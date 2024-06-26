@@ -7,7 +7,7 @@ module Admin
     before_action :find_broadcast_message, only: [:edit, :update, :destroy]
     before_action :find_broadcast_messages, only: [:index, :create]
 
-    feature_category :onboarding
+    feature_category :notifications
     urgency :low
 
     def index

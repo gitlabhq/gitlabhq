@@ -3192,7 +3192,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:build) do
         FactoryBot.build(:ci_build,
           name: 'rspec',
-          stage: 'test',
+          ci_stage: pipeline.stages.first,
           ref: 'feature',
           project: project,
           pipeline: pipeline

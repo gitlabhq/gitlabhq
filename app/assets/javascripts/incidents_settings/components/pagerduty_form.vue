@@ -124,7 +124,7 @@ export default {
           <gl-link
             :href="$options.CONFIGURE_PAGERDUTY_WEBHOOK_DOCS_LINK"
             target="_blank"
-            class="gl-display-inline-flex"
+            class="gl-inline-flex"
           >
             <span>{{ content }}</span>
             <gl-icon name="external-link" />

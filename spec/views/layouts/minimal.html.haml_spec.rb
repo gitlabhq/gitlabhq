@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'layouts/minimal', feature_category: :onboarding do
+RSpec.describe 'layouts/minimal', feature_category: :notifications do
   context 'without broadcast messaging' do
     it 'does not render the broadcast layout' do
       render

@@ -920,7 +920,7 @@ module ProjectsHelper
 
     push_to_schema_breadcrumb(project_name, project_path(project), project.try(:avatar_url))
 
-    link_to project_path(project), class: 'gl-display-inline-flex!' do
+    link_to project_path(project), class: '!gl-inline-flex' do
       icon = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 16, class: 'avatar-tile') if project.avatar_url && !Rails.env.test?
       [icon, content_tag("span", project_name, class: "js-breadcrumb-item-text")].join.html_safe
     end

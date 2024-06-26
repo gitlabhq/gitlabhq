@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Broadcast Messages', feature_category: :onboarding do
+RSpec.describe 'Broadcast Messages', feature_category: :notifications do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }

@@ -8,6 +8,9 @@ describe('LockPopovers', () => {
     path: '/gitlab-org/gitlab/-/edit',
   };
 
+  const applicationSettingMessage =
+    'An administrator selected this setting for the instance and you cannot change it.';
+
   const createPopoverMountEl = ({
     lockedByApplicationSetting = false,
     lockedByAncestor = false,
@@ -63,7 +66,7 @@ describe('LockPopovers', () => {
     });
 
     it('displays correct popover message', () => {
-      expectPopoverMessageExists('This setting has been enforced by an instance admin.');
+      expectPopoverMessageExists(applicationSettingMessage);
     });
 
     it('sets `target` prop correctly', () => {
@@ -110,7 +113,7 @@ describe('LockPopovers', () => {
     });
 
     it('application setting takes precedence and correct message is shown', () => {
-      expectPopoverMessageExists('This setting has been enforced by an instance admin.');
+      expectPopoverMessageExists(applicationSettingMessage);
     });
 
     it('sets `target` prop correctly', () => {

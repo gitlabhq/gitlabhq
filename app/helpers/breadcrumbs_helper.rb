@@ -22,7 +22,7 @@ module BreadcrumbsHelper
   end
 
   def breadcrumb_list_item(link)
-    content_tag :li, link, class: 'gl-breadcrumb-item gl-display-inline-flex'
+    content_tag :li, link, class: 'gl-breadcrumb-item gl-inline-flex'
   end
 
   def add_to_breadcrumb_collapsed_links(link, location: :before)

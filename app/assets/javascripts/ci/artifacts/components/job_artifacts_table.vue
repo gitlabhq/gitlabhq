@@ -459,7 +459,7 @@ export default {
         </span>
       </template>
       <template #cell(job)="{ item }">
-        <div class="gl-display-inline-flex gl-align-items-center gl-mb-3 gl-gap-3">
+        <div class="gl-inline-flex gl-align-items-center gl-mb-3 gl-gap-3">
           <span data-testid="job-artifacts-job-status">
             <ci-icon :status="item.detailedStatus" />
           </span>

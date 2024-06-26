@@ -216,7 +216,7 @@ export default {
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"
-            class="gl-font-sm gl-mt-1 gl-display-inline-flex gl-flex-wrap gl-text-gray-900"
+            class="gl-font-sm gl-mt-1 gl-inline-flex gl-flex-wrap gl-text-gray-900"
           >
             <span class="gl-font-bold"> &#8226; {{ $options.i18n.components }} </span>
             <gl-sprintf :message="componentNamesSprintfMessage">

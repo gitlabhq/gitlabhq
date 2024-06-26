@@ -96,7 +96,7 @@ export default {
 
     <div
       v-if="runner.version || runner.description"
-      class="gl-mb-3 gl-ml-auto gl-display-inline-flex gl-max-w-full gl-font-sm gl-align-items-center"
+      class="gl-mb-3 gl-ml-auto gl-inline-flex gl-max-w-full gl-font-sm gl-align-items-center"
     >
       <template v-if="firstVersion">
         <div class="gl-flex-shrink-0">

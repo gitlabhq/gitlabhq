@@ -9,22 +9,24 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # GitLab Duo use cases
 
-The following use cases provide practical examples, exercises and workflows with GitLab Duo.
-Learn how to start with software development and refactor existing source code.
-Dive into debugging problems with root cause analysis, solve security vulnerabilities,
-and use all stages of the DevSecOps lifecycle.
+The following use cases provide practical examples, exercises, and workflows with GitLab Duo.
+Learn how to:
+
+- Refactor existing source code.
+- Use root cause analysis to debug problems.
+- Solve security vulnerabilities.
 
 ## Use GitLab Duo to solve development challenges
 
 ### Start with a C# application
 
-In these examples, open your C# IDE, ensure that [GitLab Duo is enabled](turn_on_off.md)
-and start to explore how to use GitLab Duo AI-powered features for more efficiency.
+In these examples, open your C# IDE, ensure that [GitLab Duo is enabled](turn_on_off.md),
+and explore how to use GitLab Duo AI-powered features for more efficiency.
 
 #### CLI tool for querying the GitLab REST API
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch these steps in action in [GitLab Duo Coffee Chat: Get started with C#](https://www.youtube.com/watch?v=AdRtX9L--Po)
+Watch the [GitLab Duo Coffee Chat: Get started with C#](https://www.youtube.com/watch?v=AdRtX9L--Po)
 <!-- Video published on 2024-01-30 -->
 
 The challenge is to create a CLI tool for querying the GitLab REST API.
@@ -44,8 +46,8 @@ The challenge is to create a CLI tool for querying the GitLab REST API.
 - The generated source code might need an explanation: Use the code task `/explain`
   to get an insight how the REST API calls work.
 
-After successfully generating the source code from a Code Suggestions comment,
-CI/CD configuration is needed.
+After the source code is generated from a Code Suggestions comment,
+you need to configure CI/CD.
 
 - Chat can help with best practices for a `.gitignore` file for C#:
 
@@ -77,7 +79,8 @@ CI/CD configuration is needed.
 - Generate tests by using the `/tests` code task.
 
 The next question is where to put the generated tests in C# solutions.
-As a beginner, you might not know that the application and test projects need to exist on the same solutions level to avoid import problems.
+As a beginner, you might not know that the application and test projects must exist on the same
+solutions level to avoid import problems.
 
 - GitLab Duo Chat can help by asking and refining the prompt questions:
 
@@ -114,13 +117,13 @@ Resources:
 In this example, existing source code with a single main function exists. It repeats code, and cannot be tested.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch these steps in action in [GitLab Duo Coffee Chat: C++, SQLite and CMake](https://www.youtube.com/watch?v=zGOo1jzQ5zM)
+Watch the [GitLab Duo Coffee Chat: C++, SQLite and CMake](https://www.youtube.com/watch?v=zGOo1jzQ5zM)
 <!-- Video published on 2024-01-10 -->
 
-Refactoring the source code into reusable and testable functions is a great first step.
+To refactor the source code into reusable and testable functions:
 
 1. Open VS Code or the Web IDE with GitLab Duo enabled.
-1. Select the source code, and ask GitLab Duo Chat to refactor it into functions, using a refined prompt:
+1. Select the source code, and use a refined prompt to ask GitLab Duo Chat to refactor it into functions:
 
    ```markdown
    /refactor into functions
@@ -131,8 +134,8 @@ Refactoring the source code into reusable and testable functions is a great firs
 1. Split the refactoring strategy into functional blocks.
    For example, iterate on all insert, update, and delete operations in the database.
 
-1. The next step is to generate tests for the newly created functions. Select the source code again.
-   You can use the code task `/tests` with specific prompt instructions for the test framework:
+1. To generate tests for the newly created functions, select the source code again and
+   use the code task `/tests`. Include a specific prompt of instructions for the test framework:
 
    ```markdown
    /tests using the CTest test framework
@@ -151,10 +154,10 @@ Resources:
 #### Refactor C++ functions into object-oriented code
 
 In this example, existing source code has been wrapped into functions.
-To support more database types in the future, the code needs to be refactored into classes and object inheritance.
+To support more database types in the future, the code must be refactored into classes and object inheritance.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch these steps in action in [GitLab Duo Coffee Chat: Refactor C++ functions into `OOP` classes](https://www.youtube.com/watch?v=Z9EJh0J9358)
+Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Refactor C++ functions into `OOP` classes](https://www.youtube.com/watch?v=Z9EJh0J9358)
 <!-- Video published on 2024-01-24 -->
 
 ##### Start working on the class
@@ -260,7 +263,7 @@ Resources:
 ### Explain, test, and refactor a Kotlin application
 
 In this example, the adventure application from the [Kotlin Code Generation prompts](use_cases.md#kotlin-code-generation-prompts)
-needs to be analyzed, and improved with refactoring and tests.
+must be analyzed, and improved with refactoring and tests.
 
 The current source code looks like this:
 
@@ -450,39 +453,40 @@ fun main() {
 ### Get Started with PowerShell
 
 NOTE:
-PowerShell support is [experimental](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages-for-code-suggestions-in-vs-code)
+PowerShell support is [experimental](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages-for-code-suggestions-in-vs-code).
 
-Open Duo Chat and ask how to get started with a PowerShell script that prints the file size of the current directory.
+1. Use Duo Chat to ask how to get started with a PowerShell script that prints the file size of the current directory.
 
-```markdown
-How to get started with a PowerShell script that prints the file size of the current directory?
-```
+   ```markdown
+   How to get started with a PowerShell script that prints the file size of the current directory?
+   ```
 
-Alternatively, you can use Code Suggestions to generate the source code.
-Create a new script `get-file-sizes.ps1` with the following content:
+   Alternatively, you can use Code Suggestions to generate the source code.
 
-```powershell
-# Collect the files in a directory and print their size
-```
+1. Create a new script `get-file-sizes.ps1` with the following content:
 
-Wait for Code Suggestions to complete the prompt, and then experiment with different output
-formats by adding the following comment prompts:
+   ```powershell
+   # Collect the files in a directory and print their size
+   ```
 
-```powershell
-# Collect the files in a directory and print their size
+1. Wait for Code Suggestions to complete the prompt, and then add the following prompts to
+experiment with different output formats:
 
-$directory = Read-Host -Prompt "Enter the directory path to get file sizes"
-$files = Get-ChildItem -Path $directory -File
-foreach ($file in $files) {
-    $fileSize = [Math]::Round(($file.Length / 1KB), 2)
-    Write-Host "$($file.Name) - $fileSize KB"
-}
+   ```powershell
+   # Collect the files in a directory and print their size
 
-# Repeat the code above but store the results in a CSV file
-```
+   $directory = Read-Host -Prompt "Enter the directory path to get file sizes"
+   $files = Get-ChildItem -Path $directory -File
+   foreach ($file in $files) {
+       $fileSize = [Math]::Round(($file.Length / 1KB), 2)
+       Write-Host "$($file.Name) - $fileSize KB"
+   }
 
-You can repeat the steps with prompts for different export formats,
-or let Code Suggestions auto-complete it for you. For example:
+   # Repeat the code above but store the results in a CSV file
+   ```
+
+1. Repeat the steps with prompts for different export formats,
+or use Code Suggestions auto-complete. For example:
 
 ```powershell
 # Collect the files in a directory and print their size
@@ -533,7 +537,7 @@ Write-Host "File sizes saved to $txtFile"
 In this example, detected security vulnerabilities in C should be fixed with the help from GitLab Duo.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch the [GitLab Duo Coffee Chat: Vulnerability Resolution Challenge #1](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
+Watch the walkthrough of these steps [GitLab Duo Coffee Chat: Vulnerability Resolution Challenge #1](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
 <!-- Video published on 2024-01-30 -->
 
 [This source code snippet](https://gitlab.com/gitlab-da/use-cases/ai/gitlab-duo-coffee-chat/gitlab-duo-coffee-chat-2024-01-30/-/blob/4685e4e1c658565ae956ad9befdfcc128e60c6cf/src/main-vulnerable-source.c)
@@ -546,8 +550,8 @@ introduces a security vulnerability with a [buffer overflow](https://en.wikipedi
 ```
 
 [SAST security scanners](../application_security/sast/analyzers.md) can detect and report the problem. Use [Vulnerability Explanation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) to understand the problem.
-[Vulnerability resolution](../application_security/vulnerabilities/index.md#vulnerability-resolution) helps to generate an MR.
-If the suggested changes do not fit requirements, or would otherwise lead to problems, you can use [Code Suggestions](../project/repository/code_suggestions/index.md) and [Chat](index.md) to refine. For example:
+Vulnerability resolution helps to generate an MR.
+If the suggested changes do not fit requirements, or might lead to problems, you can use Code Suggestions and Duo Chat to refine. For example:
 
 1. Open VS Code or the Web IDE with GitLab Duo enabled, and add a comment with instructions:
 
@@ -571,7 +575,7 @@ If the suggested changes do not fit requirements, or would otherwise lead to pro
        printf("Contents of region: %s\n", region);
    ```
 
-1. In addition, use GitLab Duo Chat to ask questions. The `/refactor` code task can generate different suggestions.
+1. Use GitLab Duo Chat to ask questions. The `/refactor` code task can generate different suggestions.
    If you prefer a specific algorithm or function, refine the prompt:
 
    ```markdown
@@ -587,7 +591,7 @@ Resources:
 In this example, the challenge is to use GitLab Duo Chat to solve problems.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-Watch the recording here: [GitLab Duo Coffee Chat: Solve problems with GitLab Duo Chat Challenge](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
+Watch the walkthrough of these steps in [GitLab Duo Coffee Chat: Solve problems with GitLab Duo Chat Challenge](https://www.youtube.com/watch?v=Ypwx4lFnHP0)
 <!-- Video published on 2024-02-02 -->
 
 - You can use GitLab Duo Chat to explain CI/CD errors.
@@ -618,7 +622,7 @@ Resources:
 
 ## Root cause analysis use cases
 
-Root cause analysis assists you in determining the root cause for a CI/CD
+Use root cause analysis to determine the root cause for a CI/CD
 pipeline failure. The following examples illustrate common errors, and
 encourage you to fork and practice finding and fixing the root cause.
 
@@ -628,10 +632,10 @@ For more information, see the blog post [Developing GitLab Duo: Blending AI and 
 
 CI/CD jobs can be executed in containers, spawned from the contributed `image`
 attribute. If the container does not provide a programming language runtime,
-the executed `script` sections referencing the `go` binary fail. For example,
-the error message `/bin/sh: eval: line 149: go: not found` needs to be understood
+the executed `script` sections that reference the `go` binary fail. For example,
+the error message `/bin/sh: eval: line 149: go: not found` must be understood
 and fixed. If the `go` command is not found in the container's runtime context,
-this can have multiple reasons:
+it might be due to multiple reasons:
 
 - The job uses a minimal container image like `alpine`, and the Go language
 runtime was not installed.
@@ -644,7 +648,7 @@ configured.
 The project [Challenge: Root Cause Analysis - Go GitLab Release Fetcher](https://gitlab.com/gitlab-da/use-cases/ai/ai-workflows/gitlab-duo-challenges/root-cause-analysis/challenge-root-cause-analysis-go-gitlab-release-fetcher)
 provides an exercise to analyze and fix CI/CD problems with a Go Tanuki app. In this exercise,
 the `build` and `docker-build` jobs are failing. When you have fixed
-the problem, the CI/CD pipeline succeeds and the `build` job prints a surprise for you.
+the problem, the CI/CD pipeline succeeds and the `build` job prints an output.
 The `solution/` directory provides two possible solutions after root cause analysis.
 
 ## Use GitLab Duo to contribute to GitLab
@@ -656,13 +660,13 @@ Review the [architecture components](../../development/architecture.md) to learn
 
 ### Contribute to frontend: Profile Settings
 
-In this example, the challenge was to update the GitLab profile page and improve the social networks settings.
+In this example, the challenge is to update the GitLab profile page and improve the social networks settings.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 Watch the recording here: [GitLab Duo Coffee Chat: Contribute to GitLab using Code Suggestions and Chat](https://www.youtube.com/watch?v=TauP7soXj-E)
 <!-- Video published on 2024-02-23 -->
 
-GitLab Duo Chat can be helpful to explain and refactor code, and generate tests.
+You can use GitLab Duo Chat to explain and refactor code, and generate tests.
 Code Suggestions help complete existing code, and can generate new functions and algorithms in Ruby, Go, or VueJS.
 
 1. Use the `/explain` code task to explain selected code sections, and learn how the HAML templates work.
@@ -687,11 +691,12 @@ please explain this error: undefined method `icon` for
 
 ## Code generation prompts
 
-The following examples provide helpful [code generation](../project/repository/code_suggestions/index.md#best-practices)
+The following examples provide [code generation](../project/repository/code_suggestions/index.md#best-practices)
 prompts for the [supported languages](../project/repository/code_suggestions/supported_extensions.md) in GitLab Duo.
-Code generation prompts can be refined using multi-line comments.
+You can use multi-line comments to refine code generation prompts.
 
-The examples are stored in the [GitLab Duo Prompts project](https://gitlab.com/gitlab-da/use-cases/ai/ai-workflows/gitlab-duo-prompts), maintained by the Developer Relations team. These examples are tested working. You should review and adapt them for your environment.
+The examples are stored in the [GitLab Duo Prompts project](https://gitlab.com/gitlab-da/use-cases/ai/ai-workflows/gitlab-duo-prompts),
+maintained by the Developer Relations team. These examples are tested working. You should review and adapt them for your environment.
 
 ### C code generation prompts
 

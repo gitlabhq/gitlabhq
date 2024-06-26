@@ -654,7 +654,7 @@ export default {
 
       <span
         v-if="!isFolder && deploymentHasUser"
-        class="text-break-word gl-display-inline-flex gl-align-items-center"
+        class="text-break-word gl-inline-flex gl-align-items-center"
       >
         <gl-sprintf :message="s__('Environments|by %{avatar}')">
           <template #avatar>
@@ -757,7 +757,7 @@ export default {
         </div>
         <span
           v-if="upcomingDeployment.user"
-          class="text-break-word gl-display-inline-flex gl-align-items-center gl-mt-2"
+          class="text-break-word gl-inline-flex gl-align-items-center gl-mt-2"
         >
           <gl-sprintf :message="s__('Environments|by %{avatar}')">
             <template #avatar>

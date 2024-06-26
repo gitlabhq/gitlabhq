@@ -85,7 +85,7 @@ export default {
     class="gl-py-4"
     :class="{ 'gl-border-b-solid gl-border-b-1 gl-border-gray-100': !isLastRow }"
   >
-    <div class="gl-display-inline-flex gl-align-items-center gl-w-full">
+    <div class="gl-inline-flex gl-align-items-center gl-w-full">
       <span v-if="canBulkDestroyArtifacts" class="gl-pl-5">
         <gl-form-checkbox
           v-gl-tooltip.right

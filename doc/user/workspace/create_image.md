@@ -7,14 +7,6 @@ description: "Create a custom workspace image to support any workspace you creat
 
 # Tutorial: Create a custom workspace image that supports arbitrary user IDs
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
-
 In this tutorial, you'll learn how to create a custom workspace image that supports arbitrary user IDs.
 You can then use this custom image with any [workspace](index.md) you create in GitLab.
 

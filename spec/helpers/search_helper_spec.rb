@@ -459,7 +459,7 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
     context 'with a search scope' do
       let(:term) { 'bla' }
-      let(:scope) { 'project' }
+      let(:scope) { 'projects' }
 
       it 'returns only scope-specific results' do
         expect(self).to receive(:scope_specific_results).with(term, scope).and_return([])
@@ -492,9 +492,9 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     end
 
     where(:scope, :category) do
-      'user'    | 'Users'
-      'project' | 'Projects'
-      'issue'   | 'Recent issues'
+      'users'    | 'Users'
+      'projects' | 'Projects'
+      'issues'   | 'Recent issues'
     end
 
     with_them do

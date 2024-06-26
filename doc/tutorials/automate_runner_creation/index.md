@@ -6,10 +6,6 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 # Tutorial: Automate runner creation and registration
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 This tutorial describes how to automate runner creation and registration.
 
 To automate runner creation and registration:

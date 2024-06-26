@@ -3,7 +3,7 @@ table_name: broadcast_messages
 classes:
 - System::BroadcastMessage
 feature_categories:
-- onboarding
+- notifications
 description: GitLab can display broadcast messages to users of a GitLab instance
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/f1ecf53c1e55fbbc66cb2d7d12fb411cbfc2ace8
 milestone: '6.3'

@@ -9,10 +9,10 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 
-  let(:commit_status) { create_status(stage: 'test') }
+  let(:commit_status) { create_status }
 
   def create_status(**opts)
-    create(:commit_status, pipeline: pipeline, **opts)
+    create(:commit_status, pipeline: pipeline, ci_stage: pipeline.stages.first, **opts)
   end
 
   it_behaves_like 'having unique enum values'
@@ -56,7 +56,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
   describe '#success' do
     it 'transitions canceling to canceled' do
-      commit_status = create_status(stage: 'test', status: 'canceling')
+      commit_status = create_status(status: 'canceling')
 
       expect { commit_status.success! }.to change { commit_status.status }.from('canceling').to('canceled')
     end
@@ -64,7 +64,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     context 'when status is one that transitions to success' do
       [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running].each do |status|
         it 'transitions to success' do
-          commit_status = create_status(stage: 'test', status: status.to_s)
+          commit_status = create_status(status: status.to_s)
 
           expect { commit_status.success! }.to change { commit_status.status }.from(status.to_s).to('success')
         end
@@ -815,7 +815,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
     end
 
     it 'transitions canceling to canceled' do
-      commit_status = create_status(stage: 'test', status: 'canceling')
+      commit_status = create_status(status: 'canceling')
 
       expect { commit_status.drop! }.to change { commit_status.status }.from('canceling').to('canceled')
     end
@@ -824,7 +824,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
       [:created, :waiting_for_resource, :preparing, :waiting_for_callback, :pending, :running, :manual,
 :scheduled].each do |status|
         it 'transitions to success' do
-          commit_status = create_status(stage: 'test', status: status.to_s)
+          commit_status = create_status(status: status.to_s)
 
           expect { commit_status.drop! }.to change { commit_status.status }.from(status.to_s).to('failed')
         end

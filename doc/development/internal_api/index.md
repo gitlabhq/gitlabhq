@@ -845,7 +845,51 @@ Example response:
 }
 ```
 
-### Retrieve a subscription
+### Retrieve a subscription (internal API)
+
+Use a GET command to view an existing subscription. Requests from CustomersDot are being migrated to this endpoint.
+
+```plaintext
+GET /internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription
+```
+
+Example request:
+
+```shell
+curl --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/gitlab_subscription"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code": "premium",
+    "name": "premium",
+    "trial": false,
+    "auto_renew": null,
+    "upgradable": false,
+    "exclude_guests": false
+  },
+  "usage": {
+    "seats_in_subscription": 80,
+    "seats_in_use": 82,
+    "max_seats_used": 82,
+    "seats_owed": 2
+  },
+  "billing": {
+    "subscription_start_date": "2020-07-15",
+    "subscription_end_date": "2021-07-15",
+    "trial_ends_on": null
+  }
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
+### Retrieve a subscription (namespaces API)
 
 Use a GET command to view an existing subscription.
 
@@ -885,9 +929,9 @@ Example response:
 }
 ```
 
-### Known consumers
+#### Known consumers
 
-- CustomersDot
+- CustomersDot (deprecated - [being removed](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/9773))
 
 ## Subscription add-on purchases (excluding storage and compute packs)
 

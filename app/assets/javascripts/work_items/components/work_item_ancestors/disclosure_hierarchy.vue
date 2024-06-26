@@ -89,7 +89,7 @@ export default {
     class="disclosure-hierarchy gl-relative gl-display-flex gl-flex-grow-2 gl-min-w-0"
   >
     <ul
-      class="gl-p-0 gl-m-0 gl-relative gl-list-none gl-display-inline-flex gl-flex-direction-row gl-max-w-full"
+      class="gl-p-0 gl-m-0 gl-relative gl-list-none gl-inline-flex gl-flex-direction-row gl-max-w-full"
     >
       <template v-if="withEllipsis || isMobile">
         <disclosure-hierarchy-item v-if="!isMobile" :item="firstItem" :item-id="itemId(0)">

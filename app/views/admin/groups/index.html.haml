@@ -1,7 +1,7 @@
 - page_title _("Groups")
 - add_page_specific_style 'page_bundles/search'
 
-= render ::Layouts::PageHeadingComponent.new(_('Groups')) do |c|
+= render ::Layouts::PageHeadingComponent.new(_('Groups'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_groups_pageload' } }) do |c|
   - c.with_actions do
     = link_button_to new_admin_group_path, variant: :confirm do
       = _('New group')

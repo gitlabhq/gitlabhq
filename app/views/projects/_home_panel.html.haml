@@ -6,7 +6,7 @@
       = render Pajamas::AvatarComponent.new(@project, alt: @project.name, class: 'gl-align-self-start gl-flex-shrink-0 gl-mr-3', size: 48, avatar_options: { itemprop: 'image' })
       %h1.home-panel-title.gl-heading-1.gl-flex.gl-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere.gl-mb-0{ data: { testid: 'project-name-content' }, itemprop: 'name' }
         = @project.name
-        = visibility_level_content(@project, css_class: 'visibility-icon gl-display-inline-flex gl-text-secondary', icon_css_class: 'icon')
+        = visibility_level_content(@project, css_class: 'visibility-icon gl-inline-flex gl-text-secondary', icon_css_class: 'icon')
         - if @project.catalog_resource
           = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(@project.catalog_resource), css_class: 'gl-mx-0' }
         - if @project.group

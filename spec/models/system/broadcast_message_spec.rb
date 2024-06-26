@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe System::BroadcastMessage, feature_category: :onboarding do
+RSpec.describe System::BroadcastMessage, feature_category: :notifications do
   subject { build(:broadcast_message) }
 
   it { is_expected.to be_valid }

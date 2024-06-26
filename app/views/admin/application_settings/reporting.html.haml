@@ -3,30 +3,25 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
-%section.settings.as-spam.no-animate#js-spam-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Spam and Anti-bot Protection')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure CAPTCHAs, IP address limits, and other anti-spam measures.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Spam and Anti-bot Protection'),
+  id: 'js-spam-settings',
+  testid: 'spam-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure CAPTCHAs, IP address limits, and other anti-spam measures.')
+  - c.with_body do
     = render 'spam'
 
 -# this partial is from JiHu, see details in https://gitlab.com/gitlab-jh/gitlab/-/merge_requests/135
 = render_if_exists 'admin/application_settings/content_validation_section'
 
-%section.settings.as-abuse.no-animate#js-abuse-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Abuse reports')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Receive notification of abuse reports by email.')
-      = link_to _('Learn more.'), help_page_path('administration/review_abuse_reports'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Abuse reports'),
+  id: 'js-abuse-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Receive notification of abuse reports by email.')
+    = link_to _('Learn more.'), help_page_path('administration/review_abuse_reports'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'abuse'
 
 = render_if_exists 'admin/application_settings/git_abuse_rate_limit'

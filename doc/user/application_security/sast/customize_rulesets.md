@@ -19,8 +19,7 @@ repository being scanned. There are two kinds of customization:
   - [Disabling predefined rules](#disable-predefined-rules). Available for all analyzers.
   - [Overriding predefined rules](#override-predefined-rules). Available for all analyzers.
 - Replacing predefined rules by [synthesizing a custom configuration](#synthesize-a-custom-configuration)
-  using **passthroughs**. Available for only [nodejs-scan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)
-  and [semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
+  using **passthroughs**. Available only for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 
 ## Disable predefined rules
 
@@ -52,14 +51,7 @@ to configure this behavior.
 
 ## Synthesize a custom configuration
 
-You can completely replace the predefined rules of some SAST analyzers:
-
-- [nodejs-scan](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan) - you
-  can replace the default [njsscan configuration file](https://github.com/ajinabraham/njsscan#configure-njsscan)
-  with your own.
-- [semgrep](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) - you can replace
-  the [GitLab-maintained ruleset](https://gitlab.com/gitlab-org/security-products/sast-rules)
-  with your own.
+You can replace the [GitLab-maintained ruleset](rules.md) for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) with your own rules.
 
 You provide your customizations via passthroughs, which are composed into a
 passthrough chain at runtime and evaluated to produce a complete configuration. The
@@ -286,7 +278,7 @@ Configuration example:
 ### The `[[$analyzer.passthrough]]` section
 
 NOTE:
-This is currently supported by the `nodejs-scan` and `semgrep` analyzers only.
+Passthrough configurations are available for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) only.
 
 The `[[$analyzer.passthrough]]` section allows you to synthesize a custom configuration for an analyzer. You
 can define up to 20 of these sections per analyzer. Passthroughs are composed into a _passthrough chain_
@@ -375,47 +367,6 @@ With the following custom ruleset configuration, vulnerabilities found with
       value = "322"
     [semgrep.ruleset.override]
       severity = "Critical"
-```
-
-### Synthesize a custom configuration using a raw passthrough for `nodejs-scan`
-
-With the following custom ruleset configuration, the predefined behavior
-of the `nodejs-scan` analyzer is replaced with a custom configuration.
-
-The syntax used for the `value` follows the [njsscan config format](https://github.com/ajinabraham/njsscan#configure-njsscan).
-
-```toml
-[nodejs-scan]
-  description = "My custom ruleset for nodejs-scan"
-
-  [[nodejs-scan.passthrough]]
-    type  = "raw"
-    value = '''
----
-- nodejs-extensions:
-  - .js
-
-  template-extensions:
-  - .new
-  - .hbs
-  - ''
-
-  ignore-filenames:
-  - skip.js
-
-  ignore-paths:
-  - __MACOSX
-  - skip_dir
-  - node_modules
-
-  ignore-extensions:
-  - .hbs
-
-  ignore-rules:
-  - regex_injection_dos
-  - pug_jade_template
-  - express_xss
-'''
 ```
 
 ### Synthesize a custom configuration using a file passthrough for `semgrep`

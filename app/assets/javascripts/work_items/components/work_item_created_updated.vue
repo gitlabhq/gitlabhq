@@ -97,7 +97,7 @@ export default {
     <gl-loading-icon v-if="updateInProgress" inline />
     <confidentiality-badge
       v-if="isWorkItemConfidential"
-      class="gl-align-middle gl-display-inline-flex!"
+      class="gl-align-middle !gl-inline-flex!"
       :issuable-type="workItemType"
       :workspace-type="$options.WORKSPACE_PROJECT"
       hide-text-in-small-screens

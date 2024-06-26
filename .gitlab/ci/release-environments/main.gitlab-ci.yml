@@ -2,7 +2,7 @@
 include:
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
   - project: 'gitlab-org/quality/pipeline-common'
-    ref: master
+    ref: '8.18.0'
     file: ci/base.gitlab-ci.yml
 
 stages:

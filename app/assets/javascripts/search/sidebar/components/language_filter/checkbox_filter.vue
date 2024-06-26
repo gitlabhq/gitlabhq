@@ -72,12 +72,10 @@ export default {
       v-for="f in dataFilters"
       :key="f.label"
       :value="f.label"
-      class="gl-flex-grow-1 gl-display-inline-flex gl-justify-content-space-between gl-w-full"
+      class="gl-flex-grow-1 gl-inline-flex gl-justify-content-space-between gl-w-full"
       :class="$options.LABEL_DEFAULT_CLASSES"
     >
-      <span
-        class="gl-flex-grow-1 gl-display-inline-flex gl-justify-content-space-between gl-w-full"
-      >
+      <span class="gl-flex-grow-1 gl-inline-flex gl-justify-content-space-between gl-w-full">
         <span data-testid="label">
           {{ f.label }}
         </span>

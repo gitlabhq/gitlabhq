@@ -33,7 +33,7 @@ export default {
 
 <template>
   <div
-    class="incident-severity gl-display-inline-flex gl-align-items-center gl-justify-content-between gl-max-w-full"
+    class="incident-severity gl-inline-flex gl-align-items-center gl-justify-content-between gl-max-w-full"
   >
     <gl-icon
       :size="iconSize"

@@ -202,7 +202,7 @@ export default {
           :title="item.description"
           truncate-target="child"
           placement="top"
-          class="gl-max-w-15 gl-display-inline-flex"
+          class="gl-max-w-15 gl-inline-flex"
         >
           <div class="gl-flex-grow-1 gl-text-truncate">{{ item.description }}</div>
         </tooltip-on-truncate>

@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Create Jira credentials
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 This tutorial shows you how to create Jira credentials. You can use your new Jira credentials to
 configure the [Jira issue integration](configure.md) in GitLab for Jira Data Center or Jira Server.
 

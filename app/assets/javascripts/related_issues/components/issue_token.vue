@@ -48,7 +48,7 @@ export default {
 <template>
   <div
     :class="{
-      'issue-token gl-display-inline-flex gl-align-items-stretch gl-max-w-full gl-leading-24 gl-whitespace-nowrap': isCondensed,
+      'issue-token gl-inline-flex gl-align-items-stretch gl-max-w-full gl-leading-24 gl-whitespace-nowrap': isCondensed,
       'flex-row issuable-info-container': !isCondensed,
     }"
   >
@@ -57,7 +57,7 @@ export default {
       ref="link"
       v-gl-tooltip
       :class="{
-        'issue-token-link gl-display-inline-flex gl-min-w-0 gl-text-gray-500': isCondensed,
+        'issue-token-link gl-inline-flex gl-min-w-0 gl-text-gray-500': isCondensed,
         'issuable-main-info': !isCondensed,
       }"
       :href="computedPath"

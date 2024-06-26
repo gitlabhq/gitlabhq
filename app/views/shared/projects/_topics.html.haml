@@ -1,7 +1,7 @@
 - max_project_topic_length = 15
 
 - if project.topics.present?
-  .gl-w-full.gl-display-inline-flex.gl-flex-wrap.gl-font-base.gl-font-normal.gl-align-items-center.-gl-mx-2.-gl-my-2{ 'data-testid': 'project_topic_list' }
+  .gl-w-full.gl-inline-flex.gl-flex-wrap.gl-font-base.gl-font-normal.gl-align-items-center.-gl-mx-2.-gl-my-2{ 'data-testid': 'project_topic_list' }
     - project.topics_to_show.each do |topic|
       - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
       - if topic[:title].length > max_project_topic_length
@@ -14,7 +14,7 @@
     - if project.has_extra_topics?
       - title = _('More topics')
       - content = capture do
-        %span.gl-display-inline-flex.gl-flex-wrap
+        %span.gl-inline-flex.gl-flex-wrap
           - project.topics_not_shown.each do |topic|
             - explore_project_topic_path = topic_explore_projects_cleaned_path(topic_name: topic[:name])
             - if topic[:title].length > max_project_topic_length

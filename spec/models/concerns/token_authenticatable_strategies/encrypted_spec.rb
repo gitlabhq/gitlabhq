@@ -30,6 +30,14 @@ RSpec.describe TokenAuthenticatableStrategies::Encrypted, feature_category: :sys
     end
   end
 
+  describe '#sensitive_fields' do
+    let(:encrypted_option) { :required }
+
+    it 'includes the encrypted field' do
+      expect(strategy.sensitive_fields).to contain_exactly('some_field', 'some_field_encrypted')
+    end
+  end
+
   describe '#find_token_authenticatable' do
     shared_examples 'finds the resource' do
       it 'finds the resource by cleartext' do

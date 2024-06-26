@@ -209,7 +209,7 @@ export default {
                 {{ pipeline.details.status.label }}
               </p>
               <div
-                class="gl-align-items-center gl-display-inline-flex gl-flex-grow-1 gl-justify-content-space-between"
+                class="gl-align-items-center gl-inline-flex gl-flex-grow-1 gl-justify-content-space-between"
               >
                 <legacy-pipeline-mini-graph
                   v-if="pipeline.details.stages"

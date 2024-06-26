@@ -1,6 +1,6 @@
 - supports_file_upload = local_assigns.fetch(:supports_file_upload, true)
 .comment-toolbar.gl-px-2.gl-display-flex.gl-justify-content-end.gl-rounded-bottom-left-base.gl-rounded-bottom-right-base.clearfix
-  .content-editor-switcher.gl-display-inline-flex.gl-align-items-center
+  .content-editor-switcher.gl-inline-flex.gl-align-items-center
     = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'markdown-mark', size: :small, href: help_page_path('user/markdown'), target: '_blank', button_options: { class: 'gl-px-3!' })
   - if supports_file_upload
     %span.uploading-container.gl-leading-32.gl-font-sm

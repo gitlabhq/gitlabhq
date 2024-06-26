@@ -106,7 +106,7 @@ export default {
           >
             <span v-if="note.createdAt" class="gl-hidden sm:gl-inline">&middot;</span>
           </note-header>
-          <div class="gl-display-inline-flex">
+          <div class="gl-inline-flex">
             <abuse-report-note-actions
               :show-reply-button="showReplyButton"
               :show-edit-button="showEditButton"

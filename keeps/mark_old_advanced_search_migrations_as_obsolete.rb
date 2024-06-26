@@ -155,14 +155,15 @@ module Keeps
     end
 
     def add_obsolete_to_migration_spec(version, file, name)
-      describe = "RSpec.describe #{name}, feature_category: :global_search"
-      content = "it_behaves_like 'a deprecated Advanced Search migration', #{version}"
-
       source = RuboCop::ProcessedSource.new(File.read(file), RuboCop::ConfigStore.new.for_file('.').target_ruby_version)
       rewriter = Parser::Source::TreeRewriter.new(source.buffer)
-      describe_line = source.ast.each_node(:block).first.each_node(:send).first
-      describe_block = source.ast.each_node(:block).first.each_node(:begin).first
-      rewriter.replace(describe_line.loc.expression, describe)
+      describe_block = source.ast.each_node(:block).first
+      content = <<~RUBY.strip
+        RSpec.describe #{name}, feature_category: :global_search do
+          it_behaves_like 'a deprecated Advanced Search migration', #{version}
+        end
+      RUBY
+
       rewriter.replace(describe_block.loc.expression, content)
       process = rewriter.process.lstrip.gsub(/\n{3,}/, "\n\n")
 

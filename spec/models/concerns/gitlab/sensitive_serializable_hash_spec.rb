@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe SensitiveSerializableHash do
+RSpec.describe Gitlab::SensitiveSerializableHash, feature_category: :shared do
   describe '.prevent_from_serialization' do
     let(:base_class) do
       Class.new do
         include ActiveModel::Serialization
-        include SensitiveSerializableHash
+        include Gitlab::SensitiveSerializableHash
       end
     end
 
@@ -43,7 +43,7 @@ RSpec.describe SensitiveSerializableHash do
 
   describe '#serializable_hash' do
     shared_examples "attr_encrypted attribute" do |klass, attribute_name|
-      context "#{klass.name}\##{attribute_name}" do
+      context "for #{klass.name}\##{attribute_name}" do
         let(:attributes) { [attribute_name, "encrypted_#{attribute_name}", "encrypted_#{attribute_name}_iv"] }
 
         it 'has a attr_encrypted_attributes field' do
@@ -74,18 +74,8 @@ RSpec.describe SensitiveSerializableHash do
       let_it_be(:model) { create(:ci_instance_variable) }
     end
 
-    shared_examples "add_authentication_token_field attribute" do |klass, attribute_name, encrypted_attribute: true, digest_attribute: false|
-      context "#{klass.name}\##{attribute_name}" do
-        let(:attributes) do
-          if digest_attribute
-            ["#{attribute_name}_digest"]
-          elsif encrypted_attribute
-            [attribute_name, "#{attribute_name}_encrypted"]
-          else
-            [attribute_name]
-          end
-        end
-
+    shared_examples "add_authentication_token_field attribute" do |klass, attribute_name|
+      context "for #{klass.name}\##{attribute_name}" do
         it 'has a add_authentication_token_field field' do
           expect(klass.token_authenticatable_fields).to include(attribute_name.to_sym)
         end
@@ -105,25 +95,21 @@ RSpec.describe SensitiveSerializableHash do
     it_behaves_like 'add_authentication_token_field attribute', Ci::Runner, 'token' do
       let_it_be(:model) { create(:ci_runner) }
 
-      it 'does not include token_expires_at in serializable_hash' do
-        attribute = 'token_expires_at'
-
-        expect(model.attributes).to include(attribute) # double-check the attribute does exist
-
-        expect(model.serializable_hash).not_to include(attribute)
-        expect(model.to_json).not_to include(attribute)
-        expect(model.as_json).not_to include(attribute)
-      end
+      let(:attributes) { %w[token token_encrypted] }
     end
 
-    it_behaves_like 'add_authentication_token_field attribute', ApplicationSetting, 'health_check_access_token', encrypted_attribute: false do
-      # health_check_access_token_encrypted column does not exist
+    it_behaves_like 'add_authentication_token_field attribute', ApplicationSetting, 'health_check_access_token' do
       let_it_be(:model) { create(:application_setting) }
+
+      # health_check_access_token_encrypted column does not exist
+      let(:attributes) { %w[health_check_access_token] }
     end
 
-    it_behaves_like 'add_authentication_token_field attribute', PersonalAccessToken, 'token', encrypted_attribute: false, digest_attribute: true do
-      # PersonalAccessToken only has token_digest column
+    it_behaves_like 'add_authentication_token_field attribute', PersonalAccessToken, 'token' do
       let_it_be(:model) { create(:personal_access_token) }
+
+      # PersonalAccessToken only has token_digest column
+      let(:attributes) { %w[token_digest] }
     end
   end
 end

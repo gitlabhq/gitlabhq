@@ -1,9 +1,0 @@
----
-name: parse_ci_job_timestamps
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/455581
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154561
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464785
-milestone: '17.1'
-group: group::runner
-type: gitlab_com_derisk
-default_enabled: false

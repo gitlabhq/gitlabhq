@@ -31,7 +31,7 @@ exports[`Alert integration settings form default state should match the default 
       optionaltext="(optional)"
     >
       <label
-        class="gl-display-inline-flex"
+        class="gl-inline-flex"
         for="reference-1"
       >
         Incident template (optional).

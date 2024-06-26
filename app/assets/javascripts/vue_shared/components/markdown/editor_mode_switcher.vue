@@ -26,7 +26,7 @@ export default {
 };
 </script>
 <template>
-  <div class="content-editor-switcher gl-display-inline-flex gl-align-items-center">
+  <div class="content-editor-switcher gl-inline-flex gl-align-items-center">
     <gl-button
       :id="$options.richTextEditorButtonId"
       size="small"

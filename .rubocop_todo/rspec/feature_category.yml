@@ -437,7 +437,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/lib/api/entities/protected_environments/approval_rule_spec.rb'
     - 'ee/spec/lib/api/entities/protected_environments/deploy_access_level_spec.rb'
     - 'ee/spec/lib/audit/base_changes_auditor_spec.rb'
-    - 'ee/spec/lib/audit/changes_spec.rb'
     - 'ee/spec/lib/audit/compliance_framework_changes_auditor_spec.rb'
     - 'ee/spec/lib/audit/external_status_check_changes_auditor_spec.rb'
     - 'ee/spec/lib/audit/group_changes_auditor_spec.rb'

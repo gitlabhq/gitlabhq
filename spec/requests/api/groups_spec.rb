@@ -1084,6 +1084,24 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
         end
       end
 
+      context 'when default_branch_protection_defaults set to No one' do
+        it 'updates default branch protection settings for the group' do
+          put api("/groups/#{group1.id}", user1),
+            params: {
+              default_branch_protection_defaults: {
+                allowed_to_push: [{ access_level: 0 }],
+                allowed_to_merge: [{ access_level: 0 }]
+              }
+            }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['default_branch_protection_defaults']).to eq(
+            "allowed_to_merge" => [{ "access_level" => 0 }],
+            "allowed_to_push" => [{ "access_level" => 0 }]
+          )
+        end
+      end
+
       it 'removes the group avatar', :aggregate_failures do
         put api("/groups/#{group1.id}", user1), params: { avatar: '' }
 

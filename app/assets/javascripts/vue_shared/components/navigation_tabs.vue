@@ -60,7 +60,7 @@ export default {
     <gl-tab
       v-for="(tab, i) in tabs"
       :key="i"
-      :title-link-class="`js-${scope}-tab-${tab.scope} gl-display-inline-flex`"
+      :title-link-class="`js-${scope}-tab-${tab.scope} gl-inline-flex`"
       :title-link-attributes="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
         'data-testid': `${scope}-tab-${tab.scope}`,
       } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"

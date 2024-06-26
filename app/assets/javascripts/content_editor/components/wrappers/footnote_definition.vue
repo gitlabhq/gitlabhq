@@ -20,7 +20,7 @@ export default {
     <span
       :contenteditable="false"
       data-testid="footnote-label"
-      class="gl-display-inline-flex gl-mr-2"
+      class="gl-inline-flex gl-mr-2"
       dir="auto"
       >{{ node.attrs.label }}:</span
     >

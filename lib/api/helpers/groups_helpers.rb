@@ -28,11 +28,11 @@ module API
         optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to default branch'
         optional :default_branch_protection_defaults, type: Hash, desc: 'Determine if developers can push to default branch' do
           optional :allowed_to_push, type: Array, desc: 'An array of access levels allowed to push' do
-            requires :access_level, type: Integer, values: [::Gitlab::Access::DEVELOPER, ::Gitlab::Access::MAINTAINER], desc: 'A valid access level'
+            requires :access_level, type: Integer, values: ProtectedBranch::PushAccessLevel.allowed_access_levels, desc: 'A valid access level'
           end
           optional :allow_force_push, type: Boolean, desc: 'Allow force push for all users with push access.'
           optional :allowed_to_merge, type: Array, desc: 'An array of access levels allowed to merge' do
-            requires :access_level, type: Integer, values: [::Gitlab::Access::DEVELOPER, ::Gitlab::Access::MAINTAINER], desc: 'A valid access level'
+            requires :access_level, type: Integer, values: ProtectedBranch::MergeAccessLevel.allowed_access_levels, desc: 'A valid access level'
           end
           optional :code_owner_approval_required, type: Boolean, desc: "Require approval from code owners"
           optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'

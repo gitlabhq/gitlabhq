@@ -46,7 +46,7 @@
           = render partial: 'shared/ci_catalog_badge', locals: { href: explore_catalog_path(project.catalog_resource), css_class: 'gl-align-self-center gl-mr-2' }
 
         - if explore_projects_tab? && project_license_name(project)
-          %span.gl-display-inline-flex.gl-align-items-center.gl-mr-3
+          %span.gl-inline-flex.gl-align-items-center.gl-mr-3
             = sprite_icon('scale', size: 14, css_class: 'gl-mr-2')
             = project_license_name(project)
 

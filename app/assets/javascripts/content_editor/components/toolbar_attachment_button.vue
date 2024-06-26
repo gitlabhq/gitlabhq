@@ -39,7 +39,7 @@ export default {
 };
 </script>
 <template>
-  <span class="gl-display-inline-flex">
+  <span class="gl-inline-flex">
     <gl-button
       v-gl-tooltip
       :aria-label="$options.i18n.inputLabel"

@@ -13,11 +13,11 @@
                       - if @user.pronunciation.present?
                         %p.gl-m-0
                           = s_("UserProfile|Pronounced as:")
-                          %span.gl-font-sm.gl-text-secondary.gl-display-inline-flex= @user.pronunciation
+                          %span.gl-font-sm.gl-text-secondary.gl-inline-flex= @user.pronunciation
                       - if @user.pronouns.present?
                         %p.gl-m-0
                           = s_("UserProfile|Pronouns:")
-                          %span.gl-font-sm.gl-text-secondary.gl-display-inline-flex= @user.pronouns
+                          %span.gl-font-sm.gl-text-secondary.gl-inline-flex= @user.pronouns
                   - if @user.bio.present?
                     %p.profile-user-bio.gl-mb-0
                       = @user.bio

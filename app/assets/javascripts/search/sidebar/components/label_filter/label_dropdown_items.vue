@@ -26,7 +26,7 @@ export default {
       class="gl-px-5 gl-py-3 label-filter-menu-item"
     >
       <gl-form-checkbox
-        class="label-with-color-checkbox gl-display-inline-flex gl-min-h-5"
+        class="label-with-color-checkbox gl-inline-flex gl-min-h-5"
         :value="label.key"
       >
         <span

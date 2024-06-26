@@ -193,7 +193,7 @@ export default {
             <help-popover
               v-if="hasPopover"
               :options="popoverOptions"
-              class="gl-ml-2 gl-display-inline-flex"
+              class="gl-ml-2 gl-inline-flex"
             />
           </div>
           <slot name="sub-heading"></slot>

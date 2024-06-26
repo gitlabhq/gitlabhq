@@ -5,7 +5,7 @@
     close_button_options: { class: 'js-close-banner' }) do |c|
     - c.with_body do
       %span= s_("LastPushEvent|You pushed to")
-      %strong.gl-display-inline-flex{ class: 'gl-max-w-1/2', data: { toggle: 'tooltip' }, title: event.ref_name }
+      %strong.gl-inline-flex{ class: 'gl-max-w-1/2', data: { toggle: 'tooltip' }, title: event.ref_name }
         = link_to event.ref_name, project_commits_path(event.project, event.ref_name), class: 'ref-name gl-text-truncate'
 
       - if event.project != @project

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Users::DismissBroadcastMessageService, feature_category: :onboarding do
+RSpec.describe Users::DismissBroadcastMessageService, feature_category: :notifications do
   describe '#execute' do
     let_it_be(:user) { create(:user) }
     let_it_be(:broadcast_message) { create(:broadcast_message, :future) }

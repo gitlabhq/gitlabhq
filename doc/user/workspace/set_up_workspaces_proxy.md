@@ -7,14 +7,6 @@ description: "Create a GitLab workspaces proxy to authenticate and authorize wor
 
 # Tutorial: Set up the GitLab workspaces proxy
 
-DETAILS:
-**Tier:** Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112397) in GitLab 15.11 [with a flag](../../administration/feature_flags.md) named `remote_development_feature_flag`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
-
 In this tutorial, you'll learn how to set up the GitLab workspaces proxy
 to authenticate and authorize [workspaces](index.md) in your cluster.
 

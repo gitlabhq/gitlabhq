@@ -84,7 +84,7 @@ export default {
       :link-href="assigneeHref(assignee)"
       :img-alt="avatarUrlTitle(assignee)"
       :img-css-classes="imgCssClasses"
-      img-css-wrapper-classes="gl-display-inline-flex"
+      img-css-wrapper-classes="gl-inline-flex"
       :img-src="avatarUrl(assignee)"
       :img-size="iconSize"
       class="js-no-trigger author-link"

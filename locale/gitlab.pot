@@ -10463,16 +10463,16 @@ msgstr ""
 msgid "Capacity threshold"
 msgstr ""
 
+msgid "CascadingSettings|An administrator selected this setting for the instance and you cannot change it."
+msgstr ""
+
 msgid "CascadingSettings|Enforce for all subgroups"
 msgstr ""
 
-msgid "CascadingSettings|Setting enforced"
+msgid "CascadingSettings|Setting cannot be changed"
 msgstr ""
 
 msgid "CascadingSettings|Subgroups cannot change this setting."
-msgstr ""
-
-msgid "CascadingSettings|This setting has been enforced by an instance admin."
 msgstr ""
 
 msgid "CascadingSettings|This setting has been enforced by an owner of %{link}."
@@ -46512,6 +46512,9 @@ msgstr ""
 msgid "ScanExecutionPolicy|Override"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Run %{scan} with the following options:"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Run CI/CD code"
 msgstr ""
 
@@ -46963,6 +46966,9 @@ msgid "Search by Git revision"
 msgstr ""
 
 msgid "Search by author"
+msgstr ""
+
+msgid "Search by full path"
 msgstr ""
 
 msgid "Search by message"
@@ -48128,7 +48134,7 @@ msgstr ""
 msgid "SecurityOrchestration|Show more projects"
 msgstr ""
 
-msgid "SecurityOrchestration|Show only security policies projects"
+msgid "SecurityOrchestration|Show only linked security policy projects"
 msgstr ""
 
 msgid "SecurityOrchestration|Something went wrong, unable to fetch policies"

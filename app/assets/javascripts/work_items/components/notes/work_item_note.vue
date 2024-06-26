@@ -345,7 +345,7 @@ export default {
           >
             <span v-if="note.createdAt" class="gl-hidden sm:gl-inline">&middot;</span>
           </note-header>
-          <div class="gl-display-inline-flex">
+          <div class="gl-inline-flex">
             <note-actions
               :full-path="fullPath"
               :show-award-emoji="hasAwardEmojiPermission"

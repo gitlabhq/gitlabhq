@@ -11,15 +11,18 @@
 # The following checks are available:
 # * Run specs in _defined_ order
 # * Run specs in _reverse_ order
-# * Run specs in _random_ order
+# * Run specs in _random_ order, 5 times by default.
+#   - Adjustable via RANDOM_ORDER_RUNS=10 scripts/rspec_check_order_dependence
 
 if [ $# -eq 0 ]; then
   echo "Usage: $0 <files...>"
+  echo "  RANDOM_ORDER_RUNS=5 $0 <files...>"
   exit
 fi
 
 TODO_YAML='./spec/support/rspec_order_todo.yml'
 RSPEC_ARGS=(--format progress)
+RANDOM_ORDER_RUNS=${RANDOM_ORDER_RUNS:-5}
 
 abort() {
   echo "$@"
@@ -42,9 +45,17 @@ set -xe
 
 export RSPEC_WARN_MISSING_FEATURE_CATEGORY=0
 
+echo "Running in defined order:"
 bin/rspec --order defined "${RSPEC_ARGS[@]}" "$@"
+
+echo "Running in reverse order:"
 RSPEC_ORDER=reverse bin/rspec "${RSPEC_ARGS[@]}" "$@"
-bin/rspec --order random "${RSPEC_ARGS[@]}" "$@"
+
+for try in $(seq "$RANDOM_ORDER_RUNS")
+do
+  echo "Running in random order ($try/$RANDOM_ORDER_RUNS):"
+  bin/rspec --order random "${RSPEC_ARGS[@]}" "$@"
+done
 
 set +xe
 

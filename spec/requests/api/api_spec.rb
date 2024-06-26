@@ -148,7 +148,7 @@ RSpec.describe API::API, feature_category: :system_access do
             'meta.caller_id' => 'GET /api/:version/broadcast_messages',
             'meta.remote_ip' => an_instance_of(String),
             'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-            'meta.feature_category' => 'onboarding',
+            'meta.feature_category' => 'notifications',
             'route' => '/api/:version/broadcast_messages'
           )
 
@@ -228,7 +228,7 @@ RSpec.describe API::API, feature_category: :system_access do
             'meta.caller_id' => 'GET /api/:version/broadcast_messages',
             'meta.remote_ip' => an_instance_of(String),
             'meta.client_id' => a_string_matching(%r{\Aip/.+}),
-            'meta.feature_category' => 'onboarding',
+            'meta.feature_category' => 'notifications',
             'route' => '/api/:version/broadcast_messages'
           )
 

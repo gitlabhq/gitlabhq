@@ -34,7 +34,8 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 | `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
 | `gitlab_shared` | All application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`. | |
 | `gitlab_internal` | All internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`) | |
-| `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`|
+| `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`, to be replaced with `gitlab_sec` |
+| `gitlab_sec` | All Security and Vulnerability feature tables to be stored in the `sec:` database | [Decomposition in progress](https://gitlab.com/groups/gitlab-org/-/epics/13043) |
 
 More schemas to be introduced with additional decomposed databases
 

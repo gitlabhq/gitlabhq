@@ -177,7 +177,7 @@ export default {
         >#{{ pipeline[pipelineIdType] }}</gl-link
       >
       <!--Commit row-->
-      <div class="gl-display-inline-flex gl-rounded-base gl-px-2 gl-bg-gray-50 gl-text-gray-700">
+      <div class="gl-inline-flex gl-rounded-base gl-px-2 gl-bg-gray-50 gl-text-gray-700">
         <tooltip-on-truncate :title="tooltipTitle" truncate-target="child" placement="top">
           <gl-icon
             v-gl-tooltip

@@ -87,17 +87,6 @@ module Gitlab
         attr_accessor :offset, :n_open_tags, :fg_color, :bg_color, :style_mask, :sections, :lineno_in_section
 
         def process_stream_with_lookahead(stream)
-          if Feature.disabled?(:parse_ci_job_timestamps, Feature.current_request)
-            # Legacy logic
-            stream.each_line do |line|
-              line = encode_utf8_no_detect(line)
-              consume_line(line)
-            end
-
-            close_open_tags
-            return
-          end
-
           # We process lines with 1-line look-back, so that we can process line continuations
           previous_line = nil
 

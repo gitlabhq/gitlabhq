@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-# TODO Replace with require 'fast_spec_helper'; require 'oj' once parse_ci_job_timestamps FF is removed
-require 'spec_helper'
+require 'fast_spec_helper'
+require 'oj'
 
 RSpec.describe Gitlab::Ci::Ansi2html, feature_category: :continuous_integration do
   subject { described_class }
@@ -307,14 +307,6 @@ RSpec.describe Gitlab::Ci::Ansi2html, feature_category: :continuous_integration 
 
   it_behaves_like 'a working Ansi2html service'
   it_behaves_like 'a working Ansi2html service', line_prefix: '2024-05-14T11:19:19.899359Z 00O '
-
-  context 'with parse_ci_job_timestamps FF disabled' do
-    before do
-      stub_feature_flags(parse_ci_job_timestamps: false)
-    end
-
-    it_behaves_like 'a working Ansi2html service'
-  end
 
   context 'with timestamps' do
     let(:timestamp) { '2024-05-14T11:19:19.899359Z 00O ' }

@@ -10,21 +10,13 @@
     = link_to _('For more information, see the File Hooks documentation.'), help_page_path('administration/file_hooks')
 
   .gl-mb-3
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card' }, header_options: { class: 'gl-new-card-header'}, body_options: { class: 'gl-new-card-body'}) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h3.gl-new-card-title
-            = _('File Hooks')
-            %span.gl-new-card-count
-              = sprite_icon('hook', css_class: 'gl-mr-2')
-              #{file_hooks.count}
+    = render ::Layouts::CrudComponent.new(_('File Hooks'), icon: 'document', count: file_hooks.count) do |c|
       - c.with_body do
-        .gl-new-card-content
-          - if file_hooks.any?
-            %ul.content-list{ class: '!-gl-my-3' }
-              - file_hooks.each do |file|
-                %li.gl-border-b.gl-last-of-type-border-b-0
-                  .monospace
-                    = File.basename(file)
-          - else
-            .gl-new-card-empty.gl-text-center= _('No file hooks found.')
+        - if file_hooks.any?
+          %ul.content-list{ class: '!-gl-my-3' }
+            - file_hooks.each do |file|
+              %li.gl-border-b.gl-last-of-type-border-b-0
+                .monospace
+                  = File.basename(file)
+        - else
+          .gl-text-secondary= _('No file hooks found.')

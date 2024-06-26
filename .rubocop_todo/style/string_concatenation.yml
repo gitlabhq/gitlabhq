@@ -29,7 +29,6 @@ Style/StringConcatenation:
     - 'app/uploaders/object_storage.rb'
     - 'config/initializers/1_settings.rb'
     - 'config/settings.rb'
-    - 'config/spring.rb'
     - 'ee/app/controllers/admin/elasticsearch_controller.rb'
     - 'ee/app/finders/ee/issuables/label_filter.rb'
     - 'ee/app/helpers/ee/geo_helper.rb'

@@ -1,7 +1,7 @@
 %tr
   %td{ data: { label: _('User') } }
     %div
-      %div{ class: 'gl-display-inline-flex!' }
+      %div{ class: '!gl-inline-flex' }
         = render Pajamas::AvatarComponent.new(user, size: 32, alt: '')
         .gl-ml-3{ class: 'gl-text-left!' }
           = link_to user_path(user), class: 'gl-text-body' do

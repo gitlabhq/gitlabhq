@@ -643,7 +643,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'change Spam settings' do
         visit reporting_admin_application_settings_path
 
-        page.within('.as-spam') do
+        within_testid('spam-settings') do
           fill_in 'reCAPTCHA site key', with: 'key'
           fill_in 'reCAPTCHA private key', with: 'key'
           find('#application_setting_recaptcha_enabled').set(true)

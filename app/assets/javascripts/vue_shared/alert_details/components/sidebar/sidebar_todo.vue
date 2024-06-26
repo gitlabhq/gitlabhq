@@ -129,7 +129,7 @@ export default {
   <div
     :class="{
       block: sidebarCollapsed,
-      'gl-display-inline-flex gl-flex-basis-full': !sidebarCollapsed,
+      'gl-inline-flex gl-flex-basis-full': !sidebarCollapsed,
     }"
   >
     <todo

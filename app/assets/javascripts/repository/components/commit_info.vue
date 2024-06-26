@@ -86,10 +86,10 @@ export default {
     />
     <div class="commit-detail flex-list gl-display-flex gl-flex-grow-1 gl-min-w-0">
       <div
-        class="commit-content gl-w-full gl-display-inline-flex gl-flex-wrap gl-align-items-baseline"
+        class="commit-content gl-w-full gl-inline-flex gl-flex-wrap gl-align-items-baseline"
         data-testid="commit-content"
       >
-        <div class="gl-flex-basis-full gl-display-inline-flex gl-align-items-center gl-gap-x-3">
+        <div class="gl-flex-basis-full gl-inline-flex gl-align-items-center gl-gap-x-3">
           <gl-link
             v-safe-html:[$options.safeHtmlConfig]="commit.titleHtml"
             :href="commit.webPath"
@@ -110,7 +110,7 @@ export default {
         </div>
         <div
           class="committer gl-flex-basis-full"
-          :class="{ 'gl-display-inline-flex': truncateAuthorName }"
+          :class="{ 'gl-inline-flex': truncateAuthorName }"
           data-testid="committer"
         >
           <gl-link

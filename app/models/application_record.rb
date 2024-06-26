@@ -6,7 +6,8 @@ class ApplicationRecord < ActiveRecord::Base
   include Transactions
   include LegacyBulkInsert
   include CrossDatabaseModification
-  include SensitiveSerializableHash
+  include Gitlab::SensitiveAttributes
+  include Gitlab::SensitiveSerializableHash
   include ResetOnColumnErrors
   include HasCheckConstraints
 
