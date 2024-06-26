@@ -19,7 +19,7 @@ RSpec.describe EventsFinder do
   let!(:closed_issue_event2) { create(:event, :closed, project: project1, author: user, target: closed_issue, created_at: Date.new(2016, 2, 2)) }
   let!(:opened_merge_request_event2) { create(:event, :created, project: project2, author: user, target: opened_merge_request, created_at: Date.new(2017, 2, 2)) }
   let(:opened_merge_request3) { create(:merge_request, source_project: project1, author: other_user) }
-  let!(:other_developer_event) { create(:event, :created, project: project1, author: other_user, target: opened_merge_request3 ) }
+  let!(:other_developer_event) { create(:event, :created, project: project1, author: other_user, target: opened_merge_request3) }
 
   let_it_be(:public_project) { create(:project, :public, creator_id: user.id, namespace: user.namespace) }
 

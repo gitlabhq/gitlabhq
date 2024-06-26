@@ -1194,6 +1194,18 @@ RSpec.describe API::Files, feature_category: :source_code_management do
       end
     end
 
+    context 'when base64 encoding with a nil content' do
+      let(:params) { super().merge(content: nil, encoding: 'base64') }
+
+      it 'updates a file with an empty content' do
+        put api(route(file_path), user), params: params
+
+        expect(response).to have_gitlab_http_status(:ok)
+        updated_blob = project.repository.blob_at('master', CGI.unescape(file_path))
+        expect(updated_blob.data).to be_empty
+      end
+    end
+
     context 'when updating an existing file with stale last commit id' do
       let(:params_with_stale_id) { params.merge(last_commit_id: last_commit_for_path.parent_id) }
 

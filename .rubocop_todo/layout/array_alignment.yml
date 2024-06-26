@@ -12,7 +12,6 @@ Layout/ArrayAlignment:
     - 'ee/app/controllers/projects/push_rules_controller.rb'
     - 'ee/app/finders/autocomplete/project_invited_groups_finder.rb'
     - 'ee/app/finders/ee/issues_finder/params.rb'
-    - 'ee/app/graphql/ee/resolvers/project_pipelines_resolver.rb'
     - 'ee/app/models/concerns/geo/verification_state.rb'
     - 'ee/app/models/dast_site_profile.rb'
     - 'ee/app/models/dora/base_metric.rb'

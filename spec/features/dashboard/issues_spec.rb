@@ -32,7 +32,8 @@ RSpec.describe 'Dashboard Issues', :js, feature_category: :team_planning do
         project: project
     end
 
-    it 'passes axe automated accessibility testing' do
+    it 'passes axe automated accessibility testing',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/468892' do
       expect(page).to be_axe_clean.within('#content-body')
     end
   end

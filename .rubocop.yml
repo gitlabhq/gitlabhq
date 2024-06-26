@@ -1205,3 +1205,7 @@ Rails/StrongParams:
   Include:
     - 'app/controllers/**/*'
     - 'ee/app/controllers/**/*'
+
+QA/FabricateUsage:
+  Include:
+    - 'qa/qa/specs/**/*_spec.rb'

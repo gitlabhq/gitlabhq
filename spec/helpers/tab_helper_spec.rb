@@ -15,7 +15,7 @@ RSpec.describe TabHelper do
     end
 
     it 'adds custom class' do
-      expect(helper.gl_tabs_nav(class: 'my-class' )).to match(/class=".*my-class.*"/)
+      expect(helper.gl_tabs_nav(class: 'my-class')).to match(/class=".*my-class.*"/)
     end
   end
 

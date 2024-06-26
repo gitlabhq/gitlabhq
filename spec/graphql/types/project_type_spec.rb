@@ -513,7 +513,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject { described_class.fields['pipelineAnalytics'] }
 
     it { is_expected.to have_graphql_type(Types::Ci::AnalyticsType) }
-    it { is_expected.to have_graphql_resolver(Resolvers::ProjectPipelineStatisticsResolver) }
+    it { is_expected.to have_graphql_resolver(Resolvers::Ci::ProjectPipelineAnalyticsResolver) }
   end
 
   describe 'jobs field' do

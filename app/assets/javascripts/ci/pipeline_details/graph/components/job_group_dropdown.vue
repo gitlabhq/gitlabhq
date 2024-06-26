@@ -1,5 +1,6 @@
 <script>
 import {
+  GlBadge,
   GlDisclosureDropdown,
   GlDisclosureDropdownItem,
   GlTooltipDirective,
@@ -20,6 +21,7 @@ import JobItem from './job_item.vue';
 export default {
   components: {
     JobItem,
+    GlBadge,
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
   },
@@ -130,17 +132,16 @@ export default {
   >
     <template #toggle>
       <button type="button" :class="cssClassJobName" class="gl-w-full gl-bg-transparent gl-pr-4">
-        <div class="gl-display-flex gl-align-items-stretch gl-justify-content-space-between">
+        <div class="gl-flex gl-items-stretch gl-justify-between">
           <job-item
             :type="$options.jobItemTypes.jobDropdown"
             :job="group"
             :stage-name="stageName"
             hide-tooltip
           />
-
-          <div class="gl-font-size-lg -gl-ml-4 gl-align-self-center">
+          <gl-badge variant="muted" class="-gl-ml-5 -gl-mr-2 gl-self-center">
             {{ group.size }}
-          </div>
+          </gl-badge>
         </div>
       </button>
     </template>

@@ -2,19 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectPipelinesResolver do
+RSpec.describe Resolvers::Ci::ProjectPipelinesResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
+  let_it_be(:developer) { create(:user, developer_of: project) }
+  let_it_be(:user) { create(:user) }
 
-  let(:current_user) { create(:user) }
-
-  context 'when the user does have access' do
-    before do
-      project.add_developer(current_user)
-    end
+  context 'when the user has access' do
+    let(:current_user) { developer }
 
     it 'resolves only MRs for the passed merge request' do
       expect(resolve_pipelines).to contain_exactly(pipeline)
@@ -22,6 +20,8 @@ RSpec.describe Resolvers::ProjectPipelinesResolver do
   end
 
   context 'when the user does not have access' do
+    let(:current_user) { user }
+
     it 'does not return pipeline data' do
       expect(resolve_pipelines).to be_empty
     end

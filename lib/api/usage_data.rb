@@ -108,9 +108,7 @@ module API
           .fetch(:additional_properties, Gitlab::InternalEvents::DEFAULT_ADDITIONAL_PROPERTIES)
           .symbolize_keys
 
-        if Feature.enabled?(:track_ai_metrics_in_usage_data) && # rubocop:disable Gitlab/FeatureFlagWithoutActor -- beta
-            !Gitlab::Tracking::AiTracking.track_via_code_suggestions?(event_name, current_user)
-
+        unless Gitlab::Tracking::AiTracking.track_via_code_suggestions?(event_name, current_user)
           Gitlab::Tracking::AiTracking.track_event(event_name, additional_properties.merge(user: current_user))
         end
 

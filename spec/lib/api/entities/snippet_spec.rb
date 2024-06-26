@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ::API::Entities::Snippet, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
-  let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user ) }
+  let_it_be(:personal_snippet) { create(:personal_snippet, :repository, author: user) }
   let_it_be(:project_snippet) { create(:project_snippet, :repository, author: user) }
 
   let(:entity) { described_class.new(snippet) }

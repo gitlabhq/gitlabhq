@@ -9,7 +9,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'app/controllers/snippets/blobs_controller.rb'
     - 'app/graphql/mutations/integrations/exclusions/create.rb'
     - 'app/graphql/resolvers/integrations/exclusions_resolver.rb'
-    - 'app/graphql/resolvers/project_pipeline_statistics_resolver.rb'
     - 'app/graphql/resolvers/projects/deploy_key_resolver.rb'
     - 'app/models/alert_management/metric_image.rb'
     - 'app/models/ci/pipeline.rb'

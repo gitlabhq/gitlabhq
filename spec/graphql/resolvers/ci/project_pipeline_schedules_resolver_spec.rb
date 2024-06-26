@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectPipelineSchedulesResolver do
+RSpec.describe Resolvers::Ci::ProjectPipelineSchedulesResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:developer) { create(:user) }

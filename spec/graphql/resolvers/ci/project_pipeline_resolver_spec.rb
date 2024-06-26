@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectPipelineResolver do
+RSpec.describe Resolvers::Ci::ProjectPipelineResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
@@ -10,11 +10,7 @@ RSpec.describe Resolvers::ProjectPipelineResolver do
   let_it_be(:other_project_pipeline) { create(:ci_pipeline, project: project, iid: '1235', sha: 'sha2') }
   let_it_be(:other_pipeline) { create(:ci_pipeline) }
 
-  let(:current_user) { create(:user) }
-
-  before do
-    project.add_developer(current_user)
-  end
+  let(:current_user) { create(:user, developer_of: project) }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::PipelineType)

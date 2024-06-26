@@ -2,25 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe Resolvers::ProjectPipelineStatisticsResolver do
+RSpec.describe Resolvers::Ci::ProjectPipelineAnalyticsResolver, feature_category: :fleet_visibility do
   include GraphqlHelpers
 
+  let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:project) { create(:project, :private) }
-  let_it_be(:guest) { create(:user) }
-  let_it_be(:reporter) { create(:user) }
+  let_it_be(:guest) { create(:user, guest_of: [project, public_project]) }
+  let_it_be(:reporter) { create(:user, reporter_of: [project, public_project]) }
 
   let(:current_user) { reporter }
-
-  before do
-    project.add_guest(guest)
-    project.add_reporter(reporter)
-  end
 
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::AnalyticsType)
   end
 
-  shared_examples 'returns the pipelines statistics for a given project' do
+  shared_examples 'returns the pipeline analytics for a given project' do
     it do
       result = resolve_statistics(project, {})
       expect(result.keys).to contain_exactly(
@@ -53,7 +49,7 @@ RSpec.describe Resolvers::ProjectPipelineStatisticsResolver do
   end
 
   describe '#resolve' do
-    it_behaves_like 'returns the pipelines statistics for a given project'
+    it_behaves_like 'returns the pipeline analytics for a given project'
 
     context 'when the user does not have access to the CI/CD analytics data' do
       let(:current_user) { guest }
@@ -62,41 +58,41 @@ RSpec.describe Resolvers::ProjectPipelineStatisticsResolver do
     end
 
     context 'when the project is public' do
-      let_it_be(:project) { create(:project, :public) }
+      let(:project) { public_project }
 
-      context 'public pipelines are disabled' do
+      context 'when public pipelines are disabled' do
         before do
           project.update!(public_builds: false)
         end
 
-        context 'user is not a member' do
+        context 'when user is not a member' do
           let(:current_user) { create(:user) }
 
           it_behaves_like 'it returns nils'
         end
 
-        context 'user is a guest' do
+        context 'when user is a guest' do
           let(:current_user) { guest }
 
           it_behaves_like 'it returns nils'
         end
 
-        context 'user is a reporter or above' do
+        context 'when user is a reporter or above' do
           let(:current_user) { reporter }
 
-          it_behaves_like 'returns the pipelines statistics for a given project'
+          it_behaves_like 'returns the pipeline analytics for a given project'
         end
       end
 
-      context 'public pipelines are enabled' do
+      context 'when public pipelines are enabled' do
         before do
           project.update!(public_builds: true)
         end
 
-        context 'user is not a member' do
+        context 'when user is not a member' do
           let(:current_user) { create(:user) }
 
-          it_behaves_like 'returns the pipelines statistics for a given project'
+          it_behaves_like 'returns the pipeline analytics for a given project'
         end
       end
     end

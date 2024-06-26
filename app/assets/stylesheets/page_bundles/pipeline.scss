@@ -318,6 +318,12 @@
   &,
   .gl-new-dropdown-custom-toggle {
     width: 100%;
+
+    .gl-badge.badge-muted {
+      .gl-dark & {
+        @apply gl-bg-gray-100;
+      }
+    }
   }
 
   // Reset padding, as inner element will

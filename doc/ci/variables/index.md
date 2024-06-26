@@ -466,10 +466,11 @@ job_name:
 
 [Service containers](../docker/using_docker_images.md) can use CI/CD variables, but
 by default can only access [variables saved in the `.gitlab-ci.yml` file](#define-a-cicd-variable-in-the-gitlab-ciyml-file).
+Variables [set in the GitLab UI](#define-a-cicd-variable-in-the-ui) are not available to
+service containers, because service containers are not trusted by default.
 
-Variables [set in the GitLab UI](#define-a-cicd-variable-in-the-ui) by default are not available to
-service containers. To make a UI-defined variable available in a service container,
-re-assign it in your `.gitlab-ci.yml`:
+To make a UI-defined variable available in a service container, you can re-assign
+it to another variable in your `.gitlab-ci.yml`:
 
 ```yaml
 variables:

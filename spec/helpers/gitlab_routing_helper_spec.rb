@@ -365,7 +365,7 @@ RSpec.describe GitlabRoutingHelper do
   context 'GraphQL ETag paths' do
     context 'with pipelines' do
       let(:sha) { 'b08774cb1a11ecdc27a82c5f444a69ea7e038ede' }
-      let(:pipeline) { double(id: 5 ) }
+      let(:pipeline) { double(id: 5) }
 
       it 'returns an ETag path for a pipeline sha' do
         expect(graphql_etag_pipeline_sha_path(sha)).to eq('/api/graphql:pipelines/sha/b08774cb1a11ecdc27a82c5f444a69ea7e038ede')

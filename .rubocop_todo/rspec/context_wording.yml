@@ -1329,7 +1329,6 @@ RSpec/ContextWording:
     - 'spec/graphql/resolvers/namespace_projects_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_merge_requests_resolver_spec.rb'
     - 'spec/graphql/resolvers/project_milestones_resolver_spec.rb'
-    - 'spec/graphql/resolvers/project_pipeline_statistics_resolver_spec.rb'
     - 'spec/graphql/resolvers/snippets/blobs_resolver_spec.rb'
     - 'spec/graphql/resolvers/snippets_resolver_spec.rb'
     - 'spec/graphql/resolvers/terraform/states_resolver_spec.rb'

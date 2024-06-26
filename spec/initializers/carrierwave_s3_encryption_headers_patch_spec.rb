@@ -8,7 +8,7 @@ RSpec.describe 'CarrierWave::Storage::Fog::File', feature_category: :shared do
   let(:storage) { CarrierWave::Storage::Fog.new(uploader) }
   let(:bucket_name) { 'some-bucket' }
   let(:connection) { ::Fog::Storage.new(connection_options) }
-  let(:bucket) { connection.directories.new(key: bucket_name ) }
+  let(:bucket) { connection.directories.new(key: bucket_name) }
   let(:test_filename) { 'test' }
   let(:test_data) { File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')) }
 

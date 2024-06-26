@@ -16,7 +16,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'app/graphql/resolvers/group_packages_resolver.rb'
     - 'app/graphql/resolvers/merge_request_pipelines_resolver.rb'
     - 'app/graphql/resolvers/project_packages_resolver.rb'
-    - 'app/graphql/resolvers/project_pipelines_resolver.rb'
     - 'app/graphql/types/access_level_type.rb'
     - 'app/graphql/types/ci/detailed_status_type.rb'
     - 'app/graphql/types/ci/status_action_type.rb'

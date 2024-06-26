@@ -186,7 +186,6 @@ Style/InlineDisableAnnotation:
     - 'app/graphql/resolvers/merge_request_pipelines_resolver.rb'
     - 'app/graphql/resolvers/nested_groups_resolver.rb'
     - 'app/graphql/resolvers/project_packages_resolver.rb'
-    - 'app/graphql/resolvers/project_pipelines_resolver.rb'
     - 'app/graphql/types/access_level_type.rb'
     - 'app/graphql/types/admin/sidekiq_queues/delete_jobs_response_type.rb'
     - 'app/graphql/types/alert_management/alert_type.rb'

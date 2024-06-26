@@ -30,7 +30,6 @@ Layout/ClassStructure:
     - 'app/graphql/resolvers/group_resolver.rb'
     - 'app/graphql/resolvers/namespace_projects_resolver.rb'
     - 'app/graphql/resolvers/namespace_resolver.rb'
-    - 'app/graphql/resolvers/project_pipeline_resolver.rb'
     - 'app/graphql/resolvers/project_resolver.rb'
     - 'app/graphql/resolvers/releases_resolver.rb'
     - 'app/graphql/resolvers/work_items/work_item_discussions_resolver.rb'
