@@ -13,8 +13,14 @@ module Gitlab
             true
           end
 
+          # There is a special case where CREATE VIEW DDL statement can include DML statements.
+          # For this case, +select_tables+ should be empty, to keep the schema consistent between +main+ and +ci+.
+          #
+          # @example
+          #          CREATE VIEW issues AS SELECT * FROM tickets
           def analyze(parsed)
-            tables = parsed.pg.select_tables + parsed.pg.dml_tables
+            select_tables = QueryAnalyzerHelpers.dml_from_create_view?(parsed) ? [] : parsed.pg.select_tables
+            tables = select_tables + parsed.pg.dml_tables
             table_schemas = ::Gitlab::Database::GitlabSchema.table_schemas!(tables)
             return if table_schemas.empty?
 

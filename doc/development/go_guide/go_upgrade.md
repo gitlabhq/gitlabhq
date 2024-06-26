@@ -81,7 +81,7 @@ if you need help finding the correct person or labels:
        [the product page](https://handbook.gitlab.com/handbook/product/categories/) or the
        [feature page](https://handbook.gitlab.com/handbook/product/categories/features/).
      - If you still can't find the engineering manager, use
-       [Git blame](/ee/user/project/repository/git_blame.md) to identify a maintainer
+       [Git blame](/ee/user/project/repository/files/git_blame.md) to identify a maintainer
        involved in the project.
 
 1. Create an upgrade issue for each dependency in the

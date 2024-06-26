@@ -44,10 +44,9 @@ end
 RSpec.shared_examples 'handling nuget metadata requests with package name' do |example_names_with_status: {}|
   include_context 'with expected presenters dependency groups'
 
-  anonymous_requests_example_name = example_names_with_status.fetch(:anonymous_requests_example_name, 'process nuget metadata request at package name level')
-  anonymous_requests_status = example_names_with_status.fetch(:anonymous_requests_status, :success)
   guest_requests_example_name = example_names_with_status.fetch(:guest_requests_example_name, 'rejects nuget packages access')
   guest_requests_status = example_names_with_status.fetch(:guest_requests_status, :forbidden)
+  invalid_target_not_found_status = example_names_with_status.fetch(:invalid_target_not_found_status, :unauthorized)
 
   let_it_be(:package_name) { 'Dummy.Package' }
   let_it_be(:packages) { create_list(:nuget_package, 5, :with_metadatum, name: package_name, project: project) }
@@ -71,7 +70,7 @@ RSpec.shared_examples 'handling nuget metadata requests with package name' do |e
       'PUBLIC'  | :guest      | false | true  | 'process nuget metadata request at package name level' | :success
       'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'                        | :unauthorized
       'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'                        | :unauthorized
-      'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name                        | anonymous_requests_status
+      'PUBLIC'  | :anonymous  | false | true  | 'process nuget metadata request at package name level' | :success
       'PRIVATE' | :developer  | true  | true  | 'process nuget metadata request at package name level' | :success
       'PRIVATE' | :guest      | true  | true  | guest_requests_example_name                            | guest_requests_status
       'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'                        | :unauthorized
@@ -103,19 +102,18 @@ RSpec.shared_examples 'handling nuget metadata requests with package name' do |e
       end
     end
 
-    it_behaves_like 'rejects nuget access with unknown target id'
+    it_behaves_like 'rejects nuget access with unknown target id', not_found_response: invalid_target_not_found_status
 
-    it_behaves_like 'rejects nuget access with invalid target id'
+    it_behaves_like 'rejects nuget access with invalid target id', not_found_response: invalid_target_not_found_status
   end
 end
 
 RSpec.shared_examples 'handling nuget metadata requests with package name and package version' do |example_names_with_status: {}|
   include_context 'with expected presenters dependency groups'
 
-  anonymous_requests_example_name = example_names_with_status.fetch(:anonymous_requests_example_name, 'process nuget metadata request at package name and package version level')
-  anonymous_requests_status = example_names_with_status.fetch(:anonymous_requests_status, :success)
   guest_requests_example_name = example_names_with_status.fetch(:guest_requests_example_name, 'rejects nuget packages access')
   guest_requests_status = example_names_with_status.fetch(:guest_requests_status, :forbidden)
+  invalid_target_not_found_status = example_names_with_status.fetch(:invalid_target_not_found_status, :unauthorized)
 
   let_it_be(:package_name) { 'Dummy.Package' }
   let_it_be(:package) { create(:nuget_package, :with_metadatum, name: package_name, project: project) }
@@ -139,7 +137,7 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
       'PUBLIC'  | :guest      | false | true  | 'process nuget metadata request at package name and package version level' | :success
       'PUBLIC'  | :developer  | false | false | 'rejects nuget packages access'                                            | :unauthorized
       'PUBLIC'  | :guest      | false | false | 'rejects nuget packages access'                                            | :unauthorized
-      'PUBLIC'  | :anonymous  | false | true  | anonymous_requests_example_name                                            | anonymous_requests_status
+      'PUBLIC'  | :anonymous  | false | true  | 'process nuget metadata request at package name and package version level' | :success
       'PRIVATE' | :developer  | true  | true  | 'process nuget metadata request at package name and package version level' | :success
       'PRIVATE' | :guest      | true  | true  | guest_requests_example_name                                                | guest_requests_status
       'PRIVATE' | :developer  | true  | false | 'rejects nuget packages access'                                            | :unauthorized
@@ -172,9 +170,9 @@ RSpec.shared_examples 'handling nuget metadata requests with package name and pa
     end
   end
 
-  it_behaves_like 'rejects nuget access with unknown target id'
+  it_behaves_like 'rejects nuget access with unknown target id', not_found_response: invalid_target_not_found_status
 
-  it_behaves_like 'rejects nuget access with invalid target id'
+  it_behaves_like 'rejects nuget access with invalid target id', not_found_response: invalid_target_not_found_status
 end
 
 RSpec.shared_examples 'handling nuget search requests' do |example_names_with_status: {}|

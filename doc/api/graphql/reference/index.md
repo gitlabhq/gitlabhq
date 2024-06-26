@@ -896,10 +896,6 @@ Returns [`RunnerSetup`](#runnersetup).
 
 Runner usage by runner.
 
-DETAILS:
-**Introduced** in GitLab 16.9.
-**Status**: Experiment.
-
 Returns [`[CiRunnerUsage!]`](#cirunnerusage).
 
 #### Arguments
@@ -915,10 +911,6 @@ Returns [`[CiRunnerUsage!]`](#cirunnerusage).
 ### `Query.runnerUsageByProject`
 
 Runner usage by project.
-
-DETAILS:
-**Introduced** in GitLab 16.9.
-**Status**: Experiment.
 
 Returns [`[CiRunnerUsageByProject!]`](#cirunnerusagebyproject).
 
@@ -8124,10 +8116,6 @@ Input type: `RunnerUpdateInput`
 | <a id="mutationrunnerupdaterunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner after mutation. |
 
 ### `Mutation.runnersExportUsage`
-
-DETAILS:
-**Introduced** in GitLab 16.7.
-**Status**: Experiment.
 
 Input type: `RunnersExportUsageInput`
 
@@ -18077,7 +18065,7 @@ CI/CD variables for a project.
 | <a id="cirunnerephemeralregisterurl"></a>`ephemeralRegisterUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 15.11. **Status**: Experiment. URL of the registration page of the runner manager. Only available for the creator of the runner for a limited time during registration. |
 | <a id="cirunnergroups"></a>`groups` | [`GroupConnection`](#groupconnection) | Groups the runner is associated with. For group runners only. (see [Connections](#connections)) |
 | <a id="cirunnerid"></a>`id` | [`CiRunnerID!`](#cirunnerid) | ID of the runner. |
-| <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in GitLab 15.7. **Status**: Experiment. Job execution status of the runner. |
+| <a id="cirunnerjobexecutionstatus"></a>`jobExecutionStatus` | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | Job execution status of the runner. |
 | <a id="cirunnerlocked"></a>`locked` | [`Boolean`](#boolean) | Indicates the runner is locked. |
 | <a id="cirunnermaintenancenote"></a>`maintenanceNote` | [`String`](#string) | Runner's maintenance notes. |
 | <a id="cirunnermaintenancenotehtml"></a>`maintenanceNoteHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `maintenance_note`. |
@@ -18217,7 +18205,7 @@ Returns [`[CiRunnerCloudProvisioningStep!]`](#cirunnercloudprovisioningstep).
 | <a id="cirunnermanagerexecutorname"></a>`executorName` | [`String`](#string) | Executor last advertised by the runner. |
 | <a id="cirunnermanagerid"></a>`id` | [`CiRunnerManagerID!`](#cirunnermanagerid) | ID of the runner manager. |
 | <a id="cirunnermanageripaddress"></a>`ipAddress` | [`String`](#string) | IP address of the runner manager. |
-| <a id="cirunnermanagerjobexecutionstatus"></a>`jobExecutionStatus` **{warning-solid}** | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | **Introduced** in GitLab 16.3. **Status**: Experiment. Job execution status of the runner manager. |
+| <a id="cirunnermanagerjobexecutionstatus"></a>`jobExecutionStatus` | [`CiRunnerJobExecutionStatus`](#cirunnerjobexecutionstatus) | Job execution status of the runner manager. |
 | <a id="cirunnermanagerplatformname"></a>`platformName` | [`String`](#string) | Platform provided by the runner manager. |
 | <a id="cirunnermanagerrevision"></a>`revision` | [`String`](#string) | Revision of the runner. |
 | <a id="cirunnermanagerrunner"></a>`runner` | [`CiRunner`](#cirunner) | Runner configuration for the runner manager. |
@@ -29865,11 +29853,11 @@ The amount of time for a job to be picked up by a runner, in percentiles.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="queueinghistorytimeseriesp50"></a>`p50` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 50th percentile. 50% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp75"></a>`p75` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 75th percentile. 75% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp90"></a>`p90` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 90th percentile. 90% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp95"></a>`p95` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 95th percentile. 95% of the durations are lower than this value. |
-| <a id="queueinghistorytimeseriesp99"></a>`p99` **{warning-solid}** | [`Duration`](#duration) | **Introduced** in GitLab 16.4. **Status**: Experiment. 99th percentile. 99% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp50"></a>`p50` | [`Duration`](#duration) | 50th percentile. 50% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp75"></a>`p75` | [`Duration`](#duration) | 75th percentile. 75% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp90"></a>`p90` | [`Duration`](#duration) | 90th percentile. 90% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp95"></a>`p95` | [`Duration`](#duration) | 95th percentile. 95% of the durations are lower than this value. |
+| <a id="queueinghistorytimeseriesp99"></a>`p99` | [`Duration`](#duration) | 99th percentile. 99% of the durations are lower than this value. |
 | <a id="queueinghistorytimeseriestime"></a>`time` | [`Time!`](#time) | Start of the time interval. |
 
 ### `RecentFailures`
@@ -33536,8 +33524,8 @@ Runner cloud provider.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Runner is idle. |
-| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Runner is executing jobs. |
+| <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` | Runner is idle. |
+| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` | Runner is executing jobs. |
 
 ### `CiRunnerMembershipFilter`
 

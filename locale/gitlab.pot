@@ -31563,9 +31563,6 @@ msgstr ""
 msgid "Manage rules"
 msgstr ""
 
-msgid "Manage secret detection behavior for all projects in your GitLab instance"
-msgstr ""
-
 msgid "Manage two-factor authentication"
 msgstr ""
 
@@ -46452,10 +46449,10 @@ msgstr ""
 msgid "ScanExecutionPolicy|A runner will be selected automatically from those available."
 msgstr ""
 
-msgid "ScanExecutionPolicy|Add condition"
+msgid "ScanExecutionPolicy|Add new CI variable"
 msgstr ""
 
-msgid "ScanExecutionPolicy|Add new CI variable"
+msgid "ScanExecutionPolicy|Add new condition"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Choose a method to execute code"
@@ -47631,6 +47628,9 @@ msgstr ""
 msgid "SecurityOrchestration|Add new approver"
 msgstr ""
 
+msgid "SecurityOrchestration|Add new rule"
+msgstr ""
+
 msgid "SecurityOrchestration|Add project full path after @ to following branches: %{branches}"
 msgstr ""
 
@@ -47638,9 +47638,6 @@ msgid "SecurityOrchestration|Add protected branches"
 msgstr ""
 
 msgid "SecurityOrchestration|Add regular branches"
-msgstr ""
-
-msgid "SecurityOrchestration|Add rule"
 msgstr ""
 
 msgid "SecurityOrchestration|After dismissing the alert, the information will never be shown again."
@@ -49807,9 +49804,6 @@ msgstr ""
 msgid "Settings"
 msgstr ""
 
-msgid "Settings for the License Compliance feature"
-msgstr ""
-
 msgid "Settings saved successfully."
 msgstr ""
 
@@ -51611,10 +51605,16 @@ msgstr ""
 msgid "Subscription deletion failed."
 msgstr ""
 
+msgid "Subscription end date"
+msgstr ""
+
 msgid "Subscription for %{subscription} will be removed. Do you want to continue?"
 msgstr ""
 
 msgid "Subscription service outage"
+msgstr ""
+
+msgid "Subscription start date"
 msgstr ""
 
 msgid "Subscription successfully applied to \"%{group_name}\""

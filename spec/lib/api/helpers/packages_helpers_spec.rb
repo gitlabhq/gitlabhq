@@ -42,6 +42,17 @@ RSpec.describe API::Helpers::PackagesHelpers, feature_category: :package_registr
         expect(subject).to eq nil
       end
     end
+
+    context 'with read_public_package_registry permission' do
+      subject { helper.authorize_packages_access!(group, :read_package_within_public_registries) }
+
+      it 'authorizes packages access' do
+        expect(helper).to receive(:require_packages_enabled!)
+        expect(helper).to receive(:authorize!).with(:read_package_within_public_registries, instance_of(::Packages::Policies::Group))
+
+        expect(subject).to eq nil
+      end
+    end
   end
 
   describe 'authorize_read_package!' do

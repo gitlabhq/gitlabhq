@@ -40,16 +40,24 @@ module API
           project
         end
 
-        def find_authorized_group!
-          group = find_group(params[:id])
+        def find_authorized_group!(action: :read_group)
+          strong_memoize_with(:find_authorized_group, action) do
+            group = find_group(params[:id])
 
-          unless group && can?(current_user, :read_group, group)
-            return unauthorized_or! { not_found! }
+            subject = case action
+                      when :read_package_within_public_registries
+                        group&.packages_policy_subject
+                      when :read_group
+                        group
+                      end
+
+            unless group && can?(current_user, action, subject)
+              break unauthorized_or! { not_found! }
+            end
+
+            group
           end
-
-          group
         end
-        strong_memoize_attr :find_authorized_group!
 
         def authorize!(action, subject = :global, reason = nil)
           return if can?(current_user, action, subject)

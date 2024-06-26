@@ -2,7 +2,7 @@ ARG GDK_SHA=8b0c3fcbf534ce26dcd9c59fafd4a5f4f718ca55
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 
-FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main:${GDK_BASE_TAG_PREFIX}${GDK_SHA} as base
+FROM registry.gitlab.com/gitlab-org/gitlab-development-kit/asdf-bootstrapped-verify/main:${GDK_BASE_TAG_PREFIX}${GDK_SHA} AS base
 
 ENV GITLAB_LICENSE_MODE=test \
     GDK_KILL_CONFIRM=true
@@ -23,7 +23,7 @@ COPY --chown=gdk:gdk qa/gdk/gdk.yml ./
 
 # Build gitlab-shell
 #
-FROM base as gitlab-shell
+FROM base AS gitlab-shell
 
 COPY --chown=gdk:gdk GITLAB_SHELL_VERSION ./gitlab/
 RUN make gitlab-shell-setup \
@@ -33,7 +33,7 @@ RUN make gitlab-shell-setup \
 
 # Build gitlab-workhorse
 #
-FROM base as workhorse
+FROM base AS workhorse
 
 COPY --chown=gdk:gdk VERSION GITLAB_WORKHORSE_VERSION ./gitlab/
 COPY --chown=gdk:gdk workhorse ./gitlab/workhorse
@@ -43,7 +43,7 @@ RUN make gitlab-workhorse-setup \
 
 # Build gitaly
 #
-FROM base as gitaly
+FROM base AS gitaly
 COPY --chown=gdk:gdk GITALY_SERVER_VERSION ./gitlab/
 RUN set -eux; \
     make gitaly-setup; \
@@ -55,7 +55,7 @@ RUN set -eux; \
 
 # Install gitlab gem dependencies
 #
-FROM base as gitlab-gems
+FROM base AS gitlab-gems
 
 COPY --chown=gdk:gdk Gemfile Gemfile.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
@@ -66,7 +66,7 @@ RUN make .gitlab-bundle \
 
 # Install gitlab npm dependencies
 #
-FROM base as gitlab-node-modules
+FROM base AS gitlab-node-modules
 
 COPY --chown=gdk:gdk package.json yarn.lock ./gitlab/
 COPY --chown=gdk:gdk scripts/frontend/postinstall.js ./gitlab/scripts/frontend/postinstall.js
@@ -75,7 +75,7 @@ RUN make .gitlab-yarn && yarn cache clean
 
 # Build final image
 #
-FROM base as gdk
+FROM base AS gdk
 
 # Set global defaults so we can initialize empty git repo
 RUN git config --global init.defaultBranch master \
@@ -92,6 +92,10 @@ COPY --from=gitlab-node-modules --chown=gdk:gdk /home/gdk/gitlab-development-kit
 # Copy code
 COPY --chown=gdk:gdk ./ ./gitlab/
 COPY --chown=gdk:gdk qa/gdk/entrypoint ../
+
+# Create custom hook for E2E tests
+RUN mkdir -p /home/gdk/gitlab-development-kit/gitaly-custom-hooks/pre-receive.d
+COPY --chown=gdk:gdk --chmod=700 qa/gdk/pre-receive /home/gdk/gitlab-development-kit/gitaly-custom-hooks/pre-receive.d
 
 # Set up GDK
 RUN set -eux; \

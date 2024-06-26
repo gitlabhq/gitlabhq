@@ -3,6 +3,22 @@
 require 'spec_helper'
 
 RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
+  let_it_be(:finder_class) do
+    Class.new do
+      include ::Packages::FinderHelper
+
+      def method_missing(method_name, *args, **kwargs)
+        send(method_name, *args, **kwargs)
+      end
+
+      def respond_to_missing?
+        true
+      end
+    end
+  end
+
+  let_it_be(:finder) { finder_class.new }
+
   describe '#packages_for_project' do
     let_it_be_with_reload(:project1) { create(:project) }
     let_it_be(:package1) { create(:package, project: project1) }
@@ -10,19 +26,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     let_it_be(:project2) { create(:project) }
     let_it_be(:package3) { create(:package, project: project2) }
 
-    let(:finder_class) do
-      Class.new do
-        include ::Packages::FinderHelper
-
-        def execute(project1)
-          packages_for_project(project1)
-        end
-      end
-    end
-
-    let(:finder) { finder_class.new }
-
-    subject { finder.execute(project1) }
+    subject { finder.packages_for_project(project1) }
 
     it { is_expected.to eq [package1] }
   end
@@ -38,23 +42,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     let_it_be(:package2) { create(:package, project: project2) }
     let_it_be(:package3) { create(:package, :error, project: project2) }
 
-    let(:finder_class) do
-      Class.new do
-        include ::Packages::FinderHelper
-
-        def initialize(user)
-          @current_user = user
-        end
-
-        def execute(group)
-          packages_for(@current_user, within_group: group)
-        end
-      end
-    end
-
-    let(:finder) { finder_class.new(user) }
-
-    subject { finder.execute(group) }
+    subject { finder.packages_for(user, within_group: group) }
 
     shared_examples 'returning both packages' do
       it { is_expected.to contain_exactly(package1, package2) }
@@ -91,13 +79,13 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       end
 
       context 'without a group' do
-        subject { finder.execute(nil) }
+        let(:group) { nil }
 
         it_behaves_like 'returning no packages'
       end
 
       context 'with a subgroup' do
-        subject { finder.execute(subgroup) }
+        let(:group) { subgroup }
 
         it_behaves_like 'returning package2'
       end
@@ -123,20 +111,20 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       end
 
       context 'without a group' do
-        subject { finder.execute(nil) }
+        let(:group) { nil }
 
         it_behaves_like 'returning no packages'
       end
 
       context 'with a subgroup' do
-        subject { finder.execute(subgroup) }
+        let(:group) { subgroup }
 
         it_behaves_like 'returning both packages'
       end
     end
   end
 
-  describe '#packages_visible_to_user' do
+  context 'for packages visible to user' do
     using RSpec::Parameterized::TableSyntax
 
     let_it_be_with_reload(:group) { create(:group) }
@@ -147,24 +135,6 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     let_it_be(:package2) { create(:package, project: project2) }
     let_it_be(:package3) { create(:package, :error, project: project2) }
 
-    let(:finder_class) do
-      Class.new do
-        include ::Packages::FinderHelper
-
-        def initialize(user)
-          @current_user = user
-        end
-
-        def execute(group)
-          packages_visible_to_user(@current_user, within_group: group)
-        end
-      end
-    end
-
-    let(:finder) { finder_class.new(user) }
-
-    subject { finder.execute(group) }
-
     shared_examples 'returning both packages' do
       it { is_expected.to contain_exactly(package1, package2) }
     end
@@ -173,98 +143,125 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
       it { is_expected.to eq [package1] }
     end
 
+    shared_examples 'returning package2' do
+      it { is_expected.to eq [package2] }
+    end
+
     shared_examples 'returning no packages' do
       it { is_expected.to be_empty }
     end
 
-    context 'with a user' do
-      let_it_be(:user) { create(:user) }
+    describe '#packages_visible_to_user' do
+      subject { finder.packages_visible_to_user(user, within_group: group) }
 
-      where(:group_visibility, :subgroup_visibility, :project2_visibility, :user_role, :shared_example_name) do
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :maintainer | 'returning both packages'
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :developer  | 'returning both packages'
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :guest      | 'returning both packages'
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both packages'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both packages'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both packages'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning package1'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning package1'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning package1'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning package1'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no packages'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no packages'
-      end
+      context 'with a user' do
+        let_it_be(:user) { create(:user) }
 
-      with_them do
-        before do
-          unless user_role == :anonymous
-            group.send("add_#{user_role}", user)
-            subgroup.send("add_#{user_role}", user)
-            project1.send("add_#{user_role}", user)
-            project2.send("add_#{user_role}", user)
-          end
-
-          project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-          subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-          project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+        where(:group_visibility, :subgroup_visibility, :project2_visibility, :user_role, :shared_example_name) do
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :maintainer | 'returning both packages'
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :developer  | 'returning both packages'
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :guest      | 'returning both packages'
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | :anonymous  | 'returning both packages'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :maintainer | 'returning both packages'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :developer  | 'returning both packages'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :guest      | 'returning package1'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | :anonymous  | 'returning package1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning package1'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning package1'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :maintainer | 'returning both packages'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :developer  | 'returning both packages'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :guest      | 'returning no packages'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | :anonymous  | 'returning no packages'
         end
 
-        it_behaves_like params[:shared_example_name]
-      end
-
-      context 'when the second project has the package registry disabled' do
-        before do
-          project1.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          project2.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
-            package_registry_access_level: 'disabled', packages_enabled: false)
-        end
-
-        it_behaves_like 'returning both packages'
-
-        context 'with with_package_registry_enabled set to true' do
-          let(:finder_class) do
-            Class.new do
-              include ::Packages::FinderHelper
-
-              def initialize(user)
-                @current_user = user
-              end
-
-              def execute(group)
-                packages_visible_to_user(@current_user, within_group: group, with_package_registry_enabled: true)
-              end
+        with_them do
+          before do
+            unless user_role == :anonymous
+              group.send("add_#{user_role}", user)
+              subgroup.send("add_#{user_role}", user)
+              project1.send("add_#{user_role}", user)
+              project2.send("add_#{user_role}", user)
             end
+
+            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
           end
 
-          it_behaves_like 'returning package1'
+          it_behaves_like params[:shared_example_name]
+        end
+
+        context 'when the second project has the package registry disabled' do
+          before do
+            project1.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+            project2.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+              package_registry_access_level: 'disabled', packages_enabled: false)
+          end
+
+          it_behaves_like 'returning both packages'
+
+          context 'with with_package_registry_enabled set to true' do
+            subject do
+              finder.packages_visible_to_user(user, within_group: group, with_package_registry_enabled: true)
+            end
+
+            it_behaves_like 'returning package1'
+          end
+        end
+      end
+
+      context 'with a group deploy token' do
+        let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
+        let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+
+        where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
+          'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both packages'
+          'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both packages'
+          'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
+          'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
+        end
+
+        with_them do
+          before do
+            project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
+            subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
+            project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+            group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
+          end
+
+          it_behaves_like params[:shared_example_name]
         end
       end
     end
 
-    context 'with a group deploy token' do
-      let_it_be(:user) { create(:deploy_token, :group, read_package_registry: true) }
-      let_it_be(:group_deploy_token) { create(:group_deploy_token, deploy_token: user, group: group) }
+    describe '#packages_visible_to_user_including_public_registries' do
+      subject { finder.packages_visible_to_user_including_public_registries(user, within_group: group) }
 
-      where(:group_visibility, :subgroup_visibility, :project2_visibility, :shared_example_name) do
-        'PUBLIC'  | 'PUBLIC'  | 'PUBLIC'  | 'returning both packages'
-        'PUBLIC'  | 'PUBLIC'  | 'PRIVATE' | 'returning both packages'
-        'PUBLIC'  | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
-        'PRIVATE' | 'PRIVATE' | 'PRIVATE' | 'returning both packages'
+      let(:user) { nil }
+
+      before do
+        [subgroup, group, project1, project2].each do |entity|
+          entity.update!(visibility_level: Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
+        end
+        project1.project_feature.update!(package_registry_access_level: project1_package_registry_access_level)
+        project2.project_feature.update!(package_registry_access_level: project2_package_registry_access_level)
+      end
+
+      where(:project1_package_registry_access_level, :project2_package_registry_access_level, :shared_example_name) do
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::PUBLIC   | 'returning both packages'
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::PRIVATE  | 'returning package1'
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::DISABLED | 'returning package1'
+        ::ProjectFeature::PUBLIC   | ::ProjectFeature::ENABLED  | 'returning package1'
+        ::ProjectFeature::PRIVATE  | ::ProjectFeature::PUBLIC   | 'returning package2'
+        ::ProjectFeature::DISABLED | ::ProjectFeature::PUBLIC   | 'returning package2'
+        ::ProjectFeature::ENABLED  | ::ProjectFeature::PUBLIC   | 'returning package2'
+        ::ProjectFeature::PRIVATE  | ::ProjectFeature::PRIVATE  | 'returning no packages'
       end
 
       with_them do
-        before do
-          project2.update!(visibility_level: Gitlab::VisibilityLevel.const_get(project2_visibility, false))
-          subgroup.update!(visibility_level: Gitlab::VisibilityLevel.const_get(subgroup_visibility, false))
-          project1.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-          group.update!(visibility_level: Gitlab::VisibilityLevel.const_get(group_visibility, false))
-        end
-
         it_behaves_like params[:shared_example_name]
       end
     end
@@ -279,23 +276,7 @@ RSpec.describe ::Packages::FinderHelper, feature_category: :package_registry do
     let_it_be_with_reload(:subgroup) { create(:group, parent: group) }
     let_it_be_with_reload(:project2) { create(:project, namespace: subgroup) }
 
-    let(:finder_class) do
-      Class.new do
-        include ::Packages::FinderHelper
-
-        def initialize(user)
-          @current_user = user
-        end
-
-        def execute(group)
-          projects_visible_to_user(@current_user, within_group: group)
-        end
-      end
-    end
-
-    let(:finder) { finder_class.new(user) }
-
-    subject { finder.execute(group) }
+    subject { finder.projects_visible_to_user(user, within_group: group) }
 
     shared_examples 'returning both projects' do
       it { is_expected.to contain_exactly(project1, project2) }

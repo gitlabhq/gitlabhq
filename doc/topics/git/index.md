@@ -49,9 +49,9 @@ A typical Git user encounters these concepts soon after starting to use Git:
   [branches](../../user/project/repository/branches/index.md).
 - [How to undo changes](undo.md), including [`git reset`](rollback_commits.md).
 - View a chronological list of changes to a file with
-  [Git history](../../user/project/repository/git_history.md).
+  [Git history](../../user/project/repository/files/git_history.md).
 - View a line-by-line editing history of a file with
-  [`git blame`](../../user/project/repository/git_blame.md).
+  [`git blame`](../../user/project/repository/files/git_blame.md).
 - [Sign commits](../../user/project/repository/signed_commits/gpg.md)
   for increased accountability and trust.
 

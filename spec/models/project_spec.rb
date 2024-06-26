@@ -7057,6 +7057,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_public_package_registry' do
+    let_it_be(:project) { create(:project, package_registry_access_level: ::ProjectFeature::PUBLIC) }
+    let_it_be(:other_project) { create(:project, package_registry_access_level: ::ProjectFeature::ENABLED) }
+
+    subject { described_class.with_public_package_registry }
+
+    it { is_expected.to contain_exactly(project) }
+  end
+
   describe '.not_a_fork' do
     let_it_be(:project) { create(:project, :public) }
 

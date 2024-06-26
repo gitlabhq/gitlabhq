@@ -219,7 +219,7 @@ non-manual jobs, the option is not displayed.
 To push a commit without triggering a pipeline, add `[ci skip]` or `[skip ci]`, using any
 capitalization, to your commit message.
 
-Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+Alternatively, with Git 2.10 or later, use the `ci.skip` [Git push option](../../gitlab-basics/add-file.md#push-options-for-gitlab-cicd).
 The `ci.skip` push option does not skip merge request pipelines.
 
 ### Delete a pipeline

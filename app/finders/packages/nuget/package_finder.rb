@@ -3,6 +3,8 @@
 module Packages
   module Nuget
     class PackageFinder < ::Packages::GroupOrProjectPackageFinder
+      extend ::Gitlab::Utils::Override
+
       MAX_PACKAGES_COUNT = 300
       FORCE_NORMALIZATION_CLIENT_VERSION = '>= 3'
 
@@ -34,6 +36,15 @@ module Packages
             @params[:package_version],
             with_normalized: client_forces_normalized_version?
           )
+      end
+
+      override :group_packages
+      def group_packages
+        if ::Feature.disabled?(:allow_anyone_to_pull_public_nuget_packages_on_group_level, @project_or_group)
+          return super
+        end
+
+        packages_visible_to_user_including_public_registries(@current_user, within_group: @project_or_group)
       end
 
       def client_forces_normalized_version?

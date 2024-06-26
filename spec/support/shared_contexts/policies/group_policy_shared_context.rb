@@ -14,6 +14,7 @@ RSpec.shared_context 'GroupPolicy context' do
   let_it_be(:owner) { create(:user, owner_of: group) }
   let_it_be(:admin) { create(:admin) }
   let_it_be(:non_group_member) { create(:user) }
+  let_it_be(:external_user) { create(:user, :external) }
 
   let_it_be(:organization_owner) { create(:organization_user, :owner, organization: organization).user }
 

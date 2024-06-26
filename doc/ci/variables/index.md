@@ -744,7 +744,7 @@ You can override the value of a variable, including [predefined variables](prede
 
 - [Run a pipeline manually](../pipelines/index.md#run-a-pipeline-manually) in the UI.
 - Create a pipeline by using [the `pipelines` API endpoint](../../api/pipelines.md#create-a-new-pipeline).
-- Use [push options](../../user/project/push_options.md#push-options-for-gitlab-cicd).
+- Use [push options](../../gitlab-basics/add-file.md#push-options-for-gitlab-cicd).
 - Trigger a pipeline by using [the `triggers` API endpoint](../triggers/index.md#pass-cicd-variables-in-the-api-call).
 - Pass variables to a downstream pipeline [by using the `variable` keyword](../pipelines/downstream_pipelines.md#pass-cicd-variables-to-a-downstream-pipeline)
   or [by using `dotenv` variables](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).

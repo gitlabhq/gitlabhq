@@ -246,8 +246,8 @@ because they can't follow redirects:
 - [Files](files/index.md)
 - [Branches](branches/index.md)
 - [Create a directory](web_editor.md#create-a-directory)
-- [Find file history](git_history.md)
-- [Identify changes by line (Git blame)](git_blame.md)
+- [Find file history](files/git_history.md)
+- [Identify changes by line (Git blame)](files/git_blame.md)
 
 ## Troubleshooting
 

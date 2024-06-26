@@ -66,8 +66,7 @@ Prerequisites:
 1. Sign in to your GitLab instance as an administrator.
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Security and Compliance**.
-1. Expand **Secret Detection**.
-1. Select the **Allow secret push protection** checkbox.
+1. Under **Secret Detection**, select or clear **Allow secret push protection**.
 
 ### Enable secret push protection in a project
 
@@ -151,7 +150,7 @@ To skip secret push protection for all commits in a push, either:
 
 To skip secret push protection when using the Git CLI client:
 
-- Use the [push option](../../../project/push_options.md#push-options-for-secret-push-protection).
+- Use the [push option](../../../../gitlab-basics/add-file.md#push-options-for-secret-push-protection).
 
   For example, you have several commits that are blocked from being pushed because one of them
   contains a secret. To skip secret push protection, you append the push option to the Git command.

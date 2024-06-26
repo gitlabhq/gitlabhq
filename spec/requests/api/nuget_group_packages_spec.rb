@@ -38,29 +38,31 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
     end
 
     describe 'GET /api/v4/groups/:id/-/packages/nuget/metadata/*package_name/index' do
+      let(:url) { "/groups/#{target.id}/-/packages/nuget/metadata/#{package_name}/index.json" }
+
       it_behaves_like 'handling nuget metadata requests with package name',
         example_names_with_status:
         {
-          anonymous_requests_example_name: 'rejects nuget packages access',
-          anonymous_requests_status: :unauthorized,
           guest_requests_example_name: 'rejects nuget packages access',
-          guest_requests_status: :not_found
-        } do
-        let(:url) { "/groups/#{target.id}/-/packages/nuget/metadata/#{package_name}/index.json" }
-      end
+          guest_requests_status: :not_found,
+          invalid_target_not_found_status: :not_found
+        }
+
+      it_behaves_like 'allows anyone to pull public nuget packages on group level'
     end
 
     describe 'GET /api/v4/groups/:id/-/packages/nuget/metadata/*package_name/*package_version' do
+      let(:url) { "/groups/#{target.id}/-/packages/nuget/metadata/#{package_name}/#{package.version}.json" }
+
       it_behaves_like 'handling nuget metadata requests with package name and package version',
         example_names_with_status:
         {
-          anonymous_requests_example_name: 'rejects nuget packages access',
-          anonymous_requests_status: :unauthorized,
           guest_requests_example_name: 'rejects nuget packages access',
-          guest_requests_status: :not_found
-        } do
-        let(:url) { "/groups/#{target.id}/-/packages/nuget/metadata/#{package_name}/#{package.version}.json" }
-      end
+          guest_requests_status: :not_found,
+          invalid_target_not_found_status: :not_found
+        }
+
+      it_behaves_like 'allows anyone to pull public nuget packages on group level'
     end
 
     describe 'GET /api/v4/groups/:id/-/packages/nuget/query' do
@@ -109,11 +111,11 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
 
       subject { get api(url), headers: {} }
 
-      shared_examples 'handling mixed visibilities' do
+      shared_examples 'handling mixed visibilities' do |public_status: :success, non_public_status: :not_found|
         where(:group_visibility, :subgroup_visibility, :expected_status) do
-          'PUBLIC'   | 'PUBLIC'   | :unauthorized
-          'PUBLIC'   | 'INTERNAL' | :unauthorized
-          'PUBLIC'   | 'PRIVATE'  | :unauthorized
+          'PUBLIC'   | 'PUBLIC'   | public_status
+          'PUBLIC'   | 'INTERNAL' | non_public_status
+          'PUBLIC'   | 'PRIVATE'  | non_public_status
           'INTERNAL' | 'INTERNAL' | :unauthorized
           'INTERNAL' | 'PRIVATE'  | :unauthorized
           'PRIVATE'  | 'PRIVATE'  | :unauthorized
@@ -143,7 +145,7 @@ RSpec.describe API::NugetGroupPackages, feature_category: :package_registry do
       end
 
       describe 'GET /api/v4/groups/:id/-/packages/nuget/query' do
-        it_behaves_like 'handling mixed visibilities' do
+        it_behaves_like 'handling mixed visibilities', public_status: :unauthorized, non_public_status: :unauthorized do
           let(:url) { "/groups/#{target.id}/-/packages/nuget/query?#{query_parameters.to_query}" }
         end
       end
