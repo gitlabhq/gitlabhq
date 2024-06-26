@@ -28393,6 +28393,8 @@ CREATE INDEX index_projects_on_description_trigram ON projects USING gin (descri
 
 CREATE INDEX index_projects_on_id_and_archived_and_pending_delete ON projects USING btree (id) WHERE ((archived = false) AND (pending_delete = false));
 
+CREATE INDEX index_projects_on_id_and_namespace_id ON projects USING btree (id, namespace_id);
+
 CREATE UNIQUE INDEX index_projects_on_id_partial_for_visibility ON projects USING btree (id) WHERE (visibility_level = ANY (ARRAY[10, 20]));
 
 CREATE INDEX index_projects_on_id_service_desk_enabled ON projects USING btree (id) WHERE (service_desk_enabled = true);

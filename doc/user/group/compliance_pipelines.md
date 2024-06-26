@@ -148,7 +148,11 @@ You can leave it out if your compliance pipeline only ever runs in labeled proje
 #### Compliance pipelines and custom pipeline configuration hosted externally
 
 The example above assumes that all projects host their pipeline configuration in the same project.
-If any projects use [configuration hosted externally to the project](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file):
+If any projects use [configuration hosted externally](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
+the example configuration does not work. See [issue 393960](https://gitlab.com/gitlab-org/gitlab/-/issues/393960)
+for more details.
+
+With projects that use externally hosted configuration, you can try the this workaround:
 
 - The `include` section in the example compliance pipeline configuration must be adjusted.
   For example, using [`include:rules`](../../ci/yaml/includes.md#use-rules-with-include):

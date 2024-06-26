@@ -115,7 +115,7 @@ function resolveCompilationTargets(filter) {
       },
     ],
     [
-      'app/assets/stylesheets/{highlight/themes,lazy_bundles,mailers,page_bundles,themes}/**/*.scss',
+      'app/assets/stylesheets/{highlight/themes,lazy_bundles,lookbook,mailers,page_bundles,themes}/**/*.scss',
     ],
     // This is explicitly compiled to ensure that we do not end up with actual class definitions in this file
     // See scripts/frontend/check_page_bundle_mixins_css_for_sideeffects.js

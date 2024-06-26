@@ -639,7 +639,7 @@
 {"name":"simplecov_json_formatter","version":"0.1.4","platform":"ruby","checksum":"529418fbe8de1713ac2b2d612aa3daa56d316975d307244399fa4838c601b428"},
 {"name":"singleton","version":"0.1.1","platform":"ruby","checksum":"b410b0417fcbb17bdfbc2d478ddba4c91e873d6e51c9d2d16b345c5ee5491c54"},
 {"name":"sixarm_ruby_unaccent","version":"1.2.0","platform":"ruby","checksum":"0043a6077bdf2c4b03040152676a07f8bf77144f9b007b1960ee5c94d13a4384"},
-{"name":"slack-messenger","version":"2.3.4","platform":"ruby","checksum":"49c611d2be5b0f9c250a3a957b9cc09b9c07b81dacb9843642d87b6fa35609c1"},
+{"name":"slack-messenger","version":"2.3.5","platform":"ruby","checksum":"c360b0ea30cc5c2c5fc52c9c5014d88403fe0b989161521ce29472342e6c63cd"},
 {"name":"snaky_hash","version":"2.0.0","platform":"ruby","checksum":"fe8b2e39e8ff69320f7812af73ea06401579e29ff1734a7009567391600687de"},
 {"name":"snowplow-tracker","version":"0.8.0","platform":"ruby","checksum":"7ba6f4f1443a829845fd28e63eda72d9d3d247f485310ddcccaebbc52b734a38"},
 {"name":"solargraph","version":"0.47.2","platform":"ruby","checksum":"87ca4b799b9155c2c31c15954c483e952fdacd800f52d6709b901dd447bcac6a"},
