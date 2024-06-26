@@ -74,6 +74,7 @@ module Packages
 
       def current_package_protected?
         return false if Feature.disabled?(:packages_protected_packages, project)
+        return false if current_user.is_a?(DeployToken)
 
         user_project_authorization_access_level = current_user.max_member_access_for_project(project.id)
         project.package_protection_rules.for_push_exists?(access_level: user_project_authorization_access_level,

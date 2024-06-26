@@ -6,8 +6,6 @@ module RemoteDevelopment
       include Messages
       extend MessageSupport
 
-      private_class_method :generate_error_response_from_message
-
       # @param [Hash] context
       # @return [Hash]
       # @raise [UnmatchedResultError]

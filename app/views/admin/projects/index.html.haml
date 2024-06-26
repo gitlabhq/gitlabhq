@@ -7,19 +7,24 @@
   .js-jh-transition-banner{ data: { feature_name: Users::CalloutsHelper::TRANSITION_TO_JIHU_CALLOUT,
     user_preferred_language: current_user.preferred_language} }
 
-.top-area.gl-flex-direction-column-reverse
-  .scrolling-tabs-container.inner-page-scroll-tabs.gl-flex-grow-1.gl-min-w-0.gl-w-full
+= render ::Layouts::PageHeadingComponent.new(_('Projects')) do |c|
+  - c.with_actions do
+    = link_button_to new_project_path, variant: :confirm do
+      = _('New Project')
+
+.top-area
+  .scrolling-tabs-container.inner-page-scroll-tabs.gl-grow.gl-basis-0.gl-min-w-0
     %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
       = sprite_icon('chevron-lg-left', size: 12)
     %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
       = sprite_icon('chevron-lg-right', size: 12)
-    = gl_tabs_nav({ class: 'scrolling-tabs nav-links gl-display-flex gl-flex-grow-1 gl-w-full nav gl-tabs-nav nav gl-tabs-nav' }) do
+    = gl_tabs_nav({ class: 'scrolling-tabs nav-links gl-display-flex gl-grow gl-w-full nav gl-tabs-nav nav gl-tabs-nav' }) do
       = gl_tab_link_to _('All'), admin_projects_path(visibility_level: nil), { item_active: params[:visibility_level].empty? }
       = gl_tab_link_to _('Private'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
       = gl_tab_link_to _('Internal'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       = gl_tab_link_to _('Public'), admin_projects_path(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
 
-  .nav-controls
-    = render 'shared/projects/search_form', autofocus: true, admin_view: true
+.md:gl-flex.gl-min-w-0.gl-grow.gl-border-t-0.row-content-block
+  = render 'shared/projects/search_form', admin_view: true
 
 = render 'projects'

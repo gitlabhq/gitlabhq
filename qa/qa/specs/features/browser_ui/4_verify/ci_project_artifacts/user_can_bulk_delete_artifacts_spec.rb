@@ -31,14 +31,8 @@ module QA
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/425725' do
           Page::Project::Artifacts::Index.perform do |index|
             index.delete_selected_artifacts
-            position = rand(1..20)
-            artifacts_count = index.job_artifacts_count_by_row(row: position)
-            artifacts_size = index.job_artifacts_size_by_row(row: position)
 
-            aggregate_failures 'job artifacts count and size' do
-              expect(artifacts_count).to eq(0), 'Failed to delete artifact'
-              expect(artifacts_size).to eq(0), 'Failed to delete artifact'
-            end
+            expect(index).to have_no_artifacts
           end
         end
       end

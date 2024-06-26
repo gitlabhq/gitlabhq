@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
+require_relative '../../../lib/gitlab/fp/rop_helpers'
+
 module InvokeRopSteps
   private
 
-  def public_methods_to_ignore
-    # Singleton methods to exist on class objects by default that we need to ignore.
-    [:yaml_tag, :method]
-  end
+  include Gitlab::Fp::RopHelpers
 
   def add_err_result_for_step(err_result_for_step, err_results_for_steps)
     result_type = :err
@@ -117,7 +116,7 @@ module InvokeRopSteps
       step_action = rop_step[1]
       expected_rop_step = {
         step_class: step_class,
-        step_class_method: retrieve_rop_class_method(step_class),
+        step_class_method: retrieve_single_public_singleton_method(step_class),
         step_action: step_action
       }
 
@@ -142,16 +141,6 @@ module InvokeRopSteps
     end
 
     expected_rop_steps
-  end
-
-  def retrieve_rop_class_method(step_class)
-    public_methods = step_class.singleton_methods(false).reject { |method| public_methods_to_ignore.include?(method) }
-
-    if public_methods.size != 1
-      raise "Pattern violation in class #{step_class}: exactly one public method must be present in an ROP class"
-    end
-
-    public_methods.first
   end
 
   def setup_mock_expectations_for_steps(steps:, context_passed_along_steps:)
@@ -218,9 +207,9 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
   end
 
   chain :from_main_class do |clazz|
-    validate_main_class(clazz)
     main_class = clazz
-    main_class_method = retrieve_rop_class_method(main_class)
+    validate_main_class(main_class)
+    main_class_method = retrieve_single_public_singleton_method(main_class)
     expect(main_class).to receive(main_class_method).and_call_original
   end
 

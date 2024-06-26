@@ -8,7 +8,7 @@ require 'fast_spec_helper'
 #
 #       To support this, we have intentionally used some `rubocop:disable` comments to allow for more
 #       explicit and readable examples.
-# rubocop:disable RSpec/DescribedClass, Lint/ConstantDefinitionInBlock, RSpec/LeakyConstantDeclaration
+# rubocop:disable RSpec/DescribedClass, Lint/ConstantDefinitionInBlock, RSpec/LeakyConstantDeclaration -- intentionally disabled per comment above
 RSpec.describe Result, feature_category: :remote_development do
   describe 'usage of Result.ok and Result.err' do
     context 'when checked with .ok? and .err?' do

@@ -1079,7 +1079,6 @@ Layout/LineLength:
     - 'ee/lib/ee/api/helpers/settings_helpers.rb'
     - 'ee/lib/ee/api/helpers/users_helpers.rb'
     - 'ee/lib/ee/api/internal/base.rb'
-    - 'ee/lib/ee/api/internal/kubernetes.rb'
     - 'ee/lib/ee/api/issues.rb'
     - 'ee/lib/ee/api/members.rb'
     - 'ee/lib/ee/api/merge_request_approvals.rb'

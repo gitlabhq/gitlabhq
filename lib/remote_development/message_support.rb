@@ -4,6 +4,14 @@ require 'active_model/errors'
 
 module RemoteDevelopment
   module MessageSupport
+    # @param [Class] base
+    # @return void
+    def self.extended(base)
+      base.class_eval do
+        private_class_method :generate_error_response_from_message
+      end
+    end
+
     # @param [RemoteDevelopment::Message] message
     # @param [Symbol] reason
     # @return [Hash]

@@ -118,25 +118,6 @@ The rule for this job compares all files and paths in the current branch
 recursively (`**/*`) against the `main` branch. The rule matches and the
 job runs only when there are changes to the files in the branch.
 
-### Use variables in `rules:changes`
-
-You can use CI/CD variables in `rules:changes` expressions to determine when
-to add jobs to a pipeline:
-
-```yaml
-docker build:
-  variables:
-    DOCKERFILES_DIR: 'path/to/files'
-  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
-  rules:
-    - changes:
-      - $DOCKERFILES_DIR/**/*
-```
-
-You can use the `$` character for both variables and paths. For example, if the
-`$DOCKERFILES_DIR` variable exists, its value is used. If it does not exist, the
-`$` is interpreted as being part of a path.
-
 ## Common `if` clauses with predefined variables
 
 `rules:if` clauses are commonly used with [predefined CI/CD variables](../variables/predefined_variables.md),

@@ -17,25 +17,12 @@ PostgreSQL, and Gitaly instances.
 
 By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. To change this:
 
+1. [Configure packaged PostgreSQL server to listen on TCP/IP](https://docs.gitlab.com/omnibus/settings/database.html#configure-packaged-postgresql-server-to-listen-on-tcpip) adding the Sidekiq server IP addresses to `postgresql['md5_auth_cidr_addresses']`
+1. [Make the bundled Redis reachable via TCP](https://docs.gitlab.com/omnibus/settings/redis.html#making-the-bundled-redis-reachable-via-tcp)
 1. Edit the `/etc/gitlab/gitlab.rb` file on your GitLab instance, and add the following:
 
    ```ruby
-
-   ## PostgreSQL
-
-   # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
-   postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
-   postgresql['listen_address'] = '0.0.0.0'
-   postgresql['port'] = 5432
-
-   # Add the Sidekiq nodes to PostgreSQL's trusted addresses.
-   # In the following example, 10.10.1.30/32 is the private IP
-   # of the Sidekiq server.
-   postgresql['md5_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32)
-   postgresql['trust_auth_cidr_addresses'] = %w(127.0.0.1/32 10.10.1.30/32)
-
    ## Gitaly
-
    gitaly['configuration'] = {
       # ...
       #
@@ -48,18 +35,10 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
       },
    }
 
-   gitaly['auth_token'] = ''
-   praefect['configuration'][:auth][:token] = 'abc123secret'
    gitlab_rails['gitaly_token'] = 'abc123secret'
 
-   ## Redis configuration
-
-   redis['bind'] = '0.0.0.0'
-   redis['port'] = 6379
    # Password to Authenticate Redis
-   redis['password'] = 'redis-password-goes-here'
    gitlab_rails['redis_password'] = 'redis-password-goes-here'
-
    ```
 
 1. Run `reconfigure`:
@@ -76,106 +55,7 @@ By default, GitLab uses UNIX sockets and is not set up to communicate via TCP. T
 
 ## Set up Sidekiq instance
 
-1. SSH into the Sidekiq server.
-
-1. Confirm that you can access the PostgreSQL, Gitaly, and Redis ports:
-
-   ```shell
-   telnet <GitLab host> 5432 # PostgreSQL
-   telnet <GitLab host> 8075 # Gitaly
-   telnet <GitLab host> 6379 # Redis
-   ```
-
-1. [Download and install](https://about.gitlab.com/install/) the Linux package
-   using steps 1 and 2. **Do not complete any other steps.**
-
-1. Copy the `/etc/gitlab/gitlab.rb` file from the GitLab instance and add the following settings. Make sure
-   to replace them with your values:
-
-<!--
-Updates to example must be made at:
-- https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
-- all reference architecture pages
--->
-
-   ```ruby
-   # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles
-   roles(["sidekiq_role"])
-
-   ##
-   ## To maintain uniformity of links across nodes, the
-   ## `external_url` on the Sidekiq server should point to the external URL that users
-   ## use to access GitLab. This can be either:
-   ##
-   ## - The `external_url` set on your application server.
-   ## - The URL of a external load balancer, which routes traffic to the GitLab application server.
-   ##
-   external_url 'https://gitlab.example.com'
-
-   # Configure the gitlab-shell API callback URL. Without this, `git push` will
-   # fail. This can be your 'front door' GitLab URL or an internal load
-   # balancer.
-   gitlab_rails['internal_api_url'] = 'GITLAB_URL'
-   gitlab_shell['secret_token'] = 'SHELL_TOKEN'
-
-   ########################################
-   ####              Redis              ###
-   ########################################
-
-   ## Must be the same in every sentinel node.
-   redis['master_name'] = 'gitlab-redis' # Required if you have set up redis cluster
-   ## The same password for Redis authentication you set up for the master node.
-   redis['master_password'] = '<redis_master_password>'
-
-   ### If redis is running on the main Gitlab instance and you have opened the TCP port as above add the following
-   gitlab_rails['redis_host'] = '<gitlab_host>'
-   gitlab_rails['redis_port'] = 6379
-
-   #######################################
-   ###              Gitaly             ###
-   #######################################
-
-   ## Replace <gitaly_token> with the one you set up, see
-   ## https://docs.gitlab.com/ee/administration/gitaly/configure_gitaly.html#about-the-gitaly-token
-   git_data_dirs({
-     "default" => {
-        "gitaly_address" => "tcp://<gitlab_host>:8075",
-        "gitaly_token" => "<gitaly_token>"
-     }
-   })
-
-   #######################################
-   ###            Postgres             ###
-   #######################################
-
-   # Replace <database_host> and <database_password>
-   gitlab_rails['db_host'] = '<database_host>'
-   gitlab_rails['db_port'] = 5432
-   gitlab_rails['db_password'] = '<database_password>'
-   ## Prevent database migrations from running on upgrade automatically
-   gitlab_rails['auto_migrate'] = false
-
-   #######################################
-   ###      Sidekiq configuration      ###
-   #######################################
-   sidekiq['listen_address'] = "0.0.0.0"
-
-   ## Set number of Sidekiq queue processes to the same number as available CPUs
-   sidekiq['queue_groups'] = ['*'] * 4
-
-   ## Set number of Sidekiq threads per queue process to the recommend number of 20
-   sidekiq['max_concurrency'] = 20
-   ```
-
-1. Copy the `/etc/gitlab/gitlab-secrets.json` file from the GitLab instance and replace the file in the Sidekiq instance.
-
-1. Reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-1. Restart the Sidekiq instance after completing the process and finishing the database migrations.
+Find [your reference architecture](../reference_architectures/index.md#available-reference-architectures) and follow the Sidekiq instance setup details.
 
 ## Configure multiple Sidekiq nodes with shared storage
 

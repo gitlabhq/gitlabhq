@@ -1249,11 +1249,37 @@ include a visual representation to help readers understand it, you can:
 The Markdown code for including an image in a document is:
 `![Image description, used for alt tag](img/document_image_title_vX_Y.png)`
 
-The image description is the alt text for the rendered image on the
-documentation site. For accessibility and SEO, use [descriptions](https://webaim.org/techniques/alttext/)
-that are accurate, succinct, and unique.
+#### Alternative text
 
-Don't use **image of** or **graphic of** to describe the image.
+Alt text provides an accessible experience.
+Screen readers use alt text to describe the image, and alt text displays
+if an image fails to download.
+
+Alt text should describe the context of the image, not the content. Add context that
+relates to the topic of the page or section. Consider what you would say about the image
+if you were helping someone read and interact with the page and they couldn't see it.
+
+Do:
+
+`![A runner sending a request to the Docker API.](img/document_image_title_vX_Y.png)`
+
+Do not:
+
+`![Runner and Docker architecture](img/document_image_title_vX_Y.png)`
+
+When writing alt text:
+
+- Write short, descriptive alt text in 155 characters or fewer. Screen readers
+typically stop reading after this amount.
+- If the image has complex information, like a workflow diagram, use a short alt text to identify the image and
+include detailed information in the text.
+- Use complete sentences.
+- Use punctuation.
+- Use sentence case and avoid using all-caps. Some screenreaders read capitals as individual letters.
+- Don't use phrases like **Image of** or **Graphic of**.
+- Don't use a string of keywords. Include keywords in a complete sentence to enhance context.
+- Introduce the image in the section text, not the alt text.
+- Try to avoid repeating content that you've already used in the section text.
 
 #### Automatic screenshot generator
 

@@ -1,6 +1,7 @@
 <script>
 import { GlTable } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { TH_DESCRIPTION_TEST_ID, TH_TARGET_TEST_ID, TH_NEXT_TEST_ID } from '../../constants';
 import PipelineScheduleActions from './cells/pipeline_schedule_actions.vue';
 import PipelineScheduleLastPipeline from './cells/pipeline_schedule_last_pipeline.vue';
 import PipelineScheduleNextRun from './cells/pipeline_schedule_next_run.vue';
@@ -14,15 +15,21 @@ export default {
   fields: [
     {
       key: 'description',
+      actualSortKey: 'DESCRIPTION',
       label: s__('PipelineSchedules|Description'),
       thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-8/20',
+      sortable: true,
+      thAttr: TH_DESCRIPTION_TEST_ID,
     },
     {
       key: 'target',
+      actualSortKey: 'REF',
+      sortable: true,
       label: s__('PipelineSchedules|Target'),
       thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-2/20',
+      thAttr: TH_TARGET_TEST_ID,
     },
     {
       key: 'pipeline',
@@ -32,9 +39,12 @@ export default {
     },
     {
       key: 'next',
+      actualSortKey: 'NEXT_RUN_AT',
       label: s__('PipelineSchedules|Next Run'),
       thClass: 'gl-border-t-none!',
       columnClass: 'gl-w-3/20',
+      sortable: true,
+      thAttr: TH_NEXT_TEST_ID,
     },
     {
       key: 'owner',
@@ -66,6 +76,24 @@ export default {
       type: Object,
       required: true,
     },
+    sortBy: {
+      type: String,
+      required: true,
+    },
+    sortDesc: {
+      type: Boolean,
+      required: true,
+    },
+  },
+  methods: {
+    fetchSortedData({ sortBy, sortDesc }) {
+      const field = this.$options.fields.find(({ key }) => key === sortBy);
+      const sortingDirection = sortDesc ? 'DESC' : 'ASC';
+
+      if (!field?.actualSortKey) return;
+
+      this.$emit('update-sorting', `${field.actualSortKey}_${sortingDirection}`, sortBy, sortDesc);
+    },
   },
 };
 </script>
@@ -76,8 +104,11 @@ export default {
     :items="schedules"
     :tbody-tr-attr="{ 'data-testid': 'pipeline-schedule-table-row' }"
     :empty-text="$options.i18n.emptyText"
+    :sort-by="sortBy"
+    :sort-desc="sortDesc"
     show-empty
     stacked="md"
+    @sort-changed="fetchSortedData"
   >
     <template #table-colgroup="{ fields }">
       <col v-for="field in fields" :key="field.key" :class="field.columnClass" />

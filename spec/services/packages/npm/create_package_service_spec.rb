@@ -429,6 +429,28 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
         it_behaves_like params[:shared_examples_name]
       end
+
+      context 'with deploy token' do
+        let_it_be(:deploy_token) { create(:deploy_token, projects: [project]) }
+        let_it_be(:current_user) { deploy_token }
+        let_it_be(:user) { nil }
+
+        where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+          ref(:package_name)                  | :maintainer | 'valid package'
+          ref(:package_name)                  | :owner      | 'valid package'
+          ref(:package_name)                  | :admin      | 'valid package'
+          ref(:package_name_pattern_no_match) | :owner      | 'valid package'
+        end
+
+        with_them do
+          before do
+            package_protection_rule.update!(package_name_pattern: package_name_pattern,
+              minimum_access_level_for_push: minimum_access_level_for_push)
+          end
+
+          it_behaves_like params[:shared_examples_name]
+        end
+      end
     end
 
     describe '#lease_key' do

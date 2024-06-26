@@ -140,7 +140,7 @@ gem 'grape-path-helpers', '~> 2.0.1', feature_category: :api
 gem 'rack-cors', '~> 2.0.1', require: 'rack/cors' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # GraphQL API
-gem 'graphql', '~> 2.3.4', feature_category: :api
+gem 'graphql', '~> 2.3.5', feature_category: :api
 gem 'graphql-docs', '~> 4.0.0', group: [:development, :test], feature_category: :api
 gem 'graphiql-rails', '~> 1.8.0', feature_category: :api
 gem 'apollo_upload_server', '~> 2.1.6', feature_category: :api
@@ -561,7 +561,7 @@ group :test do
   gem 'gitlab_quality-test_tooling', '~> 1.29.1', require: false, feature_category: :tooling
 end
 
-gem 'octokit', '~> 8.1', feature_category: :importers
+gem 'octokit', '~> 9.0', feature_category: :importers
 
 gem 'gitlab-mail_room', '~> 0.0.24', require: 'mail_room', feature_category: :shared
 

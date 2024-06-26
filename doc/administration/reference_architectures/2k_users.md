@@ -625,16 +625,18 @@ Refer to the [external Sidekiq documentation](../sidekiq/index.md) for more info
 To configure the Sidekiq server, on the server node you want to use for Sidekiq:
 
 1. SSH in to the Sidekiq server.
+1. Confirm that you can access the PostgreSQL, Gitaly, and Redis ports:
+
+   ```shell
+   telnet <GitLab host> 5432 # PostgreSQL
+   telnet <GitLab host> 8075 # Gitaly
+   telnet <GitLab host> 6379 # Redis
+   ```
+
 1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
-
-   <!--
-   Updates to example must be made at:
-   - https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
-   - all reference architecture pages
-   -->
 
    ```ruby
    # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles

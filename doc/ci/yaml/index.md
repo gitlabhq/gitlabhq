@@ -4104,8 +4104,7 @@ or [merge request pipelines](../pipelines/merge_request_pipelines.md), though
 
 An array including any number of:
 
-- Paths to files. The [file paths can include variables](../jobs/job_rules.md#use-variables-in-ruleschanges).
-  A file path array can also be in [`rules:changes:paths`](#ruleschangespaths).
+- Paths to files. The file paths can include [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 - Wildcard paths for:
   - Single directories, for example `path/to/directory/*`.
   - A directory and all its subdirectories, for example `path/to/directory/**/*`.
@@ -4125,23 +4124,37 @@ docker build:
         - Dockerfile
       when: manual
       allow_failure: true
+
+docker build alternative:
+  variables:
+    DOCKERFILES_DIR: 'path/to/dockerfiles'
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - $DOCKERFILES_DIR/**/*
 ```
 
-- If the pipeline is a merge request pipeline, check `Dockerfile` for changes.
+In this example:
+
+- If the pipeline is a merge request pipeline, check `Dockerfile` and the files in
+  `$DOCKERFILES_DIR/**/*` for changes.
 - If `Dockerfile` has changed, add the job to the pipeline as a manual job, and the pipeline
   continues running even if the job is not triggered (`allow_failure: true`).
-- A maximum of 50 patterns or file paths can be defined per `rules:changes` section.
-- If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
-- [`rules:changes:paths`](#ruleschangespaths) is the same as `rules:changes` without
-  any subkeys.
+- If a file in `$DOCKERFILES_DIR/**/*` has changed, add the job to the pipeline.
+- If no listed files have changed, do not add either job to any pipeline (same as `when: never`).
 
 **Additional details**:
 
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
+- A maximum of 50 patterns or file paths can be defined per `rules:changes` section.
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 - For additional examples, see [Specify when jobs run with `rules`](../jobs/job_rules.md).
+- You can use the `$` character for both variables and paths. For example, if the
+  `$VAR` variable exists, its value is used. If it does not exist, the `$` is interpreted
+  as being part of a path.
 
 **Related topics**:
 
@@ -4161,7 +4174,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Possible inputs**:
 
-- An array of file paths. [File paths can include variables](../jobs/job_rules.md#use-variables-in-ruleschanges).
+- An array of file paths. File paths can include [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `rules:changes:paths`**:
 
@@ -4234,7 +4247,9 @@ Use `exists` to run a job when certain files exist in the repository.
 
 **Possible inputs**:
 
-- An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly link outside it. File paths can use glob patterns and [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`)
+  and can't directly link outside it. File paths can use glob patterns and
+  [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `rules:exists`**:
 
@@ -4246,10 +4261,12 @@ job:
         - Dockerfile
 
 job2:
+  variables:
+    DOCKERPATH: "**/Dockerfile"
   script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
   rules:
     - exists:
-        - "**/Dockerfile"
+        - $DOCKERPATH
 ```
 
 In this example:

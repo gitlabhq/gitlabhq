@@ -30,7 +30,8 @@ function run_rubocop {
   while IFS= read -r -d '' file; do
     files_for_rubocop+=("$file")
   done < <(find . -path './**/remote_development/*.rb' -print0)
-  files_for_rails+=(
+  files_for_rubocop+=(
+      "lib/gitlab/fp/rop_helpers.rb"
       "lib/result.rb"
       "spec/lib/result_spec.rb"
       "spec/support/matchers/invoke_rop_steps.rb"
@@ -49,7 +50,7 @@ function run_rspec_fast {
   files_for_fast=()
   while IFS= read -r file; do
       files_for_fast+=("$file")
-  done < <(find ee/spec -path '**/remote_development/*_spec.rb' -exec grep -lE 'require_relative.*rd_fast_spec_helper' {} +)
+  done < <(find spec ee/spec -path '**/remote_development/*_spec.rb' -exec grep -lE 'require_relative.*rd_fast_spec_helper' {} +)
 
   bin/rspec "${files_for_fast[@]}"
 }
@@ -64,13 +65,14 @@ function run_rspec_rails {
   files_for_rails=()
   while IFS= read -r file; do
       files_for_rails+=("$file")
-  done < <(find ee/spec -path '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
+  done < <(find spec ee/spec -path '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
   files_for_rails+=(
       "ee/spec/graphql/types/query_type_spec.rb"
       "ee/spec/graphql/types/subscription_type_spec.rb"
       "ee/spec/requests/api/internal/kubernetes_spec.rb"
       "spec/graphql/types/subscription_type_spec.rb"
+      "spec/lib/gitlab/fp/rop_helpers_spec.rb"
       "spec/lib/result_spec.rb"
       "spec/support_specs/matchers/result_matchers_spec.rb"
   )

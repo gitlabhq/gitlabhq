@@ -85,7 +85,8 @@ export default {
       },
       update({ project: { jobs: { nodes = [], pageInfo = {} } = {} } }) {
         this.pageInfo = pageInfo;
-        return nodes
+
+        const jobNodes = nodes
           .map(mapArchivesToJobNodes)
           .map(mapBooleansToJobNodes)
           .map((jobNode) => {
@@ -96,6 +97,12 @@ export default {
               _showDetails: this.expandedJobs.includes(jobNode.id),
             };
           });
+
+        if (jobNodes.some((jobNode) => !jobNode.hasArtifacts)) {
+          this.$apollo.queries.jobArtifacts.refetch();
+        }
+
+        return jobNodes;
       },
       error() {
         createAlert({
@@ -367,6 +374,9 @@ export default {
     createdLabel: I18N_CREATED,
     artifactsCount: I18N_ARTIFACTS_COUNT,
   },
+  TBODY_TR_ATTR: {
+    'data-testid': 'job-artifact-table-row',
+  },
 };
 </script>
 <template>
@@ -391,6 +401,7 @@ export default {
       :busy="$apollo.queries.jobArtifacts.loading"
       stacked="sm"
       details-td-class="gl-bg-gray-10! gl-p-0! gl-overflow-auto"
+      :tbody-tr-attr="$options.TBODY_TR_ATTR"
     >
       <template #table-busy>
         <gl-skeleton-loader v-for="i in 20" :key="i" :width="1000" :height="75">

@@ -356,7 +356,7 @@ If this is not the case, there are two options:
 
 For a complete list of upgrade notices and special considerations for older versions, see the [Mattermost documentation](https://docs.mattermost.com/administration/important-upgrade-notes.html).
 
-### GitLab Mattermost versions shipped with the Linux package
+### GitLab Mattermost versions and edition shipped with the Linux package
 
 Below is a list of Mattermost version changes for GitLab 15.0 and later:
 
@@ -388,6 +388,9 @@ Below is a list of Mattermost version changes for GitLab 15.0 and later:
 
 NOTE:
 The Mattermost upgrade notes refer to different impacts when used with a PostgreSQL versus a MySQL database. The GitLab Mattermost included with the Linux package uses a PostgreSQL database.
+
+The Linux package bundles the [Mattermost Team Edition](https://docs.mattermost.com/about/editions-and-offerings.html#mattermost-team-edition), which is a free and open source edition and does not include its commercial features.
+To upgrade to the [Mattermost Enterprise Edition](https://docs.mattermost.com/about/editions-and-offerings.html#mattermost-enterprise-edition) see the Mattermost [documentation on upgrading](https://docs.mattermost.com/install/enterprise-install-upgrade.html#upgrading-to-enterprise-edition-in-gitlab-omnibus).
 
 ## OAuth 2.0 sequence diagram
 
