@@ -41,6 +41,7 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
       let(:path) { { also: :wrong } }
 
       it 'does not raise an exception' do
+        expect(self).to receive(:render_404)
         expect { assign_ref_vars }.not_to raise_error
       end
     end
@@ -155,6 +156,7 @@ RSpec.describe ExtractsPath, feature_category: :source_code_management do
       let(:ref) { nil }
 
       it 'does not set commit' do
+        expect(self).to receive(:render_404)
         expect(container.repository).not_to receive(:commit).with('')
 
         assign_ref_vars

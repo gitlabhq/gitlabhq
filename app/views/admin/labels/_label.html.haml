@@ -1,5 +1,5 @@
-%li.js-label-list-item.gl-list-none.gl-py-3.gl-border-b.gl-last-of-type-border-b-0{ id: dom_id(label) }
-  .label-content.gl-px-3.gl-py-2.gl-rounded-base
+%li.js-label-list-item{ id: dom_id(label) }
+  .label-content
     = render "shared/label_row", label: label.present(issuable_subject: nil)
-    .label-actions-list.gl-display-inline-block
+    .label-actions-list.gl-inline-block
       .js-vue-label-actions{ data: { label_id: label.id, label_name: label.name, edit_path: edit_admin_label_path(label), destroy_path: admin_label_path(label) } }

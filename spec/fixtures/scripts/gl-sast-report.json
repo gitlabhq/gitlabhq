@@ -1,0 +1,326 @@
+{
+  "errors": [],
+  "interfile_languages_used": [],
+  "paths": {
+    "scanned": [".gitlab-ci.yml", "bug.rb", "scripts/process_custom_semgrep_results.rb"],
+    "skipped": []
+  },
+  "results": [{
+    "check_id": "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_bad-deserialization",
+    "end": {
+      "col": 29,
+      "line": 5,
+      "offset": 141
+    },
+    "extra": {
+      "dataflow_trace": {
+        "intermediate_vars": [{
+          "content": "data",
+          "location": {
+            "end": {
+              "col": 9,
+              "line": 3,
+              "offset": 61
+            },
+            "path": "bug.rb",
+            "start": {
+              "col": 5,
+              "line": 3,
+              "offset": 57
+            }
+          }
+        }],
+        "taint_sink": ["CliLoc", [{
+          "end": {
+            "col": 29,
+            "line": 5,
+            "offset": 141
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 11,
+            "line": 5,
+            "offset": 123
+          }
+        }, "Marshal.load(data)"]],
+        "taint_source": ["CliLoc", [{
+          "end": {
+            "col": 18,
+            "line": 3,
+            "offset": 70
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 12,
+            "line": 3,
+            "offset": 64
+          }
+        }, "params"]]
+      },
+      "engine_kind": "OSS",
+      "fingerprint": "867effc826283eb263dcc82f21966d363db22cf7273e702904271656e99f956fc8e10412571cb349f0ec4239948ea6acf115e207813a43bfbe8becb8b31627d3_0",
+      "is_ignored": false,
+      "lines": "    obj = Marshal.load(data)",
+      "message": "Deserializing user-controlled objects can cause vulnerabilities.",
+      "metadata": {
+        "category": "security",
+        "cwe": ["CWE-502: Deserialization of Untrusted Data"],
+        "owasp": ["A08:2017 - Insecure Deserialization", "A08:2021 - Software and Data Integrity Failures"]
+      },
+      "metavars": {},
+      "severity": "ERROR",
+      "validation_state": "NO_VALIDATOR"
+    },
+    "path": "bug.rb",
+    "start": {
+      "col": 11,
+      "line": 5,
+      "offset": 123
+    }
+  }, {
+    "check_id": "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_bad-deserialization",
+    "end": {
+      "col": 25,
+      "line": 10,
+      "offset": 259
+    },
+    "extra": {
+      "dataflow_trace": {
+        "intermediate_vars": [{
+          "content": "data",
+          "location": {
+            "end": {
+              "col": 9,
+              "line": 3,
+              "offset": 61
+            },
+            "path": "bug.rb",
+            "start": {
+              "col": 5,
+              "line": 3,
+              "offset": 57
+            }
+          }
+        }],
+        "taint_sink": ["CliLoc", [{
+          "end": {
+            "col": 25,
+            "line": 10,
+            "offset": 259
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 11,
+            "line": 10,
+            "offset": 245
+          }
+        }, "CSV.load(data)"]],
+        "taint_source": ["CliLoc", [{
+          "end": {
+            "col": 18,
+            "line": 3,
+            "offset": 70
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 12,
+            "line": 3,
+            "offset": 64
+          }
+        }, "params"]]
+      },
+      "engine_kind": "OSS",
+      "fingerprint": "867effc826283eb263dcc82f21966d363db22cf7273e702904271656e99f956fc8e10412571cb349f0ec4239948ea6acf115e207813a43bfbe8becb8b31627d3_1",
+      "is_ignored": false,
+      "lines": "    obj = CSV.load(data)",
+      "message": "Deserializing user-controlled objects can cause vulnerabilities.",
+      "metadata": {
+        "category": "security",
+        "cwe": ["CWE-502: Deserialization of Untrusted Data"],
+        "owasp": ["A08:2017 - Insecure Deserialization", "A08:2021 - Software and Data Integrity Failures"]
+      },
+      "metavars": {},
+      "severity": "ERROR",
+      "validation_state": "NO_VALIDATOR"
+    },
+    "path": "bug.rb",
+    "start": {
+      "col": 11,
+      "line": 10,
+      "offset": 245
+    }
+  }, {
+    "check_id": "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_bad-deserialization",
+    "end": {
+      "col": 31,
+      "line": 15,
+      "offset": 387
+    },
+    "extra": {
+      "dataflow_trace": {
+        "intermediate_vars": [{
+          "content": "data",
+          "location": {
+            "end": {
+              "col": 9,
+              "line": 13,
+              "offset": 298
+            },
+            "path": "bug.rb",
+            "start": {
+              "col": 5,
+              "line": 13,
+              "offset": 294
+            }
+          }
+        }],
+        "taint_sink": ["CliLoc", [{
+          "end": {
+            "col": 31,
+            "line": 15,
+            "offset": 387
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 11,
+            "line": 15,
+            "offset": 367
+          }
+        }, "Oj.object_load(data)"]],
+        "taint_source": ["CliLoc", [{
+          "end": {
+            "col": 19,
+            "line": 13,
+            "offset": 308
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 12,
+            "line": 13,
+            "offset": 301
+          }
+        }, "cookies"]]
+      },
+      "engine_kind": "OSS",
+      "fingerprint": "867effc826283eb263dcc82f21966d363db22cf7273e702904271656e99f956fc8e10412571cb349f0ec4239948ea6acf115e207813a43bfbe8becb8b31627d3_2",
+      "is_ignored": false,
+      "lines": "    obj = Oj.object_load(data)",
+      "message": "Deserializing user-controlled objects can cause vulnerabilities.",
+      "metadata": {
+        "category": "security",
+        "cwe": ["CWE-502: Deserialization of Untrusted Data"],
+        "owasp": ["A08:2017 - Insecure Deserialization", "A08:2021 - Software and Data Integrity Failures"]
+      },
+      "metavars": {},
+      "severity": "ERROR",
+      "validation_state": "NO_VALIDATOR"
+    },
+    "path": "bug.rb",
+    "start": {
+      "col": 11,
+      "line": 15,
+      "offset": 367
+    }
+  }, {
+    "check_id": "builds.sast-custom-rules.secure-coding-guidelines.ruby.glappsec_bad-deserialization",
+    "end": {
+      "col": 24,
+      "line": 17,
+      "offset": 445
+    },
+    "extra": {
+      "dataflow_trace": {
+        "intermediate_vars": [{
+          "content": "data",
+          "location": {
+            "end": {
+              "col": 9,
+              "line": 13,
+              "offset": 298
+            },
+            "path": "bug.rb",
+            "start": {
+              "col": 5,
+              "line": 13,
+              "offset": 294
+            }
+          }
+        }],
+        "taint_sink": ["CliLoc", [{
+          "end": {
+            "col": 24,
+            "line": 17,
+            "offset": 445
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 11,
+            "line": 17,
+            "offset": 432
+          }
+        }, "Oj.load(data)"]],
+        "taint_source": ["CliLoc", [{
+          "end": {
+            "col": 19,
+            "line": 13,
+            "offset": 308
+          },
+          "path": "bug.rb",
+          "start": {
+            "col": 12,
+            "line": 13,
+            "offset": 301
+          }
+        }, "cookies"]]
+      },
+      "engine_kind": "OSS",
+      "fingerprint": "2b170f6cb9843d917bdf5c00b486e3011c3cf42d36b6962c4d2af56f2c30f5f26b828329284a7cbe303cc80a65dd1deb77e074fce194149d38f62cebcbb21c15_0",
+      "is_ignored": false,
+      "lines": "    obj = Oj.load(data)",
+      "message": "Deserializing user-controlled objects can cause vulnerabilities.",
+      "metadata": {
+        "category": "security",
+        "cwe": ["CWE-502: Deserialization of Untrusted Data"],
+        "owasp": ["A08:2017 - Insecure Deserialization", "A08:2021 - Software and Data Integrity Failures"]
+      },
+      "metavars": {
+        "$X": {
+          "abstract_content": "data",
+          "end": {
+            "col": 23,
+            "line": 17,
+            "offset": 444
+          },
+          "propagated_value": {
+            "svalue_abstract_content": "cookies[[['some_field']",
+            "svalue_end": {
+              "col": 33,
+              "line": 13,
+              "offset": 322
+            },
+            "svalue_start": {
+              "col": 12,
+              "line": 13,
+              "offset": 301
+            }
+          },
+          "start": {
+            "col": 19,
+            "line": 17,
+            "offset": 440
+          }
+        }
+      },
+      "severity": "ERROR",
+      "validation_state": "NO_VALIDATOR"
+    },
+    "path": "bug.rb",
+    "start": {
+      "col": 11,
+      "line": 17,
+      "offset": 432
+    }
+  }],
+  "skipped_rules": [],
+  "version": "1.74.0"
+}

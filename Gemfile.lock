@@ -565,7 +565,7 @@ GEM
     factory_bot_rails (6.4.3)
       factory_bot (~> 6.4)
       railties (>= 5.0.0)
-    faraday (1.10.0)
+    faraday (1.10.3)
       faraday-em_http (~> 1.0)
       faraday-em_synchrony (~> 1.0)
       faraday-excon (~> 1.1)
@@ -1983,7 +1983,7 @@ DEPENDENCIES
   email_spec (~> 2.2.0)
   error_tracking_open_api!
   factory_bot_rails (~> 6.4.3)
-  faraday (~> 1.0)
+  faraday (~> 1.10.3)
   faraday_middleware-aws-sigv4 (~> 0.3.0)
   fast_blank (~> 1.0.1)
   ffaker (~> 2.23)

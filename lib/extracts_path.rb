@@ -37,10 +37,10 @@ module ExtractsPath
     @path = ref_extractor.path
     @repo = ref_extractor.repo
 
-    return unless @ref.present?
-
-    @commit = ref_extractor.commit
-    @fully_qualified_ref = ref_extractor.fully_qualified_ref
+    if @ref.present?
+      @commit = ref_extractor.commit
+      @fully_qualified_ref = ref_extractor.fully_qualified_ref
+    end
 
     rectify_atom!
 

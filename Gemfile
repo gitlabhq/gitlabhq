@@ -58,7 +58,7 @@ gem 'neighbor', '~> 0.3.2', feature_category: :duo_chat
 
 gem 'rugged', '~> 1.6' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'faraday', '~> 1.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'faraday', '~> 1.10.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'marginalia', '~> 1.11.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Authorization

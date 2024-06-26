@@ -81,7 +81,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       # aggregated table, a worker ensures eventual consistency
       'analytics_cycle_analytics_issue_stage_events.group_id',
       # aggregated table, a worker ensures eventual consistency
-      'analytics_cycle_analytics_merge_request_stage_events.group_id'
+      'analytics_cycle_analytics_merge_request_stage_events.group_id',
+      # This is event log table for gitlab_subscriptions and should not be deleted.
+      # See more: https://gitlab.com/gitlab-org/gitlab/-/issues/462598#note_1949768698
+      'gitlab_subscription_histories.namespace_id'
     ]
   end
 

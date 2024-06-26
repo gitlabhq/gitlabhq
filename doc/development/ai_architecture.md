@@ -34,6 +34,7 @@ package Models {
 
 Clients -down-> GLCOM : REST/Websockets
 Clients -down-> SMI : REST/Websockets
+Clients -down-> AIGW : code completion direct connection
 SMI -right-> CD : License + JWT Sync
 GLCOM -down-> AIGW : Prompts + Telemetry + JWT (REST)
 

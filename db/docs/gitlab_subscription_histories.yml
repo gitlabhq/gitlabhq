@@ -8,4 +8,5 @@ description: History log for the gitlab_subscriptions table
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/19694
 milestone: '12.6'
 gitlab_schema: gitlab_main_cell
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/462598
+sharding_key:
+  namespace_id: namespaces

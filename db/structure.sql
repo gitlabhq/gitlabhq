@@ -10574,7 +10574,8 @@ CREATE TABLE gitlab_subscription_histories (
     created_at timestamp with time zone,
     trial_starts_on date,
     auto_renew boolean,
-    trial_extension_type smallint
+    trial_extension_type smallint,
+    CONSTRAINT check_6d5f27a106 CHECK ((namespace_id IS NOT NULL))
 );
 
 CREATE SEQUENCE gitlab_subscription_histories_id_seq

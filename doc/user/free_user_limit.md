@@ -28,7 +28,7 @@ In the Free tier of GitLab.com, user limits do not apply to users in:
   - GitLab for Education
   - GitLab for Startups
 
-[Self-managed subscriptions](/subscriptions/self_managed/index.md) do not have user limits on the Free tier. You can also [talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
+[Self-managed subscriptions](../subscriptions/self_managed/index.md) do not have user limits on the Free tier. You can also [talk to an expert](https://page.gitlab.com/usage_limits_help.html) for more information about your options.
 
 NOTE:
 Personal namespaces are public by default and are excluded from the user limit.

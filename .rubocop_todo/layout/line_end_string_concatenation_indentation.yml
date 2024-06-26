@@ -601,7 +601,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'scripts/lib/glfm/update_specification.rb'
     - 'scripts/lib/glfm/verify_all_generated_files_are_up_to_date.rb'
     - 'scripts/lint-docs-redirects.rb'
-    - 'scripts/process_custom_semgrep_results.rb'
     - 'scripts/qa/testcases-check'
     - 'scripts/trigger-build.rb'
     - 'spec/contracts/provider_specs/helpers/provider/contract_source_helper_spec.rb'

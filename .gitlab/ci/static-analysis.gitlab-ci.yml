@@ -241,7 +241,7 @@ ping-appsec-for-sast-findings:
   script:
     - apk update
     - apk add ruby
-    - ruby scripts/process_custom_semgrep_results.rb
+    - ruby scripts/semgrep_result_processor.rb
 
 ping-appsec-for-dependency-review:
   stage: lint

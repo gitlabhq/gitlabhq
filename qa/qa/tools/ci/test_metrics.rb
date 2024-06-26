@@ -73,8 +73,7 @@ module QA
         #
         # @return [void]
         def push_test_metrics_to_gcs
-          date = Time.now
-          gcs_file_name = "main_test-stats_#{date.strftime('%Y-%m-%d')}-#{date.to_i}.json"
+          gcs_file_name = "main_test-stats-#{env('CI_PIPELINE_ID') || 'local'}.json"
 
           retry_on_exception(sleep_interval: 30, message: 'Failed to push test metrics to GCS') do
             gcs_client.put_object(gcs_bucket, gcs_file_name, metrics_data.to_json,

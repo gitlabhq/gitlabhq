@@ -8,10 +8,11 @@ RSpec.describe Resolvers::GroupLabelsResolver do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be(:current_user) { create(:user) }
-  let_it_be(:group, reload: true) { create(:group, :private) }
-  let_it_be(:subgroup, reload: true) { create(:group, :private, parent: group) }
-  let_it_be(:sub_subgroup, reload: true) { create(:group, :private, parent: subgroup) }
-  let_it_be(:project, reload: true) { create(:project, :private, group: sub_subgroup) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:group, reload: true) { create(:group, :private, organization: organization) }
+  let_it_be(:subgroup, reload: true) { create(:group, :private, parent: group, organization: organization) }
+  let_it_be(:sub_subgroup, reload: true) { create(:group, :private, parent: subgroup, organization: organization) }
+  let_it_be(:project, reload: true) { create(:project, :private, group: sub_subgroup, organization: organization) }
   let_it_be(:label1) { create(:label, project: project, name: 'project feature') }
   let_it_be(:label2) { create(:label, project: project, name: 'new project feature') }
   let_it_be(:group_label1) { create(:group_label, group: group, name: 'group feature') }
@@ -69,8 +70,8 @@ RSpec.describe Resolvers::GroupLabelsResolver do
           ActiveRecord::QueryRecorder.new { resolve_labels(group, params).to_a }
         end
 
-        another_project = create(:project, :private, group: sub_subgroup)
-        another_subgroup = create(:group, :private, parent: group)
+        another_project = create(:project, :private, group: sub_subgroup, organization: organization)
+        another_subgroup = create(:group, :private, parent: group, organization: organization)
         create(:label, project: another_project, name: 'another project feature')
         create(:group_label, group: another_subgroup, name: 'another group feature')
 

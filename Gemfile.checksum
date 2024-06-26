@@ -160,7 +160,7 @@
 {"name":"extended-markdown-filter","version":"0.7.0","platform":"ruby","checksum":"c8eeef7409fbae18c6b407cd3e4eeb5d25c35cb08fe1ac06f375df3db2d4f138"},
 {"name":"factory_bot","version":"6.4.5","platform":"ruby","checksum":"d71dd29bc95f0ec2bf27e3dd9b1b4d557bd534caca744663cb7db4bacf3198be"},
 {"name":"factory_bot_rails","version":"6.4.3","platform":"ruby","checksum":"ea73ceac1c0ff3dc11fff390bf2ea8a2604066525ed8ecd3b3bc2c267226dcc8"},
-{"name":"faraday","version":"1.10.0","platform":"ruby","checksum":"a42158d5c1932c16fd483c512f7e0797b4916096bcf0eb5fb927a1c915a7ea02"},
+{"name":"faraday","version":"1.10.3","platform":"ruby","checksum":"20f52e9f73231e5f3d43fb645901573ce2b75f0bd01ea52a2772133d0106e6b0"},
 {"name":"faraday-em_http","version":"1.0.0","platform":"ruby","checksum":"7a3d4c7079789121054f57e08cd4ef7e40ad1549b63101f38c7093a9d6c59689"},
 {"name":"faraday-em_synchrony","version":"1.0.0","platform":"ruby","checksum":"460dad1c30cc692d6e77d4c391ccadb4eca4854b315632cd7e560f74275cf9ed"},
 {"name":"faraday-excon","version":"1.1.0","platform":"ruby","checksum":"b055c842376734d7f74350fe8611542ae2000c5387348d9ba9708109d6e40940"},

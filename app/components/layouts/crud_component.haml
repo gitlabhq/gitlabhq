@@ -8,7 +8,8 @@
             %span.gl-inline-flex.gl-items-center.gl-gap-2.gl-text-sm.gl-text-secondary{ data: { testid: 'crud-count' } }
               - if @icon
                 = sprite_icon(@icon)
-              = @count
+              %span{ class: @count_class }
+                = @count
         - if description? || @description
           .gl-text-sm.gl-text-secondary.gl-mt-1.gl-mb-0{ data: { testid: 'crud-description' } }
             = description || @description
