@@ -10,7 +10,7 @@ include:
   - local: .gitlab/ci/global.gitlab-ci.yml
 
 .build-cng-env:
-  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.16
+  image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
   stage: prepare
   needs:
     # We need this job because we need its `cached-assets-hash.txt` artifact, so that we can pass the assets image tag to the downstream CNG pipeline.
@@ -24,7 +24,7 @@ include:
   script:
     - 'ruby -r./scripts/trigger-build.rb -e "puts Trigger.variables_for_env_file(Trigger::CNG.new.variables)" > $BUILD_ENV'
     - echo "GITLAB_ASSETS_TAG=$(assets_image_tag)" >> $BUILD_ENV
-    - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> build.env
+    - ruby -e 'puts "FULL_RUBY_VERSION=#{RUBY_VERSION}"' >> $BUILD_ENV
     - cat $BUILD_ENV
   artifacts:
     reports:

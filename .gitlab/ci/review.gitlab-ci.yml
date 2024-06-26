@@ -92,6 +92,8 @@ start-review-app-pipeline:
       - REVIEW_APPS_GCP_PROJECT
       - REVIEW_APPS_GCP_REGION
       - REVIEW_APPS_IMAGE
+      - RUBY_VERSION_DEFAULT
+      - RUBY_VERSION_NEXT
       - RUBY_VERSION
       - BUILD_OS
       - OS_VERSION
