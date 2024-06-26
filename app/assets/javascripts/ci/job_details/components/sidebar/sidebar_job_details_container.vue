@@ -159,7 +159,7 @@ export default {
 
     <p v-if="hasTags" class="build-detail-row" data-testid="job-tags">
       <span class="font-weight-bold">{{ $options.i18n.TAGS }}:</span>
-      <gl-badge v-for="(tag, i) in job.tags" :key="i" variant="info" size="sm">{{ tag }}</gl-badge>
+      <gl-badge v-for="(tag, i) in job.tags" :key="i" variant="info">{{ tag }}</gl-badge>
     </p>
   </div>
 </template>

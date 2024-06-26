@@ -299,7 +299,7 @@ export default {
             >
               {{ member.accessLevel.stringValue }}
             </gl-button>
-            <gl-badge v-if="member.accessLevel.memberRoleId" class="gl-mt-3" size="sm">
+            <gl-badge v-if="member.accessLevel.memberRoleId" class="gl-mt-3">
               {{ s__('MemberRole|Custom role') }}
             </gl-badge>
           </div>

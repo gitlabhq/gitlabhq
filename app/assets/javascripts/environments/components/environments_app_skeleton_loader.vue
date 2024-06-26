@@ -36,7 +36,7 @@ export default {
       <gl-tab :disabled="true">
         <template #title>
           <span>{{ $props.i18n.active }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge">
+          <gl-badge class="gl-tab-counter-badge">
             <gl-loading-icon label="" size="sm" color="dark" variant="dots" :inline="true" />
           </gl-badge>
         </template>
@@ -44,7 +44,7 @@ export default {
       <gl-tab :disabled="true">
         <template #title>
           <span>{{ $props.i18n.stopped }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge">
+          <gl-badge class="gl-tab-counter-badge">
             <gl-loading-icon label="" size="sm" color="dark" variant="dots" :inline="true" />
           </gl-badge>
         </template>

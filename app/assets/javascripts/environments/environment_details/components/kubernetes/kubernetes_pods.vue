@@ -140,7 +140,7 @@ export default {
   <gl-tab>
     <template #title>
       {{ $options.i18n.podsTitle }}
-      <gl-badge size="sm" class="gl-tab-counter-badge">{{ podsCount }}</gl-badge>
+      <gl-badge class="gl-tab-counter-badge">{{ podsCount }}</gl-badge>
     </template>
 
     <gl-loading-icon v-if="loading" />

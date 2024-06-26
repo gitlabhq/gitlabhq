@@ -1,3 +1,4 @@
+$super-sidebar-transition-delay: 0.4s;
 $super-sidebar-transition-duration: $gl-transition-duration-medium;
 $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 $command-palette-spacing: px-to-rem(14px);
@@ -663,13 +664,13 @@ $command-palette-spacing: px-to-rem(14px);
     transition: opacity $gl-transition-duration-fast linear;
 
     &:hover {
-      transition-delay: $gl-transition-duration-slow;
+      transition-delay: $super-sidebar-transition-delay;
     }
   }
 
   &:hover {
     .transition-opacity-on-hover--target {
-      transition-delay: $gl-transition-duration-slow;
+      transition-delay: $super-sidebar-transition-delay;
     }
   }
 }

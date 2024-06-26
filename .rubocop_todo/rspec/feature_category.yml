@@ -3774,7 +3774,6 @@ RSpec/FeatureCategory:
     - 'spec/models/push_event_spec.rb'
     - 'spec/models/raw_usage_data_spec.rb'
     - 'spec/models/redirect_route_spec.rb'
-    - 'spec/models/ref_matcher_spec.rb'
     - 'spec/models/releases/evidence_spec.rb'
     - 'spec/models/releases/link_spec.rb'
     - 'spec/models/releases/source_spec.rb'

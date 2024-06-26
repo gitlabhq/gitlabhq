@@ -23,6 +23,12 @@ query getState($projectPath: ID!, $iid: String!) {
         status
         warnings
       }
+      pipelines(first: 1) {
+        nodes {
+          id
+          mergeRequestEventType
+        }
+      }
       shouldBeRebased
       sourceBranchExists
       state

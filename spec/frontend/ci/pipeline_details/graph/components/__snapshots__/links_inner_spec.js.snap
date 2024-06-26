@@ -13,27 +13,27 @@ exports[`Links Inner component with a large number of needs matches snapshot and
     width="1019px"
   >
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M202,118C52,118,52,138,102,138"
       stroke-width="2"
     />
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M202,118C62,118,62,148,112,148"
       stroke-width="2"
     />
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M222,138C72,138,72,158,122,158"
       stroke-width="2"
     />
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M212,128C82,128,82,168,132,168"
       stroke-width="2"
     />
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M232,148C92,148,92,178,142,178"
       stroke-width="2"
     />
@@ -54,7 +54,7 @@ exports[`Links Inner component with a parallel need matches snapshot and has exp
     width="1019px"
   >
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M192,108C32,108,32,118,82,118"
       stroke-width="2"
     />
@@ -75,7 +75,7 @@ exports[`Links Inner component with one need matches snapshot and has expected p
     width="1019px"
   >
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M202,118C52,118,52,138,102,138"
       stroke-width="2"
     />
@@ -96,12 +96,12 @@ exports[`Links Inner component with same stage needs matches snapshot and has ex
     width="1019px"
   >
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M192,108C32,108,32,118,82,118"
       stroke-width="2"
     />
     <path
-      class="gl-fill-transparent gl-stroke-gray-200 gl-transition-duration-slow gl-transition-timing-function-ease"
+      class="gl-duration-slow gl-fill-transparent gl-stroke-gray-200 gl-transition-timing-function-ease"
       d="M202,118C42,118,42,128,92,128"
       stroke-width="2"
     />

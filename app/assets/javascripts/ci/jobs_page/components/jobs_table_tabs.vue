@@ -76,7 +76,7 @@ export default {
           <span>{{ tab.text }}</span>
           <gl-loading-icon v-if="showLoadingIcon && tab.showBadge" class="gl-ml-2" />
 
-          <gl-badge v-else-if="tab.showBadge" size="sm" class="gl-tab-counter-badge">
+          <gl-badge v-else-if="tab.showBadge" class="gl-tab-counter-badge">
             {{ tab.count }}
           </gl-badge>
         </template>

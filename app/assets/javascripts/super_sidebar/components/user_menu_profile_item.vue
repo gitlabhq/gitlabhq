@@ -53,7 +53,7 @@ export default {
           <span class="gl-font-bold">
             {{ user.name }}
           </span>
-          <gl-badge v-if="user.status.busy" size="sm" variant="warning">
+          <gl-badge v-if="user.status.busy" variant="warning">
             {{ $options.i18n.user.busy }}
           </gl-badge>
         </span>

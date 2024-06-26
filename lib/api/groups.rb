@@ -333,6 +333,31 @@ module API
         delete_group(group)
       end
 
+      desc 'Get a list of shared groups this group was invited to' do
+        success Entities::Group
+        is_array true
+        tags %w[groups]
+      end
+      params do
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
+          desc: 'Limit by visibility'
+        optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+
+        use :pagination
+        use :with_custom_attributes
+      end
+      get ":id/groups/shared", feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_shared_groups_api)
+        end
+
+        group = find_group!(params[:id])
+        groups = ::Namespaces::Groups::SharedGroupsFinder.new(group, current_user, declared(params)).execute
+        groups = order_groups(groups).with_api_scopes
+        present_groups params, groups
+      end
+
       desc 'Get a list of projects in this group.' do
         success Entities::Project
         is_array true

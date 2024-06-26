@@ -51,6 +51,7 @@ class SetPipelineName
     pipeline_suffixes         = {}
     pipeline_suffixes[:tier]  = pipeline_tier || 'N/A'
     pipeline_suffixes[:types] = pipeline_types.join(',')
+    pipeline_suffixes[:opts]  = pipeline_opts.join(',')
 
     pipeline_suffix = pipeline_suffixes.map { |key, value| "#{key}:#{value}" }.join(', ')
     pipeline_name += " [#{pipeline_suffix}]"
@@ -116,6 +117,15 @@ class SetPipelineName
     end
 
     types.sort_by { |type| PIPELINE_TYPES_ORDERED.index(type) }
+  end
+
+  def pipeline_opts
+    return [] unless ENV['CI_MERGE_REQUEST_LABELS']
+
+    opts_label = merge_request_labels.select { |label| label.start_with?(/pipeline:\w/) }
+    return if opts_label.nil?
+
+    opts_label.map { |opt_label| opt_label.delete_prefix('pipeline:') }
   end
 
   def pipeline_types_for(job)

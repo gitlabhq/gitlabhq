@@ -155,7 +155,6 @@ export default {
           <imported-badge
             v-if="isImported"
             :importable-type="$options.TYPE_DESIGN"
-            size="sm"
             class="gl-ml-2"
           />
         </h2>

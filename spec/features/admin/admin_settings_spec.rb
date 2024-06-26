@@ -599,7 +599,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'change Repository storage settings' do
         visit repository_admin_application_settings_path
 
-        page.within('.as-repository-storage') do
+        within_testid('repository-storage-settings') do
           fill_in 'application_setting_repository_storages_weighted_default', with: 50
           click_button 'Save changes'
         end
@@ -612,7 +612,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         visit repository_admin_application_settings_path
 
-        page.within('.as-repository-storage') do
+        within_testid('repository-storage-settings') do
           fill_in 'application_setting_repository_storages_weighted_default', with: 50
           click_button 'Save changes'
         end
@@ -627,7 +627,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
           visit repository_admin_application_settings_path
 
-          page.within('.as-repository-static-objects') do
+          within_testid('repository-static-objects-settings') do
             fill_in 'application_setting_static_objects_external_storage_url', with: 'http://example.com'
             fill_in 'application_setting_static_objects_external_storage_auth_token', with: 'Token'
             click_button 'Save changes'
@@ -670,7 +670,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Prometheus settings' do
-        page.within('.as-prometheus') do
+        within_testid('prometheus-settings') do
           check 'Enable GitLab Prometheus metrics endpoint'
           click_button 'Save changes'
         end
@@ -682,7 +682,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'change Performance bar settings' do
         group = create(:group)
 
-        page.within('.as-performance-bar') do
+        within_testid('performance-bar-settings-content') do
           check 'Allow non-administrators access to the performance bar'
           fill_in 'Allow access to members of the following group', with: group.path
           click_on 'Save changes'
@@ -692,7 +692,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(find_field('Allow non-administrators access to the performance bar')).to be_checked
         expect(find_field('Allow access to members of the following group').value).to eq group.path
 
-        page.within('.as-performance-bar') do
+        within_testid('performance-bar-settings-content') do
           uncheck 'Allow non-administrators access to the performance bar'
           click_on 'Save changes'
         end
@@ -907,6 +907,16 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           end
 
           let_it_be(:application_setting_key) { :group_projects_api_limit }
+
+          it_behaves_like 'API rate limit setting'
+        end
+
+        context 'for GET /groups/:id/groups/shared API requests' do
+          let(:rate_limit_field) do
+            format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /groups/:id/groups/shared', timeframe: 'minute')
+          end
+
+          let(:application_setting_key) { :group_shared_groups_api_limit }
 
           it_behaves_like 'API rate limit setting'
         end

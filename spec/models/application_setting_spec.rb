@@ -38,6 +38,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.silent_admin_exports_enabled).to eq(false) }
     it { expect(setting.group_api_limit).to eq(400) }
     it { expect(setting.group_projects_api_limit).to eq(600) }
+    it { expect(setting.group_shared_groups_api_limit).to eq(60) }
     it { expect(setting.groups_api_limit).to eq(200) }
     it { expect(setting.project_api_limit).to eq(400) }
     it { expect(setting.projects_api_limit).to eq(2000) }
@@ -260,6 +261,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           downstream_pipeline_trigger_limit_per_project_user_sha
           group_api_limit
           group_projects_api_limit
+          group_shared_groups_api_limit
           groups_api_limit
           project_api_limit
           projects_api_limit

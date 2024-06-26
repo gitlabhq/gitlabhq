@@ -100,10 +100,10 @@ export default {
         data-testid="job-artifact-row-name"
       >
         <gl-friendly-wrap :text="artifact.name" />
-        <gl-badge size="sm" variant="neutral" class="gl-ml-2">
+        <gl-badge variant="neutral" class="gl-ml-2">
           {{ artifact.fileType.toLowerCase() }}
         </gl-badge>
-        <gl-badge v-if="isExpired" size="sm" variant="warning" icon="expire" class="gl-ml-2">
+        <gl-badge v-if="isExpired" variant="warning" icon="expire" class="gl-ml-2">
           {{ $options.i18n.expired }}
         </gl-badge>
       </span>

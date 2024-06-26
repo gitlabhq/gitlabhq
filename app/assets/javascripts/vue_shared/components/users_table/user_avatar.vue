@@ -73,9 +73,7 @@ export default {
           class="gl-p-1"
           :class="{ 'gl-pb-0': glFeatures.simplifiedBadges }"
         >
-          <gl-badge class="gl-display-flex!" size="sm" :variant="badge.variant">{{
-            badge.text
-          }}</gl-badge>
+          <gl-badge class="gl-display-flex!" :variant="badge.variant">{{ badge.text }}</gl-badge>
         </div>
       </template>
     </gl-avatar-labeled>

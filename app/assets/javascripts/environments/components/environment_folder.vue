@@ -118,7 +118,7 @@ export default {
       <div class="gl-mr-2 gl-text-gray-500" :class="folderClass">
         {{ nestedEnvironment.name }}
       </div>
-      <gl-badge size="sm" class="gl-mr-auto">{{ totalEnvironmentsCount }}</gl-badge>
+      <gl-badge class="gl-mr-auto">{{ totalEnvironmentsCount }}</gl-badge>
     </div>
     <gl-collapse :visible="visible">
       <environment-item

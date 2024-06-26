@@ -86,12 +86,9 @@ export default {
       @row-selected="selectItem"
     >
       <template #cell(status)="{ item: { status } }">
-        <gl-badge
-          :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[status]"
-          size="sm"
-          class="gl-ml-2"
-          >{{ status }}</gl-badge
-        >
+        <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[status]" class="gl-ml-2">{{
+          status
+        }}</gl-badge>
       </template>
 
       <template #cell(logs)="{ item: { name, namespace, containers } }">

@@ -31,7 +31,7 @@ export default {
     <gl-tab>
       <template #title>
         <span>{{ s__('UserMapping|Awaiting reassignment') }}</span>
-        <gl-badge size="sm" class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
+        <gl-badge class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
       </template>
 
       <placeholders-table key="unassigned" />
@@ -40,7 +40,7 @@ export default {
     <gl-tab>
       <template #title>
         <span>{{ s__('UserMapping|Reassigned') }}</span>
-        <gl-badge size="sm" class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
+        <gl-badge class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
       </template>
 
       <placeholders-table key="assigned" reassigned />

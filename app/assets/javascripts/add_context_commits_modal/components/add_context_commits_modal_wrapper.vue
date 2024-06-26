@@ -337,7 +337,7 @@ export default {
       <gl-tab>
         <template #title>
           {{ __('Selected commits') }}
-          <gl-badge size="sm" class="gl-ml-2">{{ selectedCommitsCount }}</gl-badge>
+          <gl-badge class="gl-ml-2">{{ selectedCommitsCount }}</gl-badge>
         </template>
         <review-tab-container
           :is-loading="isLoadingContextCommits"

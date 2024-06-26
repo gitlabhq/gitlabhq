@@ -1759,7 +1759,13 @@ class MergeRequest < ApplicationRecord
   def update_head_pipeline
     find_diff_head_pipeline.try do |pipeline|
       self.head_pipeline = pipeline
-      update_column(:head_pipeline_id, head_pipeline.id) if head_pipeline_id_changed?
+
+      next unless head_pipeline_id_changed?
+
+      update_columns(
+        head_pipeline_id: head_pipeline.id,
+        retargeted: false
+      )
     end
   end
 

@@ -2861,7 +2861,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/concerns/ee/project_features_compatibility.rb'
     - 'ee/app/models/concerns/ee/project_security_scanners_information.rb'
     - 'ee/app/models/concerns/ee/protected_branch.rb'
-    - 'ee/app/models/concerns/ee/protected_branch_access.rb'
     - 'ee/app/models/concerns/ee/protected_ref.rb'
     - 'ee/app/models/concerns/ee/protected_ref_access.rb'
     - 'ee/app/models/concerns/ee/vulnerability_flag_helpers.rb'

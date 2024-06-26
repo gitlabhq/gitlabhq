@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+return if helper.revert_mr?
+
 NO_SPECS_LABELS = [
   'maintenance::pipelines',
   'maintenance::refactor',

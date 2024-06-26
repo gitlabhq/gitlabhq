@@ -70,7 +70,7 @@ export default {
         <div class="gl-border-l gl-border-t gl-border-r gl-rounded-base gl-mb-5">
           <div class="gl-m-5">
             <slot name="table-header">
-              <gl-badge size="md" class="gl-mr-2 gl-align-middle" icon="license" variant="tier">{{
+              <gl-badge class="gl-mr-2 gl-align-middle" icon="license" variant="tier">{{
                 $options.i18n.premiumTitle
               }}</gl-badge>
               <strong class="gl-align-middle">{{ $options.i18n.tableHeader }}</strong>

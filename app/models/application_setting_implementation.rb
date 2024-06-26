@@ -280,6 +280,7 @@ module ApplicationSettingImplementation
         use_clickhouse_for_analytics: false,
         group_api_limit: 400,
         group_projects_api_limit: 600,
+        group_shared_groups_api_limit: 60,
         groups_api_limit: 200,
         project_api_limit: 400,
         projects_api_limit: 2000,

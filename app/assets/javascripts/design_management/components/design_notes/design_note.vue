@@ -306,7 +306,7 @@ export default {
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
           </gl-link>
-          <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" size="sm" />
+          <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" />
         </span>
       </div>
       <div class="gl-display-flex gl-align-items-flex-start -gl-mt-2 -gl-mr-2">

@@ -12609,6 +12609,7 @@ CREATE TABLE merge_requests (
     override_requested_changes boolean DEFAULT false NOT NULL,
     head_pipeline_id_convert_to_bigint bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
+    retargeted boolean DEFAULT false NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
 );
 

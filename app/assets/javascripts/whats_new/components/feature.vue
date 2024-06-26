@@ -69,7 +69,6 @@ export default {
       <gl-badge
         v-for="packageName in feature.available_in"
         :key="packageName"
-        size="md"
         variant="tier"
         icon="license"
         class="gl-mr-2"

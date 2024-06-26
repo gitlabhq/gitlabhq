@@ -125,7 +125,7 @@
   "gl-hover-cursor-crosshair": "hover:gl-cursor-crosshair",
   "gl-cursor-help!": "!gl-cursor-help",
   "gl-deprecated-top-66vh": null,
-  "gl-number-as-text-input": null,
+  "gl-number-as-text-input": "gl-no-spin",
   "gl-display-none": "gl-hidden",
   "gl-display-none!": "!gl-hidden",
   "gl-sm-display-none": "sm:gl-hidden",

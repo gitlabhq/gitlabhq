@@ -142,7 +142,6 @@ describe('MembersTable', () => {
           member.accessLevel.memberRoleId = 1;
           createMaxRoleComponent(member);
 
-          expect(findCustomRoleBadge().props('size')).toBe('sm');
           expect(findCustomRoleBadge().text()).toBe('Custom role');
         });
 

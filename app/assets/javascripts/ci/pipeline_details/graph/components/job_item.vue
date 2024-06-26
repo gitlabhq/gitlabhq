@@ -366,7 +366,6 @@ export default {
         v-if="isBridge"
         class="gl-mt-3 gl-ml-7"
         variant="info"
-        size="sm"
         data-testid="job-bridge-badge"
       >
         {{ $options.i18n.bridgeBadgeText }}

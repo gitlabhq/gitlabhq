@@ -203,7 +203,7 @@ export default {
             />
             <span v-else class="gl-mr-1" data-testid="role-text">{{ selectedRole.text }}</span>
 
-            <gl-badge v-if="selectedRole.memberRoleId" size="sm">
+            <gl-badge v-if="selectedRole.memberRoleId">
               {{ s__('MemberRole|Custom role') }}
             </gl-badge>
           </dd>

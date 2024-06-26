@@ -45111,6 +45111,9 @@ msgstr ""
 msgid "Run manual or delayed jobs"
 msgstr ""
 
+msgid "Run pipeline"
+msgstr ""
+
 msgid "Run tests against your code live using the Web Terminal"
 msgstr ""
 
@@ -53229,6 +53232,9 @@ msgstr ""
 msgid "The invitation has already been accepted."
 msgstr ""
 
+msgid "The invitation is not valid"
+msgstr ""
+
 msgid "The invitation was successfully resent."
 msgstr ""
 
@@ -53239,9 +53245,6 @@ msgid "The last owner cannot be set to awaiting"
 msgstr ""
 
 msgid "The latest artifacts created by jobs in the most recent successful pipeline will be stored."
-msgstr ""
-
-msgid "The latest pipeline for this merge request did not succeed. The latest changes are unverified."
 msgstr ""
 
 msgid "The latest pipeline for this merge request has failed."
@@ -53290,6 +53293,9 @@ msgid "The maximum file size is %{size}."
 msgstr ""
 
 msgid "The maximum number of tags that a single worker accepts for cleanup. If the number of tags goes above this limit, the list of tags to delete is truncated to this number. To remove this limit, set it to 0."
+msgstr ""
+
+msgid "The merge checks are incomplete because the latest pipeline failed, the pipeline status cannot be verified, or the merge request target branch was changed. You should run a new pipeline before merging."
 msgstr ""
 
 msgid "The merge conflicts for this merge request cannot be resolved through GitLab. Please try to resolve them locally."
@@ -57530,13 +57536,34 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
+msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}. Review details to approve or reject the reassignment. Learn more about reassignments"
+msgstr ""
+
+msgid "UserMapping|Approve Contributions Reassignment"
+msgstr ""
+
+msgid "UserMapping|Approve reassignment"
+msgstr ""
+
+msgid "UserMapping|Approve reassignment of contributions from %{source_username} on %{source_hostname} to you on %{destination_group}"
+msgstr ""
+
 msgid "UserMapping|Awaiting reassignment"
+msgstr ""
+
+msgid "UserMapping|Contribution details:"
 msgstr ""
 
 msgid "UserMapping|Don't reassign"
 msgstr ""
 
+msgid "UserMapping|Imported to: %{destination_group}"
+msgstr ""
+
 msgid "UserMapping|Kept as placeholder"
+msgstr ""
+
+msgid "UserMapping|Original user: %{source_name} (%{source_username})"
 msgstr ""
 
 msgid "UserMapping|Pending approval"
@@ -57563,10 +57590,19 @@ msgstr ""
 msgid "UserMapping|Reassigned"
 msgstr ""
 
+msgid "UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})"
+msgstr ""
+
 msgid "UserMapping|Reassigned to"
 msgstr ""
 
+msgid "UserMapping|Reassigned to user: %{reassign_to_username}"
+msgstr ""
+
 msgid "UserMapping|Reassigning"
+msgstr ""
+
+msgid "UserMapping|Reassignment details:"
 msgstr ""
 
 msgid "UserMapping|Reassignment failed."
@@ -57590,10 +57626,16 @@ msgstr ""
 msgid "UserMapping|Reassignment was rejected by user."
 msgstr ""
 
+msgid "UserMapping|Reject"
+msgstr ""
+
 msgid "UserMapping|Rejected"
 msgstr ""
 
 msgid "UserMapping|Select user"
+msgstr ""
+
+msgid "UserMapping|Source: %{source_hostname}"
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"
@@ -61282,6 +61324,9 @@ msgid "You need to verify your primary email first before enabling Two-Factor Au
 msgstr ""
 
 msgid "You see projects here when you're added to a group or project."
+msgstr ""
+
+msgid "You should run a new pipeline, because the target branch has changed for this merge request."
 msgstr ""
 
 msgid "You successfully declined the invitation"

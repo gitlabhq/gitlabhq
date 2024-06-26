@@ -12,6 +12,7 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(Tooling::Danger::Specs) }
   let(:fake_project_helper) { instance_double('Tooling::Danger::ProjectHelper') }
   let(:filename) { 'spec/foo_spec.rb' }
+  let(:feature_category) { ', feature_category: <see config/feature_categories.yml>' }
 
   let(:template) do
     <<~SUGGESTION_MARKDOWN.chomp
@@ -35,22 +36,22 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
       " end",
       " describe 'GET \"time_summary\"' do",
       " end",
-      " RSpec.describe Projects::SummaryController do",
+      " RSpec.describe Projects::SummaryController, foo: :bar do",
       "  let_it_be(:user) { create(:user) }",
       " end",
       " describe 'GET \"time_summary\"' do",
       " end",
       " \n",
-      "RSpec.describe Projects :aggregate_failures,",
+      "RSpec.describe Projects, :aggregate_failures,",
       "  feature_category :team_planning do",
       " \n",
-      "RSpec.describe Epics :aggregate_failures,",
+      "RSpec.describe Epics, :aggregate_failures,",
       "  ee: true do",
       "\n",
-      "RSpec.describe Issues :aggregate_failures,",
+      "RSpec.describe Issues, :aggregate_failures,",
       "  feature_category: :team_planning do",
       "\n",
-      "RSpec.describe MergeRequest :aggregate_failures,",
+      "RSpec.describe MergeRequest, :aggregate_failures,",
       "  :js,",
       "  feature_category: :team_planning do"
     ]
@@ -63,12 +64,12 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
       "+ let_it_be(:user) { create(:user) }",
       "- end",
       "+ describe 'GET \"time_summary\"' do",
-      "+ RSpec.describe Projects::SummaryController do",
-      "+RSpec.describe Projects :aggregate_failures,",
+      "+ RSpec.describe Projects::SummaryController, foo: :bar do",
+      "+RSpec.describe Projects, :aggregate_failures,",
       "+  feature_category: :team_planning do",
-      "+RSpec.describe Epics :aggregate_failures,",
+      "+RSpec.describe Epics, :aggregate_failures,",
       "+  ee: true do",
-      "+RSpec.describe Issues :aggregate_failures,",
+      "+RSpec.describe Issues, :aggregate_failures,",
       "+RSpec.describe MergeRequest :aggregate_failures,",
       "+  :js,",
       "+  feature_category: :team_planning do",
@@ -86,9 +87,9 @@ RSpec.describe Tooling::Danger::Specs::FeatureCategorySuggestion, feature_catego
 
   it 'adds suggestions at the correct lines', :aggregate_failures do
     [
-      { suggested_line: "RSpec.describe Projects::SummaryController do", number: 5 },
-      { suggested_line: " RSpec.describe Projects::SummaryController do", number: 10 },
-      { suggested_line: "RSpec.describe Epics :aggregate_failures,", number: 19 }
+      { suggested_line: "RSpec.describe Projects::SummaryController#{feature_category} do", number: 5 },
+      { suggested_line: " RSpec.describe Projects::SummaryController, foo: :bar#{feature_category} do", number: 10 },
+      { suggested_line: "RSpec.describe Epics, :aggregate_failures#{feature_category},", number: 19 }
 
     ].each do |test_case|
       comment = format(template, suggested_line: test_case[:suggested_line])

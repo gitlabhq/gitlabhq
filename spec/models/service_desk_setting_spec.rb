@@ -152,6 +152,43 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
     end
   end
 
+  describe '#tickets_confidential_by_default?' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:visibility_level, :setting_value, :expected_value) do
+      Gitlab::VisibilityLevel::PUBLIC  | true  | true
+      Gitlab::VisibilityLevel::PUBLIC  | false | true
+      Gitlab::VisibilityLevel::PRIVATE | true  | true
+      Gitlab::VisibilityLevel::PRIVATE | false | false
+    end
+
+    with_them do
+      let(:project) { build(:project, visibility_level: visibility_level) }
+
+      subject(:setting) do
+        build(:service_desk_setting, project: project, tickets_confidential_by_default: setting_value)
+          .tickets_confidential_by_default?
+      end
+
+      it { is_expected.to be expected_value }
+    end
+
+    context 'when feature flag service_desk_tickets_confidentiality is disabled' do
+      let(:project) { build(:project, :private) }
+
+      subject(:setting) do
+        build(:service_desk_setting, project: project, tickets_confidential_by_default: false)
+         .tickets_confidential_by_default?
+      end
+
+      before do
+        stub_feature_flags(service_desk_tickets_confidentiality: false)
+      end
+
+      it { is_expected.to be true }
+    end
+  end
+
   describe 'associations' do
     let(:project) { build(:project) }
     let(:verification) { build(:service_desk_custom_email_verification) }

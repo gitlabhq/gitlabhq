@@ -31,7 +31,7 @@ describe('RunnerTypeBadge', () => {
     ({ jobStatus, classes, text }) => {
       createComponent({ props: { jobStatus } });
 
-      expect(findBadge().props()).toMatchObject({ size: 'md', variant: 'muted' });
+      expect(findBadge().props()).toMatchObject({ variant: 'muted' });
       expect(findBadge().classes().sort()).toEqual(
         [
           ...classes,

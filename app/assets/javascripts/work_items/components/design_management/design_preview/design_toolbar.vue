@@ -77,7 +77,6 @@ export default {
           <imported-badge
             v-if="design.imported"
             :importable-type="$options.TYPE_DESIGN"
-            size="sm"
             class="gl-ml-2"
           />
         </h2>

@@ -122,7 +122,7 @@ This feature uses the [`fuzzaldrin-plus`](https://github.com/jeancroy/fuzz-aldri
 To change the default handling of a file or file type, create a
 [`.gitattributes` file](../../git_attributes.md). Use `.gitattributes` files to:
 
-- Configure file display in diffs, such as [syntax highlighting](../../highlighting.md)
+- Configure file display in diffs, such as [syntax highlighting](highlighting.md)
   or [collapsing generated files](../../merge_requests/changes.md#collapse-generated-files).
 - Control file storage and protection, such as [making files read-only](../../file_lock.md),
   or storing large files [with Git LFS](../../../../topics/git/lfs/index.md).

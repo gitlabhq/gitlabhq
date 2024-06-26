@@ -69,7 +69,7 @@ export default {
     >
       <template #title>
         <span class="gl-mr-2"> {{ tab.name }} </span>
-        <gl-badge v-if="shouldRenderBadge(tab.count)" size="sm" class="gl-tab-counter-badge">{{
+        <gl-badge v-if="shouldRenderBadge(tab.count)" class="gl-tab-counter-badge">{{
           tab.count
         }}</gl-badge>
       </template>

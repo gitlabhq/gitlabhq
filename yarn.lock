@@ -1331,19 +1331,20 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.103.0.tgz#af61387481100eadef2bea8fe8605250311ac582"
   integrity sha512-jVWCrRVRF6nw2A+Aowc0quXV2bdRPl2v08ElCPSestfdKjQ92tSlCrIsLB8GvdW5aI0eFsD1vJ1w2qkzZdpA4A==
 
-"@gitlab/ui@82.1.0":
-  version "82.1.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-82.1.0.tgz#6cc3687d09a9208f90f42633ab10ecbca59ea28a"
-  integrity sha512-q81lXaXzGJu0UcNZt+k98Y/ms5FNaYRQ+1pgOUMunte7AOryoEJhplmeL+XUpyeRUDMno6WAzUxzAOkchYh2mA==
+"@gitlab/ui@85.3.0":
+  version "85.3.0"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-85.3.0.tgz#29abdfa121ca6720ca5558951319af20b55d0282"
+  integrity sha512-G8l8ZrdgOp6O6Azhypb/+HL5ZXU0/tIXjsHX7t6VkSBT7pSLBH06CnaH3Hrs8xEeCBSXfZDiMS4gq1FdEXGT2A==
   dependencies:
     "@floating-ui/dom" "1.4.3"
-    bootstrap-vue "2.23.1"
     echarts "^5.3.2"
     iframe-resizer "^4.3.2"
     lodash "^4.17.20"
     marked "^12.0.0"
     marked-bidi "^1.0.8"
-    portal-vue "^2.1.6"
+    popper.js "^1.16.1"
+    portal-vue "^2.1.7"
+    vue-functional-data-merge "^3.1.0"
     vue-runtime-helpers "^1.1.2"
 
 "@gitlab/web-ide@^0.0.1-dev-20240613133550":
@@ -1868,15 +1869,6 @@
   integrity sha512-Uv6h1sT+0DrblvIrolFtbvM1FgWm+/sy4B3pvLp67Zys+thcukzS5ekn7HsZFGpWP4Q3fYJCljbWQE/XivMRLw==
   dependencies:
     mkdirp "^1.0.4"
-
-"@nuxt/opencollective@^0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@nuxt/opencollective/-/opencollective-0.3.2.tgz#83cb70cdb2bac5fad6f8c93529e7b11187d49c02"
-  integrity sha512-XG7rUdXG9fcafu9KTDIYjJSkRO38EwjlKYIb5TQ/0WDbiTUTtUtgncMscKOYzfsY86kGs05pAuMOR+3Fi0aN3A==
-  dependencies:
-    chalk "^4.1.0"
-    consola "^2.15.0"
-    node-fetch "^2.6.1"
 
 "@originjs/vite-plugin-commonjs@^1.0.3":
   version "1.0.3"
@@ -4269,18 +4261,7 @@ boolbase@^1.0.0:
   resolved "https://registry.yarnpkg.com/boolbase/-/boolbase-1.0.0.tgz#68dff5fbe60c51eb37725ea9e3ed310dcc1e776e"
   integrity sha1-aN/1++YMUes3cl6p4+0xDcwed24=
 
-bootstrap-vue@2.23.1:
-  version "2.23.1"
-  resolved "https://registry.yarnpkg.com/bootstrap-vue/-/bootstrap-vue-2.23.1.tgz#8f866f7cda27eb0e7e13a0bea8d55d8fc7a82199"
-  integrity sha512-SEWkG4LzmMuWjQdSYmAQk1G/oOKm37dtNfjB5kxq0YafnL2W6qUAmeDTcIZVbPiQd2OQlIkWOMPBRGySk/zGsg==
-  dependencies:
-    "@nuxt/opencollective" "^0.3.2"
-    bootstrap "^4.6.1"
-    popper.js "^1.16.1"
-    portal-vue "^2.1.7"
-    vue-functional-data-merge "^3.1.0"
-
-bootstrap@4.6.2, bootstrap@^4.6.1:
+bootstrap@4.6.2:
   version "4.6.2"
   resolved "https://registry.yarnpkg.com/bootstrap/-/bootstrap-4.6.2.tgz#8e0cd61611728a5bf65a3a2b8d6ff6c77d5d7479"
   integrity sha512-51Bbp/Uxr9aTuy6ca/8FbFloBUJZLHwnhTcnjIeRn2suQWsWzcuJhGjKDB5eppVte/8oCdOL3VuwxvZDUggwGQ==
@@ -4906,11 +4887,6 @@ connect-history-api-fallback@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/connect-history-api-fallback/-/connect-history-api-fallback-2.0.0.tgz#647264845251a0daf25b97ce87834cace0f5f1c8"
   integrity sha512-U73+6lQFmfiNPrYbXqr6kZ1i1wiRqXnp2nhMsINseWXO8lDau0LGEffJ8kQi4EjLZympVgRdvqjAgiZ1tgzDDA==
-
-consola@^2.15.0:
-  version "2.15.3"
-  resolved "https://registry.yarnpkg.com/consola/-/consola-2.15.3.tgz#2e11f98d6a4be71ff72e0bdf07bd23e12cb61550"
-  integrity sha512-9vAdYbHj6x2fLKC4+oPH0kFzY/orMZyG2Aj+kNylHxKGJ/Ed4dpNyAQYwJOdqO4zdM7XpVHmyejQDcQHrnuXbw==
 
 console-browserify@^1.1.0:
   version "1.1.0"
@@ -11257,7 +11233,7 @@ popper.js@^1.16.1:
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
   integrity sha512-Wb4p1J4zyFTbM+u6WuO4XstYx4Ky9Cewe4DWrel7B0w6VVICvPwdOpotjzcf6eD8TsckVnIMNONQyPIUFOUbCQ==
 
-portal-vue@^2.1.6, portal-vue@^2.1.7:
+portal-vue@^2.1.7:
   version "2.1.7"
   resolved "https://registry.yarnpkg.com/portal-vue/-/portal-vue-2.1.7.tgz#ea08069b25b640ca08a5b86f67c612f15f4e4ad4"
   integrity sha512-+yCno2oB3xA7irTt0EU5Ezw22L2J51uKAacE/6hMPMoO/mx3h4rXFkkBkT4GFsMDv/vEe8TNKC3ujJJ0PTwb6g==

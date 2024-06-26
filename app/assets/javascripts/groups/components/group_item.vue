@@ -239,7 +239,7 @@ export default {
                 </div>
               </gl-popover>
             </template>
-            <user-access-role-badge v-if="group.permission" size="sm" class="gl-mr-2">
+            <user-access-role-badge v-if="group.permission" class="gl-mr-2">
               {{ group.permission }}
             </user-access-role-badge>
           </div>

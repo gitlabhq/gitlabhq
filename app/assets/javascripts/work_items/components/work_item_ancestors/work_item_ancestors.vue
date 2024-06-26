@@ -83,7 +83,7 @@ export default {
     <template #default="{ item, itemId }">
       <gl-popover triggers="hover focus" placement="bottom" :target="itemId">
         <template #title>
-          <gl-badge variant="muted" size="sm">{{ $options.i18n.ancestorLabel }}</gl-badge>
+          <gl-badge variant="muted">{{ $options.i18n.ancestorLabel }}</gl-badge>
           <div class="gl-pt-3">
             {{ item.title }}
           </div>

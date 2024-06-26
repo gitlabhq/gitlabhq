@@ -248,21 +248,6 @@ This feature works only when a merge request is merged. Selecting **Remove sourc
 after merging does not retarget open merge requests. This improvement is
 [proposed as a follow-up](https://gitlab.com/gitlab-org/gitlab/-/issues/321559).
 
-#### Rebase merge request when target branch merges
-
-> - Chained merge requests [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/323329) to automatically rebase on the new target branch in GitLab 16.9.
-> - Chained merge requests [no longer automatically rebase](https://gitlab.com/gitlab-org/gitlab/-/issues/441232) on the new target branch in GitLab 16.10 [with a flag](../../../administration/feature_flags.md) named `:rebase_when_retargetting_mrs`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it
-available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `:rebase_when_retargetting_mrs`.
-On GitLab.com and GitLab Dedicated, this feature is not available.
-
-When merge requests are chained together and depend on one another, they can have
-their target branch updated when their previous target merges. In some cases, the
-merge request which is still open needs to be rebased, so that its changes are
-properly reflected, and reviews can continue.
-
 ## Merge request workflows
 
 For a software developer working in a team:

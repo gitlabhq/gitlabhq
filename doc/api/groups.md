@@ -452,6 +452,82 @@ Example response:
 NOTE:
 To distinguish between a project in the group and a project shared to the group, the `namespace` attribute can be used. When a project has been shared to the group, its `namespace` differs from the group the request is being made for.
 
+## List a group's shared groups
+
+Get a list of groups shared to this group. When accessed without authentication, only public shared groups are returned.
+
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
+| `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
+| `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
+| `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
+| `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+
+```plaintext
+GET /groups/:id/groups/shared
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 101,
+    "web_url": "http://gitlab.example.com/groups/some_path",
+    "name": "group1",
+    "path": "some_path",
+    "description": "",
+    "visibility": "public",
+    "share_with_group_lock": "false",
+    "require_two_factor_authentication": "false",
+    "two_factor_grace_period": 48,
+    "project_creation_level": "maintainer",
+    "auto_devops_enabled": "nil",
+    "subgroup_creation_level": "maintainer",
+    "emails_disabled": "false",
+    "emails_enabled": "true",
+    "mentions_disabled": "nil",
+    "lfs_enabled": "true",
+    "math_rendering_limits_enabled": "true",
+    "lock_math_rendering_limits_enabled": "false",
+    "default_branch": "nil",
+    "default_branch_protection": 2,
+    "default_branch_protection_defaults": {
+        "allowed_to_push": [
+          {
+              "access_level": 30
+          }
+        ],
+        "allow_force_push": "true",
+        "allowed_to_merge": [
+          {
+              "access_level": 30
+          }
+        ],
+        "developer_can_initial_push": "false",
+        "code_owner_approval_required": "false"
+    },
+    "avatar_url": "http://gitlab.example.com/uploads/-/system/group/avatar/101/banana_sample.gif",
+    "request_access_enabled": "true",
+    "full_name": "group1",
+    "full_path": "some_path",
+    "created_at": "2024-06-06T09:39:30.056Z",
+    "parent_id": "nil",
+    "organization_id": 1,
+    "shared_runners_setting": "enabled",
+    "ldap_cn": "nil",
+    "ldap_access": "nil",
+    "wiki_access_level": "enabled"
+  }
+]
+```
+
 ## List a group's shared projects
 
 Get a list of projects shared to this group. When accessed without authentication, only public shared projects are returned.

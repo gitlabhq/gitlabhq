@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlIcon, GlAvatar, GlButton, GlLink } from '@gitlab/ui';
+import { GlBadge, GlAvatar, GlButton, GlLink } from '@gitlab/ui';
 import { REPORT_HEADER_I18N, STATUS_OPEN, STATUS_CLOSED } from '../constants';
 import ReportActions from './report_actions.vue';
 
@@ -7,7 +7,6 @@ export default {
   name: 'ReportHeader',
   components: {
     GlBadge,
-    GlIcon,
     GlAvatar,
     GlButton,
     GlLink,
@@ -56,9 +55,8 @@ export default {
     class="gl-py-4 gl-border-b gl-display-flex gl-justify-content-space-between gl-flex-direction-column gl-sm-flex-direction-row"
   >
     <div class="gl-display-flex gl-align-items-center gl-gap-3">
-      <gl-badge :variant="badgeVariant" :aria-label="badgeText">
-        <gl-icon :name="badgeIcon" class="gl-badge-icon" />
-        <span class="gl-hidden sm:gl-block gl-ml-2">{{ badgeText }}</span>
+      <gl-badge :variant="badgeVariant" :icon="badgeIcon" :aria-label="badgeText">
+        {{ badgeText }}
       </gl-badge>
       <gl-avatar :size="48" :src="user.avatarUrl" />
       <h1 class="gl-font-size-h-display gl-my-0">

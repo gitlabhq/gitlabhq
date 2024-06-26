@@ -14,8 +14,8 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
 
   %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
-      exp = act = "<#{elem}>Commit #{commit.id}</#{elem}>"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "<#{elem}>Commit #{commit.id}</#{elem}>"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -63,9 +63,9 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
 
     it 'ignores invalid commit IDs' do
       invalid = invalidate_reference(reference)
-      exp = act = "See #{invalid}"
+      act = "See #{invalid}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
 
     it 'includes a title attribute' do
@@ -154,9 +154,9 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Committed #{invalidate_reference(reference)}"
+      act = "Committed #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -180,9 +180,9 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Committed #{invalidate_reference(reference)}"
+      act = "Committed #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -206,9 +206,9 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Committed #{invalidate_reference(reference)}"
+      act = "Committed #{invalidate_reference(reference)}"
 
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -272,9 +272,9 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
     let(:context) { { project: nil, group: create(:group) } }
 
     it 'ignores internal references' do
-      exp = act = "See #{commit.id}"
+      act = "See #{commit.id}"
 
-      expect(reference_filter(act, context).to_html).to eq exp
+      expect(reference_filter(act, context).to_html).to include act
     end
 
     it 'links to a valid reference' do

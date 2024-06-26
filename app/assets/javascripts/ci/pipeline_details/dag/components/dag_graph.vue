@@ -30,7 +30,7 @@ export default {
     ),
     hoverFadeClasses: [
       'gl-cursor-pointer',
-      'gl-transition-duration-slow',
+      'gl-duration-slow',
       'gl-transition-timing-function-ease',
     ].join(' '),
   },

@@ -29,6 +29,7 @@ module Gitlab
           group_download_export: { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
           group_api: { threshold: -> { application_settings.group_api_limit }, interval: 1.minute },
+          group_shared_groups_api: { threshold: -> { application_settings.group_shared_groups_api_limit }, interval: 1.minute },
           group_projects_api: { threshold: -> { application_settings.group_projects_api_limit }, interval: 1.minute },
           groups_api: { threshold: -> { application_settings.groups_api_limit }, interval: 1.minute },
           project_api: { threshold: -> { application_settings.project_api_limit }, interval: 1.minute },

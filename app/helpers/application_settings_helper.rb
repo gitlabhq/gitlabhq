@@ -505,6 +505,7 @@ module ApplicationSettingsHelper
       :deactivation_email_additional_text,
       :projects_api_rate_limit_unauthenticated,
       :group_api_limit,
+      :group_shared_groups_api_limit,
       :group_projects_api_limit,
       :groups_api_limit,
       :project_api_limit,

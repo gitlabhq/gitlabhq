@@ -54,6 +54,12 @@ class JiraConnectInstallation < ApplicationRecord
     Gitlab::Utils.append_path(instance_url, jira_connect_events_uninstalled_path)
   end
 
+  def create_branch_url
+    return unless proxy?
+
+    Gitlab::Utils.append_path(instance_url, new_jira_connect_branch_path)
+  end
+
   def proxy?
     instance_url.present?
   end

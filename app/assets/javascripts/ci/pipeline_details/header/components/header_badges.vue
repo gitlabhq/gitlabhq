@@ -78,7 +78,6 @@ export default {
       v-gl-tooltip
       :title="__('This pipeline was created by a schedule')"
       variant="info"
-      size="sm"
     >
       {{ s__('Pipelines|Scheduled') }}
     </gl-badge>
@@ -87,7 +86,6 @@ export default {
       v-gl-tooltip
       :title="__('This pipeline was created by an API call authenticated with a trigger token')"
       variant="info"
-      size="sm"
     >
       {{ __('trigger token') }}
     </gl-badge>
@@ -96,7 +94,6 @@ export default {
       v-gl-tooltip
       :title="__('This is a child pipeline within the parent pipeline')"
       variant="info"
-      size="sm"
     >
       <gl-sprintf :message="s__('Pipelines|Child pipeline (%{linkStart}parent%{linkEnd})')">
         <template #link="{ content }">
@@ -111,7 +108,6 @@ export default {
       v-gl-tooltip
       :title="__('Latest pipeline for the most recent commit on this branch')"
       variant="success"
-      size="sm"
     >
       {{ s__('Pipelines|latest') }}
     </gl-badge>
@@ -124,20 +120,13 @@ export default {
         )
       "
       variant="info"
-      size="sm"
     >
       {{ s__('Pipelines|merge train') }}
     </gl-badge>
-    <gl-badge
-      v-if="badges.invalid"
-      v-gl-tooltip
-      :title="yamlErrorMessages"
-      variant="danger"
-      size="sm"
-    >
+    <gl-badge v-if="badges.invalid" v-gl-tooltip :title="yamlErrorMessages" variant="danger">
       {{ s__('Pipelines|yaml invalid') }}
     </gl-badge>
-    <gl-badge v-if="badges.failed" v-gl-tooltip :title="failureReason" variant="danger" size="sm">
+    <gl-badge v-if="badges.failed" v-gl-tooltip :title="failureReason" variant="danger">
       {{ s__('Pipelines|error') }}
     </gl-badge>
     <gl-badge
@@ -147,7 +136,6 @@ export default {
         __('This pipeline makes use of a predefined CI/CD configuration enabled by Auto DevOps.')
       "
       variant="info"
-      size="sm"
     >
       {{ s__('Pipelines|Auto DevOps') }}
     </gl-badge>
@@ -160,7 +148,6 @@ export default {
         )
       "
       variant="info"
-      size="sm"
     >
       {{ s__('Pipelines|merge request') }}
     </gl-badge>
@@ -173,7 +160,6 @@ export default {
         )
       "
       variant="info"
-      size="sm"
     >
       {{ s__('Pipelines|merged results') }}
     </gl-badge>
@@ -182,7 +168,6 @@ export default {
       v-gl-tooltip
       :title="s__('Pipelines|This pipeline is stuck')"
       variant="warning"
-      size="sm"
     >
       {{ s__('Pipelines|stuck') }}
     </gl-badge>

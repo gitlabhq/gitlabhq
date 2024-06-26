@@ -265,6 +265,9 @@ module Types
       description: 'Allows assigning multiple reviewers to a merge request.',
       null: false
 
+    field :retargeted, GraphQL::Types::Boolean, null: true,
+      description: 'Indicates if merge request was retargeted.'
+
     markdown_field :title_html, null: true
     markdown_field :description_html, null: true
 

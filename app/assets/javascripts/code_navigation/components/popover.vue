@@ -128,7 +128,7 @@ export default {
       <gl-tab data-testid="references-tab" class="py-2">
         <template #title>
           {{ __('References') }}
-          <gl-badge size="sm" class="gl-tab-counter-badge">{{ references.length }}</gl-badge>
+          <gl-badge class="gl-tab-counter-badge">{{ references.length }}</gl-badge>
         </template>
         <template v-if="references.length">
           <div v-for="(reference, index) in references" :key="index" class="gl-dropdown-item">

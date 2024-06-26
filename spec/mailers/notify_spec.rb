@@ -2421,27 +2421,5 @@ RSpec.describe Notify, feature_category: :code_review_workflow do
       expect(rate_limit_notification.to).to contain_exactly(recipient.notification_email)
       expect(rate_limit_notification).to have_subject(/Notifications temporarily disabled/)
     end
-
-    context 'when rate_limit_notification_emails is disabled' do
-      before do
-        stub_feature_flags(rate_limit_notification_emails: false)
-      end
-
-      it 'logs a message but does not stop sending of notifications' do
-        expect(Gitlab::AppLogger).to receive(:info).with(
-          event: 'notification_emails_rate_limited',
-          user_id: recipient.id,
-          project_id: issue.project_id,
-          group_id: nil
-        )
-
-        perform_enqueued_jobs do
-          3.times { described_class.new_issue_email(recipient.id, issue.id).deliver }
-        end
-
-        expect(ActionMailer::Base.deliveries.count).to eq(3)
-        expect(ActionMailer::Base.deliveries).to all(have_referable_subject(issue))
-      end
-    end
   end
 end

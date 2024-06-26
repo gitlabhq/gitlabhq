@@ -4,7 +4,7 @@ import GitlabVersionCheckBadge from './components/gitlab_version_check_badge.vue
 import SecurityPatchUpgradeAlertModal from './components/security_patch_upgrade_alert_modal.vue';
 
 const mountGitlabVersionCheckBadge = (el) => {
-  const { size, version } = el.dataset;
+  const { version } = el.dataset;
   const actionable = parseBoolean(el.dataset.actionable);
 
   try {
@@ -20,7 +20,6 @@ const mountGitlabVersionCheckBadge = (el) => {
       render(createElement) {
         return createElement(GitlabVersionCheckBadge, {
           props: {
-            size,
             actionable,
             status: severity,
           },

@@ -284,7 +284,7 @@ export default {
         <gl-tab v-for="tab in statusTabs" :key="tab.status" :data-testid="tab.status">
           <template #title>
             <span>{{ tab.title }}</span>
-            <gl-badge v-if="itemsCount" pill size="sm" class="gl-tab-counter-badge">
+            <gl-badge v-if="itemsCount" pill class="gl-tab-counter-badge">
               {{ itemsCount[tab.status.toLowerCase()] }}
             </gl-badge>
           </template>

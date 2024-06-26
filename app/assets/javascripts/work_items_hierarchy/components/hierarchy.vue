@@ -62,7 +62,6 @@ export default {
         v-if="!workItem.available"
         variant="info"
         icon="license"
-        size="sm"
         class="gl-ml-3 gl-align-self-center"
         >{{ workItem.license }}</gl-badge
       >

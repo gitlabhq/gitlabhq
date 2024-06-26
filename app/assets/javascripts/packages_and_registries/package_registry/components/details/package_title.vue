@@ -116,7 +116,6 @@ export default {
             class="gl-my-1"
             data-testid="tag-badge"
             variant="info"
-            size="sm"
           >
             {{ tag.name }}
           </gl-badge>
@@ -126,7 +125,6 @@ export default {
           v-if="showBadgeProtected"
           v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
           icon-size="sm"
-          size="sm"
           variant="neutral"
         >
           {{ __('protected') }}

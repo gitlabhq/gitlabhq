@@ -54,6 +54,17 @@ function gitLabUIUtilities({ addComponents, addUtilities }) {
       'white-space': 'nowrap',
       'max-width': '82%',
     },
+    '.no-spin[type="number"]': {
+      '&::-webkit-outer-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: '0',
+      },
+      '&::-webkit-inner-spin-button': {
+        '-webkit-appearance': 'none',
+        margin: '0',
+      },
+      '-moz-appearance': 'textfield',
+    },
   });
 
   addUtilities({

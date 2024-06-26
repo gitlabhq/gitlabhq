@@ -30,7 +30,7 @@ export default {
       :target="() => $refs.badge"
     />
     <span ref="badge">
-      <gl-badge size="sm" class="gl-cursor-pointer" :href="badgeHref" :variant="badge.variant">
+      <gl-badge class="gl-cursor-pointer" :href="badgeHref" :variant="badge.variant">
         {{ badge.text }}
       </gl-badge>
     </span>

@@ -42,7 +42,6 @@ export default {
         <gl-badge
           v-if="projectOverridesCount !== null"
           variant="muted"
-          size="sm"
           class="gl-tab-counter-badge"
           >{{ projectOverridesCount }}</gl-badge
         >

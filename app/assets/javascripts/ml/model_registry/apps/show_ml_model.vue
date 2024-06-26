@@ -219,13 +219,13 @@ export default {
             <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
               <template #title>
                 {{ s__('MlModelRegistry|Versions') }}
-                <gl-badge size="sm" class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
+                <gl-badge class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
               </template>
             </gl-tab>
             <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
               <template #title>
                 {{ s__('MlModelRegistry|Version candidates') }}
-                <gl-badge size="sm" class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
+                <gl-badge class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
               </template>
             </gl-tab>
 

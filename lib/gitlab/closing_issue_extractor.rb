@@ -2,8 +2,13 @@
 
 module Gitlab
   class ClosingIssueExtractor
+    # Rubular: https://rubular.com/r/PqADDyNVtBUpXl
+    # Note that it's not possible to use Gitlab::UntrustedRegexp for LINK_PATTERN,
+    # as `(?<!` is unsupported in `re2`, see https://github.com/google/re2/wiki/Syntax
+    HTTP_LINK_PATTERN = %r{((http|https)://[^\s>]{1,300})(?<!\?|!|\.|,|:)}
+
     ISSUE_CLOSING_REGEX = begin
-      link_pattern = Banzai::Filter::AutolinkFilter::LINK_PATTERN
+      link_pattern = HTTP_LINK_PATTERN
 
       pattern = Gitlab.config.gitlab.issue_closing_pattern
       pattern = pattern.sub('%{issue_ref}', "(?:(?:#{link_pattern})|(?:#{Issue.reference_pattern}))")

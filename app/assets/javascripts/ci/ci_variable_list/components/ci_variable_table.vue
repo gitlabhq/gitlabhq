@@ -302,7 +302,6 @@ export default {
                 :key="`${item.key}-${attribute}`"
                 class="gl-mr-2"
                 variant="info"
-                size="sm"
               >
                 {{ attribute }}
               </gl-badge>

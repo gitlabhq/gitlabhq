@@ -128,6 +128,8 @@ class MergeRequestPollWidgetEntity < Grape::Entity
     presenter(merge_request).jenkins_integration_active
   end
 
+  expose :retargeted
+
   private
 
   delegate :current_user, to: :request

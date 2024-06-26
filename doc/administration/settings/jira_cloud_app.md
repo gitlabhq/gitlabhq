@@ -81,7 +81,7 @@ You can use the official GitLab for Jira Cloud app from the Atlassian Marketplac
 With this method:
 
 - GitLab.com [handles the install and uninstall lifecycle events](#gitlabcom-handling-of-app-lifecycle-events) sent from Jira Cloud and forwards them to your GitLab instance. All data from your self-managed instance is still sent directly to Jira Cloud.
-- It's not possible to create branches from Jira Cloud.
+- With any version of GitLab prior to 17.2 it is not possible to create branches from Jira Cloud on self-managed instances.
   For more information, see [issue 391432](https://gitlab.com/gitlab-org/gitlab/-/issues/391432).
 
 Alternatively, you might want to [install the GitLab for Jira Cloud app manually](#install-the-gitlab-for-jira-cloud-app-manually) if:

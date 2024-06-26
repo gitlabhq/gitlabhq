@@ -20,6 +20,7 @@ module Banzai
     #
     # Linking to an actual wiki or resources happens in WikiLinkGollumFilter
     class GollumTagsFilter < HTML::Pipeline::Filter
+      prepend Concerns::PipelineTimingCheck
       include ActionView::Helpers::TagHelper
 
       # Pattern to match tags content that should be parsed in HTML.

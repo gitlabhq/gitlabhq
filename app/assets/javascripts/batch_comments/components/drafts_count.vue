@@ -20,7 +20,7 @@ export default {
 };
 </script>
 <template>
-  <gl-badge size="sm" :variant="variant" class="gl-ml-2">
+  <gl-badge :variant="variant" class="gl-ml-2">
     {{ draftsCount }}
     <span class="sr-only"> {{ n__('draft', 'drafts', draftsCount) }} </span>
   </gl-badge>

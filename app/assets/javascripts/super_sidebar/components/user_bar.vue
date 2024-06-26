@@ -122,7 +122,6 @@ export default {
           variant="success"
           data-testid="canary-badge-link"
           :href="sidebarData.canary_toggle_com_url"
-          size="sm"
         >
           {{ $options.NEXT_LABEL }}
         </gl-badge>

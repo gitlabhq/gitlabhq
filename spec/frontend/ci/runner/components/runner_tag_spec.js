@@ -45,17 +45,8 @@ describe('RunnerTag', () => {
 
   it('Displays tags with correct style', () => {
     expect(findBadge().props()).toMatchObject({
-      size: 'sm',
       variant: RUNNER_TAG_BADGE_VARIANT,
     });
-  });
-
-  it('Displays tags with md size', () => {
-    createComponent({
-      props: { size: 'md' },
-    });
-
-    expect(findBadge().props('size')).toBe('md');
   });
 
   it.each`

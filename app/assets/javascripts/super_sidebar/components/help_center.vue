@@ -240,7 +240,7 @@ export default {
           </span>
           <span>
             <span class="gl-mr-2">{{ item.version }}</span>
-            <gitlab-version-check-badge v-if="updateSeverity" :status="updateSeverity" size="sm" />
+            <gitlab-version-check-badge v-if="updateSeverity" :status="updateSeverity" />
           </span>
         </span>
       </template>
@@ -264,7 +264,7 @@ export default {
           class="gl-display-flex gl-justify-content-space-between gl-align-items-center -gl-my-1"
         >
           {{ item.text }}
-          <gl-badge v-if="item.count" pill size="sm" variant="info">{{ item.count }}</gl-badge>
+          <gl-badge v-if="item.count" pill variant="info">{{ item.count }}</gl-badge>
           <kbd v-else-if="item.shortcut" class="flat">?</kbd>
         </span>
       </template>

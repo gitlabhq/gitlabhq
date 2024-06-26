@@ -12,6 +12,8 @@ module Banzai
     #   :project
     #   :system_note
     class UploadLinkFilter < BaseRelativeLinkFilter
+      prepend Concerns::PipelineTimingCheck
+
       def call
         return doc if context[:system_note]
 

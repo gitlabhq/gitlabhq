@@ -166,7 +166,7 @@ export default {
   >
     <template #group-label="{ group }">
       <span :data-testid="`${group.id}-section`"
-        >{{ group.text }}<gl-badge size="sm" class="gl-ml-2">{{ group.totalCount }}</gl-badge></span
+        >{{ group.text }}<gl-badge class="gl-ml-2">{{ group.totalCount }}</gl-badge></span
       >
     </template>
     <template #footer>

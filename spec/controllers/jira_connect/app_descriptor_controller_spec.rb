@@ -64,7 +64,7 @@ RSpec.describe JiraConnect::AppDescriptorController, feature_category: :integrat
           jiraDevelopmentTool: {
             actions: {
               createBranch: {
-                templateUrl: 'http://test.host/-/jira_connect/branches/new?issue_key={issue.key}&issue_summary={issue.summary}'
+                templateUrl: "http://test.host/-/jira_connect/branches/route?issue_key={issue.key}&issue_summary={issue.summary}&jwt={jwt}&addonkey=#{Atlassian::JiraConnect.app_key}"
               },
               searchConnectedWorkspaces: {
                 templateUrl: 'http://test.host/-/jira_connect/workspaces/search'

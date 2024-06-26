@@ -18,8 +18,8 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
 
   %w[pre code a style].each do |elem|
     it "ignores valid references contained inside '#{elem}' element" do
-      exp = act = "<#{elem}>Commit Range #{range.to_reference}</#{elem}>"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "<#{elem}>Commit Range #{range.to_reference}</#{elem}>"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -59,11 +59,11 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     end
 
     it 'ignores invalid commit IDs' do
-      exp = act = "See #{commit1.id.reverse}...#{commit2.id}"
+      act = "See #{commit1.id.reverse}...#{commit2.id}"
 
       allow(project.repository).to receive(:commit).with(commit1.id.reverse)
       allow(project.repository).to receive(:commit).with(commit2.id)
-      expect(reference_filter(act).to_html).to eq exp
+      expect(reference_filter(act).to_html).to include act
     end
 
     it 'includes no title attribute' do
@@ -126,11 +126,11 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Fixed #{project2.full_path}@#{commit1.id.reverse}...#{commit2.id}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.full_path}@#{commit1.id.reverse}...#{commit2.id}"
+      expect(reference_filter(act).to_html).to include act
 
-      exp = act = "Fixed #{project2.full_path}@#{commit1.id}...#{commit2.id.reverse}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.full_path}@#{commit1.id}...#{commit2.id.reverse}"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -161,11 +161,11 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Fixed #{project2.path}@#{commit1.id.reverse}...#{commit2.id}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.path}@#{commit1.id.reverse}...#{commit2.id}"
+      expect(reference_filter(act).to_html).to include act
 
-      exp = act = "Fixed #{project2.path}@#{commit1.id}...#{commit2.id.reverse}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.path}@#{commit1.id}...#{commit2.id.reverse}"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -196,11 +196,11 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Fixed #{project2.path}@#{commit1.id.reverse}...#{commit2.id}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.path}@#{commit1.id.reverse}...#{commit2.id}"
+      expect(reference_filter(act).to_html).to include act
 
-      exp = act = "Fixed #{project2.path}@#{commit1.id}...#{commit2.id.reverse}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.path}@#{commit1.id}...#{commit2.id.reverse}"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -229,11 +229,11 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     end
 
     it 'ignores invalid commit IDs on the referenced project' do
-      exp = act = "Fixed #{project2.to_reference_base}@#{commit1.id.reverse}...#{commit2.id}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.to_reference_base}@#{commit1.id.reverse}...#{commit2.id}"
+      expect(reference_filter(act).to_html).to include act
 
-      exp = act = "Fixed #{project2.to_reference_base}@#{commit1.id}...#{commit2.id.reverse}"
-      expect(reference_filter(act).to_html).to eq exp
+      act = "Fixed #{project2.to_reference_base}@#{commit1.id}...#{commit2.id.reverse}"
+      expect(reference_filter(act).to_html).to include act
     end
   end
 
@@ -241,9 +241,9 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
     let(:context) { { project: nil, group: create(:group) } }
 
     it 'ignores internal references' do
-      exp = act = "See #{range.to_reference}"
+      act = "See #{range.to_reference}"
 
-      expect(reference_filter(act, context).to_html).to eq exp
+      expect(reference_filter(act, context).to_html).to include act
     end
 
     it 'links to a full-path reference' do

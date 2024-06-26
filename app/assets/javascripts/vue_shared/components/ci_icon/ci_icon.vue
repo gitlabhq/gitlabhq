@@ -103,7 +103,6 @@ export default {
     :title="title"
     :aria-label="ariaLabel"
     :href="href"
-    size="md"
     data-testid="ci-icon"
     @click="$emit('ciStatusBadgeClick')"
   >

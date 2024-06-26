@@ -1,0 +1,37 @@
+- title = s_('UserMapping|Approve Contributions Reassignment')
+- page_title title
+
+- source_username = @source_user.source_username
+- source_hostname = @source_user.source_hostname
+- destination_group = @source_user.namespace.name
+- reassigned_by = @source_user.reassigned_by_user
+- reassign_to_username = @source_user.reassign_to_user.username
+- reassigned_by_name = reassigned_by.name
+
+.gl-border-solid.gl-border-gray-100.gl-border-0.gl-border-b-1
+  %h1.gl-font-size-h1.gl-my-0.gl-py-4.gl-display-flex.gl-align-items-center.gl-gap-3
+    = s_('UserMapping|Approve reassignment of contributions from %{source_username} on %{source_hostname} to you on %{destination_group}') % { source_username: source_username, source_hostname: source_hostname, destination_group: destination_group }
+
+.gl-border-solid.gl-border-gray-100.gl-border-0.gl-border-b-1.gl-py-4
+  %p.gl-mb-5
+    = s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}. Review details to approve or reject the reassignment. Learn more about reassignments') % { reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by.username, source_name: @source_user.source_name, source_username: source_username, source_hostname: source_hostname, destination_group: destination_group }
+  %h5
+    = s_('UserMapping|Contribution details:')
+  %p.gl-mb-5
+    = s_('UserMapping|Source: %{source_hostname}') % { source_hostname: source_hostname }
+    %br
+    = s_('UserMapping|Original user: %{source_name} (%{source_username})') % { source_name: @source_user.source_name, source_username: source_username }
+  %h5
+    = s_('UserMapping|Reassignment details:')
+  %p.gl-mb-0
+    = s_('UserMapping|Imported to: %{destination_group}') % { destination_group: destination_group }
+    %br
+    = s_('UserMapping|Reassigned to user: %{reassign_to_username}') % { reassign_to_username: reassign_to_username }
+    %br
+    = s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})') % { reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by.username }
+
+.actions.gl-mt-5
+  = render Pajamas::ButtonComponent.new(variant: :confirm, method: :post, href: accept_import_source_user_path(@source_user)) do
+    = s_('UserMapping|Approve reassignment')
+  = render Pajamas::ButtonComponent.new(method: :post, href: decline_import_source_user_path(@source_user)) do
+    = s_('UserMapping|Reject')

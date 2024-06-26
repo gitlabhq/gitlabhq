@@ -15,11 +15,6 @@ export default {
       type: String,
       required: true,
     },
-    size: {
-      type: String,
-      required: false,
-      default: 'sm',
-    },
   },
   data() {
     return {
@@ -48,7 +43,6 @@ export default {
     v-gl-tooltip="tooltip"
     v-gl-resize-observer="onResize"
     class="gl-display-inline-block gl-max-w-full gl-text-truncate"
-    :size="size"
     :variant="$options.RUNNER_TAG_BADGE_VARIANT"
   >
     {{ tag }}

@@ -88,7 +88,6 @@ export default {
           <gl-badge
             v-if="stagedFiles.length"
             class="gl-absolute gl-px-2 gl-top-3 gl-right-3 gl-font-bold gl-bg-gray-900! gl-text-white!"
-            size="sm"
           >
             {{ stagedFiles.length }}
           </gl-badge>

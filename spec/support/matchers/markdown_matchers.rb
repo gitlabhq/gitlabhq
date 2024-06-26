@@ -56,7 +56,7 @@ module MarkdownMatchers
     match do |actual|
       expect(actual).to have_selector('h1 a#user-content-gitlab-markdown')
       expect(actual).to have_selector('h2 a#user-content-markdown')
-      expect(actual).to have_selector('h3 a#user-content-autolinkfilter')
+      expect(actual).to have_selector('h3 a#user-content-autolinking-in-markdownfilter')
     end
   end
 
@@ -70,7 +70,7 @@ module MarkdownMatchers
     end
   end
 
-  # AutolinkFilter
+  # Autolinking in MarkdownFilter
   matcher :create_autolinks do
     def have_autolink(link)
       have_link(link, href: link)

@@ -67,10 +67,10 @@ class GraphqlController < ApplicationController
   urgency :low, [:execute]
 
   def execute
-    result = if introspection_query?
-               execute_introspection_query
+    result = if multiplex?
+               execute_multiplex
              else
-               multiplex? ? execute_multiplex : execute_query
+               introspection_query? ? execute_introspection_query : execute_query
              end
 
     render json: result
@@ -140,8 +140,18 @@ class GraphqlController < ApplicationController
     [:api, :read_api]
   end
 
+  def permitted_params
+    @permitted_params ||= multiplex? ? permitted_multiplex_params : permitted_standalone_query_params
+  end
+
+  def permitted_standalone_query_params
+    params.permit(:query, :operationName, :remove_deprecated, variables: {}).tap do |permitted_params|
+      permitted_params[:variables] = params[:variables]
+    end
+  end
+
   def permitted_multiplex_params
-    params.permit(_json: [:query, :operationName, { variables: {} }])
+    params.permit(:remove_deprecated, _json: [:query, :operationName, { variables: {} }])
   end
 
   def disallow_mutations_for_get
@@ -169,7 +179,7 @@ class GraphqlController < ApplicationController
     end
   end
 
-  def mutation?(query_string, operation_name = params[:operationName])
+  def mutation?(query_string, operation_name = permitted_params[:operationName])
     ::GraphQL::Query.new(GitlabSchema, query_string, operation_name: operation_name).mutation?
   end
 
@@ -225,14 +235,13 @@ class GraphqlController < ApplicationController
   end
 
   def execute_query
-    variables = build_variables(params[:variables])
-    operation_name = params[:operationName]
-
+    variables = build_variables(permitted_params[:variables])
+    operation_name = permitted_params[:operationName]
     GitlabSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
   end
 
   def query
-    GraphQL::Language.escape_single_quoted_newlines(params.fetch(:query, ''))
+    GraphQL::Language.escape_single_quoted_newlines(permitted_params.fetch(:query, ''))
   end
 
   def multiplex_param
@@ -259,7 +268,7 @@ class GraphqlController < ApplicationController
       is_sessionless_user: api_user,
       request: request,
       scope_validator: ::Gitlab::Auth::ScopeValidator.new(api_user, request_authenticator),
-      remove_deprecated: Gitlab::Utils.to_boolean(params[:remove_deprecated], default: false)
+      remove_deprecated: Gitlab::Utils.to_boolean(permitted_params[:remove_deprecated], default: false)
     }
   end
 
@@ -338,8 +347,8 @@ class GraphqlController < ApplicationController
   end
 
   def introspection_query?
-    if params.key?(:operationName)
-      params[:operationName] == INTROSPECTION_QUERY_OPERATION_NAME
+    if permitted_params.key?(:operationName)
+      permitted_params[:operationName] == INTROSPECTION_QUERY_OPERATION_NAME
     else
       # If we don't provide operationName param, we infer it from the query
       graphql_query_object.selected_operation_name == INTROSPECTION_QUERY_OPERATION_NAME
@@ -348,7 +357,7 @@ class GraphqlController < ApplicationController
 
   def graphql_query_object
     @graphql_query_object ||= GraphQL::Query.new(GitlabSchema, query: query,
-      variables: build_variables(params[:variables]))
+      variables: build_variables(permitted_params[:variables]))
   end
 end
 

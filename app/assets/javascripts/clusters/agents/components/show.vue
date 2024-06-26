@@ -145,9 +145,7 @@ export default {
             <span data-testid="cluster-agent-token-count">
               {{ $options.i18n.tokens }}
 
-              <gl-badge v-if="tokenCount" size="sm" class="gl-tab-counter-badge">{{
-                tokenCount
-              }}</gl-badge>
+              <gl-badge v-if="tokenCount" class="gl-tab-counter-badge">{{ tokenCount }}</gl-badge>
             </span>
           </template>
 

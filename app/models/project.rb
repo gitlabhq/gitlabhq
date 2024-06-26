@@ -924,11 +924,28 @@ class Project < ApplicationRecord
   end
 
   def self.projects_user_can(projects, user, action)
-    projects = where(id: projects)
-
     DeclarativePolicy.user_scope do
       projects.select { |project| Ability.allowed?(user, action, project) }
     end
+  end
+
+  def self.filter_out_public_projects_with_unauthorized_private_repos(projects, user)
+    public_projects_with_private_repos = projects.with_project_feature.where(
+      visibility_level: Gitlab::VisibilityLevel::PUBLIC,
+      project_features: { repository_access_level: ProjectFeature::PRIVATE }
+    ).pluck(:id)
+
+    return projects unless public_projects_with_private_repos.present?
+
+    authorized_public_projects_with_private_repos = projects.filter_by_feature_visibility(
+      :repository, user
+    )
+
+    rejected_projects_with_private_repos = (
+      public_projects_with_private_repos - authorized_public_projects_with_private_repos.pluck(:id)
+    )
+
+    projects.where.not(id: rejected_projects_with_private_repos)
   end
 
   # This scope returns projects where user has access to both the project and the feature.

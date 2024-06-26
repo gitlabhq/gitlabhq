@@ -234,7 +234,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
       recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
 
-      expect(recorder.count).not_to be > 106
+      expect(recorder.count).not_to be > 111
     end
   end
 

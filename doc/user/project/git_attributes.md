@@ -18,7 +18,7 @@ to file handling and display, such as:
 - [Collapse generated files](merge_requests/changes.md#collapse-generated-files) in diffs.
 - Create [custom merge drivers](#custom-merge-drivers).
 - Create [exclusive lock files](file_lock.md) to mark files as read-only.
-- Change [syntax highlighting](highlighting.md) in diffs.
+- Change [syntax highlighting](repository/files/highlighting.md) in diffs.
 - Declare binary file handling with [Git LFS](../../topics/git/lfs/index.md).
 - Declare [languages used in your repository](repository/index.md#add-repository-languages).
 
@@ -59,7 +59,7 @@ For more information, see [working-tree-encoding](https://git-scm.com/docs/gitat
 
 The `.gitattributes` file can be used to define which language to use when
 syntax highlighting files and diffs. For more information, see
-[Syntax highlighting](highlighting.md).
+[Syntax highlighting](repository/files/highlighting.md).
 
 ## Custom merge drivers
 

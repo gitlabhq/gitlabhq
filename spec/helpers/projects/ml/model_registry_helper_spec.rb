@@ -43,7 +43,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
 
     subject(:parsed) { Gitlab::Json.parse(helper.show_ml_model_data(model, user)) }
 
-    it 'generates the correct data', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/468667' do
+    it 'generates the correct data' do
       is_expected.to eq({
         'projectPath' => project.full_path,
         'indexModelsPath' => "/#{project.full_path}/-/ml/models",
@@ -52,7 +52,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/",
         'modelId' => model.id,
         'modelName' => 'cool_model',
-        'latestVersion' => '1.0.1-alpha+test'
+        'latestVersion' => model.latest_version.version
       })
     end
 

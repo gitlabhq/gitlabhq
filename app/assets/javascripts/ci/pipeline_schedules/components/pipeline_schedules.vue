@@ -396,7 +396,7 @@ export default {
           <template v-if="tab.showBadge">
             <gl-loading-icon v-if="tab.scope === scope && isLoading" class="gl-ml-2" />
 
-            <gl-badge v-else-if="tab.count" size="sm" class="gl-tab-counter-badge">
+            <gl-badge v-else-if="tab.count" class="gl-tab-counter-badge">
               {{ tab.count }}
             </gl-badge>
           </template>

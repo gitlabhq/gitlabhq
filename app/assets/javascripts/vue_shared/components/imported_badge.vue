@@ -28,11 +28,6 @@ export default {
       required: false,
       default: '',
     },
-    size: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
     textOnly: {
       type: Boolean,
       required: false,
@@ -53,7 +48,7 @@ export default {
   <span v-if="textOnly" v-gl-tooltip="title">
     {{ __('Imported') }}
   </span>
-  <gl-badge v-else v-gl-tooltip="title" :size="size">
+  <gl-badge v-else v-gl-tooltip="title">
     {{ __('Imported') }}
   </gl-badge>
 </template>

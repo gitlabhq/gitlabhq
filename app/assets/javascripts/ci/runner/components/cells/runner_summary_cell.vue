@@ -84,14 +84,14 @@ export default {
         <runner-name :runner="runner" />
       </slot>
 
-      <runner-managers-badge :count="managersCount" size="sm" class="gl-align-middle" />
+      <runner-managers-badge :count="managersCount" class="gl-align-middle" />
       <gl-icon
         v-if="runner.locked"
         v-gl-tooltip
         :title="$options.i18n.I18N_LOCKED_RUNNER_DESCRIPTION"
         name="lock"
       />
-      <runner-type-badge :type="runner.runnerType" size="sm" class="gl-align-middle" />
+      <runner-type-badge :type="runner.runnerType" class="gl-align-middle" />
     </div>
 
     <div
@@ -143,6 +143,6 @@ export default {
       </runner-summary-field>
     </div>
 
-    <runner-tags class="gl-block" :tag-list="runner.tagList" size="sm" />
+    <runner-tags class="gl-block" :tag-list="runner.tagList" />
   </div>
 </template>

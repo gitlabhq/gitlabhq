@@ -176,9 +176,7 @@ export default {
           <b> {{ resource.name }}</b>
         </gl-link>
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
-          <gl-badge size="sm" class="gl-h-5 gl-align-self-center" variant="info">{{
-            name
-          }}</gl-badge>
+          <gl-badge class="gl-h-5 gl-align-self-center" variant="info">{{ name }}</gl-badge>
           <div class="gl-display-flex gl-align-items-center gl-ml-3">
             <div
               v-gl-tooltip.top

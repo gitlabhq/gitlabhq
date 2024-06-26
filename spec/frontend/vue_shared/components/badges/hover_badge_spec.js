@@ -35,16 +35,4 @@ describe('Hover badge component', () => {
 
     expect(findPopover().text()).toContain('This is an awesome content');
   });
-
-  it('passes default size to badge', () => {
-    createWrapper();
-
-    expect(findBadge().props('size')).toBe('md');
-  });
-
-  it('passes given size to badge', () => {
-    createWrapper({ props: { size: 'sm' } });
-
-    expect(findBadge().props('size')).toBe('sm');
-  });
 });

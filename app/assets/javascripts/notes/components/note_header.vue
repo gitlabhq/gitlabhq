@@ -248,7 +248,7 @@ export default {
 
       <template v-if="isImported">
         <span v-if="isSystemNote">&middot;</span>
-        <imported-badge :text-only="isSystemNote" :importable-type="importableType" size="sm" />
+        <imported-badge :text-only="isSystemNote" :importable-type="importableType" />
       </template>
 
       <gl-badge
@@ -256,7 +256,6 @@ export default {
         v-gl-tooltip:tooltipcontainer.bottom
         data-testid="internal-note-indicator"
         variant="warning"
-        size="sm"
         class="gl-ml-2"
         :title="internalNoteTooltip"
       >

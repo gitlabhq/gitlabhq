@@ -279,16 +279,12 @@ export default {
       @select="selectRef"
     >
       <template #group-label="{ group }">
-        {{ group.text }} <gl-badge size="sm">{{ totalCountText(group.options.length) }}</gl-badge>
+        {{ group.text }} <gl-badge>{{ totalCountText(group.options.length) }}</gl-badge>
       </template>
       <template #list-item="{ item }">
         {{ item.text }}
-        <gl-badge v-if="item.default" size="sm" variant="info">{{
-          i18n.defaultLabelText
-        }}</gl-badge>
-        <gl-badge v-if="item.protected" size="sm" variant="neutral">{{
-          i18n.protectedLabelText
-        }}</gl-badge>
+        <gl-badge v-if="item.default" variant="info">{{ i18n.defaultLabelText }}</gl-badge>
+        <gl-badge v-if="item.protected" variant="neutral">{{ i18n.protectedLabelText }}</gl-badge>
       </template>
       <template #footer>
         <slot name="footer" v-bind="footerSlotProps"></slot>

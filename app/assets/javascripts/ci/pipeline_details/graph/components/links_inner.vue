@@ -152,7 +152,7 @@ export default {
         :key="link.path"
         :ref="link.ref"
         :d="link.path"
-        class="gl-fill-transparent gl-transition-duration-slow gl-transition-timing-function-ease"
+        class="gl-fill-transparent gl-duration-slow gl-transition-timing-function-ease"
         :class="getLinkClasses(link)"
         :stroke-width="$options.STROKE_WIDTH"
       />

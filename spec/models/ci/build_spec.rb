@@ -3500,10 +3500,21 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
     context 'when build has dependency which has dotenv variable' do
       let!(:prepare) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
       let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: [prepare.name] }) }
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare, accessibility: accessibility) }
 
       let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
 
-      it { is_expected.to include(key: job_variable.key, value: job_variable.value, public: false, masked: false) }
+      context "when artifact is public" do
+        let(:accessibility) { 'public' }
+
+        it { is_expected.to include(key: job_variable.key, value: job_variable.value, public: false, masked: false) }
+      end
+
+      context "when artifact is private" do
+        let(:accessibility) { 'private' }
+
+        it { is_expected.not_to include(key: job_variable.key, value: job_variable.value, public: false, masked: false) }
+      end
     end
 
     context 'when ID tokens are defined on the build' do
@@ -3701,11 +3712,20 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       context 'with dependency variables' do
         let!(:prepare) { create(:ci_build, name: 'prepare', pipeline: pipeline, stage_idx: 0) }
         let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['prepare'] }) }
+        let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare, accessibility: accessibility_config) }
 
         let!(:job_variable) { create(:ci_job_variable, :dotenv_source, job: prepare) }
 
-        it 'inherits dependent variables' do
-          expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value)
+        context 'inherits dependent variables that are public' do
+          let(:accessibility_config) { 'public' }
+
+          it { expect(build.scoped_variables.to_hash).to include(job_variable.key => job_variable.value) }
+        end
+
+        context 'does not inherits dependent variables that are private' do
+          let(:accessibility_config) { 'private' }
+
+          it { expect(build.scoped_variables.to_hash).not_to include(job_variable.key => job_variable.value) }
         end
       end
     end
@@ -3792,13 +3812,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let!(:prepare1) { create(:ci_build, name: 'prepare1', pipeline: pipeline, stage_idx: 0) }
       let!(:prepare2) { create(:ci_build, name: 'prepare2', pipeline: pipeline, stage_idx: 0) }
       let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['prepare1'] }) }
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility) }
 
       let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let!(:job_variable_2) { create(:ci_job_variable, job: prepare1) }
       let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
 
-      it 'inherits only dependent variables' do
-        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
+      context 'inherits only dependent variables that are public' do
+        let(:accessibility) { 'public' }
+
+        it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
+      end
+
+      context 'does not inherit dependent variables that are private' do
+        let(:accessibility) { 'private' }
+
+        it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
       end
     end
 
@@ -3809,13 +3838,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let!(:build) { create(:ci_build, pipeline: pipeline, stage_idx: 1, scheduling_type: 'dag') }
       let!(:build_needs_prepare1) { create(:ci_build_need, build: build, name: 'prepare1', artifacts: true) }
       let!(:build_needs_prepare2) { create(:ci_build_need, build: build, name: 'prepare2', artifacts: false) }
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: prepare1, accessibility: accessibility_config) }
 
       let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: prepare1) }
       let!(:job_variable_2) { create(:ci_job_variable, :dotenv_source, job: prepare2) }
       let!(:job_variable_3) { create(:ci_job_variable, :dotenv_source, job: prepare3) }
 
-      it 'inherits only needs with artifacts variables' do
-        expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value)
+      context 'inherits only needs with artifacts variables that are public' do
+        let(:accessibility_config) { 'public' }
+
+        it { expect(subject.to_hash).to eq(job_variable_1.key => job_variable_1.value) }
+      end
+
+      context 'does not inherit needs with artifacts variables that are private' do
+        let(:accessibility_config) { 'private' }
+
+        it { expect(subject.to_hash).not_to eq(job_variable_1.key => job_variable_1.value) }
       end
     end
   end

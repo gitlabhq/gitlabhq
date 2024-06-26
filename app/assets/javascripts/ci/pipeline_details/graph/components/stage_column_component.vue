@@ -220,7 +220,7 @@ export default {
           :css-class-job-name="$options.jobClasses"
           :class="[
             { 'gl-opacity-3': isFadedOut(group.name) },
-            'gl-transition-duration-slow gl-transition-timing-function-ease',
+            'gl-duration-slow gl-transition-timing-function-ease',
           ]"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
           @setSkipRetryModal="$emit('setSkipRetryModal')"

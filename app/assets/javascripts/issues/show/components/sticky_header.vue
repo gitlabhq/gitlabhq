@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlIcon, GlIntersectionObserver, GlLink } from '@gitlab/ui';
+import { GlBadge, GlIntersectionObserver, GlLink } from '@gitlab/ui';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
 import { issuableStatusText, STATUS_CLOSED, WORKSPACE_PROJECT } from '~/issues/constants';
@@ -11,7 +11,6 @@ export default {
   components: {
     ConfidentialityBadge,
     GlBadge,
-    GlIcon,
     GlIntersectionObserver,
     GlLink,
     HiddenBadge,
@@ -85,9 +84,8 @@ export default {
         <div
           class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto"
         >
-          <gl-badge :variant="statusVariant">
-            <gl-icon :name="statusIcon" />
-            <span class="gl-block gl-ml-2">{{ statusText }}</span>
+          <gl-badge :variant="statusVariant" :icon="statusIcon">
+            {{ statusText }}
           </gl-badge>
           <confidentiality-badge
             v-if="isConfidential"

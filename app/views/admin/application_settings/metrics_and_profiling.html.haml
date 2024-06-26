@@ -5,60 +5,47 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
-%section.settings.as-prometheus.no-animate#js-prometheus-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Metrics - Prometheus')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Monitor GitLab with Prometheus.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Metrics - Prometheus'),
+  id: 'js-prometheus-settings',
+  testid: 'prometheus-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Monitor GitLab with Prometheus.')
+  - c.with_body do
     = render 'prometheus'
 
-%section.settings.as-grafana.no-animate#js-grafana-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Metrics - Grafana')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Link to your Grafana instance.')
-      = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/grafana_configuration'), target: '_blank', rel: 'noopener noreferrer'
-
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Metrics - Grafana'),
+  id: 'js-grafana-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Link to your Grafana instance.')
+    = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/grafana_configuration'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'grafana'
 
-%section.settings.as-performance-bar.no-animate#js-performance-bar-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'performance-bar-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Profiling - Performance bar')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Enable access to the performance bar for non-administrators in a given group.')
-      = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/performance_bar', anchor: 'enable-the-performance-bar-for-non-administrators'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Profiling - Performance bar'),
+  id: 'js-performance-bar-settings',
+  testid: 'performance-bar-settings-content',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Enable access to the performance bar for non-administrators in a given group.')
+    = link_to _('Learn more.'), help_page_path('administration/monitoring/performance/performance_bar', anchor: 'enable-the-performance-bar-for-non-administrators'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'performance_bar'
 
-%section.settings.as-usage.no-animate#js-usage-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'usage-statistics-settings-content' } }
-  .settings-header#usage-statistics
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Usage statistics')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Enable or disable version check and Service Ping.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Usage statistics'),
+  id: 'js-usage-settings',
+  testid: 'usage-statistics-settings-content',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Enable or disable version check and Service Ping.')
+  - c.with_body do
     = render 'usage'
 
-%section.settings.as-sentry.no-animate#js-sentry-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Sentry')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure Sentry integration for error tracking')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Sentry'),
+  id: 'js-sentry-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure Sentry integration for error tracking')
+  - c.with_body do
     = render 'sentry'

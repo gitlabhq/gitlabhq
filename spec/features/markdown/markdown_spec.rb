@@ -265,7 +265,7 @@ RSpec.describe 'GitLab Markdown', :aggregate_failures, feature_category: :team_p
         expect(doc).to create_toc
       end
 
-      aggregate_failures 'AutolinkFilter' do
+      aggregate_failures 'Autolinking in MarkdownFilter' do
         expect(doc).to create_autolinks
       end
 

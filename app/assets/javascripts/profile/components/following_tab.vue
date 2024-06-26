@@ -64,7 +64,7 @@ export default {
   <gl-tab>
     <template #title>
       <span>{{ $options.i18n.title }}</span>
-      <gl-badge size="sm" class="gl-ml-2">{{ followeesCount }}</gl-badge>
+      <gl-badge class="gl-ml-2">{{ followeesCount }}</gl-badge>
     </template>
     <follow
       :users="following"

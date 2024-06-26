@@ -23,7 +23,6 @@ exports[`Merge request dashboard collapsible section renders section 1`] = `
     <gl-badge-stub
       class="gl-ml-3"
       iconsize="md"
-      size="sm"
       variant="neutral"
     >
       3

@@ -200,6 +200,8 @@ RSpec.describe Banzai::Filter::WikiLinkGollumFilter, feature_category: :wiki do
     end
   end
 
+  it_behaves_like 'pipeline timing check'
+
   def pipeline_filter(text, context = {})
     context = { project: project, no_sourcepos: true }.merge(context)
 

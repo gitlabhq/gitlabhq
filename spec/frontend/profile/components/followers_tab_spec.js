@@ -64,8 +64,7 @@ describe('FollowersTab', () => {
       expect(wrapper.findComponent(GlTab).text()).toContain(s__('UserProfile|Followers'));
     });
 
-    it('renders `GlBadge`, sets size and content', () => {
-      expect(findGlBadge().props('size')).toBe('sm');
+    it('renders `GlBadge`, sets content', () => {
       expect(findGlBadge().text()).toBe('2');
     });
 

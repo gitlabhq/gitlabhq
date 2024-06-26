@@ -79,7 +79,7 @@ module Spam
           target.spam!
           create_spam_log
           create_spam_abuse_event(result)
-          ban_user!
+          ban_user
         when DISALLOW
           target.spam!
           create_spam_log
@@ -137,10 +137,10 @@ module Spam
       end
     end
 
-    def ban_user!
+    def ban_user
       UserCustomAttribute.set_banned_by_spam_log(target.spam_log)
 
-      user.ban!
+      Users::AutoBanService.new(user: user, reason: 'spam').execute
     end
 
     def spam_verdict_service

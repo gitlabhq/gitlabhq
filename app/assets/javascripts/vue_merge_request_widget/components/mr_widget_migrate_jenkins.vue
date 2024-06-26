@@ -52,7 +52,6 @@ export default {
         variant="info"
         :title="$options.i18n.information"
         :href="$options.MIGRATION_LINK"
-        size="md"
         data-testid="ci-icon"
       >
         <span class="ci-icon-gl-icon-wrapper"

@@ -264,7 +264,6 @@ describe.skip('Old Notes (~/deprecated_notes.js)', () => {
       notes = {
         setupNewNote: jest.fn(),
         refresh: jest.fn(),
-        collapseLongCommitList: jest.fn(),
         updateNotesCount: jest.fn(),
         putConflictEditWarningInPlace: jest.fn(),
       };

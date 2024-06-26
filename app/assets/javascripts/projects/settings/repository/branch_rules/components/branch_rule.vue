@@ -162,11 +162,11 @@ export default {
       <div>
         <strong class="gl-font-monospace">{{ name }}</strong>
 
-        <gl-badge v-if="isDefault" variant="info" size="sm" class="gl-ml-2">{{
+        <gl-badge v-if="isDefault" variant="info" class="gl-ml-2">{{
           $options.i18n.defaultLabel
         }}</gl-badge>
 
-        <gl-badge v-if="isProtected" variant="neutral" size="sm" class="gl-ml-2">{{
+        <gl-badge v-if="isProtected" variant="neutral" class="gl-ml-2">{{
           $options.i18n.protectedLabel
         }}</gl-badge>
 

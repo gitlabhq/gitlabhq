@@ -43,7 +43,7 @@ export default {
 
 <template>
   <div>
-    <gl-badge :icon="mappedStatus.icon" :variant="mappedStatus.variant" size="md" icon-size="sm">
+    <gl-badge :icon="mappedStatus.icon" :variant="mappedStatus.variant" icon-size="sm">
       {{ mappedStatus.text }}
     </gl-badge>
 

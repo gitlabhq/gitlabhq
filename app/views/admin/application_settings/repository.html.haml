@@ -3,64 +3,51 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
-%section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Default branch')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_('AdminSettings|Set the initial name and protections for the default branch of new repositories created in the instance.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Default branch'),
+  id: 'js-default-branch-name',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('AdminSettings|Set the initial name and protections for the default branch of new repositories created in the instance.')
+  - c.with_body do
     = render 'default_branch'
 
-%section.settings.as-mirror.no-animate#js-mirror-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Repository mirroring')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? 'Collapse' : 'Expand'
-    %p.gl-text-secondary
-      = _('Configure repository mirroring.')
-      = link_to _('Learn more.'), help_page_path('user/project/repository/mirror/index'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Repository mirroring'),
+  id: 'js-mirror-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure repository mirroring.')
+    = link_to _('Learn more.'), help_page_path('user/project/repository/mirror/index'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render partial: 'repository_mirrors_form'
 
-%section.settings.as-repository-storage.no-animate#js-repository-storage-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Repository storage')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure repository storage.')
-      = link_to _('Learn more.'), help_page_path('administration/repository_storage_paths'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Repository storage'),
+  id: 'js-repository-storage-settings',
+  testid: 'repository-storage-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure repository storage.')
+    = link_to _('Learn more.'), help_page_path('administration/repository_storage_paths'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'repository_storage'
 
-%section.settings.as-repository-check.no-animate#js-repository-check-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Repository maintenance')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      - repository_checks_link_url = help_page_path('administration/repository_checks')
-      - repository_checks_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: repository_checks_link_url }
-      - housekeeping_link_url = help_page_path('administration/housekeeping')
-      - housekeeping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: housekeeping_link_url }
-      = html_escape(s_('Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories.')) % { repository_checks_link_start: repository_checks_link_start, housekeeping_link_start: housekeeping_link_start, link_end: '</a>'.html_safe }
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Repository maintenance'),
+  id: 'js-repository-check-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    - repository_checks_link_url = help_page_path('administration/repository_checks')
+    - repository_checks_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: repository_checks_link_url }
+    - housekeeping_link_url = help_page_path('administration/housekeeping')
+    - housekeeping_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: housekeeping_link_url }
+    = html_escape(s_('Configure %{repository_checks_link_start}repository checks%{link_end} and %{housekeeping_link_start}housekeeping%{link_end} on repositories.')) % { repository_checks_link_start: repository_checks_link_start, housekeeping_link_start: housekeeping_link_start, link_end: '</a>'.html_safe }
+  - c.with_body do
     = render 'repository_check'
 
-%section.settings.as-repository-static-objects.no-animate#js-repository-static-objects-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('External storage for repository static objects')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Serve repository static objects (for example, archives and blobs) from external storage.')
-      = link_to _('Learn more.'), help_page_path('administration/static_objects_external_storage'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('External storage for repository static objects'),
+  id: 'js-repository-static-objects-settings',
+  testid: 'repository-static-objects-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Serve repository static objects (for example, archives and blobs) from external storage.')
+    = link_to _('Learn more.'), help_page_path('administration/static_objects_external_storage'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'repository_static_objects'

@@ -11,7 +11,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
     stroke-opacity="0.8"
   >
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-0"
     >
       <lineargradient
@@ -52,7 +52,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-3"
     >
       <lineargradient
@@ -93,7 +93,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-6"
     >
       <lineargradient
@@ -134,7 +134,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-9"
     >
       <lineargradient
@@ -175,7 +175,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-12"
     >
       <lineargradient
@@ -216,7 +216,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-15"
     >
       <lineargradient
@@ -257,7 +257,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-18"
     >
       <lineargradient
@@ -298,7 +298,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-21"
     >
       <lineargradient
@@ -339,7 +339,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-24"
     >
       <lineargradient
@@ -380,7 +380,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       />
     </g>
     <g
-      class="dag-link gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
+      class="dag-link gl-cursor-pointer gl-duration-slow gl-transition-stroke-opacity gl-transition-timing-function-ease"
       id="reference-27"
     >
       <lineargradient
@@ -423,7 +423,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
   </g>
   <g>
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-30"
       stroke="#e17223"
       stroke-linecap="round"
@@ -434,7 +434,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="154.00000000000003"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-31"
       stroke="#83ab4a"
       stroke-linecap="round"
@@ -445,7 +445,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="154"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-32"
       stroke="#5772ff"
       stroke-linecap="round"
@@ -456,7 +456,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="237.00000000000003"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-33"
       stroke="#b24800"
       stroke-linecap="round"
@@ -467,7 +467,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="320.00000000000006"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-34"
       stroke="#25d2d2"
       stroke-linecap="round"
@@ -478,7 +478,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="403.0000000000001"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-35"
       stroke="#6f3500"
       stroke-linecap="round"
@@ -489,7 +489,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="212.00000000000009"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-36"
       stroke="#006887"
       stroke-linecap="round"
@@ -500,7 +500,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="294.99999999999994"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-37"
       stroke="#487900"
       stroke-linecap="round"
@@ -511,7 +511,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="436"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-38"
       stroke="#d84280"
       stroke-linecap="round"
@@ -522,7 +522,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="353"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-39"
       stroke="#3547de"
       stroke-linecap="round"
@@ -533,7 +533,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="436"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-40"
       stroke="#006887"
       stroke-linecap="round"
@@ -544,7 +544,7 @@ exports[`The DAG graph in the basic case renders the graph svg 1`] = `
       y2="295.1890725105691"
     />
     <line
-      class="dag-node gl-cursor-pointer gl-transition-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
+      class="dag-node gl-cursor-pointer gl-duration-slow gl-transition-stroke gl-transition-timing-function-ease"
       id="reference-41"
       stroke="#275600"
       stroke-linecap="round"

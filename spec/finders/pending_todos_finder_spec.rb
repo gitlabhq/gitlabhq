@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PendingTodosFinder do
+RSpec.describe PendingTodosFinder, feature_category: :notifications do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
@@ -78,6 +78,11 @@ RSpec.describe PendingTodosFinder do
       note_3 = create(:note, discussion_id: first_discussion_note.discussion_id)
       todo1 = create(:todo, :pending, target: issue, note: note_2, user: note_2.author)
       todo2 = create(:todo, :pending, target: issue, note: note_3, user: note_3.author)
+
+      # Create a second discussion on the same issue
+      second_discussion_note = create(:discussion_note_on_issue, noteable: issue, project: issue.project)
+      todo3 = create(:todo, :pending, target: issue, note: second_discussion_note, user: second_discussion_note.author)
+
       create(:todo, :pending, note: note, user: user)
       discussion = Discussion.lazy_find(first_discussion_note.discussion_id)
       users = [note_2.author, note_3.author, user]
@@ -85,6 +90,7 @@ RSpec.describe PendingTodosFinder do
       todos = described_class.new(users: users, discussion: discussion).execute
 
       expect(todos).to contain_exactly(todo1, todo2)
+      expect(todos).not_to include(todo3)
     end
 
     it 'supports retrieving of todos for a specific action' do

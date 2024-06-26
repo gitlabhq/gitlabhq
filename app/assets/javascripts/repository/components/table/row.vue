@@ -232,9 +232,7 @@ export default {
         /><span class="position-relative">{{ fullPath }}</span>
       </component>
       <!-- eslint-disable @gitlab/vue-require-i18n-strings -->
-      <gl-badge v-if="lfsOid" variant="muted" size="sm" class="ml-1" data-testid="label-lfs"
-        >LFS</gl-badge
-      >
+      <gl-badge v-if="lfsOid" variant="muted" class="ml-1" data-testid="label-lfs">LFS</gl-badge>
       <!-- eslint-enable @gitlab/vue-require-i18n-strings -->
       <template v-if="isSubmodule">
         @ <gl-link :href="submoduleTreeUrl" class="commit-sha">{{ shortSha }}</gl-link>

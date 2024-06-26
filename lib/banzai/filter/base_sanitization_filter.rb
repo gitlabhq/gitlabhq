@@ -11,10 +11,15 @@ module Banzai
     #
     # Extends HTML::Pipeline::SanitizationFilter with common rules.
     class BaseSanitizationFilter < HTML::Pipeline::SanitizationFilter
+      include Concerns::TimeoutFilterHandler
       include Gitlab::Utils::StrongMemoize
       extend Gitlab::Utils::SanitizeNodeLink
 
       UNSAFE_PROTOCOLS = %w[data javascript vbscript].freeze
+
+      def call_with_timeout
+        Sanitize.clean_node!(doc, allowlist)
+      end
 
       def allowlist
         strong_memoize(:allowlist) do
@@ -63,6 +68,14 @@ module Banzai
 
       def customize_allowlist(allowlist)
         raise NotImplementedError
+      end
+
+      private
+
+      # If sanitization times out, we can not return partial un-sanitized results.
+      # It's ok to allow any following filters to run since this is safe HTML.
+      def returned_timeout_value
+        HTML::Pipeline.parse(COMPLEX_MARKDOWN_MESSAGE)
       end
 
       class << self

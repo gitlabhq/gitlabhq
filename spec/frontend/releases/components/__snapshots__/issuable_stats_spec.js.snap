@@ -9,7 +9,7 @@ exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
   >
     Items
     <span
-      class="badge badge-muted badge-pill gl-badge sm"
+      class="badge badge-muted badge-pill gl-badge"
     >
       10
     </span>

@@ -202,7 +202,7 @@ export default {
       >
         <template #title>
           <span>{{ $options.i18n.active }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge">
+          <gl-badge class="gl-tab-counter-badge">
             {{ activeCount }}
           </gl-badge>
         </template>
@@ -213,7 +213,7 @@ export default {
       >
         <template #title>
           <span>{{ $options.i18n.stopped }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge">
+          <gl-badge class="gl-tab-counter-badge">
             {{ stoppedCount }}
           </gl-badge>
         </template>

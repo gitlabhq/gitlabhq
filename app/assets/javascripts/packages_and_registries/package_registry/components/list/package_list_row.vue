@@ -157,7 +157,6 @@ export default {
             v-gl-tooltip="{ title: $options.i18n.badgeProtectedTooltipText }"
             class="gl-ml-2"
             icon-size="sm"
-            size="sm"
             variant="neutral"
           >
             {{ __('protected') }}

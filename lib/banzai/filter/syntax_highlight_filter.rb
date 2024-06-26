@@ -10,6 +10,7 @@ module Banzai
     # HTML Filter to highlight fenced code blocks
     #
     class SyntaxHighlightFilter < TimeoutHtmlPipelineFilter
+      prepend Concerns::PipelineTimingCheck
       include OutputSafety
 
       CSS_CLASSES = 'code highlight js-syntax-highlight'

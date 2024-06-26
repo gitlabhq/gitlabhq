@@ -254,12 +254,11 @@ class Notify < ApplicationMailer
   def check_rate_limit
     return if rate_limit_scope.nil? || @recipient.nil?
 
-    enforce_rate_limit = Feature.enabled?(:rate_limit_notification_emails, rate_limit_scope)
     already_notified = throttled?(peek: true)
 
     return unless throttled?
 
-    message.perform_deliveries = false if enforce_rate_limit
+    message.perform_deliveries = false
 
     return if already_notified
 
@@ -269,8 +268,6 @@ class Notify < ApplicationMailer
       project_id: @project&.id,
       group_id: @group&.id
     )
-
-    return unless enforce_rate_limit
 
     Namespaces::RateLimiterMailer.project_or_group_emails(
       rate_limit_scope,

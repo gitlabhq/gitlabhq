@@ -98,7 +98,7 @@ RSpec.describe Banzai::Filter::References::WorkItemReferenceFilter, feature_cate
       inner_html = 'element <code>node</code> inside'
       doc = reference_filter(%(<a href="#{written_reference}">#{inner_html}</a>))
 
-      expect(doc.children.first.attr('data-original')).to eq inner_html
+      expect(doc.children.first.children.first.attr('data-original')).to eq inner_html
     end
 
     it 'includes a data-reference-format attribute' do

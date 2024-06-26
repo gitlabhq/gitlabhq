@@ -184,4 +184,25 @@ RSpec.describe Banzai::Filter::MarkdownFilter, feature_category: :team_planning 
       expect(result).to eq(expected.strip)
     end
   end
+
+  # More extensive tests in https://gitlab.com/gitlab-org/ruby/gems/gitlab-glfm-markdown
+  describe 'autolink' do
+    it 'does nothing when :autolink is false' do
+      expected = "<p>http://example.com</p>"
+
+      expect(filter('http://example.com', { autolink: false, no_sourcepos: true })).to eq expected
+    end
+
+    it 'autolinks https' do
+      expected = '<p><a href="https://example.com">https://example.com</a></p>'
+
+      expect(filter('https://example.com', no_sourcepos: true)).to eq expected
+    end
+
+    it 'autolinks any scheme' do
+      expected = '<p><a href="smb:///Volumes/shared/foo.pdf">smb:///Volumes/shared/foo.pdf</a></p>'
+
+      expect(filter('smb:///Volumes/shared/foo.pdf', no_sourcepos: true)).to eq expected
+    end
+  end
 end

@@ -317,9 +317,7 @@ export default {
       <gl-tab v-if="showDependencies">
         <template #title>
           <span>{{ __('Dependencies') }}</span>
-          <gl-badge size="sm" data-testid="dependencies-badge">{{
-            packageDependencies.length
-          }}</gl-badge>
+          <gl-badge data-testid="dependencies-badge">{{ packageDependencies.length }}</gl-badge>
         </template>
 
         <template v-if="packageDependencies.length > 0">
@@ -334,7 +332,7 @@ export default {
       <gl-tab title-item-class="js-versions-tab" lazy>
         <template #title>
           <span>{{ $options.i18n.otherVersionsTabTitle }}</span>
-          <gl-badge size="sm" class="gl-tab-counter-badge" data-testid="other-versions-badge">{{
+          <gl-badge class="gl-tab-counter-badge" data-testid="other-versions-badge">{{
             packageVersionsCount
           }}</gl-badge>
         </template>
