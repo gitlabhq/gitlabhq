@@ -60,7 +60,7 @@ To change your username:
 
 ## Add emails to your user profile
 
-To add new email to your account:
+To add a new email address to your account:
 
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
@@ -69,6 +69,10 @@ To add new email to your account:
 1. In the **Email** text box, enter the new email.
 1. Select **Add email address**.
 1. Verify your email address with the verification email received.
+
+The new email address is added as a secondary email address.
+You can use secondary email addresses to reset passwords but not to authenticate.
+You can update your [primary email address](#change-your-primary-email).
 
 NOTE:
 [Making your email non-public](#set-your-public-email) does not prevent it from being used for commit matching,

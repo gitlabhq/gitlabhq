@@ -97,7 +97,7 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip.viewport.left
-    class="ci-icon gl-p-2"
+    class="ci-icon !gl-p-2"
     :class="`ci-icon-variant-${variant}`"
     :variant="variant"
     :title="title"

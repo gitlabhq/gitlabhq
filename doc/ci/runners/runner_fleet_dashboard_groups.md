@@ -9,9 +9,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed
-**Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/424789) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.1.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151640) as a [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `runners_dashboard_for_groups`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/459052) in GitLab 17.2. Feature flag `runners_dashboard_for_groups` removed.
 
 Users with at least the Maintainer role for a group can use the runner fleet dashboard to assess the health of group runners.
 

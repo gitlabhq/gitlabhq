@@ -392,3 +392,7 @@ DETAILS:
 
 See the [Users API documentation](users.md#create-a-personal-access-token-with-limited-scopes-for-the-currently-authenticated-user)
 for information on creating a personal access token for the currently authenticated user.
+
+## Troubleshooting access tokens
+
+To troubleshoot access token issues, see the [token troubleshooting guide](../security/token_overview.md#troubleshooting).

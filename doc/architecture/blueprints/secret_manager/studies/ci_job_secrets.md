@@ -148,6 +148,12 @@ Here's a step-by-step guide on how to test this locally:
    bao secrets enable kv-v2 # By default mounts to `kv-v2/data`
    ```
 
+1. Enable jwt authentication.
+
+   ```shell
+   bao auth enable jwt
+   ```
+
 1. Configure OpenBao JWT authentication.
 
    ```shell

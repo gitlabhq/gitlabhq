@@ -11,11 +11,11 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455582) in GitLab 17.1 [with flags](../../administration/feature_flags.md) named `FF_TIMESTAMPS` and `parse_ci_job_timestamps`. Disabled by default.
-> - `parse_ci_job_timestamps` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/455581) in GitLab 17.1.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/464785) in GitLab 17.2. Feature flag `parse_ci_job_timestamps` removed.
+> - Feature flag `parse_ci_job_timestamps` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/455581) in GitLab 17.1.
+> - Feature flag `parse_ci_job_timestamps` [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/464785) in GitLab 17.2.
 
 FLAG:
-The availability of this feature is controlled by feature flags.
+The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
 Prerequisites:

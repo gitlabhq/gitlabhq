@@ -182,7 +182,7 @@ module InternalEventsCli
 
       ex) For an event like 'change_merge_request_status', we might want to include:
 
-          Attribute: String 1 (aka label)
+          Attribute: String 1 (attribute will be named `label`)
           Description: Status of merge request after update (one of opened, merged, closed)
 
           This would enable us to create a metric like: Monthly count of unique users who changed an MR status to "closed"

@@ -121,17 +121,17 @@ module InternalEventsCli
           { value: :none, name: 'None! Continue to next section!' },
           disableable_option(
             value: :label,
-            name: 'String 1 (aka label)',
+            name: 'String 1 (attribute will be named `label`)',
             disabled: disabled
           ) { !available_props.include?(:label) },
           disableable_option(
             value: :property,
-            name: 'String 2 (aka property)',
+            name: 'String 2 (attribute will be named `property`)',
             disabled: disabled
           ) { !available_props.include?(:property) },
           disableable_option(
             value: :value,
-            name: 'Number (aka value)',
+            name: 'Number (attribute will be named `value`)',
             disabled: disabled
           ) { !available_props.include?(:value) }
         ]

@@ -33596,6 +33596,9 @@ msgstr ""
 msgid "MlModelRegistry|Enter a semantic version. Latest version is %{latestVersion}"
 msgstr ""
 
+msgid "MlModelRegistry|Enter a subfolder name to organize your artifacts."
+msgstr ""
+
 msgid "MlModelRegistry|Enter some description"
 msgstr ""
 
@@ -33720,6 +33723,9 @@ msgid "MlModelRegistry|Store and manage your machine learning models and version
 msgstr ""
 
 msgid "MlModelRegistry|Subfolder (optional)"
+msgstr ""
+
+msgid "MlModelRegistry|Subfolder cannot contain spaces"
 msgstr ""
 
 msgid "MlModelRegistry|This model has no candidates"

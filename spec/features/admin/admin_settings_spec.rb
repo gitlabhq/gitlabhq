@@ -1061,7 +1061,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           it 'shows deactivation email additional text field' do
             expect(page).to have_field 'Additional text for deactivation email'
 
-            page.within('.as-email') do
+            within_testid('email-content') do
               fill_in 'Additional text for deactivation email', with: 'So long and thanks for all the fish!'
               click_button 'Save changes'
             end
@@ -1076,7 +1076,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         new_support_url = 'http://example.com/help'
         new_documentation_url = 'https://docs.gitlab.com'
 
-        page.within('.as-help-page') do
+        within_testid('help-page-content') do
           fill_in 'Additional text to show on the Help page', with: 'Example text'
           check 'Hide marketing-related entries from the Help page'
           fill_in 'Support page URL', with: new_support_url
@@ -1092,7 +1092,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Pages settings' do
-        page.within('.as-pages') do
+        within_testid('pages-content') do
           fill_in 'Maximum size of pages (MiB)', with: 15
           check 'Require users to prove ownership of custom domains'
           click_button 'Save changes'
@@ -1104,7 +1104,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Real-time features settings' do
-        page.within('.as-realtime') do
+        within_testid('realtime-content') do
           fill_in 'Polling interval multiplier', with: 5.0
           click_button 'Save changes'
         end
@@ -1114,7 +1114,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'shows an error when validation fails' do
-        page.within('.as-realtime') do
+        within_testid('realtime-content') do
           fill_in 'Polling interval multiplier', with: -1.0
           click_button 'Save changes'
         end
@@ -1126,7 +1126,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
       it "change Pages Let's Encrypt settings" do
         visit preferences_admin_application_settings_path
-        page.within('.as-pages') do
+        within_testid('pages-content') do
           fill_in "Let's Encrypt email", with: 'my@test.example.com'
           check "I have read and agree to the Let's Encrypt Terms of Service"
           click_button 'Save changes'
