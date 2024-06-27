@@ -12,6 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/455582) in GitLab 17.1 [with flags](../../administration/feature_flags.md) named `FF_TIMESTAMPS` and `parse_ci_job_timestamps`. Disabled by default.
 > - `parse_ci_job_timestamps` [enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/455581) in GitLab 17.1.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/464785) in GitLab 17.2. Feature flag `parse_ci_job_timestamps` removed.
 
 FLAG:
 The availability of this feature is controlled by feature flags.
@@ -22,8 +23,6 @@ Prerequisites:
 - You must be on GitLab Runner 17.0 and later.
 - An administrator must enable the `FF_TIMESTAMPS`
   [feature flag](../../administration/feature_flags.md) in `.gitlab-ci.yml`.
-- On self-managed GitLab, an administrator must enable
-  the `parse_ci_job_timestamps` feature flag.
 
 This feature generates a timestamp in the
 [ISO 8601 format](https://www.iso.org/iso-8601-date-and-time-format.html) for each line in the CI log.

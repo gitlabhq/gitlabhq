@@ -1,6 +1,6 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { isEqual } from 'lodash';
+import { isEqual, inRange } from 'lodash';
 import { __ } from '~/locale';
 import GroupsView from '~/organizations/shared/components/groups_view.vue';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
@@ -32,6 +32,7 @@ export default {
   i18n: {
     pageTitle: __('Groups and projects'),
     displayListboxHeaderText: __('Display'),
+    filteredSearchPlaceholder: __('Search (3 character minimum)'),
   },
   components: {
     FilteredSearchAndSort,
@@ -148,6 +149,13 @@ export default {
     },
     onFilter(filters) {
       const { display, sort_name, sort_direction } = this.$route.query;
+      const { [FILTERED_SEARCH_TERM_KEY]: search = '' } = filters;
+
+      // API requires search to be 3 characters
+      // Don't search if length is between 1 and 3 characters
+      if (inRange(search.length, 1, 3)) {
+        return;
+      }
 
       this.pushQuery({
         display,
@@ -183,6 +191,7 @@ export default {
       :is-ascending="isAscending"
       :sort-options="$options.sortItems"
       :active-sort-option="activeSortItem"
+      :search-input-placeholder="$options.i18n.filteredSearchPlaceholder"
       @filter="onFilter"
       @sort-direction-change="onSortDirectionChange"
       @sort-by-change="onSortByChange"

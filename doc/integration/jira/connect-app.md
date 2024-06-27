@@ -92,7 +92,7 @@ To configure the GitLab for Jira Cloud app:
 1. Optional. To link a self-managed GitLab instance with Jira, select **Change GitLab version**.
    1. Select all checkboxes, then select **Next**.
    1. Enter your **GitLab instance URL**, then select **Save**.
-1. Select **Sign in to GitLab**, then enter your credentials.
+1. Select **Sign in to GitLab**, then enter your username and password. The integration doesn't support single-sign on such as SAML during configuration.
 1. Select **Authorize**. A list of groups is now visible.
 1. Select **Link groups**.
 1. To link to a group, select **Link**.

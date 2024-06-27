@@ -499,7 +499,7 @@ RSpec.describe 'Admin::Users', feature_category: :user_management do
       within(:css, '.gl-mb-3 + .gl-card') do
         click_link group.name
       end
-      expect(page).to have_content "Group: #{group.name}"
+      expect(page).to have_content group.name
       expect(page).to have_content project.name
     end
 

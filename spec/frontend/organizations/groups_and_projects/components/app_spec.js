@@ -146,17 +146,47 @@ describe('GroupsAndProjectsApp', () => {
   });
 
   describe('when filtered search bar is submitted', () => {
-    const searchTerm = 'foo bar';
+    describe('when search term is 3 characters or more', () => {
+      const searchTerm = 'foo bar';
 
-    beforeEach(() => {
-      createComponent();
+      beforeEach(() => {
+        createComponent();
 
-      findFilteredSearchAndSort().vm.$emit('filter', { [FILTERED_SEARCH_TERM_KEY]: searchTerm });
+        findFilteredSearchAndSort().vm.$emit('filter', { [FILTERED_SEARCH_TERM_KEY]: searchTerm });
+      });
+
+      it(`updates \`${FILTERED_SEARCH_TERM_KEY}\` query string`, () => {
+        expect(routerMock.push).toHaveBeenCalledWith({
+          query: { [FILTERED_SEARCH_TERM_KEY]: searchTerm },
+        });
+      });
     });
 
-    it(`updates \`${FILTERED_SEARCH_TERM_KEY}\` query string`, () => {
-      expect(routerMock.push).toHaveBeenCalledWith({
-        query: { [FILTERED_SEARCH_TERM_KEY]: searchTerm },
+    describe('when search term is less than 3 characters', () => {
+      const searchTerm = 'fo';
+
+      beforeEach(() => {
+        createComponent();
+
+        findFilteredSearchAndSort().vm.$emit('filter', { [FILTERED_SEARCH_TERM_KEY]: searchTerm });
+      });
+
+      it('does not update query string', () => {
+        expect(routerMock.push).not.toHaveBeenCalled();
+      });
+    });
+
+    describe('when search term is empty but there are other filters', () => {
+      beforeEach(() => {
+        createComponent();
+
+        findFilteredSearchAndSort().vm.$emit('filter', { foo: 'bar' });
+      });
+
+      it('updates query string', () => {
+        expect(routerMock.push).toHaveBeenCalledWith({
+          query: { foo: 'bar' },
+        });
       });
     });
   });

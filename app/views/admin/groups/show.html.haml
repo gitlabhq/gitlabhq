@@ -4,19 +4,15 @@
 - page_title @group.name, _("Groups")
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
-%h1.page-title.gl-font-size-h-display
-  = _('Group: %{group_name}') % { group_name: @group.full_name }
+= render ::Layouts::PageHeadingComponent.new(@group.full_name) do |c|
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(@group),
+      button_options: { data: { testid: 'edit-group-link' }}) do
+      = _('Edit')
 
-  = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(@group),
-    button_options: { class: 'gl-float-right', data: { testid: 'edit-group-link' }},
-    icon: 'pencil') do
-    = _('Edit')
-%hr
-.row
-  .col-md-6
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.with_header do
-        = _('Group info:')
+.gl-grid.md:gl-grid-cols-2.gl-gap-5
+  .gl-flex.gl-flex-col.gl-gap-5
+    = render ::Layouts::CrudComponent.new(_('Group information')) do |c|
       - c.with_body do
         %ul.content-list.content-list-items-padding
           %li
@@ -29,32 +25,25 @@
             %span.light= _('Path:')
             %strong
               = @group.path
-
           %li
             %span.light= _('Description:')
             %strong
               = @group.description
-
           %li
             %span.light= _('Visibility level:')
             %strong
               = visibility_level_label(@group.visibility_level)
-
           %li
             %span.light= _('Created on:')
             %strong
               = @group.created_at.to_fs(:medium)
-
           %li
             %span.light= _('ID:')
             %strong
               = @group.id
-
           = render_if_exists 'admin/namespace_plan_info', namespace: @group
-
           %li
             = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
-
           %li
             %span.light= _('Group Git LFS status:')
             %strong
@@ -64,33 +53,30 @@
           = render_if_exists 'namespaces/shared_runner_status', namespace: @group
           = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
 
-    = render 'shared/custom_attributes', custom_attributes: @group.custom_attributes
-
-    = render_if_exists 'ldap_group_links/ldap_group_links_show', group: @group
-
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.with_header do
-        = _('Projects')
-        = gl_badge_tag @group.projects.count
+    = render ::Layouts::CrudComponent.new(_('Projects'),
+      icon: 'project',
+      count: @group.projects.count) do |c|
       - c.with_body do
-        %ul.content-list.content-list-items-padding
-          - @projects.each do |project|
-            %li
-              %strong
-                = link_to project.full_name, [:admin, project]
-                = gl_badge_tag storage_counter(project.statistics.storage_size)
-              %span.gl-float-right.light
-                %span.monospace= project.full_path + '.git'
-        - unless @projects.size < Kaminari.config.default_per_page
-          - c.with_footer do
-            = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
+        - if @projects.any?
+          %ul.content-list.content-list-items-padding
+            - @projects.each do |project|
+              %li
+                %strong
+                  = link_to project.full_name, [:admin, project]
+                  = gl_badge_tag storage_counter(project.statistics.storage_size)
+                %span.gl-float-right.light
+                  %span.monospace= project.full_path + '.git'
+        - else
+          %p.gl-new-card-empty.gl-text-center= _('No projects')
+      - unless @projects.size < Kaminari.config.default_per_page
+        - c.with_footer do
+          = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
     - shared_projects = @group.shared_projects.sort_by(&:name)
     - unless shared_projects.empty?
-      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-        - c.with_header do
-          = _('Projects shared with %{group_name}') % { group_name: @group.name }
-          = gl_badge_tag shared_projects.size
+      = render ::Layouts::CrudComponent.new(_('Projects shared with %{group_name}') % { group_name: @group.name },
+        icon: 'project',
+        count: shared_projects.size) do |c|
         - c.with_body do
           %ul.content-list.content-list-items-padding
             - shared_projects.each do |project|
@@ -101,16 +87,16 @@
                 %span.gl-float-right.light
                   %span.monospace= project.full_path + '.git'
 
-  .col-md-6
-    = render 'shared/admin/admin_note'
-
     - if can?(current_user, :admin_group_member, @group)
       = render 'shared/members/requests', membership_source: @group, group: @group, requesters: @requesters, force_mobile_view: true
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.with_header do
-        = html_escape(_("%{group_name} group members")) % { group_name: "<strong>#{html_escape(@group.name)}</strong>".html_safe }
-        = gl_badge_tag @group.users_count
+  .gl-flex.gl-flex-col.gl-gap-5
+    = render 'shared/admin/admin_note'
+
+    = render ::Layouts::CrudComponent.new(_('Group members'),
+      icon: 'user',
+      count: @group.users_count) do |c|
+      - c.with_actions do
         = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
       - c.with_body do
         %ul.content-list.group-users-list.members-list
@@ -122,3 +108,7 @@
       - unless @members.size < Kaminari.config.default_per_page
         - c.with_footer do
           = paginate @members, param_name: 'members_page', theme: 'gitlab'
+
+    = render 'shared/custom_attributes', custom_attributes: @group.custom_attributes
+
+    = render_if_exists 'ldap_group_links/ldap_group_links_show', group: @group

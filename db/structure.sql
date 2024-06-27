@@ -934,6 +934,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_25d35f02ab55() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "ml_candidates"
+  WHERE "ml_candidates"."id" = NEW."candidate_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_25fe4f7da510() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12314,7 +12330,7 @@ CREATE TABLE merge_request_context_commits (
     message text,
     merge_request_id bigint,
     trailers jsonb DEFAULT '{}'::jsonb NOT NULL,
-    project_id bigint
+    project_id bigint,
     CONSTRAINT check_1dc6b5f2ac CHECK ((merge_request_id IS NOT NULL))
 );
 
@@ -12764,6 +12780,7 @@ CREATE TABLE ml_candidate_metadata (
     candidate_id bigint NOT NULL,
     name text NOT NULL,
     value text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_6b38a286a5 CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_9453f4a8e9 CHECK ((char_length(value) <= 5000))
 );
@@ -27701,6 +27718,8 @@ CREATE UNIQUE INDEX index_ml_candidate_metadata_on_candidate_id_and_name ON ml_c
 
 CREATE INDEX index_ml_candidate_metadata_on_name ON ml_candidate_metadata USING btree (name);
 
+CREATE INDEX index_ml_candidate_metadata_on_project_id ON ml_candidate_metadata USING btree (project_id);
+
 CREATE INDEX index_ml_candidate_metrics_on_candidate_id ON ml_candidate_metrics USING btree (candidate_id);
 
 CREATE INDEX index_ml_candidate_params_on_candidate_id ON ml_candidate_params USING btree (candidate_id);
@@ -31389,6 +31408,8 @@ CREATE TRIGGER trigger_2514245c7fc5 BEFORE INSERT OR UPDATE ON dast_site_profile
 
 CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_links FOR EACH ROW EXECUTE FUNCTION trigger_25c44c30884f();
 
+CREATE TRIGGER trigger_25d35f02ab55 BEFORE INSERT OR UPDATE ON ml_candidate_metadata FOR EACH ROW EXECUTE FUNCTION trigger_25d35f02ab55();
+
 CREATE TRIGGER trigger_25fe4f7da510 BEFORE INSERT OR UPDATE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION trigger_25fe4f7da510();
 
 CREATE TRIGGER trigger_2ac3d66ed1d3 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_2ac3d66ed1d3();
@@ -32491,6 +32512,9 @@ ALTER TABLE ONLY approval_merge_request_rules
 
 ALTER TABLE ONLY fork_network_members
     ADD CONSTRAINT fk_b01280dae4 FOREIGN KEY (forked_from_project_id) REFERENCES projects(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY ml_candidate_metadata
+    ADD CONSTRAINT fk_b044692715 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY sbom_occurrences
     ADD CONSTRAINT fk_b1b65d8d17 FOREIGN KEY (source_package_id) REFERENCES sbom_source_packages(id) ON DELETE CASCADE;

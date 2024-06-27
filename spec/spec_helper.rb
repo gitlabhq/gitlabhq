@@ -342,6 +342,10 @@ RSpec.configure do |config|
 
       # We want this this FF disabled by default
       stub_feature_flags(synced_epic_work_item_editable: false)
+
+      # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
+      # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/466081 for tracking revisiting this.
+      stub_feature_flags(your_work_projects_vue: false)
     else
       unstub_all_feature_flags
     end

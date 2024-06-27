@@ -81,7 +81,7 @@ To switch organizations:
 1. On the left sidebar, select **Organizations** and find the organization you want to manage.
 1. Select **Manage > Groups and projects**.
 1. Optional. Filter the results:
-   - To search for specific groups or projects, in the search box enter your search term.
+   - To search for specific groups or projects, in the search box enter your search term (minimum three characters).
    - To view only groups or projects, from the **Display** dropdown list select an option.
 1. Optional. To sort the results by name, date created, or date updated, from the dropdown list select an option. Then select ascending (**{sort-lowest}**) or descending (**{sort-highest}**) order.
 

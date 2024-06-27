@@ -10,3 +10,7 @@ milestone: '8.16'
 gitlab_schema: gitlab_main_cell
 sharding_key:
   project_id: projects
+schema_inconsistencies:
+- type: missing_indexes
+  object_name: index_project_statistics_on_wiki_size_and_project_id
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156010

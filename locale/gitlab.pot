@@ -832,9 +832,6 @@ msgstr ""
 msgid "%{group_name} activity"
 msgstr ""
 
-msgid "%{group_name} group members"
-msgstr ""
-
 msgid "%{group_name} is approaching the limit of available seats"
 msgstr ""
 
@@ -16079,6 +16076,9 @@ msgstr ""
 msgid "Custom analyzers: language support"
 msgstr ""
 
+msgid "Custom attributes"
+msgstr ""
+
 msgid "Custom confirmation message: %{message}"
 msgstr ""
 
@@ -19763,6 +19763,9 @@ msgid "Edit video description"
 msgstr ""
 
 msgid "Edit wiki page"
+msgstr ""
+
+msgid "Edit your criteria and try again."
 msgstr ""
 
 msgid "Edit your most recent comment in a thread (from an empty textarea)"
@@ -25075,9 +25078,6 @@ msgid "Group import could not be scheduled"
 msgstr ""
 
 msgid "Group import requests"
-msgstr ""
-
-msgid "Group info:"
 msgstr ""
 
 msgid "Group information"
@@ -34940,6 +34940,9 @@ msgstr ""
 msgid "No project subscribes to the pipelines in this project."
 msgstr ""
 
+msgid "No projects"
+msgstr ""
+
 msgid "No projects available."
 msgstr ""
 
@@ -42158,6 +42161,9 @@ msgstr ""
 msgid "Projects in this group can use Git LFS"
 msgstr ""
 
+msgid "Projects list"
+msgstr ""
+
 msgid "Projects shared with %{group_name}"
 msgstr ""
 
@@ -47703,6 +47709,12 @@ msgstr ""
 msgid "SecurityOrchestration|Branch: %{boldStart}%{branchName}%{boldEnd} was not found in project: %{boldStart}%{projectName}%{boldEnd}. Edit or remove this entry."
 msgstr ""
 
+msgid "SecurityOrchestration|CI/CD template edition to be enforced. The default template is stable, but may not have all the features of the latest template."
+msgstr ""
+
+msgid "SecurityOrchestration|CI/CD template edition to be enforced. The latest edition may introduce breaking changes."
+msgstr ""
+
 msgid "SecurityOrchestration|Cadence is invalid"
 msgstr ""
 
@@ -48083,6 +48095,9 @@ msgstr ""
 msgid "SecurityOrchestration|Security Scan"
 msgstr ""
 
+msgid "SecurityOrchestration|Security job template"
+msgstr ""
+
 msgid "SecurityOrchestration|Security policy overwrites this setting"
 msgstr ""
 
@@ -48368,6 +48383,9 @@ msgstr ""
 msgid "SecurityOrchestration|compliance frameworks"
 msgstr ""
 
+msgid "SecurityOrchestration|default"
+msgstr ""
+
 msgid "SecurityOrchestration|except projects"
 msgstr ""
 
@@ -48381,6 +48399,9 @@ msgid "SecurityOrchestration|have a fix available"
 msgstr ""
 
 msgid "SecurityOrchestration|have no fix available"
+msgstr ""
+
+msgid "SecurityOrchestration|latest"
 msgstr ""
 
 msgid "SecurityOrchestration|more than %{allowed}"

@@ -1,5 +1,5 @@
 <script>
-import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
@@ -15,6 +15,7 @@ import {
 import groupsQuery from '../graphql/queries/groups.query.graphql';
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import NewGroupButton from './new_group_button.vue';
+import GroupsAndProjectsEmptyState from './groups_and_projects_empty_state.vue';
 
 export default {
   i18n: {
@@ -32,7 +33,13 @@ export default {
     },
     group: __('Group'),
   },
-  components: { GlLoadingIcon, GlEmptyState, GlKeysetPagination, GroupsList, NewGroupButton },
+  components: {
+    GlLoadingIcon,
+    GlKeysetPagination,
+    GroupsList,
+    NewGroupButton,
+    GroupsAndProjectsEmptyState,
+  },
   inject: {
     organizationGid: {},
     groupsEmptyStateSvgPath: {},
@@ -140,16 +147,6 @@ export default {
     isLoading() {
       return this.$apollo.queries.groups.loading;
     },
-    emptyStateProps() {
-      const baseProps = {
-        svgHeight: 144,
-        svgPath: this.groupsEmptyStateSvgPath,
-        title: this.$options.i18n.emptyState.title,
-        description: this.$options.i18n.emptyState.description,
-      };
-
-      return baseProps;
-    },
     timestampType() {
       return timestampType(this.sortName);
     },
@@ -203,9 +200,15 @@ export default {
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
-  <gl-empty-state v-else v-bind="emptyStateProps">
+  <groups-and-projects-empty-state
+    v-else
+    :svg-path="groupsEmptyStateSvgPath"
+    :title="$options.i18n.emptyState.title"
+    :description="$options.i18n.emptyState.description"
+    :search="search"
+  >
     <template v-if="shouldShowEmptyStateButtons" #actions>
       <new-group-button />
     </template>
-  </gl-empty-state>
+  </groups-and-projects-empty-state>
 </template>

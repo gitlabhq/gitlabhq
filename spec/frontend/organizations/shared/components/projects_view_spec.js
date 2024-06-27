@@ -1,10 +1,11 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
-import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
 import organizationProjectsGraphQlResponse from 'test_fixtures/graphql/organizations/projects.query.graphql.json';
 import ProjectsView from '~/organizations/shared/components/projects_view.vue';
 import { SORT_DIRECTION_ASC, SORT_ITEM_NAME } from '~/organizations/shared/constants';
 import NewProjectButton from '~/organizations/shared/components/new_project_button.vue';
+import GroupsAndProjectsEmptyState from '~/organizations/shared/components/groups_and_projects_empty_state.vue';
 import projectsQuery from '~/organizations/shared/graphql/queries/projects.query.graphql';
 import {
   renderDeleteSuccessToast,
@@ -95,7 +96,7 @@ describe('ProjectsView', () => {
 
   const findPagination = () => wrapper.findComponent(GlKeysetPagination);
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findEmptyState = () => wrapper.findComponent(GlEmptyState);
+  const findEmptyState = () => wrapper.findComponent(GroupsAndProjectsEmptyState);
   const findProjectsList = () => wrapper.findComponent(ProjectsList);
   const findProjectsListProjectById = (projectId) =>
     findProjectsList()
@@ -149,8 +150,8 @@ describe('ProjectsView', () => {
             title: "You don't have any projects yet.",
             description:
               'Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
-            svgHeight: 144,
             svgPath: defaultProvide.projectsEmptyStateSvgPath,
+            search: 'foo',
           });
 
           expect(findNewProjectButton().exists()).toBe(shouldShowEmptyStateButtons);

@@ -1,7 +1,5 @@
 - if @group.admin_note&.note?
   - text = @group.admin_note.note
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-border-blue-500 gl-mb-5' }, header_options: { class: 'gl-bg-blue-500 gl-text-white' }) do |c|
-    - c.with_header do
-      = s_('Admin|Admin notes')
+  = render ::Layouts::CrudComponent.new(s_('Admin|Admin notes')) do |c|
     - c.with_body do
       %p= text
