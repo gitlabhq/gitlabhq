@@ -1,5 +1,5 @@
 <script>
-import { GlDrawer, GlBadge, GlSprintf, GlButton, GlIcon, GlAlert } from '@gitlab/ui';
+import { GlDrawer, GlSprintf, GlButton, GlIcon, GlAlert } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
@@ -14,7 +14,7 @@ import {
   MEMBERS_TAB_TYPES,
 } from '~/members/constants';
 import * as Sentry from '~/ci/runner/sentry_utils';
-import MemberAvatar from './member_avatar.vue';
+import MemberAvatar from '../member_avatar.vue';
 import RoleSelector from './role_selector.vue';
 
 // The API to update members uses different property names for the access level, depending on if it's a user or a group.
@@ -29,12 +29,12 @@ export default {
     MemberAvatar,
     MembersTableCell,
     GlDrawer,
-    GlBadge,
     GlSprintf,
     GlButton,
     GlIcon,
     GlAlert,
     RoleSelector,
+    RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
     GuestOverageConfirmation: () =>
       import('ee_component/members/components/table/guest_overage_confirmation.vue'),
   },
@@ -193,19 +193,16 @@ export default {
 
         <dl>
           <dt class="gl-mb-3" data-testid="role-header">{{ s__('MemberRole|Role') }}</dt>
-          <dd>
+          <dd class="gl-flex gl-flex-wrap gl-gap-x-2 gl-gap-y-3">
             <role-selector
               v-if="permissions.canUpdate"
               v-model="selectedRole"
               :roles="roles"
               :loading="isSavingRole"
-              class="gl-mb-3"
+              class="gl-w-full"
             />
-            <span v-else class="gl-mr-1" data-testid="role-text">{{ selectedRole.text }}</span>
-
-            <gl-badge v-if="selectedRole.memberRoleId">
-              {{ s__('MemberRole|Custom role') }}
-            </gl-badge>
+            <span v-else data-testid="role-text">{{ selectedRole.text }}</span>
+            <role-badges :member="member" :role="selectedRole" />
           </dd>
 
           <template v-if="selectedRole.description">

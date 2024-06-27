@@ -11,7 +11,7 @@ module Gitlab
         end
 
         def satisfied_by?(pipeline, context)
-          compare_to_sha = find_compare_to_sha(pipeline)
+          compare_to_sha = find_compare_to_sha(pipeline, context)
           modified_paths = find_modified_paths(pipeline, compare_to_sha)
 
           return true unless modified_paths
@@ -67,10 +67,16 @@ module Gitlab
           end
         end
 
-        def find_compare_to_sha(pipeline)
+        def find_compare_to_sha(pipeline, context)
           return unless @globs.include?(:compare_to)
 
-          commit = pipeline.project.commit(@globs[:compare_to])
+          compare_to = if Feature.enabled?(:ci_expand_variables_in_compare_to, pipeline.project)
+                         ExpandVariables.expand(@globs[:compare_to], -> { context.variables_hash })
+                       else
+                         @globs[:compare_to]
+                       end
+
+          commit = pipeline.project.commit(compare_to)
           raise Rules::Rule::Clause::ParseError, 'rules:changes:compare_to is not a valid ref' unless commit
 
           commit.sha

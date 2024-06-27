@@ -359,7 +359,6 @@ Prerequisites:
 1. Expand **Visibility and access controls**.
 1. In **Globally-allowed IP ranges**, provide a list of IP address ranges. This list:
    - Has no limit on the number of IP address ranges.
-   - Has a size limit of 1 GB.
    - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
      this list by authorization type.
 1. Select **Save changes**.

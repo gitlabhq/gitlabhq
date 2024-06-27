@@ -80,7 +80,10 @@ To enable the Advanced SAST analyzer:
          when: never
        - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
          when: never
-       - if: $CI_COMMIT_BRANCH
+       - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
+         exists:
+           - '**/*.py'
+       - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
          exists:
            - '**/*.py'
    ```

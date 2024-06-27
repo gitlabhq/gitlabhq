@@ -58,6 +58,9 @@ module Types
     mount_mutation Mutations::Environments::Delete
     mount_mutation Mutations::Environments::Stop
     mount_mutation Mutations::Environments::Update
+    mount_mutation Mutations::Import::SourceUsers::CancelReassignment, alpha: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::KeepAsPlaceholder, alpha: { milestone: '17.2' }
+    mount_mutation Mutations::Import::SourceUsers::Reassign, alpha: { milestone: '17.2' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Create, alpha: { milestone: '15.6' }
     mount_mutation Mutations::IncidentManagement::TimelineEvent::PromoteFromNote
     mount_mutation Mutations::IncidentManagement::TimelineEvent::Update

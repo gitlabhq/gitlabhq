@@ -90,6 +90,15 @@ module Types
       connection: true,
       description: "List of the namespaces's Pages Deployments."
 
+    field :import_source_users, Import::SourceUserType.connection_type,
+      null: true,
+      alpha: { milestone: '17.2' },
+      resolver: Resolvers::Import::SourceUsersResolver,
+      description: 'Import source users of the namespace. This field can only be resolved for one namespace in any ' \
+                   'single request.' do
+      extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+    end
+
     markdown_field :description_html, null: true
 
     def achievements_path

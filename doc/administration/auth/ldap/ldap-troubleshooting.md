@@ -744,8 +744,8 @@ You can solve this error in two ways.
 
 ### Rename references to the LDAP server
 
-This solution is suitable when the LDAP servers are replicas of each other, and the affected users should be able to sign in using a configured LDAP server. For example, if a
-load balancer is now used to manage LDAP high availability and a separate secondary sign-in option is no longer needed.
+This solution is suitable when the LDAP servers are replicas of each other, and the affected users should be able to sign in using a configured LDAP server. 
+For example, if a load balancer is now used to manage LDAP high availability and a separate secondary sign-in option is no longer needed.
 
 NOTE:
 If the LDAP servers aren't replicas of each other, this solution stops affected users from being able to sign in.
@@ -758,8 +758,14 @@ sudo gitlab-rake gitlab:ldap:rename_provider[ldapsecondary,ldapmain]
 
 ### Remove the `identity` records that relate to the removed LDAP server
 
-With this solution, affected users can sign in with the configured LDAP servers and a new `identity` record is created by GitLab. In a
-[Rails console](../../operations/rails_console.md), delete the `ldapsecondary` identities:
+Prerequisites:
+
+- Ensure that `auto_link_ldap_user` is enabled.
+
+With this solution, after the identity is deleted, affected users can sign in with the
+configured LDAP servers and a new `identity` record is created by GitLab. 
+
+Because the LDAP server that was removed was `ldapsecondary`, in a [Rails console](../../operations/rails_console.md), delete all the `ldapsecondary` identities:
 
 ```ruby
 ldap_identities = Identity.where(provider: "ldapsecondary")

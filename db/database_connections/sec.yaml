@@ -1,0 +1,16 @@
+name: sec
+description: Cell-local GitLab database holding Security feature related tables.
+gitlab_schemas:
+  - gitlab_internal
+  - gitlab_shared
+  - gitlab_sec
+lock_gitlab_schemas:
+  - gitlab_main
+  - gitlab_main_clusterwide
+  - gitlab_main_cell
+  - gitlab_ci
+  - gitlab_pm
+klass: Gitlab::Database::SecApplicationRecord
+# if Sec database is not configured, use this database
+fallback_database: main
+uses_load_balancing: true

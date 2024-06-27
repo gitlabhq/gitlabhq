@@ -210,7 +210,9 @@ RSpec.describe Organizations::OrganizationHelper, feature_category: :cell do
           'groups_empty_state_svg_path' => groups_empty_state_svg_path,
           'projects_empty_state_svg_path' => projects_empty_state_svg_path,
           'organization_groups_projects_sort' => 'name_asc',
-          'organization_groups_projects_display' => 'projects'
+          'organization_groups_projects_display' => 'projects',
+          'user_preference_sort' => 'name_asc',
+          'user_preference_display' => 'projects'
         }
       )
     end

@@ -30,12 +30,12 @@ export const TARGET_NAMESPACE_FIELD = 'targetNamespace';
 export const ROOT_NAMESPACE = { fullPath: '', id: null };
 
 const PLACEHOLDER_STATUS_PENDING_ASSIGNMENT = 'pending_assignment';
-const PLACEHOLDER_STATUS_AWAITING_APPROVAL = 'awaiting_approval';
+export const PLACEHOLDER_STATUS_AWAITING_APPROVAL = 'awaiting_approval';
 const PLACEHOLDER_STATUS_REJECTED = 'rejected';
-const PLACEHOLDER_STATUS_REASSIGNING = 'reassigning'; // backend state still pending
+export const PLACEHOLDER_STATUS_REASSIGNING = 'reassignment_in_progress';
 const PLACEHOLDER_STATUS_FAILED = 'failed';
-const PLACEHOLDER_STATUS_SAVED = 'saved'; // backend state still pending
-const PLACEHOLDER_STATUS_COMPLETED = 'completed';
+export const PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER = 'keep_as_placeholder';
+export const PLACEHOLDER_STATUS_COMPLETED = 'completed';
 
 export const placeholderUserBadges = {
   [PLACEHOLDER_STATUS_PENDING_ASSIGNMENT]: {
@@ -63,7 +63,7 @@ export const placeholderUserBadges = {
     variant: 'danger',
     tooltip: s__('UserMapping|Reassignment failed.'),
   },
-  [PLACEHOLDER_STATUS_SAVED]: {
+  [PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER]: {
     text: s__('UserMapping|Kept as placeholder'),
     variant: 'success',
     tooltip: s__('UserMapping|Placeholder user was made permanent.'),

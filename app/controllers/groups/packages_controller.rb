@@ -7,7 +7,9 @@ module Groups
     feature_category :package_registry
     urgency :low
 
-    before_action :set_feature_flag_packages_protected_packages, only: :show
+    before_action :set_feature_flag_packages_protected_packages, only: [:show, :index]
+
+    def index; end
 
     # The show action renders index to allow frontend routing to work on page refresh
     def show

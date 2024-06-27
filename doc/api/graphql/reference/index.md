@@ -5385,6 +5385,76 @@ Input type: `HttpIntegrationUpdateInput`
 | <a id="mutationhttpintegrationupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationhttpintegrationupdateintegration"></a>`integration` | [`AlertManagementHttpIntegration`](#alertmanagementhttpintegration) | HTTP integration. |
 
+### `Mutation.importSourceUserCancelReassignment`
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Input type: `ImportSourceUserCancelReassignmentInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceusercancelreassignmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceusercancelreassignmentid"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceusercancelreassignmentclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceusercancelreassignmenterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationimportsourceusercancelreassignmentimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
+### `Mutation.importSourceUserKeepAsPlaceholder`
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Input type: `ImportSourceUserKeepAsPlaceholderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserkeepasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserkeepasplaceholderid"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserkeepasplaceholderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserkeepasplaceholdererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationimportsourceuserkeepasplaceholderimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
+### `Mutation.importSourceUserReassign`
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Input type: `ImportSourceUserReassignInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserreassignassigneeuserid"></a>`assigneeUserId` | [`UserID!`](#userid) | Global ID of the assignee user. |
+| <a id="mutationimportsourceuserreassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserreassignid"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationimportsourceuserreassignclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationimportsourceuserreassignerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationimportsourceuserreassignimportsourceuser"></a>`importSourceUser` | [`ImportSourceUser`](#importsourceuser) | Mapping of a user on source instance to a user on destination instance after mutation. |
+
 ### `Mutation.instanceAuditEventStreamingDestinationsCreate`
 
 DETAILS:
@@ -7539,7 +7609,7 @@ Input type: `ProjectSavedReplyUpdateInput`
 
 ### `Mutation.projectSetComplianceFramework`
 
-Assign (or unset) a compliance framework to a project.
+Assign (or unset) a compliance framework to a project. This mutation raises an error if the project has more than one compliance framework associated with it.
 
 Input type: `ProjectSetComplianceFrameworkInput`
 
@@ -12750,6 +12820,29 @@ The edge type for [`GroupWikiRepositoryRegistry`](#groupwikirepositoryregistry).
 | <a id="groupwikirepositoryregistryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="groupwikirepositoryregistryedgenode"></a>`node` | [`GroupWikiRepositoryRegistry`](#groupwikirepositoryregistry) | The item at the end of the edge. |
 
+#### `ImportSourceUserConnection`
+
+The connection type for [`ImportSourceUser`](#importsourceuser).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="importsourceuserconnectionedges"></a>`edges` | [`[ImportSourceUserEdge]`](#importsourceuseredge) | A list of edges. |
+| <a id="importsourceuserconnectionnodes"></a>`nodes` | [`[ImportSourceUser]`](#importsourceuser) | A list of nodes. |
+| <a id="importsourceuserconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `ImportSourceUserEdge`
+
+The edge type for [`ImportSourceUser`](#importsourceuser).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="importsourceuseredgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="importsourceuseredgenode"></a>`node` | [`ImportSourceUser`](#importsourceuser) | The item at the end of the edge. |
+
 #### `IncidentManagementOncallRotationConnection`
 
 The connection type for [`IncidentManagementOncallRotation`](#incidentmanagementoncallrotation).
@@ -17674,8 +17767,11 @@ four standard [pagination arguments](#pagination-arguments):
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="cicatalogresourcecomponentinputdefault"></a>`default` | [`String`](#string) | Default value for the input. |
+| <a id="cicatalogresourcecomponentinputdescription"></a>`description` | [`String`](#string) | Description of the input. |
 | <a id="cicatalogresourcecomponentinputname"></a>`name` | [`String`](#string) | Name of the input. |
+| <a id="cicatalogresourcecomponentinputregex"></a>`regex` | [`String`](#string) | Pattern that the input value must match. Only applicable to string inputs. |
 | <a id="cicatalogresourcecomponentinputrequired"></a>`required` | [`Boolean`](#boolean) | Indicates if an input is required. |
+| <a id="cicatalogresourcecomponentinputtype"></a>`type` | [`CiCatalogResourceComponentInputType`](#cicatalogresourcecomponentinputtype) | Type of the input. |
 
 ### `CiCatalogResourceVersion`
 
@@ -21682,6 +21778,7 @@ GPG signature for a signed commit.
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of this group. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
+| <a id="groupimportsourceusers"></a>`importSourceUsers` **{warning-solid}** | [`ImportSourceUserConnection`](#importsourceuserconnection) | **Introduced** in GitLab 17.2. **Status**: Experiment. Import source users of the namespace. This field can only be resolved for one namespace in any single request. |
 | <a id="groupisadjourneddeletionenabled"></a>`isAdjournedDeletionEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Indicates if delayed group deletion is enabled. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
@@ -23324,6 +23421,23 @@ IDE settings and feature flags.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="idecodesuggestionsenabled"></a>`codeSuggestionsEnabled` | [`Boolean!`](#boolean) | Indicates whether AI assisted code suggestions are enabled. |
+
+### `ImportSourceUser`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="importsourceuserid"></a>`id` | [`ImportSourceUserID!`](#importsourceuserid) | Global ID of the mapping of a user on source instance to a user on destination instance. |
+| <a id="importsourceuserimporttype"></a>`importType` | [`ImportSource!`](#importsource) | Name of the importer. |
+| <a id="importsourceuserplaceholderuser"></a>`placeholderUser` | [`UserCore`](#usercore) | Placeholder user associated with the import source user. |
+| <a id="importsourceuserreassigntouser"></a>`reassignToUser` | [`UserCore`](#usercore) | User that contributions are reassigned to. |
+| <a id="importsourceuserreassignedbyuser"></a>`reassignedByUser` | [`UserCore`](#usercore) | User that did the reassignment. |
+| <a id="importsourceusersourcehostname"></a>`sourceHostname` | [`String!`](#string) | Source instance hostname. |
+| <a id="importsourceusersourcename"></a>`sourceName` | [`String`](#string) | Name of user in the source instance. |
+| <a id="importsourceusersourceuseridentifier"></a>`sourceUserIdentifier` | [`String!`](#string) | ID of the user in the source instance. |
+| <a id="importsourceusersourceusername"></a>`sourceUsername` | [`String`](#string) | Username of user in the source instance. |
+| <a id="importsourceuserstatus"></a>`status` | [`ImportSourceUserStatus!`](#importsourceuserstatus) | Status of the mapping. |
 
 ### `IncidentManagementOncallRotation`
 
@@ -26098,6 +26212,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacefullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
+| <a id="namespaceimportsourceusers"></a>`importSourceUsers` **{warning-solid}** | [`ImportSourceUserConnection`](#importsourceuserconnection) | **Introduced** in GitLab 17.2. **Status**: Experiment. Import source users of the namespace. This field can only be resolved for one namespace in any single request. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -27041,6 +27156,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelineiid"></a>`iid` | [`String!`](#string) | Internal ID of the pipeline. |
 | <a id="pipelinejobartifacts"></a>`jobArtifacts` | [`[CiJobArtifact!]`](#cijobartifact) | Job artifacts of the pipeline. |
 | <a id="pipelinelatest"></a>`latest` | [`Boolean!`](#boolean) | If the pipeline is the latest one or not. |
+| <a id="pipelinemanualvariables"></a>`manualVariables` | [`CiManualVariableConnection`](#cimanualvariableconnection) | CI/CD variables added to a manual pipeline. (see [Connections](#connections)) |
 | <a id="pipelinemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The MR which the Pipeline is attached to. |
 | <a id="pipelinemergerequesteventtype"></a>`mergeRequestEventType` | [`PipelineMergeRequestEventType`](#pipelinemergerequesteventtype) | Event type of the pipeline associated with a merge request. |
 | <a id="pipelinename"></a>`name` | [`String`](#string) | Name of the pipeline. |
@@ -33348,6 +33464,17 @@ Status of a merge train's car.
 | <a id="carstatusskip_merged"></a>`SKIP_MERGED` | Car's status: skip_merged. |
 | <a id="carstatusstale"></a>`STALE` | Car's status: stale. |
 
+### `CiCatalogResourceComponentInputType`
+
+Available input types.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="cicatalogresourcecomponentinputtypearray"></a>`ARRAY` | Array input. |
+| <a id="cicatalogresourcecomponentinputtypeboolean"></a>`BOOLEAN` | Boolean input. |
+| <a id="cicatalogresourcecomponentinputtypenumber"></a>`NUMBER` | Number input. |
+| <a id="cicatalogresourcecomponentinputtypestring"></a>`STRING` | String input. |
+
 ### `CiCatalogResourceScope`
 
 Values for scoping catalog resources.
@@ -34401,18 +34528,30 @@ Import source.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="importsourcebitbucket"></a>`BITBUCKET` | Imported from Bitbucket. |
-| <a id="importsourcebitbucket_server"></a>`BITBUCKET_SERVER` | Imported from Bitbucket Server. |
-| <a id="importsourcecustom_template"></a>`CUSTOM_TEMPLATE` | Imported from Custom Template. |
-| <a id="importsourcefogbugz"></a>`FOGBUGZ` | Imported from Fogbugz. |
-| <a id="importsourcegit"></a>`GIT` | Imported from Git. |
-| <a id="importsourcegitea"></a>`GITEA` | Imported from Gitea. |
-| <a id="importsourcegithub"></a>`GITHUB` | Imported from Github. |
-| <a id="importsourcegitlab_group"></a>`GITLAB_GROUP` | Imported from Gitlab Group. |
-| <a id="importsourcegitlab_migration"></a>`GITLAB_MIGRATION` | Imported from Gitlab Migration. |
-| <a id="importsourcegitlab_project"></a>`GITLAB_PROJECT` | Imported from Gitlab Project. |
-| <a id="importsourcemanifest"></a>`MANIFEST` | Imported from Manifest. |
+| <a id="importsourcebitbucket"></a>`BITBUCKET` | Bitbucket. |
+| <a id="importsourcebitbucket_server"></a>`BITBUCKET_SERVER` | Bitbucket Server. |
+| <a id="importsourcecustom_template"></a>`CUSTOM_TEMPLATE` | Custom Template. |
+| <a id="importsourcefogbugz"></a>`FOGBUGZ` | Fogbugz. |
+| <a id="importsourcegit"></a>`GIT` | Git. |
+| <a id="importsourcegitea"></a>`GITEA` | Gitea. |
+| <a id="importsourcegithub"></a>`GITHUB` | Github. |
+| <a id="importsourcegitlab_group"></a>`GITLAB_GROUP` | Gitlab Group. |
+| <a id="importsourcegitlab_migration"></a>`GITLAB_MIGRATION` | Gitlab Migration. |
+| <a id="importsourcegitlab_project"></a>`GITLAB_PROJECT` | Gitlab Project. |
+| <a id="importsourcemanifest"></a>`MANIFEST` | Manifest. |
 | <a id="importsourcenone"></a>`NONE` | Not imported. |
+
+### `ImportSourceUserStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="importsourceuserstatusawaiting_approval"></a>`AWAITING_APPROVAL` | An import source user mapping that is awaiting approval. |
+| <a id="importsourceuserstatuscompleted"></a>`COMPLETED` | An import source user mapping that is completed. |
+| <a id="importsourceuserstatusfailed"></a>`FAILED` | An import source user mapping that is failed. |
+| <a id="importsourceuserstatuskeep_as_placeholder"></a>`KEEP_AS_PLACEHOLDER` | An import source user mapping that is keep as placeholder. |
+| <a id="importsourceuserstatuspending_assignment"></a>`PENDING_ASSIGNMENT` | An import source user mapping that is pending assignment. |
+| <a id="importsourceuserstatusreassignment_in_progress"></a>`REASSIGNMENT_IN_PROGRESS` | An import source user mapping that is reassignment in progress. |
+| <a id="importsourceuserstatusrejected"></a>`REJECTED` | An import source user mapping that is rejected. |
 
 ### `IntegrationType`
 
@@ -36759,6 +36898,12 @@ An ISO 8601-encoded date.
 ### `ISO8601DateTime`
 
 An ISO 8601-encoded datetime.
+
+### `ImportSourceUserID`
+
+A `ImportSourceUserID` is a global ID. It is encoded as a string.
+
+An example `ImportSourceUserID` is: `"gid://gitlab/Import::SourceUser/1"`.
 
 ### `IncidentManagementEscalationPolicyID`
 

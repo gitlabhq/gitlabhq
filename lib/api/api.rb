@@ -302,6 +302,7 @@ module API
         mount ::API::ProjectAvatar
         mount ::API::ProjectClusters
         mount ::API::ProjectContainerRepositories
+        mount ::API::ProjectContainerRegistryProtectionRules
         mount ::API::ProjectDebianDistributions
         mount ::API::ProjectEvents
         mount ::API::ProjectExport

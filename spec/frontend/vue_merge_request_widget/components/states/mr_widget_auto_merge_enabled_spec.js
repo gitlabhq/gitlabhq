@@ -4,7 +4,7 @@ import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import autoMergeEnabledComponent from '~/vue_merge_request_widget/components/states/mr_widget_auto_merge_enabled.vue';
-import { MWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
+import { MWPS_MERGE_STRATEGY, MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
@@ -36,7 +36,7 @@ function factory(propsData, stateOverride = {}) {
         service: new MRWidgetService({}),
       },
       data() {
-        return { ...convertPropsToGraphqlState(propsData), ...stateOverride };
+        return { state: { ...convertPropsToGraphqlState(propsData), ...stateOverride } };
       },
       mocks: {
         $apollo: {
@@ -148,6 +148,15 @@ describe('MRWidgetAutoMergeEnabled', () => {
       });
 
       expect(getStatusText()).toContain('to be merged automatically when the pipeline succeeds');
+    });
+
+    it('should render the status text as "to be merged automatically..." if MWCP is selected', () => {
+      factory({
+        ...defaultMrProps(),
+        autoMergeStrategy: MWCP_MERGE_STRATEGY,
+      });
+
+      expect(getStatusText()).toContain('to be merged automatically when all merge checks pass');
     });
 
     it('should render the cancel button as "Cancel" if MWPS is selected', () => {

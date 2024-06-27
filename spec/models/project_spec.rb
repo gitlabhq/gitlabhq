@@ -9505,4 +9505,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it { expect(project.supports_saved_replies?).to eq(false) }
   end
+
+  describe '#merge_trains_enabled?' do
+    let_it_be(:project) { create(:project) }
+
+    it { expect(project.merge_trains_enabled?).to eq(false) }
+  end
 end

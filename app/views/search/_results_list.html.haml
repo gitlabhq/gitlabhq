@@ -3,7 +3,7 @@
 
 - if @timeout
   = render partial: "search/results/timeout"
-- elsif @search_results.respond_to?(:failed?) && @search_results.failed?
+- elsif @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
   = render partial: "search/results/error"
 - elsif @search_objects.blank?
   = render partial: "search/results/empty"

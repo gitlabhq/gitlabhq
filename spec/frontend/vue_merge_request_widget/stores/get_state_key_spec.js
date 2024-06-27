@@ -1,4 +1,5 @@
 import getStateKey from '~/vue_merge_request_widget/stores/get_state_key';
+import { DETAILED_MERGE_STATUS, MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 
 describe('getStateKey', () => {
   it('should return proper state name', () => {
@@ -47,5 +48,30 @@ describe('getStateKey', () => {
     context.projectArchived = true;
 
     expect(bound()).toEqual('archived');
+  });
+
+  describe('AutoMergeStrategy "merge_when_checks_pass"', () => {
+    const createContext = (detailedMergeStatus, preferredAutoMergeStrategy, autoMergeEnabled) => ({
+      canMerge: true,
+      commitsCount: 2,
+      detailedMergeStatus,
+      preferredAutoMergeStrategy,
+      autoMergeEnabled,
+    });
+
+    it.each`
+      scenario                   | detailedMergeStatus                   | autoMergeEnabled | state
+      ${'MWCP and not approved'} | ${DETAILED_MERGE_STATUS.NOT_APPROVED} | ${false}         | ${'readyToMerge'}
+      ${'MWCP and approved'}     | ${DETAILED_MERGE_STATUS.MERGEABLE}    | ${false}         | ${'readyToMerge'}
+    `(
+      'when $scenario, state should equal $state',
+      ({ detailedMergeStatus, autoMergeEnabled, state }) => {
+        const bound = getStateKey.bind(
+          createContext(detailedMergeStatus, MWCP_MERGE_STRATEGY, autoMergeEnabled),
+        );
+
+        expect(bound()).toBe(state);
+      },
+    );
   });
 });

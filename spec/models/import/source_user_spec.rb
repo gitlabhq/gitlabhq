@@ -50,12 +50,14 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
 
     it 'unsets reassign_to_user when assignment is cancelled' do
-      expect { source_user.cancel_assignment! }
+      expect { source_user.cancel_reassignment! }
         .to change { source_user.reload.reassign_to_user }
               .from(an_instance_of(User)).to(nil)
     end
 
     it 'unsets reassign_to_user when kept as placeholder' do
+      source_user = create(:import_source_user, :with_reassign_to_user)
+
       expect { source_user.keep_as_placeholder! }
         .to change { source_user.reload.reassign_to_user }
         .from(an_instance_of(User)).to(nil)
@@ -113,6 +115,40 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         source_hostname: 'github.com',
         import_type: 'github'
       )).to be_nil
+    end
+  end
+
+  describe '#reassignable_status?' do
+    reassignable_statuses = [:pending_assignment, :rejected]
+    all_states = described_class.state_machines[:status].states
+
+    all_states.reject { |state| reassignable_statuses.include?(state.name) }.each do |state|
+      it "returns false for #{state.name}" do
+        expect(described_class.new(status: state.value).reassignable_status?).to eq(false)
+      end
+    end
+
+    all_states.select { |state| reassignable_statuses.include?(state.name) }.each do |state|
+      it "returns true for #{state.name}" do
+        expect(described_class.new(status: state.value).reassignable_status?).to eq(true)
+      end
+    end
+  end
+
+  describe '#cancelable_status?' do
+    cancelable_statuses = [:awaiting_approval, :rejected]
+    all_states = described_class.state_machines[:status].states
+
+    all_states.reject { |state| cancelable_statuses.include?(state.name) }.each do |state|
+      it "returns false for #{state.name}" do
+        expect(described_class.new(status: state.value).cancelable_status?).to eq(false)
+      end
+    end
+
+    all_states.select { |state| cancelable_statuses.include?(state.name) }.each do |state|
+      it "returns true for #{state.name}" do
+        expect(described_class.new(status: state.value).cancelable_status?).to eq(true)
+      end
     end
   end
 end

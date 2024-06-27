@@ -14,6 +14,21 @@ RSpec.describe MergeRequestsHelper, feature_category: :code_review_workflow do
 
   let_it_be(:current_user) { create(:user) }
 
+  describe '#merge_params' do
+    let(:merge_request) { create(:merge_request) }
+
+    it 'returns the expected params' do
+      expect(merge_params(merge_request)).to eq(
+        {
+          auto_merge_strategy: AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
+          should_remove_source_branch: true,
+          sha: 'b83d6e391c22777fca1ed3012fce84f633d7fed0',
+          squash: false
+        }
+      )
+    end
+  end
+
   describe '#format_mr_branch_names' do
     describe 'within the same project' do
       let(:merge_request) { create(:merge_request) }

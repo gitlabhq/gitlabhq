@@ -61,15 +61,8 @@ module QA
         private
 
         def has_project_with_access_role?(project_name, access_role)
-          # Since we are very early in the Vue migration, there isn't much value in testing
-          # when the feature flag is enabled.
-          # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/466081 for tracking revisiting this.
-          if Runtime::Feature.enabled?(:your_work_projects_vue)
-            has_text?('Projects list')
-          else
-            within_element('project-content', text: project_name) do
-              has_element?('user-access-role', text: access_role)
-            end
+          within_element('project-content', text: project_name) do
+            has_element?('user-access-role', text: access_role)
           end
         end
       end

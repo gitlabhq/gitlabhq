@@ -56,7 +56,7 @@ class SearchController < ApplicationController
     @group = search_service.group
     @search_service_presenter = Gitlab::View::Presenter::Factory.new(search_service, current_user: current_user).fabricate!
 
-    return unless search_term_valid?
+    return unless search_term_valid? && search_type_valid?
 
     return if check_single_commit_result?
 
@@ -73,7 +73,7 @@ class SearchController < ApplicationController
       @search_highlight = @search_service_presenter.search_highlight
     end
 
-    return if @search_results.respond_to?(:failed?) && @search_results.failed?
+    return if @search_results.respond_to?(:failed?) && @search_results.failed?(@scope)
 
     Gitlab::Metrics::GlobalSearchSlis.record_apdex(
       elapsed: @global_search_duration_s,
@@ -180,6 +180,17 @@ class SearchController < ApplicationController
 
     unless search_service.valid_terms_count?
       flash[:alert] = t('errors.messages.search_terms_too_long', count: Gitlab::Search::Params::SEARCH_TERM_LIMIT)
+      return false
+    end
+
+    true
+  end
+
+  def search_type_valid?
+    search_type_errors = search_service.search_type_errors
+
+    if search_type_errors
+      flash[:alert] = search_type_errors
       return false
     end
 

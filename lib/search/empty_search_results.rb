@@ -1,13 +1,10 @@
 # frozen_string_literal: true
 
-module Gitlab
+module Search
   # This class has the same interface as SearchResults except
   # it is empty and does not do any work.
-  #
-  # We use this when responding to abusive search requests.
   class EmptySearchResults
-    def initialize(*)
-    end
+    def initialize(*); end
 
     def objects(*)
       Kaminari.paginate_array([])
@@ -23,6 +20,10 @@ module Gitlab
 
     def aggregations(*)
       []
+    end
+
+    def failed?(*)
+      false
     end
   end
 end

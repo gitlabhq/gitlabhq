@@ -169,31 +169,35 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
   end
 
   context 'when there are auto merge MRs with the branch as target' do
-    context 'when merge_when_checks_pass is disabled and when source branch is to be deleted' do
+    context 'when source branch is to be deleted' do
       let(:params) { { delete_source_branch: true } }
 
-      it 'aborts no non MWCP auto merges' do
+      it 'aborts auto merges' do
         mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
           source_branch: "test", source_project: merge_request.project)
-        mr_2 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+        mr_2 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
+          source_branch: "feature", source_project: merge_request.project)
+        mr_3 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
           source_branch: 'second', source_project: merge_request.project)
 
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
         subject
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_3)
       end
     end
 
     context 'when source branch is not be deleted' do
-      it 'aborts no non MWCP auto merges' do
+      it 'does not abort any auto merges' do
         mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
           source_branch: "test", source_project: merge_request.project)
-        mr_2 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+        mr_2 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
+          source_branch: "feature", source_project: merge_request.project)
+        mr_3 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
           source_branch: 'second', source_project: merge_request.project)
 
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
         subject
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
       end
     end
 
@@ -202,15 +206,17 @@ RSpec.describe MergeRequests::PostMergeService, feature_category: :code_review_w
         stub_feature_flags(merge_when_checks_pass: false)
       end
 
-      it 'aborts no non MWCP auto merges' do
+      it 'does not aborts any auto merges' do
         mr_1 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: merge_request.source_branch,
           source_branch: "test", source_project: merge_request.project)
-        mr_2 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
+        mr_2 = create(:merge_request, :merge_when_checks_pass, target_branch: merge_request.source_branch,
+          source_branch: "feature", source_project: merge_request.project)
+        mr_3 = create(:merge_request, :merge_when_pipeline_succeeds, target_branch: 'feature',
           source_branch: 'second', source_project: merge_request.project)
 
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
         subject
-        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2)
+        expect(merge_request.source_project.merge_requests.with_auto_merge_enabled).to contain_exactly(mr_1, mr_2, mr_3)
       end
     end
   end

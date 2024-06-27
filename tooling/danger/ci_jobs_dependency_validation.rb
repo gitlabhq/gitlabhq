@@ -71,7 +71,7 @@ module Tooling
         YAML.load(api_response['merged_yaml'], aliases: true)
       rescue StandardError => e
         puts e.message
-        []
+        {}
       end
 
       def build_jobs_from_yaml(jobs_yaml, ref)

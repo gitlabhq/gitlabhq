@@ -33,7 +33,6 @@ RSpec/RepeatedExampleGroupBody:
     - 'spec/lib/gitlab/ci/pipeline/seed/build_spec.rb'
     - 'spec/lib/gitlab/ci/yaml_processor_spec.rb'
     - 'spec/lib/gitlab/database/migrations/batched_background_migration_helpers_spec.rb'
-    - 'spec/lib/gitlab/empty_search_results_spec.rb'
     - 'spec/lib/gitlab/import_export/project/sample/relation_factory_spec.rb'
     - 'spec/lib/gitlab/lfs/client_spec.rb'
     - 'spec/lib/gitlab/sanitizers/exif_spec.rb'

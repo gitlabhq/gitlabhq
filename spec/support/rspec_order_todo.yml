@@ -5774,7 +5774,6 @@
 - './spec/lib/gitlab/email/service_desk_receiver_spec.rb'
 - './spec/lib/gitlab/email/smime/signer_spec.rb'
 - './spec/lib/gitlab/emoji_spec.rb'
-- './spec/lib/gitlab/empty_search_results_spec.rb'
 - './spec/lib/gitlab/encoding_helper_spec.rb'
 - './spec/lib/gitlab/encrypted_configuration_spec.rb'
 - './spec/lib/gitlab/endpoint_attributes_spec.rb'

@@ -2,7 +2,11 @@
 import { GlAvatarLabeled, GlBadge, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
 import { s__ } from '~/locale';
 
-import { placeholderUserBadges } from '~/import_entities/import_groups/constants';
+import {
+  PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
+  PLACEHOLDER_STATUS_COMPLETED,
+  placeholderUserBadges,
+} from '~/import_entities/import_groups/constants';
 import PlaceholderActions from './placeholder_actions.vue';
 
 export default {
@@ -59,6 +63,21 @@ export default {
     statusBadge(item) {
       return placeholderUserBadges[item.status];
     },
+
+    isReassignedItem(item) {
+      return (
+        (item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER ||
+          item.status === PLACEHOLDER_STATUS_COMPLETED) &&
+        item.reassignToUser
+      );
+    },
+
+    onCancel(item) {
+      this.$emit('cancel', item);
+    },
+    onConfirm(item, selectedUserId) {
+      this.$emit('confirm', item, selectedUserId);
+    },
   },
 };
 </script>
@@ -88,8 +107,20 @@ export default {
       >
     </template>
 
-    <template #cell(actions)>
-      <placeholder-actions />
+    <template #cell(actions)="{ item }">
+      <gl-avatar-labeled
+        v-if="isReassignedItem(item)"
+        :size="32"
+        :src="item.reassignToUser.avatar_url"
+        :label="item.reassignToUser.name"
+        :sub-label="item.reassignToUser.username"
+      />
+      <placeholder-actions
+        v-else
+        :placeholder="item"
+        @confirm="onConfirm(item, $event)"
+        @cancel="onCancel(item)"
+      />
     </template>
   </gl-table-lite>
 </template>

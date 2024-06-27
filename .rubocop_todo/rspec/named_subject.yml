@@ -2042,7 +2042,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/doctor/secrets_spec.rb'
     - 'spec/lib/gitlab/email/handler/service_desk_handler_spec.rb'
     - 'spec/lib/gitlab/email/html_to_markdown_parser_spec.rb'
-    - 'spec/lib/gitlab/empty_search_results_spec.rb'
     - 'spec/lib/gitlab/encoding_helper_spec.rb'
     - 'spec/lib/gitlab/error_tracking/error_repository/open_api_strategy_spec.rb'
     - 'spec/lib/gitlab/etag_caching/store_spec.rb'

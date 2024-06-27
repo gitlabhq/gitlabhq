@@ -2,11 +2,95 @@ export const mockPlaceholderUsers = [
   {
     avatar_url:
       'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Administrator',
-    username: '@root',
+    name: 'Placeholder 1',
+    username: 'placeholder-1',
     source_hostname: 'https://gitlab.com',
     source_username: '@old_root',
     status: 'pending_assignment',
+  },
+  {
+    avatar_url:
+      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+    name: 'Placeholder 2',
+    username: 'placeholder-2',
+    source_hostname: 'https://gitlab.com',
+    source_username: '@old_root',
+    status: 'awaiting_approval',
+    reassignToUser: {
+      avatar_url:
+        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+      name: 'Administrator',
+      username: '@root2',
+    },
+  },
+  {
+    avatar_url:
+      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+    name: 'Placeholder 3',
+    username: 'placeholder-3',
+    source_hostname: 'https://gitlab.com',
+    source_username: '@old_root',
+    status: 'rejected',
+  },
+  {
+    avatar_url:
+      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+    name: 'Placeholder 4',
+    username: 'placeholder-4',
+    source_hostname: 'https://gitlab.com',
+    source_username: '@old_root',
+    status: 'reassignment_in_progress',
+    reassignToUser: {
+      avatar_url:
+        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+      name: 'Administrator',
+      username: '@root4',
+    },
+  },
+  {
+    avatar_url:
+      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+    name: 'Placeholder 5',
+    username: 'placeholder-5',
+    source_hostname: 'https://gitlab.com',
+    source_username: '@old_root',
+    status: 'failed',
+    reassignToUser: {
+      avatar_url:
+        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+      name: 'Administrator',
+      username: '@root5',
+    },
+  },
+  {
+    avatar_url:
+      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+    name: 'Placeholder 6',
+    username: 'placeholder-6',
+    source_hostname: 'https://gitlab.com',
+    source_username: '@old_root',
+    status: 'keep_as_placeholder',
+    reassignToUser: {
+      avatar_url:
+        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+      name: 'Administrator',
+      username: '@root6',
+    },
+  },
+  {
+    avatar_url:
+      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+    name: 'Placeholder 7',
+    username: 'placeholder-7',
+    source_hostname: 'https://gitlab.com',
+    source_username: '@old_root',
+    status: 'completed',
+    reassignToUser: {
+      avatar_url:
+        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
+      name: 'Administrator',
+      username: '@root7',
+    },
   },
 ];
 

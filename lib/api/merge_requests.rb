@@ -691,7 +691,7 @@ module API
             .execute(merge_request)
         elsif automatically_mergeable
           AutoMergeService.new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+            .execute(merge_request, merge_request.default_auto_merge_strategy)
         end
 
         if immediately_mergeable && !merge_request.merged?

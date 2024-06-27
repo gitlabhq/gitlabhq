@@ -1,7 +1,7 @@
 ---
-status: proposed
+status: ongoing
 creation-date: "2024-02-20"
-authors: [ "@bvenker", "@mikolaj_wawrzyniak" ]
+authors: [ "@maddievn", "@mikolaj_wawrzyniak", "@dgruzd" ]
 coach: [ "@stanhu" ]
 approvers: [ "@pwietchner", "@oregand", "@shinya.meda", "@mikolaj_wawrzyniak" ]
 owning-stage: "~devops::data stores"
@@ -50,7 +50,7 @@ LLMs:
   enhance performance but may also increase computational costs due to longer
   processing times.
 - **Duplicate Contents:** Repetitive content can reduce the diversity of search
-  results. For instance, if a semantic search yields ten results indicating 
+  results. For instance, if a semantic search yields ten results indicating
   "Tom is a president" but the eleventh reveals "Tom lives in the United States,"
   solely using the top ten would omit critical information. Filtering out
   duplicate content, for example, through Maximal Marginal Relevance (MMR), can
@@ -101,7 +101,7 @@ execution of multiple tools and LLM inferences.
 
 Choosing the appropriate search method is pivotal for feature design and UX optimization. Here are common search techniques:
 
-### Semantic Search
+### Semantic Search using embeddings
 
 Semantic search shines when handling complex queries that demand an
 understanding of the context or intent behind the words, not just the words
@@ -114,7 +114,7 @@ related information.
 
 In the realm of semantic search, the K-Nearest Neighbors (KNN) method is
 commonly employed to identify data segments that are semantically closer to the
-user's input. To measure the semantic proximity, various methods are used:
+user's input by using embeddings. To measure the semantic proximity, various methods are used:
 
 - **Cosine Similarity:** Focuses solely on the direction of vectors.
 - **L2 Distance (Euclidean Distance):** Takes into account both the direction
@@ -137,6 +137,13 @@ approximate nearest neighbors (ANN) search, is a popular strategy for this
 purpose. For insights into HNSW's effectiveness, consider reviewing
 [benchmarks on its performance in large-scale applications](https://supabase.com/blog/increase-performance-pgvector-hnsw).
 
+Due to the existing framework and scalability of Elasticsearch, embeddings will
+be stored on Elasticsearch for large datasets such as
+[issues](https://gitlab.com/gitlab-org/gitlab/-/issues/451431), merge requests,
+etc. This will be used to perform [Hybrid Search](https://gitlab.com/gitlab-org/gitlab/-/issues/440424)
+but will also be useful for other features such as finding duplicates, similar results or
+categorizing documents.
+
 ### Keyword Search
 
 Keyword search is the go-to method for straightforward, specific queries where
@@ -150,6 +157,10 @@ with the content in the database or document collection, prioritizing results
 that have a high frequency of the query terms. Its efficiency and directness
 make it particularly useful for situations where users expect quick and precise
 results based on specific keywords or phrases.
+
+Elasicsearch uses a BM25 algorigthm to perform keyword search.
+If one of the existing [indexed document types](../../../integration/advanced_search/elasticsearch.md#advanced-search-index-scopes)
+is not covered, a [new document type](../../../development/advanced_search.md#add-a-new-document-type-to-elasticsearch) can be added.
 
 ### Hybrid Search
 
@@ -169,13 +180,22 @@ contrasted with the relative efficiency of [BM25](https://pub.aimind.so/understa
 keyword searches, making hybrid search a strategic choice for optimizing
 performance across diverse datasets.
 
+The first hybrid search scope is for issues which combines keyword search with kNN matches using embeddings.
+
 ### Code Search
 
 Like the other data types above, a source code search task can utilize different
-search types, each more suited to address different queries. Currently,
+search types, each more suited to address different queries.
+
+Two code searches are available currrently: `Elasticsearch` and `Zoekt`.
+
+Elasticsearch provides blob search which supports [Advanced Search Syntax](../../../drawers/advanced_search_syntax.md).
+
 [Zoekt](../code_search_with_zoekt/index.md) is employed on GitLab.com to provide
 exact match keyword search and regular expression search capabilities for source
-code. Semantic search and hybrid search functionalities are yet to be
+code.
+
+Semantic search and hybrid search functionalities are yet to be
 implemented for code.
 
 ### ID Search
@@ -283,17 +303,3 @@ To read more about the [GitLab Duo Chat PoCs](../gitlab_duo_rag/index.md) conduc
 - [PGVector PoC](../gitlab_duo_rag/postgresql.md)
 - [Elasticsearch PoC](../gitlab_duo_rag/elasticsearch.md)
 - [Google Vertex PoC](../gitlab_duo_rag/vertex_ai_search.md)
-
-## Proposed solution
-
-_Disclaimer: This blueprint is in the first iteration and the chosen solutions could change._
-
-Due to the existing framework and scalability of Elasticsearch, embeddings will
-be stored on Elasticsearch for large datasets such as
-[issues](https://gitlab.com/gitlab-org/gitlab/-/issues/451431), merge requests,
-etc. This will be used to perform [Hybrid Search](https://gitlab.com/gitlab-org/gitlab/-/issues/440424)
-but will also be useful for other features such as finding duplicates, similar results or
-categorizing documents.
-
-[Vertext AI Search](../gitlab_duo_rag/vertex_ai_search.md) is going to be
-implemented to serve GitLab DUO documentation for self-managed instances.

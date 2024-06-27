@@ -344,6 +344,15 @@ These [predefined variables](../variables/predefined_variables.md)
 ensure that your component also works when used on another instance, for example when using
 [a GitLab.com component in a self-managed instance](#use-a-gitlabcom-component-in-a-self-managed-instance).
 
+### Do not assume API resources are always public
+
+Ensure that the component and its testing pipeline work also [in a self-managed instance](#use-a-gitlabcom-component-in-a-self-managed-instance).
+While some API resources of public projects on GitLab.com could be accessed via unauthenticated requests
+on self-managed a component project could be mirrored as private or internal project.
+
+It's important that an access token can optionally be provided via inputs or variables to
+authenticate requests on self-managed instances.
+
 ### Avoid using global keywords
 
 Avoid using [global keywords](../yaml/index.md#global-keywords) in a component.

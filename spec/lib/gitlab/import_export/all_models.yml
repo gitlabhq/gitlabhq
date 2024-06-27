@@ -2,6 +2,7 @@
 issues:
 - subscriptions
 - award_emoji
+- own_award_emoji
 - author
 - assignees
 - updated_by
@@ -1012,6 +1013,7 @@ design_versions: *version
 epic:
 - subscriptions
 - award_emoji
+- own_award_emoji
 - description_versions
 - author
 - assignee

@@ -19981,6 +19981,9 @@ msgstr ""
 msgid "Emoji"
 msgstr ""
 
+msgid "Emoji already assigned"
+msgstr ""
+
 msgid "Empty file"
 msgstr ""
 
@@ -27237,6 +27240,9 @@ msgstr ""
 msgid "Import|GitHub import details"
 msgstr ""
 
+msgid "Import|Import source user has an invalid status for this operation"
+msgstr ""
+
 msgid "Import|Maximum decompressed file size for archives from imports (MiB)"
 msgstr ""
 
@@ -27264,6 +27270,9 @@ msgstr ""
 msgid "Import|No import details"
 msgstr ""
 
+msgid "Import|Only active regular, auditor, or administrator users can be assigned"
+msgstr ""
+
 msgid "Import|Partially completed"
 msgstr ""
 
@@ -27286,6 +27295,9 @@ msgid "Import|Timeout for decompressing archived files."
 msgstr ""
 
 msgid "Import|You can import a Subversion repository by using third-party tools. %{svn_link}."
+msgstr ""
+
+msgid "Import|You have insufficient permissions to update the import source user"
 msgstr ""
 
 msgid "Improve customer support with Service Desk"
@@ -32232,6 +32244,9 @@ msgstr ""
 msgid "MemberRole|No description"
 msgstr ""
 
+msgid "MemberRole|Overridden"
+msgstr ""
+
 msgid "MemberRole|Permission"
 msgstr ""
 
@@ -32260,6 +32275,9 @@ msgid "MemberRole|Select at least one permission."
 msgstr ""
 
 msgid "MemberRole|Standard roles"
+msgstr ""
+
+msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
 msgstr ""
 
 msgid "MemberRole|To delete custom role, remove role from all group members."
@@ -56011,13 +56029,7 @@ msgstr ""
 msgid "TrialDiscoverPage|Your software, deployed your way"
 msgstr ""
 
-msgid "TrialRegistration|Start GitLab Ultimate free trial"
-msgstr ""
-
 msgid "TrialRegistration|To complete registration, we need additional details from you."
-msgstr ""
-
-msgid "TrialRegistration|Your GitLab Ultimate free trial lasts for 30 days. After this period, you can maintain a GitLab Free account forever or upgrade to a paid plan."
 msgstr ""
 
 msgid "Trials|%{planName} Trial"
@@ -56062,6 +56074,9 @@ msgid "Trial| By selecting Continue or registering through a third party, you ac
 msgstr ""
 
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
+msgstr ""
+
+msgid "Trial|Continue"
 msgstr ""
 
 msgid "Trial|Cookie Policy"
@@ -57618,6 +57633,12 @@ msgid "UserMapping|Imported to: %{destination_group}"
 msgstr ""
 
 msgid "UserMapping|Kept as placeholder"
+msgstr ""
+
+msgid "UserMapping|Notification email sent."
+msgstr ""
+
+msgid "UserMapping|Notify again"
 msgstr ""
 
 msgid "UserMapping|Original user: %{source_name} (%{source_username})"
@@ -61057,6 +61078,9 @@ msgid "You cannot add any more issues. This epic already has maximum number of c
 msgstr ""
 
 msgid "You cannot approve your own deployment. This configuration can be adjusted in the protected environment settings."
+msgstr ""
+
+msgid "You cannot assign or unassign frameworks to a project that has more than one associated framework."
 msgstr ""
 
 msgid "You cannot combine replace_ids with add_ids or remove_ids"

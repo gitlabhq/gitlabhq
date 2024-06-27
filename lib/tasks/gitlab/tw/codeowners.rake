@@ -90,7 +90,7 @@ namespace :tw do
 
     CONTRIBUTOR_DOCS_PATH = '/doc/development/'
     CONTRIBUTOR_DOCS_CODE_OWNER_RULES = [
-      CodeOwnerRule.new('AI-powered', '@gitlab-org/ai-powered'),
+      CodeOwnerRule.new('AI Framework', '@gitlab-org/ai-powered'),
       CodeOwnerRule.new('Analytics Instrumentation',
         '@gitlab-org/analytics-section/product-analytics/engineers/frontend ' \
         '@gitlab-org/analytics-section/analytics-instrumentation/engineers'),

@@ -8,8 +8,8 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 To allow GitLab to scale further we
 [decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
-The two databases are `main` and `ci`. GitLab supports being run with either one database or two databases.
-On GitLab.com we are using two separate databases.
+The main databases are `main`, `ci`, and (optionally) `sec`. GitLab supports being run with one, two, or three databases.
+On GitLab.com we are using separate `main` and `ci` databases.
 
 For the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture, we are decomposing
 the databases further, to introduce another database `gitlab_main_clusterwide`.
@@ -47,6 +47,7 @@ The usage of schema enforces the base class to be used:
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
+- `Gitlab::Database::SecApplicationRecord` for `gitlab_sec`
 
 ### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 

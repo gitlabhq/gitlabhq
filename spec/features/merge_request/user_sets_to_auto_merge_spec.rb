@@ -47,24 +47,10 @@ RSpec.describe 'Merge request > User sets to auto-merge', :js, feature_category:
           click_button "Set to auto-merge"
           wait_for_requests
 
-          # rubocop:disable RSpec/AvoidConditionalStatements -- Removed when moving MWCP to FOSS: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146730
-          set_auto_merge_msg = if Gitlab.ee?
-                                 'when all merge checks pass'
-                               else
-                                 'when the pipeline succeeds'
-                               end
-
-          enabled_auto_merge_msg = if Gitlab.ee?
-                                     /all merge checks for \h{8} pass/
-                                   else
-                                     /the pipeline for \h{8} succeeds/
-                                   end
-          # rubocop:enable RSpec/AvoidConditionalStatements
-
-          expect(page).to have_content "Set by #{user.name} to be merged automatically #{set_auto_merge_msg}"
+          expect(page).to have_content "Set by #{user.name} to be merged automatically when all merge checks pass"
           expect(page).to have_content "Source branch will not be deleted"
           expect(page).to have_selector ".js-cancel-auto-merge"
-          expect(page).to have_content(/enabled an automatic merge when #{enabled_auto_merge_msg}/i)
+          expect(page).to have_content(/enabled an automatic merge when all merge checks for \h{8} pass/i)
         end
       end
 

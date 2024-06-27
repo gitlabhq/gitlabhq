@@ -22,12 +22,16 @@ module Import
       state :completed, value: 5
       state :keep_as_placeholder, value: 6
 
-      event :cancel_assignment do
+      event :reassign do
+        transition [:pending_assignment, :rejected] => :awaiting_approval
+      end
+
+      event :cancel_reassignment do
         transition [:awaiting_approval, :rejected] => :pending_assignment
       end
 
       event :keep_as_placeholder do
-        transition [:pending_assignment, :awaiting_approval, :rejected] => :keep_as_placeholder
+        transition [:pending_assignment, :rejected] => :keep_as_placeholder
       end
 
       event :accept do
@@ -60,6 +64,14 @@ module Import
         source_hostname: source_hostname,
         import_type: import_type
       )
+    end
+
+    def reassignable_status?
+      pending_assignment? || rejected?
+    end
+
+    def cancelable_status?
+      awaiting_approval? || rejected?
     end
   end
 end

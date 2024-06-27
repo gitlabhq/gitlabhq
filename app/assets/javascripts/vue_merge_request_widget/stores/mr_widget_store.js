@@ -394,7 +394,7 @@ export default class MergeRequestStore {
   }
 
   get preventMerge() {
-    return this.isApprovalNeeded;
+    return this.isApprovalNeeded && this.preferredAutoMergeStrategy !== MWCP_MERGE_STRATEGY;
   }
 
   // Because the state machine doesn't yet handle every state and transition,

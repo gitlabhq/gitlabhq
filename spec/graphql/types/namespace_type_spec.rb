@@ -9,7 +9,7 @@ RSpec.describe GitlabSchema.types['Namespace'] do
     expected_fields = %w[
       id name path full_name full_path achievements_path description description_html visibility
       lfs_enabled request_access_enabled projects root_storage_statistics shared_runners_setting
-      timelog_categories achievements work_item pages_deployments
+      timelog_categories achievements work_item pages_deployments import_source_users
     ]
 
     expect(described_class).to include_graphql_fields(*expected_fields)

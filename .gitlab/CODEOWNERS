@@ -748,6 +748,7 @@ lib/gitlab/checks/**
 /doc/api/project_aliases.md @msedlakjakubowski
 /doc/api/project_badges.md @msedlakjakubowski
 /doc/api/project_clusters.md @phillipwells
+/doc/api/project_container_registry_protection_rules.md @marcel.amirault
 /doc/api/project_import_export.md @eread
 /doc/api/project_job_token_scopes.md @marcel.amirault
 /doc/api/project_level_variables.md @marcel.amirault
@@ -830,8 +831,12 @@ lib/gitlab/checks/**
 /doc/ci/testing/code_quality.md @rdickenson
 /doc/ci/testing/code_quality_troubleshooting.md @rdickenson @phillipwells
 /doc/ci/variables/ @marcel.amirault
+/doc/ci/yaml/ci_job_log_timestamps.md @ashrafkhamis
 /doc/ci/yaml/signing_examples.md @marcel.amirault
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers
+/doc/development/ai_architecture.md @gitlab-org/ai-powered
+/doc/development/ai_features/ @gitlab-org/ai-powered
+/doc/development/ai_features/embeddings.md @gitlab-org/search-team/migration-maintainers
 /doc/development/application_limits.md @gitlab-org/distribution
 /doc/development/audit_event_guide/ @gitlab-org/govern/security-policies-frontend @gitlab-org/govern/threat-insights-frontend-team @gitlab-org/govern/threat-insights-backend-team
 /doc/development/avoiding_required_stops.md @gitlab-org/distribution
@@ -1013,9 +1018,7 @@ lib/gitlab/checks/**
 /doc/user/project/remote_development/ @ashrafkhamis
 /doc/user/project/repository/code_explain.md @sselhorn @jglassman1 @fneill
 /doc/user/project/repository/code_suggestions/ @jglassman1
-/doc/user/project/repository/files/geojson.md @msedlakjakubowski
 /doc/user/project/repository/files/index.md @ashrafkhamis
-/doc/user/project/repository/files/jupyter_notebooks/ @msedlakjakubowski
 /doc/user/project/repository/monorepos/ @eread
 /doc/user/project/repository/web_editor.md @ashrafkhamis
 /doc/user/project/settings/import_export.md @eread

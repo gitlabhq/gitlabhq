@@ -16,7 +16,7 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
       upstream path project active user_permissions warnings commit commit_path uses_needs
       test_report_summary test_suite ref ref_path warning_messages merge_request_event_type
       name total_jobs triggered_by_path child source stuck
-      latest merge_request ref_text failure_reason yaml_errors yaml_error_messages trigger
+      latest merge_request ref_text failure_reason yaml_errors yaml_error_messages trigger manual_variables
     ]
 
     if Gitlab.ee?
@@ -27,5 +27,56 @@ RSpec.describe Types::Ci::PipelineType, feature_category: :continuous_integratio
     end
 
     expect(described_class).to have_graphql_fields(*expected_fields)
+  end
+
+  describe 'manual_variables' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:project) { create(:project, :repository) }
+    let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+    let(:query) do
+      %(
+        {
+          project(fullPath: "#{project.full_path}") {
+            id
+            pipeline(iid: "#{pipeline.iid}") {
+              id
+              iid
+              startedAt
+              manualVariables {
+                nodes {
+                  key
+                  value
+                }
+              }
+            }
+          }
+        }
+      )
+    end
+
+    let(:manual_variables) { data.dig('data', 'project', 'pipeline', 'manualVariables', 'nodes') }
+
+    subject(:data) { GitlabSchema.execute(query, context: { current_user: user }).as_json }
+
+    before do
+      project.add_role(user, user_access_level) # rubocop:disable RSpec/BeforeAllRoleAssignment -- need dynamic settings `user_access_level`
+      create(:ci_pipeline_variable, pipeline: pipeline, key: 'TRIGGER_KEY_1', value: 'TRIGGER_VALUE_1')
+    end
+
+    context 'when user has access to read variables' do
+      let(:user_access_level) { :owner }
+
+      it 'returns the manual variables' do
+        expect(manual_variables).to match_array([{ 'key' => 'TRIGGER_KEY_1', 'value' => 'TRIGGER_VALUE_1' }])
+      end
+    end
+
+    context 'when user does not have access to read variables' do
+      let(:user_access_level) { :developer }
+
+      it 'returns the manual variables with nil values' do
+        expect(manual_variables).to match_array([{ 'key' => 'TRIGGER_KEY_1', 'value' => nil }])
+      end
+    end
   end
 end

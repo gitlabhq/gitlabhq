@@ -1043,8 +1043,6 @@ Use `after_script` to define an array of commands to run last, after a job's `be
 - Long commands [split over multiple lines](script.md#split-long-commands).
 - [YAML anchors](yaml_optimization.md#yaml-anchors-for-scripts).
 
-CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
-
 **Example of `after_script`**:
 
 ```yaml
@@ -4201,6 +4199,7 @@ In this example, both jobs have the same behavior.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366412) in GitLab 15.5. Feature flag `ci_rules_changes_compare` removed.
+> - Support for CI/CD variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369916) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `ci_expand_variables_in_compare_to`. Disabled by default.
 
 Use `rules:changes:compare_to` to specify which ref to compare against for changes to the files
 listed under [`rules:changes:paths`](#ruleschangespaths).
@@ -4212,6 +4211,8 @@ listed under [`rules:changes:paths`](#ruleschangespaths).
 - A branch name, like `main`, `branch1`, or `refs/heads/branch1`.
 - A tag name, like `tag1` or `refs/tags/tag1`.
 - A commit SHA, like `2fg31ga14b`.
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `rules:changes:compare_to`**:
 

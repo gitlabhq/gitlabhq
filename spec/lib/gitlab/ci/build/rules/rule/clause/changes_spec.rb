@@ -255,6 +255,37 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
           )
         end
       end
+
+      context 'when using variable expansion' do
+        let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
+        let(:variables_hash) { { 'FEATURE_BRANCH_NAME_PREFIX' => 'feature_' } }
+        let(:globs) { { paths: ['file2.txt'], compare_to: '${FEATURE_BRANCH_NAME_PREFIX}1' } }
+        let(:pipeline) { build(:ci_pipeline, project: project, ref: 'feature_2', sha: project.commit('feature_2').sha) }
+
+        before do
+          allow(context).to receive(:variables_hash).and_return(variables_hash)
+        end
+
+        context 'when ci_expand_variables_in_compare_to is true' do
+          before do
+            stub_feature_flags(ci_expand_variables_in_compare_to: true)
+          end
+
+          it { is_expected.to be_truthy }
+        end
+
+        context 'when ci_expand_variables_in_compare_to is false' do
+          before do
+            stub_feature_flags(ci_expand_variables_in_compare_to: false)
+          end
+
+          it 'raises ParseError' do
+            expect { satisfied_by }.to raise_error(
+              ::Gitlab::Ci::Build::Rules::Rule::Clause::ParseError, 'rules:changes:compare_to is not a valid ref'
+            )
+          end
+        end
+      end
     end
   end
 end

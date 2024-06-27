@@ -9,7 +9,7 @@
 - group_attributes = @group&.attributes&.slice('id', 'name')&.merge(full_name: @group&.full_name)
 - project_attributes = @project&.attributes&.slice('id', 'namespace_id', 'name')&.merge(name_with_namespace: @project&.name_with_namespace)
 
-- if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?)
+- if @search_results && !(@search_results.respond_to?(:failed?) && @search_results.failed?(@scope))
   - if @search_service_presenter.without_count?
     - page_description(_("%{scope} results for term '%{term}'") % { scope: @scope, term: @search_term })
   - else

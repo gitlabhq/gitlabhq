@@ -20,7 +20,8 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
           AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
         )
       else
-        is_expected.to eq([AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS])
+        is_expected.to eq([AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS,
+          AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS])
       end
     end
   end
@@ -47,7 +48,17 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     end
 
     it 'returns available strategies' do
-      is_expected.to include('merge_when_pipeline_succeeds')
+      is_expected.to include('merge_when_checks_pass')
+    end
+
+    context 'when merge_when_checks_pass is off' do
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
+      end
+
+      it 'returns available strategies' do
+        is_expected.to include('merge_when_pipeline_succeeds')
+      end
     end
 
     context 'when the head piipeline succeeded' do
@@ -82,12 +93,8 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
       stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
     end
 
-    it 'returns preferred strategy', if: Gitlab.ee? do
+    it 'returns preferred strategy' do
       is_expected.to eq('merge_when_checks_pass')
-    end
-
-    it 'returns preferred strategy', unless: Gitlab.ee? do
-      is_expected.to eq('merge_when_pipeline_succeeds')
     end
 
     context 'when the head pipeline succeeded' do
@@ -125,7 +132,7 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     end
 
     let(:pipeline_status) { :running }
-    let(:strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
+    let(:strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS }
 
     before do
       create(
@@ -139,12 +146,30 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
       merge_request.update_head_pipeline
     end
 
-    it 'delegates to a relevant service instance' do
-      expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
-        expect(service).to receive(:execute).with(merge_request)
+    context 'when the strategy is MWCP' do
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenChecksPassService) do |service|
+          expect(service).to receive(:execute).with(merge_request)
+        end
+
+        subject
+      end
+    end
+
+    context 'when the strategy is MWPS and merge_when_checks_pass is off' do
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
       end
 
-      subject
+      let(:strategy) { AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS }
+
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
+          expect(service).to receive(:execute).with(merge_request)
+        end
+
+        subject
+      end
     end
 
     context 'when the head pipeline succeeded' do
@@ -162,12 +187,8 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
         stub_licensed_features(merge_request_approvers: true) if Gitlab.ee?
       end
 
-      it 'chooses the most preferred strategy', if: Gitlab.ee? do
+      it 'chooses the most preferred strategy' do
         is_expected.to eq(:merge_when_checks_pass)
-      end
-
-      it 'chooses the most preferred strategy', unless: Gitlab.ee? do
-        is_expected.to eq(:merge_when_pipeline_succeeds)
       end
     end
   end
@@ -176,14 +197,32 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
     subject { service.update(merge_request) } # rubocop:disable Rails/SaveBang
 
     context 'when auto merge is enabled' do
-      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+      context 'when the merge request is MWCP' do
+        let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
 
-      it 'delegates to a relevant service instance' do
-        expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
-          expect(service).to receive(:update).with(merge_request)
+        it 'delegates to a relevant service instance' do
+          expect_next_instance_of(AutoMerge::MergeWhenChecksPassService) do |service|
+            expect(service).to receive(:update).with(merge_request)
+          end
+
+          subject
+        end
+      end
+
+      context 'when the merge request is MWPS' do
+        let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+        before do
+          stub_feature_flags(merge_when_checks_pass: false)
         end
 
-        subject
+        it 'delegates to a relevant service instance' do
+          expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
+            expect(service).to receive(:update).with(merge_request)
+          end
+
+          subject
+        end
       end
     end
 
@@ -199,14 +238,32 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
   describe '#process' do
     subject { service.process(merge_request) }
 
-    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+    context 'when the merge request is MWCP' do
+      let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
 
-    it 'delegates to a relevant service instance' do
-      expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
-        expect(service).to receive(:process).with(merge_request)
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenChecksPassService) do |service|
+          expect(service).to receive(:process).with(merge_request)
+        end
+
+        subject
+      end
+    end
+
+    context 'when the merge request is MWPS' do
+      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
       end
 
-      subject
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
+          expect(service).to receive(:process).with(merge_request)
+        end
+
+        subject
+      end
     end
 
     context 'when auto merge is not enabled' do
@@ -221,14 +278,32 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
   describe '#cancel' do
     subject { service.cancel(merge_request) }
 
-    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+    context 'when the merge request is MWCP' do
+      let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
 
-    it 'delegates to a relevant service instance' do
-      expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
-        expect(service).to receive(:cancel).with(merge_request)
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenChecksPassService) do |service|
+          expect(service).to receive(:cancel).with(merge_request)
+        end
+
+        subject
+      end
+    end
+
+    context 'when the merge request is MWPS' do
+      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
       end
 
-      subject
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
+          expect(service).to receive(:cancel).with(merge_request)
+        end
+
+        subject
+      end
     end
 
     context 'when auto merge is not enabled' do
@@ -245,15 +320,34 @@ RSpec.describe AutoMergeService, feature_category: :code_review_workflow do
   describe '#abort' do
     subject { service.abort(merge_request, error) }
 
-    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
     let(:error) { 'an error' }
 
-    it 'delegates to a relevant service instance' do
-      expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
-        expect(service).to receive(:abort).with(merge_request, error)
+    context 'when the merge request is MWCP' do
+      let(:merge_request) { create(:merge_request, :merge_when_checks_pass) }
+
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenChecksPassService) do |service|
+          expect(service).to receive(:abort).with(merge_request, error)
+        end
+
+        subject
+      end
+    end
+
+    context 'when the merge request is MWPS' do
+      let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
       end
 
-      subject
+      it 'delegates to a relevant service instance' do
+        expect_next_instance_of(AutoMerge::MergeWhenPipelineSucceedsService) do |service|
+          expect(service).to receive(:abort).with(merge_request, error)
+        end
+
+        subject
+      end
     end
 
     context 'when auto merge is not enabled' do

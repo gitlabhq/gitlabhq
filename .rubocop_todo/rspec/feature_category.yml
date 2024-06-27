@@ -2706,7 +2706,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/email/message/repository_push_spec.rb'
     - 'spec/lib/gitlab/email/smime/signer_spec.rb'
     - 'spec/lib/gitlab/emoji_spec.rb'
-    - 'spec/lib/gitlab/empty_search_results_spec.rb'
     - 'spec/lib/gitlab/encrypted_configuration_spec.rb'
     - 'spec/lib/gitlab/error_tracking/context_payload_generator_spec.rb'
     - 'spec/lib/gitlab/error_tracking/error_repository/open_api_strategy_spec.rb'

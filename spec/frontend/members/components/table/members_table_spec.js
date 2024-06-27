@@ -1,8 +1,7 @@
-import { GlTable, GlButton, GlBadge } from '@gitlab/ui';
+import { GlTable, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { cloneDeep } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
@@ -13,7 +12,7 @@ import MemberActivity from '~/members/components/table/member_activity.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import MembersPagination from '~/members/components/table/members_pagination.vue';
 import MaxRole from '~/members/components/table/max_role.vue';
-import RoleDetailsDrawer from '~/members/components/table/role_details_drawer.vue';
+import RoleDetailsDrawer from '~/members/components/table/drawer/role_details_drawer.vue';
 import {
   MEMBERS_TAB_TYPES,
   MEMBER_STATE_CREATED,
@@ -87,7 +86,6 @@ describe('MembersTable', () => {
   const findTable = () => wrapper.findComponent(GlTable);
   const findRoleDetailsDrawer = () => wrapper.findComponent(RoleDetailsDrawer);
   const findRoleButton = () => wrapper.findComponent(GlButton);
-  const findCustomRoleBadge = () => wrapper.findByTestId('max-role').findComponent(GlBadge);
   const findTableCellByMemberId = (tableCellLabel, memberId) =>
     wrapper
       .findByTestId(`members-table-row-${memberId}`)
@@ -134,22 +132,6 @@ describe('MembersTable', () => {
         createMaxRoleComponent();
 
         expect(findRoleButton().text()).toBe('Owner');
-      });
-
-      describe('custom role badge', () => {
-        it('shows the badge for a custom role', () => {
-          const member = cloneDeep(memberMock);
-          member.accessLevel.memberRoleId = 1;
-          createMaxRoleComponent(member);
-
-          expect(findCustomRoleBadge().text()).toBe('Custom role');
-        });
-
-        it('does not show badge for a standard role', () => {
-          createMaxRoleComponent();
-
-          expect(findCustomRoleBadge().exists()).toBe(false);
-        });
       });
 
       describe('disabled state', () => {

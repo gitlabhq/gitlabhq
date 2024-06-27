@@ -112,10 +112,45 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
         it_behaves_like 'empty message'
       end
 
+      context 'when retrieving target branch jobs fails' do
+        before do
+          allow(ci_jobs_dependency_validation).to receive_message_chain(:gitlab, :api, :get)
+            .with("/projects/1/ci/lint", query: query).and_raise('404 Not Found')
+        end
+
+        it 'prints the failure but does not break' do
+          expect { expect(ci_jobs_dependency_validation.output_message).to eq('') }.tap do |expectation|
+            expectation
+              .to output(<<~MSG).to_stdout
+                Initializing 1 jobs from master ci config...
+                404 Not Found
+                Initializing 0 jobs from feature_branch ci config...
+              MSG
+          end
+        end
+      end
+
       context 'when source branch jobs is empty' do
         let(:master_merged_yaml) { YAML.dump({}) }
 
         it_behaves_like 'empty message'
+      end
+
+      context 'when retrieving source branch jobs fails' do
+        before do
+          allow(ci_jobs_dependency_validation).to receive_message_chain(:gitlab, :api, :get)
+            .with("/projects/1/ci/lint", query: {}).and_raise('404 Not Found')
+        end
+
+        it 'prints the failure but does not break' do
+          expect { expect(ci_jobs_dependency_validation.output_message).to eq('') }.tap do |expectation|
+            expectation
+              .to output(<<~MSG).to_stdout
+                404 Not Found
+                Initializing 0 jobs from master ci config...
+              MSG
+          end
+        end
       end
 
       context 'when jobs do not have dependencies' do
@@ -331,7 +366,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
       end
 
       it 'returns jobs yaml' do
-        expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq([])
+        expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq({})
       end
     end
 
@@ -343,7 +378,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
       end
 
       it 'returns jobs yaml' do
-        expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq([])
+        expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq({})
       end
     end
 
@@ -357,7 +392,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
       end
 
       it 'returns jobs yaml' do
-        expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq([])
+        expect(ci_jobs_dependency_validation.send(:fetch_jobs_yaml, '1', 'master')).to eq({})
       end
     end
   end

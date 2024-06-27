@@ -1156,17 +1156,19 @@ Instead of:
 
 ## level
 
-If you can, avoid using `level` in the context of an instance or group.
+If you can, avoid using `level` in the context of an instance, project, or group.
 
 Use:
 
 - This setting is turned on for the instance.
 - This setting is turned on for the group and its subgroups.
+- This setting is turned on for projects.
 
 Instead of:
 
 - This setting is turned on at the instance level.
 - This setting is turned on at the group level.
+- This is a project-level setting.
 
 ## list
 

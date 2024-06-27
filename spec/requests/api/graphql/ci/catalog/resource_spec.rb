@@ -73,12 +73,16 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
 
     let_it_be(:inputs) do
       {
-        website: nil,
+        access_token: nil,
         environment: {
           default: 'test'
         },
         tags: {
           type: 'array'
+        },
+        website: {
+          description: 'The website',
+          regex: '^https'
         }
       }
     end
@@ -103,9 +107,12 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
                     name
                     includePath
                     inputs {
-                      name
                       default
+                      description
+                      name
+                      regex
                       required
+                      type
                     }
                   }
                 }
@@ -126,23 +133,31 @@ RSpec.describe 'Query.ciCatalogResource', feature_category: :pipeline_compositio
           components.first,
           name: components.first.name,
           include_path: components.first.include_path,
-          inputs: [
+          inputs: contain_exactly(
+            a_graphql_entity_for(
+              name: 'access_token',
+              required: true,
+              type: 'STRING'
+            ),
             a_graphql_entity_for(
               name: 'tags',
-              default: nil,
-              required: true
+              required: true,
+              type: 'ARRAY'
             ),
             a_graphql_entity_for(
               name: 'website',
-              default: nil,
-              required: true
+              required: true,
+              description: 'The website',
+              regex: '^https',
+              type: 'STRING'
             ),
             a_graphql_entity_for(
               name: 'environment',
               default: 'test',
-              required: false
+              required: false,
+              type: 'STRING'
             )
-          ]
+          )
         ),
         a_graphql_entity_for(
           components.last,

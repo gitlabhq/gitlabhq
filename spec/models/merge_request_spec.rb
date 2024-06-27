@@ -2222,12 +2222,36 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
 
-    it { is_expected.to eq('merge_when_pipeline_succeeds') }
+    it { is_expected.to eq('merge_when_checks_pass') }
+
+    context 'when merge_when_checks_pass is false' do
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
+      end
+
+      it { is_expected.to eq('merge_when_pipeline_succeeds') }
+    end
 
     context 'when auto merge is disabled' do
       let(:merge_request) { create(:merge_request) }
 
       it { is_expected.to be_nil }
+    end
+  end
+
+  describe '#default_auto_merge_strategy' do
+    subject { merge_request.default_auto_merge_strategy }
+
+    let(:merge_request) { create(:merge_request, :merge_when_pipeline_succeeds) }
+
+    it { is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS) }
+
+    context 'when merge_when_checks_pass feature flag is off' do
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
+      end
+
+      it { is_expected.to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS) }
     end
   end
 

@@ -343,19 +343,15 @@ RSpec.describe 'Merge request > User sees merge widget', :js, feature_category: 
         expect(page).not_to have_selector('.accept-merge-request')
       end
     end
-    # TODO When moving merge when checks pass to FOSS
-    # context 'when using merge when checks pass' do
-    #   before do
-    #     stub_feature_flags(merge_when_checks_pass: true)
-    #   end
-    #
-    #   it 'is not allowed to set auto merge' do
-    #     # Wait for the `ci_status` and `merge_check` requests
-    #     wait_for_requests
-    #
-    #     expect(page).to have_selector('.accept-merge-request')
-    #   end
-    # end
+
+    context 'when using merge when checks pass' do
+      it 'is not allowed to set auto merge' do
+        # Wait for the `ci_status` and `merge_check` requests
+        wait_for_requests
+
+        expect(page).to have_selector('.accept-merge-request')
+      end
+    end
   end
 
   context 'view merge request with MWPS enabled but automatically merge fails' do
