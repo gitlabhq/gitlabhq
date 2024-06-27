@@ -40,7 +40,7 @@ export default {
     <gl-collapsible-listbox
       v-model="selected"
       :items="databases"
-      placement="right"
+      placement="bottom-end"
       :toggle-text="selectedDatabase"
       toggle-aria-labelled-by="label"
       @select="selectDatabase"

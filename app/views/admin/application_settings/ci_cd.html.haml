@@ -3,10 +3,13 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
-%section.settings.no-animate#js-ci-cd-variables{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    = render 'admin/application_settings/ci/header', expanded: expanded_by_default?
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Variables'),
+  id: 'js-ci-cd-variables',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('CiVariables|Variables store information that you can use in job scripts. All projects on the instance can use these variables.')
+    = link_to _('Learn more.'), help_page_path('ci/variables/index', anchor: 'for-an-instance'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'ci/variables/attributes'
     - if ci_variable_protected_by_default?
       %p.settings-message.gl-text-center
@@ -14,35 +17,32 @@
         = safe_format(s_('Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default.'), tag_pair(help_link, :help_link_start, :help_link_end))
     #js-instance-variables{ data: { endpoint: admin_ci_variables_path, maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
 
-%section.settings.as-ci-cd.no-animate#js-ci-cd-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Continuous Integration and Deployment')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Customize CI/CD settings, including Auto DevOps, instance runners, and job artifacts.')
-  = render 'ci_cd'
+= render ::Layouts::SettingsBlockComponent.new(_('Continuous Integration and Deployment'),
+  id: 'js-continuous-integration-settings',
+  testid: 'ci-cd-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Customize CI/CD settings, including Auto DevOps, instance runners, and job artifacts.')
+  - c.with_body do
+    = render 'ci_cd'
 
 = render_if_exists 'admin/application_settings/package_registry', expanded: expanded_by_default?
 
 - if Gitlab.config.registry.enabled
-  %section.settings.as-registry.no-animate#js-registry-settings{ class: ('expanded' if expanded_by_default?) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _('Container Registry')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded_by_default? ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _('Various container registry settings.')
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Container Registry'),
+    id: 'js-registry-settings',
+    testid: 'registry-settings',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = _('Various container registry settings.')
+    - c.with_body do
       = render 'registry'
 
-%section.settings.as-runner.no-animate#js-runner-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_('Runners|Runners')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? 'Collapse' : 'Expand'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(s_('Runners|Runners'),
+  id: 'js-runner-settings',
+  testid: 'runner-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure runner version management and registration settings.')
+  - c.with_body do
     = render 'runner_registrars_form'

@@ -706,7 +706,7 @@ GEM
       mime-types
     gitlab-glfm-markdown (0.0.17)
       rb_sys (= 0.9.94)
-    gitlab-labkit (0.36.0)
+    gitlab-labkit (0.36.1)
       actionpack (>= 5.0.0, < 8.0.0)
       activesupport (>= 5.0.0, < 8.0.0)
       grpc (>= 1.62)

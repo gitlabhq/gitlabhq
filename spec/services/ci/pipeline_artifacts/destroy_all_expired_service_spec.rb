@@ -12,7 +12,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_re
     context 'when timeout happens' do
       before do
         stub_const('Ci::PipelineArtifacts::DestroyAllExpiredService::LOOP_TIMEOUT', 0.1.seconds)
-        allow(service).to receive(:destroy_artifacts_batch) { true }
+        allow(service).to receive(:destroy_batch) { true }
       end
 
       it 'returns 0 and does not continue destroying' do
@@ -31,7 +31,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_re
         stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::LOOP_LIMIT', 1)
         stub_const('::Ci::PipelineArtifacts::DestroyAllExpiredService::BATCH_SIZE', 1)
 
-        create_list(:ci_pipeline_artifact, 2, :unlocked, expire_at: 1.week.ago)
+        create_list(:ci_pipeline_artifact, 2, :artifact_unlocked, expire_at: 1.week.ago)
       end
 
       it 'destroys one artifact' do
@@ -47,7 +47,7 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_re
       before do
         stub_const('Ci::PipelineArtifacts::DestroyAllExpiredService::BATCH_SIZE', 1)
 
-        create_list(:ci_pipeline_artifact, 2, :unlocked, expire_at: 1.week.ago)
+        create_list(:ci_pipeline_artifact, 2, :artifact_unlocked, expire_at: 1.week.ago)
       end
 
       it 'destroys all expired artifacts' do
@@ -92,7 +92,6 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_re
 
       before do
         create_list(:ci_pipeline_artifact, 2, :artifact_unlocked, expire_at: 1.week.ago)
-        allow(service).to receive(:legacy_destroy_pipeline_artifacts)
       end
 
       it 'destroys all expired artifacts' do
@@ -115,12 +114,6 @@ RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_re
           is_expected.to eq(1)
         end
       end
-    end
-  end
-
-  describe '.destroy_artifacts_batch' do
-    it 'returns a falsy value without artifacts' do
-      expect(service.send(:destroy_artifacts_batch)).to be_falsy
     end
   end
 end

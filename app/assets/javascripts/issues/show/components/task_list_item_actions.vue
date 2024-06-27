@@ -38,7 +38,7 @@ export default {
     category="tertiary"
     icon="ellipsis_v"
     no-caret
-    placement="right"
+    placement="bottom-end"
     :toggle-text="$options.i18n.taskActions"
     text-sr-only
     toggle-class="task-list-item-actions gl-opacity-0 gl-p-2! "

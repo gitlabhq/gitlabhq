@@ -4377,9 +4377,9 @@ export const mockFrequentlyUsedProjects = [
 export const createWorkItemQueryResponse = {
   data: {
     workspace: {
-      id: 'new-workspace-workitem-id',
+      id: 'full-path-epic-id',
       workItem: {
-        id: 'gid://gitlab/WorkItem/new',
+        id: 'gid://gitlab/WorkItem/new-epic',
         iid: NEW_WORK_ITEM_IID,
         archived: false,
         title: '',
@@ -4393,7 +4393,7 @@ export const createWorkItemQueryResponse = {
         reference: 'gitlab-org#56',
         createNoteEmail: null,
         namespace: {
-          id: 'gid://gitlab/Group/24',
+          id: 'full-path-epic-id',
           fullPath: 'full-path',
           name: 'Gitlab Org',
           __typename: 'Namespace',

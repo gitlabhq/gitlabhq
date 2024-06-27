@@ -1,6 +1,7 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import { s__ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import CodeInstruction from '~/vue_shared/components/registry/code_instruction.vue';
 
 export default {
@@ -9,7 +10,7 @@ export default {
     GlLink,
     GlSprintf,
   },
-  inject: ['terraformHelpPath', 'gitlabHost', 'projectPath'],
+  inject: ['gitlabHost', 'projectPath'],
   props: {
     packageName: {
       type: String,
@@ -38,6 +39,9 @@ export default {
       'InfrastructureRegistry|For more information on the Terraform registry, %{linkStart}see our documentation%{linkEnd}.',
     ),
   },
+  terraformHelpPath: helpPagePath('user/packages/terraform_module_registry/index', {
+    anchor: 'reference-a-terraform-module',
+  }),
 };
 </script>
 
@@ -66,7 +70,7 @@ export default {
     />
     <gl-sprintf :message="$options.i18n.helpText">
       <template #link="{ content }">
-        <gl-link :href="terraformHelpPath">{{ content }}</gl-link>
+        <gl-link :href="$options.terraformHelpPath">{{ content }}</gl-link>
       </template>
     </gl-sprintf>
   </div>

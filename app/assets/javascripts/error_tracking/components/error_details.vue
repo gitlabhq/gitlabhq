@@ -372,7 +372,7 @@ export default {
             block
             :toggle-text="__('Options')"
             toggle-class="md:gl-hidden"
-            placement="right"
+            placement="bottom-end"
             :disabled="issueUpdateInProgress"
             :items="dropdownItems"
           />

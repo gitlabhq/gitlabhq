@@ -178,7 +178,7 @@ export default {
       data-testid="discussion-preferences-dropdown"
       :toggle-text="__('Sort or filter')"
       :disabled="isLoading"
-      placement="right"
+      placement="bottom-end"
     >
       <gl-disclosure-dropdown-group id="discussion-sort">
         <gl-disclosure-dropdown-item

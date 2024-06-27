@@ -249,7 +249,7 @@ export default {
       />
       <gl-disclosure-dropdown
         v-if="canUpdate && canAddTask"
-        placement="right"
+        placement="bottom-end"
         size="small"
         :toggle-text="$options.i18n.addChildButtonLabel"
         data-testid="toggle-form"

@@ -1,7 +1,7 @@
 <script>
 import { GlButton } from '@gitlab/ui';
 import { unionBy } from 'lodash';
-import { sortNameAlphabetically } from '~/work_items/utils';
+import { sortNameAlphabetically, newWorkItemId } from '~/work_items/utils';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import usersSearchQuery from '~/graphql_shared/queries/workspace_autocomplete_users.query.graphql';
 import InviteMembersTrigger from '~/invite_members/components/invite_members_trigger.vue';
@@ -12,7 +12,7 @@ import { s__, sprintf, __ } from '~/locale';
 import Tracking from '~/tracking';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
-import { i18n, TRACKING_CATEGORY_SHOW, NEW_WORK_ITEM_GID } from '../constants';
+import { i18n, TRACKING_CATEGORY_SHOW } from '../constants';
 
 export default {
   components: {
@@ -236,12 +236,13 @@ export default {
       this.updateInProgress = true;
       const { localAssigneeIds } = this;
 
-      if (this.workItemId === NEW_WORK_ITEM_GID) {
+      if (this.workItemId === newWorkItemId(this.workItemType)) {
         this.$apollo.mutate({
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
               isGroup: this.isGroup,
+              workItemType: this.workItemType,
               fullPath: this.fullPath,
               assignees: this.localAssignees,
             },

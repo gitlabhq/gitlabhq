@@ -84,7 +84,7 @@ export default {
           icon="ellipsis_v"
           no-caret
           text-sr-only
-          placement="right"
+          placement="bottom-end"
           :toggle-text="__('Comment template actions')"
           :loading="isDeleting"
           category="tertiary"

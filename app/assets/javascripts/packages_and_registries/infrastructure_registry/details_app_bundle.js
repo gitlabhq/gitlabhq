@@ -11,11 +11,11 @@ export default () => {
   const {
     package: packageJson,
     canDelete: canDeleteStr,
-    terraformHelpPath,
     gitlabHost,
     projectPath,
     projectName,
     projectListUrl,
+    svgPath,
   } = el.dataset;
   const packageEntity = JSON.parse(packageJson);
   const canDelete = parseBoolean(canDeleteStr);
@@ -34,7 +34,7 @@ export default () => {
       projectListUrl,
       projectName,
       projectPath,
-      terraformHelpPath,
+      svgPath,
     },
     render(createElement) {
       return createElement(PackagesApp);

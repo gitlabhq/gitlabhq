@@ -55,6 +55,6 @@ export default {
     :loading="loading"
     icon="download"
     size="small"
-    placement="right"
+    placement="bottom-end"
   />
 </template>

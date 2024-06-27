@@ -747,55 +747,64 @@ When GitLab receives a SAML response from a SAML SSO provider, GitLab looks for 
 
 You must include these values correctly in the attribute `Name` field so that GitLab can parse the SAML response. For example, GitLab can parse the following SAML response snippets:
 
-```xml
-            <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname">
-                <AttributeValue>Alvin</AttributeValue>
-            </Attribute>
-            <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname">
-                <AttributeValue>Test</AttributeValue>
-            </Attribute>
-            <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
-                <AttributeValue>alvintest@example.com</AttributeValue>
-            </Attribute>
-```
+- This is accepted because the `Name` attribute is set to one of the required values from the previous table.
 
-```xml
-            <Attribute Name="firstname">
-                <AttributeValue>Alvin</AttributeValue>
-            </Attribute>
-            <Attribute Name="lastname">
-                <AttributeValue>Test</AttributeValue>
-            </Attribute>
-            <Attribute Name="email">
-                <AttributeValue>alvintest@example.com</AttributeValue>
-            </Attribute>
-```
+  ```xml
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
+
+- This is accepted because the `Name` attribute matches one of the values from the previous table.
+
+  ```xml
+           <Attribute Name="firstname">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute Name="lastname">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute Name="email">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
 
 However, GitLab cannot parse the following SAML response snippets:
 
-```xml
-            <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/firstname">
-                <AttributeValue>Alvin</AttributeValue>
-            </Attribute>
-            <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/lastname">
-                <AttributeValue>Test</AttributeValue>
-            </Attribute>
-            <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mail">
-                <AttributeValue>alvintest@example.com</AttributeValue>
-            </Attribute>
-```
+- This will not be accepted because value in the `Name` attribute is not one of the supported
+  values in the previous table.
 
-```xml
-            <Attribute FriendlyName="firstname" Name="urn:oid:2.5.4.42">
-                <AttributeValue>Alvin</AttributeValue>
-            </Attribute>
-            <Attribute FriendlyName="lastname" Name="urn:oid:2.5.4.4">
-                <AttributeValue>Test</AttributeValue>
-            </Attribute>
-            <Attribute FriendlyName="email" Name="urn:oid:0.9.2342.19200300.100.1.3">
-                <AttributeValue>alvintest@example.com</AttributeValue>
-            </Attribute>
-```
+  ```xml
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/firstname">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/lastname">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mail">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
+
+- This will fail because, even though the `FriendlyName` has a supported value, the `Name` attribute does not.  
+
+  ```xml
+           <Attribute FriendlyName="firstname" Name="urn:oid:2.5.4.42">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute FriendlyName="lastname" Name="urn:oid:2.5.4.4">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute FriendlyName="email" Name="urn:oid:0.9.2342.19200300.100.1.3">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
 
 See [`attribute_statements`](#map-saml-response-attribute-names) for:
 

@@ -1,4 +1,6 @@
+import { GlLink, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import TerraformInstallation from '~/packages_and_registries/infrastructure_registry/details/components/terraform_installation.vue';
 import CodeInstructions from '~/vue_shared/components/registry/code_instruction.vue';
 import { terraformModule } from '../../mock_data';
@@ -9,7 +11,6 @@ describe('TerraformInstallation', () => {
   const defaultProvide = {
     gitlabHost: 'bar.dev',
     projectPath: 'foo',
-    terraformHelpPath: '/help',
   };
 
   const defaultProps = {
@@ -18,6 +19,7 @@ describe('TerraformInstallation', () => {
   };
 
   const findCodeInstructions = () => wrapper.findAllComponents(CodeInstructions);
+  const findLink = () => wrapper.findComponent(GlLink);
 
   function createComponent() {
     wrapper = shallowMount(TerraformInstallation, {
@@ -26,6 +28,9 @@ describe('TerraformInstallation', () => {
       },
       provide: {
         ...defaultProvide,
+      },
+      stubs: {
+        GlSprintf,
       },
     });
   }
@@ -56,6 +61,16 @@ describe('TerraformInstallation', () => {
           token = \\"<TOKEN>\\"
         }"
       `);
+    });
+  });
+
+  describe('link to help page', () => {
+    it('is rendered', () => {
+      expect(findLink().attributes('href')).toBe(
+        helpPagePath('user/packages/terraform_module_registry/index', {
+          anchor: 'reference-a-terraform-module',
+        }),
+      );
     });
   });
 });

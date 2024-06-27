@@ -40,7 +40,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge v-gl-tooltip :title="confidentialTooltip" variant="warning">
+  <gl-badge v-gl-tooltip :title="confidentialTooltip" variant="warning" class="gl-shrink-0">
     <gl-icon name="eye-slash" :size="16" />
     <span data-testid="confidential-badge-text" :class="confidentialTextClass">{{
       __('Confidential')

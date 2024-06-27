@@ -91,7 +91,11 @@ export default {
 </script>
 
 <template>
-  <gl-badge :variant="badgeProperties.variant" :aria-label="badgeProperties.text">
+  <gl-badge
+    :variant="badgeProperties.variant"
+    :aria-label="badgeProperties.text"
+    class="gl-shrink-0"
+  >
     <gl-icon :name="badgeProperties.icon" />
     {{ badgeProperties.text }}
   </gl-badge>

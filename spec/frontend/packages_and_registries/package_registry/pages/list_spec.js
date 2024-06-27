@@ -1,6 +1,7 @@
 import { GlButton, GlEmptyState, GlSprintf, GlLink } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -19,8 +20,15 @@ import {
 } from '~/packages_and_registries/package_registry/constants';
 import PersistedPagination from '~/packages_and_registries/shared/components/persisted_pagination.vue';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
+import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
 import destroyPackagesMutation from '~/packages_and_registries/package_registry/graphql/mutations/destroy_packages.mutation.graphql';
-import { packagesListQuery, packageData, pagination } from '../mock_data';
+import {
+  packagesListQuery,
+  groupPackageSettingsQuery,
+  groupPackageSettingsQueryForGroup,
+  packageData,
+  pagination,
+} from '../mock_data';
 
 jest.mock('~/alert');
 
@@ -33,6 +41,7 @@ describe('PackagesListApp', () => {
     isGroupPage: true,
     fullPath: 'gitlab-org',
     settingsPath: 'settings-path',
+    canDeletePackages: true,
   };
 
   const PackageList = {
@@ -62,6 +71,7 @@ describe('PackagesListApp', () => {
 
   const mountComponent = ({
     resolver = jest.fn().mockResolvedValue(packagesListQuery()),
+    groupPackageSettingsResolver = jest.fn().mockResolvedValue(groupPackageSettingsQueryForGroup()),
     mutationResolver,
     provide = defaultProvide,
   } = {}) => {
@@ -69,6 +79,7 @@ describe('PackagesListApp', () => {
 
     const requestHandlers = [
       [getPackagesQuery, resolver],
+      [getGroupPackageSettings, groupPackageSettingsResolver],
       [destroyPackagesMutation, mutationResolver],
     ];
     apolloProvider = createMockApollo(requestHandlers);
@@ -256,20 +267,52 @@ describe('PackagesListApp', () => {
     });
   });
 
+  describe('when canDeletePackages is false does not request group package settings query', () => {
+    const groupPackageSettingsResolver = jest
+      .fn()
+      .mockResolvedValue(groupPackageSettingsQueryForGroup());
+    beforeEach(() => {
+      mountComponent({
+        groupPackageSettingsResolver,
+        provide: {
+          ...defaultProvide,
+          canDeletePackages: false,
+        },
+      });
+
+      return waitForFirstRequest();
+    });
+
+    it('does not request group package settings query', () => {
+      expect(groupPackageSettingsResolver).not.toHaveBeenCalled();
+    });
+  });
+
   describe.each`
     type                 | sortType
     ${WORKSPACE_PROJECT} | ${'sort'}
     ${WORKSPACE_GROUP}   | ${'groupSort'}
   `('$type query', ({ type, sortType }) => {
+    let groupPackageSettingsResolver;
     let provide;
     let resolver;
 
     const isGroupPage = type === WORKSPACE_GROUP;
 
     beforeEach(() => {
+      jest.spyOn(Sentry, 'captureException').mockImplementation();
       provide = { ...defaultProvide, isGroupPage };
       resolver = jest.fn().mockResolvedValue(packagesListQuery({ type }));
-      mountComponent({ provide, resolver });
+
+      const response = isGroupPage
+        ? groupPackageSettingsQueryForGroup()
+        : groupPackageSettingsQuery();
+      groupPackageSettingsResolver = jest.fn().mockResolvedValue(response);
+      mountComponent({
+        provide,
+        resolver,
+        groupPackageSettingsResolver,
+      });
       return waitForFirstRequest();
     });
 
@@ -283,6 +326,17 @@ describe('PackagesListApp', () => {
       );
     });
 
+    it('calls the group packageSettings resolver with the right parameters', () => {
+      expect(groupPackageSettingsResolver).toHaveBeenCalledWith({
+        fullPath: provide.fullPath,
+        isGroupPage,
+      });
+    });
+
+    it('expects not to call sentry', () => {
+      expect(Sentry.captureException).not.toHaveBeenCalled();
+    });
+
     it('list component has group settings prop set', () => {
       expect(findListComponent().props()).toMatchObject({
         groupSettings: expect.objectContaining({
@@ -292,19 +346,40 @@ describe('PackagesListApp', () => {
         }),
       });
     });
+
+    describe('when group package settings query fails', () => {
+      beforeEach(() => {
+        groupPackageSettingsResolver = jest.fn().mockRejectedValue(new Error('error'));
+        mountComponent({
+          provide,
+          resolver,
+          groupPackageSettingsResolver,
+        });
+        return waitForFirstRequest();
+      });
+
+      it('captures error in Sentry', () => {
+        expect(Sentry.captureException).toHaveBeenCalled();
+      });
+    });
   });
 
   describe.each`
     description         | resolverResponse
-    ${'empty response'} | ${packagesListQuery({ extend: { nodes: [] } })}
+    ${'empty response'} | ${packagesListQuery({ extend: { packages: { nodes: [], count: 0, pageInfo: {}, __typename: 'PackageConnection' } } })}
     ${'error response'} | ${{ data: { group: null } }}
   `(`$description renders empty state`, ({ resolverResponse }) => {
+    const groupPackageSettingsResolver = jest
+      .fn()
+      .mockResolvedValue(groupPackageSettingsQueryForGroup());
+
     beforeEach(() => {
       const resolver = jest.fn().mockResolvedValue(resolverResponse);
-      mountComponent({ resolver });
+      mountComponent({ resolver, groupPackageSettingsResolver });
 
       return waitForFirstRequest();
     });
+
     it('generate the correct empty list link', () => {
       const link = findListComponent().findComponent(GlLink);
 
@@ -314,6 +389,10 @@ describe('PackagesListApp', () => {
 
     it('includes the right content on the default tab', () => {
       expect(findEmptyState().text()).toContain(ListPage.i18n.emptyPageTitle);
+    });
+
+    it('does not request for group package settings', () => {
+      expect(groupPackageSettingsResolver).not.toHaveBeenCalled();
     });
   });
 

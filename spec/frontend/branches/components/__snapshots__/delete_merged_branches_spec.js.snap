@@ -8,7 +8,7 @@ exports[`Delete merged branches component Delete merged branches confirmation mo
     icon="ellipsis_v"
     nocaret="true"
     offset="[object Object]"
-    placement="right"
+    placement="bottom-end"
     positioningstrategy="absolute"
     size="medium"
     textsronly="true"

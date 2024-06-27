@@ -116,7 +116,7 @@ export default {
     :toggle-text="$options.i18n.toggleText"
     icon="ellipsis_v"
     category="tertiary"
-    placement="right"
+    placement="bottom-end"
     data-testid="branch-more-actions"
     text-sr-only
     no-caret

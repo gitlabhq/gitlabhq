@@ -66,7 +66,7 @@ export default {
       v-model="selectedKey"
       data-testid="tags-dropdown"
       :items="sortOptionsListboxItems"
-      placement="right"
+      placement="bottom-end"
       :toggle-text="selectedSortMethod"
       @select="visitUrlFromOption"
     />

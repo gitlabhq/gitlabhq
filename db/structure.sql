@@ -12177,21 +12177,8 @@ CREATE TABLE member_roles (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     base_access_level integer NOT NULL,
-    read_code boolean DEFAULT false,
-    read_vulnerability boolean DEFAULT false NOT NULL,
-    admin_vulnerability boolean DEFAULT false NOT NULL,
-    read_dependency boolean DEFAULT false NOT NULL,
     name text DEFAULT 'Custom'::text NOT NULL,
     description text,
-    admin_merge_request boolean DEFAULT false NOT NULL,
-    admin_group_member boolean DEFAULT false NOT NULL,
-    manage_project_access_tokens boolean DEFAULT false NOT NULL,
-    archive_project boolean DEFAULT false NOT NULL,
-    manage_group_access_tokens boolean DEFAULT false NOT NULL,
-    remove_project boolean DEFAULT false NOT NULL,
-    admin_terraform_state boolean DEFAULT false NOT NULL,
-    admin_cicd_variables boolean DEFAULT false NOT NULL,
-    remove_group boolean DEFAULT false NOT NULL,
     occupies_seat boolean DEFAULT false NOT NULL,
     permissions jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_4364846f58 CHECK ((char_length(description) <= 255)),
@@ -29648,8 +29635,6 @@ CREATE INDEX scan_finding_approval_mr_rule_index_mr_id_and_created_at ON approva
 CREATE INDEX scan_finding_approval_project_rule_index_created_at_project_id ON approval_project_rules USING btree (created_at, project_id) WHERE (report_type = 4);
 
 CREATE INDEX scan_finding_approval_project_rule_index_project_id ON approval_project_rules USING btree (project_id) WHERE (report_type = 4);
-
-CREATE INDEX security_findings_confidence_idx ON ONLY security_findings USING btree (confidence);
 
 CREATE INDEX security_findings_project_fingerprint_idx ON ONLY security_findings USING btree (project_fingerprint);
 

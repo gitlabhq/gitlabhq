@@ -220,7 +220,7 @@
 {"name":"gitlab-glfm-markdown","version":"0.0.17","platform":"ruby","checksum":"f379545fc53a71c31525025fdb422f46081133af5cced3130ce680b155c2aa69"},
 {"name":"gitlab-glfm-markdown","version":"0.0.17","platform":"x86_64-darwin","checksum":"50e0f4865ef7c455426c7c058fc10ff9c8366482d48a63d6f6693b38c4a49c1c"},
 {"name":"gitlab-glfm-markdown","version":"0.0.17","platform":"x86_64-linux","checksum":"cc877ff8ceb3aa8a331fdb8991592e35897823e0f77ba9e4b2b65082c665089b"},
-{"name":"gitlab-labkit","version":"0.36.0","platform":"ruby","checksum":"35f21d1c3870ed0c9b8321e25d0b0b0b5021805a5d0525d1eb0fde6b103af981"},
+{"name":"gitlab-labkit","version":"0.36.1","platform":"ruby","checksum":"04fb6941b7e5fc1fdcee8f9971fa2086a4dc442e39e67a74b992403dd580c300"},
 {"name":"gitlab-license","version":"2.5.0","platform":"ruby","checksum":"4c166c469c2ad17876ca43188a4ccebe3feb0726c4c1770047f8dcef96573f4d"},
 {"name":"gitlab-mail_room","version":"0.0.25","platform":"ruby","checksum":"223ce7c3c0797b6015eaa37147884e6ddc7be9a7ee90a424358c96bc18613b1a"},
 {"name":"gitlab-markup","version":"1.9.0","platform":"ruby","checksum":"7eda045a08ec2d110084252fa13a8c9eac8bdac0e302035ca7db4b82bcbd7ed4"},

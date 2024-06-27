@@ -20,7 +20,7 @@ module ProtectedRef
   end
 
   def commit
-    project.commit(self.name)
+    project&.commit(name)
   end
 
   class_methods do
@@ -59,7 +59,7 @@ module ProtectedRef
     end
 
     def access_levels_for_ref(ref, action:, protected_refs: nil)
-      self.matching(ref, protected_refs: protected_refs)
+      matching(ref, protected_refs: protected_refs)
         .flat_map(&:"#{action}_access_levels")
     end
 
@@ -70,14 +70,14 @@ module ProtectedRef
     # This method optionally takes in a list of `protected_refs` to search
     # through, to avoid calling out to the database.
     def matching(ref_name, protected_refs: nil)
-      (protected_refs || self.all).select { |protected_ref| protected_ref.matches?(ref_name) }
+      (protected_refs || all).select { |protected_ref| protected_ref.matches?(ref_name) }
     end
   end
 
   private
 
   def ref_matcher
-    @ref_matcher ||= RefMatcher.new(self.name)
+    @ref_matcher ||= RefMatcher.new(name)
   end
 end
 

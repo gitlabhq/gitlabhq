@@ -232,10 +232,7 @@ export const pagination = (extend) => ({
   ...extend,
 });
 
-export const packageDetailsQuery = ({
-  extendPackage = {},
-  packageSettings = defaultPackageGroupSettings,
-} = {}) => ({
+export const packageDetailsQuery = ({ extendPackage = {} } = {}) => ({
   data: {
     package: {
       ...packageData(),
@@ -251,11 +248,6 @@ export const packageDetailsQuery = ({
         path: 'projectPath',
         name: 'gitlab-test',
         fullPath: 'gitlab-test',
-        group: {
-          id: '1',
-          packageSettings,
-          __typename: 'Group',
-        },
         __typename: 'Project',
       },
       tags: {
@@ -274,6 +266,18 @@ export const packageDetailsQuery = ({
       },
       __typename: 'PackageDetailsType',
       ...extendPackage,
+    },
+  },
+});
+
+export const groupPackageSettingsQueryForGroup = ({
+  packageSettings = defaultPackageGroupSettings,
+} = {}) => ({
+  data: {
+    group: {
+      id: 'group-id',
+      packageSettings,
+      __typename: 'Group',
     },
   },
 });
@@ -433,12 +437,7 @@ export const packageDestroyFilesMutationError = () => ({
   ],
 });
 
-export const packagesListQuery = ({
-  type = 'group',
-  extend = {},
-  extendPagination = {},
-  packageSettings = defaultPackageGroupSettings,
-} = {}) => ({
+export const packagesListQuery = ({ type = 'group', extend = {}, extendPagination = {} } = {}) => ({
   data: {
     [type]: {
       id: '1',
@@ -467,14 +466,6 @@ export const packagesListQuery = ({
         pageInfo: pagination(extendPagination),
         __typename: 'PackageConnection',
       },
-      ...(type === 'group' && { packageSettings }),
-      ...(type === 'project' && {
-        group: {
-          id: '1',
-          packageSettings,
-          __typename: 'Group',
-        },
-      }),
       ...extend,
       __typename: capitalize(type),
     },

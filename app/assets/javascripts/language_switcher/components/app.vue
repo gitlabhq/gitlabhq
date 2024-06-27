@@ -45,7 +45,7 @@ export default {
     :toggle-text="preferredLocale.text"
     :items="locales"
     category="tertiary"
-    placement="right"
+    placement="bottom-end"
     icon="earth"
     size="small"
     toggle-class="py-0 gl-h-6"

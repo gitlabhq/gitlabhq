@@ -235,7 +235,7 @@ RSpec.describe LabelsFinder, feature_category: :team_planning do
 
     context 'filtering by project_id' do
       context 'when include_ancestor_groups is true' do
-        let!(:sub_project) { create(:project, namespace: private_subgroup_1) }
+        let_it_be(:sub_project) { create(:project, namespace: private_subgroup_1) }
         let!(:project_label) { create(:label, project: sub_project, title: 'Label 5') }
         let(:finder) { described_class.new(user, project_id: sub_project.id, include_ancestor_groups: true) }
 

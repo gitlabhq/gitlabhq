@@ -39,6 +39,7 @@ extend type Mutation {
 
 input LocalUpdateNewWorkItemInput {
   fullPath: String!
+  workItemType: String!
   isGroup: Boolean!
   healthStatus: String
   assignees: [LocalUserInput]

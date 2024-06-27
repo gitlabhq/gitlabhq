@@ -81,10 +81,8 @@ export default {
         class="issue-sticky-header gl-fixed gl-z-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
         data-testid="issue-sticky-header"
       >
-        <div
-          class="issue-sticky-header-text gl-display-flex gl-align-items-center gl-gap-2 gl-mx-auto"
-        >
-          <gl-badge :variant="statusVariant" :icon="statusIcon">
+        <div class="issue-sticky-header-text gl-flex gl-items-center gl-gap-2 gl-mx-auto">
+          <gl-badge :variant="statusVariant" :icon="statusIcon" class="gl-shrink-0">
             {{ statusText }}
           </gl-badge>
           <confidentiality-badge

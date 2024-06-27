@@ -62,7 +62,7 @@ export default {
       <gl-collapsible-listbox
         :items="filteredChanges"
         size="small"
-        placement="right"
+        placement="bottom-end"
         searchable
         @search="search"
       >

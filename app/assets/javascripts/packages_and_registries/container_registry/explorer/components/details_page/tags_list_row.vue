@@ -227,7 +227,7 @@ export default {
         :text-sr-only="true"
         category="tertiary"
         no-caret
-        placement="right"
+        placement="bottom-end"
         :class="{ 'gl-opacity-0 gl-pointer-events-none': disabled }"
         data-testid="additional-actions"
         :items="items"

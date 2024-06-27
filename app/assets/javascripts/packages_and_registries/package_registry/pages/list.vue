@@ -5,6 +5,7 @@ import { createAlert, VARIANT_INFO } from '~/alert';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { fetchPolicies } from '~/lib/graphql';
 import { historyReplaceState } from '~/lib/utils/common_utils';
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { SHOW_DELETE_SUCCESS_ALERT } from '~/packages_and_registries/shared/constants';
 import {
@@ -15,6 +16,7 @@ import {
   PACKAGE_HELP_URL,
 } from '~/packages_and_registries/package_registry/constants';
 import getPackagesQuery from '~/packages_and_registries/package_registry/graphql/queries/get_packages.query.graphql';
+import getGroupPackageSettings from '~/packages_and_registries/package_registry/graphql/queries/get_group_package_settings.query.graphql';
 import DeletePackages from '~/packages_and_registries/package_registry/components/functional/delete_packages.vue';
 import PackageTitle from '~/packages_and_registries/package_registry/components/list/package_title.vue';
 import PackageSearch from '~/packages_and_registries/package_registry/components/list/package_search.vue';
@@ -41,7 +43,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['emptyListIllustration', 'isGroupPage', 'fullPath', 'settingsPath'],
+  inject: ['emptyListIllustration', 'canDeletePackages', 'isGroupPage', 'fullPath', 'settingsPath'],
   data() {
     return {
       packagesResource: {},
@@ -49,6 +51,7 @@ export default {
       filters: {},
       isDeleteInProgress: false,
       pageParams: {},
+      groupSettings: {},
     };
   },
   apollo: {
@@ -65,15 +68,30 @@ export default {
         return !this.sort;
       },
     },
+    groupSettings: {
+      query: getGroupPackageSettings,
+      variables() {
+        return {
+          fullPath: this.fullPath,
+          isGroupPage: this.isGroupPage,
+        };
+      },
+      update(data) {
+        return this.isGroupPage
+          ? data[this.graphqlResource].packageSettings ?? {}
+          : data[this.graphqlResource].group?.packageSettings ?? {};
+      },
+      skip() {
+        return !(this.packagesCount > 0 && this.canDeletePackages);
+      },
+      error(error) {
+        Sentry.captureException(error);
+      },
+    },
   },
   computed: {
     packages() {
       return this.packagesResource?.packages ?? {};
-    },
-    groupSettings() {
-      return this.isGroupPage
-        ? this.packagesResource?.packageSettings ?? {}
-        : this.packagesResource?.group?.packageSettings ?? {};
     },
     queryVariables() {
       return {

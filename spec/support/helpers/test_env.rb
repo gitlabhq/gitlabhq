@@ -7,6 +7,10 @@ require_relative '../../../lib/gitlab/setup_helper'
 module TestEnv
   extend self
 
+  def self.included(_)
+    raise "Don't include TestEnv. Use TestEnv.<method> instead."
+  end
+
   ComponentFailedToInstallError = Class.new(StandardError)
 
   # https://gitlab.com/gitlab-org/gitlab-test is used to seed your local gdk

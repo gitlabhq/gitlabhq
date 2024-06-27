@@ -70,6 +70,11 @@ export default {
       required: false,
       default: false,
     },
+    workItemTypeName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -99,7 +104,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.createFlow ? newWorkItemFullPath(this.fullPath) : this.fullPath,
+          fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
@@ -117,6 +122,11 @@ export default {
     },
   },
   computed: {
+    workItemFullPath() {
+      return this.createFlow
+        ? newWorkItemFullPath(this.fullPath, this.workItemTypeName)
+        : this.fullPath;
+    },
     autosaveKey() {
       return this.workItemId || `new-${this.workItemType}-description-draft`;
     },

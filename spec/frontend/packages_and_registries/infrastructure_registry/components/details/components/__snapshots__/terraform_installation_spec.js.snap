@@ -33,8 +33,12 @@ exports[`TerraformInstallation renders all the messages 1`] = `
     trackingaction=""
     trackinglabel=""
   />
-  <gl-sprintf-stub
-    message="For more information on the Terraform registry, %{linkStart}see our documentation%{linkEnd}."
-  />
+  For more information on the Terraform registry,
+  <gl-link-stub
+    href="/help/user/packages/terraform_module_registry/index#reference-a-terraform-module"
+  >
+    see our documentation
+  </gl-link-stub>
+  .
 </div>
 `;

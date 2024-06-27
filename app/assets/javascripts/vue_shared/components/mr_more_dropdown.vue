@@ -229,7 +229,7 @@ export default {
       v-gl-tooltip="showDropdownTooltip"
       :title="$options.i18n.mergeRequestActions"
       data-testid="dropdown-toggle"
-      placement="right"
+      placement="bottom-end"
       block
       class="gl-w-full"
       :auto-close="false"

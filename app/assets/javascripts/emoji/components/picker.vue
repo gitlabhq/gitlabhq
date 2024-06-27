@@ -70,7 +70,7 @@ export default {
       }));
     },
     placement() {
-      return this.right ? 'right' : 'left';
+      return this.right ? 'bottom-end' : 'bottom-start';
     },
     newCustomEmoji() {
       return {

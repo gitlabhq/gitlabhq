@@ -292,6 +292,7 @@ export const resolvers = {
         healthStatus,
         isGroup,
         fullPath,
+        workItemType,
         assignees,
         color,
         title,
@@ -301,9 +302,10 @@ export const resolvers = {
       const query = isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
 
       const variables = {
-        fullPath: newWorkItemFullPath(fullPath),
+        fullPath: newWorkItemFullPath(fullPath, workItemType),
         iid: NEW_WORK_ITEM_IID,
       };
+
       cache.updateQuery({ query, variables }, (sourceData) =>
         produce(sourceData, (draftData) => {
           if (healthStatus) {

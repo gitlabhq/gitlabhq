@@ -223,7 +223,7 @@ export default {
       v-gl-tooltip
       icon="ellipsis_v"
       text-sr-only
-      placement="right"
+      placement="bottom-end"
       :toggle-text="$options.i18n.moreActionsText"
       :title="$options.i18n.moreActionsText"
       category="tertiary"

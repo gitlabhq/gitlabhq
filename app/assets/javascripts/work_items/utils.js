@@ -20,6 +20,7 @@ import {
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
+  NEW_WORK_ITEM_GID,
 } from './constants';
 
 export const isAssigneesWidget = (widget) => widget.type === WIDGET_TYPE_ASSIGNEES;
@@ -156,11 +157,15 @@ export const workItemRoadmapPath = (fullPath, iid) => {
  * Builds unique path for new work item
  *
  * @param {string} fullPath the path to the namespace
+ * @param {string} workItemType the type of work item
  */
 
-export const newWorkItemFullPath = (fullPath) => {
+export const newWorkItemFullPath = (fullPath, workItemType) => {
+  if (!workItemType) return undefined;
+
+  const workItemTypeLowercase = workItemType.split(' ').join('-').toLowerCase();
   // eslint-disable-next-line @gitlab/require-i18n-strings
-  return `${fullPath}-id`;
+  return `${fullPath}-${workItemTypeLowercase}-id`;
 };
 
 /**
@@ -182,4 +187,11 @@ export const isWorkItemItemValidEnum = (workItemType) => {
       WORK_ITEM_TYPE_ENUM_REQUIREMENTS,
     ].indexOf(workItemType) >= 0
   );
+};
+
+export const newWorkItemId = (workItemType) => {
+  if (!workItemType) return undefined;
+
+  const workItemTypeLowercase = workItemType.split(' ').join('-').toLowerCase();
+  return `${NEW_WORK_ITEM_GID}-${workItemTypeLowercase}`;
 };

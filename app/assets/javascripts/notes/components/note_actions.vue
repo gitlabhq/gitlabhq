@@ -355,7 +355,7 @@ export default {
         text-sr-only
         icon="ellipsis_v"
         category="tertiary"
-        placement="right"
+        placement="bottom-end"
         class="note-action-button more-actions-toggle"
         no-caret
       >

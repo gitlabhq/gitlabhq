@@ -31,7 +31,7 @@ describe('TaskListItemActions component', () => {
     expect(findGlDisclosureDropdown().props()).toMatchObject({
       category: 'tertiary',
       icon: 'ellipsis_v',
-      placement: 'right',
+      placement: 'bottom-end',
       toggleText: TaskListItemActions.i18n.taskActions,
       textSrOnly: true,
     });

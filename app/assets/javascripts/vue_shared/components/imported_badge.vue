@@ -48,7 +48,7 @@ export default {
   <span v-if="textOnly" v-gl-tooltip="title">
     {{ __('Imported') }}
   </span>
-  <gl-badge v-else v-gl-tooltip="title">
+  <gl-badge v-else v-gl-tooltip="title" class="gl-shrink-0">
     {{ __('Imported') }}
   </gl-badge>
 </template>

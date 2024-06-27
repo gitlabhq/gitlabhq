@@ -31,7 +31,7 @@ export default {
 <template>
   <div>
     <gl-disclosure-dropdown
-      placement="right"
+      placement="bottom-end"
       toggle-text="Use an existing commit message"
       category="tertiary"
       :items="dropdownItems"

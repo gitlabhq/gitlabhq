@@ -115,9 +115,14 @@ describe('PackagesApp', () => {
   });
 
   it('terraform installation exists', () => {
-    createComponent();
+    createComponent({
+      packageEntity: terraformModule,
+    });
 
-    expect(findTerraformInstallation().exists()).toBe(true);
+    expect(findTerraformInstallation().props()).toEqual({
+      packageName: 'Test/system-22',
+      packageVersion: '0.1',
+    });
   });
 
   describe('deleting packages', () => {

@@ -824,7 +824,7 @@ export default {
           no-caret
           icon="ellipsis_v"
           category="secondary"
-          placement="right"
+          placement="bottom-end"
           :toggle-text="__('More actions')"
         >
           <rollback-component

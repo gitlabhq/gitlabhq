@@ -293,7 +293,7 @@ describe('tags list row', () => {
         toggleText: 'More actions',
         textSrOnly: true,
         category: 'tertiary',
-        placement: 'right',
+        placement: 'bottom-end',
         disabled: false,
       });
     });

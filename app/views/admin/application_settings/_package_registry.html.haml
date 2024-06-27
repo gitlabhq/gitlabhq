@@ -1,17 +1,12 @@
 - if Gitlab.config.packages.enabled
-  %section.settings.as-package.no-animate#js-package-settings{ class: ('expanded' if expanded_by_default?) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _('Package Registry')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded_by_default? ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = s_('PackageRegistry|Configure package forwarding and package file size limits.')
-
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Package Registry'),
+    id: 'js-package-settings',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = s_('PackageRegistry|Configure package forwarding and package file size limits.')
+    - c.with_body do
       = render_if_exists 'admin/application_settings/ee_package_registry'
       = render 'admin/application_settings/nuget_skip_metadata_url_validation' unless Gitlab.ee?
-
 
       .gl-mt-7
         %h4

@@ -34,7 +34,7 @@ describe('SecurityReportDownloadDropdown component', () => {
       expect(findDropdown().props('loading')).toBe(false);
       expect(findDropdown().props('toggleText')).toBe('test');
       expect(findDropdown().attributes()).toMatchObject({
-        placement: 'right',
+        placement: 'bottom-end',
         size: 'small',
         icon: 'download',
       });

@@ -462,7 +462,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes CI/CD settings' do
         visit ci_cd_admin_application_settings_path
 
-        page.within('.as-ci-cd') do
+        within_testid('ci-cd-settings') do
           check 'Default to Auto DevOps pipeline for all projects'
           fill_in 'application_setting_auto_devops_domain', with: 'domain.com'
           uncheck 'Keep the latest artifacts for all jobs in the latest successful pipelines'
@@ -484,7 +484,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes CI/CD limits', :aggregate_failures do
         visit ci_cd_admin_application_settings_path
 
-        page.within('.as-ci-cd') do
+        within_testid('ci-cd-settings') do
           fill_in 'plan_limits_ci_instance_level_variables', with: 5
           fill_in 'plan_limits_dotenv_size', with: 6
           fill_in 'plan_limits_dotenv_variables', with: 7
@@ -534,7 +534,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
           expect(current_settings.valid_runner_registrars).to eq(ApplicationSetting::VALID_RUNNER_REGISTRAR_TYPES)
 
-          page.within('.as-runner') do
+          within_testid('runner-settings') do
             find_all('input[type="checkbox"]').each(&:click)
 
             click_button 'Save changes'
@@ -566,7 +566,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
             it 'changes the setting' do
               visit ci_cd_admin_application_settings_path
 
-              page.within('.as-registry') do
+              within_testid('registry-settings') do
                 fill_in "application_setting_#{setting}", with: 400
                 click_button 'Save changes'
               end
@@ -583,7 +583,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
             visit ci_cd_admin_application_settings_path
 
-            page.within('.as-registry') do
+            within_testid('registry-settings') do
               find('#application_setting_container_registry_expiration_policies_caching').click
               click_button 'Save changes'
             end

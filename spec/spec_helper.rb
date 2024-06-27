@@ -158,7 +158,6 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
-  config.include TestEnv
   config.include FileReadHelpers
   config.include Database::MultipleDatabasesHelpers
   config.include Database::WithoutCheckConstraint

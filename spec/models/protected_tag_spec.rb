@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedTag, feature_category: :source_code_management do
+  it_behaves_like 'protected ref', :protected_tag
+
   describe 'Associations' do
     it { is_expected.to belong_to(:project).touch(true) }
     it { is_expected.to have_many(:create_access_levels).inverse_of(:protected_tag) }
@@ -10,7 +12,6 @@ RSpec.describe ProtectedTag, feature_category: :source_code_management do
 
   describe 'Validation' do
     it { is_expected.to validate_presence_of(:project) }
-    it { is_expected.to validate_presence_of(:name) }
   end
 
   describe '#protected?' do

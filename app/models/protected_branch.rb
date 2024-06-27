@@ -10,7 +10,6 @@ class ProtectedBranch < ApplicationRecord
   belongs_to :group, foreign_key: :namespace_id, touch: true, inverse_of: :protected_branches
 
   validate :validate_either_project_or_top_group
-  validates :name, presence: true
   validates :name, uniqueness: { scope: [:project_id, :namespace_id] }, if: :name_changed?
 
   scope :requiring_code_owner_approval, -> { where(code_owner_approval_required: true) }

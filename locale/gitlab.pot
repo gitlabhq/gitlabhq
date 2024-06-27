@@ -6341,6 +6341,12 @@ msgstr ""
 msgid "Appearance was successfully updated."
 msgstr ""
 
+msgid "AppearanceSettings|Last edit"
+msgstr ""
+
+msgid "AppearanceSettings|Preview last save:"
+msgstr ""
+
 msgid "Append the comment with %{shrug}"
 msgstr ""
 
@@ -13989,6 +13995,9 @@ msgid "Configure repository mirroring."
 msgstr ""
 
 msgid "Configure repository storage."
+msgstr ""
+
+msgid "Configure runner version management and registration settings."
 msgstr ""
 
 msgid "Configure settings for Advanced Search with Elasticsearch."

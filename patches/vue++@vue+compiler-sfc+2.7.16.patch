@@ -1,8 +1,8 @@
 diff --git a/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js b/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js
-index ec32339..91e43a7 100644
+index 91da3e0..001cf4f 100644
 --- a/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js
 +++ b/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js
-@@ -9645,7 +9645,23 @@ const splitRE = /\r?\n/g;
+@@ -9658,7 +9658,23 @@ const splitRE = /\r?\n/g;
  const emptyRE = /^(?:\/\/)?\s*$/;
  function parse(options) {
      const { source, filename = DEFAULT_FILENAME, compiler, compilerParseOptions = { pad: false }, sourceRoot = '', needMap = true, sourceMap = needMap } = options;

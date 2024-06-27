@@ -3,8 +3,9 @@
     .gl-grow
       %h2{ class: title_classes }
         = heading || @heading
-      %p.gl-text-secondary.gl-m-0
-        = description || @description
+      - if description || @description
+        %p.gl-text-secondary.gl-m-0
+          = description || @description
     .gl-shrink-0.gl-px-2
       = render Pajamas::ButtonComponent.new(button_options: @button_options.merge(class: 'gl-min-w-12 js-settings-toggle')) do
         = button_text

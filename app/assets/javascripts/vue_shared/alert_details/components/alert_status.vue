@@ -110,7 +110,7 @@ export default {
     <gl-collapsible-listbox
       ref="dropdown"
       v-model="alertStatus"
-      placement="right"
+      placement="bottom-end"
       :header-text="headerText"
       :items="items"
       block

@@ -202,6 +202,7 @@ describe('PackagesApp', () => {
       if (requested) {
         expect(groupSettingsResolver).toHaveBeenCalledWith({
           fullPath: 'gitlab-test',
+          isGroupPage: false,
         });
         expect(Sentry.captureException).not.toHaveBeenCalled();
       } else {

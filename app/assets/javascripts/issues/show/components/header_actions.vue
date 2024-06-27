@@ -345,7 +345,7 @@ export default {
         :auto-close="false"
         data-testid="mobile-dropdown"
         :loading="isToggleStateButtonLoading"
-        placement="right"
+        placement="bottom-end"
       >
         <template v-if="showMovedSidebarOptions && !glFeatures.notificationsTodosButtons">
           <sidebar-subscriptions-widget

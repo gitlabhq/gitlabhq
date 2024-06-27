@@ -121,7 +121,7 @@ export default {
   <div>
     <gl-collapsible-listbox
       v-if="permissions.canUpdate"
-      :placement="isDesktop ? 'left' : 'right'"
+      :placement="isDesktop ? 'bottom-start' : 'bottom-end'"
       :header-text="__('Change role')"
       :disabled="disabled"
       :loading="busy"
