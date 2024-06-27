@@ -1,6 +1,7 @@
-import { GlAlert, GlBadge, GlKeysetPagination, GlCard, GlIcon } from '@gitlab/ui';
+import { GlAlert, GlBadge, GlKeysetPagination, GlIcon } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import CiVariableTable from '~/ci/ci_variable_list/components/ci_variable_table.vue';
 import { EXCEEDS_VARIABLE_LIMIT_TEXT, projectString } from '~/ci/ci_variable_list/constants';
 import { mockInheritedVariables, mockVariables } from '../mocks';
@@ -52,7 +53,7 @@ describe('Ci variable table', () => {
   const findGroupCiCdSettingsLink = (rowIndex) =>
     wrapper.findAllByTestId('ci-variable-table-row-cicd-path').at(rowIndex).attributes('href');
   const findKeysetPagination = () => wrapper.findComponent(GlKeysetPagination);
-  const findCard = () => wrapper.findComponent(GlCard);
+  const findCrud = () => wrapper.findComponent(CrudComponent);
 
   const generateExceedsVariableLimitText = (entity, currentVariableCount, maxVariableLimit) => {
     return sprintf(EXCEEDS_VARIABLE_LIMIT_TEXT, { entity, currentVariableCount, maxVariableLimit });
@@ -61,18 +62,18 @@ describe('Ci variable table', () => {
   describe('card', () => {
     it('displays the correct title', () => {
       createComponent();
-      expect(findCard().text()).toContain('CI/CD Variables');
+      expect(findCrud().text()).toContain('CI/CD Variables');
     });
 
     it('displays the correct icon', () => {
       createComponent();
-      expect(findCard().findComponent(GlIcon).props('name')).toBe('code');
+      expect(findCrud().findComponent(GlIcon).props('name')).toBe('code');
     });
 
     it('displays the number of added CI/CD Variables', () => {
       const variables = [1, 2, 3];
       createComponent({ props: { variables } });
-      expect(findCard().text()).toContain(String(variables.length));
+      expect(findCrud().text()).toContain(String(variables.length));
     });
   });
 

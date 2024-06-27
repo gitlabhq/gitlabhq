@@ -3,8 +3,6 @@ import {
   GlAlert,
   GlBadge,
   GlButton,
-  GlCard,
-  GlIcon,
   GlLoadingIcon,
   GlModalDirective,
   GlKeysetPagination,
@@ -15,6 +13,7 @@ import {
 } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { convertEnvironmentScope } from '~/ci/common/private/ci_environments_dropdown';
 import {
   DEFAULT_EXCEEDS_VARIABLE_LIMIT_TEXT,
@@ -65,13 +64,12 @@ export default {
     GlAlert,
     GlBadge,
     GlButton,
-    GlCard,
     GlKeysetPagination,
     GlLink,
-    GlIcon,
     GlLoadingIcon,
     GlTable,
     GlModal,
+    CrudComponent,
   },
   directives: {
     GlModalDirective,
@@ -213,20 +211,14 @@ export default {
 
 <template>
   <div>
-    <gl-card
-      class="gl-new-card ci-variable-table"
-      header-class="gl-new-card-header"
-      body-class="gl-new-card-body gl-px-0"
+    <crud-component
+      :title="$options.i18n.title"
+      :count="variables.length"
+      icon="code"
+      class="ci-variable-table"
       :data-testid="tableDataTestId"
     >
-      <template #header>
-        <div class="gl-new-card-title-wrapper">
-          <h5 class="gl-new-card-title">{{ $options.i18n.title }}</h5>
-          <span class="gl-new-card-count">
-            <gl-icon name="code" class="gl-mr-2" />
-            {{ variables.length }}
-          </span>
-        </div>
+      <template #actions>
         <div v-if="!isInheritedGroupVars" class="gl-new-card-actions gl-font-size-0">
           <gl-button
             v-if="!isTableEmpty"
@@ -368,21 +360,22 @@ export default {
           </div>
         </template>
         <template v-if="!isInheritedGroupVars" #cell(actions)="{ item }">
-          <div class="gl-display-flex gl-justify-content-end -gl-mt-2 -gl-mb-2">
+          <div class="gl-flex gl-justify-end gl-gap-2 -gl-mt-3 -gl-mb-2">
             <gl-button
+              v-gl-tooltip
+              category="tertiary"
               icon="pencil"
-              size="small"
-              class="gl-mr-3"
+              :title="$options.i18n.editButton"
               :aria-label="$options.i18n.editButton"
               data-testid="edit-ci-variable-button"
               @click="setSelectedVariable(item.index)"
             />
             <gl-button
+              v-gl-tooltip
               v-gl-modal-directive="`delete-variable-${item.index}`"
-              variant="danger"
-              category="secondary"
+              category="tertiary"
               icon="remove"
-              size="small"
+              :title="$options.i18n.deleteButton"
               :aria-label="$options.i18n.deleteButton"
             />
             <gl-modal
@@ -411,7 +404,7 @@ export default {
       >
         {{ exceedsVariableLimitText }}
       </gl-alert>
-    </gl-card>
+    </crud-component>
     <div v-if="!isInheritedGroupVars">
       <div v-if="showPagination" class="gl-display-flex gl-justify-content-center gl-mt-5">
         <gl-keyset-pagination

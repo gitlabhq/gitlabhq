@@ -133,7 +133,7 @@ To enable product analytics on your instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > Analytics**.
-1. Expand **Product analytics** and enter the configuration values.
+1. Enter the configuration values.
 1. Select **Save changes**.
 
 ### Project-level settings

@@ -47987,7 +47987,7 @@ msgstr ""
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
 msgstr ""
 
-msgid "SecurityOrchestration|Override the following project settings:"
+msgid "SecurityOrchestration|Override the following project settings"
 msgstr ""
 
 msgid "SecurityOrchestration|Overwrite the current CI/CD code with the new file's content?"

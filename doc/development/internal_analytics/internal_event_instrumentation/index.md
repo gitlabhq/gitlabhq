@@ -14,3 +14,4 @@ This page is a work in progress. If you have access to the GitLab Slack workspac
 - [Quick start for internal event tracking](quick_start.md#quick-start-for-internal-event-tracking)
 - [Migrating existing tracking to internal event tracking](migration.md)
 - [Event definition guide](event_definition_guide.md)
+- [Metric definition guide](metric_definition_guide.md)

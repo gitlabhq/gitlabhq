@@ -9,7 +9,7 @@
   .settings-content
     = render 'ci/variables/attributes'
     - if ci_variable_protected_by_default?
-      %p.settings-message.text-center.gl-mb-0
+      %p.settings-message.gl-text-center
         - help_link = link_to('', help_page_path('ci/variables/index', anchor: 'protect-a-cicd-variable', target: '_blank', rel: 'noopener noreferrer'))
         = safe_format(s_('Environment variables on this GitLab instance are configured to be %{help_link_start}protected%{help_link_end} by default.'), tag_pair(help_link, :help_link_start, :help_link_end))
     #js-instance-variables{ data: { endpoint: admin_ci_variables_path, maskable_regex: ci_variable_maskable_regex, protected_by_default: ci_variable_protected_by_default?.to_s} }
