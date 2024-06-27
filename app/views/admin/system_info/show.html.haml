@@ -1,7 +1,7 @@
 - page_title _('System information')
 = render ::Layouts::PageHeadingComponent.new(_('System information'))
 
-.gl-grid.sm:gl-grid-cols-2.md:gl-grid-cols-3.gl-gap-5
+.gl-grid.sm:gl-grid-cols-2.md:gl-grid-cols-3.gl-gap-5{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_system_info_pageload' } }
   = render Pajamas::CardComponent.new do |c|
     - c.with_body do
       - if @cpus

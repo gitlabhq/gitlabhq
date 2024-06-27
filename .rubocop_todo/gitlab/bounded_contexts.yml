@@ -4267,7 +4267,6 @@ Gitlab/BoundedContexts:
     - 'lib/quality/seeders/issues.rb'
     - 'lib/release_highlights/validator.rb'
     - 'lib/release_highlights/validator/entry.rb'
-    - 'lib/result.rb'
     - 'lib/rouge/formatters/html_gitlab.rb'
     - 'lib/rouge/plugins/common_mark.rb'
     - 'lib/safe_zip/entry.rb'

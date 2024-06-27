@@ -3323,7 +3323,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           'build_timeout',
           'auto_devops_enabled',
           'auto_devops_deploy_strategy',
-          'import_error'
+          'import_error',
+          'ci_push_repository_for_job_token_allowed'
         )
       end
     end
@@ -4072,6 +4073,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it_behaves_like 'PUT request permissions for admin mode' do
       let(:params) { { visibility: 'internal' } }
       let(:failed_status_code) { :not_found }
+    end
+
+    describe 'updating ci_push_repository_for_job_token_allowed attribute' do
+      it 'is disabled by default' do
+        expect(project.ci_push_repository_for_job_token_allowed).to be_falsey
+      end
+
+      it 'enables push to repository using job token' do
+        put(api(path, user), params: { ci_push_repository_for_job_token_allowed: true })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.ci_push_repository_for_job_token_allowed).to be_truthy
+        expect(json_response['ci_push_repository_for_job_token_allowed']).to eq(true)
+      end
     end
 
     describe 'updating packages_enabled attribute' do

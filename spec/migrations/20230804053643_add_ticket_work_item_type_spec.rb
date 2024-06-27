@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddTicketWorkItemType, :migration, feature_category: :service_desk do
+RSpec.describe AddTicketWorkItemType, :migration, feature_category: :service_desk, allowed_to_be_slow: true do
   include MigrationHelpers::WorkItemTypesHelper
 
   let(:work_item_types) { table(:work_item_types) }

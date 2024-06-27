@@ -276,3 +276,21 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   - To remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
+
+### Push to a project repository using a job token
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags.md) named `allow_push_repository_for_job_token`. Disabled by default.
+
+WARNING:
+Pushing via job token is still in development and is not yet optimized for performance.
+If you enable this feature for testing, you must thoroughly test and implement validation measures
+to prevent infinite loops of "push" pipelines triggering more pipelines.
+
+By default, pushing to a project repository by authenticating with a job token is disabled.
+To enable this ability, you can:
+
+- Feature flag named `allow_push_repository_for_job_token` should be enabled.
+- Enable the [`pushRepositoryForJobTokenAllowed`](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate) GraphQL endpoint.
+- Enable the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-project) REST API endpoint.
+
+You are only permitted to push to the repository of the project where the job is running.

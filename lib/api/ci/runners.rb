@@ -320,10 +320,11 @@ module API
           runner = get_runner(params[:runner_id])
           authenticate_enable_runner!(runner)
 
-          if ::Ci::Runners::AssignRunnerService.new(runner, user_project, current_user).execute.success?
+          result = ::Ci::Runners::AssignRunnerService.new(runner, user_project, current_user).execute
+          if result.success?
             present runner, with: Entities::Ci::Runner
           else
-            render_validation_error!(runner)
+            render_api_error_with_reason!(:bad_request, result.message, result.reason)
           end
         end
 

@@ -9,23 +9,21 @@ export const mergeVariables = (existing, incoming) => {
   return incoming;
 };
 
-export const apolloProvider = new VueApollo({
-  defaultClient: createDefaultClient(
-    {},
-    {
-      batchMax: 1,
-      cacheConfig: {
-        typePolicies: {
-          ContainerRepositoryDetails: {
-            fields: {
-              tags: {
-                keyArgs: ['id', 'name', 'sort'],
-                merge: mergeVariables,
-              },
-            },
+export const config = {
+  cacheConfig: {
+    typePolicies: {
+      ContainerRepositoryDetails: {
+        fields: {
+          tags: {
+            keyArgs: ['id', 'name', 'sort'],
+            merge: mergeVariables,
           },
         },
       },
     },
-  ),
+  },
+};
+
+export const apolloProvider = new VueApollo({
+  defaultClient: createDefaultClient({}, config),
 });

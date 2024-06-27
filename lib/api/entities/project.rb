@@ -131,6 +131,7 @@ module API
         expose :auto_devops_deploy_strategy, documentation: { type: 'string', example: 'continuous' } do |project, options|
           project.auto_devops.nil? ? 'continuous' : project.auto_devops.deploy_strategy
         end
+        expose :ci_push_repository_for_job_token_allowed, documentation: { type: 'boolean' }
       end
 
       expose :ci_config_path, documentation: { type: 'string', example: '' }, if: ->(project, options) { Ability.allowed?(options[:current_user], :read_code, project) }

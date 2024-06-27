@@ -11,14 +11,14 @@ module InvokeRopSteps
     result_type = :err
     step_class, returned_message = parse_result_for_step(err_result_for_step, result_type)
 
-    err_results_for_steps[step_class] = Result.err(returned_message)
+    err_results_for_steps[step_class] = Gitlab::Fp::Result.err(returned_message)
   end
 
   def add_ok_result_for_step(ok_result_for_step, ok_results_for_steps)
     result_type = :ok
     step_class, returned_message = parse_result_for_step(ok_result_for_step, result_type)
 
-    ok_results_for_steps[step_class] = Result.ok(returned_message)
+    ok_results_for_steps[step_class] = Gitlab::Fp::Result.ok(returned_message)
   end
 
   def parse_result_for_step(result_for_step, result_type)
@@ -88,9 +88,11 @@ module InvokeRopSteps
   end
 
   def validate_expected_return_value(expected_return_value)
-    if expected_return_value.is_a?(Hash) || expected_return_value.is_a?(Result) || expected_return_value < RuntimeError
-      return
-    end
+    return_value_is_valid = expected_return_value.is_a?(Hash) ||
+      expected_return_value.is_a?(Gitlab::Fp::Result) ||
+      expected_return_value < RuntimeError
+
+    return if return_value_is_valid
 
     raise "'and_return_expected_value' argument must be a Hash,Result or a subclass of RuntimeError, " \
       "but was a #{expected_return_value.class}"
@@ -130,7 +132,7 @@ module InvokeRopSteps
       elsif ok_results_for_steps.key?(step_class)
         expected_rop_step[:returned_object] = ok_results_for_steps[step_class]
       elsif step_action == :and_then
-        expected_rop_step[:returned_object] = Result.ok(context_passed_along_steps)
+        expected_rop_step[:returned_object] = Gitlab::Fp::Result.ok(context_passed_along_steps)
       elsif step_action == :map
         expected_rop_step[:returned_object] = context_passed_along_steps
       else
@@ -148,7 +150,7 @@ module InvokeRopSteps
       step => {
         step_class: Class => step_class,
         step_class_method: Symbol => step_class_method,
-        returned_object: Result | Hash => returned_object
+        returned_object: Gitlab::Fp::Result | Hash => returned_object
       }
 
       set_up_step_class_expectation(
@@ -240,7 +242,7 @@ RSpec::Matchers.define :invoke_rop_steps do |rop_steps|
     validate_expected_return_value(value)
     expected_return_value = value
     # noinspection RubyUnusedLocalVariable -- TODO: open issue and add to https://handbook.gitlab.com/handbook/tools-and-tips/editors-and-ides/jetbrains-ides/tracked-jetbrains-issues
-    expected_return_value_matcher = if value.is_a?(Hash) || value.is_a?(Result)
+    expected_return_value_matcher = if value.is_a?(Hash) || value.is_a?(Gitlab::Fp::Result)
                                       ->(main) { expect(main.call).to eq(value) }
                                     else
                                       ->(main) { expect { main.call }.to raise_error(value) }

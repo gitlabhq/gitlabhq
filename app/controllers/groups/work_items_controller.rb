@@ -17,15 +17,7 @@ module Groups
     end
 
     def show
-      @work_item = group.work_items.find_by_iid(show_params[:iid])
-
       not_found unless Feature.enabled?(:namespace_level_work_items, group)
-    end
-
-    private
-
-    def show_params
-      params.permit(:iid)
     end
   end
 end

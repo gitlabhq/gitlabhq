@@ -247,7 +247,11 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:push_repository_for_job_token_allowed) do
-    @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
+    if ::Feature.enabled?(:allow_push_repository_for_job_token, @subject)
+      @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
+    else
+      false
+    end
   end
 
   condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
@@ -622,6 +626,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
+  rule { can?(:admin_runner) }.enable :read_runner
 
   rule { public_project & metrics_dashboard_allowed }.policy do
     enable :metrics_dashboard

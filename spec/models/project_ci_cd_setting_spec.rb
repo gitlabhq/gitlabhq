@@ -27,6 +27,12 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
     end
   end
 
+  describe '#push_repository_for_job_token_allowed' do
+    it 'is false by default' do
+      expect(described_class.new.push_repository_for_job_token_allowed).to be_falsey
+    end
+  end
+
   describe '#separated_caches' do
     it 'is true by default' do
       expect(described_class.new.separated_caches).to be_truthy

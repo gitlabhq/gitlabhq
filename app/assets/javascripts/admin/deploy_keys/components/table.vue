@@ -1,17 +1,17 @@
 <script>
 import {
-  GlCard,
   GlTable,
   GlButton,
   GlPagination,
-  GlIcon,
   GlLoadingIcon,
   GlEmptyState,
   GlModal,
+  GlTooltipDirective,
 } from '@gitlab/ui';
 
 import { __ } from '~/locale';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { createAlert } from '~/alert';
@@ -86,15 +86,17 @@ export default {
   csrf,
   DEFAULT_PER_PAGE,
   components: {
-    GlCard,
+    CrudComponent,
     GlTable,
     GlButton,
     GlPagination,
     TimeAgoTooltip,
-    GlIcon,
     GlLoadingIcon,
     GlEmptyState,
     GlModal,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   inject: ['editPath', 'deletePath', 'createPath', 'emptyStateSvgPath'],
   data() {
@@ -190,19 +192,13 @@ export default {
 </script>
 
 <template>
-  <gl-card
-    class="gl-new-card"
-    header-class="gl-new-card-header"
-    body-class="gl-new-card-body gl-px-0"
+  <crud-component
+    :title="$options.i18n.pageTitle"
+    :count="totalItems.toString()"
+    icon="key"
+    class="gl-mt-5"
   >
-    <template #header>
-      <div class="gl-new-card-title-wrapper">
-        <h3 class="gl-new-card-title">{{ $options.i18n.pageTitle }}</h3>
-        <span class="gl-new-card-count">
-          <gl-icon name="key" class="gl-mr-2" />
-          {{ totalItems }}
-        </span>
-      </div>
+    <template #actions>
       <div class="gl-new-card-actions">
         <gl-button size="small" :href="createPath" data-testid="new-deploy-key-button">{{
           $options.i18n.newDeployKeyButtonText
@@ -257,21 +253,24 @@ export default {
       </template>
 
       <template #cell(actions)="{ item: { id } }">
-        <gl-button
-          icon="pencil"
-          size="small"
-          :aria-label="$options.i18n.edit"
-          :href="editHref(id)"
-          class="gl-mr-2"
-        />
-        <gl-button
-          variant="danger"
-          category="secondary"
-          icon="remove"
-          size="small"
-          :aria-label="$options.i18n.delete"
-          @click="handleDeleteClick(id)"
-        />
+        <div class="gl-flex gl-gap-2 -gl-my-3">
+          <gl-button
+            v-gl-tooltip
+            :title="$options.i18n.edit"
+            category="tertiary"
+            icon="pencil"
+            :aria-label="$options.i18n.edit"
+            :href="editHref(id)"
+          />
+          <gl-button
+            v-gl-tooltip
+            :title="$options.i18n.delete"
+            category="tertiary"
+            icon="remove"
+            :aria-label="$options.i18n.delete"
+            @click="handleDeleteClick(id)"
+          />
+        </div>
       </template>
     </gl-table>
     <gl-empty-state
@@ -307,5 +306,5 @@ export default {
       </form>
       {{ $options.i18n.modal.body }}
     </gl-modal>
-  </gl-card>
+  </crud-component>
 </template>

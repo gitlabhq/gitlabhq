@@ -103,6 +103,7 @@ ci_cd_settings:
     - push_repository_for_job_token_allowed
   remapped_attributes:
     pipeline_variables_minimum_override_role: ci_pipeline_variables_minimum_override_role
+    push_repository_for_job_token_allowed: ci_push_repository_for_job_token_allowed
     default_git_depth: ci_default_git_depth
     forward_deployment_enabled: ci_forward_deployment_enabled
     forward_deployment_rollback_allowed: ci_forward_deployment_rollback_allowed

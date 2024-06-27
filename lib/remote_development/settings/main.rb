@@ -10,7 +10,7 @@ module RemoteDevelopment
       # @return [Hash]
       # @raise [UnmatchedResultError]
       def self.get_settings(context)
-        initial_result = Result.ok(context)
+        initial_result = Gitlab::Fp::Result.ok(context)
 
         # The order of the chain determines the precedence of settings. I.e., defaults are
         # overridden by env vars, and any subsequent steps override env vars.

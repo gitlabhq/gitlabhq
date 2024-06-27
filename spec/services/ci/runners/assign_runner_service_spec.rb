@@ -3,12 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category: :runner do
-  subject(:execute) { described_class.new(runner, new_project, user).execute }
+  let(:service) { described_class.new(runner, new_project, user) }
 
-  let_it_be(:owner_group) { create(:group) }
-  let_it_be(:owner_project) { create(:project, group: owner_group) }
-  let_it_be(:new_project) { create(:project) }
+  let_it_be(:organization1) { create(:organization) }
+  let_it_be(:owner_group) { create(:group, organization: organization1) }
+  let_it_be(:owner_project) { create(:project, group: owner_group, organization: organization1) }
+  let_it_be(:new_project) { create(:project, organization: organization1) }
   let_it_be(:runner) { create(:ci_runner, :project, projects: [owner_project]) }
+
+  subject(:execute) { service.execute }
 
   context 'without user' do
     let(:user) { nil }
@@ -16,8 +19,9 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
     it 'does not call assign_to on runner and returns error response', :aggregate_failures do
       expect(runner).not_to receive(:assign_to)
 
-      is_expected.to be_error
-      expect(execute.message).to eq('user not allowed to assign runner')
+      expect(execute).to be_error
+      expect(execute.reason).to eq(:not_authorized_to_assign_runner)
+      expect(execute.message).to eq(_('user not allowed to assign runner'))
     end
   end
 
@@ -27,8 +31,9 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
     it 'does not call assign_to on runner and returns error message' do
       expect(runner).not_to receive(:assign_to)
 
-      is_expected.to be_error
-      expect(execute.message).to eq('user not allowed to assign runner')
+      expect(execute).to be_error
+      expect(execute.reason).to eq(:not_authorized_to_assign_runner)
+      expect(execute.message).to eq(_('user not allowed to assign runner'))
     end
   end
 
@@ -44,7 +49,32 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
       it 'calls assign_to on runner and returns success response' do
         expect(runner).to receive(:assign_to).with(new_project, user).once.and_call_original
 
-        is_expected.to be_success
+        expect(execute).to be_success
+      end
+
+      context 'when runner returns error' do
+        let(:new_project) { owner_project }
+
+        it 'returns error response' do
+          expect(execute).to be_error
+          expect(execute.reason).to eq(:runner_error)
+          expect(execute.errors).to contain_exactly(
+            'Assign to Validation failed: Runner projects runner has already been taken')
+        end
+      end
+
+      context 'when new project is from a different organization' do
+        let_it_be(:organization2) { create(:organization) }
+        let_it_be(:new_project) { create(:project, organization: organization2) }
+
+        it 'returns error response and rolls back transaction' do
+          expect(execute).to be_error
+          expect(execute.reason).to eq(:project_not_in_same_organization)
+          expect(execute.errors).to contain_exactly(
+            _('runner can only be assigned to projects in the same organization')
+          )
+          expect(runner.reload.projects).to contain_exactly(owner_project)
+        end
       end
     end
 
@@ -56,8 +86,9 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
       it 'does not call assign_to on runner and returns error message', :aggregate_failures do
         expect(runner).not_to receive(:assign_to)
 
-        is_expected.to be_error
-        expect(execute.message).to eq('user not allowed to add runners to project')
+        expect(execute).to be_error
+        expect(execute.reason).to eq(:not_authorized_to_add_runner_in_project)
+        expect(execute.message).to eq(_('user is not authorized to add runners to project'))
       end
     end
 
@@ -69,7 +100,8 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
       it 'does not call assign_to on runner and returns error message' do
         expect(runner).not_to receive(:assign_to)
 
-        is_expected.to be_error
+        expect(execute).to be_error
+        expect(execute.reason).to eq(:not_authorized_to_assign_runner)
         expect(execute.message).to eq('user not allowed to assign runner')
       end
     end
@@ -81,7 +113,7 @@ RSpec.describe ::Ci::Runners::AssignRunnerService, '#execute', feature_category:
     it 'calls assign_to on runner and returns success response' do
       expect(runner).to receive(:assign_to).with(new_project, user).once.and_call_original
 
-      is_expected.to be_success
+      expect(execute).to be_success
     end
   end
 end

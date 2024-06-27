@@ -1,6 +1,7 @@
 - page_title _('Health Check')
 - no_errors = @errors.blank?
 
+#div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_health_check_pageload' } }
 %h1.page-title.gl-font-size-h-display= page_title
 = render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
   - c.with_body do

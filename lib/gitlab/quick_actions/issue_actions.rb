@@ -304,7 +304,8 @@ module Gitlab
           _('One or more contacts were successfully added.')
         end
         command :add_contacts do |contact_emails|
-          @updates[:add_contacts] = contact_emails.split(' ')
+          @updates[:add_contacts] ||= []
+          @updates[:add_contacts] += contact_emails.split(' ')
         end
 
         desc { _('Remove customer relation contacts') }
@@ -319,7 +320,8 @@ module Gitlab
           _('One or more contacts were successfully removed.')
         end
         command :remove_contacts do |contact_emails|
-          @updates[:remove_contacts] = contact_emails.split(' ')
+          @updates[:remove_contacts] ||= []
+          @updates[:remove_contacts] += contact_emails.split(' ')
         end
 
         desc { _('Add a timeline event to incident') }

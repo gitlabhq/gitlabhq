@@ -112,7 +112,6 @@ export default {
     :sort-by="sortBy"
     sort-desc
     no-local-sorting
-    no-sort-reset
     @sort-changed="$emit('sortChanged', $event)"
   >
     <template v-for="field in fields" #[getHeaderSlotName(field.key)]>

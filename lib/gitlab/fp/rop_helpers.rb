@@ -19,7 +19,11 @@ module Gitlab
         fp_class_singleton_methods = fp_module_or_class.singleton_methods(false)
         public_singleton_methods = fp_class_singleton_methods - public_singleton_methods_to_ignore
 
-        return public_singleton_methods.first if public_singleton_methods.size == 1
+        # Note: Intentionally using Array#[] instead of Array#first here, because there appears to be a bug
+        #       in the type declaration, that doesn't indicate that #first should have `implicitly-returns-nil`
+        #       behavior. See https://github.com/ruby/rbs/pull/1226, this probably needs to be fixed for #first too.
+        #       Until then, we use #[] to avoid type inspection warnings in RubyMine.
+        return public_singleton_methods[0] if public_singleton_methods.size == 1
 
         fp_doc_link =
           "https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#functional-patterns"

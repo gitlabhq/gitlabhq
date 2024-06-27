@@ -452,6 +452,55 @@ PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.to
 end
 ```
 
+#### tokens_with_no_expiry.rb
+
+This script finds tokens that do not have an expiry date, that is, `expires_at` is set to `NULL`. For users who have not yet upgraded to GitLab version 16.0 or later, the token `expires_at` value will be `NULL` and can be used to identify tokens that will be set with an expiration date.
+
+```ruby
+# This script finds tokens which do not have an expires_at value set.
+
+# Check for expiring personal access tokens
+PersonalAccessToken.owner_is_human.where(expires_at: nil).find_each do |token|
+  puts "Expires_at is nil for Personal Access Token ID: #{token.id}, User Email: #{token.user.email}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+end
+
+# Check for expiring project and group access tokens
+PersonalAccessToken.project_access_token.where(expires_at: nil).find_each do |token|
+  token.user.members.each do |member|
+    type = member.is_a?(GroupMember) ? 'Group' : 'Project'
+
+    puts "Expires_at is nil for #{type} access token in #{type} ID #{member.source_id}, Token ID: #{token.id}, Name: #{token.name}, Scopes: #{token.scopes}, Last used: #{token.last_used_at}"
+  end
+end
+```
+
+You can use this script in either the [Rails console](../administration/operations/rails_console.md) or the [Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner):
+
+::Tabs
+
+:::TabTitle Rails console session
+
+1. In your terminal window, connect to your instance.
+1. Start a Rails console session with `sudo gitlab-rails console`.
+1. Paste in the entire script.
+1. Press <kbd>Enter</kbd>.
+
+:::TabTitle Rails Runner
+
+1. In your terminal window, connect to your instance.
+1. Copy this entire script, and save it as a file on your instance:
+   - Name it `tokens_with_no_expiry.rb`.
+   - The file must be accessible to `git:git`.
+1. Run this command, changing the path to the _full_ path to your `tokens_with_no_expiry.rb` file:
+
+   ```shell
+   sudo gitlab-rails runner /path/to/tokens_with_no_expiry.rb
+   ```
+
+For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+
+::EndTabs
+
 ### Extend token lifetime
 
 Delay the expiration of certain tokens with this script.

@@ -257,7 +257,6 @@ export default {
         stacked="md"
         fixed
         show-empty
-        no-sort-reset
         no-local-sorting
         @sort-changed="(val) => $emit('sort-changed', val)"
       >

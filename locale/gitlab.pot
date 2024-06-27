@@ -14277,10 +14277,19 @@ msgstr ""
 msgid "ContainerRegistry|Container Registry"
 msgstr ""
 
+msgid "ContainerRegistry|Container Scanning for Registry: Off"
+msgstr ""
+
+msgid "ContainerRegistry|Container Scanning for Registry: On"
+msgstr ""
+
 msgid "ContainerRegistry|Container protection rule deleted."
 msgstr ""
 
 msgid "ContainerRegistry|Container protection rule updated."
+msgstr ""
+
+msgid "ContainerRegistry|Continuous container scanning runs in the registry when any image or database is updated."
 msgstr ""
 
 msgid "ContainerRegistry|Copy build command"
@@ -36018,6 +36027,9 @@ msgstr ""
 msgid "Observability|Enable"
 msgstr ""
 
+msgid "Observability|Enable tracing, metrics, or logs on your project."
+msgstr ""
+
 msgid "Observability|Error: Failed to enable GitLab Observability. Please retry later."
 msgstr ""
 
@@ -36064,6 +36076,15 @@ msgid "Observability|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "Observability|To widen your search, change or remove filters above"
+msgstr ""
+
+msgid "Observability|Tracing, Metrics & Logs"
+msgstr ""
+
+msgid "Observability|View our %{docsLink} for further instructions on how to use these features."
+msgstr ""
+
+msgid "Observability|documentation"
 msgstr ""
 
 msgid "Oct"
@@ -59539,6 +59560,9 @@ msgstr ""
 msgid "What is a compute quota?"
 msgstr ""
 
+msgid "What is continuous container scanning?"
+msgstr ""
+
 msgid "What is listed here?"
 msgstr ""
 
@@ -62748,6 +62772,12 @@ msgstr ""
 msgid "failed"
 msgstr ""
 
+msgid "failed to assign runner to project"
+msgstr ""
+
+msgid "failed to destroy runner project"
+msgstr ""
+
 msgid "failed to dismiss associated finding(id=%{finding_id}): %{message}"
 msgstr ""
 
@@ -63854,6 +63884,9 @@ msgid_plural "rules"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "runner can only be assigned to projects in the same organization"
+msgstr ""
+
 msgid "running"
 msgstr ""
 
@@ -64095,7 +64128,13 @@ msgstr[1] ""
 msgid "user avatar"
 msgstr ""
 
+msgid "user is not authorized to add runners to project"
+msgstr ""
+
 msgid "user namespace cannot be the parent of another namespace"
+msgstr ""
+
+msgid "user not allowed to assign runner"
 msgstr ""
 
 msgid "username"

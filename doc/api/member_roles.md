@@ -77,6 +77,7 @@ Example response:
     "manage_project_access_tokens": false,
     "manage_security_policy_link": false,
     "read_code": true,
+    "read_runners": false,
     "read_dependency": false,
     "read_vulnerability": false,
     "remove_group": false,
@@ -115,6 +116,7 @@ Supported attributes:
 | `manage_project_access_tokens` | boolean | no       | Permission to manage project access tokens. |
 | `manage_security_policy_link` | boolean | no       | Permission to link security policy projects. |
 | `read_code`           | boolean | no       | Permission to read project code. |
+| `read_runners`     | boolean | no       | Permission to view project runners. |
 | `read_dependency`     | boolean | no       | Permission to read project dependencies. |
 | `read_vulnerability`  | boolean | no       | Permission to read project vulnerabilities. |
 | `remove_group` | boolean | no       | Permission to delete or restore a group. |
@@ -152,6 +154,7 @@ Example response:
   "manage_project_access_tokens": false,
   "manage_security_policy_link": false,
   "read_code": true,
+  "read_runners": false,
   "read_dependency": false,
   "read_vulnerability": false,
   "remove_group": false,
@@ -236,6 +239,7 @@ Example response:
     "manage_project_access_tokens": false,
     "manage_security_policy_link": false,
     "read_code": true,
+    "read_runners": false,
     "read_dependency": false,
     "read_vulnerability": false,
     "remove_group": false,
@@ -262,6 +266,7 @@ Example response:
     "manage_project_access_tokens": false,
     "manage_security_policy_link": false,
     "read_code": true,
+    "read_runners": false,
     "read_dependency": true,
     "read_vulnerability": true,
     "remove_group": false,
@@ -300,6 +305,7 @@ Parameters:
 | `manage_project_access_tokens` | boolean | no       | Permission to manage project access tokens. |
 | `manage_security_policy_link` | boolean | no       | Permission to link security policy projects. |
 | `read_code`           | boolean | no       | Permission to read project code. |
+| `read_runners`     | boolean | no       | Permission to view project runners. |
 | `read_dependency`     | boolean | no       | Permission to read project dependencies. |
 | `read_vulnerability`  | boolean | no       | Permission to read project vulnerabilities. |
 | `remove_group` | boolean | no       | Permission to delete or restore a group. |
@@ -335,6 +341,7 @@ Example response:
   "manage_project_access_tokens": false,
   "manage_security_policy_link": false,
   "read_code": true,
+  "read_runners": false,
   "read_dependency": false,
   "read_vulnerability": false,
   "remove_group": false,

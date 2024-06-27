@@ -125,6 +125,7 @@ We do not yet support multi-arch image, only `linux/amd64`. If you try to run th
 
    ```shell
    AI_GATEWAY_URL=https://<your_ai_gitlab_domain>
+   CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
    ```
 
 1. After you've set up the environment variables, run the image. For example:

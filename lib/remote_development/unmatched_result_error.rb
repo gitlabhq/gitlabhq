@@ -2,7 +2,7 @@
 
 module RemoteDevelopment
   class UnmatchedResultError < RuntimeError
-    # @param [Result] result
+    # @param [Gitlab::Fp::Result] result
     # @return [void]
     def initialize(result:)
       msg = "Failed to pattern match #{result.ok? ? "'ok'" : "'err'"} Result " \

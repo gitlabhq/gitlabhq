@@ -35,7 +35,7 @@ RSpec.describe RemoteDevelopment::Settings::EnvVarReader, :rd_fast, feature_cate
       let(:setting_type) { String }
 
       it "uses the string value of the overridden ENV var value" do
-        expect(result).to eq(Result.ok(
+        expect(result).to eq(Gitlab::Fp::Result.ok(
           {
             settings: { the_setting: env_var_value },
             setting_types: { the_setting: setting_type }
@@ -49,7 +49,7 @@ RSpec.describe RemoteDevelopment::Settings::EnvVarReader, :rd_fast, feature_cate
       let(:setting_type) { Integer }
 
       it "uses the casted type of the overridden ENV var value" do
-        expect(result).to eq(Result.ok(
+        expect(result).to eq(Gitlab::Fp::Result.ok(
           {
             settings: { the_setting: env_var_value.to_i },
             setting_types: { the_setting: setting_type }
@@ -63,7 +63,7 @@ RSpec.describe RemoteDevelopment::Settings::EnvVarReader, :rd_fast, feature_cate
       let(:setting_type) { Hash }
 
       it "uses the casted type of the overridden ENV var value" do
-        expect(result).to eq(Result.ok(
+        expect(result).to eq(Gitlab::Fp::Result.ok(
           {
             settings: { the_setting: { a: 1 } },
             setting_types: { the_setting: setting_type }
@@ -77,7 +77,7 @@ RSpec.describe RemoteDevelopment::Settings::EnvVarReader, :rd_fast, feature_cate
       let(:setting_type) { Array }
 
       it "uses the casted type of the overridden ENV var value" do
-        expect(result).to eq(Result.ok(
+        expect(result).to eq(Gitlab::Fp::Result.ok(
           {
             settings: { the_setting: ["a", 1] },
             setting_types: { the_setting: setting_type }
@@ -92,7 +92,7 @@ RSpec.describe RemoteDevelopment::Settings::EnvVarReader, :rd_fast, feature_cate
     let(:env_var_value) { "maybe some old deprecated setting, doesn't matter, it's ignored" }
 
     it "ignores the ENV var" do
-      expect(result).to eq(Result.ok(
+      expect(result).to eq(Gitlab::Fp::Result.ok(
         {
           settings: { the_setting: default_setting_value },
           setting_types: { the_setting: setting_type }

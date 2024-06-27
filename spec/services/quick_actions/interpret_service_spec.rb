@@ -2916,6 +2916,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
     context 'crm_contact commands' do
       let_it_be(:new_contact) { create(:contact, group: group) }
+      let_it_be(:another_contact) { create(:contact, group: group) }
       let_it_be(:existing_contact) { create(:contact, group: group) }
 
       let(:add_command) { service.execute("/add_contacts #{new_contact.email}", issue) }
@@ -2926,18 +2927,62 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         create(:issue_customer_relations_contact, issue: issue, contact: existing_contact)
       end
 
-      it 'add_contacts command adds the contact' do
-        _, updates, message = add_command
+      describe 'add_contacts command' do
+        it 'adds a contact' do
+          _, updates, message = add_command
 
-        expect(updates).to eq(add_contacts: [new_contact.email])
-        expect(message).to eq(_('One or more contacts were successfully added.'))
+          expect(updates).to eq(add_contacts: [new_contact.email])
+          expect(message).to eq(_('One or more contacts were successfully added.'))
+        end
+
+        context 'with multiple contacts in the same command' do
+          it 'adds both contacts' do
+            _, updates, message = service.execute("/add_contacts #{new_contact.email} #{another_contact.email}", issue)
+
+            expect(updates).to eq(add_contacts: [new_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully added.'))
+          end
+        end
+
+        context 'with multiple commands' do
+          it 'adds both contacts' do
+            _, updates, message = service.execute("/add_contacts #{new_contact.email}\n/add_contacts #{another_contact.email}", issue)
+
+            expect(updates).to eq(add_contacts: [new_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully added. One or more contacts were successfully added.'))
+          end
+        end
       end
 
-      it 'remove_contacts command removes the contact' do
-        _, updates, message = remove_command
+      describe 'remove_contacts command' do
+        before do
+          create(:issue_customer_relations_contact, issue: issue, contact: another_contact)
+        end
 
-        expect(updates).to eq(remove_contacts: [existing_contact.email])
-        expect(message).to eq(_('One or more contacts were successfully removed.'))
+        it 'removes the contact' do
+          _, updates, message = remove_command
+
+          expect(updates).to eq(remove_contacts: [existing_contact.email])
+          expect(message).to eq(_('One or more contacts were successfully removed.'))
+        end
+
+        context 'with multiple contacts in the same command' do
+          it 'removes the contact' do
+            _, updates, message = service.execute("/remove_contacts #{existing_contact.email} #{another_contact.email}", issue)
+
+            expect(updates).to eq(remove_contacts: [existing_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully removed.'))
+          end
+        end
+
+        context 'with multiple commands' do
+          it 'removes the contact' do
+            _, updates, message = service.execute("/remove_contacts #{existing_contact.email}\n/remove_contacts #{another_contact.email}", issue)
+
+            expect(updates).to eq(remove_contacts: [existing_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully removed. One or more contacts were successfully removed.'))
+          end
+        end
       end
     end
 

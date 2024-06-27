@@ -249,6 +249,8 @@ When the user is authenticated and `simple` is not set this returns something li
     "ci_job_token_scope_enabled": false,
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
+    "ci_pipeline_variables_minimum_override_role": "maintainer",
+    "ci_push_repository_for_job_token_allowed": false,
     "public_jobs": true,
     "build_timeout": 3600,
     "auto_cancel_pending_pipelines": "enabled",
@@ -425,6 +427,8 @@ GET /users/:user_id/projects
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
+    "ci_pipeline_variables_minimum_override_role": "maintainer",
+    "ci_push_repository_for_job_token_allowed": false,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -546,6 +550,8 @@ GET /users/:user_id/projects
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
+    "ci_pipeline_variables_minimum_override_role": "maintainer",
+    "ci_push_repository_for_job_token_allowed": false,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -1218,6 +1224,8 @@ GET /projects/:id
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
+  "ci_pipeline_variables_minimum_override_role": "maintainer",
+  "ci_push_repository_for_job_token_allowed": false,
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -1760,6 +1768,8 @@ General project attributes:
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
+| `ci_pipeline_variables_minimum_override_role`           | string            | No       | When `restrict_user_defined_variables` is enabled, you can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. |
+| `ci_push_repository_for_job_token_allowed` | boolean           | No       | Enable or disable the ability to push to the project repository using job token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. |
 | `container_expiration_policy_attributes`           | hash              | No       | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                       | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
@@ -2379,6 +2389,8 @@ Example response:
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
+  "ci_pipeline_variables_minimum_override_role": "maintainer",
+  "ci_push_repository_for_job_token_allowed": false,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2511,6 +2523,8 @@ Example response:
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
+  "ci_pipeline_variables_minimum_override_role": "maintainer",
+  "ci_push_repository_for_job_token_allowed": false,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,

@@ -18,7 +18,8 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
       full_path: project.full_path,
       keep_latest_artifact: false,
       job_token_scope_enabled: false,
-      inbound_job_token_scope_enabled: false
+      inbound_job_token_scope_enabled: false,
+      push_repository_for_job_token_allowed: false
     }
   end
 
@@ -67,6 +68,23 @@ RSpec.describe 'ProjectCiCdSettingsUpdate', feature_category: :continuous_integr
 
       expect(response).to have_gitlab_http_status(:success)
       expect(project.ci_outbound_job_token_scope_enabled).to eq(false)
+    end
+
+    context 'when push_repository_for_job_token_allowed requested to be true' do
+      let(:variables) do
+        {
+          full_path: project.full_path,
+          push_repository_for_job_token_allowed: true
+        }
+      end
+
+      it 'updates push_repository_for_job_token_allowed' do
+        post_graphql_mutation(mutation, current_user: user)
+        project.reload
+
+        expect(response).to have_gitlab_http_status(:success)
+        expect(project.ci_cd_settings.push_repository_for_job_token_allowed).to eq(true)
+      end
     end
 
     context 'when job_token_scope_enabled: true' do

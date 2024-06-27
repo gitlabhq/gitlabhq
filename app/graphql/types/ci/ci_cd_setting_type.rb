@@ -37,6 +37,13 @@ module Types
         null: true,
         description: 'Project the CI/CD settings belong to.',
         authorize: :admin_project
+      field :push_repository_for_job_token_allowed,
+        GraphQL::Types::Boolean,
+        null: true,
+        description: 'Indicates the ability to push to the original project ' \
+          'repository using a job token',
+        method: :push_repository_for_job_token_allowed?,
+        authorize: :admin_project
     end
   end
 end
