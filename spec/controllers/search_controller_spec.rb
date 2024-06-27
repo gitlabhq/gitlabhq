@@ -511,6 +511,36 @@ RSpec.describe SearchController, feature_category: :global_search do
         expect(json_response).to eq({ 'count' => '0' })
       end
 
+      describe 'database transaction' do
+        before do
+          allow_next_instance_of(SearchService) do |search_service|
+            allow(search_service).to receive(:search_type).and_return(search_type)
+          end
+        end
+
+        subject(:count) { get :count, params: { search: 'hello', scope: 'projects' } }
+
+        context 'for basic search' do
+          let(:search_type) { 'basic' }
+
+          it 'executes within transaction with short timeout' do
+            expect(ApplicationRecord).to receive(:with_fast_read_statement_timeout)
+
+            count
+          end
+        end
+
+        context 'for advacned search' do
+          let(:search_type) { 'advanced' }
+
+          it 'does not execute within transaction' do
+            expect(ApplicationRecord).not_to receive(:with_fast_read_statement_timeout)
+
+            count
+          end
+        end
+      end
+
       it_behaves_like 'rate limited endpoint', rate_limit_key: :search_rate_limit do
         let(:current_user) { user }
 
