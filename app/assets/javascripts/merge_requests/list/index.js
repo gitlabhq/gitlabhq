@@ -19,6 +19,7 @@ export async function mountMergeRequestListsApp() {
   const {
     fullPath,
     hasAnyMergeRequests,
+    hasScopedLabelsFeature,
     initialSort,
     isPublicVisibilityRestricted,
     isSignedIn,
@@ -45,6 +46,7 @@ export async function mountMergeRequestListsApp() {
     provide: {
       fullPath,
       hasAnyMergeRequests: parseBoolean(hasAnyMergeRequests),
+      hasScopedLabelsFeature: parseBoolean(hasScopedLabelsFeature),
       initialSort,
       isPublicVisibilityRestricted: parseBoolean(isPublicVisibilityRestricted),
       isSignedIn: parseBoolean(isSignedIn),

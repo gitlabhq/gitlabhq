@@ -31,3 +31,5 @@ module Users
     end
   end
 end
+
+Users::AutoBanService.prepend_mod

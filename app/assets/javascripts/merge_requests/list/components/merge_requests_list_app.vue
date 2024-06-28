@@ -15,6 +15,7 @@ import IssuableList from '~/vue_shared/issuable/list/components/issuable_list_ro
 import { DEFAULT_PAGE_SIZE, mergeRequestListTabs } from '~/vue_shared/issuable/list/constants';
 import {
   OPERATORS_IS,
+  OPERATORS_IS_NOT,
   TOKEN_TITLE_AUTHOR,
   TOKEN_TYPE_AUTHOR,
   TOKEN_TITLE_DRAFT,
@@ -29,6 +30,8 @@ import {
   TOKEN_TYPE_REVIEWER,
   TOKEN_TITLE_MILESTONE,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TITLE_LABEL,
+  TOKEN_TYPE_LABEL,
 } from '~/vue_shared/components/filtered_search_bar/constants';
 import {
   convertToApiParams,
@@ -53,6 +56,7 @@ import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference
 import { i18n } from '../constants';
 import getMergeRequestsQuery from '../queries/get_merge_requests.query.graphql';
 import getMergeRequestsCountsQuery from '../queries/get_merge_requests_counts.query.graphql';
+import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import MergeRequestStatistics from './merge_request_statistics.vue';
 import MergeRequestMoreActionsDropdown from './more_actions_dropdown.vue';
 
@@ -61,6 +65,8 @@ const BranchToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/branch_token.vue');
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
+const LabelToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
 
 export default {
   i18n,
@@ -75,6 +81,7 @@ export default {
   inject: [
     'fullPath',
     'hasAnyMergeRequests',
+    'hasScopedLabelsFeature',
     'initialSort',
     'isPublicVisibilityRestricted',
     'isSignedIn',
@@ -269,6 +276,15 @@ export default {
           isProject: true,
           fetchBranches: this.fetchBranches,
         },
+        {
+          type: TOKEN_TYPE_LABEL,
+          title: TOKEN_TITLE_LABEL,
+          icon: 'labels',
+          token: LabelToken,
+          operators: OPERATORS_IS_NOT,
+          fetchLabels: this.fetchLabels,
+          recentSuggestionsStorageKey: `${this.fullPath}-merge_requests-recent-tokens-label`,
+        },
       ];
     },
     showPaginationControls() {
@@ -329,6 +345,23 @@ export default {
             message: this.$options.i18n.errorFetchingBranches,
           });
         });
+    },
+    fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
+      return this.$apollo
+        .query({
+          query: searchLabelsQuery,
+          variables: { fullPath: this.fullPath, search },
+          fetchPolicy,
+        })
+        .then(({ data }) => data.project.labels.nodes)
+        .then((labels) =>
+          // TODO remove once we can search by title-only on the backend
+          // https://gitlab.com/gitlab-org/gitlab/-/issues/346353
+          labels.filter((label) => label.title.toLowerCase().includes(search.toLowerCase())),
+        );
+    },
+    fetchLabels(search) {
+      return this.fetchLabelsWithFetchPolicy(search);
     },
     getStatus(mergeRequest) {
       if (mergeRequest.state === STATUS_CLOSED) {
@@ -428,6 +461,7 @@ export default {
     :namespace="fullPath"
     recent-searches-storage-key="merge_requests"
     :search-tokens="searchTokens"
+    :has-scoped-labels-feature="hasScopedLabelsFeature"
     :initial-filter-value="filterTokens"
     :sort-options="sortOptions"
     :initial-sort-by="sortKey"

@@ -10,6 +10,7 @@ import { convertToGraphQLId } from '~/graphql_shared/utils';
 import {
   TOKEN_TYPE_AUTHOR,
   TOKEN_TYPE_DRAFT,
+  TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_SOURCE_BRANCH,
   TOKEN_TYPE_TARGET_BRANCH,
@@ -39,6 +40,7 @@ function createComponent({ provide = {} } = {}) {
     provide: {
       fullPath: 'gitlab-org/gitlab',
       hasAnyMergeRequests: true,
+      hasScopedLabelsFeature: false,
       initialSort: '',
       isPublicVisibilityRestricted: false,
       isSignedIn: true,
@@ -117,6 +119,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
+          { type: TOKEN_TYPE_LABEL },
         ]);
       });
     });
@@ -126,6 +129,7 @@ describe('Merge requests list app', () => {
         assignee_username: 'bob',
         reviewer_username: 'bill',
         draft: 'yes',
+        'label_name[]': 'fluff',
         milestone_title: 'milestone',
         'target_branches[]': 'branch-a',
         'source_branches[]': 'branch-b',
@@ -163,6 +167,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },
+          { type: TOKEN_TYPE_LABEL },
         ]);
       });
 
@@ -171,6 +176,7 @@ describe('Merge requests list app', () => {
           { type: TOKEN_TYPE_ASSIGNEE },
           { type: TOKEN_TYPE_REVIEWER },
           { type: TOKEN_TYPE_DRAFT },
+          { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MILESTONE },
           { type: TOKEN_TYPE_TARGET_BRANCH },
           { type: TOKEN_TYPE_SOURCE_BRANCH },

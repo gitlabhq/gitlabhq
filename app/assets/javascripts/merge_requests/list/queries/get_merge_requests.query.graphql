@@ -13,6 +13,7 @@ query getMergeRequests(
   $reviewerWildcardId: ReviewerWildcardId
   $authorUsername: String
   $draft: Boolean
+  $labelName: [String!]
   $milestoneTitle: String
   $milestoneWildcardId: MilestoneWildcardId
   $sourceBranches: [String!]
@@ -33,6 +34,7 @@ query getMergeRequests(
       reviewerWildcardId: $reviewerWildcardId
       authorUsername: $authorUsername
       draft: $draft
+      labelName: $labelName
       milestoneTitle: $milestoneTitle
       milestoneWildcardId: $milestoneWildcardId
       sourceBranches: $sourceBranches

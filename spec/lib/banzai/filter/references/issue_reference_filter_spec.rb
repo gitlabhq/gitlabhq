@@ -605,4 +605,18 @@ RSpec.describe Banzai::Filter::References::IssueReferenceFilter, feature_categor
       end
     end
   end
+
+  context 'checking N+1' do
+    let_it_be(:issue1) { create(:issue, project: project) }
+    let_it_be(:issue2) { create(:issue, project: project) }
+
+    it 'does not have N+1 per multiple references per project' do
+      single_reference = "Issue #{issue1.to_reference}"
+      multiple_references = "Issues #{issue1.to_reference} and #{issue2.to_reference}"
+
+      control = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }
+
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control)
+    end
+  end
 end
