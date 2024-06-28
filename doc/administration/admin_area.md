@@ -8,7 +8,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The Admin Area provides a web UI to manage and configure features of GitLab
 self-managed instances. If you are an administrator, to access the Admin Area:
@@ -21,7 +21,7 @@ If the GitLab instance uses Admin Mode, you must [enable Admin Mode for your ses
 the **Admin Area** button is visible.
 
 NOTE:
-Only administrators on GitLab self-managed can access the Admin Area. On GitLab.com the Admin Area feature is not available.
+Only administrators on GitLab self-managed or GitLab Dedicated can access the Admin Area. On GitLab.com the Admin Area feature is not available.
 
 ## Administering organizations
 
@@ -166,7 +166,7 @@ the identities being used for an account.
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 An administrator can export user permissions for all users in the GitLab instance from the Admin Area's Users page.
 The export lists direct membership the users have in groups and projects.
@@ -490,7 +490,7 @@ The content of each log file is listed in chronological order. To minimize perfo
 
 DETAILS:
 **Tier:** Premium, Ultimate
-**Offering:** Self-managed
+**Offering:** Self-managed, GitLab Dedicated
 
 The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
 

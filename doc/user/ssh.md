@@ -611,3 +611,16 @@ You can troubleshoot this by trying the following:
   the key type provided.
 - Verify the version of OpenSSH is 8.2 or greater by
   running `ssh -V`.
+
+### Error: `SSH host keys are not available on this system.`
+
+If GitLab does not have access to the host SSH keys, when you visit `gitlab.example/help/instance_configuration`, you see the following error message under the **SSH host key fingerprints** header instead of the instance SSH fingerprint:
+
+```plaintext
+SSH host keys are not available on this system. Please use ssh-keyscan command or contact your GitLab administrator for more information.
+```
+
+To resolve this error:
+
+- On Helm chart (Kubernetes) deployments, update the `values.yaml` to set [`sshHostKeys.mount`](https://docs.gitlab.com/charts/charts/gitlab/webservice/) to `true` under the `webservice` section.
+- On GitLab self-managed installations, check the `/etc/ssh` directory for the host keys.

@@ -247,7 +247,7 @@ gem update --system
 GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
 Linux. You can find downloads for other platforms at the
-[Go download page](https://go.dev/dl).
+[Go download page](https://go.dev/dl/).
 
 ```shell
 # Remove former Go installation folder

@@ -72,7 +72,7 @@ Within the rule DSL, you can use:
 - `can?(:other_ability)` delegates to the rules that apply to `:other_ability`. This is distinct from the instance method `can?`, which can check dynamically - this only configures a delegation to another ability.
 
 `~`, `&` and `|` operators are overridden methods in
-[`DeclarativePolicy::Rule::Base`](https://gitlab.com/gitlab-org/declarative-policy/-/blob/main/lib/declarative_policy/rule.rb).
+[`DeclarativePolicy::Rule::Base`](https://gitlab.com/gitlab-org/ruby/gems/declarative-policy/-/blob/main/lib/declarative_policy/rule.rb).
 
 Do not use boolean operators such as `&&` and `||` within the rule DSL,
 as conditions within rule blocks are objects, not booleans. The same

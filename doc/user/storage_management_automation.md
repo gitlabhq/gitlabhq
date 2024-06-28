@@ -1193,7 +1193,7 @@ generate-package:
 Use the following projects to test storage usage with [cost factors for forks](usage_quotas.md#view-project-fork-storage-usage):
 
 - Fork [`gitlab-org/gitlab`](https://gitlab.com/gitlab-org/gitlab) into a new namespace or group (includes LFS, Git repository).
-- Fork [`gitlab-com/www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-comgitlab-com/www-gitlab-com) into a new namespace or group.
+- Fork [`gitlab-com/www-gitlab-com`](https://gitlab.com/gitlab-com/www-gitlab-com) into a new namespace or group.
 
 ## Community resources
 

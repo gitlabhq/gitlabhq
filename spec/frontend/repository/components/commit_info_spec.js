@@ -77,7 +77,7 @@ describe('Repository last commit component', () => {
 
     it('strips the first newline of the description', () => {
       expect(findCommitRowDescription().html()).toBe(
-        '<pre class="commit-row-description gl-mb-3 gl-white-space-pre-wrap">Update ADOPTERS.md</pre>',
+        '<pre class="commit-row-description gl-mb-3 gl-whitespace-pre-wrap">Update ADOPTERS.md</pre>',
       );
     });
 

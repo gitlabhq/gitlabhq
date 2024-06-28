@@ -33,7 +33,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestImporter, fe
         reviewer_ids: match_array([reviewer_1.id, reviewer_2.id]),
         state: pull_request.state,
         author_id: project.creator_id,
-        description: "*Created by: #{pull_request.author}*\n\n#{pull_request.description}"
+        description: "*Created by: #{pull_request.author}*\n\n#{pull_request.description}",
+        imported_from: 'bitbucket_server'
       )
     end
 

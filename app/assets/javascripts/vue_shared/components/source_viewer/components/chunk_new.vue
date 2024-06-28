@@ -114,7 +114,7 @@ export default {
     <gl-intersection-observer class="gl-w-full" @appear="handleChunkAppear">
       <pre
         class="gl-m-0 gl-p-0! gl-w-full gl-overflow-visible! gl-border-none! code highlight gl-leading-0"
-      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" :style="codeStyling" data-testid="content"></code><code v-else v-once class="line gl-white-space-pre-wrap! gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
+      ><code v-if="shouldHighlight" v-safe-html="highlightedContent" :style="codeStyling" data-testid="content"></code><code v-else v-once class="line !gl-whitespace-pre-wrap gl-ml-1" data-testid="content" v-text="rawContent"></code></pre>
     </gl-intersection-observer>
   </div>
 </template>

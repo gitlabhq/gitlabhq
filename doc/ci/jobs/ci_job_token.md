@@ -178,7 +178,9 @@ To disable the job token scope allowlist:
 
 You can also enable and disable the setting with the [GraphQL](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate) (`inboundJobTokenScopeEnabled`) and [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
 
-## Use a job token to clone a private project's repository
+## Use a job token
+
+### To `git clone` a private project's repository
 
 You can use the job token to authenticate and clone a repository from a private project
 in a CI/CD job. For example:
@@ -189,6 +191,20 @@ git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>
 
 You can use this job token to clone a repository even if the HTTPS protocol is [disabled by group, project, or instance settings](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols). You cannot use a job token to push to a repository, but [issue 389060](https://gitlab.com/gitlab-org/gitlab/-/issues/389060)
 proposes to change this behavior.
+
+### To authenticate a REST API request
+
+You can use a job token to authenticate requests for allowed REST API endpoints. For example:
+
+```shell
+curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
+```
+
+Additionally, there are multiple valid methods for passing the job token in the request:
+
+- `--form "token=$CI_JOB_TOKEN"`
+- `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
+- `--data "job_token=$CI_JOB_TOKEN"`
 
 ## Limit your project's job token access (deprecated)
 

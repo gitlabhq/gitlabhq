@@ -37,18 +37,18 @@ the tools that identify short-code and URI references from markup documents and
 transform them into structured links to the resources they represent.
 
 For example, the class
-[`Banzai::Filter::IssueReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/issue_reference_filter.rb)
+[`Banzai::Filter::References::IssueReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/references/issue_reference_filter.rb)
 is responsible for handling references to issues, such as
 `gitlab-org/gitlab#123` and `https://gitlab.com/gitlab-org/gitlab/-/issues/200048`.
 
 All reference filters are instances of [`HTML::Pipeline::Filter`](https://www.rubydoc.info/gems/html-pipeline),
-and inherit (often indirectly) from [`Banzai::Filter::ReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/reference_filter.rb).
+and inherit (often indirectly) from [`Banzai::Filter::References::ReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/references/reference_filter.rb).
 
 `HTML::Pipeline::Filter` has a simple interface consisting of `#call`, a void
 method that mutates the current document. `ReferenceFilter` provides methods
 that make defining suitable `#call` methods easier. Most reference filters
 however do not inherit from either of these classes directly, but from
-[`AbstractReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/abstract_reference_filter.rb),
+[`AbstractReferenceFilter`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/banzai/filter/references/abstract_reference_filter.rb),
 which provides a higher-level interface.
 
 Subclasses of `AbstractReferenceFilter` generally do not override `#call`; instead,

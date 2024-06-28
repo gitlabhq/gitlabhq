@@ -452,6 +452,57 @@ PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.to
 end
 ```
 
+#### dates_when_most_of_tokens_expire.rb
+
+This script identifies dates when most of tokens expire. You can use it in combination with other scripts on this page to identify and extend large batches of tokens that may be approaching their expiration date, in case your team has not yet set up token rotation.
+
+The script returns results in this format:
+
+```plaintext
+42 Personal Access Tokens will expire at 2024-06-27
+17 Personal Access Tokens will expire at 2024-09-23
+3 Personal Access Tokens will expire at 2024-08-13
+```
+
+To use it:
+
+::Tabs
+
+:::TabTitle Rails console session
+
+1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
+1. Paste in the entire script.
+1. Press <kbd>Enter</kbd>.
+
+:::TabTitle Rails Runner
+
+1. In your terminal window, connect to your instance.
+1. Copy this entire script, and save it as a file on your instance:
+   - Name it `dates_when_most_of_tokens_expire.rb`.
+   - The file must be accessible to `git:git`.
+1. Run this command, changing `/path/to/dates_when_most_of_tokens_expire.rb`
+   to the _full_ path to your `dates_when_most_of_tokens_expire.rb` file:
+
+   ```shell
+   sudo gitlab-rails runner /path/to/dates_when_most_of_tokens_expire.rb
+   ```
+
+For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+
+::EndTabs
+
+```ruby
+PersonalAccessToken
+  .select(:expires_at, Arel.sql('count(*)'))
+  .where('expires_at >= NOW()')
+  .group(:expires_at)
+  .order(Arel.sql('count(*) DESC'))
+  .limit(10)
+  .each do |token|
+    puts "#{token.count} Personal Access Tokens will expire at #{token.expires_at}"
+  end
+```
+
 #### tokens_with_no_expiry.rb
 
 This script finds tokens that do not have an expiry date, that is, `expires_at` is set to `NULL`. For users who have not yet upgraded to GitLab version 16.0 or later, the token `expires_at` value will be `NULL` and can be used to identify tokens that will be set with an expiration date.

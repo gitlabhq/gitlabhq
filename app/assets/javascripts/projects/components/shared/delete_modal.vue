@@ -154,7 +154,7 @@ export default {
       </gl-alert>
       <p class="gl-mb-1">{{ $options.i18n.confirmText }}</p>
       <p>
-        <code class="gl-white-space-pre-wrap">{{ confirmPhrase }}</code>
+        <code class="gl-whitespace-pre-wrap">{{ confirmPhrase }}</code>
       </p>
 
       <gl-form-input

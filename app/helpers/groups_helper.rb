@@ -253,9 +253,9 @@ module GroupsHelper
     new_group_custom_emoji_path(group)
   end
 
-  def access_level_roles_user_can_assign(group)
+  def access_level_roles_user_can_assign(group, roles)
     max_access_level = group.max_member_access_for_user(current_user)
-    group.access_level_roles.select do |_name, access_level|
+    roles.select do |_name, access_level|
       access_level <= max_access_level
     end
   end

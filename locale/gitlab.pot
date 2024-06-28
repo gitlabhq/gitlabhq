@@ -7785,16 +7785,16 @@ msgstr ""
 msgid "AutoDevOps|Auto DevOps documentation"
 msgstr ""
 
+msgid "AutoDevOps|Automatically build, test, and deploy your application based on a predefined CI/CD configuration."
+msgstr ""
+
 msgid "AutoDevOps|Dismiss Auto DevOps box"
 msgstr ""
 
 msgid "AutoDevOps|Enable in settings"
 msgstr ""
 
-msgid "AutoDevOps|It will automatically build, test, and deploy your application based on a predefined CI/CD configuration."
-msgstr ""
-
-msgid "AutoDevOps|Learn more in the %{link_to_documentation}"
+msgid "AutoDevOps|Learn more in the %{link_to_documentation}."
 msgstr ""
 
 msgid "AutoDevOps|The Auto DevOps pipeline has been enabled and will be used if no alternative CI configuration file is found."
@@ -48359,7 +48359,13 @@ msgstr ""
 msgid "SecurityOrchestration|When license scanner finds any license matching %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
 msgstr ""
 
+msgid "SecurityOrchestration|With the default security job template"
+msgstr ""
+
 msgid "SecurityOrchestration|With the following customized CI variables:"
+msgstr ""
+
+msgid "SecurityOrchestration|With the latest security job template"
 msgstr ""
 
 msgid "SecurityOrchestration|YAML"
@@ -55835,6 +55841,9 @@ msgid "Tracing|Traces"
 msgstr ""
 
 msgid "Tracing|Tracing"
+msgstr ""
+
+msgid "Tracing|View Logs"
 msgstr ""
 
 msgid "Tracing|You must select a Service and Operation first."

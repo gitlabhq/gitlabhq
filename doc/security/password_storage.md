@@ -40,7 +40,7 @@ library to hash user passwords. Created password hashes have these attributes:
 
 ## OAuth access token storage
 
-> - PBKDF2+SHA512 [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/364110) in GitLab 15.3 [with flag](../administration/feature_flags.md) named `hash_oauth_tokens`.
+> - PBKDF2+SHA512 introduced in GitLab 15.3 [with flag](../administration/feature_flags.md) named `hash_oauth_tokens`.
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.5.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/367570) in GitLab 15.6.
 

@@ -17,38 +17,39 @@
         %ul.content-list.content-list-items-padding
           %li
             = render Pajamas::AvatarComponent.new(@group, size: 64, alt: '')
-          %li
-            %span.light= _('Name:')
-            %strong
-              = link_to @group.name, group_path(@group)
-          %li
-            %span.light= _('Path:')
-            %strong
-              = @group.path
-          %li
-            %span.light= _('Description:')
-            %strong
-              = @group.description
-          %li
-            %span.light= _('Visibility level:')
-            %strong
-              = visibility_level_label(@group.visibility_level)
-          %li
-            %span.light= _('Created on:')
-            %strong
-              = @group.created_at.to_fs(:medium)
-          %li
-            %span.light= _('ID:')
-            %strong
-              = @group.id
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+            %span.gl-text-secondary= _('Name:')
+            .gl-col-span-2
+              %strong= link_to @group.name, group_path(@group)
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+            %span.gl-text-secondary= _('Path:')
+            .gl-col-span-2
+              %strong= @group.path
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+            %span.gl-text-secondary= _('Description:')
+            .gl-col-span-2
+              %strong= @group.description
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+            %span.gl-text-secondary= _('Visibility level:')
+            .gl-col-span-2
+              %strong= visibility_level_label(@group.visibility_level)
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+            %span.gl-text-secondary= _('Created on:')
+            .gl-col-span-2
+              %strong= @group.created_at.to_fs(:medium)
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+            %span.gl-text-secondary= _('ID:')
+            .gl-col-span-2
+              %strong= @group.id
           = render_if_exists 'admin/namespace_plan_info', namespace: @group
-          %li
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
             = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
-          %li
-            %span.light= _('Group Git LFS status:')
-            %strong
-              = group_lfs_status(@group)
-              = link_to sprite_icon('question-o'), help_page_path('topics/git/lfs/index')
+          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+            %span.gl-text-secondary= _('Group Git LFS status:')
+            .gl-col-span-2
+              %strong
+                = group_lfs_status(@group)
+                = link_to sprite_icon('question-o', css_class: 'gl-text-blue-600'), help_page_path('topics/git/lfs/index')
 
           = render_if_exists 'namespaces/shared_runner_status', namespace: @group
           = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
@@ -60,12 +61,12 @@
         - if @projects.any?
           %ul.content-list.content-list-items-padding
             - @projects.each do |project|
-              %li
+              %li{ class: '!gl-flex gl-flex-col' }
                 %strong
                   = link_to project.full_name, [:admin, project]
                   = gl_badge_tag storage_counter(project.statistics.storage_size)
-                %span.gl-float-right.light
-                  %span.monospace= project.full_path + '.git'
+                %span.gl-font-monospace.gl-text-secondary.gl-text-sm
+                  = project.full_path + '.git'
         - else
           %p.gl-new-card-empty.gl-text-center= _('No projects')
       - unless @projects.size < Kaminari.config.default_per_page
@@ -80,12 +81,12 @@
         - c.with_body do
           %ul.content-list.content-list-items-padding
             - shared_projects.each do |project|
-              %li
+              %li{ class: '!gl-flex gl-flex-col' }
                 %strong
                   = link_to project.full_name, [:admin, project]
                   = gl_badge_tag storage_counter(project.statistics.storage_size)
-                %span.gl-float-right.light
-                  %span.monospace= project.full_path + '.git'
+                %span.gl-font-monospace.gl-text-secondary.gl-text-sm
+                  = project.full_path + '.git'
 
     - if can?(current_user, :admin_group_member, @group)
       = render 'shared/members/requests', membership_source: @group, group: @group, requesters: @requesters, force_mobile_view: true

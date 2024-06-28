@@ -171,7 +171,7 @@ export default {
         v-if="commit.description_html"
         v-safe-html:[$options.safeHtmlConfig]="commitDescription"
         :class="{ 'js-toggle-content': collapsible, '!gl-block': !collapsible }"
-        class="commit-row-description gl-mb-3 gl-text-body gl-white-space-pre-wrap"
+        class="commit-row-description gl-mb-3 gl-text-body gl-whitespace-pre-wrap"
       ></pre>
     </div>
   </li>

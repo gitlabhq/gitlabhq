@@ -24,8 +24,8 @@ Must-reads:
 Complementary reads:
 
 - [Contribute to GitLab](contributing/index.md)
-- [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md#security-releases-critical-non-critical-as-a-developer)
-- [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/patch/process.md#process-for-developers)
+- [Security process for developers](https://gitlab.com/gitlab-org/release/docs/blob/master/general/security/engineer.md)
+- [Patch release process for developers](https://gitlab.com/gitlab-org/release/docs/-/tree/master/general/patch)
 - [Guidelines for implementing Enterprise Edition features](ee_features.md)
 - [Adding a new service component to GitLab](adding_service_component.md)
 - [Guidelines for changelogs](changelog.md)

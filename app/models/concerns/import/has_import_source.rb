@@ -4,6 +4,7 @@ module Import
   SOURCE_DIRECT_TRANSFER = :gitlab_migration # aka BulkImports
   SOURCE_PROJECT_EXPORT_IMPORT = :gitlab_project
   SOURCE_GROUP_EXPORT_IMPORT = :gitlab_group
+  SOURCE_BITBUCKET_SERVER = :bitbucket_server
 
   module HasImportSource
     extend ActiveSupport::Concern
@@ -15,7 +16,7 @@ module Import
       SOURCE_GROUP_EXPORT_IMPORT => 3,
       github: 4,
       bitbucket: 5, # aka bitbucket cloud
-      bitbucket_server: 6,
+      SOURCE_BITBUCKET_SERVER => 6,
       fogbugz: 7,
       gitea: 8,
       git: 9, # aka repository by url

@@ -46,16 +46,16 @@ export default {
   <div data-testid="ci-lint-value">
     <pre
       v-if="scripts.beforeScript.show"
-      class="gl-white-space-pre-wrap"
+      class="gl-whitespace-pre-wrap"
       data-testid="ci-lint-before-script"
       >{{ scripts.beforeScript.content }}</pre
     >
-    <pre v-if="scripts.script.show" class="gl-white-space-pre-wrap" data-testid="ci-lint-script">{{
+    <pre v-if="scripts.script.show" class="gl-whitespace-pre-wrap" data-testid="ci-lint-script">{{
       scripts.script.content
     }}</pre>
     <pre
       v-if="scripts.afterScript.show"
-      class="gl-white-space-pre-wrap"
+      class="gl-whitespace-pre-wrap"
       data-testid="ci-lint-after-script"
       >{{ scripts.afterScript.content }}</pre
     >

@@ -6,7 +6,6 @@ import { debounce, uniq } from 'lodash';
 import { mapActions, mapState, mapGetters } from 'vuex';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { getDatesInRange } from '~/lib/utils/datetime_utility';
-import { getSvgIconPathContent } from '~/lib/utils/icon_utils';
 import { __ } from '~/locale';
 import RefSelector from '~/ref/components/ref_selector.vue';
 import { REF_TYPE_BRANCHES, REF_TYPE_TAGS } from '~/ref/constants';
@@ -50,11 +49,6 @@ export default {
       type: String,
       required: true,
     },
-    getSvgIconPathContent: {
-      type: Function,
-      required: false,
-      default: getSvgIconPathContent,
-    },
   },
   refTypes: [REF_TYPE_BRANCHES, REF_TYPE_TAGS],
   data() {
@@ -62,7 +56,6 @@ export default {
       masterChart: null,
       individualCharts: [],
       individualChartZoom: {},
-      svgs: {},
       selectedBranch: this.branch,
     };
   },
@@ -180,29 +173,11 @@ export default {
         },
       };
     },
-    setSvg(name) {
-      return this.getSvgIconPathContent(name)
-        .then((path) => {
-          if (path) {
-            this.$set(this.svgs, name, `path://${path}`);
-          }
-        })
-        .catch(() => {});
-    },
     onMasterChartCreated(chart) {
       this.masterChart = chart;
-      this.setSvg('scroll-handle')
-        .then(() => {
-          this.masterChart.setOption({
-            dataZoom: [
-              {
-                type: 'slider',
-                handleIcon: this.svgs['scroll-handle'],
-              },
-            ],
-          });
-        })
-        .catch(() => {});
+      this.masterChart.setOption({
+        dataZoom: [{ type: 'slider' }],
+      });
 
       this.masterChart.on(
         'datazoom',

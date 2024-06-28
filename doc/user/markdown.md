@@ -1626,7 +1626,7 @@ ___
 
 You can also use raw HTML in your Markdown, and it usually works pretty well.
 
-See the documentation for `HTML::Pipeline`'s [SanitizationFilter](https://github.com/jch/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
+See the documentation for `HTML::Pipeline`'s [SanitizationFilter](https://github.com/gjtorikian/html-pipeline/blob/v2.12.3/lib/html/pipeline/sanitization_filter.rb#L42)
 class for the list of allowed HTML tags and attributes. In addition to the default
 `SanitizationFilter` allowlist, GitLab allows `span`, `abbr`, `details` and `summary` elements.
 `rel="license"` is allowed on links to support the [Rel-License microformat](https://microformats.org/wiki/rel-license) and license attribution.

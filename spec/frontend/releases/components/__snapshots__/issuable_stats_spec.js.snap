@@ -18,7 +18,7 @@ exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
     class="gl-display-flex"
   >
     <span
-      class="gl-white-space-pre-wrap"
+      class="gl-whitespace-pre-wrap"
       data-testid="open-stat"
     >
       Open:
@@ -35,7 +35,7 @@ exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
       •
     </span>
     <span
-      class="gl-white-space-pre-wrap"
+      class="gl-whitespace-pre-wrap"
       data-testid="merged-stat"
     >
       Merged:
@@ -52,7 +52,7 @@ exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
       •
     </span>
     <span
-      class="gl-white-space-pre-wrap"
+      class="gl-whitespace-pre-wrap"
       data-testid="closed-stat"
     >
       Closed:

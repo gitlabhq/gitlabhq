@@ -1044,6 +1044,37 @@ Example response:
 
 - CustomersDot
 
+## Users
+
+### Retrieve a user (internal API)
+
+Use a GET command to get the User object based on user ID.
+
+```plaintext
+GET /internal/gitlab_subscriptions/users/:id
+```
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/users/:id"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "username": "john_smith",
+  "name": "John Smith",
+  "web_url": "http://localhost:3000/john_smith"
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
 ## Storage limit exclusions
 
 The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.

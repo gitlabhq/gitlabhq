@@ -169,34 +169,6 @@ read the blog post:
 
 [View examples of how to use GitLab Duo Chat](../gitlab_duo_chat/examples.md).
 
-## Get code explained, refactored, or generate tests
-
-In VS Code, JetBrains IDEs, or in the Web IDE, you can
-have code explained, refactored, or generate test for it.
-
-1. Select code in your editor.
-1. In the **Chat** box, type one the following slash commands:
-   - [`/explain`](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)
-   - [`/refactor`](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)
-   - [`/tests`](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)
-
-Alternatively, use the context menu to perform these tasks.
-
-When you use a slash command, you can also add additional instructions, for example: `/tests using the Boost.Test framework`.
-
-## Delete or reset the conversation
-
-To delete all conversations permanently and clear the chat window:
-
-- In the text box, type `/clear` and select **Send**.
-
-To start a new conversation, but keep the previous conversations visible in the chat window:
-
-- In the text box, type `/reset` and select **Send**.
-
-In both cases, the conversation history will not be considered when you ask new questions.
-Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
-
 ## Give feedback
 
 Your feedback is important to us as we continually enhance your GitLab Duo Chat experience.

@@ -542,7 +542,7 @@ The actual RSS cost is always slightly higher as MRI heaps are not squashed to s
 
 One of the reasons of the increased memory footprint could be Ruby memory fragmentation.
 
-To diagnose it, you can visualize Ruby heap as described in [this post by Aaron Patterson](https://tenderlovemaking.com/2017/09/27/visualizing-your-ruby-heap.html).
+To diagnose it, you can visualize Ruby heap as described in [this post by Aaron Patterson](https://tenderlovemaking.com/2017/09/27/visualizing-your-ruby-heap/).
 
 To start, you want to dump the heap of the process you're investigating to a JSON file.
 

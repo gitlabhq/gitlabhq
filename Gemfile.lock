@@ -684,7 +684,7 @@ GEM
     git (1.18.0)
       addressable (~> 2.8)
       rchardet (~> 1.8)
-    gitaly (17.0.2)
+    gitaly (17.1.1)
       grpc (~> 1.0)
     gitlab (4.19.0)
       httparty (~> 0.20)
@@ -1999,7 +1999,7 @@ DEPENDENCIES
   gdk-toogle (~> 0.9, >= 0.9.5)
   gettext (~> 3.4, >= 3.4.9)
   gettext_i18n_rails (~> 1.12.0)
-  gitaly (~> 17.0.1)
+  gitaly (~> 17.1.0)
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 4.8.0)

@@ -204,7 +204,6 @@ The following integration guides are internal. Some integrations require access 
 
 ## Other GitLab Development Kit (GDK) guides
 
-- [Run full Auto DevOps cycle in a GDK instance](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/auto_devops.md)
 - [Using GitLab Runner with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/blob/main/doc/howto/runner.md)
 - [Using the Web IDE terminal with the GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/web_ide_terminal_gdk_setup.md)
 - [Gitpod configuration internals page](gitpod_internals.md)

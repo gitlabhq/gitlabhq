@@ -7,11 +7,13 @@ module Types
 
       value 'IDLE',
         description: "Runner is idle.",
-        value: :idle
+        value: :idle,
+        alpha: { milestone: '15.7' }
 
       value 'RUNNING',
         description: 'Runner is executing jobs.',
-        value: :running
+        value: :running,
+        alpha: { milestone: '15.7' }
     end
   end
 end

@@ -1,4 +1,5 @@
-%span.light= _('Storage:')
-%strong= storage_counter(storage_size)
-- if storage_details
-  (#{storage_counters_details(storage_details)})
+%span.gl-text-secondary= _('Storage:')
+.gl-col-span-2
+  %strong= storage_counter(storage_size)
+  - if storage_details
+    (#{storage_counters_details(storage_details)})

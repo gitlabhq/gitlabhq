@@ -364,7 +364,7 @@ POST /projects/remote-import-s3
 
 | Attribute           | Type           | Required | Description                              |
 | ------------------- | -------------- | -------- | ---------------------------------------- |
-| `access_key_id`     | string         | yes      | [AWS S3 access key ID](https://docs.aws.amazon.com/general/latest/gr/aws-sec-cred-types.html#access-keys-and-secret-access-keys). |
+| `access_key_id`     | string         | yes      | [AWS S3 access key ID](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html). |
 | `bucket_name`       | string         | yes      | [AWS S3 bucket name](https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html) where the file is stored. |
 | `file_key`          | string         | yes      | [AWS S3 file key](https://docs.aws.amazon.com/AmazonS3/latest/userguide/UsingObjects.html) to identify the file. |
 | `path`              | string         | yes      | The full path of the new project. |

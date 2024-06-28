@@ -131,7 +131,7 @@ export default {
           v-if="commitDescription"
           v-safe-html:[$options.safeHtmlConfig]="commitDescription"
           :class="{ '!gl-block': showDescription }"
-          class="commit-row-description gl-mb-3 gl-white-space-pre-wrap"
+          class="commit-row-description gl-mb-3 gl-whitespace-pre-wrap"
         ></pre>
       </div>
       <div class="gl-flex-grow-1"></div>

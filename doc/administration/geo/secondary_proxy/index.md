@@ -51,7 +51,7 @@ a single URL used by all Geo sites, including the primary.
 
 ### Update the Geo sites to use the same external URL
 
-1. On your Geo sites, SSH **into each node running Rails (Puma, Sidekiq, Log-Cursor)
+1. On your Geo sites, SSH into **each** node running Rails (Puma, Sidekiq, Log-Cursor)
    and change the `external_url` to that of the single URL:
 
    ```shell
