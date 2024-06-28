@@ -1744,6 +1744,7 @@ GET /groups/:id/hooks/:hook_id
   "group_id": 3,
   "push_events": true,
   "push_events_branch_filter": "",
+  "branch_filter_strategy": "wildcard",
   "issues_events": true,
   "confidential_issues_events": true,
   "merge_requests_events": true,
@@ -1789,6 +1790,7 @@ POST /groups/:id/hooks
 | `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
 | `push_events`                | boolean        | no       | Trigger hook on push events |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only |
+| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches` |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
@@ -1825,6 +1827,7 @@ PUT /groups/:id/hooks/:hook_id
 | `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
+| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events. |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |

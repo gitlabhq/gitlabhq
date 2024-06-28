@@ -5,10 +5,11 @@ module VersionedDescription
 
   included do
     attr_accessor :saved_description_version
+    attr_accessor :skip_description_version
 
     has_many :description_versions
 
-    after_update :save_description_version, unless: :skip_description_version?
+    after_update :save_description_version, unless: :skip_description_version
   end
 
   private
@@ -26,9 +27,5 @@ module VersionedDescription
     end
 
     self.saved_description_version = description_versions.create!(description: description)
-  end
-
-  def skip_description_version?
-    false
   end
 end

@@ -205,7 +205,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           visit new_project_path
           click_link 'Create blank project'
           page.within('#blank-project-pane') do
-            expect(find_field("project_visibility_level_#{level}")).to be_checked
+            expect(page).to have_field(key, checked: true)
           end
         end
 
@@ -216,7 +216,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           choose(key)
           click_button('Create project')
           page.within('#blank-project-pane') do
-            expect(find_field("project_visibility_level_#{level}")).to be_checked
+            expect(page).to have_field(key, checked: true)
           end
         end
       end
@@ -234,7 +234,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
             click_link 'Create blank project'
 
             page.within('#blank-project-pane') do
-              expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+              expect(page).to have_field('Private', checked: true)
             end
           end
         end
@@ -261,7 +261,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
             click_link 'Create blank project'
 
             page.within('#blank-project-pane') do
-              expect(find_field("project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).to be_checked
+              expect(page).to have_field('Private', checked: true)
             end
           end
         end
@@ -367,30 +367,30 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           click_button public_group.full_path
           select_listbox_item user.username
 
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
+          expect(page).to have_field("Private", disabled: false)
+          expect(page).to have_field("Internal", disabled: false)
+          expect(page).to have_field("Public", disabled: false)
 
           click_button user.username
           select_listbox_item public_group.full_path
 
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).not_to be_disabled
+          expect(page).to have_field("Private", disabled: false)
+          expect(page).to have_field("Internal", disabled: false)
+          expect(page).to have_field("Public", disabled: false)
 
           click_button public_group.full_path
           select_listbox_item internal_group.full_path
 
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
+          expect(page).to have_field("Private", disabled: false)
+          expect(page).to have_field("Internal", disabled: false)
+          expect(page).to have_field("Public", disabled: true)
 
           click_button internal_group.full_path
           select_listbox_item private_group.full_path
 
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PRIVATE}")).not_to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::INTERNAL}")).to be_disabled
-          expect(find("#project_visibility_level_#{Gitlab::VisibilityLevel::PUBLIC}")).to be_disabled
+          expect(page).to have_field("Private", disabled: false)
+          expect(page).to have_field("Internal", disabled: true)
+          expect(page).to have_field("Public", disabled: true)
         end
       end
     end

@@ -1,10 +1,8 @@
 - breadcrumb_title _("Messages")
 - page_title _("Broadcast Messages")
+- page_description = _('Use banners and notifications to notify your users about scheduled maintenance, recent upgrades, and more.')
 
-%h1.page-title.gl-font-size-h-display
-  = _('Broadcast Messages')
-%p.light
-  = _('Use banners and notifications to notify your users about scheduled maintenance, recent upgrades, and more.')
+= render ::Layouts::PageHeadingComponent.new(_("Broadcast Messages"), description: page_description)
 
 #js-broadcast-messages{ data: {
   page: params[:page] || 1,

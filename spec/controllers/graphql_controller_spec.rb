@@ -645,11 +645,11 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         end
       end
 
-      it 'fails if the GraphiQL gem version is not 1.8.0' do
+      it 'fails if the GraphiQL gem version is not 1.10.0' do
         # We cache the IntrospectionQuery based on the default IntrospectionQuery by GraphiQL. If this spec fails,
         # GraphiQL has been updated, so we should check whether the IntropsectionQuery we cache is still valid.
         # It is stored in `app/graphql/cached_introspection_query.rb#query_string`
-        expect(GraphiQL::Rails::VERSION).to eq("1.8.0")
+        expect(GraphiQL::Rails::VERSION).to eq("1.10.0")
       end
     end
   end

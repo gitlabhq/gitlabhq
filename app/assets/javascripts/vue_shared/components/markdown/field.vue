@@ -338,6 +338,11 @@ export default {
     }, 400),
 
     renderMarkdown(data = {}) {
+      const { references } = data;
+      if (!references) {
+        this.referencedCommands = '';
+      }
+
       this.markdownPreviewLoading = false;
       this.markdownPreview = data.body || __('Nothing to preview.');
 

@@ -2884,6 +2884,7 @@ POST /projects/:id/hooks
 | `note_events`                | boolean           | No       | Trigger hook on note events. |
 | `pipeline_events`            | boolean           | No       | Trigger hook on pipeline events. |
 | `push_events_branch_filter`  | string            | No       | Trigger hook on push events for matching branches only. |
+| `branch_filter_strategy`     | string         | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                | boolean           | No       | Trigger hook on push events. |
 | `releases_events`            | boolean           | No       | Trigger hook on release events. |
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |
@@ -2918,6 +2919,7 @@ PUT /projects/:id/hooks/:hook_id
 | `note_events`                | boolean           | No       | Trigger hook on note events. |
 | `pipeline_events`            | boolean           | No       | Trigger hook on pipeline events. |
 | `push_events_branch_filter`  | string            | No       | Trigger hook on push events for matching branches only. |
+| `branch_filter_strategy`     | string         | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                | boolean           | No       | Trigger hook on push events. |
 | `releases_events`            | boolean           | No       | Trigger hook on release events. |
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |

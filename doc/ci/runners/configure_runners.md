@@ -918,9 +918,6 @@ variables:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-runner/-/issues/28940) in GitLab Runner 15.1.
 
-NOTE:
-Zip archives are the only supported artifact type. Follow [the issue for details](https://gitlab.com/gitlab-org/gitlab/-/issues/367203).
-
 Runners can generate and produce provenance metadata for all build artifacts.
 
 To enable artifact provenance data, set the `RUNNER_GENERATE_ARTIFACTS_METADATA` environment
@@ -976,54 +973,178 @@ An example of provenance metadata that the GitLab Runner might generate is as fo
 
 ```yaml
 {
-    "_type": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/v15.1.0/PROVENANCE.md",
-    "subject": [
-        {
-            "name": "script.sh",
-            "digest": {
-                "sha256": "f5ae5ced234922eebe6461d32228ba8ab9c3d0c0f3983a3bef707e6e1a1ab52a"
-            }
-        }
-    ],
-    "predicateType": "https://slsa.dev/provenance/v0.2",
-    "predicate": {
-        "buildType": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/v15.1.0/PROVENANCE.md",
-        "builder": {
-            "id": "https://gitlab.com/ggeorgiev_gitlab/playground/-/runners/14811533"
-        },
-        "invocation": {
-            "configSource": {
-                "uri": "https://gitlab.com/ggeorgiev_gitlab/playground",
-                "digest": {
-                    "sha256": "f0582e2c9a16b5cc2cde90e8be8f1b50fd67c631"
-                },
-                "entryPoint": "whoami shell"
-            },
-            "environment": {
-                "name": "local",
-                "executor": "shell",
-                "architecture": "amd64"
-            },
-            "parameters": {
-                "CI_PIPELINE_ID": "",
-                "CI_PIPELINE_URL": "",
-                // All other CI variable names are listed here. Values are always represented as empty strings to avoid leaking secrets.
-            }
-        },
-        "metadata": {
-            "buildStartedOn": "2022-06-17T00:47:27+03:00",
-            "buildFinishedOn": "2022-06-17T00:47:28+03:00",
-            "completeness": {
-                "parameters": true,
-                "environment": true,
-                "materials": false
-            },
-            "reproducible": false
-        },
-        "materials": []
+ "_type": "https://in-toto.io/Statement/v0.1",
+ "predicateType": "https://slsa.dev/provenance/v1",
+ "subject": [
+  {
+   "name": "build/pico_w/wifi/blink/picow_blink.uf2",
+   "digest": {
+    "sha256": "f5a381a3fdf095a88fb928094f0e38cf269d226b07414369e8906d749634c090"
+   }
+  },
+  {
+   "name": "build/pico_w/wifi/blink/picow_blink.0.1.148-2-new-feature49.cosign.bundle",
+   "digest": {
+    "sha256": "f8762bf0b3ea1b88550b755323bf04417c2bbe9e50010cfcefc1fa877e2b52a6"
+   }
+  },
+  {
+   "name": "build/pico_w/wifi/blink/pico-examples-3a.0.1.148-2-new-feature49.tar.gz",
+   "digest": {
+    "sha256": "104674887da894443ab55918d81b0151dc7abb2472e5dafcdd78e7be71098af1"
+   }
+  },
+  {
+   "name": "build/pico_w/wifi/blink/pico-examples-3a.0.1.148-2-new-feature49.tar.gz.cosign.bundle",
+   "digest": {
+    "sha256": "33f3f7a19779a2d189dc03b420eb0be199a38404e8c1a24b2c8731bdfa3a30fb"
+   }
+  }
+ ],
+ "predicate": {
+  "buildDefinition": {
+   "buildType": "https://gitlab.com/gitlab-org/gitlab-runner/-/blob/761ae5dd/PROVENANCE.md",
+   // All other CI variable names are listed here. Values are always represented as empty strings to avoid leaking secrets and to comply with SLSA.
+   "externalParameters": {
+    "CI": "",
+    "CI_API_GRAPHQL_URL": "",
+    "CI_API_V4_URL": "",
+    "CI_COMMIT_AUTHOR": "",
+    "CI_COMMIT_BEFORE_SHA": "",
+    "CI_COMMIT_BRANCH": "",
+    "CI_COMMIT_DESCRIPTION": "",
+    "CI_COMMIT_MESSAGE": "",
+    "CI_COMMIT_REF_NAME": "",
+    "CI_COMMIT_REF_PROTECTED": "",
+    "CI_COMMIT_REF_SLUG": "",
+    "CI_COMMIT_SHA": "",
+    "CI_COMMIT_SHORT_SHA": "",
+    "CI_COMMIT_TIMESTAMP": "",
+    "CI_COMMIT_TITLE": "",
+    "CI_CONFIG_PATH": "",
+    "CI_DEFAULT_BRANCH": "",
+    "CI_DEPENDENCY_PROXY_DIRECT_GROUP_IMAGE_PREFIX": "",
+    "CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX": "",
+    "CI_DEPENDENCY_PROXY_PASSWORD": "",
+    "CI_DEPENDENCY_PROXY_SERVER": "",
+    "CI_DEPENDENCY_PROXY_USER": "",
+    "CI_JOB_ID": "",
+    "CI_JOB_NAME": "",
+    "CI_JOB_NAME_SLUG": "",
+    "CI_JOB_STAGE": "",
+    "CI_JOB_STARTED_AT": "",
+    "CI_JOB_TOKEN": "",
+    "CI_JOB_URL": "",
+    "CI_NODE_TOTAL": "",
+    "CI_OPEN_MERGE_REQUESTS": "",
+    "CI_PAGES_DOMAIN": "",
+    "CI_PAGES_URL": "",
+    "CI_PIPELINE_CREATED_AT": "",
+    "CI_PIPELINE_ID": "",
+    "CI_PIPELINE_IID": "",
+    "CI_PIPELINE_NAME": "",
+    "CI_PIPELINE_SOURCE": "",
+    "CI_PIPELINE_URL": "",
+    "CI_PROJECT_CLASSIFICATION_LABEL": "",
+    "CI_PROJECT_DESCRIPTION": "",
+    "CI_PROJECT_ID": "",
+    "CI_PROJECT_NAME": "",
+    "CI_PROJECT_NAMESPACE": "",
+    "CI_PROJECT_NAMESPACE_ID": "",
+    "CI_PROJECT_PATH": "",
+    "CI_PROJECT_PATH_SLUG": "",
+    "CI_PROJECT_REPOSITORY_LANGUAGES": "",
+    "CI_PROJECT_ROOT_NAMESPACE": "",
+    "CI_PROJECT_TITLE": "",
+    "CI_PROJECT_URL": "",
+    "CI_PROJECT_VISIBILITY": "",
+    "CI_REGISTRY": "",
+    "CI_REGISTRY_IMAGE": "",
+    "CI_REGISTRY_PASSWORD": "",
+    "CI_REGISTRY_USER": "",
+    "CI_REPOSITORY_URL": "",
+    "CI_RUNNER_DESCRIPTION": "",
+    "CI_RUNNER_ID": "",
+    "CI_RUNNER_TAGS": "",
+    "CI_SERVER_FQDN": "",
+    "CI_SERVER_HOST": "",
+    "CI_SERVER_NAME": "",
+    "CI_SERVER_PORT": "",
+    "CI_SERVER_PROTOCOL": "",
+    "CI_SERVER_REVISION": "",
+    "CI_SERVER_SHELL_SSH_HOST": "",
+    "CI_SERVER_SHELL_SSH_PORT": "",
+    "CI_SERVER_URL": "",
+    "CI_SERVER_VERSION": "",
+    "CI_SERVER_VERSION_MAJOR": "",
+    "CI_SERVER_VERSION_MINOR": "",
+    "CI_SERVER_VERSION_PATCH": "",
+    "CI_TEMPLATE_REGISTRY_HOST": "",
+    "COSIGN_YES": "",
+    "DS_EXCLUDED_ANALYZERS": "",
+    "DS_EXCLUDED_PATHS": "",
+    "DS_MAJOR_VERSION": "",
+    "DS_SCHEMA_MODEL": "",
+    "GITLAB_CI": "",
+    "GITLAB_FEATURES": "",
+    "GITLAB_USER_EMAIL": "",
+    "GITLAB_USER_ID": "",
+    "GITLAB_USER_LOGIN": "",
+    "GITLAB_USER_NAME": "",
+    "GitVersion_FullSemVer": "",
+    "GitVersion_LegacySemVer": "",
+    "GitVersion_Major": "",
+    "GitVersion_MajorMinorPatch": "",
+    "GitVersion_Minor": "",
+    "GitVersion_Patch": "",
+    "GitVersion_SemVer": "",
+    "RUNNER_GENERATE_ARTIFACTS_METADATA": "",
+    "SAST_EXCLUDED_ANALYZERS": "",
+    "SAST_EXCLUDED_PATHS": "",
+    "SAST_IMAGE_SUFFIX": "",
+    "SCAN_KUBERNETES_MANIFESTS": "",
+    "SECRETS_ANALYZER_VERSION": "",
+    "SECRET_DETECTION_EXCLUDED_PATHS": "",
+    "SECRET_DETECTION_IMAGE_SUFFIX": "",
+    "SECURE_ANALYZERS_PREFIX": "",
+    "SIGSTORE_ID_TOKEN": "",
+    "entryPoint": "create_generic_package",
+    "source": "https://gitlab.com/dsanoy-demo/experiments/pico-examples-3a"
+   },
+   "internalParameters": {
+    "architecture": "amd64",
+    "executor": "docker+machine",
+    "job": "7211908025",
+    "name": "green-6.saas-linux-small-amd64.runners-manager.gitlab.com/default"
+   },
+   "resolvedDependencies": [
+    {
+     "uri": "https://gitlab.com/dsanoy-demo/experiments/pico-examples-3a",
+     "digest": {
+      "sha256": "7e1aeac4e6c07138769b638d4926f429692d0124"
+     }
     }
+   ]
+  },
+  "runDetails": {
+   "builder": {
+    "id": "https://gitlab.com/dsanoy-demo/experiments/pico-examples-3a/-/runners/32976645",
+    "version": {
+     "gitlab-runner": "761ae5dd"
+    }
+   },
+   "metadata": {
+    "invocationID": "7211908025",
+    "startedOn": "2024-06-28T09:56:44Z",
+    "finishedOn": "2024-06-28T09:56:58Z"
+   }
+  }
+ }
 }
 ```
+
+To verify compliance with the in-toto specification,
+see the [in-toto statement](https://in-toto.io/Statement/v0.1).
 
 ### Staging directory
 

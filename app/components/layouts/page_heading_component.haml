@@ -6,6 +6,6 @@
     .gl-flex.gl-items-center.gl-gap-3{ data: { testid: 'page-heading-actions' } }
       = actions
 
-  - if description?
+  - if description? || @description
     .gl-w-full.gl-mt-2.gl-text-secondary{ data: { testid: 'page-heading-description' } }
-      = description
+      = description || @description

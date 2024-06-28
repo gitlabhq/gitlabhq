@@ -3,162 +3,128 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
-%section.settings.as-performance.no-animate#js-performance-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Performance optimization')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Various settings that affect GitLab performance.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Performance optimization'),
+  id: 'js-performance-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Various settings that affect GitLab performance.')
+  - c.with_body do
     = render 'performance'
 
-%section.settings.as-ip-limits.no-animate#js-ip-limits-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'ip-limits-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('User and IP rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set limits for web and API requests.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/user_and_ip_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('User and IP rate limits'),
+  id: 'js-ip-limits-settings',
+  testid: 'ip-limits-content',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set limits for web and API requests.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/user_and_ip_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'ip_limits'
 
-%section.settings.as-packages-limits.no-animate#js-packages-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Package registry rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/package_registry_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Package registry rate limits'),
+  id: 'js-packages-limits-settings',
+  testid: 'packages-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set rate limits for package registry API requests that supersede the general user and IP rate limits.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/package_registry_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-packages-limits-settings', setting_fragment: 'packages_api' }
 
-%section.settings.as-files-limits.no-animate#js-files-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Files API rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Files API rate limits'),
+  id: 'js-files-limits-settings',
+  testid: 'files-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure specific limits for Files API requests that supersede the general user and IP rate limits.')
+  - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-files-limits-settings', setting_fragment: 'files_api' }
 
-%section.settings.as-search-limits.no-animate#js-search-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Search rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set rate limits for searches performed by web or API requests.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Search rate limits'),
+  id: 'js-search-limits-settings',
+  testid: 'search-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set rate limits for searches performed by web or API requests.')
+  - c.with_body do
     = render 'search_limits'
 
-%section.settings.as-deprecated-limits.no-animate#js-deprecated-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Deprecated API rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
-      = link_to _('Which API requests are affected?'), help_page_path('administration/settings/deprecated_api_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Deprecated API rate limits'),
+  id: 'js-deprecated-limits-settings',
+  testid: 'deprecated-api-rate-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure specific limits for deprecated API requests that supersede the general user and IP rate limits.')
+    = link_to _('Which API requests are affected?'), help_page_path('administration/settings/deprecated_api_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render partial: 'network_rate_limits', locals: { anchor: 'js-deprecated-limits-settings', setting_fragment: 'deprecated_api' }
 
-%section.settings.as-git-http-limits.no-animate#js-git-http-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Git HTTP rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure specific limits for Git HTTP requests.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/git_http_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Git HTTP rate limits'),
+  id: 'js-git-http-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure specific limits for Git HTTP requests.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/git_http_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'git_http_limits'
 
-%section.settings.as-git-lfs-limits.no-animate#js-git-lfs-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Git LFS rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure specific limits for Git LFS requests that supersede the general user and IP rate limits.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/git_lfs_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Git LFS rate limits'),
+  id: 'js-git-lfs-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure specific limits for Git LFS requests that supersede the general user and IP rate limits.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/git_lfs_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'git_lfs_limits'
-
 
 = render 'gitlab_shell_operation_limits'
 
-%section.settings.as-outbound.no-animate#js-outbound-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'outbound-requests-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_('OutboundRequests|Outbound requests')
-
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_('OutboundRequests|Allow requests to the local network from hooks and integrations.')
-      = link_to _('Learn more.'), help_page_path('security/webhooks'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(s_('OutboundRequests|Outbound requests'),
+  id: 'js-outbound-settings',
+  testid: 'outbound-requests-content',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('OutboundRequests|Allow requests to the local network from hooks and integrations.')
+    = link_to _('Learn more.'), help_page_path('security/webhooks'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'outbound'
 
-%section.settings.as-protected-paths.no-animate#js-protected-paths-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Protected paths')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Rate limit access to specified paths.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/protected_paths'), target: '_blank', rel: 'noopener noreferrer'
-
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Protected paths'),
+  id: 'js-protected-paths-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Rate limit access to specified paths.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/protected_paths'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'protected_paths'
 
-%section.settings.as-issue-limits.no-animate#js-issue-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Issues rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Limit the number of issues and epics per minute a user can create through web and API requests.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_issues_creation'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Issues rate limits'),
+  id: 'js-issue-limits-settings',
+  testid: 'issue-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Limit the number of issues and epics per minute a user can create through web and API requests.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_issues_creation'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'issue_limits'
 
-%section.settings.as-note-limits.no-animate#js-note-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Notes rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set the per-user rate limit for notes created by web or API requests.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_notes_creation'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Notes rate limits'),
+  id: 'js-note-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set the per-user rate limit for notes created by web or API requests.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_notes_creation'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'note_limits'
 
-%section.settings.as-users-api-limits.no-animate#js-users-api-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Users API rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set the per-user rate limit for getting a user by ID via the API.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Users API rate limits'),
+  id: 'js-users-api-limits-settings',
+  testid: 'users-api-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set the per-user rate limit for getting a user by ID via the API.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_users_api'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'users_api_limits'
 
 = render 'groups_api_limits'
@@ -167,28 +133,23 @@
 
 = render 'members_api_limits'
 
-%section.settings.as-import-export-limits.no-animate#js-import-export-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Import and export rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set per-user rate limits for imports and exports of projects and groups.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/import_export_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Import and export rate limits'),
+  id: 'js-import-export-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set per-user rate limits for imports and exports of projects and groups.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/import_export_rate_limits'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'import_export_limits'
 
-%section.settings.as-pipeline-limits.no-animate#js-pipeline-limits-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Pipeline creation rate limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_pipelines_creation'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Pipeline creation rate limits'),
+  id: 'js-pipeline-limits-settings',
+  testid: 'pipeline-limits-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Limit the number of pipeline creation requests per minute. This limit includes pipelines created through the UI, the API, and by background processing.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/rate_limit_on_pipelines_creation'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'pipeline_limits'
 
 = render_if_exists 'admin/application_settings/ee_network_settings'

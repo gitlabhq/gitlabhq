@@ -118,6 +118,9 @@ AIGW_FASTAPI__API_HOST=0.0.0.0
 AIGW_FASTAPI__API_PORT=5052
 ```
 
+To check if your monolith is using correct AI Gateway, please visit `http://<your-gdk-url>/help/instance_configuration#ai_gateway_url`
+page.
+
 ### Required: Setup Licenses in GitLab-Rails
 
 **Why:** GitLab Duo is available to Premium and Ultimate customers only. You

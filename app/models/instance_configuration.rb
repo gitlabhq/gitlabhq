@@ -10,17 +10,21 @@ class InstanceConfiguration
 
   def settings
     @configuration ||= Rails.cache.fetch(CACHE_KEY, expires_in: EXPIRATION_TIME) do
-      { ssh_algorithms_hashes: ssh_algorithms_hashes,
-        host: host,
-        gitlab_pages: gitlab_pages,
-        ci_cd_limits: ci_cd_limits,
-        size_limits: size_limits,
-        package_file_size_limits: package_file_size_limits,
-        rate_limits: rate_limits }.deep_symbolize_keys
+      configuration
     end
   end
 
   private
+
+  def configuration
+    { ssh_algorithms_hashes: ssh_algorithms_hashes,
+      host: host,
+      gitlab_pages: gitlab_pages,
+      ci_cd_limits: ci_cd_limits,
+      size_limits: size_limits,
+      package_file_size_limits: package_file_size_limits,
+      rate_limits: rate_limits }.deep_symbolize_keys
+  end
 
   def ssh_algorithms_hashes
     SSH_ALGORITHMS.select { |algo| ssh_algorithm_enabled?(algo) }.map { |algo| ssh_algorithm_hashes(algo) }.compact
@@ -188,3 +192,5 @@ class InstanceConfiguration
     }
   end
 end
+
+InstanceConfiguration.prepend_mod_with('InstanceConfiguration')

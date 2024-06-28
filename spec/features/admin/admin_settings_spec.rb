@@ -751,7 +751,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes Outbound requests settings' do
         visit network_admin_application_settings_path
 
-        page.within('.as-outbound') do
+        within_testid('outbound-requests-content') do
           check 'Allow requests to the local network from webhooks and integrations'
           # Enabled by default
           uncheck 'Allow requests to the local network from system hooks'
@@ -769,7 +769,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes User and IP rate limits settings' do
         visit network_admin_application_settings_path
 
-        page.within('.as-ip-limits') do
+        within_testid('ip-limits-content') do
           check 'Enable unauthenticated API request rate limit'
           fill_in 'Maximum unauthenticated API requests per rate limit period per IP', with: 100
           fill_in 'Unauthenticated API rate limit period in seconds', with: 200
@@ -816,7 +816,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes Issues rate limits settings' do
         visit network_admin_application_settings_path
 
-        page.within('.as-issue-limits') do
+        within_testid('issue-limits-settings') do
           fill_in 'Maximum number of requests per minute', with: 0
           click_button 'Save changes'
         end
@@ -828,7 +828,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes Pipelines rate limits settings' do
         visit network_admin_application_settings_path
 
-        page.within('.as-pipeline-limits') do
+        within_testid('pipeline-limits-settings') do
           fill_in 'Maximum number of requests per minute', with: 10
           click_button 'Save changes'
         end
@@ -840,7 +840,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes Users API rate limits settings' do
         visit network_admin_application_settings_path
 
-        page.within('.as-users-api-limits') do
+        within_testid('users-api-limits-settings') do
           fill_in 'Maximum requests per 10 minutes per user', with: 0
           fill_in 'Users to exclude from the rate limit', with: 'someone, someone_else'
           click_button 'Save changes'
@@ -868,7 +868,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           visit network_admin_application_settings_path
 
           new_rate_limit = 1234
-          page.within(network_settings_section) do
+          within_testid(network_settings_section) do
             fill_in rate_limit_field, with: new_rate_limit
             click_button 'Save changes'
           end
@@ -879,7 +879,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       describe 'groups API rate limits' do
-        let_it_be(:network_settings_section) { '.as-groups-api-limits' }
+        let_it_be(:network_settings_section) { 'groups-api-limits-settings' }
 
         context 'for unauthenticated GET /groups API requests' do
           let_it_be(:rate_limit_field) do
@@ -923,7 +923,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       describe 'projects API rate limits' do
-        let_it_be(:network_settings_section) { '.as-projects-api-limits' }
+        let_it_be(:network_settings_section) { 'projects-api-limits-settings' }
 
         context 'for unauthenticated GET /projects API requests' do
           let_it_be(:rate_limit_field) do
@@ -990,7 +990,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         it 'changes rate limit settings' do
           visit network_admin_application_settings_path
 
-          page.within(".#{selector}") do
+          within_testid(selector) do
             check 'Enable unauthenticated API request rate limit'
             fill_in 'Maximum unauthenticated API requests per rate limit period per IP', with: 12
             fill_in 'Unauthenticated API rate limit period in seconds', with: 34
@@ -1016,21 +1016,21 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       context 'Package Registry API rate limits' do
-        let(:selector) { 'as-packages-limits' }
+        let(:selector) { 'packages-limits-settings' }
         let(:fragment) { :packages_api }
 
         include_examples 'regular throttle rate limit settings'
       end
 
       context 'Files API rate limits' do
-        let(:selector) { 'as-files-limits' }
+        let(:selector) { 'files-limits-settings' }
         let(:fragment) { :files_api }
 
         include_examples 'regular throttle rate limit settings'
       end
 
       context 'Deprecated API rate limits' do
-        let(:selector) { 'as-deprecated-limits' }
+        let(:selector) { 'deprecated-api-rate-limits-settings' }
         let(:fragment) { :deprecated_api }
 
         include_examples 'regular throttle rate limit settings'
@@ -1039,7 +1039,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'changes search rate limits' do
         visit network_admin_application_settings_path
 
-        page.within('.as-search-limits') do
+        within_testid('search-limits-settings') do
           fill_in 'Maximum number of requests per minute for an authenticated user', with: 98
           fill_in 'Maximum number of requests per minute for an unauthenticated IP address', with: 76
           click_button 'Save changes'

@@ -558,8 +558,8 @@ lib/gitlab/checks/**
 /doc/administration/integration/terminal.md @phillipwells
 /doc/administration/invalidate_markdown_cache.md @msedlakjakubowski
 /doc/administration/issue_closing_pattern.md @aqualls
-/doc/administration/job_artifacts.md @marcel.amirault
-/doc/administration/job_artifacts_troubleshooting.md @marcel.amirault
+/doc/administration/job_artifacts.md @marcel.amirault @lyspin
+/doc/administration/job_artifacts_troubleshooting.md @marcel.amirault @lyspin
 /doc/administration/job_logs.md @ashrafkhamis
 /doc/administration/labels.md @msedlakjakubowski
 /doc/administration/lfs/ @msedlakjakubowski
@@ -698,7 +698,7 @@ lib/gitlab/checks/**
 /doc/api/group_import_export.md @eread
 /doc/api/group_iterations.md @msedlakjakubowski
 /doc/api/group_labels.md @msedlakjakubowski
-/doc/api/group_level_variables.md @marcel.amirault
+/doc/api/group_level_variables.md @marcel.amirault @lyspin
 /doc/api/group_milestones.md @msedlakjakubowski
 /doc/api/group_protected_branches.md @msedlakjakubowski
 /doc/api/group_protected_environments.md @phillipwells
@@ -710,13 +710,13 @@ lib/gitlab/checks/**
 /doc/api/import.md @eread
 /doc/api/index.md @eread
 /doc/api/instance_clusters.md @phillipwells
-/doc/api/instance_level_ci_variables.md @marcel.amirault
+/doc/api/instance_level_ci_variables.md @marcel.amirault @lyspin
 /doc/api/integrations.md @eread
 /doc/api/issue_links.md @msedlakjakubowski
 /doc/api/issues.md @msedlakjakubowski
 /doc/api/issues_statistics.md @msedlakjakubowski
 /doc/api/iterations.md @msedlakjakubowski
-/doc/api/job_artifacts.md @marcel.amirault
+/doc/api/job_artifacts.md @marcel.amirault @lyspin
 /doc/api/jobs.md @marcel.amirault @lyspin
 /doc/api/keys.md @msedlakjakubowski
 /doc/api/labels.md @msedlakjakubowski
@@ -738,7 +738,7 @@ lib/gitlab/checks/**
 /doc/api/openapi/ @eread
 /doc/api/packages.md @phillipwells
 /doc/api/packages/ @phillipwells
-/doc/api/personal_access_tokens.md @eread
+/doc/api/personal_access_tokens.md @jglassman1
 /doc/api/pipeline_schedules.md @marcel.amirault @lyspin
 /doc/api/pipeline_triggers.md @marcel.amirault @lyspin
 /doc/api/pipelines.md @marcel.amirault @lyspin
@@ -751,7 +751,7 @@ lib/gitlab/checks/**
 /doc/api/project_container_registry_protection_rules.md @marcel.amirault
 /doc/api/project_import_export.md @eread
 /doc/api/project_job_token_scopes.md @marcel.amirault
-/doc/api/project_level_variables.md @marcel.amirault
+/doc/api/project_level_variables.md @marcel.amirault @lyspin
 /doc/api/project_packages_protection_rules.md @phillipwells
 /doc/api/project_relations_export.md @eread
 /doc/api/project_repository_storage_moves.md @eread
@@ -817,8 +817,6 @@ lib/gitlab/checks/**
 /doc/ci/gitlab_google_cloud_integration/ @marcel.amirault
 /doc/ci/interactive_web_terminal/ @ashrafkhamis
 /doc/ci/jobs/ci_job_token.md @marcel.amirault
-/doc/ci/jobs/job_artifacts.md @marcel.amirault
-/doc/ci/jobs/job_artifacts_troubleshooting.md @marcel.amirault
 /doc/ci/pipelines/pipeline_security.md @marcel.amirault
 /doc/ci/resource_groups/ @phillipwells
 /doc/ci/runners/ @ashrafkhamis
@@ -830,7 +828,6 @@ lib/gitlab/checks/**
 /doc/ci/test_cases/ @msedlakjakubowski
 /doc/ci/testing/code_quality.md @rdickenson
 /doc/ci/testing/code_quality_troubleshooting.md @rdickenson @phillipwells
-/doc/ci/variables/ @marcel.amirault
 /doc/ci/yaml/ci_job_log_timestamps.md @ashrafkhamis
 /doc/ci/yaml/signing_examples.md @marcel.amirault
 /doc/development/advanced_search.md @gitlab-org/search-team/migration-maintainers

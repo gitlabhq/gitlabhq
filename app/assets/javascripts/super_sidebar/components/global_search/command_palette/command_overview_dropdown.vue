@@ -1,5 +1,6 @@
 <script>
 import { GlCollapsibleListbox, GlSprintf } from '@gitlab/ui';
+import { getModifierKey } from '~/constants';
 import { InternalEvents } from '~/tracking';
 import { s__ } from '~/locale';
 import { EVENT_CLICK_COMMANDS_SUB_MENU_IN_COMMAND_PALETTE } from '~/super_sidebar/components/global_search/tracking_constants';
@@ -12,12 +13,17 @@ export default {
   mixins: [trackingMixin],
   i18n: {
     header: s__("GlobalSearch|I'm looking for"),
-    button: s__('GlobalSearch|Commands %{link1Start}⌘%{link1End} %{link2Start}k%{link2End}'),
+    button: s__('GlobalSearch|Commands %{superKey} %{link2Start}k%{link2End}'),
   },
   props: {
     items: {
       type: Array,
       required: true,
+    },
+  },
+  computed: {
+    modKey() {
+      return getModifierKey(true);
     },
   },
   methods: {
@@ -52,8 +58,8 @@ export default {
       <template #toggle>
         <button class="gl-border-0 gl-rounded-base">
           <gl-sprintf :message="$options.i18n.button">
-            <template #link1="{ content }">
-              <kbd class="gl-font-base gl-py-2 vertical-align-normalization">{{ content }}</kbd>
+            <template #superKey>
+              <kbd class="gl-font-base gl-py-2 vertical-align-normalization">{{ modKey }}</kbd>
             </template>
             <template #link2="{ content }">
               <kbd class="gl-font-base gl-py-2 vertical-align-normalization">{{ content }}</kbd>

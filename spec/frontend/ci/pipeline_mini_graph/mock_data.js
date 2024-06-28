@@ -64,6 +64,64 @@ export const pipelineStage = {
     id: 'success-409-409',
     icon: 'status_success',
     label: 'passed',
+    tooltip: 'passed',
+  },
+};
+
+// for `pipeline_stage_spec.js`
+export const mockPipelineStageJobs = {
+  data: {
+    ciPipelineStage: {
+      __typename: 'CiStage',
+      id: 'gid://gitlab/Ci::Stage/409',
+      jobs: {
+        __typename: 'CiJobConnection',
+        nodes: [
+          {
+            __typename: 'CiJob',
+            id: 'gid://gitlab/Ci::Build/1001',
+            detailedStatus: {
+              __typename: 'DetailedStatus',
+              id: 'success-1001-1001',
+              action: {
+                __typename: 'StatusAction',
+                id: 'Ci::Build-success-1001',
+                icon: 'retry',
+                path: '/flightjs/Flight/-/jobs/1001/retry',
+                title: 'Retry',
+              },
+              detailsPath: '/flightjs/Flight/-/pipelines/1176',
+              group: 'success',
+              hasDetails: true,
+              icon: 'status_success',
+              tooltip: 'passed',
+            },
+            name: 'test_job',
+          },
+          {
+            __typename: 'CiJob',
+            id: 'gid://gitlab/Ci::Build/1002',
+            detailedStatus: {
+              __typename: 'DetailedStatus',
+              id: 'success-1002-1002',
+              action: {
+                __typename: 'StatusAction',
+                id: 'Ci::Build-success-1002',
+                icon: 'retry',
+                path: '/flightjs/Flight/-/jobs/1001/retry',
+                title: 'Retry',
+              },
+              detailsPath: '/flightjs/Flight/-/pipelines/1176',
+              group: 'success',
+              hasDetails: true,
+              icon: 'status_success',
+              tooltip: 'passed',
+            },
+            name: 'test_job_2',
+          },
+        ],
+      },
+    },
   },
 };
 
@@ -132,6 +190,7 @@ export const mockPipelineStatusResponse = {
 };
 
 export const pipelineMiniGraphFetchError = 'There was a problem fetching the pipeline mini graph.';
+export const pipelineStageJobsFetchError = 'There was a problem fetching the pipeline stage jobs.';
 
 export const downstreamPipelines = [
   {

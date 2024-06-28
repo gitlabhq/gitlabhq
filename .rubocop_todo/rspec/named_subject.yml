@@ -1610,7 +1610,6 @@ RSpec/NamedSubject:
     - 'spec/lib/banzai/color_parser_spec.rb'
     - 'spec/lib/banzai/filter/broadcast_message_placeholders_filter_spec.rb'
     - 'spec/lib/banzai/filter/math_filter_spec.rb'
-    - 'spec/lib/banzai/filter/output_safety_spec.rb'
     - 'spec/lib/banzai/filter/references/project_reference_filter_spec.rb'
     - 'spec/lib/banzai/filter/references/reference_cache_spec.rb'
     - 'spec/lib/banzai/pipeline/post_process_pipeline_spec.rb'

@@ -914,8 +914,7 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *ci-build-images-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *code-qa-patterns
     # Rules to support .qa:rules:package-and-test-ee
@@ -1246,8 +1245,7 @@
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     # Rules to support .qa:rules:package-and-test
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1706,8 +1704,7 @@
       changes: *qa-patterns
       when: manual
       allow_failure: true
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-security-merge-request
       changes: *code-patterns
       when: manual
@@ -1739,7 +1736,7 @@
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
-        COVERBAND_ENABLED: "false" #Will open a separate MR to set to true
+        COVERBAND_ENABLED: "true" # Record Coverage in scheduled master pipelines
 
 
 .qa:rules:e2e:test-on-cng:
@@ -2688,8 +2685,7 @@
     - <<: *if-merge-request-labels-run-review-app
     - if: '$CI_REVIEW_APPS_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -2747,8 +2743,7 @@
       allow_failure: true
     - if: '$CI_REVIEW_APPS_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
       when: manual

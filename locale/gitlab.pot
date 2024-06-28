@@ -2055,6 +2055,12 @@ msgstr ""
 msgid "AI Agent was successfully deleted"
 msgstr ""
 
+msgid "AI Gateway URL:"
+msgstr ""
+
+msgid "AI gateway URL"
+msgstr ""
+
 msgid "AI-generated summary"
 msgstr ""
 
@@ -24196,7 +24202,7 @@ msgstr ""
 msgid "GlobalSearch|Command palette"
 msgstr ""
 
-msgid "GlobalSearch|Commands %{link1Start}⌘%{link1End} %{link2Start}k%{link2End}"
+msgid "GlobalSearch|Commands %{superKey} %{link2Start}k%{link2End}"
 msgstr ""
 
 msgid "GlobalSearch|Explore"
@@ -34737,6 +34743,9 @@ msgid "No %{providerTitle} repositories found"
 msgstr ""
 
 msgid "No %{title} have been added."
+msgstr ""
+
+msgid "No AI gateway available."
 msgstr ""
 
 msgid "No Epic"
@@ -51710,6 +51719,24 @@ msgstr ""
 msgid "SubscriptionBanner|Upload new license"
 msgstr ""
 
+msgid "SubscriptionGroupsNew|Select a group for your %{planName} subscription"
+msgstr ""
+
+msgid "SubscriptionGroupsNew|Select a group for your subscription"
+msgstr ""
+
+msgid "SubscriptionGroupsNew|The group is a top-level group on a Free tier"
+msgstr ""
+
+msgid "SubscriptionGroupsNew|Why can't I find my group?"
+msgstr ""
+
+msgid "SubscriptionGroupsNew|You're assigned the Owner role of the group"
+msgstr ""
+
+msgid "SubscriptionGroupsNew|Your group will only be displayed in the list above if:"
+msgstr ""
+
 msgid "SubscriptionMangement|If you'd like to add more seats, upgrade your plan, or purchase additional products, contact your GitLab sales representative."
 msgstr ""
 
@@ -53799,7 +53826,7 @@ msgstr ""
 msgid "There was a problem fetching the pipeline mini graph."
 msgstr ""
 
-msgid "There was a problem fetching the pipeline stage."
+msgid "There was a problem fetching the pipeline stage jobs."
 msgstr ""
 
 msgid "There was a problem fetching the pipeline stages."

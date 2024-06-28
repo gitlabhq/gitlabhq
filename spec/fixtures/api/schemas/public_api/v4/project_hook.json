@@ -24,7 +24,8 @@
     "disabled_until",
     "emoji_events",
     "custom_webhook_template",
-    "resource_access_token_events"
+    "resource_access_token_events",
+    "branch_filter_strategy"
   ],
   "optional": [
     "url_variables",
@@ -167,6 +168,9 @@
           }
         }
       }
+    },
+    "branch_filter_strategy": {
+      "type": "string"
     }
   },
   "additionalProperties": false

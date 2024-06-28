@@ -42,6 +42,8 @@ module API
         optional :token, type: String, desc: "Secret token to validate received payloads; this will not be returned in the response"
         optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
         optional :custom_webhook_template, type: String, desc: "Custom template for the request payload"
+        optional :branch_filter_strategy, type: String, values: WebHook.branch_filter_strategies.keys,
+          desc: "Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`"
         use :url_variables
         use :custom_headers
       end

@@ -1,12 +1,6 @@
-query getPipelineStage($id: CiStageID!) {
+query getPipelineStageJobs($id: CiStageID!) {
   ciPipelineStage(id: $id) {
     id
-    name
-    detailedStatus {
-      id
-      group
-      icon
-    }
     jobs {
       nodes {
         id
@@ -19,14 +13,13 @@ query getPipelineStage($id: CiStageID!) {
             title
           }
           detailsPath
-          hasDetails
           group
+          hasDetails
           icon
           tooltip
         }
         name
       }
     }
-    status
   }
 }

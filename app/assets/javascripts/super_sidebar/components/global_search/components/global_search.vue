@@ -389,7 +389,7 @@ export default {
     hide-header-close
     scrollable
     :title="$options.i18n.COMMAND_PALETTE"
-    body-class="gl-p-0!"
+    body-class="gl-p-0! !gl-min-h-26"
     modal-class="global-search-modal"
     :centered="false"
     @shown="onSearchModalShown"

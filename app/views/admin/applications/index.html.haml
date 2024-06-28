@@ -16,22 +16,14 @@
       = s_('AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider, start by creating a new one above.')
 
 - else
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper.gl-flex-direction-column
-        %h3.gl-new-card-title
-          =  s_('AdminArea|Instance OAuth applications')
-          .gl-new-card-count
-            = sprite_icon('applications', css_class: 'gl-mr-2')
-            = @applications.size
-        %p.gl-new-card-description
-          - docs_link_path = help_page_path('integration/oauth_provider')
-          - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: docs_link_path }
-          = s_('AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
-
-      .gl-new-card-actions
-        = render Pajamas::ButtonComponent.new(size: :small, href: button_link, button_options: button_options) do
-          = button_text
+  = render ::Layouts::CrudComponent.new(s_('AdminArea|Instance OAuth applications'), icon: 'applications', count: @applications.size, options: { class: 'gl-mt-5' }) do |c|
+    - c.with_description do
+      - docs_link_path = help_page_path('integration/oauth_provider')
+      - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: docs_link_path }
+      = s_('AdminArea|Manage applications for your instance that can use GitLab as an %{docs_link_start}OAuth provider%{docs_link_end}.').html_safe % { docs_link_start: docs_link_start, docs_link_end: '</a>'.html_safe }
+    - c.with_actions do
+      = render Pajamas::ButtonComponent.new(size: :small, href: button_link, button_options: button_options) do
+        = button_text
     - c.with_body do
       .table-holder
         %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
@@ -41,7 +33,7 @@
               %th= _('Callback URL')
               %th= _('Trusted')
               %th= _('Confidential')
-              %th= _('Actions')
+              %th.gl-text-right= _('Actions')
           %tbody{ data: { testid: "oauth-applications" } }
             - @applications.each do |application|
               %tr{ id: "application_#{application.id}" }
@@ -50,10 +42,10 @@
                 %td{ data: { label: _('Trusted') } }= application.trusted? ? _('Yes'): _('No')
                 %td{ data: { label: _('Confidential') } }= application.confidential? ? _('Yes'): _('No')
                 %td{ data: { label: _('Actions') } }
-                  = render Pajamas::ButtonComponent.new(href: edit_admin_application_path(application), size: :small, button_options: { class: 'gl-mr-3' }) do
-                    = _('Edit')
-                  = render 'delete_form', application: application
-
-= paginate @applications, theme: 'gitlab'
+                  .gl-flex.gl-justify-end.gl-gap-2{ class: '!-gl-my-3' }
+                    = render Pajamas::ButtonComponent.new(href: edit_admin_application_path(application), category: :tertiary, icon: 'pencil', button_options: { title: _('Edit'), class: 'has-tooltip' })
+                    = render Pajamas::ButtonComponent.new(category: :tertiary, icon: 'remove', button_options: { data: { path: admin_application_path(application), name: application.name }, title: _('Destroy'), class: 'has-tooltip js-application-delete-button' })
+    - c.with_pagination do
+      = paginate @applications, theme: 'gitlab'
 
 .js-application-delete-modal

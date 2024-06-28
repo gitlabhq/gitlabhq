@@ -23,6 +23,7 @@ issues:
 - own_label_links
 - labels
 - own_labels
+- own_description_versions
 - sync_object
 - last_edited_by
 - todos
@@ -1025,6 +1026,7 @@ epic:
 - own_label_links
 - labels
 - own_labels
+- own_description_versions
 - sync_object
 - todos
 - metrics

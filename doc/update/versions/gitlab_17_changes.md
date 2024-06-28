@@ -55,6 +55,37 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Project.where(repository_storage: 'duplicate-path').update_all(repository_storage: 'default')
   ```
 
+- Migration failures when upgrading from GitLab 16.x directly to GitLab 17.1.
+
+  Due to a bug in GitLab 17.1 where a background job completion did not get enforced correctly, there
+  can be failures when upgrading directly to GitLab 17.1.
+  The error during the migration of the upgrade looks like the following:
+
+  ```shell
+  main: == [advisory_lock_connection] object_id: 55460, pg_backend_pid: 8714
+  main: == 20240531173207 ValidateNotNullCheckConstraintOnEpicsIssueId: migrating =====
+  main: -- execute("SET statement_timeout TO 0")
+  main:    -> 0.0004s
+  main: -- execute("ALTER TABLE epics VALIDATE CONSTRAINT check_450724d1bb;")
+  main: -- execute("RESET statement_timeout")
+  main: == [advisory_lock_connection] object_id: 55460, pg_backend_pid: 8714
+  STDERR:
+  ```
+
+  This issue occurs because the background migration that got introduced in GitLab 17.0 didn't complete.
+  To upgrade, either:
+
+  - Upgrade to GitLab 17.0 and wait until all background migrations are completed.
+  - Upgrade to GitLab 17.1 and then manually execute the background job and the migration by
+    running the following command:
+
+    ```shell
+    sudo gitlab-rake gitlab:background_migrations:finalize[BackfillEpicBasicFieldsToWorkItemRecord,epics,id,'[null]']
+    ```
+
+  Now you should be able to complete the migrations in GitLab 17.1 and finish
+  the upgrade.
+
 ### Linux package installations
 
 Specific information applies to Linux package installations:
@@ -93,3 +124,7 @@ For more information, see the:
   For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
 - Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
   you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+- Upgrading to GitLab 17.1 or having unfinished background migrations from GitLab 17.0 can result
+  in a failure when running the migrations.
+  This is due to a bug.
+  [Issue 468875](https://gitlab.com/gitlab-org/gitlab/-/issues/468875) tracks fixing this behavior.

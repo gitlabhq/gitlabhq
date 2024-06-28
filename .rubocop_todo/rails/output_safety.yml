@@ -133,6 +133,5 @@ Rails/OutputSafety:
     - 'spec/helpers/profiles_helper_spec.rb'
     - 'spec/helpers/safe_format_helper_spec.rb'
     - 'spec/helpers/sidebars_helper_spec.rb'
-    - 'spec/lib/banzai/filter/output_safety_spec.rb'
     - 'spec/lib/gitlab/string_range_marker_spec.rb'
     - 'spec/lib/gitlab/string_regex_marker_spec.rb'

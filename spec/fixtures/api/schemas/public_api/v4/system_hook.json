@@ -13,7 +13,8 @@
     "disabled_until",
     "url_variables",
     "custom_webhook_template",
-    "custom_headers"
+    "custom_headers",
+    "branch_filter_strategy"
   ],
   "properties": {
     "id": {
@@ -101,6 +102,15 @@
           }
         }
       }
+    },
+    "push_events_branch_filter": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "branch_filter_strategy": {
+      "type": "string"
     }
   },
   "additionalProperties": false

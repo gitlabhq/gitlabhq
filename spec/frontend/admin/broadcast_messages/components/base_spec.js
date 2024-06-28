@@ -8,6 +8,7 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { visitUrl } from '~/lib/utils/url_utility';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import BroadcastMessagesBase from '~/admin/broadcast_messages/components/base.vue';
 import MessagesTable from '~/admin/broadcast_messages/components/messages_table.vue';
 import { generateMockMessages, MOCK_MESSAGES } from '../mock_data';
@@ -31,6 +32,9 @@ describe('BroadcastMessagesBase', () => {
         messagesCount: MOCK_MESSAGES.length,
         messages: MOCK_MESSAGES,
         ...props,
+      },
+      stubs: {
+        CrudComponent,
       },
     });
   }

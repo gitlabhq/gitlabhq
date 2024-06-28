@@ -27,6 +27,8 @@ module Keeps
 
     def initialize(logger: nil)
       @migrations_to_be_marked_obsolete = {}
+      @search_team_map = group_data['backend_engineers'].index_with(0)
+
       load_migrations_to_process
 
       super(logger: logger)
@@ -37,7 +39,10 @@ module Keeps
 
       migrations_to_be_marked_obsolete.each do |version, migration_data|
         mark_obsolete_change = create_mark_obsolete_change(version, migration_data)
-        yield(mark_obsolete_change) if mark_obsolete_change
+        next unless mark_obsolete_change
+
+        search_team_map[mark_obsolete_change.assignees.first] += 1
+        yield(mark_obsolete_change)
       end
 
       nil
@@ -45,7 +50,7 @@ module Keeps
 
     private
 
-    attr_reader :migrations_to_be_marked_obsolete
+    attr_reader :migrations_to_be_marked_obsolete, :search_team_map
 
     def load_migrations_to_process
       each_advanced_search_migration do |migration_filename, spec_filename, yaml_filename, yaml_content|
@@ -96,29 +101,31 @@ module Keeps
       migration_name = migration_data[:yaml_content]['name']
       change = ::Gitlab::Housekeeper::Change.new
       change.title = "Mark #{version} as obsolete"
-      change.identifiers = [self.class.name.demodulize, 'mark_obsolete', version, migration_name]
+      change.identifiers = ['mark_obsolete', version, migration_name]
       change.labels = [
         'maintenance::refactor',
         GROUP_LABEL
       ]
-      change.assignees = groups_helper.pick_reviewer(group_data, change.identifiers)
+      assignee = search_team_map.min_by { |_k, v| v }.first
+      change.assignees = assignee
       change.changelog_ee = true
 
       # rubocop:disable Gitlab/DocUrl -- Not running inside rails application
       change.description = <<~MARKDOWN
         This migration marks the #{version} #{migration_name} Advanced search migration as obsolete.
 
-        This MR will still need changes to remove [references to the migration](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{migration_name.underscore}&regex=false)
-        in the code. At the moment, the `gitlab-housekeeper` is not always capable of removing all references so
+        [Search for references to `#{migration_name.underscore}` in code](https://gitlab.com/search?project_id=278964&scope=blobs&search=#{migration_name.underscore}&regex=false))
+
+        At the moment, the `gitlab-housekeeper` is not always capable of removing all references so
         you must check the diff and pipeline failures to confirm if there are any issues.
         It is the responsibility of the assignee (picked from ~"group::global search") to push those changes to this branch.
 
-        You can read more about the process for marking Advanced search migrations as obsolete in
-        https://docs.gitlab.com/ee/development/search/advanced_search_migration_styleguide.html#deleting-advanced-search-migrations-in-a-major-version-upgrade.
+        [Read more](https://docs.gitlab.com/ee/development/search/advanced_search_migration_styleguide.html#deleting-advanced-search-migrations-in-a-major-version-upgrade)
+        about the process for marking Advanced search migrations as obsolete.
 
-        As part of our process we want to ensure all Advanced search migrations have had at least one
-        [required stop](https://docs.gitlab.com/ee/development/database/required_stops.html)
-        to process the migration. Therefore we can mark any Advanced search migrations added before the
+        All Advanced search migrations must have had at least one
+        [required stop](https : // docs.gitlab.com / ee / development / database / required_stops.html)
+        to process the migration. Therefore we mark any Advanced search migrations added before the
         last required stop as obsolete.
       MARKDOWN
       # rubocop:enable Gitlab/DocUrl

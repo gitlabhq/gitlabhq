@@ -1,10 +1,11 @@
 <script>
-import { GlButton, GlCard, GlIcon, GlPagination } from '@gitlab/ui';
+import { GlPagination } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
 import { createAlert, VARIANT_DANGER } from '~/alert';
 import { s__ } from '~/locale';
 import axios from '~/lib/utils/axios_utils';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { NEW_BROADCAST_MESSAGE } from '../constants';
 import MessageForm from './message_form.vue';
 import MessagesTable from './messages_table.vue';
@@ -15,10 +16,8 @@ export default {
   name: 'BroadcastMessagesBase',
   NEW_BROADCAST_MESSAGE,
   components: {
-    GlButton,
-    GlCard,
-    GlIcon,
     GlPagination,
+    CrudComponent,
     MessageForm,
     MessagesTable,
   },
@@ -83,11 +82,9 @@ export default {
     buildPageUrl(newPage) {
       return buildUrlWithCurrentLocation(`?page=${newPage}`);
     },
-    toggleAddForm() {
-      this.showAddForm = !this.showAddForm;
-    },
     closeAddForm() {
       this.showAddForm = false;
+      this.$refs.crudComponent.hideForm();
     },
     setVisibleMessages({ index, message, value }) {
       const copy = [...this.visibleMessages];
@@ -119,48 +116,38 @@ export default {
 
 <template>
   <div>
-    <gl-card
-      class="gl-new-card"
-      header-class="gl-new-card-header"
-      body-class="gl-new-card-body gl-px-0"
+    <crud-component
+      ref="crudComponent"
+      :title="$options.i18n.title"
+      icon="messages"
+      :count="messagesCount"
+      :toggle-text="$options.i18n.addButton"
     >
-      <template #header>
-        <div class="gl-new-card-title-wrapper">
-          <h3 class="gl-new-card-title">{{ $options.i18n.title }}</h3>
-          <div class="gl-new-card-count">
-            <gl-icon name="messages" class="gl-mr-2" />
-            {{ messagesCount }}
-          </div>
-        </div>
-        <gl-button v-if="!showAddForm" size="small" @click="toggleAddForm">{{
-          $options.i18n.addButton
-        }}</gl-button>
-      </template>
-
-      <div v-if="showAddForm" class="gl-new-card-add-form gl-m-3">
+      <template #form>
         <h4 class="gl-mt-0">{{ $options.i18n.addTitle }}</h4>
         <message-form
           :broadcast-message="$options.NEW_BROADCAST_MESSAGE"
           @close-add-form="closeAddForm"
         />
-      </div>
+      </template>
 
       <messages-table
         v-if="hasVisibleMessages"
         :messages="visibleMessages"
         @delete-message="deleteMessage"
       />
-      <div v-else-if="!showAddForm" class="gl-new-card-empty gl-px-5 gl-py-4">
+      <div v-else-if="!showAddForm" class="gl-text-secondary">
         {{ $options.i18n.emptyMessage }}
       </div>
-    </gl-card>
 
-    <gl-pagination
-      v-model="currentPage"
-      :total-items="totalMessages"
-      :link-gen="buildPageUrl"
-      align="center"
-      class="gl-mt-5"
-    />
+      <template #pagination>
+        <gl-pagination
+          v-model="currentPage"
+          :total-items="totalMessages"
+          :link-gen="buildPageUrl"
+          align="center"
+        />
+      </template>
+    </crud-component>
   </div>
 </template>
