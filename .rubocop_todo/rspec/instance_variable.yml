@@ -18,7 +18,6 @@ RSpec/InstanceVariable:
     - 'ee/spec/helpers/notes_helper_spec.rb'
     - 'ee/spec/helpers/search_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/elastic/helper_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/search_results_spec.rb'
     - 'ee/spec/lib/gitlab/reference_extractor_spec.rb'
     - 'ee/spec/services/ee/merge_requests/update_service_spec.rb'
     - 'ee/spec/services/ee/notification_service_spec.rb'

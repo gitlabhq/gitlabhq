@@ -5696,8 +5696,9 @@ Input type: `IntegrationExclusionCreateInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationintegrationexclusioncreateclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationintegrationexclusioncreategroupids"></a>`groupIds` | [`[GroupID!]`](#groupid) | IDs of groups to exclude up to a maximum of 100. |
 | <a id="mutationintegrationexclusioncreateintegrationname"></a>`integrationName` | [`IntegrationType!`](#integrationtype) | Type of integration to exclude. |
-| <a id="mutationintegrationexclusioncreateprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of projects to exclude up to a maximum of 100. |
+| <a id="mutationintegrationexclusioncreateprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | IDs of projects to exclude up to a maximum of 100. |
 
 #### Fields
 
@@ -5720,8 +5721,9 @@ Input type: `IntegrationExclusionDeleteInput`
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="mutationintegrationexclusiondeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationintegrationexclusiondeletegroupids"></a>`groupIds` | [`[GroupID!]`](#groupid) | IDs of excluded groups. |
 | <a id="mutationintegrationexclusiondeleteintegrationname"></a>`integrationName` | [`IntegrationType!`](#integrationtype) | Type of integration. |
-| <a id="mutationintegrationexclusiondeleteprojectids"></a>`projectIds` | [`[ProjectID!]!`](#projectid) | IDs of excluded projects. |
+| <a id="mutationintegrationexclusiondeleteprojectids"></a>`projectIds` | [`[ProjectID!]`](#projectid) | IDs of excluded projects. |
 
 #### Fields
 
@@ -23724,6 +23726,7 @@ An integration to override the level settings of instance specific integrations.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="integrationexclusiongroup"></a>`group` | [`Group`](#group) | Group that has been excluded from the instance specific integration. |
 | <a id="integrationexclusionproject"></a>`project` | [`Project`](#project) | Project that has been excluded from the instance specific integration. |
 
 ### `IssuableResourceLink`

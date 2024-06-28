@@ -14,7 +14,6 @@ Naming/HeredocDelimiterNaming:
     - 'ee/spec/lib/ee/gitlab/ci/config_spec.rb'
     - 'ee/spec/lib/ee/gitlab/ci/templates/templates_spec.rb'
     - 'ee/spec/lib/gitlab/ci/pipeline/chain/config/content_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/search_results_spec.rb'
     - 'ee/spec/lib/gitlab/patch/database_config_spec.rb'
     - 'ee/spec/lib/gitlab/sitemaps/sitemap_file_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/compliance_spec.rb'

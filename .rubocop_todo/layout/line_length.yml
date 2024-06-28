@@ -1544,7 +1544,6 @@ Layout/LineLength:
     - 'ee/spec/lib/gitlab/elastic/group_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/indexer_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/project_search_results_spec.rb'
-    - 'ee/spec/lib/gitlab/elastic/search_results_spec.rb'
     - 'ee/spec/lib/gitlab/elastic/snippet_search_results_spec.rb'
     - 'ee/spec/lib/gitlab/email/handler/create_note_handler_spec.rb'
     - 'ee/spec/lib/gitlab/email/message/account_validation_spec.rb'
