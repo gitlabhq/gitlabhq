@@ -7,6 +7,16 @@ module QA
       let(:first_added_commit_message) { 'commit over git' }
       let(:second_added_commit_message) { 'commit over api' }
 
+      before do
+        # Debug environment certs to attempt to address some flakiness as per
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/431474#note_1891541780
+        QA::Service::Shellout.shell("docker exec gitlab bash -c 'ls -al /etc/gitlab/trusted-certs'")
+        QA::Service::Shellout.shell("docker exec gitlab bash -c 'ls -al /etc/gitlab/ssl'")
+
+        QA::Service::Shellout.shell("docker exec gitaly bash -c 'ls -al /etc/gitlab/trusted-certs'")
+        QA::Service::Shellout.shell("docker exec gitaly bash -c 'ls -al /etc/gitlab/ssl'")
+      end
+
       it 'pushes to gitaly', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347677' do
         project = Resource::Project.fabricate! do |project|
           project.name = "mTLS"

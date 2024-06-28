@@ -25,6 +25,37 @@ With this integration, you can use [exact code search](../../user/search/exact_c
 instead of [advanced search](../../user/search/advanced_search.md) to search for code in GitLab.
 You can use regular expression and exact match modes to search for code in a group or repository.
 
+## Install Zoekt
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+
+To [enable exact code search](#enable-exact-code-search) in GitLab,
+you must have at least one Zoekt node connected to the instance.
+The following installation methods are supported for Zoekt:
+
+- [Zoekt chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-zoekt/)
+  (as a standalone chart or subchart of the GitLab Helm chart)
+- [GitLab Operator](https://docs.gitlab.com/operator/) (with `gitlab-zoekt.install=true`)
+- [Docker Compose](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/tree/main/example/docker-compose)
+- [Ansible playbook](https://gitlab.com/johnmason/ansible-gitlab-zoekt) (experiment)
+
+## Enable exact code search
+
+Prerequisites:
+
+- You must have administrator access to the instance.
+- You must [install Zoekt](#install-zoekt).
+
+To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Search**.
+1. Expand **Exact code search configuration**.
+1. Select the **Enable indexing for exact code search** and **Enable exact code search** checkboxes.
+1. Select **Save changes**.
+
 ## Index root namespaces automatically
 
 Prerequisites:
@@ -43,20 +74,6 @@ When you disable this setting:
 
 - Existing root namespaces remain indexed.
 - New root namespaces are no longer indexed.
-
-## Enable exact code search
-
-Prerequisites:
-
-- You must have administrator access to the instance.
-
-To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
-
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Settings > Search**.
-1. Expand **Exact code search configuration**.
-1. Select the **Enable indexing for exact code search** and **Enable exact code search** checkboxes.
-1. Select **Save changes**.
 
 ## Pause indexing
 

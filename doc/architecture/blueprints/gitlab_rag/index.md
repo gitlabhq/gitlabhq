@@ -184,12 +184,12 @@ The first hybrid search scope is for issues which combines keyword search with k
 
 ### Code Search
 
-Like the other data types above, a source code search task can utilize different
+Like the other data types above, a source code search task can use different
 search types, each more suited to address different queries.
 
-Two code searches are available currrently: `Elasticsearch` and `Zoekt`.
+Two code searches are available: `Elasticsearch` and `Zoekt`.
 
-Elasticsearch provides blob search which supports [Advanced Search Syntax](../../../drawers/advanced_search_syntax.md).
+Elasticsearch provides blob search which supports [Advanced Search Syntax](../../../user/search/advanced_search.md#syntax).
 
 [Zoekt](../code_search_with_zoekt/index.md) is employed on GitLab.com to provide
 exact match keyword search and regular expression search capabilities for source

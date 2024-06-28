@@ -29022,6 +29022,8 @@ CREATE UNIQUE INDEX index_trending_projects_on_project_id ON trending_projects U
 
 CREATE INDEX index_unarchived_occurrences_for_aggregations_component_name ON sbom_occurrences USING btree (traversal_ids, component_name, component_id, component_version_id) WHERE (archived = false);
 
+CREATE INDEX index_unarchived_occurrences_for_aggregations_license ON sbom_occurrences USING btree (traversal_ids, (((licenses -> 0) ->> 'spdx_identifier'::text)), component_id, component_version_id) WHERE (archived = false);
+
 CREATE INDEX index_unarchived_occurrences_for_aggregations_package_manager ON sbom_occurrences USING btree (traversal_ids, package_manager, component_id, component_version_id) WHERE (archived = false);
 
 CREATE INDEX index_unarchived_occurrences_for_aggregations_severity ON sbom_occurrences USING btree (traversal_ids, highest_severity, component_id, component_version_id) WHERE (archived = false);

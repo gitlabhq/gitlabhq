@@ -22,6 +22,17 @@ module Issuables
       label_names_from_params
     end
 
+    # rubocop: disable CodeReuse/ActiveRecord
+    def label_link_query(issuables, label_ids: nil, label_names: nil)
+      target_model = issuables.base_class
+
+      relation = target_label_links_query(target_model, label_ids)
+      relation = relation.joins(:label).where(labels: { name: label_names }) if label_names
+
+      relation
+    end
+    # rubocop: enable CodeReuse/ActiveRecord
+
     private
 
     attr_reader :project, :group
@@ -140,17 +151,6 @@ module Issuables
     # rubocop: disable CodeReuse/ActiveRecord
     def project_labels_for_root_namespace
       Label.where(group_id: nil).where(project_id: Project.select(:id).where(namespace_id: root_namespace.self_and_descendant_ids))
-    end
-    # rubocop: enable CodeReuse/ActiveRecord
-
-    # rubocop: disable CodeReuse/ActiveRecord
-    def label_link_query(issuables, label_ids: nil, label_names: nil)
-      target_model = issuables.base_class
-
-      relation = target_label_links_query(target_model, label_ids)
-      relation = relation.joins(:label).where(labels: { name: label_names }) if label_names
-
-      relation
     end
     # rubocop: enable CodeReuse/ActiveRecord
 

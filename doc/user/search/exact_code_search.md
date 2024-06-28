@@ -25,22 +25,12 @@ to search for code in all GitLab or in a specific project.
 Exact code search is powered by [Zoekt](https://github.com/sourcegraph/zoekt)
 and is used by default in groups where the feature is enabled.
 
-## Set up Zoekt node(s)
-
-In order for enable this feature, you need to have at least one Zoekt node connected to the GitLab instance.
-
-Here are the installation/deployment methods we currently support:
-
-- [Zoekt Helm chart](https://docs.gitlab.com/charts/charts/gitlab/gitlab-zoekt/) - can be used as a standalone chart or a subchart of GitLab Helm chart
-- [GitLab Operator](https://docs.gitlab.com/operator/) - you can enable Zoekt via `gitlab-zoekt.install`
-- [An example Docker Compose](https://gitlab.com/gitlab-org/gitlab-zoekt-indexer/-/tree/main/example/docker-compose)
-- [Ansible/Terraform playbook](https://gitlab.com/johnmason/ansible-gitlab-zoekt) - *Note: Early Alpha*
-
 ## Enable exact code search
 
 - For [GitLab.com](../../subscriptions/gitlab_com/index.md),
   exact code search is enabled in paid subscriptions.
 - For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+  [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
 ## Zoekt search API
