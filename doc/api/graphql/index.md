@@ -66,8 +66,8 @@ If the authentication information is not valid, GitLab returns an error message 
 
 #### Token authentication
 
-> - Authentication method restrictions [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150407) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `graphql_minimal_auth_methods` and backported to GitLab 17.0.2, GitLab 16.11.4, and GitLab 16.10.7. Disabled by default in 17.0.
-> - Flag enabled by default in 17.0.2, 16.11.4, and 16.10.7 and therefore restrictions are enforced in these versions and later.
+> - Authentication method restrictions [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150407) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `graphql_minimal_auth_methods` and backported to GitLab 17.0.3 and GitLab 16.11.5. Disabled by default in 17.0.
+> - Flag enabled by default in 17.0.3 and 16.11.5, therefore restrictions are enforced in these versions and later.
 
 Use any of the following tokens to authenticate with the GraphQL API:
 
