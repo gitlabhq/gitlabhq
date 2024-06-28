@@ -3,6 +3,8 @@
 - button_link = new_admin_application_path
 - button_options = { data: { testid: 'new-application-button' } }
 
+%div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_applications_pageload' } }
+
 - if @applications.empty?
   = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-admin-apps-md.svg',
     title: s_('AdminArea|No applications found'),

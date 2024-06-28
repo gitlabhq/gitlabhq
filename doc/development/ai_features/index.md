@@ -47,8 +47,18 @@ time.
       management, you can install `gcloud` with the
       [`asdf gcloud` plugin](https://github.com/jthegedus/asdf-gcloud)
 1. Authenticate locally with Google Cloud using the
-   [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login)
-   command.
+   [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
+
+    NOTE:
+    This command tries to find a quota project from gcloud's context
+    and write it to ADC(Application Default Credentials)
+    so that Google client libraries can use it for billing and quota.
+    To be able to use a project as the quota project, the account in
+    ADC must have the `serviceusage.services.use` permission on the project.
+    If you don't have a project with this permission and you always want to
+    bill the project owning the resources,
+    you can disable the quota project and authenticate using
+    `gcloud auth application-default login --disable-quota-project` command.
 1. Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
 
    ```shell
