@@ -28,6 +28,8 @@
   inherit:
     variables:
       - CHROME_VERSION
+      - RUBY_VERSION_DEFAULT
+      - RUBY_VERSION_NEXT
       - RUBY_VERSION
       - BUNDLER_VERSION
       - DOCKER_VERSION

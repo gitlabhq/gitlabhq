@@ -24,7 +24,10 @@ variables:
   GIT_SUBMODULE_STRATEGY: "none"
   GET_SOURCES_ATTEMPTS: "3"
   # Default Ruby version for jobs that don't use .ruby_matrix
-  RUBY_VERSION: "3.0"
+  RUBY_VERSION: "${RUBY_VERSION_DEFAULT}"
+
+include:
+  - local: .gitlab/ci/version.yml
 
 default:
   image: "ruby:${RUBY_VERSION}"
@@ -47,7 +50,7 @@ default:
 .ruby_matrix:
   parallel:
     matrix:
-      - RUBY_VERSION: ["3.0", "3.1", "3.2"]
+      - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
 
 .ruby_and_postgres_matrix:
   services:
@@ -55,7 +58,7 @@ default:
       command: ["postgres", "-c", "fsync=off", "-c", "synchronous_commit=off", "-c", "full_page_writes=off"]
   parallel:
     matrix:
-      - RUBY_VERSION: ["3.0", "3.1", "3.2"]
+      - RUBY_VERSION: ["${RUBY_VERSION_DEFAULT}", "${RUBY_VERSION_NEXT}"]
         POSTGRES_VERSION: ["12", "13", "14"]
 
 rubocop:
