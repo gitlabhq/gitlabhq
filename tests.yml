@@ -67,9 +67,15 @@ mapping:
   - source: 'ee/spec/(.*/)ee/(.+)\.rb'
     test: 'spec/%s%s.rb'
 
-  # EE/FOSS factory should map to factories spec
-  - source: '(ee/)?spec/factories/.+\.rb'
-    test: 'ee/spec/models/factories_spec.rb'
+  # FOSS+EE factories map to FOSS/EE model specs
+  - source:
+      - '(?:ee/)?spec/factories/(.+)\.rb'
+      - '(?:ee/)?spec/factories/(.+)s\.rb'
+    test:
+      - 'spec/models/%s_spec.rb'
+      - 'ee/spec/models/ee/%s_spec.rb'
+      - 'ee/spec/models/%s_spec.rb'
+      - 'ee/spec/models/ee/%s_spec.rb'
 
   # Whats New should map to its respective spec
   - source: 'data/whats_new/\w*\.yml'
