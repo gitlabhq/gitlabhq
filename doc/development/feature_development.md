@@ -98,6 +98,7 @@ Consult these topics for information on contributing to specific GitLab features
 - [AI features](ai_features/index.md)
 - [Application settings](application_settings.md)
 - [Remote Development](remote_development/index.md)
+- [Markdown (GLFM) development guide](gitlab_flavored_markdown/index.md)
 
 ### Import and Export
 
@@ -193,7 +194,6 @@ The following integration guides are internal. Some integrations require access 
 ## Other development guides
 
 - [Defining relations between files using projections](projections.md)
-- [Reference processing](reference_processing.md)
 - [Compatibility with multiple versions of the application running at the same time](multi_version_compatibility.md)
 - [Features inside `.gitlab/`](features_inside_dot_gitlab.md)
 - [Dashboards for stage groups](stage_group_observability/index.md)

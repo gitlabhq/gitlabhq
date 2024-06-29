@@ -7447,6 +7447,30 @@ Input type: `PipelineTriggerUpdateInput`
 | <a id="mutationpipelinetriggerupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationpipelinetriggerupdatepipelinetrigger"></a>`pipelineTrigger` | [`PipelineTrigger`](#pipelinetrigger) | Mutated pipeline trigger token. |
 
+### `Mutation.processUserBillablePromotionRequest`
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Input type: `ProcessUserBillablePromotionRequestInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprocessuserbillablepromotionrequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprocessuserbillablepromotionrequeststatus"></a>`status` | [`MemberApprovalStatusType!`](#memberapprovalstatustype) | Status for the member approval request (approved, denied, pending). |
+| <a id="mutationprocessuserbillablepromotionrequestuserid"></a>`userId` | [`UserID!`](#userid) | Global ID of user to be promoted. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationprocessuserbillablepromotionrequestclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationprocessuserbillablepromotionrequesterrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationprocessuserbillablepromotionrequestresult"></a>`result` | [`UserPromotionStatusType`](#userpromotionstatustype) | Status of the user promotion process (success, partial_success, failed). |
+
 ### `Mutation.productAnalyticsProjectSettingsUpdate`
 
 Input type: `ProductAnalyticsProjectSettingsUpdateInput`
@@ -34880,6 +34904,16 @@ Name of access levels of a group or project member.
 | <a id="memberaccesslevelnameowner"></a>`OWNER` | Owner access. |
 | <a id="memberaccesslevelnamereporter"></a>`REPORTER` | Reporter access. |
 
+### `MemberApprovalStatusType`
+
+Types of member approval status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="memberapprovalstatustypeapproved"></a>`APPROVED` | Approved promotion request. |
+| <a id="memberapprovalstatustypedenied"></a>`DENIED` | Denied promotion request. |
+| <a id="memberapprovalstatustypepending"></a>`PENDING` | Pending promotion request. |
+
 ### `MemberRolePermission`
 
 Member role permission.
@@ -36021,6 +36055,16 @@ Name of the feature that the callout is for.
 | <a id="usercalloutfeaturenameenumvulnerability_report_grouping"></a>`VULNERABILITY_REPORT_GROUPING` | Callout feature name for vulnerability_report_grouping. |
 | <a id="usercalloutfeaturenameenumweb_ide_alert_dismissed"></a>`WEB_IDE_ALERT_DISMISSED` | Callout feature name for web_ide_alert_dismissed. |
 | <a id="usercalloutfeaturenameenumweb_ide_ci_environments_guidance"></a>`WEB_IDE_CI_ENVIRONMENTS_GUIDANCE` | Callout feature name for web_ide_ci_environments_guidance. |
+
+### `UserPromotionStatusType`
+
+Types of User Promotion States.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="userpromotionstatustypefailed"></a>`FAILED` | Failed to apply promotion requests for user. |
+| <a id="userpromotionstatustypepartial_success"></a>`PARTIAL_SUCCESS` | User promotion was successful, but all promotion requests were not successfully applied. |
+| <a id="userpromotionstatustypesuccess"></a>`SUCCESS` | Successfully applied all promotion requests for user. |
 
 ### `UserState`
 

@@ -280,7 +280,7 @@
 {"name":"graphlient","version":"0.6.0","platform":"ruby","checksum":"b8d8664b4c8ec215012cbe3cca918a045b0a206d709712d68b6db51fd215c5c0"},
 {"name":"graphlyte","version":"1.0.0","platform":"ruby","checksum":"b5af4ab67dde6e961f00ea1c18f159f73b52ed11395bb4ece297fe628fa1804d"},
 {"name":"graphql","version":"2.3.5","platform":"ruby","checksum":"9c367835f86541660d24c3d81632267ecee553d304577aaee070f8ac05860af1"},
-{"name":"graphql-client","version":"0.19.0","platform":"ruby","checksum":"fe699d81976f916bd8f989216155326449cb8475a5d69fa1dd054012a86969c7"},
+{"name":"graphql-client","version":"0.23.0","platform":"ruby","checksum":"f238b8e451676baad06bd15f95396e018192243dcf12c4e6d13fb41d9a2babc1"},
 {"name":"graphql-docs","version":"4.0.0","platform":"ruby","checksum":"f68296959263db26e1b7ba7058856d67b641cf508187222268be58f09dfa02d7"},
 {"name":"grpc","version":"1.63.0","platform":"aarch64-linux","checksum":"dc75c5fd570b819470781d9512105dddfdd11d984f38b8e60bb946f92d1f79ee"},
 {"name":"grpc","version":"1.63.0","platform":"arm64-darwin","checksum":"91b93a354508a9d1772f095554f2e4c04358c2b32d7a670e3705b7fc4695c996"},

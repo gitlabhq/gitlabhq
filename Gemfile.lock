@@ -877,9 +877,9 @@ GEM
     graphlyte (1.0.0)
     graphql (2.3.5)
       base64
-    graphql-client (0.19.0)
+    graphql-client (0.23.0)
       activesupport (>= 3.0)
-      graphql
+      graphql (>= 1.13.0)
     graphql-docs (4.0.0)
       commonmarker (~> 0.23, >= 0.23.6)
       dartsass (~> 1.49)
