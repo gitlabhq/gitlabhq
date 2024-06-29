@@ -194,6 +194,13 @@ editor. Once closed, Git presents you with a new text editor instance to edit
 the commit message of commit B. Add the trailer, then save and quit the editor.
 If all went well, commit B is now updated.
 
+Since you changed commits that already exist in your remote branch, you must use
+the `--force-with-lease` flag when pushing to your remote branch:
+
+```shell
+git push origin your-branch-name --force-with-lease
+```
+
 For more information about interactive rebases, take a look at
 [the Git documentation](https://git-scm.com/book/en/v2/Git-Tools-Rewriting-History).
 
