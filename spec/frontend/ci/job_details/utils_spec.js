@@ -72,8 +72,7 @@ describe('Job utils', () => {
         {
           content: [
             {
-              text:
-                'Using docker image sha256:55106bf6ba7f452c38d01ea760affc6ceb67d4b60068ffadab98d1b7b007668c for ruby:2.7 with digest ruby@sha256:23d08a4bae1a12ee3fce017f83204fcf9a02243443e4a516e65e5ff73810a449 ...',
+              text: 'Using docker image sha256:55106bf6ba7f452c38d01ea760affc6ceb67d4b60068ffadab98d1b7b007668c for ruby:2.7 with digest ruby@sha256:23d08a4bae1a12ee3fce017f83204fcf9a02243443e4a516e65e5ff73810a449 ...',
             },
           ],
           lineNumber: 7,
@@ -175,8 +174,7 @@ describe('Job utils', () => {
         {
           content: [
             {
-              text:
-                'Using docker image sha256:55106bf6ba7f452c38d01ea760affc6ceb67d4b60068ffadab98d1b7b007668c for ruby:2.7 with digest ruby@sha256:23d08a4bae1a12ee3fce017f83204fcf9a02243443e4a516e65e5ff73810a449 ...',
+              text: 'Using docker image sha256:55106bf6ba7f452c38d01ea760affc6ceb67d4b60068ffadab98d1b7b007668c for ruby:2.7 with digest ruby@sha256:23d08a4bae1a12ee3fce017f83204fcf9a02243443e4a516e65e5ff73810a449 ...',
             },
           ],
           lineNumber: 19,

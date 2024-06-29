@@ -137,15 +137,8 @@ describe('RunnerUpdateForm', () => {
       await submitFormAndWait();
 
       // Some read-only fields are not submitted
-      const {
-        __typename,
-        shortSha,
-        runnerType,
-        createdAt,
-        createdBy,
-        status,
-        ...submitted
-      } = mockRunner;
+      const { __typename, shortSha, runnerType, createdAt, createdBy, status, ...submitted } =
+        mockRunner;
 
       expectToHaveSubmittedRunnerContaining(submitted);
     });

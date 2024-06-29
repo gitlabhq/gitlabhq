@@ -4,8 +4,8 @@ import { __ } from '~/locale';
 import { createAlert } from '~/alert';
 
 // Async import component since we might not need it...
-const JSONTable = memoize(() =>
-  import(/* webpackChunkName: 'gfm_json_table' */ '../components/json_table.vue'),
+const JSONTable = memoize(
+  () => import(/* webpackChunkName: 'gfm_json_table' */ '../components/json_table.vue'),
 );
 
 const mountParseError = (element) => {

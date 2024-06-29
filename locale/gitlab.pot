@@ -838,9 +838,6 @@ msgstr ""
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
-msgid "%{group} is a top level group and cannot be immediately deleted from here.  Please visit the %{linkStart}Group Settings%{linkEnd} to immediately delete this group."
-msgstr ""
-
 msgid "%{host} sign-in from new location"
 msgstr ""
 
@@ -48359,13 +48356,10 @@ msgstr ""
 msgid "SecurityOrchestration|When license scanner finds any license matching %{licenses}%{detection} in an open merge request %{targeting}%{branches}%{branchExceptionsString}"
 msgstr ""
 
-msgid "SecurityOrchestration|With the default security job template"
+msgid "SecurityOrchestration|With the %{template} security job template"
 msgstr ""
 
 msgid "SecurityOrchestration|With the following customized CI variables:"
-msgstr ""
-
-msgid "SecurityOrchestration|With the latest security job template"
 msgstr ""
 
 msgid "SecurityOrchestration|YAML"

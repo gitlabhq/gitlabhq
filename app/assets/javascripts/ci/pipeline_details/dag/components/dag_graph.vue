@@ -216,14 +216,8 @@ export default {
     },
 
     drawGraph({ maxNodesPerLayer, linksAndNodes }) {
-      const {
-        baseWidth,
-        baseHeight,
-        minNodeHeight,
-        nodeWidth,
-        nodePadding,
-        paddingForLabels,
-      } = this.$options.viewOptions;
+      const { baseWidth, baseHeight, minNodeHeight, nodeWidth, nodePadding, paddingForLabels } =
+        this.$options.viewOptions;
 
       this.width = baseWidth;
       this.height = baseHeight + maxNodesPerLayer * minNodeHeight;

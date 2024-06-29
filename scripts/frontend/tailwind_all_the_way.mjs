@@ -8,7 +8,7 @@ import path from 'node:path';
 
 import _ from 'lodash';
 import postcss from 'postcss';
-import prettier from 'prettier';
+import * as prettier from 'prettier';
 
 import tailwindcss from 'tailwindcss/lib/plugin.js';
 import {

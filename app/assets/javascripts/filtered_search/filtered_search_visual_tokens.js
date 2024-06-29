@@ -156,10 +156,8 @@ export default class FilteredSearchVisualTokens {
   }
 
   static addValueToPreviousVisualTokenElement(value) {
-    const {
-      lastVisualToken,
-      isLastVisualTokenValid,
-    } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+    const { lastVisualToken, isLastVisualTokenValid } =
+      FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
     if (!isLastVisualTokenValid && lastVisualToken.classList.contains('filtered-search-token')) {
       const name = FilteredSearchVisualTokens.getLastTokenPartial();
@@ -181,10 +179,8 @@ export default class FilteredSearchVisualTokens {
     tokenValue,
     { canEdit, uppercaseTokenName = false, capitalizeTokenValue = false } = {},
   ) {
-    const {
-      lastVisualToken,
-      isLastVisualTokenValid,
-    } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+    const { lastVisualToken, isLastVisualTokenValid } =
+      FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
     const { addVisualTokenElement } = FilteredSearchVisualTokens;
 
     if (isLastVisualTokenValid) {

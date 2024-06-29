@@ -111,8 +111,7 @@ describe('AlertsSettingsWrapper', () => {
               type: 'HTTP',
               active: true,
               name: 'test',
-              url:
-                'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/eddd36969b2d3d6a.json',
+              url: 'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/eddd36969b2d3d6a.json',
               token: '7eb24af194116411ec8d66b58c6b0d2e',
             },
           ],

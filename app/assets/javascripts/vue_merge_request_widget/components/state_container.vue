@@ -105,7 +105,8 @@ export default {
           <slot></slot>
           <div
             :class="{
-              'state-container-action-buttons gl-flex-wrap gl-lg-justify-content-end': !actions.length,
+              'state-container-action-buttons gl-flex-wrap gl-lg-justify-content-end':
+                !actions.length,
               'gl-md-pt-0 gl-pt-3': hasActionsSlot,
             }"
             class="gl-display-flex gl-font-size-0 gl-gap-3"

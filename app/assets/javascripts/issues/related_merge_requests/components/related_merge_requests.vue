@@ -36,9 +36,8 @@ export default {
               const prevMergeRequests = previousResult.project.issue.relatedMergeRequests.nodes;
 
               return produce(fetchMoreResult, (draftData) => {
-                draftData.project.issue.relatedMergeRequests.nodes = prevMergeRequests.concat(
-                  newMergeRequests,
-                );
+                draftData.project.issue.relatedMergeRequests.nodes =
+                  prevMergeRequests.concat(newMergeRequests);
               });
             },
           });

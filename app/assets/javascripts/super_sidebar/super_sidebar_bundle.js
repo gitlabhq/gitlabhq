@@ -54,13 +54,8 @@ const getTrialStatusWidgetData = (sidebarData) => {
     sidebarData.duo_pro_trial_status_widget_data_attrs &&
     sidebarData.duo_pro_trial_status_popover_data_attrs
   ) {
-    const {
-      containerId,
-      trialDaysUsed,
-      trialDuration,
-      percentageComplete,
-      widgetUrl,
-    } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
+    const { containerId, trialDaysUsed, trialDuration, percentageComplete, widgetUrl } =
+      convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
 
     const { daysRemaining, trialEndDate, purchaseNowUrl } = convertObjectPropsToCamelCase(
       sidebarData.duo_pro_trial_status_popover_data_attrs,
@@ -108,14 +103,8 @@ export const initSuperSidebar = () => {
   const commandPaletteLinks = convertObjectPropsToCamelCase(sidebarData.current_menu_items || []);
   const contextSwitcherLinks = sidebarData.context_switcher_links;
 
-  const {
-    searchPath,
-    issuesPath,
-    mrPath,
-    autocompletePath,
-    settingsPath,
-    searchContext,
-  } = searchData;
+  const { searchPath, issuesPath, mrPath, autocompletePath, settingsPath, searchContext } =
+    searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
 
   const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);

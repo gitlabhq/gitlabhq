@@ -161,23 +161,21 @@ export const parseDataAttributes = (el) => {
   });
 };
 
-export const baseRequestFormatter = (basePropertyName, accessLevelPropertyName) => ({
-  accessLevel,
-  memberRoleId,
-  ...otherProperties
-}) => {
-  const accessLevelProperty = !isUndefined(accessLevel)
-    ? { [accessLevelPropertyName]: accessLevel }
-    : {};
+export const baseRequestFormatter =
+  (basePropertyName, accessLevelPropertyName) =>
+  ({ accessLevel, memberRoleId, ...otherProperties }) => {
+    const accessLevelProperty = !isUndefined(accessLevel)
+      ? { [accessLevelPropertyName]: accessLevel }
+      : {};
 
-  return {
-    [basePropertyName]: {
-      ...accessLevelProperty,
-      member_role_id: memberRoleId ?? null,
-      ...otherProperties,
-    },
+    return {
+      [basePropertyName]: {
+        ...accessLevelProperty,
+        member_role_id: memberRoleId ?? null,
+        ...otherProperties,
+      },
+    };
   };
-};
 
 export const groupLinkRequestFormatter = baseRequestFormatter(
   GROUP_LINK_BASE_PROPERTY_NAME,

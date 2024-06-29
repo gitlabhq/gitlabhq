@@ -35,9 +35,8 @@ export default class FilteredSearchDropdown {
   itemClicked(e, getValueFunction) {
     const { selected } = e.detail;
     if (selected.tagName === 'LI' && selected.innerHTML) {
-      const {
-        lastVisualToken: visualToken,
-      } = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+      const { lastVisualToken: visualToken } =
+        FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
       const { tokenOperator } = DropdownUtils.getVisualTokenValues(visualToken);
 
       const dataValueSet = DropdownUtils.setDataValueIfSelected(

@@ -22,13 +22,8 @@ export default {
     document.querySelectorAll(this.selector).forEach((button) => {
       button.addEventListener('click', (e) => {
         e.preventDefault();
-        const {
-          environmentName,
-          commitShortSha,
-          commitUrl,
-          isLastDeployment,
-          retryPath,
-        } = button.dataset;
+        const { environmentName, commitShortSha, commitUrl, isLastDeployment, retryPath } =
+          button.dataset;
 
         this.environment = {
           name: environmentName,

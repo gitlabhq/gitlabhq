@@ -42,10 +42,8 @@ describe('registerCaptchaModalInterceptor', () => {
       }
 
       const data = JSON.parse(config.data);
-      const {
-        'X-GitLab-Captcha-Response': captchaResponse,
-        'X-GitLab-Spam-Log-Id': spamLogId,
-      } = config.headers;
+      const { 'X-GitLab-Captcha-Response': captchaResponse, 'X-GitLab-Spam-Log-Id': spamLogId } =
+        config.headers;
 
       if (captchaResponse === CAPTCHA_RESPONSE && spamLogId === SPAM_LOG_ID) {
         return [HTTP_STATUS_OK, { ...data, method: config.method, CAPTCHA_SUCCESS }];

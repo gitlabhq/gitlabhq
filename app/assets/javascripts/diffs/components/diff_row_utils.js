@@ -153,67 +153,68 @@ export const shouldShowCommentButton = (hover, context, meta, discussions) => {
   return hover && !context && !meta && !discussions;
 };
 
-export const mapParallel = ({
-  diffFile,
-  hasParallelDraftLeft,
-  hasParallelDraftRight,
-  draftsForLine,
-}) => (line) => {
-  let { left, right } = line;
+export const mapParallel =
+  ({ diffFile, hasParallelDraftLeft, hasParallelDraftRight, draftsForLine }) =>
+  (line) => {
+    let { left, right } = line;
 
-  // Dicussions/Comments
-  const hasExpandedDiscussionOnLeft =
-    left?.discussions?.length > 0 ? left?.discussionsExpanded : false;
-  const hasExpandedDiscussionOnRight =
-    right?.discussions?.length > 0 ? right?.discussionsExpanded : false;
+    // Dicussions/Comments
+    const hasExpandedDiscussionOnLeft =
+      left?.discussions?.length > 0 ? left?.discussionsExpanded : false;
+    const hasExpandedDiscussionOnRight =
+      right?.discussions?.length > 0 ? right?.discussionsExpanded : false;
 
-  const renderCommentRow =
-    hasExpandedDiscussionOnLeft || hasExpandedDiscussionOnRight || left?.hasForm || right?.hasForm;
+    const renderCommentRow =
+      hasExpandedDiscussionOnLeft ||
+      hasExpandedDiscussionOnRight ||
+      left?.hasForm ||
+      right?.hasForm;
 
-  if (left) {
-    left = {
-      ...left,
-      renderDiscussion: hasExpandedDiscussionOnLeft,
-      hasDraft: hasParallelDraftLeft(diffFile.file_hash, line),
-      lineDrafts: draftsForLine(diffFile.file_hash, line, 'left'),
-      hasCommentForm: left.hasForm,
-      isConflictMarker:
-        line.left.type === CONFLICT_MARKER_OUR || line.left.type === CONFLICT_MARKER_THEIR,
-      emptyCellClassMap: { conflict_our: line.right?.type === CONFLICT_THEIR },
-      addCommentTooltip: addCommentTooltip(line.left),
+    if (left) {
+      left = {
+        ...left,
+        renderDiscussion: hasExpandedDiscussionOnLeft,
+        hasDraft: hasParallelDraftLeft(diffFile.file_hash, line),
+        lineDrafts: draftsForLine(diffFile.file_hash, line, 'left'),
+        hasCommentForm: left.hasForm,
+        isConflictMarker:
+          line.left.type === CONFLICT_MARKER_OUR || line.left.type === CONFLICT_MARKER_THEIR,
+        emptyCellClassMap: { conflict_our: line.right?.type === CONFLICT_THEIR },
+        addCommentTooltip: addCommentTooltip(line.left),
+      };
+    }
+    if (right) {
+      right = {
+        ...right,
+        renderDiscussion: Boolean(
+          hasExpandedDiscussionOnRight && right.type && right.type !== EXPANDED_LINE_TYPE,
+        ),
+        hasDraft: hasParallelDraftRight(diffFile.file_hash, line),
+        lineDrafts: draftsForLine(diffFile.file_hash, line, 'right'),
+        hasCommentForm: Boolean(right.hasForm && right.type && right.type !== EXPANDED_LINE_TYPE),
+        emptyCellClassMap: { conflict_their: line.left?.type === CONFLICT_OUR },
+        addCommentTooltip: addCommentTooltip(line.right),
+      };
+    }
+
+    return {
+      ...line,
+      left,
+      right,
+      isMatchLineLeft: isMatchLine(left?.type),
+      isMatchLineRight: isMatchLine(right?.type),
+      isContextLineLeft: isContextLine(left?.type),
+      isContextLineRight: isContextLine(right?.type),
+      hasDiscussionsLeft: hasDiscussions(left),
+      hasDiscussionsRight: hasDiscussions(right),
+      lineHrefOld: lineHref(left, diffFile),
+      lineHrefNew: lineHref(right, diffFile),
+      lineCode: lineCode(line),
+      isMetaLineLeft: isMetaLine(left?.type),
+      isMetaLineRight: isMetaLine(right?.type),
+      draftRowClasses: left?.hasDraft || right?.hasDraft ? '' : 'js-temp-notes-holder',
+      renderCommentRow,
+      commentRowClasses:
+        hasDiscussions(left) || hasDiscussions(right) ? '' : 'js-temp-notes-holder',
     };
-  }
-  if (right) {
-    right = {
-      ...right,
-      renderDiscussion: Boolean(
-        hasExpandedDiscussionOnRight && right.type && right.type !== EXPANDED_LINE_TYPE,
-      ),
-      hasDraft: hasParallelDraftRight(diffFile.file_hash, line),
-      lineDrafts: draftsForLine(diffFile.file_hash, line, 'right'),
-      hasCommentForm: Boolean(right.hasForm && right.type && right.type !== EXPANDED_LINE_TYPE),
-      emptyCellClassMap: { conflict_their: line.left?.type === CONFLICT_OUR },
-      addCommentTooltip: addCommentTooltip(line.right),
-    };
-  }
-
-  return {
-    ...line,
-    left,
-    right,
-    isMatchLineLeft: isMatchLine(left?.type),
-    isMatchLineRight: isMatchLine(right?.type),
-    isContextLineLeft: isContextLine(left?.type),
-    isContextLineRight: isContextLine(right?.type),
-    hasDiscussionsLeft: hasDiscussions(left),
-    hasDiscussionsRight: hasDiscussions(right),
-    lineHrefOld: lineHref(left, diffFile),
-    lineHrefNew: lineHref(right, diffFile),
-    lineCode: lineCode(line),
-    isMetaLineLeft: isMetaLine(left?.type),
-    isMetaLineRight: isMetaLine(right?.type),
-    draftRowClasses: left?.hasDraft || right?.hasDraft ? '' : 'js-temp-notes-holder',
-    renderCommentRow,
-    commentRowClasses: hasDiscussions(left) || hasDiscussions(right) ? '' : 'js-temp-notes-holder',
   };
-};

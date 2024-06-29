@@ -248,11 +248,10 @@ export default {
             const sourceData = cache.readQuery(query);
 
             const newData = produce(sourceData, (draftState) => {
-              const {
-                awardEmoji,
-              } = draftState.project.issue.designCollection.designs.nodes[0].discussions.nodes
-                .find((d) => d.id === this.note.discussion.id)
-                .notes.nodes.find((n) => n.id === this.note.id);
+              const { awardEmoji } =
+                draftState.project.issue.designCollection.designs.nodes[0].discussions.nodes
+                  .find((d) => d.id === this.note.discussion.id)
+                  .notes.nodes.find((n) => n.id === this.note.id);
 
               awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
             });

@@ -7,9 +7,8 @@ export class OAuthCallbackDomainMismatchErrorApp {
 
   constructor(el, callbackUrls) {
     this.#el = el;
-    this.#callbackUrlOrigins = OAuthCallbackDomainMismatchErrorApp.#getCallbackUrlOrigins(
-      callbackUrls,
-    );
+    this.#callbackUrlOrigins =
+      OAuthCallbackDomainMismatchErrorApp.#getCallbackUrlOrigins(callbackUrls);
   }
 
   isVisitingFromNonRegisteredOrigin() {

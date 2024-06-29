@@ -93,6 +93,7 @@ module Organizations
         projects_empty_state_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
         groups_empty_state_svg_path: image_path('illustrations/empty-state/empty-groups-md.svg'),
         new_group_path: new_groups_organization_path(organization),
+        groups_path: groups_organization_path(organization),
         new_project_path: new_project_path,
         can_create_group: can?(current_user, :create_group, organization),
         can_create_project: current_user&.can_create_project?,

@@ -76,9 +76,8 @@ describe('ManageViaMr component', () => {
   describe.each(supportedReportTypes)(
     '%s',
     (featureName, featureType, mutation, mutationId, mutationVariables) => {
-      const buildConfigureSecurityFeatureMock = buildConfigureSecurityFeatureMockFactory(
-        mutationId,
-      );
+      const buildConfigureSecurityFeatureMock =
+        buildConfigureSecurityFeatureMockFactory(mutationId);
       const successHandler = jest.fn().mockResolvedValue(buildConfigureSecurityFeatureMock());
       const noSuccessPathHandler = jest.fn().mockResolvedValue(
         buildConfigureSecurityFeatureMock({

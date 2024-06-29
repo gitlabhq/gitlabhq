@@ -556,7 +556,8 @@ describe('Settings Panel', () => {
 
         await findPackageRegistryEnabledInput().vm.$emit('change', packageRegistryEnabled);
 
-        const packageRegistryApiForEveryoneEnabledInput = findPackageRegistryApiForEveryoneEnabledInput();
+        const packageRegistryApiForEveryoneEnabledInput =
+          findPackageRegistryApiForEveryoneEnabledInput();
 
         if (packageRegistryApiForEveryoneEnabled === 'hidden') {
           expect(packageRegistryApiForEveryoneEnabledInput.exists()).toBe(false);

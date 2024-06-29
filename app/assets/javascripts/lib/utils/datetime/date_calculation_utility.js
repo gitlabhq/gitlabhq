@@ -579,7 +579,11 @@ export const approximateDuration = (seconds = 0) => {
   const HOURS_LIMIT = 86370; // 23 hours 59 minutes 30s
   const ONE_DAY_LIMIT = 151170; // 41 hours 59 minutes 30s
 
-  const { days = 0, hours = 0, minutes = 0 } = parseSeconds(seconds, {
+  const {
+    days = 0,
+    hours = 0,
+    minutes = 0,
+  } = parseSeconds(seconds, {
     daysPerWeek: 7,
     hoursPerDay: 24,
     limitToDays: true,

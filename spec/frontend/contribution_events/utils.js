@@ -40,20 +40,22 @@ const findEventByActionAndTargetType = (action, targetType) => () =>
   events.find((event) => event.action === action && event.target?.type === targetType);
 const findEventByActionAndIssueType = (action, issueType) => () =>
   events.find((event) => event.action === action && event.target.issue_type === issueType);
-const findPushEvent = ({
-  isNew = false,
-  isRemoved = false,
-  refType = PUSH_EVENT_REF_TYPE_BRANCH,
-  commitCount = 1,
-} = {}) => () =>
-  events.find(
-    ({ action, ref, commit }) =>
-      action === EVENT_TYPE_PUSHED &&
-      ref.is_new === isNew &&
-      ref.is_removed === isRemoved &&
-      ref.type === refType &&
-      commit.count === commitCount,
-  );
+const findPushEvent =
+  ({
+    isNew = false,
+    isRemoved = false,
+    refType = PUSH_EVENT_REF_TYPE_BRANCH,
+    commitCount = 1,
+  } = {}) =>
+  () =>
+    events.find(
+      ({ action, ref, commit }) =>
+        action === EVENT_TYPE_PUSHED &&
+        ref.is_new === isNew &&
+        ref.is_removed === isRemoved &&
+        ref.type === refType &&
+        commit.count === commitCount,
+    );
 const findEventByActionAndNoteableType = (action, noteableType) => () =>
   events.find((event) => event.action === action && event.noteable?.type === noteableType);
 const findCommentedSnippet = (resourceParentType) => () =>

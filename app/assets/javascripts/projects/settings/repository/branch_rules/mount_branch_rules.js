@@ -13,13 +13,8 @@ const apolloProvider = new VueApollo({
 export default function mountBranchRules(el) {
   if (!el) return null;
 
-  const {
-    projectPath,
-    branchRulesPath,
-    showCodeOwners,
-    showStatusChecks,
-    showApprovers,
-  } = el.dataset;
+  const { projectPath, branchRulesPath, showCodeOwners, showStatusChecks, showApprovers } =
+    el.dataset;
 
   return new Vue({
     el,

@@ -297,12 +297,8 @@ export default {
       return getSortOptions({ hasManualSort: false });
     },
     tabCounts() {
-      const {
-        openedMergeRequests,
-        closedMergeRequests,
-        mergedMergeRequests,
-        allMergeRequests,
-      } = this.mergeRequestCounts;
+      const { openedMergeRequests, closedMergeRequests, mergedMergeRequests, allMergeRequests } =
+        this.mergeRequestCounts;
       return {
         [STATUS_OPEN]: openedMergeRequests?.count,
         [STATUS_MERGED]: mergedMergeRequests?.count,

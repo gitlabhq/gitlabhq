@@ -280,9 +280,8 @@ describe('DependencyProxyApp', () => {
             it('shows the clear cache dropdown list', () => {
               expect(findClearCacheDropdownList().exists()).toBe(true);
 
-              const clearCacheDropdownItem = findClearCacheDropdownList().findComponent(
-                GlDisclosureDropdownItem,
-              );
+              const clearCacheDropdownItem =
+                findClearCacheDropdownList().findComponent(GlDisclosureDropdownItem);
 
               expect(clearCacheDropdownItem.text()).toBe('Clear cache');
             });

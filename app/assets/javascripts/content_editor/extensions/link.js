@@ -77,9 +77,11 @@ export default Link.extend({
   addCommands() {
     return {
       ...this.parent?.(),
-      editLink: (attrs) => ({ chain }) => {
-        chain().setMeta('creatingLink', true).setLink(attrs).run();
-      },
+      editLink:
+        (attrs) =>
+        ({ chain }) => {
+          chain().setMeta('creatingLink', true).setLink(attrs).run();
+        },
     };
   },
 

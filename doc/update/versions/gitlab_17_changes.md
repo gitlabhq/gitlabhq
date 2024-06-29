@@ -108,7 +108,7 @@ date set at one year from the date of upgrade.
 
 Before this automatic expiry date is applied, you should do the following to minimize disruption:
 
-1. [Identify any access tokens without an expiration date](../../security/token_overview.md#identify-personal-project-and-group-access-tokens-expiring-on-a-certain-date-using-the-rails-console).
+1. [Identify any access tokens without an expiration date](../../security/token_overview.md#find-tokens-with-no-expiration-date).
 1. [Give those tokens an expiration date](../../security/token_overview.md#extend-token-lifetime).
 
 For more information, see the:

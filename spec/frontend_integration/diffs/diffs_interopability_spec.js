@@ -98,13 +98,15 @@ describe('diffs third party interoperability', () => {
     document.body.innerHTML = '';
   });
 
-  const tryOrErrorMessage = (fn) => (...args) => {
-    try {
-      return fn(...args);
-    } catch (e) {
-      return e.message;
-    }
-  };
+  const tryOrErrorMessage =
+    (fn) =>
+    (...args) => {
+      try {
+        return fn(...args);
+      } catch (e) {
+        return e.message;
+      }
+    };
 
   const findDiffFile = () => document.querySelector(`.diff-file[data-path="${TEST_DIFF_FILE}"]`);
   const hasLines = (sel = 'tr.line_holder') => findDiffFile().querySelectorAll(sel).length > 0;

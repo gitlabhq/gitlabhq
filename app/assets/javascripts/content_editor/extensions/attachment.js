@@ -29,17 +29,19 @@ export default Extension.create({
 
   addCommands() {
     return {
-      uploadAttachment: ({ file }) => () => {
-        const { uploadsPath, renderMarkdown, eventHub } = this.options;
+      uploadAttachment:
+        ({ file }) =>
+        () => {
+          const { uploadsPath, renderMarkdown, eventHub } = this.options;
 
-        return handleFileEvent({
-          file,
-          uploadsPath,
-          renderMarkdown,
-          editor: this.editor,
-          eventHub,
-        });
-      },
+          return handleFileEvent({
+            file,
+            uploadsPath,
+            renderMarkdown,
+            editor: this.editor,
+            eventHub,
+          });
+        },
     };
   },
   addProseMirrorPlugins() {

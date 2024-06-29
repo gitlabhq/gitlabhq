@@ -140,10 +140,8 @@ const getAverageCharWidth = memoize(function getAverageCharWidth(options = {}) {
  * @return {String} either the original string or a truncated version
  */
 export const truncateWidth = (string, options = {}) => {
-  const {
-    maxWidth = TRUNCATE_WIDTH_DEFAULT_WIDTH,
-    fontSize = TRUNCATE_WIDTH_DEFAULT_FONT_SIZE,
-  } = options;
+  const { maxWidth = TRUNCATE_WIDTH_DEFAULT_WIDTH, fontSize = TRUNCATE_WIDTH_DEFAULT_FONT_SIZE } =
+    options;
   const { truncateIndex } = string.split('').reduce(
     (memo, char, index) => {
       let newIndex = index;

@@ -11,11 +11,10 @@ export const initOrganizationsProjectsEdit = () => {
   const {
     dataset: { appData },
   } = el;
-  const {
-    projectsOrganizationPath,
-    previewMarkdownPath,
-    project,
-  } = convertObjectPropsToCamelCase(JSON.parse(appData), { deep: true });
+  const { projectsOrganizationPath, previewMarkdownPath, project } = convertObjectPropsToCamelCase(
+    JSON.parse(appData),
+    { deep: true },
+  );
 
   return new Vue({
     el,

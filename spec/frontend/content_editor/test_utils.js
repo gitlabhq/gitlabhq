@@ -141,7 +141,10 @@ export const createTestContentEditorExtension = ({ commands = [] } = {}) => {
         return commands.reduce(
           (accum, commandName) => ({
             ...accum,
-            [commandName]: (...params) => () => commandMocks[commandName](...params),
+            [commandName]:
+              (...params) =>
+              () =>
+                commandMocks[commandName](...params),
           }),
           {},
         );

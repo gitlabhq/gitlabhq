@@ -30,12 +30,8 @@ export const initGroupsExplore = () => {
   const {
     dataset: { appData },
   } = el;
-  const {
-    groupsEmptyStateIllustration,
-    emptySearchIllustration,
-    endpoint,
-    initialSort,
-  } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { groupsEmptyStateIllustration, emptySearchIllustration, endpoint, initialSort } =
+    convertObjectPropsToCamelCase(JSON.parse(appData));
 
   Vue.use(VueRouter);
   const router = createRouter();

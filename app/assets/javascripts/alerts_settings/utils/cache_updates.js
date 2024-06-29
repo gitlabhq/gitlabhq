@@ -15,9 +15,8 @@ const deleteIntegrationFromStore = (store, query, { httpIntegrationDestroy }, va
   });
 
   const data = produce(sourceData, (draftData) => {
-    draftData.project.alertManagementIntegrations.nodes = draftData.project.alertManagementIntegrations.nodes.filter(
-      ({ id }) => id !== integration.id,
-    );
+    draftData.project.alertManagementIntegrations.nodes =
+      draftData.project.alertManagementIntegrations.nodes.filter(({ id }) => id !== integration.id);
   });
 
   store.writeQuery({

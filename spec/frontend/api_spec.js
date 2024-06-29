@@ -1584,8 +1584,7 @@ describe('Api', () => {
           title: 'My title 1',
           created_at: '2021-10-29T16:59:55.229Z',
           expires_at: null,
-          key:
-            'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDLvQzRX960N7dxPdge9o5a96+M4GEGQ7rxT2D3wAQDtQFjQV5ZcKb5wfeLtYLe3kRVI4lCO10PXeQppb1XBaYmVO31IaRkcgmMEPVyfp76Dp4CJZz6aMEbbcqfaHkDre0Fa8kzTXnBJVh2NeDbBfGMjFM5NRQLhKykodNsepO6dQ== dummy@gitlab.com',
+          key: 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAAgQDLvQzRX960N7dxPdge9o5a96+M4GEGQ7rxT2D3wAQDtQFjQV5ZcKb5wfeLtYLe3kRVI4lCO10PXeQppb1XBaYmVO31IaRkcgmMEPVyfp76Dp4CJZz6aMEbbcqfaHkDre0Fa8kzTXnBJVh2NeDbBfGMjFM5NRQLhKykodNsepO6dQ== dummy@gitlab.com',
           fingerprint: '81:93:63:b9:1e:24:a2:aa:e0:87:d3:3f:42:81:f2:c2',
           projects_with_write_access: [
             {

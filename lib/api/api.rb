@@ -278,6 +278,7 @@ module API
         mount ::API::Keys
         mount ::API::Lint
         mount ::API::Markdown
+        mount ::API::MarkdownUploads
         mount ::API::MavenPackages
         mount ::API::Members
         mount ::API::MergeRequestApprovals

@@ -179,14 +179,16 @@ export const getDiscussionLastNote = (state) => (discussion) =>
 export const unresolvedDiscussionsCount = (state) => state.unresolvedDiscussionsCount;
 export const resolvableDiscussionsCount = (state) => state.resolvableDiscussionsCount;
 
-export const showJumpToNextDiscussion = (state, getters) => (mode = 'discussion') => {
-  const orderedDiffs =
-    mode !== 'discussion'
-      ? getters.unresolvedDiscussionsIdsByDiff
-      : getters.unresolvedDiscussionsIdsByDate;
+export const showJumpToNextDiscussion =
+  (state, getters) =>
+  (mode = 'discussion') => {
+    const orderedDiffs =
+      mode !== 'discussion'
+        ? getters.unresolvedDiscussionsIdsByDiff
+        : getters.unresolvedDiscussionsIdsByDate;
 
-  return orderedDiffs.length > 1;
-};
+    return orderedDiffs.length > 1;
+  };
 
 export const isDiscussionResolved = (state, getters) => (discussionId) =>
   getters.resolvedDiscussionsById[discussionId] !== undefined;
@@ -302,26 +304,24 @@ export const isLastUnresolvedDiscussion = (state, getters) => (discussionId, dif
   return lastDiscussionId === discussionId;
 };
 
-export const findUnresolvedDiscussionIdNeighbor = (state, getters) => ({
-  discussionId,
-  diffOrder,
-  step,
-}) => {
-  const diffIds = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
-  const dateIds = getters.unresolvedDiscussionsIdsOrdered(false);
-  const ids = diffIds.length ? diffIds : dateIds;
-  const index = ids.indexOf(discussionId) + step;
+export const findUnresolvedDiscussionIdNeighbor =
+  (state, getters) =>
+  ({ discussionId, diffOrder, step }) => {
+    const diffIds = getters.unresolvedDiscussionsIdsOrdered(diffOrder);
+    const dateIds = getters.unresolvedDiscussionsIdsOrdered(false);
+    const ids = diffIds.length ? diffIds : dateIds;
+    const index = ids.indexOf(discussionId) + step;
 
-  if (index < 0 && step < 0) {
-    return ids[ids.length - 1];
-  }
+    if (index < 0 && step < 0) {
+      return ids[ids.length - 1];
+    }
 
-  if (index === ids.length && step > 0) {
-    return ids[0];
-  }
+    if (index === ids.length && step > 0) {
+      return ids[0];
+    }
 
-  return ids[index];
-};
+    return ids[index];
+  };
 
 // Gets the ID of the discussion following the one provided, respecting order (diff or date)
 // @param {Boolean} discussionId - id of the current discussion

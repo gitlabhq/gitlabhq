@@ -76,8 +76,10 @@ const chromeVersion = chromeMatches && chromeMatches[1] && parseInt(chromeMatche
 const fontSize = 16;
 function generateUnicodeSupportMap(testMap) {
   const testMapKeys = Object.keys(testMap);
-  const numTestEntries = testMapKeys.reduce((list, testKey) => list.concat(testMap[testKey]), [])
-    .length;
+  const numTestEntries = testMapKeys.reduce(
+    (list, testKey) => list.concat(testMap[testKey]),
+    [],
+  ).length;
 
   const canvas = document.createElement('canvas');
   (window.gl || window).testEmojiUnicodeSupportMapCanvas = canvas;
@@ -106,8 +108,12 @@ function generateUnicodeSupportMap(testMap) {
     // keep the `readIndex` in sync from the writes by running all entries
     const isTestSatisfied = [].concat(testEntry).reduce((isSatisfied) => {
       // Sample along the vertical-middle for a couple of characters
-      const imageData = ctx.getImageData(0, readIndex * fontSize + fontSize / 2, 2 * fontSize, 1)
-        .data;
+      const imageData = ctx.getImageData(
+        0,
+        readIndex * fontSize + fontSize / 2,
+        2 * fontSize,
+        1,
+      ).data;
 
       let isValidEmoji = false;
       for (let currentPixel = 0; currentPixel < 64; currentPixel += 1) {

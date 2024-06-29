@@ -87,28 +87,6 @@ module API
         accepted!
       end
 
-      def exempt_from_global_attachment_size?(user_project)
-        list = ::Gitlab::RackAttack::UserAllowlist.new(ENV['GITLAB_UPLOAD_API_ALLOWLIST'])
-        list.include?(user_project.id)
-      end
-
-      # Temporarily introduced for upload API: https://gitlab.com/gitlab-org/gitlab/-/issues/325788
-      def project_attachment_size(user_project)
-        return PROJECT_ATTACHMENT_SIZE_EXEMPT if exempt_from_global_attachment_size?(user_project)
-
-        user_project.max_attachment_size
-      end
-
-      # This is to help determine which projects to use in https://gitlab.com/gitlab-org/gitlab/-/issues/325788
-      def log_if_upload_exceed_max_size(user_project, file)
-        return if file.size <= user_project.max_attachment_size
-
-        if file.size > user_project.max_attachment_size
-          allowed = exempt_from_global_attachment_size?(user_project)
-          Gitlab::AppLogger.info({ message: "File exceeds maximum size", file_bytes: file.size, project_id: user_project.id, project_path: user_project.full_path, upload_allowed: allowed })
-        end
-      end
-
       def validate_projects_api_rate_limit_for_unauthenticated_users!
         check_rate_limit!(:projects_api_rate_limit_unauthenticated, scope: [ip_address]) if current_user.blank?
       end
@@ -864,42 +842,6 @@ module API
         else
           { status: result.status, message: result.message, total_members_count: result.payload[:total_members_count] }
         end
-      end
-
-      desc 'Workhorse authorize the file upload' do
-        detail 'This feature was introduced in GitLab 13.11'
-        success code: 200
-        failure [
-          { code: 404, message: 'Not found' }
-        ]
-        tags %w[projects]
-      end
-      post ':id/uploads/authorize', feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
-        require_gitlab_workhorse!
-
-        status 200
-        content_type Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE
-        FileUploader.workhorse_authorize(has_length: false, maximum_size: project_attachment_size(user_project))
-      end
-
-      desc 'Upload a file' do
-        success code: 201, model: Entities::ProjectUpload
-        failure [
-          { code: 404, message: 'Not found' }
-        ]
-        tags %w[projects]
-      end
-      params do
-        requires :file, types: [Rack::Multipart::UploadedFile, ::API::Validations::Types::WorkhorseFile], desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
-      end
-      post ":id/uploads", feature_category: :not_owned do # rubocop:todo Gitlab/AvoidFeatureCategoryNotOwned
-        log_if_upload_exceed_max_size(user_project, params[:file])
-
-        service = UploadService.new(user_project, params[:file])
-        service.override_max_attachment_size = project_attachment_size(user_project)
-        upload = service.execute
-
-        present upload, with: Entities::ProjectUpload
       end
 
       desc 'Get the users list of a project' do

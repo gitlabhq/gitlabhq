@@ -325,23 +325,23 @@ To replace the token:
 
 ## Troubleshooting
 
-### Identify personal, project and group access tokens expiring on a certain date using the Rails console
+### Identify personal, project, and group access tokens expiring on a certain date
 
-Use either of these scripts in self-managed instances to identify tokens affected by
+Use these scripts in self-managed instances to identify tokens affected by
 [incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003).
 Run the script from your terminal window in either:
 
 - A [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
 - Using the [Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner).
 
-Both scripts return results in this format:
+These scripts return results in this format:
 
 ```plaintext
 Expired Group Access Token in Group ID 25, Token ID: 8, Name: Example Token, Scopes: ["read_api", "create_runner"], Last used:
 Expired Project Access Token in Project ID 2, Token ID: 9, Name: Test Token, Scopes: ["api", "read_registry", "write_registry"], Last used: 2022-02-11 13:22:14 UTC
 ```
 
-#### expired_tokens.rb
+#### Find all tokens expiring on a specific date
 
 This script finds tokens that expire on a specific date.
 
@@ -357,13 +357,17 @@ To use it:
 
 1. In your terminal window, connect to your instance.
 1. Start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire script. Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
+1. Depending on your needs, copy either the entire [`expired_tokens.rb`](#expired_tokensrb)
+   or [`expired_tokens_date_range.rb`](#expired_tokens_date_rangerb) script below, and paste it into the console.
+   Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
 1. Press <kbd>Enter</kbd>.
 
 :::TabTitle Rails Runner
 
 1. In your terminal window, connect to your instance.
-1. Copy this entire script, and save it as a file on your instance:
+1. Depending on your needs, copy either the entire [`expired_tokens.rb`](#expired_tokensrb)
+   or [`expired_tokens_date_range.rb`](#expired_tokens_date_rangerb) script below, and save it
+   as a file on your instance:
    - Name it `expired_tokens.rb`.
    - Change the `expires_at_date` to the date one year after your instance was upgraded to GitLab 16.0.
    - The file must be accessible to `git:git`.
@@ -377,10 +381,13 @@ For more information, see the [Rails Runner troubleshooting section](../administ
 
 ::EndTabs
 
+##### `expired_tokens.rb`
+
+This script requires you to know the exact date your GitLab instance
+was upgraded to GitLab 16.0.
+
 ```ruby
-# This script requires you to know the exact date your GitLab instance
-# was upgraded to GitLab 16.0. Change this value to the date one year after
-# your GitLab instance was upgraded.
+# Change this value to the date one year after your GitLab instance was upgraded.
 
 expires_at_date = "2024-05-22"
 
@@ -399,7 +406,7 @@ PersonalAccessToken.project_access_token.where(expires_at: expires_at_date).find
 end
 ```
 
-#### expired_tokens_date_range.rb
+#### Find tokens expiring in a given month
 
 This script finds tokens that expire in a particular month. You don't need to know
 the exact date your instance was upgraded to GitLab 16.0. To use it:
@@ -409,13 +416,14 @@ the exact date your instance was upgraded to GitLab 16.0. To use it:
 :::TabTitle Rails console session
 
 1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire script. If desired, change the `date_range` to a different range.
+1. Paste in the entire [`tokens_with_no_expiry.rb`](#tokens_with_no_expiryrb) script below.
+   If desired, change the `date_range` to a different range.
 1. Press <kbd>Enter</kbd>.
 
 :::TabTitle Rails Runner
 
 1. In your terminal window, connect to your instance.
-1. Copy this entire script, and save it as a file on your instance:
+1. Copy this entire [`tokens_with_no_expiry.rb`](#tokens_with_no_expiryrb) script below, and save it as a file on your instance:
    - Name it `expired_tokens_date_range.rb`.
    - If desired, change the `date_range` to a different range.
    - The file must be accessible to `git:git`.
@@ -429,6 +437,8 @@ the exact date your instance was upgraded to GitLab 16.0. To use it:
 For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
 
 ::EndTabs
+
+##### `expired_tokens_date_range.rb`
 
 ```ruby
 # This script enables you to search for tokens that expire within a
@@ -452,7 +462,7 @@ PersonalAccessToken.project_access_token.where(expires_at: Date.today .. Date.to
 end
 ```
 
-#### dates_when_most_of_tokens_expire.rb
+#### Identify dates when many tokens expire
 
 This script identifies dates when most of tokens expire. You can use it in combination with other scripts on this page to identify and extend large batches of tokens that may be approaching their expiration date, in case your team has not yet set up token rotation.
 
@@ -471,13 +481,14 @@ To use it:
 :::TabTitle Rails console session
 
 1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire script.
+1. Paste in the entire [`dates_when_most_of_tokens_expire.rb`](#dates_when_most_of_tokens_expirerb) script.
 1. Press <kbd>Enter</kbd>.
 
 :::TabTitle Rails Runner
 
 1. In your terminal window, connect to your instance.
-1. Copy this entire script, and save it as a file on your instance:
+1. Copy this entire [`dates_when_most_of_tokens_expire.rb`](#dates_when_most_of_tokens_expirerb)
+   script, and save it as a file on your instance:
    - Name it `dates_when_most_of_tokens_expire.rb`.
    - The file must be accessible to `git:git`.
 1. Run this command, changing `/path/to/dates_when_most_of_tokens_expire.rb`
@@ -491,6 +502,8 @@ For more information, see the [Rails Runner troubleshooting section](../administ
 
 ::EndTabs
 
+##### `dates_when_most_of_tokens_expire.rb`
+
 ```ruby
 PersonalAccessToken
   .select(:expires_at, Arel.sql('count(*)'))
@@ -503,11 +516,14 @@ PersonalAccessToken
   end
 ```
 
-#### tokens_with_no_expiry.rb
+#### Find tokens with no expiration date
 
-This script finds tokens that do not have an expiry date, that is, `expires_at` is set to `NULL`. For users who have not yet upgraded to GitLab version 16.0 or later, the token `expires_at` value will be `NULL` and can be used to identify tokens that will be set with an expiration date.
+This script finds tokens that lack an expiration date: `expires_at` is `NULL`. For users
+who have not yet upgraded to GitLab version 16.0 or later, the token `expires_at`
+value is `NULL`, and can be used to identify tokens to add an expiration date to.
 
-You can use this script in either the [Rails console](../administration/operations/rails_console.md) or the [Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner):
+You can use this script in either the [Rails console](../administration/operations/rails_console.md)
+or the [Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner):
 
 ::Tabs
 
@@ -515,8 +531,28 @@ You can use this script in either the [Rails console](../administration/operatio
 
 1. In your terminal window, connect to your instance.
 1. Start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire script.
+1. Paste in the entire [`tokens_with_no_expiry.rb`](#tokens_with_no_expiryrb) script below.
 1. Press <kbd>Enter</kbd>.
+
+:::TabTitle Rails Runner
+
+1. In your terminal window, connect to your instance.
+1. Copy this entire [`tokens_with_no_expiry.rb`](#tokens_with_no_expiryrb) script below, and save it as a file on your instance:
+   - Name it `tokens_with_no_expiry.rb`.
+   - The file must be accessible to `git:git`.
+1. Run this command, changing the path to the _full_ path to your `tokens_with_no_expiry.rb` file:
+
+   ```shell
+   sudo gitlab-rails runner /path/to/tokens_with_no_expiry.rb
+   ```
+
+For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
+
+::EndTabs
+
+##### `tokens_with_no_expiry.rb`
+
+This script finds tokens without a value set for `expires_at`.
 
    ```ruby
    # This script finds tokens which do not have an expires_at value set.
@@ -536,22 +572,6 @@ You can use this script in either the [Rails console](../administration/operatio
    end
    ```
 
-:::TabTitle Rails Runner
-
-1. In your terminal window, connect to your instance.
-1. Copy this entire script, and save it as a file on your instance:
-   - Name it `tokens_with_no_expiry.rb`.
-   - The file must be accessible to `git:git`.
-1. Run this command, changing the path to the _full_ path to your `tokens_with_no_expiry.rb` file:
-
-   ```shell
-   sudo gitlab-rails runner /path/to/tokens_with_no_expiry.rb
-   ```
-
-For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
-
-::EndTabs
-
 ### Extend token lifetime
 
 Delay the expiration of certain tokens with this script.
@@ -563,7 +583,7 @@ If this date is approaching and there are tokens that have not yet
 been rotated, you can use this script to delay expiration and give
 users more time to rotate their tokens.
 
-#### extend_expiring_tokens.rb
+#### Extend lifetime for specific tokens
 
 This script extends the lifetime of all tokens which expire on a specified date, including:
 
@@ -581,13 +601,14 @@ To use the script:
 :::TabTitle Rails console session
 
 1. In your terminal window, start a Rails console session with `sudo gitlab-rails console`.
-1. Paste in the entire script. If desired, change the `expiring_date` to a different date.
+1. Paste in the entire [`extend_expiring_tokens.rb`](#extend_expiring_tokensrb) script below.
+   If desired, change the `expiring_date` to a different date.
 1. Press <kbd>Enter</kbd>.
 
 :::TabTitle Rails Runner
 
 1. In your terminal window, connect to your instance.
-1. Copy this entire script, and save it as a file on your instance:
+1. Copy this entire [`extend_expiring_tokens.rb`](#extend_expiring_tokensrb) script below, and save it as a file on your instance:
    - Name it `extend_expiring_tokens.rb`.
    - If desired, change the `expiring_date` to a different date.
    - The file must be accessible to `git:git`.
@@ -601,6 +622,8 @@ To use the script:
 For more information, see the [Rails Runner troubleshooting section](../administration/operations/rails_console.md#troubleshooting).
 
 ::EndTabs
+
+##### `extend_expiring_tokens.rb`
 
 ```ruby
 expiring_date = Date.new(2024, 5, 30)

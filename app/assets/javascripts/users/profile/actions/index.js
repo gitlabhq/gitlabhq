@@ -7,13 +7,8 @@ export const initUserActionsApp = () => {
 
   if (!mountingEl) return false;
 
-  const {
-    userId,
-    rssSubscriptionPath,
-    reportAbusePath,
-    reportedUserId,
-    reportedFromUrl,
-  } = mountingEl.dataset;
+  const { userId, rssSubscriptionPath, reportAbusePath, reportedUserId, reportedFromUrl } =
+    mountingEl.dataset;
 
   Vue.use(GlToast);
 

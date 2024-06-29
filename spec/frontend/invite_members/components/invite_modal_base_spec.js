@@ -236,7 +236,8 @@ describe('InviteModalBase', () => {
     });
 
     describe('when users limit is not reached', () => {
-      const textRegex = /Select a role\s*Read more about role permissions\s*Access expiration date \(optional\)/;
+      const textRegex =
+        /Select a role\s*Read more about role permissions\s*Access expiration date \(optional\)/;
 
       beforeEach(() => {
         createComponent({ props: { reachedLimit: false }, stubs: { GlModal, GlFormGroup } });

@@ -2995,8 +2995,7 @@ export const mockWorkItemNotesByIidResponse = {
                     nodes: [
                       {
                         id: 'gid://gitlab/IterationNote/addbc177f7664699a135130ab05ffb78c57e4db3',
-                        body:
-                          'changed iteration to Et autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022',
+                        body: 'changed iteration to Et autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022',
                         bodyHtml:
                           '\u003cp data-sourcepos="1:1-1:36" dir="auto"\u003echanged iteration to \u003ca href="/groups/flightjs/-/iterations/5352" data-reference-type="iteration" data-original="*iteration:5352" data-link="false" data-link-reference="false" data-project="6" data-iteration="5352" data-container="body" data-placement="top" title="Iteration" class="gfm gfm-iteration has-tooltip"\u003eEt autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022\u003c/a\u003e\u003c/p\u003e',
                         systemNoteIconName: 'iteration',
@@ -3941,8 +3940,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                           descriptionVersion: {
                             id: 'gid://gitlab/DescriptionVersion/199',
                             description: 'Desc2',
-                            diff:
-                              '<span class="idiff">Desc</span><span class="idiff deletion">1</span><span class="idiff addition">2</span>',
+                            diff: '<span class="idiff">Desc</span><span class="idiff deletion">1</span><span class="idiff addition">2</span>',
                             diffPath: '/gnuwget/Wget2/-/issues/79/descriptions/199/diff',
                             deletePath: '/gnuwget/Wget2/-/issues/79/descriptions/199',
                             canDelete: true,
@@ -4007,8 +4005,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                           descriptionVersion: {
                             id: 'gid://gitlab/DescriptionVersion/200',
                             description: 'Desc3',
-                            diff:
-                              '<span class="idiff">Desc</span><span class="idiff deletion">2</span><span class="idiff addition">3</span>',
+                            diff: '<span class="idiff">Desc</span><span class="idiff deletion">2</span><span class="idiff addition">3</span>',
                             diffPath: '/gnuwget/Wget2/-/issues/79/descriptions/200/diff',
                             deletePath: '/gnuwget/Wget2/-/issues/79/descriptions/200',
                             canDelete: true,

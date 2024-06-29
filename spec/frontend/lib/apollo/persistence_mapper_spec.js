@@ -39,81 +39,82 @@ describe('lib/apollo/persistence_mapper', () => {
       'Project:gid://gitlab/Project/6': {
         __typename: 'Project',
         id: 'gid://gitlab/Project/6',
-        'issues({"after":null,"before":"eyJ1cGRhdGVkX2F0IjoiMjAyMy0wMS0wOSAwNDowNToyOS4yMzI5NDUwMDAgKzAwMDAiLCJpZCI6IjE1NjYifQ","includeSubepics":true,"last":20,"sort":"UPDATED_DESC","state":"opened","types":["ISSUE","INCIDENT","TEST_CASE","TASK"]})': {
-          __typename: 'IssueConnection',
-          __persist: true,
-          pageInfo: {
-            __typename: 'PageInfo',
-            hasNextPage: true,
-            hasPreviousPage: false,
-            startCursor:
-              'eyJ1cGRhdGVkX2F0IjoiMjAyMy0wMS0xMCAxMjozNjo1NC41NDYxNzEwMDAgKzAwMDAiLCJpZCI6IjQ4MyJ9',
-            endCursor:
-              'eyJ1cGRhdGVkX2F0IjoiMjAyMy0wMS0wOSAwNDowNToyOS4zMDE3NDcwMDAgKzAwMDAiLCJpZCI6IjE1NjcifQ',
+        'issues({"after":null,"before":"eyJ1cGRhdGVkX2F0IjoiMjAyMy0wMS0wOSAwNDowNToyOS4yMzI5NDUwMDAgKzAwMDAiLCJpZCI6IjE1NjYifQ","includeSubepics":true,"last":20,"sort":"UPDATED_DESC","state":"opened","types":["ISSUE","INCIDENT","TEST_CASE","TASK"]})':
+          {
+            __typename: 'IssueConnection',
+            __persist: true,
+            pageInfo: {
+              __typename: 'PageInfo',
+              hasNextPage: true,
+              hasPreviousPage: false,
+              startCursor:
+                'eyJ1cGRhdGVkX2F0IjoiMjAyMy0wMS0xMCAxMjozNjo1NC41NDYxNzEwMDAgKzAwMDAiLCJpZCI6IjQ4MyJ9',
+              endCursor:
+                'eyJ1cGRhdGVkX2F0IjoiMjAyMy0wMS0wOSAwNDowNToyOS4zMDE3NDcwMDAgKzAwMDAiLCJpZCI6IjE1NjcifQ',
+            },
+            nodes: [
+              {
+                __ref: 'Issue:gid://gitlab/Issue/483',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1585',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1584',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1583',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1582',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1581',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1580',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1579',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1578',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1577',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1576',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1575',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1574',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1573',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1572',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1571',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1570',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1569',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1568',
+              },
+              {
+                __ref: 'Issue:gid://gitlab/Issue/1567',
+              },
+            ],
           },
-          nodes: [
-            {
-              __ref: 'Issue:gid://gitlab/Issue/483',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1585',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1584',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1583',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1582',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1581',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1580',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1579',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1578',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1577',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1576',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1575',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1574',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1573',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1572',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1571',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1570',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1569',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1568',
-            },
-            {
-              __ref: 'Issue:gid://gitlab/Issue/1567',
-            },
-          ],
-        },
       },
       'Issue:gid://gitlab/Issue/483': {
         __typename: 'Issue',

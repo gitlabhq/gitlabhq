@@ -31,11 +31,8 @@ export default {
           dataset: { popoverData },
         } = el;
 
-        const {
-          lockedByAncestor,
-          lockedByApplicationSetting,
-          ancestorNamespace,
-        } = convertObjectPropsToCamelCase(JSON.parse(popoverData || '{}'), { deep: true });
+        const { lockedByAncestor, lockedByApplicationSetting, ancestorNamespace } =
+          convertObjectPropsToCamelCase(JSON.parse(popoverData || '{}'), { deep: true });
 
         return {
           el,

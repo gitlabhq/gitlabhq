@@ -5,7 +5,7 @@ import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { deleteGroup } from 'ee_else_ce/rest_api';
+import axios from '~/lib/utils/axios_utils';
 import {
   renderDeleteSuccessToast,
   deleteParams,
@@ -43,6 +43,7 @@ export default {
   inject: {
     organizationGid: {},
     groupsEmptyStateSvgPath: {},
+    groupsPath: {},
   },
   props: {
     shouldShowEmptyStateButtons: {
@@ -172,7 +173,9 @@ export default {
 
       try {
         this.setGroupIsDeleting(nodeIndex, true);
-        await deleteGroup(group.id, deleteParams(group));
+        await axios.delete(this.groupsPath, {
+          params: { id: group.fullPath, ...deleteParams(group) },
+        });
         this.$apollo.queries.groups.refetch();
         renderDeleteSuccessToast(group, this.$options.i18n.group);
       } catch (error) {

@@ -12,9 +12,8 @@ import {
 import NewMergeRequestOption from './new_merge_request_option.vue';
 import RadioGroup from './radio_group.vue';
 
-const { mapState: mapCommitState, mapActions: mapCommitActions } = createNamespacedHelpers(
-  'commit',
-);
+const { mapState: mapCommitState, mapActions: mapCommitActions } =
+  createNamespacedHelpers('commit');
 
 export default {
   components: {

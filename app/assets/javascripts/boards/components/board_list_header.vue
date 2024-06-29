@@ -330,7 +330,8 @@ export default {
     :class="{
       'gl-h-full': list.collapsed,
       'gl-bg-gray-50': isSwimlanesHeader,
-      'gl-border-t-solid gl-border-4 gl-rounded-top-left-base gl-rounded-top-right-base': isLabelList,
+      'gl-border-t-solid gl-border-4 gl-rounded-top-left-base gl-rounded-top-right-base':
+        isLabelList,
       'gl-bg-red-50 gl-rounded-top-left-base gl-rounded-top-right-base': boardItemsSizeExceedsMax,
     }"
     :style="headerStyle"

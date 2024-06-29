@@ -269,10 +269,8 @@ describe('WorkItemAssignees component', () => {
     });
 
     it('sorts selected assignees first', async () => {
-      const [
-        unselected,
-        selected,
-      ] = projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users;
+      const [unselected, selected] =
+        projectMembersAutocompleteResponseWithCurrentUser.data.workspace.users;
 
       createComponent({
         assignees: [selected],

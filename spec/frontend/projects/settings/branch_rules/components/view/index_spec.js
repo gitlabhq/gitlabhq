@@ -205,7 +205,8 @@ describe('View branch rules', () => {
     'renders force push section with the correct title and description',
     async ({ allowForcePush, iconTitle, description }) => {
       const mockResponse = branchProtectionsMockResponse;
-      mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush = allowForcePush;
+      mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush =
+        allowForcePush;
       await createComponent({
         glFeatures: { editBranchRules: true },
         branchRulesQueryHandler: jest.fn().mockResolvedValue(mockResponse),
@@ -461,7 +462,8 @@ describe('View branch rules', () => {
       'renders force push section with the correct title and description, when rule is `$allowForcePush`',
       async ({ allowForcePush, title, description }) => {
         const mockResponse = branchProtectionsMockResponse;
-        mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush = allowForcePush;
+        mockResponse.data.project.branchRules.nodes[0].branchProtection.allowForcePush =
+          allowForcePush;
 
         await createComponent({
           glFeatures: { editBranchRules: false },

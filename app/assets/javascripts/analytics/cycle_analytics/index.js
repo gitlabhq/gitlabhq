@@ -18,12 +18,8 @@ export default () => {
   const initialData = buildCycleAnalyticsInitialData({ ...el.dataset, gon });
 
   const pagination = extractPaginationQueryParameters(window.location.search);
-  const {
-    selectedAuthor,
-    selectedMilestone,
-    selectedAssigneeList,
-    selectedLabelList,
-  } = extractFilterQueryParameters(window.location.search);
+  const { selectedAuthor, selectedMilestone, selectedAssigneeList, selectedLabelList } =
+    extractFilterQueryParameters(window.location.search);
 
   store.dispatch('initializeVsa', {
     ...initialData,

@@ -198,8 +198,9 @@ describe('container Protection Rule Form', () => {
         await submitForm();
 
         expect(wrapper.emitted('submit')).toBeDefined();
-        const expectedEventSubmitPayload = createContainerProtectionRuleMutationPayload().data
-          .createContainerRegistryProtectionRule.containerRegistryProtectionRule;
+        const expectedEventSubmitPayload =
+          createContainerProtectionRuleMutationPayload().data.createContainerRegistryProtectionRule
+            .containerRegistryProtectionRule;
         expect(wrapper.emitted('submit')[0]).toEqual([expectedEventSubmitPayload]);
 
         expect(wrapper.emitted()).not.toHaveProperty('cancel');

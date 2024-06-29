@@ -8,14 +8,8 @@ export default function initInviteMembersBanner() {
     return false;
   }
 
-  const {
-    svgPath,
-    inviteMembersPath,
-    trackLabel,
-    calloutsPath,
-    calloutsFeatureId,
-    groupId,
-  } = el.dataset;
+  const { svgPath, inviteMembersPath, trackLabel, calloutsPath, calloutsFeatureId, groupId } =
+    el.dataset;
 
   return new Vue({
     el,

@@ -31,12 +31,16 @@ export default CodeBlockHighlight.extend({
   },
   addCommands() {
     return {
-      setFrontmatter: (attributes) => ({ commands }) => {
-        return commands.setNode(this.name, attributes);
-      },
-      toggleFrontmatter: (attributes) => ({ commands }) => {
-        return commands.toggleNode(this.name, 'paragraph', attributes);
-      },
+      setFrontmatter:
+        (attributes) =>
+        ({ commands }) => {
+          return commands.setNode(this.name, attributes);
+        },
+      toggleFrontmatter:
+        (attributes) =>
+        ({ commands }) => {
+          return commands.toggleNode(this.name, 'paragraph', attributes);
+        },
     };
   },
 

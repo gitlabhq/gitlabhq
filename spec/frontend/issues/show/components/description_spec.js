@@ -284,9 +284,10 @@ describe('Description component', () => {
         });
 
         it('calls a mutation to create a task', () => {
-          const workItemTypeIdForTask = projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
-            (node) => node.name === 'Task',
-          ).id;
+          const workItemTypeIdForTask =
+            projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+              (node) => node.name === 'Task',
+            ).id;
           const { confidential, iteration, milestone } = issueDetailsResponse.data.issue;
           expect(createWorkItemMutationHandler).toHaveBeenCalledWith({
             input: {

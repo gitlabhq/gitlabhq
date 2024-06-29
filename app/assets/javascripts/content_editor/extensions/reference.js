@@ -65,14 +65,18 @@ export default Node.create({
 
   addCommands() {
     return {
-      insertQuickAction: () => ({ commands }) => commands.insertContent('<p>/</p>'),
+      insertQuickAction:
+        () =>
+        ({ commands }) =>
+          commands.insertContent('<p>/</p>'),
     };
   },
 
   addInputRules() {
     const { editor } = this;
     const { assetResolver } = this.options;
-    const referenceInputRegex = /(?:^|\s)([\w/]*([#!&%$@~]|\[vulnerability:)[\w.]+(\+?s?\]?))(?:\s|\n)/m;
+    const referenceInputRegex =
+      /(?:^|\s)([\w/]*([#!&%$@~]|\[vulnerability:)[\w.]+(\+?s?\]?))(?:\s|\n)/m;
     const referenceTypes = {
       '#': 'issue',
       '!': 'merge_request',
@@ -95,13 +99,8 @@ export default Node.create({
           const [, referenceId, referenceSymbol, expansionType] = match;
           const referenceType = referenceTypes[referenceSymbol];
 
-          const {
-            href,
-            text,
-            expandedText,
-            fullyExpandedText,
-            backgroundColor,
-          } = await assetResolver.resolveReference(referenceId);
+          const { href, text, expandedText, fullyExpandedText, backgroundColor } =
+            await assetResolver.resolveReference(referenceId);
 
           if (!text) return;
 

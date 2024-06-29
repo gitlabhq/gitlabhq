@@ -31,9 +31,8 @@ export function removeTokenFromStore(store, revokeToken, query, variables) {
     });
 
     const data = produce(sourceData, (draftData) => {
-      draftData.project.clusterAgent.tokens.nodes = draftData.project.clusterAgent.tokens.nodes.filter(
-        ({ id }) => id !== revokeToken.id,
-      );
+      draftData.project.clusterAgent.tokens.nodes =
+        draftData.project.clusterAgent.tokens.nodes.filter(({ id }) => id !== revokeToken.id);
       draftData.project.clusterAgent.tokens.count -= 1;
     });
 

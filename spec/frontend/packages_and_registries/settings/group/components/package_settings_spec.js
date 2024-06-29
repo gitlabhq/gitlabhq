@@ -292,10 +292,8 @@ describe('Packages Settings', () => {
     it('renders ExceptionsInput and assigns duplication allowness and exception props', () => {
       mountComponent({ mountFn: mountExtended });
 
-      const {
-        terraformModuleDuplicatesAllowed,
-        terraformModuleDuplicateExceptionRegex,
-      } = packageSettings;
+      const { terraformModuleDuplicatesAllowed, terraformModuleDuplicateExceptionRegex } =
+        packageSettings;
 
       expect(findTerraformModuleDuplicatedSettingsExceptionsInput().props()).toMatchObject({
         duplicatesAllowed: terraformModuleDuplicatesAllowed,
