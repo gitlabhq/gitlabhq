@@ -233,6 +233,8 @@ module API
       optional :project_jobs_api_rate_limit, type: Integer, desc: 'Maximum authenticated requests to /project/:id/jobs per minute'
       optional :security_txt_content, type: String, desc: 'Public security contact information made available at https://gitlab.example.com/.well-known/security.txt'
       optional :downstream_pipeline_trigger_limit_per_project_user_sha, type: Integer, desc: 'Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit).'
+      optional :ai_action_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to aiAction endpoint'
+      optional :code_suggestions_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to code suggestions endpoint'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

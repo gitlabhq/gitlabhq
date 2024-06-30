@@ -531,7 +531,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   with_options(numericality: { only_integer: true, greater_than: 0 }) do
-    validates :bulk_import_concurrent_pipeline_batch_limit,
+    validates :ai_action_api_rate_limit,
+      :bulk_import_concurrent_pipeline_batch_limit,
+      :code_suggestions_api_rate_limit,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,

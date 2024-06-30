@@ -524,7 +524,9 @@ module ApplicationSettingsHelper
       :security_txt_content,
       :allow_project_creation_for_guest_and_below,
       :downstream_pipeline_trigger_limit_per_project_user_sha,
-      :asciidoc_max_includes
+      :asciidoc_max_includes,
+      :ai_action_api_rate_limit,
+      :code_suggestions_api_rate_limit
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users
