@@ -453,31 +453,24 @@ different.
 
 ## Authentication & Authorization
 
-GitLab provides the first layer of authorization: It authenticates
-the user and checks if the license allows using the feature the user is
-trying to use. This can be done using the authentication, policy and license
-checks that are already built into GitLab.
+GitLab provides the first layer of authorization by authenticating the user and checking if the license permits using the requested feature. This is accomplished using the existing authentication, policy, and license checks built into GitLab.
 
-Authenticating the GitLab-instance on the AI-gateway was discussed
-in:
+Authenticating the GitLab instance on the AI-gateway was discussed in:
 
 - [Issue 177](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/issues/177)
 - [Epic 10808](https://gitlab.com/groups/gitlab-org/-/epics/10808)
 
-The specific mechanism by which trust is delegated between end-users, GitLab instances,
-and the AI-gateway is covered in the [Cloud Connector access control documentation](../../../development/cloud_connector/architecture.md#access-control).
+The specific mechanism by which trust is delegated between end-users, GitLab instances, and the AI-gateway is detailed in the [Cloud Connector access control documentation](../../../development/cloud_connector/architecture.md#access-control).
 
-AI Gateway is accessed only through Cloud connector which handles instance
-authentication (among others). Cloud connector will need to support also end-user
-authentication because some requests (e.g. code completion) will be sent
-directly by clients instead of sending all requests indirectly through
-GitLab Rails. A possible solution in
-which short-term user tokens are used is described in [Epic 13252](https://gitlab.com/groups/gitlab-org/-/epics/13252).
-AI Gateway needs to be able to distinguish between requests proxied by
-GitLab Rails and direct client requests because some endpoints or parameters
-may not be available for direct requests (for example clients should not be
-able to send final prompt, but rather only sub-components from which the final
-prompt is built by AI Gateway).
+The AI Gateway, as a backend service, handles instance authentication among other tasks. It is accessed through the Cloud Connector Load Balancer (currently implemented as Cloudflare), which acts as a Web Application Firewall (WAF) layer but does not perform authentication. The AI Gateway also needs to support end-user authentication because some requests, such as code completion, will be sent directly by clients rather than indirectly through GitLab Rails. A possible solution involving short-term user tokens is described in [Epic 13252](https://gitlab.com/groups/gitlab-org/-/epics/13252). The AI Gateway must distinguish between requests proxied by GitLab Rails and direct client requests, as some endpoints or parameters may not be available for direct requests (e.g., clients should only send sub-components of the final prompt, which the AI Gateway will build).
+
+The AI Gateway uses JSON-based API communication and relies on JWTs for authentication. These JWTs are generally scoped to the GitLab instance and are obtained using a PAT or OAuth token. For Code Completions, a short-lived user-bound JWT is used, allowing direct communication between the client and the AI Gateway, bypassing the need to go through the GitLab instance for each request. This short-lived JWT is valid for one hour, reducing the number of JWTs needed for multiple prompt requests.
+
+When a client initiates a prompt in GitLab Duo Chat or an IDE, the prompts, telemetry, context, and JWT token are packaged and transmitted using TLS. It is important to note that the payload itself is not encrypted; it is passed as plain text in JSON format within the request body. This approach is consistent for calls to third-party models where only tunnel-level TLS encryption is used via HTTPS.
+
+The AI Gateway operates within GitLab hosted infrastructure, interfacing with APIs hosted in GitLab accounts for providers like Anthropic and Vertex. Models are hosted as frozen versions of Google's models within GitLab GCP tenancy, using private endpoints within the security perimeter. While prompts from different customers use the same shared model, each session maintains a user-level connection to ensure isolation.
+
+The AI Gateway is designed as a stateless service, meaning it does not store any customer-specific data. Decryption of payloads occurs at the network layer rather than the application layer, and encryption keys are generated per request using GKE native GCP processes. Requests to Anthropic APIs are made via the public internet, whereas requests to Vertex AI models are optimized by being co-located within the same GCP region. All connections are secured with TLS/HTTPS to ensure encrypted communication throughout the data flow.
 
 ## Embeddings
 

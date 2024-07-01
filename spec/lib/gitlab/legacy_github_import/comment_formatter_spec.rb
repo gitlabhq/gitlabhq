@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, feature_category: :importers do
-  let_it_be(:project) { create(:project) }
+  let_it_be(:project) { create(:project, import_type: 'gitea') }
   let(:client) { double }
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:created_at) { DateTime.strptime('2013-04-10T20:09:31Z') }
   let(:updated_at) { DateTime.strptime('2014-03-03T18:58:10Z') }
+  let(:imported_from) { ::Import::SOURCE_GITEA }
   let(:base) do
     {
       body: "I'm having a problem with this.",
@@ -15,7 +16,8 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, feature_category: :
       commit_id: nil,
       diff_hunk: nil,
       created_at: created_at,
-      updated_at: updated_at
+      updated_at: updated_at,
+      imported_from: imported_from
     }
   end
 
@@ -38,7 +40,8 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, feature_category: :
           author_id: project.creator_id,
           type: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported_from: imported_from
         }
 
         expect(comment.attributes).to eq(expected)
@@ -66,7 +69,8 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, feature_category: :
           author_id: project.creator_id,
           type: 'LegacyDiffNote',
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported_from: imported_from
         }
 
         expect(comment.attributes).to eq(expected)
@@ -86,6 +90,31 @@ RSpec.describe Gitlab::LegacyGithubImport::CommentFormatter, feature_category: :
         create(:user, email: octocat[:email])
 
         expect(comment.attributes.fetch(:note)).to eq("I'm having a problem with this.")
+      end
+    end
+
+    context 'when importing a GitHub project' do
+      let(:imported_from) { ::Import::SOURCE_GITHUB }
+      let(:raw) { base }
+
+      before do
+        project.import_type = 'github'
+      end
+
+      it 'returns formatted attributes' do
+        expected = {
+          project: project,
+          note: "*Created by: octocat*\n\nI'm having a problem with this.",
+          commit_id: nil,
+          line_code: nil,
+          author_id: project.creator_id,
+          type: nil,
+          created_at: created_at,
+          updated_at: updated_at,
+          imported_from: imported_from
+        }
+
+        expect(comment.attributes).to eq(expected)
       end
     end
   end

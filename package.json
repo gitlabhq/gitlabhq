@@ -153,7 +153,7 @@
     "gettext-parser": "^6.0.0",
     "graphql": "^15.7.2",
     "graphql-tag": "^2.11.0",
-    "gridstack": "^10.2.1",
+    "gridstack": "^10.3.0",
     "highlight.js": "^11.8.0",
     "immer": "^9.0.15",
     "ipaddr.js": "^1.9.1",
