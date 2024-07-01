@@ -10,6 +10,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
@@ -25,7 +26,7 @@ type option struct {
 
 func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, allowRedirects bool, options ...option) *httptest.ResponseRecorder {
 	requestHandler := func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "GET", r.Method)
+		assert.Equal(t, "GET", r.Method)
 
 		sendData := map[string]interface{}{
 			"URL":            r.URL.String() + "/file",
@@ -37,7 +38,7 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 		}
 
 		jsonParams, err := json.Marshal(sendData)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		data := base64.URLEncoding.EncodeToString(jsonParams)
 
 		// The server returns a Content-Disposition
@@ -50,14 +51,14 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 		SendURL.Inject(w, r, data)
 	}
 	serveFile := func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "GET", r.Method)
+		assert.Equal(t, "GET", r.Method)
 
 		tempFile, err := os.CreateTemp("", "download_file")
-		require.NoError(t, err)
-		require.NoError(t, os.Remove(tempFile.Name()))
+		assert.NoError(t, err)
+		assert.NoError(t, os.Remove(tempFile.Name()))
 		defer tempFile.Close()
 		_, err = tempFile.Write([]byte(testData))
-		require.NoError(t, err)
+		assert.NoError(t, err)
 
 		w.Header().Set("Etag", testDataEtag)
 		w.Header().Set("Cache-Control", "public")
@@ -68,7 +69,7 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 		http.ServeContent(w, r, "archive.txt", time.Now(), tempFile)
 	}
 	redirectFile := func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "GET", r.Method)
+		assert.Equal(t, "GET", r.Method)
 		http.Redirect(w, r, r.URL.String()+"/download", http.StatusTemporaryRedirect)
 	}
 	timeoutFile := func(w http.ResponseWriter, r *http.Request) {
@@ -217,7 +218,7 @@ func TestPostRequest(t *testing.T) {
 	body := "any string"
 	header := map[string][]string{"Authorization": {"Bearer token"}}
 	postRequestHandler := func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "POST", r.Method)
+		assert.Equal(t, "POST", r.Method)
 
 		url := r.URL.String() + "/external/url"
 
@@ -228,20 +229,20 @@ func TestPostRequest(t *testing.T) {
 			"Method": "POST",
 		}
 		jsonParams, err := json.Marshal(sendData)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 
 		data := base64.URLEncoding.EncodeToString(jsonParams)
 
 		SendURL.Inject(w, r, data)
 	}
 	externalPostURLHandler := func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "POST", r.Method)
+		assert.Equal(t, "POST", r.Method)
 
 		b, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
-		require.Equal(t, body, string(b))
+		assert.NoError(t, err)
+		assert.Equal(t, body, string(b))
 
-		require.Equal(t, []string{"Bearer token"}, r.Header["Authorization"])
+		assert.Equal(t, []string{"Bearer token"}, r.Header["Authorization"])
 
 		w.Write([]byte(testData))
 	}

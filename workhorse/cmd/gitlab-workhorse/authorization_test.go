@@ -11,6 +11,7 @@ import (
 	"gitlab.com/gitlab-org/labkit/correlation"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -70,7 +71,7 @@ func TestPreAuthorizeJsonFailure(t *testing.T) {
 func TestPreAuthorizeContentTypeFailure(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte(`{"hello":"world"}`))
-		require.NoError(t, err, "write auth response")
+		assert.NoError(t, err, "write auth response")
 	}))
 	defer ts.Close()
 
@@ -108,16 +109,16 @@ func TestPreAuthorizeJWT(t *testing.T) {
 
 			return secretBytes, nil
 		})
-		require.NoError(t, err, "decode token")
+		assert.NoError(t, err, "decode token")
 
 		claims, ok := token.Claims.(jwt.MapClaims)
-		require.True(t, ok, "claims cast")
-		require.True(t, token.Valid, "JWT token valid")
-		require.Equal(t, "gitlab-workhorse", claims["iss"], "JWT token issuer")
+		assert.True(t, ok, "claims cast")
+		assert.True(t, token.Valid, "JWT token valid")
+		assert.Equal(t, "gitlab-workhorse", claims["iss"], "JWT token issuer")
 
 		w.Header().Set("Content-Type", api.ResponseContentType)
 		_, err = w.Write([]byte(`{"hello":"world"}`))
-		require.NoError(t, err, "write auth response")
+		assert.NoError(t, err, "write auth response")
 	}))
 	defer ts.Close()
 

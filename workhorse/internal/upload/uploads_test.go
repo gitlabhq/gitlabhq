@@ -18,6 +18,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -57,11 +58,11 @@ func TestUploadTempPathRequirement(t *testing.T) {
 
 func TestUploadHandlerForwardingRawData(t *testing.T) {
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "PATCH", r.Method, "method")
+		assert.Equal(t, "PATCH", r.Method, "method")
 
 		body, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
-		require.Equal(t, "REQUEST", string(body), "request body")
+		assert.NoError(t, err)
+		assert.Equal(t, "REQUEST", string(body), "request body")
 
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")
@@ -92,19 +93,19 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 	tempPath := t.TempDir()
 
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "PUT", r.Method, "method")
-		require.NoError(t, r.ParseMultipartForm(100000))
+		assert.Equal(t, "PUT", r.Method, "method")
+		assert.NoError(t, r.ParseMultipartForm(100000))
 
-		require.Empty(t, r.MultipartForm.File, "Expected to not receive any files")
-		require.Equal(t, "test", r.FormValue("token"), "Expected to receive token")
-		require.Equal(t, "my.file", r.FormValue("file.name"), "Expected to receive a filename")
+		assert.Empty(t, r.MultipartForm.File, "Expected to not receive any files")
+		assert.Equal(t, "test", r.FormValue("token"), "Expected to receive token")
+		assert.Equal(t, "my.file", r.FormValue("file.name"), "Expected to receive a filename")
 
 		filePath = r.FormValue("file.path")
-		require.True(t, strings.HasPrefix(filePath, tempPath), "Expected to the file to be in tempPath")
+		assert.True(t, strings.HasPrefix(filePath, tempPath), "Expected to the file to be in tempPath")
 
-		require.Empty(t, r.FormValue("file.remote_url"), "Expected to receive empty remote_url")
-		require.Empty(t, r.FormValue("file.remote_id"), "Expected to receive empty remote_id")
-		require.Equal(t, "4", r.FormValue("file.size"), "Expected to receive the file size")
+		assert.Empty(t, r.FormValue("file.remote_url"), "Expected to receive empty remote_url")
+		assert.Empty(t, r.FormValue("file.remote_id"), "Expected to receive empty remote_id")
+		assert.Equal(t, "4", r.FormValue("file.size"), "Expected to receive the file size")
 
 		hashes := map[string]string{
 			"sha1":   "a94a8fe5ccb19ba61c4c0873d391e987982fbbd3",
@@ -113,13 +114,13 @@ func TestUploadHandlerRewritingMultiPartData(t *testing.T) {
 		}
 
 		for algo, hash := range hashes {
-			require.Equal(t, hash, r.FormValue("file."+algo), "file hash %s", algo)
+			assert.Equal(t, hash, r.FormValue("file."+algo), "file hash %s", algo)
 		}
 
 		expectedLen := 12
 
-		require.Equal(t, "098f6bcd4621d373cade4e832627b4f6", r.FormValue("file.md5"), "file hash md5")
-		require.Len(t, r.MultipartForm.Value, expectedLen, "multipart form values")
+		assert.Equal(t, "098f6bcd4621d373cade4e832627b4f6", r.FormValue("file.md5"), "file hash md5")
+		assert.Len(t, r.MultipartForm.Value, expectedLen, "multipart form values")
 
 		w.WriteHeader(202)
 		fmt.Fprint(w, "RESPONSE")
@@ -184,7 +185,7 @@ func TestUploadHandlerDetectingInjectedMultiPartData(t *testing.T) {
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
 			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
-				require.Equal(t, "PUT", r.Method, "method")
+				assert.Equal(t, "PUT", r.Method, "method")
 
 				w.WriteHeader(202)
 				fmt.Fprint(w, "RESPONSE")
@@ -518,12 +519,12 @@ func TestUploadHandlerRemovingExif(t *testing.T) {
 
 	runUploadTest(t, content, "sample_exif.jpg", 200, func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(100000)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 
 		size, err := strconv.Atoi(r.FormValue("file.size"))
-		require.NoError(t, err)
-		require.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
-		require.Greater(t, size, 0, "Expected to receive non-empty file")
+		assert.NoError(t, err)
+		assert.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
+		assert.Greater(t, size, 0, "Expected to receive non-empty file")
 
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")
@@ -536,12 +537,12 @@ func TestUploadHandlerRemovingExifTiff(t *testing.T) {
 
 	runUploadTest(t, content, "sample_exif.tiff", 200, func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(100000)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 
 		size, err := strconv.Atoi(r.FormValue("file.size"))
-		require.NoError(t, err)
-		require.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
-		require.Greater(t, size, 0, "Expected to receive not empty file")
+		assert.NoError(t, err)
+		assert.Less(t, size, len(content), "Expected the file to be smaller after removal of exif")
+		assert.Greater(t, size, 0, "Expected to receive not empty file")
 
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")
@@ -554,11 +555,11 @@ func TestUploadHandlerRemovingExifInvalidContentType(t *testing.T) {
 
 	runUploadTest(t, content, "sample_exif_invalid.jpg", 200, func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(100000)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 
 		output, err := os.ReadFile(r.FormValue("file.path"))
-		require.NoError(t, err)
-		require.Equal(t, content, output, "Expected the file to be same as before")
+		assert.NoError(t, err)
+		assert.Equal(t, content, output, "Expected the file to be same as before")
 
 		w.WriteHeader(200)
 		fmt.Fprint(w, "RESPONSE")
@@ -571,7 +572,7 @@ func TestUploadHandlerRemovingExifCorruptedFile(t *testing.T) {
 
 	runUploadTest(t, content, "sample_exif_corrupted.jpg", 422, func(w http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(100000)
-		require.Error(t, err)
+		assert.Error(t, err)
 	})
 }
 

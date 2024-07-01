@@ -13,6 +13,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -222,12 +223,12 @@ func TestValidUploadConfiguration(t *testing.T) {
 		t.Run(tc.desc, func(t *testing.T) {
 			uploadHandler := &fakeUploadHandler{
 				handler: func(w http.ResponseWriter, r *http.Request) {
-					require.Equal(t, tc.expectedConfig.URL, r.URL.String())
-					require.Equal(t, tc.expectedConfig.Method, r.Method)
+					assert.Equal(t, tc.expectedConfig.URL, r.URL.String())
+					assert.Equal(t, tc.expectedConfig.Method, r.Method)
 
 					if tc.expectedConfig.Headers != nil {
 						for k, v := range tc.expectedConfig.Headers {
-							require.Equal(t, v, r.Header[k])
+							assert.Equal(t, v, r.Header[k])
 						}
 					}
 
@@ -368,7 +369,7 @@ func TestFailedOriginServer(t *testing.T) {
 
 	uploadHandler := &fakeUploadHandler{
 		handler: func(w http.ResponseWriter, r *http.Request) {
-			require.FailNow(t, "the error response must not be uploaded")
+			assert.FailNow(t, "the error response must not be uploaded")
 		},
 	}
 
@@ -409,8 +410,8 @@ func TestLongUploadRequest(t *testing.T) {
 		rt := badgateway.NewRoundTripper(false, http.DefaultTransport)
 		res, err := rt.RoundTrip(r)
 
-		require.NoError(t, err, "RoundTripper should not receive an error")
-		require.Equal(t, http.StatusOK, res.StatusCode, "RoundTripper should receive a 200 status code")
+		assert.NoError(t, err, "RoundTripper should not receive an error")
+		assert.Equal(t, http.StatusOK, res.StatusCode, "RoundTripper should receive a 200 status code")
 		w.WriteHeader(res.StatusCode)
 	}
 

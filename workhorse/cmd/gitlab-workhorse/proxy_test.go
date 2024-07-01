@@ -18,6 +18,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/testhelper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upstream/roundtripper"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -37,14 +38,14 @@ func TestProxyRequest(t *testing.T) {
 
 	urlRegexp := regexp.MustCompile(fmt.Sprintf(`%s\z`, inboundURL.Path))
 	ts := testhelper.TestServerWithHandler(urlRegexp, func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "POST", r.Method, "method")
-		require.Equal(t, "test", r.Header.Get("Custom-Header"), "custom header")
-		require.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
-		require.Equal(t, inboundURL.Host, r.Host, "sent host header")
-		require.Empty(t, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
-		require.Empty(t, r.Header.Get("Forwarded"), "Forwarded header")
+		assert.Equal(t, "POST", r.Method, "method")
+		assert.Equal(t, "test", r.Header.Get("Custom-Header"), "custom header")
+		assert.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
+		assert.Equal(t, inboundURL.Host, r.Host, "sent host header")
+		assert.Empty(t, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
+		assert.Empty(t, r.Header.Get("Forwarded"), "Forwarded header")
 
-		require.Regexp(
+		assert.Regexp(
 			t,
 			regexp.MustCompile(`\A1`),
 			r.Header.Get("Gitlab-Workhorse-Proxy-Start"),
@@ -52,8 +53,8 @@ func TestProxyRequest(t *testing.T) {
 		)
 
 		body, err := io.ReadAll(r.Body)
-		require.NoError(t, err, "read body")
-		require.Equal(t, "REQUEST", string(body), "body contents")
+		assert.NoError(t, err, "read body")
+		assert.Equal(t, "REQUEST", string(body), "body contents")
 
 		w.Header().Set("Custom-Response-Header", "test")
 		w.WriteHeader(202)
@@ -79,12 +80,12 @@ func TestProxyWithForcedTargetHostHeader(t *testing.T) {
 
 	urlRegexp := regexp.MustCompile(fmt.Sprintf(`%s\z`, inboundURL.Path))
 	ts := testhelper.TestServerWithHandler(urlRegexp, func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, tsUrl.Host, r.Host, "upstream host header")
-		require.Equal(t, inboundURL.Host, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
-		require.Equal(t, fmt.Sprintf("host=%s", inboundURL.Host), r.Header.Get("Forwarded"), "Forwarded header")
+		assert.Equal(t, tsUrl.Host, r.Host, "upstream host header")
+		assert.Equal(t, inboundURL.Host, r.Header.Get("X-Forwarded-Host"), "X-Forwarded-Host header")
+		assert.Equal(t, fmt.Sprintf("host=%s", inboundURL.Host), r.Header.Get("Forwarded"), "Forwarded header")
 
 		_, err := w.Write([]byte(`ok`))
-		require.NoError(t, err, "write ok response")
+		assert.NoError(t, err, "write ok response")
 	})
 	tsUrl, err = url.Parse(ts.URL)
 	require.NoError(t, err, "parse testserver URL")
@@ -100,11 +101,11 @@ func TestProxyWithForcedTargetHostHeader(t *testing.T) {
 
 func TestProxyWithCustomHeaders(t *testing.T) {
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`/url/path\z`), func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "value", r.Header.Get("Custom-Header"), "custom proxy header")
-		require.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
+		assert.Equal(t, "value", r.Header.Get("Custom-Header"), "custom proxy header")
+		assert.Equal(t, testVersion, r.Header.Get("Gitlab-Workhorse"), "version header")
 
 		_, err := w.Write([]byte(`ok`))
-		require.NoError(t, err, "write ok response")
+		assert.NoError(t, err, "write ok response")
 	})
 
 	httpRequest, err := http.NewRequest("POST", ts.URL+"/url/path", nil)

@@ -21,6 +21,7 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 	"gitlab.com/gitlab-org/labkit/log"
@@ -89,7 +90,7 @@ func TestRegularProjectsAPI(t *testing.T) {
 
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		_, err := w.Write([]byte(apiResponse))
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 	defer ts.Close()
 
@@ -229,10 +230,10 @@ This is a static error page for code 499
 		upstreamError := "499"
 		// This is the point of the test: the size of the upstream response body
 		// should be overridden.
-		require.NotEqual(t, len(upstreamError), len(errorPageBody))
+		assert.NotEqual(t, len(upstreamError), len(errorPageBody))
 		w.WriteHeader(499)
 		_, err := w.Write([]byte(upstreamError))
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 	defer ts.Close()
 
@@ -453,10 +454,10 @@ func TestSendURLForArtifacts(t *testing.T) {
 
 	rawHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hj, ok := w.(http.Hijacker)
-		require.Equal(t, true, ok)
+		assert.Equal(t, true, ok)
 
 		conn, buf, err := hj.Hijack()
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		defer conn.Close()
 		defer buf.Flush()
 
@@ -498,7 +499,7 @@ func TestApiContentTypeBlock(t *testing.T) {
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", api.ResponseContentType)
 		_, err := w.Write([]byte(wrongResponse))
-		require.NoError(t, err, "write upstream response")
+		assert.NoError(t, err, "write upstream response")
 	})
 	defer ts.Close()
 
@@ -524,7 +525,7 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 		} else {
 			w.Header().Set("Content-Type", "text/html")
 			_, err := w.Write(goodResponse)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 		}
 	})
 	defer ts.Close()
@@ -700,7 +701,7 @@ func newBranch() string {
 
 func testAuthServer(t *testing.T, url *regexp.Regexp, params url.Values, code int, body interface{}) *httptest.Server {
 	ts := testhelper.TestServerWithHandler(url, func(w http.ResponseWriter, r *http.Request) {
-		require.NotEmpty(t, r.Header.Get("X-Request-Id"))
+		assert.NotEmpty(t, r.Header.Get("X-Request-Id"))
 
 		// return a 204 No Content response if we don't receive the JWT header
 		if r.Header.Get(secret.RequestHeader) == "" {
@@ -855,7 +856,7 @@ This is a static error page for code 503
 		w.Header().Set("X-Gitlab-Custom-Error", "1")
 		w.WriteHeader(503)
 		_, err := w.Write([]byte(apiResponse))
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	})
 	defer ts.Close()
 
@@ -925,7 +926,7 @@ func TestDependencyProxyInjector(t *testing.T) {
 			originResource := "/origin_resource"
 
 			originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				require.Equal(t, originResource, r.URL.String())
+				assert.Equal(t, originResource, r.URL.String())
 
 				w.Header().Set("Content-Length", strconv.Itoa(bodyLength))
 
@@ -943,7 +944,7 @@ func TestDependencyProxyInjector(t *testing.T) {
 				case "/base/upload/authorize":
 					w.Header().Set("Content-Type", api.ResponseContentType)
 					_, err := fmt.Fprintf(w, `{"TempPath":"%s"}`, t.TempDir())
-					require.NoError(t, err)
+					assert.NoError(t, err)
 				case "/base/upload":
 					w.WriteHeader(tc.finalizeStatus)
 				default:

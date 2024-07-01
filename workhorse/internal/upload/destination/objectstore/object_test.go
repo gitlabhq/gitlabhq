@@ -9,6 +9,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/upload/destination/objectstore/test"
@@ -123,7 +124,7 @@ func TestObjectUploadBrokenConnection(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		hj, ok := w.(http.Hijacker)
 		if !ok {
-			require.FailNow(t, "webserver doesn't support hijacking")
+			assert.FailNow(t, "webserver doesn't support hijacking")
 		}
 		conn, _, err := hj.Hijack()
 		if err != nil {

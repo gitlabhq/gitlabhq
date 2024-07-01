@@ -15,6 +15,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/api"
@@ -73,11 +74,11 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 	storeServerCalled := 0
 	storeServerMux := http.NewServeMux()
 	storeServerMux.HandleFunc(putURL, func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "PUT", r.Method)
+		assert.Equal(t, "PUT", r.Method)
 
 		receivedData, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
-		require.Equal(t, archiveData, receivedData)
+		assert.NoError(t, err)
+		assert.Equal(t, archiveData, receivedData)
 
 		storeServerCalled++
 		w.Header().Set("ETag", md5)
@@ -89,8 +90,8 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 
 	responseProcessorCalled := 0
 	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
-		require.Equal(t, "store-id", r.FormValue("file.remote_id"))
-		require.NotEmpty(t, r.FormValue("file.remote_url"))
+		assert.Equal(t, "store-id", r.FormValue("file.remote_id"))
+		assert.NotEmpty(t, r.FormValue("file.remote_url"))
 		w.WriteHeader(200)
 		responseProcessorCalled++
 	}
@@ -184,7 +185,7 @@ func TestUploadHandlerSendingToExternalStorageAndItReturnsAnError(t *testing.T) 
 	storeServerMux := http.NewServeMux()
 	storeServerMux.HandleFunc(putURL, func(w http.ResponseWriter, r *http.Request) {
 		putCalledTimes++
-		require.Equal(t, "PUT", r.Method)
+		assert.Equal(t, "PUT", r.Method)
 		w.WriteHeader(510)
 	})
 
