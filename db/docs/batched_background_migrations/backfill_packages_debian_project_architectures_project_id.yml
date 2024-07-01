@@ -1,0 +1,9 @@
+---
+migration_job_name: BackfillPackagesDebianProjectArchitecturesProjectId
+description: Backfills sharding key `packages_debian_project_architectures.project_id` from `packages_debian_project_distributions`.
+feature_category: package_registry
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157767
+milestone: '17.2'
+queued_migration_version: 20240628133958
+finalize_after: '2024-07-22'
+finalized_by: # version of the migration that finalized this BBM

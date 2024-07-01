@@ -1201,6 +1201,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_68435a54ee2b() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "packages_debian_project_distributions"
+  WHERE "packages_debian_project_distributions"."id" = NEW."distribution_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_6cdea9559242() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -13980,6 +13996,7 @@ CREATE TABLE packages_debian_project_architectures (
     updated_at timestamp with time zone NOT NULL,
     distribution_id bigint NOT NULL,
     name text NOT NULL,
+    project_id bigint,
     CONSTRAINT check_9c2e1c99d8 CHECK ((char_length(name) <= 255))
 );
 
@@ -28039,6 +28056,8 @@ CREATE INDEX index_packages_debian_group_distribution_keys_on_group_id ON packag
 
 CREATE INDEX index_packages_debian_group_distributions_on_creator_id ON packages_debian_group_distributions USING btree (creator_id);
 
+CREATE INDEX index_packages_debian_project_architectures_on_project_id ON packages_debian_project_architectures USING btree (project_id);
+
 CREATE INDEX index_packages_debian_project_component_files_on_component_id ON packages_debian_project_component_files USING btree (component_id);
 
 CREATE INDEX index_packages_debian_project_components_on_project_id ON packages_debian_project_components USING btree (project_id);
@@ -31435,6 +31454,8 @@ CREATE TRIGGER trigger_5ca97b87ee30 BEFORE INSERT OR UPDATE ON merge_request_con
 
 CREATE TRIGGER trigger_5f6432d2dccc BEFORE INSERT OR UPDATE ON operations_strategies_user_lists FOR EACH ROW EXECUTE FUNCTION trigger_5f6432d2dccc();
 
+CREATE TRIGGER trigger_68435a54ee2b BEFORE INSERT OR UPDATE ON packages_debian_project_architectures FOR EACH ROW EXECUTE FUNCTION trigger_68435a54ee2b();
+
 CREATE TRIGGER trigger_6cdea9559242 BEFORE INSERT OR UPDATE ON issue_links FOR EACH ROW EXECUTE FUNCTION trigger_6cdea9559242();
 
 CREATE TRIGGER trigger_77d9fbad5b12 BEFORE INSERT OR UPDATE ON packages_debian_project_distribution_keys FOR EACH ROW EXECUTE FUNCTION trigger_77d9fbad5b12();
@@ -32699,6 +32720,9 @@ ALTER TABLE ONLY vulnerability_flags
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_ccf0373936 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY packages_debian_project_architectures
+    ADD CONSTRAINT fk_cd96fce0a1 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY compliance_framework_security_policies
     ADD CONSTRAINT fk_cf3c0ac207 FOREIGN KEY (policy_configuration_id) REFERENCES security_orchestration_policy_configurations(id) ON DELETE CASCADE;
