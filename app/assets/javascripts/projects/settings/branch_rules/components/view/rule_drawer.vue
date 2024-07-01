@@ -166,7 +166,7 @@ export default {
         <items-selector
           type="users"
           :items="formatItemsIds(users)"
-          is-project-only-namespace
+          disable-namespace-dropdown
           :users-options="$options.projectUsersOptions"
           data-testid="users-selector"
           @change="handleRuleDataUpdate('updatedUsers', $event)"
@@ -176,7 +176,7 @@ export default {
           :items="formatItemsIds(groups)"
           :group-id="groupId"
           data-testid="groups-selector"
-          is-project-only-namespace
+          disable-namespace-dropdown
           @change="handleRuleDataUpdate('updatedGroups', $event)"
         />
       </gl-form-group>

@@ -8319,7 +8319,7 @@ CREATE TABLE ci_sources_projects (
     id bigint NOT NULL,
     pipeline_id bigint NOT NULL,
     source_project_id bigint NOT NULL,
-    partition_id bigint DEFAULT 100 NOT NULL
+    partition_id bigint NOT NULL
 );
 
 CREATE SEQUENCE ci_sources_projects_id_seq

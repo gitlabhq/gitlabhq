@@ -11,7 +11,11 @@ exports[`~/releases/components/issuable_stats.vue matches snapshot 1`] = `
     <span
       class="badge badge-muted badge-pill gl-badge"
     >
-      10
+      <span
+        class="gl-badge-content"
+      >
+        10
+      </span>
     </span>
   </span>
   <div

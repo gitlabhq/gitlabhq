@@ -1331,10 +1331,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.103.0.tgz#af61387481100eadef2bea8fe8605250311ac582"
   integrity sha512-jVWCrRVRF6nw2A+Aowc0quXV2bdRPl2v08ElCPSestfdKjQ92tSlCrIsLB8GvdW5aI0eFsD1vJ1w2qkzZdpA4A==
 
-"@gitlab/ui@85.4.1":
-  version "85.4.1"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-85.4.1.tgz#4cc7ed0bec0d022003e996a790d7ea9c37cce5ff"
-  integrity sha512-Q2QsIILLlipv6StUEAjS11OaJFkoZ5jlIE3QpFpJeGkHnskD6viRdnFcFDCYXwGMtrm1JphEp7iZZs6uX/MIkw==
+"@gitlab/ui@85.12.1":
+  version "85.12.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-85.12.1.tgz#b990c57b5ab3941e8a8900a987a8642a8cf8aa50"
+  integrity sha512-T+LWKfYGhxSVPT5x72qx7ujv1xgEKJCxVXbwcrMcWdMMjTdLSK6hGA/G7pY4MW8t0e0ZHvlwj7+BO9NFSDmq3Q==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -4994,10 +4994,10 @@ core-js-pure@^3.30.2:
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.35.0.tgz#4660033304a050215ae82e476bd2513a419fbb34"
   integrity sha512-f+eRYmkou59uh7BPcyJ8MC76DiGhspj1KMxVIcF24tzP8NA9HVa1uC7BTW2tgx7E1QVCzDzsgp7kArrzhlz8Ew==
 
-core-js@^3.29.1, core-js@^3.36.1, core-js@^3.6.5:
-  version "3.36.1"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.36.1.tgz#c97a7160ebd00b2de19e62f4bbd3406ab720e578"
-  integrity sha512-BTvUrwxVBezj5SZ3f10ImnX2oRByMxql3EimVqMysepbC9EeMUOpLwdy6Eoili2x6E4kf+ZUB5k/+Jv55alPfA==
+core-js@^3.29.1, core-js@^3.37.1, core-js@^3.6.5:
+  version "3.37.1"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.37.1.tgz#d21751ddb756518ac5a00e4d66499df981a62db9"
+  integrity sha512-Xn6qmxrQZyB0FFY8E3bgRXei3lWDJHhvI+u0q9TKIYM49G8pAr0FgnnrFRAmsbptZL1yxRADVXn+x5AGsbBfyw==
 
 core-util-is@~1.0.0:
   version "1.0.3"

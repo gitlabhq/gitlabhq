@@ -4,7 +4,7 @@ creation-date: "2023-08-07"
 authors: [ "@alberts-gitlab", "@iamricecake" ]
 coach: [ "@grzesiek", "@fabiopitino" ]
 approvers: [ "@jocelynjane", "@shampton" ]
-owning-stage: "~devops::verify"
+owning-stage: "~sec::govern"
 participating-stages: []
 ---
 
@@ -102,13 +102,37 @@ A consumer can be:
 1. A user who interacts manually with a client library, API, or UI.
 1. An integration, for example, Vault integration on Runner.
 
-**1. GitLab Rails**
+### GitLab Rails
 
 GitLab Rails would be the main interface that users would interact with when managing secrets using the Secrets Manager feature.
 
 This component is a facade to OpenBao server.
 
-**2. OpenBao Server**
+#### Retrieve user secrets
+
+To retrieve secrets for a given user and display them in GitLab UI we will create a new table to persist secrets metadata. Otherwise we can't pull all the secrets belonging to a user as there is no `OpenBao` endpoint to achieve this.
+
+Here a `SQL` example of how this could look like:
+
+```sql
+CREATE TABLE secrets (
+   id bigint NOT NULL,
+   environment_id bigint,
+   project_id bigint,
+   group_id bigint,
+   created_at timestamp with time zone NOT NULL,
+   updated_at timestamp with time zone NOT NULL,
+   revoked_at timestamp with time zone,
+   expiration_date date,
+   name text,
+   description text,
+   branch_name text
+)
+```
+
+Based on this metadata, we will be able to determine the secret path in `OpenBao` by using the name provided by the user: `kv-v2/data/projects/<project_id>/<secret#name>`.
+
+### OpenBao Server
 
 OpenBao Server will be a new component in the GitLab overall architecture. This component provides all the secrets management capabilities
 including storing the secrets themselves.
@@ -144,3 +168,21 @@ The following links provide additional information that may be relevant to secre
 
 - [OWASP Secrets Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Secrets_Management_Cheat_Sheet.html)
 - [OWASP Key Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Key_Management_Cheat_Sheet.html)
+
+## Who
+
+DRIs:
+
+<!-- vale gitlab.Spelling = NO -->
+
+| Role                | Who                                            |
+|---------------------|------------------------------------------------|
+| Author              | Erick Bajao, Senior Engineer                   |
+| Recommender         | Fabio Pitino, Principal Engineer               |
+| Product Leadership  | Jocelyn Eillis , Product Manager               |
+| Engineering Leadership | Scott Hampton, Engineering Manager          |
+| Lead Engineer       | Erick Bajao, Senior Backend Engineer           |
+| Senior Engineer     | Maxime Orefice, Senior Backend Engineer        |
+| Engineer            | Shabini Rajadas, Backend Engineer              |
+
+<!-- vale gitlab.Spelling = YES -->

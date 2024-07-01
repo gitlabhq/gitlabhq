@@ -59,6 +59,8 @@ export const pipelineStage = {
   __typename: 'CiStage',
   id: 'gid://gitlab/Ci::Stage/409',
   name: 'build',
+  scheduled: false,
+  scheduledAt: null,
   detailedStatus: {
     __typename: 'DetailedStatus',
     id: 'success-409-409',
@@ -66,6 +68,31 @@ export const pipelineStage = {
     label: 'passed',
     tooltip: 'passed',
   },
+};
+
+// for `job_item_spec.js`
+export const mockPipelineJob = {
+  __typename: 'CiJob',
+  id: 'gid://gitlab/Ci::Build/1001',
+  detailedStatus: {
+    __typename: 'DetailedStatus',
+    id: 'running-1001-1001',
+    action: {
+      __typename: 'StatusAction',
+      id: 'Ci::Build-success-1001',
+      icon: 'cancel',
+      path: '/flightjs/Flight/-/jobs/1001/cancel',
+      title: 'Cancel',
+    },
+    detailsPath: '/flightjs/Flight/-/pipelines/1176',
+    group: 'running',
+    hasDetails: true,
+    icon: 'status_running',
+    tooltip: 'running',
+  },
+  name: 'test_job',
+  scheduled: false,
+  scheduledAt: null,
 };
 
 // for `pipeline_stage_spec.js`
@@ -97,6 +124,8 @@ export const mockPipelineStageJobs = {
               tooltip: 'passed',
             },
             name: 'test_job',
+            scheduled: false,
+            scheduledAt: null,
           },
           {
             __typename: 'CiJob',
@@ -118,6 +147,8 @@ export const mockPipelineStageJobs = {
               tooltip: 'passed',
             },
             name: 'test_job_2',
+            scheduled: false,
+            scheduledAt: null,
           },
         ],
       },

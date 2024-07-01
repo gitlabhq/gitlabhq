@@ -127,9 +127,9 @@ describe('List Selector spec', () => {
     });
 
     describe('namespace dropdown rendering', () => {
-      beforeEach(() => createComponent({ ...USERS_MOCK_PROPS, isProjectOnlyNamespace: true }));
+      beforeEach(() => createComponent({ ...USERS_MOCK_PROPS, disableNamespaceDropdown: true }));
 
-      it('does not render namespace dropdown with isProjectOnlyNamespace prop', () => {
+      it('does not render namespace dropdown with disableNamespaceDropdown prop', () => {
         expect(findNamespaceDropdown().exists()).toBe(false);
       });
     });
@@ -183,6 +183,15 @@ describe('List Selector spec', () => {
       expect(findNamespaceDropdown().props('items').length).toBe(2);
     });
 
+    it('does not render namespace dropdown with disableNamespaceDropdown prop set to true', () => {
+      createComponent({
+        ...GROUPS_MOCK_PROPS,
+        disableNamespaceDropdown: true,
+      });
+
+      expect(findNamespaceDropdown().exists()).toBe(false);
+    });
+
     describe('searching', () => {
       const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes.map((group) => ({
         ...group,
@@ -229,6 +238,7 @@ describe('List Selector spec', () => {
               name: 'Flightjs',
               text: 'Flightjs',
               value: 'Flightjs',
+              type: 'group',
             },
           ],
         ]);

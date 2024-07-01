@@ -213,7 +213,7 @@ export default {
       return ['FAILED', 'CANCELED'].indexOf(this.pipeline?.status) !== -1;
     },
     showMergeFailedPipelineConfirmationDialog() {
-      return this.status === PIPELINE_FAILED_STATE || this.isPipelineFailed;
+      return (this.status === PIPELINE_FAILED_STATE && this.isPipelineFailed) || this.mr.retargeted;
     },
     isMergeAllowed() {
       return this.state.mergeable || false;

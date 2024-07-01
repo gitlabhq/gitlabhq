@@ -7,6 +7,7 @@ module Import
   SOURCE_GROUP_EXPORT_IMPORT = :gitlab_group
   SOURCE_GITHUB = :github
   SOURCE_GITEA = :gitea
+  SOURCE_BITBUCKET = :bitbucket
   SOURCE_BITBUCKET_SERVER = :bitbucket_server
 
   module HasImportSource
@@ -18,7 +19,7 @@ module Import
       SOURCE_PROJECT_EXPORT_IMPORT => 2,
       SOURCE_GROUP_EXPORT_IMPORT => 3,
       SOURCE_GITHUB => 4,
-      bitbucket: 5, # aka bitbucket cloud
+      SOURCE_BITBUCKET => 5, # aka bitbucket cloud
       SOURCE_BITBUCKET_SERVER => 6,
       fogbugz: 7,
       SOURCE_GITEA => 8,

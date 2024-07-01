@@ -104,11 +104,11 @@ POST /v1/proxy/vertex-ai/(*path)
 
 - Clients must send JWT issued by GitLab.com or Customer Dot.
   - This JWT contains `scopes` that indicates the permissions given to the GitLab-instance. This `scopes` will vary per Duo subscription tier.
-  - To access these proxy endpoints, `scopes` must **include** one of: `explain_vulnerability`, `resolve_vulnerability`, `generate_description`, `summarize_all_open_notes`, `generate_commit_message`, `summarize_review`, `fill_in_merge_request_template`, `analyze_ci_job_failure`.
+  - To access these proxy endpoints, `scopes` must **include** one of: `explain_vulnerability`, `resolve_vulnerability`, `generate_description`, `summarize_all_open_notes`, `generate_commit_message`, `summarize_review`, `analyze_ci_job_failure`.
   - Requests that do not meet the specified criteria will result in a 401 Unauthorized Access error.
 - Clients must send `X-Gitlab-Feature-Usage` headers in HTTP requests.
   - This `X-Gitlab-Feature-Usage` header indicates the purpose of the API request.
-  - To access these proxy endpoints, `X-Gitlab-Feature-Usage` must **be** one of: `explain_vulnerability`, `resolve_vulnerability`, `generate_description`, `summarize_all_open_notes`, `generate_commit_message`, `summarize_review`, `fill_in_merge_request_template`, `analyze_ci_job_failure`.
+  - To access these proxy endpoints, `X-Gitlab-Feature-Usage` must **be** one of: `explain_vulnerability`, `resolve_vulnerability`, `generate_description`, `summarize_all_open_notes`, `generate_commit_message`, `summarize_review`, `analyze_ci_job_failure`.
   - Requests that do not meet the specified criteria will result in a 401 Unauthorized Access error.
 - For logging, we add the value of `X-Gitlab-Feature-Usage` header in access logs in AI Gateway.
 - For metrics, we instrument the concurrent requests with `ModelRequestInstrumentator` and input/output tokens with `TextGenModelInstrumentator` in AI Gateway. It should be labled with `X-Gitlab-Instance-Id`, `X-Gitlab-Global-User-Id` and `X-Gitlab-Feature-Usage`.

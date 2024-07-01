@@ -67,6 +67,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestNotesImporter, :cl
         expect(note.author).to eq(bitbucket_user)
         expect(note.created_at).to eq(created_at)
         expect(note.updated_at).to eq(updated_at)
+        expect(note.imported_from).to eq('bitbucket')
       end
 
       context 'when the author does not have a bitbucket identity' do

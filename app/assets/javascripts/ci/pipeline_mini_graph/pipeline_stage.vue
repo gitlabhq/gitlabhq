@@ -142,7 +142,7 @@ export default {
     </div>
     <ul
       v-else
-      class="gl-overflow-y-auto gl-p-4"
+      class="gl-overflow-y-auto gl-p-0"
       data-testid="pipeline-stage-dropdown-menu-list"
       @click.stop
     >

@@ -13,7 +13,7 @@ module Gitlab
         DEFAULT_PER_PAGE = 30
 
         delegate :limit_value, :current_page, :next_page, :prev_page, :total_count,
-                 :total_pages, to: :paginated_collection
+          :total_pages, to: :paginated_collection
 
         def initialize(merge_request_diff, page, per_page)
           super(merge_request_diff, diff_options: nil)

@@ -6,6 +6,7 @@ import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
  * Renders the downstream portion of the pipeline mini graph.
  */
 export default {
+  name: 'DownstreamPipelines',
   directives: {
     GlTooltip: GlTooltipDirective,
   },

@@ -11,12 +11,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
 
-  before_action only: [:new] do
-    if can?(current_user, :fill_in_merge_request_template, project)
-      push_frontend_feature_flag(:fill_in_mr_template, project)
-    end
-  end
-
   urgency :low, [
     :new,
     :create,

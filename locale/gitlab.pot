@@ -22480,9 +22480,6 @@ msgstr ""
 msgid "Files, directories, and submodules in the path %{path} for commit reference %{ref}"
 msgstr ""
 
-msgid "Fill in merge request template"
-msgstr ""
-
 msgid "Fill in the fields below, turn on %{strong_open}Enable SAML authentication for this group%{strong_close}, and press %{strong_open}Save changes%{strong_close}"
 msgstr ""
 
@@ -44254,9 +44251,6 @@ msgid "Replace all labels"
 msgstr ""
 
 msgid "Replace audio"
-msgstr ""
-
-msgid "Replace current template with filled in placeholders"
 msgstr ""
 
 msgid "Replace file"

@@ -52,12 +52,8 @@ module Projects
 
       set_project_name_from_path
 
-      # get namespace id
-      namespace_id = params[:namespace_id] || current_user.namespace_id
-      @project.namespace_id = namespace_id.to_i
-
-      organization_id = params[:organization_id] || @project.namespace.organization_id
-      @project.organization_id = organization_id.to_i
+      @project.namespace_id = (params[:namespace_id] || current_user.namespace_id).to_i
+      @project.organization_id = (params[:organization_id] || @project.namespace.organization_id).to_i
 
       @project.check_personal_projects_limit
       return @project if @project.errors.any?
@@ -106,6 +102,7 @@ module Projects
 
     def validate_import_permissions
       return unless @project.import?
+      return if @project.gitlab_project_import?
       return if current_user.can?(:import_projects, parent_namespace)
 
       @project.errors.add(:user, 'is not allowed to import projects')

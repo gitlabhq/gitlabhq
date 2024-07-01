@@ -70,6 +70,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::PullRequestImporter, :clean_g
       expect(merge_request.merge_request_diffs.first.head_commit_sha).to eq(target_branch_sha)
       expect(merge_request.metrics.merged_by_id).to eq(closed_by_user.id)
       expect(merge_request.metrics.latest_closed_by_id).to be_nil
+      expect(merge_request.imported_from).to eq('bitbucket')
     end
 
     it 'converts mentions in the description' do

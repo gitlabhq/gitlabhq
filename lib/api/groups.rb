@@ -68,12 +68,22 @@ module API
           .execute
       end
 
+      def authorized_params?(group, params)
+        return true if can?(current_user, :admin_group, group)
+
+        can?(current_user, :admin_runner, group) &&
+          params.keys == [:shared_runners_setting]
+      end
+
       # This is a separate method so that EE can extend its behaviour, without
       # having to modify this code directly.
       #
       def update_group(group)
+        safe_params = translate_params_for_compatibility
+        return unauthorized! unless authorized_params?(group, safe_params)
+
         ::Groups::UpdateService
-          .new(group, current_user, translate_params_for_compatibility)
+          .new(group, current_user, safe_params)
           .execute
       end
 
@@ -291,7 +301,7 @@ module API
         group.preload_shared_group_links
 
         mark_throttle! :update_namespace_name, scope: group if params.key?(:name) && params[:name].present?
-        authorize! :admin_group, group
+        authorize_any! [:admin_group, :admin_runner], group
 
         group.remove_avatar! if params.key?(:avatar) && params[:avatar].nil?
 

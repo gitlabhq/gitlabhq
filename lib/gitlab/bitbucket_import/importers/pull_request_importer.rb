@@ -33,7 +33,10 @@ module Gitlab
             state_id: MergeRequest.available_states[object[:state]],
             author_id: author_id,
             created_at: object[:created_at],
-            updated_at: object[:updated_at]
+            updated_at: object[:updated_at],
+            # MergeRequestHelpers#create_merge_request_without_hooks requires
+            # that we pass the enum integer value rather than the key.
+            imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:bitbucket]
           }
 
           creator = Gitlab::Import::MergeRequestCreator.new(project)

@@ -32,7 +32,8 @@ module Gitlab
             work_item_type_id: object[:issue_type_id],
             label_ids: [object[:label_id]].compact,
             created_at: object[:created_at],
-            updated_at: object[:updated_at]
+            updated_at: object[:updated_at],
+            imported_from: ::Import::SOURCE_BITBUCKET
           }
 
           project.issues.create!(attributes)

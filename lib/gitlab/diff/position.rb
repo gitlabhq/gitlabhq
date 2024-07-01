@@ -8,19 +8,19 @@ module Gitlab
       attr_accessor :formatter
 
       delegate :old_path,
-               :new_path,
-               :base_sha,
-               :start_sha,
-               :head_sha,
-               :old_line,
-               :new_line,
-               :width,
-               :height,
-               :x,
-               :y,
-               :line_range,
-               :position_type,
-               :ignore_whitespace_change, to: :formatter
+        :new_path,
+        :base_sha,
+        :start_sha,
+        :head_sha,
+        :old_line,
+        :new_line,
+        :width,
+        :height,
+        :x,
+        :y,
+        :line_range,
+        :position_type,
+        :ignore_whitespace_change, to: :formatter
 
       # A position can belong to a text line or to an image coordinate
       # it depends of the position_type argument.

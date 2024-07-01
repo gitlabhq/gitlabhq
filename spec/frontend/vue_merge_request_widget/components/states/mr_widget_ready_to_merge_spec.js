@@ -828,6 +828,22 @@ describe('ReadyToMerge', () => {
     });
   });
 
+  describe('Merge button when merge request has been retargeted', () => {
+    beforeEach(() => {
+      createComponent({
+        mr: { retargeted: true },
+      });
+    });
+
+    it('should display confirmation modal when merge button is clicked', async () => {
+      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: false });
+
+      await findMergeButton().vm.$emit('click');
+
+      expect(findPipelineFailedConfirmModal().props()).toEqual({ visible: true });
+    });
+  });
+
   describe('updating graphql data triggers commit message update when default changed', () => {
     const UPDATED_MERGE_COMMIT_MESSAGE = 'New merge message from BE';
     const UPDATED_SQUASH_COMMIT_MESSAGE = 'New squash message from BE';

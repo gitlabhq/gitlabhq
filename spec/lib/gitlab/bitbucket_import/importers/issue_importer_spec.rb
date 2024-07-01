@@ -49,6 +49,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueImporter, :clean_gitlab_
       expect(issue.labels).to eq([label])
       expect(issue.created_at).to eq(Date.today)
       expect(issue.updated_at).to eq(Date.today)
+      expect(issue.imported_from).to eq('bitbucket')
     end
 
     it 'converts mentions in the description' do

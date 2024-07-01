@@ -16,9 +16,8 @@ This page attempts to index the ways in which GitLab supports Rust. It does so w
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | `[Rust Configuration]`    | Integration accomplished by Configuring Existing Rust Functionality       | Rust                                                          |
 | `[GitLab Configuration]` | Integration accomplished by Configuring Existing GitLab Functionality    | GitLab                                                       |
-| `[Rust Built]`            | Built into Rust by Product Team to Address Rust Integration    | Rust                                                          |
-| `[GitLab Built]`         | Built into GitLab by Product Team to Address Rust Integration | GitLab                                                       |
-| `[Rust Solution]`         | Built as Solution Example by Rust or Rust Partners             | Community/Example                                            |
+| `[Rust Partner Built]`         | Built into GitLab by Product Team to Address Rust Integration | GitLab                                                       |
+| `[Rust Partner Solution]`         | Built as Solution Example by Rust or Rust Partners             | Community/Example                                            |
 | `[GitLab Solution]`      | Built as Solution Example by GitLab or GitLab Partners       | Community/Example                                            |
 | `[CI Solution]`          | Built using GitLab CI and therefore <br />more customer customizable. | Items tagged `[CI Solution]` will <br />also carry one of the other tags <br />that indicate the maintenance status. |
 
@@ -43,3 +42,4 @@ This page attempts to index the ways in which GitLab supports Rust. It does so w
 - [Testing Code Coverage](../../../ci/testing/code_coverage.md#test-coverage-examples) `[GitLab Built]`
 - [GitLab SAST Scanning](../../../user/application_security/sast/index.md#supported-languages-and-frameworks)  `[GitLab Built]`- requires custom ruleset be created.
 - [Rust License Scanning (Currently in Prerelease)](https://gitlab.com/groups/gitlab-org/-/epics/13093)  `[GitLab Built]`
+- [CodeSecure CodeSonar Embedded C Deep SAST Scanner as a GitLab CI/CD Component](https://gitlab.com/explore/catalog/codesonar/components/codesonar-ci) `[Rust Partner Built]` `[CI Solution]` - supports deep Abstract Execution analysis by watching compiles. Supports GitLabs SAST JSON which enables the findings throughout GitLab Ultimate security features. Features MISRA support and direct support for many Embedded Systems compilers.

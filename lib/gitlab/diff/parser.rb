@@ -74,8 +74,8 @@ module Gitlab
 
       def filename?(line)
         line.start_with?('--- /dev/null', '+++ /dev/null', '--- a', '+++ b',
-                          '+++ a', # The line will start with `+++ a` in the reverse diff of an orphan commit
-                          '--- /tmp/diffy', '+++ /tmp/diffy')
+          '+++ a', # The line will start with `+++ a` in the reverse diff of an orphan commit
+          '--- /tmp/diffy', '+++ /tmp/diffy')
       end
 
       def identification_type(line)

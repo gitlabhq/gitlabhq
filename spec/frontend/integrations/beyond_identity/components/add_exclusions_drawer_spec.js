@@ -70,14 +70,12 @@ describe('AddExclusionsDrawer component', () => {
       expect(findGroupsListSelector().props()).toMatchObject({
         type: 'groups',
         autofocus: true,
+        disableNamespaceDropdown: true,
       });
     });
 
     it('renders a list selector for projects', () => {
-      expect(findProjectsListSelector().props()).toMatchObject({
-        type: 'projects',
-        autofocus: true,
-      });
+      expect(findProjectsListSelector().props('type')).toBe('projects');
     });
 
     it('renders a button for adding exclusions', () => {

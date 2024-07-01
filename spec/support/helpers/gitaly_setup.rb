@@ -112,10 +112,14 @@ module GitalySetup
       FileUtils.mkdir_p(GitalySetup.second_storage_path)
     end
 
-    if ENV['CI'] && gitaly_with_transactions?
-      # The configuration file with transactions is pre-generated in the CI. Here we check
+    if gitaly_with_transactions? && !toml
+      # The configuration file with transactions is pre-generated. Here we check
       # whether this job should actually run with transactions and choose the pre-generated
       # configuration with transactions enabled if so.
+      #
+      # Workhorse provides its own configuration through 'toml'. If a configuration is
+      # explicitly provided, we don't override it. Workhorse test setup has its own logic
+      # to choose the configuration with transactions enabled.
       toml = "#{config_path(service)}.transactions"
     end
 
@@ -247,7 +251,7 @@ module GitalySetup
           runtime_dir: runtime_dir,
           prometheus_listen_addr: 'localhost:9236',
           config_filename: config_name(:gitaly),
-          transactions_enabled: gitaly_with_transactions?
+          transactions_enabled: false
         }
       },
       {
@@ -256,7 +260,7 @@ module GitalySetup
           runtime_dir: runtime_dir,
           gitaly_socket: "gitaly2.socket",
           config_filename: config_name(:gitaly2),
-          transactions_enabled: gitaly_with_transactions?
+          transactions_enabled: false
         }
       }
     ].each do |params|
@@ -272,12 +276,10 @@ module GitalySetup
       # without transactions enabled.
       #
       # Similarly to the Praefect configuration, generate variant of the configuration file with
-      # transactions enabled in CI. Later when the rspec job runs, we decide whether to run Gitaly
+      # transactions enabled. Later when the rspec job runs, we decide whether to run Gitaly
       # using the configuration with transactions enabled or not.
       #
       # These configuration files are only used in the CI.
-      next unless ENV['CI']
-
       params[:options][:config_filename] = "#{params[:options][:config_filename]}.transactions"
       params[:options][:transactions_enabled] = true
 

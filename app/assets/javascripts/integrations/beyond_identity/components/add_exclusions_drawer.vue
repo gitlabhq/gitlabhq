@@ -68,12 +68,11 @@ export default {
     </template>
 
     <template #default>
-      <!-- This selector is temporarily disabled until the backend adds support for groups -->
       <list-selector
-        v-show="false"
         type="groups"
         class="gl-m-5 gl-p-0!"
         autofocus
+        disable-namespace-dropdown
         :selected-items="groupExclusions"
         @select="handleSelectExclusion"
         @delete="handleRemoveExclusion"
@@ -82,7 +81,6 @@ export default {
       <list-selector
         type="projects"
         class="gl-m-5 gl-p-0!"
-        autofocus
         :selected-items="projectExclusions"
         @select="handleSelectExclusion"
         @delete="handleRemoveExclusion"

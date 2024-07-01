@@ -6,6 +6,7 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
   let_it_be(:snippet_not_imported) { create(:snippet, :repository) }
   let_it_be(:snippet_imported) { create(:snippet, imported_from: :bitbucket) }
   let_it_be(:merge_request_imported) { create(:snippet, imported_from: :fogbugz) }
+  let_it_be(:merge_request_imported_bb_cloud) { create(:snippet, imported_from: :bitbucket) }
   let_it_be(:merge_request_imported_github) { create(:snippet, imported_from: :github) }
   let_it_be(:merge_request_imported_gitea) { create(:snippet, imported_from: :gitea) }
 
@@ -14,6 +15,7 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
       expect(snippet_not_imported.imported?).to eq(false)
       expect(snippet_imported.imported?).to eq(true)
       expect(merge_request_imported.imported?).to eq(true)
+      expect(merge_request_imported_bb_cloud.imported?).to eq(true)
       expect(merge_request_imported_github.imported?).to eq(true)
       expect(merge_request_imported_gitea.imported?).to eq(true)
     end
@@ -24,6 +26,7 @@ RSpec.describe Import::HasImportSource, feature_category: :importers do
       expect(snippet_not_imported.imported_from).to eq('none')
       expect(snippet_imported.imported_from).to eq('bitbucket')
       expect(merge_request_imported.imported_from).to eq('fogbugz')
+      expect(merge_request_imported_bb_cloud.imported_from).to eq('bitbucket')
       expect(merge_request_imported_github.imported_from).to eq('github')
       expect(merge_request_imported_gitea.imported_from).to eq('gitea')
     end

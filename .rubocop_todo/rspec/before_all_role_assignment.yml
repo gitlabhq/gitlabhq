@@ -609,7 +609,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/llm/base_service_spec.rb'
     - 'ee/spec/services/llm/chat_service_spec.rb'
     - 'ee/spec/services/llm/explain_code_service_spec.rb'
-    - 'ee/spec/services/llm/fill_in_merge_request_template_service_spec.rb'
     - 'ee/spec/services/llm/generate_commit_message_service_spec.rb'
     - 'ee/spec/services/llm/generate_description_service_spec.rb'
     - 'ee/spec/services/llm/generate_summary_service_spec.rb'

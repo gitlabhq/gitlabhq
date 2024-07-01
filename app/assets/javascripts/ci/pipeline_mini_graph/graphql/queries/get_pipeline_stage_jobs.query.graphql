@@ -19,6 +19,8 @@ query getPipelineStageJobs($id: CiStageID!) {
           tooltip
         }
         name
+        scheduled
+        scheduledAt
       }
     }
   }
