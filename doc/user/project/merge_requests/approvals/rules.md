@@ -33,6 +33,8 @@ enforce a [minimum number of required approvers](settings.md) in the project's s
 Merge requests that target a different project, such as from a fork to the upstream project,
 use the default approval rules from the target (upstream) project, not the source (fork).
 
+Merge request approvals can be configured globally to apply across all (or a subset) projects with [policies](../../../application_security/policies/index.md). [Merge request approval policies](../../../application_security/policies/scan-result-policies.md) also provide additional flexibility with more granular configuration options.
+
 ## Add an approval rule
 
 > - Approval rules for all protected branches introduced in GitLab 15.3.
