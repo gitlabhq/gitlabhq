@@ -2899,8 +2899,6 @@ Style/InlineDisableAnnotation:
     - 'spec/support/shared_examples/models/boards/user_preferences_shared_examples.rb'
     - 'spec/support/shared_examples/models/cluster_application_helm_cert_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/counter_attribute_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/protected_ref_access_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/protected_ref_deploy_key_access_examples.rb'
     - 'spec/support/shared_examples/models/concerns/ttl_expirable_shared_examples.rb'
     - 'spec/support/shared_examples/models/cycle_analytics_stage_shared_examples.rb'
     - 'spec/support/shared_examples/models/issuable_link_shared_examples.rb'

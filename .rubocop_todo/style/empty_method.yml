@@ -91,7 +91,6 @@ Style/EmptyMethod:
     - 'lib/gitlab/background_migration/migrate_job_artifact_registry_to_ssf.rb'
     - 'lib/gitlab/background_migration/migrate_requirements_to_work_items.rb'
     - 'lib/gitlab/background_migration/migrate_shared_vulnerability_scanners.rb'
-    - 'lib/gitlab/empty_search_results.rb'
     - 'lib/gitlab/git_access.rb'
     - 'lib/gitlab/import_export/json/ndjson_writer.rb'
     - 'lib/gitlab/mailgun/webhook_processors/base.rb'

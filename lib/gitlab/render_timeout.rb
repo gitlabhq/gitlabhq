@@ -10,5 +10,9 @@ module Gitlab
 
       Timeout.timeout(period, &block)
     end
+
+    def self.banzai_timeout_disabled?
+      Gitlab::Utils.to_boolean(ENV['DISABLE_BANZAI_TIMEOUT'], default: false)
+    end
   end
 end

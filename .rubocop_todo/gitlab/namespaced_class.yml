@@ -1092,7 +1092,6 @@ Gitlab/NamespacedClass:
     - 'lib/gitlab/deploy_key_access.rb'
     - 'lib/gitlab/deprecation_json_logger.rb'
     - 'lib/gitlab/devise_failure.rb'
-    - 'lib/gitlab/empty_search_results.rb'
     - 'lib/gitlab/encrypted_command_base.rb'
     - 'lib/gitlab/encrypted_configuration.rb'
     - 'lib/gitlab/encrypted_incoming_email_command.rb'

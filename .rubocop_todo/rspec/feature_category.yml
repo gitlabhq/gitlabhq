@@ -3586,7 +3586,6 @@ RSpec/FeatureCategory:
     - 'spec/models/concerns/safe_url_spec.rb'
     - 'spec/models/concerns/sanitizable_spec.rb'
     - 'spec/models/concerns/schedulable_spec.rb'
-    - 'spec/models/concerns/sensitive_serializable_hash_spec.rb'
     - 'spec/models/concerns/sha_attribute_spec.rb'
     - 'spec/models/concerns/signature_type_spec.rb'
     - 'spec/models/concerns/sortable_spec.rb'

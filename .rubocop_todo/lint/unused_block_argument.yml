@@ -176,7 +176,6 @@ Lint/UnusedBlockArgument:
     - 'lib/api/helpers/snippets_helpers.rb'
     - 'lib/api/search.rb'
     - 'lib/atlassian/jira_connect/serializers/repository_entity.rb'
-    - 'lib/banzai/filter/autolink_filter.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
     - 'lib/banzai/filter/spaced_link_filter.rb'
     - 'lib/banzai/issuable_extractor.rb'

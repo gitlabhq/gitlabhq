@@ -2444,7 +2444,6 @@ RSpec/NamedSubject:
     - 'spec/metrics_server/metrics_server_spec.rb'
     - 'spec/migrations/20230714015909_add_index_for_member_expiring_query_spec.rb'
     - 'spec/models/ability_spec.rb'
-    - 'spec/models/abuse/trust_score_spec.rb'
     - 'spec/models/abuse_report_spec.rb'
     - 'spec/models/active_session_spec.rb'
     - 'spec/models/alert_management/alert_spec.rb'

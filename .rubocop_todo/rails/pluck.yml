@@ -7,7 +7,6 @@ Rails/Pluck:
     - 'app/helpers/issuables_description_templates_helper.rb'
     - 'app/models/ci/unit_test.rb'
     - 'app/models/commit.rb'
-    - 'app/models/concerns/sensitive_serializable_hash.rb'
     - 'app/models/integrations/chat_message/pipeline_message.rb'
     - 'app/models/list.rb'
     - 'app/models/packages/go/module_version.rb'

@@ -1,6 +1,7 @@
 - page_title _('Abuse Reports')
 
-%h1.page-title.gl-font-size-h-display= _('Abuse Reports')
+%h1.page-title.gl-font-size-h-display{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_abuse_reports_pageload' } }
+  = _('Abuse Reports')
 
 #js-abuse-reports-list-app{ data: abuse_reports_list_data(@abuse_reports) }
   = gl_loading_icon(css_class: 'gl-my-5', size: 'md')

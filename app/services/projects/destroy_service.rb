@@ -172,6 +172,10 @@ module Projects
       # called multiple times, and it doesn't destroy any database records.
       project.destroy_dependent_associations_in_batches(exclude: [:container_repositories, :snippets])
       project.destroy!
+    rescue ActiveRecord::RecordNotDestroyed => e
+      raise_error(
+        e.record.errors.full_messages.to_sentence
+      )
     end
 
     def log_destroy_event

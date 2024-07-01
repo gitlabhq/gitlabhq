@@ -31,6 +31,10 @@ namespace :gitlab do
       raise "No admin user with SSH key could be found"
     end
 
+    tmp_organization_path = "tmp-organization-import-#{SecureRandom.hex(4)}"
+    puts "Creating temporary organization #{tmp_organization_path}"
+    tmp_organization = ::Organizations::Organization.create!(name: tmp_organization_path, path: tmp_organization_path)
+
     tmp_namespace_path = "tmp-project-import-#{Time.now.to_i}"
     puts "Creating temporary namespace #{tmp_namespace_path}"
     tmp_namespace = Namespace.create!(owner: admin, name: tmp_namespace_path, path: tmp_namespace_path, type: Namespaces::UserNamespace.sti_name)
@@ -44,6 +48,7 @@ namespace :gitlab do
     templates.each do |template|
       params = {
         namespace_id: tmp_namespace.id,
+        organization_id: tmp_organization.id,
         path: template.name,
         skip_wiki: true
       }
@@ -108,6 +113,11 @@ namespace :gitlab do
     if tmp_namespace
       puts "Destroying temporary namespace #{tmp_namespace_path}"
       tmp_namespace.destroy
+    end
+
+    if tmp_organization
+      puts "Destroying temporary organization #{tmp_organization_path}"
+      tmp_organization.destroy
     end
 
     puts "Done".green if success

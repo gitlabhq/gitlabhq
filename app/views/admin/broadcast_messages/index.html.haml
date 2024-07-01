@@ -2,7 +2,7 @@
 - page_title _("Broadcast Messages")
 - page_description = _('Use banners and notifications to notify your users about scheduled maintenance, recent upgrades, and more.')
 
-= render ::Layouts::PageHeadingComponent.new(_("Broadcast Messages"), description: page_description)
+= render ::Layouts::PageHeadingComponent.new(_("Broadcast Messages"), description: page_description, options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_broadcast_messages_pageload' } })
 
 #js-broadcast-messages{ data: {
   page: params[:page] || 1,

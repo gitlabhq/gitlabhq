@@ -8,7 +8,7 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.3.2
 	github.com/BurntSushi/toml v1.4.0
 	github.com/alecthomas/chroma/v2 v2.14.0
-	github.com/aws/aws-sdk-go v1.53.20
+	github.com/aws/aws-sdk-go v1.54.6
 	github.com/disintegration/imaging v1.6.2
 	github.com/dlclark/regexp2 v1.11.0
 	github.com/getsentry/raven-go v0.2.0
@@ -25,7 +25,7 @@ require (
 	github.com/sirupsen/logrus v1.9.3
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.9.0
-	gitlab.com/gitlab-org/gitaly/v16 v16.11.4
+	gitlab.com/gitlab-org/gitaly/v16 v16.11.5
 	gitlab.com/gitlab-org/labkit v1.21.0
 	go.uber.org/goleak v1.3.0
 	gocloud.dev v0.37.0

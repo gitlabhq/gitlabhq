@@ -1049,6 +1049,7 @@ epic:
 - boards_epic_user_preferences
 - epic_board_positions
 - work_item
+- own_subscriptions
 epic_issue:
 - epic
 - issue

@@ -715,32 +715,19 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it_behaves_like 'namespace traversal'
 
     describe '#self_and_descendants' do
-      it { expect(group.self_and_descendants.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
+      it { expect(group.self_and_descendants.to_sql).to include 'traversal_ids @>' }
     end
 
     describe '#self_and_descendant_ids' do
-      it { expect(group.self_and_descendant_ids.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
+      it { expect(group.self_and_descendant_ids.to_sql).to include 'traversal_ids @>' }
     end
 
     describe '#descendants' do
-      it { expect(group.descendants.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
+      it { expect(group.descendants.to_sql).to include 'traversal_ids @>' }
     end
 
     describe '#self_and_hierarchy' do
-      it { expect(group.self_and_hierarchy.to_sql).to include('traversal_ids >=').and(include('traversal_ids <')) }
-    end
-
-    context 'when optimize_top_bound_lineage_search is off' do
-      before do
-        stub_feature_flags(optimize_top_bound_lineage_search: false)
-      end
-
-      it 'uses @> operator in queries' do
-        expect(group.self_and_descendants.to_sql).to include('traversal_ids @>')
-        expect(group.self_and_descendant_ids.to_sql).to include('traversal_ids @>')
-        expect(group.descendants.to_sql).to include('traversal_ids @>')
-        expect(group.self_and_hierarchy.to_sql).to include('traversal_ids @>')
-      end
+      it { expect(group.self_and_hierarchy.to_sql).to include 'traversal_ids @>' }
     end
 
     describe '#ancestors' do

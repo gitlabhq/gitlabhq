@@ -448,8 +448,6 @@ Lint/RedundantCopDisableDirective:
     - 'spec/support/shared_examples/lib/gitlab/regex_shared_examples.rb'
     - 'spec/support/shared_examples/models/boards/listable_shared_examples.rb'
     - 'spec/support/shared_examples/models/concerns/incident_management/escalatable_shared_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/protected_ref_access_examples.rb'
-    - 'spec/support/shared_examples/models/concerns/protected_ref_deploy_key_access_examples.rb'
     - 'spec/support/shared_examples/models/packages/debian/distribution_key_shared_examples.rb'
     - 'spec/support/shared_examples/requests/api/rubygems_packages_shared_examples.rb'
     - 'tooling/danger/ignored_model_columns.rb'

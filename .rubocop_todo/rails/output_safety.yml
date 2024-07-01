@@ -109,7 +109,6 @@ Rails/OutputSafety:
     - 'ee/lib/gitlab/licenses/submit_license_usage_data_banner.rb'
     - 'ee/lib/gitlab/manual_quarterly_co_term_banner.rb'
     - 'ee/spec/controllers/admin/licenses_controller_spec.rb'
-    - 'lib/banzai/filter/autolink_filter.rb'
     - 'lib/banzai/filter/references/milestone_reference_filter.rb'
     - 'lib/banzai/filter/spaced_link_filter.rb'
     - 'lib/banzai/object_renderer.rb'

@@ -190,7 +190,6 @@ Search/NamespacedClass:
     - 'lib/gitlab/background_migration/backfill_imported_issue_search_data.rb'
     - 'lib/gitlab/background_migration/backfill_issue_search_data.rb'
     - 'lib/gitlab/elasticsearch/logger.rb'
-    - 'lib/gitlab/empty_search_results.rb'
     - 'lib/gitlab/github_import/clients/search_repos.rb'
     - 'lib/gitlab/group_search_results.rb'
     - 'lib/gitlab/metrics/elasticsearch_rack_middleware.rb'

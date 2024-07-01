@@ -1,0 +1,5 @@
+fragment DesignDiffRefs on DiffRefs {
+  baseSha
+  startSha
+  headSha
+}
