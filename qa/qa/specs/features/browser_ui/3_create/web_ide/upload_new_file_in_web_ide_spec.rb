@@ -50,7 +50,7 @@ module QA
         end
       end
 
-      context 'when the file is a text file',
+      context 'when the file is a text file', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/390006' do
         let(:file_name) { 'text_file.txt' }
 

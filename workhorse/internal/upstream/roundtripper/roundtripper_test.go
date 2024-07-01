@@ -46,7 +46,7 @@ func TestMustParseAddressPanic(t *testing.T) {
 }
 
 func TestSupportsHTTPBackend(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(200)
 		fmt.Fprint(w, "successful response")
 	}))
@@ -56,7 +56,7 @@ func TestSupportsHTTPBackend(t *testing.T) {
 }
 
 func TestSupportsHTTPSBackend(t *testing.T) {
-	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewTLSServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(200)
 		fmt.Fprint(w, "successful response")
 	}))

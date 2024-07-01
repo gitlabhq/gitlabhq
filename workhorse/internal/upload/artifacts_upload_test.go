@@ -201,7 +201,7 @@ func TestUploadHandlerAddingMetadata(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.desc, func(t *testing.T) {
 			s := setupWithTmpPath(t, "file", tc.includeFormat, tc.format, nil,
-				func(w http.ResponseWriter, r *http.Request) {
+				func(_ http.ResponseWriter, r *http.Request) {
 					token, err := jwt.ParseWithClaims(r.Header.Get(RewrittenFieldsHeader), &MultipartClaims{}, testhelper.ParseJWT)
 					assert.NoError(t, err)
 
@@ -232,7 +232,7 @@ func TestUploadHandlerAddingMetadata(t *testing.T) {
 
 func TestUploadHandlerTarArtifact(t *testing.T) {
 	s := setupWithTmpPath(t, "file", true, "tar", nil,
-		func(w http.ResponseWriter, r *http.Request) {
+		func(_ http.ResponseWriter, r *http.Request) {
 			token, err := jwt.ParseWithClaims(r.Header.Get(RewrittenFieldsHeader), &MultipartClaims{}, testhelper.ParseJWT)
 			assert.NoError(t, err)
 

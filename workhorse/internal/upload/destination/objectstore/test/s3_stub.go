@@ -117,7 +117,7 @@ func CheckS3Metadata(t *testing.T, sess *session.Session, config config.S3Config
 func S3ObjectDoesNotExist(t *testing.T, sess *session.Session, config config.S3Config, objectName string) bool {
 	deleted := false
 
-	downloadObject(t, sess, config, objectName, func(tmpfile *os.File, numBytes int64, err error) {
+	downloadObject(t, sess, config, objectName, func(_ *os.File, _ int64, err error) {
 		if err != nil && strings.Contains(err.Error(), "NoSuchKey") {
 			deleted = true
 		}

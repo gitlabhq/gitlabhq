@@ -402,7 +402,7 @@ func TestUnauthorizedMultipartHeader(t *testing.T) {
 
 	httpRequest, response := setupMultipleFiles(t)
 
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 	}))
 	defer ts.Close()
@@ -485,7 +485,7 @@ func TestContentDispositionRewrite(t *testing.T) {
 			httpRequest.Header.Set("Content-Type", writer.FormDataContentType())
 
 			var upstreamRequestBuffer bytes.Buffer
-			customHandler := http.HandlerFunc(func(rw http.ResponseWriter, r *http.Request) {
+			customHandler := http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 				r.Write(&upstreamRequestBuffer)
 			})
 
@@ -570,7 +570,7 @@ func TestUploadHandlerRemovingExifCorruptedFile(t *testing.T) {
 	content, err := os.ReadFile("exif/testdata/sample_exif_corrupted.jpg")
 	require.NoError(t, err)
 
-	runUploadTest(t, content, "sample_exif_corrupted.jpg", 422, func(w http.ResponseWriter, r *http.Request) {
+	runUploadTest(t, content, "sample_exif_corrupted.jpg", 422, func(_ http.ResponseWriter, r *http.Request) {
 		err := r.ParseMultipartForm(100000)
 		assert.Error(t, err)
 	})

@@ -17,7 +17,7 @@ RSpec.describe Gitlab::Pagination::Offset::PaginationWithIndexOnlyScan, feature_
   let(:per) { 2 }
   let(:page) { 1 }
 
-  subject(:result) { optimization.pageinate_with_kaminari }
+  subject(:result) { optimization.paginate_with_kaminari }
 
   RSpec::Matchers.define :match_pagination_results do |expected|
     match do |actual|

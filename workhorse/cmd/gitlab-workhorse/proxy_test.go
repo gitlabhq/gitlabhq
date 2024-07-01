@@ -129,7 +129,7 @@ func TestProxyError(t *testing.T) {
 }
 
 func TestProxyReadTimeout(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(nil, func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(nil, func(_ http.ResponseWriter, _ *http.Request) {
 		time.Sleep(time.Minute)
 	})
 
@@ -155,7 +155,7 @@ func TestProxyReadTimeout(t *testing.T) {
 
 func TestProxyHandlerTimeout(t *testing.T) {
 	ts := testhelper.TestServerWithHandler(nil,
-		http.TimeoutHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		http.TimeoutHandler(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 			time.Sleep(time.Second)
 		}), time.Millisecond, "Request took too long").ServeHTTP,
 	)

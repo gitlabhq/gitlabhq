@@ -17,7 +17,7 @@ type fakeReader struct {
 	err error
 }
 
-func (f *fakeReader) Read(b []byte) (int, error) {
+func (f *fakeReader) Read(_ []byte) (int, error) {
 	return f.n, f.err
 }
 
@@ -34,7 +34,7 @@ func (*fakeContextWithTimeout) Done() <-chan struct{} {
 	return nil
 }
 
-func (*fakeContextWithTimeout) Value(key interface{}) interface{} {
+func (*fakeContextWithTimeout) Value(_ interface{}) interface{} {
 	return nil
 }
 

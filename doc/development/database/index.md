@@ -79,6 +79,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 - [Ordering table columns](ordering_table_columns.md)
 - [Pagination guidelines](pagination_guidelines.md)
   - [Pagination performance guidelines](pagination_performance_guidelines.md)
+  - [Offset pagination optimization](offset_pagination_optimization.md)
 - [Polymorphic associations](polymorphic_associations.md)
 - [Query count limits](query_count_limits.md)
 - [Query performance guidelines](query_performance.md)

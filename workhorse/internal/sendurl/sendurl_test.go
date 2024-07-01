@@ -72,7 +72,7 @@ func testEntryServer(t *testing.T, requestURL string, httpHeaders http.Header, a
 		assert.Equal(t, "GET", r.Method)
 		http.Redirect(w, r, r.URL.String()+"/download", http.StatusTemporaryRedirect)
 	}
-	timeoutFile := func(w http.ResponseWriter, r *http.Request) {
+	timeoutFile := func(_ http.ResponseWriter, _ *http.Request) {
 		time.Sleep(20 * time.Millisecond)
 	}
 

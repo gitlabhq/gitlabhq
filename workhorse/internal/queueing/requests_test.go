@@ -10,12 +10,12 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-var httpHandler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+var httpHandler = http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 	fmt.Fprintln(w, "OK")
 })
 
 func pausedHTTPHandler(pauseCh chan struct{}) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		<-pauseCh
 		fmt.Fprintln(w, "OK")
 	})

@@ -330,7 +330,7 @@ func TestLoadConfigCommand(t *testing.T) {
 	}{
 		{
 			desc: "nonexistent executable",
-			setup: func(t *testing.T) setupData {
+			setup: func(_ *testing.T) setupData {
 				return setupData{
 					cfg: config.Config{
 						ConfigCommand: "/does/not/exist",

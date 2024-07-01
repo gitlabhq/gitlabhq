@@ -24,7 +24,7 @@ func (srv *smartHTTPServiceServerWithInfoRefs) InfoRefsUploadPack(r *gitalypb.In
 
 func TestGetInfoRefsHandler(t *testing.T) {
 	addr := startSmartHTTPServer(t, &smartHTTPServiceServerWithInfoRefs{
-		InfoRefsUploadPackFunc: func(r *gitalypb.InfoRefsRequest, s gitalypb.SmartHTTPService_InfoRefsUploadPackServer) error {
+		InfoRefsUploadPackFunc: func(_ *gitalypb.InfoRefsRequest, _ gitalypb.SmartHTTPService_InfoRefsUploadPackServer) error {
 			return grpcstatus.Error(grpccodes.Unavailable, "error")
 		},
 	})

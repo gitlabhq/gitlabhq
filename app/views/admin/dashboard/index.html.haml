@@ -24,7 +24,7 @@
     = render_if_exists 'admin/licenses/summary'
     = render_if_exists 'admin/licenses/breakdown'
 
-.admin-dashboard.gl-mt-3
+.admin-dashboard.gl-mt-3{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_dashboard_pageload' } }
   .h3.gl-mb-5.gl-mt-0= _('Instance overview')
   .row
     - component_params = { body_options: { class: 'gl-display-flex gl-justify-content-space-between gl-align-items-flex-start' } }

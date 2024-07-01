@@ -129,7 +129,7 @@ func TestAllowedStaticFile(t *testing.T) {
 	setupStaticFile(t, "static file.txt", content)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		proxied = true
 		w.WriteHeader(404)
 	})
@@ -260,7 +260,7 @@ func TestGzipAssets(t *testing.T) {
 	setupStaticFile(t, path+".gz", contentGzip)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		proxied = true
 		w.WriteHeader(404)
 	})
@@ -312,7 +312,7 @@ func TestAltDocumentAssets(t *testing.T) {
 	setupAltStaticFile(t, path+".gz", contentGzip)
 
 	proxied := false
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		proxied = true
 		w.WriteHeader(404)
 	})
@@ -366,7 +366,7 @@ func TestAltDocumentAssets(t *testing.T) {
 var sendDataHeader = "Gitlab-Workhorse-Send-Data"
 
 func sendDataResponder(command string, literalJSON string) *httptest.Server {
-	handler := func(w http.ResponseWriter, r *http.Request) {
+	handler := func(w http.ResponseWriter, _ *http.Request) {
 		data := base64.URLEncoding.EncodeToString([]byte(literalJSON))
 		w.Header().Set(sendDataHeader, fmt.Sprintf("%s:%s", command, data))
 
@@ -442,17 +442,17 @@ func TestImageResizing(t *testing.T) {
 func TestSendURLForArtifacts(t *testing.T) {
 	expectedBody := strings.Repeat("CONTENT!", 1024)
 
-	regularHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	regularHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Length", strconv.Itoa(len(expectedBody)))
 		w.Write([]byte(expectedBody))
 	})
 
-	chunkedHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	chunkedHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Transfer-Encoding", "chunked")
 		w.Write([]byte(expectedBody))
 	})
 
-	rawHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	rawHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		hj, ok := w.(http.Hijacker)
 		assert.Equal(t, true, ok)
 
@@ -562,7 +562,7 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 }
 
 func TestCorrelationIdHeader(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Add("X-Request-Id", "12345678")
 		w.WriteHeader(200)
 	})
@@ -671,7 +671,7 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 }
 
 func TestRejectUnknownMethod(t *testing.T) {
-	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
+	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(200)
 	})
 	defer ts.Close()
@@ -789,7 +789,7 @@ func runOrFail(t *testing.T, cmd *exec.Cmd) {
 	require.NoError(t, err)
 }
 
-func gitOkBody(t *testing.T) *api.Response {
+func gitOkBody(_ *testing.T) *api.Response {
 	return &api.Response{
 		GL_ID:       "user-123",
 		GL_USERNAME: "username",

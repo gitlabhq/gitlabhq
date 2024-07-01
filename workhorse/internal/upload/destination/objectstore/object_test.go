@@ -121,7 +121,7 @@ func (e *endlessReader) Read(p []byte) (n int, err error) {
 // This is important for troubleshooting in production.
 func TestObjectUploadBrokenConnection(t *testing.T) {
 	// This test server closes connection immediately
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		hj, ok := w.(http.Hijacker)
 		if !ok {
 			assert.FailNow(t, "webserver doesn't support hijacking")

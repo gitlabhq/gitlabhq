@@ -138,7 +138,7 @@ func TestUploadHandlerSendingToExternalStorage(t *testing.T) {
 func TestUploadHandlerSendingToExternalStorageAndStorageServerUnreachable(t *testing.T) {
 	tempPath := t.TempDir()
 
-	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
+	responseProcessor := func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatal("it should not be called")
 	}
 
@@ -160,7 +160,7 @@ func TestUploadHandlerSendingToExternalStorageAndStorageServerUnreachable(t *tes
 func TestUploadHandlerSendingToExternalStorageAndInvalidURLIsUsed(t *testing.T) {
 	tempPath := t.TempDir()
 
-	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
+	responseProcessor := func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatal("it should not be called")
 	}
 
@@ -189,7 +189,7 @@ func TestUploadHandlerSendingToExternalStorageAndItReturnsAnError(t *testing.T) 
 		w.WriteHeader(510)
 	})
 
-	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
+	responseProcessor := func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatal("it should not be called")
 	}
 
@@ -214,11 +214,11 @@ func TestUploadHandlerSendingToExternalStorageAndItReturnsAnError(t *testing.T) 
 func TestUploadHandlerSendingToExternalStorageAndSupportRequestTimeout(t *testing.T) {
 	shutdown := make(chan struct{})
 	storeServerMux := http.NewServeMux()
-	storeServerMux.HandleFunc(putURL, func(w http.ResponseWriter, r *http.Request) {
+	storeServerMux.HandleFunc(putURL, func(_ http.ResponseWriter, _ *http.Request) {
 		<-shutdown
 	})
 
-	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
+	responseProcessor := func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatal("it should not be called")
 	}
 
@@ -266,7 +266,7 @@ func TestUploadHandlerMultipartUploadSizeLimit(t *testing.T) {
 		},
 	}
 
-	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
+	responseProcessor := func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatal("it should not be called")
 	}
 
@@ -306,7 +306,7 @@ func TestUploadHandlerMultipartUploadMaximumSizeFromApi(t *testing.T) {
 		},
 	}
 
-	responseProcessor := func(w http.ResponseWriter, r *http.Request) {
+	responseProcessor := func(_ http.ResponseWriter, _ *http.Request) {
 		t.Fatal("it should not be called")
 	}
 

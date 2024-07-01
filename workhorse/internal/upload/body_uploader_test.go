@@ -78,7 +78,7 @@ func TestRequestBodyErrors(t *testing.T) {
 }
 
 func testNoProxyInvocation(t *testing.T, expectedStatus int, auth PreAuthorizer, preparer Preparer) {
-	proxy := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	proxy := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		assert.Fail(t, "request proxied upstream")
 	})
 
@@ -153,7 +153,7 @@ type rails struct {
 
 func (r *rails) PreAuthorizeHandler(next api.HandleFunc, _ string) http.Handler {
 	if r.unauthorized {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		return http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(http.StatusUnauthorized)
 		})
 	}

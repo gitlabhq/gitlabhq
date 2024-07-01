@@ -69,7 +69,7 @@ func TestPreAuthorizeJsonFailure(t *testing.T) {
 }
 
 func TestPreAuthorizeContentTypeFailure(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		_, err := w.Write([]byte(`{"hello":"world"}`))
 		assert.NoError(t, err, "write auth response")
 	}))

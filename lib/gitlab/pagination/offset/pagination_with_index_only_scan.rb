@@ -17,7 +17,7 @@ module Gitlab
       #
       # scope = Issue.where(project_id: 1).order(:id)
       #
-      # records = PaginationWithIndexOnlyScan.new(scope: scope, page: 5, per_page: 100).pageinate_with_kaminari
+      # records = PaginationWithIndexOnlyScan.new(scope: scope, page: 5, per_page: 100).paginate_with_kaminari
       # puts records.to_a
       # puts records.total_count
       class PaginationWithIndexOnlyScan
@@ -32,7 +32,7 @@ module Gitlab
           @original_order_values = scope.order_values
         end
 
-        def pageinate_with_kaminari
+        def paginate_with_kaminari
           original_kaminari_query = scope.page(page).per(per_page)
 
           # Check for keyset pagination support

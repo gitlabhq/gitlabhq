@@ -99,7 +99,7 @@ func TestInject(t *testing.T) {
 	testhelper.ConfigureSecret()
 
 	for _, tc := range testCases {
-		originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			w.Header().Set("Content-Length", strconv.Itoa(tc.contentLength))
 			w.Write([]byte(content))
 		}))
@@ -108,7 +108,7 @@ func TestInject(t *testing.T) {
 		// RequestBody expects http.Handler as its second param, we can create a stub function and verify that
 		// it's only called for successful requests
 		handlerIsCalled := false
-		handlerFunc := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) { handlerIsCalled = true })
+		handlerFunc := http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) { handlerIsCalled = true })
 
 		bodyUploader := upload.RequestBody(&fakePreAuthHandler{}, handlerFunc, &upload.DefaultPreparer{})
 
@@ -130,7 +130,7 @@ func TestSuccessfullRequest(t *testing.T) {
 	contentType := "foo"
 	dockerContentDigest := "sha256:asdf1234"
 	overriddenHeader := "originResourceServer"
-	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Length", contentLength)
 		w.Header().Set("Content-Type", contentType)
 		w.Header().Set("Docker-Content-Digest", dockerContentDigest)
@@ -140,7 +140,7 @@ func TestSuccessfullRequest(t *testing.T) {
 	defer originResourceServer.Close()
 
 	uploadHandler := &fakeUploadHandler{
-		handler: func(w http.ResponseWriter, r *http.Request) {
+		handler: func(w http.ResponseWriter, _ *http.Request) {
 			w.WriteHeader(200)
 		},
 	}
@@ -311,7 +311,7 @@ func TestInvalidUploadConfiguration(t *testing.T) {
 }
 
 func TestTimeoutConfiguration(t *testing.T) {
-	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		time.Sleep(20 * time.Millisecond)
 	}))
 	defer originResourceServer.Close()
@@ -362,13 +362,13 @@ func TestIncorrectSendDataUrl(t *testing.T) {
 }
 
 func TestFailedOriginServer(t *testing.T) {
-	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.WriteHeader(404)
 		w.Write([]byte("Not found"))
 	}))
 
 	uploadHandler := &fakeUploadHandler{
-		handler: func(w http.ResponseWriter, r *http.Request) {
+		handler: func(_ http.ResponseWriter, _ *http.Request) {
 			assert.FailNow(t, "the error response must not be uploaded")
 		},
 	}
@@ -389,7 +389,7 @@ func TestLongUploadRequest(t *testing.T) {
 	contentLength := strconv.Itoa(len(content))
 
 	// the server holding the upstream resource
-	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	originResourceServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Length", contentLength)
 		w.Write(content)
 	}))
@@ -397,7 +397,7 @@ func TestLongUploadRequest(t *testing.T) {
 
 	// the server receiving the upload request
 	// it makes the upload request artifically long with a sleep
-	uploadServer := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	uploadServer := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, _ *http.Request) {
 		time.Sleep(40 * time.Millisecond)
 	}))
 	defer uploadServer.Close()

@@ -179,7 +179,7 @@ func TestSendGitAuditEvent(t *testing.T) {
 		requestBody    GitAuditEventRequest
 	)
 
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/api/v4/internal/shellhorse/git_audit_event" {
 			return
 		}

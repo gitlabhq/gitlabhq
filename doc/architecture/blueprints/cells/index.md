@@ -391,6 +391,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 - [ADR-006: Use Geo for Disaster Recovery](decisions/006_disaster_recovery_geo.md)
 - [ADR-007: Cells 1.0 for internal customers only](decisions/007_internal_customers.md)
 - [ADR-008: Cluster wide unique database sequences](decisions/008_database_sequences.md)
+- [ADR-009: Initial Cell Sizes](decisions/009_cell_initial_sizing.md)
 
 ## Links
 
