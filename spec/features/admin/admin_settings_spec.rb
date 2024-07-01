@@ -233,7 +233,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       context 'Change Sign-up restrictions' do
         context 'Require Admin approval for new signup setting' do
           it 'changes the setting', :js do
-            page.within('.as-signup') do
+            within_testid('sign-up-restrictions-settings-content') do
               check 'Require admin approval for new sign-ups'
               click_button 'Save changes'
             end
@@ -249,7 +249,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
           end
 
           it 'changes the setting', :js do
-            page.within('.as-signup') do
+            within_testid('sign-up-restrictions-settings-content') do
               choose 'Hard'
               click_button 'Save changes'
             end
@@ -261,7 +261,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'change Sign-in restrictions' do
-        page.within('.as-signin') do
+        within_testid('signin-settings') do
           fill_in 'Home page URL', with: 'https://about.gitlab.com/'
           click_button 'Save changes'
         end
@@ -275,7 +275,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         _existing_terms = create(:term)
         accept_terms(admin)
 
-        page.within('.as-terms') do
+        within_testid('terms-settings') do
           check 'All users must accept the Terms of Service and Privacy Policy to access GitLab'
           fill_in 'Terms of Service Agreement', with: 'Be nice!'
           click_button 'Save changes'
@@ -292,7 +292,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'modify oauth providers' do
         expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
 
-        page.within('.as-signin') do
+        within_testid('signin-settings') do
           uncheck 'Google'
           click_button 'Save changes'
         end
@@ -300,7 +300,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         expect(page).to have_content 'Application settings saved successfully'
         expect(current_settings.disabled_oauth_sign_in_sources).to include('google_oauth2')
 
-        page.within('.as-signin') do
+        within_testid('signin-settings') do
           check "Google"
           click_button 'Save changes'
         end
@@ -312,7 +312,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       it 'oauth providers do not raise validation errors when saving unrelated changes' do
         expect(current_settings.disabled_oauth_sign_in_sources).to be_empty
 
-        page.within('.as-signin') do
+        within_testid('signin-settings') do
           uncheck 'Google'
           click_button 'Save changes'
         end
@@ -324,7 +324,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         allow(Devise).to receive(:omniauth_providers).and_return([])
 
         # Save an unrelated setting
-        page.within('.as-terms') do
+        within_testid('terms-settings') do
           click_button 'Save changes'
         end
 
@@ -333,7 +333,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'configure web terminal' do
-        page.within('.as-terminal') do
+        within_testid('terminal-settings') do
           fill_in 'Max session time', with: 15
           click_button 'Save changes'
         end
@@ -378,7 +378,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         let(:update_heading) { 'Update your Slack app' }
 
         it 'has all sections' do
-          page.within('.as-slack') do
+          within_testid('slack-settings') do
             expect(page).to have_content(create_heading)
             expect(page).to have_content(configure_heading)
             expect(page).to have_content(update_heading)
@@ -387,7 +387,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
 
         context 'when GitLab.com', :saas do
           it 'only has the configure section' do
-            page.within('.as-slack') do
+            within_testid('slack-settings') do
               expect(page).to have_content(configure_heading)
 
               expect(page).not_to have_content(create_heading)
@@ -397,7 +397,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
         end
 
         it 'changes the settings' do
-          page.within('.as-slack') do
+          within_testid('slack-settings') do
             check 'Enable GitLab for Slack app'
             fill_in 'Client ID', with: 'slack_app_id'
             fill_in 'Client secret', with: 'slack_app_secret'
@@ -424,7 +424,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'enable hiding third party offers' do
-        page.within('.as-third-party-offers') do
+        within_testid('third-party-offers-settings') do
           check 'Do not display content for customer experience improvement and offers from third parties'
           click_button 'Save changes'
         end
@@ -434,7 +434,7 @@ RSpec.describe 'Admin updates settings', feature_category: :shared do
       end
 
       it 'enabling Mailgun events', :aggregate_failures do
-        page.within('.as-mailgun') do
+        within_testid('mailgun-settings') do
           check 'Enable Mailgun event receiver'
           fill_in 'Mailgun HTTP webhook signing key', with: 'MAILGUN_SIGNING_KEY'
           click_button 'Save changes'

@@ -166,6 +166,20 @@ module API
           present runner, with: Entities::Ci::RunnerDetails, current_user: current_user
         end
 
+        desc "Get a list of all runner's managers" do
+          success Entities::Ci::RunnerManager
+          failure [[403, 'Forbidden']]
+        end
+        params do
+          requires :id, type: Integer, desc: 'The ID of a runner'
+        end
+        get ':id/managers' do
+          runner = get_runner(params[:id])
+          authenticate_show_runner!(runner)
+
+          present runner.runner_managers, with: Entities::Ci::RunnerManager
+        end
+
         desc "Update runner's details" do
           summary "Update details of a runner"
           success Entities::Ci::RunnerDetails

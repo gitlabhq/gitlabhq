@@ -1,16 +1,12 @@
 - expanded = integration_expanded?('gitpod_')
 
-%section.settings.no-animate#js-gitpod-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Gitpod')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    .gl-text-secondary.gl-mb-5
-      #js-gitpod-settings-help-text{ data: {"message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" } }
-      = link_to sprite_icon('question-o'), help_page_path('integration/gitpod'), target: '_blank', class: 'has-tooltip', title: _('More information')
-
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Gitpod'),
+  id: 'js-gitpod-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    #js-gitpod-settings-help-text{ data: {"message" => gitpod_enable_description, "message-url" => "https://gitpod.io/" } }
+    = link_to sprite_icon('question-o'), help_page_path('integration/gitpod'), target: '_blank', class: 'has-tooltip', title: _('More information')
+  - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-gitpod-settings'), html: { class: 'fieldset-form', id: 'gitpod-settings' } do |f|
       = form_errors(@application_setting)
 

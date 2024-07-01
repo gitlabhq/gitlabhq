@@ -275,6 +275,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :project_callouts, class_name: 'Users::ProjectCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
+  belongs_to :created_by, class_name: 'User', optional: true
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
@@ -1566,10 +1567,6 @@ class User < MainClusterwide::ApplicationRecord
         DeployKey.where(id: project_deploy_keys.select(:deploy_key_id)),
         DeployKey.are_public
       ])
-  end
-
-  def created_by
-    User.find_by(id: created_by_id) if created_by_id
   end
 
   def sanitize_attrs

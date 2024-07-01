@@ -7997,6 +7997,7 @@ CREATE TABLE ci_pipelines (
     partition_id bigint NOT NULL,
     id bigint NOT NULL,
     auto_canceled_by_id bigint,
+    auto_canceled_by_partition_id bigint,
     CONSTRAINT check_d7e99a025e CHECK ((lock_version IS NOT NULL))
 );
 

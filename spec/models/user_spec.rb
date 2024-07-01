@@ -155,6 +155,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'associations' do
+    it { is_expected.to belong_to(:created_by).class_name('User').optional }
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_one(:status) }
     it { is_expected.to have_one(:user_detail) }

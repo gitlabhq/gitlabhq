@@ -1,15 +1,14 @@
 - expanded = integration_expanded?('snowplow_')
-%section.settings.as-snowplow.no-animate#js-snowplow-settings{ class: ('expanded' if expanded), data: { testid: 'snowplow-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Snowplow')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      - help_link = link_to('', help_page_path('development/internal_analytics/internal_event_instrumentation/index'), target: '_blank', rel: 'noopener noreferrer')
-      - snowplow_link = link_to('', 'https://snowplow.io/', target: '_blank', rel: 'noopener noreferrer')
-      = safe_format(_('Configure %{snowplow_link_start}Snowplow%{snowplow_link_end} to track events. %{help_link_start}Learn more.%{help_link_end}'), tag_pair(snowplow_link, :snowplow_link_start, :snowplow_link_end), tag_pair(help_link, :help_link_start, :help_link_end))
-  .settings-content
+
+= render ::Layouts::SettingsBlockComponent.new(_('Snowplow'),
+  id: 'js-snowplow-settings',
+  testid: 'snowplow-settings-content',
+  expanded: expanded) do |c|
+  - c.with_description do
+    - help_link = link_to('', help_page_path('development/internal_analytics/internal_event_instrumentation/index'), target: '_blank', rel: 'noopener noreferrer')
+    - snowplow_link = link_to('', 'https://snowplow.io/', target: '_blank', rel: 'noopener noreferrer')
+    = safe_format(_('Configure %{snowplow_link_start}Snowplow%{snowplow_link_end} to track events. %{help_link_start}Learn more.%{help_link_end}'), tag_pair(snowplow_link, :snowplow_link_start, :snowplow_link_end), tag_pair(help_link, :help_link_start, :help_link_end))
+  - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-snowplow-settings'), html: { class: 'fieldset-form', id: 'snowplow-settings' } do |f|
       = form_errors(@application_setting) if expanded
 

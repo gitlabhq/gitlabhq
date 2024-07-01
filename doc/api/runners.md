@@ -537,6 +537,53 @@ Example response:
 ]
 ```
 
+## List runner's managers
+
+List all the managers of a runner.
+
+```plaintext
+GET /runners/:id/managers
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id`      | integer | yes      | The ID of a runner  |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/managers"
+```
+
+Example response:
+
+```json
+[
+    {
+      "id": 1,
+      "system_id": "s_89e5e9956577",
+      "version": "16.11.1",
+      "revision": "535ced5f",
+      "platform": "linux",
+      "architecture": "amd64",
+      "created_at": "2024-06-09T11:12:02.507Z",
+      "contacted_at": "2024-06-09T06:30:09.355Z",
+      "ip_address": "127.0.0.1",
+      "status": "offline"
+    },
+    {
+        "id": 2,
+        "system_id": "runner-2",
+        "version": "16.11.0",
+        "revision": "91a27b2a",
+        "platform": "linux",
+        "architecture": "amd64",
+        "created_at": "2024-06-09T09:12:02.507Z",
+      "contacted_at": "2024-06-09T06:30:09.355Z",
+        "ip_address": "127.0.0.1",
+        "status": "offline",
+
+    }
+]
+
 ## List project's runners
 
 List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).

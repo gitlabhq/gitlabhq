@@ -1,14 +1,12 @@
 - expanded = integration_expanded?('diagramsnet_')
-%section.settings.as-diagramsnet.no-animate#js-diagramsnet-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Diagrams.net')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Render diagrams in your documents using diagrams.net.')
-      = link_to _('Learn more.'), help_page_path('administration/integration/diagrams_net'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+
+= render ::Layouts::SettingsBlockComponent.new(_('Diagrams.net'),
+  id: 'js-diagramsnet-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Render diagrams in your documents using diagrams.net.')
+    = link_to _('Learn more.'), help_page_path('administration/integration/diagrams_net'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-diagramsnet-settings'), html: { class: 'fieldset-form', id: 'diagramsnet-settings' } do |f|
       = form_errors(@application_setting) if expanded
 

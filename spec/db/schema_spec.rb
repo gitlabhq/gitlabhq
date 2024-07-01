@@ -65,7 +65,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_pipeline_messages: %w[partition_id],
     ci_pipeline_metadata: %w[partition_id],
     ci_pipeline_variables: %w[partition_id],
-    ci_pipelines: %w[partition_id],
+    ci_pipelines: %w[partition_id auto_canceled_by_partition_id],
     ci_runner_projects: %w[runner_id],
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_sources_projects: %w[partition_id],

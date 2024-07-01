@@ -19,7 +19,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   let_it_be(:group) { create(:group, owners: user) }
   let_it_be(:subgroup) { create(:group, parent: group) }
 
-  let_it_be(:shared_runner, reload: true) { create(:ci_runner, :instance, description: 'Shared runner') }
+  let_it_be(:shared_runner, reload: true) { create(:ci_runner, :instance, :with_runner_manager, description: 'Shared runner') }
   let_it_be(:project_runner, reload: true) { create(:ci_runner, :project, description: 'Project runner', projects: [project]) }
   let_it_be(:two_projects_runner) { create(:ci_runner, :project, description: 'Two projects runner', projects: [project, project2]) }
   let_it_be(:group_runner_a) { create(:ci_runner, :group, description: 'Group runner A', groups: [group]) }
@@ -204,6 +204,55 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
 
     context 'unauthorized user' do
       let(:current_user) { nil }
+
+      it 'does not return runners' do
+        perform_request
+
+        expect(response).to have_gitlab_http_status(:unauthorized)
+      end
+    end
+  end
+
+  describe 'GET /runners/:id/managers' do
+    let(:path) { "/runners/#{runner.id}/managers" }
+
+    subject(:perform_request) { get api(path, current_user) }
+
+    context 'authorized user' do
+      let(:current_user) { user }
+
+      context 'when runner has managers' do
+        let(:runner) { shared_runner }
+        let(:manager) { runner.runner_managers.first }
+
+        it 'returns all managers of the runner' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(json_response).to contain_exactly(
+            a_hash_including('id' => manager.id, 'version' => manager.version, 'architecture' => manager.architecture)
+          )
+        end
+      end
+
+      context 'when runner does not have managers' do
+        let(:runner) { project_runner }
+
+        it 'returns no managers' do
+          perform_request
+
+          expect(response).to have_gitlab_http_status(:ok)
+
+          expect(json_response).to be_empty
+        end
+      end
+    end
+
+    context 'unauthorized user' do
+      let(:current_user) { nil }
+
+      let(:runner) { shared_runner }
 
       it 'does not return runners' do
         perform_request

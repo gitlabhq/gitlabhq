@@ -132,7 +132,7 @@ export default {
     <template v-if="registrationToken">
       <h5 class="gl-mb-3">{{ $options.i18n.runnerRegistrationToken }}</h5>
       <div class="gl-display-flex">
-        <pre class="gl-bg-gray gl-flex-grow-1 gl-white-space-pre-line">{{ registrationToken }}</pre>
+        <pre class="gl-bg-gray gl-flex-grow-1 gl-whitespace-pre-line">{{ registrationToken }}</pre>
         <modal-copy-button
           :title="$options.i18n.copyInstructions"
           :text="registrationToken"

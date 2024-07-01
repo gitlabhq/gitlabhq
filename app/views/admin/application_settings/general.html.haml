@@ -3,102 +3,84 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
-%section.settings.as-visibility-access.no-animate#js-visibility-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'admin-visibility-access-settings' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Visibility and access controls')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_('AdminSettings|Set visibility of project contents and configure Git access protocols.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Visibility and access controls'),
+  id: 'js-visibility-settings',
+  testid: 'admin-visibility-access-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('AdminSettings|Set visibility of project contents and configure Git access protocols.')
+  - c.with_body do
     = render 'visibility_and_access'
 
-%section.settings.as-account-limit.no-animate#js-account-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'account-and-limit-settings-content'} }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Account and limit')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Account and limit'),
+  id: 'js-account-settings',
+  testid: 'account-and-limit-settings-content',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set projects and maximum size limits, session duration, user options, and check feature availability for namespace plan.')
+  - c.with_body do
     = render 'account_and_limit'
 
 = render_if_exists 'admin/application_settings/ai_powered'
 
-%section.settings.as-import-export.no-animate#js-import-export-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'admin-import-export-settings' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Import and export settings')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle '}) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure import sources and settings related to import and export features.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Import and export settings'),
+  id: 'js-import-export-settings',
+  testid: 'admin-import-export-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure import sources and settings related to import and export features.')
+  - c.with_body do
     = render 'import_and_export'
 
-%section.settings.as-diff-limits.no-animate#js-merge-request-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Diff limits')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set size limits for displaying diffs in the browser.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Diff limits'),
+  id: 'js-merge-request-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set size limits for displaying diffs in the browser.')
+  - c.with_body do
     = render 'diff_limits'
 
-%section.settings.as-signup.no-animate#js-signup-settings{ class: ('expanded' if expanded_by_default?), data: { testid: 'sign-up-restrictions-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Sign-up restrictions')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure the way a user creates a new account.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Sign-up restrictions'),
+  id: 'js-signup-settings',
+  testid: 'sign-up-restrictions-settings-content',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Configure the way a user creates a new account.')
+  - c.with_body do
     = render 'signup'
 
-%section.settings.as-signin.no-animate#js-signin-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Sign-in restrictions')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set sign-in restrictions for all users.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Sign-in restrictions'),
+  id: 'js-signin-settings',
+  testid: 'signin-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set sign-in restrictions for all users.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/sign_in_restrictions'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'signin'
 
-%section.settings.as-terms.no-animate#js-terms-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Terms of Service and Privacy Policy')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance.')
-      = link_to _('Learn more.'), help_page_path('administration/settings/terms'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Terms of Service and Privacy Policy'),
+  id: 'js-terms-settings',
+  testid: 'terms-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Add a Terms of Service agreement and Privacy Policy for users of this GitLab instance.')
+    = link_to _('Learn more.'), help_page_path('administration/settings/terms'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'terms'
 
 = render 'admin/application_settings/external_authorization_service_form', expanded: expanded_by_default?
-
 = render_if_exists 'admin/application_settings/microsoft_application'
 = render_if_exists 'admin/application_settings/scim'
 
-%section.settings.as-terminal.no-animate#js-terminal-settings{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Web terminal')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Set the maximum session time for a web terminal.')
-      = link_to _('How do I use a web terminal?'), help_page_path('ci/environments/index', anchor: 'web-terminals-deprecated'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Web terminal'),
+  id: 'js-terminal-settings',
+  testid: 'terminal-settings',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = _('Set the maximum session time for a web terminal.')
+    = link_to _('How do I use a web terminal?'), help_page_path('ci/environments/index', anchor: 'web-terminals-deprecated'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = render 'terminal'
 
 = render_if_exists 'admin/application_settings/maintenance_mode_settings_form'
