@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Analytics::CycleAnalytics::Aggregated::BaseQueryBuilder do
-  let_it_be(:group) { create(:group) }
-  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:group) { create(:group, :with_organization) }
+  let_it_be(:project) { create(:project, namespace: group) }
   let_it_be(:milestone) { create(:milestone, project: project) }
   let_it_be(:user_1) { create(:user) }
 

@@ -189,7 +189,6 @@ RSpec/AnyInstanceOf:
     - 'spec/lib/mattermost/team_spec.rb'
     - 'spec/lib/system_check/simple_executor_spec.rb'
     - 'spec/models/ci/build_spec.rb'
-    - 'spec/models/ci/runner_spec.rb'
     - 'spec/models/environment_spec.rb'
     - 'spec/models/hooks/service_hook_spec.rb'
     - 'spec/models/hooks/system_hook_spec.rb'

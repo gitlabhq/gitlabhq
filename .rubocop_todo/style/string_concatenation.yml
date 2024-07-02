@@ -117,7 +117,6 @@ Style/StringConcatenation:
     - 'lib/tasks/tanuki_emoji.rake'
     - 'qa/qa/page/component/snippet.rb'
     - 'qa/qa/page/milestone/new.rb'
-    - 'qa/qa/specs/features/browser_ui/3_create/source_editor/source_editor_toolbar_spec.rb'
     - 'qa/qa/specs/features/ee/browser_ui/3_create/repository/assign_code_owners_spec.rb'
     - 'qa/qa/tools/generate_perf_testdata.rb'
     - 'scripts/perf/gc/print_gc_stats.rb'

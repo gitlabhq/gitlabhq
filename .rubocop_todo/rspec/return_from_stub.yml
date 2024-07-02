@@ -67,7 +67,6 @@ RSpec/ReturnFromStub:
     - 'spec/controllers/projects/issues_controller_spec.rb'
     - 'spec/controllers/projects/jobs_controller_spec.rb'
     - 'spec/controllers/projects/merge_requests/creations_controller_spec.rb'
-    - 'spec/controllers/projects/merge_requests_controller_spec.rb'
     - 'spec/controllers/projects_controller_spec.rb'
     - 'spec/features/groups/clusters/user_spec.rb'
     - 'spec/features/groups/container_registry_spec.rb'

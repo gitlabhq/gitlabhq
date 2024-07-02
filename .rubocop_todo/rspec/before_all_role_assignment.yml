@@ -655,7 +655,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/support/shared_examples/policies/dast_on_demand_scans_shared_examples.rb'
     - 'ee/spec/support/shared_examples/serializers/report_status_shared_examples.rb'
     - 'ee/spec/views/shared/promotions/_promotion_link_project.html.haml_spec.rb'
-    - 'ee/spec/workers/abuse/new_abuse_report_worker_spec.rb'
     - 'ee/spec/workers/app_sec/dast/profile_schedule_worker_spec.rb'
     - 'ee/spec/workers/compliance_management/update_default_framework_worker_spec.rb'
     - 'ee/spec/workers/ee/ci/build_finished_worker_spec.rb'

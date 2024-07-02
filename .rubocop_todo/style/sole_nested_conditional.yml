@@ -24,7 +24,6 @@ Style/SoleNestedConditional:
     - 'ee/app/workers/ee/post_receive.rb'
     - 'ee/lib/ee/gitlab/auth/o_auth/auth_hash.rb'
     - 'ee/lib/ee/gitlab/checks/push_rules/commit_check.rb'
-    - 'ee/lib/elastic/latest/issue_class_proxy.rb'
     - 'lib/api/deploy_keys.rb'
     - 'lib/api/helpers/label_helpers.rb'
     - 'lib/api/maven_packages.rb'

@@ -475,7 +475,7 @@ test:
 
 In this example, GitLab checks for the existence of `file.md` in the current project.
 
-There is a known issue if you configure `include` with `rules:exists` in an include file
+Review your configuration carefully if you use `include` with `rules:exists` in an include file
 from a different project. GitLab checks for the existence of the file in the _other_ project.
 For example:
 

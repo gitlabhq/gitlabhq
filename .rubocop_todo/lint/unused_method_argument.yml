@@ -247,7 +247,6 @@ Lint/UnusedMethodArgument:
     - 'ee/app/services/projects/update_mirror_service.rb'
     - 'ee/app/workers/gitlab_subscriptions/refresh_seats_worker.rb'
     - 'ee/db/fixtures/development/20_burndown.rb'
-    - 'ee/lib/audit/compliance_framework_changes_auditor.rb'
     - 'ee/lib/compliance_management/compliance_report/commit_loader.rb'
     - 'ee/lib/ee/api/ci/helpers/runner.rb'
     - 'ee/lib/ee/api/entities/project.rb'

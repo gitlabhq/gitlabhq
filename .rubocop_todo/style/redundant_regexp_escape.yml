@@ -12,7 +12,6 @@ Style/RedundantRegexpEscape:
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/vulnerability.rb'
     - 'ee/lib/ee/gitlab/path_regex.rb'
-    - 'ee/lib/elastic/latest/merge_request_class_proxy.rb'
     - 'ee/lib/gitlab/geo/git_ssh_proxy.rb'
     - 'ee/lib/gitlab/return_to_location.rb'
     - 'ee/spec/features/read_only_spec.rb'

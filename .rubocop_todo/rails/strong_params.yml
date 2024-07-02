@@ -1,7 +1,6 @@
 ---
 # Cop supports --autocorrect.
 Rails/StrongParams:
-  Details: grace period
   Exclude:
     - 'app/controllers/abuse_reports_controller.rb'
     - 'app/controllers/acme_challenges_controller.rb'

@@ -1,6 +1,5 @@
 ---
 RSpec/NamedSubject:
-  Details: grace period
   Exclude:
     - 'ee/spec/controllers/admin/audit_log_reports_controller_spec.rb'
     - 'ee/spec/controllers/admin/emails_controller_spec.rb'
@@ -440,9 +439,11 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/llm/concerns/exponential_backoff_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/categorize_question_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/explain_vulnerability_spec.rb'
+    - 'ee/spec/lib/gitlab/llm/templates/fill_in_merge_request_template_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/generate_commit_message_spec.rb'
     - 'ee/spec/lib/gitlab/llm/templates/summarize_review_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/completions/analyze_ci_job_failure_spec.rb'
+    - 'ee/spec/lib/gitlab/llm/vertex_ai/completions/fill_in_merge_request_template_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/completions/generate_commit_message_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/completions/summarize_review_spec.rb'
     - 'ee/spec/lib/gitlab/llm/vertex_ai/model_configurations/chat_spec.rb'
@@ -1133,7 +1134,6 @@ RSpec/NamedSubject:
     - 'ee/spec/workers/elastic/migration_worker_spec.rb'
     - 'ee/spec/workers/elastic/namespace_update_worker_spec.rb'
     - 'ee/spec/workers/elastic_association_indexer_worker_spec.rb'
-    - 'ee/spec/workers/elastic_cluster_reindexing_cron_worker_spec.rb'
     - 'ee/spec/workers/elastic_commit_indexer_worker_spec.rb'
     - 'ee/spec/workers/elastic_full_index_worker_spec.rb'
     - 'ee/spec/workers/elastic_indexing_control_worker_spec.rb'
@@ -2751,7 +2751,6 @@ RSpec/NamedSubject:
     - 'spec/requests/api/ci/runner/jobs_artifacts_spec.rb'
     - 'spec/requests/api/ci/runner/runners_delete_spec.rb'
     - 'spec/requests/api/commit_statuses_spec.rb'
-    - 'spec/requests/api/commits_spec.rb'
     - 'spec/requests/api/composer_packages_spec.rb'
     - 'spec/requests/api/container_repositories_spec.rb'
     - 'spec/requests/api/deploy_keys_spec.rb'
@@ -3351,7 +3350,6 @@ RSpec/NamedSubject:
     - 'spec/services/topics/merge_service_spec.rb'
     - 'spec/services/two_factor/destroy_service_spec.rb'
     - 'spec/services/update_container_registry_info_service_spec.rb'
-    - 'spec/services/upload_service_spec.rb'
     - 'spec/services/uploads/destroy_service_spec.rb'
     - 'spec/services/user_agent_detail_service_spec.rb'
     - 'spec/services/users/activity_service_spec.rb'

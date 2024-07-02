@@ -11,21 +11,29 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 FLAG:
-On self-managed GitLab, by default this feature is available. To hide the feature, an administrator can [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
+On self-managed GitLab, by default this feature is available. To hide the feature,
+an administrator can [disable the feature flag](../administration/feature_flags.md) named `sourcegraph`.
 On GitLab.com, this feature is available for public projects only.
 
-[Sourcegraph](https://sourcegraph.com) provides code intelligence features, natively integrated into the GitLab UI.
+[Sourcegraph](https://sourcegraph.com) provides code intelligence features in the GitLab UI.
+When enabled, participating projects display a code intelligence popover in
+these code views:
 
-For GitLab.com users, see [Sourcegraph for GitLab.com](#sourcegraph-for-gitlabcom).
+- Merge request diffs
+- Commit view
+- File view
 
-![Sourcegraph demo](img/sourcegraph_demo_v12_5.png)
+When visiting one of these views, hover over a code reference to see a popover with:
+
+- Details on how this reference was defined.
+- **Go to definition**, which goes to the line of code where this reference was defined.
+- **Find references**, which goes to the configured Sourcegraph instance, showing a list of references to the highlighted code.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, watch the video [Sourcegraph's new GitLab native integration](https://www.youtube.com/watch?v=LjVxkt4_sEA).
+<!-- Video published on 2019-11-12 -->
 
-NOTE:
-This feature requires user opt-in. After Sourcegraph has been enabled for your GitLab instance,
-you can choose to enable Sourcegraph [through your user preferences](#enable-sourcegraph-in-user-preferences).
+For more information, see [epic 2201](https://gitlab.com/groups/gitlab-org/-/epics/2201).
 
 ## Set up for self-managed GitLab instances
 
@@ -33,79 +41,67 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-Before you can enable Sourcegraph code intelligence in GitLab you must:
-configure a Sourcegraph instance with your GitLab instance as an external service.
+Prerequisites:
 
-### Set up a self-managed Sourcegraph instance
+- You must have a Sourcegraph instance [configured and running](https://docs.sourcegraph.com/admin)
+  with your GitLab instance as an external service.
+- If your Sourcegraph instance uses a HTTPS connection to GitLab, you must
+  [configure HTTPS](https://docs.sourcegraph.com/admin/http_https_configuration)
+  for your Sourcegraph instance.
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** Self-managed, GitLab Dedicated
+In Sourcegraph:
 
-If you are new to Sourcegraph, head over to the [Sourcegraph installation documentation](https://docs.sourcegraph.com/admin) and get your instance up and running.
+1. Go to the site Admin Area.
+1. Optional. [Configure your GitLab external service](https://docs.sourcegraph.com/admin/external_service/gitlab).
+   If your GitLab repositories are already searchable in Sourcegraph, you can skip this step.
+1. Confirm that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.
+1. Add your GitLab instance URL to the [`corsOrigin` setting](https://docs.sourcegraph.com/admin/config/site_config#corsOrigin)
+   in your Sourcegraph configuration.
 
-If you are using an HTTPS connection to GitLab, you must [configure HTTPS](https://docs.sourcegraph.com/admin/http_https_configuration) for your Sourcegraph instance.
-
-### Connect your Sourcegraph instance to your GitLab instance
-
-1. Go to the site Admin Area in Sourcegraph.
-1. [Configure your GitLab external service](https://docs.sourcegraph.com/admin/external_service/gitlab).
-   You can skip this step if you already have your GitLab repositories searchable in Sourcegraph.
-1. Validate that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.
-1. Add your GitLab instance URL to the [`corsOrigin` setting](https://docs.sourcegraph.com/admin/config/site_config#corsOrigin) in your site configuration.
+Next, configure your GitLab instance to connect to your Sourcegraph instance.
 
 ### Configure your GitLab instance with Sourcegraph
 
+Prerequisites:
+
+- You must be an administrator.
+
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Settings > General**.
-1. Expand the **Sourcegraph** configuration section.
-1. Check **Enable Sourcegraph**.
-1. Set the Sourcegraph URL to your Sourcegraph instance, such as `https://sourcegraph.example.com`.
-
-![Sourcegraph administration settings](img/sourcegraph_admin_v12_5.png)
+1. Expand **Sourcegraph**.
+1. Select **Enable Sourcegraph**.
+1. Optional. Select **Block on private and internal projects**.
+1. Set the **Sourcegraph URL** to your Sourcegraph instance, such as `https://sourcegraph.example.com`.
+1. Select **Save changes**.
 
 ## Enable Sourcegraph in user preferences
 
-If a GitLab administrator has enabled Sourcegraph, you can enable this feature in your user preferences.
+Users on self-managed instances must also configure their user settings to use the
+Sourcegraph integration.
 
-In GitLab:
+On GitLab.com, the integration is available for all public projects.
+Private projects are not supported.
+
+Prerequisites:
+
+- If on a self-managed instance, Sourcegraph must be enabled.
+
+To enable this feature in your GitLab user preferences:
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
-1. In the **Integrations** section, select the checkbox under **Sourcegraph**.
+1. Scroll to the **Integrations** section. Under **Sourcegraph**, select **Enable integrated code intelligence on code views**.
 1. Select **Save changes**.
 
-![Sourcegraph user preferences](img/sourcegraph_user_preferences_v12_5.png)
+## References
 
-## Using Sourcegraph code intelligence
-
-Once enabled, participating projects display a code intelligence popover available in
-the following code views:
-
-- Merge request diffs
-- Commit view
-- File view
-
-When visiting one of these views, you can now hover over a code reference to see a popover with:
-
-- Details on how this reference was defined.
-- **Go to definition**, which goes to the line of code where this reference was defined.
-- **Find references**, which goes to the configured Sourcegraph instance, showing a list of references to the highlighted code.
-
-![Sourcegraph demo](img/sourcegraph_popover_v12_5.png)
-
-## Sourcegraph for GitLab.com
-
-Sourcegraph is available for all public projects on GitLab.com.
-Private projects are not supported.
-For more information, see [epic 2201](https://gitlab.com/groups/gitlab-org/-/epics/2201).
-
-## Sourcegraph and privacy
-
-See the [Sourcegraph browser extension documentation](https://docs.sourcegraph.com/integration/browser_extension/references/privacy).
+- [Privacy information](https://sourcegraph.com/docs/integration/browser_extension/references/privacy) in the Sourcegraph documentation
 
 ## Troubleshooting
 
-### Sourcegraph isn't working
+### Sourcegraph is not working
 
-If you enabled Sourcegraph for your project but it isn't working, Sourcegraph may not have indexed the project yet. You can check if Sourcegraph is available for your project by visiting `https://sourcegraph.com/gitlab.com/<project-path>`replacing `<project-path>` with the path to your GitLab project.
+If you enabled Sourcegraph for your project but it is not working, Sourcegraph might not
+have indexed the project yet. You can check if Sourcegraph is available for your project
+by visiting `https://sourcegraph.com/gitlab.com/<project-path>`, replacing `<project-path>`
+with the path to your GitLab project.

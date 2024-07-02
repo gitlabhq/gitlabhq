@@ -64,7 +64,7 @@ describe('Utils', () => {
       expect(result).toEqual([{ userId: 2 }]);
     });
 
-    it('returns an array with accessLevel, groupId, and userId when node has all properties', () => {
+    it('returns an array with groupId, and userId when node has all properties', () => {
       const edges = [
         {
           node: {
@@ -76,7 +76,7 @@ describe('Utils', () => {
       ];
       const result = getAccessLevelInputFromEdges(edges);
 
-      expect(result).toEqual([{ accessLevel: 30, groupId: 1, userId: 2 }]);
+      expect(result).toEqual([{ groupId: 1, userId: 2 }]);
     });
 
     it('returns an array with multiple objects when given multiple edges', () => {
@@ -87,7 +87,7 @@ describe('Utils', () => {
       ];
       const result = getAccessLevelInputFromEdges(edges);
 
-      expect(result).toEqual([{ accessLevel: 30, groupId: 1 }, { userId: 2 }, { accessLevel: 40 }]);
+      expect(result).toEqual([{ groupId: 1 }, { userId: 2 }, { accessLevel: 40 }]);
     });
   });
 });

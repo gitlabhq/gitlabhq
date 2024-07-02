@@ -8,16 +8,22 @@ module Analytics
       validates :hash_sha256, presence: true
 
       # Creates or queries the id of the corresponding stage event hash code
-      def self.record_id_by_hash_sha256(hash)
-        casted_hash_code = Arel::Nodes.build_quoted(hash, Analytics::CycleAnalytics::StageEventHash.arel_table[:hash_sha256]).to_sql
+      def self.record_id_by_hash_sha256(organization_id, hash)
+        casted_organization_id = Arel::Nodes
+          .build_quoted(organization_id, Analytics::CycleAnalytics::StageEventHash.arel_table[:organization_id])
+          .to_sql
+
+        casted_hash_code = Arel::Nodes
+          .build_quoted(hash, Analytics::CycleAnalytics::StageEventHash.arel_table[:hash_sha256])
+          .to_sql
 
         # Atomic, safe insert without retrying
         query = <<~SQL
         WITH insert_cte AS MATERIALIZED (
-          INSERT INTO #{quoted_table_name} (hash_sha256) VALUES (#{casted_hash_code}) ON CONFLICT DO NOTHING RETURNING ID
+          INSERT INTO #{quoted_table_name} (organization_id, hash_sha256) VALUES (#{casted_organization_id}, #{casted_hash_code}) ON CONFLICT DO NOTHING RETURNING ID
         )
         SELECT ids.id FROM (
-          (SELECT id FROM #{quoted_table_name} WHERE hash_sha256=#{casted_hash_code} LIMIT 1)
+          (SELECT id FROM #{quoted_table_name} WHERE organization_id=#{casted_organization_id} AND hash_sha256=#{casted_hash_code} LIMIT 1)
             UNION ALL
           (SELECT id FROM insert_cte LIMIT 1)
         ) AS ids LIMIT 1

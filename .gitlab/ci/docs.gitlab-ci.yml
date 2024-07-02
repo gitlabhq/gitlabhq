@@ -93,7 +93,7 @@ docs-lint links:
   stage: lint
   needs: []
   script:
-    - lychee --offline --include-fragments doc
+    - lychee --offline --no-progress --include-fragments doc
 
 ui-docs-links lint:
   extends:

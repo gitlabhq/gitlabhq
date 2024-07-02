@@ -2,7 +2,9 @@
 description: Audit event triggered
 internal_events: true
 action: trigger_audit_event
-label_description: Name of the triggered audit event
+additional_properties:
+  label:
+    description: Name of the triggered audit event
 identifiers:
 product_group: compliance
 milestone: '17.2'

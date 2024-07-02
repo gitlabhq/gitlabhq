@@ -6026,9 +6026,6 @@ msgstr ""
 msgid "Analytics|Dashboards are created by editing the projects dashboard files."
 msgstr ""
 
-msgid "Analytics|Data"
-msgstr ""
-
 msgid "Analytics|Data table"
 msgstr ""
 
@@ -6144,9 +6141,6 @@ msgid "Analytics|Referer"
 msgstr ""
 
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
-msgstr ""
-
-msgid "Analytics|Resulting Data"
 msgstr ""
 
 msgid "Analytics|Save and add to Dashboard"
@@ -9222,6 +9216,9 @@ msgstr ""
 msgid "BranchRules|Allowed to push and merge (%{total})"
 msgstr ""
 
+msgid "BranchRules|Allowed to push and merge updated"
+msgstr ""
+
 msgid "BranchRules|Allows force push"
 msgstr ""
 
@@ -9298,6 +9295,9 @@ msgid "BranchRules|Edit"
 msgstr ""
 
 msgid "BranchRules|Edit allowed to merge"
+msgstr ""
+
+msgid "BranchRules|Edit allowed to push and merge"
 msgstr ""
 
 msgid "BranchRules|From users with push access."

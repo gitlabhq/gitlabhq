@@ -5,13 +5,10 @@
 {{- $e := 0 -}}
 {{- $w := 0 -}}
 {{- $s := 0 -}}
-{{- $f := 0 -}}
 
 {{- /* Range over the linted files */ -}}
 
 {{- range .Files}}
-
-{{- $f = add1 $f -}}
 {{- $path := .Path | underline -}}
 
 {{- /* Range over the file's alerts */ -}}
@@ -48,4 +45,4 @@
 {{end -}}
 {{end -}}
 
-{{- $e}} {{"errors" | red}}, {{$w}} {{"warnings" | yellow}}, and {{$s}} {{"suggestions" | blue}} found.
+{{- $e}} {{"errors" | red}}, {{$w}} {{"warnings" | yellow}}, and {{$s}} {{"suggestions" | blue}} found in {{.LintedTotal}} {{.LintedTotal | int | plural "file" "files"}}.

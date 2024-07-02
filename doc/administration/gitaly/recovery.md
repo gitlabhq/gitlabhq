@@ -246,7 +246,7 @@ random, fully up-to-date replica of the repository on another healthy Gitaly nod
 replication job is scheduled only if there are no other replication jobs pending for the target
 repository.
 
-The reconciliation frequency can be changed via the configuration. The value can be any valid
+The reconciliation frequency can be changed through the configuration. The value can be any valid
 [Go duration value](https://pkg.go.dev/time#ParseDuration). Values below 0 disable the feature.
 
 Examples:

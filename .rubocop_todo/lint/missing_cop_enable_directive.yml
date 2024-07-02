@@ -112,8 +112,6 @@ Lint/MissingCopEnableDirective:
     - 'ee/app/workers/groups/export_memberships_worker.rb'
     - 'ee/lib/api/ldap_group_links.rb'
     - 'ee/lib/ee/gitlab/background_migration/migrate_approver_to_approval_rules.rb'
-    - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
-    - 'ee/spec/helpers/projects/security/discover_helper_spec.rb'
     - 'ee/spec/lib/ee/gitlab/background_migration/delete_invalid_epic_issues_spec.rb'
     - 'lib/gitlab/audit/null_author.rb'
     - 'lib/gitlab/auth/ldap/dn.rb'

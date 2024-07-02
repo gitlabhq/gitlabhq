@@ -130,7 +130,6 @@ describe('View branch rules', () => {
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
   const findEditRuleNameButton = () => wrapper.findByTestId('edit-rule-name-button');
-  const findEditRuleButton = () => wrapper.findByTestId('edit-rule-button');
   const findDeleteRuleModal = () => wrapper.findComponent(GlModal);
   const findBranchRuleModal = () => wrapper.findComponent(BranchRuleModal);
   const findBranchRuleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
@@ -285,6 +284,27 @@ describe('View branch rules', () => {
         '/project/Project/-/settings/repository/branch_rules?branch=main',
       );
     });
+
+    it('shows an alert if response contains an error', async () => {
+      const mockResponse = { branchRuleUpdate: { errors: ['some error'], branchRule: null } };
+      const editMutationHandler = jest
+        .fn()
+        .mockResolvedValue({ ...editBranchRuleMockResponse, data: mockResponse });
+
+      await createComponent({
+        glFeatures: { editBranchRules: true },
+        branchRulesQueryHandler: branchRulesMockRequestHandler,
+        editMutationHandler,
+      });
+
+      findBranchRuleModal().vm.$emit('primary', 'main');
+      await nextTick();
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        message: 'Something went wrong while updating branch rule.',
+      });
+    });
   });
 
   describe('Deleting branch rule', () => {
@@ -363,36 +383,52 @@ describe('View branch rules', () => {
     });
   });
 
-  describe('Allowed to merge editing', () => {
-    it('renders the edit button', () => {
-      expect(findEditRuleButton().text()).toBe('Edit');
+  describe.each`
+    drawerType          | title                               | findProtection        | accessLevels
+    ${'merge'}          | ${'Edit allowed to merge'}          | ${findAllowedToMerge} | ${{ mergeAccessLevels: [{ accessLevel: 30 }] }}
+    ${'push and merge'} | ${'Edit allowed to push and merge'} | ${findAllowedToPush}  | ${{ pushAccessLevels: [{ accessLevel: 30 }] }}
+  `('allowed to $drawerType drawer', ({ title, findProtection, accessLevels }) => {
+    const openEditRuleDrawer = () => {
+      findProtection().vm.$emit('edit');
+      return nextTick();
+    };
+
+    it('rule drawer is closed by default', () => {
+      expect(findRuleDrawer().props('isOpen')).toBe(false);
     });
-    it('passes expected props to rule drawer', () => {
-      expect(findRuleDrawer().props()).toMatchObject(allowedToMergeDrawerProps);
+
+    it('passes expected props to rule drawer', async () => {
+      await openEditRuleDrawer();
+
+      expect(findRuleDrawer().props()).toMatchObject({
+        ...allowedToMergeDrawerProps,
+        isOpen: true,
+        title,
+      });
     });
-    it('when edit button is clicked it opens rule drawer', async () => {
-      findEditRuleButton().vm.$emit('click');
-      await nextTick();
-      expect(findRuleDrawer().props('isOpen')).toBe(true);
-    });
+
     it('when save button is clicked it calls edit rule mutation', async () => {
-      findRuleDrawer().vm.$emit('editRule', { accessLevel: 30 });
+      await openEditRuleDrawer();
+      findRuleDrawer().vm.$emit('editRule', [{ accessLevel: 30 }]);
       await nextTick();
+
       expect(findRuleDrawer().props('isLoading')).toEqual(true);
+
       await waitForPromises();
+
       expect(editBranchRuleSuccessHandler).toHaveBeenCalledWith(
         expect.objectContaining({
           input: {
             branchProtection: expect.objectContaining({
-              mergeAccessLevels: {
-                accessLevel: 30,
-              },
+              allowForcePush: false,
+              ...accessLevels,
             }),
             id: 'gid://gitlab/Projects/BranchRule/1',
             name: 'main',
           },
         }),
       );
+
       expect(findRuleDrawer().props('isLoading')).toEqual(false);
     });
   });

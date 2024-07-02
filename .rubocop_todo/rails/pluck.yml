@@ -91,7 +91,6 @@ Rails/Pluck:
     - 'ee/spec/support/shared_examples/controllers/analytics/cycle_analytics/shared_stage_shared_examples.rb'
     - 'ee/spec/support/shared_examples/requests/api/graphql/incident_management/escalation_policies_shared_examples.rb'
     - 'lib/atlassian/jira_connect/client.rb'
-    - 'lib/banzai/filter/references/label_reference_filter.rb'
     - 'lib/banzai/renderer.rb'
     - 'lib/gitlab/access.rb'
     - 'lib/gitlab/analytics/cycle_analytics/default_stages.rb'

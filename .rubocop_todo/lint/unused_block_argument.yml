@@ -258,8 +258,6 @@ Lint/UnusedBlockArgument:
     - 'spec/factories/ci/pipelines.rb'
     - 'spec/factories/ci/processable.rb'
     - 'spec/factories/ci/reports/sbom/reports.rb'
-    - 'spec/factories/ci/runner_namespaces.rb'
-    - 'spec/factories/ci/runner_projects.rb'
     - 'spec/factories/ci/runners.rb'
     - 'spec/factories/clusters/clusters.rb'
     - 'spec/factories/clusters/platforms/kubernetes.rb'

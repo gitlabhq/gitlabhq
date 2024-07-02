@@ -3,7 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Analytics::CycleAnalytics::StageEventHash, type: :model do
-  let(:stage_event_hash) { described_class.create!(hash_sha256: hash_sha256) }
+  let_it_be(:organization) { create(:organization) }
+
+  let(:stage_event_hash) { described_class.create!(organization_id: organization.id, hash_sha256: hash_sha256) }
   let(:hash_sha256) { 'does_not_matter' }
 
   describe 'associations' do
@@ -17,14 +19,14 @@ RSpec.describe Analytics::CycleAnalytics::StageEventHash, type: :model do
   describe '.record_id_by_hash_sha256' do
     it 'returns an existing id' do
       id = stage_event_hash.id
-      same_id = described_class.record_id_by_hash_sha256(hash_sha256)
+      same_id = described_class.record_id_by_hash_sha256(organization.id, hash_sha256)
 
       expect(same_id).to eq(id)
     end
 
     it 'creates a new record' do
       expect do
-        described_class.record_id_by_hash_sha256(hash_sha256)
+        described_class.record_id_by_hash_sha256(organization.id, hash_sha256)
       end.to change { described_class.count }.from(0).to(1)
     end
   end

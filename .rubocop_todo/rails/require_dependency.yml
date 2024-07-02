@@ -8,7 +8,6 @@ Rails/RequireDependency:
     - 'config/initializers/query_limiting.rb'
     - 'config/initializers/zz_metrics.rb'
     - 'ee/app/finders/status_page/incident_comments_finder.rb'
-    - 'ee/app/models/compliance_management/compliance_framework/project_settings.rb'
     - 'ee/app/services/group_saml/saml_provider/create_service.rb'
     - 'ee/app/services/group_saml/saml_provider/update_service.rb'
     - 'ee/app/services/vulnerabilities/confirm_service.rb'

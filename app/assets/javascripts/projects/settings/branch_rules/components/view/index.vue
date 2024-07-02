@@ -99,7 +99,7 @@ export default {
         this.branchProtection = branchRule?.branchProtection;
         this.statusChecks = branchRule?.externalStatusChecks?.nodes || [];
         this.matchingBranchesCount = branchRule?.matchingBranchesCount;
-        this.groupId = getIdFromGraphQLId(group?.id) || '';
+        this.groupId = getIdFromGraphQLId(group?.id) || null;
         if (!this.showApprovers) return;
         // The approval rules app uses a separate endpoint to fetch the list of approval rules.
         // In future, we will update the GraphQL request to include the approval rules data.
@@ -122,6 +122,7 @@ export default {
       groupId: null,
       matchingBranchesCount: null,
       isAllowedToMergeDrawerOpen: false,
+      isAllowedToPushAndMergeDrawerOpen: false,
       isRuleUpdating: false,
       isAllowForcePushLoading: false,
       isCodeOwnersLoading: false,
@@ -204,6 +205,14 @@ export default {
     hasPushAccessLevelSet() {
       return this.pushAccessLevels?.total > 0;
     },
+    accessLevelsDrawerTitle() {
+      return this.isAllowedToMergeDrawerOpen
+        ? s__('BranchRules|Edit allowed to merge')
+        : s__('BranchRules|Edit allowed to push and merge');
+    },
+    accessLevelsDrawerData() {
+      return this.isAllowedToMergeDrawerOpen ? this.mergeAccessLevels : this.pushAccessLevels;
+    },
   },
   methods: {
     ...mapActions(['setRulesFilter', 'fetchRules']),
@@ -242,8 +251,12 @@ export default {
     openAllowedToMergeDrawer() {
       this.isAllowedToMergeDrawerOpen = true;
     },
-    closeAllowedToMergeDrawer() {
+    closeAccessLevelsDrawer() {
       this.isAllowedToMergeDrawerOpen = false;
+      this.isAllowedToPushAndMergeDrawerOpen = false;
+    },
+    openAllowedToPushAndMergeDrawer() {
+      this.isAllowedToPushAndMergeDrawerOpen = true;
     },
     onEnableForcePushToggle(isChecked) {
       this.isAllowForcePushLoading = true;
@@ -267,12 +280,20 @@ export default {
         toastMessage,
       });
     },
-    onEditAllowedToMerge(allowedToMerge) {
+    onEditAccessLevels(accessLevels) {
       this.isRuleUpdating = true;
-      this.editBranchRule({
-        branchProtection: { mergeAccessLevels: allowedToMerge },
-        toastMessage: s__('BranchRules|Allowed to merge updated'),
-      });
+
+      if (this.isAllowedToMergeDrawerOpen) {
+        this.editBranchRule({
+          branchProtection: { mergeAccessLevels: accessLevels },
+          toastMessage: s__('BranchRules|Allowed to merge updated'),
+        });
+      } else if (this.isAllowedToPushAndMergeDrawerOpen) {
+        this.editBranchRule({
+          branchProtection: { pushAccessLevels: accessLevels },
+          toastMessage: s__('BranchRules|Allowed to push and merge updated'),
+        });
+      }
     },
     editBranchRule({ name = this.branchRule.name, branchProtection = null, toastMessage = '' }) {
       this.$apollo
@@ -296,12 +317,17 @@ export default {
             },
           },
         })
-        .then(() => {
+        .then(({ data: { branchRuleUpdate } }) => {
+          if (branchRuleUpdate.errors.length) {
+            createAlert({ message: this.$options.i18n.updateBranchRuleError });
+            return;
+          }
+
           const isRedirectNeeded = !branchProtection;
           if (isRedirectNeeded) {
             visitUrl(setUrlParams({ branch: name }));
           } else {
-            this.closeAllowedToMergeDrawer();
+            this.closeAccessLevelsDrawer();
             this.$toast.show(toastMessage);
           }
         })
@@ -385,15 +411,15 @@ export default {
         />
 
         <rule-drawer
-          :is-open="isAllowedToMergeDrawerOpen"
-          :roles="mergeAccessLevels.roles"
-          :users="mergeAccessLevels.users"
-          :groups="mergeAccessLevels.groups"
+          :is-open="isAllowedToMergeDrawerOpen || isAllowedToPushAndMergeDrawerOpen"
+          :roles="accessLevelsDrawerData.roles"
+          :users="accessLevelsDrawerData.users"
+          :groups="accessLevelsDrawerData.groups"
           :is-loading="isRuleUpdating"
           :group-id="groupId"
-          :title="s__('BranchRules|Edit allowed to merge')"
-          @editRule="onEditAllowedToMerge"
-          @close="closeAllowedToMergeDrawer"
+          :title="accessLevelsDrawerTitle"
+          @editRule="onEditAccessLevels"
+          @close="closeAccessLevelsDrawer"
         />
 
         <!-- Allowed to push -->
@@ -407,7 +433,9 @@ export default {
           :groups="pushAccessLevels.groups"
           :empty-state-copy="$options.i18n.allowedToPushEmptyState"
           :help-text="$options.i18n.allowedToPushDescription"
+          is-edit-available
           data-testid="allowed-to-push-content"
+          @edit="openAllowedToPushAndMergeDrawer"
         />
 
         <!-- Force push -->

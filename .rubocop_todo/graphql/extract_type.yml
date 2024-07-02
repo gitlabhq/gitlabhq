@@ -46,7 +46,6 @@ GraphQL/ExtractType:
     - 'app/graphql/types/packages/conan/file_metadatum_type.rb'
     - 'app/graphql/types/packages/conan/metadatum_type.rb'
     - 'app/graphql/types/packages/maven/metadatum_type.rb'
-    - 'app/graphql/types/packages/package_base_type.rb'
     - 'app/graphql/types/packages/package_details_type.rb'
     - 'app/graphql/types/packages/package_file_type.rb'
     - 'app/graphql/types/packages/protection/rule_type.rb'

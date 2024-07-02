@@ -63,9 +63,9 @@ export default {
     return {
       updatedGroups: this.groups,
       updatedUsers: this.users,
-      isAdminSelected: this.roles.includes(ACCESS_LEVEL_ADMIN_INTEGER),
-      isMaintainersSelected: this.roles.includes(ACCESS_LEVEL_MAINTAINER_INTEGER),
-      isDevelopersAndMaintainersSelected: this.roles.includes(ACCESS_LEVEL_DEVELOPER_INTEGER),
+      isAdminSelected: null,
+      isMaintainersSelected: null,
+      isDevelopersAndMaintainersSelected: null,
       isRuleUpdated: false,
     };
   },
@@ -79,6 +79,16 @@ export default {
         !this.isMaintainersSelected &&
         !this.isDevelopersAndMaintainersSelected
       );
+    },
+  },
+  watch: {
+    isOpen() {
+      this.isAdminSelected = this.roles.includes(ACCESS_LEVEL_ADMIN_INTEGER);
+      this.isMaintainersSelected = this.roles.includes(ACCESS_LEVEL_MAINTAINER_INTEGER);
+      this.isDevelopersAndMaintainersSelected = this.roles.includes(ACCESS_LEVEL_DEVELOPER_INTEGER);
+
+      this.updatedGroups = this.groups;
+      this.updatedUsers = this.users;
     },
   },
   methods: {

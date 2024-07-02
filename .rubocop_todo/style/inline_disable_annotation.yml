@@ -1,6 +1,5 @@
 ---
 Style/InlineDisableAnnotation:
-  Details: grace period
   Exclude:
     - 'Gemfile'
     - 'Guardfile'
@@ -1188,7 +1187,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/finders/projects/integrations/jira/issues_finder.rb'
     - 'ee/app/finders/security/approval_groups_finder.rb'
     - 'ee/app/finders/security/findings_finder.rb'
-    - 'ee/app/finders/security/pure_findings_finder.rb'
     - 'ee/app/finders/security/scan_policy_base_finder.rb'
     - 'ee/app/finders/status_page/incident_comments_finder.rb'
     - 'ee/app/finders/status_page/incidents_finder.rb'
@@ -1811,7 +1809,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/features/groups/group_settings_spec.rb'
     - 'ee/spec/features/groups/settings/domain_verification_spec.rb'
     - 'ee/spec/features/merge_request/draft_comments_spec.rb'
-    - 'ee/spec/features/merge_trains/user_adds_to_merge_train_when_pipeline_succeeds_spec.rb'
     - 'ee/spec/features/projects/mirror_spec.rb'
     - 'ee/spec/features/registrations/combined_registration_spec.rb'
     - 'ee/spec/features/registrations/saas/standard_flow_with_2fa_spec.rb'
@@ -1825,8 +1822,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/helpers/analytics/analytics_dashboards_helper_spec.rb'
     - 'ee/spec/helpers/ee/dashboard_helper_spec.rb'
     - 'ee/spec/helpers/ee/releases_helper_spec.rb'
-    - 'ee/spec/helpers/groups/security_features_helper_spec.rb'
-    - 'ee/spec/helpers/projects/security/discover_helper_spec.rb'
     - 'ee/spec/initializers/fog_google_https_private_urls_spec.rb'
     - 'ee/spec/lib/audit/push_rules/group_push_rules_changes_auditor_spec.rb'
     - 'ee/spec/lib/audit/push_rules/project_push_rules_changes_auditor_spec.rb'
@@ -1881,7 +1876,6 @@ Style/InlineDisableAnnotation:
     - 'ee/spec/models/members/member_role_spec.rb'
     - 'ee/spec/models/package_metadata/affected_package_spec.rb'
     - 'ee/spec/models/package_metadata/package_spec.rb'
-    - 'ee/spec/models/product_analytics/dashboard_spec.rb'
     - 'ee/spec/models/security/training_spec.rb'
     - 'ee/spec/models/upload_spec.rb'
     - 'ee/spec/models/vulnerabilities/read_spec.rb'
@@ -2361,7 +2355,6 @@ Style/InlineDisableAnnotation:
     - 'lib/gitlab/pagination/keyset/iterator.rb'
     - 'lib/gitlab/pagination/keyset/order.rb'
     - 'lib/gitlab/pagination/keyset/pager.rb'
-    - 'lib/gitlab/pagination/keyset/paginator.rb'
     - 'lib/gitlab/pagination/offset_pagination.rb'
     - 'lib/gitlab/pagination_delegate.rb'
     - 'lib/gitlab/patch/action_cable_subscription_adapter_identifier.rb'

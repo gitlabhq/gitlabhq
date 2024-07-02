@@ -79,6 +79,11 @@ pre-push:
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       glob: 'data/deprecations/*.yml'
       run: echo "Changes to deprecation files detected. Checking deprecations..\n"; bundle exec rake gitlab:docs:check_deprecations
+    docs-link-check:
+      tags: documentation
+      files: git diff --name-only $(git merge-base origin/master HEAD)..HEAD
+      glob: 'doc/*.md'
+      run: scripts/lint-docs-link-check.sh
     db-schema-changes:
       tags: database
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD

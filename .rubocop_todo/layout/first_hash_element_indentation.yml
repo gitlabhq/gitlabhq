@@ -41,7 +41,6 @@ Layout/FirstHashElementIndentation:
     - 'lib/gitlab/ci/config/entry/processable.rb'
     - 'lib/gitlab/database/migrations/observers/query_details.rb'
     - 'lib/gitlab/database/migrations/observers/transaction_duration.rb'
-    - 'lib/gitlab/hook_data/issue_builder.rb'
     - 'lib/gitlab/hook_data/release_builder.rb'
     - 'lib/gitlab/quick_actions/issuable_actions.rb'
     - 'qa/qa/resource/snippet.rb'

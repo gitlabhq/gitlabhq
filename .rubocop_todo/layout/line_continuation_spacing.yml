@@ -4,7 +4,6 @@ Layout/LineContinuationSpacing:
   Exclude:
     - 'app/controllers/concerns/controller_with_cross_project_access_check.rb'
     - 'app/controllers/projects/google_cloud/databases_controller.rb'
-    - 'app/graphql/gitlab_schema.rb'
     - 'app/graphql/mutations/boards/issues/issue_move_list.rb'
     - 'app/graphql/types/environment_type.rb'
     - 'app/helpers/application_settings_helper.rb'

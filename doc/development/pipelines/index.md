@@ -268,7 +268,7 @@ We don't have a specific number, but we need to have better numbers for flaky te
 
 ## Faster feedback for some merge requests
 
-### Broken Master Fixes
+### Broken `master` Fixes
 
 When you need to [fix a broken `master`](https://handbook.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline::expedited` label to expedite the pipelines that run on the merge request.
 
