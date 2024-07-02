@@ -11,7 +11,7 @@
   flex-direction: column;
 
   @include media-breakpoint-up(sm) {
-    transition: width $gl-transition-duration-medium;
+    @apply gl-transition-width;
     width: 100%;
 
     &.is-compact {

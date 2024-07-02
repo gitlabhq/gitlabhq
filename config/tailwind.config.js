@@ -208,6 +208,7 @@ module.exports = {
     },
     transitionTimingFunction: {
       ease: 'ease',
+      linear: 'linear',
     },
     // TODO: Backport to GitLab UI.
     borderRadius: {
@@ -267,8 +268,16 @@ module.exports = {
         '1/2': '50%',
       },
       transitionProperty: {
+        transform: 'transform',
+        background: 'background',
+        opacity: 'opacity',
+        left: 'left',
+        right: 'right',
+        width: 'width',
         stroke: 'stroke',
+        padding: 'padding',
         'stroke-opacity': 'stroke-opacity',
+        'box-shadow': 'box-shadow',
       },
       transitionTimingFunction: {
         DEFAULT: 'ease',

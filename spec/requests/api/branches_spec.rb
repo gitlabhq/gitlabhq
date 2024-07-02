@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe API::Branches, feature_category: :source_code_management do
   let_it_be(:user) { create(:user) }
 
-  let(:project) { create(:project, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt') }
+  let(:project) { create(:project, :in_group, :repository, creator: user, path: 'my.project', create_branch: 'ends-with.txt') }
   let(:guest) { create(:user, guest_of: project) }
   let(:branch_name) { 'feature' }
   let(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
@@ -295,10 +295,79 @@ RSpec.describe API::Branches, feature_category: :source_code_management do
         new_branch_name = 'protected-branch'
         ::Branches::CreateService.new(project, current_user).execute(new_branch_name, 'master')
         create(:protected_branch, name: new_branch_name, project: project)
+        create(:protected_branch, name: new_branch_name, project: nil, group: project.group)
 
         expect do
           get api(route, current_user), params: { per_page: 100 }
-        end.not_to exceed_query_limit(control).with_threshold(1)
+        end.not_to exceed_query_limit(control)
+      end
+    end
+
+    context 'with group protected branches' do
+      subject(:request) { get api(route, user) }
+
+      let!(:group_protected_branch) do
+        create(:protected_branch,
+          *access_levels,
+          project: nil,
+          group: project.group,
+          name: '*'
+        )
+      end
+
+      context 'maintainers allowed to push and merge' do
+        let(:access_levels) { [] }
+
+        it 'responds with correct attributes related to push and merge' do
+          request
+
+          expect(json_response.dig(0, 'developers_can_merge')).to be_falsey
+          expect(json_response.dig(0, 'developers_can_push')).to be_falsey
+          expect(json_response.dig(0, 'can_push')).to be_truthy
+        end
+
+        context 'and there is a more permissive project level protected branch' do
+          let!(:project_level_protected_branch) do
+            create(:protected_branch,
+              :developers_can_merge,
+              :developers_can_push,
+              project: project,
+              name: '*'
+            )
+          end
+
+          it 'responds with correct attributes related to push and merge' do
+            request
+
+            expect(json_response.dig(0, 'developers_can_merge')).to be_truthy
+            expect(json_response.dig(0, 'developers_can_push')).to be_truthy
+            expect(json_response.dig(0, 'can_push')).to be_truthy
+          end
+        end
+      end
+
+      context 'when developers can push and merge' do
+        let(:access_levels) { %i[developers_can_merge developers_can_push] }
+
+        it 'responds with correct attributes related to push and merge' do
+          request
+
+          expect(json_response.dig(0, 'developers_can_merge')).to be_truthy
+          expect(json_response.dig(0, 'developers_can_push')).to be_truthy
+          expect(json_response.dig(0, 'can_push')).to be_truthy
+        end
+      end
+
+      context 'when no one can push and merge' do
+        let(:access_levels) { %i[no_one_can_merge no_one_can_push] }
+
+        it 'responds with correct attributes related to push and merge' do
+          request
+
+          expect(json_response.dig(0, 'developers_can_merge')).to be_falsey
+          expect(json_response.dig(0, 'developers_can_push')).to be_falsey
+          expect(json_response.dig(0, 'can_push')).to be_falsey
+        end
       end
     end
 

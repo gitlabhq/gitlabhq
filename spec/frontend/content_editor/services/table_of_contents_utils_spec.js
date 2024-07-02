@@ -1,5 +1,10 @@
 import Heading from '~/content_editor/extensions/heading';
-import { toTree, getHeadings, fillEmpty } from '~/content_editor/services/table_of_contents_utils';
+import {
+  toTree,
+  getHeadings,
+  fillEmpty,
+  getHeadingsFromDOM,
+} from '~/content_editor/services/table_of_contents_utils';
 import { createTestEditor, createDocBuilder } from '../test_utils';
 
 describe('content_editor/services/table_of_content_utils', () => {
@@ -141,6 +146,59 @@ describe('content_editor/services/table_of_content_utils', () => {
           text: 'Heading 2',
           subHeadings: [],
         },
+      ]);
+    });
+  });
+
+  describe('getHeadingsFromDOM', () => {
+    it('gets all headings as a tree in a DOM element', () => {
+      const element = document.createElement('div');
+      element.innerHTML = `
+        <h1><a href="#heading-1"></a>Heading 1</h1>
+        <h2><a href="#heading-1-1"></a>Heading 1.1</h2>
+        <h3><a href="#heading-1-1-1"></a>Heading 1.1.1</h3>
+        <h2><a href="#heading-1-2"></a>Heading 1.2</h2>
+        <h3><a href="#heading-1-2-1"></a>Heading 1.2.1</h3>
+        <h2><a href="#heading-1-3"></a>Heading 1.3</h2>
+        <h2><a href="#heading-1-4"></a>Heading 1.4</h2>
+        <h3><a href="#heading-1-4-1"></a>Heading 1.4.1</h3>
+        <h1><a href="#heading-2"></a>Heading 2</h1>
+      `;
+
+      expect(getHeadingsFromDOM(element)).toEqual([
+        {
+          href: '#heading-1',
+          level: 1,
+          subHeadings: [
+            {
+              href: '#heading-1-1',
+              level: 2,
+              subHeadings: [
+                { href: '#heading-1-1-1', level: 3, subHeadings: [], text: 'Heading 1.1.1' },
+              ],
+              text: 'Heading 1.1',
+            },
+            {
+              href: '#heading-1-2',
+              level: 2,
+              subHeadings: [
+                { href: '#heading-1-2-1', level: 3, subHeadings: [], text: 'Heading 1.2.1' },
+              ],
+              text: 'Heading 1.2',
+            },
+            { href: '#heading-1-3', level: 2, subHeadings: [], text: 'Heading 1.3' },
+            {
+              href: '#heading-1-4',
+              level: 2,
+              subHeadings: [
+                { href: '#heading-1-4-1', level: 3, subHeadings: [], text: 'Heading 1.4.1' },
+              ],
+              text: 'Heading 1.4',
+            },
+          ],
+          text: 'Heading 1',
+        },
+        { href: '#heading-2', level: 1, subHeadings: [], text: 'Heading 2' },
       ]);
     });
   });

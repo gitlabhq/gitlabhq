@@ -79,7 +79,7 @@ module Gitlab
       end
 
       def apply_headers(records, next_cursor)
-        if records.count == params[:per_page]
+        if records.count == params[:per_page] && next_cursor.present?
           Gitlab::Pagination::Keyset::HeaderBuilder
             .new(request_context)
             .add_next_page_header(

@@ -31,6 +31,7 @@ The following policy types are available:
   pipeline or on a specified schedule.
 - [Merge request approval policy](scan-result-policies.md). Enforce project-level settings and
   approval rules based on scan results.
+- [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
 
 ## Security policy project
 

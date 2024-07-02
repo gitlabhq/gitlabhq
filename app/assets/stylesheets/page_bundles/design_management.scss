@@ -182,9 +182,9 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
     .design-note {
       padding: $gl-padding-8;
       list-style: none;
-      transition: background $gl-transition-duration-medium $general-hover-transition-curve;
       border-top-left-radius: $gl-border-radius-base; // same border radius used by .bordered-box
       border-top-right-radius: $gl-border-radius-base;
+      @apply gl-transition-background;
 
       video {
         width: 100%;

@@ -19,7 +19,7 @@ type ChannelSettings struct {
 	Subprotocols []string
 
 	// The websocket URL to connect to.
-	WsURL string
+	Url string //nolint:revive,stylecheck // when JSON decoding, the value is provided via 'url'
 
 	// Any headers (e.g., Authorization) to send with the websocket request
 	Header http.Header
@@ -35,7 +35,7 @@ type ChannelSettings struct {
 
 // URL parses the websocket URL in the ChannelSettings and returns a *url.URL.
 func (t *ChannelSettings) URL() (*url.URL, error) {
-	return url.Parse(t.WsURL)
+	return url.Parse(t.Url)
 }
 
 // Dialer returns a websocket Dialer configured with the settings from ChannelSettings.
@@ -72,7 +72,7 @@ func (t *ChannelSettings) Clone() *ChannelSettings {
 // Dial establishes a websocket connection using the settings from ChannelSettings.
 // It returns a websocket connection, an HTTP response, and an error if any.
 func (t *ChannelSettings) Dial() (*websocket.Conn, *http.Response, error) {
-	return t.Dialer().Dial(t.WsURL, t.Header)
+	return t.Dialer().Dial(t.Url, t.Header)
 }
 
 // Validate checks if the ChannelSettings instance is valid.
@@ -133,7 +133,7 @@ func (t *ChannelSettings) IsEqual(other *ChannelSettings) bool {
 		}
 	}
 
-	return t.WsURL == other.WsURL &&
+	return t.Url == other.Url &&
 		t.CAPem == other.CAPem &&
 		t.MaxSessionTime == other.MaxSessionTime
 }

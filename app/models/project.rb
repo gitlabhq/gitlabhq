@@ -342,6 +342,8 @@ class Project < ApplicationRecord
   has_many :hooks, class_name: 'ProjectHook'
   has_many :protected_branches
   has_many :exported_protected_branches
+  has_many :all_protected_branches, ->(project) { ProtectedBranch.unscope(:where).from_union(project.protected_branches, project.group_protected_branches) }, class_name: 'ProtectedBranch'
+
   has_many :protected_tags
   has_many :repository_languages, -> { order "share DESC" }
   has_many :designs, inverse_of: :project, class_name: 'DesignManagement::Design'
@@ -1278,8 +1280,8 @@ class Project < ApplicationRecord
 
   def preload_protected_branches
     ActiveRecord::Associations::Preloader.new(
-      records: [self],
-      associations: { protected_branches: [:push_access_levels, :merge_access_levels] }
+      records: [all_protected_branches, protected_branches].flatten,
+      associations: [:push_access_levels, :merge_access_levels]
     ).call
   end
 
@@ -2948,15 +2950,9 @@ class Project < ApplicationRecord
   end
 
   def group_protected_branches
-    root_namespace.is_a?(Group) ? root_namespace.protected_branches : ProtectedBranch.none
-  end
+    return root_namespace.protected_branches if allow_protected_branches_for_group? && root_namespace.is_a?(Group)
 
-  def all_protected_branches
-    if allow_protected_branches_for_group?
-      @all_protected_branches ||= ProtectedBranch.from_union([protected_branches, group_protected_branches])
-    else
-      protected_branches
-    end
+    ProtectedBranch.none
   end
 
   def allow_protected_branches_for_group?

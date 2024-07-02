@@ -435,7 +435,7 @@
 }
 
 @mixin side-panel-toggle {
-  transition: width $gl-transition-duration-medium;
+  @apply gl-transition-width;
   height: $toggle-sidebar-height;
   padding: 0 $gl-padding;
   background-color: $gray-10;

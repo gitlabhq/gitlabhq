@@ -246,7 +246,7 @@ To run the QA Evaluation test locally, the following environment variables
 must be exported:
 
 ```ruby
-REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
+ANTHROPIC_API_KEY='your-key' VERTEX_AI_PROJECT='your-project-id' REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
 
 ## Testing with CI

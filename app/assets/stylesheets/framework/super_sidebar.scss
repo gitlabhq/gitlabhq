@@ -1,5 +1,5 @@
 $super-sidebar-transition-delay: 0.4s;
-$super-sidebar-transition-duration: $gl-transition-duration-medium;
+$super-sidebar-transition-duration: 0.2s;
 $super-sidebar-transition-hint-duration: $super-sidebar-transition-duration / 4;
 $command-palette-spacing: px-to-rem(14px);
 
@@ -335,7 +335,7 @@ $command-palette-spacing: px-to-rem(14px);
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: transform $super-sidebar-transition-duration;
+    @apply gl-transition-transform;
   }
 
   .user-bar {
@@ -523,7 +523,7 @@ $command-palette-spacing: px-to-rem(14px);
   padding-left: 0;
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: padding-left $super-sidebar-transition-duration;
+    @apply gl-transition-padding;
   }
 
   &:not(.page-with-super-sidebar-collapsed) {
@@ -661,7 +661,9 @@ $command-palette-spacing: px-to-rem(14px);
 
 .transition-opacity-on-hover--context {
   .transition-opacity-on-hover--target {
-    transition: opacity $gl-transition-duration-fast linear;
+    @apply gl-transition-opacity;
+    @apply gl-duration-fast;
+    @apply gl-ease-linear;
 
     &:hover {
       transition-delay: $super-sidebar-transition-delay;

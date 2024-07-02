@@ -18,8 +18,8 @@
 }
 
 .upload-dropzone-card {
-  transition: background $gl-transition-duration-medium $general-hover-transition-curve,
-    border $gl-transition-duration-medium $general-hover-transition-curve;
+  @apply gl-transition-[background,border];
+
   color: $gl-text-color;
 
   &:hover,
@@ -53,7 +53,9 @@
 
 .upload-dropzone-fade-enter-active,
 .upload-dropzone-fade-leave-active {
-  transition: opacity $general-hover-transition-duration $general-hover-transition-curve;
+  @apply gl-transition-opacity;
+  @apply gl-duration-fast;
+  @apply gl-ease-linear;
 }
 
 .upload-dropzone-fade-enter,

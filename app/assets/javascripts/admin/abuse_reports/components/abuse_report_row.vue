@@ -67,7 +67,7 @@ export default {
     <template #left-primary>
       <gl-link
         :href="report.reportPath"
-        class="gl-font-normal gl-pt-4 gl-text-gray-900"
+        class="gl-font-normal gl-text-gray-900"
         data-testid="abuse-report-title"
       >
         {{ title }}
@@ -86,7 +86,7 @@ export default {
     </template>
 
     <template #right-secondary>
-      <div class="gl-mt-7" data-testid="abuse-report-date">{{ displayDate }}</div>
+      <div data-testid="abuse-report-date">{{ displayDate }}</div>
     </template>
   </list-item>
 </template>

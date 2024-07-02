@@ -14,17 +14,6 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
-  ignore_columns %i[
-    container_registry_import_max_tags_count
-    container_registry_import_max_retries
-    container_registry_import_start_max_retries
-    container_registry_import_max_step_duration
-    container_registry_pre_import_tags_rate
-    container_registry_pre_import_timeout
-    container_registry_import_timeout
-    container_registry_import_target_plan
-    container_registry_import_created_before
-  ], remove_with: '17.2', remove_after: '2024-06-24'
   ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
   ignore_columns %i[toggle_security_policies_policy_scope lock_toggle_security_policies_policy_scope], remove_with: '17.2', remove_after: '2024-07-12'
   ignore_columns %i[arkose_labs_verify_api_url], remove_with: '17.4', remove_after: '2024-08-09'

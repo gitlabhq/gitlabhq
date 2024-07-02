@@ -247,6 +247,25 @@ RSpec.shared_examples 'User views a wiki page' do
     end
   end
 
+  context 'when a page has headings' do
+    before do
+      wiki_page.update(content: "# Heading 1\n\n## Heading 1.1\n\n### Heading 1.1.1\n\n# Heading 2") # rubocop:disable Rails/SaveBang -- not an ActiveRecord
+    end
+
+    it 'displays the table of contents for the page' do
+      visit(wiki_page_path(wiki, wiki_page))
+
+      within '.js-wiki-toc' do
+        expect(page).to have_content('On this page')
+
+        expect(page).to have_content('Heading 1')
+        expect(page).to have_content('Heading 1.1')
+        expect(page).to have_content('Heading 1.1.1')
+        expect(page).to have_content('Heading 2')
+      end
+    end
+  end
+
   context 'when page has invalid content encoding' do
     let(:content) { (+'whatever').force_encoding('ISO-8859-1') }
 

@@ -2,7 +2,7 @@
 .fade-leave-active,
 .fade-in-enter-active,
 .fade-out-leave-active {
-  transition: opacity $gl-transition-duration-medium $general-hover-transition-curve;
+  @apply gl-transition-opacity;
 }
 
 .fade-enter,

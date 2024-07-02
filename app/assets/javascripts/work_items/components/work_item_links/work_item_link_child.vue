@@ -17,6 +17,7 @@ import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.v
 import WorkItemTreeChildren from './work_item_tree_children.vue';
 
 export default {
+  name: 'WorkItemLinkChild',
   components: {
     GlButton,
     WorkItemTreeChildren,

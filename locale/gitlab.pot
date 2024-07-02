@@ -2421,9 +2421,6 @@ msgstr ""
 msgid "About your company"
 msgstr ""
 
-msgid "Abuse Reports"
-msgstr ""
-
 msgid "Abuse reports"
 msgstr ""
 
@@ -4650,7 +4647,7 @@ msgstr ""
 msgid "Admin|AI-Powered Features"
 msgstr ""
 
-msgid "Admin|Abuse Reports"
+msgid "Admin|Abuse reports"
 msgstr ""
 
 msgid "Admin|Additional users must be reviewed and approved by a system administrator. Learn more about %{help_link_start}usage caps%{help_link_end}."
@@ -36150,6 +36147,9 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "On the left sidebar, select %{compliance_center_link} to view them."
+msgstr ""
+
+msgid "On this page"
 msgstr ""
 
 msgid "On track"

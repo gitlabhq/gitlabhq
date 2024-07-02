@@ -645,6 +645,7 @@ project:
 - notes
 - snippets
 - hooks
+- all_protected_branches
 - protected_branches
 - protected_tags
 - project_members

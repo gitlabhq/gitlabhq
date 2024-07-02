@@ -110,14 +110,10 @@ It respects a rate limit of 450 embeddings per minute. Reach out to `@maddievn` 
 
 If the following returns 0, all issues for the project have embeddings:
 
-<details><summary>Expand</summary>
-
 ```shell
 curl "http://localhost:9200/gitlab-development-issues/_count" \
 --header "Content-Type: application/json" \
 --data '{"query": {"bool": {"filter": [{"term": {"project_id": PROJECT_ID}}], "must_not": [{"exists": {"field": "embedding"}}]}}}' | jq '.count'
 ```
-
-</details>
 
 Replacing `PROJECT_ID` with your project ID.

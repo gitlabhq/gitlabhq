@@ -17,7 +17,7 @@
 }
 
 .page-initialised  .content-wrapper {
-  transition: padding $gl-transition-duration-medium;
+  @apply gl-transition-padding;
 }
 
 .right-sidebar-collapsed {
@@ -134,7 +134,7 @@
   @include maintain-sidebar-dimensions;
   width: 0;
   padding: 0;
-  transition: width $gl-transition-duration-medium;
+  @apply gl-transition-width;
 
   &.right-sidebar-expanded {
     @include maintain-sidebar-dimensions;
@@ -321,10 +321,10 @@
   position: fixed;
   bottom: calc(#{$calc-application-footer-height} + var(--mr-review-bar-height));
   right: 0;
-  transition: width $gl-transition-duration-medium;
   background-color: $white;
   z-index: 200;
   overflow: hidden;
+  @apply gl-transition-width;
 }
 
 .right-sidebar {

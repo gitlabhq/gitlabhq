@@ -4,14 +4,17 @@
 
 %aside.right-sidebar.right-sidebar-expanded.wiki-sidebar.js-wiki-sidebar.js-right-sidebar{ data: { "offset-top" => "50", "spy" => "affix" }, 'aria-label': _('Wiki') }
   .sidebar-container
-    .block.gl-mb-3.gl-mx-5.gl-block.sm:gl-hidden{ class: '!gl-pt-0' }
+    .block.gl-mb-3.gl-mx-5.gl-mt-5.gl-block.sm:gl-hidden{ class: '!gl-pt-0' }
       %a.gutter-toggle.gl-float-right.gl-block.md:gl-hidden.js-sidebar-wiki-toggle{ href: "#" }
         = sprite_icon('chevron-double-lg-right', css_class: 'gl-icon')
 
     - if @sidebar_error.present?
       = render 'shared/alert_info', body: s_('Wiki|The sidebar failed to load. You can reload the page to try again.')
 
-    .blocks-container{ class: '!gl-px-3' }
+    - if !editing
+      .js-wiki-toc
+
+    .blocks-container{ class: '!gl-px-3 !gl-my-5' }
       .gl-flex.gl-place-content-between.gl-items-center.gl-pb-3.gl-pr-1{ class: (@sidebar_page ? 'js-wiki-expand-pages-list wiki-list collapsed gl-pl-0' : 'gl-pl-3') }
         .gl-flex.gl-items-center
           - if @sidebar_page

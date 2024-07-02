@@ -83,34 +83,14 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   end
 
   describe '.protected_refs' do
-    let_it_be(:project) { create(:project) }
+    let(:project) { build_stubbed(:project) }
 
     subject { described_class.protected_refs(project) }
 
-    context 'when feature flag enabled' do
-      before do
-        stub_feature_flags(group_protected_branches: true)
-        stub_feature_flags(allow_protected_branches_for_group: true)
-      end
+    it 'call `all_protected_branches`' do
+      expect(project).to receive(:all_protected_branches)
 
-      it 'call `all_protected_branches`' do
-        expect(project).to receive(:all_protected_branches)
-
-        subject
-      end
-    end
-
-    context 'when feature flag disabled' do
-      before do
-        stub_feature_flags(group_protected_branches: false)
-        stub_feature_flags(allow_protected_branches_for_group: false)
-      end
-
-      it 'call `protected_branches`' do
-        expect(project).to receive(:protected_branches)
-
-        subject
-      end
+      subject
     end
   end
 

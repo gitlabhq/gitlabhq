@@ -11167,6 +11167,28 @@ CREATE SEQUENCE import_failures_id_seq
 
 ALTER SEQUENCE import_failures_id_seq OWNED BY import_failures.id;
 
+CREATE TABLE import_source_user_placeholder_references (
+    id bigint NOT NULL,
+    source_user_id bigint NOT NULL,
+    namespace_id bigint NOT NULL,
+    numeric_key bigint,
+    created_at timestamp with time zone NOT NULL,
+    model text NOT NULL,
+    user_reference_column text NOT NULL,
+    composite_key jsonb,
+    CONSTRAINT check_782140eb9d CHECK ((char_length(user_reference_column) <= 50)),
+    CONSTRAINT check_d17bd9dd4d CHECK ((char_length(model) <= 150))
+);
+
+CREATE SEQUENCE import_source_user_placeholder_references_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE import_source_user_placeholder_references_id_seq OWNED BY import_source_user_placeholder_references.id;
+
 CREATE TABLE import_source_users (
     id bigint NOT NULL,
     placeholder_user_id bigint,
@@ -20801,6 +20823,8 @@ ALTER TABLE ONLY import_export_uploads ALTER COLUMN id SET DEFAULT nextval('impo
 
 ALTER TABLE ONLY import_failures ALTER COLUMN id SET DEFAULT nextval('import_failures_id_seq'::regclass);
 
+ALTER TABLE ONLY import_source_user_placeholder_references ALTER COLUMN id SET DEFAULT nextval('import_source_user_placeholder_references_id_seq'::regclass);
+
 ALTER TABLE ONLY import_source_users ALTER COLUMN id SET DEFAULT nextval('import_source_users_id_seq'::regclass);
 
 ALTER TABLE ONLY incident_management_escalation_policies ALTER COLUMN id SET DEFAULT nextval('incident_management_escalation_policies_id_seq'::regclass);
@@ -22986,6 +23010,9 @@ ALTER TABLE ONLY import_export_uploads
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT import_failures_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY import_source_user_placeholder_references
+    ADD CONSTRAINT import_source_user_placeholder_references_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT import_source_users_pkey PRIMARY KEY (id);
@@ -27321,6 +27348,10 @@ CREATE INDEX index_import_failures_on_project_id_and_correlation_id_value ON imp
 CREATE INDEX index_import_failures_on_project_id_not_null ON import_failures USING btree (project_id) WHERE (project_id IS NOT NULL);
 
 CREATE INDEX index_import_failures_on_user_id_not_null ON import_failures USING btree (user_id) WHERE (user_id IS NOT NULL);
+
+CREATE INDEX index_import_source_user_placeholder_references_on_namespace_id ON import_source_user_placeholder_references USING btree (namespace_id);
+
+CREATE INDEX index_import_source_user_placeholder_references_on_source_user_ ON import_source_user_placeholder_references USING btree (source_user_id);
 
 CREATE INDEX index_import_source_users_on_namespace_id ON import_source_users USING btree (namespace_id);
 
@@ -33352,6 +33383,9 @@ ALTER TABLE ONLY namespaces_storage_limit_exclusions
 ALTER TABLE ONLY users_security_dashboard_projects
     ADD CONSTRAINT fk_rails_150cd5682c FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_source_user_placeholder_references
+    ADD CONSTRAINT fk_rails_158995b934 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY import_source_users
     ADD CONSTRAINT fk_rails_167f82fd95 FOREIGN KEY (reassign_to_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
@@ -34719,6 +34753,9 @@ ALTER TABLE ONLY upload_states
 
 ALTER TABLE ONLY epic_metrics
     ADD CONSTRAINT fk_rails_d071904753 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY import_source_user_placeholder_references
+    ADD CONSTRAINT fk_rails_d0b75c434e FOREIGN KEY (source_user_id) REFERENCES import_source_users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY subscriptions
     ADD CONSTRAINT fk_rails_d0c8bda804 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

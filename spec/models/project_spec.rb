@@ -196,6 +196,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:incident_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:relation_import_trackers).class_name('Projects::ImportExport::RelationImportTracker') }
+    it { is_expected.to have_many(:all_protected_branches).class_name('ProtectedBranch') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }

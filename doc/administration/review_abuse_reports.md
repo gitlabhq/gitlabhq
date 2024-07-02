@@ -39,7 +39,7 @@ To find out more about reporting abuse, see
 To access abuse reports:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Abuse Reports**.
+1. Select **Abuse reports**.
 
 There are four ways to resolve an abuse report, with a button for each method:
 
@@ -55,7 +55,7 @@ There are four ways to resolve an abuse report, with a button for each method:
   - Allows the user to create issues, notes, snippets, and merge requests without being blocked for spam.
   - Prevents abuse reports from being created for this user.
 
-The following is an example of the **Abuse Reports** page:
+The following is an example of the **Abuse reports** page:
 
 ![abuse-reports-page-image](img/abuse_reports_page_v13_11.png)
 
@@ -80,7 +80,7 @@ After blocking, you can still either:
 - Remove the user and report if necessary.
 - Remove the report.
 
-The following is an example of a blocked user listed on the **Abuse Reports**
+The following is an example of a blocked user listed on the **Abuse reports**
 page:
 
 ![abuse-report-blocked-user-image](img/abuse_report_blocked_user.png)
