@@ -31,6 +31,7 @@ domains:
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
       - cloud_connector  # Also in CloudConnector
+      - duo_workflow
 
   Analytics:
     description:

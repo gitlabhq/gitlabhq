@@ -7,7 +7,7 @@
   .js-jh-transition-banner{ data: { feature_name: Users::CalloutsHelper::TRANSITION_TO_JIHU_CALLOUT,
     user_preferred_language: current_user.preferred_language} }
 
-= render ::Layouts::PageHeadingComponent.new(_('Projects')) do |c|
+= render ::Layouts::PageHeadingComponent.new(_('Projects'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_projects_pageload' } }) do |c|
   - c.with_actions do
     = link_button_to new_project_path, variant: :confirm do
       = _('New Project')

@@ -3,12 +3,12 @@
 // Do not use 3-letter hex codes, bgcolor vs css background-color is problematic in emails
 //
 $mailer-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-$mailer-text-color: #333;
+$mailer-text-color: #333333;
 $mailer-bg-color: #fafafa;
 $mailer-link-color: #3777b0;
-$mailer-link-muted-color: #333;
+$mailer-link-muted-color: #333333;
 $mailer-line-cell-bg-color: #6b4fbb;
-$mailer-wrapper-cell-bg-color: #fff;
+$mailer-wrapper-cell-bg-color: #ffffff;
 $mailer-wrapper-cell-border-color: #ededed;
 $mailer-header-footer-text-color: #5c5c5c;
 $full-width: 640px;

@@ -171,7 +171,7 @@ export default {
       return this.issuableAttributesQueries[this.issuableAttribute];
     },
     attributeTitle() {
-      return this.currentAttribute?.title || this.i18n.noAttribute;
+      return this.currentAttribute?.title || __('None');
     },
     attributeUrl() {
       return this.currentAttribute?.webUrl;

@@ -13,11 +13,11 @@ RSpec.describe 'Project milestone', :js, feature_category: :team_planning do
   end
 
   def sidebar_release_block
-    find('.milestone-sidebar .block.releases')
+    find_by_testid('milestone-sidebar-releases')
   end
 
   def sidebar_release_block_collapsed_icon
-    find('.milestone-sidebar .block.releases .sidebar-collapsed-icon')
+    find_by_testid('milestone-sidebar-releases-collapsed-icon')
   end
 
   before do

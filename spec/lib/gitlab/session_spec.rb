@@ -70,5 +70,22 @@ RSpec.describe Gitlab::Session do
         end
       end
     end
+
+    context 'when an exception is raised' do
+      let(:session) { { set_session_id: 'abc' }.with_indifferent_access }
+      let(:exception) { StandardError.new('Something went wrong') }
+
+      before do
+        allow(session).to receive(:is_a?).and_raise(exception)
+        allow(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception)
+      end
+
+      it 'tracks the exception and returns nil' do
+        described_class.with_session(session) do
+          expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(exception)
+          expect(described_class.session_id_for_worker).to be_nil
+        end
+      end
+    end
   end
 end

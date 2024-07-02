@@ -6,3 +6,4 @@ description: |
 feature_category: user_profile
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129350
 milestone: '16.4'
+finalized_by: '20240630231802'

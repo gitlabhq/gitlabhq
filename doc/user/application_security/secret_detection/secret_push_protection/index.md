@@ -12,7 +12,7 @@ DETAILS:
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta in GitLab 17.1.
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta and made available on GitLab.com in GitLab 17.1.
 
 Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab.
 The content of each commit is checked for secrets when pushed to GitLab. If any secrets are

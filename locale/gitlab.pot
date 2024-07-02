@@ -13628,6 +13628,9 @@ msgstr ""
 msgid "ComplianceReport|Approved by committer"
 msgstr ""
 
+msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline execution policy actions instead. %{linkStart}Pipeline execution policy%{linkEnd} actions provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance."
+msgstr ""
+
 msgid "ComplianceReport|Choose one bulk action"
 msgstr ""
 
@@ -13637,7 +13640,7 @@ msgstr ""
 msgid "ComplianceReport|Compliance framework"
 msgstr ""
 
-msgid "ComplianceReport|Compliance pipelines are now in maintenance mode"
+msgid "ComplianceReport|Compliance pipelines are deprecated"
 msgstr ""
 
 msgid "ComplianceReport|Create a new framework"
@@ -13707,9 +13710,6 @@ msgid "ComplianceReport|Update filtered results?"
 msgstr ""
 
 msgid "ComplianceReport|Update result"
-msgstr ""
-
-msgid "ComplianceReport|You can still edit existing compliance pipelines, but cannot create new compliance pipelines. %{linkStart}Pipeline execution policy%{linkEnd} actions provide the ability to enforce CI/CD jobs, execute security scans, and better manage compliance. You should migrate as soon as possible."
 msgstr ""
 
 msgid "ComplianceStandardsAdherence| Standards adherence export"

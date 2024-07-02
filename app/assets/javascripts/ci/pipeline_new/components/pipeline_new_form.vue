@@ -13,7 +13,6 @@ import {
   GlLoadingIcon,
 } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
-import Vue from 'vue';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { fetchPolicies } from '~/lib/graphql';
 import SafeHtml from '~/vue_shared/directives/safe_html';
@@ -276,10 +275,13 @@ export default {
         { descriptions: {}, values: {}, options: {} },
       );
 
-      Vue.set(this.form, this.refFullName, {
-        descriptions: this.configVariablesWithDescription.descriptions,
-        variables: [],
-      });
+      this.form = {
+        ...this.form,
+        [this.refFullName]: {
+          descriptions: this.configVariablesWithDescription.descriptions,
+          variables: [],
+        },
+      };
 
       // Add default variables from yml
       this.setVariableParams(

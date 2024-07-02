@@ -6,5 +6,13 @@
      "ee/app/assets/stylesheets/startup/startup-*.scss",
      "app/assets/stylesheets/highlight/themes/*.scss",
      "app/assets/stylesheets/lazy_bundles/cropper.css"
+   ],
+   "overrides": [
+    {
+      "files": ["app/assets/stylesheets/mailer.scss"],
+      "rules": {
+        "color-hex-length": "long"
+      }
+    }
    ]
 }

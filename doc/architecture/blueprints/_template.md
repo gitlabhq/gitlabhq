@@ -9,6 +9,20 @@ participating-stages: []
 ---
 
 <!--
+We plan to move the architecture and design documents section
+to the public handbook. This will change how you contribute to the documents.
+As part of this plan, we'll update this template and move it over to the public handbook as well.
+
+Follow the issue:
+https://gitlab.com/gitlab-com/content-sites/handbook/-/issues/279
+
+Check the #architecture Slack channel for updates.
+
+New home in the public handbook:
+https://handbook.gitlab.com/handbook/engineering/architecture/
+-->
+
+<!--
 Before you start:
 
 - Copy this file to a sub-directory and call it `index.md` for it to appear in

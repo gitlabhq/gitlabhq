@@ -17,7 +17,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
     users: [%w[accepted_term_id]],
-    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[partition_id upstream_pipeline_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
     snippets: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
@@ -334,7 +334,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     "Packages::Composer::Metadatum" => %w[composer_json],
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary],
-    "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
+    "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
+    "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata] # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity

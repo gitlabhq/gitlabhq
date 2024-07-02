@@ -18,3 +18,8 @@ If you would like to contribute to any of these documents, feel free to:
    and select the design doc you wish to contribute to.
 1. [Create a merge request](../development/contributing/merge_request_workflow.md).
 1. `@` message both an author and a coach assigned to the design document, as listed below.
+
+NOTE:
+We plan to [move the architecture and design documents section](https://gitlab.com/gitlab-com/content-sites/handbook/-/issues/279)
+to the [public GitLab handbook](https://handbook.gitlab.com/handbook/engineering/architecture/).
+This will change how you contribute to the documents.
