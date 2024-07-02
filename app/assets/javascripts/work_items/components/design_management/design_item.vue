@@ -50,6 +50,11 @@ export default {
       required: false,
       default: null,
     },
+    workItemIid: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -125,7 +130,7 @@ export default {
   <router-link
     :to="{
       name: $options.DESIGN_ROUTE_NAME,
-      params: { id: filename },
+      params: { iid: workItemIid, id: filename },
       query: $route.query,
     }"
     class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0"

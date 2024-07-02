@@ -615,7 +615,6 @@ export default {
                 @error="updateError = $event"
                 @emoji-updated="$emit('work-item-emoji-updated', $event)"
               />
-              <design-widget v-if="!isDrawer && hasDesignWidget" :work-item-id="workItem.id" />
             </section>
             <aside
               data-testid="work-item-overview-right-sidebar"
@@ -630,6 +629,13 @@ export default {
                 @error="updateError = $event"
               />
             </aside>
+
+            <design-widget
+              v-if="hasDesignWidget"
+              :class="{ 'gl-mt-0': isDrawer }"
+              :work-item-id="workItem.id"
+              :work-item-iid="workItemIid"
+            />
 
             <work-item-tree
               v-if="showWorkItemTree"

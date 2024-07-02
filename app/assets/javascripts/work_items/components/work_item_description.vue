@@ -155,6 +155,9 @@ export default {
     workItemType() {
       return this.workItem?.workItemType?.name;
     },
+    taskCompletionStatus() {
+      return this.workItemDescription?.taskCompletionStatus;
+    },
     lastEditedAt() {
       return this.workItemDescription?.lastEditedAt;
     },
@@ -187,6 +190,9 @@ export default {
       return {
         'gl-mb-5 common-note-form': true,
       };
+    },
+    showEditedAt() {
+      return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
     },
   },
   watch: {
@@ -353,7 +359,8 @@ export default {
       @descriptionUpdated="handleDescriptionTextUpdated"
     />
     <edited-at
-      v-if="lastEditedAt && !editMode"
+      v-if="showEditedAt"
+      :task-completion-status="taskCompletionStatus"
       :updated-at="lastEditedAt"
       :updated-by-name="lastEditedByName"
       :updated-by-path="lastEditedByPath"

@@ -10,6 +10,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
 .layout-page.design-detail-layout {
   max-height: 100vh;
+
+  .super-sidebar, .top-bar-fixed {
+    z-index: 0;
+  }
 }
 
 .design-detail {

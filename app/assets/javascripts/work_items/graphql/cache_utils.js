@@ -239,6 +239,7 @@ export const setNewWorkItemCache = async (
     descriptionHtml: '',
     lastEditedAt: null,
     lastEditedBy: null,
+    taskCompletionStatus: null,
     __typename: 'WorkItemWidgetDescription',
   });
 

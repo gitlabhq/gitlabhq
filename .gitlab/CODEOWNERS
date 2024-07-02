@@ -1383,13 +1383,6 @@ lib/gitlab/checks/**
 /ee/lib/gitlab/ci/reports/license_scanning/ @gitlab-org/secure/composition-analysis-be
 /ee/lib/gitlab/ci/reports/security/ @gitlab-org/govern/threat-insights-backend-team
 
-# Verify frontend
-/**/javascripts/ci/ @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/token_access/ @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/admin/application_settings/runner_token_expiration/ @gitlab-org/ci-cd/verify/frontend
-/**/javascripts/usage_quotas/pipelines/ @gitlab-org/ci-cd/verify/frontend @sheldonled @aalakkad @kpalchyk
-/**/javascripts/editor/schema/ci.json @gitlab-org/ci-cd/verify/frontend
-
 # CI/CD templates require approval from specific owners.
 /lib/gitlab/ci/templates/ @gitlab-org/maintainers/cicd-templates
 /lib/gitlab/ci/templates/Security/ @gonzoyumo @twoodham @amarpatel @theoretick @thiagocsf @agroleau
@@ -1485,6 +1478,7 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/assets/javascripts/usage_quotas/components/
 /ee/app/assets/javascripts/usage_quotas/seats/
 /ee/app/assets/javascripts/usage_quotas/storage/
+/**/javascripts/usage_quotas/pipelines/
 
 ^[Manage::Foundations] @gitlab-org/manage/foundations/engineering
 /lib/sidebars/

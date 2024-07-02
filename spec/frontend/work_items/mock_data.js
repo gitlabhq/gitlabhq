@@ -169,6 +169,7 @@ export const workItemQueryResponse = {
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
           lastEditedAt: null,
           lastEditedBy: null,
+          taskCompletionStatus: null,
         },
         {
           __typename: 'WorkItemWidgetAssignees',
@@ -917,6 +918,7 @@ export const workItemResponseFactory = ({
   allowsScopedLabels = false,
   lastEditedAt = null,
   lastEditedBy = null,
+  taskCompletionStatus = null,
   withCheckboxes = false,
   parent = mockParent.parent,
   workItemType = taskType,
@@ -973,6 +975,7 @@ export const workItemResponseFactory = ({
             : '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
           lastEditedAt,
           lastEditedBy,
+          taskCompletionStatus,
         },
         assigneesWidgetPresent
           ? {
@@ -4440,6 +4443,11 @@ export const createWorkItemQueryResponse = {
               name: 'Administrator',
               webPath: '/root',
               __typename: 'UserCore',
+            },
+            taskCompletionStatus: {
+              completedCount: 0,
+              count: 4,
+              __typename: 'TaskCompletionStatus',
             },
             __typename: 'WorkItemWidgetDescription',
           },

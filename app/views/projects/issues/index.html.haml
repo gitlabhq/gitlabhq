@@ -2,6 +2,7 @@
 - add_page_specific_style 'page_bundles/issuable_list'
 - add_page_specific_style 'page_bundles/issues_list'
 - add_page_specific_style 'page_bundles/work_items'
+- add_page_specific_style 'page_bundles/design_management'
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, safe_params.merge(rss_url_options).to_h, title: "#{@project.name} issues")
 

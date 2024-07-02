@@ -3,10 +3,6 @@
 module ContainerRegistry
   module Protection
     class Rule < ApplicationRecord
-      include IgnorableColumns
-      ignore_columns %i[push_protected_up_to_access_level delete_protected_up_to_access_level],
-        remove_with: '17.2', remove_after: '2024-06-22'
-
       enum minimum_access_level_for_delete:
              Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),
         _prefix: :minimum_access_level_for_delete

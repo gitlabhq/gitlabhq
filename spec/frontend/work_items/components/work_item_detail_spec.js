@@ -714,11 +714,11 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemDesigns().exists()).toBe(true);
     });
 
-    it('does not render if within a drawer', async () => {
+    it('renders if within a drawer', async () => {
       createComponent({ isDrawer: true });
       await waitForPromises();
 
-      expect(findWorkItemDesigns().exists()).toBe(false);
+      expect(findWorkItemDesigns().exists()).toBe(true);
     });
   });
 

@@ -239,4 +239,44 @@ describe('WorkItemDescription', () => {
       expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
     });
   });
+
+  describe('checklist count visibility', () => {
+    const taskCompletionStatus = {
+      completedCount: 0,
+      count: 4,
+    };
+
+    describe('when checklist exists', () => {
+      it('when edit mode is active, checklist count is not visible', async () => {
+        await createComponent({
+          editMode: true,
+          workItemResponse: workItemByIidResponseFactory({ taskCompletionStatus }),
+        });
+
+        expect(findEditedAt().exists()).toBe(false);
+      });
+
+      it('when edit mode is inactive, checklist count is visible', async () => {
+        await createComponent({
+          editMode: false,
+          workItemResponse: workItemByIidResponseFactory({ taskCompletionStatus }),
+        });
+
+        expect(findEditedAt().exists()).toBe(true);
+        expect(findEditedAt().props()).toMatchObject({
+          taskCompletionStatus,
+        });
+      });
+    });
+
+    describe('when checklist does not exist', () => {
+      it('checklist count is not visible', async () => {
+        await createComponent({
+          workItemResponse: workItemByIidResponseFactory({ taskCompletionStatus: null }),
+        });
+
+        expect(findEditedAt().exists()).toBe(false);
+      });
+    });
+  });
 });
