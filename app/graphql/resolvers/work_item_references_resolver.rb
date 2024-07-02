@@ -45,15 +45,20 @@ module Resolvers
 
     # rubocop: disable CodeReuse/ActiveRecord -- #references is not an ActiveRecord method
     def find_work_items(references)
-      # Also check for references with :issue pattern to find legacy issues
-      item_ids = references_extractor(references).references(:issue, ids_only: true)
-      item_ids << references_extractor(references).references(:work_item, ids_only: true)
+      epic_refs, issue_refs = references.partition { |r| r.match?(/epics|&/) }
+      item_ids = references_extractor(issue_refs)&.references(:work_item, ids_only: true) || []
 
-      WorkItem.id_in(item_ids.flatten)
+      # Also check for references with :issue and :epic patterns to find legacy items
+      item_ids << references_extractor(issue_refs)&.references(:issue, ids_only: true)
+      item_ids << references_extractor(epic_refs)&.references(:epic)&.pluck(:issue_id)
+
+      WorkItem.id_in(item_ids.flatten.compact)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     def references_extractor(refs)
+      return unless refs.any?
+
       extractor, analyze_context =
         if container.is_a?(Group)
           [::Gitlab::ReferenceExtractor.new(nil, context[:current_user]), { group: container }]

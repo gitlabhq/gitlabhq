@@ -76,3 +76,48 @@ The following process outlines the steps to get embeddings generated and stored 
 1. Add a new unit primitive: [here](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/918) and [here](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155835).
 1. Use `Elastic::ApplicationVersionedSearch` to access callbacks and add the necessary checks for when to generate embeddings. See [`Search::Elastic::IssuesSearch`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/concerns/search/elastic/issues_search.rb) for an example.
 1. Backfill embeddings: [example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154940).
+
+## Adding issue embeddings locally
+
+### Prerequisites
+
+1. [Make sure Elasticsearch is running](../advanced_search.md#setting-up-development-environment).
+1. If you have an existing Elasticsearch setup, make sure the `AddEmbeddingToIssues` migration has been completed by executing the following until it returns:
+
+    ```ruby
+    Elastic::MigrationWorker.new.perform
+    ```
+
+1. Make sure you can run [GitLab Duo features on your local environment](../ai_features/index.md#instructions-for-setting-up-gitlab-duo-features-in-the-local-development-environment).
+1. Ensure running the following in a rails console outputs an embedding (a vector of 768 dimensions). If not, there is a problem with the AI setup.
+
+    ```ruby
+    Gitlab::Llm::VertexAi::Embeddings::Text.new('text', user: nil, tracking_context: {}, unit_primitive: 'semantic_search_issue').execute
+    ```
+
+### Running the backfill
+
+To backfill issue embeddings for a project's issues, run the following in a rails console:
+
+```ruby
+Gitlab::Duo::Developments::BackfillIssueEmbeddings.execute(project_id: project_id)
+```
+
+The task adds the issues to a queue and processes them in batches, indexing embeddings into Elasticsearch.
+It respects a rate limit of 450 embeddings per minute. Reach out to `@maddievn` or `#g_global_search` in Slack if there are any issues.
+
+### Verify
+
+If the following returns 0, all issues for the project have embeddings:
+
+<details><summary>Expand</summary>
+
+```shell
+curl "http://localhost:9200/gitlab-development-issues/_count" \
+--header "Content-Type: application/json" \
+--data '{"query": {"bool": {"filter": [{"term": {"project_id": PROJECT_ID}}], "must_not": [{"exists": {"field": "embedding"}}]}}}' | jq '.count'
+```
+
+</details>
+
+Replacing `PROJECT_ID` with your project ID.

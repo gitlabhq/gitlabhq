@@ -190,6 +190,8 @@ A manual cache-clearing ensures that you can use Duo features immediately:
 bundle exec rake cache:clear
 ```
 
+**Troubleshooting:** If you have problems with your setup at this point, double-check your admin settings. When GDK is running, go to admin settings (Navigation -> Admin), then go to general settings (Settings -> General), and expand the "Account and limit" section. Scroll to the bottom of this section to make sure the setting "Allow use of licensed EE features" is toggled on.
+
 ### Recommended: Test clients in Rails console
 
 **Why:** you've completed all of the setup steps, now it's time to confirm that
