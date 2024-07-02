@@ -1,0 +1,13 @@
+---
+table_name: dependency_list_export_parts
+classes:
+- Dependencies::DependencyListExport::Part
+feature_categories:
+- dependency_management
+description: Track partial files to enable large data exports
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157638
+milestone: '17.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  organization_id: organizations
+

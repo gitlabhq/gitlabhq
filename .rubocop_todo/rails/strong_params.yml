@@ -354,7 +354,7 @@ Rails/StrongParams:
     - 'ee/app/controllers/smartcard_controller.rb'
     - 'ee/app/controllers/subscriptions/groups_controller.rb'
     - 'ee/app/controllers/subscriptions/hand_raise_leads_controller.rb'
-    - 'ee/app/controllers/subscriptions/trials/duo_pro_controller.rb'
+    - 'ee/app/controllers/gitlab_subscriptions/trials/duo_pro_controller.rb'
     - 'ee/app/controllers/subscriptions/trials_controller.rb'
     - 'ee/app/controllers/subscriptions_controller.rb'
     - 'ee/app/controllers/users/base_identity_verification_controller.rb'

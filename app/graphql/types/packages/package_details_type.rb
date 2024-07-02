@@ -30,10 +30,6 @@ module Types
 
       field :public_package, GraphQL::Types::Boolean, null: true, description: 'Indicates if there is public access to the package.'
 
-      def versions
-        object.versions
-      end
-
       def composer_config_repository_url
         composer_config_repository_name(object.project.group&.id)
       end

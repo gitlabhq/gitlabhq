@@ -307,7 +307,7 @@ gem 'jira-ruby', '~> 2.3.0', feature_category: :integrations
 gem 'atlassian-jwt', '~> 0.2.1', feature_category: :integrations
 
 # Slack integration
-gem 'slack-messenger', '~> 2.3.4', feature_category: :integrations
+gem 'slack-messenger', '~> 2.3.5', feature_category: :integrations
 
 # FogBugz integration
 gem 'ruby-fogbugz', '~> 0.3.0', feature_category: :importers

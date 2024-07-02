@@ -12,17 +12,13 @@ module Types
       field :type, GraphQL::Types::String, null: true,
         description: 'Class name of the service.'
       field :service_type, ::Types::Projects::ServiceTypeEnum, null: true,
-        description: 'Type of the service.'
+        description: 'Type of the service.', method: :type
       field :active, GraphQL::Types::Boolean, null: true,
         description: 'Indicates if the service is active.'
 
       def type
-        enum = ::Types::Projects::ServiceTypeEnum.coerce_result(service_type, context)
+        enum = ::Types::Projects::ServiceTypeEnum.coerce_result(object.type, context)
         enum.downcase.camelize
-      end
-
-      def service_type
-        object.type
       end
 
       definition_methods do

@@ -78,6 +78,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     cluster_providers_gcp: %w[gcp_project_id operation_id],
     compliance_management_frameworks: %w[group_id],
     commit_user_mentions: %w[commit_id],
+    dependency_list_export_parts: %w[start_id end_id],
     dep_ci_build_trace_sections: %w[build_id],
     deploy_keys_projects: %w[deploy_key_id],
     deployments: %w[deployable_id user_id],
