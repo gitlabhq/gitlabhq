@@ -163,9 +163,6 @@ export default {
     };
   },
   computed: {
-    showAreTicketsConfidentialByDefault() {
-      return this.glFeatures.serviceDeskTicketsConfidentiality;
-    },
     showAddExternalParticipantsFromCC() {
       return this.glFeatures.issueEmailParticipants;
     },
@@ -382,10 +379,7 @@ export default {
           </template>
         </gl-form-group>
 
-        <div
-          v-if="showAreTicketsConfidentialByDefault"
-          data-testid="service-desk-are-tickets-confidential-by-default-wrapper"
-        >
+        <div data-testid="service-desk-are-tickets-confidential-by-default-wrapper">
           <h5>{{ $options.i18n.headlines.ticketVisibility }}</h5>
 
           <gl-form-checkbox

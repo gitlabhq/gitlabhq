@@ -1,98 +1,89 @@
-export const mockPlaceholderUsers = [
-  {
-    avatar_url:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Placeholder 1',
-    username: 'placeholder-1',
-    source_hostname: 'https://gitlab.com',
-    source_username: '@old_root',
-    status: 'pending_assignment',
-  },
-  {
-    avatar_url:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Placeholder 2',
-    username: 'placeholder-2',
-    source_hostname: 'https://gitlab.com',
-    source_username: '@old_root',
-    status: 'awaiting_approval',
-    reassignToUser: {
-      avatar_url:
-        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-      name: 'Administrator',
-      username: '@root2',
-    },
-  },
-  {
-    avatar_url:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Placeholder 3',
-    username: 'placeholder-3',
-    source_hostname: 'https://gitlab.com',
-    source_username: '@old_root',
-    status: 'rejected',
-  },
-  {
-    avatar_url:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Placeholder 4',
-    username: 'placeholder-4',
-    source_hostname: 'https://gitlab.com',
-    source_username: '@old_root',
-    status: 'reassignment_in_progress',
-    reassignToUser: {
-      avatar_url:
-        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-      name: 'Administrator',
-      username: '@root4',
-    },
-  },
-  {
-    avatar_url:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Placeholder 5',
-    username: 'placeholder-5',
-    source_hostname: 'https://gitlab.com',
-    source_username: '@old_root',
-    status: 'failed',
-    reassignToUser: {
-      avatar_url:
-        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-      name: 'Administrator',
-      username: '@root5',
-    },
-  },
-  {
-    avatar_url:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Placeholder 6',
-    username: 'placeholder-6',
-    source_hostname: 'https://gitlab.com',
-    source_username: '@old_root',
-    status: 'keep_as_placeholder',
-    reassignToUser: {
-      avatar_url:
-        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-      name: 'Administrator',
-      username: '@root6',
-    },
-  },
-  {
-    avatar_url:
-      'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-    name: 'Placeholder 7',
-    username: 'placeholder-7',
-    source_hostname: 'https://gitlab.com',
-    source_username: '@old_root',
-    status: 'completed',
-    reassignToUser: {
-      avatar_url:
-        'https://www.gravatar.com/avatar/258d8dc916db8cea2cafb6c3cd0cb0246efe061421dbd83ec3a350428cabda4f?s=80&d=identicon',
-      name: 'Administrator',
-      username: '@root7',
-    },
-  },
+const createMockPlaceholderUser = (index) => {
+  return {
+    __typename: 'UserCore',
+    id: `gid://gitlab/User/382${index}`,
+    avatarUrl: '/avatar1',
+    name: `Placeholder ${index}`,
+    username: `placeholder_${index}`,
+    webUrl: '/',
+    webPath: '/',
+  };
+};
+
+const createMockReassignUser = (index) => {
+  return {
+    __typename: 'UserCore',
+    id: `gid://gitlab/User/741${index}`,
+    avatarUrl: '/avatar2',
+    name: `Reassigned ${index}`,
+    username: `reassigned_${index}`,
+    webUrl: '/',
+    webPath: '/',
+  };
+};
+
+const createMockSourceUser = (index, { status, reassignToUser = false } = {}) => {
+  return {
+    __typename: 'ImportSourceUser',
+    id: `gid://gitlab/Import::SourceUser/${index}`,
+    sourceHostname: 'https://gitlab.com',
+    sourceName: `Old User ${index}`,
+    sourceUsername: `old_user_${index}`,
+    status,
+    placeholderUser: createMockPlaceholderUser(index),
+    reassignToUser: reassignToUser ? createMockReassignUser(index) : null,
+  };
+};
+
+export const mockSourceUsers = [
+  createMockSourceUser(1, {
+    status: 'PENDING_ASSIGNMENT',
+  }),
+  createMockSourceUser(2, {
+    status: 'AWAITING_APPROVAL',
+    reassignToUser: true,
+  }),
+  createMockSourceUser(3, {
+    status: 'REJECTED',
+  }),
+  createMockSourceUser(4, {
+    status: 'REASSIGNMENT_IN_PROGRESS',
+    reassignToUser: true,
+  }),
+  createMockSourceUser(5, {
+    status: 'FAILED',
+    reassignToUser: true,
+  }),
+  createMockSourceUser(6, {
+    status: 'KEEP_AS_PLACEHOLDER',
+    reassignToUser: true,
+  }),
+  createMockSourceUser(7, {
+    status: 'COMPLETED',
+    reassignToUser: true,
+  }),
 ];
+
+export const mockSourceUsersQueryResponse = ({ pageInfo = {} } = {}) => ({
+  data: {
+    namespace: {
+      __typename: 'Namespace',
+      id: 'gid://gitlab/Group/1',
+      importSourceUsers: {
+        __typename: 'ImportSourceUserConnection',
+        nodes: mockSourceUsers,
+        pageInfo: {
+          __typename: 'PageInfo',
+          hasNextPage: false,
+          hasPreviousPage: false,
+          startCursor: '',
+          endCursor: '',
+          ...pageInfo,
+        },
+      },
+    },
+  },
+});
 
 export const mockUser1 = {
   __typename: 'UserCore',

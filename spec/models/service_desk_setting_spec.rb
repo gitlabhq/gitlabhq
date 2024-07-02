@@ -172,21 +172,6 @@ RSpec.describe ServiceDeskSetting, feature_category: :service_desk do
 
       it { is_expected.to be expected_value }
     end
-
-    context 'when feature flag service_desk_tickets_confidentiality is disabled' do
-      let(:project) { build(:project, :private) }
-
-      subject(:setting) do
-        build(:service_desk_setting, project: project, tickets_confidential_by_default: false)
-         .tickets_confidential_by_default?
-      end
-
-      before do
-        stub_feature_flags(service_desk_tickets_confidentiality: false)
-      end
-
-      it { is_expected.to be true }
-    end
   end
 
   describe 'associations' do

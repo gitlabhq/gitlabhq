@@ -1,5 +1,12 @@
 <script>
-import { GlAvatarLabeled, GlBadge, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlBadge,
+  GlKeysetPagination,
+  GlLoadingIcon,
+  GlTable,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 
 import {
@@ -14,17 +21,28 @@ export default {
   components: {
     GlAvatarLabeled,
     GlBadge,
-    GlTableLite,
+    GlKeysetPagination,
+    GlLoadingIcon,
+    GlTable,
     PlaceholderActions,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
     items: {
       type: Array,
       required: false,
       default: () => [],
+    },
+    pageInfo: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
     reassigned: {
       type: Boolean,
@@ -83,44 +101,62 @@ export default {
 </script>
 
 <template>
-  <gl-table-lite :items="items" :fields="fields">
-    <template #cell(user)="{ item }">
-      <gl-avatar-labeled
-        :size="32"
-        :src="item.avatar_url"
-        :label="item.name"
-        :sub-label="item.username"
-      />
-    </template>
+  <div>
+    <gl-table :items="items" :fields="fields" :busy="isLoading">
+      <template #table-busy>
+        <gl-loading-icon size="lg" class="gl-my-5" />
+      </template>
 
-    <template #cell(source)="{ item }">
-      <div>{{ item.source_hostname }}</div>
-      <div class="gl-mt-2">{{ item.source_username }}</div>
-    </template>
+      <template #cell(user)="{ item }">
+        <gl-avatar-labeled
+          v-if="item.placeholderUser"
+          :size="32"
+          :src="item.placeholderUser.avatarUrl"
+          :label="item.placeholderUser.name"
+          :sub-label="`@${item.placeholderUser.username}`"
+        />
+      </template>
 
-    <template #cell(status)="{ item }">
-      <gl-badge
-        v-gl-tooltip="statusBadge(item).tooltip"
-        :variant="statusBadge(item).variant"
-        tabindex="0"
-        >{{ statusBadge(item).text }}</gl-badge
-      >
-    </template>
+      <template #cell(source)="{ item }">
+        <div>{{ item.sourceHostname }}</div>
+        <div class="gl-mt-2">{{ item.sourceUsername }}</div>
+      </template>
 
-    <template #cell(actions)="{ item }">
-      <gl-avatar-labeled
-        v-if="isReassignedItem(item)"
-        :size="32"
-        :src="item.reassignToUser.avatar_url"
-        :label="item.reassignToUser.name"
-        :sub-label="item.reassignToUser.username"
+      <template #cell(status)="{ item }">
+        <gl-badge
+          v-if="statusBadge(item)"
+          v-gl-tooltip="statusBadge(item).tooltip"
+          :variant="statusBadge(item).variant"
+          tabindex="0"
+          >{{ statusBadge(item).text }}</gl-badge
+        >
+      </template>
+
+      <template #cell(actions)="{ item }">
+        <gl-avatar-labeled
+          v-if="isReassignedItem(item) && item.reassignToUser"
+          :size="32"
+          :src="item.reassignToUser.avatarUrl"
+          :label="item.reassignToUser.name"
+          :sub-label="`@${item.reassignToUser.username}`"
+        />
+        <placeholder-actions
+          v-else
+          :placeholder="item"
+          @confirm="onConfirm(item, $event)"
+          @cancel="onCancel(item)"
+        />
+      </template>
+    </gl-table>
+
+    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
+      <gl-keyset-pagination
+        v-bind="pageInfo"
+        :prev-text="__('Prev')"
+        :next-text="__('Next')"
+        @prev="$emit('prev')"
+        @next="$emit('next')"
       />
-      <placeholder-actions
-        v-else
-        :placeholder="item"
-        @confirm="onConfirm(item, $event)"
-        @cancel="onCancel(item)"
-      />
-    </template>
-  </gl-table-lite>
+    </div>
+  </div>
 </template>

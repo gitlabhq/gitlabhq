@@ -9783,19 +9783,22 @@ msgstr ""
 msgid "BulkImport|Following data will not be migrated: %{bullets} Contact system administrator of %{host} to upgrade GitLab if you need this data in your migration"
 msgstr ""
 
-msgid "BulkImport|Group import disabled on source or destination instance. Ask an administrator to enable it on both instances and try again."
-msgstr ""
-
 msgid "BulkImport|Import completed"
 msgstr ""
 
 msgid "BulkImport|Import failed. '%{path}' already exists. Change the destination and try again."
 msgstr ""
 
+msgid "BulkImport|Import failed. '%{path}' not found."
+msgstr ""
+
 msgid "BulkImport|Import failed. Destination '%{destination}' is invalid, or you don't have permission."
 msgstr ""
 
 msgid "BulkImport|Import failed. Destination URL %{url}"
+msgstr ""
+
+msgid "BulkImport|Import failed. You don't have permission to export '%{path}'."
 msgstr ""
 
 msgid "BulkImport|Import failed: Destination cannot be a subgroup of the source group. Change the destination and try again."
@@ -9835,6 +9838,9 @@ msgid "BulkImport|Last imported to %{link}"
 msgstr ""
 
 msgid "BulkImport|Maximum download file size when importing from source GitLab instances by direct transfer."
+msgstr ""
+
+msgid "BulkImport|Migration by direct transfer disabled on source or destination instance. Ask an administrator to enable it on both instances and try again."
 msgstr ""
 
 msgid "BulkImport|Migration details"
@@ -57738,6 +57744,9 @@ msgid "UserMapping|Select user"
 msgstr ""
 
 msgid "UserMapping|Source: %{source_hostname}"
+msgstr ""
+
+msgid "UserMapping|There was a problem fetching placeholder users."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"

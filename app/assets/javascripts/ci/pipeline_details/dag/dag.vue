@@ -149,7 +149,10 @@ export default {
   },
   methods: {
     addAnnotationToMap({ uid, source, target }) {
-      this.$set(this.annotationsMap, uid, { source, target });
+      this.annotationsMap = {
+        ...this.annotationsMap,
+        [uid]: { source, target },
+      };
     },
     processGraphData(data) {
       let parsed;

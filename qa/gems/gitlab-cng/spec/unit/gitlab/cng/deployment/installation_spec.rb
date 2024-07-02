@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable RSpec/MultipleMemoizedHelpers -- allows to reuse many of the mock definitions, with less helpers a lot more value duplication would occur
 RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
   describe "with setup" do
     subject(:installation) do
@@ -171,4 +170,3 @@ RSpec.describe Gitlab::Cng::Deployment::Installation, :aggregate_failures do
     end
   end
 end
-# rubocop:enable RSpec/MultipleMemoizedHelpers

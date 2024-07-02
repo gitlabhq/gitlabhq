@@ -39,7 +39,6 @@ describe('ServiceDeskSetting', () => {
         provide: {
           glFeatures: {
             issueEmailParticipants: true,
-            serviceDeskTicketsConfidentiality: true,
           },
           ...provide,
         },
@@ -283,16 +282,6 @@ describe('ServiceDeskSetting', () => {
             ServiceDeskSetting.i18n.areTicketsConfidentialByDefault.help.nonConfidential,
           );
         });
-      });
-    });
-
-    describe('when feature flag service_desk_tickets_confidentiality is disabled', () => {
-      it('is not rendered', () => {
-        wrapper = createComponent({
-          provide: { glFeatures: { serviceDeskTicketsConfidentiality: false } },
-        });
-
-        expect(findAreTicketsConfidentialByDefaultCheckbox().exists()).toBe(false);
       });
     });
   });

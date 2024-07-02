@@ -1,13 +1,13 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlAvatarLabeled, GlBadge, GlTableLite } from '@gitlab/ui';
+import { GlAvatarLabeled, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTable } from '@gitlab/ui';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
 import PlaceholdersTable from '~/members/components/placeholders/placeholders_table.vue';
 import PlaceholderActions from '~/members/components/placeholders/placeholder_actions.vue';
-import { mockPlaceholderUsers } from './mock_data';
+import { mockSourceUsers } from './mock_data';
 
 Vue.use(VueApollo);
 
@@ -16,7 +16,8 @@ describe('PlaceholdersTable', () => {
   let mockApollo;
 
   const defaultProps = {
-    items: mockPlaceholderUsers,
+    isLoading: false,
+    items: mockSourceUsers,
   };
 
   const createComponent = ({ mountFn = shallowMount, props = {} } = {}) => {
@@ -34,7 +35,9 @@ describe('PlaceholdersTable', () => {
     });
   };
 
-  const findTable = () => wrapper.findComponent(GlTableLite);
+  const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findPagination = () => wrapper.findComponent(GlKeysetPagination);
+  const findTable = () => wrapper.findComponent(GlTable);
   const findTableRows = () => findTable().findAll('tbody > tr');
   const findTableFields = () =>
     findTable()
@@ -45,7 +48,7 @@ describe('PlaceholdersTable', () => {
     createComponent({ mountFn: mount });
 
     expect(findTable().exists()).toBe(true);
-    expect(findTableRows().length).toBe(mockPlaceholderUsers.length);
+    expect(findTableRows().length).toBe(mockSourceUsers.length);
     expect(findTableFields()).toEqual([
       'Placeholder user',
       'Source',
@@ -54,22 +57,32 @@ describe('PlaceholdersTable', () => {
     ]);
   });
 
-  it('renders avatar', () => {
+  it('renders loading icon when table is loading', () => {
+    createComponent({
+      props: { isLoading: true },
+    });
+
+    expect(findLoadingIcon().exists()).toBe(true);
+  });
+
+  it('renders avatar for placeholder user', () => {
     createComponent({ mountFn: mount });
 
     const avatar = findTableRows().at(0).findComponent(GlAvatarLabeled);
+    const { placeholderUser } = mockSourceUsers[0];
 
     expect(avatar.props()).toMatchObject({
-      label: mockPlaceholderUsers[0].name,
-      subLabel: mockPlaceholderUsers[0].username,
+      label: placeholderUser.name,
+      subLabel: `@${placeholderUser.username}`,
     });
-    expect(avatar.attributes('src')).toBe(mockPlaceholderUsers[0].avatar_url);
+    expect(avatar.attributes('src')).toBe(placeholderUser.avatarUrl);
   });
 
   it('renders source info', () => {
     createComponent({ mountFn: mount });
 
-    expect(findTableRows().at(0).text()).toContain(mockPlaceholderUsers[0].source_hostname);
+    expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceHostname);
+    expect(findTableRows().at(0).text()).toContain(mockSourceUsers[0].sourceUsername);
   });
 
   it('renders status badge with tooltip', () => {
@@ -89,18 +102,19 @@ describe('PlaceholdersTable', () => {
     const firstRow = findTableRows().at(0);
     const actions = firstRow.findComponent(PlaceholderActions);
 
-    expect(actions.props('placeholder')).toEqual(mockPlaceholderUsers[0]);
+    expect(actions.props('placeholder')).toEqual(mockSourceUsers[0]);
   });
 
-  it('renders avatar of final user when item is reassigned', () => {
+  it('renders avatar for final user when item is reassigned', () => {
     createComponent({ mountFn: mount });
 
     const reassignedItemRow = findTableRows().at(5);
     const actionsAvatar = reassignedItemRow.findAllComponents(GlAvatarLabeled).at(1);
+    const { reassignToUser } = mockSourceUsers[5];
 
     expect(actionsAvatar.props()).toMatchObject({
-      label: mockPlaceholderUsers[5].reassignToUser.name,
-      subLabel: mockPlaceholderUsers[5].reassignToUser.username,
+      label: reassignToUser.name,
+      subLabel: `@${reassignToUser.username}`,
     });
   });
 
@@ -115,7 +129,7 @@ describe('PlaceholdersTable', () => {
 
       actions.vm.$emit('confirm', selectedUserId);
 
-      expect(wrapper.emitted('confirm')[0]).toEqual([mockPlaceholderUsers[2], selectedUserId]);
+      expect(wrapper.emitted('confirm')[0]).toEqual([mockSourceUsers[2], selectedUserId]);
     });
 
     it('emits "cancel" event with item and selectedUserId', () => {
@@ -123,7 +137,7 @@ describe('PlaceholdersTable', () => {
 
       actions.vm.$emit('cancel');
 
-      expect(wrapper.emitted('cancel')[0]).toEqual([mockPlaceholderUsers[2]]);
+      expect(wrapper.emitted('cancel')[0]).toEqual([mockSourceUsers[2]]);
     });
   });
 
@@ -144,6 +158,62 @@ describe('PlaceholdersTable', () => {
         'Reassignment status',
         'Reassigned to',
       ]);
+    });
+  });
+
+  describe('pagination', () => {
+    describe.each`
+      hasNextPage | hasPreviousPage | expectPagination
+      ${false}    | ${false}        | ${false}
+      ${false}    | ${true}         | ${true}
+      ${true}     | ${false}        | ${true}
+      ${true}     | ${true}         | ${true}
+    `(
+      'when hasNextPage=$hasNextPage and hasPreviousPage=$hasPreviousPage',
+      ({ hasNextPage, hasPreviousPage, expectPagination }) => {
+        beforeEach(() => {
+          createComponent({
+            props: {
+              pageInfo: {
+                hasNextPage,
+                hasPreviousPage,
+              },
+            },
+          });
+        });
+
+        it(`${expectPagination ? 'renders' : 'does not render'} pagination`, () => {
+          expect(findPagination().exists()).toBe(expectPagination);
+        });
+      },
+    );
+
+    it('emits "prev" event', () => {
+      createComponent({
+        props: {
+          pageInfo: {
+            hasPreviousPage: true,
+          },
+        },
+      });
+
+      findPagination().vm.$emit('prev');
+
+      expect(wrapper.emitted('prev')[0]).toEqual([]);
+    });
+
+    it('emits "next" event', () => {
+      createComponent({
+        props: {
+          pageInfo: {
+            hasNextPage: true,
+          },
+        },
+      });
+
+      findPagination().vm.$emit('next');
+
+      expect(wrapper.emitted('next')[0]).toEqual([]);
     });
   });
 });

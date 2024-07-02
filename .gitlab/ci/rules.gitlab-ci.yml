@@ -684,7 +684,7 @@
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
-  - gems/gitlab-cng/**/*.rb
+  - qa/gems/gitlab-cng/**/*.rb
 
 ##################
 # Conditions set #
@@ -1521,6 +1521,18 @@
     - <<: *if-not-dot-com-gitlab-org-and-not-jihulab
       when: never
     - !reference [.qa:rules:update-gem-cache, rules]
+
+.qa:rules:metadata-lint:
+  rules:
+    - <<: *if-default-refs
+      changes: *qa-patterns
+    - <<: *if-default-refs
+      changes: *ci-qa-patterns
+
+.qa:rules:gitlab-cng:
+  rules:
+    - <<: *if-default-refs
+      changes: *cng-orchestrator-patterns
 
 .qa:rules:code-merge-request:
   rules:
@@ -2443,13 +2455,6 @@
         RUN_ALL_RUBOCOP: "true"
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
-
-.static-analysis:rules:qa:metadata-lint:
-  rules:
-    - <<: *if-default-refs
-      changes: *qa-patterns
-    - <<: *if-default-refs
-      changes: [".gitlab/ci/static-analysis.gitlab-ci.yml"]
 
 .static-analysis:rules:haml-lint:
   rules:

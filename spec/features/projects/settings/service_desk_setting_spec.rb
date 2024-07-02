@@ -106,6 +106,5 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
     visit edit_project_path(project)
 
     expect(page).to have_pushed_frontend_feature_flags(issueEmailParticipants: true)
-    expect(page).to have_pushed_frontend_feature_flags(serviceDeskTicketsConfidentiality: true)
   end
 end

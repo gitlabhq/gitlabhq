@@ -23,6 +23,9 @@ issues:
 - own_label_links
 - labels
 - own_labels
+- own_notes
+- own_resource_state_events
+- own_resource_label_events
 - own_description_versions
 - sync_object
 - last_edited_by
@@ -1027,6 +1030,9 @@ epic:
 - own_label_links
 - labels
 - own_labels
+- own_notes
+- own_resource_state_events
+- own_resource_label_events
 - own_description_versions
 - sync_object
 - todos

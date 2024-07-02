@@ -23,13 +23,6 @@ class ContainerRepository < ApplicationRecord
   belongs_to :project
 
   ignore_columns %i[
-    migration_retries_count
-    migration_aborted_in_state
-    migration_skipped_reason
-    migration_state
-  ], remove_with: '17.2', remove_after: '2024-06-24'
-
-  ignore_columns %i[
     migration_aborted_at
     migration_import_done_at
     migration_import_started_at

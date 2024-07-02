@@ -1,8 +1,14 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'listing issuable discussions' do |user_role, internal_discussion_count, total_discussions_count|
+RSpec.shared_examples 'listing issuable discussions' do |user_role:, internal_discussions:, total_discussions:|
   before_all do
     create_notes(issuable, "some user comment")
+
+    if issuable.try(:sync_object).present?
+      create_notes(issuable.sync_object, "some user comment")
+      internal_discussions *= 2
+      total_discussions *= 2
+    end
   end
 
   context 'when user cannot read issue' do
@@ -41,8 +47,7 @@ RSpec.shared_examples 'listing issuable discussions' do |user_role, internal_dis
 
       it "returns non confidential notes" do
         discussions = discussions_service.execute
-
-        non_conf_discussion_count = total_discussions_count - internal_discussion_count
+        non_conf_discussion_count = total_discussions - internal_discussions
         expect(discussions.count).to eq(non_conf_discussion_count)
         expect(discussions.count { |disc| disc.notes.any?(&:confidential) }).to eq(0)
         expect(discussions.count { |disc| !disc.notes.any?(&:confidential) }).to eq(non_conf_discussion_count)
@@ -53,10 +58,9 @@ RSpec.shared_examples 'listing issuable discussions' do |user_role, internal_dis
     context 'and can read confidential notes' do
       it "returns all notes" do
         discussions = discussions_service.execute
-
-        expect(discussions.count).to eq(total_discussions_count)
-        expect(discussions.count { |disc| disc.notes.any?(&:confidential) }).to eq(internal_discussion_count)
-        non_conf_discussion_count = total_discussions_count - internal_discussion_count
+        expect(discussions.count).to eq(total_discussions)
+        expect(discussions.count { |disc| disc.notes.any?(&:confidential) }).to eq(internal_discussions)
+        non_conf_discussion_count = total_discussions - internal_discussions
         expect(discussions.count { |disc| !disc.notes.any?(&:confidential) }).to eq(non_conf_discussion_count)
       end
     end
@@ -106,7 +110,7 @@ def create_notes(issuable, note_body)
   )
   create(:resource_label_event, user: current_user, "#{assoc_name}": issuable, label: label, action: 'remove')
 
-  unless issuable.is_a?(Epic)
+  if !issuable.is_a?(Epic) && !(issuable.is_a?(WorkItem) && issuable.work_item_type.name == 'Epic')
     create(:resource_milestone_event, "#{assoc_name}": issuable, milestone: milestone, action: 'add')
     create(:resource_milestone_event, "#{assoc_name}": issuable, milestone: milestone, action: 'remove')
   end

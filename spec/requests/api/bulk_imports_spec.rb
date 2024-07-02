@@ -146,7 +146,7 @@ RSpec.describe API::BulkImports, feature_category: :importers do
     end
 
     let(:source_entity_type) { BulkImports::CreateService::ENTITY_TYPES_MAPPING.fetch(params[:entities][0][:source_type]) }
-    let(:source_entity_identifier) { ERB::Util.url_encode(params[:entities][0][:source_full_path]) }
+    let(:source_entity_identifier) { '165' }
 
     before do
       allow_next_instance_of(BulkImports::Clients::HTTP) do |instance|
@@ -158,6 +158,14 @@ RSpec.describe API::BulkImports, feature_category: :importers do
           .to receive(:instance_enterprise)
           .and_return(false)
       end
+
+      allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
+        allow(client).to receive(:parse)
+        allow(client).to receive(:execute).and_return(
+          instance_double(GraphQL::Client::Response, original_hash: { 'data' => { 'group' => { 'id' => "gid://gitlab/Group/#{source_entity_identifier}" } } })
+        )
+      end
+
       stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
         .to_return(status: 200, body: "", headers: {})
 
@@ -340,11 +348,45 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         }
       end
 
-      it 'returns blocked url message in the error', :aggregate_failures do
+      it 'returns not accessible message in the error', :aggregate_failures do
+        stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=token")
+          .to_return(status: 403, body: "Forbidden 403", headers: {})
+
         request
 
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response['message']).to eq("URL is blocked: Only allowed schemes are http, https")
+        expect(json_response['message']).to eq("Import failed. You don't have permission to export 'full_path'.")
+      end
+    end
+
+    context 'when resource is not found on source instance' do
+      let(:params) do
+        {
+          configuration: {
+            url: 'http://gitlab.example',
+            access_token: 'access_token'
+          },
+          entities: [
+            source_type: 'group_entity',
+            source_full_path: 'full_path',
+            destination_slug: 'destination_slug',
+            destination_namespace: 'destination_namespace'
+          ]
+        }
+      end
+
+      before do
+        allow_next_instance_of(BulkImports::Clients::Graphql) do |client|
+          allow(client).to receive(:parse)
+          allow(client).to receive(:execute).and_return(
+            instance_double(GraphQL::Client::Response, original_hash: { 'data' => { 'group' => nil } })
+          )
+        end
+      end
+
+      it 'returns not found message', :aggregate_failures do
+        request
+
+        expect(json_response['message']).to eq("Import failed. 'full_path' not found.")
       end
     end
 
@@ -364,16 +406,14 @@ RSpec.describe API::BulkImports, feature_category: :importers do
         }
       end
 
-      it 'returns blocked url error', :aggregate_failures do
+      it 'returns disabled instance error message', :aggregate_failures do
         stub_request(:get, "http://gitlab.example/api/v4/#{source_entity_type}/#{source_entity_identifier}/export_relations/status?page=1&per_page=30&private_token=access_token")
-          .to_return(status: 404, body: "{'error':'404 Not Found'}")
+          .to_return(status: 404, body: "Unsuccessful response 404", headers: {})
 
         request
 
-        expect(response).to have_gitlab_http_status(:unprocessable_entity)
-        expect(json_response['message']).to eq(
-          "Unsuccessful response 404 from /api/v4/groups/full_path/export_relations/status. Body: {'error':'404 Not Found'}"
-        )
+        expect(json_response['message']).to include("Migration by direct transfer disabled on source or destination instance. " \
+                                                    "Ask an administrator to enable it on both instances and try again.")
       end
     end
 

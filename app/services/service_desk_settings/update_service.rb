@@ -13,10 +13,6 @@ module ServiceDeskSettings
         feature_flag: :issue_email_participants,
         field: :add_external_participants_from_cc
       )
-      apply_feature_flag_restrictions!(
-        feature_flag: :service_desk_tickets_confidentiality,
-        field: :tickets_confidential_by_default
-      )
 
       # We want to know when custom email got enabled
       write_log_message = params[:custom_email_enabled].present? && !settings.custom_email_enabled?

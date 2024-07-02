@@ -7,8 +7,6 @@ require 'gitlab/utils/all'
 require_relative '../lib/gitlab_edition'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
 
-require_relative 'lib/gitlab'
-
 require_relative '../config/bundler_setup'
 Bundler.require(:default)
 
@@ -19,6 +17,7 @@ require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/parameter_filter'
+require 'gitlab'
 
 module QA
   root = "#{__dir__}/qa"

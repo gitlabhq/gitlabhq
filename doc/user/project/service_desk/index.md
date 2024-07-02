@@ -54,6 +54,7 @@ Meanwhile:
   - [Customize emails sent to external participants](configure.md#customize-emails-sent-to-external-participants)
   - [Use a custom template for Service Desk tickets](configure.md#use-a-custom-template-for-service-desk-tickets)
   - [Support Bot user](configure.md#support-bot-user)
+  - [Default ticket visibility](configure.md#default-ticket-visibility)
   - [Reopen issues when an external participant comments](configure.md#reopen-issues-when-an-external-participant-comments)
   - [Custom email address](configure.md#custom-email-address)
   - [Use an additional Service Desk alias email](configure.md#use-an-additional-service-desk-alias-email)

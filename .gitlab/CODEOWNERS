@@ -145,7 +145,6 @@ Dangerfile
 
 ^[End-to-end] @gl-quality
 /qa/
-/gems/gitlab-cng/
 
 ^[LDAP] @dblessing @mkozono
 /ee/lib/ee/gitlab/auth/ldap/
@@ -1307,11 +1306,11 @@ lib/gitlab/checks/**
 # opportunity to refine specific rules defined in this section.
 # Note that frontend, CI templates and other concerns should be kept within
 # the same section.
-/app/**/ci/
-/ee/app/**/ci/
+/app/**/ci/*.rb
+/ee/app/**/ci/*.rb
 /lib/**/ci/
 /ee/lib/**/ci/
-/ee/app/**/merge_trains/
+/ee/app/**/merge_trains/*.rb
 /app/controllers/admin/jobs_controller.rb
 /app/controllers/admin/runner_projects_controller.rb
 /app/controllers/admin/runners_controller.rb
@@ -1401,6 +1400,16 @@ lib/gitlab/checks/**
 /lib/gitlab/ci/templates/Jobs/License-Scanning.*.yml @gitlab-org/secure/composition-analysis-be
 /lib/gitlab/ci/templates/Jobs/SAST.*.yml @gitlab-org/secure/static-analysis
 /lib/gitlab/ci/templates/Jobs/Secret-Detection.*.yml @gitlab-org/secure/static-analysis
+
+# Verify Frontend, optional approvals
+^[Verify frontend] @gitlab-org/ci-cd/verify/frontend
+/**/javascripts/ci/
+/**/javascripts/token_access/ 
+/**/javascripts/admin/application_settings/runner_token_expiration/ 
+/**/javascripts/editor/schema/ci.json
+/app/**/ci/*.haml
+/ee/app/**/ci/*.haml
+/ee/app/**/merge_trains/*.haml
 
 ## Verify:Runner Fleet Backend
 ^[Runner Fleet Backend] @gitlab-org/ci-cd/runner-fleet-team/backend-approvers

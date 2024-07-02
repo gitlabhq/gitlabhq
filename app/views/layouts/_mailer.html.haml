@@ -6,13 +6,19 @@
     %meta{ content: "IE=edge", "http-equiv" => "X-UA-Compatible" }/
     %title= message.subject
 
-    -# Avoid premailer processing of client-specific styles (@media tag not supported)
-    -# We need to inline the contents here because mail clients (e.g. iOS Mail, Outlook)
-    -# do not support linked stylesheets.
-    %style{ type: 'text/css', 'data-premailer': 'ignore' }
-      = asset_to_string('mailer_client_specific.css').html_safe
+    -# Vite in dev mode isn't too great about reading assets a string,
+    -# so we do not inline it with vite. Similar solution to:
+    -# app/views/layouts/errors.html.haml
+    - if vite_enabled?
+      = universal_stylesheet_link_tag 'mailer_client_specific', data: { premailer: 'ignore' }
+    - else
+      -# Avoid premailer processing of client-specific styles (@media tag not supported)
+      -# We need to inline the contents here because mail clients (e.g. iOS Mail, Outlook)
+      -# do not support linked stylesheets.
+      %style{ type: 'text/css', 'data-premailer': 'ignore' }
+        = asset_to_string('mailer_client_specific.css').html_safe
 
-    = stylesheet_link_tag 'mailer.css'
+    = universal_stylesheet_link_tag 'mailer'
   %body
     = yield :preview_text
     -# Test stub for RSpec testing of Notify and associated modules

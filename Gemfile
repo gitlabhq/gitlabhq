@@ -373,7 +373,7 @@ gem 'pg_query', '~> 5.1.0', feature_category: :database
 gem 'gitlab-schema-validation', path: 'gems/gitlab-schema-validation' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'gitlab-http', path: 'gems/gitlab-http' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'premailer-rails', '~> 1.10.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'premailer-rails', '~> 1.12.0', feature_category: :notifications
 gem 'gitlab-labkit', '~> 0.36.0', feature_category: :shared
 gem 'thrift', '>= 0.16.0' # rubocop:todo Gemfile/MissingFeatureCategory
 

@@ -524,8 +524,6 @@
 - p_ci_templates_workflows_branch_pipelines
 - p_ci_templates_workflows_mergerequest_pipelines
 - p_terraform_state_api_unique_users
-- package_pulled_by_guest
-- package_pushed_using_deploy_token
 - project_action
 - project_created_analytics_dashboard
 - project_initialized_product_analytics

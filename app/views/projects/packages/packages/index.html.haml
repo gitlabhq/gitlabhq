@@ -2,13 +2,4 @@
 
 .row
   .col-12
-    #js-vue-packages-list{ data: {
-      full_path: @project.full_path,
-      endpoint: project_packages_path(@project),
-      page_type: 'projects',
-      empty_list_illustration: image_path('illustrations/empty-state/empty-package-md.svg'),
-      npm_instance_url: package_registry_instance_url(:npm),
-      project_list_url: project_packages_path(@project),
-      settings_path: show_package_registry_settings(@project) ? project_settings_packages_and_registries_path(@project) : '',
-      can_delete_packages: can_delete_packages?(@project).to_s,
-      group_list_url: '' } }
+    #js-vue-packages-list{ data: project_packages_template_data(@project) }

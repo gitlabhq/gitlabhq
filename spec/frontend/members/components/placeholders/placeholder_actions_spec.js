@@ -9,7 +9,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import PlaceholderActions from '~/members/components/placeholders/placeholder_actions.vue';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
 import {
-  mockPlaceholderUsers,
+  mockSourceUsers,
   mockUser1,
   mockUser2,
   mockUsersQueryResponse,
@@ -210,15 +210,15 @@ describe('PlaceholderActions', () => {
     });
   });
 
-  describe('when status is awaiting_approval', () => {
-    const mockPlaceholder = mockPlaceholderUsers[3];
+  describe('when status is AWAITING_APPROVAL', () => {
+    const mockPlaceholder = mockSourceUsers[3];
 
     beforeEach(() => {
       createComponent({
         props: {
           placeholder: {
             ...mockPlaceholder,
-            status: 'awaiting_approval',
+            status: 'AWAITING_APPROVAL',
           },
         },
       });
@@ -256,15 +256,15 @@ describe('PlaceholderActions', () => {
     });
   });
 
-  describe('when status is reassignment_in_progress', () => {
-    const mockPlaceholder = mockPlaceholderUsers[3];
+  describe('when status is REASSIGNMENT_IN_PROGRESS', () => {
+    const mockPlaceholder = mockSourceUsers[3];
 
     beforeEach(() => {
       createComponent({
         props: {
           placeholder: {
             ...mockPlaceholder,
-            status: 'reassignment_in_progress',
+            status: 'REASSIGNMENT_IN_PROGRESS',
           },
         },
       });

@@ -34,6 +34,7 @@ gem "warning", "~> 1.4"
 
 gem 'chemlab', '~> 0.11', '>= 0.11.1'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1', '>= 0.1.1'
+gem 'chemlab-library-gitlab', path: 'gems/chemlab-gitlab'
 
 # dependencies for jenkins client
 gem 'nokogiri', '~> 1.16', '>= 1.16.6'
@@ -48,6 +49,6 @@ group :development do
 end
 
 group :ci do
-  gem 'gitlab-cng', path: '../gems/gitlab-cng'
+  gem 'gitlab-cng', path: 'gems/gitlab-cng'
   gem 'junit_merge', '~> 0.1.2'
 end

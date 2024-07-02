@@ -6,11 +6,11 @@ product_group: package_registry
 value_type: number
 status: active
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: package_events
-  event: i_package_debian_pull_package
+data_source: internal_events
+events:
+  - name: pull_package_from_registry
+    filter:
+      label: debian
 distribution:
 - ee
 - ce

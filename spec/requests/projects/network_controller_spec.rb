@@ -41,6 +41,14 @@ RSpec.describe Projects::NetworkController, feature_category: :source_code_manag
         subject
         expect(assigns(:url)).to eq(project_network_path(project, ref, format: :json))
       end
+
+      context 'when path includes a space' do
+        it 'still renders the page' do
+          get [project_network_path(project, ref), '/%20'].join
+
+          expect(response).to have_gitlab_http_status(:ok)
+        end
+      end
     end
   end
 end

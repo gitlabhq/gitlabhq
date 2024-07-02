@@ -124,32 +124,6 @@ rubocop:
         fi
       fi
 
-qa:metadata-lint:
-  extends:
-    - .static-analysis-base
-    - .static-analysis:rules:qa:metadata-lint
-  before_script:
-    - !reference [.default-before_script, before_script]
-    - cd qa/
-    - bundle_install_script
-  script:
-    - run_timed_command "bundle exec bin/qa Test::Instance::All http://localhost:3000 --test-metadata-only"
-    - cd ..
-    - run_timed_command "./scripts/qa/testcases-check qa/tmp/test-metadata.json"
-    - run_timed_command "./scripts/qa/quarantine-types-check qa/tmp/test-metadata.json"
-  variables:
-    USE_BUNDLE_INSTALL: "false"
-    SETUP_DB: "false"
-    QA_EXPORT_TEST_METRICS: "false"
-    # Disable warnings in browserslist which can break on backports
-    # https://github.com/browserslist/browserslist/blob/a287ec6/node.js#L367-L384
-    BROWSERSLIST_IGNORE_OLD_DATA: "true"
-  artifacts:
-    expire_in: 31d
-    when: always
-    paths:
-      - qa/tmp/
-
 feature-flags-usage:
   extends:
     - .static-analysis-base

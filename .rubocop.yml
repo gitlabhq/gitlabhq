@@ -32,6 +32,7 @@ AllCops:
   TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'
+    - 'qa/gems/**/*'
     - 'vendor/**/*'
     - 'node_modules/**/*'
     - 'db/fixtures/**/*'

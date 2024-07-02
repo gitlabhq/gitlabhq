@@ -5,6 +5,7 @@ class ResourceLabelEvent < ResourceEvent
   include MergeRequestResourceEvent
   include Import::HasImportSource
   include IgnorableColumns
+  include FromUnion
 
   ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 

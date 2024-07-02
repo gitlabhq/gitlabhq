@@ -31,8 +31,18 @@ module BulkImports
         path: full_path))
     end
 
+    def self.source_full_path_validation_failure(full_path)
+      self.new(format(s_("BulkImport|Import failed. '%{path}' not found."),
+        path: full_path))
+    end
+
+    def self.not_authorized(full_path)
+      self.new(format(s_("BulkImport|Import failed. You don't have permission to export '%{path}'."),
+        path: full_path))
+    end
+
     def self.setting_not_enabled
-      self.new(s_("BulkImport|Group import disabled on source or destination instance. " \
+      self.new(s_("BulkImport|Migration by direct transfer disabled on source or destination instance. " \
                   "Ask an administrator to enable it on both instances and try again."))
     end
   end

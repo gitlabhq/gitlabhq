@@ -73,6 +73,42 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
     end
   end
 
+  describe '#track_package_event' do
+    let_it_be(:project) { create(:project) }
+
+    let(:action) { 'push_package' }
+    let(:scope) { :terraform_module }
+    let(:category) { described_class.name }
+    let(:namespace) { project.namespace }
+    let(:user) { project.creator }
+    let(:create_event_service) { instance_double(::Packages::CreateEventService) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(Packages::CreateEventService).to receive(:new).and_return(create_event_service)
+      allow(create_event_service).to receive(:execute)
+    end
+
+    it 'tracks a snowplow event' do
+      helper.track_package_event(action, scope, category: category, namespace: namespace, user: user, project: project)
+
+      expect_snowplow_event(
+        category: category,
+        action: action,
+        user: user,
+        project: project,
+        namespace: namespace
+      )
+    end
+
+    it 'calls CreateEventService with correct parameters and executes it' do
+      helper.track_package_event(action, scope, category: category, namespace: namespace, user: user, project: project)
+
+      expect(Packages::CreateEventService).to have_received(:new).with(project, user, event_name: action, scope: scope)
+      expect(create_event_service).to have_received(:execute)
+    end
+  end
+
   describe '#show_cleanup_policy_link' do
     let_it_be(:user) { create(:user) }
     let_it_be_with_reload(:container_repository) { create(:container_repository) }
@@ -248,6 +284,97 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
 
           it { is_expected.to be(false) }
         end
+      end
+    end
+  end
+
+  describe '#group_packages_template_data' do
+    let_it_be(:group) { create(:group) }
+    let_it_be(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+      stub_config(packages: { enabled: true })
+    end
+
+    subject { helper.group_packages_template_data(group) }
+
+    it 'returns the correct data' do
+      is_expected.to include(
+        empty_list_illustration: match_asset_path('illustrations/empty-state/empty-package-md.svg'),
+        endpoint: group_packages_path(group),
+        full_path: group.full_path,
+        group_list_url: group_packages_path(group),
+        npm_instance_url: package_registry_instance_url(:npm),
+        page_type: 'groups',
+        project_list_url: ''
+      )
+    end
+
+    context 'when user has permission' do
+      before do
+        group.add_owner(user)
+      end
+
+      it 'returns the correct data' do
+        is_expected.to include(
+          can_delete_packages: 'true',
+          settings_path: group_settings_packages_and_registries_path(group)
+        )
+      end
+    end
+
+    context 'when user does not have permission' do
+      it 'returns the correct data' do
+        is_expected.to include(
+          can_delete_packages: 'false',
+          settings_path: ''
+        )
+      end
+    end
+  end
+
+  describe '#project_packages_template_data' do
+    let_it_be(:user) { create(:user) }
+
+    subject { helper.project_packages_template_data(project) }
+
+    before do
+      allow(helper).to receive(:current_user) { user }
+      stub_config(packages: { enabled: true })
+    end
+
+    it 'returns the correct data' do
+      is_expected.to include(
+        empty_list_illustration: match_asset_path('illustrations/empty-state/empty-package-md.svg'),
+        endpoint: project_packages_path(project),
+        full_path: project.full_path,
+        group_list_url: '',
+        npm_instance_url: package_registry_instance_url(:npm),
+        page_type: 'projects',
+        project_list_url: project_packages_path(project)
+      )
+    end
+
+    context 'when user has permission' do
+      before do
+        project.add_owner(user)
+      end
+
+      it 'returns the correct data' do
+        is_expected.to include(
+          can_delete_packages: 'true',
+          settings_path: project_settings_packages_and_registries_path(project)
+        )
+      end
+    end
+
+    context 'when user does not have permission' do
+      it 'returns the correct data' do
+        is_expected.to include(
+          can_delete_packages: 'false',
+          settings_path: ''
+        )
       end
     end
   end

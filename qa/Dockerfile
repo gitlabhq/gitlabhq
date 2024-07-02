@@ -41,10 +41,11 @@ WORKDIR /home/gitlab/qa
 ##
 # Install qa dependencies or fetch from cache if unchanged
 #
-COPY ./qa/Gemfile* /home/gitlab/qa/
-COPY ./vendor/gems/ /home/gitlab/vendor/gems/
-COPY ./gems/ /home/gitlab/gems/
-RUN bundle config set --local without development \
+COPY qa/Gemfile* /home/gitlab/qa/
+COPY vendor/gems/ /home/gitlab/vendor/gems/
+COPY gems/gitlab-utils /home/gitlab/gems/gitlab-utils
+COPY qa/gems /home/gitlab/qa/gems
+RUN ls -la && bundle config set --local without development \
     && bundle install --retry=3
 
 COPY ./config/initializers/0_inject_enterprise_edition_module.rb /home/gitlab/config/initializers/
@@ -60,7 +61,7 @@ COPY ./qa /home/gitlab/qa
 ENTRYPOINT ["bin/test"]
 
 # Add ee files when passing the parameter: `--build-arg QA_BUILD_TARGET=ee`
-FROM foss as ee
+FROM foss AS ee
 # Copy VERSION to ensure the COPY succeeds to copy at least one file since ee/app/models/license.rb isn't present in FOSS
 # The [b] part makes ./ee/app/models/license.r[b] a pattern that is allowed to return no files (which is the case in FOSS)
 ONBUILD COPY VERSION ./ee/app/models/license.r[b] /home/gitlab/ee/app/models/
@@ -74,7 +75,7 @@ ONBUILD COPY ./jh/config/feature_flags /home/gitlab/jh/config/feature_flags
 
 # Add solargraph gem for devcontainer
 # Solargraph is only present in parent Gemfile so we just install it manually
-FROM ee as dev
+FROM ee AS dev
 RUN gem install solargraph --force
 
 FROM $QA_BUILD_TARGET

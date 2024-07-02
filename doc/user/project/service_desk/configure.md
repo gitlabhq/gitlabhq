@@ -188,11 +188,7 @@ To edit the custom email display name:
 
 ## Default ticket visibility
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33091) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `service_desk_ticket_confidentiality`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33091) in GitLab 17.2.
 
 New tickets are confidential by default, so only project members with at least the Reporter role
 can view them.

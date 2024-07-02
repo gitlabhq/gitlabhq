@@ -443,7 +443,7 @@ class NotificationService
   def send_service_desk_notification(note)
     return unless note.noteable_type == 'Issue'
     return if note.confidential
-    return unless note.project.service_desk_enabled?
+    return unless note.project&.service_desk_enabled?
 
     issue = note.noteable
     recipients = issue.issue_email_participants

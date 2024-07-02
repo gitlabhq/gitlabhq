@@ -252,6 +252,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('node_modules/**/*', File::FNM_DOTMATCH) +
       Dir.glob('patches/*') +
       Dir.glob('public/assets/**/.*') +
+      Dir.glob('qa/{,**/}.*') +
       Dir.glob('qa/.{,**/}*') +
       Dir.glob('qa/**/.gitlab-ci.yml') +
       Dir.glob('shared/**/*') +

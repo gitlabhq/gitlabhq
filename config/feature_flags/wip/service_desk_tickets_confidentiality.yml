@@ -1,9 +1,0 @@
----
-name: service_desk_tickets_confidentiality
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/33091
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150025
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457181
-milestone: '17.0'
-group: group::respond
-type: wip
-default_enabled: false
