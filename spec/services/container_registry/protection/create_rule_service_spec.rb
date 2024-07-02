@@ -69,25 +69,27 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
 
   it_behaves_like 'a successful service response with side effects'
 
-  context 'when fields are invalid' do
-    context 'when repository_path_pattern is invalid' do
-      let(:params) { super().merge(repository_path_pattern: '') }
+  context 'with invalid params' do
+    context 'for "repository_path_pattern"' do
+      let(:params) do
+        super().merge(repository_path_pattern: 'any_repository_path_pattern_with_invalid_character_!')
+      end
 
       it_behaves_like 'an erroneous service response without side effects',
-        message:
-          "Repository path pattern can't be blank, " \
-          "Repository path pattern should be a valid container repository path with optional wildcard characters., " \
-          "and Repository path pattern should start with the project's full path"
+        message: [
+          "Repository path pattern should be a valid container repository path with optional wildcard characters.",
+          "Repository path pattern should start with the project's full path"
+        ]
     end
 
-    context 'when minimum_access_level_for_delete is invalid' do
+    context 'for "minimum_access_level_for_delete"' do
       let(:params) { super().merge(minimum_access_level_for_delete: 1000) }
 
       it_behaves_like 'an erroneous service response without side effects',
         message: "'1000' is not a valid minimum_access_level_for_delete"
     end
 
-    context 'when minimum_access_level_for_push is invalid' do
+    context 'for "minimum_access_level_for_push"' do
       let(:params) { super().merge(minimum_access_level_for_push: 1000) }
 
       it_behaves_like 'an erroneous service response without side effects',
@@ -98,7 +100,7 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       let(:params) { super().merge(minimum_access_level_for_delete: nil, minimum_access_level_for_push: nil) }
 
       it_behaves_like 'an erroneous service response without side effects',
-        message: 'A rule must have at least a minimum access role for push or delete.'
+        message: ['A rule must have at least a minimum access role for push or delete.']
     end
   end
 
@@ -129,11 +131,9 @@ RSpec.describe ContainerRegistry::Protection::CreateRuleService, '#execute', fea
       end
 
       it_behaves_like 'an erroneous service response without side effects',
-        message: 'Repository path pattern has already been taken'
-
-      it { is_expected.to have_attributes(errors: ['Repository path pattern has already been taken']) }
-
-      it { expect { service_execute }.not_to change { existing_container_registry_protection_rule.updated_at } }
+        message: ['Repository path pattern has already been taken'] do
+        it { expect { service_execute }.not_to change { existing_container_registry_protection_rule.updated_at } }
+      end
     end
   end
 

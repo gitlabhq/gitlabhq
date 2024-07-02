@@ -121,7 +121,7 @@ RSpec.describe 'Creating the container registry protection rule', :aggregate_fai
       expect_graphql_errors_to_be_empty
 
       expect(mutation_response['errors']).to eq [
-        "Repository path pattern should be a valid container repository path with optional wildcard characters. and " \
+        "Repository path pattern should be a valid container repository path with optional wildcard characters.",
         "Repository path pattern should start with the project's full path"
       ]
     end

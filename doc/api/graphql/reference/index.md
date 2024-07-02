@@ -27622,8 +27622,10 @@ Represents policy violation for `scan_finding` report_type.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="policyscopecomplianceframeworks"></a>`complianceFrameworks` | [`ComplianceFrameworkConnection!`](#complianceframeworkconnection) | Compliance Frameworks linked to the policy. (see [Connections](#connections)) |
-| <a id="policyscopeexcludingprojects"></a>`excludingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should not be applied to. (see [Connections](#connections)) |
-| <a id="policyscopeincludingprojects"></a>`includingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should be applied to. (see [Connections](#connections)) |
+| <a id="policyscopeexcludinggroups"></a>`excludingGroups` | [`GroupConnection!`](#groupconnection) | Groups to which the policy should not be applied. (see [Connections](#connections)) |
+| <a id="policyscopeexcludingprojects"></a>`excludingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should not be applied. (see [Connections](#connections)) |
+| <a id="policyscopeincludinggroups"></a>`includingGroups` | [`GroupConnection!`](#groupconnection) | Groups to which the policy should be applied. (see [Connections](#connections)) |
+| <a id="policyscopeincludingprojects"></a>`includingProjects` | [`ProjectConnection!`](#projectconnection) | Projects to which the policy should be applied. (see [Connections](#connections)) |
 
 ### `PolicyViolationDetails`
 

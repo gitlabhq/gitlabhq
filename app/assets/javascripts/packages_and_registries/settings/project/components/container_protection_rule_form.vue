@@ -45,7 +45,7 @@ export default {
         minimumAccessLevelForDelete: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
-      alertErrorMessage: '',
+      alertErrorMessages: [],
     };
   },
   computed: {
@@ -80,7 +80,7 @@ export default {
   },
   methods: {
     submit() {
-      this.clearAlertErrorMessage();
+      this.clearAlertErrorMessages();
 
       this.updateInProgress = true;
       return this.$apollo
@@ -91,9 +91,11 @@ export default {
           },
         })
         .then(({ data }) => {
-          const [errorMessage] = data?.createContainerRegistryProtectionRule?.errors ?? [];
-          if (errorMessage) {
-            this.alertErrorMessage = errorMessage;
+          const errorMessages = data?.createContainerRegistryProtectionRule?.errors ?? [];
+          if (errorMessages?.length) {
+            this.alertErrorMessages = Array.isArray(errorMessages)
+              ? errorMessages
+              : [errorMessages];
             return;
           }
 
@@ -103,17 +105,17 @@ export default {
           );
         })
         .catch(() => {
-          this.alertErrorMessage = this.$options.i18n.protectionRuleSavedErrorMessage;
+          this.alertErrorMessages = [this.$options.i18n.protectionRuleSavedErrorMessage];
         })
         .finally(() => {
           this.updateInProgress = false;
         });
     },
-    clearAlertErrorMessage() {
-      this.alertErrorMessage = null;
+    clearAlertErrorMessages() {
+      this.alertErrorMessages = [];
     },
     cancelForm() {
-      this.clearAlertErrorMessage();
+      this.clearAlertErrorMessages();
       this.$emit('cancel');
     },
   },
@@ -124,12 +126,12 @@ export default {
   <div class="gl-new-card-add-form gl-m-3">
     <gl-form @submit.prevent="submit" @reset="cancelForm">
       <gl-alert
-        v-if="alertErrorMessage"
+        v-if="alertErrorMessages.length"
         class="gl-mb-5"
         variant="danger"
-        @dismiss="clearAlertErrorMessage"
+        @dismiss="clearAlertErrorMessages"
       >
-        {{ alertErrorMessage }}
+        <div v-for="error in alertErrorMessages" :key="error">{{ error }}</div>
       </gl-alert>
 
       <gl-form-group

@@ -10484,6 +10484,9 @@ msgstr ""
 msgid "CascadingSettings|Subgroups cannot change this setting."
 msgstr ""
 
+msgid "CascadingSettings|This setting has been enforced by an owner and cannot be changed."
+msgstr ""
+
 msgid "CascadingSettings|This setting has been enforced by an owner of %{link}."
 msgstr ""
 
@@ -42562,13 +42565,28 @@ msgstr ""
 msgid "Promotion is not supported."
 msgstr ""
 
-msgid "PromotionRequests|An error occured while loading the role promotion requests. Please refresh the page to try again."
+msgid "PromotionRequests|An error occured while loading the role promotion requests. Refresh the page to try again"
+msgstr ""
+
+msgid "PromotionRequests|An error occurred while processing the request"
 msgstr ""
 
 msgid "PromotionRequests|Highest role requested"
 msgstr ""
 
 msgid "PromotionRequests|No promotion requests found"
+msgstr ""
+
+msgid "PromotionRequests|User has been promoted to a billable role"
+msgstr ""
+
+msgid "PromotionRequests|User has been promoted to a billable role. Some errors occurred"
+msgstr ""
+
+msgid "PromotionRequests|User promotion has been rejected"
+msgstr ""
+
+msgid "PromotionRequests|User promotion has been rejected. Some errors occurred"
 msgstr ""
 
 msgid "Promotions"
@@ -43685,6 +43703,9 @@ msgid "Registry setup"
 msgstr ""
 
 msgid "Reindexing Status: %{status} (Slice multiplier: %{multiplier}, Maximum running slices: %{max_slices})"
+msgstr ""
+
+msgid "Reject"
 msgstr ""
 
 msgid "Rejected (closed)"

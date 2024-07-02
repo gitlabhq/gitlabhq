@@ -291,7 +291,7 @@ class Issue < ApplicationRecord
     def in_namespaces_with_cte(namespaces)
       cte = Gitlab::SQL::CTE.new(:namespace_ids, namespaces.select(:id))
 
-      where('namespace_id IN (SELECT id FROM namespace_ids)').with(cte.to_arel)
+      where('issues.namespace_id IN (SELECT id FROM namespace_ids)').with(cte.to_arel)
     end
 
     override :order_upvotes_desc

@@ -26,6 +26,7 @@ To view Terraform modules in your project or group:
 1. Select **Operate > Terraform modules**.
 
 You can search, sort, and filter modules on this page.
+You can also view the module's Readme file by selecting a module, and then selecting **Readme**.
 
 ## Authenticate to the Terraform Module Registry
 

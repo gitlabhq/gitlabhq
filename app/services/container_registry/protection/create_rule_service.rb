@@ -19,7 +19,7 @@ module ContainerRegistry
           project.container_registry_protection_rules.create(params.slice(*ALLOWED_ATTRIBUTES))
 
         unless container_registry_protection_rule.persisted?
-          return service_response_error(message: container_registry_protection_rule.errors.full_messages.to_sentence)
+          return service_response_error(message: container_registry_protection_rule.errors.full_messages)
         end
 
         ServiceResponse.success(payload: { container_registry_protection_rule: container_registry_protection_rule })

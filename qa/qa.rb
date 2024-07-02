@@ -101,6 +101,10 @@ Warning.process do |warning|
 end
 
 Warning.ignore(/already initialized constant Chemlab::Vendor|previous definition of Vendor was here/)
+# ignore faraday-multipart warning produced by octokit as it is only required for functionality we don't use
+# see: https://github.com/octokit/octokit.rb/issues/1701
+Warning.ignore(/To use multipart middleware with Faraday v2\.0/)
+require "octokit"
 
 # TODO: Temporary monkeypatch for broadcast logging
 # Remove once activesupport is upgraded to 7.1

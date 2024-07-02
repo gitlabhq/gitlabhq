@@ -1,7 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlForm } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
@@ -140,7 +140,7 @@ describe('container Protection Rule Form', () => {
     });
 
     describe('submit', () => {
-      const findAlert = () => wrapper.findByRole('alert');
+      const findAlert = () => extendedWrapper(wrapper.findByRole('alert'));
 
       const submitForm = () => {
         findForm().trigger('submit');
@@ -218,7 +218,13 @@ describe('container Protection Rule Form', () => {
         await submitForm();
 
         expect(findAlert().isVisible()).toBe(true);
-        expect(findAlert().text()).toBe(createContainerProtectionRuleMutationPayloadErrors[0]);
+
+        expect(
+          findAlert().findByText(createContainerProtectionRuleMutationPayloadErrors[0]).exists(),
+        ).toBe(true);
+        expect(
+          findAlert().findByText(createContainerProtectionRuleMutationPayloadErrors[1]).exists(),
+        ).toBe(true);
       });
 
       it('shows error alert with general message when apollo mutation request fails', async () => {

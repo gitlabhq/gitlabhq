@@ -689,7 +689,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
         sign_in(user)
       end
 
-      it 'schedules a group destroy' do
+      it 'schedules a group destroy', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/469091' do
         Sidekiq::Testing.fake! do
           expect { delete :destroy, params: { id: group.to_param } }.to change(GroupDestroyWorker.jobs, :size).by(1)
         end

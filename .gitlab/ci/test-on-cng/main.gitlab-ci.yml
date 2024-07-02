@@ -31,13 +31,15 @@ workflow:
     GITLAB_ADMIN_USERNAME: root
     GITLAB_ADMIN_PASSWORD: 5iveL!fe
     GITLAB_QA_ADMIN_ACCESS_TOKEN: $QA_ADMIN_ACCESS_TOKEN
-    KNAPSACK_TEST_FILE_PATTERN: "" # overridden because currently selective test execution is skipped
     RSPEC_LAST_RUN_RESULTS_FILE: "$CI_PROJECT_DIR/qa/tmp/examples.txt"
     QA_DOCKER_NETWORK: host
     QA_GENERATE_ALLURE_REPORT: "true"
     QA_CAN_TEST_PRAEFECT: "false"
     QA_ALLOW_LOCAL_REQUESTS: "true"
     QA_SUITE_STATUS_ENV_FILE: $CI_PROJECT_DIR/suite_status.env
+    # disable selective test execution until pipeline setup is implemented to support it correctly
+    KNAPSACK_TEST_FILE_PATTERN: ""
+    QA_TESTS: ""
   before_script:
     - echo "SUITE_RAN=true" > "$QA_SUITE_STATUS_ENV_FILE"
     # save extra values to be available for after_script if created dynamically

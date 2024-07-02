@@ -44,11 +44,7 @@ module QA
 
         it(
           'member retains direct membership in imported project',
-          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417',
-          quarantine: {
-            type: :stale,
-            issue: "https://gitlab.com/gitlab-org/gitlab/-/issues/469117"
-          }
+          testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/354417'
         ) do
           expect_project_import_finished_successfully
 
