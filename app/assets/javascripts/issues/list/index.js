@@ -84,6 +84,7 @@ export async function mountIssuesListApp() {
     emailsHelpPagePath,
     exportCsvPath,
     fullPath,
+    groupId,
     groupPath,
     hasAnyIssues,
     hasAnyProjects,
@@ -113,10 +114,10 @@ export async function mountIssuesListApp() {
     rssPath,
     showNewIssueLink,
     signInPath,
-    groupId = '',
-    reportAbusePath,
-    registerPath,
-    issuesListPath,
+    wiCanAdminLabel,
+    wiIssuesListPath,
+    wiLabelsManagePath,
+    wiReportAbusePath,
   } = el.dataset;
 
   return new Vue({
@@ -155,10 +156,8 @@ export async function mountIssuesListApp() {
       canReadCrmContact: parseBoolean(canReadCrmContact),
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       fullPath,
-      projectPath: fullPath,
+      groupId,
       groupPath,
-      reportAbusePath,
-      registerPath,
       hasAnyIssues: parseBoolean(hasAnyIssues),
       hasAnyProjects: parseBoolean(hasAnyProjects),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
@@ -197,8 +196,11 @@ export async function mountIssuesListApp() {
       markdownHelpPath,
       quickActionsHelpPath,
       resetPath,
-      groupId,
-      issuesListPath,
+      // For work item modal
+      canAdminLabel: wiCanAdminLabel,
+      issuesListPath: wiIssuesListPath,
+      labelsManagePath: wiLabelsManagePath,
+      reportAbusePath: wiReportAbusePath,
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

@@ -159,27 +159,64 @@ RSpec.shared_examples 'POST resource access tokens available' do
 end
 
 RSpec.shared_examples 'PUT resource access tokens available' do
-  it 'calls delete user worker' do
-    expect(DeleteUserWorker).to receive(:perform_async).with(user.id, access_token_user.id, skip_authorization: true)
+  context "when retain bot user ff is disabled" do
+    before do
+      stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+    end
 
+    it 'revokes the token' do
+      subject
+      expect(resource_access_token.reload).to be_revoked
+    end
+
+    it 'calls delete user worker' do
+      expect(DeleteUserWorker).to receive(:perform_async).with(user.id, access_token_user.id, skip_authorization: true)
+
+      subject
+    end
+
+    it 'removes membership of bot user' do
+      subject
+
+      resource_bots = if resource.is_a?(Project)
+                        resource.bots
+                      elsif resource.is_a?(Group)
+                        User.bots.id_in(resource.all_group_members.non_invite.pluck(:user_id))
+                      end
+
+      expect(resource_bots).not_to include(access_token_user)
+    end
+
+    it 'creates GhostUserMigration records to handle migration in a worker' do
+      expect { subject }.to(
+        change { Users::GhostUserMigration.count }.from(0).to(1))
+    end
+  end
+
+  it 'revokes the token' do
+    subject
+    expect(resource_access_token.reload).to be_revoked
+  end
+
+  it 'does not call delete user worker' do
+    expect(DeleteUserWorker).not_to receive(:perform_async)
     subject
   end
 
-  it 'removes membership of bot user' do
+  it 'does not remove membership of the bot' do
     subject
 
     resource_bots = if resource.is_a?(Project)
                       resource.bots
                     elsif resource.is_a?(Group)
-                      User.bots.id_in(resource.all_group_members.non_invite.pluck_primary_key)
+                      User.bots.id_in(resource.all_group_members.non_invite.pluck(:user_id))
                     end
 
-    expect(resource_bots).not_to include(access_token_user)
+    expect(resource_bots).to include(access_token_user)
   end
 
-  it 'creates GhostUserMigration records to handle migration in a worker' do
-    expect { subject }.to(
-      change { Users::GhostUserMigration.count }.from(0).to(1))
+  it 'does not create GhostUserMigration records to handle migration in a worker' do
+    expect { subject }.not_to change { Users::GhostUserMigration.count }
   end
 
   context 'when unsuccessful' do

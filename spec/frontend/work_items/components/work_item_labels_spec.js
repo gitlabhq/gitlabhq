@@ -109,6 +109,8 @@ describe('WorkItemLabels component', () => {
   const findRegularLabel = () => findAllLabels().at(0);
   const findLabelWithDescription = () => findAllLabels().at(2);
   const findDropdownContentsCreateView = () => wrapper.findComponent(DropdownContentsCreateView);
+  const findCreateLabelButton = () => wrapper.findByTestId('create-label');
+  const findManageLabelsButton = () => wrapper.findByTestId('manage-labels');
 
   const showDropdown = () => {
     findWorkItemSidebarDropdownWidget().vm.$emit('dropdownShown');
@@ -422,71 +424,94 @@ describe('WorkItemLabels component', () => {
     });
   });
 
-  describe('creating project label', () => {
-    beforeEach(async () => {
-      createComponent();
+  describe('create/manage label buttons', () => {
+    describe('when project context', () => {
+      beforeEach(() => {
+        createComponent({ isGroup: false });
+      });
 
-      wrapper.findByTestId('create-project-label').vm.$emit('click');
-      await nextTick();
-    });
+      it('renders "Create project label" button', () => {
+        expect(findCreateLabelButton().text()).toBe('Create project label');
+      });
 
-    describe('when "Create project label" button is clicked', () => {
-      it('renders "Create label" dropdown', () => {
-        expect(findDisclosureDropdown().props()).toMatchObject({
-          block: true,
-          startOpened: true,
-          toggleText: 'No labels',
-        });
-        expect(findDropdownContentsCreateView().props()).toEqual({
-          attrWorkspacePath: 'test-project-path',
-          fullPath: 'test-project-path',
-          labelCreateType: 'project',
-          searchKey: '',
-          workspaceType: 'project',
-        });
+      it('renders "Manage project labels" link', () => {
+        expect(findManageLabelsButton().text()).toBe('Manage project labels');
+        expect(findManageLabelsButton().attributes('href')).toBe('test-project-path/labels');
       });
     });
 
-    describe('when "hideCreateView" event is emitted', () => {
-      it('hides dropdown', async () => {
-        expect(findDisclosureDropdown().exists()).toBe(true);
-        expect(findDropdownContentsCreateView().exists()).toBe(true);
+    describe('when group context', () => {
+      beforeEach(() => {
+        createComponent({ isGroup: true });
+      });
 
-        findDropdownContentsCreateView().vm.$emit('hideCreateView');
+      it('renders "Create group label" button', () => {
+        expect(findCreateLabelButton().text()).toBe('Create group label');
+      });
+
+      it('renders "Manage group labels" link', () => {
+        expect(findManageLabelsButton().text()).toBe('Manage group labels');
+        expect(findManageLabelsButton().attributes('href')).toBe('test-project-path/labels');
+      });
+    });
+
+    describe('creating project label', () => {
+      beforeEach(async () => {
+        createComponent();
+
+        findCreateLabelButton().vm.$emit('click');
         await nextTick();
-
-        expect(findDisclosureDropdown().exists()).toBe(false);
-        expect(findDropdownContentsCreateView().exists()).toBe(false);
       });
-    });
 
-    describe('when "labelCreated" event is emitted', () => {
-      it('updates "createdLabelId" value and hides dropdown', async () => {
-        expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(undefined);
-        expect(findDisclosureDropdown().exists()).toBe(true);
-        expect(findDropdownContentsCreateView().exists()).toBe(true);
-
-        findDropdownContentsCreateView().vm.$emit('labelCreated', {
-          id: 'gid://gitlab/Label/55',
-          name: 'New label',
+      describe('when "Create project label" button is clicked', () => {
+        it('renders "Create label" dropdown', () => {
+          expect(findDisclosureDropdown().props()).toMatchObject({
+            block: true,
+            startOpened: true,
+            toggleText: 'No labels',
+          });
+          expect(findDropdownContentsCreateView().props()).toEqual({
+            attrWorkspacePath: 'test-project-path',
+            fullPath: 'test-project-path',
+            labelCreateType: 'project',
+            searchKey: '',
+            workspaceType: 'project',
+          });
         });
-        await nextTick();
+      });
 
-        expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(
-          'gid://gitlab/Label/55',
-        );
-        expect(findDisclosureDropdown().exists()).toBe(false);
-        expect(findDropdownContentsCreateView().exists()).toBe(false);
+      describe('when "hideCreateView" event is emitted', () => {
+        it('hides dropdown', async () => {
+          expect(findDisclosureDropdown().exists()).toBe(true);
+          expect(findDropdownContentsCreateView().exists()).toBe(true);
+
+          findDropdownContentsCreateView().vm.$emit('hideCreateView');
+          await nextTick();
+
+          expect(findDisclosureDropdown().exists()).toBe(false);
+          expect(findDropdownContentsCreateView().exists()).toBe(false);
+        });
+      });
+
+      describe('when "labelCreated" event is emitted', () => {
+        it('updates "createdLabelId" value and hides dropdown', async () => {
+          expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(undefined);
+          expect(findDisclosureDropdown().exists()).toBe(true);
+          expect(findDropdownContentsCreateView().exists()).toBe(true);
+
+          findDropdownContentsCreateView().vm.$emit('labelCreated', {
+            id: 'gid://gitlab/Label/55',
+            name: 'New label',
+          });
+          await nextTick();
+
+          expect(findWorkItemSidebarDropdownWidget().props('createdLabelId')).toBe(
+            'gid://gitlab/Label/55',
+          );
+          expect(findDisclosureDropdown().exists()).toBe(false);
+          expect(findDropdownContentsCreateView().exists()).toBe(false);
+        });
       });
     });
-  });
-
-  it('renders "Manage project labels" link in dropdown', () => {
-    createComponent();
-
-    expect(wrapper.findByTestId('manage-project-labels').text()).toBe('Manage project labels');
-    expect(wrapper.findByTestId('manage-project-labels').attributes('href')).toBe(
-      'test-project-path/labels',
-    );
   });
 });

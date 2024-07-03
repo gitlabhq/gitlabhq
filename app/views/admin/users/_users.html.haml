@@ -10,7 +10,6 @@
 .gl-display-flex.gl-align-items-flex-start.gl-flex-wrap.gl-md-flex-nowrap.gl-gap-4.row-content-block.gl-border-0{ data: { testid: "filtered-search-block" } }
   #js-admin-users-filter-app
   .gl-flex-shrink-0
-    = label_tag s_('AdminUsers|Sort by')
     = gl_redirect_listbox_tag admin_users_sort_options(filter: params[:filter], search_query: params[:search_query]), @sort,  data: { placement: 'right' }
 
 #js-admin-users-app{ data: admin_users_data_attributes(@users) }

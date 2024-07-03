@@ -19,11 +19,15 @@ module ResourceAccessTokens
 
       access_token.revoke!
 
-      destroy_bot_user
+      success_message = "Access token #{access_token.name} has been revoked"
+      unless Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource)
+        destroy_bot_user
+        success_message += " and the bot user has been scheduled for deletion"
+      end
 
       log_event
 
-      success("Access token #{access_token.name} has been revoked and the bot user has been scheduled for deletion.")
+      success("#{success_message}.")
     rescue StandardError => error
       log_error("Failed to revoke access token for #{bot_user.name}: #{error.message}")
       error(error.message)

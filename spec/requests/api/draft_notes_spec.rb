@@ -26,7 +26,8 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
       expect(response).to have_gitlab_http_status(:ok)
     end
 
-    it "returns only draft notes authored by the current user" do
+    it "returns only draft notes authored by the current user",
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448707' do
       get api(base_url, user)
 
       draft_note_ids = json_response.pluck("id")

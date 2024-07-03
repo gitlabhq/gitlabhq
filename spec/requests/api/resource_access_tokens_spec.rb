@@ -243,13 +243,49 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
       end
 
       context "when the user has valid permissions" do
+        context "when retain bot user ff is disabled" do
+          before do
+            stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+          end
+
+          it "deletes the #{source_type} access token from the #{source_type}" do
+            delete_token
+
+            expect(response).to have_gitlab_http_status(:no_content)
+            expect(token.reload).to be_revoked
+            expect(
+              Users::GhostUserMigration.where(user: project_bot, initiator_user: user)
+            ).to be_exists
+          end
+
+          context "when using #{source_type} access token to DELETE other #{source_type} access token" do
+            let_it_be(:other_project_bot) { create(:user, :project_bot) }
+            let_it_be(:other_token) { create(:personal_access_token, user: other_project_bot) }
+            let_it_be(:token_id) { other_token.id }
+
+            before do
+              resource.add_maintainer(other_project_bot)
+            end
+
+            it "deletes the #{source_type} access token from the #{source_type}" do
+              delete_token
+
+              expect(response).to have_gitlab_http_status(:no_content)
+              expect(token.reload).not_to be_revoked
+              expect(other_token.reload).to be_revoked
+              expect(
+                Users::GhostUserMigration.where(user: other_project_bot, initiator_user: user)
+              ).to be_exists
+            end
+          end
+        end
+
         it "deletes the #{source_type} access token from the #{source_type}" do
           delete_token
 
           expect(response).to have_gitlab_http_status(:no_content)
-          expect(
-            Users::GhostUserMigration.where(user: project_bot, initiator_user: user)
-          ).to be_exists
+          expect(token.reload).to be_revoked
+          expect(User.exists?(project_bot.id)).to be_truthy
         end
 
         context "when using #{source_type} access token to DELETE other #{source_type} access token" do
@@ -265,9 +301,9 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             delete_token
 
             expect(response).to have_gitlab_http_status(:no_content)
-            expect(
-              Users::GhostUserMigration.where(user: other_project_bot, initiator_user: user)
-            ).to be_exists
+            expect(token.reload).not_to be_revoked
+            expect(other_token.reload).to be_revoked
+            expect(User.exists?(other_project_bot.id)).to be_truthy
           end
         end
 

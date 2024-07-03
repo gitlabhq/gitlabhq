@@ -258,7 +258,7 @@ export default {
       <gl-collapsible-listbox
         id="$options.inputId"
         ref="input"
-        class="gl-block"
+        class="work-item-sidebar-dropdown gl-block"
         data-testid="work-item-parent-listbox"
         block
         searchable
@@ -266,7 +266,6 @@ export default {
         is-check-centered
         category="primary"
         fluid-width
-        toggle-class="work-item-sidebar-dropdown-toggle"
         positioning-strategy="fixed"
         :searching="isLoading"
         :header-text="$options.i18n.assignParentLabel"

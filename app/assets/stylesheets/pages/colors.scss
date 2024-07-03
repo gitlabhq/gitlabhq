@@ -67,7 +67,7 @@
       &:nth-of-type(7) {
         border-top-right-radius: $gl-border-radius-base;
       }
-      
+
       &:nth-last-child(7) {
         border-bottom-left-radius: $gl-border-radius-base;
       }
@@ -76,13 +76,5 @@
         border-bottom-right-radius: $gl-border-radius-base;
       }
     }
-  }
-}
-
-.suggested-colors {
-  .color-palette {
-    width: 28px;
-    height: 28px;
-    border-radius: 2px;
   }
 }

@@ -768,14 +768,13 @@ We want to avoid introducing a changelog when features are not accessible by an 
     ACF(added / changed / fixed / '...')
     RF{Remove flag}
     RF2{Remove flag}
-    NC(No changelog)
     RC(removed / changed)
     OTHER(other)
 
     FDOFF -->CDO-->ACF
     FDOFF -->RF
     RF-->|Keep new code?| ACF
-    RF-->|Keep old code?| NC
+    RF-->|Keep old code?| OTHER
 
     FDON -->RF2
     RF2-->|Keep old code?| RC

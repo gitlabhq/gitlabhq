@@ -110,6 +110,12 @@ export default {
     allowsScopedLabels() {
       return this.labelsWidget?.allowsScopedLabels;
     },
+    createLabelText() {
+      return this.isGroup ? __('Create group label') : __('Create project label');
+    },
+    manageLabelText() {
+      return this.isGroup ? __('Manage group labels') : __('Manage project labels');
+    },
     workspaceType() {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
@@ -282,23 +288,28 @@ export default {
         class="!gl-justify-start"
         block
         category="tertiary"
-        data-testid="create-project-label"
+        data-testid="create-label"
         @click="showLabelForm = true"
       >
-        {{ __('Create project label') }}
+        {{ createLabelText }}
       </gl-button>
       <gl-button
         class="!gl-justify-start !gl-mt-2"
         block
         category="tertiary"
         :href="labelsManagePath"
-        data-testid="manage-project-labels"
+        data-testid="manage-labels"
       >
-        {{ __('Manage project labels') }}
+        {{ manageLabelText }}
       </gl-button>
     </template>
     <template v-if="showLabelForm" #body>
-      <gl-disclosure-dropdown block start-opened :toggle-text="dropdownText">
+      <gl-disclosure-dropdown
+        class="work-item-sidebar-dropdown"
+        block
+        start-opened
+        :toggle-text="dropdownText"
+      >
         <div
           class="gl-text-sm gl-font-bold gl-leading-24 gl-border-b gl-pt-2 gl-pb-3 gl-pl-4 gl-mb-4"
         >

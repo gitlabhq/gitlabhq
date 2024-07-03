@@ -4467,9 +4467,6 @@ msgstr ""
 msgid "AdminUsers|Skype"
 msgstr ""
 
-msgid "AdminUsers|Sort by"
-msgstr ""
-
 msgid "AdminUsers|Stop monitoring %{username} for possible spam?"
 msgstr ""
 
@@ -5512,6 +5509,9 @@ msgid "An error occurred while adding formatted title for epic"
 msgstr ""
 
 msgid "An error occurred while checking group path. Please refresh and try again."
+msgstr ""
+
+msgid "An error occurred while creating the group. Please try again."
 msgstr ""
 
 msgid "An error occurred while creating the issue. Please try again."
@@ -12916,6 +12916,9 @@ msgstr ""
 msgid "CodeownersValidation|Zero owners"
 msgstr ""
 
+msgid "Cohorts"
+msgstr ""
+
 msgid "Cohorts|Active users"
 msgstr ""
 
@@ -20303,6 +20306,9 @@ msgid "Enter confidential issue URL"
 msgstr ""
 
 msgid "Enter epic URL"
+msgstr ""
+
+msgid "Enter group name"
 msgstr ""
 
 msgid "Enter in your Bitbucket Server URL and personal access token below"
@@ -51740,10 +51746,13 @@ msgstr ""
 msgid "SubscriptionBanner|Upload new license"
 msgstr ""
 
+msgid "SubscriptionGroupsNew|Group name %{error}"
+msgstr ""
+
 msgid "SubscriptionGroupsNew|Select a group for your %{planName} subscription"
 msgstr ""
 
-msgid "SubscriptionGroupsNew|Select a group for your subscription"
+msgid "SubscriptionGroupsNew|Select a group for your subscription."
 msgstr ""
 
 msgid "SubscriptionGroupsNew|The group is a top-level group on a Free tier"
@@ -51753,6 +51762,9 @@ msgid "SubscriptionGroupsNew|Why can't I find my group?"
 msgstr ""
 
 msgid "SubscriptionGroupsNew|You're assigned the Owner role of the group"
+msgstr ""
+
+msgid "SubscriptionGroupsNew|Your group will be created at:"
 msgstr ""
 
 msgid "SubscriptionGroupsNew|Your group will only be displayed in the list above if:"

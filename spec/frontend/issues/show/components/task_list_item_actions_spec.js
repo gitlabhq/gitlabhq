@@ -20,7 +20,7 @@ describe('TaskListItemActions component', () => {
     document.body.appendChild(li);
 
     wrapper = shallowMountExtended(TaskListItemActions, {
-      provide: { canUpdate: true, issuableType },
+      provide: { issuableType },
       attachTo: document.querySelector('div'),
     });
   };
@@ -32,8 +32,8 @@ describe('TaskListItemActions component', () => {
       category: 'tertiary',
       icon: 'ellipsis_v',
       placement: 'bottom-end',
-      toggleText: TaskListItemActions.i18n.taskActions,
       textSrOnly: true,
+      toggleText: 'Task actions',
     });
   });
 

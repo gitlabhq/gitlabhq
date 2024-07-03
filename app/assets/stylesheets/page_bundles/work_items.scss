@@ -345,12 +345,7 @@ $disclosure-hierarchy-chevron-dimension: 1.2rem;
   }
 }
 
-/** Ideally should be fixed in gitlab-ui but fixing it using classes for now **/
-.work-item-sidebar-dropdown-toggle {
-  justify-content: start !important;
-}
-
-.work-item-sidebar-dropdown-toggle ~ .gl-new-dropdown-panel {
+.work-item-sidebar-dropdown .gl-new-dropdown-panel {
     width: 100% !important;
     max-width: 19rem !important;
 }

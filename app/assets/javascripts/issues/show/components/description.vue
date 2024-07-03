@@ -34,10 +34,6 @@ import TaskListItemActions from './task_list_item_actions.vue';
 
 Vue.use(GlToast);
 
-const workItemTypes = {
-  TASK: 'task',
-};
-
 export default {
   directives: {
     SafeHtml,
@@ -146,19 +142,14 @@ export default {
         this.initialUpdate = false;
       }
 
-      this.$nextTick(() => {
-        this.renderGFM();
-      });
+      this.renderGFM();
     },
   },
   mounted() {
     eventHub.$on('convert-task-list-item', this.convertTaskListItem);
     eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
 
-    // this.renderGFM();
-    this.$nextTick(() => {
-      this.renderGFM();
-    });
+    this.renderGFM();
   },
   beforeDestroy() {
     eventHub.$off('convert-task-list-item', this.convertTaskListItem);
@@ -167,7 +158,9 @@ export default {
     this.removeAllPointerEventListeners();
   },
   methods: {
-    renderGFM() {
+    async renderGFM() {
+      await this.$nextTick();
+
       renderGFM(this.$refs['gfm-content']);
 
       if (this.canUpdate) {
@@ -177,15 +170,13 @@ export default {
           fieldName: 'description',
           lockVersion: this.lockVersion,
           selector: '.detail-page-description',
-          onUpdate: this.taskListUpdateStarted.bind(this),
-          onSuccess: this.taskListUpdateSuccess.bind(this),
+          onUpdate: () => this.$emit('taskListUpdateStarted'),
+          onSuccess: () => this.$emit('taskListUpdateSucceeded'),
           onError: this.taskListUpdateError.bind(this),
         });
 
         this.removeAllPointerEventListeners();
-
         this.renderSortableLists();
-
         this.renderTaskListItemActions();
       }
     },
@@ -263,30 +254,18 @@ export default {
         this.pointerEventListeners.delete(listItem);
       });
     },
-    taskListUpdateStarted() {
-      this.$emit('taskListUpdateStarted');
-    },
-    taskListUpdateSuccess() {
-      this.$emit('taskListUpdateSucceeded');
-    },
     taskListUpdateError() {
-      createAlert({
-        message: sprintf(
-          __(
-            'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
-          ),
-          {
-            issueType: this.issuableType,
-          },
-        ),
-      });
+      const message = __(
+        'Someone edited this %{issueType} at the same time you did. The description has been updated and you will need to make your changes again.',
+      );
+      createAlert({ message: sprintf(message, { issueType: this.issuableType }) });
 
       this.$emit('taskListUpdateFailed');
     },
-    createTaskListItemActions(provide) {
+    createTaskListItemActions() {
       const app = new Vue({
         el: document.createElement('div'),
-        provide,
+        provide: { issuableType: this.issuableType },
         render: (createElement) => createElement(TaskListItemActions),
       });
       return app.$el;
@@ -310,8 +289,7 @@ export default {
       );
 
       taskListItems?.forEach((item) => {
-        const provide = { canUpdate: this.canUpdate, issuableType: this.issuableType };
-        const dropdown = this.createTaskListItemActions(provide);
+        const dropdown = this.createTaskListItemActions();
         this.insertNextToTaskListItemText(dropdown, item);
         this.addPointerEventListeners(item, '.task-list-item-actions');
         this.hasTaskListItemActions = true;
@@ -419,7 +397,7 @@ export default {
     },
     showAlert(message, error) {
       createAlert({
-        message: sprintfWorkItem(message, workItemTypes.TASK),
+        message: sprintfWorkItem(message, WORK_ITEM_TYPE_VALUE_TASK),
         error,
         captureError: true,
       });

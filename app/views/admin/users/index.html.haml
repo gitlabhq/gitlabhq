@@ -1,12 +1,14 @@
 - page_title _("Users")
 
-.top-area{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_users_pageload' } }
-  = render 'tabs'
-  .nav-controls
+= render ::Layouts::PageHeadingComponent.new(_('Users'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_users_pageload' } }) do |c|
+  - c.with_actions do
     = render_if_exists 'admin/users/admin_email_users'
     = render_if_exists 'admin/users/admin_export_user_permissions'
     = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
       = s_('AdminUsers|New user')
+
+.top-area
+  = render 'tabs'
 
 .tab-content
   .tab-pane.active

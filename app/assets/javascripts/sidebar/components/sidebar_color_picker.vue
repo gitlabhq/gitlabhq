@@ -66,23 +66,23 @@ export default {
 <template>
   <div>
     <div
-      class="suggested-colors gl-display-flex gl-justify-content-space-between gl-flex-wrap gl-gap-2"
+      class="suggested-colors gl-grid gl-grid-cols-[repeat(auto-fill,2rem)] gl-justify-between gl-gap-2"
     >
       <gl-link
         v-for="(color, index) in suggestedColors"
         :key="index"
         v-gl-tooltip:tooltipcontainer
-        class="gl-block color-palette"
+        class="gl-block gl-h-7 gl-w-7 gl-rounded-base"
         :style="getStyle(color)"
         :title="getColorName(color)"
         @click.prevent="handleColorClick(getColorCode(color))"
       />
     </div>
-    <div class="gl-display-flex">
-      <gl-form-group class="gl-mb-0!">
+    <div class="gl-flex">
+      <gl-form-group class="gl-mb-0">
         <gl-form-input
           v-model.trim="selectedColor"
-          class="-gl-mr-1 gl-mb-2 gl-w-8"
+          class="-gl-mr-1 gl-w-8 gl-rounded-e-none"
           type="color"
           :value="selectedColor"
           :placeholder="__('Select color')"
@@ -92,11 +92,11 @@ export default {
       <gl-form-group
         :invalid-feedback="errorMessage"
         :state="validColor"
-        class="gl-mb-0! gl-flex-grow-1"
+        class="gl-mb-0 gl-flex-grow-1"
       >
         <gl-form-input
           v-model.trim="selectedColor"
-          class="gl-rounded-top-left-none gl-rounded-bottom-left-none gl-mb-2"
+          class="gl-rounded-s-none gl-mb-2"
           :placeholder="__('Use custom color #FF0000')"
           :autofocus="autofocus"
           :state="validColor"

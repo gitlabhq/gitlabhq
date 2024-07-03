@@ -1336,12 +1336,6 @@ lib/gitlab/checks/**
 /app/services/projects/refresh_build_artifacts_size_statistics_service.rb
 /app/uploaders/job_artifact_uploader.rb
 /app/validators/json_schemas/build_metadata_id_tokens.json
-/app/views/projects/artifacts/
-/app/views/projects/generic_commit_statuses/
-/app/views/projects/jobs/
-/app/views/projects/pipeline_schedules/
-/app/views/projects/pipelines/
-/app/views/projects/triggers/
 /app/workers/build_queue_worker.rb
 /app/workers/ci_platform_metrics_update_cron_worker.rb
 /app/workers/create_pipeline_worker.rb
@@ -1408,6 +1402,12 @@ lib/gitlab/checks/**
 /**/javascripts/admin/application_settings/runner_token_expiration/ 
 /**/javascripts/editor/schema/ci.json
 /app/**/ci/*.haml
+/app/views/projects/artifacts/
+/app/views/projects/generic_commit_statuses/
+/app/views/projects/jobs/
+/app/views/projects/pipeline_schedules/
+/app/views/projects/pipelines/
+/app/views/projects/triggers/
 /ee/app/**/ci/*.haml
 /ee/app/**/merge_trains/*.haml
 
