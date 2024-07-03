@@ -120,6 +120,7 @@ class Notify < ApplicationMailer
 
     subject << @project.name if @project
     subject << @group.name if @group
+    subject << @namespace.name if @namespace && !@project
     subject.concat(extra) if extra.present?
 
     subject_with_suffix(subject)
@@ -157,8 +158,9 @@ class Notify < ApplicationMailer
     mail_with_locale(headers)
   end
 
-  # `model` is used on EE code
-  def reply_display_name(_model)
+  def reply_display_name(model)
+    return model.namespace.full_name if model.is_a?(Issue)
+
     @project.full_name
   end
 

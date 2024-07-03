@@ -14,14 +14,8 @@ module QA
 
             view 'app/assets/javascripts/super_sidebar/components/help_center.vue' do
               element 'sidebar-help-button'
-              element 'duo-chat-menu-item'
             end
           end
-        end
-
-        def open_duo_chat
-          open_help
-          click_element('duo-chat-menu-item')
         end
 
         private

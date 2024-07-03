@@ -6,6 +6,10 @@ require 'email_spec'
 RSpec.describe Emails::Issues, feature_category: :team_planning do
   include EmailSpec::Matchers
 
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, group: group) }
+  let_it_be(:user) { create(:user) }
+
   it 'adds email methods to Notify' do
     subject.instance_methods.each do |email_method|
       expect(Notify).to be_respond_to(email_method)
@@ -13,9 +17,6 @@ RSpec.describe Emails::Issues, feature_category: :team_planning do
   end
 
   describe "#import_issues_csv_email" do
-    let(:user) { create(:user) }
-    let(:project) { create(:project) }
-
     subject { Notify.import_issues_csv_email(user.id, project.id, @results) }
 
     it "shows number of successful issues imported" do
@@ -41,8 +42,10 @@ RSpec.describe Emails::Issues, feature_category: :team_planning do
                    preprocess_errors:
                      { milestone_errors: { missing: { header: 'Milestone', titles: %w[15.10 15.11] } } } }
 
-      expect(subject).to have_body_text "Could not find the following milestone values in \
-#{project.full_name}: 15.10, 15.11"
+      expect(subject).to have_body_text(
+        'Could not find the following milestone values in ' \
+          "#{project.full_name} or its parent groups: 15.10, 15.11"
+      )
     end
 
     context 'with header and footer' do
@@ -56,7 +59,6 @@ RSpec.describe Emails::Issues, feature_category: :team_planning do
   end
 
   describe '#issues_csv_email' do
-    let(:user) { create(:user) }
     let(:empty_project) { create(:project, path: 'myproject') }
     let(:export_status) { { truncated: false, rows_expected: 3, rows_written: 3 } }
     let(:attachment) { subject.attachments.first }

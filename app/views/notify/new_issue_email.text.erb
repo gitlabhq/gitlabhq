@@ -1,5 +1,5 @@
 <%= _('%{user} created an issue: %{issue_link}') % { user: sanitize_name(@issue.author_name),
-                                                     issue_link: url_for(project_issue_url(@issue.project, @issue)) } %>
+                                                     issue_link: @target_url } %>
 
 <%= assignees_label(@issue) if @issue.assignees.any? %>
 

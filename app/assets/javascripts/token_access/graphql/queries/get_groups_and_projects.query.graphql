@@ -1,0 +1,18 @@
+query getTokenAccessGroupsAndProjects($search: String) {
+  groups(search: $search, first: 4) {
+    nodes {
+      id
+      name
+      avatarUrl
+      fullPath
+    }
+  }
+  projects(search: $search, first: 4) {
+    nodes {
+      id
+      name
+      avatarUrl
+      fullPath
+    }
+  }
+}

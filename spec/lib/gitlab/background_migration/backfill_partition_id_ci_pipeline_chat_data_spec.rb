@@ -36,11 +36,26 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineChatDat
       batch_column: :id,
       sub_batch_size: 1,
       pause_ms: 0,
-      connection: Ci::ApplicationRecord.connection
+      connection: connection
     }
   end
 
   let!(:migration) { described_class.new(**migration_attrs) }
+  let(:connection) { Ci::ApplicationRecord.connection }
+
+  around do |example|
+    connection.transaction do
+      connection.execute(<<~SQL)
+        ALTER TABLE ci_pipelines DISABLE TRIGGER ALL;
+      SQL
+
+      example.run
+
+      connection.execute(<<~SQL)
+        ALTER TABLE ci_pipelines ENABLE TRIGGER ALL;
+      SQL
+    end
+  end
 
   describe '#perform' do
     context 'when second partition does not exist' do

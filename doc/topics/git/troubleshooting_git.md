@@ -226,6 +226,23 @@ remote: Calculating new repository size... (cancelled after 729ms)
 This could be used to further investigate what operation is performing poorly
 and provide GitLab with more information on how to improve the service.
 
+### Error: Operation timed out
+
+If you encounter an error like this when using Git, it usually indicates a network issue:
+
+```shell
+ssh: connect to host gitlab.com port 22: Operation timed out
+fatal: Could not read from remote repository
+```
+
+To help identify the underlying issue:
+
+- Connect through a different network (for example, switch from Wi-Fi to cellular data) to rule out
+  local network or firewall issues.
+- Run this bash command to gather `traceroute` and `ping` information: `mtr -T -P 22 <gitlab_server>.com`.
+  To learn about MTR and how to read its output, see the Cloudflare article
+  [What is My Traceroute (MTR)?](https://www.cloudflare.com/en-gb/learning/network-layer/what-is-mtr/).
+
 ## `git clone` over HTTP fails with `transfer closed with outstanding read data remaining` error
 
 Sometimes, when cloning old or large repositories, the following error is thrown:

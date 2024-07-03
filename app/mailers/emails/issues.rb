@@ -72,7 +72,12 @@ module Emails
       setup_issue_mail(issue_id, recipient_id)
 
       @label_names = label_names
-      @labels_url = project_labels_url(@project, subscribed: true)
+      @labels_url = if @issue.project
+                      project_labels_url(@issue.project, subscribed: true)
+                    else
+                      group_labels_url(@issue.namespace, subscribed: true)
+                    end
+
       mail_answer_thread(
         @issue,
         issue_thread_options(
@@ -178,7 +183,8 @@ module Emails
     def setup_issue_mail(issue_id, recipient_id, closed_via: nil)
       @issue = Issue.find(issue_id)
       @project = @issue.project
-      @target_url = project_issue_url(@project, @issue)
+      @namespace = @issue.namespace
+      @target_url = Gitlab::UrlBuilder.build(@issue)
       @closed_via = closed_via
       @recipient = User.find(recipient_id)
 
@@ -187,9 +193,10 @@ module Emails
 
     def issue_thread_options(sender_id, reason, confidentiality: false)
       confidentiality = false if confidentiality.nil?
+      group = @namespace.is_a?(Group) ? @namespace : @namespace.parent
       {
         from: sender(sender_id),
-        to: @recipient.notification_email_for(@project.group),
+        to: @recipient.notification_email_for(group),
         subject: subject("#{@issue.title} (##{@issue.iid})"),
         'X-GitLab-NotificationReason' => reason,
         'X-GitLab-ConfidentialIssue' => confidentiality.to_s

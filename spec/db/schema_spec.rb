@@ -11,6 +11,7 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   IGNORED_INDEXES_ON_FKS = {
     application_settings: %w[instance_administration_project_id instance_administrators_group_id],
+    ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],

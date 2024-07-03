@@ -24,7 +24,7 @@ module EmailsHelper
   def action_title(url)
     return unless url
 
-    %w[merge_requests issues commit].each do |action|
+    %w[merge_requests issues work_items commit].each do |action|
       if url.split("/").include?(action)
         return "View #{action.humanize.singularize}"
       end

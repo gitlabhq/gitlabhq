@@ -132,7 +132,7 @@ GitLab Dedicated provides access to [audit and system logs](../../administration
 
 ### Bring your own domain
 
-You can use your own hostname to access your GitLab Dedicated instance. Instead of `customer_name.gitlab-dedicated.com`, you can use a hostname for a domain that you own, like `gitlab.my-company.com`. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services for your GitLab Dedicated instance. For example, `gitlab-registry.my-company.com` and `gitlab-kas.my-company.com`.
+You can use your own hostname to access your GitLab Dedicated instance. Instead of `tenant_name.gitlab-dedicated.com`, you can use a hostname for a domain that you own, like `gitlab.my-company.com`. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services for your GitLab Dedicated instance. For example, `gitlab-registry.my-company.com` and `gitlab-kas.my-company.com`.
 
 Add a custom hostname to:
 
@@ -145,6 +145,9 @@ When you add a custom hostname:
 - Any connections to your instance using the previous domain names are no longer available.
 
 You can add a custom hostname when you [create your tenant](../../administration/dedicated/create_instance.md#step-2-create-your-gitlab-dedicated-instance). To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+
+NOTE:
+Custom hostnames for GitLab Pages are not supported. If you use GitLab Pages, the URL to access the Pages site for your GitLab Dedicated instance would be `tenant_name.gitlab-dedicated.site`.
 
 ### Maintenance
 
@@ -164,24 +167,30 @@ GitLab Dedicated comes with the self-managed [Ultimate feature set](https://abou
 
 #### GitLab Pages
 
-You can use GitLab Pages on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
+You can use [GitLab Pages](../../user/project/pages/index.md) on GitLab Dedicated to host your static website. The domain name is `tenant_name.gitlab-dedicated.site`, where `tenant_name` is the same as your instance URL.
 
-You can control access to your Pages website with [GitLab Pages access control](../../user/project/pages/pages_access_control.md).
+NOTE:
+Custom domains for GitLab Pages are not supported. For example, if you added a custom domain named `gitlab.my-company.com`, the URL to access the Pages site for your GitLab Dedicated instance would still be `tenant_name.gitlab-dedicated.site`.
 
-In addition, you can limit access to your Pages website by using an [IP allowlist](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
+You can control access to your Pages website with:
 
-The following GitLab Pages features are not available:
+- [GitLab Pages access control](../../user/project/pages/pages_access_control.md).
+- [IP allowlists](../../administration/dedicated/configure_instance.md#ip-allowlist). Any existing IP allowlists for your GitLab Dedicated instances are applied.
 
-- Custom domains
-- PrivateLink access
-- Change of authentication scope
+GitLab Pages for Dedicated:
 
-In addition, GitLab Pages:
-
+- Is enabled by default.
 - Only works in the primary site if [Geo](../../administration/geo/index.md) is enabled.
 - Is not included as part of instance migrations to GitLab Dedicated.
 
-GitLab Pages for GitLab Dedicated is enabled by default for all customers.
+The following GitLab Pages features are not available for GitLab Dedicated:
+
+- Custom domains
+- PrivateLink access
+- Namespaces in URL path
+- Let's Encrypt integration
+- Reduced authentication scope
+- Running Pages behind a proxy
 
 #### GitLab Runners
 
@@ -203,7 +212,7 @@ The beta release of Hosted Runners provides the following features:
 
 Additional features will be included based on customer demand leading up to limited and general availability.
 
-Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed beta of Hosted Runners for Dedicated, please reach out to your Customer Success Manager or Account representative.
+Hosted Runners for Dedicated are available upon invitation for existing GitLab Dedicated customers. To participate in the closed beta of Hosted Runners for Dedicated, reach out to your Customer Success Manager or Account representative.
 
 ##### Request runner IP ranges
 

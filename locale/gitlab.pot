@@ -10187,6 +10187,9 @@ msgstr ""
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "CICD|Target project is already in the job token scope."
+msgstr ""
+
 msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}to%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
 msgstr ""
 
@@ -38045,9 +38048,6 @@ msgstr ""
 msgid "Paste a public key here. %{link_start}How do I generate it?%{link_end}"
 msgstr ""
 
-msgid "Paste group path (i.e. gitlab-org) or project path (i.e. gitlab-org/gitlab)"
-msgstr ""
-
 msgid "Paste project path (i.e. gitlab-org/gitlab)"
 msgstr ""
 
@@ -38316,6 +38316,9 @@ msgid "PhoneVerification|You've reached the maximum number of tries. Request a n
 msgstr ""
 
 msgid "PhoneVerification|You've reached the maximum number of tries. Wait %{interval} and try again."
+msgstr ""
+
+msgid "Pick a group or project"
 msgstr ""
 
 msgid "Pick a name"
@@ -38957,6 +38960,9 @@ msgstr ""
 msgid "Pipelines|More Information"
 msgstr ""
 
+msgid "Pipelines|No merge trains"
+msgstr ""
+
 msgid "Pipelines|No trigger tokens have been created yet. Add one using the form above."
 msgstr ""
 
@@ -39012,6 +39018,9 @@ msgid "Pipelines|There are currently no finished pipelines."
 msgstr ""
 
 msgid "Pipelines|There are currently no pipelines."
+msgstr ""
+
+msgid "Pipelines|There are no merge trains for the %{branch} target branch in %{projectName}. Merge requests added to a merge train are displayed on this page. Go to a merge request to %{linkStart}start a merge train.%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines|There was a problem with loading the pipeline data."
@@ -53669,9 +53678,6 @@ msgid "There are no issues with the selected labels"
 msgstr ""
 
 msgid "There are no matching files"
-msgstr ""
-
-msgid "There are no merge trains to show."
 msgstr ""
 
 msgid "There are no open epics"

@@ -1,15 +1,9 @@
 <script>
-import {
-  GlBadge,
-  GlButton,
-  GlIcon,
-  GlDisclosureDropdown,
-  GlDisclosureDropdownGroup,
-} from '@gitlab/ui';
+import { GlBadge, GlButton, GlDisclosureDropdown, GlDisclosureDropdownGroup } from '@gitlab/ui';
 import GitlabVersionCheckBadge from '~/gitlab_version_check/components/gitlab_version_check_badge.vue';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
 import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS, helpCenterState } from '../constants';
@@ -18,7 +12,7 @@ export default {
   components: {
     GlBadge,
     GlButton,
-    GlIcon,
+
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GitlabVersionCheckBadge,
@@ -35,7 +29,6 @@ export default {
     shortcuts: __('Keyboard shortcuts'),
     version: __('Your GitLab version'),
     whatsnew: __("What's new"),
-    chat: s__('DuoChat|GitLab Duo Chat'),
   },
   props: {
     sidebarData: {
@@ -67,15 +60,6 @@ export default {
         },
         helpLinks: {
           items: [
-            this.sidebarData.show_tanuki_bot && {
-              icon: 'tanuki-ai',
-              text: this.$options.i18n.chat,
-              action: this.showTanukiBotChat,
-              extraAttrs: {
-                ...this.trackingAttrs('tanuki_bot_help_dropdown'),
-                'data-testid': 'duo-chat-menu-item',
-              },
-            },
             {
               text: this.$options.i18n.help,
               href: helpPagePath(),
@@ -171,10 +155,6 @@ export default {
       return true;
     },
 
-    showTanukiBotChat() {
-      this.helpCenterState.showTanukiBotChatDrawer = true;
-    },
-
     async showWhatsNew() {
       this.showWhatsNewNotification = false;
 
@@ -249,14 +229,7 @@ export default {
     <gl-disclosure-dropdown-group
       :group="itemGroups.helpLinks"
       :bordered="sidebarData.show_version_check"
-    >
-      <template #list-item="{ item }">
-        <span class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
-          {{ item.text }}
-          <gl-icon v-if="item.icon" :name="item.icon" class="gl-text-gray-500" />
-        </span>
-      </template>
-    </gl-disclosure-dropdown-group>
+    />
 
     <gl-disclosure-dropdown-group :group="itemGroups.helpActions" bordered>
       <template #list-item="{ item }">

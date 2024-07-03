@@ -7,7 +7,6 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
-import { helpCenterState } from '~/super_sidebar/constants';
 import { mockTracking } from 'helpers/tracking_helper';
 import { sidebarData } from '../mock_data';
 
@@ -95,36 +94,6 @@ describe('HelpCenter component', () => {
     it('passes custom offset to the dropdown', () => {
       expect(findDropdown().props('dropdownOffset')).toEqual({
         mainAxis: 4,
-      });
-    });
-
-    describe('with show_tanuki_bot true', () => {
-      beforeEach(() => {
-        createWrapper({ ...sidebarData, show_tanuki_bot: true });
-      });
-
-      it('shows GitLab Duo Chat with the help items', () => {
-        expect(findDropdownGroup(0).props('group').items).toEqual([
-          expect.objectContaining({
-            icon: 'tanuki-ai',
-            text: HelpCenter.i18n.chat,
-            extraAttrs: {
-              ...trackingAttrs('tanuki_bot_help_dropdown'),
-              'data-testid': 'duo-chat-menu-item',
-            },
-          }),
-          ...DEFAULT_HELP_ITEMS,
-        ]);
-      });
-
-      describe('when GitLab Duo Chat button is clicked', () => {
-        beforeEach(() => {
-          findButton('GitLab Duo Chat').click();
-        });
-
-        it('sets helpCenterState.showTanukiBotChatDrawer to true', () => {
-          expect(helpCenterState.showTanukiBotChatDrawer).toBe(true);
-        });
       });
     });
 

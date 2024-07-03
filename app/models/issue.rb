@@ -765,6 +765,10 @@ class Issue < ApplicationRecord
     work_item_type.widgets(resource_parent).include?(widget_class)
   end
 
+  def group_level?
+    project_id.blank?
+  end
+
   private
 
   def project_level_readable_by?(user)

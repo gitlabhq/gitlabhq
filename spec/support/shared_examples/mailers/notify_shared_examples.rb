@@ -88,8 +88,8 @@ RSpec.shared_examples 'a new thread email with reply-by-email enabled' do
   end
 end
 
-RSpec.shared_examples 'a thread answer email with reply-by-email enabled' do
-  include_examples 'an email with X-GitLab headers containing project details'
+RSpec.shared_examples 'a thread answer email with reply-by-email enabled' do |group_level = false|
+  include_examples 'an email with X-GitLab headers containing project details' unless group_level
   include_examples 'an email with X-GitLab headers containing IDs'
 
   it 'has the characteristics of a threaded reply' do
@@ -105,8 +105,8 @@ RSpec.shared_examples 'a thread answer email with reply-by-email enabled' do
   end
 end
 
-RSpec.shared_examples 'an email starting a new thread with reply-by-email enabled' do
-  include_examples 'an email with X-GitLab headers containing project details'
+RSpec.shared_examples 'an email starting a new thread with reply-by-email enabled' do |group_level = false|
+  include_examples 'an email with X-GitLab headers containing project details' unless group_level
   include_examples 'an email with X-GitLab headers containing IDs'
   include_examples 'a new thread email with reply-by-email enabled'
 
@@ -130,10 +130,8 @@ RSpec.shared_examples 'an email starting a new thread with reply-by-email enable
   end
 end
 
-RSpec.shared_examples 'an answer to an existing thread with reply-by-email enabled' do
-  include_examples 'an email with X-GitLab headers containing project details'
-  include_examples 'an email with X-GitLab headers containing IDs'
-  include_examples 'a thread answer email with reply-by-email enabled'
+RSpec.shared_examples 'an answer to an existing thread with reply-by-email enabled' do |group_level = false|
+  include_examples 'a thread answer email with reply-by-email enabled', group_level
 
   context 'when reply-by-email is enabled with incoming address with %{key}' do
     it 'has a Reply-To header' do
@@ -143,7 +141,7 @@ RSpec.shared_examples 'an answer to an existing thread with reply-by-email enabl
 
   context 'when reply-by-email is enabled with incoming address without %{key}' do
     include_context 'reply-by-email is enabled with incoming address without %{key}'
-    include_examples 'a thread answer email with reply-by-email enabled'
+    include_examples 'a thread answer email with reply-by-email enabled', group_level
 
     it 'has a Reply-To header' do
       is_expected.to have_header 'Reply-To', /<reply@#{Gitlab.config.gitlab.host}>\Z/
@@ -175,10 +173,16 @@ RSpec.shared_examples 'it should show Gmail Actions Join now link' do
   it { is_expected.to have_body_text('Join now') }
 end
 
-RSpec.shared_examples 'it should show Gmail Actions View Issue link' do
+RSpec.shared_examples 'it should show Gmail Actions View Issue link' do |group_level = false|
   it_behaves_like 'it should have Gmail Actions links'
 
-  it { is_expected.to have_body_text('View Issue') }
+  it 'show the correct view action text' do
+    if group_level
+      is_expected.to have_body_text('View Work item')
+    else
+      is_expected.to have_body_text('View Issue')
+    end
+  end
 end
 
 RSpec.shared_examples 'it should show Gmail Actions View Merge request link' do
@@ -231,10 +235,16 @@ RSpec.shared_examples 'a user cannot unsubscribe through footer link' do
   end
 end
 
-RSpec.shared_examples 'an email with a labels subscriptions link in its footer' do
+RSpec.shared_examples 'an email with a labels subscriptions link in its footer' do |group_level = false|
   it { is_expected.to have_body_text('label subscriptions') }
 
-  it { is_expected.to have_body_text(%(href="#{project_labels_url(project, subscribed: true)}")) }
+  it 'has the correct labels URL' do
+    if group_level
+      is_expected.to have_body_text(%(href="#{group_labels_url(group, subscribed: true)}"))
+    else
+      is_expected.to have_body_text(%(href="#{project_labels_url(project, subscribed: true)}"))
+    end
+  end
 end
 
 RSpec.shared_examples 'a note email' do
@@ -317,7 +327,7 @@ end
 
 RSpec.shared_examples 'email with link to issue' do
   it do
-    is_expected.to have_body_text(%(<a href="#{project_issue_url(project, issue)}">view it on GitLab</a>))
-    is_expected.to have_plain_text_content("view it on GitLab: #{project_issue_url(project, issue)}")
+    is_expected.to have_body_text(%(<a href="#{Gitlab::UrlBuilder.build(issue)}">view it on GitLab</a>))
+    is_expected.to have_plain_text_content("view it on GitLab: #{Gitlab::UrlBuilder.build(issue)}")
   end
 end

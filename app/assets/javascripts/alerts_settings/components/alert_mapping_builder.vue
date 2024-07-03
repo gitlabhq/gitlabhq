@@ -6,7 +6,6 @@ import {
   GlTooltipDirective as GlTooltip,
 } from '@gitlab/ui';
 import { cloneDeep, isEqual } from 'lodash';
-import Vue from 'vue';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import { s__, __ } from '~/locale';
 import { mappingFields } from '../constants';
@@ -82,6 +81,11 @@ export default {
     },
   },
   methods: {
+    setGitlabFields(index, field) {
+      const copy = [...this.gitlabFields];
+      copy[index] = field;
+      this.gitlabFields = copy;
+    },
     setMapping(gitlabKey, mappingFieldLabel, valueKey = mappingFields.mapping) {
       const fieldIndex = this.gitlabFields.findIndex((field) => field.name === gitlabKey);
       const mappingField = this.mappingData[fieldIndex].mappingFields.find(
@@ -91,13 +95,14 @@ export default {
         ...this.gitlabFields[fieldIndex],
         ...{ [valueKey]: mappingField.path },
       };
-      Vue.set(this.gitlabFields, fieldIndex, updatedField);
+
+      this.setGitlabFields(fieldIndex, updatedField);
       this.$emit('onMappingUpdate', transformForSave(this.mappingData));
     },
     setSearchTerm(search = '', searchFieldKey, gitlabKey) {
       const fieldIndex = this.gitlabFields.findIndex((field) => field.name === gitlabKey);
       const updatedField = { ...this.gitlabFields[fieldIndex], ...{ [searchFieldKey]: search } };
-      Vue.set(this.gitlabFields, fieldIndex, updatedField);
+      this.setGitlabFields(fieldIndex, updatedField);
     },
     filterFields(searchTerm = '', fields) {
       const search = searchTerm.toLowerCase();

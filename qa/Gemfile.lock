@@ -184,7 +184,7 @@ GEM
       google-apis-core (>= 0.15.0, < 2.a)
     google-cloud-env (2.1.1)
       faraday (>= 1.0, < 3.a)
-    googleauth (1.9.2)
+    googleauth (1.11.0)
       faraday (>= 1.0, < 3.a)
       google-cloud-env (~> 2.1)
       jwt (>= 1.4, < 3.0)
@@ -406,7 +406,7 @@ DEPENDENCIES
   gitlab-qa (~> 14, >= 14.11.0)
   gitlab-utils!
   gitlab_quality-test_tooling (~> 1.30.0)
-  googleauth (~> 1.9.0)
+  googleauth (~> 1.11.0)
   influxdb-client (~> 3.1)
   junit_merge (~> 0.1.2)
   knapsack (~> 4.0)
@@ -430,4 +430,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.15)
 
 BUNDLED WITH
-   2.5.14
+   2.5.11

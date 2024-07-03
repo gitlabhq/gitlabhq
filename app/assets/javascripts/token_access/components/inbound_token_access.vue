@@ -3,7 +3,8 @@ import {
   GlAlert,
   GlButton,
   GlCard,
-  GlFormInput,
+  GlForm,
+  GlFormGroup,
   GlLink,
   GlIcon,
   GlLoadingIcon,
@@ -21,6 +22,7 @@ import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbo
 import inboundUpdateCIJobTokenScopeMutation from '../graphql/mutations/inbound_update_ci_job_token_scope.mutation.graphql';
 import inboundGetCIJobTokenScopeQuery from '../graphql/queries/inbound_get_ci_job_token_scope.query.graphql';
 import inboundGetGroupsAndProjectsWithCIJobTokenScopeQuery from '../graphql/queries/inbound_get_groups_and_projects_with_ci_job_token_scope.query.graphql';
+import GroupsAndProjectsListbox from './groups_and_projects_listbox.vue';
 import TokenAccessTable from './token_access_table.vue';
 
 export default {
@@ -36,22 +38,23 @@ export default {
     addGroupOrProject: __('Add group or project'),
     add: __('Add'),
     cancel: __('Cancel'),
-    addProjectPlaceholder: __(
-      'Paste group path (i.e. gitlab-org) or project path (i.e. gitlab-org/gitlab)',
-    ),
+    addProjectPlaceholder: __('Pick a group or project'),
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
+    projectInScopeError: s__('CICD|Target project is already in the job token scope.'),
   },
   components: {
     GlAlert,
     GlButton,
     GlCard,
-    GlFormInput,
+    GlForm,
+    GlFormGroup,
     GlLink,
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
     GlToggle,
+    GroupsAndProjectsListbox,
     TokenAccessTable,
   },
   directives: {
@@ -111,6 +114,11 @@ export default {
   computed: {
     isGroupOrProjectPathEmpty() {
       return this.groupOrProjectPath === '';
+    },
+    isGroupOrProjectPathInScope() {
+      return this.groupsAndProjectsWithAccess.some(
+        (item) => item.fullPath === this.groupOrProjectPath,
+      );
     },
     ciJobTokenHelpPage() {
       return helpPagePath('ci/jobs/ci_job_token#control-job-token-access-to-your-project');
@@ -219,6 +227,9 @@ export default {
         this.getGroupsAndProjects();
       }
     },
+    setGroupOrProjectPath(path) {
+      this.groupOrProjectPath = path;
+    },
     clearGroupOrProjectPath() {
       this.groupOrProjectPath = '';
       this.isAddFormVisible = false;
@@ -312,23 +323,33 @@ export default {
           </template>
 
           <div v-if="isAddFormVisible" class="gl-new-card-add-form gl-m-3">
-            <h4 class="gl-mt-0">{{ $options.i18n.addGroupOrProject }}</h4>
-            <gl-form-input
-              v-model="groupOrProjectPath"
-              :placeholder="$options.i18n.addProjectPlaceholder"
-            />
-            <div class="gl-display-flex gl-mt-5">
-              <gl-button
-                variant="confirm"
-                :disabled="isGroupOrProjectPathEmpty"
-                class="gl-mr-3"
-                data-testid="add-project-btn"
-                @click="addGroupOrProject"
+            <strong>{{ $options.i18n.addGroupOrProject }}</strong>
+            <gl-form @submit.prevent="addGroupOrProject">
+              <gl-form-group
+                :state="!isGroupOrProjectPathInScope"
+                :invalid-feedback="$options.projectInScopeError"
+                data-testid="group-or-project-form-group"
               >
-                {{ $options.i18n.add }}
-              </gl-button>
-              <gl-button @click="clearGroupOrProjectPath">{{ $options.i18n.cancel }}</gl-button>
-            </div>
+                <groups-and-projects-listbox
+                  :placeholder="$options.i18n.addProjectPlaceholder"
+                  :is-valid="!isGroupOrProjectPathInScope"
+                  :value="groupOrProjectPath"
+                  @select="setGroupOrProjectPath"
+                />
+              </gl-form-group>
+              <div class="gl-display-flex gl-mt-5">
+                <gl-button
+                  variant="confirm"
+                  :disabled="isGroupOrProjectPathEmpty || isGroupOrProjectPathInScope"
+                  class="gl-mr-3"
+                  data-testid="add-project-btn"
+                  @click="addGroupOrProject"
+                >
+                  {{ $options.i18n.add }}
+                </gl-button>
+                <gl-button @click="clearGroupOrProjectPath">{{ $options.i18n.cancel }}</gl-button>
+              </div>
+            </gl-form>
           </div>
 
           <token-access-table :items="groupsAndProjectsWithAccess" @removeItem="removeItem" />

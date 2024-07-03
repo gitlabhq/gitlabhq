@@ -497,7 +497,7 @@ end.each do |project, configuration_ids|
 end
 ```
 
-### Debugging security approval policy approvals
+### Support request for debugging of merge request approval policy
 
 GitLab SaaS users may submit a [support ticket](https://about.gitlab.com/support/) titled "Merge request approval policy debugging". Provide the following details:
 

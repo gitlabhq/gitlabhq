@@ -236,6 +236,23 @@ export const inboundGroupsAndProjectsWithScopeResponseWithAddedItem = {
   },
 };
 
+export const getGroupsAndProjectsResponse = {
+  data: {
+    groups: {
+      nodes: [
+        { id: 1, name: 'gitlab-org', avatarUrl: '', fullPath: 'gitlab-org' },
+        { id: 2, name: 'ci-group', avatarUrl: '', fullPath: 'root/ci-group' },
+      ],
+    },
+    projects: {
+      nodes: [
+        { id: 1, name: 'gitlab', avatarUrl: '', fullPath: 'gitlab-org/gitlab' },
+        { id: 2, name: 'ci-project', avatarUrl: '', fullPath: 'root/ci-project' },
+      ],
+    },
+  },
+};
+
 export const inboundAddGroupOrProjectSuccessResponse = {
   data: {
     ciJobTokenScopeAddProject: {

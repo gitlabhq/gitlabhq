@@ -61,7 +61,14 @@ module EmailHelpers
   end
 
   def have_referable_subject(referable, include_project: true, reply: false)
-    prefix = (include_project && referable.project ? "#{referable.project.name} | " : '').freeze
+    prefix = if include_project && referable.project
+               "#{referable.project.name} | "
+             elsif referable.is_a?(Issue) && referable.group_level?
+               "#{referable.namespace.name} | "
+             else
+               ""
+             end.freeze
+
     prefix = "Re: #{prefix}" if reply
 
     suffix = "#{referable.title} (#{referable.to_reference})"
