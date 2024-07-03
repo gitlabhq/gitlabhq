@@ -107,6 +107,7 @@ export default {
       selectedProject: null,
       childToCreateTitle: null,
       confidential: this.parentConfidential,
+      submitInProgress: false,
     };
   },
   computed: {
@@ -234,6 +235,11 @@ export default {
       );
     },
   },
+  watch: {
+    workItemsToAdd() {
+      this.unsetError();
+    },
+  },
   methods: {
     getConfidentialityTooltipTarget() {
       // We want tooltip to be anchored to `input` within checkbox component
@@ -244,6 +250,7 @@ export default {
       this.error = null;
     },
     addChild() {
+      this.submitInProgress = true;
       this.$apollo
         .mutate({
           mutation: updateWorkItemMutation,
@@ -269,12 +276,14 @@ export default {
         })
         .finally(() => {
           this.search = '';
+          this.submitInProgress = false;
         });
     },
     createChild() {
       if (!this.canSubmitForm) {
         return;
       }
+      this.submitInProgress = true;
       this.$apollo
         .mutate({
           mutation: createWorkItemMutation,
@@ -304,6 +313,7 @@ export default {
         .finally(() => {
           this.search = '';
           this.childToCreateTitle = null;
+          this.submitInProgress = false;
         });
     },
   },
@@ -391,7 +401,7 @@ export default {
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
-      <div v-if="error" class="gl-text-red-500">
+      <div v-if="error" class="gl-text-red-500" data-testid="work-items-error">
         {{ error }}
       </div>
     </div>
@@ -401,6 +411,7 @@ export default {
       size="small"
       type="submit"
       :disabled="!canSubmitForm"
+      :loading="submitInProgress"
       data-testid="add-child-button"
       class="gl-mr-2"
     >

@@ -56,6 +56,7 @@ describe('WorkItemLinksForm', () => {
   let wrapper;
 
   const updateMutationResolver = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+  const updateMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const availableWorkItemsResolver = jest.fn().mockResolvedValue(availableWorkItemsResponse);
   const projectWorkItemTypesResolver = jest
@@ -74,6 +75,7 @@ describe('WorkItemLinksForm', () => {
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
+    updateMutation = updateMutationResolver,
     isGroup = false,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
@@ -83,7 +85,7 @@ describe('WorkItemLinksForm', () => {
         [groupWorkItemTypesQuery, groupWorkItemTypesResolver],
         [groupProjectsForLinksWidgetQuery, groupProjectsFormLinksWidgetResolver],
         [relatedProjectsForLinksWidgetQuery, relatedProjectsForLinksWidgetResolver],
-        [updateWorkItemMutation, updateMutationResolver],
+        [updateWorkItemMutation, updateMutation],
         [createWorkItemMutation, createMutationResolver],
       ]),
       propsData: {
@@ -112,6 +114,7 @@ describe('WorkItemLinksForm', () => {
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findAddChildButton = () => wrapper.findByTestId('add-child-button');
   const findValidationElement = () => wrapper.findByTestId('work-items-invalid');
+  const findErrorMessageElement = () => wrapper.findByTestId('work-items-error');
   const findProjectSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
 
   beforeEach(() => {
@@ -300,11 +303,10 @@ describe('WorkItemLinksForm', () => {
   });
 
   describe('adding an existing work item', () => {
-    const selectAvailableWorkItemTokens = () => {
-      findWorkItemTokenInput().vm.$emit(
-        'input',
-        availableWorkItemsResponse.data.workspace.workItems.nodes,
-      );
+    const selectAvailableWorkItemTokens = (
+      tokens = availableWorkItemsResponse.data.workspace.workItems.nodes,
+    ) => {
+      findWorkItemTokenInput().vm.$emit('input', tokens);
     };
 
     beforeEach(async () => {
@@ -368,6 +370,28 @@ describe('WorkItemLinksForm', () => {
           },
         ),
       );
+    });
+
+    it('clears form error when token input is updated', async () => {
+      await createComponent({ formType: FORM_TYPES.add, updateMutation: updateMutationRejection });
+      await selectAvailableWorkItemTokens();
+
+      // Trigger form submission
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+      await waitForPromises();
+
+      // Assert if error was shown
+      expect(findErrorMessageElement().exists()).toBe(true);
+
+      // Trigger Token input update, causing error to clear
+      await selectAvailableWorkItemTokens(
+        availableWorkItemsResponse.data.workspace.workItems.nodes.slice(0, 2),
+      );
+
+      // Assert if error was cleared
+      expect(findErrorMessageElement().exists()).toBe(false);
     });
   });
 

@@ -274,9 +274,12 @@ You must manually replicate the secret file across all of your secondary sites, 
 1. To verify SSH is still functional, from a new terminal, SSH into your GitLab secondary server.
    If you can't connect, make sure you have the correct permissions.
 
-#### Set up fast lookup of authorized SSH keys
+#### Fast lookup of authorized SSH keys
 
-After the replication process is complete, you need to [configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md).
+After the initial replication process is complete, follow the steps to
+[configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md).
+
+Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
 NOTE:
 Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.

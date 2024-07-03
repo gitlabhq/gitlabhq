@@ -3,7 +3,7 @@ category: default
 action: toggle
 extra_properties:
 identifiers:
-product_group: ""
+product_group: project_management
 milestone:
 introduced_by_url:
 distributions:

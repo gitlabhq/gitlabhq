@@ -3,7 +3,7 @@ status: proposed
 creation-date: "2023-06-03"
 authors: [ "@dmishunov" ]
 coach: "@jessieay"  
-approvers: [  ]
+approvers: ["@pwietchner", "@dmishunov" ]
 owning-stage: "~devops::ai-powered"
 participating-stages: ["~devops::create"]
 ---

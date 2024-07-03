@@ -164,24 +164,35 @@ Using the class `svg-content` around it ensures nice rendering.
 
 ### Usage in Vue
 
-To use an SVG illustrations in a template provide the path as a property and display it through a standard `img` tag.
+It is discouraged to pass down SVG paths from Rails. Instead of `Rails => Haml => Vue` we can import SVG illustrations directly in `Vue`.
+
+To use an SVG illustration in a template import the SVG from `@gitlab/svgs`. You can find the available SVG paths via the [GitLab SVG Previewer](https://gitlab-org.gitlab.io/gitlab-svgs/illustrations).
+
+Below is an example of how to import an SVG illustration and use with the `GlEmptyState` component.
 
 Component:
 
 ```html
 <script>
+import { GlEmptyState } from '@gitlab/ui';
+// The ?url query string ensures the SVG is imported as an URL instead of an inilne SVG
+// This is useful for bundle size and optimized loading
+import mergeTrainsSvgPath from '@gitlab/svgs/dist/illustrations/train-sm.svg?url';
+
 export default {
-  props: {
-    svgIllustrationPath: {
-      type: String,
-      required: true,
-    },
+  components: {
+    GlEmptyState
   },
+  mergeTrainsSvgPath,
 };
 <script>
 
 <template>
-  <img :src="svgIllustrationPath" />
+  <gl-empty-state
+    title="This state is empty"
+    description="Empty state description"
+    :svg-path="$options.mergeTrainsSvgPath"
+  />
 </template>
 ```
 

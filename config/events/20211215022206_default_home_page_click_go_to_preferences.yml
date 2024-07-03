@@ -3,7 +3,7 @@ category: default
 action: click_go_to_preferences
 extra_properties:
 identifiers:
-product_group: ""
+product_group: analytics_instrumentation
 milestone:
 introduced_by_url:
 distributions:

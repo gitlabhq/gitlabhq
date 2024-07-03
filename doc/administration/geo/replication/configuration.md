@@ -336,7 +336,9 @@ On the **primary** site:
 1. Expand **Visibility and access controls**.
 1. If using Git over SSH, then:
    1. Ensure "Enabled Git access protocols" is set to "Both SSH and HTTP(S)".
-   1. Follow [Fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on **all primary and secondary** sites.
+   1. Follow the steps to configure
+      [fast lookup of authorized SSH keys in the database](../../operations/fast_ssh_key_lookup.md) on
+      **all primary and secondary** sites.
 1. If not using Git over SSH, then set "Enabled Git access protocols" to "Only HTTP(S)".
 
 ## Step 6. Verify proper functioning of the **secondary** site

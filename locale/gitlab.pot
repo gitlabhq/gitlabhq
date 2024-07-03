@@ -54657,6 +54657,9 @@ msgstr ""
 msgid "This trial is for"
 msgstr ""
 
+msgid "This user"
+msgstr ""
+
 msgid "This user cannot be unlocked manually from GitLab"
 msgstr ""
 

@@ -393,7 +393,13 @@ The replication process is complete.
 
 ## Configure a new secondary site
 
-After the replication process is complete, you need to [configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md).
+After the initial replication process is complete, proceed with the configuration of the following items on the secondary site.
+
+### Fast lookup of authorized SSH keys
+
+Follow the documentation to [configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md).
+
+Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
 NOTE:
 Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.

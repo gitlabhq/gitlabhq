@@ -3,7 +3,7 @@ category: default
 action: click_toggle_external_button
 extra_properties:
 identifiers:
-product_group: ""
+product_group: code_review
 milestone:
 introduced_by_url:
 distributions:

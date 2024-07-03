@@ -42,7 +42,15 @@ module Types
       def protection_rule_exists
         return false if Feature.disabled?(:packages_protected_packages, object.project)
 
-        object.matching_package_protection_rules.exists?
+        object_package_type_value = ::Packages::Package.package_types[object.package_type]
+
+        BatchLoader::GraphQL.for([object.name, object_package_type_value]).batch do |inputs, loader|
+          ::Packages::Protection::Rule
+            .for_push_exists_for_multiple_packages(
+              package_names: inputs.map(&:first), package_types: inputs.map(&:last), project_id: object.project_id
+            )
+            .each { |row| loader.call([row['package_name'], row['package_type']], row['protected']) }
+        end
       end
 
       # NOTE: This method must be kept in sync with the union

@@ -280,3 +280,13 @@ master 132da6064f5d3453d445fd7cb452b148705bdc1b...a62e1e693150a2e46ace0ce696cd4a
 master 58b07b719a4b0039fec810efa52f479ba1b84756...f05321a5b5728bd8a89b7bf530aa44043c951dce root
 master f05321a5b5728bd8a89b7bf530aa44043c951dce...7d02e575fd790e76a3284ee435368279a5eb3773 root
 ```
+
+### Error: Xcode fails to clone repository
+
+GitLab provides an option to [restrict a list of allowed SSH keys](../../../security/ssh_keys_restrictions.md).
+If your SSH key is not on the allowed list, you might encounter an error like
+`The repository rejected the provided credentials`.
+
+To resolve this issue, create a new SSH key pair that meets the guidelines for
+[supported SSH key types](../../ssh.md#supported-ssh-key-types). After you generate a
+supported SSH key, try cloning the repository again.

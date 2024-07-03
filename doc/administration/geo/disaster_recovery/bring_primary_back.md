@@ -80,6 +80,10 @@ site back online as well by repeating the first step
 ([configure the former **primary** site to be a **secondary** site](#configure-the-former-primary-site-to-be-a-secondary-site))
 for the **secondary** site.
 
+### Restoring additional **secondary** sites
+
+If there is more than one **secondary** site, the remaining sites can be brought online now. For each of the remaining sites, [initiate the replication process](../setup/database.md#step-3-initiate-the-replication-process) with the **primary** site.
+
 ## Skipping re-transfer of data on a **secondary** site
 
 When a secondary site is added, if it contains data that would otherwise be synced from the primary, then Geo avoids re-transferring the data.

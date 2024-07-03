@@ -889,6 +889,40 @@ Example response:
 
 - CustomersDot
 
+### Retrieve owners
+
+Use a GET command to get direct owners of the namespace. Requests from CustomersDot are being migrated to this endpoint.
+
+```plaintext
+GET /internal/gitlab_subscriptions/namespaces/:id/owners
+```
+
+Example request:
+
+```shell
+curl --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/owners"
+```
+
+Example response:
+
+```json
+[
+  {
+    "user": {
+      "id": 1,
+      "username": "john_smith",
+      "name": "John Smith"
+    },
+    "access_level": 50,
+    "notification_email": "name@example.com",
+  }
+]
+```
+
+#### Known consumers
+
+- CustomersDot
+
 ### Retrieve a subscription (namespaces API)
 
 Use a GET command to view an existing subscription.

@@ -42,6 +42,36 @@ RSpec.describe 'getting a package list for a project', feature_category: :packag
       QUERY
     end
 
+    describe "efficient database queries" do
+      let_it_be(:project2) { create(:project, :repository) }
+      let_it_be(:project2_npm_package) { create(:npm_package, project: project2, name: '@project2/npm-package') }
+      let_it_be(:project2_npm_packages_no_match) do
+        create_list(:npm_package, 4, project: project2) do |npm_package, i|
+          npm_package.update!(name: "@project2/npm-package-no-match-#{i}")
+        end
+      end
+
+      let_it_be(:project2_npm_package_protection_rule) do
+        create(:package_protection_rule,
+          project: project2,
+          package_name_pattern: project2_npm_package.name,
+          package_type: :npm,
+          minimum_access_level_for_push: :maintainer
+        )
+      end
+
+      let_it_be(:user1) { create(:user, developer_of: resource) }
+      let_it_be(:user2) { create(:user, developer_of: project2) }
+
+      it 'avoids N+1 database queries' do
+        control_count = ActiveRecord::QueryRecorder.new { post_graphql(query, current_user: user1) }
+
+        query2 = graphql_query_for(resource_type, { 'fullPath' => project2.full_path },
+          query_graphql_field('packages', {}, fields))
+        expect { post_graphql(query2, current_user: user2) }.not_to exceed_query_limit(control_count)
+      end
+    end
+
     context 'when package protection rule for package and user exists' do
       using RSpec::Parameterized::TableSyntax
 
