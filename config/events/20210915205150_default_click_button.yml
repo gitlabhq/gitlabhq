@@ -1,7 +1,6 @@
 description: "Click Terraform banner button"
 category: default
 action: click_button
-label_description: "`terraform_banner`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`terraform_banner`"

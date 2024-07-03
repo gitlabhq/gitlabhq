@@ -28,6 +28,7 @@ import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
+import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 
 import {
   groupWorkItemByIidResponseFactory,
@@ -37,6 +38,7 @@ import {
   epicType,
   mockWorkItemCommentNote,
   mockBlockingLinkedItem,
+  allowedChildrenTypesResponse,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
@@ -70,6 +72,8 @@ describe('WorkItemDetail component', () => {
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
+
+  const allowedChildrenTypesHandler = jest.fn().mockResolvedValue(allowedChildrenTypesResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -114,6 +118,7 @@ describe('WorkItemDetail component', () => {
         [groupWorkItemByIidQuery, groupSuccessHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
+        [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
@@ -178,6 +183,10 @@ describe('WorkItemDetail component', () => {
     it('skips the work item updated subscription', () => {
       expect(workItemUpdatedSubscriptionHandler).not.toHaveBeenCalled();
     });
+
+    it('does not fetch allowed children types for current work item', () => {
+      expect(allowedChildrenTypesHandler).not.toHaveBeenCalled();
+    });
   });
 
   describe('when loading', () => {
@@ -212,6 +221,13 @@ describe('WorkItemDetail component', () => {
 
     it('calls the work item updated subscription', () => {
       expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
+    });
+
+    it('fetches allowed children types for current work item', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(allowedChildrenTypesHandler).toHaveBeenCalled();
     });
   });
 

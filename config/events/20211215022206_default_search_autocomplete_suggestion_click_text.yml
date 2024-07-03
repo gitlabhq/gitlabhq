@@ -1,9 +1,6 @@
 description: "Click autocomplete option"
 category: default
 action: click_text
-label_description: "`search_autocomplete_suggestion`"
-property_description: "Slugged option category"
-value_description: "Option index"
 extra_properties:
 identifiers:
 product_group: global_search
@@ -16,3 +13,10 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`search_autocomplete_suggestion`"
+  property:
+    description: "Slugged option category"
+  value:
+    description: "Option index"

@@ -1,7 +1,6 @@
 description: "Click environment stop button"
 category: default
 action: click_button
-label_description: "`environment_stop`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`environment_stop`"

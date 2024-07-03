@@ -2,7 +2,6 @@ description: "Change discussion sort direction"
 category: default
 action: change_discussion_sort_direction
 label_description: ""
-property_description: "`[asc | desc]`"
 value_description: ""
 extra_properties:
 identifiers:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  property:
+    description: "`[asc | desc]`"

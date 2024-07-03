@@ -1,7 +1,6 @@
 description: "Submit Docker form"
 category: default
 action: submit_form
-label_description: "`docker_container_retention_and_expiration_policies`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`docker_container_retention_and_expiration_policies`"

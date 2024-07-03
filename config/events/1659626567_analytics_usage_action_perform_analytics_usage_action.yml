@@ -2,8 +2,6 @@
 description: Analytics usage event
 category: class of the controller triggering given event
 action: perform_analytics_usage_action
-label_description: key_path of corresponding redis hll total metric
-property_description: the name of the performed action, corresponding to migrated redis hll event name
 value_description:
 extra_properties:
 identifiers:
@@ -19,4 +17,9 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: key_path of corresponding redis hll total metric
+  property:
+    description: the name of the performed action, corresponding to migrated redis hll event name
 

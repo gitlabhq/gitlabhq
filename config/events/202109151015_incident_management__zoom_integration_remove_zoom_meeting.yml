@@ -1,9 +1,7 @@
 description: Remove Zoom meeting
 category: IncidentManagement::ZoomIntegration
 action: remove_zoom_meeting
-label_description: The string "Issue ID"
 property_description:
-value_description: ID of the issue
 extra_properties:
 identifiers:
 product_group: respond
@@ -16,3 +14,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: The string "Issue ID"
+  value:
+    description: ID of the issue

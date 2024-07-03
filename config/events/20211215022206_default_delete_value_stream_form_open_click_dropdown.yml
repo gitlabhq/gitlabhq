@@ -1,7 +1,6 @@
 description: "Delete stream value from dropdown"
 category: default
 action: click_dropdown
-label_description: "`delete_value_stream_form_open`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`delete_value_stream_form_open`"

@@ -31,7 +31,8 @@ import workItemUpdatedSubscription from '../graphql/work_item_updated.subscripti
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-import { findHierarchyWidgetChildren } from '../utils';
+import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
+import { findHierarchyWidgetChildren, findHierarchyWidgetDefinition } from '../utils';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
@@ -168,6 +169,23 @@ export default {
         },
       },
     },
+    allowedChildTypes: {
+      query: getAllowedWorkItemChildTypes,
+      variables() {
+        return {
+          id: this.workItem.id,
+        };
+      },
+      skip() {
+        return !this.workItem?.id;
+      },
+      update(data) {
+        return (
+          findHierarchyWidgetDefinition(data.workItem.workItemType.widgetDefinitions)
+            ?.allowedChildTypes?.nodes || []
+        );
+      },
+    },
   },
   computed: {
     workItemFullPath() {
@@ -273,7 +291,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
     },
     showWorkItemTree() {
-      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY);
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY) && this.allowedChildTypes?.length > 0;
     },
     titleClassHeader() {
       return {
@@ -648,6 +666,7 @@ export default {
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
               :confidential="workItem.confidential"
+              :allowed-child-types="allowedChildTypes"
               @show-modal="openInModal"
               @addChild="$emit('addChild')"
             />

@@ -2,7 +2,6 @@
 description: "Selects an editor in the Edit dropdown menu"
 category: default
 action: click_consolidated_edit
-label_description: "The editor selected in the Edit dropdown menu"
 property_description:
 value_description:
 extra_properties:
@@ -17,4 +16,7 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "The editor selected in the Edit dropdown menu"
 

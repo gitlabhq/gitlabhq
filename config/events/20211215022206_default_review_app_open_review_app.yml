@@ -1,7 +1,6 @@
 description: "Go to review app"
 category: default
 action: open_review_app
-label_description: "`review_app`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`review_app`"

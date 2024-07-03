@@ -13,8 +13,6 @@ import {
   I18N_WORK_ITEM_SHOW_LABELS,
   CHILD_ITEMS_ANCHOR,
 } from '../../constants';
-import { findHierarchyWidgetDefinition } from '../../utils';
-import getAllowedWorkItemChildTypes from '../../graphql/work_item_allowed_children.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -77,6 +75,11 @@ export default {
       required: false,
       default: false,
     },
+    allowedChildTypes: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
   data() {
     return {
@@ -86,22 +89,7 @@ export default {
       childType: null,
       widgetName: CHILD_ITEMS_ANCHOR,
       showLabels: true,
-      allowedChildrenTypes: [],
     };
-  },
-  apollo: {
-    allowedChildrenTypes: {
-      query: getAllowedWorkItemChildTypes,
-      variables() {
-        return {
-          id: this.workItemId,
-        };
-      },
-      update(data) {
-        return findHierarchyWidgetDefinition(data.workItem.workItemType.widgetDefinitions)
-          .allowedChildTypes.nodes;
-      },
-    },
   },
   computed: {
     childrenIds() {
@@ -115,7 +103,7 @@ export default {
         .some((hierarchy) => hierarchy.hasChildren);
     },
     addItemsActions() {
-      const reorderedChildTypes = this.allowedChildrenTypes
+      const reorderedChildTypes = this.allowedChildTypes
         .slice()
         .sort((a, b) => a.id.localeCompare(b.id));
       return reorderedChildTypes.map((type) => {

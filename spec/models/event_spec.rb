@@ -19,28 +19,28 @@ RSpec.describe Event, feature_category: :user_profile do
   end
 
   describe 'Callbacks' do
-    describe 'after_create :reset_project_activity' do
-      it 'calls the reset_project_activity method' do
+    context 'when combined_project_update_on_event_creation is enabled' do
+      before do
+        stub_feature_flags(combined_project_update_on_event_creation: project)
+      end
+
+      it 'does call update_project_activity instead of legacy callbacks' do
         expect_next_instance_of(described_class) do |instance|
-          expect(instance).to receive(:reset_project_activity)
+          expect(instance).to receive(:update_project_activity)
+          expect(instance).not_to receive(:reset_project_activity)
+          expect(instance).not_to receive(:set_last_repository_updated_at)
         end
 
         create_push_event(project, project.first_owner)
       end
     end
 
-    describe 'after_create :set_last_repository_updated_at' do
-      context 'with a push event' do
-        it 'updates the project last_repository_updated_at' do
-          project.update!(last_repository_updated_at: 1.year.ago)
+    context 'when combined_project_update_on_event_creation is disabled' do
+      before do
+        stub_feature_flags(combined_project_update_on_event_creation: false)
+      end
 
-          event = create_push_event(project, project.first_owner)
-
-          project.reload
-
-          expect(project.last_repository_updated_at).to be_like_time(event.created_at)
-        end
-
+      describe 'after_create :reset_project_activity' do
         it 'calls the reset_project_activity method' do
           expect_next_instance_of(described_class) do |instance|
             expect(instance).to receive(:reset_project_activity)
@@ -50,15 +50,37 @@ RSpec.describe Event, feature_category: :user_profile do
         end
       end
 
-      context 'without a push event' do
-        it 'does not update the project last_repository_updated_at' do
-          project.update!(last_repository_updated_at: 1.year.ago)
+      describe 'after_create :set_last_repository_updated_at' do
+        context 'with a push event' do
+          it 'updates the project last_repository_updated_at' do
+            project.update!(last_repository_updated_at: 1.year.ago)
 
-          create(:closed_issue_event, project: project, author: project.first_owner)
+            event = create_push_event(project, project.first_owner)
 
-          project.reload
+            project.reload
 
-          expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
+            expect(project.last_repository_updated_at).to be_like_time(event.created_at)
+          end
+
+          it 'calls the reset_project_activity method' do
+            expect_next_instance_of(described_class) do |instance|
+              expect(instance).to receive(:reset_project_activity)
+            end
+
+            create_push_event(project, project.first_owner)
+          end
+        end
+
+        context 'without a push event' do
+          it 'does not update the project last_repository_updated_at' do
+            project.update!(last_repository_updated_at: 1.year.ago)
+
+            create(:closed_issue_event, project: project, author: project.first_owner)
+
+            project.reload
+
+            expect(project.last_repository_updated_at).to be_within(1.minute).of(1.year.ago)
+          end
         end
       end
     end
@@ -898,6 +920,160 @@ RSpec.describe Event, feature_category: :user_profile do
       subject { described_class.limit_recent(1) }
 
       it { is_expected.to eq([event2]) }
+    end
+  end
+
+  describe '#update_project_activity' do
+    let(:project) { create(:project) }
+
+    context 'when last_activity_at has to be updated, but last_repository_updated_at not' do
+      before do
+        project.update!(
+          last_activity_at: described_class::RESET_PROJECT_ACTIVITY_INTERVAL.ago - 5.minutes,
+          last_repository_updated_at: Time.current
+        )
+        project.reload
+
+        ::Gitlab::Redis::SharedState.with do |redis|
+          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{project.id}", Date.current.to_s)
+        end
+      end
+
+      it 'updates the column' do
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis).to receive(:hdel).with(
+            'inactive_projects_deletion_warning_email_notified',
+            "project:#{project.id}"
+          )
+        end
+
+        last_repository_updated_at = project.last_repository_updated_at
+
+        event = create_push_event(project, project.first_owner)
+
+        project.reload
+        event.reload
+
+        expect(project.last_repository_updated_at).to eq(last_repository_updated_at)
+        expect(project.last_activity_at).to eq(event.created_at)
+        expect(project.updated_at).to eq(event.created_at)
+      end
+    end
+
+    context 'when last_activity_at does not have to be updated, but last_repository_updated_at has' do
+      before do
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis).not_to receive(:hdel)
+        end
+
+        project.update!(
+          last_activity_at: Time.current,
+          last_repository_updated_at: described_class::REPOSITORY_UPDATED_AT_INTERVAL.ago - 5.minutes
+        )
+        project.reload
+      end
+
+      context 'with push event' do
+        it 'updates the column' do
+          last_activity_at = project.last_activity_at
+
+          event = create_push_event(project, project.first_owner)
+
+          project.reload
+          event.reload
+
+          expect(project.last_activity_at).to eq(last_activity_at)
+          expect(project.last_repository_updated_at).to eq(event.created_at)
+          expect(project.updated_at).to eq(event.created_at)
+        end
+      end
+
+      context 'without push event' do
+        it 'does not update the columns' do
+          updated_at = project.updated_at
+          last_activity_at = project.last_activity_at
+          last_repository_updated_at = project.last_repository_updated_at
+
+          create(:closed_issue_event, project: project, author: project.first_owner)
+
+          project.reload
+
+          expect(project.last_activity_at).to eq(last_activity_at)
+          expect(project.last_repository_updated_at).to eq(last_repository_updated_at)
+          expect(project.updated_at).to eq(updated_at)
+        end
+      end
+    end
+
+    context 'when both last_activity_at and last_repository_updated_at have to be updated' do
+      before do
+        project.update!(
+          last_activity_at: described_class::RESET_PROJECT_ACTIVITY_INTERVAL.ago - 5.minutes,
+          last_repository_updated_at: described_class::REPOSITORY_UPDATED_AT_INTERVAL.ago - 5.minutes
+        )
+        project.reload
+
+        ::Gitlab::Redis::SharedState.with do |redis|
+          redis.hset('inactive_projects_deletion_warning_email_notified', "project:#{project.id}", Date.current.to_s)
+        end
+      end
+
+      it 'updates the columns' do
+        event = create_push_event(project, project.first_owner)
+
+        project.reload
+        event.reload
+
+        expect(project.last_activity_at).to eq(event.created_at)
+        expect(project.last_repository_updated_at).to eq(event.created_at)
+        expect(project.updated_at).to eq(event.created_at)
+      end
+    end
+
+    context 'when none of last_activity_at and last_repository_updated_at have to be updated' do
+      before do
+        Gitlab::Redis::SharedState.with do |redis|
+          expect(redis).not_to receive(:hdel)
+        end
+
+        project.update!(
+          last_activity_at: Time.current,
+          last_repository_updated_at: Time.current
+        )
+        project.reload
+      end
+
+      context 'with push event' do
+        it 'does not update the columns' do
+          updated_at = project.updated_at
+          last_activity_at = project.last_activity_at
+          last_repository_updated_at = project.last_repository_updated_at
+
+          create_push_event(project, project.first_owner)
+
+          project.reload
+
+          expect(project.last_activity_at).to eq(last_activity_at)
+          expect(project.last_repository_updated_at).to eq(last_repository_updated_at)
+          expect(project.updated_at).to eq(updated_at)
+        end
+      end
+
+      context 'without push event' do
+        it 'does not update the columns' do
+          updated_at = project.updated_at
+          last_activity_at = project.last_activity_at
+          last_repository_updated_at = project.last_repository_updated_at
+
+          create(:closed_issue_event, project: project, author: project.first_owner)
+
+          project.reload
+
+          expect(project.last_activity_at).to eq(last_activity_at)
+          expect(project.last_repository_updated_at).to eq(last_repository_updated_at)
+          expect(project.updated_at).to eq(updated_at)
+        end
+      end
     end
   end
 

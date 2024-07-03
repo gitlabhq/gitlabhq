@@ -1,8 +1,6 @@
 description: "Click Terraform MR plan button"
 category: default
 action: click_terraform_mr_plan_button
-label_description: "mr_widget_terraform_mr_plan_button"
-property_description: "`terraform_mr_plan_button`"
 value_description: ""
 extra_properties:
 identifiers:
@@ -16,3 +14,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "mr_widget_terraform_mr_plan_button"
+  property:
+    description: "`terraform_mr_plan_button`"

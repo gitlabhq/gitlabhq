@@ -1,7 +1,6 @@
 description: Create SAST
 category: Security::CiConfiguration::SastCreateService
 action: create
-label_description: One of "true", "false"
 property_description:
 value_description:
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: One of "true", "false"

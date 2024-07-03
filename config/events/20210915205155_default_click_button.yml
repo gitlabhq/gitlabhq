@@ -1,7 +1,6 @@
 description: "Click registry tag delete button"
 category: default
 action: click_button
-label_description: "`[bulk_registry_tag_delete | registry_tag_delete]`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`[bulk_registry_tag_delete | registry_tag_delete]`"

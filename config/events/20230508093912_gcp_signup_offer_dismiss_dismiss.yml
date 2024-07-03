@@ -2,7 +2,6 @@
 description: GCP offer banner is dismissed
 category: gcp_signup_offer_dismiss
 action: dismiss
-label_description: 'gcp_signup_offer_banner'
 property_description:
 value_description:
 extra_properties:
@@ -17,3 +16,6 @@ tiers:
   - free
   - premium
   - ultimate
+additional_properties:
+  label:
+    description: 'gcp_signup_offer_banner'

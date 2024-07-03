@@ -6,7 +6,6 @@ description: "User submits a Duo Chat message.
 category: Gitlab::Llm::Anthropic::Completions::CategorizeQuestion
 action: ai_question_category
 label_description:
-property_description: Request ID to link to other events of the same AI request.
 value_description:
 identifiers:
   - user
@@ -17,3 +16,6 @@ distributions:
   - ee
 tiers:
   - ultimate
+additional_properties:
+  property:
+    description: Request ID to link to other events of the same AI request.

@@ -678,10 +678,16 @@ To debug issues with the migrations, check the [`elasticsearch.log`](../../admin
 
 Some migrations are built with a retry limit. If the migration cannot finish within the retry limit,
 it is halted and a notification is displayed in the advanced search integration settings.
+
 It is recommended to check the [`elasticsearch.log` file](../../administration/logs/index.md#elasticsearchlog) to
-debug why the migration was halted and make any changes before retrying the migration. Once you believe you've
-fixed the cause of the failure, select "Retry migration", and the migration is scheduled to be retried
-in the background.
+debug why the migration was halted and make any changes before retrying the migration.
+
+When you believe you've fixed the cause of the failure:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > Search**.
+1. Expand **Advanced Search**.
+1. Inside the **Elasticsearch migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
 
 If you cannot get the migration to succeed, you may
 consider the

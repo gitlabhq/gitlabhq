@@ -2,8 +2,6 @@
 description: Mirrored `g_compliance_audit_events` Redis HLL metric as a Snowplow event. Emitted when group audit events page is visited.
 category: Groups::AuditEventsController
 action: visit_group_compliance_audit_events
-label_description: Mirrored Service Ping metric key path
-property_description: Mirrored Service Ping Redis HLL event name
 value_description:
 extra_properties:
 identifiers:
@@ -20,4 +18,9 @@ tiers:
 #- free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: Mirrored Service Ping metric key path
+  property:
+    description: Mirrored Service Ping Redis HLL event name
 

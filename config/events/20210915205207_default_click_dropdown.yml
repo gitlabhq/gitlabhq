@@ -1,7 +1,6 @@
 description: "Click Epic's board switcher"
 category: default
 action: click_dropdown
-label_description: "`board_switcher`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`board_switcher`"

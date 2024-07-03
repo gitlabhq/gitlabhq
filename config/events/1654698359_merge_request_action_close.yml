@@ -2,7 +2,6 @@
 description: Triggered from backend layer when merge request is closed
 category: merge_request_action
 action: close
-label_description: Constant string that match with ServicePing metric name of merge_requests_users
 property_description:
 value_description:
 extra_properties:
@@ -20,4 +19,7 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: Constant string that match with ServicePing metric name of merge_requests_users
 

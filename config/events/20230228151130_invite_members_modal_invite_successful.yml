@@ -2,7 +2,6 @@
 description: Invite members modal is submitted successfully
 category: invite_members_modal
 action: invite_successful
-label_description: area/source of invite members modal being triggered
 property_description:
 value_description:
 extra_properties:
@@ -20,4 +19,7 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: area/source of invite members modal being triggered
 

@@ -1,7 +1,6 @@
 description: "Dismiss Terraform banner"
 category: default
 action: dismiss_banner
-label_description: "`terraform_banner`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`terraform_banner`"

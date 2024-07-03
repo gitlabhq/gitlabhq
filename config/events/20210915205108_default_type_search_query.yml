@@ -1,7 +1,6 @@
 description: "Type search query"
 category: default
 action: type_search_query
-label_description: "`[dropdown_type]_dropdown_frequent_items_search_input`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`[dropdown_type]_dropdown_frequent_items_search_input`"

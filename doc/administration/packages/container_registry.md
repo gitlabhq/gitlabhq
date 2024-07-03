@@ -1703,7 +1703,7 @@ by running the below script from the [Rails console](../../administration/operat
 This can help diagnose problems with the policy.
 
 ```ruby
-repo = ContainerRepository.find(<project_id>)
+repo = ContainerRepository.find(<repository_id>)
 policy = repo.project.container_expiration_policy
 
 tags = repo.tags

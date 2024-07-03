@@ -226,7 +226,12 @@ rule in the defined policy are met.
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 | `template` | `string` | `default`, `latest` | CI/CD template edition to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) edition may introduce breaking changes. |
 
-Note the following:
+### Scan field details
+
+There are additional requirements for some of the `scan` action fields.
+Some scanners also behave differently in a `scan` action than they do in a regular CI/CD pipeline-based scan.
+
+#### Profiles
 
 - You must create the [site profile](../dast/on-demand_scan.md#site-profile) and [scanner profile](../dast/on-demand_scan.md#scanner-profile)
   with selected names for each project that is assigned to the selected Security Policy Project.
@@ -237,32 +242,39 @@ Note the following:
 - When configuring policies with a scheduled DAST scan, the author of the commit in the security
   policy project's repository must have access to the scanner and site profiles. Otherwise, the scan
   is not scheduled successfully.
-- For a secret detection scan, only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/pipeline/index.md#custom-rulesets)
-  are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/pipeline/index.md#specify-a-remote-configuration-file) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
-- By default, for `scheduled` scan execution policies, secret detection scans configured without any CI variables defined run first in `historic` mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current SHA. CI variables provided in the scan execution policy can override this behavior. Learn more about [historic mode](../secret_detection/pipeline/index.md#full-history-pipeline-secret-detection).
-- For `triggered` scan execution policies, secret detection works just like regular scan [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/index.md#edit-the-gitlab-ciyml-file-manually).
-- A container scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
+
+#### Scanner behavior
+
+- For Secret Detection:
+  - Only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/pipeline/index.md#custom-rulesets) are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/pipeline/index.md#specify-a-remote-configuration-file) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
+  - By default, for `scheduled` scan execution policies, secret detection scans configured without any CI variables defined run first in `historic` mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current SHA. CI variables provided in the scan execution policy can override this behavior. Learn more about [historic mode](../secret_detection/pipeline/index.md#full-history-pipeline-secret-detection).
+  - For `triggered` scan execution policies, secret detection works just like regular scan [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/index.md#edit-the-gitlab-ciyml-file-manually).
+- A Container Scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.
   An agent with a name provided in the `agents` object must be created and configured for the project.
-- Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
-- Preconfigured values are used for the following CI/CD variables in any project on which a scan
-  execution policy is enforced. Their values can be overridden, but **only** if they are declared in
-  a policy. They **cannot** be overridden by group or project CI/CD variables:
 
-  ```plaintext
-  DS_EXCLUDED_PATHS: spec, test, tests, tmp
-  SAST_EXCLUDED_PATHS: spec, test, tests, tmp
-  SECRET_DETECTION_EXCLUDED_PATHS: ''
-  SECRET_DETECTION_HISTORIC_SCAN: false
-  SAST_EXCLUDED_ANALYZERS: ''
-  DS_EXCLUDED_ANALYZERS: ''
-  ```
+#### CI/CD variables
 
-  In GitLab 16.9 and earlier:
+Variables defined in a Scan Execution Policy follow the standard [CI/CD variable precedence](../../../ci/variables/index.md#cicd-variable-precedence).
 
-  - If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
-    be overridden by group or project CI/CD variables.
-  - If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
-    ignored, regardless of where they were defined: policy, group, or project.
+Preconfigured values are used for the following CI/CD variables in any project on which a scan
+execution policy is enforced. Their values can be overridden, but **only** if they are declared in
+a policy. They **cannot** be overridden by group or project CI/CD variables:
+
+```plaintext
+DS_EXCLUDED_PATHS: spec, test, tests, tmp
+SAST_EXCLUDED_PATHS: spec, test, tests, tmp
+SECRET_DETECTION_EXCLUDED_PATHS: ''
+SECRET_DETECTION_HISTORIC_SCAN: false
+SAST_EXCLUDED_ANALYZERS: ''
+DS_EXCLUDED_ANALYZERS: ''
+```
+
+In GitLab 16.9 and earlier:
+
+- If the CI/CD variables suffixed `_EXCLUDED_PATHS` were declared in a policy, their values _could_
+  be overridden by group or project CI/CD variables.
+- If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
+  ignored, regardless of where they were defined: policy, group, or project.
 
 ## Security policy scopes
 

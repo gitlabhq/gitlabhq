@@ -3,7 +3,6 @@ description: Issue usage event
 category: issues_edit
 action: perform_issue_action
 label_description:
-property_description: the name of the performed action
 value_description:
 extra_properties:
 identifiers:
@@ -20,3 +19,6 @@ tiers:
   - free
   - premium
   - ultimate
+additional_properties:
+  property:
+    description: the name of the performed action

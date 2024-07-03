@@ -2,8 +2,6 @@
 description: When a CompletionWorker gets executed to perform an AI request.
 category: Llm::CompletionWorker
 action: perform_completion_worker
-label_description: AI Action that gets performed
-property_description: Request ID to link to other events of the same AI request.
 value_description:
 extra_properties:
   client:
@@ -17,3 +15,8 @@ distributions:
   - ee
 tiers:
   - ultimate
+additional_properties:
+  label:
+    description: AI Action that gets performed
+  property:
+    description: Request ID to link to other events of the same AI request.

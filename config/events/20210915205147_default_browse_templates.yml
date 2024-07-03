@@ -1,7 +1,6 @@
 description: "Browse Pipeline editor templates"
 category: default
 action: browse_templates
-label_description: "`pipeline_editor`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`pipeline_editor`"

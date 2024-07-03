@@ -2,8 +2,6 @@
 description: Save markdown
 category: default
 action: save_markdown
-label_description: Editor type
-property_description: Markdown context
 value_description:
 extra_properties:
 identifiers:
@@ -17,4 +15,9 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: Editor type
+  property:
+    description: Markdown context
 

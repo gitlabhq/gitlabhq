@@ -2,7 +2,6 @@
 description: Pipeline created with id_tokens (JWT tokens) defined
 category: Ci::Build
 action: create_id_tokens
-label_description: "Mirrored Service Ping key_path: redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly"
 property_description:
 value_description:
 extra_properties:
@@ -20,4 +19,7 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "Mirrored Service Ping key_path: redis_hll_counters.ci_secrets_management.i_ci_secrets_management_id_tokens_build_created_monthly"
 

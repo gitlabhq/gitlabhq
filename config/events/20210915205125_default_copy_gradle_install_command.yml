@@ -1,7 +1,6 @@
 description: "Copy Gradle install command"
 category: default
 action: copy_gradle_install_command
-label_description: "`code_instruction`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`code_instruction`"

@@ -1,7 +1,6 @@
 description: "Selec stream from dropdown"
 category: default
 action: click_dropdown
-label_description: "Slugged stream name"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "Slugged stream name"

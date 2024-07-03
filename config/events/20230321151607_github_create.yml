@@ -2,7 +2,6 @@
 description: State of projects imported from GitHub
 category: Import::GithubService
 action: create
-label_description: github_import_project_state
 property_description:
 value_description:
 extra_properties:
@@ -24,4 +23,7 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: github_import_project_state
 

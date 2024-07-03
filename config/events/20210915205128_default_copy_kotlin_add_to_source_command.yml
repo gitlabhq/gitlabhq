@@ -1,7 +1,6 @@
 description: "Copy Kotlin add to source command"
 category: default
 action: copy_kotlin_add_to_source_command
-label_description: "`code_instruction`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`code_instruction`"

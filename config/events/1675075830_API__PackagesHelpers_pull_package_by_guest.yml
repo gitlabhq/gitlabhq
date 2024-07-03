@@ -2,7 +2,6 @@
 description: "Mirrored Service Ping total metric key_path: counts.package_events_i_package_pull_package_by_guest"
 category: package class
 action: pull_package_by_guest
-label_description: "Mirrored Service Ping total metric key_path: counts.package_events_i_package_pull_package_by_guest"
 property_description:
 value_description:
 extra_properties:
@@ -20,4 +19,7 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "Mirrored Service Ping total metric key_path: counts.package_events_i_package_pull_package_by_guest"
 

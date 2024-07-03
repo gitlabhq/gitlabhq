@@ -2,7 +2,11 @@ import { mount } from '@vue/test-utils';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import { currentUserResponse, workItemByIidResponseFactory } from 'jest/work_items/mock_data';
+import {
+  currentUserResponse,
+  workItemByIidResponseFactory,
+  allowedChildrenTypesResponse,
+} from 'jest/work_items/mock_data';
 import currentUserQuery from '~/graphql_shared/queries/current_user.query.graphql';
 import App from '~/work_items/components/app.vue';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -10,6 +14,7 @@ import CreateWorkItem from '~/work_items/pages/create_work_item.vue';
 import WorkItemsRoot from '~/work_items/pages/work_item_root.vue';
 import { createRouter } from '~/work_items/router';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
+import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
@@ -25,6 +30,7 @@ describe('Work items router', () => {
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
+  const allowedChildrenTypesHandler = jest.fn().mockResolvedValue(allowedChildrenTypesResponse);
 
   const createComponent = async (routeArg) => {
     const router = createRouter({ fullPath: '/work_item' });
@@ -36,6 +42,7 @@ describe('Work items router', () => {
       [workItemByIidQuery, workItemQueryHandler],
       [currentUserQuery, currentUserQueryHandler],
       [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
+      [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
     ];
 
     wrapper = mount(App, {

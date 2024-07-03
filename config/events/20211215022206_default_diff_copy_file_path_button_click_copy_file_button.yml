@@ -1,8 +1,6 @@
 description: "Copy file path on diffs"
 category: default
 action: click_copy_file_button
-label_description: "`diff_copy_file_path_button`"
-property_description: "`diff_copy_file`"
 value_description: ""
 extra_properties:
 identifiers:
@@ -16,3 +14,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`diff_copy_file_path_button`"
+  property:
+    description: "`diff_copy_file`"

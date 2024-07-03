@@ -213,6 +213,23 @@ To purchase additional compute minutes for your personal namespace:
 After your payment is processed, the additional compute minutes are added to your personal
 namespace.
 
+### Troubleshooting
+
+#### Error: `Last name can't be blank`
+
+You might get an error "Last name can't be blank" when purchasing compute minutes. This issue occurs when a last name is missing from the **Full name** field of your profile.
+
+To resolve the issue:
+
+1. Ensure that your user profile has a last name filled in:
+   - On the left sidebar, select your avatar.
+   - Select **Edit profile**.
+   - Update the **Full name** field to have both first name and last name, save the changes.
+
+1. Clear your browser cache and cookies, then try the purchase process again.
+
+1. If the error persists, try using a different web browser or an incognito/private browsing window.
+
 ## How compute usage is calculated
 
 GitLab uses this formula to calculate the compute usage of a job:

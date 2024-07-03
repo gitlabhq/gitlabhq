@@ -1,7 +1,6 @@
 description: "Click feature flag toggle button"
 category: default
 action: click_button
-label_description: "`feature_flag_toggle`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`feature_flag_toggle`"

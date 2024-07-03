@@ -2,7 +2,6 @@
 description: GCP offer banner Apply for credit is clicked
 category: gcp_signup_offer_click
 action: click
-label_description: 'gcp_signup_offer_banner'
 property_description:
 value_description:
 extra_properties:
@@ -17,3 +16,6 @@ tiers:
   - free
   - premium
   - ultimate
+additional_properties:
+  label:
+    description: 'gcp_signup_offer_banner'

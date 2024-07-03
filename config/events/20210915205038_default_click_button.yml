@@ -1,7 +1,6 @@
 description: "Click 2FA codes related buttons: copy, download, print..."
 category: default
 action: click_button
-label_description: "Action button name"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "Action button name"

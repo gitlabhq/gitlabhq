@@ -2,8 +2,6 @@
 description: Mirrored `a_compliance_audit_events_api` Redis HLL metric as a Snowplow event. Emitted when Project Audit Events REST API endpoint is called.
 category: EE::API::Projects
 action: project_audit_event_request
-label_description: Mirrored Service Ping metric key path
-property_description: Mirrored Service Ping Redis HLL event name
 value_description:
 extra_properties:
 identifiers:
@@ -20,4 +18,9 @@ tiers:
 #- free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: Mirrored Service Ping metric key path
+  property:
+    description: Mirrored Service Ping Redis HLL event name
 

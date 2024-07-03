@@ -1,8 +1,6 @@
 description: "Toggle labels on boards"
 category: default
 action: toggle
-label_description: "`show_labels`"
-property_description: "`[on | off]`"
 value_description: ""
 extra_properties:
 identifiers:
@@ -16,3 +14,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`show_labels`"
+  property:
+    description: "`[on | off]`"

@@ -1,7 +1,6 @@
 description: "Click quickstart dropdown"
 category: default
 action: click_dropdown
-label_description: "`quickstart_dropdown`"
 property_description: ""
 value_description: ""
 extra_properties:
@@ -16,3 +15,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`quickstart_dropdown`"
