@@ -1,7 +1,6 @@
 description: "Show \"What's new\" drawer"
 category: default
 action: click_whats_new_drawer
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

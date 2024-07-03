@@ -23,7 +23,7 @@ RSpec.describe Admin::RunnerProjectsController, feature_category: :fleet_visibil
 
     context 'when assigning to another project' do
       let(:project_runner) { create(:ci_runner, :project, projects: [source_project]) }
-      let(:source_project) { create(:project) }
+      let_it_be(:source_project) { create(:project, organization: project.organization) }
 
       it 'redirects to the admin runner edit page' do
         send_create

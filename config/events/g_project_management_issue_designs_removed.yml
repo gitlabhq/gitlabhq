@@ -2,9 +2,6 @@
 description: A design wes removed from an issue
 internal_events: true
 action: g_project_management_issue_designs_removed
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -2,8 +2,6 @@
 description: Count of unique users changing alert's status. Migrated from Service Ping metric
 category: Mutations::AlertManagement::UpdateAlertStatus
 action: incident_management_alert_status_changed
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

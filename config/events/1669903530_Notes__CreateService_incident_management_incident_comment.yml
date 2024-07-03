@@ -1,8 +1,6 @@
 ---
 category: Notes::CreateService
 action: incident_management_incident_comment
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

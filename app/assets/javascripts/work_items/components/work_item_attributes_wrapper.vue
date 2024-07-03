@@ -178,6 +178,7 @@ export default {
     <template v-if="workItemRolledupDates && showRolledupDates">
       <work-item-rolledup-dates
         :can-update="canUpdate"
+        :full-path="fullPath"
         :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
         :due-date-fixed="workItemRolledupDates.dueDateFixed"
         :due-date-inherited="workItemRolledupDates.dueDate"

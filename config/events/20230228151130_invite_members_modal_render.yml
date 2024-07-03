@@ -2,8 +2,6 @@
 description: Invite members modal is opened from top nav
 category: invite_members_modal
 action: render
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

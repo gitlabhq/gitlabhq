@@ -2,8 +2,6 @@
 description: "Mirrored Service Ping total metric key_path: counts.package_events_i_package_push_package_by_deploy_token"
 category: package class
 action: push_package_by_deploy_token
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

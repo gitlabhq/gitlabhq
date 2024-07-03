@@ -2,9 +2,6 @@
 description: An issue's time spent was changed
 internal_events: true
 action: g_project_management_issue_time_spent_changed
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

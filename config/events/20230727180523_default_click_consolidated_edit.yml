@@ -2,8 +2,6 @@
 description: "Selects an editor in the Edit dropdown menu"
 category: default
 action: click_consolidated_edit
-property_description:
-value_description:
 extra_properties:
 identifiers:
 product_group: ide

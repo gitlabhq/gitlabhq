@@ -39,7 +39,7 @@ RSpec.describe 'Projects > Settings > User changes avatar', feature_category: :g
       :project_avatar,
       File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
     )
-    page.within '.general-settings' do
+    within_testid('general-settings-content') do
       click_button 'Save changes'
     end
   end

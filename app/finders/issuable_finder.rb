@@ -459,18 +459,27 @@ class IssuableFinder
     return items unless params[:my_reaction_emoji] && current_user
 
     if params.filter_by_no_reaction?
-      items.not_awarded(current_user)
+      items.not_awarded(current_user, reaction_emoji_filter_params)
     elsif params.filter_by_any_reaction?
-      items.awarded(current_user)
+      items.awarded(current_user, reaction_emoji_filter_params)
     else
-      items.awarded(current_user, params[:my_reaction_emoji])
+      items.awarded(current_user, reaction_emoji_filter_params.merge(name: params[:my_reaction_emoji]))
     end
+  end
+
+  # Overriden on EE::WorKItemsFinder and EE::EpicsFinder.
+  #
+  # Used to check if epic_and_work_item_associations_unification
+  # feature flag is enabled for the group and apply filtering over award emoji
+  # unified association. Should be removed with the feature flag.
+  def reaction_emoji_filter_params
+    {}
   end
 
   def by_negated_my_reaction_emoji(items)
     return items unless not_params[:my_reaction_emoji] && current_user
 
-    items.not_awarded(current_user, not_params[:my_reaction_emoji])
+    items.not_awarded(current_user, reaction_emoji_filter_params.merge(name: not_params[:my_reaction_emoji]))
   end
 
   def by_non_archived(items)

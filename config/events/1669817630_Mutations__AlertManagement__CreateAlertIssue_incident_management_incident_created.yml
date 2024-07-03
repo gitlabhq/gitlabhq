@@ -2,8 +2,6 @@
 description: Migrated from Service Ping metric. Count of unique users creating incidents
 category: Mutations::AlertManagement::CreateAlertIssue
 action: incident_management_incident_created
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

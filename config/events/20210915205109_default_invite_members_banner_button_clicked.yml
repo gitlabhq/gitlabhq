@@ -1,8 +1,6 @@
 description: "Click invite members banner"
 category: default
 action: invite_members_banner_button_clicked
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

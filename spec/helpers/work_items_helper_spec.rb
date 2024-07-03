@@ -105,7 +105,10 @@ RSpec.describe WorkItemsHelper, feature_category: :team_planning do
           full_path: group.full_path,
           initial_sort: current_user&.user_preference&.issues_sort,
           is_signed_in: current_user.present?.to_s,
-          show_new_issue_link: 'true'
+          show_new_issue_link: 'true',
+          issues_list_path: issues_group_path(group),
+          labels_manage_path: group_labels_path(group),
+          can_admin_label: 'true'
         }
       )
     end

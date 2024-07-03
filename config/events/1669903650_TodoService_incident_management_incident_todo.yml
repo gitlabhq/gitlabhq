@@ -1,8 +1,6 @@
 ---
 category: TodoService
 action: incident_management_incident_todo
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

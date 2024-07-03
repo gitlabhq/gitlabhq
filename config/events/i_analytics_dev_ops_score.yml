@@ -2,9 +2,6 @@
 description: User visited /admin/dev_ops_reports
 internal_events: true
 action: i_analytics_dev_ops_score
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

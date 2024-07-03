@@ -1,7 +1,6 @@
 description: Add Zoom meeting
 category: IncidentManagement::ZoomIntegration
 action: add_zoom_meeting
-property_description:
 extra_properties:
 identifiers:
 product_group: respond

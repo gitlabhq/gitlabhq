@@ -17,7 +17,7 @@ require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/parameter_filter'
-require 'gitlab'
+require 'chemlab_gitlab'
 
 module QA
   root = "#{__dir__}/qa"

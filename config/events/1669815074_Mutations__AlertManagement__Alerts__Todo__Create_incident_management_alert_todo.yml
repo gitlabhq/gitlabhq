@@ -2,8 +2,6 @@
 description: Migrated Service Ping metric. Count of unique users adding alerts to the TODO list
 category: Mutations::AlertManagement::Alerts::Todo::Create
 action: incident_management_alert_todo
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

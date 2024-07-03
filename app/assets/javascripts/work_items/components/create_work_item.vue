@@ -28,6 +28,8 @@ import {
   WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_GID,
+  WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_ROLLEDUP_DATES,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import groupWorkItemTypesQuery from '../graphql/group_work_item_types.query.graphql';
@@ -39,6 +41,7 @@ import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
+import WorkItemLabels from './work_item_labels.vue';
 import WorkItemLoading from './work_item_loading.vue';
 
 export default {
@@ -52,10 +55,13 @@ export default {
     WorkItemDescription,
     WorkItemTitle,
     WorkItemAssignees,
+    WorkItemLabels,
     WorkItemLoading,
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
+    WorkItemRolledupDates: () =>
+      import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
   },
   inject: ['fullPath', 'isGroup'],
   props: {
@@ -155,6 +161,9 @@ export default {
     workItemAssignees() {
       return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
     },
+    workItemLabels() {
+      return findWidget(WIDGET_TYPE_LABELS, this.workItem);
+    },
     workItemHealthStatus() {
       return findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
     },
@@ -211,6 +220,10 @@ export default {
       const assigneesWidget = findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
       return assigneesWidget?.assignees?.nodes?.map((assignee) => assignee.id) || [];
     },
+    workItemLabelIds() {
+      const labelsWidget = findWidget(WIDGET_TYPE_LABELS, this.workItem);
+      return labelsWidget?.labels?.nodes?.map((label) => label.id) || [];
+    },
     workItemColorValue() {
       const colorWidget = findWidget(WIDGET_TYPE_COLOR, this.workItem);
       return colorWidget?.color || '';
@@ -228,6 +241,21 @@ export default {
     workItemDescription() {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description;
+    },
+    workItemRolledupDates() {
+      return findWidget(WIDGET_TYPE_ROLLEDUP_DATES, this.workItem);
+    },
+    workItemDueDateFixed() {
+      return this.workItemRolledupDates?.dueDateFixed;
+    },
+    workItemStartDateFixed() {
+      return this.workItemRolledupDates?.startDateFixed;
+    },
+    workItemDueDateIsFixed() {
+      return this.workItemRolledupDates?.dueDateIsFixed;
+    },
+    workItemStartDateIsFixed() {
+      return this.workItemRolledupDates?.startDateIsFixed;
     },
   },
   methods: {
@@ -298,6 +326,21 @@ export default {
       if (this.isWidgetSupported(WIDGET_TYPE_HEALTH_STATUS)) {
         workItemCreateInput.healthStatusWidget = {
           healthStatus: this.workItemHealthStatusValue,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_LABELS)) {
+        workItemCreateInput.labelsWidget = {
+          labelIds: this.workItemLabelIds,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_ROLLEDUP_DATES)) {
+        workItemCreateInput.rolledupDatesWidget = {
+          dueDateIsFixed: this.workItemDueDateIsFixed,
+          startDateIsFixed: this.workItemStartDateIsFixed,
+          startDateFixed: this.workItemStartDateFixed,
+          dueDateFixed: this.workItemDueDateFixed,
         };
       }
 
@@ -425,6 +468,33 @@ export default {
                 :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
                 :work-item-type="selectedWorkItemTypeName"
                 :can-invite-members="workItemAssignees.canInviteMembers"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemLabels">
+              <work-item-labels
+                class="gl-mb-5 js-labels"
+                create-flow
+                :can-update="canUpdate"
+                :full-path="fullPath"
+                :work-item-id="workItem.id"
+                :work-item-iid="workItem.iid"
+                :work-item-type="selectedWorkItemTypeName"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemRolledupDates">
+              <work-item-rolledup-dates
+                :can-update="canUpdate"
+                :full-path="fullPath"
+                :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
+                :due-date-fixed="workItemRolledupDates.dueDateFixed"
+                :due-date-inherited="workItemRolledupDates.dueDate"
+                :start-date-is-fixed="workItemRolledupDates.startDateIsFixed"
+                :start-date-fixed="workItemRolledupDates.startDateFixed"
+                :start-date-inherited="workItemRolledupDates.startDate"
+                :work-item-type="selectedWorkItemTypeName"
+                :work-item="workItem"
                 @error="$emit('error', $event)"
               />
             </template>

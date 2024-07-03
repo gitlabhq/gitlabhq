@@ -9,8 +9,10 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 
+import { VIEW_ADMIN_DEPLOY_KEYS_PAGELOAD } from '~/admin/deploy_keys/constants';
 import { __ } from '~/locale';
 import Api, { DEFAULT_PER_PAGE } from '~/api';
+import { InternalEvents } from '~/tracking';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
@@ -98,6 +100,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  mixins: [InternalEvents.mixin()],
   inject: ['editPath', 'deletePath', 'createPath', 'emptyStateSvgPath'],
   data() {
     return {
@@ -127,6 +130,7 @@ export default {
     },
   },
   mounted() {
+    this.trackEvent(VIEW_ADMIN_DEPLOY_KEYS_PAGELOAD);
     this.fetchDeployKeys();
   },
   methods: {

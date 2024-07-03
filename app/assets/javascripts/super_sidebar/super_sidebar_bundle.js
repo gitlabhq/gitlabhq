@@ -129,6 +129,9 @@ export const initSuperSidebar = () => {
       groupsPath,
       fullPath: sidebarData.work_items?.full_path,
       hasIssuableHealthStatusFeature: sidebarData.work_items?.has_issuable_health_status_feature,
+      issuesListPath: sidebarData.work_items?.issues_list_path,
+      canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
+      labelsManagePath: sidebarData.work_items?.labels_manage_path,
       isGroup,
     },
     store: createStore({

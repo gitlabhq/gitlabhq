@@ -1,0 +1,8 @@
+---
+migration_job_name: FixSyncedEpicWorkItemParentLinks
+description: Fixes orphaned work item parent links.
+feature_category: team_planning
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156657
+milestone: '17.2'
+queued_migration_version: 20240618093306
+finalize_after: '2024-07-14'

@@ -21,7 +21,8 @@ module Gitlab
               target_type: issuable_type(issue_event),
               target_id: issuable_db_id(issue_event),
               created_at: issue_event.created_at,
-              updated_at: issue_event.created_at
+              updated_at: issue_event.created_at,
+              imported_from: imported_from
             )
           end
 
@@ -33,7 +34,8 @@ module Gitlab
               state: 'merged',
               close_after_error_tracking_resolve: false,
               close_auto_resolve_prometheus_alert: false,
-              created_at: issue_event.created_at
+              created_at: issue_event.created_at,
+              imported_from: imported_from
             }.merge(resource_event_belongs_to(issue_event))
 
             ResourceStateEvent.create!(attrs)
@@ -44,7 +46,8 @@ module Gitlab
               merged_by: issue_event.actor&.to_hash,
               merged_at: issue_event.created_at,
               iid: issue_event.issuable_id,
-              state: :closed
+              state: :closed,
+              imported_from: imported_from
             })
 
             PullRequests::MergedByImporter.new(pull_request, project, client).execute

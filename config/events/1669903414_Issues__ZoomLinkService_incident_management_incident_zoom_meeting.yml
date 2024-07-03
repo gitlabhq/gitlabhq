@@ -1,8 +1,6 @@
 ---
 category: Issues::ZoomLinkService
 action: incident_management_incident_zoom_meeting
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

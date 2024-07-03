@@ -20,6 +20,7 @@ class RemoteMirror < ApplicationRecord
 
   belongs_to :project, inverse_of: :remote_mirrors
 
+  validates :project, presence: true
   validates :url, presence: true, public_url: { schemes: Project::VALID_MIRROR_PROTOCOLS, allow_blank: true, enforce_user: true }
   validates :only_protected_branches, inclusion: { in: [true, false], message: :blank }
 

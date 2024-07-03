@@ -2,7 +2,6 @@
 description: Mirrored `g_compliance_audit_events` Redis HLL metric as a Snowplow event. Emitted when group audit events page is visited.
 category: Groups::AuditEventsController
 action: visit_group_compliance_audit_events
-value_description:
 extra_properties:
 identifiers:
 #- project

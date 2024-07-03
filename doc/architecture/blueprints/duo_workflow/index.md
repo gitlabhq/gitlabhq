@@ -112,18 +112,79 @@ For many development use cases we expect developers may prefer to run Duo
 Workflow Executor locally as it can operate on a locally mounted directory and
 allow the user to more easily watch changes as they happen.
 
-### High level architecture
-
-#### Backend architecture
+### GitLab.com architecture
 
 <img src="diagrams/duo-workflow-architecture-gitlab-com.png" height="600" alt="">
-
-*(this PNG can be edited in Excalidraw)*
 
 1. Initially we focus on running locally and in CI pipelines with all inputs as
    environment variables
 1. State stored in GitLab so it can be accessed from the web UI and through IDE
    extensions
+
+#### With Local (IDE) execution
+
+```mermaid
+sequenceDiagram
+   participant user as User
+   participant ide as IDE
+   participant executor as Duo Workflow Executor
+   participant gitlab_rails as GitLab Rails
+   box AI-gateway service
+     participant duo_workflow_service as Duo Workflow Service
+     participant ai_gateway as AI Gateway
+   end
+   participant llm_provider as LLM Provider
+   ide->>gitlab_rails: Request AI Gateway JWT using OAuth token or PAT
+   ide->>executor: start executor with JWT
+   user->>ide: trigger workflow from IDE
+   executor->>+duo_workflow_service: Solve this issue (open grpc connection auth'd with AI Gateway JWT)
+   duo_workflow_service->>gitlab_rails: Request ai_workflow scoped OAuth token using AI Gateway JWT
+   duo_workflow_service->>gitlab_rails: Create the workflow (auth'd with ai_workflow OAuth token)
+   duo_workflow_service->>llm_provider: Ask LLM what to do
+   llm_provider->>duo_workflow_service: Run rails new my_new_app
+   duo_workflow_service->>executor: execute `rails new my_new_app`
+   executor->>duo_workflow_service: result `rails new my_new_app`
+   duo_workflow_service->>gitlab_rails: Save checkpoint
+   duo_workflow_service->>llm_provider: What's next?
+   llm_provider->>duo_workflow_service: You're finished
+   duo_workflow_service->>gitlab_rails: Save checkpoint and mark completed
+   duo_workflow_service->>gitlab_rails: Revoke ai_workflow scoped OAuth token
+   deactivate duo_workflow_service
+   gitlab_rails->>user: Workflow done!
+```
+
+#### With Remote (CI pipeline) execution
+
+```mermaid
+sequenceDiagram
+   participant user as User
+   participant gitlab_rails as GitLab Rails
+   box CI-Runner
+      participant executor as Duo Workflow Executor
+   end
+   box AI-gateway service
+     participant duo_workflow_service as Duo Workflow Service
+     participant ai_gateway as AI Gateway
+   end
+   participant llm_provider as LLM Provider
+
+   user->>gitlab_rails: trigger workflow from Web UI
+   gitlab_rails->>executor: start executor (sends AI Gateway JWT with request)
+   executor->>+duo_workflow_service: Solve this issue (open grpc connection auth'd with AI Gateway JWT)
+   duo_workflow_service->>gitlab_rails: Request ai_workflow scoped OAuth token using AI Gateway JWT
+   duo_workflow_service->>gitlab_rails: Create the workflow (auth'd with ai_workflow OAuth token)
+   duo_workflow_service->>llm_provider: Ask LLM what to do
+   llm_provider->>duo_workflow_service: Run rails new my_new_app
+   duo_workflow_service->>executor: execute `rails new my_new_app`
+   executor->>duo_workflow_service: result `rails new my_new_app`
+   duo_workflow_service->>gitlab_rails: Save checkpoint
+   duo_workflow_service->>llm_provider: What's next?
+   llm_provider->>duo_workflow_service: You're finished
+   duo_workflow_service->>gitlab_rails: Save checkpoint and mark completed
+   duo_workflow_service->>gitlab_rails: Revoke ai_workflow scoped OAuth token
+   deactivate duo_workflow_service
+   gitlab_rails->>user: Workflow done!
+```
 
 ### Self-managed architecture
 

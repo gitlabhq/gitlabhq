@@ -8,6 +8,9 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import CreateWorkItem from '~/work_items/components/create_work_item.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
+import WorkItemDescription from '~/work_items/components/work_item_description.vue';
+import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
+import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
@@ -46,6 +49,9 @@ describe('Create work item component', () => {
   const findFormTitle = () => wrapper.find('h1');
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findTitleInput = () => wrapper.findComponent(WorkItemTitle);
+  const findDescriptionWidget = () => wrapper.findComponent(WorkItemDescription);
+  const findAssigneesWidget = () => wrapper.findComponent(WorkItemAssignees);
+  const findLabelsWidget = () => wrapper.findComponent(WorkItemLabels);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
   const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
@@ -54,7 +60,6 @@ describe('Create work item component', () => {
   const findCancelButton = () => wrapper.find('[data-testid="cancel-button"]');
 
   const createComponent = ({
-    data = {},
     props = {},
     isGroup = false,
     mutationHandler = createWorkItemSuccessHandler,
@@ -88,11 +93,6 @@ describe('Create work item component', () => {
 
     wrapper = shallowMount(CreateWorkItem, {
       apolloProvider: mockApollo,
-      data() {
-        return {
-          ...data,
-        };
-      },
       propsData: {
         workItemTypeName,
         ...props,
@@ -294,6 +294,28 @@ describe('Create work item component', () => {
       await submitCreateForm();
 
       expect(findAlert().text()).toBe('Something went wrong when creating epic. Please try again.');
+    });
+  });
+
+  describe('Create work item widgets for epic work item type', () => {
+    beforeEach(async () => {
+      await initialiseComponentAndSelectWorkItem();
+    });
+
+    it('renders the work item title widget', () => {
+      expect(findTitleInput().exists()).toBe(true);
+    });
+
+    it('renders the work item description widget', () => {
+      expect(findDescriptionWidget().exists()).toBe(true);
+    });
+
+    it('renders the work item assignees widget', () => {
+      expect(findAssigneesWidget().exists()).toBe(true);
+    });
+
+    it('renders the work item labels widget', () => {
+      expect(findLabelsWidget().exists()).toBe(true);
     });
   });
 });

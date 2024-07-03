@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_category: :importers do
   subject { described_class.new(gist_object, user.id) }
 
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let(:created_at) { Time.utc(2022, 1, 9, 12, 15) }
   let(:updated_at) { Time.utc(2022, 5, 9, 12, 17) }
   let(:gist_file) { { file_name: '_Summary.md', file_content: 'File content' } }
@@ -41,17 +41,37 @@ RSpec.describe Gitlab::GithubGistsImport::Importer::GistImporter, feature_catego
         instance_double(ServiceResponse, error?: false)
       end
 
-      it 'creates expected snippet and snippet repository' do
-        expect_next_instance_of(Snippets::RepositoryValidationService) do |validator|
-          expect(validator).to receive(:execute).and_return(validator_result)
-        end
+      context 'when Current.organization is not set', :with_current_organization do
+        it 'creates expected snippet and snippet repository' do
+          expect_next_instance_of(Snippets::RepositoryValidationService) do |validator|
+            expect(validator).to receive(:execute).and_return(validator_result)
+          end
 
-        expect_next_instance_of(Repository) do |repository|
-          expect(repository).to receive(:fetch_as_mirror)
-        end
+          expect_next_instance_of(Repository) do |repository|
+            expect(repository).to receive(:fetch_as_mirror)
+          end
 
-        expect { subject.execute }.to change { user.snippets.count }.by(1)
-        expect(user.snippets[0].attributes).to include expected_snippet_attrs
+          expect { subject.execute }.to change { user.snippets.count }.by(1)
+          expect(user.snippets[0].attributes).to include expected_snippet_attrs
+          expect(user.snippets[0].organization_id).to eq(Current.organization_id)
+        end
+      end
+
+      context 'when Current.organization is not set' do
+        it 'still uses the default organization_id' do
+          expect_next_instance_of(Snippets::RepositoryValidationService) do |validator|
+            expect(validator).to receive(:execute).and_return(validator_result)
+          end
+
+          expect_next_instance_of(Repository) do |repository|
+            expect(repository).to receive(:fetch_as_mirror)
+          end
+
+          expect { subject.execute }.to change { user.snippets.count }.by(1)
+          expect(user.snippets[0].attributes).to include expected_snippet_attrs
+          expect(user.snippets[0].organization_id)
+            .to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
+        end
       end
     end
 

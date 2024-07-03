@@ -17,11 +17,11 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
       stub_feature_flags(your_work_projects_vue: true)
     end
 
-    it 'mounts JS app' do
+    it 'mounts JS app and defaults to contributed tab' do
       visit dashboard_projects_path
 
       expect(page).to have_content('Projects')
-      expect(page).to have_content('Projects list')
+      expect(page).to have_content('Active tab: Contributed')
     end
   end
 
@@ -34,7 +34,7 @@ RSpec.describe 'Dashboard Projects', :js, feature_category: :groups_and_projects
       visit dashboard_projects_path
 
       expect(page).to have_content('Projects')
-      expect(page).not_to have_content('Projects list')
+      expect(page).not_to have_content('Active tab')
     end
 
     it_behaves_like "an autodiscoverable RSS feed with current_user's feed token" do

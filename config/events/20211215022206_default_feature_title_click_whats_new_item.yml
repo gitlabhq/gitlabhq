@@ -1,7 +1,6 @@
 description: "Click item in What's new component"
 category: default
 action: click_whats_new_item
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

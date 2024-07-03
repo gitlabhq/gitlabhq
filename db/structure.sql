@@ -16612,6 +16612,7 @@ CREATE TABLE remote_mirrors (
     error_notification_sent boolean,
     keep_divergent_refs boolean,
     mirror_branch_regex text,
+    CONSTRAINT check_7547191afa CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_aa6b497785 CHECK ((char_length(mirror_branch_regex) <= 255))
 );
 

@@ -1,8 +1,6 @@
 description: "Click button to export issuable as CSV"
 category: default
 action: click_button
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: optimize

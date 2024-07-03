@@ -13,7 +13,8 @@ module Gitlab
               note: issue_event.body,
               created_at: issue_event.created_at,
               updated_at: issue_event.updated_at,
-              note_id: issue_event.id
+              note_id: issue_event.id,
+              imported_from: imported_from
             )
 
             NoteImporter.new(note, project, client).execute

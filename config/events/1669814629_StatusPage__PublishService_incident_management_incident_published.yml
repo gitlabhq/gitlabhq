@@ -2,8 +2,6 @@
 description: Mirrored Service Ping Redis metric. Count of unique users that published incidents per month
 category: StatusPage::PublishService
 action: incident_management_incident_published
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -1,7 +1,6 @@
 description: "Toggle labels on boards"
 category: default
 action: toggle
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ""

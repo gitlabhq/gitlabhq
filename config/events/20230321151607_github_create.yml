@@ -2,8 +2,6 @@
 description: State of projects imported from GitHub
 category: Import::GithubService
 action: create
-property_description:
-value_description:
 extra_properties:
   import_type:
     type: string

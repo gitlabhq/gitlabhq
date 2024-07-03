@@ -1,11 +1,9 @@
 description: "Copy Composer package include command"
 category: default
 action: copy_composer_package_include_command
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::package
+product_group: package_registry
 milestone: "13.3"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/38779
 distributions:

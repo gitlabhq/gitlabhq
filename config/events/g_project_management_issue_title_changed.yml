@@ -2,9 +2,6 @@
 description: Title of an issue changed
 internal_events: true
 action: g_project_management_issue_title_changed
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -2,9 +2,6 @@
 description: GCP regions configuration form rendered
 category: Projects::GoogleCloud::GcpRegionsController
 action: render_form
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

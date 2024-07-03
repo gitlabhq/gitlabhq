@@ -2,8 +2,6 @@
 description: Pipeline created with id_tokens (JWT tokens) defined
 category: Ci::Build
 action: create_id_tokens
-property_description:
-value_description:
 extra_properties:
   ultimate_namespace_id: "The ID of the Ultimate Namespace"
 identifiers:

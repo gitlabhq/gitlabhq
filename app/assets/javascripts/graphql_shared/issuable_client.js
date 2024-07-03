@@ -7,20 +7,9 @@ import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.quer
 import getIssueStateQuery from '~/issues/show/queries/get_issue_state.query.graphql';
 import createDefaultClient from '~/lib/graphql';
 import typeDefs from '~/work_items/graphql/typedefs.graphql';
-import { findWidget } from '~/issues/list/utils';
-import { newWorkItemFullPath } from '~/work_items/utils';
-import {
-  WIDGET_TYPE_NOTES,
-  WIDGET_TYPE_AWARD_EMOJI,
-  NEW_WORK_ITEM_IID,
-  WIDGET_TYPE_HEALTH_STATUS,
-  WIDGET_TYPE_ASSIGNEES,
-  WIDGET_TYPE_COLOR,
-  WIDGET_TYPE_DESCRIPTION,
-} from '~/work_items/constants';
+import { WIDGET_TYPE_NOTES, WIDGET_TYPE_AWARD_EMOJI } from '~/work_items/constants';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
-import groupWorkItemByIidQuery from '~/work_items//graphql/group_work_item_by_iid.query.graphql';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import { updateNewWorkItemCache } from '~/work_items/graphql/resolvers';
 
 export const config = {
   typeDefs,
@@ -288,85 +277,7 @@ export const resolvers = {
       return isShowingLabels;
     },
     updateNewWorkItem(_, { input }, { cache }) {
-      const {
-        healthStatus,
-        isGroup,
-        fullPath,
-        workItemType,
-        assignees,
-        color,
-        title,
-        description,
-        confidential,
-      } = input;
-      const query = isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-
-      const variables = {
-        fullPath: newWorkItemFullPath(fullPath, workItemType),
-        iid: NEW_WORK_ITEM_IID,
-      };
-
-      cache.updateQuery({ query, variables }, (sourceData) =>
-        produce(sourceData, (draftData) => {
-          if (healthStatus) {
-            const healthStatusWidget = findWidget(
-              WIDGET_TYPE_HEALTH_STATUS,
-              draftData?.workspace?.workItem,
-            );
-
-            healthStatusWidget.healthStatus = healthStatus;
-
-            const healthStatusWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-              (widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS,
-            );
-            draftData.workspace.workItem.widgets[healthStatusWidgetIndex] = healthStatusWidget;
-          }
-
-          if (assignees) {
-            const assigneesWidget = findWidget(
-              WIDGET_TYPE_ASSIGNEES,
-              draftData?.workspace?.workItem,
-            );
-            assigneesWidget.assignees.nodes = assignees;
-
-            const assigneesWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-              (widget) => widget.type === WIDGET_TYPE_ASSIGNEES,
-            );
-            draftData.workspace.workItem.widgets[assigneesWidgetIndex] = assigneesWidget;
-          }
-
-          if (color) {
-            const colorWidget = findWidget(WIDGET_TYPE_COLOR, draftData?.workspace?.workItem);
-            colorWidget.color = color;
-
-            const colorWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-              (widget) => widget.type === WIDGET_TYPE_COLOR,
-            );
-            draftData.workspace.workItem.widgets[colorWidgetIndex] = colorWidget;
-          }
-
-          if (title) {
-            draftData.workspace.workItem.title = title;
-          }
-
-          if (description) {
-            const descriptionWidget = findWidget(
-              WIDGET_TYPE_DESCRIPTION,
-              draftData?.workspace?.workItem,
-            );
-            descriptionWidget.description = description;
-
-            const descriptionWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-              (widget) => widget.type === WIDGET_TYPE_DESCRIPTION,
-            );
-            draftData.workspace.workItem.widgets[descriptionWidgetIndex] = descriptionWidget;
-          }
-
-          if (confidential !== undefined) {
-            draftData.workspace.workItem.confidential = confidential;
-          }
-        }),
-      );
+      updateNewWorkItemCache(input, cache);
     },
   },
 };

@@ -2,7 +2,6 @@
 description: Mirrored `i_compliance_audit_events` Redis HLL metric as a Snowplow event. Emitted when audit logs page is visited in Admin area.
 category: Admin::AuditLogsController
 action: visit_instance_compliance_audit_events
-value_description:
 extra_properties:
 identifiers:
 #- project

@@ -23,9 +23,24 @@ input LocalUserInput {
   avatarUrl: String
 }
 
+input LocalLabelInput {
+  color: String
+  description: String
+  id: ID!
+  textColor: String
+  title: String
+}
+
 input LocalUpdateWorkItemInput {
   id: WorkItemID!
   assignees: [LocalUserInput!]
+}
+
+input LocalRolledUpDatesInput {
+  dueDateIsFixed: Boolean!
+  startDateIsFixed: Boolean!
+  dueDateFixed: String
+  startDateFixed: String
 }
 
 type LocalWorkItemPayload {
@@ -47,6 +62,8 @@ input LocalUpdateNewWorkItemInput {
   title: String
   description: String
   confidential: Boolean
+  labels: [LocalLabelInput]
+  rolledUpDates: [LocalRolledUpDatesInput]
 }
 
 extend type Mutation {

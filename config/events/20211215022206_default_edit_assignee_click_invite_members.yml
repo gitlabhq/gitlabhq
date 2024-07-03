@@ -1,8 +1,6 @@
 description: "Click edit assignee button when inviting members"
 category: default
 action: click_invite_members
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

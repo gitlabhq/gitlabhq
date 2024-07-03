@@ -2,8 +2,6 @@
 description: Count of unique users created timeline events
 category: IncidentManagement::TimelineEvents::CreateService
 action: incident_management_timeline_event_created
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

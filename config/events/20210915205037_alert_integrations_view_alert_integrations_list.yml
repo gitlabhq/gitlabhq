@@ -1,9 +1,6 @@
 description: "Show alert integrations list"
 category: "`Alert Integrations`"
 action: view_alert_integrations_list
-label_description: ""
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: respond

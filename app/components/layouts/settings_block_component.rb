@@ -8,13 +8,14 @@ module Layouts
     # @param [String] testid
     # @param [Boolean] expanded
     # @param [Hash] button_options
-    def initialize(heading, description: nil, id: nil, testid: nil, expanded: nil, button_options: {})
+    def initialize(heading, description: nil, id: nil, testid: nil, expanded: nil, button_options: {}, css_class: nil)
       @heading = heading
       @description = description
       @id = id
       @testid = testid
       @expanded = expanded
       @button_options = button_options
+      @css_class = css_class
     end
 
     renders_one :heading
@@ -26,6 +27,7 @@ module Layouts
     def section_classes
       classes = %w[settings no-animate]
       classes.push('expanded') if @expanded
+      classes.push(@css_class) if @css_class
       classes.join(' ')
     end
 

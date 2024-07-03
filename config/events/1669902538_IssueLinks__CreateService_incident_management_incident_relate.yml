@@ -1,8 +1,6 @@
 ---
 category: IssueLinks::CreateService
 action: incident_management_incident_relate
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

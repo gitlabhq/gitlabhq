@@ -1,8 +1,6 @@
 ---
 category: Issues::UpdateService
 action: incident_management_incident_change_confidential
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

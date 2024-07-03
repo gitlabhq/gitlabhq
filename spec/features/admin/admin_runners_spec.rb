@@ -601,7 +601,7 @@ RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibilit
 
   describe "Runner edit page", :js do
     let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2) { create(:project, organization: project1.organization) }
     let_it_be(:project_runner) { create(:ci_runner, :unregistered, :project) }
 
     before do

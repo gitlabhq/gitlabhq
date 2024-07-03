@@ -2,9 +2,6 @@
 description: A saved reply was used in an MR
 internal_events: true
 action: i_code_review_saved_replies_use_in_mr
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

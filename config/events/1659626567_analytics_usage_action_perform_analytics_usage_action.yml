@@ -2,7 +2,6 @@
 description: Analytics usage event
 category: class of the controller triggering given event
 action: perform_analytics_usage_action
-value_description:
 extra_properties:
 identifiers:
 - user

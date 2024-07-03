@@ -2,9 +2,6 @@
 description: Unique self managed and .com users visiting CI/CD Catalog page count on monthly and weekly basis.
 internal_events: true
 action: unique_users_visiting_ci_catalog
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 product_group: pipeline_authoring

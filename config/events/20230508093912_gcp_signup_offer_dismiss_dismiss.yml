@@ -2,8 +2,6 @@
 description: GCP offer banner is dismissed
 category: gcp_signup_offer_dismiss
 action: dismiss
-property_description:
-value_description:
 extra_properties:
 identifiers:
 product_group: environments

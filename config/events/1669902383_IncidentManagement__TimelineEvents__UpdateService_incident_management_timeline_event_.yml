@@ -1,8 +1,6 @@
 ---
 category: IncidentManagement::TimelineEvents::UpdateService
 action: incident_management_timeline_event_edited
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

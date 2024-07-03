@@ -144,3 +144,5 @@ module WorkItems
     strong_memoize_attr :include_ancestors?
   end
 end
+
+WorkItems::WorkItemsFinder.prepend_mod

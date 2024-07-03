@@ -3,8 +3,6 @@
 - breadcrumb_title _('Terminal')
 - page_title _('Terminal'), "#{@build.name} (##{@build.id})", _('Jobs')
 - add_page_specific_style 'page_bundles/terminal'
-- content_for :page_specific_javascripts do
-  = universal_stylesheet_link_tag "xterm"
 
 .terminal-container
   #terminal.gl-mt-4{ data: { project_path: terminal_project_job_path(@project, @build, format: :ws) } }

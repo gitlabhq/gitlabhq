@@ -379,7 +379,6 @@ module Gitlab
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
     config.assets.precompile << "jira_connect.js"
-    config.assets.precompile << "xterm.css"
 
     config.assets.precompile << "themes/*.css"
 

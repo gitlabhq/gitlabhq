@@ -2,8 +2,6 @@
 description: Count of unique users assiging incidents per
 category: Issues::UpdateService
 action: incident_management_incident_assigned
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

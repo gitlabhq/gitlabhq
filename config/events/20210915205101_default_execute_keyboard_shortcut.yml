@@ -1,8 +1,6 @@
 description: "Execute keyboard shortcut"
 category: default
 action: execute_keyboard_shortcut
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ide

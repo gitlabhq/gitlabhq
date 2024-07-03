@@ -13,8 +13,9 @@ import Tracking from '~/tracking';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
+import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS, TRACKING_CATEGORY_SHOW } from '../constants';
-import { isLabelsWidget } from '../utils';
+import { isLabelsWidget, newWorkItemId, newWorkItemFullPath } from '../utils';
 
 export default {
   components: {
@@ -48,6 +49,11 @@ export default {
       required: false,
       default: false,
     },
+    createFlow: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -61,6 +67,11 @@ export default {
     };
   },
   computed: {
+    workItemFullPath() {
+      return this.createFlow
+        ? newWorkItemFullPath(this.fullPath, this.workItemType)
+        : this.fullPath;
+    },
     tracking() {
       return {
         category: TRACKING_CATEGORY_SHOW,
@@ -127,7 +138,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
@@ -185,6 +196,29 @@ export default {
       if (labels?.length === 0) {
         this.removeLabelIds = this.itemValues;
         this.addLabelIds = [];
+      }
+
+      if (this.workItemId === newWorkItemId(this.workItemType)) {
+        const selectedIds = [...this.itemValues, ...this.addLabelIds].filter(
+          (x) => !this.removeLabelIds.includes(x),
+        );
+
+        this.$apollo.mutate({
+          mutation: updateNewWorkItemMutation,
+          variables: {
+            input: {
+              isGroup: this.isGroup,
+              workItemType: this.workItemType,
+              fullPath: this.fullPath,
+              labels: this.visibleLabels.filter(({ id }) => selectedIds.includes(id)),
+            },
+          },
+        });
+
+        this.updateInProgress = false;
+        this.addLabelIds = [];
+        this.removeLabelIds = [];
+        return;
       }
 
       try {
@@ -250,8 +284,8 @@ export default {
     :toggle-dropdown-text="dropdownText"
     :header-text="__('Select labels')"
     :reset-button-label="__('Clear')"
-    multi-select
     show-footer
+    multi-select
     clear-search-on-item-select
     data-testid="work-item-labels"
     @dropdownShown="onDropdownShown"

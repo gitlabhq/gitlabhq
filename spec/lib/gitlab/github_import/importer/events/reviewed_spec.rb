@@ -41,6 +41,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reviewed, feature_categor
     expect(last_note.note).to include("This is my review")
     expect(last_note.author).to eq(user)
     expect(last_note.created_at).to eq(issue_event.submitted_at)
+    expect(last_note.imported_from).to eq('github')
   end
 
   it 'does not create a reviewer for the Merge Request', :aggregate_failures do
@@ -60,6 +61,7 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Reviewed, feature_categor
       expect(note.note).to include("This is my review")
       expect(note.author).to eq(user)
       expect(note.created_at).to eq(issue_event.submitted_at)
+      expect(note.imported_from).to eq('github')
 
       system_note = merge_request.notes.where(system: true).last
       expect(system_note.note).to eq('approved this merge request')

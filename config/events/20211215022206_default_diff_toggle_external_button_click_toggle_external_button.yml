@@ -1,7 +1,6 @@
 description: "Click toggle external button on diff"
 category: default
 action: click_toggle_external_button
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ""

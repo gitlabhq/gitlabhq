@@ -2,9 +2,6 @@
 description: Triggered from backend layer Search controller performs search operation
 category: SearchController
 action: i_search_total
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
   - project

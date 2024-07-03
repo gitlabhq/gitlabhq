@@ -1,8 +1,6 @@
 description: "Delete stream value from dropdown"
 category: default
 action: click_dropdown
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: optimize

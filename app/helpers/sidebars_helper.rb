@@ -120,11 +120,14 @@ module SidebarsHelper
   end
 
   def work_items_modal_data(group)
-    return unless group
+    return unless group && group.id
 
     {
       full_path: group.full_path,
-      has_issuable_health_status_feature: group.licensed_feature_available?(:issuable_health_status).to_s
+      has_issuable_health_status_feature: group.licensed_feature_available?(:issuable_health_status).to_s,
+      issues_list_path: issues_group_path(group),
+      labels_manage_path: group_labels_path(group),
+      can_admin_label: can?(current_user, :admin_label, group).to_s
     }
   end
 

@@ -2,9 +2,6 @@
 description: A design was added to an issue
 internal_events: true
 action: g_project_management_issue_designs_added
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

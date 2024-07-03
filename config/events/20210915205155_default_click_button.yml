@@ -1,11 +1,9 @@
 description: "Click registry tag delete button"
 category: default
 action: click_button
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::package
+product_group: package_registry
 milestone: "12.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23154
 distributions:

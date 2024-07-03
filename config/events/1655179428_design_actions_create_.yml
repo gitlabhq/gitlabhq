@@ -2,8 +2,6 @@
 description: Triggered from backend layer when design is created
 category: design_actions
 action: create
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

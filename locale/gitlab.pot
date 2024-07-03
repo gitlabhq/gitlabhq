@@ -1115,6 +1115,9 @@ msgstr ""
 msgid "%{project_name}"
 msgstr ""
 
+msgid "%{project_name} project members"
+msgstr ""
+
 msgid "%{project_path} is a project that you can use to add a README to your GitLab profile. Create a public project and initialize the repository with a README to get started. %{help_link_start}Learn more%{help_link_end}."
 msgstr ""
 
@@ -2974,6 +2977,9 @@ msgid "Active pipeline trigger tokens"
 msgstr ""
 
 msgid "Active project access tokens"
+msgstr ""
+
+msgid "Active tab: %{tab}"
 msgstr ""
 
 msgid "Activity"
@@ -8197,6 +8203,9 @@ msgid "Bi-weekly code coverage"
 msgstr ""
 
 msgid "Billable Users"
+msgstr ""
+
+msgid "Billable users"
 msgstr ""
 
 msgid "Billing"
@@ -14687,6 +14696,9 @@ msgstr ""
 msgid "Contribute to GitLab"
 msgstr ""
 
+msgid "Contributed"
+msgstr ""
+
 msgid "Contribution"
 msgstr ""
 
@@ -15083,9 +15095,6 @@ msgstr ""
 msgid "Copy environment"
 msgstr ""
 
-msgid "Copy epic URL"
-msgstr ""
-
 msgid "Copy evidence SHA"
 msgstr ""
 
@@ -15099,9 +15108,6 @@ msgid "Copy file path"
 msgstr ""
 
 msgid "Copy image URL"
-msgstr ""
-
-msgid "Copy issue URL"
 msgstr ""
 
 msgid "Copy issue URL to clipboard"
@@ -15120,9 +15126,6 @@ msgid "Copy link"
 msgstr ""
 
 msgid "Copy link URL"
-msgstr ""
-
-msgid "Copy merge request URL"
 msgstr ""
 
 msgid "Copy reference"
@@ -20794,9 +20797,6 @@ msgstr ""
 msgid "Epic Boards"
 msgstr ""
 
-msgid "Epic ID"
-msgstr ""
-
 msgid "Epic actions"
 msgstr ""
 
@@ -20818,13 +20818,7 @@ msgstr ""
 msgid "Epic not found for given params"
 msgstr ""
 
-msgid "Epic summary"
-msgstr ""
-
 msgid "Epic swimlanes"
-msgstr ""
-
-msgid "Epic title"
 msgstr ""
 
 msgid "Epics"
@@ -28793,9 +28787,6 @@ msgstr ""
 msgid "Issue Boards"
 msgstr ""
 
-msgid "Issue ID"
-msgstr ""
-
 msgid "Issue Type"
 msgstr ""
 
@@ -28842,12 +28833,6 @@ msgid "Issue or merge request ID is required"
 msgstr ""
 
 msgid "Issue published on status page."
-msgstr ""
-
-msgid "Issue summary"
-msgstr ""
-
-msgid "Issue title"
 msgstr ""
 
 msgid "Issue type"
@@ -30835,12 +30820,6 @@ msgstr[1] ""
 msgid "LearnGitLab|%{percentage}%{percentSymbol} completed"
 msgstr ""
 
-msgid "LearnGitLab|1. Add code to your project"
-msgstr ""
-
-msgid "LearnGitLab|2. Build"
-msgstr ""
-
 msgid "LearnGitLab|Add code"
 msgstr ""
 
@@ -30853,10 +30832,13 @@ msgstr ""
 msgid "LearnGitLab|Complete these tasks first so you can enjoy GitLab's features to their fullest:"
 msgstr ""
 
+msgid "LearnGitLab|Configure your project"
+msgstr ""
+
 msgid "LearnGitLab|Create a repository"
 msgstr ""
 
-msgid "LearnGitLab|Create a workflow for your new workspace, and learn how GitLab features work together:"
+msgid "LearnGitLab|Create a workflow, and learn how GitLab features work together:"
 msgstr ""
 
 msgid "LearnGitLab|Create an issue"
@@ -30868,10 +30850,13 @@ msgstr ""
 msgid "LearnGitLab|Create/import issues (tickets) to collaborate on ideas and plan work."
 msgstr ""
 
-msgid "LearnGitLab|Deploy"
+msgid "LearnGitLab|Enable require merge approvals"
 msgstr ""
 
-msgid "LearnGitLab|Enable require merge approvals"
+msgid "LearnGitLab|Follow these steps to get familiar with the GitLab workflow."
+msgstr ""
+
+msgid "LearnGitLab|Get started"
 msgstr ""
 
 msgid "LearnGitLab|GitLab works best as a team. Invite your colleague to enjoy all features."
@@ -30883,13 +30868,13 @@ msgstr ""
 msgid "LearnGitLab|Learn GitLab"
 msgstr ""
 
-msgid "LearnGitLab|Plan and execute"
+msgid "LearnGitLab|Next steps"
+msgstr ""
+
+msgid "LearnGitLab|Plan and execute work together"
 msgstr ""
 
 msgid "LearnGitLab|Prevent unexpected changes to important assets by assigning ownership of files and paths."
-msgstr ""
-
-msgid "LearnGitLab|Ready to get started with GitLab? Follow these steps to set up your workspace, plan and commit changes, and deploy your project."
 msgstr ""
 
 msgid "LearnGitLab|Review and edit proposed changes to source code."
@@ -30907,13 +30892,16 @@ msgstr ""
 msgid "LearnGitLab|Scan dependencies for vulnerabilities"
 msgstr ""
 
+msgid "LearnGitLab|Secure your deployment"
+msgstr ""
+
 msgid "LearnGitLab|Set up CI/CD"
 msgstr ""
 
-msgid "LearnGitLab|Set up your first project's CI/CD"
+msgid "LearnGitLab|Set up your code"
 msgstr ""
 
-msgid "LearnGitLab|Set up your workspace"
+msgid "LearnGitLab|Set up your first project's CI/CD"
 msgstr ""
 
 msgid "LearnGitLab|Start a free trial of GitLab Ultimate"
@@ -30928,10 +30916,10 @@ msgstr ""
 msgid "LearnGitLab|Try all GitLab features for 30 days, no credit card required."
 msgstr ""
 
-msgid "LearnGitLab|Use the built-in editor, WebIDE, or upload code using your preferred method."
+msgid "LearnGitLab|Use GitLab to deploy your application, monitor its health, and keep it secure:"
 msgstr ""
 
-msgid "LearnGitLab|Use your new GitLab workflow to deploy your application, monitor its health, and keep it secure:"
+msgid "LearnGitLab|Use the built-in editor, WebIDE, or upload code using your preferred method."
 msgstr ""
 
 msgid "LearnGitLab|You completed all tasks!"
@@ -32106,6 +32094,9 @@ msgstr ""
 msgid "Maximum unauthenticated web requests per rate limit period per IP"
 msgstr ""
 
+msgid "Maximum users"
+msgstr ""
+
 msgid "May"
 msgstr ""
 
@@ -32624,9 +32615,6 @@ msgstr ""
 msgid "Merge request %{mr_link} was reviewed by %{mr_author}"
 msgstr ""
 
-msgid "Merge request ID"
-msgstr ""
-
 msgid "Merge request actions"
 msgstr ""
 
@@ -32670,12 +32658,6 @@ msgid "Merge request reports"
 msgstr ""
 
 msgid "Merge request status"
-msgstr ""
-
-msgid "Merge request summary"
-msgstr ""
-
-msgid "Merge request title"
 msgstr ""
 
 msgid "Merge request was set to auto-merge"
@@ -34594,6 +34576,9 @@ msgid "New environment"
 msgstr ""
 
 msgid "New epic"
+msgstr ""
+
+msgid "New epic look"
 msgstr ""
 
 msgid "New epic title"
@@ -38270,6 +38255,9 @@ msgstr ""
 msgid "Permissions and project features"
 msgstr ""
 
+msgid "Personal"
+msgstr ""
+
 msgid "Personal Access Token"
 msgstr ""
 
@@ -41096,9 +41084,6 @@ msgstr ""
 msgid "Project import requests"
 msgstr ""
 
-msgid "Project info:"
-msgstr ""
-
 msgid "Project information"
 msgstr ""
 
@@ -41157,9 +41142,6 @@ msgid "Project was created and assigned as security policy project, but failed a
 msgstr ""
 
 msgid "Project was not found or you do not have permission to add this project to Security Dashboards."
-msgstr ""
-
-msgid "Project: %{name}"
 msgstr ""
 
 msgid "Project:Branches: %{source_project_path}:%{source_branch} to %{target_project_path}:%{target_branch}"
@@ -42233,9 +42215,6 @@ msgstr ""
 msgid "Projects in this group can use Git LFS"
 msgstr ""
 
-msgid "Projects list"
-msgstr ""
-
 msgid "Projects shared with %{group_name}"
 msgstr ""
 
@@ -43154,6 +43133,9 @@ msgstr ""
 msgid "Provide feedback"
 msgstr ""
 
+msgid "Provide feedback on the experience"
+msgstr ""
+
 msgid "Provider"
 msgstr ""
 
@@ -44010,9 +43992,6 @@ msgstr ""
 msgid "Remove email participants"
 msgstr ""
 
-msgid "Remove epic reference"
-msgstr ""
-
 msgid "Remove exclusion for %{name}"
 msgstr ""
 
@@ -44038,9 +44017,6 @@ msgid "Remove icon"
 msgstr ""
 
 msgid "Remove identity verification exemption"
-msgstr ""
-
-msgid "Remove issue reference"
 msgstr ""
 
 msgid "Remove iteration"
@@ -44070,9 +44046,6 @@ msgstr ""
 msgid "Remove member"
 msgstr ""
 
-msgid "Remove merge request reference"
-msgstr ""
-
 msgid "Remove milestone"
 msgstr ""
 
@@ -44083,6 +44056,9 @@ msgid "Remove parent epic from an epic"
 msgstr ""
 
 msgid "Remove priority"
+msgstr ""
+
+msgid "Remove reference"
 msgstr ""
 
 msgid "Remove reviewer"
@@ -51263,6 +51239,9 @@ msgstr ""
 msgid "Star labels to start sorting by priority."
 msgstr ""
 
+msgid "Starred"
+msgstr ""
+
 msgid "Starred Projects"
 msgstr ""
 
@@ -52127,9 +52106,6 @@ msgstr ""
 msgid "SuperSonics|An error occurred while adding your subscription"
 msgstr ""
 
-msgid "SuperSonics|Billable users"
-msgstr ""
-
 msgid "SuperSonics|Buy subscription"
 msgstr ""
 
@@ -52161,9 +52137,6 @@ msgid "SuperSonics|Learn more about %{activationLinkStart}activating your subscr
 msgstr ""
 
 msgid "SuperSonics|Licensed to"
-msgstr ""
-
-msgid "SuperSonics|Maximum users"
 msgstr ""
 
 msgid "SuperSonics|Offline license"
@@ -52211,27 +52184,7 @@ msgstr ""
 msgid "SuperSonics|There is a connectivity issue"
 msgstr ""
 
-msgid "SuperSonics|This is the highest peak of users on your installation since the license started."
-msgstr ""
-
-msgid "SuperSonics|This is the number of %{billableUsersLinkStart}billable users%{billableUsersLinkEnd} on your installation, and this is the minimum number you need to purchase when you renew your license."
-msgstr ""
-
 msgid "SuperSonics|To activate your subscription, your instance needs to connect to GitLab. %{learnMoreLinkStart}Learn more%{learnMoreLinkEnd}."
-msgstr ""
-
-msgid "SuperSonics|User in subscription"
-msgid_plural "SuperSonics|Users in subscription"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "SuperSonics|Users in subscription"
-msgstr ""
-
-msgid "SuperSonics|Users over subscription"
-msgstr ""
-
-msgid "SuperSonics|Users with a Guest role or those who don't belong to a Project or Group will not use a seat from your license."
 msgstr ""
 
 msgid "SuperSonics|You can %{purchaseSubscriptionLinkStart}purchase a new subscription%{purchaseSubscriptionLinkEnd} and try again. If you need further assistance, please %{supportLinkStart}contact GitLab Support%{supportLinkEnd}."
@@ -52259,9 +52212,6 @@ msgid "SuperSonics|You have successfully added a license that activates on %{dat
 msgstr ""
 
 msgid "SuperSonics|You may have entered an expired or ineligible activation code. To request a new activation code, %{purchaseSubscriptionLinkStart}purchase a new subscription%{purchaseSubscriptionLinkEnd} or %{supportLinkStart}contact GitLab Support%{supportLinkEnd} for further assistance."
-msgstr ""
-
-msgid "SuperSonics|You'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd} on a quarterly or annual basis, depending on the terms of your agreement."
 msgstr ""
 
 msgid "SuperSonics|Your %{subscriptionEntryName} cannot be displayed at the moment. Please refresh the page to try again."
@@ -53046,7 +52996,7 @@ msgstr ""
 msgid "The %{plan_name} is no longer available to purchase. For more information about how this will impact you, check our %{faq_link_start}frequently asked questions%{faq_link_end}."
 msgstr ""
 
-msgid "The %{true_up_start}true-up model%{true_up_end} allows having more users, and additional users will incur a retroactive charge on renewal."
+msgid "The %{trueUpLinkStart}true-up model%{trueUpLinkEnd} allows having more users, and additional users will incur a retroactive charge on renewal."
 msgstr ""
 
 msgid "The %{type} contains the following error:"
@@ -54384,6 +54334,9 @@ msgstr ""
 msgid "This is the highest peak of users on your installation since the license started."
 msgstr ""
 
+msgid "This is the number of %{billableUsersLinkStart}billable users%{billableUsersLinkEnd} on your installation, and this is the minimum number you need to purchase when you renew your license."
+msgstr ""
+
 msgid "This is the number of %{billable_users_link_start}billable users%{billable_users_link_end} on your installation, and this is the minimum number you need to purchase when you renew your license."
 msgstr ""
 
@@ -55311,9 +55264,6 @@ msgid "To pass variables to the triggered pipeline, add %{code_start}variables[V
 msgstr ""
 
 msgid "To personalize your GitLab experience, we'd like to know a bit more about you. We won't share this information with anyone."
-msgstr ""
-
-msgid "To proceed with the transfer, type %{phrase_code}:"
 msgstr ""
 
 msgid "To protect this issue's confidentiality, %{linkStart}fork this project%{linkEnd} and set the fork's visibility to private."
@@ -57533,6 +57483,11 @@ msgstr ""
 msgid "User identity was successfully updated."
 msgstr ""
 
+msgid "User in subscription"
+msgid_plural "Users in subscription"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "User is blocked"
 msgstr ""
 
@@ -58025,10 +57980,16 @@ msgstr ""
 msgid "Users in License"
 msgstr ""
 
+msgid "Users in subscription"
+msgstr ""
+
 msgid "Users or groups set as approvers in the project's or merge request's settings."
 msgstr ""
 
 msgid "Users over License"
+msgstr ""
+
+msgid "Users over subscription"
 msgstr ""
 
 msgid "Users requesting access to"
@@ -59632,6 +59593,9 @@ msgstr ""
 msgid "Welcome, %{name}!"
 msgstr ""
 
+msgid "We’ve introduced some improvements to the epic page such as real time updates, additional features, and a refreshed design. Have questions or thoughts on the changes?"
+msgstr ""
+
 msgid "What are some examples?"
 msgstr ""
 
@@ -60963,6 +60927,9 @@ msgstr ""
 msgid "You are trying to upload something other than an image. Please upload a .png, .jpg, .jpeg, .gif, .bmp, .tiff or .ico."
 msgstr ""
 
+msgid "You are using a trial license. When you use a paid subscription, you'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd}."
+msgstr ""
+
 msgid "You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}."
 msgstr ""
 
@@ -61518,7 +61485,7 @@ msgstr ""
 msgid "You will receive notifications only for comments in which you were @mentioned"
 msgstr ""
 
-msgid "You'll be charged for %{true_up_start}users over license%{true_up_end} on a quarterly or annual basis, depending on the terms of your agreement."
+msgid "You'll be charged for %{trueUpLinkStart}users over license%{trueUpLinkEnd} on a quarterly or annual basis, depending on the terms of your agreement."
 msgstr ""
 
 msgid "You're about to leave GitLab"
@@ -62935,9 +62902,6 @@ msgstr ""
 msgid "group access tokens"
 msgstr ""
 
-msgid "group members"
-msgstr ""
-
 msgid "groups"
 msgstr ""
 
@@ -63890,9 +63854,6 @@ msgid "project bots cannot be added to other groups / projects"
 msgstr ""
 
 msgid "project is read-only"
-msgstr ""
-
-msgid "project members"
 msgstr ""
 
 msgid "project name"

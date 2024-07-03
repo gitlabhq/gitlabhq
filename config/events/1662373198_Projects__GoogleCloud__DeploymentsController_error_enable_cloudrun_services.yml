@@ -2,9 +2,6 @@
 description: Failed to enable Cloud Run services
 category: Projects::GoogleCloud::DeploymentsController
 action: error_enable_cloudrun_services
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -1,8 +1,6 @@
 ---
 category: IssueLinks::DestroyService
 action: incident_management_incident_unrelate
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

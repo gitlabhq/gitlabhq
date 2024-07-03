@@ -1,7 +1,6 @@
 description: "Click edit reviewer button on right sidebar"
 category: default
 action: click_edit_button
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ""

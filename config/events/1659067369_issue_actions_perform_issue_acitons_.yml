@@ -2,8 +2,6 @@
 description: Issue usage event
 category: issues_edit
 action: perform_issue_action
-label_description:
-value_description:
 extra_properties:
 identifiers:
   - namespace

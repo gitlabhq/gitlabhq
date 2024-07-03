@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::Closed do
+RSpec.describe Gitlab::GithubImport::Importer::Events::Closed, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository) }
@@ -33,7 +33,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed do
       target_type: issuable.class.name,
       action: 'closed',
       created_at: issue_event.created_at,
-      updated_at: issue_event.created_at
+      updated_at: issue_event.created_at,
+      imported_from: 'github'
     }.stringify_keys
   end
 
@@ -79,7 +80,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed do
         user_id: user.id,
         issue_id: issuable.id,
         state: 'closed',
-        created_at: issue_event.created_at
+        created_at: issue_event.created_at,
+        imported_from: 'github'
       }.stringify_keys
     end
 
@@ -93,7 +95,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Closed do
         user_id: user.id,
         merge_request_id: issuable.id,
         state: 'closed',
-        created_at: issue_event.created_at
+        created_at: issue_event.created_at,
+        imported_from: 'github'
       }.stringify_keys
     end
 

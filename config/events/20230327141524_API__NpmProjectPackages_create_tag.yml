@@ -2,9 +2,6 @@
 description: Create NPM project packages tag
 category: API::NpmProjectPackages
 action: create_tag
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

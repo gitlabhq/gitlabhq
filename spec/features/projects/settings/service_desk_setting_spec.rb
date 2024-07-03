@@ -58,7 +58,7 @@ RSpec.describe 'Service Desk Setting', :js, :clean_gitlab_redis_cache, feature_c
       project.reload
       expect(find_by_testid('incoming-email').value).to eq(project.service_desk_alias_address)
 
-      page.within '#js-service-desk' do
+      within_testid('service-desk-content') do
         fill_in('service-desk-project-suffix', with: 'foo')
         click_button 'Save changes'
       end

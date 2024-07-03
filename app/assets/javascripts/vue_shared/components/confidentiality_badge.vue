@@ -31,7 +31,7 @@ export default {
     },
     confidentialTextClass() {
       return {
-        'gl-hidden sm:gl-block': this.hideTextInSmallScreens,
+        'gl-hidden sm:gl-inline-block': this.hideTextInSmallScreens,
         'gl-ml-2': true,
       };
     },

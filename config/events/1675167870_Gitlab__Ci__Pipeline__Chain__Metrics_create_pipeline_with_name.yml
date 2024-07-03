@@ -2,9 +2,6 @@
 description: Pipeline with name is created
 category: Gitlab::Ci::Pipeline::Chain::Metrics
 action: create_pipeline_with_name
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

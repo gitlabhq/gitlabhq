@@ -1,9 +1,6 @@
 description: "Show home page banner"
 category: default
 action: show_home_page_banner
-label_description: ""
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

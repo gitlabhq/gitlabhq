@@ -2,8 +2,6 @@
 description: Triggered from backend layer when merge request is commented
 category: merge_request_action
 action: comment
-property_description:
-value_description:
 extra_properties:
 identifiers:
   - project

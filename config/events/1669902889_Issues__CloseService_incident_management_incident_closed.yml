@@ -1,8 +1,6 @@
 ---
 category: Issues::CloseService
 action: incident_management_incident_closed
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -1,7 +1,6 @@
 description: "Copy file path on diffs"
 category: default
 action: click_copy_file_button
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ""

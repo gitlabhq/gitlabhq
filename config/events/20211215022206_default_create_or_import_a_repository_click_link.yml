@@ -1,7 +1,6 @@
 description: "Click link to create or import a repository"
 category: default
 action: click_link
-value_description: ""
 extra_properties:
 identifiers:
 product_group: acquisition

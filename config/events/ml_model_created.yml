@@ -2,9 +2,6 @@
 description: Tracks the creation of Machine learning models (Ml::Model) through Ml::CreateModelService
 internal_events: true
 action: model_registry_ml_model_created
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

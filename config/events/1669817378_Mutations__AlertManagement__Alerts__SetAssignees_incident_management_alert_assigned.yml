@@ -2,8 +2,6 @@
 description: Count of unique users assigning an alert per week. Migrated form Service Ping metric
 category: Mutations::AlertManagement::Alerts::SetAssignees
 action: incident_management_alert_assigned
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

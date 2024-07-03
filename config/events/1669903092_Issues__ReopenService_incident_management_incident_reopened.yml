@@ -1,8 +1,6 @@
 ---
 category: Issues::ReopenService
 action: incident_management_incident_reopened
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -1,8 +1,6 @@
 description: "Wiki content editor loaded"
 category: default
 action: content_editor_loaded
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ide

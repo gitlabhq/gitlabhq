@@ -1,8 +1,6 @@
 description: "Dismiss Terraform banner"
 category: default
 action: dismiss_banner
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: environments

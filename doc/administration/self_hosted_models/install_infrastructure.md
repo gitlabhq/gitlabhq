@@ -47,6 +47,7 @@ Install one of the following GitLab-approved LLM models:
 - [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1).
 - [CodeGemma 7B IT](https://huggingface.co/google/codegemma-7b-it).
 - [CodeGemma 2B](https://huggingface.co/google/codegemma-2b) or [7B](https://huggingface.co/google/codegemma-7b).
+- [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama)).
 
 ### Recommended serving architectures
 

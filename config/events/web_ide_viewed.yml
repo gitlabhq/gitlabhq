@@ -2,9 +2,6 @@
 description: Tracks when Web IDE is viewed
 internal_events: true
 action: web_ide_viewed
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -2,7 +2,6 @@
 description: When a CompletionWorker gets executed to perform an AI request.
 category: Llm::CompletionWorker
 action: perform_completion_worker
-value_description:
 extra_properties:
   client:
     type: string

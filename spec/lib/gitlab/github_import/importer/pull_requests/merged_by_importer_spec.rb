@@ -43,6 +43,7 @@ RSpec.describe Gitlab::GithubImport::Importer::PullRequests::MergedByImporter, :
       expect(last_note.created_at).to eq(merged_at)
       expect(last_note.author).to eq(project.creator)
       expect(last_note.note).to eq("*Merged by: merger at #{merged_at}*")
+      expect(last_note.imported_from).to eq('github')
     end
   end
 

@@ -2,9 +2,6 @@
 description: Error creating Cloud SQL instance
 category: Projects::GoogleCloud::DatabasesController
 action: error_create_cloudsql_instance
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -2,9 +2,6 @@
 description: Delete a Project-level Secure Files via the CI/CD settings page
 category: projects:settings:ci_cd:show
 action: delete
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
   - project

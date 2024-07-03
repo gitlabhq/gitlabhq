@@ -1,8 +1,6 @@
 description: "Click feature flag toggle button"
 category: default
 action: click_button
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: environments

@@ -18,6 +18,9 @@ module Gitlab
           @user = User.find(user_id)
         end
 
+        # Marking for refactor in:
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/469564
+        # We'll want to use the Snippets::CreateService here.
         def execute
           validate_gist!
 
@@ -32,8 +35,16 @@ module Gitlab
 
         private
 
+        # Duplicate logic in
+        # app/services/snippets/create_service.rb
+        # Remove as part of refactor in: https://gitlab.com/gitlab-org/gitlab/-/issues/469564
+        def organization_id
+          Current.organization_id || Organizations::Organization::DEFAULT_ORGANIZATION_ID
+        end
+
         def build_snippet
           attrs = {
+            organization_id: organization_id,
             title: gist.truncated_title,
             visibility_level: gist.visibility_level,
             content: gist.first_file[:file_content],

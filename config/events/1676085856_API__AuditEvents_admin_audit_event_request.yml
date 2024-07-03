@@ -2,7 +2,6 @@
 description: Mirrored `a_compliance_audit_events_api` Redis HLL metric as a Snowplow event. Emitted when Instance Audit Events REST API endpoint is called.
 category: API::AuditEvents
 action: admin_audit_event_request
-value_description:
 extra_properties:
 identifiers:
 #- project

@@ -3,6 +3,7 @@
 - breadcrumb_title @group.name
 - page_title @group.name, _("Groups")
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
+- list_item_classes = '!gl-grid md:gl-grid-cols-3 gl-gap-x-3'
 
 = render ::Layouts::PageHeadingComponent.new(@group.full_name) do |c|
   - c.with_actions do
@@ -17,34 +18,34 @@
         %ul.content-list.content-list-items-padding
           %li
             = render Pajamas::AvatarComponent.new(@group, size: 64, alt: '')
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Name:')
             .gl-col-span-2
               %strong= link_to @group.name, group_path(@group)
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Path:')
             .gl-col-span-2
               %strong= @group.path
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Description:')
             .gl-col-span-2
               %strong= @group.description
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Visibility level:')
             .gl-col-span-2
               %strong= visibility_level_label(@group.visibility_level)
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Created on:')
             .gl-col-span-2
               %strong= @group.created_at.to_fs(:medium)
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             %span.gl-text-secondary= _('ID:')
             .gl-col-span-2
               %strong= @group.id
           = render_if_exists 'admin/namespace_plan_info', namespace: @group
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
-          %li{ class: '!gl-grid md:gl-grid-cols-3 gl-gap-x-3' }
+          %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Group Git LFS status:')
             .gl-col-span-2
               %strong

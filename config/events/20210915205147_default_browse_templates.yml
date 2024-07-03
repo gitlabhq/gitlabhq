@@ -1,8 +1,6 @@
 description: "Browse Pipeline editor templates"
 category: default
 action: browse_templates
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: pipeline_authoring

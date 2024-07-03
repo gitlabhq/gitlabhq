@@ -2,9 +2,6 @@
 description: Cloud Run pipeline generated
 category: Projects::GoogleCloud::DeploymentsController
 action: generate_cloudrun_pipeline
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

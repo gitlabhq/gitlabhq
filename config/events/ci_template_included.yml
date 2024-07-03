@@ -2,9 +2,6 @@
 description: When a pipeline is created with a CI Template file included in its configuration.
 internal_events: true
 action: ci_template_included
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

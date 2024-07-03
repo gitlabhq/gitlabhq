@@ -1,8 +1,6 @@
 description: "Go to review app"
 category: default
 action: open_review_app
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: pipeline_execution

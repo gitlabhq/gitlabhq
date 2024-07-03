@@ -80,7 +80,8 @@ module Gitlab
               note: note,
               system: false,
               created_at: submitted_at,
-              updated_at: submitted_at
+              updated_at: submitted_at,
+              imported_from: ::Import::SOURCE_GITHUB
             }.merge(extra)
           end
 

@@ -5,8 +5,6 @@ description: "User submits a Duo Chat message.
   Category list: https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/gitlab/llm/fixtures/categories.xml"
 category: Gitlab::Llm::Anthropic::Completions::CategorizeQuestion
 action: ai_question_category
-label_description:
-value_description:
 identifiers:
   - user
 product_group: duo_chat

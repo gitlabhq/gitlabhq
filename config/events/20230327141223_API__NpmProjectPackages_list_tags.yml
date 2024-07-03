@@ -2,9 +2,6 @@
 description: List NPM project packages tags
 category: API::NpmProjectPackages
 action: list_tags
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -1,8 +1,6 @@
 description: "Execute input rule"
 category: default
 action: execute_input_rule
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ide

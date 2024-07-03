@@ -14,7 +14,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
   let_it_be(:group_maintainer) { create(:user, maintainer_of: group) }
 
   let_it_be(:project) { create(:project, creator_id: user.id, maintainers: user, reporters: user2) }
-  let_it_be(:project2) { create(:project, creator_id: user.id, maintainers: user) }
+  let_it_be(:project2) { create(:project, creator_id: user.id, maintainers: user, organization: project.organization) }
 
   let_it_be(:group) { create(:group, owners: user) }
   let_it_be(:subgroup) { create(:group, parent: group) }
@@ -2200,7 +2200,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
     subject(:perform_request) { post api(path, current_user), params: params }
 
     it_behaves_like 'POST request permissions for admin mode' do
-      let!(:new_project_runner) { create(:ci_runner, :project) }
+      let!(:new_project_runner) { create(:ci_runner, :project, projects: [project2]) }
       let(:params) { { runner_id: new_project_runner.id } }
       let(:failed_status_code) { :not_found }
     end
@@ -2265,7 +2265,7 @@ RSpec.describe API::Ci::Runners, :aggregate_failures, feature_category: :fleet_v
         let(:current_user) { admin }
 
         context 'when project runner is used' do
-          let!(:new_project_runner) { create(:ci_runner, :project) }
+          let!(:new_project_runner) { create(:ci_runner, :project, projects: [project2]) }
           let(:runner) { new_project_runner }
 
           it 'enables any project runner' do

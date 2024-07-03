@@ -2,10 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ExtraSpacing:
   Exclude:
-    - 'app/finders/admin/plans_finder.rb'
-    - 'app/finders/autocomplete/users_finder.rb'
-    - 'app/graphql/mutations/commits/create.rb'
-    - 'app/graphql/types/ci/job_artifact_file_type_enum.rb'
     - 'ee/app/graphql/mutations/geo/registries/update.rb'
     - 'ee/app/models/epic_issue.rb'
     - 'ee/app/models/merge_request/predictions.rb'

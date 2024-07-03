@@ -64,7 +64,7 @@ module Mutations
         result = ::Files::MultiService.new(project, current_user, attributes).execute
 
         {
-          content: actions.pluck(:content),  # rubocop:disable CodeReuse/ActiveRecord -- Array#pluck
+          content: actions.pluck(:content), # rubocop:disable CodeReuse/ActiveRecord -- Array#pluck
           commit: (project.repository.commit(result[:result]) if result[:status] == :success),
           commit_pipeline_path: UrlHelpers.new.graphql_etag_pipeline_sha_path(result[:result]),
           errors: Array.wrap(result[:message])

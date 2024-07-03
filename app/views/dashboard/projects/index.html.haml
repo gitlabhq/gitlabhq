@@ -8,12 +8,13 @@
 - add_page_specific_style 'page_bundles/projects'
 
 = render "projects/last_push"
-- if show_projects?(@projects, params)
-  = render 'dashboard/projects_head'
-  = render 'nav'
-  - if Feature.enabled?(:your_work_projects_vue, current_user)
-    #js-your-work-projects-app
-  - else
-    = render 'projects'
+
+- if Feature.enabled?(:your_work_projects_vue, current_user)
+  #js-your-work-projects-app
 - else
-  = render "zero_authorized_projects"
+  - if show_projects?(@projects, params)
+    = render 'dashboard/projects_head'
+    = render 'nav'
+    = render 'projects'
+  - else
+    = render "zero_authorized_projects"

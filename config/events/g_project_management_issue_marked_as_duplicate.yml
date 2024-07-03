@@ -2,9 +2,6 @@
 description: A issue was marked as a duplicate
 internal_events: true
 action: g_project_management_issue_marked_as_duplicate
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

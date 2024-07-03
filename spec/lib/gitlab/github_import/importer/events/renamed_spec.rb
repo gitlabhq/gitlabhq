@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed do
+RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository) }
@@ -33,7 +33,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Renamed do
       note: "changed title from **{-old-} title** to **{+new+} title**",
       system: true,
       created_at: issue_event.created_at,
-      updated_at: issue_event.created_at
+      updated_at: issue_event.created_at,
+      imported_from: 'github'
     }.stringify_keys
   end
 

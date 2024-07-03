@@ -1,7 +1,6 @@
 description: "Show Pipeline suggestion on new MRs"
 category: default
 action: generic
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

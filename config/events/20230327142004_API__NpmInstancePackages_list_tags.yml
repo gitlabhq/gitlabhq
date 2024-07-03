@@ -2,9 +2,6 @@
 description: List NPM instance packages tags
 category: API::NpmInstancePackages
 action: list_tags
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

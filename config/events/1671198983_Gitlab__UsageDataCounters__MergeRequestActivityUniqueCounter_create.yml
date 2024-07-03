@@ -2,9 +2,6 @@
 description: A merge request was created
 internal_events: true
 action: i_code_review_user_create_mr
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

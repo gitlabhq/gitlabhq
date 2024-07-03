@@ -257,7 +257,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/app/helpers/ee/ci/runners_helper.rb'
     - 'ee/app/helpers/ee/preferences_helper.rb'
     - 'ee/app/helpers/ee/timeboxes_helper.rb'
-    - 'ee/app/helpers/license_monitoring_helper.rb'
     - 'ee/app/helpers/subscriptions_helper.rb'
     - 'ee/app/helpers/trials_helper.rb'
     - 'ee/app/models/approval_merge_request_rule.rb'

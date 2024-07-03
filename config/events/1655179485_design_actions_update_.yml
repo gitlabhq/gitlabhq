@@ -2,8 +2,6 @@
 description: Triggered from backend layer when design is updated
 category: design_actions
 action: update
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

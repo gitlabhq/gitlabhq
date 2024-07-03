@@ -2,9 +2,6 @@
 description: Cloud SQL form rendered
 category: Projects::GoogleCloud::DatabasesController
 action: render_cloudsql_form
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

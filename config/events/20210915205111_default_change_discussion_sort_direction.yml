@@ -1,8 +1,6 @@
 description: "Change discussion sort direction"
 category: default
 action: change_discussion_sort_direction
-label_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: product_planning

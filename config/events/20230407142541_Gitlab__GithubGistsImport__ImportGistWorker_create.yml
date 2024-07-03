@@ -2,8 +2,6 @@
 description: State of imported gist from GitHub
 category: Gitlab::GithubGistsImport::ImportGistWorker
 action: create
-property_description:
-value_description:
 extra_properties:
   status:
     type: string

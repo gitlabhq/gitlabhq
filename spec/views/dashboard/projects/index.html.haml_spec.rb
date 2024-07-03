@@ -37,11 +37,11 @@ RSpec.describe 'dashboard/projects/index.html.haml', feature_category: :groups_a
         render
       end
 
-      it 'does not render #js-your-work-projects-app and renders empty state' do
+      it 'renders #js-your-work-projects-app and does not render HAML empty state' do
         render
 
-        expect(rendered).not_to have_selector('#js-your-work-projects-app')
-        expect(rendered).to render_template('dashboard/projects/_zero_authorized_projects')
+        expect(rendered).to have_selector('#js-your-work-projects-app')
+        expect(rendered).not_to render_template('dashboard/projects/_zero_authorized_projects')
       end
     end
   end

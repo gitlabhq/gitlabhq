@@ -1,8 +1,6 @@
 description: "Type search query"
 category: default
 action: type_search_query
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ide

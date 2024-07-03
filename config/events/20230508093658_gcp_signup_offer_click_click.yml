@@ -2,8 +2,6 @@
 description: GCP offer banner Apply for credit is clicked
 category: gcp_signup_offer_click
 action: click
-property_description:
-value_description:
 extra_properties:
 identifiers:
 product_group: environments

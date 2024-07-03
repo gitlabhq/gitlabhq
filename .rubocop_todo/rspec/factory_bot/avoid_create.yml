@@ -52,7 +52,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/helpers/incident_management/escalation_policy_helper_spec.rb'
     - 'ee/spec/helpers/incident_management/oncall_schedule_helper_spec.rb'
     - 'ee/spec/helpers/license_helper_spec.rb'
-    - 'ee/spec/helpers/license_monitoring_helper_spec.rb'
     - 'ee/spec/helpers/manual_quarterly_co_term_banner_helper_spec.rb'
     - 'ee/spec/helpers/markup_helper_spec.rb'
     - 'ee/spec/helpers/notes_helper_spec.rb'

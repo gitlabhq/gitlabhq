@@ -1,8 +1,6 @@
 description: "Copy 2FA codes with keyboard shortcut"
 category: default
 action: copy_keyboard_shortcut
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: compliance

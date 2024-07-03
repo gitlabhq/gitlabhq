@@ -13,28 +13,14 @@ module Awardable
   end
 
   class_methods do
-    def awarded(user, name = nil, base_class_name = base_class.name, awardable_id_column = :id)
-      award_emoji_table = Arel::Table.new('award_emoji')
-      inner_query = award_emoji_table
-                .project('true')
-                .where(award_emoji_table[:user_id].eq(user.id))
-                .where(award_emoji_table[:awardable_type].eq(base_class_name))
-                .where(award_emoji_table[:awardable_id].eq(self.arel_table[awardable_id_column]))
-
-      inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
+    def awarded(user, opts = {})
+      inner_query = inner_filter_query(user, opts)
 
       where(inner_query.exists)
     end
 
-    def not_awarded(user, name = nil, base_class_name = base_class.name, awardable_id_column = :id)
-      award_emoji_table = Arel::Table.new('award_emoji')
-      inner_query = award_emoji_table
-                .project('true')
-                .where(award_emoji_table[:user_id].eq(user.id))
-                .where(award_emoji_table[:awardable_type].eq(base_class_name))
-        .where(award_emoji_table[:awardable_id].eq(self.arel_table[awardable_id_column]))
-
-      inner_query = inner_query.where(award_emoji_table[:name].eq(name)) if name.present?
+    def not_awarded(user, opts = {})
+      inner_query = inner_filter_query(user, opts)
 
       where(inner_query.exists.not)
     end
@@ -65,6 +51,28 @@ module Awardable
       joins(join_clause).group(awardable_table[:id]).reorder(
         Arel.sql("COUNT(award_emoji.id) #{direction}")
       )
+    end
+
+    private
+
+    # Fragment used to build queries when filtering objects by award emoji
+    def inner_filter_query(user, opts = {})
+      award_emoji_table = Arel::Table.new('award_emoji')
+
+      emoji_name = opts[:name]
+      base_class_name = opts[:base_class_name] || base_class.name
+      awardable_id_column = opts[:awardable_id_column] || self.arel_table[:id]
+
+      inner_query =
+        award_emoji_table
+          .project('true')
+          .where(award_emoji_table[:user_id].eq(user.id))
+          .where(award_emoji_table[:awardable_type].eq(base_class_name))
+          .where(award_emoji_table[:awardable_id].eq(awardable_id_column))
+
+      inner_query.where(award_emoji_table[:name].eq(emoji_name)) if emoji_name.present?
+
+      inner_query
     end
   end
 

@@ -1,9 +1,6 @@
 description: "Dismiss home page banner"
 category: default
 action: click_dismiss
-label_description: ""
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

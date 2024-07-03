@@ -1,8 +1,6 @@
 description: "Wiki saved using content editor"
 category: default
 action: saved_using_content_editor
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ide

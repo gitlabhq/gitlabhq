@@ -106,6 +106,29 @@ or following the example in [the official documentation](https://github.com/olla
    }
    ```
 
+## Example setup for Codestral with Ollama
+
+When serving the Codestral model through Ollama, there is an additional step required to make Codestral work with both code completions and code generations.
+
+1. Pull the Codestral model:
+
+   ```shell
+   ollama pull codestral
+   ```
+
+1. Edit the default template used for Codestral:
+
+   ```shell
+   ollama run codestral
+   ```
+
+   ```shell
+   >>> /set template {{ .Prompt }}
+   Set prompt template.
+   >>> /save codestral
+   Created new model 'codestral'
+   ```
+
 ## Related topics
 
 - [LiteLLM documentation](https://docs.litellm.ai/docs/providers/openai_compatible)

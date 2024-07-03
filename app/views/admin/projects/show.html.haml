@@ -5,28 +5,23 @@
 - page_title @project.full_name, _("Projects")
 - current_user_is_group_owner = @group && @group.has_owner?(current_user)
 
-%h1.page-title.gl-font-size-h-display
-  = _('Project: %{name}') % { name: @project.full_name }
-  = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: @project.to_param, namespace_id: @project.namespace.to_param }),
-    icon: 'pencil',
-    button_options: { class: 'gl-float-right'}) do
-    = _('Edit')
-%hr
+= render ::Layouts::PageHeadingComponent.new(@project.full_name) do |c|
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(href: edit_admin_namespace_project_path({ id: @project.to_param, namespace_id: @project.namespace.to_param })) do
+      = _('Edit')
+
 - if @project.last_repository_check_failed?
-  .row
-    .col-md-12
-      = render Pajamas::AlertComponent.new(variant: :danger,
-        alert_options: { class: 'gl-mb-5',
-                         data: { testid: 'last-repository-check-failed-alert' }}) do |c|
-        - c.with_body do
-          - last_check_message = _("Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages.")
-          - last_check_message = last_check_message % { last_check_timestamp: time_ago_with_tooltip(@project.last_repository_check_at) }
-          = last_check_message.html_safe
-.row
-  .col-md-6
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }) do |c|
-      - c.with_header do
-        = _('Project info:')
+  = render Pajamas::AlertComponent.new(variant: :danger,
+    alert_options: { class: 'gl-mb-5',
+                      data: { testid: 'last-repository-check-failed-alert' }}) do |c|
+    - c.with_body do
+      - last_check_message = _("Last repository check (%{last_check_timestamp}) failed. See the 'repocheck.log' file for error messages.")
+      - last_check_message = last_check_message % { last_check_timestamp: time_ago_with_tooltip(@project.last_repository_check_at) }
+      = last_check_message.html_safe
+
+.gl-grid.md:gl-grid-cols-2.gl-gap-5
+  .gl-flex.gl-flex-col.gl-gap-5
+    = render ::Layouts::CrudComponent.new(_('Project information')) do |c|
       - c.with_body do
         %ul.content-list
           %li{ class: 'gl-px-5!' }
@@ -142,24 +137,17 @@
 
     = render_if_exists 'admin/projects/geo_status_widget', locals: { project: @project }
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }) do |c|
-      - c.with_header do
-        = s_('ProjectSettings|Transfer project')
+    = render ::Layouts::CrudComponent.new(s_('ProjectSettings|Transfer project')) do |c|
       - c.with_body do
         = gitlab_ui_form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
-          .form-group.row
-            .col-sm-3.col-form-label
+          .form-group
+            .col-form-label
               = f.label :new_namespace_id, _("Namespace")
-            .col-sm-9
-              .js-namespace-select{ data: { field_name: 'new_namespace_id', toggle_text_placeholder: _('Search for Namespace') } }
+            .js-namespace-select{ data: { field_name: 'new_namespace_id', toggle_text_placeholder: _('Search for Namespace') } }
+          .form-group
+            = f.submit _('Transfer'), pajamas_button: true
 
-          .form-group.row
-            .offset-sm-3.col-sm-9
-              = f.submit _('Transfer'), pajamas_button: true
-
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5 repository-check' }) do |c|
-      - c.with_header do
-        = _("Repository check")
+    = render ::Layouts::CrudComponent.new(_('Repository check'), options: { class: 'repository-check' }) do |c|
       - c.with_body do
         = gitlab_ui_form_for @project, url: repository_check_admin_project_path(@project), method: :post do |f|
           .form-group
@@ -177,13 +165,12 @@
           .form-group
             = f.submit _('Trigger repository check'), pajamas_button: true
 
-  .col-md-6
+  .gl-flex.gl-flex-col.gl-gap-5
     - if @group
-      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }, footer_options: { class: 'gl-p-4' }) do |c|
-        - c.with_header do
-          %strong= @group.name
-          = _('group members')
-          = gl_badge_tag @group_members.size
+      = render ::Layouts::CrudComponent.new(_('Group members'),
+        icon: 'user',
+        count: @group_members.size) do |c|
+        - c.with_actions do
           = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
         - c.with_body do
           %ul.content-list.members-list
@@ -197,11 +184,10 @@
 
     = render 'shared/members/requests', membership_source: @project, group: @group, requesters: @requesters
 
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-p-0' }, footer_options: { class: 'gl-p-4' }) do |c|
-      - c.with_header do
-        %strong= @project.name
-        = _('project members')
-        = gl_badge_tag @project.users.size
+    = render ::Layouts::CrudComponent.new(_('%{project_name} project members') % { project_name: @project.name },
+      icon: 'user',
+      count: @project.users.size) do |c|
+      - c.with_actions do
         = render 'shared/members/manage_access_button', path: project_project_members_path(@project)
       - c.with_body do
         %ul.content-list.project_members.members-list

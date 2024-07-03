@@ -1,8 +1,6 @@
 description: "Click tab on new namespace welcoming component"
 category: default
 action: click_tab
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: import_and_integrate

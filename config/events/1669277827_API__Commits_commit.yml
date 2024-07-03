@@ -2,8 +2,6 @@
 description: Mirrored Service Ping Redis metric counts.web_ide_commits - Count of commits made from the Web IDE
 category: API::Commits
 action: commit
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

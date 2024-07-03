@@ -28,10 +28,10 @@ RSpec.describe Awardable do
 
     describe "#awarded" do
       it "filters by user and emoji name" do
-        expect(Note.awarded(award_emoji.user, "thumbsup")).to be_empty
-        expect(Note.awarded(award_emoji.user, "thumbsdown")).to eq [note]
-        expect(Note.awarded(award_emoji2.user, "thumbsup")).to eq [note2]
-        expect(Note.awarded(award_emoji2.user, "thumbsdown")).to be_empty
+        expect(Note.awarded(award_emoji.user, { name: "thumbsup" })).to be_empty
+        expect(Note.awarded(award_emoji.user, { name: "thumbsdown" })).to eq [note]
+        expect(Note.awarded(award_emoji2.user, { name: "thumbsup" })).to eq [note2]
+        expect(Note.awarded(award_emoji2.user, { name: "thumbsdown" })).to be_empty
       end
 
       it "filters by user and any emoji" do

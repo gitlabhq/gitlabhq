@@ -2,9 +2,6 @@
 description: Project level CI CD Analytics deployment frequency tab has been visited
 internal_events: true
 action: p_analytics_ci_cd_deployment_frequency
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

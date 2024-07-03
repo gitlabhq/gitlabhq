@@ -32,7 +32,10 @@ module WorkItemsHelper
       full_path: group.full_path,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,
-      show_new_issue_link: can?(current_user, :create_work_item, group).to_s
+      show_new_issue_link: can?(current_user, :create_work_item, group).to_s,
+      issues_list_path: issues_group_path(group),
+      labels_manage_path: group_labels_path(group),
+      can_admin_label: can?(current_user, :admin_label, group).to_s
     }
   end
 end

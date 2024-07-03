@@ -2,8 +2,6 @@
 description: Invite members modal is canceled
 category: invite_members_modal
 action: click_cancel
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

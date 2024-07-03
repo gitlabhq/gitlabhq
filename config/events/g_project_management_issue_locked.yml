@@ -2,9 +2,6 @@
 description: A issue was locked
 internal_events: true
 action: g_project_management_issue_locked
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

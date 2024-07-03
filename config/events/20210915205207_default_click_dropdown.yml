@@ -1,8 +1,6 @@
 description: "Click Epic's board switcher"
 category: default
 action: click_dropdown
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: product_planning

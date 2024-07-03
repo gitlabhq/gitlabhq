@@ -65,7 +65,7 @@ RSpec.describe 'Projects > Settings > Visibility settings', :js, feature_categor
   end
 
   def save_permissions_group
-    page.within('.sharing-permissions') do
+    within_testid('visibility-features-permissions-content') do
       click_button 'Save changes'
       wait_for_requests
     end

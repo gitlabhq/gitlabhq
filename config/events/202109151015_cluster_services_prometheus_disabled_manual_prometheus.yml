@@ -1,9 +1,6 @@
 description: Disable manual prometheus
 category: cluster:services:prometheus
 action: disabled_manual_prometheus
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 product_group: import_and_integrate

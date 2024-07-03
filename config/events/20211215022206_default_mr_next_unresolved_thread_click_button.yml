@@ -1,7 +1,6 @@
 description: "Click button to jump to next unresolved thread"
 category: default
 action: click_button
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ""

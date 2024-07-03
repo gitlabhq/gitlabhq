@@ -1,8 +1,6 @@
 description: "Click pipeline empty state template"
 category: default
 action: template_clicked
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation

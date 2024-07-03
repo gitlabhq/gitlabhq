@@ -2,8 +2,6 @@
 description: Invite members modal is submitted successfully
 category: invite_members_modal
 action: invite_successful
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project
