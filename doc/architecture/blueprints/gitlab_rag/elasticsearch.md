@@ -89,7 +89,7 @@ Elasticsearch currently supports [Reciprocal rank fusion (RRF)](https://www.elas
 
 Elasticsearch is available on GitLab.com and can be integrated on Dedicated and Self-Managed instances. To use as a vector store only:
 
-- [Install Elasticsearch version `8.12`](../../../integration/advanced_search/elasticsearch.md#install-elasticsearch) or upgrade to at least version `8.12`.
+- [Install Elasticsearch version `8.12`](../../../integration/advanced_search/elasticsearch.md#install-elasticsearch-or-aws-opensearch-cluster) or upgrade to at least version `8.12`.
 - Add URL, Username and Password on the Advanced Search settings page: `admin/application_settings/advanced_search`
 
 After the integration is configured, instance admins don't need to do further work to use it as a vector store since the GitLab Elasticsearch framework handles setting mappings, settings and indexing data.

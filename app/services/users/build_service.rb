@@ -143,8 +143,6 @@ module Users
     end
 
     def build_user_detail
-      return unless Feature.enabled?(:create_user_details_all_user_creation, Feature.current_request)
-
       # This will ensure we either load an existing record or create it.
       user.user_detail
     end

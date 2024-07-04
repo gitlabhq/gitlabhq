@@ -28,6 +28,9 @@ module Gitlab
       },
       secret_detection: {
         keys: [:skip_all]
+      },
+      secret_push_protection: {
+        keys: [:skip_all]
       }
     }).freeze
 

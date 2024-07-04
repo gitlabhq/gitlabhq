@@ -47,7 +47,7 @@ In FY24 Q2 we began working to integrate ClickHouse with GitLab.com to support m
 
 #### FY25 H1 (current)
 
-After we have formulated best practices of managing ClickHouse ourselves for GitLab.com, we will begin to offer supported recommendations for self-managed instances that want to run ClickHouse themselves. During this phase we will allow users to "Bring your own ClickHouse" similar to our [approach for Elasticsearch](../../../integration/advanced_search/elasticsearch.md#install-elasticsearch). For the features that require ClickHouse for optimal usage (Value Streams Dashboard, [Product Analytics](https://gitlab.com/groups/gitlab-org/-/epics/8921)), this will be the initial go-to-market action. Notably, the Observability team has made the decision to support self-managed users via GitLab Cloud Connector instead of following this approach.
+After we have formulated best practices of managing ClickHouse ourselves for GitLab.com, we will begin to offer supported recommendations for self-managed instances that want to run ClickHouse themselves. During this phase we will allow users to "Bring your own ClickHouse" similar to our [approach for Elasticsearch](../../../integration/advanced_search/elasticsearch.md#install-elasticsearch-or-aws-opensearch-cluster). For the features that require ClickHouse for optimal usage (Value Streams Dashboard, [Product Analytics](https://gitlab.com/groups/gitlab-org/-/epics/8921)), this will be the initial go-to-market action. Notably, the Observability team has made the decision to support self-managed users via GitLab Cloud Connector instead of following this approach.
 
 #### Long-term
 

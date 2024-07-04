@@ -144,7 +144,7 @@ scanned after they are pushed to the repository.
 To skip secret push protection for all commits in a push, either:
 
 - If you're using the Git CLI client, [instruct Git to skip secret push protection](#skip-when-using-the-git-cli-client).
-- If you're using any other client, [add `[skip secret detection]` to one of the commit messages](#skip-when-using-the-git-cli-client).
+- If you're using any other client, [add `[skip secret push protection]` to one of the commit messages](#skip-when-using-the-git-cli-client).
 
 #### Skip when using the Git CLI client
 
@@ -156,16 +156,16 @@ To skip secret push protection when using the Git CLI client:
   contains a secret. To skip secret push protection, you append the push option to the Git command.
 
   ```shell
-  git push -o secret_detection.skip_all
+  git push -o secret_push_protection.skip_all
   ```
 
 #### Skip when using any Git client
 
 To skip secret push protection when using any Git client:
 
-- Add `[skip secret detection]` to one of the commit messages, on either an existing line or a new
+- Add `[skip secret push protection]` to one of the commit messages, on either an existing line or a new
   line, then push the commits.
 
   For example, you are using the GitLab Web IDE and have several commits that are blocked from being
   pushed because one of them contains a secret. To skip secret push protection, edit the latest
-  commit message and add `[skip secret detection]`, then push the commits.
+  commit message and add `[skip secret push protection]`, then push the commits.

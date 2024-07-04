@@ -24,18 +24,6 @@ RSpec.describe Users::BuildService, feature_category: :user_management do
 
         expect { user.save! }.to change { UserDetail.count }.by(1)
       end
-
-      context 'when create_user_details_all_user_creation feature flag is disabled' do
-        before do
-          stub_feature_flags(create_user_details_all_user_creation: false)
-        end
-
-        it 'does not create the user_detail record' do
-          user = service.execute
-
-          expect { user.save! }.not_to change { UserDetail.count }
-        end
-      end
     end
 
     context 'with nil current_user' do

@@ -50,26 +50,173 @@ Elasticsearch requires additional resources to those documented in the
 
 Memory, CPU, and storage resource amounts vary depending on the amount of data you index into the Elasticsearch cluster. Heavily used Elasticsearch clusters may require more resources. The [`estimate_cluster_size`](#gitlab-advanced-search-rake-tasks) Rake task uses the total repository size to estimate the advanced search storage requirements.
 
-## Install Elasticsearch
+## Install Elasticsearch or AWS OpenSearch cluster
 
-Elasticsearch is *not* included in the Linux package or when you self-compile your installation.
-You must [install it separately](https://www.elastic.co/guide/en/elasticsearch/reference/7.16/install-elasticsearch.html "Elasticsearch 7.x installation documentation") and ensure you select your version. Detailed information on how to install Elasticsearch is out of the scope of this page.
+Elasticsearch and AWS OpenSearch are **not** included in the Linux package or when you perform a direct package installation. Detailed information on how to install Elasticsearch is out of the scope of this page.
 
-You can install Elasticsearch yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
+You can install a search cluster yourself, or use a cloud hosted offering such as [Elasticsearch Service](https://www.elastic.co/elasticsearch/service) (available on AWS, GCP, or Azure) or the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gsg.html)
 service.
 
-You should install Elasticsearch on a separate server. Running Elasticsearch on the same server as GitLab is not recommended and can cause a degradation in GitLab instance performance.
+You should install the search cluster on a separate server. Running the search cluster on the same server as GitLab is not recommended and can cause a degradation in GitLab instance performance.
 
-For a single node Elasticsearch cluster, the functional cluster health status is always yellow due to the allocation of the primary shard. Elasticsearch cannot assign replica shards to the same node as primary shards.
+For a single node search cluster, the functional cluster health status is always yellow due to the allocation of the primary shard. The cluster cannot assign replica shards to the same node as primary shards.
 
 The search index updates after you:
 
 - Add data to the database or repository.
-- [Enable Elasticsearch](#enable-advanced-search) in the Admin Area.
+- [Enable advanced search](#enable-advanced-search) in the Admin Area.
 
 NOTE:
 Before you use a new Elasticsearch cluster in production, see the
 [Elasticsearch documentation on important settings](https://www.elastic.co/guide/en/elasticsearch/reference/current/important-settings.html).
+
+### Elasticsearch access control configuration
+
+Elasticsearch offers role based access control to secure the cluster. To access and perform operations in the
+Elasticsearch cluster, the `Username` configured in the Admin UI must have role(s) assigned that grant the following
+privileges. The `Username` makes requests from GitLab to the search cluster.
+
+For more information,
+see [Elasticsearch role based access control](https://www.elastic.co/guide/en/elasticsearch/reference/current/authorization.html#roles)
+and [Elasticsearch security privileges](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-privileges.html).
+
+```json
+{
+  "cluster": ["monitor"],
+  "indices": [
+    {
+      "names": ["gitlab-*"],
+      "privileges": [
+        "create_index",
+        "delete_index",
+        "view_index_metadata",
+        "read",
+        "manage",
+        "write"
+      ]
+    }
+  ]
+}
+```
+
+### AWS OpenSearch service configuration
+
+AWS OpenSearch offers multiple methods of access control which are supported by GitLab:
+
+- [Domain level access policy](#domain-level-access-policy-configuration)
+- Fine-grained access control
+  - [With IAM ARN as master user](#connecting-with-an-iam-user)
+  - [With master user](#connecting-with-a-master-user-in-the-internal-database)
+
+For more details on fine-grained access control see
+[recommended configurations](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-recommendations)
+
+#### Domain level access policy configuration
+
+Configure the AWS OpenSearch domain access policy to allow `es:ESHttp*` actions. You can customize
+the following example configuration to limit principals or resources:
+
+NOTE:
+All `es:ESHttp` actions are required by GitLab.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": [
+          "*"
+        ]
+      },
+      "Action": [
+        "es:ESHttp*"
+      ],
+      "Resource": "arn:aws:es:REGION:AWS_ACCOUNT_ID:domain/DOMAIN_NAME/*"
+    }
+  ]
+}
+```
+
+For more information,
+see [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html).
+
+##### Service linked role configuration
+
+The GitLab Rails and Sidekiq nodes require permissions to communicate with the search cluster.
+
+Create an IAM role with the following options and attach the role to the GitLab Rails and Sidekiq nodes:
+
+- Trusted entity type: `AWS Service` for `EC2` service
+- Permission policy: `AmazonOpenSearchServiceFullAccess`
+
+##### Connecting with a domain level access policy only
+
+When using a domain level access policy, you must check the box **Use AWS OpenSearch Service with IAM credentials** and
+fill in **AWS region** while leaving **AWS Access Key** and **AWS Secret Access Key** blank in the advanced search settings.
+
+NOTE:
+Domain level access policy can be used standalone or in addition to fine-grained access control policies.
+
+#### Fine-grained access control configuration
+
+To access and perform operations in the AWS OpenSearch cluster, the user in **Username** must have role(s) assigned that
+grant the following privileges. This user makes requests from GitLab to the search cluster.
+
+For more information,
+see [OpenSearch access control permissions](https://opensearch.org/docs/latest/security/access-control/permissions/)
+and [Creating roles](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-roles).
+
+NOTE:
+The index pattern `*` requires a few permissions for Advanced search to work.
+
+```json
+{
+  "cluster_permissions": [
+    "cluster_composite_ops",
+    "cluster_monitor"
+  ],
+  "index_permissions": [
+    {
+      "index_patterns": [
+        "gitlab*"
+      ],
+      "allowed_actions": [
+        "data_access",
+        "manage_aliases",
+        "search",
+        "create_index",
+        "delete",
+        "manage"
+      ]
+    },
+    {
+      "index_patterns": [
+        "*"
+      ],
+      "allowed_actions": [
+        "indices:admin/aliases/get",
+        "indices:monitor/stats"
+      ]
+    }
+  ]
+}
+```
+
+##### Connecting with a master user in the internal database
+
+When using fine-grained access control with a user in the internal database, you should use HTTP basic
+authentication to connect to AWS OpenSearch. You can provide the master username and password as part of the
+AWS OpenSearch URL or in the **Username** and **Password** text boxes in the advanced search settings. See
+[Tutorial: Internal user database and HTTP basic authentication](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac-walkthrough-basic.html)
+for details.
+
+##### Connecting with an IAM user
+
+When using fine-grained access control with IAM credentials, you must check the box **Use AWS OpenSearch Service with
+IAM credentials** in the **AWS OpenSearch IAM credentials** section in the advanced search settings.
+Provide the **AWS region**, **AWS Access Key**, and **AWS Secret Access Key**.
 
 ## Upgrade to a new Elasticsearch major version
 
@@ -281,113 +428,6 @@ Increasing the values of `Maximum bulk request size (MiB)` and `Bulk request con
 Sidekiq performance. Return them to their default values if you see increased `scheduling_latency_s` durations
 in your Sidekiq logs. For more information, see
 [issue 322147](https://gitlab.com/gitlab-org/gitlab/-/issues/322147).
-
-### Access requirements
-
-#### Elasticsearch with role privileges
-
-To access and perform operations in Elasticsearch, GitLab requires a role with the following privileges:
-
-```json
-{
-  "cluster": ["monitor"],
-  "indices": [
-    {
-      "names": ["gitlab-*"],
-      "privileges": [
-        "create_index",
-        "delete_index",
-        "view_index_metadata",
-        "read",
-        "manage",
-        "write"
-      ]
-    }
-  ]
-}
-```
-
-For more information, see [Elasticsearch security privileges](https://www.elastic.co/guide/en/elasticsearch/reference/current/security-privileges.html).
-
-#### AWS OpenSearch Service with fine-grained access control
-
-To use the self-managed AWS OpenSearch Service with GitLab using fine-grained access control, try one of the
-[recommended configurations](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-recommendations).
-
-Configure your instance's domain access policies to allow `es:ESHttp*` actions. You can customize
-the following example configuration to limit principals or resources:
-
-```json
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Effect": "Allow",
-      "Principal": {
-        "AWS": [
-          "*"
-        ]
-      },
-      "Action": [
-        "es:ESHttp*"
-      ],
-      "Resource": "domain-arn/*"
-    }
-  ]
-}
-```
-
-For more information, see [Identity and Access Management in Amazon OpenSearch Service](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/ac.html).
-
-##### Connecting with a master user in the internal database
-
-When using fine-grained access control with a user in the internal database, you should use HTTP basic
-authentication to connect to OpenSearch. You can provide the master username and password as part of the
-OpenSearch URL or in the **Username** and **Password** text boxes in the advanced search settings. See
-[Tutorial: Internal user database and HTTP basic authentication](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac-walkthrough-basic.html) for details.
-
-##### Connecting with an IAM user
-
-When using fine-grained access control with IAM credentials, you can provide the credentials in the **AWS OpenSearch IAM credentials** section in the advanced search settings.
-
-##### Permissions for fine-grained access control
-
-The following permissions are required for advanced search. See [Creating roles](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-roles) for details.
-
-```json
-{
-  "cluster_permissions": [
-    "cluster_composite_ops",
-    "cluster_monitor"
-  ],
-  "index_permissions": [
-    {
-      "index_patterns": [
-        "gitlab*"
-      ],
-      "allowed_actions": [
-        "data_access",
-        "manage_aliases",
-        "search",
-        "create_index",
-        "delete",
-        "manage"
-      ]
-    },
-    {
-      "index_patterns": [
-        "*"
-      ],
-      "allowed_actions": [
-        "indices:admin/aliases/get",
-        "indices:monitor/stats"
-      ]
-    }
-  ]
-}
-```
-
-The index pattern `*` requires a few permissions for advanced search to work.
 
 ### Limit the amount of namespace and project data to index
 

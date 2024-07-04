@@ -41426,6 +41426,9 @@ msgstr ""
 msgid "ProjectSettings|Build, test, and deploy your changes. Does not apply to project integrations."
 msgstr ""
 
+msgid "ProjectSettings|By default the current project is used."
+msgstr ""
+
 msgid "ProjectSettings|Checkbox is visible and selected by default."
 msgstr ""
 

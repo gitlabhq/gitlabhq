@@ -270,7 +270,16 @@ You can use push options to skip [secret push protection](../user/application_se
 
 | Push option                    | Description | Example |
 |--------------------------------|-------------|---------|
-| `secret_detection.skip_all` | Do not perform secret push protection for any commit in this push. | `git push -o secret_detection.skip_all` |
+| `secret_push_protection.skip_all` | Do not perform secret push protection for any commit in this push. | `git push -o secret_push_protection.skip_all` |
+
+### Push options for GitGuardian integration
+
+You can use the same [push option for Secret push protection](#push-options-for-secret-push-protection) to skip GitGuardian secret detection.
+
+| Push option                    | Description | Example |
+|--------------------------------|-------------|---------|
+| `secret_detection.skip_all` | Deprecated in GitLab 17.2. Use `secret_push_protection.skip_all` instead. | `git push -o secret_detection.skip_all` |
+| `secret_push_protection.skip_all` | Do not perform GitGuardian secret detection. | `git push -o secret_push_protection.skip_all` |
 
 ### Formats for push options
 

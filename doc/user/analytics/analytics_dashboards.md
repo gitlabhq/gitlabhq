@@ -154,9 +154,10 @@ To change the location of a group's dashboards:
 
 ### Project dashboards
 
-Dashboards are usually defined in the project where the analytics data is being retrieved from.
+By default custom dashboards are saved to the current project, because
+dashboards are usually defined in the project where the analytics data is retrieved from.
 However, you can also have a separate project for dashboards.
-This is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
+This setup is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
 
 NOTE:
 You can share dashboards only between projects that are located in the same group.

@@ -12,6 +12,11 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Disabled by default.
 
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
 Use Pipeline execution policies to enforce CI/CD jobs for all applicable projects.
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> For a video walkthrough, see [Security Policies: Pipeline Execution Policy Type](https://www.youtube.com/watch?v=QQAOpkZ__pA).
@@ -48,7 +53,7 @@ Note the following:
 - Users triggering a pipeline must have at least read access to CI file specified in `content`.
 - Pipeline execution policy jobs can be assigned to one of the two reserved stages:
   - `.pipeline-policy-pre` at the beginning of the pipeline, before the `.pre` stage.
-  - `.pipeline-policy-post` at the very end of the pipeline, after the .post stage.
+  - `.pipeline-policy-post` at the very end of the pipeline, after the `.post` stage.
 - Injecting jobs in any of the reserved stages is guaranteed to always work. Execution policy jobs can also be assigned to any standard (build, test, deploy) or user-declared stages. However, in this case, the jobs may be ignored depending on the project pipeline configuration.
 - It is not possible to assign jobs to reserved stages outside of a pipeline execution policy.
 

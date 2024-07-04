@@ -252,6 +252,8 @@ These commands remove data permanently from database and storage. Before running
 
 #### Delete old artifacts for a project
 
+This step also erases artifacts that users have [chosen to keep](../ci/jobs/job_artifacts.md#with-an-expiry):
+
 ```ruby
 project = Project.find_by_full_path('path/to/project')
 builds_with_artifacts =  project.builds.with_downloadable_artifacts
@@ -278,6 +280,8 @@ end
 ```
 
 #### Delete old artifacts instance wide
+
+This step also erases artifacts that users have [chosen to keep](../ci/jobs/job_artifacts.md#with-an-expiry):
 
 ```ruby
 builds_with_artifacts = Ci::Build.with_downloadable_artifacts
