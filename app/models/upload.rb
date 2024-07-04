@@ -17,6 +17,8 @@ class Upload < ApplicationRecord
   scope :with_files_stored_locally, -> { where(store: ObjectStorage::Store::LOCAL) }
   scope :with_files_stored_remotely, -> { where(store: ObjectStorage::Store::REMOTE) }
   scope :for_model_type_and_id, ->(type, id) { where(model_type: type, model_id: id) }
+  scope :for_uploader, ->(uploader_class) { where(uploader: uploader_class.to_s) }
+  scope :order_by_created_at_desc, -> { reorder(created_at: :desc) }
 
   before_save :calculate_checksum!, if: :foreground_checksummable?
   # as the FileUploader is not mounted, the default CarrierWave ActiveRecord

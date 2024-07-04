@@ -24,6 +24,18 @@ RSpec.describe Analytics::CycleAnalytics::StageEventHash, type: :model do
       expect(same_id).to eq(id)
     end
 
+    context 'when the initial find_by query does not find the record' do
+      it 'returns an existing id' do
+        expect(described_class).to receive(:find_by).with(organization_id: organization.id,
+          hash_sha256: hash_sha256).and_return(nil)
+
+        id = stage_event_hash.id
+        same_id = described_class.record_id_by_hash_sha256(organization.id, hash_sha256)
+
+        expect(same_id).to eq(id)
+      end
+    end
+
     it 'creates a new record' do
       expect do
         described_class.record_id_by_hash_sha256(organization.id, hash_sha256)

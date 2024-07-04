@@ -1,6 +1,6 @@
 - page_title @hook.pluralized_name
 
-.settings-section
+.settings-section{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_hooks_pageload' } }
   = render 'shared/web_hooks/title_and_docs', hook: @hook
   = render 'shared/web_hooks/index', hooks: @hooks, hook_class: @hook.class, partial: 'form', url: admin_hooks_path
 

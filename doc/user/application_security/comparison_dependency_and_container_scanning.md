@@ -19,16 +19,15 @@ security scanning tools:
 
 The following table summarizes which types of dependencies each scanning tool can detect:
 
-| Feature                                                                                      | Dependency Scanning | Container Scanning                           |
-|----------------------------------------------------------------------------------------------|---------------------|----------------------------------------------|
-| Identify the manifest, lock file, or static file that introduced the dependency              | **{check-circle}**  | **{dotted-circle}**                          |
-| Development dependencies                                                                     | **{check-circle}**  | **{dotted-circle}**                          |
-| Dependencies in a lock file committed to your repository                                     | **{check-circle}**  | **{check-circle}** <sup>1</sup>              |
-| Binaries built by Go                                                                         | **{dotted-circle}** | **{check-circle}** <sup>2</sup> <sup>3</sup> |
-| Dynamically-linked language-specific dependencies installed by the Operating System          | **{dotted-circle}** | **{check-circle}** <sup>3</sup>              |
-| Operating system dependencies                                                                | **{dotted-circle}** | **{check-circle}**                           |
-| Language-specific dependencies installed on the operating system (not built by your project) | **{dotted-circle}** | **{check-circle}**                           |
+| Feature                                                                                      | Dependency Scanning | Container Scanning              |
+|----------------------------------------------------------------------------------------------|---------------------|---------------------------------|
+| Identify the manifest, lock file, or static file that introduced the dependency              | **{check-circle}**  | **{dotted-circle}**             |
+| Development dependencies                                                                     | **{check-circle}**  | **{dotted-circle}**             |
+| Dependencies in a lock file committed to your repository                                     | **{check-circle}**  | **{check-circle}** <sup>1</sup> |
+| Binaries built by Go                                                                         | **{dotted-circle}** | **{check-circle}** <sup>2</sup> |
+| Dynamically-linked language-specific dependencies installed by the Operating System          | **{dotted-circle}** | **{check-circle}**              |
+| Operating system dependencies                                                                | **{dotted-circle}** | **{check-circle}**              |
+| Language-specific dependencies installed on the operating system (not built by your project) | **{dotted-circle}** | **{check-circle}**              |
 
 1. Lock file must be present in the image to be detected.
 1. Binary file must be present in the image to be detected.
-1. Only when using Trivy.

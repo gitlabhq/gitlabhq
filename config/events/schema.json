@@ -25,24 +25,6 @@
       "type": "string",
       "pattern": "^[a-z0-9_]+$"
     },
-    "label_description": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "property_description": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
-    "value_description": {
-      "type": [
-        "string",
-        "null"
-      ]
-    },
     "extra_properties": {
       "type": [
         "object",

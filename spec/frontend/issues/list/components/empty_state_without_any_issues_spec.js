@@ -1,11 +1,8 @@
 import { GlDisclosureDropdown, GlEmptyState, GlLink } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { stubExperiments } from 'helpers/experimentation_helper';
 import CsvImportExportButtons from '~/issuable/components/csv_import_export_buttons.vue';
 import EmptyStateWithoutAnyIssues from '~/issues/list/components/empty_state_without_any_issues.vue';
-import EmptyStateWithoutAnyIssuesExperiment from '~/issues/list/components/empty_state_without_any_issues_experiment.vue';
 import NewResourceDropdown from '~/vue_shared/components/new_resource_dropdown/new_resource_dropdown.vue';
-import GitlabExperiment from '~/experimentation/components/gitlab_experiment.vue';
 
 describe('EmptyStateWithoutAnyIssues component', () => {
   let wrapper;
@@ -27,7 +24,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
     isProject: false,
   };
 
-  const findSignedInEmptyStateBlock = () => wrapper.findByTestId('signed-in-empty-state-block');
   const findCsvImportExportButtons = () => wrapper.findComponent(CsvImportExportButtons);
   const findCsvImportExportDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findGlEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -51,7 +47,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         ...provide,
       },
       stubs: {
-        GitlabExperiment,
         NewResourceDropdown: true,
       },
     });
@@ -177,89 +172,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
           });
         });
       });
-
-      describe('tracking', () => {
-        const experimentTracking = { 'data-track-experiment': 'issues_mrs_empty_state' };
-
-        const emptyStateBlockTracking = {
-          'data-track-action': 'render',
-          'data-track-label': 'project_issues_empty_list',
-        };
-
-        const issueHelpLinkTracking = {
-          'data-track-action': 'click_learn_more_project_issues_empty_list_page',
-          'data-track-label': 'learn_more_project_issues_empty_list',
-        };
-
-        const jiraDocsLinkTracking = {
-          'data-track-action': 'click_jira_int_project_issues_empty_list_page',
-          'data-track-label': 'jira_int_project_issues_empty_list',
-        };
-
-        it('tracks new issue link', () => {
-          mountComponent({ provide: { showNewIssueLink: true } });
-
-          expect(findNewIssueLink().attributes()).toMatchObject({
-            'data-track-action': 'click_new_issue_project_issues_empty_list_page',
-            'data-track-label': 'new_issue_project_issues_empty_list',
-            ...experimentTracking,
-          });
-        });
-
-        describe('when the isProject=true', () => {
-          beforeEach(() => {
-            mountComponent({ provide: { isProject: true } });
-          });
-
-          it('tracks empty state block', () => {
-            expect(findSignedInEmptyStateBlock().attributes()).toMatchObject({
-              ...emptyStateBlockTracking,
-              ...experimentTracking,
-            });
-          });
-
-          it('tracks issue help link', () => {
-            expect(findIssuesHelpPageLink().attributes()).toMatchObject({
-              ...issueHelpLinkTracking,
-              ...experimentTracking,
-            });
-          });
-
-          it('tracks Jira docs link', () => {
-            expect(findJiraDocsLink().attributes()).toMatchObject({
-              ...jiraDocsLinkTracking,
-              ...experimentTracking,
-            });
-          });
-        });
-
-        describe('when the isProject=false', () => {
-          beforeEach(() => {
-            mountComponent();
-          });
-
-          it('does not track empty state block', () => {
-            expect(findSignedInEmptyStateBlock().attributes()).not.toMatchObject({
-              ...emptyStateBlockTracking,
-              ...experimentTracking,
-            });
-          });
-
-          it('does not track issue help link', () => {
-            expect(findIssuesHelpPageLink().attributes()).not.toMatchObject({
-              ...issueHelpLinkTracking,
-              ...experimentTracking,
-            });
-          });
-
-          it('does not track Jira docs link', () => {
-            expect(findJiraDocsLink().attributes()).not.toMatchObject({
-              ...jiraDocsLinkTracking,
-              ...experimentTracking,
-            });
-          });
-        });
-      });
     });
 
     describe('Jira section', () => {
@@ -280,21 +192,6 @@ describe('EmptyStateWithoutAnyIssues component', () => {
         expect(findJiraDocsLink().attributes('href')).toBe(
           '/help/integration/jira/issues#view-jira-issues',
         );
-      });
-    });
-
-    describe('when issues_mrs_empty_state candidate experiment', () => {
-      beforeEach(() => {
-        stubExperiments({ issues_mrs_empty_state: 'candidate' });
-      });
-
-      it('renders EmptyStateWithoutAnyIssuesExperiment', () => {
-        mountComponent();
-
-        expect(wrapper.findComponent(EmptyStateWithoutAnyIssuesExperiment).props()).toEqual({
-          showCsvButtons: false,
-          showIssuableByEmail: false,
-        });
       });
     });
   });

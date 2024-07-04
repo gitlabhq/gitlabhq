@@ -11,7 +11,7 @@ module ApplicationCable
 
     def connect
       self.current_user = find_user_from_bearer_token || find_user_from_session_store
-    rescue Gitlab::Auth::UnauthorizedError
+    rescue Gitlab::Auth::AuthenticationError
       reject_unauthorized_connection
     end
 

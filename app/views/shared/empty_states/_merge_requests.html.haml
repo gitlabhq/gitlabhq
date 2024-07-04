@@ -35,4 +35,16 @@
     title: _("There are no closed merge requests"))
 
 - else
-  = render_if_exists 'shared/empty_states/merge_requests_without_filters', button_path: button_path
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-merge-requests-md.svg',
+    empty_state_options: { data: { testid: 'issuable-empty-state' } },
+    title: _("Merge requests are a place to propose changes you've made to a project and discuss those changes with others")) do |c|
+
+    - c.with_description do
+      = _("Interested parties can even contribute by pushing commits if they want to.")
+      - if button_path
+        .gl-mt-5= link_button_to button_text, button_path,
+          title: button_text,
+          id: 'new_merge_request_link',
+          variant: :confirm,
+          data: { testid: "new-merge-request-button", **tracking_data }
+

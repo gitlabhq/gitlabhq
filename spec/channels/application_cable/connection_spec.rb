@@ -46,11 +46,46 @@ RSpec.describe ApplicationCable::Connection, :clean_gitlab_redis_sessions do
   context 'when bearer header is provided' do
     context 'when it is a personal_access_token' do
       let(:user_pat) { create(:personal_access_token) }
+      let(:app_context) { Gitlab::ApplicationContext.current }
+      let_it_be(:expired_token) { create(:personal_access_token, :expired, scopes: %w[read_api]) }
+      let_it_be(:revoked_token) { create(:personal_access_token, :revoked, scopes: %w[read_api]) }
 
       it 'finds user by PAT' do
         connect(ActionCable.server.config.mount_path, headers: { Authorization: "Bearer #{user_pat.token}" })
 
         expect(connection.current_user).to eq(user_pat.user)
+      end
+
+      context 'when an expired personal_access_token' do
+        let_it_be(:user_pat) { expired_token }
+
+        it 'sets the current_user as `nil`, and rejects the connection' do
+          expect do
+            connect(ActionCable.server.config.mount_path,
+              headers: { Authorization: "Bearer #{user_pat.token}" }
+            )
+          end.to have_rejected_connection
+
+          expect(connection.current_user).to be_nil
+          expect(app_context['meta.auth_fail_reason']).to eq('token_expired')
+          expect(app_context['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{user_pat.id}")
+        end
+      end
+
+      context 'when a revoked personal_access_token' do
+        let_it_be(:user_pat) { revoked_token }
+
+        it 'sets the current_user as `nil`, and rejects the connection' do
+          expect do
+            connect(ActionCable.server.config.mount_path,
+              headers: { Authorization: "Bearer #{user_pat.token}" }
+            )
+          end.to have_rejected_connection
+
+          expect(connection.current_user).to be_nil
+          expect(app_context['meta.auth_fail_reason']).to eq('token_revoked')
+          expect(app_context['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{user_pat.id}")
+        end
       end
     end
 

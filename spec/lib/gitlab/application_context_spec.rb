@@ -2,7 +2,14 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::ApplicationContext do
+RSpec.describe Gitlab::ApplicationContext, feature_category: :shared do
+  describe '.allowed_job_keys' do
+    it 'includes known keys but omits Web-specific keys' do
+      expect(described_class.allowed_job_keys).to include(:user, :user_id, :project, :root_namespace, :client_id)
+      expect(described_class.allowed_job_keys).not_to include(:auth_fail_reason, :auth_fail_token_id)
+    end
+  end
+
   describe '.with_context' do
     it 'yields the block' do
       expect { |b| described_class.with_context({}, &b) }.to yield_control

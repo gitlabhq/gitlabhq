@@ -154,6 +154,8 @@ def catalog_url
 end
 ```
 
+We commonly use `#sync` in a mutation after finding a record with `GitlabSchema.find_by_gid` or `.object_from_id`, as those methods return the result in a batch loader wrapper. Mutations are executed serially, so batch loading is not necessary and the object can be evaluated immediately.
+
 ## Testing
 
 Ideally, do all your testing using request specs, and using `Schema.execute`. If

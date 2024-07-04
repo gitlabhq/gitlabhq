@@ -417,6 +417,11 @@ msgid_plural "%d replies"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d result"
+msgid_plural "%d results"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] ""
@@ -1954,9 +1959,6 @@ msgid "A maximum of %{limit} projects can be searched for at one time."
 msgstr ""
 
 msgid "A member of the abuse team will review your report as soon as possible."
-msgstr ""
-
-msgid "A merge request (MR) is a proposal to incorporate changes from a source branch to a target branch."
 msgstr ""
 
 msgid "A new Auto DevOps pipeline has been created, go to the Pipelines page for details"
@@ -15386,9 +15388,6 @@ msgstr ""
 msgid "Create a new issue"
 msgstr ""
 
-msgid "Create a new merge request"
-msgstr ""
-
 msgid "Create a new project"
 msgstr ""
 
@@ -19807,9 +19806,6 @@ msgstr ""
 msgid "Email a new %{name} to this project"
 msgstr ""
 
-msgid "Email a new issue"
-msgstr ""
-
 msgid "Email address copied"
 msgstr ""
 
@@ -19970,9 +19966,6 @@ msgid "Enable Gitpod?"
 msgstr ""
 
 msgid "Enable Invisible Captcha during sign up"
-msgstr ""
-
-msgid "Enable Jira integration"
 msgstr ""
 
 msgid "Enable Kroki"
@@ -22099,9 +22092,6 @@ msgid "False positive"
 msgstr ""
 
 msgid "Fast timeout"
-msgstr ""
-
-msgid "Faster releases. Better code. Less pain."
 msgstr ""
 
 msgid "Favicon"
@@ -24446,9 +24436,6 @@ msgid "Go to merge requests"
 msgstr ""
 
 msgid "Go to next page"
-msgstr ""
-
-msgid "Go to page %{page}"
 msgstr ""
 
 msgid "Go to parent"
@@ -26975,9 +26962,6 @@ msgid "Import and export rate limits"
 msgstr ""
 
 msgid "Import and export settings"
-msgstr ""
-
-msgid "Import existing issues"
 msgstr ""
 
 msgid "Import from"
@@ -30716,9 +30700,6 @@ msgstr ""
 msgid "Learn more about groups."
 msgstr ""
 
-msgid "Learn more about issues"
-msgstr ""
-
 msgid "Learn more about issues."
 msgstr ""
 
@@ -30732,9 +30713,6 @@ msgid "Learn more about linking issues and incidents"
 msgstr ""
 
 msgid "Learn more about max seats used"
-msgstr ""
-
-msgid "Learn more about merge requests"
 msgstr ""
 
 msgid "Learn more about seats owed"
@@ -37859,6 +37837,9 @@ msgstr ""
 msgid "Pagination|Go to next page"
 msgstr ""
 
+msgid "Pagination|Go to page %{page}"
+msgstr ""
+
 msgid "Pagination|Go to previous page"
 msgstr ""
 
@@ -42035,7 +42016,7 @@ msgstr ""
 msgid "Projects are graded based on the highest severity vulnerability present"
 msgstr ""
 
-msgid "Projects are where you store your code, access issues, wiki and other features of GitLab."
+msgid "Projects are where you store your code, access issues, wiki, and other features of GitLab."
 msgstr ""
 
 msgid "Projects contributed to"
@@ -43334,13 +43315,13 @@ msgstr ""
 msgid "Read more about GitLab at %{link_to_promo}."
 msgstr ""
 
-msgid "Read our documentation"
-msgstr ""
-
 msgid "Read the documentation before applying changes."
 msgstr ""
 
 msgid "Read their documentation."
+msgstr ""
+
+msgid "Ready to get started with GitLab? Follow these steps to get familiar with us:"
 msgstr ""
 
 msgid "Ready to merge by members who can write to the target branch."
@@ -54046,9 +54027,6 @@ msgstr ""
 msgid "This feature is not enabled yet."
 msgstr ""
 
-msgid "This feature is only available on paid plans."
-msgstr ""
-
 msgid "This feature requires local storage to be enabled"
 msgstr ""
 
@@ -59413,10 +59391,10 @@ msgstr ""
 msgid "Welcome back! Your account had been deactivated due to inactivity but is now reactivated."
 msgstr ""
 
-msgid "Welcome to GitLab"
+msgid "Welcome to GitLab, %{first_name}!"
 msgstr ""
 
-msgid "Welcome to GitLab, %{first_name}!"
+msgid "Welcome to GitLab, %{name}!"
 msgstr ""
 
 msgid "Welcome to GitLab,%{br_tag}%{name}!"
@@ -59518,9 +59496,6 @@ msgid "When using the %{code_open}http://%{code_close} or %{code_open}https://%{
 msgstr ""
 
 msgid "When using the %{code_open}ssh://%{code_close} protocol, please use the following format: %{code_open}ssh://username@example.com/group/project.git%{code_close}."
-msgstr ""
-
-msgid "When you open a merge request, you can visualize and collaborate on the changes before merge."
 msgstr ""
 
 msgid "When you transfer your project to a group, you can easily manage multiple projects, view usage quotas for storage, compute minutes, and users, and start a trial or upgrade to a paid tier."
@@ -59746,9 +59721,6 @@ msgstr ""
 msgid "WikiPage|Write your content or drag files here…"
 msgstr ""
 
-msgid "Wiki|+ %{count} more"
-msgstr ""
-
 msgid "Wiki|Add custom sidebar"
 msgstr ""
 
@@ -59858,9 +59830,6 @@ msgid "Wireframe"
 msgstr ""
 
 msgid "With custom notification levels you receive notifications for the same events as in the Participate level, with additional selected events. For more information, see %{notificationLinkStart}notification emails%{notificationLinkEnd}."
-msgstr ""
-
-msgid "With issues you can discuss the implementation of an idea, track tasks and work status, elaborate on code implementations, and accept feature proposals, questions, support requests, or bug reports."
 msgstr ""
 
 msgid "With requirements, you can set criteria to check your products against."
@@ -61270,9 +61239,6 @@ msgid "You need to upload a GitLab project export archive (ending in .gz)."
 msgstr ""
 
 msgid "You need to verify your primary email first before enabling Two-Factor Authentication."
-msgstr ""
-
-msgid "You see projects here when you're added to a group or project."
 msgstr ""
 
 msgid "You should run a new pipeline, because the target branch has changed for this merge request."

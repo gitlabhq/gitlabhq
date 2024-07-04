@@ -36,12 +36,6 @@ RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
 
         expect(rendered).not_to include(_('Create a project'))
       end
-
-      it 'shows an alert' do
-        render
-
-        expect(rendered).to include(_("You see projects here when you're added to a group or project."))
-      end
     end
   end
 
@@ -56,12 +50,6 @@ RSpec.describe 'dashboard/projects/_blank_state_welcome.html.haml' do
       render
 
       expect(rendered).not_to include(_('Create a project'))
-    end
-
-    it 'shows an alert' do
-      render
-
-      expect(rendered).to include(_("You see projects here when you're added to a group or project."))
     end
   end
 end

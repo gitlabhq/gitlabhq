@@ -2219,7 +2219,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/events/epics/epic_updated_event.rb'
     - 'ee/app/events/namespace_settings/ai_related_settings_changed_event.rb'
     - 'ee/app/experiments/ee/application_experiment.rb'
-    - 'ee/app/experiments/issues_mrs_empty_state_experiment.rb'
     - 'ee/app/experiments/project_templates_during_registration_experiment.rb'
     - 'ee/app/experiments/signup_intent_step_one_experiment.rb'
     - 'ee/app/finders/app_sec/fuzzing/coverage/corpuses_finder.rb'

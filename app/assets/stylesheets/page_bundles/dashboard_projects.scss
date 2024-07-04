@@ -1,35 +1,9 @@
 @import 'mixins_and_variables_and_functions';
 
-.blank-state {
-  padding: 20px 50px;
-  min-height: 240px;
-  width: calc(50% - #{$gl-padding-8});
-
-  @include media-breakpoint-down(sm) {
-    width: 100%;
-    flex-direction: column;
-    justify-content: center;
-    padding: 50px 20px;
-  }
-}
-
-.blank-state-link {
-  &:hover {
-    background-color: var(--gl-background-color-subtle);
-    color: var(--gl-text-color, $gl-text-color);
-    text-decoration: none;
-  }
-}
-
-.blank-state-icon {
-  svg {
-    display: block;
-  }
-}
-
-.blank-state-body {
-  @include media-breakpoint-down(sm) {
-    text-align: center;
-    margin-top: 20px;
-  }
+.welcome-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
+  gap: $gl-spacing-scale-5;
+  max-width: 90ch;
+  margin: auto;
 }

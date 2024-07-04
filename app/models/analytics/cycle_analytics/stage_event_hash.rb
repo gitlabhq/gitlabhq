@@ -9,12 +9,15 @@ module Analytics
 
       # Creates or queries the id of the corresponding stage event hash code
       def self.record_id_by_hash_sha256(organization_id, hash)
+        hash_record = find_by(organization_id: organization_id, hash_sha256: hash)
+        return hash_record.id if hash_record
+
         casted_organization_id = Arel::Nodes
-          .build_quoted(organization_id, Analytics::CycleAnalytics::StageEventHash.arel_table[:organization_id])
+          .build_quoted(organization_id, arel_table[:organization_id])
           .to_sql
 
         casted_hash_code = Arel::Nodes
-          .build_quoted(hash, Analytics::CycleAnalytics::StageEventHash.arel_table[:hash_sha256])
+          .build_quoted(hash, arel_table[:hash_sha256])
           .to_sql
 
         # Atomic, safe insert without retrying

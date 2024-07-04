@@ -1,7 +1,7 @@
 ---
 status: proposed
 creation-date: "2024-03-29"
-authors: [ "@sean_carroll" ]
+authors: [ "@sean_carroll", "@eduardobonet" ]
 coach: "@jessieay"
 approvers: [ "@susie.bee", "@m_gill" ]
 owning-stage: "~devops::ai-powered"
@@ -160,9 +160,45 @@ Installation instructions will be added to the Developer documentation. [issue](
 - GitLab Duo Chat can also use Vertex AI Codey textembedding-gecko
 - Vulnerability explanation can fall back to Claude-2 if degraded performance
 
+#### RAG / Duo Chat tools
+
+Most of the tools available to Duo Chat behave the same for self-hosted models as
+they do in the GitLab-hosted AI Gateway architecture. Below are the expections:
+
+##### Duo Documentation search
+
+Duo documentation search performed through the GitLab-managed AI Gateway (`cloud.gitlab.com`) relies on [VertexAI Search](../gitlab_rag/index.md),
+which is not available for air-gapped customers. As a replacement, only within the scope of
+self-hosted, air-gapped customers, an index of GitLab documentation has been provided
+within the self-hosted AI Gateway.
+
+This index is an SQLite database that allows for full-text search. An index is
+generated for each GitLab version and saved into a generic package registry. The index that matches the customer's GitLab version is then downloaded by the self-hosted AI Gateway.
+
+Using a local index does bring some limitations:
+
+- [BM25 search](https://en.wikipedia.org/wiki/Okapi_BM25) performs worse in the presence of typos, and the performance also depends on how the index was built
+- Given that the indexed tokens depend on how the corpus was cleaned (stemming, tokenisation, punctuation), the same text cleaning steps need to be applied to the user query for it to properly match the indexes
+- Local search diverges from other already implemented solutions, and creates a split between self-managed and GitLab-hosted instances of the AI Gateway.
+
+Over time, we intend to replace this solution with a self-hosted Elasticsearch/OpenSearch
+alternative, but as of now, the percentage of self-hosted customers that have
+[Elasticsearch enabled is low](https://gitlab.com/gitlab-org/gitlab/-/issues/438178#current-adoption).
+
+For further discussion, refer to the [proof of concept](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/974).
+
+**Index creation**
+
+Index creation and implementation is being worked on as part of [this epic](https://gitlab.com/groups/gitlab-org/-/epics/14282)
+
+**Evaluation**
+
+Evaluation of the local-search is being worked on as part of [this epic](https://gitlab.com/gitlab-org/gitlab/-/issues/468666).
+
 #### LLM-hosting
 
-Customers will self-manage LLM hosting. For Mistral, GitLab recommends following the [Mistral Self-Deployment documentation](https://docs.mistral.ai/deployment/self-deployment/overview/)
+Customers will self-manage LLM hosting. We provided limited documentation on how
+customers can host their own [LLMs](../../../administration/self_hosted_models/install_infrastructure.md)
 
 #### GitLab Duo License Management
 

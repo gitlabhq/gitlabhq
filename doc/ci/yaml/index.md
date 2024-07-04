@@ -4034,7 +4034,7 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 
 - If an `if` statement is true, add the job to the pipeline.
 - If an `if` statement is true, but it's combined with `when: never`, do not add the job to the pipeline.
-- If no `if` statements are true, do not add the job to the pipeline.
+- If an `if` statement is false, do not add the job to the pipeline, then check the next `rules` item (if any more exist).
 
 `if` clauses are evaluated based on the values of [CI/CD variables](../variables/index.md)
 or [predefined CI/CD variables](../variables/predefined_variables.md), with

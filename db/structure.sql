@@ -29254,7 +29254,7 @@ CREATE INDEX index_upload_states_pending_verification ON upload_states USING btr
 
 CREATE INDEX index_uploads_on_checksum ON uploads USING btree (checksum);
 
-CREATE INDEX index_uploads_on_model_id_and_model_type ON uploads USING btree (model_id, model_type);
+CREATE INDEX index_uploads_on_model_id_model_type_uploader_created_at ON uploads USING btree (model_id, model_type, uploader, created_at);
 
 CREATE INDEX index_uploads_on_store ON uploads USING btree (store);
 
@@ -32920,6 +32920,9 @@ ALTER TABLE ONLY vulnerability_state_transitions
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_d4e29af7d7 FOREIGN KEY (source_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY ci_sources_pipelines
+    ADD CONSTRAINT fk_d4e29af7d7_p FOREIGN KEY (source_partition_id, source_pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
+
 ALTER TABLE ONLY operations_strategies_user_lists
     ADD CONSTRAINT fk_d4f7076369 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -33003,6 +33006,9 @@ ALTER TABLE ONLY ci_resources
 
 ALTER TABLE ONLY ci_sources_pipelines
     ADD CONSTRAINT fk_e1bad85861 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_sources_pipelines
+    ADD CONSTRAINT fk_e1bad85861_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE p_ci_builds_metadata
     ADD CONSTRAINT fk_e20479742e_p FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
@@ -33171,6 +33177,9 @@ ALTER TABLE ONLY vulnerability_finding_evidences
 
 ALTER TABLE p_ci_stages
     ADD CONSTRAINT fk_fb57e6cc56 FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_stages
+    ADD CONSTRAINT fk_fb57e6cc56_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY agent_group_authorizations
     ADD CONSTRAINT fk_fb70782616 FOREIGN KEY (agent_id) REFERENCES cluster_agents(id) ON DELETE CASCADE;
