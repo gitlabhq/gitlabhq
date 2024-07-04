@@ -32,6 +32,7 @@ export default {
     WorkItemTreeActions,
     GlToggle,
   },
+  inject: ['hasSubepicsFeature'],
   props: {
     fullPath: {
       type: String,
@@ -103,9 +104,18 @@ export default {
         .some((hierarchy) => hierarchy.hasChildren);
     },
     addItemsActions() {
-      const reorderedChildTypes = this.allowedChildTypes
-        .slice()
-        .sort((a, b) => a.id.localeCompare(b.id));
+      let childTypes = this.allowedChildTypes;
+      // To remove EPICS actions when subepics are not available
+      if (
+        this.workItemType.toUpperCase() === WORK_ITEM_TYPE_ENUM_EPIC &&
+        !this.hasSubepicsFeature
+      ) {
+        childTypes = childTypes.filter((type) => {
+          return type.name.toUpperCase() !== WORK_ITEM_TYPE_ENUM_EPIC;
+        });
+      }
+
+      const reorderedChildTypes = childTypes.slice().sort((a, b) => a.id.localeCompare(b.id));
       return reorderedChildTypes.map((type) => {
         const enumType = WORK_ITEM_TYPE_VALUE_MAP[type.name];
         return {

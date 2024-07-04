@@ -3,9 +3,19 @@
 module Tooling
   module Danger
     module CiJobsDependencyValidation
-      VALIDATED_JOB_NAMES = %w[setup-test-env compile-test-assets retrieve-tests-metadata build-gdk-image].freeze
+      VALIDATED_JOB_NAMES = %w[
+        setup-test-env
+        compile-test-assets
+        retrieve-tests-metadata
+        build-gdk-image
+        build-assets-image
+        build-qa-image
+      ].freeze
       GLOBAL_KEYWORDS = %w[workflow variables stages default].freeze
       DEFAULT_BRANCH_NAME = 'master'
+      FAILED_VALIDATION_WARNING = 'Please review warnings in the *CI Jobs Dependency Validation* section below.'
+      SKIPPED_VALIDATION_WARNING = 'Job dependency validation is skipped due to error fetching merged CI yaml'
+      VALIDATION_PASSED_OUTPUT = ':white_check_mark: No warnings found in ci job dependencies.'
 
       Job = Struct.new(:name, :rules, :needs, keyword_init: true) do
         def self.parse_rules_from_yaml(name, jobs_yaml)
@@ -28,7 +38,6 @@ module Tooling
         end
 
         def self.ignore?(job_name)
-          # hidden jobs are extended by other jobs thus their rules will be verified in the extending jobs
           GLOBAL_KEYWORDS.include?(job_name) || job_name.start_with?('.')
         end
 
@@ -42,9 +51,27 @@ module Tooling
       def output_message
         return '' if !helper.ci? || !helper.has_ci_changes? || target_branch_jobs.empty? || source_branch_jobs.empty?
 
-        VALIDATED_JOB_NAMES.filter_map do |needed_job_name|
-          construct_warning_message(needed_job_name)
-        end.join("\n")
+        validation_statuses = VALIDATED_JOB_NAMES.to_h do |job_name|
+          [job_name, { skipped: false, failed: 0 }]
+        end
+
+        output = VALIDATED_JOB_NAMES.filter_map do |needed_job_name|
+          validate(needed_job_name, validation_statuses)
+        end.join("\n").chomp
+
+        return VALIDATION_PASSED_OUTPUT if output == ''
+
+        warn FAILED_VALIDATION_WARNING
+
+        <<~MARKDOWN
+        ### CI Jobs Dependency Validation
+
+        | name | validation status |
+        | ------ | --------------- |
+        #{construct_summary_table(validation_statuses)}
+
+        #{output}
+        MARKDOWN
       end
 
       private
@@ -70,7 +97,7 @@ module Tooling
 
         YAML.load(api_response['merged_yaml'], aliases: true)
       rescue StandardError => e
-        puts e.message
+        warn "#{SKIPPED_VALIDATION_WARNING}: #{e.message}"
         {}
       end
 
@@ -99,43 +126,70 @@ module Tooling
         ref == DEFAULT_BRANCH_NAME ? {} : ref_query_params
       end
 
-      def construct_warning_message(needed_job_name)
+      def validate(needed_job_name, validation_statuses)
         needed_job_in_source_branch = source_branch_jobs.find { |job| job.name == needed_job_name }
         needed_job_in_target_branch = target_branch_jobs.find { |job| job.name == needed_job_name }
 
         if needed_job_in_source_branch.nil?
-          return "Unable to find job #{needed_job_name} in #{source_branch}. Skipping."
+          validation_statuses[needed_job_name][:skipped] = true
+
+          return <<~MARKDOWN
+          - :warning: Unable to find job `#{needed_job_name}` in branch `#{source_branch}`.
+            If this job has been removed, please delete it from `Tooling::Danger::CiJobsDependencyValidation::VALIDATED_JOB_NAMES`.
+            Validation skipped.
+          MARKDOWN
         end
 
-        puts "Looking for misconfigured dependent jobs for #{needed_job_name}..."
-
-        warnings = changed_jobs_warnings(
+        failures = validation_failures(
           needed_job_in_source_branch: needed_job_in_source_branch,
           needed_job_in_target_branch: needed_job_in_target_branch
         )
 
-        puts "Detected #{warnings.count} dependent jobs with misconfigured rules."
+        failed_count = failures.count
 
-        return if warnings.empty?
+        return if failed_count == 0
+
+        validation_statuses[needed_job_name][:failed] = failed_count
 
         <<~MSG
-          **This MR adds new rules to the following dependent jobs for `#{needed_job_name}`:**
+          - 🚨 **New rules were detected in the following jobs but missing in `#{needed_job_name}`:**
 
-          #{warnings.join("\n")}
+          <details><summary>Click to expand details</summary>
 
-          Please ensure the changes are included in the rules for `#{needed_job_name}` to avoid yaml syntax error!
+          #{failures.join("\n")}
 
-          <details><summary>Click to expand rules for #{needed_job_name} to confirm if the new conditions are present</summary>
+          Here are the rules for `#{needed_job_name}`:
 
           ```yaml
           #{dump_yaml(needed_job_in_source_branch.rules)}
           ```
 
           </details>
+
+          To avoid CI config errors, please verify if the new rules should be added to `#{needed_job_name}`.
+          Please add a comment if rules should not be added.
         MSG
       end
 
-      def changed_jobs_warnings(needed_job_in_source_branch:, needed_job_in_target_branch:)
+      def construct_summary_table(validation_statuses)
+        validation_statuses.map do |job_name, statuses|
+          skipped, failed_count = statuses.values_at(:skipped, :failed)
+
+          summary = if skipped
+                      ":warning: Skipped"
+                    elsif failed_count == 0
+                      ":white_check_mark: Passed"
+                    else
+                      "🚨 Failed (#{failed_count})"
+                    end
+
+          <<~MARKDOWN.chomp
+          | `#{job_name}` | #{summary} |
+          MARKDOWN
+        end.join("\n")
+      end
+
+      def validation_failures(needed_job_in_source_branch:, needed_job_in_target_branch:)
         dependent_jobs_new = needed_job_in_source_branch&.dependent_jobs(source_branch_jobs) || []
         dependent_jobs_old = needed_job_in_target_branch&.dependent_jobs(target_branch_jobs) || []
 
@@ -149,8 +203,6 @@ module Tooling
                               else
                                 dependent_job_with_rule_change.rules - dependent_job_old.rules
                               end
-
-          puts "Detected #{report_candidates.count} jobs with applicable rule changes."
 
           rules_to_report = exact_rules_missing_in_needed_job(
             needed_job: needed_job_in_source_branch,

@@ -12,6 +12,8 @@ import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '~/work_items/constants';
@@ -38,6 +40,7 @@ describe('WorkItemTree', () => {
     children = childrenWorkItems,
     canUpdate = true,
     canUpdateChildren = true,
+    hasSubepicsFeature = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
       propsData: {
@@ -50,6 +53,9 @@ describe('WorkItemTree', () => {
         children,
         canUpdate,
         canUpdateChildren,
+      },
+      provide: {
+        hasSubepicsFeature,
       },
       stubs: { WidgetWrapper },
     });
@@ -113,6 +119,52 @@ describe('WorkItemTree', () => {
       });
     },
   );
+
+  describe('when subepics are not available', () => {
+    it.each`
+      option              | formType             | childType
+      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    `(
+      'when triggering action $option, renders the form passing $formType and $childType',
+      async ({ formType, childType }) => {
+        createComponent({ hasSubepicsFeature: false, workItemType: 'Epic' });
+
+        wrapper.vm.showAddForm(formType, childType);
+        await nextTick();
+
+        expect(findForm().exists()).toBe(true);
+        expect(findForm().props()).toMatchObject({
+          formType,
+          childrenType: childType,
+        });
+      },
+    );
+  });
+
+  describe('when subepics are available', () => {
+    it.each`
+      option              | formType             | childType
+      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+      ${'New epic'}       | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_EPIC}
+      ${'Existing epic'}  | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_EPIC}
+    `(
+      'when triggering action $option, renders the form passing $formType and $childType',
+      async ({ formType, childType }) => {
+        createComponent({ hasSubepicsFeature: true, workItemType: 'Epic' });
+
+        wrapper.vm.showAddForm(formType, childType);
+        await nextTick();
+
+        expect(findForm().exists()).toBe(true);
+        expect(findForm().props()).toMatchObject({
+          formType,
+          childrenType: childType,
+        });
+      },
+    );
+  });
 
   describe('when no permission to update', () => {
     beforeEach(() => {

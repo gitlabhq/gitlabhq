@@ -1183,42 +1183,37 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     describe '.excluding_restricted_visibility_levels_for_user' do
       let_it_be(:admin_user) { create(:admin) }
 
-      context 'when restricted_visibility_level is not configured' do
-        context 'when user is an admin', :enable_admin_mode do
-          it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to contain_exactly(
-              private_group, internal_group, group
-            )
+      let(:private_vis) { Gitlab::VisibilityLevel::PRIVATE }
+      let(:internal_vis) { Gitlab::VisibilityLevel::INTERNAL }
+      let(:public_vis) { Gitlab::VisibilityLevel::PUBLIC }
+
+      subject { described_class.excluding_restricted_visibility_levels_for_user(user1) }
+
+      context 'with table syntax' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:restricted_visibility_levels, :expected_groups) do
+          []                                      | lazy { [private_group, internal_group, group] }
+          [private_vis]                           | lazy { [internal_group, group] }
+          [internal_vis]                          | lazy { [private_group, internal_group, group] }
+          [public_vis]                            | lazy { [private_group, internal_group, group] }
+          [private_vis, internal_vis]             | lazy { [group] }
+          [private_vis, public_vis]               | lazy { [internal_group, group] }
+          [internal_vis, public_vis]              | lazy { [private_group, internal_group, group] }
+          [private_vis, internal_vis, public_vis] | lazy { [] }
+        end
+
+        with_them do
+          before do
+            stub_application_setting(restricted_visibility_levels: restricted_visibility_levels)
           end
-        end
 
-        context 'when user is not an admin' do
-          it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to contain_exactly(
-              private_group, internal_group, group
-            )
-          end
-        end
-      end
+          it { is_expected.to match_array(expected_groups) }
 
-      context 'when restricted_visibility_level is set to private' do
-        before do
-          stub_application_setting(restricted_visibility_levels: [Gitlab::VisibilityLevel::PRIVATE])
-        end
+          context 'with admin mode enabled', :enable_admin_mode do
+            subject { described_class.excluding_restricted_visibility_levels_for_user(admin_user) }
 
-        context 'and user is an admin', :enable_admin_mode do
-          it 'returns all groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(admin_user)).to contain_exactly(
-              private_group, internal_group, group
-            )
-          end
-        end
-
-        context 'and user is not an admin' do
-          it 'excludes private groups' do
-            expect(described_class.excluding_restricted_visibility_levels_for_user(user1)).to contain_exactly(
-              internal_group, group
-            )
+            it { is_expected.to match_array([private_group, internal_group, group]) }
           end
         end
       end

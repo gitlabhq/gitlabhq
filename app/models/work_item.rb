@@ -22,7 +22,7 @@ class WorkItem < Issue
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
     foreign_key: :work_item_id, source: :work_item
-  has_many :work_item_children_by_relative_position, -> { work_item_children_keyset_order },
+  has_many :work_item_children_by_relative_position, ->(work_item) { work_item_children_keyset_order(work_item) },
     through: :child_links, class_name: 'WorkItem',
     foreign_key: :work_item_id, source: :work_item
 
@@ -65,8 +65,8 @@ class WorkItem < Issue
       )
     end
 
-    def work_item_children_keyset_order
-      keyset_order = Gitlab::Pagination::Keyset::Order.build(
+    def work_item_children_keyset_order_config
+      Gitlab::Pagination::Keyset::Order.build(
         [
           Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'parent_link_relative_position',
@@ -81,6 +81,10 @@ class WorkItem < Issue
           )
         ]
       )
+    end
+
+    def work_item_children_keyset_order(_work_item)
+      keyset_order = work_item_children_keyset_order_config
 
       keyset_order.apply_cursor_conditions(includes(:parent_link)).reorder(keyset_order)
     end

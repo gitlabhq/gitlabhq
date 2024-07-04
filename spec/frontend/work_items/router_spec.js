@@ -57,6 +57,7 @@ describe('Work items router', () => {
         hasIssueWeightsFeature: false,
         hasIterationsFeature: false,
         hasOkrsFeature: false,
+        hasSubepicsFeature: false,
         hasIssuableHealthStatusFeature: false,
         labelsManagePath: 'test-project-path/labels',
         reportAbusePath: '/report/abuse/path',

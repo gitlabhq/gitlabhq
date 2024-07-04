@@ -111,6 +111,7 @@ describe('WorkItemDetail component', () => {
     workItemsAlphaEnabled = false,
     workItemsBeta = false,
     namespaceLevelWorkItems = true,
+    hasSubepicsFeature = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -141,6 +142,7 @@ describe('WorkItemDetail component', () => {
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         hasOkrsFeature: true,
+        hasSubepicsFeature,
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
@@ -351,6 +353,22 @@ describe('WorkItemDetail component', () => {
     describe('`namespace_level_work_items` is disabled', () => {
       it('does not show ancestors widget and shows title in the header', async () => {
         createComponent({ namespaceLevelWorkItems: false });
+
+        await waitForPromises();
+
+        expect(findAncestors().exists()).toBe(false);
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+      });
+    });
+
+    describe('`subepics` is unavailable', () => {
+      it('does not show ancestors widget and shows title in the header', async () => {
+        const epicWorkItem = workItemByIidResponseFactory({
+          workItemType: epicType,
+        });
+        const epicHandler = jest.fn().mockResolvedValue(epicWorkItem);
+
+        createComponent({ hasSubepicsFeature: false, handler: epicHandler });
 
         await waitForPromises();
 

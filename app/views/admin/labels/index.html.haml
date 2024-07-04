@@ -2,7 +2,7 @@
 - add_page_specific_style 'page_bundles/labels'
 - page_description = s_('AdminLabels|Labels created here will be automatically added to new projects.')
 
-%div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_labels_pageload' } })
+%div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_labels_pageload' } }
 
 - if @labels.present?
   = render ::Layouts::CrudComponent.new(_('Labels'), description: page_description, count: @labels.count, count_class: 'js-admin-labels-count', icon: 'label', options: { class: 'labels other-labels gl-mt-5 js-admin-labels-container' }) do |c|

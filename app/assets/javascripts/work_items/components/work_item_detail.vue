@@ -25,6 +25,7 @@ import {
   LINKED_ITEMS_ANCHOR,
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -80,7 +81,7 @@ export default {
     WorkItemLoading,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'isGroup', 'reportAbusePath', 'groupPath'],
+  inject: ['fullPath', 'isGroup', 'reportAbusePath', 'groupPath', 'hasSubepicsFeature'],
   props: {
     isModal: {
       type: Boolean,
@@ -230,9 +231,17 @@ export default {
     showAncestors() {
       // TODO: This is a temporary check till the issue work item migration is completed
       // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
-        ? this.glFeatures.namespaceLevelWorkItems && this.parentWorkItem
-        : this.parentWorkItem;
+      const { workItemType, glFeatures, parentWorkItem, hasSubepicsFeature } = this;
+
+      if (workItemType === WORK_ITEM_TYPE_VALUE_TASK) {
+        return glFeatures.namespaceLevelWorkItems && parentWorkItem;
+      }
+
+      if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
+        return hasSubepicsFeature;
+      }
+
+      return parentWorkItem;
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;

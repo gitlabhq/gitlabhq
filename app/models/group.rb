@@ -222,7 +222,19 @@ class Group < Namespace
   end
 
   scope :excluding_restricted_visibility_levels_for_user, ->(user) do
-    user.can_admin_all_resources? ? all : where.not(visibility_level: Gitlab::CurrentSettings.restricted_visibility_levels)
+    return all if user.can_admin_all_resources?
+
+    case Gitlab::CurrentSettings.restricted_visibility_levels.sort
+    when [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PUBLIC],
+         [Gitlab::VisibilityLevel::PRIVATE]
+      where.not(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    when [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]
+      where.not(visibility_level: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL])
+    when Gitlab::VisibilityLevel.values
+      none
+    else
+      all
+    end
   end
 
   scope :project_creation_allowed, ->(user) do

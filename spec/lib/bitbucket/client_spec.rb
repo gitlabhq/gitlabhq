@@ -14,6 +14,76 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
 
   subject(:client) { described_class.new(options) }
 
+  describe '#each_page' do
+    let_it_be(:item1) do
+      { 'username' => 'Ben' }
+    end
+
+    let_it_be(:item2) do
+      { 'username' => 'Affleck' }
+    end
+
+    let_it_be(:item3) do
+      { 'username' => 'Jane' }
+    end
+
+    let_it_be(:response1) do
+      { 'values' => [item1], 'next' => 'https://example.com/next' }
+    end
+
+    let_it_be(:response2) do
+      { 'values' => [item2], 'next' => 'https://example.com/next2' }
+    end
+
+    let_it_be(:response3) do
+      { 'values' => [item3], 'next' => nil }
+    end
+
+    before do
+      allow(client)
+        .to receive(:pull_requests)
+        .with('repo')
+        .and_return(response1)
+
+      allow(client)
+        .to receive(:pull_requests)
+        .with('repo', { next_url: 'https://example.com/next' })
+        .and_return(response2)
+
+      allow(client)
+        .to receive(:pull_requests)
+        .with('repo', { next_url: 'https://example.com/next2' })
+        .and_return(response3)
+    end
+
+    it 'yields every retrieved page to the supplied block' do
+      pages = []
+
+      client.each_page(:pull_requests, :pull_request, 'repo') { |page| pages << page }
+
+      expect(pages[0]).to be_an_instance_of(Bitbucket::Page)
+
+      expect(pages[0].items.count).to eq(1)
+      expect(pages[0].items.first.raw).to eq(item1)
+      expect(pages[0].attrs[:next]).to eq('https://example.com/next')
+
+      expect(pages[1].items.count).to eq(1)
+      expect(pages[1].items.first.raw).to eq(item2)
+      expect(pages[1].attrs[:next]).to eq('https://example.com/next2')
+
+      expect(pages[2].items.count).to eq(1)
+      expect(pages[2].items.first.raw).to eq(item3)
+      expect(pages[2].attrs[:next]).to eq(nil)
+    end
+
+    context 'when fetch_data not defined' do
+      it 'raises argument error' do
+        expect { client.each_page(:foo, :pull_request, 'repo') }
+          .to raise_error(ArgumentError, 'Unknown data method foo')
+      end
+    end
+  end
+
   describe '#last_issue' do
     let(:url) { "#{root_url}/repositories/#{repo}/issues?pagelen=1&sort=-created_on&state=ALL" }
 
@@ -58,6 +128,18 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
       expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :pull_request, page_number: nil, limit: nil)
 
       client.pull_requests(repo)
+    end
+
+    context 'with options raw' do
+      let(:url) { "#{root_url}#{path}" }
+
+      it 'returns raw result' do
+        stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
+
+        client.pull_requests(repo, raw: true)
+
+        expect(WebMock).to have_requested(:get, url)
+      end
     end
   end
 

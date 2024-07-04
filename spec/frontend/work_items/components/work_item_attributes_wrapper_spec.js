@@ -43,6 +43,7 @@ describe('WorkItemAttributesWrapper component', () => {
         hasOkrsFeature: true,
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
+        hasSubepicsFeature: true,
         glFeatures: {
           workItemsAlpha,
         },

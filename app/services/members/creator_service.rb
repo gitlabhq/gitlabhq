@@ -56,18 +56,22 @@ module Members
                 existing_members: existing_members
               }.merge(parsed_args(args))
 
-              members = emails.map do |email|
-                new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
-              end
-
-              members += users.map do |user|
-                new(invitee: user, **common_arguments).execute
-              end
-
-              members
+              build_members(emails, users, common_arguments)
             end
           end
         end
+      end
+
+      def build_members(emails, users, common_arguments)
+        members = emails.map do |email|
+          new(invitee: email, builder: InviteMemberBuilder, **common_arguments).execute
+        end
+
+        members += users.map do |user|
+          new(invitee: user, **common_arguments).execute
+        end
+
+        members
       end
 
       def add_member(source, invitee, access_level, **args)
