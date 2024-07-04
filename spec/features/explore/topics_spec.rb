@@ -8,7 +8,7 @@ RSpec.describe 'Explore Topics', feature_category: :user_profile do
       visit topics_explore_projects_path
 
       expect(page).to have_current_path topics_explore_projects_path, ignore_query: true
-      expect(page).to have_content('There are no topics to show.')
+      expect(page).to have_content('There are no topics to show')
     end
   end
 

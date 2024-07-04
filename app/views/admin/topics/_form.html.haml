@@ -25,6 +25,7 @@
                                  supports_quick_actions: 'false',
                                  enable_autocomplete: 'false',
                                  disable_attachments: 'true',
+                                 autofocus: 'false',
                                  form_field_classes: 'note-textarea js-gfm-input markdown-area' } }
       = f.hidden_field :description
 
@@ -36,14 +37,12 @@
     - if @topic.avatar?
       .js-remove-topic-avatar{ data: { path: admin_topic_avatar_path(@topic), name: @topic.name } }
 
-  - if @topic.new_record?
-    .form-actions
+  .gl-mt-5.gl-flex.gl-flex-wrap.gl-gap-3
+    - if @topic.new_record?
       = f.submit _('Create topic'), pajamas_button: true
       = render Pajamas::ButtonComponent.new(href: admin_topics_path) do
         = _('Cancel')
-
-  - else
-    .form-actions
+    - else
       = f.submit _('Save changes'), pajamas_button: true
       = render Pajamas::ButtonComponent.new(href: admin_topics_path) do
         = _('Cancel')

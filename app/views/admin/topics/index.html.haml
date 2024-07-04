@@ -1,20 +1,23 @@
 - page_title _("Topics")
 - add_page_specific_style 'page_bundles/search'
 
-.top-area{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_topics_pageload' } }
-  .nav-controls.gl-w-full.gl-mt-3.gl-mb-3
-    = form_tag admin_topics_path, method: :get do |f|
-      - search = params.fetch(:search, nil)
-      .search-field-holder
-        = search_field_tag :search, search, class: "form-control gl-form-input search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: _('Search by name')
-        = sprite_icon('search', css_class: 'search-icon')
-    .gl-flex-grow-1
+= render ::Layouts::PageHeadingComponent.new(_('Topics'), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_topics_pageload' } }) do |c|
+  - c.with_actions do
     .js-merge-topics{ data: { path: merge_admin_topics_path } }
     = render Pajamas::ButtonComponent.new(href: new_admin_topic_path, variant: 'confirm') do
       = _('New topic')
+
+.gl-flex.gl-min-w-0.gl-grow.row-content-block
+  = form_tag admin_topics_path, method: :get, class: 'gl-w-full' do |f|
+    - search = params.fetch(:search, nil)
+    .search-field-holder
+      = search_field_tag :search, search, class: "form-control gl-form-input search-text-input js-search-input", autofocus: true, spellcheck: false, placeholder: _('Search by name')
+      = sprite_icon('search', css_class: 'search-icon')
+
 %ul.content-list
   = render partial: 'topic', collection: @topics
 
 = paginate_collection @topics
+
 - if @topics.empty?
   = render 'shared/empty_states/topics'

@@ -1154,6 +1154,7 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
     subject { GitlabSchema.execute(query, context: { current_user: current_user }).as_json }
 
     let_it_be(:current_user) { create(:user) }
+    let_it_be(:project) { create(:project, :empty_repo) }
 
     let(:query) do
       %(
@@ -1170,18 +1171,12 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
       subject.dig('data', 'project', 'protectableBranches')
     end
 
-    let_it_be(:project) { create(:project, :empty_repo) }
-
     before_all do
       project.add_maintainer(current_user)
     end
 
     describe 'an empty repository' do
-      before_all do
-        project.repository.branch_names.each do |branch_name|
-          project.repository.delete_branch(branch_name)
-        end
-      end
+      let(:project) { create(:project, :empty_repo, maintainers: current_user) }
 
       it 'returns an empty array' do
         expect(protectable_branches).to be_empty

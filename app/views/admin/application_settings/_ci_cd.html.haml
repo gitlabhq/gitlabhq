@@ -1,4 +1,4 @@
-.settings-content
+.settings-content{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_application_settings_ci_cd_pageload' } }
   = gitlab_ui_form_for @application_setting, url: ci_cd_admin_application_settings_path(anchor: 'js-ci-cd-settings'), html: { class: 'fieldset-form' } do |f|
     = form_errors(@application_setting)
 

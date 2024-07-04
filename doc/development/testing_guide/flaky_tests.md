@@ -84,6 +84,16 @@ difficult to achieve locally. Ordering issues are easier to reproduce by repeate
   in the tests.
 - [Example 4](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106936/diffs).
 
+### Too Many SQL queries
+
+**Label:** `flaky-test::too-many-sql-queries`
+
+**Description:** SQL Query limit has reached triggering `Gitlab::QueryLimiting::Transaction::ThresholdExceededError`.
+
+**Difficulty to reproduce:** Moderate, this failure may depend on the state of query cache which can be impacted by order of specs.
+
+**Resolution:** See [query count limits docs](../database/query_count_limits.md#solving-failing-tests).
+
 ### Random input
 
 **Label:** `flaky-test::random input`
