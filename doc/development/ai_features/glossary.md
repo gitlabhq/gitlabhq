@@ -77,7 +77,7 @@ to AI that you think could benefit from being in this list, add it!
   synthesize the information to generate a coherent, contextualy-relevant answer.
   This design pattern is helpful in open-domain question answering with LLMs,
   which is why we use this design pattern for answering questions to GitLab Duo Chat.
-- **Self-Hosted Model**: A LLM hosted externally to GitLab by an organisation and interacting with GitLab AI features.
+- **Self-hosted model**: A LLM hosted externally to GitLab by an organisation and interacting with GitLab AI features.
 - **Similarity Score**: A mathematical method to determine the likeness between answers produced by an LLM and the reference ground truth answers.
   See also the [Model Validation direction page](https://about.gitlab.com/direction/ai-powered/ai_model_validation/ai_evaluation/metrics/#similarity-scores)
 - **Tool**: logic that performs a specific LLM-related task; each tool has a

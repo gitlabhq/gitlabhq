@@ -59,7 +59,7 @@ export default {
       variables() {
         const queryVariables = {
           projectPath: this.projectPath,
-          filePath: this.path,
+          filePath: [this.path],
           ref: this.currentRef,
           refType: this.refType?.toUpperCase() || null,
           shouldFetchRawText: true,

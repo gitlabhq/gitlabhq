@@ -569,16 +569,16 @@ test-job4:
   script:
     - echo "$BUILD_VERSION"  # Output is: 'v1.0.0'
   needs:
-    job: build-job1
-    artifacts: true
+    - job: build-job1
+      artifacts: true
 
 test-job5:
   stage: deploy
   script:
     - echo "$BUILD_VERSION"  # Output is ''
   needs:
-    job: build-job1
-    artifacts: false
+    - job: build-job1
+      artifacts: false
 
 test-job6:
   stage: deploy

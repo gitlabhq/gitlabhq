@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :deploy_token do
-    token_encrypted { Gitlab::CryptoHelper.aes256_gcm_encrypt(SecureRandom.hex(50)) }
     sequence(:name) { |n| "PDT #{n}" }
     read_repository { true }
     read_registry { true }

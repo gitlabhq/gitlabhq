@@ -82,7 +82,7 @@ module RuboCop
       # sometimes code needs to be refactored to make this work. As such, we
       # only allow developers to easily denylist existing offenses.
       def corrector(node)
-        lambda do |corrector|
+        ->(corrector) do
           corrector.insert_after(
             node.source_range,
             " # rubocop: disable #{cop_name}"

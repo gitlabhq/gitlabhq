@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-get :issues, to: 'issues#calendar', constraints: lambda { |req| req.format == :ics }
+get :issues, to: 'issues#calendar', constraints: ->(req) { req.format == :ics }
 
 resources :issues, concerns: :awardable, constraints: { id: /\d+/ } do
   member do

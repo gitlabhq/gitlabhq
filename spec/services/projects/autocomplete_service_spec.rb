@@ -241,7 +241,7 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
   describe '#labels_as_hash' do
     def expect_labels_to_equal(labels, expected_labels)
       expect(labels.size).to eq(expected_labels.size)
-      extract_title = lambda { |label| label['title'] }
+      extract_title = ->(label) { label['title'] }
       expect(labels.map(&extract_title)).to match_array(expected_labels.map(&extract_title))
     end
 

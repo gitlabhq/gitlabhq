@@ -23,6 +23,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
+    p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
     ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
     snippets: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
   }.with_indifferent_access.freeze

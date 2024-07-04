@@ -1,7 +1,7 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Setup your Self-Hosted Model Deployment infrastructure
+description: Setup your self-hosted model deployment infrastructure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 

@@ -15,7 +15,7 @@ RSpec.describe Groups::AutocompleteService, feature_category: :groups_and_projec
   end
 
   def expect_labels_to_equal(labels, expected_labels)
-    extract_title = lambda { |label| label['title'] }
+    extract_title = ->(label) { label['title'] }
     expect(labels.map(&extract_title)).to match_array(expected_labels.map(&extract_title))
   end
 

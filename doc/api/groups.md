@@ -2427,3 +2427,69 @@ DELETE /groups/:id/push_rule
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+
+## Revoke Token
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `group_agnostic_token_revocation`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. 
+For more information, see the history.
+
+Revoke a token, if it has access to the group or any of its subgroups
+and projects. If the token is revoked, or was already revoked, its 
+details are returned in the response.
+
+The following criteria must be met:
+
+- The group must be a top-level group.
+- You must have the Owner role in the group.
+- The token type is one of:
+  - Personal Access Token
+  - Group Access Token
+  - Project Access Token
+  - Group Deploy Token
+
+Additional token types may be supported at a later date.
+
+```plaintext
+POST /groups/:id/tokens/revoke
+```
+
+| Attribute   | Type           | Required               | Description |
+|-------------|----------------|------------------------|-------------|
+| `id`        | integer or string | Yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `token` | string | Yes  | The plaintext token. |
+
+If successful, returns [`200 OK`](rest/index.md#status-codes) and
+a JSON representation of the token. The attributes returned will vary by
+token type.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"token":"glpat-1234567890abcdefghij"}' \
+  --url "https://gitlab.example.com/api/v4/groups/63/tokens/revoke"
+```
+
+Example response:
+
+```json
+{
+    "id": 9,
+    "name": "my-subgroup-deploytoken",
+    "username": "gitlab+deploy-token-9",
+    "expires_at": null,
+    "scopes":
+    [
+        "read_repository",
+        "read_package_registry",
+        "write_package_registry"
+    ],
+    "revoked": true,
+    "expired": false
+}
+```

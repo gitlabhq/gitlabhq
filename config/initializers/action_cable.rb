@@ -23,7 +23,7 @@ end
 raise "Do not configure cable.yml with a Redis Cluster as ActionCable only works with Redis." if using_redis_cluster
 
 # https://github.com/rails/rails/blob/bb5ac1623e8de08c1b7b62b1368758f0d3bb6379/actioncable/lib/action_cable/subscription_adapter/redis.rb#L18
-ActionCable::SubscriptionAdapter::Redis.redis_connector = lambda do |config|
+ActionCable::SubscriptionAdapter::Redis.redis_connector = ->(config) do
   args = config.except(:adapter, :channel_prefix)
     .merge(custom: { instrumentation_class: "ActionCable" })
 

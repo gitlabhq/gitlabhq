@@ -115,7 +115,7 @@ InitializerConnections.raise_if_new_database_connection do
       get '/whats_new' => 'whats_new#index'
 
       get 'offline' => "pwa#offline"
-      get 'manifest' => "pwa#manifest", constraints: lambda { |req| req.format == :json }
+      get 'manifest' => "pwa#manifest", constraints: ->(req) { req.format == :json }
 
       scope module: 'clusters' do
         scope module: 'agents' do

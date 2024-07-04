@@ -17,7 +17,7 @@ This Blueprint describes support for customer self-deployments of Mistral LLMs a
 
 ## Motivation
 
-Self-Hosted LLM models allow customers to manage the end-to-end transmission of requests to enterprise-hosted LLM backends for [GitLab Duo features](../../../user/ai_features.md), and keep all requests within their enterprise network. GitLab provides as a default LLM backends of Google Vertex and Anthropic, hosted externally to GitLab. GitLab Duo feature developers are able to access other LLM choices via the AI Gateway. More details on model and region information can be [found here](https://gitlab.com/groups/gitlab-org/-/epics/13024#current-feature-outline).
+Self-hosted LLM models allow customers to manage the end-to-end transmission of requests to enterprise-hosted LLM backends for [GitLab Duo features](../../../user/ai_features.md), and keep all requests within their enterprise network. GitLab provides as a default LLM backends of Google Vertex and Anthropic, hosted externally to GitLab. GitLab Duo feature developers are able to access other LLM choices via the AI Gateway. More details on model and region information can be [found here](https://gitlab.com/groups/gitlab-org/-/epics/13024#current-feature-outline).
 
 ### Goals
 
@@ -44,7 +44,7 @@ GitLab will provide support for specific LLMs hosted in a customer's infrastruct
 
 This feature is accessible at the instance-level and is intended for use in GitLab Self-Managed instances.
 
-Self-Hosted Model Deployment is a [GitLab Duo Enterprise Add-on](https://about.gitlab.com/pricing/).
+Self-hosted model deployment is a [GitLab Duo Enterprise Add-on](https://about.gitlab.com/pricing/).
 
 ## Design and implementation details
 
@@ -98,8 +98,8 @@ graph LR
 
 Configuration is set at the GitLab instance-level; for each GitLab Duo feature a drop-down list of options will be presented. The following options will be available:
 
-- Self-Hosted Model 1
-- Self-Hosted Model n
+- Self-hosted model 1
+- Self-hosted model n
 - Feature Inactive
 
 In the initial implementation a single self-hosted Model will be supported, but this will be expanded to a number of GitLab-defined models.
@@ -219,7 +219,7 @@ Self-Managed customers who deploy a self-managed AI Gateway will only be able to
 Engineering documentation will be produced on how to develop this feature, with work in progress on:
 
 - [Include AI Gateway in GDK](https://gitlab.com/gitlab-org/gitlab-development-kit/-/issues/2025)
-- [Developer setup for Self-Hosted Models](https://gitlab.com/gitlab-org/gitlab/-/issues/452509)
+- [Developer setup for self-hosted models](https://gitlab.com/gitlab-org/gitlab/-/issues/452509)
 - [Centralized Evaluation Framework](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/tree/main)
 
 ### Out of scope

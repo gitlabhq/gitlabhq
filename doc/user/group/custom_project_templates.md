@@ -47,6 +47,12 @@ Projects in nested subgroups are not included in the template list.
   except for **GitLab Pages** and **Security and Compliance** are set to **Everyone With Access**.
 - Private projects can be selected only by users who are members of the projects.
 
+There is a [known issue](https://gitlab.com/gitlab-org/gitlab/-/issues/295646):
+[Inherited members](../project/members/index.md#membership-types) can't select project templates,
+unless the `project_templates_without_min_access` feature flag is enabled.
+This feature flag [is disabled](https://gitlab.com/gitlab-org/gitlab/-/issues/425452)
+on GitLab.com, and so users must be granted direct membership of the template project.
+
 ## Example structure
 
 Here's a sample group and project structure for project templates, for `myorganization`:

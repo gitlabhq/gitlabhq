@@ -174,7 +174,7 @@ export default {
     loadBlob() {
       this.apolloQuery(blobInfoQuery, {
         projectPath: this.projectPath,
-        filePath: this.path,
+        filePath: [this.path],
         ref: this.ref,
         refType: this.refType?.toUpperCase() || null,
         shouldFetchRawText: true,

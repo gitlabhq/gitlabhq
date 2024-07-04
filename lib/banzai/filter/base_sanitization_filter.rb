@@ -80,7 +80,7 @@ module Banzai
 
       class << self
         def remove_rel
-          lambda do |env|
+          ->(env) do
             if env[:node_name] == 'a'
               # we allow rel="license" to support the Rel-license microformat
               # http://microformats.org/wiki/rel-license

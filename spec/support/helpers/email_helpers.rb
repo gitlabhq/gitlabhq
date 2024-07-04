@@ -36,7 +36,7 @@ module EmailHelpers
 
   def should_email(user, times: 1, recipients: email_recipients)
     amount = sent_to_user(user, recipients: recipients)
-    failed_message = lambda { "User #{user.username} (#{user.id}): email test failed (expected #{times}, got #{amount})" }
+    failed_message = -> { "User #{user.username} (#{user.id}): email test failed (expected #{times}, got #{amount})" }
     expect(amount).to eq(times), failed_message
   end
 

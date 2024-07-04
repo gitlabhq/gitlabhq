@@ -201,7 +201,7 @@ class ProjectFeature < ApplicationRecord
   # Validates builds and merge requests access level
   # which cannot be higher than repository access level
   def repository_children_level
-    validator = lambda do |field|
+    validator = ->(field) do
       level = public_send(field) || ENABLED # rubocop:disable GitlabSecurity/PublicSend
       not_allowed = level > repository_access_level
       self.errors.add(field, "cannot have higher visibility level than repository access level") if not_allowed

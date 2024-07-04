@@ -10,7 +10,7 @@ RSpec.describe Projects::LfsPointers::LfsDownloadLinkListService, feature_catego
   let(:remote_uri) { URI.parse(lfs_endpoint) }
 
   let(:request_object) { HTTParty::Request.new(Net::HTTP::Post, '/') }
-  let(:parsed_block) { lambda {} }
+  let(:parsed_block) { -> {} }
   let(:success_net_response) { Net::HTTPOK.new('', '', '') }
   let(:response) { Gitlab::HTTP::Response.new(request_object, net_response, parsed_block) }
 

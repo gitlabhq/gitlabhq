@@ -33,22 +33,22 @@ class GroupChildEntity < Grape::Entity
   end
 
   # Project only attributes
-  expose :last_activity_at, if: lambda { |instance| project? }
+  expose :last_activity_at, if: ->(instance) { project? }
 
-  expose :star_count, :archived, if: lambda { |_instance, _options| project? }
+  expose :star_count, :archived, if: ->(_instance, _options) { project? }
 
   # Group only attributes
-  expose :children_count, :parent_id, unless: lambda { |_instance, _options| project? }
+  expose :children_count, :parent_id, unless: ->(_instance, _options) { project? }
 
-  expose :subgroup_count, if: lambda { |group| access_group_counts?(group) }
+  expose :subgroup_count, if: ->(group) { access_group_counts?(group) }
 
-  expose :project_count, if: lambda { |group| access_group_counts?(group) }
+  expose :project_count, if: ->(group) { access_group_counts?(group) }
 
-  expose :leave_path, unless: lambda { |_instance, _options| project? } do |instance|
+  expose :leave_path, unless: ->(_instance, _options) { project? } do |instance|
     leave_group_members_path(instance)
   end
 
-  expose :can_leave, unless: lambda { |_instance, _options| project? } do |instance|
+  expose :can_leave, unless: ->(_instance, _options) { project? } do |instance|
     if membership
       can?(request.current_user, :destroy_group_member, membership)
     else
@@ -56,11 +56,11 @@ class GroupChildEntity < Grape::Entity
     end
   end
 
-  expose :can_remove, unless: lambda { |_instance, _options| project? } do |group|
+  expose :can_remove, unless: ->(_instance, _options) { project? } do |group|
     can?(request.current_user, :admin_group, group)
   end
 
-  expose :number_users_with_delimiter, unless: lambda { |_instance, _options| project? } do |instance|
+  expose :number_users_with_delimiter, unless: ->(_instance, _options) { project? } do |instance|
     number_with_delimiter(instance.member_count)
   end
 

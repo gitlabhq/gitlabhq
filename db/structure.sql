@@ -12726,7 +12726,7 @@ CREATE TABLE merge_requests (
     cached_markdown_version integer,
     last_edited_at timestamp without time zone,
     last_edited_by_id integer,
-    head_pipeline_id integer,
+    head_pipeline_id_convert_to_bigint integer,
     merge_jid character varying,
     discussion_locked boolean,
     latest_merge_request_diff_id integer,
@@ -12740,7 +12740,7 @@ CREATE TABLE merge_requests (
     prepared_at timestamp with time zone,
     merged_commit_sha bytea,
     override_requested_changes boolean DEFAULT false NOT NULL,
-    head_pipeline_id_convert_to_bigint bigint,
+    head_pipeline_id bigint,
     imported_from smallint DEFAULT 0 NOT NULL,
     retargeted boolean DEFAULT false NOT NULL,
     CONSTRAINT check_970d272570 CHECK ((lock_version IS NOT NULL))
@@ -34655,7 +34655,7 @@ ALTER TABLE ONLY project_feature_usages
     ADD CONSTRAINT fk_rails_c22a50024b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE p_ci_builds_execution_configs
-    ADD CONSTRAINT fk_rails_c26408d02c FOREIGN KEY (pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+    ADD CONSTRAINT fk_rails_c26408d02c_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY user_canonical_emails
     ADD CONSTRAINT fk_rails_c2bd828b51 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;

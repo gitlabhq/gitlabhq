@@ -101,10 +101,10 @@ module API
       end
       expose :import_type, documentation: { type: 'string', example: 'git' }, if: ->(project, options) { Ability.allowed?(options[:current_user], :admin_project, project) }
       expose :import_status, documentation: { type: 'string', example: 'none' }
-      expose :import_error, documentation: { type: 'string', example: 'Import error' }, if: lambda { |_project, options| options[:user_can_admin_project] } do |project|
+      expose :import_error, documentation: { type: 'string', example: 'Import error' }, if: ->(_project, options) { options[:user_can_admin_project] } do |project|
         project.import_state&.last_error
       end
-      expose :open_issues_count, documentation: { type: 'integer', example: 1 }, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
+      expose :open_issues_count, documentation: { type: 'integer', example: 1 }, if: ->(project, options) { project.feature_available?(:issues, options[:current_user]) }
       expose :description_html, documentation: { type: 'string' }
       expose :updated_at, documentation: { type: 'dateTime', example: '2020-05-07T04:27:17.016Z' }
 

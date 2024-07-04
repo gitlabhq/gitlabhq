@@ -1748,8 +1748,7 @@
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
-        COVERBAND_ENABLED: "true" # Record Coverage in scheduled master pipelines
-
+        COVERBAND_ENABLED: "true"
 
 .qa:rules:e2e:test-on-cng:
   rules:

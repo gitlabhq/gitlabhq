@@ -43,21 +43,21 @@ Prerequisites:
 To configure a self-hosted model:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **AI-Powered Features**.
-   - If the **AI-Powered Features** menu item is not available, synchronize your
+1. Select **AI-powered features**.
+   - If the **AI-powered features** menu item is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select
         synchronize subscription (**{retry}**).
 1. Select **Models**.
-1. Set your model details by selecting **New Self-Hosted Model**.
+1. Set your model details by selecting **New self-hosted model**.
 1. Complete the fields:
    - Enter the model name, for example, Mistral.
    - From the **Model** dropdown list, select the model. Only GitLab-approved models are listed here.
    - For **Endpoint**, select the self-hosted model endpoint, for example, the server hosting the model.
    - Optional. For **API token**, add an API key if you need one to access the model.
 
-1. Select **Create Self-Hosted Model**.
+1. Select **Create model**.
 
 ## Configure the features to your models
 
@@ -68,8 +68,8 @@ Prerequisites:
 To configure the AI-powered features to use your model:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **AI-Powered Features**.
-   - If the **AI-Powered Features** menu item is not available, synchronize your
+1. Select **AI-powered features**.
+   - If the **AI-powered features** menu item is not available, synchronize your
      subscription after purchase:
      1. On the left sidebar, select **Subscription**.
      1. In **Subscription details**, to the right of **Last sync**, select

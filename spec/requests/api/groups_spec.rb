@@ -3150,4 +3150,117 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
     end
   end
+
+  describe 'POST groups/:id/tokens/revoke' do
+    let(:token) { 'glprefix-AABBCCDDEE1122334455' }
+    let(:service_response) { ServiceResponse.error(message: '') }
+    let(:service) { instance_double(service_class, execute: service_response) }
+    let(:service_class) { Groups::AgnosticTokenRevocationService }
+    let_it_be(:group) { create(:group, :with_hierarchy, children: 1) }
+
+    let(:path) { "/groups/#{group.id}/tokens/revoke" }
+
+    before do
+      allow(service_class).to receive(:new).and_return(service)
+    end
+
+    shared_examples 'revoking token fails' do |status, message|
+      it 'cannot revoke token' do
+        revoke_token
+
+        expect(response).to have_gitlab_http_status(status)
+        expect(json_response['message'] || json_response['error']).to include(message)
+      end
+    end
+
+    context 'when not a group owner' do
+      subject(:revoke_token) { post api(path, user1), params: { token: token } }
+
+      before do
+        group.add_maintainer(user1)
+      end
+
+      it_behaves_like 'revoking token fails', :forbidden, 'Forbidden'
+    end
+
+    context 'when authenticated as a group owner' do
+      subject(:revoke_token) { post api(path, user1), params: { token: token } }
+
+      before do
+        group.add_owner(user1)
+      end
+
+      context 'when group is a top level group' do
+        it 'calls revocation service' do
+          revoke_token
+          expect(service_class).to have_received(:new).with(group, user1, token)
+        end
+
+        context 'when the service returns successfully' do
+          let(:token) { create(:personal_access_token, :revoked) }
+          let(:service_response) do
+            ServiceResponse.success(
+              message: 'PersonalAccessToken is revoked',
+              payload: {
+                token: token,
+                type: 'PersonalAccessToken'
+              }
+            )
+          end
+
+          it 'renders the token with a presenter', :aggregate_failures do
+            revoke_token
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response.with_indifferent_access).to include(revoked: true, id: token.id)
+            expect(json_response.keys).not_to include(%w[token token_digest])
+          end
+        end
+
+        context 'when the service returns unsuccessfully' do
+          let(:service_response) do
+            ServiceResponse.error(
+              message: 'Some error'
+            )
+          end
+
+          it_behaves_like 'revoking token fails', :unprocessable_entity, 'Unprocessable Entity'
+        end
+
+        context 'when ff disabled' do
+          before do
+            Feature.disable(:group_agnostic_token_revocation, group)
+          end
+
+          it_behaves_like 'revoking token fails', :not_found, 'Not Found'
+
+          it 'does not call revocation service' do
+            revoke_token
+            expect(service_class).not_to have_received(:new)
+          end
+        end
+      end
+
+      context 'when group does not exist' do
+        let(:path) { "/groups/0/tokens/revoke" }
+
+        it_behaves_like 'revoking token fails', :not_found, 'Group Not Found'
+
+        it 'does not call revocation service' do
+          revoke_token
+          expect(service_class).not_to have_received(:new)
+        end
+      end
+
+      context 'when group is a subgroup' do
+        let(:path) { "/groups/#{group.children.first.id}/tokens/revoke" }
+
+        it_behaves_like 'revoking token fails', :bad_request, 'Must be a top-level'
+
+        it 'does not call revocation service' do
+          revoke_token
+          expect(service_class).not_to have_received(:new)
+        end
+      end
+    end
+  end
 end

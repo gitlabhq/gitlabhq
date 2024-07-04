@@ -53,7 +53,7 @@ RSpec.describe Issues::ReferencedMergeRequestsService, feature_category: :team_p
         # to avoid false negatives
         reloaded_issue = Issue.find(issue.id)
 
-        pipeline_routes = lambda do |merge_requests|
+        pipeline_routes = ->(merge_requests) do
           merge_requests.map { |mr| mr.head_pipeline&.project&.full_path }
         end
 

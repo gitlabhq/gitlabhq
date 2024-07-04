@@ -20,7 +20,7 @@ class IssuableSidebarBasicEntity < Grape::Entity
   expose :milestone, using: ::API::Entities::Milestone
   expose :labels, using: LabelEntity
 
-  expose :current_user, if: lambda { |_issuable| current_user } do
+  expose :current_user, if: ->(_issuable) { current_user } do
     expose :current_user, merge: true, using: ::API::Entities::UserBasic
 
     expose :todo, using: IssuableSidebarTodoEntity do |issuable|

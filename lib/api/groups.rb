@@ -580,6 +580,48 @@ module API
         no_content!
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Revoke a single token' do
+        detail <<-DETAIL
+Revoke a token, if it has access to the group or any of its subgroups
+and projects. If the token is revoked, or was already revoked, its
+details are returned in the response.
+
+The following criteria must be met:
+
+- The group must be a top-level group.
+- You must have Owner permission in the group.
+- The token type is one of:
+  - Personal Access Token
+  - Group Access Token
+  - Project Access Token
+  - Group Deploy Token
+
+This feature is gated by the :group_agnostic_token_revocation feature flag.
+        DETAIL
+      end
+      params do
+        requires :id, type: String, desc: 'The ID of a top-level group'
+        requires :token, type: String, desc: 'The token to revoke'
+      end
+      post ":id/tokens/revoke", urgency: :low, feature_category: :groups_and_projects do
+        group = find_group!(params[:id])
+        not_found! unless Feature.enabled?(:group_agnostic_token_revocation, group)
+        bad_request!('Must be a top-level group') if group.subgroup?
+        authorize! :admin_group, group
+
+        result = ::Groups::AgnosticTokenRevocationService.new(group, current_user, params[:token]).execute
+
+        if result.success?
+          status :ok
+          present result.payload[:token], with: "API::Entities::#{result.payload[:type]}".constantize
+        else
+          # No matter the error, we always return a 422.
+          # This prevents disclosing cases like: token is invalid,
+          # or token is valid but in a different group.
+          unprocessable_entity!
+        end
+      end
     end
   end
 end

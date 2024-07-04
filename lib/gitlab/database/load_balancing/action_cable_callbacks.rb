@@ -9,7 +9,7 @@ module Gitlab
         end
 
         def self.wrapper
-          lambda do |_, inner|
+          ->(_, inner) do
             inner.call
           ensure
             ::Gitlab::Database::LoadBalancing.release_hosts
