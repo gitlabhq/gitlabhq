@@ -31,8 +31,6 @@ export const initOrganizationsShow = () => {
     organization,
     groupsAndProjectsOrganizationPath,
     usersOrganizationPath,
-    projectsEmptyStateSvgPath,
-    groupsEmptyStateSvgPath,
     newGroupPath,
     groupsPath,
     newProjectPath,
@@ -55,8 +53,6 @@ export const initOrganizationsShow = () => {
     router,
     provide: {
       organizationGid,
-      projectsEmptyStateSvgPath,
-      groupsEmptyStateSvgPath,
       newGroupPath,
       groupsPath,
       newProjectPath,

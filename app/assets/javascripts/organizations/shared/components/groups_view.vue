@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import groupsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url';
 import { createAlert } from '~/alert';
 import { s__, __ } from '~/locale';
 import GroupsList from '~/vue_shared/components/groups_list/groups_list.vue';
@@ -18,6 +19,7 @@ import NewGroupButton from './new_group_button.vue';
 import GroupsAndProjectsEmptyState from './groups_and_projects_empty_state.vue';
 
 export default {
+  groupsEmptyStateSvgPath,
   i18n: {
     errorMessage: s__(
       'Organization|An error occurred loading the groups. Please refresh the page to try again.',
@@ -42,7 +44,6 @@ export default {
   },
   inject: {
     organizationGid: {},
-    groupsEmptyStateSvgPath: {},
     groupsPath: {},
   },
   props: {
@@ -205,7 +206,7 @@ export default {
   </div>
   <groups-and-projects-empty-state
     v-else
-    :svg-path="groupsEmptyStateSvgPath"
+    :svg-path="$options.groupsEmptyStateSvgPath"
     :title="$options.i18n.emptyState.title"
     :description="$options.i18n.emptyState.description"
     :search="search"

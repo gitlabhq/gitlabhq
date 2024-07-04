@@ -20,12 +20,15 @@ projects.
 
 ## View Terraform modules
 
+> - Support for Readme files [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438060) in GitLab 17.2.
+
 To view Terraform modules in your project or group:
 
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Operate > Terraform modules**.
 
 You can search, sort, and filter modules on this page.
+
 You can also view the module's Readme file by selecting a module, and then selecting **Readme**.
 
 ## Authenticate to the Terraform Module Registry

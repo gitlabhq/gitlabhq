@@ -29,6 +29,10 @@ import {
 
 jest.mock('~/alert');
 jest.mock('~/api/projects_api');
+jest.mock(
+  '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url',
+  () => 'empty-projects-md.svg',
+);
 
 const MOCK_DELETE_PARAMS = {
   testParam: true,
@@ -55,7 +59,6 @@ describe('ProjectsView', () => {
   let mockApollo;
 
   const defaultProvide = {
-    projectsEmptyStateSvgPath: 'illustrations/empty-state/empty-projects-md.svg',
     newProjectPath: '/projects/new',
     organizationGid: 'gid://gitlab/Organizations::Organization/1',
   };
@@ -150,7 +153,7 @@ describe('ProjectsView', () => {
             title: "You don't have any projects yet.",
             description:
               'Projects are where you can store your code, access issues, wiki, and other features of GitLab.',
-            svgPath: defaultProvide.projectsEmptyStateSvgPath,
+            svgPath: 'empty-projects-md.svg',
             search: 'foo',
           });
 

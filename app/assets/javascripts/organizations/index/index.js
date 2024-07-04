@@ -13,9 +13,7 @@ export const initOrganizationsIndex = () => {
     defaultClient: createDefaultClient(),
   });
 
-  const { newOrganizationUrl, organizationsEmptyStateSvgPath } = convertObjectPropsToCamelCase(
-    el.dataset,
-  );
+  const { newOrganizationUrl } = convertObjectPropsToCamelCase(el.dataset);
 
   return new Vue({
     el,
@@ -23,7 +21,6 @@ export const initOrganizationsIndex = () => {
     apolloProvider,
     provide: {
       newOrganizationUrl,
-      organizationsEmptyStateSvgPath,
     },
     render(createElement) {
       return createElement(OrganizationsIndexApp);

@@ -5957,12 +5957,6 @@ msgstr ""
 msgid "Analytics|Are you sure you want to cancel editing this dashboard?"
 msgstr ""
 
-msgid "Analytics|Browser"
-msgstr ""
-
-msgid "Analytics|Browser Family"
-msgstr ""
-
 msgid "Analytics|Cancel"
 msgstr ""
 
@@ -6005,9 +5999,6 @@ msgstr ""
 msgid "Analytics|Custom dashboards"
 msgstr ""
 
-msgid "Analytics|Custom events"
-msgstr ""
-
 msgid "Analytics|Dashboard description"
 msgstr ""
 
@@ -6041,9 +6032,6 @@ msgstr ""
 msgid "Analytics|Edit your dashboard"
 msgstr ""
 
-msgid "Analytics|Element ID"
-msgstr ""
-
 msgid "Analytics|Enter a dashboard description"
 msgstr ""
 
@@ -6060,12 +6048,6 @@ msgid "Analytics|Error while saving dashboard"
 msgstr ""
 
 msgid "Analytics|Error while saving visualization."
-msgstr ""
-
-msgid "Analytics|Event Name"
-msgstr ""
-
-msgid "Analytics|Event Props"
 msgstr ""
 
 msgid "Analytics|Events received since %{date}"
@@ -6092,22 +6074,13 @@ msgstr ""
 msgid "Analytics|GitLab Duo may be used to help generate your visualization. You can prompt Duo with your desired data, as well as any dimensions or additional groupings of that data. You may also edit the result as needed."
 msgstr ""
 
-msgid "Analytics|Host"
-msgstr ""
-
 msgid "Analytics|Invalid dashboard configuration"
 msgstr ""
 
 msgid "Analytics|Invalid visualization configuration"
 msgstr ""
 
-msgid "Analytics|Language"
-msgstr ""
-
 msgid "Analytics|Line chart"
-msgstr ""
-
-msgid "Analytics|Link clicks"
 msgstr ""
 
 msgid "Analytics|New dashboard"
@@ -6119,28 +6092,7 @@ msgstr ""
 msgid "Analytics|No results match your query or filter."
 msgstr ""
 
-msgid "Analytics|OS"
-msgstr ""
-
-msgid "Analytics|OS Version"
-msgstr ""
-
 msgid "Analytics|Overview"
-msgstr ""
-
-msgid "Analytics|Page Language"
-msgstr ""
-
-msgid "Analytics|Page Path"
-msgstr ""
-
-msgid "Analytics|Page Title"
-msgstr ""
-
-msgid "Analytics|Pages"
-msgstr ""
-
-msgid "Analytics|Referer"
 msgstr ""
 
 msgid "Analytics|Refresh the page to try again or see %{linkStart}troubleshooting documentation%{linkEnd}."
@@ -6194,16 +6146,10 @@ msgstr ""
 msgid "Analytics|Tables"
 msgstr ""
 
-msgid "Analytics|Target URL"
-msgstr ""
-
 msgid "Analytics|There was a problem generating your query. Please try again."
 msgstr ""
 
 msgid "Analytics|To create your own dashboards, first configure a project to store your dashboards."
-msgstr ""
-
-msgid "Analytics|URL"
 msgstr ""
 
 msgid "Analytics|Unable to update analytics settings. Please try again."
@@ -6224,15 +6170,6 @@ msgstr ""
 msgid "Analytics|Use the visualization designer to create custom visualizations. After you save a visualization, you can add it to a dashboard."
 msgstr ""
 
-msgid "Analytics|User Id"
-msgstr ""
-
-msgid "Analytics|User Props"
-msgstr ""
-
-msgid "Analytics|Users"
-msgstr ""
-
 msgid "Analytics|Value Streams Dashboard"
 msgstr ""
 
@@ -6240,9 +6177,6 @@ msgid "Analytics|View available dashboards"
 msgstr ""
 
 msgid "Analytics|View metrics only for users who have consented to activity tracking."
-msgstr ""
-
-msgid "Analytics|Viewport"
 msgstr ""
 
 msgid "Analytics|Visualization"
@@ -40058,9 +39992,6 @@ msgstr ""
 msgid "ProductAnalytics|A deployed instance of the %{linkStart}helm-charts%{linkEnd} project."
 msgstr ""
 
-msgid "ProductAnalytics|Add another dimension"
-msgstr ""
-
 msgid "ProductAnalytics|Add the script to the page and assign the client SDK to window"
 msgstr ""
 
@@ -40071,21 +40002,6 @@ msgid "ProductAnalytics|Additional permissions required"
 msgstr ""
 
 msgid "ProductAnalytics|After your application has been instrumented and data is being collected, you can visualize and monitor behaviors in your %{linkStart}analytics dashboards%{linkEnd}."
-msgstr ""
-
-msgid "ProductAnalytics|All Events Compared"
-msgstr ""
-
-msgid "ProductAnalytics|All Link Clicks"
-msgstr ""
-
-msgid "ProductAnalytics|All Pages"
-msgstr ""
-
-msgid "ProductAnalytics|All Returning Users Compared"
-msgstr ""
-
-msgid "ProductAnalytics|All Sessions Compared"
 msgstr ""
 
 msgid "ProductAnalytics|An analytics provider has been successfully created, but it has not received any events yet. To continue with the setup, instrument your application and start sending events."
@@ -40103,15 +40019,6 @@ msgstr ""
 msgid "ProductAnalytics|Audience"
 msgstr ""
 
-msgid "ProductAnalytics|Average Per User"
-msgstr ""
-
-msgid "ProductAnalytics|Average Session Duration"
-msgstr ""
-
-msgid "ProductAnalytics|Average duration in minutes"
-msgstr ""
-
 msgid "ProductAnalytics|Back to dashboards"
 msgstr ""
 
@@ -40119,21 +40026,6 @@ msgid "ProductAnalytics|By providing feedback on AI-generated content, you ackno
 msgstr ""
 
 msgid "ProductAnalytics|Collector host"
-msgstr ""
-
-msgid "ProductAnalytics|Compares all events against each other"
-msgstr ""
-
-msgid "ProductAnalytics|Compares all returning users against each other"
-msgstr ""
-
-msgid "ProductAnalytics|Compares all user sessions against each other"
-msgstr ""
-
-msgid "ProductAnalytics|Compares link click events against each other"
-msgstr ""
-
-msgid "ProductAnalytics|Compares page views of all pages against each other"
 msgstr ""
 
 msgid "ProductAnalytics|Connect your own provider"
@@ -40169,19 +40061,7 @@ msgstr ""
 msgid "ProductAnalytics|Dimension"
 msgstr ""
 
-msgid "ProductAnalytics|Dimensions"
-msgstr ""
-
-msgid "ProductAnalytics|Event Type"
-msgstr ""
-
 msgid "ProductAnalytics|Events"
-msgstr ""
-
-msgid "ProductAnalytics|Events grouped by %{granularity}"
-msgstr ""
-
-msgid "ProductAnalytics|Events over time"
 msgstr ""
 
 msgid "ProductAnalytics|Feedback acknowledgement"
@@ -40217,12 +40097,6 @@ msgstr ""
 msgid "ProductAnalytics|Helpful"
 msgstr ""
 
-msgid "ProductAnalytics|How many sessions a user has"
-msgstr ""
-
-msgid "ProductAnalytics|How often users returned compared to all sessions"
-msgstr ""
-
 msgid "ProductAnalytics|How was the result?"
 msgstr ""
 
@@ -40238,9 +40112,6 @@ msgstr ""
 msgid "ProductAnalytics|Learn how to onboard projects"
 msgstr ""
 
-msgid "ProductAnalytics|Link Click Events"
-msgstr ""
-
 msgid "ProductAnalytics|Loading instance"
 msgstr ""
 
@@ -40250,40 +40121,10 @@ msgstr ""
 msgid "ProductAnalytics|Measure"
 msgstr ""
 
-msgid "ProductAnalytics|Measure All tracked Events"
-msgstr ""
-
-msgid "ProductAnalytics|Measure all link click events"
-msgstr ""
-
-msgid "ProductAnalytics|Measure all or specific Page Views"
-msgstr ""
-
-msgid "ProductAnalytics|Measure all returning users"
-msgstr ""
-
-msgid "ProductAnalytics|Measure all sessions"
-msgstr ""
-
-msgid "ProductAnalytics|Measure by unique users"
-msgstr ""
-
-msgid "ProductAnalytics|Measuring"
-msgstr ""
-
 msgid "ProductAnalytics|Month"
 msgstr ""
 
 msgid "ProductAnalytics|No projects found"
-msgstr ""
-
-msgid "ProductAnalytics|On what do you want to get insights?"
-msgstr ""
-
-msgid "ProductAnalytics|Page Views"
-msgstr ""
-
-msgid "ProductAnalytics|Percentage of Users Returning"
 msgstr ""
 
 msgid "ProductAnalytics|Previous month"
@@ -40304,9 +40145,6 @@ msgstr ""
 msgid "ProductAnalytics|Reset existing project provider settings"
 msgstr ""
 
-msgid "ProductAnalytics|Returning Users"
-msgstr ""
-
 msgid "ProductAnalytics|SDK application ID"
 msgstr ""
 
@@ -40317,9 +40155,6 @@ msgid "ProductAnalytics|SDK host"
 msgstr ""
 
 msgid "ProductAnalytics|Self-managed provider"
-msgstr ""
-
-msgid "ProductAnalytics|Sessions"
 msgstr ""
 
 msgid "ProductAnalytics|Set up Product Analytics to track how your product is performing. Combine analytics with your GitLab data to better understand where you can improve your product and development processes. %{linkStart}Learn more%{linkEnd}."
@@ -40394,9 +40229,6 @@ msgstr ""
 msgid "ProductAnalytics|Unhelpful"
 msgstr ""
 
-msgid "ProductAnalytics|Unique Users"
-msgstr ""
-
 msgid "ProductAnalytics|Usage by month"
 msgstr ""
 
@@ -40415,15 +40247,6 @@ msgstr ""
 msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."
 msgstr ""
 
-msgid "ProductAnalytics|User Sessions"
-msgstr ""
-
-msgid "ProductAnalytics|User activity"
-msgstr ""
-
-msgid "ProductAnalytics|Users"
-msgstr ""
-
 msgid "ProductAnalytics|Using JS module"
 msgstr ""
 
@@ -40431,9 +40254,6 @@ msgid "ProductAnalytics|Valid project settings."
 msgstr ""
 
 msgid "ProductAnalytics|Waiting for events"
-msgstr ""
-
-msgid "ProductAnalytics|What metric do you want to visualize?"
 msgstr ""
 
 msgid "ProductAnalytics|Wrong"

@@ -90,8 +90,6 @@ module Organizations
     def shared_groups_and_projects_app_data(organization)
       {
         organization_gid: organization.to_global_id,
-        projects_empty_state_svg_path: image_path('illustrations/empty-state/empty-projects-md.svg'),
-        groups_empty_state_svg_path: image_path('illustrations/empty-state/empty-groups-md.svg'),
         new_group_path: new_groups_organization_path(organization),
         groups_path: groups_organization_path(organization),
         new_project_path: new_project_path,
@@ -113,8 +111,7 @@ module Organizations
 
     def shared_organization_index_app_data
       {
-        new_organization_url: new_organization_path,
-        organizations_empty_state_svg_path: image_path('illustrations/empty-state/empty-organizations-md.svg')
+        new_organization_url: new_organization_path
       }
     end
 

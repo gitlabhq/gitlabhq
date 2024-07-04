@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import projectsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url';
 import { s__, __ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -18,6 +19,7 @@ import NewProjectButton from './new_project_button.vue';
 import GroupsAndProjectsEmptyState from './groups_and_projects_empty_state.vue';
 
 export default {
+  projectsEmptyStateSvgPath,
   i18n: {
     errorMessage: s__(
       'Organization|An error occurred loading the projects. Please refresh the page to try again.',
@@ -42,7 +44,6 @@ export default {
   },
   inject: {
     organizationGid: {},
-    projectsEmptyStateSvgPath: {},
   },
   props: {
     shouldShowEmptyStateButtons: {
@@ -201,7 +202,7 @@ export default {
   </div>
   <groups-and-projects-empty-state
     v-else
-    :svg-path="projectsEmptyStateSvgPath"
+    :svg-path="$options.projectsEmptyStateSvgPath"
     :title="$options.i18n.emptyState.title"
     :description="$options.i18n.emptyState.description"
     :search="search"

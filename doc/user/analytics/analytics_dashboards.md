@@ -301,11 +301,8 @@ After you save a visualization, you can add it to a new or existing custom dashb
 
 ### Visualization query builder
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14098) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `analytics_visualization_designer_filtering`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14098) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `analytics_visualization_designer_filtering`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469461) in GitLab 17.2. Feature flag `analytics_visualization_designer_filtering` removed.
 
 You can use measures and dimensions to filter and refine the results of a custom visualization:
 

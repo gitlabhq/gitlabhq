@@ -28,6 +28,11 @@ import {
   pageInfoOnePage,
 } from 'jest/organizations/mock_data';
 
+jest.mock(
+  '@gitlab/svgs/dist/illustrations/empty-state/empty-groups-md.svg?url',
+  () => 'empty-groups-md.svg',
+);
+
 const {
   data: {
     organization: {
@@ -56,7 +61,6 @@ describe('GroupsView', () => {
   let mockAxios;
 
   const defaultProvide = {
-    groupsEmptyStateSvgPath: 'illustrations/empty-state/empty-groups-md.svg',
     newGroupPath: '/groups/new',
     groupsPath: '/-/organizations/default/groups',
     organizationGid: 'gid://gitlab/Organizations::Organization/1',
@@ -152,7 +156,7 @@ describe('GroupsView', () => {
             title: "You don't have any groups yet.",
             description:
               'A group is a collection of several projects. If you organize your projects under a group, it works like a folder.',
-            svgPath: defaultProvide.groupsEmptyStateSvgPath,
+            svgPath: 'empty-groups-md.svg',
             search: 'foo',
           });
 

@@ -16938,9 +16938,7 @@ CREATE TABLE sbom_components (
     component_type smallint NOT NULL,
     name text NOT NULL,
     purl_type smallint,
-    source_package_name text,
-    CONSTRAINT check_91a8f6ad53 CHECK ((char_length(name) <= 255)),
-    CONSTRAINT check_e2dcb53709 CHECK ((char_length(source_package_name) <= 255))
+    CONSTRAINT check_91a8f6ad53 CHECK ((char_length(name) <= 255))
 );
 
 CREATE SEQUENCE sbom_components_id_seq
