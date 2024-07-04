@@ -203,6 +203,19 @@ RSpec.describe API::DraftNotes, feature_category: :code_review_workflow do
         end
       end
 
+      context "when using a diff file position" do
+        let!(:draft_note) { create(:draft_note_on_text_diff, merge_request: merge_request, author: user) }
+
+        it "creates a new diff file draft note" do
+          position = draft_note.position.to_h.merge(position_type: 'file').except(:ignore_whitespace_change)
+
+          post api("/projects/#{project.id}/merge_requests/#{merge_request['iid']}/draft_notes", user),
+            params: { note: 'hi!', position: position }
+
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
       context "when attempting to resolve a disscussion" do
         context "when providing a non-existant ID" do
           it "returns a 400 Bad Request" do

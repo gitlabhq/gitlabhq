@@ -20,6 +20,9 @@ RSpec.describe 'Database schema', feature_category: :database do
     users: [%w[accepted_term_id]],
     ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[partition_id upstream_pipeline_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
     ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain

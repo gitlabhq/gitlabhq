@@ -54,7 +54,7 @@ job:
 ### With an expiry
 
 The [`expire_in`](../yaml/index.md#artifactsexpire_in) keyword determines how long
-GitLab keeps the job artifacts. For example:
+GitLab keeps the artifacts defined in `artifacts:paths`. For example:
 
 ```yaml
 pdf:

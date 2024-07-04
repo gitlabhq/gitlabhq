@@ -111,14 +111,14 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::Populate, feature_category: :continu
       expect(pipeline).to be_filtered_by_rules
     end
 
-    context 'when there are execution_policy_pipelines' do
+    context 'when there are pipeline_execution_policies' do
       let(:policy_pipeline) { create(:ci_pipeline, project: project, user: user) }
       let(:command) do
         Gitlab::Ci::Pipeline::Chain::Command.new(
           project: project,
           current_user: user,
           origin_ref: 'master',
-          execution_policy_pipelines: [policy_pipeline],
+          pipeline_execution_policies: [policy_pipeline],
           seeds_block: nil)
       end
 

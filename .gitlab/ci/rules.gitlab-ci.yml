@@ -3035,8 +3035,6 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
@@ -3115,8 +3113,6 @@
       changes: *db-patterns
       allow_failure: true
       when: manual
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       allow_failure: true
       when: manual
@@ -3199,8 +3195,6 @@
     - <<: *if-security-merge-request
       changes: *db-patterns
       allow_failure: true
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       allow_failure: true
     - <<: *if-merge-request

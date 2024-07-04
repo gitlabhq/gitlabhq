@@ -88,6 +88,7 @@ with a job token from any project. These resources can also be [limited to only 
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.10.
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 > - Adding groups to the job token allowlist [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.0.
+> - **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 You can add groups or projects to your job token allowlist to allow access your project's resources
 with a job token for authentication. By default, the allowlist of any project only includes itself.
@@ -112,7 +113,7 @@ To add a group or project to the allowlist:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
+1. Expand **Job token permissions**.
 1. Ensure the **Limit access _to_ this project** toggle is enabled. Enabled by default in new projects.
    It is a security risk to disable this feature, so project maintainers or owners should
    keep this setting enabled at all times.
@@ -151,6 +152,7 @@ To set a feature to be only visible to project members:
 ### Allow any project to access your project
 
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 WARNING:
 It is a security risk to disable the token access limit and allowlist. A malicious user could try to compromise
@@ -172,7 +174,7 @@ To disable the job token scope allowlist:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
+1. Expand **Job token permissions**.
 1. Toggle **Limit access _to_ this project** to disabled.
    Enabled by default in new projects.
 
@@ -230,6 +232,7 @@ to make an API request to project `B`, then `B` must be added to the allowlist f
 ### Configure the job token scope (deprecated)
 
 > - **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access _from_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 Prerequisites:
 
@@ -239,7 +242,7 @@ To configure the job token scope:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
+1. Expand **Job token permissions**.
 1. Toggle **Limit access _from_ this project** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.

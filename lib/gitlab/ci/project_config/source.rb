@@ -8,7 +8,7 @@ module Gitlab
 
         def initialize(
           project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
-          triggered_for_branch: false, ref: nil, has_execution_policy_pipelines: nil)
+          triggered_for_branch: false, ref: nil, has_pipeline_execution_policies: nil)
           @project = project
           @sha = sha
           @custom_content = custom_content
@@ -16,7 +16,7 @@ module Gitlab
           @pipeline_source_bridge = pipeline_source_bridge
           @triggered_for_branch = triggered_for_branch
           @ref = ref
-          @has_execution_policy_pipelines = has_execution_policy_pipelines
+          @has_pipeline_execution_policies = has_pipeline_execution_policies
         end
 
         def exists?

@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineConfig,
   let(:ci_pipeline_config_table) { table(:ci_pipelines_config, database: :ci) }
   let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100) }
   let!(:pipeline_2) { ci_pipelines_table.create!(id: 2, partition_id: 101) }
-  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 101) }
+  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 100) }
   let!(:ci_pipeline_config_100) do
     ci_pipeline_config_table.create!(
       pipeline_id: pipeline_1.id,
@@ -41,18 +41,29 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineConfig,
       batch_column: :pipeline_id,
       sub_batch_size: 1,
       pause_ms: 0,
-      connection: Ci::ApplicationRecord.connection
+      connection: connection
     }
   end
 
   let!(:migration) { described_class.new(**migration_attrs) }
+  let(:connection) { Ci::ApplicationRecord.connection }
+
+  around do |example|
+    connection.transaction do
+      connection.execute(<<~SQL)
+        ALTER TABLE ci_pipelines DISABLE TRIGGER ALL;
+      SQL
+
+      example.run
+
+      connection.execute(<<~SQL)
+        ALTER TABLE ci_pipelines ENABLE TRIGGER ALL;
+      SQL
+    end
+  end
 
   describe '#perform' do
     context 'when second partition does not exist' do
-      before do
-        pipeline_3.update!(partition_id: 100)
-      end
-
       it 'does not execute the migration' do
         expect { migration.perform }
           .not_to change { invalid_ci_pipeline_config.reload.partition_id }
@@ -60,6 +71,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineConfig,
     end
 
     context 'when second partition exists' do
+      before do
+        pipeline_3.update!(partition_id: 101)
+      end
+
       it 'fixes invalid records in the wrong the partition' do
         expect { migration.perform }
           .to not_change { ci_pipeline_config_100.reload.partition_id }

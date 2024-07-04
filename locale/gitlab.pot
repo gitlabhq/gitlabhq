@@ -10069,7 +10069,7 @@ msgstr ""
 msgid "CICD|Add an existing project to the scope"
 msgstr ""
 
-msgid "CICD|Allow access to this project from authorized groups or projects by adding them to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
+msgid "CICD|Authorized groups and projects"
 msgstr ""
 
 msgid "CICD|Auto DevOps"
@@ -10102,7 +10102,7 @@ msgstr ""
 msgid "CICD|Enable feature to limit job token access to the following projects."
 msgstr ""
 
-msgid "CICD|Groups and projects with access"
+msgid "CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist."
 msgstr ""
 
 msgid "CICD|Jobs"
@@ -10145,6 +10145,9 @@ msgid "CICD|Unprotected branches will not have access to the cache from protecte
 msgstr ""
 
 msgid "CICD|Use separate caches for protected branches"
+msgstr ""
+
+msgid "CICD|When enabled, only groups and projects in the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. When disabled, any group or project can do so. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -14944,7 +14947,7 @@ msgstr ""
 msgid "Contributor analytics"
 msgstr ""
 
-msgid "Control how the CI_JOB_TOKEN CI/CD variable is used for API access between projects."
+msgid "Control whether CI/CD job tokens can be used to authenticate with this project."
 msgstr ""
 
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
@@ -29662,6 +29665,9 @@ msgid "Job is stuck. Check runners."
 msgstr ""
 
 msgid "Job logs and artifacts"
+msgstr ""
+
+msgid "Job token permissions"
 msgstr ""
 
 msgid "Job was retried"
@@ -55329,9 +55335,6 @@ msgid "Toggles :%{name}: emoji reaction."
 msgstr ""
 
 msgid "Token"
-msgstr ""
-
-msgid "Token Access"
 msgstr ""
 
 msgid "Token name"

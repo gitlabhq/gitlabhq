@@ -1367,7 +1367,6 @@ fail-pipeline-early:
   stage: test
   needs:
     - !reference [.rspec-base-needs, needs]
-    - job: "compile-test-assets"
     - job: "detect-previous-failed-tests"
   script:
     - !reference [.base-script, script]

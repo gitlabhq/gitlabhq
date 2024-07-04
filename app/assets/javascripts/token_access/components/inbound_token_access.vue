@@ -29,9 +29,12 @@ export default {
   i18n: {
     toggleLabelTitle: s__('CICD|Limit access %{italicStart}to%{italicEnd} this project'),
     toggleDescription: s__(
-      `CICD|Allow access to this project from authorized groups or projects by adding them to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}.`,
+      `CICD|When enabled, only groups and projects in the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. When disabled, any group or project can do so. %{linkStart}Learn more%{linkEnd}.`,
     ),
-    cardHeaderTitle: s__('CICD|Groups and projects with access'),
+    cardHeaderTitle: s__('CICD|Authorized groups and projects'),
+    cardHeaderDescription: s__(
+      `CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist.`,
+    ),
     settingDisabledMessage: s__(
       'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project. Enable this setting to restrict authentication to only job tokens generated in the groups and projects in the allowlist below.',
     ),
@@ -284,7 +287,7 @@ export default {
       <div>
         <gl-card
           class="gl-new-card"
-          header-class="gl-new-card-header gl-border-bottom-0"
+          header-class="gl-new-card-header gl-border-bottom-0 gl-flex-wrap gl-md-flex-nowrap"
           body-class="gl-new-card-body gl-px-0"
         >
           <template #header>
@@ -310,8 +313,9 @@ export default {
                   {{ projectCount }}
                 </span>
               </div>
+              <p class="gl-text-secondary">{{ $options.i18n.cardHeaderDescription }}</p>
             </div>
-            <div class="gl-new-card-actions">
+            <div class="gl-new-card-actions gl-w-full gl-md-w-auto gl-text-right">
               <gl-button
                 v-if="!isAddFormVisible"
                 size="small"

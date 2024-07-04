@@ -107,21 +107,26 @@ To enable the Inbound Private Link:
 
 ### Outbound Private Link
 
-NOTE:
-If you plan to add a PrivateLink connection (either [inbound](#inbound-private-link) or [outbound](#outbound-private-link)) to your environment, and you require the connections to be available in specific Availability Zones, you must provide up to two [Availability Zone IDs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) to your account team during onboarding. If not specified, GitLab selects two random Availability Zone IDs where the connections are available.
+Outbound private links allow your GitLab Dedicated instance and the hosted runners for GitLab Dedicated to securely communicate with services running in your VPC on AWS without exposing any traffic to the public internet.
 
-Consider the following when using Outbound Private Links:
+This type of connection allows GitLab functionality to access private services:
 
-- Outbound Private Links allow the GitLab Dedicated instance to securely communicate with services running in your VPC on AWS. This type of connection
-  can execute [webhooks](../../user/project/integrations/webhooks.md) where the targeted services are running in your VPC, import or mirror projects
-  and repositories, or use any other GitLab functionality to access private services.
-- You can only establish Private Links between VPCs in the same region. Therefore, you can only establish a connection in the regions you selected for
-  your Dedicated instance.
-- The Network Load Balancer (NLB) that backs the Endpoint Service at your end must be enabled in at least one of the Availability Zones to which your Dedicated instance was
-  deployed. This is not the user-facing name such as `us-east-1a`, but the underlying [Availability Zone ID](https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html).
-  If you did not specify these during onboarding to Dedicated, you must either:
-  - Ask for the Availability Zone IDs in the ticket you raise to enable the link and ensure the NLB is enabled in those AZs, or
-  - Ensure the NLB has is enabled in every Availability Zone in the region.
+- For the GitLab Dedicated instance:
+
+  - [webhooks](../../user/project/integrations/webhooks.md)
+  - import or mirror projects and repositories
+
+- For hosted runners:
+
+  - custom secrets managers
+  - artifacts or job images stored in your infrastructure
+  - deployments into your infrastructure
+
+Consider the following:
+
+- You can only establish private links between VPCs in the same region. Therefore, you can only establish a connection in the regions specified for your Dedicated instance.
+- The connection requires the [Availability Zone IDs (AZ IDs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) for the Availability Zones (AZs) in the regions that you selected during onboarding.
+- If you did not specify any AZs during onboarding to Dedicated, GitLab randomly selects the AZ IDs.
 
 You can view the `Reverse Private Link IAM Principal` attribute in the **Tenant Details** section of Switchboard.
 
@@ -130,6 +135,9 @@ To enable an Outbound Private Link:
 1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service
    will be available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on a new
    [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. Make sure you have configured a Network Load Balancer (NLB) for the endpoint service in the AZs to which your Dedicated instance was deployed. If you did not specify these during onboarding to Dedicated, you must either:
+    - Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request the AZ IDs required to enable the connection and ensure the NLB is enabled in those AZs.
+    - Ensure the NLB is enabled in every AZ in the region.
 1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab will provide you with the ARN of an
    IAM role that will be initiating the connection to your endpoint service. You must ensure this ARN is included, or otherwise covered by other
    entries, in the list of "Allowed Principals" on the Endpoint Service, as described by the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).

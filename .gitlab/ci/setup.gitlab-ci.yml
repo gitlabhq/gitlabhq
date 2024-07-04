@@ -91,7 +91,7 @@ verify-tests-yml:
   extends:
     - .setup:rules:verify-tests-yml
   image: ${GITLAB_DEPENDENCY_PROXY_ADDRESS}ruby:${RUBY_VERSION}-alpine3.20
-  stage: test
+  stage: preflight
   needs: []
   script:
     - source scripts/utils.sh

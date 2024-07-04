@@ -18,7 +18,6 @@ import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mi
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
 import runPipelineMixin from '../mixins/run_pipeline';
-import { MT_MERGE_STRATEGY } from '../constants';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -170,7 +169,7 @@ export default {
       );
     },
     isMergeTrain() {
-      return this.mergeStrategy === MT_MERGE_STRATEGY;
+      return Boolean(this.pipeline.flags?.merge_train_pipeline);
     },
   },
   errorText: s__(

@@ -21,7 +21,7 @@ import getCIJobTokenScopeQuery from '../graphql/queries/get_ci_job_token_scope.q
 import getProjectsWithCIJobTokenScopeQuery from '../graphql/queries/get_projects_with_ci_job_token_scope.query.graphql';
 import TokenAccessTable from './token_access_table.vue';
 
-// Note: This component will be removed in 17.0, as the outbound access token is getting deprecated
+// Note: This component will be removed in 18.0, as the outbound access token is getting deprecated
 export default {
   i18n: {
     toggleLabelTitle: s__(
