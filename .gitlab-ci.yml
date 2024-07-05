@@ -5,7 +5,6 @@ stages:
   - build-images
   - fixtures
   - lint
-  - test-frontend
   - test
   - post-test
   - review

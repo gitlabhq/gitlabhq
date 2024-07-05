@@ -175,6 +175,18 @@ To support your self-managed instance with Jira Cloud, do one of the following:
   1. Open your firewall and allow inbound traffic from [Atlassian IP addresses](https://support.atlassian.com/organization-administration/docs/ip-addresses-and-domains-for-atlassian-cloud-products/#Outgoing-Connections) only.
 - The Jira user that installs and configures the app must meet certain [requirements](#jira-user-requirements).
 
+### Set up your instance
+
+[Prerequisites](#prerequisites-1)
+
+To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
+
+1. On the left sidebar, at the bottom, select **Admin Area**.
+1. Select **Settings > General**.
+1. Expand **GitLab for Jira App**.
+1. In **Jira Connect Proxy URL**, ensure this is blank.
+1. Select **Save changes**.
+
 ### Install the app in development mode
 
 [Prerequisites](#prerequisites-1)

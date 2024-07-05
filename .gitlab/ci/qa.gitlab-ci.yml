@@ -103,7 +103,6 @@ qa:metadata-lint:
   extends:
     - .qa-job-base
     - .qa:rules:metadata-lint
-  stage: lint
   variables:
     QA_EXPORT_TEST_METRICS: "false"
     # Disable warnings in browserslist which can break on backports

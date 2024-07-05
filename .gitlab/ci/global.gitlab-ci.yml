@@ -28,8 +28,7 @@
   needs:
     # If the job extending this also defines `needs`, make sure to update
     # its `needs` to include `clone-gitlab-repo` because it'll be overridden.
-    - job: clone-gitlab-repo
-      optional: true # Optional so easier to switch in between
+    - clone-gitlab-repo
 
 .production:
   variables:

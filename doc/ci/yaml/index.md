@@ -256,8 +256,10 @@ include: '.gitlab-ci-production.yml'
 
 - The `.gitlab-ci.yml` file and the local file must be on the same branch.
 - You can't include local files through Git submodules paths.
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the `include` keyword, not the project running the pipeline.
-  You can use local, project, remote, or template includes.
+- `include` configuration is always evaluated based on the location of the file
+  containing the `include` keyword, not the project running the pipeline. If a
+  [nested `include`](includes.md#use-nested-includes) is in a configuration file
+  in a different project, `include: local` checks that other project for the file.
 
 #### `include:project`
 
@@ -304,8 +306,10 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the nested `include` keyword.
-  You can use `local` (relative to the project containing the configuration file with the `include` keyword), `project`, `remote`, or `template` includes.
+- `include` configuration is always evaluated based on the location of the file
+  containing the `include` keyword, not the project running the pipeline. If a
+  [nested `include`](includes.md#use-nested-includes) is in a configuration file
+  in a different project, `include: local` checks that other project for the file.
 - When the pipeline starts, the `.gitlab-ci.yml` file configuration included by all methods is evaluated.
   The configuration is a snapshot in time and persists in the database. GitLab does not reflect any changes to
   the referenced `.gitlab-ci.yml` file configuration until the next pipeline starts.
