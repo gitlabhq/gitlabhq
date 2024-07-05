@@ -238,7 +238,7 @@ export default {
       }
 
       if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
-        return hasSubepicsFeature;
+        return hasSubepicsFeature && parentWorkItem;
       }
 
       return parentWorkItem;

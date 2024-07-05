@@ -401,7 +401,7 @@ DEPENDENCIES
   faker (~> 3.4, >= 3.4.1)
   faraday-retry (~> 2.2, >= 2.2.1)
   fog-core (= 2.1.0)
-  fog-google (~> 1.19)
+  fog-google (~> 1.24, >= 1.24.1)
   gitlab-cng!
   gitlab-qa (~> 14, >= 14.11.0)
   gitlab-utils!
@@ -430,4 +430,4 @@ DEPENDENCIES
   zeitwerk (~> 2.6, >= 2.6.15)
 
 BUNDLED WITH
-   2.5.14
+   2.5.11

@@ -24,9 +24,14 @@ module Issuables
 
     # rubocop: disable CodeReuse/ActiveRecord
     def label_link_query(issuables, label_ids: nil, label_names: nil)
-      target_model = issuables.base_class
+      target_model = issuables.klass
+      base_target_model = issuables.base_class
 
-      relation = target_label_links_query(target_model, label_ids)
+      # passing the original target_model just to avoid running the labels union query on group level issues pages
+      # as the query becomes more expensive at group level. This is to be removed altogether as we migrate labels off
+      # Epic altogether, planned as a high priority follow-up for Epic to WorkItem migration:
+      # re https://gitlab.com/gitlab-org/gitlab/-/issues/465725
+      relation = target_label_links_query(target_model, base_target_model, label_ids)
       relation = relation.joins(:label).where(labels: { name: label_names }) if label_names
 
       relation
@@ -154,8 +159,9 @@ module Issuables
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
-    def target_label_links_query(target_model, label_ids)
-      LabelLink.by_target_for_exists_query(target_model.name, target_model.arel_table['id'], label_ids)
+    # overridden in EE
+    def target_label_links_query(_target_model, base_target_model, label_ids)
+      LabelLink.by_target_for_exists_query(base_target_model.name, base_target_model.arel_table['id'], label_ids)
     end
 
     def label_names_from_params

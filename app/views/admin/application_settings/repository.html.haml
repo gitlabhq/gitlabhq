@@ -3,6 +3,8 @@
 - add_page_specific_style 'page_bundles/settings'
 - @force_desktop_expanded_sidebar = true
 
+%div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_application_settings_repository_pageload' } }
+
 = render ::Layouts::SettingsBlockComponent.new(_('Default branch'),
   id: 'js-default-branch-name',
   expanded: expanded_by_default?) do |c|

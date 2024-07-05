@@ -47,7 +47,7 @@ node "Customer Infrastructure" {
 
 OT --> SM : "send"
 SAAS -[#blue]-> CC : " access GOB via CC"
-CC -[#blue]-> GOB: " access GOB" 
+CC -[#blue]-> GOB: " access GOB"
 GOB --> SAAS : "fetch JWKS"
 GOB --> CDOT : "fetch JWKS"
 
@@ -164,7 +164,7 @@ sequenceDiagram
     Note over U,GOB: instance-to-instance auth
     loop chron job
         SMR->>CD: sync Cloud Connector access data
-        Note over CD,SMR: Includes instance JWT (IJWT) scoped to eligible services
+        Note over CD,SMR: Includes IJWT scoped to eligible services
         CD-->>SMR: access data + IJWT
         SMR->>SMR: store access data + IJWT
     end
@@ -174,7 +174,7 @@ sequenceDiagram
     U->>SDK: configure with PAT & Project endpoint
 
     Note over U,GOB: Sending OpenTelemetry Data
-    loop Requests issued by SDK/Collector 
+    loop Requests issued by SDK/Collector
         SDK->>SMW: send opentelemetry data with PAT
         SMW->>SMR: preAuthHandler without body
         SMR->>SMR: auth with PAT

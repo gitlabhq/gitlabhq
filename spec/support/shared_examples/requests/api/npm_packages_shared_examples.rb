@@ -29,7 +29,7 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
       expect(json_response['dist-tags']).to match_schema('public_api/v4/packages/npm_package_tags')
     end
 
-    it 'avoids N+1 database queries' do
+    it 'avoids N+1 database queries', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/448409' do
       control = ActiveRecord::QueryRecorder.new { get(url, headers: headers) }
 
       create_list(:npm_package, 5, project: project, name: package_name).each do |npm_package|

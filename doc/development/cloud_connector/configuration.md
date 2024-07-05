@@ -11,7 +11,7 @@ A GitLab Rails instance accesses backend services uses a [Cloud Connector Servic
 - This token is synced to a GitLab instance from CustomersDot daily and stored in the instance's local database.
 - For GitLab.com, we do not require this step; instead, we issue short-lived tokens for each request.
 
-The Cloud Connector **JWT** Service token contains a custom claim, which represents the list of access scopes that define which features, or unit primitives, this token is valid for.
+The Cloud Connector **JWT** contains a custom claim, which represents the list of access scopes that define which features, or unit primitives, this token is valid for.
 
 ## Configuration structure
 
@@ -71,7 +71,7 @@ and represents an almost exact copy of the GitLab.com configuration.
 
 ## GitLab.com configuration
 
-Because the GitLab.com deployment enjoys special trust, it has the advantage of being able to [self-sign and create service tokens](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
+Because the GitLab.com deployment enjoys special trust, it has the advantage of being able to [self-sign and create IJWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
 
 To issue tokens with the proper scopes, GitLab.com needs access to the configuration.
 The configuration is located in [`access_data.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/config/cloud_connector/access_data.yml),

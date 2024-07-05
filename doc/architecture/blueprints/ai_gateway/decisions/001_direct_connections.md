@@ -18,7 +18,7 @@ The original iteration of the blueprint suggested to route all code suggestion r
 There were multiple reasons for this:
 
 - the decision if a code suggestion request is a completion or generation request was done on GitLab Rails side
-- Simpler authentication of requests could be used. For example, we could use instance JWT tokens to authenticate requests from self-managed instances.
+- Simpler authentication of requests could be used. For example, we could use IJWTs to authenticate requests from self-managed instances.
 
 In [epic 12224](https://gitlab.com/groups/gitlab-org/-/epics/12224), we discussed various
 options to decrease request latency which would decrease also overall response

@@ -19,6 +19,7 @@ import {
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   SEARCH_DEBOUNCE,
+  WORK_ITEM_TYPE_ENUM_EPIC,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
@@ -48,6 +49,7 @@ const findWorkItemTypeId = (typeName) => {
 
 const workItemTypeIdForTask = findWorkItemTypeId('Task');
 const workItemTypeIdForIssue = findWorkItemTypeId('Issue');
+const workItemTypeIdForEpic = findWorkItemTypeId('Epic');
 
 describe('WorkItemLinksForm', () => {
   /**
@@ -298,6 +300,43 @@ describe('WorkItemLinksForm', () => {
             parentWorkItemType: WORK_ITEM_TYPE_VALUE_ISSUE.toLocaleLowerCase(),
           }),
         );
+      });
+    });
+
+    it('doesnt include selected project when switching from project to group level child', async () => {
+      await createComponent({
+        parentConfidential: false,
+        isGroup: true,
+        parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+        childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+      });
+
+      findInput().vm.$emit('input', 'Pretending to add an issue');
+
+      findProjectSelector().vm.$emit('selectProject', projectData[0]);
+
+      await wrapper.setProps({
+        childrenType: WORK_ITEM_TYPE_ENUM_EPIC,
+      });
+
+      findInput().vm.$emit('input', 'Actually adding an epic');
+
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+
+      await waitForPromises();
+
+      expect(createMutationResolver).toHaveBeenCalledWith({
+        input: {
+          title: 'Actually adding an epic',
+          projectPath: 'group-a',
+          workItemTypeId: workItemTypeIdForEpic,
+          hierarchyWidget: {
+            parentId: 'gid://gitlab/WorkItem/1',
+          },
+          confidential: false,
+        },
       });
     });
   });

@@ -124,7 +124,7 @@ export default {
         confidential: this.parentConfidential || this.confidential,
       };
 
-      if (this.selectedProject) {
+      if (this.selectedProject && !this.workItemChildIsEpic) {
         workItemInput = {
           ...workItemInput,
           namespacePath: this.selectedProject.fullPath,
