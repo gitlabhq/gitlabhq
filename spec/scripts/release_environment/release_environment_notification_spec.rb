@@ -28,7 +28,7 @@ RSpec.describe ReleaseEnvironmentNotification, feature_category: :delivery do
 
     context 'when all environment variables are provided' do
       before do
-        stub_env('CI_PIPELINE_ID', '1')
+        stub_env('CI_PIPELINE_URL', '1')
         stub_env('ENVIRONMENT', 'my-env')
         stub_env('VERSIONS', '{"gitlab": "12.7.0"}')
         stub_env('OPS_RELEASE_TOOLS_PIPELINE_TOKEN', 'token')
@@ -44,7 +44,7 @@ RSpec.describe ReleaseEnvironmentNotification, feature_category: :delivery do
   describe '#execute' do
     context 'when all environment variables are provided' do
       before do
-        stub_env('CI_PIPELINE_ID', '1')
+        stub_env('CI_PIPELINE_URL', '1')
         stub_env('ENVIRONMENT', 'my-env')
         stub_env('VERSIONS', '{"gitlab": "12.7.0"}')
         stub_env('OPS_RELEASE_TOOLS_PIPELINE_TOKEN', 'token')
