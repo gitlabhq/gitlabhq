@@ -26,6 +26,7 @@ import {
 import {
   member as memberMock,
   directMember,
+  updateableMember,
   invite,
   accessRequest,
   privateGroup,
@@ -41,11 +42,11 @@ describe('MembersTable', () => {
   const createStore = (state = {}) => {
     return new Vuex.Store({
       modules: {
-        [MEMBERS_TAB_TYPES.invite]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             members: [],
-            memberPath: 'invite/path/:id',
+            memberPath: 'user/path/:id',
             tableFields: [],
             tableAttrs: {
               tr: { 'data-testid': 'member-row' },
@@ -68,7 +69,7 @@ describe('MembersTable', () => {
         sourceId: 1,
         currentUserId: 1,
         canManageMembers: true,
-        namespace: MEMBERS_TAB_TYPES.invite,
+        namespace: MEMBERS_TAB_TYPES.user,
         namespaceReachedLimit: false,
         namespaceUserLimit: 1,
         glFeatures: { showRoleDetailsInDrawer },
@@ -132,20 +133,6 @@ describe('MembersTable', () => {
         createMaxRoleComponent();
 
         expect(findRoleButton().text()).toBe('Owner');
-      });
-
-      describe('disabled state', () => {
-        it.each`
-          phrase        | busy
-          ${'disables'} | ${true}
-          ${'enables'}  | ${false}
-        `('$phrase the button when the drawer busy state is $busy', async ({ busy }) => {
-          createMaxRoleComponent();
-          findRoleDetailsDrawer().vm.$emit('busy', busy);
-          await nextTick();
-
-          expect(findRoleButton().props('disabled')).toBe(busy);
-        });
       });
     });
 
@@ -307,12 +294,12 @@ describe('MembersTable', () => {
 
     describe('with member selected', () => {
       beforeEach(() => {
-        createComponent({ members: [memberMock], tableFields: ['maxRole'] });
+        createComponent({ members: [updateableMember], tableFields: ['maxRole'] });
         return findRoleButton().trigger('click');
       });
 
       it('passes member to drawer', () => {
-        expect(findRoleDetailsDrawer().props('member')).toBe(memberMock);
+        expect(findRoleDetailsDrawer().props('member')).toEqual(updateableMember);
       });
 
       it('clears member when drawer is closed', async () => {

@@ -12,6 +12,7 @@ export function createMockClient() {
     metricsSearchMetadataUrl: 'metrics-search-metadata-url',
     logsSearchUrl: 'logs-search-url',
     logsSearchMetadataUrl: 'logs-search-metadata-url',
+    analyticsUrl: 'analytics-url',
   });
 
   Object.getOwnPropertyNames(mockClient)

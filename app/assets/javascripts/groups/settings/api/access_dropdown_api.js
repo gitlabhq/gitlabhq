@@ -1,5 +1,6 @@
 import axios from '~/lib/utils/axios_utils';
 import { joinPaths } from '~/lib/utils/url_utility';
+import { getGroupMembers } from '~/rest_api';
 
 const GROUP_SUBGROUPS_PATH = '/-/autocomplete/group_subgroups.json';
 
@@ -23,5 +24,12 @@ export const getSubGroups = (options = defaultOptions) => {
       include_parent_shared_groups: includeParentSharedGroups,
       search,
     },
+  });
+};
+
+export const getUsers = (query) => {
+  return getGroupMembers(gon.current_group_id, false, {
+    query,
+    per_page: 20,
   });
 };

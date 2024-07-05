@@ -39,7 +39,6 @@ import {
   dataAttribute,
 } from './mock_data';
 
-jest.mock('lodash/uniqueId', () => (prefix) => `${prefix}0`);
 jest.mock('~/vue_shared/plugins/global_toast');
 
 const IS_CURRENT_USER_ID = 123;

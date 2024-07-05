@@ -154,7 +154,7 @@ Lint/AssignmentInCondition:
     - 'lib/gitlab/ci/build/rules/rule.rb'
     - 'lib/gitlab/ci/config/external/rules.rb'
     - 'lib/gitlab/ci/config/normalizer.rb'
-    - 'lib/gitlab/ci/parsers/coverage/sax_document.rb'
+    - 'lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'
     - 'lib/gitlab/ci/yaml_processor.rb'
     - 'lib/gitlab/counters/buffered_counter.rb'
     - 'lib/gitlab/data_builder/deployment.rb'

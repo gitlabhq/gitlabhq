@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
-  let_it_be(:project) { create(:project) }
-  let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
+  let_it_be_with_refind(:project) { create(:project) }
+  let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
 
   let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
@@ -101,7 +101,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
 
     context 'when project does not have shared runners enabled' do
       before do
-        project.shared_runners_enabled = false
+        project.update!(shared_runners_enabled: false)
       end
 
       it 'sets instance_runners_enabled to false' do
@@ -115,7 +115,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
       let_it_be(:runner) { create(:ci_runner, :instance) }
 
       before do
-        project.shared_runners_enabled = true
+        project.update!(shared_runners_enabled: true)
       end
 
       it 'sets instance_runners_enabled to true' do
@@ -126,7 +126,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
 
       context 'when project is about to be deleted' do
         before do
-          build.project.update!(pending_delete: true)
+          project.update!(pending_delete: true)
         end
 
         it 'sets instance_runners_enabled to false' do
@@ -138,7 +138,7 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
 
       context 'when builds are disabled' do
         before do
-          build.project.project_feature.update!(builds_access_level: false)
+          project.project_feature.update!(builds_access_level: false)
         end
 
         it 'sets instance_runners_enabled to false' do
@@ -162,35 +162,36 @@ RSpec.describe Ci::PendingBuild, feature_category: :continuous_integration do
     end
 
     context 'when a build project is nested in a subgroup' do
-      let(:group) { create(:group, :with_hierarchy, depth: 2, children: 1) }
-      let(:project) { create(:project, namespace: group.descendants.first) }
-      let(:pipeline) { create(:ci_pipeline, project: project) }
+      let_it_be(:group) { create(:group, :with_hierarchy, depth: 2, children: 1) }
+      let_it_be_with_refind(:project) { create(:project, namespace: group.descendants.first) }
+      let_it_be_with_refind(:pipeline) { create(:ci_pipeline, project: project) }
+
       let(:build) { create(:ci_build, :created, pipeline: pipeline) }
 
-      subject { described_class.last }
+      subject(:latest_pending_build) { described_class.last }
 
       context 'when build can be picked by a group runner' do
         before do
-          project.group_runners_enabled = true
+          project.update!(group_runners_enabled: true)
         end
 
         it 'denormalizes namespace traversal ids' do
           described_class.upsert_from_build!(build)
 
-          expect(subject.namespace_traversal_ids).not_to be_empty
-          expect(subject.namespace_traversal_ids).to eq [group.id, project.namespace.id]
+          expect(latest_pending_build.namespace_traversal_ids).not_to be_empty
+          expect(latest_pending_build.namespace_traversal_ids).to eq [group.id, project.namespace.id]
         end
       end
 
       context 'when build can not be picked by a group runner' do
         before do
-          project.group_runners_enabled = false
+          project.update!(group_runners_enabled: false)
         end
 
         it 'creates an empty namespace traversal ids array' do
           described_class.upsert_from_build!(build)
 
-          expect(subject.namespace_traversal_ids).to be_empty
+          expect(latest_pending_build.namespace_traversal_ids).to be_empty
         end
       end
     end

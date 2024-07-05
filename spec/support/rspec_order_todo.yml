@@ -4854,7 +4854,7 @@
 - './spec/lib/gitlab/ci/parsers/accessibility/pa11y_spec.rb'
 - './spec/lib/gitlab/ci/parsers/codequality/code_climate_spec.rb'
 - './spec/lib/gitlab/ci/parsers/coverage/cobertura_spec.rb'
-- './spec/lib/gitlab/ci/parsers/coverage/sax_document_spec.rb'
+- './spec/lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'
 - './spec/lib/gitlab/ci/parsers/instrumentation_spec.rb'
 - './spec/lib/gitlab/ci/parsers/sbom/cyclonedx_properties_spec.rb'
 - './spec/lib/gitlab/ci/parsers/sbom/cyclonedx_spec.rb'

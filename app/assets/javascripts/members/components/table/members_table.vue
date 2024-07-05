@@ -79,7 +79,11 @@ export default {
   computed: {
     ...mapState({
       members(state) {
-        return state[this.namespace].members;
+        return state[this.namespace].members.map((member) => ({
+          ...member,
+          memberPath: state[this.namespace].memberPath.replace(':id', member.id),
+          namespace: this.namespace,
+        }));
       },
       tableFields(state) {
         return state[this.namespace].tableFields;
@@ -89,9 +93,6 @@ export default {
       },
       pagination(state) {
         return state[this.namespace].pagination;
-      },
-      memberPath(state) {
-        return state[this.namespace].memberPath;
       },
     }),
     filteredAndModifiedFields() {
@@ -340,7 +341,6 @@ export default {
     <role-details-drawer
       v-if="glFeatures.showRoleDetailsInDrawer"
       :member="selectedMember"
-      :member-path="memberPath"
       @busy="isRoleDrawerBusy = $event"
       @close="selectedMember = null"
     />

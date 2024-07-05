@@ -401,7 +401,7 @@ Style/GuardClause:
     - 'lib/gitlab/ci/config/external/file/base.rb'
     - 'lib/gitlab/ci/config/external/file/remote.rb'
     - 'lib/gitlab/ci/config/external/file/template.rb'
-    - 'lib/gitlab/ci/parsers/coverage/sax_document.rb'
+    - 'lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'
     - 'lib/gitlab/ci/parsers/security/common.rb'
     - 'lib/gitlab/ci/pipeline/chain/command.rb'
     - 'lib/gitlab/ci/pipeline/chain/limit/rate_limit.rb'

@@ -89,7 +89,10 @@ RSpec::Matchers.define :have_scheduled_batched_migration do |gitlab_schema: :git
       Gitlab::Database::BackgroundMigration::BatchedMigration
         .where(job_class_name: migration)
 
-    expect(batched_migrations.count).to be(0)
+    expect(batched_migrations.count).to(
+      be(0),
+      "#{migration} should not be scheduled, found #{batched_migrations.count} times"
+    )
   end
 end
 

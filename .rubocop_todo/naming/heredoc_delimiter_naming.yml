@@ -56,7 +56,7 @@ Naming/HeredocDelimiterNaming:
     - 'spec/lib/banzai/pipeline/full_pipeline_spec.rb'
     - 'spec/lib/gitlab/auth/ldap/config_spec.rb'
     - 'spec/lib/gitlab/ci/config_spec.rb'
-    - 'spec/lib/gitlab/ci/parsers/coverage/sax_document_spec.rb'
+    - 'spec/lib/gitlab/ci/parsers/coverage/documents/cobertura_document_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/test/junit_spec.rb'
     - 'spec/lib/gitlab/ci/pipeline/chain/config/content_spec.rb'
     - 'spec/lib/gitlab/ci/templates/templates_spec.rb'

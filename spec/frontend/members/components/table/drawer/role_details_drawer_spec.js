@@ -10,7 +10,7 @@ import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import RoleSelector from '~/members/components/table/drawer/role_selector.vue';
 import { roleDropdownItems } from '~/members/utils';
 import waitForPromises from 'helpers/wait_for_promises';
-import { member as memberData, updateableMember } from '../../mock_data';
+import { member as memberData, updateableMember } from '../../../mock_data';
 
 describe('Role details drawer', () => {
   const dropdownItems = roleDropdownItems(updateableMember);
@@ -20,13 +20,12 @@ describe('Role details drawer', () => {
   let axiosMock;
   let wrapper;
 
-  const createWrapper = ({ member = updateableMember, namespace = 'user' } = {}) => {
+  const createWrapper = ({ member = updateableMember } = {}) => {
     wrapper = shallowMountExtended(RoleDetailsDrawer, {
-      propsData: { member, memberPath: 'user/path/:id' },
+      propsData: { member },
       provide: {
         currentUserId: 1,
         canManageMembers: true,
-        namespace,
         group: 'group/path',
       },
       stubs: { GlDrawer, MembersTableCell, GlSprintf },

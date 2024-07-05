@@ -215,3 +215,5 @@ export const I18N_USER_YOU = __("It's you");
 export const I18N_USER_BLOCKED = __('Blocked');
 export const I18N_USER_BOT = __('Bot');
 export const I188N_USER_2FA = __('2FA');
+export const I18N_ROLE_SAVE_SUCCESS = s__('Members|Role was successfully updated.');
+export const I18N_ROLE_SAVE_ERROR = s__('MemberRole|Could not update role.');

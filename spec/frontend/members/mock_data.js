@@ -115,7 +115,12 @@ export const members = [member];
 
 export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
-export const updateableMember = { ...directMember, canUpdate: true };
+export const updateableMember = {
+  ...directMember,
+  canUpdate: true,
+  memberPath: 'user/path/238',
+  namespace: 'user',
+};
 
 export const member2faEnabled = { ...member, user: { ...member.user, twoFactorEnabled: true } };
 

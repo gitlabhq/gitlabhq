@@ -259,7 +259,7 @@ Style/RedundantSelf:
     - 'lib/gitlab/ci/config/entry/jobs.rb'
     - 'lib/gitlab/ci/config/entry/root.rb'
     - 'lib/gitlab/ci/jwt.rb'
-    - 'lib/gitlab/ci/parsers/coverage/sax_document.rb'
+    - 'lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'
     - 'lib/gitlab/ci/pipeline/expression/lexeme/null.rb'
     - 'lib/gitlab/ci/pipeline/preloader.rb'
     - 'lib/gitlab/ci/queue/metrics.rb'

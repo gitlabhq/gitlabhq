@@ -170,7 +170,6 @@ module Git
     end
 
     def enqueue_jira_connect_remove_branches
-      return unless Feature.enabled?(:jira_connect_remove_branches, project)
       return unless project.jira_subscription_exists?
 
       return unless Atlassian::JiraIssueKeyExtractors::Branch.has_keys?(project, branch_name)

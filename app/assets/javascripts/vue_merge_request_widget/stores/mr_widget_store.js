@@ -8,6 +8,7 @@ import {
   MT_MERGE_STRATEGY,
   MWCP_MERGE_STRATEGY,
   MWPS_MERGE_STRATEGY,
+  MTWCP_MERGE_STRATEGY,
   STATE_MACHINE,
   stateToTransitionMap,
 } from '../constants';
@@ -368,6 +369,9 @@ export default class MergeRequestStore {
     }
     if (availableAutoMergeStrategies.includes(MWPS_MERGE_STRATEGY)) {
       return MWPS_MERGE_STRATEGY;
+    }
+    if (availableAutoMergeStrategies.includes(MTWCP_MERGE_STRATEGY)) {
+      return MTWCP_MERGE_STRATEGY;
     }
 
     return undefined;

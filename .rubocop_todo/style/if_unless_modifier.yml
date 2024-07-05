@@ -599,7 +599,7 @@ Style/IfUnlessModifier:
     - 'lib/gitlab/ci/config/external/file/base.rb'
     - 'lib/gitlab/ci/config/external/file/template.rb'
     - 'lib/gitlab/ci/config/normalizer.rb'
-    - 'lib/gitlab/ci/parsers/coverage/sax_document.rb'
+    - 'lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'
     - 'lib/gitlab/ci/parsers/security/common.rb'
     - 'lib/gitlab/ci/pipeline/chain/validate/abilities.rb'
     - 'lib/gitlab/ci/pipeline/chain/validate/repository.rb'

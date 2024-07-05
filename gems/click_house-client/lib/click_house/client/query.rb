@@ -7,6 +7,12 @@ module ClickHouse
       PLACEHOLDER_REGEX = /{\w+:\w+}/ # example: {var:UInt8}
       PLACEHOLDER_NAME_REGEX = /{(\w+):/ # example: {var:UInt8} => var
 
+      def self.build(query)
+        return query if query.is_a?(ClickHouse::Client::QueryLike)
+
+        new(raw_query: query)
+      end
+
       def initialize(raw_query:, placeholders: {})
         raise QueryError, 'Empty query string given' if raw_query.blank?
 
@@ -18,7 +24,7 @@ module ClickHouse
       # If there are subqueries, merge their placeholders as well.
       def placeholders
         all_placeholders = @placeholders.select { |_, v| !v.is_a?(QueryLike) }
-        @placeholders.each do |_name, value|
+        @placeholders.each_value do |value|
           next unless value.is_a?(QueryLike)
 
           all_placeholders.merge!(value.placeholders) do |key, a, b|
@@ -53,12 +59,6 @@ module ClickHouse
             bind_index_manager.next_bind_str
           end
         end
-      end
-
-      def self.build(query)
-        return query if query.is_a?(ClickHouse::Client::QueryLike)
-
-        new(raw_query: query)
       end
 
       private

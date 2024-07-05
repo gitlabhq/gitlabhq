@@ -61,11 +61,11 @@ export const getGroupTransferLocations = (groupId, params = {}) => {
   return axios.get(url, { params: { ...defaultParams, ...params } });
 };
 
-export const getGroupMembers = (groupId, inherited = false) => {
+export const getGroupMembers = (groupId, inherited = false, params = {}) => {
   const path = inherited ? GROUP_ALL_MEMBERS_PATH : GROUP_MEMBERS_PATH;
   const url = buildApiUrl(path).replace(':id', groupId);
 
-  return axios.get(url);
+  return axios.get(url, { params });
 };
 
 export const createGroup = (params) => {

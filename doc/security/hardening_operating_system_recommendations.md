@@ -51,10 +51,17 @@ AllowTcpForwarding no
 X11Forwarding no
 PrintMotd no
 PermitTunnel no
+PermitRootLogin no
+
 # Allow client to pass locale environment variables
 AcceptEnv LANG LC_*
+
+# Change default od 120 seconds to 60
+LoginGraceTime 60
+
 # override default of no subsystems
 Subsystem       sftp    /usr/lib/openssh/sftp-server
+
 # Protocol adjustments, these would be needed/recommended in a FIPS or
 # FedRAMP deployment, and use only strong and proven algorithm choices
 Protocol 2
@@ -124,6 +131,8 @@ kernel.unprivileged_bpf_disabled=1
 net.core.bpf_jit_harden=2
 # Prevent common use-after-free exploits
 vm.unprivileged_userfaultfd=0
+# Mitigation CVE-2024-1086 by preventing unprivileged users from creating namespaces
+kernel.unprivileged_userns_clone=0
 
 ## Networking tweaks ##
 ##

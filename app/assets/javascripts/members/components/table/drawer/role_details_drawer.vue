@@ -7,12 +7,15 @@ import MembersTableCell from 'ee_else_ce/members/components/table/members_table_
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
 import axios from '~/lib/utils/axios_utils';
 import { s__ } from '~/locale';
-import { roleDropdownItems } from 'ee_else_ce/members/utils';
 import {
   GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
   MEMBER_ACCESS_LEVEL_PROPERTY_NAME,
   MEMBERS_TAB_TYPES,
 } from '~/members/constants';
+import {
+  getRoleDropdownItems,
+  getMemberRole,
+} from 'ee_else_ce/members/components/table/drawer/utils';
 import * as Sentry from '~/ci/runner/sentry_utils';
 import MemberAvatar from '../member_avatar.vue';
 import RoleSelector from './role_selector.vue';
@@ -36,18 +39,14 @@ export default {
     RoleSelector,
     RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
     GuestOverageConfirmation: () =>
-      import('ee_component/members/components/table/guest_overage_confirmation.vue'),
+      import('ee_component/members/components/table/drawer/guest_overage_confirmation.vue'),
   },
-  inject: ['namespace', 'group'],
+  inject: ['group'],
   props: {
     member: {
       type: Object,
       required: false,
       default: null,
-    },
-    memberPath: {
-      type: String,
-      required: true,
     },
   },
   data() {
@@ -59,18 +58,10 @@ export default {
   },
   computed: {
     roles() {
-      return roleDropdownItems(this.member);
+      return getRoleDropdownItems(this.member);
     },
     initialRole() {
-      const { memberRoleId = null, integerValue, stringValue } = this.member.accessLevel;
-      const role = this.roles.flatten.find(
-        (r) => r.memberRoleId === memberRoleId && r.accessLevel === integerValue,
-      );
-      // When the user doesn't have write access to the members list, the members data won't have custom roles. If the
-      // member is assigned a custom role, there won't be an entry for it in the custom roles list, and the role name
-      // won't be shown. To fix this, we'll return a fake role with just the role name and member role ID so that the
-      // role name will be shown properly.
-      return role || { text: stringValue, memberRoleId };
+      return getMemberRole(this.roles.flatten, this.member);
     },
   },
   watch: {
@@ -99,21 +90,20 @@ export default {
     checkGuestOverage() {
       this.saveError = null;
       this.isSavingRole = true;
-      const confirmOverageFn = this.$refs.guestOverageConfirmation.confirmOverage;
+      const checkOverageFn = this.$refs.guestOverageConfirmation?.checkOverage;
       // If guestOverageConfirmation is real instead of the CE dummy, check the guest overage. Otherwise, just update
       // the role.
-      if (confirmOverageFn) {
-        confirmOverageFn();
+      if (checkOverageFn) {
+        checkOverageFn();
       } else {
         this.updateRole();
       }
     },
     async updateRole() {
       try {
-        const url = this.memberPath.replace(':id', this.member.id);
-        const accessLevelProp = ACCESS_LEVEL_PROPERTY_NAME[this.namespace];
+        const accessLevelProp = ACCESS_LEVEL_PROPERTY_NAME[this.member.namespace];
 
-        const { data } = await axios.put(url, {
+        const { data } = await axios.put(this.member.memberPath, {
           [accessLevelProp]: this.selectedRole.accessLevel,
           member_role_id: this.selectedRole.memberRoleId,
         });

@@ -2355,7 +2355,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/ci/parsers/accessibility/pa11y_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/codequality/code_climate_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/coverage/cobertura_spec.rb'
-    - 'spec/lib/gitlab/ci/parsers/coverage/sax_document_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/instrumentation_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/security/sast_spec.rb'
     - 'spec/lib/gitlab/ci/parsers/security/secret_detection_spec.rb'

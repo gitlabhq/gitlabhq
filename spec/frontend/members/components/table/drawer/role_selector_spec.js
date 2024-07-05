@@ -2,7 +2,7 @@ import { GlCollapsibleListbox } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { roleDropdownItems } from '~/members/utils';
 import RoleSelector from '~/members/components/table/drawer/role_selector.vue';
-import { member } from '../../mock_data';
+import { member } from '../../../mock_data';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),

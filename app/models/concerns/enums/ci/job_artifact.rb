@@ -180,7 +180,7 @@ module Enums
           cyclonedx: 28, ## EE-specific
           requirements_v2: 29, ## EE-specific
           annotations: 30,
-          repository_xray: 31 ## EE-specifric
+          repository_xray: 31 ## EE-specific
         }
       end
 
