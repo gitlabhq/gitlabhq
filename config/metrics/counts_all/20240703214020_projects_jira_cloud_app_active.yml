@@ -1,0 +1,19 @@
+---
+key_path: counts.projects_jira_cloud_app_active
+description: Count of projects with active integrations for Jira Cloud App
+product_group: import_and_integrate
+value_type: number
+status: active
+milestone: "17.2"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154634
+time_frame: all
+data_source: database
+data_category: optional
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

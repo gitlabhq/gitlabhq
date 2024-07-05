@@ -1146,7 +1146,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   end
 
   describe '#cluster_agent_token_from_authorization_token' do
-    let_it_be(:agent_token) { create(:cluster_agent_token) }
+    let_it_be_with_reload(:agent_token) { create(:cluster_agent_token) }
 
     subject { cluster_agent_token_from_authorization_token }
 
@@ -1190,6 +1190,32 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
           end
 
           it { is_expected.to be_nil }
+        end
+      end
+
+      context 'when using Gitlab-Agentk-Api-Request header' do
+        context 'when the token is incorrect' do
+          before do
+            request.headers['Gitlab-Agentk-Api-Request'] = 'ABCD'
+          end
+
+          it { is_expected.to be_nil }
+        end
+
+        context 'when the token is correct' do
+          before do
+            request.headers['Gitlab-Agentk-Api-Request'] = agent_token.token
+          end
+
+          it { is_expected.to eq(agent_token) }
+
+          context 'when the token has been revoked' do
+            before do
+              agent_token.revoked!
+            end
+
+            it { is_expected.to be_nil }
+          end
         end
       end
     end

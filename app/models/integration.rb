@@ -21,7 +21,7 @@ class Integration < ApplicationRecord
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker
     datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
-    gitlab_slack_application hangouts_chat harbor irker jira
+    gitlab_slack_application hangouts_chat harbor irker jira jira_cloud_app
     mattermost mattermost_slash_commands microsoft_teams packagist phorge pipelines_email
     pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
     unify_circuit webex_teams youtrack zentao
@@ -335,6 +335,8 @@ class Integration < ApplicationRecord
         (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
       names.delete('gitlab_slack_application')
     end
+
+    names.delete('jira_cloud_app') unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
 
     names
   end

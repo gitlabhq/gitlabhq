@@ -35830,6 +35830,7 @@ State of a Sentry error.
 | <a id="servicetypeharbor_service"></a>`HARBOR_SERVICE` | HarborService type. |
 | <a id="servicetypeirker_service"></a>`IRKER_SERVICE` | IrkerService type. |
 | <a id="servicetypejenkins_service"></a>`JENKINS_SERVICE` | JenkinsService type. |
+| <a id="servicetypejira_cloud_app_service"></a>`JIRA_CLOUD_APP_SERVICE` | JiraCloudAppService type. |
 | <a id="servicetypejira_service"></a>`JIRA_SERVICE` | JiraService type. |
 | <a id="servicetypemattermost_service"></a>`MATTERMOST_SERVICE` | MattermostService type. |
 | <a id="servicetypemattermost_slash_commands_service"></a>`MATTERMOST_SLASH_COMMANDS_SERVICE` | MattermostSlashCommandsService type. |

@@ -619,6 +619,7 @@ project:
 - teamcity_integration
 - pushover_integration
 - jira_integration
+- jira_cloud_app_integration
 - zentao_integration
 # dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
 - dingtalk_integration

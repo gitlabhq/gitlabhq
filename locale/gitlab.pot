@@ -22982,6 +22982,9 @@ msgstr ""
 msgid "Generate new export"
 msgstr ""
 
+msgid "Generate page path from title"
+msgstr ""
+
 msgid "Generate project access tokens scoped to this project for your applications that need access to the GitLab API."
 msgstr ""
 
@@ -29254,6 +29257,27 @@ msgid "Jira users have been imported from the configured Jira instance. They can
 msgstr ""
 
 msgid "Jira-GitLab user mapping template"
+msgstr ""
+
+msgid "JiraCloudApp|Copy and paste your JSM Service ID here. Use comma (,) to separate multiple IDs."
+msgstr ""
+
+msgid "JiraCloudApp|GitLab For Jira Cloud app"
+msgstr ""
+
+msgid "JiraCloudApp|Jira Service Management"
+msgstr ""
+
+msgid "JiraCloudApp|Service ID"
+msgstr ""
+
+msgid "JiraCloudApp|Sync development information to Jira in real time."
+msgstr ""
+
+msgid "JiraCloudApp|You must configure GitLab For Jira before enabling this integration. %{jira_doc_link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "JiraCloudApp|cannot have more than %{limit} service IDs"
 msgstr ""
 
 msgid "JiraConnect|Are you a GitLab administrator?"
@@ -46808,6 +46832,9 @@ msgstr ""
 msgid "Scroll up"
 msgstr ""
 
+msgid "Seamlessly create change requests when your team initiates deployments."
+msgstr ""
+
 msgid "Search"
 msgstr ""
 
@@ -59664,7 +59691,13 @@ msgstr ""
 msgid "WikiPage|Learn more."
 msgstr ""
 
+msgid "WikiPage|Page path"
+msgstr ""
+
 msgid "WikiPage|Page title"
+msgstr ""
+
+msgid "WikiPage|Path"
 msgstr ""
 
 msgid "WikiPage|Save changes"

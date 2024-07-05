@@ -9,10 +9,6 @@ module API
     feature_category :service_ping
 
     namespace 'usage_data' do
-      before do
-        forbidden!('Invalid CSRF token is provided') unless verified_request?
-      end
-
       resource :service_ping do
         allow_access_with_scope :read_service_ping
 
@@ -46,7 +42,7 @@ module API
         detail 'This feature was introduced in GitLab 13.4.'
         success code: 200
         failure [
-          { code: 403, message: 'Invalid CSRF token is provided' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
         tags %w[usage_data]
@@ -66,7 +62,7 @@ module API
       desc 'Track usage data event for the current user' do
         success code: 200
         failure [
-          { code: 403, message: 'Invalid CSRF token is provided' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
         tags %w[usage_data]
@@ -87,7 +83,7 @@ module API
         detail 'This feature was introduced in GitLab 16.2.'
         success code: 200
         failure [
-          { code: 403, message: 'Invalid CSRF token is provided' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
         tags %w[usage_data]
@@ -131,7 +127,7 @@ module API
         detail 'This feature was introduced in GitLab 13.11.'
         success code: 200
         failure [
-          { code: 403, message: 'Invalid CSRF token is provided' },
+          { code: 401, message: 'Unauthorized' },
           { code: 404, message: 'Not found' }
         ]
         produces ['application/yaml']

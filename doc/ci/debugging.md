@@ -335,7 +335,7 @@ For help with a specific area, see:
 - [CI/CD job tokens](jobs/ci_job_token.md).
 - [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
 - [Docker](docker/using_docker_build.md#troubleshooting).
-- [Downstream pipelines](pipelines/downstream_pipelines.md#troubleshooting).
+- [Downstream pipelines](pipelines/downstream_pipelines_troubleshooting.md).
 - [Environments](environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).
 - [GitLab Runner](https://docs.gitlab.com/runner/faq/).
 - [ID tokens](secrets/id_token_authentication.md#troubleshooting).

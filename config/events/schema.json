@@ -94,7 +94,7 @@
       ]
     },
     "product_group": {
-      "type": "string"
+      "$ref": "../metrics/schema/product_groups.json"
     },
     "introduced_by_url": {
       "type": [

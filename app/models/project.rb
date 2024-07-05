@@ -234,6 +234,7 @@ class Project < ApplicationRecord
   has_one :irker_integration, class_name: 'Integrations::Irker'
   has_one :jenkins_integration, class_name: 'Integrations::Jenkins'
   has_one :jira_integration, class_name: 'Integrations::Jira'
+  has_one :jira_cloud_app_integration, class_name: 'Integrations::JiraCloudApp'
   has_one :mattermost_integration, class_name: 'Integrations::Mattermost'
   has_one :mattermost_slash_commands_integration, class_name: 'Integrations::MattermostSlashCommands'
   has_one :microsoft_teams_integration, class_name: 'Integrations::MicrosoftTeams'

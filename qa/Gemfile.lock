@@ -97,7 +97,7 @@ GEM
     domain_name (0.6.20240107)
     erubi (1.12.0)
     excon (0.110.0)
-    factory_bot (6.3.0)
+    factory_bot (6.4.6)
       activesupport (>= 5.0.0)
     faker (3.4.1)
       i18n (>= 1.8.11, < 2)
@@ -397,7 +397,7 @@ DEPENDENCIES
   chemlab-library-gitlab!
   chemlab-library-www-gitlab-com (~> 0.1, >= 0.1.1)
   deprecation_toolkit (~> 2.2.0)
-  factory_bot (~> 6.3.0)
+  factory_bot (~> 6.4.6)
   faker (~> 3.4, >= 3.4.1)
   faraday-retry (~> 2.2, >= 2.2.1)
   fog-core (= 2.1.0)

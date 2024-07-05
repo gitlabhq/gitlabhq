@@ -380,6 +380,7 @@ module API
               desc: 'Enable comments inside Jira issues on each GitLab event (commit / merge request)'
             }
           ],
+          'jira-cloud-app' => ::Integrations::JiraCloudApp.api_arguments,
           'mattermost-slash-commands' => ::Integrations::MattermostSlashCommands.api_arguments,
           'slack-slash-commands' => [
             {
@@ -647,6 +648,7 @@ module API
           ::Integrations::Irker,
           ::Integrations::Jenkins,
           ::Integrations::Jira,
+          ::Integrations::JiraCloudApp,
           ::Integrations::Mattermost,
           ::Integrations::MattermostSlashCommands,
           ::Integrations::MicrosoftTeams,

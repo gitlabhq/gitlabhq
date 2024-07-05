@@ -226,7 +226,7 @@ module Atlassian
           'properties' => {
             'associationType' => {
               'type' => 'string',
-              'pattern' => '(issueKeys|issueIdOrKeys)'
+              'pattern' => '(issueKeys|issueIdOrKeys|serviceIdOrKeys)'
             },
             'values' => issue_keys_type
           }

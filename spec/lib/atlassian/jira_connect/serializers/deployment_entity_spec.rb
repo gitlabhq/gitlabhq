@@ -14,6 +14,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
     context 'when the deployment does not belong to any Jira issue' do
       before do
         allow(subject).to receive(:issue_keys).and_return([])
+        allow(subject).to receive(:service_ids_from_integration_configuration).and_return([])
       end
 
       it 'can encode the object' do
@@ -28,6 +29,106 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
     context 'when the deployment belongs to Jira issue' do
       before do
         allow(subject).to receive(:issue_keys).and_return(['JIRA-1'])
+        allow(subject).to receive(:service_ids_from_integration_configuration).and_return([])
+      end
+
+      it 'is valid according to the deployment info schema' do
+        expect(subject.to_json).to be_valid_json.and match_schema(Atlassian::Schemata.deployment_info)
+      end
+    end
+
+    context 'with/without enable_jira_connect_configuration FF still valid' do
+      it 'is valid according to the deployment info schema' do
+        allow(Feature).to receive(:enabled?).and_return(true)
+        allow(Feature).to receive(:enabled?).with(:enable_jira_connect_configuration).and_return(false)
+
+        expect(subject.to_json).to be_valid_json.and match_schema(Atlassian::Schemata.deployment_info)
+      end
+    end
+
+    context 'when the project has GitLab for Jira Cloud app, and service keys configured' do
+      let_it_be(:integration) { create(:jira_cloud_app_integration, project: project) }
+
+      let(:associations) { Gitlab::Json.parse(subject.to_json)['associations'] }
+
+      it 'is valid according to the deployment info schema' do
+        expect(subject.to_json).to be_valid_json.and match_schema(Atlassian::Schemata.deployment_info)
+      end
+
+      it 'includes service IDs in the association' do
+        expect(associations).to include(
+          { 'associationType' => 'serviceIdOrKeys', 'values' => [integration.jira_cloud_app_service_ids] }
+        )
+      end
+
+      context 'when the integration has comma-separated service keys' do
+        before do
+          integration.update!(jira_cloud_app_service_ids: 'b:AXJpOmNsmdOJ2aWNlLzP=,b:BXJpOmNOzZXJ2aWNlLzP=')
+        end
+
+        it 'splits the keys' do
+          expect(associations).to include(
+            { 'associationType' => 'serviceIdOrKeys', 'values' => %w[b:AXJpOmNsmdOJ2aWNlLzP= b:BXJpOmNOzZXJ2aWNlLzP=] }
+          )
+        end
+      end
+
+      context 'when the integration has service keys with no comma' do
+        before do
+          integration.update!(jira_cloud_app_service_ids: 'b:AXJpOmNsmdOJ2aWNlLzP=')
+        end
+
+        it 'splits the keys' do
+          expect(associations).to include(
+            { 'associationType' => 'serviceIdOrKeys', 'values' => %w[b:AXJpOmNsmdOJ2aWNlLzP=] }
+          )
+        end
+      end
+
+      context 'when the integration has service keys with a comma at the end' do
+        before do
+          integration.update!(jira_cloud_app_service_ids: 'b:AXJpOmNsmdOJ2aWNlLzP=,')
+        end
+
+        it 'splits the keys' do
+          expect(associations).to include(
+            { 'associationType' => 'serviceIdOrKeys', 'values' => %w[b:AXJpOmNsmdOJ2aWNlLzP=] }
+          )
+        end
+      end
+
+      context 'when the integration has no service keys' do
+        before do
+          integration.update!(jira_cloud_app_service_ids: [])
+        end
+
+        it 'does not include the serviceIdOrKeys association type' do
+          expect(associations.any? { |association| association['associationType'] == 'serviceIdOrKeys' }).to be_falsey
+        end
+      end
+
+      context 'when the integration is inactive no associationType equals to serviceIdOrKeys' do
+        before do
+          integration.update!(active: false)
+        end
+
+        it 'does not include the serviceIdOrKeys association type' do
+          expect(associations.any? { |association| association['associationType'] == 'serviceIdOrKeys' }).to be_falsey
+        end
+      end
+    end
+
+    context 'when the deployment belongs to Jira issue and Service IDs' do
+      before do
+        allow(subject).to receive(:issue_keys).and_return(['JIRA-1'])
+        allow(subject).to receive(:service_ids_from_integration_configuration).and_return([
+          { associationType: 'serviceIdOrKeys', values: [
+            'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzIwM2asdkMWE0LTE0MmEtNDE0Yy1hYjY4LTA1
+          OGMzMDBkODAxMS8yMDdlZDkwZS1lNWMxLTExZWUtODFiNS0xMjhiNDsfa4MTk0MjQ=',
+            'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzIwM2asdkMWE0LTEgasdtNDE0Yy1hYjY4LTA1
+          OGMzMDBkODAxMS8yMDdlZDkwZS1lNWMxLTExZWUtODFiNS0xMjhiNDsfa4MTk0MjQ='
+          ] }
+        ])
       end
 
       it 'is valid according to the deployment info schema' do
@@ -39,6 +140,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
   context 'when deployment is an external deployment' do
     before do
       deployment.update!(deployable: nil)
+      allow(subject).to receive(:service_ids_from_integration_configuration).and_return([])
     end
 
     it 'does not raise errors when serializing' do

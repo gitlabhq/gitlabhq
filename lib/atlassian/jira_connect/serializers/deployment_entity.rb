@@ -36,7 +36,9 @@ module Atlassian
         def associations
           keys = issue_keys
 
-          [{ associationType: :issueKeys, values: keys }] if keys.present?
+          combined_associations = service_ids_from_integration_configuration
+          combined_associations << { associationType: :issueKeys, values: keys } if keys.present?
+          combined_associations.presence
         end
 
         def display_name
@@ -48,7 +50,13 @@ module Atlassian
         end
 
         def description
-          "Deployment #{deployment.iid} of #{project.name} at #{short_sha} (#{build&.name}) to #{environment.name}"
+          unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
+            return "Deployment #{deployment.iid} of #{project.name} at #{short_sha} (#{build&.name}) to
+             #{environment.name}"
+          end
+
+          "Deployment #{deployment.iid} of #{project.name} (project-#{project.id})
+          at #{short_sha} (#{build&.name}) to #{environment.name}"
         end
 
         def url
@@ -119,6 +127,15 @@ module Atlassian
           commits.flat_map do |commit|
             JiraIssueKeyExtractor.new(commit.message).issue_keys
           end.compact
+        end
+
+        def service_ids_from_integration_configuration
+          return [] unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
+          return [] unless project.jira_cloud_app_integration&.active
+          return [] if project.jira_cloud_app_integration&.jira_cloud_app_service_ids.blank?
+
+          service_ids = project.jira_cloud_app_integration.jira_cloud_app_service_ids.gsub(/\s+/, '').split(',')
+          [{ associationType: 'serviceIdOrKeys', values: service_ids }]
         end
       end
     end

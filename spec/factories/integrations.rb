@@ -486,6 +486,13 @@ FactoryBot.define do
     thread { nil }
   end
 
+  factory :jira_cloud_app_integration, class: 'Integrations::JiraCloudApp' do
+    project
+    active { true }
+    type { 'Integrations::JiraCloudApp' }
+    jira_cloud_app_service_ids { 'b:YXJpOmNsb3VkOmdyYXBoOjpzZXJ2aWNlLzI=' }
+  end
+
   # this is for testing storing values inside properties, which is deprecated and will be removed in
   # https://gitlab.com/gitlab-org/gitlab/issues/29404
   trait :without_properties_callback do

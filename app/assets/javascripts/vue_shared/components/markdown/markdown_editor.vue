@@ -68,7 +68,6 @@ export default {
     formFieldProps: {
       type: Object,
       required: true,
-      validator: (prop) => prop.id && prop.name,
     },
     autofocus: {
       type: Boolean,

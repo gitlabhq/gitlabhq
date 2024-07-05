@@ -2,6 +2,7 @@
 
 class Projects::DeployKeysController < Projects::ApplicationController
   include RepositorySettingsRedirect
+
   respond_to :html
 
   # Authorize

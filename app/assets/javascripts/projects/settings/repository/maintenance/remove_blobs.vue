@@ -1,5 +1,6 @@
 <script>
 import { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
@@ -7,6 +8,8 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__ } from '~/locale';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import removeBlobsMutation from './graphql/mutations/remove_blobs.mutation.graphql';
+
+const trackingMixin = InternalEvents.mixin();
 
 export const BLOB_OID_LENGTH = 40;
 
@@ -40,6 +43,7 @@ export default {
   }),
   modalCancel: { text: i18n.modalCancelText },
   components: { GlButton, GlDrawer, GlLink, GlFormTextarea, GlModal, GlFormInput },
+  mixins: [trackingMixin],
   inject: { projectPath: { default: '' }, housekeepingPath: { default: '' } },
   data() {
     return {
@@ -86,6 +90,7 @@ export default {
     },
     removeBlobsConfirm() {
       this.isLoading = true;
+      this.trackEvent('click_remove_blob_button_repository_settings');
       this.$apollo
         .mutate({
           mutation: removeBlobsMutation,

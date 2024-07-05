@@ -2,6 +2,7 @@
 
 class Admin::DashboardController < Admin::ApplicationController
   include CountHelper
+
   helper Admin::ComponentsHelper
 
   COUNTED_ITEMS = [Project, User, Group].freeze

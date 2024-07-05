@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import RemoveBlobs from '~/projects/settings/repository/maintenance/remove_blobs.vue';
@@ -25,6 +26,7 @@ jest.mock('~/alert');
 describe('Remove blobs', () => {
   let wrapper;
   let mutationMock;
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createMockApolloProvider = (resolverMock) => {
     return createMockApollo([[removeBlobsMutation, resolverMock]]);
@@ -136,6 +138,15 @@ describe('Remove blobs', () => {
               blobOids: [TEST_BLOB_ID],
               projectPath: TEST_PROJECT_PATH,
             });
+          });
+
+          it('tracks click_remove_blob_button_repository_settings', () => {
+            const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+            expect(trackEventSpy).toHaveBeenCalledWith(
+              'click_remove_blob_button_repository_settings',
+              {},
+              undefined,
+            );
           });
 
           it('closes the drawer when removal is confirmed', async () => {

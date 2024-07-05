@@ -3191,7 +3191,9 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 
 - The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
   To download artifacts from a job in the current pipeline, use [`needs:artifacts`](#needsartifacts).
-- You cannot use `needs:pipeline:job` in a [trigger job](#trigger).
+- You cannot use `needs:pipeline:job` in a [trigger job](#trigger), or to fetch artifacts
+  from a [multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines).
+  To fetch artifacts from a multi-project pipeline use [`needs:project`](#needsproject).
 
 #### `needs:optional`
 

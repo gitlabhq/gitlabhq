@@ -158,11 +158,20 @@ module Gitlab
 
       def cluster_agent_token_from_authorization_token
         return unless route_authentication_setting[:cluster_agent_token_allowed]
-        return unless current_request.authorization.present?
 
-        authorization_token, _options = token_and_options(current_request)
+        # We are migrating from the `Authorization` header to one specific to cluster
+        # agents, `Gitlab-Agentk-Api-Request`. Both must be supported until KAS has
+        # been updated to use the new header, and then this first lookup can be removed.
+        # See https://gitlab.com/gitlab-org/gitlab/-/issues/406582.
+        token, _ = if current_request.authorization.present?
+                     token_and_options(current_request)
+                   else
+                     current_request.headers[Gitlab::Kas::INTERNAL_API_AGENTK_REQUEST_HEADER]
+                   end
 
-        ::Clusters::AgentToken.active.find_by_token(authorization_token.to_s)
+        return unless token.present?
+
+        ::Clusters::AgentToken.active.find_by_token(token.to_s)
       end
 
       def find_runner_from_token

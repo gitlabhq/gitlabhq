@@ -6,6 +6,7 @@ module Mutations
       class Create < BaseMutation
         graphql_name 'IntegrationExclusionCreate'
         include ResolvesIds
+
         MAX_PROJECT_IDS = ::Integrations::Exclusions::CreateService::MAX_PROJECTS
         MAX_GROUP_IDS = ::Integrations::Exclusions::CreateService::MAX_GROUPS
 
