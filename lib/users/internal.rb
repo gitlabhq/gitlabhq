@@ -23,6 +23,8 @@ module Users
           u.bio = 'The GitLab alert bot'
           u.name = 'GitLab Alert Bot'
           u.avatar = bot_avatar(image: 'alert-bot.png')
+          u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 
@@ -33,6 +35,7 @@ module Users
           u.bio = 'The GitLab migration bot'
           u.name = 'GitLab Migration Bot'
           u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 
@@ -46,6 +49,7 @@ module Users
           u.website_url = Gitlab::Routing.url_helpers.help_page_url('user/application_security/security_bot/index.md')
           u.avatar = bot_avatar(image: 'security-bot.png')
           u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 
@@ -57,6 +61,7 @@ module Users
           u.name = 'GitLab Support Bot'
           u.avatar = bot_avatar(image: 'support-bot.png')
           u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 
@@ -67,6 +72,8 @@ module Users
           u.bio = 'The GitLab automation bot used for automated workflows and tasks'
           u.name = 'GitLab Automation Bot'
           u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for automation-bot
+          u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 
@@ -78,6 +85,7 @@ module Users
           u.name = 'GitLab LLM Bot'
           u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for llm-bot
           u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 
@@ -89,6 +97,7 @@ module Users
           u.name = 'Duo Code Reviewer'
           u.avatar = bot_avatar(image: 'support-bot.png') # todo: add an avatar for duo_code_review_bot
           u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 
@@ -101,6 +110,7 @@ module Users
           u.avatar = bot_avatar(image: 'admin-bot.png')
           u.admin = true
           u.confirmed_at = Time.zone.now
+          u.private_profile = true
         end
       end
 

@@ -7850,19 +7850,19 @@ msgstr ""
 msgid "BackgroundMigrations|Background Migrations"
 msgstr ""
 
-msgid "BackgroundMigrations|Background migrations are used to perform data migrations whenever a migration exceeds the time limits in our guidelines. %{linkStart}Learn more%{linkEnd}"
+msgid "BackgroundMigrations|Background migrations are used to perform data migrations when a migration exceeds the time limits set by GitLab. %{linkStart}Learn more%{linkEnd}"
 msgstr ""
 
 msgid "BackgroundMigrations|Batch size"
-msgstr ""
-
-msgid "BackgroundMigrations|Database"
 msgstr ""
 
 msgid "BackgroundMigrations|Failed jobs:"
 msgstr ""
 
 msgid "BackgroundMigrations|Finished at"
+msgstr ""
+
+msgid "BackgroundMigrations|No background migrations"
 msgstr ""
 
 msgid "BackgroundMigrations|Started at"
@@ -28145,6 +28145,9 @@ msgstr ""
 msgid "Integrations|Remove exclusion"
 msgstr ""
 
+msgid "Integrations|Remove exclusion for %{name}"
+msgstr ""
+
 msgid "Integrations|Reset integration?"
 msgstr ""
 
@@ -33499,6 +33502,9 @@ msgstr ""
 msgid "MlModelRegistry|Candidate not linked to a CI build"
 msgstr ""
 
+msgid "MlModelRegistry|Create"
+msgstr ""
+
 msgid "MlModelRegistry|Create & import"
 msgstr ""
 
@@ -33559,10 +33565,13 @@ msgstr ""
 msgid "MlModelRegistry|Drop to start upload"
 msgstr ""
 
-msgid "MlModelRegistry|Enter a description for this version of the model."
+msgid "MlModelRegistry|Enter a model description"
 msgstr ""
 
-msgid "MlModelRegistry|Enter a model description"
+msgid "MlModelRegistry|Enter a model name"
+msgstr ""
+
+msgid "MlModelRegistry|Enter a semantic version"
 msgstr ""
 
 msgid "MlModelRegistry|Enter a semantic version."
@@ -33574,7 +33583,16 @@ msgstr ""
 msgid "MlModelRegistry|Enter a subfolder name to organize your artifacts."
 msgstr ""
 
+msgid "MlModelRegistry|Enter a version description"
+msgstr ""
+
 msgid "MlModelRegistry|Enter some description"
+msgstr ""
+
+msgid "MlModelRegistry|Example: 1.0.0"
+msgstr ""
+
+msgid "MlModelRegistry|Example: my-model"
 msgstr ""
 
 msgid "MlModelRegistry|Experiment"
@@ -33598,12 +33616,6 @@ msgstr ""
 msgid "MlModelRegistry|For example 1.0.0"
 msgstr ""
 
-msgid "MlModelRegistry|For example 1.0.0. Must be a semantic version."
-msgstr ""
-
-msgid "MlModelRegistry|For example my-model"
-msgstr ""
-
 msgid "MlModelRegistry|ID"
 msgstr ""
 
@@ -33614,9 +33626,6 @@ msgid "MlModelRegistry|Info"
 msgstr ""
 
 msgid "MlModelRegistry|Latest version"
-msgstr ""
-
-msgid "MlModelRegistry|Leave empty to skip version creation."
 msgstr ""
 
 msgid "MlModelRegistry|Logging artifacts"
@@ -33634,6 +33643,9 @@ msgstr ""
 msgid "MlModelRegistry|Manage versions of your machine learning modelManage versions of your machine learning model"
 msgstr ""
 
+msgid "MlModelRegistry|May not contain spaces."
+msgstr ""
+
 msgid "MlModelRegistry|Metadata"
 msgstr ""
 
@@ -33646,9 +33658,6 @@ msgstr ""
 msgid "MlModelRegistry|Model name"
 msgstr ""
 
-msgid "MlModelRegistry|Model name must not contain spaces or upper case letter."
-msgstr ""
-
 msgid "MlModelRegistry|Model performance"
 msgstr ""
 
@@ -33656,6 +33665,15 @@ msgid "MlModelRegistry|Model registry"
 msgstr ""
 
 msgid "MlModelRegistry|Model version %{versionName} deleted successfully"
+msgstr ""
+
+msgid "MlModelRegistry|Must be a semantic version. Example: 1.0.0"
+msgstr ""
+
+msgid "MlModelRegistry|Must be a semantic version. Leave blank to skip version creation."
+msgstr ""
+
+msgid "MlModelRegistry|Must be unique. May not contain spaces."
 msgstr ""
 
 msgid "MlModelRegistry|New model"
@@ -33674,6 +33692,9 @@ msgid "MlModelRegistry|No logged parameters"
 msgstr ""
 
 msgid "MlModelRegistry|No registered versions"
+msgstr ""
+
+msgid "MlModelRegistry|Optional"
 msgstr ""
 
 msgid "MlModelRegistry|Package creation failed"
@@ -33724,6 +33745,9 @@ msgstr ""
 msgid "MlModelRegistry|Version description"
 msgstr ""
 
+msgid "MlModelRegistry|Version is a valid semantic version."
+msgstr ""
+
 msgid "MlModelRegistry|Version is not a valid semantic version."
 msgstr ""
 
@@ -33757,6 +33781,9 @@ msgid "Modal|Close"
 msgstr ""
 
 msgid "Model"
+msgstr ""
+
+msgid "Model description"
 msgstr ""
 
 msgid "Model experiments"
@@ -43827,9 +43854,6 @@ msgid "Remove due date"
 msgstr ""
 
 msgid "Remove email participants"
-msgstr ""
-
-msgid "Remove exclusion for %{name}"
 msgstr ""
 
 msgid "Remove favicon"
@@ -53911,6 +53935,12 @@ msgid "This code snippet contains everything reflected in the configuration form
 msgstr ""
 
 msgid "This command is used for explaining vulnerabilities and can only be invoked from a vulnerability detail page."
+msgstr ""
+
+msgid "This command is used for troubleshooting jobs and can only be invoked from a failed job log page."
+msgstr ""
+
+msgid "This command is used for troubleshooting jobs and can only be invoked from a job log page."
 msgstr ""
 
 msgid "This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost."

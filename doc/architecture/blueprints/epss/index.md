@@ -75,6 +75,8 @@ For long pages, consider creating a table of contents.
 The `[_TOC_]` function is not supported on docs.gitlab.com.
 -->
 
+For important terms, see [glossary](#glossary).
+
 ## Summary
 
 [EPSS](https://www.first.org/epss/faq) scores specify the likelihood a CVE will be exploited in the next 30 days. This data may be used to improve and simplify prioritization efforts when remediating vulnerabilities in a project. EPSS support requirements are outlined in [the EPSS epic](https://gitlab.com/groups/gitlab-org/-/epics/11544) along with an overview of EPSS. This document focuses on the technical implementation of EPSS support.
@@ -259,3 +261,15 @@ each alternative solution/path.
 
 "Do nothing" and its pros and cons could be included in the list too.
 -->
+
+## Glossary
+
+- **PMDB** (Package metadata database, also known as License DB): PMDB is a standalone service (and not solely a database), outside of the Rails application, that gathers, stores and exports packages metadata for GitLab instances to consume. See [complete documentation](https://gitlab.com/gitlab-org/security-products/license-db/deployment/-/blob/main/docs/DESIGN.md?ref_type=heads). PMDB components include:
+  - **Feeder**: a scheduled job called by the PMDB deployment to publish data from the relevant sources to pub/sub messages consumed by PMDB processors.
+  - **Advisory processor**: Runs as a Cloud Run instance and consumes messages published by the advisory feeder containing advisory related data and stores them to the PMDB database.
+  - **PMDB database**: a PostgreSQL instance storing license and advisory data.
+  - **Exporter**: exports license/advisory data from the PMDB database to public GCP buckets. 
+- **GitLab database**: the database used by GitLab instances.
+- **CVE** (Common Vulnerabilities and Exposures): a list of publicly known information-security vulnerabilities. "A CVE" usually refers to a specific vulnerability and its CVE ID.
+- **EPSS** (Exploit prediction scoring system) **score**: a score ranging from 0 to 1 representing the probability of exploitation in the wild in the next 30 days of a given vulnerability. 
+- **EPSS score percentile**: for a given EPSS score (of some vulnerability), the proportion of all scored vulnerabilities with the same or a lower EPSS score.

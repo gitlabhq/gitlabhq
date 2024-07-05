@@ -176,17 +176,16 @@ export default {
         <items-selector
           type="users"
           :items="formatItemsIds(users)"
-          disable-namespace-dropdown
           :users-options="$options.projectUsersOptions"
           data-testid="users-selector"
           @change="handleRuleDataUpdate('updatedUsers', $event)"
         />
         <items-selector
           type="groups"
-          :items="formatItemsIds(groups)"
-          :group-id="groupId"
-          data-testid="groups-selector"
           disable-namespace-dropdown
+          is-project-scoped
+          :items="formatItemsIds(groups)"
+          data-testid="groups-selector"
           @change="handleRuleDataUpdate('updatedGroups', $event)"
         />
       </gl-form-group>

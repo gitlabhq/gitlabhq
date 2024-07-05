@@ -12,6 +12,7 @@ import {
 import { __, s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { semverRegex, noSpacesRegex } from '~/lib/utils/regexp';
 import { uploadModel } from '../services/upload_model';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
 import createModelMutation from '../graphql/mutations/create_model.mutation.graphql';
@@ -48,6 +49,36 @@ export default {
   computed: {
     showImportArtifactZone() {
       return this.version && this.name;
+    },
+    modelNameIsValid() {
+      return this.name && noSpacesRegex.test(this.name);
+    },
+    isSemver() {
+      return semverRegex.test(this.version);
+    },
+    isVersionValid() {
+      return !this.version || this.isSemver;
+    },
+    submitButtonDisabled() {
+      return !this.isVersionValid || !this.modelNameIsValid;
+    },
+    actionPrimary() {
+      return {
+        text: s__('MlModelRegistry|Create'),
+        attributes: { variant: 'confirm', disabled: this.submitButtonDisabled },
+      };
+    },
+    validVersionFeedback() {
+      if (this.isSemver) {
+        return this.$options.modal.versionValid;
+      }
+      return null;
+    },
+    modelNameDescription() {
+      return !this.name || this.modelNameIsValid ? this.$options.modal.nameDescription : '';
+    },
+    versionDescriptionText() {
+      return !this.version ? this.$options.modal.versionDescription : '';
     },
   },
   methods: {
@@ -138,29 +169,28 @@ export default {
   i18n: {},
   modal: {
     id: MODEL_CREATION_MODAL_ID,
-    actionPrimary: {
-      text: __('Create'),
-      attributes: { variant: 'confirm' },
-    },
     actionSecondary: {
       text: __('Cancel'),
       attributes: { variant: 'default' },
     },
-    nameDescription: s__(
-      'MlModelRegistry|Model name must not contain spaces or upper case letter.',
-    ),
-    namePlaceholder: s__('MlModelRegistry|For example my-model'),
-    versionDescription: s__('MlModelRegistry|Leave empty to skip version creation.'),
-    versionPlaceholder: s__('MlModelRegistry|For example 1.0.0. Must be a semantic version.'),
-    descriptionPlaceholder: s__('MlModelRegistry|Enter a model description'),
+    nameDescriptionLabel: s__('MlModelRegistry|Must be unique. May not contain spaces.'),
+    nameDescription: s__('MlModelRegistry|Example: my-model'),
+    nameInvalid: s__('MlModelRegistry|May not contain spaces.'),
+    namePlaceholder: s__('MlModelRegistry|Enter a model name'),
+    versionDescription: s__('MlModelRegistry|Example: 1.0.0'),
+    versionPlaceholder: s__('MlModelRegistry|Enter a semantic version'),
+    nameDescriptionPlaceholder: s__('MlModelRegistry|Enter a model description'),
     versionDescriptionTitle: s__('MlModelRegistry|Version description'),
-    versionDescriptionPlaceholder: s__(
-      'MlModelRegistry|Enter a description for this version of the model.',
+    versionDescriptionLabel: s__(
+      'MlModelRegistry|Must be a semantic version. Leave blank to skip version creation.',
     ),
+    versionValid: s__('MlModelRegistry|Version is a valid semantic version.'),
+    versionInvalid: s__('MlModelRegistry|Must be a semantic version. Example: 1.0.0'),
+    versionDescriptionPlaceholder: s__('MlModelRegistry|Enter a version description'),
     buttonTitle: s__('MlModelRegistry|Create model'),
     title: s__('MlModelRegistry|Create model, version & import artifacts'),
     modelName: s__('MlModelRegistry|Model name'),
-    modelDescription: __('Description'),
+    modelDescription: __('Model description'),
     version: __('Version'),
     uploadLabel: __('Upload artifacts'),
     modelSuccessButVersionArtifactFailAlert: {
@@ -170,6 +200,7 @@ export default {
       ),
       variant: 'warning',
     },
+    optionalText: s__('MlModelRegistry|Optional'),
   },
 };
 </script>
@@ -180,7 +211,7 @@ export default {
     <gl-modal
       :modal-id="$options.modal.id"
       :title="$options.modal.title"
-      :action-primary="$options.modal.actionPrimary"
+      :action-primary="actionPrimary"
       :action-secondary="$options.modal.actionSecondary"
       size="sm"
       @primary="create"
@@ -189,8 +220,12 @@ export default {
       <gl-form>
         <gl-form-group
           :label="$options.modal.modelName"
+          :label-description="$options.modal.nameDescriptionLabel"
           label-for="nameId"
-          :description="$options.modal.nameDescription"
+          data-testid="nameGroupId"
+          :state="modelNameIsValid"
+          :invalid-feedback="$options.modal.nameInvalid"
+          :description="modelNameDescription"
         >
           <gl-form-input
             id="nameId"
@@ -200,18 +235,30 @@ export default {
             :placeholder="$options.modal.namePlaceholder"
           />
         </gl-form-group>
-        <gl-form-group :label="$options.modal.modelDescription" label-for="descriptionId">
+        <gl-form-group
+          :label="$options.modal.modelDescription"
+          label-for="descriptionId"
+          optional
+          :optional-text="$options.modal.optionalText"
+        >
           <gl-form-textarea
             id="descriptionId"
             v-model="description"
             data-testid="descriptionId"
-            :placeholder="$options.modal.descriptionPlaceholder"
+            :placeholder="$options.modal.nameDescriptionPlaceholder"
           />
         </gl-form-group>
         <gl-form-group
           :label="$options.modal.version"
+          :label-description="$options.modal.versionDescriptionLabel"
+          data-testid="versionGroupId"
           label-for="versionId"
-          :description="$options.modal.versionDescription"
+          :state="isVersionValid"
+          :invalid-feedback="$options.modal.versionInvalid"
+          :valid-feedback="validVersionFeedback"
+          :description="versionDescriptionText"
+          optional
+          :optional-text="$options.modal.optionalText"
         >
           <gl-form-input
             id="versionId"
@@ -225,6 +272,8 @@ export default {
         <gl-form-group
           :label="$options.modal.versionDescriptionTitle"
           label-for="versionDescriptionId"
+          optional
+          :optional-text="$options.modal.optionalText"
         >
           <gl-form-textarea
             id="versionDescriptionId"
@@ -251,11 +300,11 @@ export default {
 
       <gl-alert
         v-if="errorMessage"
-        data-testid="modal-create-alert"
+        data-testid="modalCreateAlert"
         variant="danger"
         @dismiss="hideAlert"
-        >{{ errorMessage }}</gl-alert
-      >
+        >{{ errorMessage }}
+      </gl-alert>
     </gl-modal>
   </div>
 </template>

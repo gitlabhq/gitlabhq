@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlButton } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 
 export default {
@@ -7,6 +7,9 @@ export default {
   components: {
     GlAvatar,
     GlButton,
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     data: {
@@ -21,7 +24,7 @@ export default {
   },
   computed: {
     deleteButtonLabel() {
-      return sprintf(__('Remove exclusion for %{name}'), { name: this.name });
+      return sprintf(__('Delete %{name}'), { name: this.name });
     },
     name() {
       return this.data.name;
@@ -47,6 +50,7 @@ export default {
 
     <gl-button
       v-if="canDelete"
+      v-gl-tooltip="deleteButtonLabel"
       icon="remove"
       :aria-label="deleteButtonLabel"
       category="tertiary"

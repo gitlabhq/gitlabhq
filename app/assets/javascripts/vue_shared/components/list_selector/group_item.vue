@@ -1,5 +1,5 @@
 <script>
-import { GlAvatar, GlButton } from '@gitlab/ui';
+import { GlAvatar, GlButton, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf, __ } from '~/locale';
 
 export default {
@@ -8,6 +8,9 @@ export default {
     GlAvatar,
     GlButton,
     HiddenGroupsItem: () => import('ee_component/approvals/components/hidden_groups_item.vue'),
+  },
+  directives: {
+    GlTooltip: GlTooltipDirective,
   },
   props: {
     data: {
@@ -59,6 +62,7 @@ export default {
 
     <gl-button
       v-if="canDelete"
+      v-gl-tooltip="deleteButtonLabel"
       icon="remove"
       :aria-label="deleteButtonLabel"
       category="tertiary"

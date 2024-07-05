@@ -65,11 +65,16 @@ export default {
       required: false,
       default: false,
     },
+    isProjectScoped: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       searchValue: '',
-      isProjectNamespace: this.disableNamespaceDropdown ? 'false' : 'true',
+      isProjectNamespace: this.isProjectScoped ? 'true' : 'false',
       selected: [],
       items: [],
       isLoading: false,

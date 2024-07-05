@@ -798,20 +798,6 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
                 )
               end
             end
-
-            context 'when the compare_to variable feature flag is disabled' do
-              before do
-                stub_feature_flags(ci_expand_variables_in_compare_to: false)
-              end
-
-              let(:compare_to) { '$VALID_BRANCH_NAME' }
-
-              it 'returns an error' do
-                expect(pipeline.errors.full_messages).to eq(
-                  ['Failed to parse rule for job1: rules:changes:compare_to is not a valid ref']
-                )
-              end
-            end
           end
         end
 

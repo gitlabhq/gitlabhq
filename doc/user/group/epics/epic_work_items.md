@@ -7,6 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Test a new look for epics
 
 DETAILS:
+**Tier:** Premium, Ultimate
+**Offering:** Self-managed
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/9290) in GitLab 17.2. This feature is an [experiment](../../../policy/experiment-beta-support.md#experiment).
@@ -39,20 +41,21 @@ following blog posts:
 - [First look: The new Agile planning experience in GitLab](https://about.gitlab.com/blog/2024/06/18/first-look-the-new-agile-planning-experience-in-gitlab/) (June 2024)
 - [Unveiling a new epic experience for improved Agile planning](https://about.gitlab.com/blog/2024/07/03/unveiling-a-new-epic-experience-for-improved-agile-planning/) (July 2024)
 
+## Feature flags
+
+To try out this change on GitLab self-managed, enable the following feature flags.
+Because this is an experimental feature,
+**we strongly advise to enable the feature flags on a new group that does not contain any critical data**.
+
+| Flag                                          | Description                                                                                              | Actor | Status |
+| --------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----- | ------ |
+| `work_item_epics`                             | Consolidated flag that contains all the changes needed to get epic work items to work for a given group. | Group | **Required** |
+| `sync_work_item_to_epic`                      | Synchronizes data from a legacy epic to a corresponding work item.                                       | Group | **Required** |
+| `work_items_rolledup_dates`                   | Calculates the start and due dates in a hierarchy for work items.                                        | Group | **Required** |
+| `epic_and_work_item_labels_unification`       | Delegates labels between epics and epic work item.                                                       | Group | **Required** |
+| `epic_and_work_item_associations_unification` | Delegates other epic and work item associations.                                                         | Group | **Required** |
+| `epic_and_work_item_notes_unification`        | Delegates notes between epics and work item.                                                             | Group | **Required** |
+
 ## Related topics
 
 - [Work items development](../../../development/work_items.md)
-
-## Feature flags
-
-To try out this change on a self-managed instance of GitLab, enable the following feature flags. Because this is an experimental
-feature, **it is strongly advised to enable the feature flags on a new group that does not contain any critical data**.
-
-|Flag|Description|Actor|Status|
-|---|---|---|---|
-|`work_item_epics`| Consolidated flag that contains all the changes needed to get epic work items to work for a given group. |Group|**Required**|
-|`sync_work_item_to_epic`| Synchronizes data from a legacy epic to a corresponding work item. |Group|**Required**|
-|`work_items_rolledup_dates`| Calculates the start and due dates in a hierarchy for work items. |Group|**Required**|
-|`epic_and_work_item_labels_unification`| Delegates labels between epics and epic work item. |Group|**Required**|
-|`epic_and_work_item_associations_unification`| Delegates other epic and work item associations. |Group|**Required**|
-|`epic_and_work_item_notes_unification`| Delegates notes between epics and work item. |Group|**Required**|

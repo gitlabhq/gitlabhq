@@ -61,6 +61,15 @@ This error occurs when you try to access GitLab Duo Chat but do not have the acc
 
 Ensure you have [access to use GitLab Duo Chat](../gitlab_duo/turn_on_off.md).
 
+## `Error M3005`
+
+You might get an error that states
+`I'm sorry, this question is not supported in your Duo Pro subscription. You might consider upgrading to Duo Enterprise. Error code: M3005`.
+
+This error occurs when you try to access a tool of GitLab Duo Chat that is not bundled in your GitLab Duo subscription tier.
+
+Ensure your [GitLab Duo subscription tier](https://about.gitlab.com/gitlab-duo/) includes the selected tool.
+
 ## `Error M4000`
 
 You might get an error that states

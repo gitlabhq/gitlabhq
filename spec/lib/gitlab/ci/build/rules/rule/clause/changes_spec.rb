@@ -266,25 +266,7 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
           allow(context).to receive(:variables_hash).and_return(variables_hash)
         end
 
-        context 'when ci_expand_variables_in_compare_to is true' do
-          before do
-            stub_feature_flags(ci_expand_variables_in_compare_to: true)
-          end
-
-          it { is_expected.to be_truthy }
-        end
-
-        context 'when ci_expand_variables_in_compare_to is false' do
-          before do
-            stub_feature_flags(ci_expand_variables_in_compare_to: false)
-          end
-
-          it 'raises ParseError' do
-            expect { satisfied_by }.to raise_error(
-              ::Gitlab::Ci::Build::Rules::Rule::Clause::ParseError, 'rules:changes:compare_to is not a valid ref'
-            )
-          end
-        end
+        it { is_expected.to be_truthy }
       end
     end
   end

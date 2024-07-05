@@ -180,7 +180,7 @@ export const EXTENSION_ICON_CLASS = {
   severityUnknown: 'gl-text-gray-400',
 };
 
-export const TELEMETRY_WIDGET_VIEWED = 'WIDGET_VIEWED';
+export const VIEW_MERGE_REQUEST_WIDGET = 'view_merge_request_widget';
 export const TELEMETRY_WIDGET_EXPANDED = 'WIDGET_EXPANDED';
 export const TELEMETRY_WIDGET_FULL_REPORT_CLICKED = 'WIDGET_FULL_REPORT_CLICKED';
 

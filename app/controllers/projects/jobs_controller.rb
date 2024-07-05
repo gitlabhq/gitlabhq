@@ -282,3 +282,5 @@ class Projects::JobsController < Projects::ApplicationController
     push_frontend_feature_flag(:ai_build_failure_cause, @project)
   end
 end
+
+Projects::JobsController.prepend_mod_with('Projects::JobsController')

@@ -1,6 +1,6 @@
 <script>
-import { GlButton, GlIcon, GlAvatar } from '@gitlab/ui';
-import { __ } from '~/locale';
+import { GlButton, GlIcon, GlAvatar, GlTooltipDirective } from '@gitlab/ui';
+import { sprintf, s__ } from '~/locale';
 
 export default {
   name: 'ExclusionsListItem',
@@ -9,13 +9,22 @@ export default {
     GlAvatar,
     GlIcon,
   },
+  directives: {
+    GlTooltip: GlTooltipDirective,
+  },
   props: {
     exclusion: {
       type: Object,
       required: true,
     },
   },
-  i18n: { remove: __('Remove') },
+  computed: {
+    deleteButtonLabel() {
+      return sprintf(s__('Integrations|Remove exclusion for %{name}'), {
+        name: this.exclusion.name,
+      });
+    },
+  },
 };
 </script>
 
@@ -37,8 +46,9 @@ export default {
     </span>
 
     <gl-button
+      v-gl-tooltip="s__('Integrations|Remove exclusion')"
       icon="remove"
-      :aria-label="$options.i18n.remove"
+      :aria-label="deleteButtonLabel"
       category="tertiary"
       @click="() => $emit('remove')"
     />

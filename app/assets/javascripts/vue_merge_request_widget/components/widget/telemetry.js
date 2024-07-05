@@ -1,7 +1,9 @@
 import api from '~/api';
 import createEventHub from '~/helpers/event_hub_factory';
+import { InternalEvents } from '~/tracking';
+
 import {
-  TELEMETRY_WIDGET_VIEWED,
+  VIEW_MERGE_REQUEST_WIDGET,
   TELEMETRY_WIDGET_EXPANDED,
   TELEMETRY_WIDGET_FULL_REPORT_CLICKED,
 } from '../../constants';
@@ -12,6 +14,10 @@ function simplifyWidgetName(componentName) {
   const tierlessName = camelName.replace(/(CE|EE)$/, '');
 
   return tierlessName;
+}
+
+function baseWidgetName(extensionName) {
+  return extensionName.replace(/([A-Z])/g, '_$1').toLowerCase();
 }
 
 function baseRedisEventName(extensionName) {
@@ -36,20 +42,12 @@ function whenable(bus) {
 
 function defaultBehaviorEvents({ bus, config }) {
   const when = whenable(bus);
-  const isViewed = when(TELEMETRY_WIDGET_VIEWED);
   const isExpanded = when(TELEMETRY_WIDGET_EXPANDED);
   const fullReportIsClicked = when(TELEMETRY_WIDGET_FULL_REPORT_CLICKED);
   const toHll = config?.uniqueUser || {};
   const toCounts = config?.counter || {};
   const user = api.trackRedisHllUserEvent.bind(api);
   const count = api.trackRedisCounterEvent.bind(api);
-
-  if (toHll.view) {
-    isViewed({ execute: user, track: toHll.view });
-  }
-  if (toCounts.view) {
-    isViewed({ execute: count, track: toCounts.view });
-  }
 
   if (toHll.expand) {
     isExpanded({
@@ -102,12 +100,10 @@ function baseTelemetry(componentName) {
    */
   return {
     uniqueUser: {
-      view: [`${baseRedisEventName(simpleExtensionName)}_view`],
       expand: [`${baseRedisEventName(simpleExtensionName)}_expand`],
       clickFullReport: [`${baseRedisEventName(simpleExtensionName)}_click_full_report`],
     },
     counter: {
-      view: [`${baseRedisEventName(simpleExtensionName)}_count_view`],
       expand: [`${baseRedisEventName(simpleExtensionName)}_count_expand`],
       clickFullReport: [`${baseRedisEventName(simpleExtensionName)}_count_click_full_report`],
     },
@@ -122,7 +118,9 @@ export function createTelemetryHub(componentName) {
 
   return {
     viewed() {
-      bus.$emit(TELEMETRY_WIDGET_VIEWED);
+      InternalEvents.trackEvent(VIEW_MERGE_REQUEST_WIDGET, {
+        label: baseWidgetName(simplifyWidgetName(componentName)),
+      });
     },
     expanded({ type }) {
       bus.$emit(TELEMETRY_WIDGET_EXPANDED, { type });

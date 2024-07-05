@@ -70,12 +70,7 @@ module Gitlab
         def find_compare_to_sha(pipeline, context)
           return unless @globs.include?(:compare_to)
 
-          compare_to = if Feature.enabled?(:ci_expand_variables_in_compare_to, pipeline.project)
-                         ExpandVariables.expand(@globs[:compare_to], -> { context.variables_hash })
-                       else
-                         @globs[:compare_to]
-                       end
-
+          compare_to = ExpandVariables.expand(@globs[:compare_to], -> { context.variables_hash })
           commit = pipeline.project.commit(compare_to)
           raise Rules::Rule::Clause::ParseError, 'rules:changes:compare_to is not a valid ref' unless commit
 

@@ -254,6 +254,11 @@ describe('List Selector spec', () => {
       };
 
       beforeEach(async () => {
+        createComponent({
+          ...GROUPS_MOCK_PROPS,
+          isProjectScoped: true,
+        });
+
         findNamespaceDropdown().vm.$emit('select', 'true');
         await emitSearchInput();
       });

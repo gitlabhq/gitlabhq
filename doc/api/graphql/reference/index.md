@@ -19176,6 +19176,7 @@ Represents the current license.
 | <a id="currentlicensename"></a>`name` | [`String`](#string) | Name of the licensee. |
 | <a id="currentlicenseplan"></a>`plan` | [`String!`](#string) | Name of the subscription plan. |
 | <a id="currentlicensestartsat"></a>`startsAt` | [`Date`](#date) | Date when the license started. |
+| <a id="currentlicensetrial"></a>`trial` | [`Boolean`](#boolean) | Indicates if the license is a trial. |
 | <a id="currentlicensetype"></a>`type` | [`String!`](#string) | Type of the license. |
 | <a id="currentlicenseusersinlicensecount"></a>`usersInLicenseCount` | [`Int`](#int) | Number of paid users in the license. |
 | <a id="currentlicenseusersoverlicensecount"></a>`usersOverLicenseCount` | [`Int`](#int) | Number of users over the paid users in the license. |

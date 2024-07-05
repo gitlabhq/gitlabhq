@@ -57,3 +57,11 @@
 '{event_counters}_view_productivity_analytics': USAGE_PRODUCTIVITY_ANALYTICS_VIEWS
 '{event_counters}_view_wiki_page': USAGE_WIKI_PAGES_VIEW
 '{event_counters}_web_ide_viewed': WEB_IDE_VIEWS_COUNT
+'{event_counters}_view_merge_request_widget-filter:[label:accessibility]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_ACCESSIBILITY_COUNT_VIEW
+'{event_counters}_view_merge_request_widget-filter:[label:code_quality]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_CODE_QUALITY_COUNT_VIEW
+'{event_counters}_view_merge_request_widget-filter:[label:license_compliance]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_LICENSE_COMPLIANCE_COUNT_VIEW
+'{event_counters}_view_merge_request_widget-filter:[label:status_checks]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_STATUS_CHECKS_COUNT_VIEW
+'{event_counters}_view_merge_request_widget-filter:[label:terraform]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_TERRAFORM_COUNT_VIEW
+'{event_counters}_view_merge_request_widget-filter:[label:test_summary]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_TEST_SUMMARY_COUNT_VIEW
+'{event_counters}_view_merge_request_widget-filter:[label:metrics]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_METRICS_COUNT_VIEW
+'{event_counters}_view_merge_request_widget-filter:[label:security_reports]': USAGE_I_CODE_REVIEW_MERGE_REQUEST_WIDGET_SECURITY_REPORTS_COUNT_VIEW

@@ -8,6 +8,7 @@ RSpec.describe 'Code review events' do
   it 'the aggregated metrics contain all the code review metrics' do
     mr_related_events = %w[
       i_code_review_create_mr
+      view_merge_request_widget
       i_code_review_mr_diffs
       i_code_review_mr_with_invalid_approvers
       i_code_review_mr_single_file_diffs
