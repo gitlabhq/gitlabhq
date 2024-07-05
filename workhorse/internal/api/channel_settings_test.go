@@ -9,7 +9,7 @@ import (
 
 func channel(url string, subprotocols ...string) *ChannelSettings {
 	return &ChannelSettings{
-		WsURL:          url,
+		Url:            url,
 		Subprotocols:   subprotocols,
 		MaxSessionTime: 0,
 	}
@@ -146,7 +146,7 @@ func TestIsEqual(t *testing.T) {
 		{chann, chann, true},
 		{chann.Clone(), chann.Clone(), true},
 		{chann, channel("foo:"), false},
-		{chann, channel(chann.WsURL), false},
+		{chann, channel(chann.Url), false},
 		{header(chann), header(chann), true},
 		{channHeader2, channHeader2, true},
 		{channHeader3, channHeader3, true},

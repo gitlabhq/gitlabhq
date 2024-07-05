@@ -19,7 +19,7 @@ func checkerSeries(values ...*api.ChannelSettings) AuthCheckerFunc {
 }
 
 func TestAuthCheckerStopsWhenAuthFails(t *testing.T) {
-	template := &api.ChannelSettings{WsURL: "ws://example.com"}
+	template := &api.ChannelSettings{Url: "ws://example.com"}
 	stopCh := make(chan error)
 	series := checkerSeries(template, template, template)
 	ac := NewAuthChecker(series, template, stopCh)
@@ -35,9 +35,9 @@ func TestAuthCheckerStopsWhenAuthFails(t *testing.T) {
 }
 
 func TestAuthCheckerStopsWhenAuthChanges(t *testing.T) {
-	template := &api.ChannelSettings{WsURL: "ws://example.com"}
+	template := &api.ChannelSettings{Url: "ws://example.com"}
 	changed := template.Clone()
-	changed.WsURL = "wss://example.com"
+	changed.Url = "wss://example.com"
 	stopCh := make(chan error)
 	series := checkerSeries(template, changed, template)
 	ac := NewAuthChecker(series, template, stopCh)

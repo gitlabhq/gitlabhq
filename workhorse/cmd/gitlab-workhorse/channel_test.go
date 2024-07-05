@@ -174,7 +174,7 @@ func webSocketHandler(upgrader *websocket.Upgrader, connCh chan connWithReq) htt
 func channelOkBody(remote *httptest.Server, header http.Header, subprotocols ...string) *api.Response {
 	out := &api.Response{
 		Channel: &api.ChannelSettings{
-			WsURL:          websocketURL(remote.URL),
+			Url:            websocketURL(remote.URL),
 			Header:         header,
 			Subprotocols:   subprotocols,
 			MaxSessionTime: 0,
