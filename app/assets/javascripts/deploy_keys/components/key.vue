@@ -151,6 +151,7 @@ export default {
         <template v-if="projects.length > 0">
           <gl-badge
             v-gl-tooltip
+            :href="firstProject.project.fullPath"
             :title="projectTooltipTitle(firstProject)"
             :icon="firstProject.canPush ? 'lock-open' : 'lock'"
             class="deploy-project-label gl-mr-2 gl-mb-2 gl-truncate"

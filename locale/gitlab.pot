@@ -19071,7 +19071,7 @@ msgstr ""
 msgid "Discover|Security capabilities, integrated into your development lifecycle"
 msgstr ""
 
-msgid "Discover|See the other features of the %{linkStart}ultimate plan%{linkEnd}"
+msgid "Discover|See the other features of the %{linkStart}Ultimate plan%{linkEnd}."
 msgstr ""
 
 msgid "Discover|Start a free trial"
