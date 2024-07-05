@@ -28,7 +28,7 @@ class ReleaseEnvironmentNotification
 
   def set_required_env_vars?
     # List of required environment variables.
-    # CI_PIPELINE_ID supposes to be set by the CI pipeline, so we don't check it.
+    # CI_PIPELINE_URL supposes to be set by the CI pipeline, so we don't check it.
     required_env_vars = %w[ENVIRONMENT VERSIONS OPS_RELEASE_TOOLS_PIPELINE_TOKEN RELEASE_ENVIRONMENT_NOTIFICATION_TYPE]
 
     required_env_vars.each do |var|
@@ -56,7 +56,7 @@ class ReleaseEnvironmentNotification
     data = {
       "variables[RELEASE_ENVIRONMENT_PIPELINE]" => "true",
       "variables[RELEASE_ENVIRONMENT_NOTIFICATION_TYPE]" => ENV.fetch('RELEASE_ENVIRONMENT_NOTIFICATION_TYPE', nil),
-      "variables[RELEASE_ENVIRONMENT_CI_PIPELINE_ID]" => ENV.fetch('CI_PIPELINE_ID', nil),
+      "variables[RELEASE_ENVIRONMENT_CI_PIPELINE_URL]" => ENV.fetch('CI_PIPELINE_URL', nil),
       "variables[RELEASE_ENVIRONMENT_NAME]" => ENV.fetch('ENVIRONMENT', nil),
       "variables[RELEASE_ENVIRONMENT_VERSION]" => version,
       "token" => ENV.fetch('OPS_RELEASE_TOOLS_PIPELINE_TOKEN', nil),
