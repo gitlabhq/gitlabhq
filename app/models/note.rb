@@ -93,7 +93,7 @@ class Note < ApplicationRecord
   accepts_nested_attributes_for :note_metadata
 
   validates :project, presence: true, if: :for_project_noteable?
-  validates :namespace, presence: true, unless: :for_abuse_report?
+  validates :namespace, presence: true
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
