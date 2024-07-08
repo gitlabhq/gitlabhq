@@ -8896,17 +8896,9 @@ CREATE TABLE container_repositories (
     expiration_policy_started_at timestamp with time zone,
     expiration_policy_cleanup_status smallint DEFAULT 0 NOT NULL,
     expiration_policy_completed_at timestamp with time zone,
-    migration_pre_import_started_at timestamp with time zone,
-    migration_pre_import_done_at timestamp with time zone,
-    migration_import_started_at timestamp with time zone,
-    migration_import_done_at timestamp with time zone,
-    migration_aborted_at timestamp with time zone,
-    migration_skipped_at timestamp with time zone,
-    migration_plan text,
     last_cleanup_deleted_tags_count integer,
     delete_started_at timestamp with time zone,
-    status_updated_at timestamp with time zone,
-    CONSTRAINT check_05e9012f36 CHECK ((char_length(migration_plan) <= 255))
+    status_updated_at timestamp with time zone
 );
 
 CREATE SEQUENCE container_repositories_id_seq
