@@ -92,7 +92,78 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
         it 'applies the quick action' do
           expect do
             update_work_item
-          end.to change(work_item, :description).to(' ¯\＿(ツ)＿/¯')
+          end.to change(work_item, :description).to('¯\＿(ツ)＿/¯')
+        end
+      end
+
+      it_behaves_like 'issuable record that supports quick actions' do
+        let(:opts) { params }
+        let(:current_user) { user }
+        let(:work_item) { create(:work_item, project: project, description: "some random description") }
+        let(:issuable) { update_work_item[:work_item] }
+      end
+
+      it_behaves_like 'issuable record that supports quick actions', with_widgets: true do
+        let(:opts) { params }
+        let(:current_user) { user }
+        let(:work_item) { create(:work_item, project: project, description: "some random description") }
+        let(:issuable) { update_work_item[:work_item] }
+      end
+
+      it_behaves_like 'issuable record does not run quick actions when not editing description' do
+        let(:label) { create(:label, project: project) }
+        let(:assignee) { create(:user, maintainer_of: project) }
+        let(:work_item) { create(:work_item, project: project, description: old_description) }
+        let(:opts) { params }
+        let(:updated_issuable) { update_work_item[:work_item] }
+      end
+
+      it_behaves_like 'issuable record does not run quick actions when not editing description', with_widgets: true do
+        let(:label) { create(:label, project: project) }
+        let(:assignee) { create(:user, maintainer_of: project) }
+        let(:work_item) { create(:work_item, project: project, description: old_description) }
+        let(:opts) { params }
+        let(:updated_issuable) { update_work_item[:work_item] }
+      end
+
+      context 'when work item type is not default issue' do
+        # when quick actions are passed in `description` param those are not interpreted and just saved into description
+        # as plain text
+        #
+        # it_behaves_like 'issuable record that does not supports quick actions' do
+        #   let(:opts) { params }
+        #   let(:current_user) { user }
+        #   let(:work_item) { create(:work_item, :task, project: project, description: "some random description") }
+        #   let(:issuable) { update_work_item[:work_item] }
+        # end
+
+        it_behaves_like 'issuable record that supports quick actions', with_widgets: true do
+          let(:opts) { params }
+          let(:current_user) { user }
+          let(:work_item) { create(:work_item, :task, project: project, description: "some random description") }
+          let(:issuable) { update_work_item[:work_item] }
+        end
+      end
+
+      context 'when work item labels widget is disabled' do
+        before do
+          widget_definitions = WorkItems::Type.default_by_type(:issue).widget_definitions
+          widget_definitions.find_by_widget_type(:labels).update!(disabled: true)
+          widget_definitions.find_by_widget_type(:assignees).update!(disabled: true)
+        end
+
+        it_behaves_like 'issuable record that does not supports quick actions' do
+          let(:opts) { params }
+          let(:current_user) { user }
+          let(:work_item) { create(:work_item, project: project, description: "some random description") }
+          let(:issuable) { update_work_item[:work_item] }
+        end
+
+        it_behaves_like 'issuable record that does not supports quick actions', with_widgets: true do
+          let(:opts) { params }
+          let(:current_user) { user }
+          let(:work_item) { create(:work_item, project: project, description: "some random description") }
+          let(:issuable) { update_work_item[:work_item] }
         end
       end
     end
@@ -177,7 +248,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
     end
 
-    context 'when decription is changed' do
+    context 'when description is changed' do
       let(:opts) { { description: 'description changed' } }
 
       it_behaves_like 'publish WorkItems::WorkItemUpdatedEvent event',
@@ -202,7 +273,7 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
       end
     end
 
-    context 'when decription is not changed' do
+    context 'when description is not changed' do
       let(:opts) { { title: 'title changed' } }
 
       it 'does not trigger GraphQL description updated subscription' do
