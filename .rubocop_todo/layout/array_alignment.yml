@@ -19,7 +19,6 @@ Layout/ArrayAlignment:
     - 'ee/app/models/ee/epic.rb'
     - 'ee/app/models/ee/user.rb'
     - 'ee/app/models/geo/event_log.rb'
-    - 'ee/app/models/gitlab_subscription_history.rb'
     - 'ee/app/models/ip_restriction.rb'
     - 'ee/app/models/license.rb'
     - 'ee/app/models/protected_environment.rb'

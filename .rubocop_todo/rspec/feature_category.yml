@@ -849,7 +849,6 @@ RSpec/FeatureCategory:
     - 'ee/spec/models/elastic/reindexing_task_spec.rb'
     - 'ee/spec/models/epic_user_mention_spec.rb'
     - 'ee/spec/models/gitlab/seat_link_data_spec.rb'
-    - 'ee/spec/models/gitlab_subscription_history_spec.rb'
     - 'ee/spec/models/gitlab_subscriptions/upcoming_reconciliation_spec.rb'
     - 'ee/spec/models/group_deletion_schedule_spec.rb'
     - 'ee/spec/models/group_merge_request_approval_setting_spec.rb'

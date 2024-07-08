@@ -10724,6 +10724,7 @@ CREATE TABLE gitlab_subscription_histories (
     trial_starts_on date,
     auto_renew boolean,
     trial_extension_type smallint,
+    seats_in_use integer,
     CONSTRAINT check_6d5f27a106 CHECK ((namespace_id IS NOT NULL))
 );
 

@@ -13,6 +13,7 @@ require_relative './cli/helpers'
 require_relative './cli/usage_viewer'
 require_relative './cli/metric_definer'
 require_relative './cli/event_definer'
+require_relative './cli/global_state'
 require_relative './cli/metric'
 require_relative './cli/event'
 require_relative './cli/text'
@@ -125,9 +126,17 @@ class Cli
   end
 end
 
+class GitlabPrompt < SimpleDelegator
+  def global
+    @global ||= InternalEventsCli::GlobalState.new
+  end
+end
+
 if $PROGRAM_NAME == __FILE__
   begin
-    Cli.new(TTY::Prompt.new).run
+    prompt = GitlabPrompt.new(TTY::Prompt.new)
+
+    Cli.new(prompt).run
   rescue Interrupt
     puts "\n"
   end

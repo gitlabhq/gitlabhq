@@ -51,14 +51,14 @@ module Gitlab
       # it's very similar to a goroutine and channel design.
       #
       # another nice benefit of this method is that we can timeout the
-      # IO.select call, allowing the profile to automatically stop after
+      # IO.wait_readable call, allowing the profile to automatically stop after
       # a given interval (by default 30 seconds), avoiding unbounded memory
       # growth from a profile that was started and never stopped.
       t = Thread.new do
         timeout_s = ENV['STACKPROF_TIMEOUT_S']&.to_i || DEFAULT_TIMEOUT_SEC
         current_timeout_s = nil
         loop do
-          read.getbyte if IO.select([read], nil, nil, current_timeout_s)
+          read.getbyte if read.wait_readable(current_timeout_s)
 
           if ::StackProf.running?
             stackprof_file_prefix = ENV['STACKPROF_FILE_PREFIX'] || DEFAULT_FILE_PREFIX

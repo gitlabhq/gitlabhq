@@ -51,7 +51,7 @@ or following the example in [the official documentation](https://github.com/olla
    # config.yaml
    model_list:
    - model_name: codegemma
-      litellm_params:
+     litellm_params:
          model: ollama/codegemma:2b
          api_base: http://localhost:11434
    ```

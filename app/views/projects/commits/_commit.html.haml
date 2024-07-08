@@ -66,7 +66,8 @@
             = link_to tags.first, project_commits_path(project, tags.first, ref_type: 'tags'), class: 'gl-text-truncate gl-max-w-15'
 
       - if request.xhr?
-        = render partial: 'projects/commit/signature', object: commit.signature
+        - if commit.has_signature?
+          = render partial: 'projects/commit/signature', object: commit.signature
       - else
         = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
 

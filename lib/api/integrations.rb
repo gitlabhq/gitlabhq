@@ -20,13 +20,15 @@ module API
     integration_classes.each do |integration|
       event_names = integration.try(:event_names) || next
       event_names.each do |event_name|
-        INTEGRATIONS[integration.to_param.tr("_", "-")] << {
+        INTEGRATIONS[integration.to_param.dasherize] << {
           required: false,
           name: event_name.to_sym,
           type: ::Grape::API::Boolean,
           desc: IntegrationsHelper.integration_event_description(integration, event_name)
         }
       end
+
+      INTEGRATIONS[integration.to_param.dasherize] << Helpers::IntegrationsHelpers.inheritance_field
     end
 
     SLASH_COMMAND_INTEGRATIONS = {

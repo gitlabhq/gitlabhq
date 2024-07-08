@@ -140,7 +140,7 @@ module InternalEventsCli
           "\n\n   Technical description:  #{metric.technical_description}"
         ].compact.join(' ')
 
-        last_line_of_prompt = "\n  Finish the description:  #{format_info("#{metric.prefix}...")}"
+        last_line_of_prompt = "\n  Finish the description:  #{format_info("#{metric.description_prefix}...")}"
 
         cli.say("\n")
         cli.say(multiline_prompt)
@@ -160,7 +160,7 @@ module InternalEventsCli
 
         cli.say("\n") # looks like multiline input, but isn't. Spacer improves clarity.
 
-        metric.description = "#{metric.prefix} #{base_description}"
+        metric.description = "#{metric.description_prefix} #{base_description}"
       end
     end
 

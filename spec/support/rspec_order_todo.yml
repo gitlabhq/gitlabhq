@@ -1641,7 +1641,6 @@
 - './ee/spec/models/geo/upload_registry_spec.rb'
 - './ee/spec/models/geo/upload_state_spec.rb'
 - './ee/spec/models/gitlab/seat_link_data_spec.rb'
-- './ee/spec/models/gitlab_subscription_history_spec.rb'
 - './ee/spec/models/gitlab_subscriptions/features_spec.rb'
 - './ee/spec/models/gitlab_subscription_spec.rb'
 - './ee/spec/models/gitlab_subscriptions/upcoming_reconciliation_spec.rb'

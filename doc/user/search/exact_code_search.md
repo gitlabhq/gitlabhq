@@ -76,6 +76,8 @@ When `zoekt_exact_search` is enabled, you can switch between two search modes:
 - **Regular expression mode:** supports regular and boolean expressions.
 - **Exact match mode:** returns results that exactly match the query.
 
+To switch between the two modes, to the right of the search box,
+select **Use regular expression** (**{regular-expression}**).
 When `zoekt_exact_search` is disabled, the regular expression mode is used by default.
 
 ### Syntax

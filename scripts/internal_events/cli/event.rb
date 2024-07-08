@@ -23,7 +23,9 @@ module InternalEventsCli
     introduced_by_url: 'TODO'
   }.freeze
 
-  Event = Struct.new(*NEW_EVENT_FIELDS, keyword_init: true) do
+  ExistingEvent = Struct.new(*NEW_EVENT_FIELDS, :file_path, keyword_init: true)
+
+  NewEvent = Struct.new(*NEW_EVENT_FIELDS, keyword_init: true) do
     def formatted_output
       EVENT_DEFAULTS
         .merge(to_h.compact)
@@ -45,6 +47,16 @@ module InternalEventsCli
 
     def bulk_assign(key_value_pairs)
       key_value_pairs.each { |key, value| self[key] = value }
+    end
+  end
+
+  class Event
+    def self.parse(**args)
+      ExistingEvent.new(**args)
+    end
+
+    def self.new(**args)
+      NewEvent.new(**args)
     end
   end
 end

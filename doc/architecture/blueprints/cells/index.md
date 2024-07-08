@@ -392,6 +392,7 @@ The Tenant Scale team sees an opportunity to use GitLab Dedicated as a base for 
 - [ADR-007: Cells 1.0 for internal customers only](decisions/007_internal_customers.md)
 - [ADR-008: Cluster wide unique database sequences](decisions/008_database_sequences.md)
 - [ADR-009: Initial Cell Sizes](decisions/009_cell_initial_sizing.md)
+- [ADR-010: HTTP Router uses static rules and HTTP-based caching mechanism](decisions/010_http_router_rules_and_cache.md)
 
 ## Links
 

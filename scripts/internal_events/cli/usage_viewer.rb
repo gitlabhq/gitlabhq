@@ -345,7 +345,7 @@ module InternalEventsCli
     end
 
     def gdk_examples
-      key_paths = get_existing_metrics_for_events([event]).map(&:key_path)
+      key_paths = cli.global.metrics.select { |metric| metric.actions&.include?(event.action) }.map(&:key_path)
 
       cli.say <<~TEXT
         #{divider}

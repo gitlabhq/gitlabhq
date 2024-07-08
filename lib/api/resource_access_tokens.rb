@@ -20,13 +20,15 @@ module API
         end
         params do
           requires :id, types: [String, Integer], desc: "ID or URL-encoded path of the #{source_type}"
+          optional :state, type: String, desc: 'Filter tokens which are either active or inactive',
+            values: %w[active inactive], documentation: { example: 'active' }
         end
         get ":id/access_tokens" do
           resource = find_source(source_type, params[:id])
 
           next unauthorized! unless current_user.can?(:read_resource_access_tokens, resource)
 
-          tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false }).execute.preload_users
+          tokens = PersonalAccessTokensFinder.new({ user: resource.bots, impersonation: false, state: params[:state] }).execute.preload_users
 
           resource.members.load
           present paginate(tokens), with: Entities::ResourceAccessToken, resource: resource

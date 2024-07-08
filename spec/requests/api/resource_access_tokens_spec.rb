@@ -12,7 +12,11 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
 
       context "when the user has valid permissions" do
         let_it_be(:project_bot) { create(:user, :project_bot) }
-        let_it_be(:access_tokens) { create_list(:personal_access_token, 3, user: project_bot) }
+        let_it_be(:active_access_tokens) { create_list(:personal_access_token, 5, user: project_bot) }
+        let_it_be(:expired_token) { create(:personal_access_token, :expired, user: project_bot) }
+        let_it_be(:revoked_token) { create(:personal_access_token, :revoked, user: project_bot) }
+        let_it_be(:inactive_access_tokens) { [expired_token, revoked_token] }
+        let_it_be(:all_access_tokens) { active_access_tokens + inactive_access_tokens }
         let_it_be(:resource_id) { resource.id }
 
         before do
@@ -23,7 +27,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           end
         end
 
-        it "gets a list of access tokens for the specified #{source_type}" do
+        it "gets a list of all access tokens for the specified #{source_type}" do
           get_tokens
 
           token_ids = json_response.map { |token| token['id'] }
@@ -31,13 +35,13 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to include_pagination_headers
           expect(response).to match_response_schema('public_api/v4/resource_access_tokens')
-          expect(token_ids).to match_array(access_tokens.pluck(:id))
+          expect(token_ids).to match_array(all_access_tokens.pluck(:id))
         end
 
         it "exposes the correct token information", :aggregate_failures do
           get_tokens
 
-          token = access_tokens.last
+          token = all_access_tokens.last
           api_get_token = json_response.last
 
           expect(api_get_token["name"]).to eq(token.name)
@@ -54,7 +58,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
         end
 
         context "when using a #{source_type} access token to GET other #{source_type} access tokens" do
-          let_it_be(:token) { access_tokens.first }
+          let_it_be(:token) { active_access_tokens.first }
 
           it "gets a list of access tokens for the specified #{source_type}" do
             get api("/#{source_type}s/#{resource_id}/access_tokens", personal_access_token: token)
@@ -62,7 +66,7 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             token_ids = json_response.map { |token| token['id'] }
 
             expect(response).to have_gitlab_http_status(:ok)
-            expect(token_ids).to match_array(access_tokens.pluck(:id))
+            expect(token_ids).to match_array(all_access_tokens.pluck(:id))
           end
         end
 
@@ -111,6 +115,36 @@ RSpec.describe API::ResourceAccessTokens, feature_category: :system_access do
             get_tokens
 
             expect(response).to have_gitlab_http_status(:not_found)
+          end
+        end
+
+        context 'when state param is set to inactive' do
+          let(:params) { { state: 'inactive' } }
+
+          it 'returns only inactive tokens' do
+            get api("/#{source_type}s/#{resource_id}/access_tokens", user), params: params
+
+            token_ids = json_response.map { |token| token['id'] }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(response).to match_response_schema('public_api/v4/resource_access_tokens')
+            expect(token_ids).to match_array(inactive_access_tokens.pluck(:id))
+          end
+        end
+
+        context 'when state param is set to active' do
+          let(:params) { { state: 'active' } }
+
+          it 'returns only active tokens' do
+            get api("/#{source_type}s/#{resource_id}/access_tokens", user), params: params
+
+            token_ids = json_response.map { |token| token['id'] }
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to include_pagination_headers
+            expect(response).to match_response_schema('public_api/v4/resource_access_tokens')
+            expect(token_ids).to match_array(active_access_tokens.pluck(:id))
           end
         end
       end

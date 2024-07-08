@@ -42,7 +42,10 @@ module InternalEventsCli
       def write_to_file(filepath, content, verb)
         File.write(filepath, content)
 
-        file_saved_message(verb, filepath).tap { |message| cli.say message }
+        file_saved_message(verb, filepath).tap do |message|
+          cli.say message
+          cli.global.reload_definitions
+        end
       end
     end
   end

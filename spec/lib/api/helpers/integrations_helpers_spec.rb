@@ -41,4 +41,17 @@ RSpec.describe API::Helpers::IntegrationsHelpers, feature_category: :integration
       expect(described_class.development_integration_classes).to eq(development_classes)
     end
   end
+
+  describe '.inheritance_field' do
+    it 'returns correct field' do
+      expect(described_class.inheritance_field).to eq(
+        {
+          required: false,
+          name: :use_inherited_settings,
+          type: ::Grape::API::Boolean,
+          desc: 'Indicates whether or not to inherit default settings. Defaults to `false`.'
+        }
+      )
+    end
+  end
 end

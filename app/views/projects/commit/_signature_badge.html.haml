@@ -14,7 +14,9 @@
         = description
 
 - content = capture do
-  - if signature.x509?
+  - if signature.nil?
+    = _('Unsupported signature')
+  - elsif signature.x509?
     = render partial: "projects/commit/x509/certificate_details", locals: { signature: signature }
 
     = link_to(_('Learn more about X.509 signed commits'), help_page_path('user/project/repository/signed_commits/x509'), class: 'gl-link gl-block')

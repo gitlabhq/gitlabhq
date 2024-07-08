@@ -56565,6 +56565,9 @@ msgstr ""
 msgid "Unsupported forecast type."
 msgstr ""
 
+msgid "Unsupported signature"
+msgstr ""
+
 msgid "Unsupported sort value."
 msgstr ""
 
@@ -58788,6 +58791,9 @@ msgstr ""
 msgid "Vulnerability|Code Review"
 msgstr ""
 
+msgid "Vulnerability|Code flow"
+msgstr ""
+
 msgid "Vulnerability|Comments"
 msgstr ""
 
@@ -58965,6 +58971,9 @@ msgstr ""
 msgid "Vulnerability|Unmodified response:"
 msgstr ""
 
+msgid "Vulnerability|View code flow"
+msgstr ""
+
 msgid "Vulnerability|View training"
 msgstr ""
 
@@ -58978,6 +58987,9 @@ msgid "Vulnerability|Warning: possible secrets detected"
 msgstr ""
 
 msgid "Vulnerability|You can also %{message}."
+msgstr ""
+
+msgid "Vulnerability|code_flow"
 msgstr ""
 
 msgid "Vulnerability|use AI by asking GitLab Duo Chat to explain this vulnerability and suggest a solution"

@@ -7,7 +7,7 @@ require_relative '../../../scripts/internal_events/cli'
 RSpec.describe Cli, feature_category: :service_ping do
   include WaitHelpers
 
-  let(:prompt) { TTY::Prompt::Test.new }
+  let(:prompt) { GitlabPrompt.new(TTY::Prompt::Test.new) }
   let(:files_to_cleanup) { [] }
 
   let(:event1_filepath) { 'config/events/internal_events_cli_used.yml' }
@@ -328,6 +328,55 @@ RSpec.describe Cli, feature_category: :service_ping do
           'internal_events_cli_used', # Filters to this event
           "\n" # Select: config/events/internal_events_cli_used.yml
         ])
+      end
+    end
+
+    context 'when creating a metric for multiple events which have metrics' do
+      before do
+        File.write(event1_filepath, File.read(event1_content))
+        File.write(event3_filepath, File.read(event3_content))
+
+        # existing metrics which use both events
+        File.write(
+          'config/metrics/counts_7d/' \
+            'count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_weekly.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/project_id_7d_multiple_events.yml')
+        )
+        File.write(
+          'config/metrics/counts_28d/' \
+            'count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_monthly.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/project_id_28d_multiple_events.yml')
+        )
+
+        # Non-conflicting metric which uses only one of the events
+        File.write(
+          'config/metrics/counts_all/count_total_internal_events_cli_used.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/total_single_event.yml')
+        )
+      end
+
+      it 'partially filters metric options' do
+        queue_cli_inputs([
+          "2\n", # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+          "2\n", # Enum-select:  Multiple events -- count occurrences of several separate events or interactions
+          'internal_events_cli', # Filters to the relevant events
+          ' ', # Multi-select: internal_events_cli_closed
+          "\e[B", # Arrow down to: internal_events_cli_used
+          ' ', # Multi-select: internal_events_cli_used
+          "\n" # Complete selections
+        ])
+
+        expected_output = <<~TEXT.chomp
+        ‣ Monthly/Weekly count of unique users [who triggered any of 2 events]
+        ✘ Monthly/Weekly count of unique projects [where any of 2 events occurred] (already defined)
+          Monthly/Weekly count of unique namespaces [where any of 2 events occurred]
+          Monthly/Weekly count of [any of 2 events occurrences]
+          Total count of [any of 2 events occurrences]
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+        end
       end
     end
 
