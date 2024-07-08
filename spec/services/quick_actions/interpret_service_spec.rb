@@ -711,18 +711,18 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
     end
 
     shared_examples 'shrug command' do
-      it 'appends ¯\_(ツ)_/¯ to the comment' do
+      it 'adds ¯\_(ツ)_/¯' do
         new_content, _, _ = service.execute(content, issuable)
 
-        expect(new_content).to end_with(described_class::SHRUG)
+        expect(new_content).to eq(described_class::SHRUG)
       end
     end
 
     shared_examples 'tableflip command' do
-      it 'appends (╯°□°)╯︵ ┻━┻ to the comment' do
+      it 'adds (╯°□°)╯︵ ┻━┻' do
         new_content, _, _ = service.execute(content, issuable)
 
-        expect(new_content).to end_with(described_class::TABLEFLIP)
+        expect(new_content).to eq(described_class::TABLEFLIP)
       end
     end
 
@@ -2208,7 +2208,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
       text, commands = service.execute(content, issue, only: [:shrug])
 
       expect(commands).to be_empty
-      expect(text).to eq("test #{described_class::SHRUG}\n/close")
+      expect(text).to eq("#{described_class::SHRUG}\n/close")
     end
 
     it 'preserves leading whitespace' do

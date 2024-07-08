@@ -218,13 +218,13 @@ RSpec.shared_examples 'issuable quick actions' do
       QuickAction.new(
         action_text: "/shrug oops",
         expectation: ->(noteable, can_use_quick_action) {
-          expect(noteable.notes&.last&.note == "HELLO\noops ¯\\＿(ツ)＿/¯\nWORLD").to eq(can_use_quick_action)
+          expect(noteable.notes&.last&.note == "HELLO\n¯\\＿(ツ)＿/¯\nWORLD").to eq(can_use_quick_action)
         }
       ),
       QuickAction.new(
         action_text: "/tableflip oops",
         expectation: ->(noteable, can_use_quick_action) {
-          expect(noteable.notes&.last&.note == "HELLO\noops (╯°□°)╯︵ ┻━┻\nWORLD").to eq(can_use_quick_action)
+          expect(noteable.notes&.last&.note == "HELLO\n(╯°□°)╯︵ ┻━┻\nWORLD").to eq(can_use_quick_action)
         }
       ),
       QuickAction.new(

@@ -209,26 +209,48 @@ class IssuableBaseService < ::BaseContainerService
   end
 
   def handle_quick_actions(issuable)
-    merge_quick_actions_into_params!(issuable)
+    merge_quick_actions_into_params!(issuable, params: params)
   end
 
-  def merge_quick_actions_into_params!(issuable, only: nil)
-    original_description = params.fetch(:description, issuable.description)
+  # Notes: When the description has been edited, then we need to sanitize and compare with
+  # the original description, removing any extra quick actions.
+  # If the description has not been edited, then just remove any quick actions
+  # in the current description.
+  def merge_quick_actions_into_params!(issuable, params:, only: nil)
+    interpret_params = quick_action_options
+    unedited_description = issuable.description
+    edited_description = params.fetch(:description, issuable.description)
 
-    description, command_params = QuickActions::InterpretService.new(
-      container: container,
-      current_user: current_user,
-      params: quick_action_options
-    ).execute(original_description, issuable, only: only)
+    target_text = issuable.new_record? || params[:description] ? edited_description : unedited_description
+
+    # only set the original_text if we're editing the issuable
+    original_text = params[:description] && !issuable.new_record? ? unedited_description : nil
+
+    sanitized_description, sanitized_command_params = interpret_quick_actions(target_text, issuable, params: interpret_params, only: only, original_text: original_text)
+
+    unless issuable.new_record? || params[:description]
+      edited_description = unedited_description
+      sanitized_command_params = nil
+    end
 
     # Avoid a description already set on an issuable to be overwritten by a nil
-    params[:description] = description if description && description != original_description
+    params[:description] = sanitized_description if sanitized_description && sanitized_description != edited_description
 
-    params.merge!(command_params)
+    params.merge!(sanitized_command_params) if sanitized_command_params
   end
 
   def quick_action_options
     {}
+  end
+
+  def interpret_quick_actions(new_text, issuable, params:, only:, original_text: nil)
+    sanitized_new_text, new_command_params = QuickActions::InterpretService.new(
+      container: container,
+      current_user: current_user,
+      params: params
+    ).execute_with_original_text(new_text, issuable, only: only, original_text: original_text)
+
+    [sanitized_new_text, new_command_params]
   end
 
   def create(issuable, skip_system_notes: false)

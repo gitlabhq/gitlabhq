@@ -15,6 +15,10 @@ module Banzai
           Filter::QuickActionFilter
         ]
       end
+
+      def self.transform_context(context)
+        context.merge(disable_raw_html: true)
+      end
     end
   end
 end
