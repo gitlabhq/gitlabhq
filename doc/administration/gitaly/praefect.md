@@ -527,7 +527,6 @@ Updates to example must be made at:
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -1073,7 +1072,6 @@ For more information on Gitaly server configuration, see our
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   grafana['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
