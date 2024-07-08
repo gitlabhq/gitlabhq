@@ -336,15 +336,23 @@ sudo gitlab-rake db:migrate:status:geo
 ```
 
 This outputs a table with a `Status` of `up` or `down` for
-each Migration ID.
+each migration. Example:
 
 ```shell
 database: gitlabhq_production
 
- Status   Migration ID    Migration Name
+ Status   Migration ID    Type     Milestone    Name
 --------------------------------------------------
-   up     migration_id    migration_name
+   up     20240701074848  regular  17.2         AddGroupIdToPackagesDebianGroupComponents
+   up     20240701153843  regular  17.2         AddWorkItemsDatesSourcesSyncToIssuesTrigger
+   up     20240702072515  regular  17.2         AddGroupIdToPackagesDebianGroupArchitectures
+   up     20240702133021  regular  17.2         AddWorkspaceTerminationTimeoutsToRemoteDevelopmentAgentConfigs
+   up     20240604064938  post     17.2         FinalizeBackfillPartitionIdCiPipelineMessage
+   up     20240604111157  post     17.2         AddApprovalPolicyRulesFkOnApprovalGroupRules
 ```
+
+Starting with GitLab 17.1, migrations are executed in an
+[order](../../development/database/migration_ordering.md#171-logic) that conforms to the GitLab release cadence.
 
 ## Run incomplete database migrations
 
@@ -365,6 +373,9 @@ status in the output of the `sudo gitlab-rake db:migrate:status` command.
    sudo gitlab-ctl hup puma
    sudo gitlab-ctl restart sidekiq
    ```
+
+Starting with GitLab 17.1, migrations are executed in an
+[order](../../development/database/migration_ordering.md#171-logic) that conforms to the GitLab release cadence.
 
 ## Rebuild database indexes
 

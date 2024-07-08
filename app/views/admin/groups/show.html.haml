@@ -44,14 +44,13 @@
               %strong= @group.id
           = render_if_exists 'admin/namespace_plan_info', namespace: @group
           %li{ class: list_item_classes }
-            = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group
+            = render 'shared/storage_counter_statistics', storage_size: @group.storage_size, storage_details: @group, namespace: @group
           %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Group Git LFS status:')
             .gl-col-span-2
               %strong
                 = group_lfs_status(@group)
                 = link_to sprite_icon('question-o', css_class: 'gl-text-blue-600'), help_page_path('topics/git/lfs/index')
-
           = render_if_exists 'namespaces/shared_runner_status', namespace: @group
           = render_if_exists 'namespaces/additional_minutes_status', namespace: @group
 
@@ -100,6 +99,10 @@
       count: @group.users_count) do |c|
       - c.with_actions do
         = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
+        - direct_members_link = link_to('', help_page_path('user/project/members/index', anchor: 'membership-types'))
+        - direct_members_message = s_('The number of direct members in the current group. Members in subgroups are not included. %{link_start}What is a direct member%{link_end}?')
+        - if @group.root?
+          .gl-text-sm.gl-text-secondary.gl-pt-3= safe_format(direct_members_message, tag_pair(direct_members_link, :link_start, :link_end))
       - c.with_body do
         %ul.content-list.group-users-list.members-list
           = render partial: 'shared/members/member',

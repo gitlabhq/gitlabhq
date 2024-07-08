@@ -86,4 +86,33 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     it_behaves_like 'appearance header and footer enabled'
     it_behaves_like 'appearance header and footer not enabled'
   end
+
+  describe '#import_source_user_reassign' do
+    let(:user) { build_stubbed(:user) }
+    let(:group) { build_stubbed(:group) }
+    let(:source_user) do
+      build_stubbed(:import_source_user, :with_reassigned_by_user, namespace: group, reassign_to_user: user)
+    end
+
+    subject { Notify.import_source_user_reassign('user_id') }
+
+    before do
+      allow(Import::SourceUser).to receive(:find).and_return(source_user)
+    end
+
+    it 'sends reassign email' do
+      is_expected.to have_subject("Reassignments on #{group.full_path} waiting for review.")
+      is_expected.to have_content("Migrated from: #{source_user.source_hostname}")
+      is_expected.to have_content("Original user: #{source_user.source_name} (@#{source_user.source_username})")
+      is_expected.to have_content("Migrated to: #{group.name}")
+      is_expected.to have_content("Reassigned to user: #{user.name} (@#{user.username})")
+      is_expected.to have_content(
+        "Reassigned by: #{source_user.reassigned_by_user.name} (@#{source_user.reassigned_by_user.username})"
+      )
+      is_expected.to have_body_text(import_source_user_url(source_user))
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
 end

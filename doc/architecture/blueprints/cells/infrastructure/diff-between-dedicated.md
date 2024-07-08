@@ -197,7 +197,7 @@ _work in progress._  [See Issue 2481](https://gitlab.com/gitlab-com/gl-infra/git
 **What is GitLab.com doing right now:**
 
 - Outgoing: Mail is handled by a third party, [Mailgun](https://www.mailgun.com/).
-- Incoming: Email is handled by the GitLab application with [webhook delivery method](../../email_ingestion/index.md#webhook-delivery-method-recommended) which watches for email sitting on a configured inbox and directing this appropriately to Sidekiq workers.
+- Incoming: Email is handled by the GitLab application with [webhook delivery method](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/email-ingestion/#webhook-delivery-method-recommended) which watches for email sitting on a configured inbox and directing this appropriately to Sidekiq workers.
 
 **What will GitLab.com Cells do:**
 

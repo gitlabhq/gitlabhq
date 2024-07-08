@@ -93,7 +93,7 @@
                 = s_('ProjectSettings|For Gitaly, location of data on the storage. For Gitaly Cluster, location of data on the virtual storage.')
 
             %li{ class: 'gl-px-5!' }
-              = render 'shared/storage_counter_statistics', storage_size: @project.statistics&.storage_size, storage_details: @project.statistics
+              = render 'shared/storage_counter_statistics', storage_size: @project.statistics&.storage_size, storage_details: @project.statistics, namespace: @project.namespace
 
             %li{ class: 'gl-px-5!' }
               %span.light

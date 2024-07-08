@@ -9984,7 +9984,8 @@ CREATE TABLE duo_workflows_workflows (
     user_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL
+    updated_at timestamp with time zone NOT NULL,
+    status smallint DEFAULT 0 NOT NULL
 );
 
 CREATE SEQUENCE duo_workflows_workflows_id_seq

@@ -367,6 +367,12 @@ class NotifyPreview < ActionMailer::Preview
     Notify.bulk_import_csv_user_mapping(user.id, group.id, 71249, 824)
   end
 
+  def import_source_user_reassign
+    source_user = Import::SourceUser.last
+
+    Notify.import_source_user_reassign(source_user.id)
+  end
+
   private
 
   def project

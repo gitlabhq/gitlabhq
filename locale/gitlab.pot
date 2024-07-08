@@ -10204,6 +10204,9 @@ msgstr ""
 msgid "Calculate the number of slices during reindexing. The multiplier is applied to the number of shards per index. Learn more about %{slice_multiplier_link_start}slice multiplier configuration%{slice_multiplier_link_end}."
 msgstr ""
 
+msgid "Calculations are made based on projects in the current group. Projects in subgroups are not included."
+msgstr ""
+
 msgid "Callback URL"
 msgstr ""
 
@@ -53283,6 +53286,9 @@ msgstr ""
 msgid "The number of changes to fetch from GitLab when cloning a repository. Lower values can speed up pipeline execution. Set to %{code_open}0%{code_close} or blank to fetch all branches and tags for each job"
 msgstr ""
 
+msgid "The number of direct members in the current group. Members in subgroups are not included. %{link_start}What is a direct member%{link_end}?"
+msgstr ""
+
 msgid "The number of merge requests merged by month."
 msgstr ""
 
@@ -53926,6 +53932,9 @@ msgid "This also resolves all related threads"
 msgstr ""
 
 msgid "This also resolves this thread"
+msgstr ""
+
+msgid "This application is provided by GitLab."
 msgstr ""
 
 msgid "This application will be able to:"
@@ -57514,16 +57523,22 @@ msgstr ""
 msgid "UserMapping|Awaiting reassignment"
 msgstr ""
 
-msgid "UserMapping|Contribution details:"
-msgstr ""
-
 msgid "UserMapping|Don't reassign"
 msgstr ""
 
-msgid "UserMapping|Imported to: %{destination_group}"
+msgid "UserMapping|Kept as placeholder"
 msgstr ""
 
-msgid "UserMapping|Kept as placeholder"
+msgid "UserMapping|Migrated from: %{source_hostname}"
+msgstr ""
+
+msgid "UserMapping|Migrated to: %{destination_group}"
+msgstr ""
+
+msgid "UserMapping|Migration details:"
+msgstr ""
+
+msgid "UserMapping|Migration to: %{destination_group}"
 msgstr ""
 
 msgid "UserMapping|Notification email sent."
@@ -57565,6 +57580,9 @@ msgstr ""
 msgid "UserMapping|Reassigned to"
 msgstr ""
 
+msgid "UserMapping|Reassigned to user: %{reassign_to_name} (%{reassign_to_username})"
+msgstr ""
+
 msgid "UserMapping|Reassigned to user: %{reassign_to_username}"
 msgstr ""
 
@@ -57595,19 +57613,31 @@ msgstr ""
 msgid "UserMapping|Reassignment was rejected by user."
 msgstr ""
 
+msgid "UserMapping|Reassignments on %{group} waiting for review."
+msgstr ""
+
 msgid "UserMapping|Reject"
 msgstr ""
 
 msgid "UserMapping|Rejected"
 msgstr ""
 
+msgid "UserMapping|Review reassignment details"
+msgstr ""
+
 msgid "UserMapping|Select user"
 msgstr ""
 
-msgid "UserMapping|Source: %{source_hostname}"
+msgid "UserMapping|There was a problem fetching placeholder users."
 msgstr ""
 
-msgid "UserMapping|There was a problem fetching placeholder users."
+msgid "UserMapping|To learn more about reassignments, %{link_start}visit the docs%{link_end}. If you don't recognize this request, you can safely ignore this email or %{report_link_start}report abuse%{report_link_end}."
+msgstr ""
+
+msgid "UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, you can safely ignore this email or report abuse (%{report_link})."
+msgstr ""
+
+msgid "UserMapping|You have reassignments from a GitLab migration waiting for review."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"

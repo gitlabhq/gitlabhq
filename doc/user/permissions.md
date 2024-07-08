@@ -113,19 +113,6 @@ The following table lists project permissions available for each role:
 | [Issues](project/issues/index.md):<br>Archive [Design Management](project/issues/design_management.md) files                                                                                 |       | ✓        | ✓         | ✓          | ✓     |       |
 | [Issues](project/issues/index.md):<br>Upload [Design Management](project/issues/design_management.md) files                                                                                  |       | ✓        | ✓         | ✓          | ✓     |       |
 | [Issues](project/issues/index.md):<br>Delete                                                                                                                                                 |       |          |           |            | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>View a merge request                                                                                                                   | ✓     | ✓        | ✓         | ✓          | ✓     | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
-| [Merge requests](project/merge_requests/index.md):<br>Assign reviewer                                                                                                                        |       |          | ✓         | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>View list                                                                                                                              |       | ✓        | ✓         | ✓          | ✓     | Members with the Guest role can view the list of MRs in public projects. Private projects restrict Guests from viewing MR lists. |
-| [Merge requests](project/merge_requests/index.md):<br>Apply code change suggestions                                                                                                          |       |          | ✓         | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>Approve                                                                                                                                |       |          | ✓         | ✓          | ✓     | For information on eligible approvers for merge requests, see [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers). |
-| [Merge requests](project/merge_requests/index.md):<br>Assign                                                                                                                                 |       |          | ✓         | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>Create                                                                                                                                 |       |          | ✓         | ✓          | ✓     | In projects that accept contributions from external members, users can create, edit, and close their own merge requests. |
-| [Merge requests](project/merge_requests/index.md):<br>Add labels                                                                                                                             |       |          | ✓         | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>Lock threads                                                                                                                           |       |          | ✓         | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>Manage or accept                                                                                                                       |       |          | ✓         | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>[Resolve a thread](project/merge_requests/index.md#resolve-a-thread)                                                                   |       |          | ✓         | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>Manage [merge approval rules](project/merge_requests/approvals/settings.md) (project settings)                                         |       |          |           | ✓          | ✓     |       |
-| [Merge requests](project/merge_requests/index.md):<br>Delete                                                                                                                                 |       |          |           |            | ✓     |       |
 | [Objectives and key results](okrs.md):<br>Add a child OKR                                                                                                                                    | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Objectives and key results](okrs.md):<br>Add a linked item                                                                                                                                  | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Objectives and key results](okrs.md):<br>Create                                                                                                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |       |
@@ -175,24 +162,6 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Disable notification emails                                                                                                                                 |       |          |           |            | ✓     |       |
 | [Projects](project/index.md):<br>Transfer project to another namespace                                                                                                                       |       |          |           |            | ✓     |       |
 | [Projects](project/index.md): View [Usage Quotas](usage_quotas.md) page                                                                                                                      |       |          |           | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Pull project code                                                                                                                              | ✓     | ✓        | ✓         | ✓          | ✓     | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
-| [Repository](project/repository/index.md):<br>View project code                                                                                                                              | ✓     | ✓        | ✓         | ✓          | ✓     | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users. |
-| [Repository](project/repository/index.md):<br>View a commit status                                                                                                                           |       | ✓        | ✓         | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Add tags                                                                                                                                       |       |          | ✓         | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Create new branches                                                                                                                            |       |          | ✓         | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Create or update commit status                                                                                                                 |       |          | ✓         | ✓          | ✓     | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
-| [Repository](project/repository/index.md):<br>Force push to non-protected branches                                                                                                           |       |          | ✓         | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Push to non-protected branches                                                                                                                 |       |          | ✓         | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Remove non-protected branches                                                                                                                  |       |          | ✓         | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Rewrite or remove Git tags                                                                                                                     |       |          | ✓         | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Enable or disable branch protection                                                                                                            |       |          |           | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Enable or disable tag protection                                                                                                               |       |          |           | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Manage [push rules](project/repository/push_rules.md)                                                                                          |       |          |           | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Push to protected branches                                                                                                                     |       |          |           | ✓          | ✓     | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
-| [Repository](project/repository/index.md):<br>Turn on or off protected branch push for developers                                                                                            |       |          |           | ✓          | ✓     |       |
-| [Repository](project/repository/index.md):<br>Remove fork relationship                                                                                                                       |       |          |           |            | ✓     |       |
-| [Repository](project/repository/index.md):<br>Force push to protected branches                                                                                                               |       |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md). |
-| [Repository](project/repository/index.md):<br>Remove protected branches by using the UI or API                                                                                               |       |          |           | ✓          | ✓     |       |
 | [Requirements Management](project/requirements/index.md):<br>Archive / reopen                                                                                                                |       | ✓        | ✓         | ✓          | ✓     | Authors and assignees can archive and re-open even if they don’t have the Reporter role. |
 | [Requirements Management](project/requirements/index.md):<br>Create / edit                                                                                                                   |       | ✓        | ✓         | ✓          | ✓     |  Authors and assignees can modify the title and description even if they don’t have the Reporter role.|
 | [Requirements Management](project/requirements/index.md):<br>Import / export                                                                                                                 |       | ✓        | ✓         | ✓          | ✓     |       |
@@ -238,6 +207,40 @@ Project permissions for [compliance](compliance/index.md) features including com
 | View licenses in [dependency list](application_security/dependency_list/index.md)                                                  |       |          | ✓         | ✓          | ✓     |       |
 | Create, edit, and delete license approval policies                              | | | ✓  | ✓  | ✓ |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)    | | |   |    | ✓ | |
+
+### Repository
+
+Project permissions for [repository](project/repository/index.md) features including source code, branches, push rules, and more:
+
+| Action                                                         | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|----------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| View project code                                              |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. In GitLab 15.9 and later, users with the Guest role and an Ultimate license can view private repository content if an administrator (on self-managed or GitLab Dedicated) or group owner (on GitLab.com) gives those users permission. The administrator or group owner can create a [custom role](custom_roles.md) through the API or UI and assign that role to the users. |
+| Pull project code                                              |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
+| View a commit status                                           |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Create or update commit status                                 |       |          |     ✓     |     ✓      |   ✓   | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
+| Create and delete [Git tags](project/repository/tags/index.md) |       |          |     ✓     |     ✓      |   ✓   |       |
+| Create new [branches](project/repository/branches/index.md)    |       |          |     ✓     |     ✓      |   ✓   |       |
+| Force push to non-protected branches                           |       |          |     ✓     |     ✓      |   ✓   |       |
+| Push to non-protected branches                                 |       |          |     ✓     |     ✓      |   ✓   |       |
+| Delete non-protected branches                                  |       |          |     ✓     |     ✓      |   ✓   |       |
+| Manage [protected branches](project/protected_branches.md)     |       |          |           |     ✓      |   ✓   |       |
+| Delete protected branches                                      |       |          |           |     ✓      |   ✓   |       |
+| Manage [protected tags](project/protected_tags.md)             |       |          |           |     ✓      |   ✓   |       |
+| Manage [push rules](project/repository/push_rules.md)          |       |          |           |     ✓      |   ✓   |       |
+| Push to protected branches                                     |       |          |           |     ✓      |   ✓   | If the [branch is protected](project/protected_branches.md), this depends on the access given to Developers and Maintainers. |
+| Remove fork relationship                                       |       |          |           |            |   ✓   |       |
+| Force push to protected branches                               |       |          |           |            |       | Not allowed for Guest, Reporter, Developer, Maintainer, or Owner. See [protected branches](project/protected_branches.md#allow-force-push-on-a-protected-branch). |
+
+Project permissions for [merge requests](project/merge_requests/index.md):
+
+| Action                                                                                                       | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|--------------------------------------------------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| [View](project/merge_requests/index.md#view-merge-requests) a merge request                                  |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
+| [Create](project/merge_requests/creating_merge_requests.md) a merge request                                  |       |          |     ✓     |     ✓      |   ✓   | In projects that accept contributions from external members, users can create, edit, and close their own merge requests. |
+| Update a merge request including assign, review, code suggestions, approve, labels, lock and resolve threads |       |          |     ✓     |     ✓      |   ✓   | For information on eligible approvers for merge requests, see [Eligible approvers](project/merge_requests/approvals/rules.md#eligible-approvers). |
+| Manage [merge request settings](project/merge_requests/approvals/settings.md)                                |       |          |           |     ✓      |   ✓   |       |
+| Manage [merge request approval rules](project/merge_requests/approvals/rules.md)                             |       |          |           |     ✓      |   ✓   |       |
+| Delete merge request                                                                                         |       |          |           |            |   ✓   |       |
 
 ## GitLab CI/CD permissions
 
@@ -346,14 +349,10 @@ The following table lists group permissions available for each role:
 | Enable/disable a dependency proxy                                                       |       |          |           |            | ✓     |       |
 | Enable/disable package request forwarding                                               |       |          |           |            | ✓     |       |
 | Fork project into a group                                                               |       |          |           | ✓          | ✓     |       |
-| Manage [group approval rules](project/merge_requests/approvals/settings.md) (group settings) |  |          |           | ✓          | ✓     |       |
-| Manage [group push rules](group/access_and_permissions.md#group-push-rules)             |       |          |           | ✓          | ✓     |       |
 | View group runners                                                                      |       |          |           | ✓          | ✓     |       |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |       |
-| List group deploy tokens                                                                |       |          |           |            | ✓     |       |
 | Change group visibility level                                                           |       |          |           |            | ✓     |       |
 | Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |       |
-| Create/Delete group deploy tokens                                                       |       |          |           |            | ✓     |       |
 | Create/Delete [group access tokens](group/settings/group_access_tokens.md)              |       |          |           |            | ✓     |       |
 | Delete group                                                                            |       |          |           |            | ✓     |       |
 | Delete group [epic](group/epics/index.md)                                               |       |          |           |            | ✓     |       |
@@ -382,10 +381,10 @@ Group permissions for [Application Security](application_security/secure_your_ap
 
 | Action                                                                             | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |------------------------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
-| View [dependency list](application_security/dependency_list/index.md)              |       |          | ✓         | ✓          | ✓     |       |
-| View [vulnerability report](application_security/vulnerability_report/index.md)    |       |          | ✓         | ✓          | ✓     |       |
-| View [security dashboard](application_security/security_dashboard/index.md)        |       |          | ✓         | ✓          | ✓     |       |
-| Create or assign [security policy project](application_security/policies/index.md)                                                 |       |          |           |            | ✓     |       |
+| View [dependency list](application_security/dependency_list/index.md)              |       |          |     ✓     |     ✓      |   ✓   |       |
+| View [vulnerability report](application_security/vulnerability_report/index.md)    |       |          |     ✓     |     ✓      |   ✓   |       |
+| View [security dashboard](application_security/security_dashboard/index.md)        |       |          |     ✓     |     ✓      |   ✓   |       |
+| Create or assign [security policy project](application_security/policies/index.md) |       |          |           |            |   ✓   |       |
 
 ### Compliance
 
@@ -399,6 +398,16 @@ Groups permissions for [compliance](compliance/index.md) features including comp
 | View the [compliance center](compliance/compliance_center/index.md)    | | |   |    | ✓ | |
 | Manage [compliance frameworks](group/compliance_frameworks.md)    | | |   |    | ✓ | |
 | Assign [compliance frameworks](group/compliance_frameworks.md) to projects  | | |   |    | ✓ | |
+
+### Repository
+
+Group permissions for [repository](project/repository/index.md) features including merge requests, push rules, and deploy tokens.
+
+| Action                                                                                 | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|----------------------------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |          |           |            |   ✓   |       |
+| Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |          |           |            |   ✓   |       |
+| Manage [deploy tokens](project/deploy_tokens/index.md)                                 |       |          |           |            |   ✓   |       |
 
 ### Subgroup permissions
 

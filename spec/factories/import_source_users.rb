@@ -5,6 +5,8 @@ FactoryBot.define do
     namespace
     source_user_identifier { SecureRandom.uuid }
     source_hostname { 'github.com' }
+    source_name { generate(:name) }
+    source_username { generate(:username) }
     import_type { 'github' }
 
     trait :with_placeholder_user do

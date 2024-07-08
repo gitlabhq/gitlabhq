@@ -21,6 +21,8 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
     project.add_owner(project_owner)
     project.add_reporter(reporter)
     repository.add_branch(project.creator, 'patch-x', 'master')
+    repository.add_branch(project.creator, 'ambiguous', 'master')
+    repository.add_tag(project.creator, 'ambiguous', 'master')
 
     pipeline_schedule.reload
   end
@@ -42,10 +44,11 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
     end
 
     context 'when user has permission' do
+      let(:ref) { 'patch-x' }
       let(:params) do
         {
           description: 'updated_desc',
-          ref: 'patch-x',
+          ref: ref,
           active: false,
           cron: '*/1 * * * *',
           variables_attributes: [
@@ -77,6 +80,19 @@ RSpec.describe Ci::PipelineSchedules::UpdateService, feature_category: :continuo
                            .and change {
                              pipeline_schedule.variables.last.value
                            }.from('foovalue').to('barvalue')
+      end
+
+      context 'when the ref is ambiguous' do
+        let(:ref) { 'ambiguous' }
+
+        it 'returns ambiguous ref error' do
+          result = service.execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.error?).to be(true)
+          expect(result.message).to match_array(['Ref is ambiguous'])
+          expect(result.payload.errors.full_messages).to match_array(['Ref is ambiguous'])
+        end
       end
 
       context 'when the new branch is protected', :request_store do

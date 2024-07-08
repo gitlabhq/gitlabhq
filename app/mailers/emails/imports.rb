@@ -44,5 +44,19 @@ module Emails
         subject: subject(@title)
       )
     end
+
+    def import_source_user_reassign(source_user_id)
+      @source_user = Import::SourceUser.find(source_user_id)
+      @reassign_to_user = @source_user.reassign_to_user
+      title = safe_format(
+        s_('UserMapping|Reassignments on %{group} waiting for review.'),
+        group: @source_user.namespace.full_path
+      )
+
+      email_with_layout(
+        to: @reassign_to_user.notification_email_or_default,
+        subject: subject(title)
+      )
+    end
   end
 end

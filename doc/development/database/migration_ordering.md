@@ -6,13 +6,13 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Migration ordering
 
-Starting with GitLab 17.1, the migration Rake tasks apply migrations using
+Starting with GitLab 17.1, migrations are executed using
 a custom ordering scheme that conforms to the GitLab release cadence. This change
 simplifies the upgrade process, and eases both maintenance and support.
 
 ## Pre 17.1 logic
 
-Relevant Rake tasks apply migrations in an order based upon the 14-digit timestamp
+Migrations are executed in an order based upon the 14-digit timestamp
 given in the file name of the migration itself. This behavior is the default for a Rails application.
 
 GitLab also features logic to extend standard migration behavior in these important ways:
@@ -26,20 +26,25 @@ GitLab also features logic to extend standard migration behavior in these import
 
 ## 17.1+ logic
 
-The new logic orders migrations according to four criteria, in this order:
+Migrations are executed in the following order:
 
-1. If a GitLab milestone is present in the migration definition.
-   Migrations without a milestone defined are sorted lower.
-1. The milestone defined on the migration. "Milestone" values are converted to
-   [GitLab semantic versions](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-utils/lib/gitlab/version_info.rb)
-   and these semantic versions are used as this sort criteria, in ascending order.
-1. The 'migration type', which you can think of as an enumerable with two values:
-   `regular` and `post`, with `regular` sorting lower.
-   [Relevant source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/database/migrations/version.rb).
-1. The timestamp value itself.
+1. Migrations without `milestone` defined are executed first, ordered by their timestamp.
+1. Migrations with `milestone` defined are executed in milestone order:
+    1. Regular migrations are executed before post-deployment migrations.
+    1. Migrations of the same type and milestone are executed in order specified by their timestamp.
+
+Example:
+
+1. Any migrations without `milestone` defined.
+1. `17.1` regular migrations.
+1. `17.1` post-deployment migrations.
+1. `17.2` regular migrations.
+1. `17.2` post-deployment migrations.
+1. Repeat for each milestone in the upgrade.
 
 ### New behavior for post-deployment migrations
 
 This change causes post-deployment migrations to always be sorted at the end
 of a given milestone. Previously, post-deployment migrations were
 interleaved with regular ones, provided `SKIP_POST_DEPLOYMENT_MIGRATIONS` was not set.
+When `SKIP_POST_DEPLOYMENT_MIGRATIONS` is set, post-deployment migrations are not executed.

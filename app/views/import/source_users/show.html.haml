@@ -16,15 +16,15 @@
   %p.gl-mb-5
     = s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}. Review details to approve or reject the reassignment. Learn more about reassignments') % { reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by.username, source_name: @source_user.source_name, source_username: source_username, source_hostname: source_hostname, destination_group: destination_group }
   %h5
-    = s_('UserMapping|Contribution details:')
+    = s_('UserMapping|Migration details:')
   %p.gl-mb-5
-    = s_('UserMapping|Source: %{source_hostname}') % { source_hostname: source_hostname }
+    = s_('UserMapping|Migrated from: %{source_hostname}') % { source_hostname: source_hostname }
     %br
     = s_('UserMapping|Original user: %{source_name} (%{source_username})') % { source_name: @source_user.source_name, source_username: source_username }
   %h5
     = s_('UserMapping|Reassignment details:')
   %p.gl-mb-0
-    = s_('UserMapping|Imported to: %{destination_group}') % { destination_group: destination_group }
+    = s_('UserMapping|Migration to: %{destination_group}') % { destination_group: destination_group }
     %br
     = s_('UserMapping|Reassigned to user: %{reassign_to_username}') % { reassign_to_username: reassign_to_username }
     %br

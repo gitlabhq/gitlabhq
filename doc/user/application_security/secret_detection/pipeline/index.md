@@ -133,9 +133,6 @@ Prerequisites:
   shared runners on GitLab.com, this is enabled by default.
   - Windows Runners are not supported.
   - CPU architectures other than amd64 are not supported.
-- If you use your own runners, make sure the Docker version installed is **not** `19.03.0`. See
-  [Docker error](../../sast/troubleshooting.md#docker-error)
-  for details.
 - GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage.
 
 Different features are available in different [GitLab tiers](https://about.gitlab.com/pricing/).

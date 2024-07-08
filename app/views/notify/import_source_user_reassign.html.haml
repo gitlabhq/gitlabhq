@@ -1,0 +1,48 @@
+- source_hostname = @source_user.source_hostname
+- source_name = @source_user.source_name
+- source_username = "@#{@source_user.source_username}"
+- reassign_to_name = @reassign_to_user.name
+- reassign_to_username = "@#{@reassign_to_user.username}"
+- reassigned_by = @source_user.reassigned_by_user
+- reassigned_by_name = reassigned_by.name
+- reassigned_by_username = "@#{reassigned_by.username}"
+- destination_group = @source_user.namespace.name
+
+- text_style = 'font-size:16px; text-align:center; line-height:24px; margin-top: 24px;'
+- heading_style = 'font-size:14px; line-height:20px; margin-top: 16px; margin-bottom: 8px;'
+- details_text_style = 'font-size:14px; line-height:20px; margin-top: 8px; margin-bottom: 8px;'
+- footer_text_style = 'font-size:12px; line-height:20px; text-align:center; margin-top: 16px; margin-bottom: 8px;'
+- button_style = 'border: 1px solid #694cc0; border-radius: 4px; font-size: 14px; padding: 8px 16px; background-color: #7b58cf; color: #fff; cursor: pointer;'
+
+- help_link_tag_pair = tag_pair(link_to('', help_page_url('user/group/import/index', anchor: 'memberships'), target: '_blank', rel: 'noopener noreferrer'), :link_start, :link_end)
+- report_link_tag_pair = tag_pair(link_to('', help_page_url('user/report_abuse'), target: '_blank', rel: 'noopener noreferrer'), :report_link_start, :report_link_end)
+
+%p{ style: text_style }
+  = s_('UserMapping|You have reassignments from a GitLab migration waiting for review.')
+
+%p{ style: text_style }
+  = link_to import_source_user_url(@source_user), target: '_blank', rel: 'noopener noreferrer' do
+    %button{ type: 'button', style: button_style }
+      = s_('UserMapping|Review reassignment details')
+
+%hr
+
+%h5{ style: heading_style }
+  = s_('UserMapping|Migration details:')
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Migrated from: %{source_hostname}'), source_hostname: source_hostname)
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Original user: %{source_name} (%{source_username})'), source_name: source_name, source_username: source_username)
+
+%h5{ style: heading_style }
+  = s_('UserMapping|Reassignment details:')
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Migrated to: %{destination_group}'), destination_group: destination_group)
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Reassigned to user: %{reassign_to_name} (%{reassign_to_username})'), reassign_to_name: reassign_to_name, reassign_to_username: reassign_to_username)
+%p{ style: details_text_style }
+  = safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username)
+
+
+%p{ style: footer_text_style }
+  = safe_format(s_("UserMapping|To learn more about reassignments, %{link_start}visit the docs%{link_end}. If you don't recognize this request, you can safely ignore this email or %{report_link_start}report abuse%{report_link_end}."), help_link_tag_pair, report_link_tag_pair)

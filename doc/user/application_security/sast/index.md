@@ -48,15 +48,14 @@ The following table lists the GitLab tiers in which each feature is available.
 
 ## Requirements
 
-SAST runs in the `test` stage, which is available by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
+Before you run a SAST analyzer in your instance, make sure you have the following:
 
-To run SAST jobs, by default, you need GitLab Runner with the
-[`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
-[`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor.
-If you're using SaaS runners on GitLab.com, this is enabled by default.
-
-NOTE:
-GitLab SAST analyzers only run in a Docker on Linux amd64 environment, which is **not** `Docker 19.03.0`. See [Docker error](troubleshooting.md#docker-error) for details.
+- Linux-based GitLab Runner with the [`docker`](https://docs.gitlab.com/runner/executors/docker.html) or
+  [`kubernetes`](https://docs.gitlab.com/runner/install/kubernetes.html) executor. If you're using the
+  shared runners on GitLab.com, this is enabled by default.
+  - Windows Runners are not supported.
+  - CPU architectures other than amd64 are not supported.
+- GitLab CI/CD configuration (`.gitlab-ci.yml`) must include the `test` stage, which is included by default. If you redefine the stages in the `.gitlab-ci.yml` file, the `test` stage is required.
 
 ## Supported languages and frameworks
 
@@ -425,7 +424,7 @@ To scan Rust applications, you must:
      description = "Rust ruleset for Semgrep"
      targetdir = "/sgrules"
      timeout = 60
-   
+
      [[semgrep.passthrough]]
        type  = "url"
        value = "https://semgrep.dev/c/p/rust"
@@ -439,13 +438,13 @@ To scan Rust applications, you must:
    ```yaml
    include:
      - template: Jobs/SAST.gitlab-ci.yml
-    
+
    semgrep-sast:
      rules:
        - if: $CI_COMMIT_BRANCH
          exists:
            - '**/*.rs'
-           # include any other file extensions you need to scan from the semgrep-sast template: Jobs/SAST.gitlab-ci.yml 
+           # include any other file extensions you need to scan from the semgrep-sast template: Jobs/SAST.gitlab-ci.yml
    ```
 
 ### Pre-compilation
