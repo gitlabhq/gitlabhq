@@ -114,7 +114,7 @@ Even when creation is disabled, you can still use and revoke existing project ac
 FLAG:
 The behavior of the bot user after the project access token is revoked is controlled by a feature flag. For more information, see the history.
 
-Bot users for projects are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
+Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
 This user is not a billable user, so it does not count toward the license limit.
 
