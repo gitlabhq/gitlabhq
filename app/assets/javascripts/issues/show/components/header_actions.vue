@@ -441,7 +441,6 @@ export default {
       class="gl-hidden md:!gl-inline-flex"
       icon="ellipsis_v"
       category="tertiary"
-      placement="left"
       :toggle-text="dropdownText"
       text-sr-only
       :title="dropdownText"

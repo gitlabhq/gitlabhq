@@ -49,7 +49,7 @@ variables.
 
 Prerequisites:
 
-- GitLab version 16.0 or later.
+- GitLab version 17.1 or later, if you are running a self-managed instance. (GitLab.com is ready to use.)
 - The `.gitlab-ci.yml` file must include:
   - The `test` stage.
 

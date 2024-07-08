@@ -17,7 +17,7 @@ module QA
         Page::Project::Wiki::Show.perform(&:click_edit)
 
         Page::Project::Wiki::Edit.perform do |edit|
-          edit.set_title("#{new_path}/home")
+          edit.set_path("#{new_path}/home")
           edit.set_message('changing the path of the home page')
         end
 

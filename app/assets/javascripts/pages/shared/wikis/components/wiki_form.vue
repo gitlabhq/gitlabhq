@@ -473,6 +473,7 @@ export default {
             id="wiki_path"
             v-model="path"
             name="wiki[title]"
+            data-testid="wiki-path-textbox"
             type="text"
             class="form-control !gl-font-monospace"
             :required="true"

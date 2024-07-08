@@ -38,12 +38,12 @@
 #
 # expect { subject }
 #   .to trigger_internal_events('mr_created', 'member_role_created')
-#   .with(user: user, project: project, category: category, label: label)
+#   .with(user: user, project: project, category: category, additional_properties: { label: label } )
 #   .exactly(3).times
 #
 # expect { subject }
 #   .to trigger_internal_events('mr_created')
-#     .with(user: user, project: project, category: category, label: label)
+#     .with(user: user, project: project, category: category, additional_properties: { label: label } )
 #   .and increment_usage_metrics('counts.deployments')
 #     .at_least(:once)
 #   .and change { mr.notes.count }.by(1)
@@ -107,6 +107,7 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
       **args
     }
     @properties[:namespace] ||= @properties[:project]&.namespace
+    @additional_properties ||= @properties.fetch(:additional_properties, {})
   end
 
   %i[once twice thrice never at_most at_least times time exactly].each do |message|
@@ -131,7 +132,6 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
       [
         expect_internal_event(event_name),
         expect_snowplow(event_name),
-        expect_redis(event_name),
         expect_product_analytics(event_name)
       ]
     end
@@ -206,7 +206,7 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
           standard_context,
           service_ping_context_for(event_name)
         ),
-        **@properties.slice(:label, :property, :value).compact
+        **@additional_properties.slice(:label, :property, :value).compact
       )
     )
   end
@@ -247,23 +247,11 @@ RSpec::Matchers.define :trigger_internal_events do |*event_names|
     # rubocop:enable RSpec/ExpectGitlabTracking
   end
 
-  def expect_redis(event_name)
-    Gitlab::InternalEvents::EventDefinitions.unique_properties(event_name).map do |property|
-      expect(Gitlab::Redis::HLL)
-        .to receive_expected_count_of(:add)
-        .with(hash_including(
-          key: a_string_including(event_name),
-          value: @properties.any? ? id_for(property) : anything,
-          expiry: 6.weeks
-        ))
-    end
-  end
-
   def expect_product_analytics(event_name)
     return expect_any_product_analytics_call(event_name) if @properties.none?
 
     expected_context = { project_id: id_for(:project), namespace_id: id_for(:namespace) }
-    additional_properties = @properties.slice(:label, :property, :value)
+    additional_properties = @additional_properties.slice(:label, :property, :value)
     expected_context[:additional_properties] = additional_properties if additional_properties.any?
 
     expect(product_analytics_spy).to receive_expected_count_of(:track).with(

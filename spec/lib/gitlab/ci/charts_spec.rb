@@ -2,15 +2,22 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
+RSpec.describe Gitlab::Ci::Charts, :freeze_time, feature_category: :fleet_visibility do
+  include GraphqlHelpers
+  using RSpec::Parameterized::TableSyntax
+
   let_it_be(:project) { create(:project) }
 
-  context 'yearchart' do
-    let(:chart) { Gitlab::Ci::Charts::YearChart.new(project) }
+  before_all do
+    create_pipeline(:success, 11.months.ago, 2.hours)
+    create_pipeline(:failed, 10.months.ago, 1.hour)
+    create_pipeline(:canceled, 3.weeks.ago, 2.hours)
+    create_pipeline(:success, 6.days.ago, 1.hour)
+  end
 
-    before_all do
-      create(:ci_empty_pipeline, project: project, duration: 120)
-    end
+  describe 'yearchart' do
+    let(:selected_statuses) { [] }
+    let(:chart) { Gitlab::Ci::Charts::YearChart.new(project, selected_statuses) }
 
     it 'goes until the end of the current month (including the whole last day of the month)' do
       expect(chart.to).to eq(Date.today.end_of_month.end_of_day)
@@ -24,17 +31,28 @@ RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
       expect(chart.labels).to include(chart.from.strftime('%B %Y'))
     end
 
-    it 'returns count of pipelines run each day in the current year' do
-      expect(chart.total.sum).to eq(1)
+    describe '#totals' do
+      subject(:totals) { chart.totals(status: status) }
+
+      where(:status, :selected_statuses, :expected_sum) do
+        :all     | []                 | 4 # computed even if field is not selected
+        :success | %i[failed]         | 0
+        :success | %i[success failed] | 2
+        :failed  | %i[success failed] | 1
+        :other   | %i[other]          | 1
+      end
+
+      with_them do
+        it 'returns count of pipelines run each day in the current year' do
+          expect(totals&.sum).to eq(expected_sum)
+        end
+      end
     end
   end
 
-  context 'monthchart' do
-    let(:chart) { Gitlab::Ci::Charts::MonthChart.new(project) }
-
-    before_all do
-      create(:ci_empty_pipeline, project: project, duration: 120)
-    end
+  describe 'monthchart' do
+    let(:selected_statuses) { [] }
+    let(:chart) { Gitlab::Ci::Charts::MonthChart.new(project, selected_statuses) }
 
     it 'includes the whole current day' do
       expect(chart.to).to eq(Date.today.end_of_day)
@@ -48,17 +66,28 @@ RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
       expect(chart.labels).to include(chart.from.strftime('%d %B'))
     end
 
-    it 'returns count of pipelines run each day in the current month' do
-      expect(chart.total.sum).to eq(1)
+    describe '#totals' do
+      subject(:totals) { chart.totals(status: status) }
+
+      where(:status, :selected_statuses, :expected_sum) do
+        :all     | []                 | 2 # computed even if field is not selected
+        :success | %i[failed]         | 0
+        :success | %i[success failed] | 1
+        :failed  | %i[success failed] | 0
+        :other   | %i[other]          | 1
+      end
+
+      with_them do
+        it 'returns count of pipelines run each day in the current month' do
+          expect(totals&.sum).to eq(expected_sum)
+        end
+      end
     end
   end
 
-  context 'weekchart' do
-    let(:chart) { Gitlab::Ci::Charts::WeekChart.new(project) }
-
-    before_all do
-      create(:ci_empty_pipeline, project: project, duration: 120)
-    end
+  describe 'weekchart' do
+    let(:selected_statuses) { [] }
+    let(:chart) { Gitlab::Ci::Charts::WeekChart.new(project, selected_statuses) }
 
     it 'includes the whole current day' do
       expect(chart.to).to eq(Date.today.end_of_day)
@@ -72,8 +101,22 @@ RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
       expect(chart.labels).to include(chart.from.strftime('%d %B'))
     end
 
-    it 'returns count of pipelines run each day in the current week' do
-      expect(chart.total.sum).to eq(1)
+    describe '#totals' do
+      subject(:totals) { chart.totals(status: status) }
+
+      where(:status, :selected_statuses, :expected_sum) do
+        :all     | []                 | 1 # computed even if field is not selected
+        :success | %i[failed]         | 0
+        :success | %i[success failed] | 1
+        :failed  | %i[success failed] | 0
+        :other   | %i[other]          | 0
+      end
+
+      with_them do
+        it 'returns count of pipelines run each day in the current week' do
+          expect(totals&.sum).to eq(expected_sum)
+        end
+      end
     end
   end
 
@@ -91,7 +134,7 @@ RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
       # objects created above, and cause the queried counts to
       # go to zero when the test executes close to midnight on the
       # CI system, so we explicitly set it to a day earlier
-      create(:ci_empty_pipeline, project: project, duration: 120, created_at: 1.day.before(today))
+      create(:ci_pipeline, project: project, duration: 120, created_at: 1.day.before(today))
     end
 
     before do
@@ -105,7 +148,7 @@ RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
     end
 
     it 'returns count of pipelines run each day in the current week' do
-      expect(chart.total.sum).to eq(1)
+      expect(chart.totals.sum).to eq(2)
     end
   end
 
@@ -117,14 +160,14 @@ RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
 
     let(:chart) { Gitlab::Ci::Charts::WeekChart.new(project) }
 
-    subject { chart.total }
+    subject { chart.totals }
 
     before_all do
       # The DB uses UTC always, so our use of a Time Zone in the application
       # can cause the creation date of the pipeline to go unmatched depending
       # on the offset. We can work around this by requesting the pipeline be
       # created a with the `created_at` field set to a day ago in the same week.
-      create(:ci_empty_pipeline, project: project, duration: 120, created_at: 1.day.before(today))
+      create(:ci_pipeline, project: project, duration: 120, created_at: 1.day.before(today))
     end
 
     before do
@@ -138,31 +181,41 @@ RSpec.describe Gitlab::Ci::Charts, feature_category: :fleet_visibility do
     end
 
     it 'returns count of pipelines run each day in the current week' do
-      expect(chart.total.sum).to eq(1)
+      expect(chart.totals.sum).to eq(2)
     end
   end
 
-  context 'pipeline_times' do
+  describe '#pipeline_times' do
     let(:chart) { Gitlab::Ci::Charts::PipelineTime.new(project) }
 
     subject { chart.pipeline_times }
 
-    before_all do
-      create(:ci_empty_pipeline, project: project, duration: 120)
-    end
-
     it 'returns pipeline times in minutes' do
-      is_expected.to contain_exactly(2)
+      is_expected.to contain_exactly(60, 60, 120, 120)
     end
 
     context 'when a pipeline has nil duration' do
       before_all do
-        create(:ci_empty_pipeline, project: project, duration: nil)
+        create(:ci_pipeline, project: project, duration: nil)
       end
 
       it 'handles nil pipeline times' do
-        is_expected.to contain_exactly(2, 0)
+        is_expected.to contain_exactly(60, 60, 120, 120, 0)
       end
     end
+  end
+
+  def create_pipeline(status, started_at, duration)
+    pipeline = create(:ci_pipeline, status, project: project,
+      created_at: 1.second.before(started_at), started_at: started_at)
+
+    status = :success if status == :manual
+    create(:ci_build, status, pipeline: pipeline,
+      created_at: pipeline.created_at,
+      started_at: pipeline.started_at,
+      finished_at: pipeline.started_at + duration)
+
+    pipeline.update_duration
+    pipeline.save!
   end
 end

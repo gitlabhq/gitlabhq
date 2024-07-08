@@ -27404,17 +27404,42 @@ Returns [`TestSuite`](#testsuite).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="pipelineanalyticsmonthpipelines"></a>`monthPipelines` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.2. **Status**: Experiment. Pipeline analytics for the last month. |
 | <a id="pipelineanalyticsmonthpipelineslabels"></a>`monthPipelinesLabels` | [`[String!]`](#string) | Labels for the monthly pipeline count. |
 | <a id="pipelineanalyticsmonthpipelinessuccessful"></a>`monthPipelinesSuccessful` | [`[Int!]`](#int) | Total monthly successful pipeline count. |
 | <a id="pipelineanalyticsmonthpipelinestotals"></a>`monthPipelinesTotals` | [`[Int!]`](#int) | Total monthly pipeline count. |
 | <a id="pipelineanalyticspipelinetimeslabels"></a>`pipelineTimesLabels` | [`[String!]`](#string) | Pipeline times labels. |
 | <a id="pipelineanalyticspipelinetimesvalues"></a>`pipelineTimesValues` | [`[Int!]`](#int) | Pipeline times. |
+| <a id="pipelineanalyticsweekpipelines"></a>`weekPipelines` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.2. **Status**: Experiment. Pipeline analytics for the last week. |
 | <a id="pipelineanalyticsweekpipelineslabels"></a>`weekPipelinesLabels` | [`[String!]`](#string) | Labels for the weekly pipeline count. |
 | <a id="pipelineanalyticsweekpipelinessuccessful"></a>`weekPipelinesSuccessful` | [`[Int!]`](#int) | Total weekly successful pipeline count. |
 | <a id="pipelineanalyticsweekpipelinestotals"></a>`weekPipelinesTotals` | [`[Int!]`](#int) | Total weekly pipeline count. |
+| <a id="pipelineanalyticsyearpipelines"></a>`yearPipelines` **{warning-solid}** | [`PipelineAnalyticsPeriod`](#pipelineanalyticsperiod) | **Introduced** in GitLab 17.2. **Status**: Experiment. Pipeline analytics for the last year. |
 | <a id="pipelineanalyticsyearpipelineslabels"></a>`yearPipelinesLabels` | [`[String!]`](#string) | Labels for the yearly pipeline count. |
 | <a id="pipelineanalyticsyearpipelinessuccessful"></a>`yearPipelinesSuccessful` | [`[Int!]`](#int) | Total yearly successful pipeline count. |
 | <a id="pipelineanalyticsyearpipelinestotals"></a>`yearPipelinesTotals` | [`[Int!]`](#int) | Total yearly pipeline count. |
+
+### `PipelineAnalyticsPeriod`
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineanalyticsperiodlabels"></a>`labels` | [`[String!]`](#string) | Labels for the pipeline count. |
+
+#### Fields with arguments
+
+##### `PipelineAnalyticsPeriod.totals`
+
+Total pipeline count, optionally filtered by status.
+
+Returns [`[Int!]`](#int).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelineanalyticsperiodtotalsstatus"></a>`status` | [`PipelineAnalyticsJobStatus`](#pipelineanalyticsjobstatus) | Filter totals by status. If not provided, the totals for all pipelines are returned. |
 
 ### `PipelineArtifactRegistry`
 
@@ -35492,6 +35517,14 @@ Package type of a package protection rule resource.
 | Value | Description |
 | ----- | ----------- |
 | <a id="packagesprotectionrulepackagetypenpm"></a>`NPM` **{warning-solid}** | **Introduced** in GitLab 16.5. **Status**: Experiment. Packages of the npm format. |
+
+### `PipelineAnalyticsJobStatus`
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="pipelineanalyticsjobstatusfailed"></a>`FAILED` | Job that failed. |
+| <a id="pipelineanalyticsjobstatusother"></a>`OTHER` | Job that was canceled or skipped. |
+| <a id="pipelineanalyticsjobstatussuccess"></a>`SUCCESS` | Job that succeeded. |
 
 ### `PipelineConfigSourceEnum`
 

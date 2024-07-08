@@ -21,13 +21,6 @@ With GitLab Ultimate, SAST results are also processed so you can:
 
 For more information, see [Features](#features).
 
-![SAST results shown in the MR widget](img/sast_results_in_mr_v14_0.png)
-
-A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
-for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
-job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
-the analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code).
-
 ## Features
 
 The following table lists the GitLab tiers in which each feature is available.
@@ -218,6 +211,11 @@ The [SAST report file](#output) is processed by GitLab and the details are shown
 - Merge request widget
 - Merge request changes view
 - Vulnerability report
+
+A pipeline consists of multiple jobs, including SAST and DAST scanning. If any job fails to finish
+for any reason, the security dashboard does not show SAST scanner output. For example, if the SAST
+job finishes but the DAST job fails, the security dashboard does not show SAST results. On failure,
+the analyzer outputs an [exit code](../../../development/integrations/secure.md#exit-code).
 
 ### Merge request widget
 

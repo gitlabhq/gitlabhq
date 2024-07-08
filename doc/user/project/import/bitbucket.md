@@ -20,15 +20,18 @@ The Bitbucket importer can import:
 
 - Repository description
 - Git repository data
-- Issues
-- Issue comments
-- Pull requests
-- Pull request comments
+- Issues, including comments
+- Pull requests, including comments
 - Milestones
 - Wiki
 - Labels
 - Milestones
 - LFS objects
+
+The Bitbucket importer cannot import:
+
+- Pull request approvals
+- Approval rules
 
 When importing:
 
@@ -51,7 +54,6 @@ For pull requests:
 
 - If the source SHA does not exist in the repository, the importer attempts to set the source commit to the merge commit SHA.
 - The merge request assignee is set to the author. Reviewers are set with usernames matching Bitbucket identities in GitLab.
-- Approvals are not imported.
 - Merge requests in GitLab can be either can be either `opened`, `closed` or `merged`.
 
 For issues:

@@ -49,8 +49,7 @@ To import your Bitbucket repositories:
 
 - Repository description
 - Git repository data
-- Pull requests
-- Pull request comments, user mentions, reviewers, approvals, and merge events
+- Pull requests, including comments, user mentions, reviewers, and merge events
 - LFS objects
 
 When importing, repository public access is retained. If a repository is private in Bitbucket, it's
@@ -71,6 +70,8 @@ The following items aren't imported:
 - Attachments in Markdown
 - Task lists
 - Emoji reactions
+- Pull request approvals
+- Approval rules for pull requests
 
 ## Items that are imported but changed
 

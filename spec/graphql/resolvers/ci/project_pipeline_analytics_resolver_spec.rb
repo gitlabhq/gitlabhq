@@ -11,15 +11,23 @@ RSpec.describe Resolvers::Ci::ProjectPipelineAnalyticsResolver, feature_category
   let_it_be(:reporter) { create(:user, reporter_of: [project, public_project]) }
 
   let(:current_user) { reporter }
+  let(:lookahead) { positive_lookahead }
 
   specify do
     expect(described_class).to have_nullable_graphql_type(::Types::Ci::AnalyticsType)
   end
 
+  specify do
+    expect(described_class.extras).to include(:lookahead)
+  end
+
   shared_examples 'returns the pipeline analytics for a given project' do
-    it do
+    it 'loads all fields' do
       result = resolve_statistics(project, {})
       expect(result.keys).to contain_exactly(
+        :week_pipelines,
+        :month_pipelines,
+        :year_pipelines,
         :week_pipelines_labels,
         :week_pipelines_totals,
         :week_pipelines_successful,
@@ -33,6 +41,19 @@ RSpec.describe Resolvers::Ci::ProjectPipelineAnalyticsResolver, feature_category
         :pipeline_times_values
       )
     end
+
+    context 'with negative lookahead' do
+      let(:lookahead) { negative_lookahead }
+
+      it 'does not load fields that execute queries' do
+        result = resolve_statistics(project, {})
+        expect(result.keys).to contain_exactly(
+          :week_pipelines,
+          :month_pipelines,
+          :year_pipelines
+        )
+      end
+    end
   end
 
   shared_examples 'it returns nils' do
@@ -45,7 +66,7 @@ RSpec.describe Resolvers::Ci::ProjectPipelineAnalyticsResolver, feature_category
 
   def resolve_statistics(project, args)
     ctx = { current_user: current_user }
-    resolve(described_class, obj: project, args: args, ctx: ctx)
+    resolve(described_class, obj: project, args: args, ctx: ctx, lookahead: lookahead, arg_style: :internal)
   end
 
   describe '#resolve' do

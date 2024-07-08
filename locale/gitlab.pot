@@ -5630,13 +5630,13 @@ msgstr ""
 msgid "An error occurred while fetching the health status."
 msgstr ""
 
-msgid "An error occurred while fetching the job log."
+msgid "An error occurred while fetching the job log. The information presented below may not be accurate. Refresh the page to retrieve the latest job log."
 msgstr ""
 
 msgid "An error occurred while fetching the job logs."
 msgstr ""
 
-msgid "An error occurred while fetching the job."
+msgid "An error occurred while fetching the job. The information presented below may not be accurate. Refresh the page to retrieve the latest job log."
 msgstr ""
 
 msgid "An error occurred while fetching the jobs."
@@ -34762,6 +34762,9 @@ msgstr ""
 msgid "No branches found"
 msgstr ""
 
+msgid "No change"
+msgstr ""
+
 msgid "No change to this %{noun}'s draft status."
 msgstr ""
 
@@ -63614,6 +63617,9 @@ msgid "my-channel"
 msgstr ""
 
 msgid "my-topic"
+msgstr ""
+
+msgid "n/a"
 msgstr ""
 
 msgid "needs to be between 10 minutes and 1 month"

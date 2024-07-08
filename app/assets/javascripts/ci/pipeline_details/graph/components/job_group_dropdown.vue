@@ -73,7 +73,7 @@ export default {
       // This is not an ideal solution, but rather a temporary solution
       // until we find a better solution in
       // https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2615
-      return this.isMobile ? 'left' : 'right-start';
+      return this.isMobile ? 'bottom-start' : 'right-start';
     },
     moreActionsTooltip() {
       return !this.showTooltip ? this.jobStatusText : '';
