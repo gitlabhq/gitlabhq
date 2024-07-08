@@ -2,6 +2,7 @@ include:
   - component: ${CI_SERVER_FQDN}/gitlab-org/components/danger-review/danger-review@1.4.1
     inputs:
       job_image: "${DEFAULT_CI_IMAGE}"
+      job_stage: "preflight"
       # By default DANGER_DANGERFILE_PREFIX is not defined but allows JiHu to
       # use a different prefix.
       # See https://jihulab.com/gitlab-cn/gitlab/-/blob/main-jh/jh/.gitlab-ci.yml

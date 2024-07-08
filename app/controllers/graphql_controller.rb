@@ -321,6 +321,8 @@ class GraphqlController < ApplicationController
   end
 
   def execute_introspection_query
+    context[:introspection] = true
+
     if introspection_query_can_use_cache?
       # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
       Rails.cache.fetch(

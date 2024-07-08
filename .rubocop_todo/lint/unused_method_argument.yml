@@ -472,7 +472,6 @@ Lint/UnusedMethodArgument:
     - 'lib/gitlab/utils/usage_data.rb'
     - 'lib/gitlab/verify/batch_verifier.rb'
     - 'lib/gitlab/view/presenter/base.rb'
-    - 'lib/gitlab/web_ide/config.rb'
     - 'lib/gitlab/work_items/work_item_hierarchy.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'
     - 'lib/tasks/gems.rake'

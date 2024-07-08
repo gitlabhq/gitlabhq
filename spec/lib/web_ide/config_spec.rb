@@ -2,19 +2,19 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::WebIde::Config do
+RSpec.describe WebIde::Config, feature_category: :web_ide do
   let(:config) do
     described_class.new(yml)
   end
 
   context 'when config is valid' do
     let(:yml) do
-      <<-EOS
+      <<-YAML
         terminal:
           image: image:1.0
           before_script:
             - gem install rspec
-      EOS
+      YAML
     end
 
     describe '#to_hash' do

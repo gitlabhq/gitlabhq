@@ -435,6 +435,16 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     let_it_be(:namespace1sub) { create(:group, name: 'Sub Namespace', path: 'sub-namespace', parent: namespace1) }
     let_it_be(:namespace2sub) { create(:group, name: 'Sub Namespace', path: 'sub-namespace', parent: namespace2) }
 
+    describe '.without_deleted' do
+      before do
+        namespace1.namespace_details.update!(pending_delete: true)
+      end
+
+      it 'does not include namespace marked as deleted' do
+        expect(described_class.without_deleted).to contain_exactly(namespace, namespace2, namespace1sub, namespace2sub)
+      end
+    end
+
     describe '.by_parent' do
       it 'includes correct namespaces' do
         expect(described_class.by_parent(namespace1.id)).to match_array([namespace1sub])
@@ -550,6 +560,8 @@ RSpec.describe Namespace, feature_category: :groups_and_projects do
     it { is_expected.to delegate_method(:math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:lock_math_rendering_limits_enabled?).to(:namespace_settings) }
     it { is_expected.to delegate_method(:add_creator).to(:namespace_details) }
+    it { is_expected.to delegate_method(:pending_delete).to(:namespace_details) }
+    it { is_expected.to delegate_method(:pending_delete=).to(:namespace_details).with_arguments(:args) }
 
     it do
       is_expected.to delegate_method(:prevent_sharing_groups_outside_hierarchy=).to(:namespace_settings)

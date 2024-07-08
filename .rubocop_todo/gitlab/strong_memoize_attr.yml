@@ -593,7 +593,6 @@ Gitlab/StrongMemoizeAttr:
     - 'lib/gitlab/tracking/destinations/snowplow_micro.rb'
     - 'lib/gitlab/usage_data.rb'
     - 'lib/gitlab/web_hooks/rate_limiter.rb'
-    - 'lib/gitlab/web_ide/config/entry/terminal.rb'
     - 'lib/gitlab/webpack/graphql_known_operations.rb'
     - 'lib/gitlab/webpack/manifest.rb'
     - 'lib/gitlab/wiki_pages/front_matter_parser.rb'

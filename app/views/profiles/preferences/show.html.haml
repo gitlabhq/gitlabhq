@@ -8,7 +8,7 @@
 - fluid_help_text = s_('Preferences|Content will span %{percentage} of the page width.').html_safe % { percentage: '100%' }
 - @color_modes = Gitlab::ColorModes::available_modes.to_json
 - @themes = Gitlab::Themes::available_themes.to_json
-- extensions_marketplace_url = ::Gitlab::WebIde::ExtensionsMarketplace.marketplace_home_url
+- extensions_marketplace_url = ::WebIde::ExtensionsMarketplace.marketplace_home_url
 - data_attributes = { color_modes: @color_modes, themes: @themes, integration_views: integration_views.to_json, user_fields: user_fields, body_classes: Gitlab::Themes.body_classes, profile_preferences_path: profile_preferences_path, extensions_marketplace_url: extensions_marketplace_url }
 - @force_desktop_expanded_sidebar = true
 

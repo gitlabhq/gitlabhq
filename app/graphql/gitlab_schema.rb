@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 class GitlabSchema < GraphQL::Schema
-  # Currently an IntrospectionQuery has a complexity of 179.
-  # These values will evolve over time.
   DEFAULT_MAX_COMPLEXITY = 200
   AUTHENTICATED_MAX_COMPLEXITY = 250
   ADMIN_MAX_COMPLEXITY = 300
+  # Current GraphiQL introspection query has complexity of 217.
+  # As we cache this specific query we allow it to have a higher complexity.
+  INTROSPECTION_MAX_COMPLEXITY = 217
 
   DEFAULT_MAX_DEPTH = 15
   AUTHENTICATED_MAX_DEPTH = 20
@@ -156,11 +157,14 @@ class GitlabSchema < GraphQL::Schema
 
     def max_query_complexity(ctx)
       current_user = ctx&.fetch(:current_user, nil)
+      introspection = ctx&.fetch(:introspection, false)
 
       if current_user&.admin
         ADMIN_MAX_COMPLEXITY
       elsif current_user
         AUTHENTICATED_MAX_COMPLEXITY
+      elsif introspection
+        INTROSPECTION_MAX_COMPLEXITY
       else
         DEFAULT_MAX_COMPLEXITY
       end

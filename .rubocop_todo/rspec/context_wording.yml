@@ -1896,7 +1896,6 @@ RSpec/ContextWording:
     - 'spec/lib/gitlab/view/presenter/base_spec.rb'
     - 'spec/lib/gitlab/visibility_level_checker_spec.rb'
     - 'spec/lib/gitlab/visibility_level_spec.rb'
-    - 'spec/lib/gitlab/web_ide/config/entry/terminal_spec.rb'
     - 'spec/lib/gitlab/wiki_pages/front_matter_parser_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'
     - 'spec/lib/gitlab/x509/certificate_spec.rb'

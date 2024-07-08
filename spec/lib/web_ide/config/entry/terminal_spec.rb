@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
+RSpec.describe WebIde::Config::Entry::Terminal, feature_category: :web_ide do
   let(:entry) { described_class.new(config, with_image_ports: true) }
 
   describe '.nodes' do
@@ -35,7 +35,9 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
         let(:config) do
           {
             image: { name: "ruby", ports: [80] },
-            services: [{ name: "mysql", alias: "service1", ports: [81] }, { name: "mysql", alias: "service2", ports: [82] }]
+            services: [
+              { name: "mysql", alias: "service1", ports: [81] }, { name: "mysql", alias: "service2", ports: [82] }
+            ]
           }
         end
 
@@ -63,7 +65,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Terminal do
     end
 
     context 'when entry value is not correct' do
-      context 'incorrect config value type' do
+      context 'when incorrect config value type' do
         let(:config) { ['incorrect'] }
 
         describe '#errors' do

@@ -344,7 +344,6 @@ Lint/RedundantCopDisableDirective:
     - 'lib/gitlab/usage_data.rb'
     - 'lib/gitlab/usage_data_queries.rb'
     - 'lib/gitlab/verify/ci_secure_files.rb'
-    - 'lib/gitlab/web_ide/extensions_marketplace.rb'
     - 'lib/gitlab/x509/signature.rb'
     - 'lib/tasks/gitlab/cleanup.rake'
     - 'lib/tasks/gitlab/seed/group_seed.rake'

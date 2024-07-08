@@ -3696,8 +3696,6 @@ Layout/LineLength:
     - 'spec/lib/gitlab/utils/measuring_spec.rb'
     - 'spec/lib/gitlab/utils/nokogiri_spec.rb'
     - 'spec/lib/gitlab/utils/usage_data_spec.rb'
-    - 'spec/lib/gitlab/web_ide/config/entry/global_spec.rb'
-    - 'spec/lib/gitlab/web_ide/config/entry/terminal_spec.rb'
     - 'spec/lib/gitlab/webpack/manifest_spec.rb'
     - 'spec/lib/gitlab/word_diff/parser_spec.rb'
     - 'spec/lib/gitlab/workhorse_spec.rb'

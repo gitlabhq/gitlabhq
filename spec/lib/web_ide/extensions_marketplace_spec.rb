@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::WebIde::ExtensionsMarketplace, feature_category: :web_ide do
+RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:current_user) { create(:user) }
@@ -25,7 +25,7 @@ RSpec.describe Gitlab::WebIde::ExtensionsMarketplace, feature_category: :web_ide
     with_them do
       it 'returns the expected value' do
         stub_feature_flags(web_ide_extensions_marketplace: web_ide_extensions_marketplace)
-        expect(::Gitlab::WebIde::DefaultOauthApplication).to receive(:feature_enabled?)
+        expect(::WebIde::DefaultOauthApplication).to receive(:feature_enabled?)
           .with(current_user).and_return(web_ide_oauth)
 
         expect(described_class.feature_enabled?(user: current_user)).to be(expectation)

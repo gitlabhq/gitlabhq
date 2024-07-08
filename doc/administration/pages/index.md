@@ -218,8 +218,7 @@ Prerequisites:
 - You have configured DNS setup
   [without a wildcard](#for-namespace-in-url-path-without-wildcard-dns).
 
-1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages, and enable
-   the feature flag:
+1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages, and enable the feature:
 
    ```ruby
    # External_url here is only for reference
@@ -309,8 +308,7 @@ In this configuration, NGINX proxies all requests to the daemon. The GitLab Page
 daemon doesn't listen to the outside world:
 
 1. Add your TLS certificate and key as mentioned in the prerequisites into `/etc/gitlab/ssl`.
-1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages, and enable
-   the feature flag:
+1. In `/etc/gitlab/gitlab.rb`, set the external URL for GitLab Pages, and enable the feature:
 
    ```ruby
    # The external_url field is here only for reference.

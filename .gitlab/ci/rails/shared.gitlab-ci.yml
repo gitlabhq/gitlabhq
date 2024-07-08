@@ -68,10 +68,10 @@ include:
 
 .rspec-base-needs:
   needs:
-    - job: "clone-gitlab-repo"
-      optional: true  # Optional so easier to switch in between
+    - !reference [.repo-from-artifacts, needs]
     - job: "setup-test-env"
     - job: "retrieve-tests-metadata"
+    - job: "compile-test-assets"
 
 .rspec-base:
   extends:
@@ -89,7 +89,6 @@ include:
     EVENT_PROF: "sql.active_record"
   needs:
     - !reference [.rspec-base-needs, needs]
-    - job: "compile-test-assets"
     - job: "detect-tests"
       optional: true
   script:

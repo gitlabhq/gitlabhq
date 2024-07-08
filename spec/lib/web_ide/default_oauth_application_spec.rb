@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::WebIde::DefaultOauthApplication, feature_category: :web_ide do
+RSpec.describe WebIde::DefaultOauthApplication, feature_category: :web_ide do
   let_it_be(:current_user) { create(:user) }
   let_it_be(:oauth_application) { create(:oauth_application, owner: nil) }
 

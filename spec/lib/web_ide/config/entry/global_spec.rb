@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::WebIde::Config::Entry::Global do
+RSpec.describe WebIde::Config::Entry::Global, feature_category: :web_ide do
   let(:global) { described_class.new(hash) }
 
   describe '.nodes' do
@@ -38,7 +38,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Global do
 
         it 'creates node object using valid class' do
           expect(global.descendants.first)
-            .to be_an_instance_of Gitlab::WebIde::Config::Entry::Terminal
+            .to be_an_instance_of WebIde::Config::Entry::Terminal
         end
 
         it 'sets correct description for nodes' do
@@ -108,7 +108,9 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Global do
       describe '#errors' do
         it 'reports errors about missing script' do
           expect(global.errors)
-            .to include "terminal:before_script config should be a string or a nested array of strings up to 10 levels deep"
+            .to include(
+              "terminal:before_script config should be a string or a nested array of strings up to 10 levels deep"
+            )
         end
       end
     end
@@ -148,7 +150,7 @@ RSpec.describe Gitlab::WebIde::Config::Entry::Global do
     context 'when entry exists' do
       it 'returns correct entry' do
         expect(global[:terminal])
-          .to be_an_instance_of Gitlab::WebIde::Config::Entry::Terminal
+          .to be_an_instance_of WebIde::Config::Entry::Terminal
         expect(global[:terminal][:before_script].value).to eq ['ls']
       end
     end

@@ -78,7 +78,6 @@ Naming/HeredocDelimiterNaming:
     - 'spec/lib/gitlab/metrics/samplers/puma_sampler_spec.rb'
     - 'spec/lib/gitlab/patch/database_config_spec.rb'
     - 'spec/lib/gitlab/quick_actions/substitution_definition_spec.rb'
-    - 'spec/lib/gitlab/web_ide/config_spec.rb'
     - 'spec/lib/gitlab/webpack/file_loader_spec.rb'
     - 'spec/lib/gitlab/webpack/graphql_known_operations_spec.rb'
     - 'spec/lib/gitlab/webpack/manifest_spec.rb'

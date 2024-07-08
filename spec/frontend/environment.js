@@ -21,9 +21,12 @@ class CustomEnvironment extends TestEnvironment {
     const { error: originalErrorFn } = context.console;
     Object.assign(context.console, {
       error(...args) {
+        const firstError = args?.[0];
         if (
-          args?.[0]?.includes('[Vue warn]: Missing required prop') ||
-          args?.[0]?.includes('[Vue warn]: Invalid prop')
+          typeof firstError === 'string' &&
+          ['[Vue warn]: Missing required prop', '[Vue warn]: Invalid prop'].some((line) =>
+            firstError.startsWith(line),
+          )
         ) {
           originalErrorFn.apply(context.console, args);
           return;

@@ -18,6 +18,9 @@ RSpec.describe 'Database schema', feature_category: :database do
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
     users: [%w[accepted_term_id]],
+    ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
     ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[partition_id upstream_pipeline_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient

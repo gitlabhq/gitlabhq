@@ -27,11 +27,11 @@ class IdeController < ApplicationController
   end
 
   def oauth_redirect
-    return render_404 unless ::Gitlab::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
+    return render_404 unless ::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
     # TODO - It's **possible** we end up here and no oauth application has been set up.
     # We need to have better handling of these edge cases. Here's a follow-up issue:
     # https://gitlab.com/gitlab-org/gitlab/-/issues/433322
-    return render_404 unless ::Gitlab::WebIde::DefaultOauthApplication.oauth_application
+    return render_404 unless ::WebIde::DefaultOauthApplication.oauth_application
 
     render layout: 'fullscreen', locals: { minimal: true }
   end
@@ -43,9 +43,9 @@ class IdeController < ApplicationController
   end
 
   def ensure_web_ide_oauth_application!
-    return unless ::Gitlab::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
+    return unless ::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
 
-    ::Gitlab::WebIde::DefaultOauthApplication.ensure_oauth_application!
+    ::WebIde::DefaultOauthApplication.ensure_oauth_application!
   end
 
   def fork_info(project, branch)
