@@ -71,3 +71,47 @@ Example response:
   },
 ]
 ```
+
+## Create a container registry protection rule
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/457518) in GitLab 17.2.
+
+Create a container registry protection rule for a project.
+
+```plaintext
+POST /api/v4/projects/:id/registry/protection/rules
+```
+
+Supported attributes:
+
+| Attribute                         | Type           | Required | Description |
+|-----------------------------------|----------------|----------|-------------|
+| `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `repository_path_pattern`         | string         | Yes      | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
+| `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level to allow to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. |
+| `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level to allow to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when  `minimum_access_level_for_push` is not set. |
+
+If successful, returns [`201`](rest/index.md#status-codes) and the created container registry protection rule.
+
+Can return the following status codes:
+
+- `201 Created`: The container registry protection rule was created successfully.
+- `400 Bad Request`: The container registry protection rule is invalid.
+- `401 Unauthorized`: The access token is invalid.
+- `403 Forbidden`: The user does not have permission to create a container registry protection rule.
+- `404 Not Found`: The project was not found.
+- `422 Unprocessable Entity`: The container registry protection rule could not be created, for example, because the `repository_path_pattern` is already taken.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --url "https://gitlab.example.com/api/v4/projects/7/registry/protection/rules" \
+  --data '{
+        "repository_path_pattern": "flightjs/flight-needs-to-be-a-unique-path",
+        "minimum_access_level_for_push": "maintainer",
+        "minimum_access_level_for_delete": "maintainer"
+    }'
+```

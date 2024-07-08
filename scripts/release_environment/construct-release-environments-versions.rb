@@ -21,7 +21,7 @@ class ReleaseEnvironmentsModel
   def generate_json
     output_json = {}
     COMPONENTS.each do |component|
-      output_json[component.to_s] = image_tag.to_s
+      output_json[component.to_s] = "#{environment}-#{ENV['CI_COMMIT_SHORT_SHA']}"
     end
     JSON.generate(output_json)
   end
@@ -39,35 +39,17 @@ class ReleaseEnvironmentsModel
   end
 
   def environment
-    @environment ||= environment_base + (security_project? ? "-security" : "")
-  end
-
-  def image_tag
-    @image_tag ||= "#{environment_base}-#{ENV['CI_COMMIT_SHORT_SHA']}"
-  end
-
-  private
-
-  # This is to generate the environment name without "-security". It is used by the image tag
-  def environment_base
-    @environment_base ||= if release_tag_match
-                            "#{release_tag_match[1]}-#{release_tag_match[2]}-stable"
-                          else
-                            ENV['CI_COMMIT_REF_SLUG'].delete_suffix('-ee')
-                          end
-  end
-
-  def release_tag_match
-    @release_tag_match ||= ENV['CI_COMMIT_REF_SLUG'].match(/^v?([\d]+)\.([\d]+)\.[\d]+[\d\w-]*-ee$/)
-  end
-
-  def security_project?
-    ENV['CI_PROJECT_PATH'] == "gitlab-org/security/gitlab"
+    match = ENV['CI_COMMIT_REF_SLUG'].match(/^v?([\d]+)\.([\d]+)\.[\d]+[\d\w-]*-ee$/)
+    @environment ||= if match
+                       "#{match[1]}-#{match[2]}-stable"
+                     else
+                       ENV['CI_COMMIT_REF_SLUG'].sub("-ee", "")
+                     end
   end
 end
 
 # Outputs in `dotenv` format the ENVIRONMENT and VERSIONS to pass to release environments e.g.
-# ENVIRONMENT=15-10-stable(-security)
+# ENVIRONMENT=15-10-stable
 # VERSIONS={"gitaly":"15-10-stable-c7c5131c","registry":"15-10-stable-c7c5131c","kas":"15-10-stable-c7c5131c", ...
 if $PROGRAM_NAME == __FILE__
   model = ReleaseEnvironmentsModel.new

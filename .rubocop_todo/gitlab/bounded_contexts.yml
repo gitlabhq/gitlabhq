@@ -2635,6 +2635,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/graphql/types/pending_group_member_type.rb'
     - 'ee/app/graphql/types/permission_types/dast_site_profile.rb'
     - 'ee/app/graphql/types/permission_types/epic.rb'
+    - 'ee/app/graphql/types/permission_types/merge_trains/car.rb'
     - 'ee/app/graphql/types/permission_types/pipeline_security_report_finding.rb'
     - 'ee/app/graphql/types/permission_types/requirement.rb'
     - 'ee/app/graphql/types/permission_types/vulnerability.rb'

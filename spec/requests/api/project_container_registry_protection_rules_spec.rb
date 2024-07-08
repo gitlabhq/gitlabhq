@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ProjectContainerRegistryProtectionRules, feature_category: :container_registry do
+RSpec.describe API::ProjectContainerRegistryProtectionRules, :aggregate_failures, feature_category: :container_registry do
   include ExclusiveLeaseHelpers
 
   let_it_be(:project) { create(:project, :private) }
@@ -15,7 +15,13 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, feature_category: :
   let_it_be(:invalid_token) { 'invalid-token123' }
   let_it_be(:headers_with_invalid_token) { { Gitlab::Auth::AuthFinders::PRIVATE_TOKEN_HEADER => invalid_token } }
 
-  shared_examples 'rejecting project container protection rules request' do
+  let(:params) do
+    { repository_path_pattern: "#{container_registry_protection_rule.repository_path_pattern}-unique",
+      minimum_access_level_for_push: container_registry_protection_rule.minimum_access_level_for_push,
+      minimum_access_level_for_delete: container_registry_protection_rule.minimum_access_level_for_delete }
+  end
+
+  shared_examples 'rejecting project container protection rules request when not enough permissions' do
     using RSpec::Parameterized::TableSyntax
 
     where(:user_role, :status) do
@@ -34,14 +40,34 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, feature_category: :
     end
   end
 
+  shared_examples 'rejecting container registry protection rules request when enough permissions' do
+    context 'when feature flag is disabled' do
+      before do
+        stub_feature_flags(container_registry_protected_containers: false)
+      end
+
+      it_behaves_like 'returning response status', :not_found
+    end
+
+    context 'when the project id is invalid' do
+      let(:url) { "/projects/invalid/registry/protection/rules" }
+
+      it_behaves_like 'returning response status', :not_found
+    end
+
+    context 'when the project id does not exist' do
+      let(:url) { "/projects/#{non_existing_record_id}/registry/protection/rules" }
+
+      it_behaves_like 'returning response status', :not_found
+    end
+  end
+
   describe 'GET /projects/:id/registry/protection/rules' do
     let(:url) { "/projects/#{project.id}/registry/protection/rules" }
 
     subject(:get_container_registry_rules) { get(api(url, api_user)) }
 
-    context 'when not enough permissions' do
-      it_behaves_like 'rejecting project container protection rules request'
-    end
+    it_behaves_like 'rejecting project container protection rules request when not enough permissions'
 
     context 'for maintainer' do
       let(:api_user) { maintainer }
@@ -74,29 +100,103 @@ RSpec.describe API::ProjectContainerRegistryProtectionRules, feature_category: :
         )
       end
 
-      context 'when the project id is invalid' do
-        let(:url) { '/projects/invalid/registry/protection/rules' }
-
-        it_behaves_like 'returning response status', :not_found
-      end
-
-      context 'when the project id does not exist' do
-        let(:url) { "/projects/#{non_existing_record_id}/registry/protection/rules" }
-
-        it_behaves_like 'returning response status', :not_found
-      end
-
-      context 'when container_registry_protected_containers is disabled' do
-        before do
-          stub_feature_flags(container_registry_protected_containers: false)
-        end
-
-        it_behaves_like 'returning response status', :not_found
-      end
+      it_behaves_like 'rejecting container registry protection rules request when enough permissions'
     end
 
     context 'with invalid token' do
       subject(:get_container_registry_rules) { get(api(url), headers: headers_with_invalid_token) }
+
+      it_behaves_like 'returning response status', :unauthorized
+    end
+  end
+
+  describe 'POST /projects/:id/registry/protection/rules' do
+    let(:url) { "/projects/#{project.id}/registry/protection/rules" }
+
+    subject(:post_container_registry_rule) { post(api(url, api_user), params: params) }
+
+    it_behaves_like 'rejecting project container protection rules request when not enough permissions'
+
+    context 'for maintainer' do
+      let(:api_user) { maintainer }
+
+      it 'creates a container registry protection rule' do
+        expect { post_container_registry_rule }.to change { ContainerRegistry::Protection::Rule.count }.by(1)
+        expect(response).to have_gitlab_http_status(:created)
+      end
+
+      context 'with empty minimum_access_level_for_push' do
+        before do
+          params[:minimum_access_level_for_push] = nil
+        end
+
+        it 'creates a container registry protection rule' do
+          expect { post_container_registry_rule }.to change { ContainerRegistry::Protection::Rule.count }.by(1)
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'with invalid minimum_access_level_for_delete' do
+        before do
+          params[:minimum_access_level_for_delete] = "not in enum"
+        end
+
+        it 'does not create a container registry protection rule' do
+          expect { post_container_registry_rule }.to not_change(ContainerRegistry::Protection::Rule, :count)
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'with empty minimum_access_level_for_delete' do
+        before do
+          params[:minimum_access_level_for_delete] = nil
+        end
+
+        it 'creates a container registry protection rule' do
+          expect { post_container_registry_rule }.to change { ContainerRegistry::Protection::Rule.count }.by(1)
+          expect(response).to have_gitlab_http_status(:created)
+        end
+      end
+
+      context 'with invalid minimum_access_level_for_push' do
+        before do
+          params[:minimum_access_level_for_push] = "not in enum"
+        end
+
+        it 'does not create a container registry protection rule' do
+          expect { post_container_registry_rule }.to not_change(ContainerRegistry::Protection::Rule, :count)
+          expect(response).to have_gitlab_http_status(:bad_request)
+        end
+      end
+
+      context 'with already existing repository_path_pattern' do
+        before do
+          params[:repository_path_pattern] = container_registry_protection_rule.repository_path_pattern
+        end
+
+        it 'does not create a container registry protection rule' do
+          expect { post_container_registry_rule }.to not_change(ContainerRegistry::Protection::Rule, :count)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+
+      context 'with neither minimum_access_level_for_push nor minimum_access_level_for_delete' do
+        before do
+          params[:minimum_access_level_for_push] = nil
+          params[:minimum_access_level_for_delete] = nil
+        end
+
+        it 'does not create a container registry protection rule' do
+          expect { post_container_registry_rule }.to not_change(ContainerRegistry::Protection::Rule, :count)
+          expect(response).to have_gitlab_http_status(:unprocessable_entity)
+        end
+      end
+
+      it_behaves_like 'rejecting container registry protection rules request when enough permissions'
+    end
+
+    context 'with invalid token' do
+      subject(:post_container_registry_rules) { post(api(url), headers: headers_with_invalid_token, params: params) }
 
       it_behaves_like 'returning response status', :unauthorized
     end

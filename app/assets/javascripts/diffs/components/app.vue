@@ -751,13 +751,6 @@ export default {
       <compare-versions :diff-files-count-text="numTotalFiles" />
 
       <template v-if="!isBatchLoadingError">
-        <hidden-files-warning
-          v-if="visibleWarning == $options.alerts.ALERT_OVERFLOW_HIDDEN"
-          :visible="numVisibleFiles"
-          :total="numTotalFiles"
-          :plain-diff-path="plainDiffPath"
-          :email-patch-path="emailPatchPath"
-        />
         <collapsed-files-warning v-if="visibleWarning == $options.alerts.ALERT_COLLAPSED_FILES" />
       </template>
 
@@ -784,6 +777,13 @@ export default {
             <div v-if="pinnedFileStatus === 'loading'" class="loading">
               <gl-loading-icon size="lg" />
             </div>
+            <hidden-files-warning
+              v-if="visibleWarning == $options.alerts.ALERT_OVERFLOW_HIDDEN"
+              :visible="numVisibleFiles"
+              :total="numTotalFiles"
+              :plain-diff-path="plainDiffPath"
+              :email-patch-path="emailPatchPath"
+            />
             <dynamic-scroller
               v-if="isVirtualScrollingEnabled"
               :items="diffs"

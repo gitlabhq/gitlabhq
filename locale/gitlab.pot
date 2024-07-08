@@ -2168,6 +2168,9 @@ msgstr ""
 msgid "AI|An error occurred while explaining the code."
 msgstr ""
 
+msgid "AI|An error occurred while troubleshooting the failed job."
+msgstr ""
+
 msgid "AI|Apply AI-generated description"
 msgstr ""
 
@@ -13410,6 +13413,9 @@ msgid "ComplianceFrameworks| Frameworks export"
 msgstr ""
 
 msgid "ComplianceFrameworks| Project frameworks export"
+msgstr ""
+
+msgid "ComplianceFrameworks|\"%{name}\" is a reserved word and cannot be used as a compliance framework name."
 msgstr ""
 
 msgid "ComplianceFrameworks|%{count} linked policy."

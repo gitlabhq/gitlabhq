@@ -34,12 +34,12 @@ objects from the server is reduced, putting less load on the server's CPU.
 
 When a user pushes changes, it usually kicks off a CI pipeline with
 a bunch of jobs. When the CI runners all clone the repository from scratch,
-if they use [`git clone`](/ee/ci/pipelines/settings.md#choose-the-default-git-strategy),
+if they use [`git clone`](../../../ci/pipelines/settings.md#choose-the-default-git-strategy),
 they all start negotiating with the server what they need to clone. This is
 really CPU intensive for the server.
 
 Some time ago we've introduced the
-[pack-objects](/ee/administration/gitaly/configure_gitaly.md#pack-objects-cache),
+[pack-objects](../../../administration/gitaly/configure_gitaly.md#pack-objects-cache),
 but it has some pitfalls. When the tip of a branch changes, a new packfile needs
 to be calculated, and the cache needs to be refreshed.
 

@@ -42,37 +42,24 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
   end
 
   describe '#environment' do
-    context 'when CI_PROJECT_PATH is not gitlab-org/security/gitlab' do
-      context 'for stable branch' do
-        it 'returns the correct environment' do
-          stub_env('CI_COMMIT_REF_SLUG', '15-10-stable-ee')
-          expect(model.environment).to eq('15-10-stable')
-        end
-      end
-
-      context 'for RC tag' do
-        it 'returns the correct environment' do
-          stub_env('CI_COMMIT_REF_SLUG', 'v15.10.3-rc42-ee')
-          expect(model.environment).to eq('15-10-stable')
-        end
-      end
-
-      context 'for release tag' do
-        it 'returns the correct environment' do
-          stub_env('CI_COMMIT_REF_SLUG', 'v15.10.3-ee')
-          expect(model.environment).to eq('15-10-stable')
-        end
+    context 'for stable branch' do
+      it 'returns the correct environment' do
+        stub_env('CI_COMMIT_REF_SLUG', '15-10-stable-ee')
+        expect(model.environment).to eq('15-10-stable')
       end
     end
 
-    context 'when CI_PROJECT_PATH is gitlab-org/security/gitlab' do
-      before do
-        stub_env('CI_PROJECT_PATH', 'gitlab-org/security/gitlab')
-        stub_env('CI_COMMIT_REF_SLUG', '15-10-stable-ee')
+    context 'for RC tag' do
+      it 'returns the correct environment' do
+        stub_env('CI_COMMIT_REF_SLUG', 'v15.10.3-rc42-ee')
+        expect(model.environment).to eq('15-10-stable')
       end
+    end
 
-      it 'returns the environment with -security' do
-        expect(model.environment).to eq('15-10-stable-security')
+    context 'for release tag' do
+      it 'returns the correct environment' do
+        stub_env('CI_COMMIT_REF_SLUG', 'v15.10.3-ee')
+        expect(model.environment).to eq('15-10-stable')
       end
     end
   end

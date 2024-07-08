@@ -6807,6 +6807,28 @@ Input type: `MergeRequestUpdateApprovalRuleInput`
 | <a id="mutationmergerequestupdateapprovalruleerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationmergerequestupdateapprovalrulemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | Merge request after mutation. |
 
+### `Mutation.mergeTrainsDeleteCar`
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Input type: `MergeTrainsDeleteCarInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergetrainsdeletecarcarid"></a>`carId` | [`MergeTrainsCarID!`](#mergetrainscarid) | Global ID of the car. |
+| <a id="mutationmergetrainsdeletecarclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationmergetrainsdeletecarclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationmergetrainsdeletecarerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.mlModelCreate`
 
 DETAILS:
@@ -17762,6 +17784,16 @@ Represents the total number of issues and their weights for a particular day.
 | <a id="burnupchartdailytotalsscopecount"></a>`scopeCount` | [`Int!`](#int) | Number of issues as of this day. |
 | <a id="burnupchartdailytotalsscopeweight"></a>`scopeWeight` | [`Int!`](#int) | Total weight of issues as of this day. |
 
+### `CarPermissions`
+
+Check user's permission for the car.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="carpermissionsdeletecar"></a>`deleteCar` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_car` on this resource. |
+
 ### `CiApplicationSettings`
 
 #### Fields
@@ -26051,10 +26083,11 @@ MergeTrainCar represents an attempt to merge a merge requestusing merge trains.
 | <a id="mergetraincarmergedat"></a>`mergedAt` | [`Time`](#time) | Timestamp of when the car was merged. |
 | <a id="mergetraincarpipeline"></a>`pipeline` | [`Pipeline`](#pipeline) | Pipeline of the car. |
 | <a id="mergetraincarstatus"></a>`status` | [`CarStatus!`](#carstatus) | Status of the car. |
-| <a id="mergetraincartargetbranch"></a>`targetBranch` | [`Branch!`](#branch) | Target branch of the car's merge request. |
+| <a id="mergetraincartargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the car's merge request. |
 | <a id="mergetraincartargetproject"></a>`targetProject` | [`Project!`](#project) | Project the car's MR targets. |
 | <a id="mergetraincarupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the car was last updated. |
 | <a id="mergetraincaruser"></a>`user` | [`UserCore!`](#usercore) | Creator of the car (user who added the merge request to the train). |
+| <a id="mergetraincaruserpermissions"></a>`userPermissions` | [`CarPermissions!`](#carpermissions) | Permissions for the current user on the resource. |
 
 ### `Metadata`
 

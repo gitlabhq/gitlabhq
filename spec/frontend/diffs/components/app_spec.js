@@ -516,6 +516,9 @@ describe('diffs/components/app', () => {
               state.diffs.plainDiffPath = 'plain diff path';
               state.diffs.emailPatchPath = 'email patch path';
               state.diffs.size = 1;
+              state.diffs.treeEntries = {
+                111: { type: 'blob', fileHash: '111', path: '111.js' },
+              };
             },
           });
 

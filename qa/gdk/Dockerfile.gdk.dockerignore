@@ -34,6 +34,7 @@ tmp/*
 !tmp/sockets
 
 db/fixtures/
+!db/fixtures/development/01__default_organization.rb
 !db/fixtures/development/01_admin.rb
 !db/fixtures/development/02_application_settings.rb
 !db/fixtures/development/25_api_personal_access_token.rb

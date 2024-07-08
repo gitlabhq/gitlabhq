@@ -33,13 +33,13 @@ Before you start:
 
 To get started with a blueprint you can use this template to inform you about
 what you may want to document in it at the beginning. This content will change
-/ evolve as you move forward with the proposal.  You are not constrained by the
+/ evolve as you move forward with the proposal. You are not constrained by the
 content in this template. If you have a good idea about what should be in your
 blueprint, you can ignore the template, but if you don't know yet what should
 be in it, this template might be handy.
 
 - **Fill out this file as best you can.** At minimum, you should fill in the
-  "Summary", and "Motivation" sections.  These can be brief and may be a copy
+  "Summary", and "Motivation" sections. These can be brief and may be a copy
   of issue or epic descriptions if the initiative is already on Product's
   roadmap.
 - **Create a MR for this blueprint.** Assign it to an Architecture Evolution
@@ -60,7 +60,7 @@ If there are new details that belong in the blueprint, edit the blueprint. Once
 a feature has become "implemented", major changes should get new blueprints.
 
 The canonical place for the latest set of instructions (and the likely source
-of this file) is [here](/doc/architecture/blueprints/_template.md).
+of this file) is [here](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/architecture/blueprints/_template.md).
 
 Blueprint statuses you can use:
 
@@ -143,7 +143,7 @@ optional.
 
 <!--
 This is where we get down to the specifics of what the proposal actually is,
-but keep it simple!  This should have enough detail that reviewers can
+but keep it simple! This should have enough detail that reviewers can
 understand exactly what you're proposing, but should not include things like
 API designs or implementation. The "Design Details" section below is for the
 real nitty-gritty.

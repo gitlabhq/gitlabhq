@@ -173,7 +173,7 @@ The time limit to resolve all files is 30 seconds.
 And optionally:
 
 - [`include:inputs`](#includeinputs)
-- [`include:rules`](includes.md#use-rules-with-include)
+- [`include:rules`](#includerules)
 
 **Additional details**:
 
@@ -197,11 +197,6 @@ And optionally:
     count towards the limit.
   - From [GitLab 14.9 to GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987), you can have up to 100 includes.
     The same file can be included multiple times in nested includes, but duplicates are ignored.
-
-**Related topics**:
-
-- [Use variables with `include`](includes.md#use-variables-with-include).
-- [Use `rules` with `include`](includes.md#use-rules-with-include).
 
 #### `include:component`
 
@@ -394,6 +389,7 @@ include:
 #### `include:inputs`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
+> - [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
 
 Use `include:inputs` to set the values for input parameters when the included configuration
 uses [`spec:inputs`](#specinputs) and is added to the pipeline.
@@ -426,6 +422,45 @@ In this example:
 **Related topics**:
 
 - [Set input values when using `include`](inputs.md#set-input-values-when-using-include).
+
+#### `include:rules`
+
+You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: These `rules` subkeys:
+
+- [`rules:if`](#rulesif).
+- [`rules:exists`](#rulesexists).
+- [`rules:changes`](#ruleschanges).
+
+Some [CI/CD variables are supported](includes.md#use-variables-with-include).
+
+**Example of `include:rules`**:
+
+```yaml
+include:
+  - local: build_jobs.yml
+    rules:
+      - if: $INCLUDE_BUILDS == "true"
+
+test-job:
+  stage: test
+  script: echo "This is a test job"
+```
+
+In this example, if the `INCLUDE_BUILDS` variable is:
+
+- `true`, the `build_jobs.yml` configuration is included in the pipeline.
+- Not `true` or does not exist, the `build_jobs.yml` configuration is not included in the pipeline.
+
+**Related topics**:
+
+- Examples of using `include` with:
+  - [`rules:if`](includes.md#include-with-rulesif).
+  - [`rules:changes`](includes.md#include-with-ruleschanges).
+  - [`rules:exists`](includes.md#include-with-rulesexists).
 
 ### `stages`
 

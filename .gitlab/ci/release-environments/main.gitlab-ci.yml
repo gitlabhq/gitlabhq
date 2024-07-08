@@ -1,10 +1,8 @@
 ---
 include:
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
-    inputs:
-      cng_path: 'build/CNG-mirror'
   - project: 'gitlab-org/quality/pipeline-common'
-    ref: '8.18.4'
+    ref: '8.18.3'
     file: ci/base.gitlab-ci.yml
 
 stages:
@@ -97,6 +95,7 @@ release-environments-qa:
     GITLAB_INITIAL_ROOT_PASSWORD: "${RELEASE_ENVIRONMENTS_ROOT_PASSWORD}"
     QA_PRAEFECT_REPOSITORY_STORAGE: "default"
     SIGNUP_DISABLED: "true"
+  resource_group: release-environment-${CI_COMMIT_REF_SLUG}
 
 release-environments-notification-failure:
   stage: finish

@@ -5018,7 +5018,7 @@ ALTER SEQUENCE analytics_cycle_analytics_group_value_streams_id_seq OWNED BY ana
 CREATE TABLE analytics_cycle_analytics_stage_event_hashes (
     id bigint NOT NULL,
     hash_sha256 bytea,
-    organization_id bigint DEFAULT 1 NOT NULL
+    organization_id bigint NOT NULL
 );
 
 CREATE SEQUENCE analytics_cycle_analytics_stage_event_hashes_id_seq
@@ -31818,6 +31818,9 @@ ALTER TABLE ONLY abuse_report_notes
 
 ALTER TABLE ONLY vulnerability_issue_links
     ADD CONSTRAINT fk_081e11030b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY analytics_cycle_analytics_stage_event_hashes
+    ADD CONSTRAINT fk_0839874e4f FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY abuse_report_user_mentions
     ADD CONSTRAINT fk_088018ecd8 FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id) ON DELETE CASCADE;

@@ -52,5 +52,5 @@ Snippets are scoped to an Organization because Gitaly is confined to a Cell.
 
 ## 4.2. Cons
 
-- We will break [snippet discovery](/ee/user/snippets.md#discover-snippets).
+- We will break [snippet discovery](../../../../user/snippets.md#discover-snippets).
 - Snippet access may become subordinate to the visibility of the Organization.

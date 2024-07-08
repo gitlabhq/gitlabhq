@@ -52,12 +52,21 @@ To help design the architecture, we need to understand how users, in their roles
 operate and use the system. Here are significant use case scenarios that can help drive our
 design decisions:
 
-- As a user running a pipeline, I want a CI job to automatically fetch secrets specified in the `.gitlab-ci.yml` file.
-- As a DevOps engineer, I want the deployment process to fetch secrets necessary for deployment directly from GitLab Secrets Manager.
-- As a DevOps engineer, I want to manually retrieve the staging database password from the GitLab Secrets Manager.
-- As a project maintainer, I want to destroy all secrets in the scope of the project, when the project is being deleted.
-- As a GitLab instance admin, I want to quickly rotate all runner registration tokens.
-- As a FIPS compliant customer, I want GitLab Secrets Manager to encrypt/decrypt secrets using an HSM solution.
+1. As a Compliance Manager or Security Ops engineer, I want to use dynamic secrets to provide an additional layer of security for my system.
+1. As a Compliance Manager or Security Ops engineer, I want to use automatic secret rotation to provide an additional layer of security for my system.
+1. As a Compliance Manager or Security Ops engineer, I want to set secrets expiration policies to provide an additional layer of security for my system.
+1. As a Developer, I want sensitive credentials to be fully encrypted so I am not accidentally leaking this information in my deliverables.
+1. As a Developer, I want to use secrets to store sensitive credentials to avoid storing this information inside of my code.
+1. As a GitLab Admin and as a GitLab Group Owner, I want to have the ability to disable secrets management feature altogether if my organization requires the use of a 3rd party tool.
+1. As a Compliance Manager or Security Ops engineer, I need to have audit tools which will show me the status of the secrets, their usage so I can identify any suspicious behavior and ensure our security and compliance of our sensitive credentials.
+1. As a Compliance Manager, I need to audit log of secrets usage and management to ensure my organization is following compliance policy.
+1. As a DevOps Engineer, I want the deployment process to fetch secrets necessary for deployment directly from a secrets manager.
+1. As a Customer of a regulated industry, I need a secrets manager with HSM support so I can meet FIPS requirements.
+1. As a US Public Sector customer, I need a secrets manager that is FedRAMP certified to meet security requirements.
+1. As a Customer with an air-gapped system, I need a secrets managers that can be installed on-prem and managed on-site to meet network requirements.
+1. As a Secret Owner, I need to quickly update or rotate the secret in case there has been a vulnerability to ensure the security of my software supply chain.
+1. As a Secret Owner, I need the ability to rollback change to a secret in the event of an accidental change.
+1. As a Security Engineer, I want to ensure all secrets are properly deleted/destroyed if they are no longer needed.
 
 #### Non-functional requirements
 

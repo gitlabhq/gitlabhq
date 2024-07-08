@@ -30,11 +30,11 @@ Base type for issue, requirement, test case, incident and task (this list is pla
 
 A set of predefined types for different categories of work items. Currently, the available types are:
 
-- [Incident](/ee/operations/incident_management/incidents.md)
-- [Test case](/ee/ci/test_cases/index.md)
-- [Requirement](/ee/user/project/requirements/index.md)
-- [Task](/ee/user/tasks.md)
-- [OKRs](/ee/user/okrs.md)
+- [Incident](../../../operations/incident_management/incidents.md)
+- [Test case](../../../ci/test_cases/index.md)
+- [Requirement](../../../user/project/requirements/index.md)
+- [Task](../../../user/tasks.md)
+- [OKRs](../../../user/okrs.md)
 
 Work is underway to convert existing objects to Work Item Types or add new ones:
 

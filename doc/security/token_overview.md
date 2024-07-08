@@ -327,19 +327,52 @@ To replace the token:
 
 ### Identify personal, project, and group access tokens expiring on a certain date
 
-Use these scripts in self-managed instances to identify tokens affected by
-[incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003).
-Run the script from your terminal window in either:
+Access tokens that have no expiration date are valid indefinitely, which is a
+security risk if the access token is divulged.
+
+To manage this risk, when you upgrade to GitLab 16.0 and later, any
+[personal](../user/profile/personal_access_tokens.md),
+[project](../user/project/settings/project_access_tokens.md), or
+[group](../user/group/settings/group_access_tokens.md) access
+token that does not have an expiration date automatically has an expiration
+date set at one year from the date of upgrade.
+
+If you are not aware of when your tokens expire because the dates have changed,
+you might have unexpected authentication failures when trying to sign into GitLab
+on that date.
+
+To manage this issue, you can run scripts in self-managed instances to identify
+tokens that either:
+
+- Expire on a specific date.
+- Have no expiration date.
+
+You run these scripts from your terminal window in either:
 
 - A [Rails console session](../administration/operations/rails_console.md#starting-a-rails-console-session).
 - Using the [Rails Runner](../administration/operations/rails_console.md#using-the-rails-runner).
 
-These scripts return results in this format:
+The specific scripts you run differ depending on if you have upgraded to GitLab 16.0
+and later, or not:
+
+- If you have not yet upgraded to GitLab 16.0 or later, [identify tokens that do not have an expiration date](#find-tokens-with-no-expiration-date).
+- If you have upgraded to GitLab 16.0 or later, use scripts to identify any of
+  the following:
+  - [Tokens expiring on a specific date](#find-all-tokens-expiring-on-a-specific-date).
+  - [Tokens expiring in a specific month](#find-tokens-expiring-in-a-given-month).
+  - [Dates when many tokens expire](#identify-dates-when-many-tokens-expire).
+
+After you have identified tokens affected by this issue, you can run a final script
+to [extend the lifetime of specific tokens](#extend-token-lifetime) if needed.
+
+These scripts return results in the following format:
 
 ```plaintext
 Expired Group Access Token in Group ID 25, Token ID: 8, Name: Example Token, Scopes: ["read_api", "create_runner"], Last used:
 Expired Project Access Token in Project ID 2, Token ID: 9, Name: Test Token, Scopes: ["api", "read_registry", "write_registry"], Last used: 2022-02-11 13:22:14 UTC
 ```
+
+For more information on this, see [incident 18003](https://gitlab.com/gitlab-com/gl-infra/production/-/issues/18003).
 
 #### Find all tokens expiring on a specific date
 

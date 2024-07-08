@@ -37,12 +37,7 @@ export default {
 </script>
 
 <template>
-  <gl-alert
-    variant="warning"
-    class="gl-mx-5 gl-mb-4 gl-mt-3"
-    :title="$options.i18n.title"
-    :dismissible="false"
-  >
+  <gl-alert variant="warning" class="gl-mb-5" :title="$options.i18n.title" :dismissible="false">
     <gl-sprintf
       :message="
         sprintf(

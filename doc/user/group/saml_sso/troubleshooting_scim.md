@@ -194,14 +194,14 @@ this:
 
 1. Optional. If you did not save your SCIM token when you first configured SCIM, [generate a new token](scim_setup.md#configure-gitlab). If you generate a new SCIM token, you **must** update the token in your identity provider's SCIM configuration, or SCIM will stop working.
 1. Locate your SCIM token.
-1. Use the API to [get a single SCIM provisioned user](/ee/development/internal_api/index.md#get-a-single-scim-provisioned-user).
+1. Use the API to [get a single SCIM provisioned user](../../../development/internal_api/index.md#get-a-single-scim-provisioned-user).
 1. Check the returned information to make sure that:
 
    - The user's identifier (`id`) and email match what your identity provider is sending.
    - `active` is set to `false`.
 
    If any of this information does not match, [contact GitLab Support](https://support.gitlab.com/).
-1. Use the API to [update the SCIM provisioned user's `active` value to `true`](/ee/development/internal_api/index.md#update-a-single-scim-provisioned-user).
+1. Use the API to [update the SCIM provisioned user's `active` value to `true`](../../../development/internal_api/index.md#update-a-single-scim-provisioned-user).
 1. If the update returns a status code `204`, have the user attempt to sign in
    using SAML SSO.
 

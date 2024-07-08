@@ -1853,10 +1853,10 @@ This example links to `<wiki_root>/documentation`:
 [Link to Related Page](/documentation)
 ```
 
-This example links to `<wiki_root>/miscellaneous.md`:
+This example links to `<wiki_root>/documentation.md`:
 
 ```markdown
-[Link to Related Page](/miscellaneous.md)
+[Link to Related Page](/documentation.md)
 ```
 
 ### diagrams.net editor

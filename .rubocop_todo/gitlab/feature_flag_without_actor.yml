@@ -159,7 +159,6 @@ Gitlab/FeatureFlagWithoutActor:
     - 'ee/lib/ee/gitlab/auth/saml/config.rb'
     - 'ee/lib/ee/gitlab/geo_git_access.rb'
     - 'ee/lib/ee/gitlab/git_access.rb'
-    - 'ee/lib/elastic/latest/merge_request_class_proxy.rb'
     - 'ee/lib/gitlab/elastic/bulk_indexer.rb'
     - 'ee/lib/gitlab/elastic/client.rb'
     - 'ee/lib/gitlab/elastic/document_reference.rb'
