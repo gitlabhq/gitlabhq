@@ -8990,6 +8990,27 @@ CREATE SEQUENCE conversational_development_index_metrics_id_seq
 
 ALTER SEQUENCE conversational_development_index_metrics_id_seq OWNED BY conversational_development_index_metrics.id;
 
+CREATE TABLE country_access_logs (
+    id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    access_count_reset_at timestamp with time zone,
+    first_access_at timestamp with time zone,
+    last_access_at timestamp with time zone,
+    user_id bigint NOT NULL,
+    access_count integer DEFAULT 0 NOT NULL,
+    country_code smallint NOT NULL
+);
+
+CREATE SEQUENCE country_access_logs_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE country_access_logs_id_seq OWNED BY country_access_logs.id;
+
 CREATE TABLE coverage_fuzzing_corpuses (
     id bigint NOT NULL,
     project_id bigint NOT NULL,
@@ -18335,6 +18356,7 @@ CREATE TABLE uploads (
     mount_point character varying,
     secret character varying,
     version integer DEFAULT 1 NOT NULL,
+    uploaded_by_user_id bigint,
     CONSTRAINT check_5e9547379c CHECK ((store IS NOT NULL))
 );
 
@@ -20663,6 +20685,8 @@ ALTER TABLE ONLY content_blocked_states ALTER COLUMN id SET DEFAULT nextval('con
 
 ALTER TABLE ONLY conversational_development_index_metrics ALTER COLUMN id SET DEFAULT nextval('conversational_development_index_metrics_id_seq'::regclass);
 
+ALTER TABLE ONLY country_access_logs ALTER COLUMN id SET DEFAULT nextval('country_access_logs_id_seq'::regclass);
+
 ALTER TABLE ONLY coverage_fuzzing_corpuses ALTER COLUMN id SET DEFAULT nextval('coverage_fuzzing_corpuses_id_seq'::regclass);
 
 ALTER TABLE ONLY csv_issue_imports ALTER COLUMN id SET DEFAULT nextval('csv_issue_imports_id_seq'::regclass);
@@ -22695,6 +22719,9 @@ ALTER TABLE ONLY content_blocked_states
 
 ALTER TABLE ONLY conversational_development_index_metrics
     ADD CONSTRAINT conversational_development_index_metrics_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY country_access_logs
+    ADD CONSTRAINT country_access_logs_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY coverage_fuzzing_corpuses
     ADD CONSTRAINT coverage_fuzzing_corpuses_pkey PRIMARY KEY (id);
@@ -26767,6 +26794,8 @@ CREATE INDEX index_container_repository_states_pending_verification ON container
 
 CREATE UNIQUE INDEX index_content_blocked_states_on_container_id_commit_sha_path ON content_blocked_states USING btree (container_identifier, commit_sha, path);
 
+CREATE UNIQUE INDEX index_country_access_logs_on_user_id_and_country_code ON country_access_logs USING btree (user_id, country_code);
+
 CREATE UNIQUE INDEX index_coverage_fuzzing_corpuses_on_package_id ON coverage_fuzzing_corpuses USING btree (package_id);
 
 CREATE INDEX index_coverage_fuzzing_corpuses_on_project_id ON coverage_fuzzing_corpuses USING btree (project_id);
@@ -29292,6 +29321,8 @@ CREATE INDEX index_uploads_on_checksum ON uploads USING btree (checksum);
 CREATE INDEX index_uploads_on_model_id_model_type_uploader_created_at ON uploads USING btree (model_id, model_type, uploader, created_at);
 
 CREATE INDEX index_uploads_on_store ON uploads USING btree (store);
+
+CREATE INDEX index_uploads_on_uploaded_by_user_id ON uploads USING btree (uploaded_by_user_id);
 
 CREATE INDEX index_uploads_on_uploader_and_path ON uploads USING btree (uploader, path);
 
@@ -32793,6 +32824,9 @@ ALTER TABLE ONLY ci_trigger_requests
 
 ALTER TABLE ONLY customer_relations_contacts
     ADD CONSTRAINT fk_b91ddd9345 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY uploads
+    ADD CONSTRAINT fk_b94f059d73 FOREIGN KEY (uploaded_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY deployments
     ADD CONSTRAINT fk_b9a3851b82 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -25,7 +25,7 @@ FactoryBot.define do
     end
 
     after(:build) do |processable, evaluator|
-      next if processable.ci_stage || Feature.disabled?(:ci_remove_ensure_stage_service, processable.project)
+      next if processable.ci_stage
 
       processable.stage = evaluator.stage
       pipeline = processable.pipeline
@@ -57,7 +57,7 @@ FactoryBot.define do
     end
 
     before(:create) do |processable, evaluator|
-      next if processable.ci_stage || Feature.disabled?(:ci_remove_ensure_stage_service, processable.project)
+      next if processable.ci_stage
 
       processable.ci_stage =
         if ci_stage = processable.pipeline.stages.find_by(name: evaluator.stage)

@@ -66,7 +66,8 @@ module Gitlab
         def upload_params
           {
             upload_parent: project,
-            uploader_class: FileUploader
+            uploader_class: FileUploader,
+            author: author
           }
         end
 

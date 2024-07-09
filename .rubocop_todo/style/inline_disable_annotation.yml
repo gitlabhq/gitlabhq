@@ -577,7 +577,6 @@ Style/InlineDisableAnnotation:
     - 'app/services/ci/create_pipeline_service.rb'
     - 'app/services/ci/delete_objects_service.rb'
     - 'app/services/ci/delete_unit_tests_service.rb'
-    - 'app/services/ci/ensure_stage_service.rb'
     - 'app/services/ci/expire_pipeline_cache_service.rb'
     - 'app/services/ci/job_artifacts/bulk_delete_by_project_service.rb'
     - 'app/services/ci/job_artifacts/destroy_batch_service.rb'

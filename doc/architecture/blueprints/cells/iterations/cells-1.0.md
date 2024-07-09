@@ -240,6 +240,7 @@ The table below is a comparison between the existing GitLab.com features, and no
 | Windows and Mac OS Runners    |  Mac and Windows runners are still in beta and there are some more complex technical considerations related to cost. See the discussion: [#434982 (comment 1789275416)](https://gitlab.com/gitlab-org/gitlab/-/issues/434982#note_1789275416) on sharing resources. |
 | Multiple Sizes for Linux Runners | We will only support [small linux runners on Cells 1.0](https://gitlab.com/gitlab-org/gitlab/-/issues/434982#note_1806447839). |
 | GitLab for Jira Cloud app and GitLab for Slack app integrations | Jira and Slack apps can only be configured to post to single endpoints, so there is nothing in the configured endpoints' routes that would allow the Cells router to know which cell to route to. We may need to support at the organization level. See [#467791](https://gitlab.com/gitlab-org/gitlab/-/issues/467791) and [#467809](https://gitlab.com/gitlab-org/gitlab/-/issues/467809) for more details. |
+| Cross-organization downstream pipelines | Private organizations are in Cells 1.0 only and downstream pipelines would be unable to see public organizations. |
 
 ## Questions
 

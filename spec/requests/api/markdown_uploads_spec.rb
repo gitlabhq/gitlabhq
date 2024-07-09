@@ -46,7 +46,9 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       project
     end
 
-    it "uploads the file and returns its info" do
+    it "uploads the file through the upload service and returns its info" do
+      expect(UploadService).to receive(:new).with(project, anything, uploaded_by_user_id: user.id).and_call_original
+
       post api(path, user), params: { file: file }
 
       expect(response).to have_gitlab_http_status(:created)

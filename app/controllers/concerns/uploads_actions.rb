@@ -20,7 +20,7 @@ module UploadsActions
   end
 
   def create
-    uploader = UploadService.new(model, params[:file], uploader_class).execute
+    uploader = UploadService.new(model, params[:file], uploader_class, uploaded_by_user_id: current_user&.id).execute
 
     respond_to do |format|
       if uploader

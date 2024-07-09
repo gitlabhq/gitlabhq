@@ -1,0 +1,11 @@
+---
+table_name: country_access_logs
+classes:
+- Users::CountryAccessLog
+feature_categories:
+- instance_resiliency
+description: Tracks user access from specific countries.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157480
+milestone: '17.2'
+gitlab_schema: gitlab_main_cell
+exempt_from_sharding: true # Not related to projects or groups

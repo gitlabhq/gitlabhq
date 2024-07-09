@@ -51,6 +51,7 @@ RSpec.shared_examples 'handle uploads' do
           aggregate_failures do
             expect(upload).to exist
             expect(upload.model).to eq(model)
+            expect(upload.uploaded_by_user).to eq(user)
           end
         end
       end

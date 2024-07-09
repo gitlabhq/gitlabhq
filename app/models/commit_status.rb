@@ -51,7 +51,7 @@ class CommitStatus < Ci::ApplicationRecord
 
   validates :pipeline, presence: true, unless: :importing?
   validates :name, presence: true, unless: :importing?
-  validates :ci_stage, presence: true, on: :create, unless: :importing?, if: -> { Feature.enabled?(:ci_remove_ensure_stage_service, project) }
+  validates :ci_stage, presence: true, on: :create, unless: :importing?
   validates :ref, :target_url, :description, length: { maximum: 255 }
 
   alias_attribute :author, :user
@@ -118,21 +118,6 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     merge(or_conditions)
-  end
-
-  ##
-  # We still create some CommitStatuses outside of CreatePipelineService.
-  #
-  # These are pages deployments and external statuses.
-  #
-  before_create unless: :importing? do
-    next if Feature.enabled?(:ci_remove_ensure_stage_service, project)
-
-    # rubocop: disable CodeReuse/ServiceClass
-    Ci::EnsureStageService.new(project, user).execute(self) do |stage|
-      self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
-    end
-    # rubocop: enable CodeReuse/ServiceClass
   end
 
   before_save if: :status_changed?, unless: :importing? do

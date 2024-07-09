@@ -8,6 +8,7 @@ class Upload < ApplicationRecord
   CHECKSUM_THRESHOLD = 100.megabytes
 
   belongs_to :model, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :uploaded_by_user, class_name: 'User', optional: true
 
   validates :size, presence: true
   validates :path, presence: true
@@ -124,7 +125,8 @@ class Upload < ApplicationRecord
   def uploader_context
     {
       identifier: identifier,
-      secret: secret
+      secret: secret,
+      uploaded_by_user_id: uploaded_by_user_id
     }.compact
   end
 

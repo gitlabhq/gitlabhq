@@ -33,7 +33,7 @@ module API
           desc: 'The attachment file to be uploaded', documentation: { type: 'file' }
       end
       post ':id/uploads' do
-        upload = UploadService.new(user_project, params[:file]).execute
+        upload = UploadService.new(user_project, params[:file], uploaded_by_user_id: current_user&.id).execute
 
         present upload, with: Entities::ProjectUpload
       end
