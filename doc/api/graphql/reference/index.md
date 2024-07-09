@@ -159,28 +159,6 @@ This field returns a [connection](#connections). It accepts the
 four standard [pagination arguments](#pagination-arguments):
 `before: String`, `after: String`, `first: Int`, and `last: Int`.
 
-### `Query.blobSearch`
-
-Find code visible to the current user.
-
-DETAILS:
-**Introduced** in GitLab 17.2.
-**Status**: Experiment.
-
-Returns [`BlobSearch`](#blobsearch).
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="queryblobsearchchunkcount"></a>`chunkCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum chunks per file. |
-| <a id="queryblobsearchgroupid"></a>`groupId` **{warning-solid}** | [`GroupID`](#groupid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Group to search in. |
-| <a id="queryblobsearchpage"></a>`page` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Page number to fetch the results. |
-| <a id="queryblobsearchperpage"></a>`perPage` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Number of results per page. |
-| <a id="queryblobsearchprojectid"></a>`projectId` **{warning-solid}** | [`ProjectID`](#projectid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Project to search in. |
-| <a id="queryblobsearchrepositoryref"></a>`repositoryRef` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Repository reference to search in. |
-| <a id="queryblobsearchsearch"></a>`search` | [`String!`](#string) | Searched term. |
-
 ### `Query.boardList`
 
 Find an issue board list.
@@ -17451,21 +17429,6 @@ An emoji awarded by a user.
 | <a id="blobwebpath"></a>`webPath` | [`String`](#string) | Web path of the blob. |
 | <a id="blobweburl"></a>`webUrl` | [`String`](#string) | Web URL of the blob. |
 
-### `BlobSearch`
-
-Full JSON structure of multi-match results in a single file.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="blobsearchfilecount"></a>`fileCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of files with matches. |
-| <a id="blobsearchfiles"></a>`files` **{warning-solid}** | [`[SearchBlobFileType!]`](#searchblobfiletype) | **Introduced** in GitLab 17.2. **Status**: Experiment. List of files with matches. |
-| <a id="blobsearchmatchcount"></a>`matchCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of matches. |
-| <a id="blobsearchperpage"></a>`perPage` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of files per page. |
-| <a id="blobsearchsearchlevel"></a>`searchLevel` **{warning-solid}** | [`SearchLevel`](#searchlevel) | **Introduced** in GitLab 17.2. **Status**: Experiment. Level of search performed. |
-| <a id="blobsearchsearchtype"></a>`searchType` **{warning-solid}** | [`SearchType`](#searchtype) | **Introduced** in GitLab 17.2. **Status**: Experiment. Type of search performed. |
-
 ### `BlobViewer`
 
 Represents how the blob content should be displayed.
@@ -17852,7 +17815,7 @@ Check user's permission for the car.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="carpermissionsdeletecar"></a>`deleteCar` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_car` on this resource. |
+| <a id="carpermissionsdeletemergetraincar"></a>`deleteMergeTrainCar` | [`Boolean!`](#boolean) | If `true`, the user can perform `delete_merge_train_car` on this resource. |
 
 ### `CiApplicationSettings`
 
@@ -30755,45 +30718,6 @@ Represents a resource scanned by a security scan.
 | <a id="scannedresourcerequestmethod"></a>`requestMethod` | [`String`](#string) | HTTP request method used to access the URL. |
 | <a id="scannedresourceurl"></a>`url` | [`String`](#string) | URL scanned by the scanner. |
 
-### `SearchBlobChunk`
-
-JSON structure of a matched chunk.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="searchblobchunklines"></a>`lines` **{warning-solid}** | [`[SearchBlobLine!]`](#searchblobline) | **Introduced** in GitLab 17.2. **Status**: Experiment. Path of the file. |
-| <a id="searchblobchunkmatchcountinchunk"></a>`matchCountInChunk` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Number of matches in the chunk. |
-
-### `SearchBlobFileType`
-
-JSON structure of a file with matches.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="searchblobfiletypeblameurl"></a>`blameUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Blame URL of the file. |
-| <a id="searchblobfiletypechunks"></a>`chunks` **{warning-solid}** | [`[SearchBlobChunk!]`](#searchblobchunk) | **Introduced** in GitLab 17.2. **Status**: Experiment. Maximum matches per file. |
-| <a id="searchblobfiletypefileurl"></a>`fileUrl` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. URL of the file. |
-| <a id="searchblobfiletypematchcount"></a>`matchCount` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Matches per file in maximum 50 chunks. |
-| <a id="searchblobfiletypematchcounttotal"></a>`matchCountTotal` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Total number of matches per file. |
-| <a id="searchblobfiletypepath"></a>`path` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Path of the file. |
-| <a id="searchblobfiletypeprojectpath"></a>`projectPath` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Full path of the project. |
-
-### `SearchBlobLine`
-
-JSON structure of each line in a matched chunk.
-
-#### Fields
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="searchbloblinelinenumber"></a>`lineNumber` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Line number of the blob. |
-| <a id="searchbloblinerichtext"></a>`richText` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Rich text of the blob. |
-| <a id="searchbloblinetext"></a>`text` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Text content of the blob. |
-
 ### `SecurityPolicyValidationError`
 
 Security policy validation error.
@@ -35913,26 +35837,6 @@ The status of the security scan.
 | <a id="scanstatuspurged"></a>`PURGED` | Report for the scan has been removed from the database. |
 | <a id="scanstatusreport_error"></a>`REPORT_ERROR` | The report artifact provided by the CI build couldn't be parsed. |
 | <a id="scanstatussucceeded"></a>`SUCCEEDED` | The report has been successfully prepared. |
-
-### `SearchLevel`
-
-Level of search.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="searchlevelglobal"></a>`GLOBAL` | Global search including all groups and projects. |
-| <a id="searchlevelgroup"></a>`GROUP` | Group search. |
-| <a id="searchlevelproject"></a>`PROJECT` | Project search. |
-
-### `SearchType`
-
-Type of search.
-
-| Value | Description |
-| ----- | ----------- |
-| <a id="searchtypeadvanced"></a>`ADVANCED` | Advanced search. |
-| <a id="searchtypebasic"></a>`BASIC` | Basic search. |
-| <a id="searchtypezoekt"></a>`ZOEKT` | Exact code search. |
 
 ### `SecurityPolicyRelationType`
 

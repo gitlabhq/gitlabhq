@@ -32,12 +32,12 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
 
       shared_examples 'go-get=1' do |enabled_protocol:|
         context 'with simple 2-segment project path' do
-          let!(:project) { create(:project, :private, :repository) }
+          let!(:project) { create(:project, :public, :repository) }
 
           context 'with subpackages' do
             let(:path) { "#{project.full_path}/subpackage" }
 
-            it 'returns the full project path' do
+            it 'returns the full project path', :unlimited_max_formatted_output_length do
               expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
             end
           end
@@ -47,6 +47,28 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
 
             it 'returns the full project path' do
               expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
+            end
+          end
+
+          context 'when the project is private' do
+            let(:path) { project.full_path }
+
+            before do
+              project.update_attribute(:visibility_level, Project::PRIVATE)
+            end
+
+            it 'returns 404' do
+              expect_404_response(go)
+            end
+
+            context 'when feature flag is disabled' do
+              before do
+                stub_feature_flags(not_found_response_for_go_get: false)
+              end
+
+              it 'returns the full project path' do
+                expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
+              end
             end
           end
         end
@@ -68,8 +90,18 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
               end
 
               shared_examples 'unauthorized' do
-                it 'returns the 2-segment group path' do
-                  expect_response_with_path(go, enabled_protocol, group.full_path, project.default_branch)
+                it 'returns 404' do
+                  expect_404_response(go)
+                end
+
+                context 'when feature flag is disabled' do
+                  before do
+                    stub_feature_flags(not_found_response_for_go_get: false)
+                  end
+
+                  it 'returns the 2-segment group path' do
+                    expect_response_with_path(go, enabled_protocol, group.full_path, project.default_branch)
+                  end
                 end
               end
 
@@ -88,13 +120,6 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
                   context 'with access to the project' do
                     it 'returns the full project path' do
                       expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
-                    end
-
-                    context 'with an empty ssh_user' do
-                      it 'returns the full project path' do
-                        allow(Gitlab.config.gitlab_shell).to receive(:ssh_user).and_return('')
-                        expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
-                      end
                     end
                   end
 
@@ -190,10 +215,20 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
         context 'with a bogus path' do
           let(:path) { "http:;url=http:&sol;&sol;www.example.com'http-equiv='refresh'x='?go-get=1" }
 
-          it 'skips go-import generation' do
-            expect(app).to receive(:call).and_return('no-go')
+          it 'returns 404' do
+            expect_404_response(go)
+          end
 
-            go
+          context 'when feature flag is disabled' do
+            before do
+              stub_feature_flags(not_found_response_for_go_get: false)
+            end
+
+            it 'skips go-import generation' do
+              expect(app).to receive(:call).and_return('no-go')
+
+              go
+            end
           end
         end
 
@@ -202,12 +237,7 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
           let(:path) { project.full_path }
 
           it 'returns 404' do
-            response = go
-
-            expect(response[0]).to eq(404)
-            expect(response[1]['Content-Type']).to eq('text/html')
-            expected_body = %(<html><body>go get #{Gitlab.config.gitlab.url}/#{project.full_path}</body></html>)
-            expect(response[2]).to eq([expected_body])
+            expect_404_response(go)
           end
         end
 
@@ -266,19 +296,24 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
       middleware.call(env)
     end
 
+    def expect_404_response(response)
+      expect(response[2]).to start_with([/Go package not found or access denied/])
+      expect(response[1]['Content-Type']).to eq('text/plain')
+      expect(response[0]).to eq(404)
+    end
+
     def expect_response_with_path(response, protocol, path, branch)
       repository_url = case protocol
                        when :ssh
                          shell = Gitlab.config.gitlab_shell
-                         user = "#{shell.ssh_user}@" unless shell.ssh_user.empty?
-                         "ssh://#{user}#{shell.ssh_host}/#{path}.git"
-                       when :http, nil
+                         "ssh://#{shell.ssh_user}@#{shell.ssh_host}/#{path}.git"
+                       else
                          "http://#{Gitlab.config.gitlab.host}/#{path}.git"
                        end
       project_url = "http://#{Gitlab.config.gitlab.host}/#{path}"
       expect(response[0]).to eq(200)
       expect(response[1]['Content-Type']).to eq('text/html')
-      expected_body = %(<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git #{repository_url}"><meta name="go-source" content="#{Gitlab.config.gitlab.host}/#{path} #{project_url} #{project_url}/-/tree/#{branch}{/dir} #{project_url}/-/blob/#{branch}{/dir}/{file}#L{line}"></head><body>go get #{Gitlab.config.gitlab.url}/#{path}</body></html>)
+      expected_body = %(<html><head><meta name="go-import" content="#{Gitlab.config.gitlab.host}/#{path} git #{repository_url}"><meta name="go-source" content="#{Gitlab.config.gitlab.host}/#{path} #{project_url} #{project_url}/-/tree/#{branch}{/dir} #{project_url}/-/blob/#{branch}{/dir}/{file}#L{line}"></head><body>go get #{Gitlab.config.gitlab.host}/#{path}</body></html>)
       expect(response[2]).to eq([expected_body])
     end
   end

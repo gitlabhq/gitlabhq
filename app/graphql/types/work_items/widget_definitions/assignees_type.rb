@@ -15,7 +15,7 @@ module Types
           description: 'Indicates whether the current user can invite members to the work item\'s parent.'
 
         def can_invite_members
-          object.can_invite_members?(current_user, resource_parent)
+          object.widget_class.can_invite_members?(current_user, resource_parent)
         end
 
         private

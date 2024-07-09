@@ -228,7 +228,7 @@ You can also manually trigger a resync by running the following commands on the 
 
 ```ruby
 registry = Geo::ContainerRepositoryRegistry.first # Choose a Geo registry entry
-registry.replicator.resync # Resync the container repository
+registry.replicator.sync # Resync the container repository
 pp registry.reload # Look at replication state fields
 
 #<Geo::ContainerRepositoryRegistry:0x00007f54c2a36060

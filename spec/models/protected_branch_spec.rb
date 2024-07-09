@@ -233,27 +233,35 @@ RSpec.describe ProtectedBranch, feature_category: :source_code_management do
     end
   end
 
-  describe '.default_branch?' do
-    before do
-      allow(subject.project).to receive(:default_branch).and_return(branch)
-    end
-
-    context 'when the name matches the default branch' do
-      let(:branch) { subject.name }
-
-      it { is_expected.to be_default_branch }
-    end
-
-    context 'when the name does not match the default branch' do
-      let(:branch) { "#{subject.name}qwerty" }
+  describe '#default_branch?' do
+    context 'when group level' do
+      subject { build_stubbed(:protected_branch, project: nil, group: build(:group)) }
 
       it { is_expected.not_to be_default_branch }
     end
 
-    context 'when a wildcard name matches the default branch' do
-      let(:branch) { "#{subject.name}*" }
+    context 'when project level' do
+      before do
+        allow(subject.project).to receive(:default_branch).and_return(branch)
+      end
 
-      it { is_expected.not_to be_default_branch }
+      context 'when the name matches the default branch' do
+        let(:branch) { subject.name }
+
+        it { is_expected.to be_default_branch }
+      end
+
+      context 'when the name does not match the default branch' do
+        let(:branch) { "#{subject.name}qwerty" }
+
+        it { is_expected.not_to be_default_branch }
+      end
+
+      context 'when a wildcard name matches the default branch' do
+        let(:branch) { "#{subject.name}*" }
+
+        it { is_expected.not_to be_default_branch }
+      end
     end
   end
 

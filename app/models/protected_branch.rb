@@ -103,6 +103,8 @@ class ProtectedBranch < ApplicationRecord
   end
 
   def default_branch?
+    return false unless project.present?
+
     name == project.default_branch
   end
 

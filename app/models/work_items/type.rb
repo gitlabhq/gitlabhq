@@ -122,15 +122,19 @@ module WorkItems
 
     # resource_parent is used in EE
     def widgets(_resource_parent)
-      enabled_widget_definitions.filter_map(&:widget_class)
+      enabled_widget_definitions.filter(&:widget_class)
+    end
+
+    def widget_classes(resource_parent)
+      widgets(resource_parent).map(&:widget_class)
     end
 
     def supports_assignee?(resource_parent)
-      widgets(resource_parent).include?(::WorkItems::Widgets::Assignees)
+      widget_classes(resource_parent).include?(::WorkItems::Widgets::Assignees)
     end
 
     def supports_time_tracking?(resource_parent)
-      widgets(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
+      widget_classes(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
     end
 
     def default_issue?

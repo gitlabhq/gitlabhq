@@ -223,6 +223,18 @@ RSpec.describe Gitlab::Pagination::OffsetPagination do
 
             paginator.paginate(resource, exclude_total_headers: true)
           end
+
+          it 'does not return total pages when excluding them' do
+            expect_header('X-Per-Page', '2')
+            expect_header('X-Page', '1')
+            expect_header('X-Next-Page', '2')
+            expect_header('X-Prev-Page', '')
+            expect_header('Link', anything) do |_key, val|
+              expect(val).not_to include('rel="last"')
+            end
+
+            paginator.paginate(resource, without_count: true)
+          end
         end
       end
 

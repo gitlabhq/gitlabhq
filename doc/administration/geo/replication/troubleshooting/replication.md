@@ -292,14 +292,14 @@ to enact the following, basic troubleshooting steps:
 
     ```ruby
     model_record = Packages::PackageFile.find(id)
-    model_record.replicator.send(:download)
+    model_record.replicator.sync
     ```
 
   - Resync a package file, synchronously, given a registry ID:
 
     ```ruby
     registry = Geo::PackageFileRegistry.find(registry_id)
-    registry.replicator.send(:download)
+    registry.replicator.sync
     ```
 
   - Resync a package file, asynchronously, given a registry ID.
@@ -324,14 +324,14 @@ to enact the following, basic troubleshooting steps:
 
     ```ruby
     model_record = Geo::SnippetRepositoryRegistry.find(id)
-    model_record.replicator.sync_repository
+    model_record.replicator.sync
     ```
 
   - Resync a snippet repository, synchronously, given a registry ID
 
     ```ruby
     registry = Geo::SnippetRepositoryRegistry.find(registry_id)
-    registry.replicator.sync_repository
+    registry.replicator.sync
     ```
 
   - Resync a snippet repository, asynchronously, given a registry ID.

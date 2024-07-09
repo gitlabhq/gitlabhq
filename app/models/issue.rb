@@ -762,7 +762,7 @@ class Issue < ApplicationRecord
   def has_widget?(widget)
     widget_class = WorkItems::Widgets.const_get(widget.to_s.camelize, false)
 
-    work_item_type.widgets(resource_parent).include?(widget_class)
+    work_item_type.widget_classes(resource_parent).include?(widget_class)
   end
 
   def group_level?

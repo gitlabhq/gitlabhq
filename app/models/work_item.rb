@@ -119,8 +119,8 @@ class WorkItem < Issue
 
   def widgets
     strong_memoize(:widgets) do
-      work_item_type.widgets(resource_parent).map do |widget_class|
-        widget_class.new(self)
+      work_item_type.widgets(resource_parent).map do |widget_definition|
+        widget_definition.widget_class.new(self)
       end
     end
   end
@@ -148,7 +148,7 @@ class WorkItem < Issue
   end
 
   def supported_quick_action_commands
-    commands_for_widgets = work_item_type.widgets(resource_parent).flat_map(&:quick_action_commands).uniq
+    commands_for_widgets = work_item_type.widget_classes(resource_parent).flat_map(&:quick_action_commands).uniq
 
     COMMON_QUICK_ACTIONS_COMMANDS + commands_for_widgets
   end
@@ -159,7 +159,7 @@ class WorkItem < Issue
     common_params = command_params.dup
     widget_params = {}
 
-    work_item_type.widgets(resource_parent)
+    work_item_type.widget_classes(resource_parent)
           .filter { |widget| widget.respond_to?(:quick_action_params) }
           .each do |widget|
             widget.quick_action_params

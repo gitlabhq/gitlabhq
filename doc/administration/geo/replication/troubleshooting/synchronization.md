@@ -176,7 +176,7 @@ To solve this:
 
    ```ruby
    failed_project_registries.each do |registry|
-     registry.replicator.sync_repository
+     registry.replicator.sync
      puts "Sync initiated for registry ID: #{registry.id}, Project ID: #{registry.project_id}"
    end
    ```
@@ -256,7 +256,7 @@ Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
 ```ruby
 project = Project.find_by_full_path('<group/project>')
 
-project.replicator.sync_repository
+project.replicator.sync
 ```
 
 #### Sync all failed repositories now
@@ -277,7 +277,7 @@ The following script:
 Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
    begin
      puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Last Sync Failure: '#{registry.last_sync_failure}'"
-     registry.replicator.sync_repository
+     registry.replicator.sync
      puts "Sync initiated for registry ID: #{id}"
    rescue => e
      puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Failed: '#{e}'", e.backtrace.join("\n")

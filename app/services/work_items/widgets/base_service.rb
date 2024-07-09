@@ -19,7 +19,7 @@ module WorkItems
       def new_type_excludes_widget?
         return false unless service_params[:work_item_type]
 
-        service_params[:work_item_type].widgets(work_item.resource_parent).exclude?(@widget.class)
+        service_params[:work_item_type].widget_classes(work_item.resource_parent).exclude?(@widget.class)
       end
 
       def has_permission?(permission)

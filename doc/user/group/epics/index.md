@@ -88,6 +88,14 @@ have a start or due date, a visual
 
 ![Child epics roadmap](img/epic_view_roadmap_v12_9.png)
 
+<!-- When epics as work items are GA, the steps below should be the only ones here. -->
+
+If your administrator [enabled the new look for epics](epic_work_items.md):
+
+- On the Child issues and epics section header, select **More actions** (**{ellipsis_v}**) **> View on a roadmap**.
+
+A roadmap filtered for the parent epic opens.
+
 ## Related topics
 
 - [Manage epics](manage_epics.md) and multi-level child epics.

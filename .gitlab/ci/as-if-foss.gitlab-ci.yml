@@ -9,6 +9,7 @@ prepare-as-if-foss-branch:
     - .as-if-foss-variables
   stage: prepare
   needs: []
+  timeout: 10m
   environment:
     name: "as-if-foss/${CI_MERGE_REQUEST_IID}"
     on_stop: delete-as-if-foss-branch
@@ -117,6 +118,7 @@ delete-as-if-foss-branch:
     name: alpine/git
     entrypoint: [""]
   stage: prepare
+  timeout: 10m
   needs:
     - prepare-as-if-foss-branch
   environment:

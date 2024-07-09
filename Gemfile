@@ -401,6 +401,9 @@ gem 'snowplow-tracker', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'webrick', '~> 1.8.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'prometheus-client-mmap', '~> 1.1', '>= 1.1.1', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
 
+# Event-driven reactor for Ruby
+gem 'async', '~> 2.12.1' # rubocop:disable Gemfile/MissingFeatureCategory -- This is general utility gem
+
 # OpenTelemetry
 group :opentelemetry do
   # Core OpenTelemetry gems

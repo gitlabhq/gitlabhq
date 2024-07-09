@@ -13,6 +13,7 @@ DETAILS:
 > - Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `bitbucket_parallel_importer`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.6.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.7. Feature flag `bitbucket_parallel_importer` removed.
+> - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461210) in GitLab 17.2.
 
 Import your projects from Bitbucket Cloud to GitLab.
 
@@ -38,6 +39,7 @@ When importing:
 - References to pull requests and issues are preserved.
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as
   private in GitLab as well.
+- Imported issues, merge requests, and comments have an **Imported** badge in GitLab. 
 
 NOTE:
 The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.org/), not with Bitbucket

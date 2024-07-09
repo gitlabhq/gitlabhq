@@ -17,18 +17,21 @@ module Types
         ::Types::WorkItems::WidgetDefinitions::HierarchyType
       ].freeze
 
+      TYPE_MAPPING = {
+        ::WorkItems::Widgets::Assignees => ::Types::WorkItems::WidgetDefinitions::AssigneesType,
+        ::WorkItems::Widgets::Hierarchy => ::Types::WorkItems::WidgetDefinitions::HierarchyType
+      }.freeze
+
       def self.ce_orphan_types
         ORPHAN_TYPES
       end
 
       def self.resolve_type(object, _context)
-        if object == ::WorkItems::Widgets::Assignees
-          ::Types::WorkItems::WidgetDefinitions::AssigneesType
-        elsif object == ::WorkItems::Widgets::Hierarchy
-          ::Types::WorkItems::WidgetDefinitions::HierarchyType
-        else
-          ::Types::WorkItems::WidgetDefinitions::GenericType
-        end
+        TYPE_MAPPING[object.widget_class] || ::Types::WorkItems::WidgetDefinitions::GenericType
+      end
+
+      def type
+        object.widget_class.type
       end
 
       orphan_types(*ce_orphan_types)
