@@ -45,7 +45,7 @@ describe('content_editor/extensions/copy_paste', () => {
       () =>
         new Promise((resolve) => {
           resolveRenderMarkdownPromiseAndWait = (data) =>
-            waitUntilNextDocTransaction({ tiptapEditor, action: () => resolve(data) });
+            waitUntilNextDocTransaction({ tiptapEditor, action: () => resolve({ body: data }) });
         }),
     );
 

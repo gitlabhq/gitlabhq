@@ -41,7 +41,7 @@ describe('content_editor', () => {
   };
 
   const mockRenderMarkdownResponse = (response) => {
-    renderMarkdown.mockImplementation((markdown) => (markdown ? response : null));
+    renderMarkdown.mockImplementation((markdown) => ({ body: markdown ? response : null }));
   };
 
   beforeEach(() => {
@@ -101,7 +101,8 @@ This reference tag is a mix of letters and numbers [^footnote].
 
       await waitUntilContentIsLoaded();
 
-      expect(wrapper.text()).toContain('footnote: This is another footnote');
+      expect(wrapper.text()).toContain('footnote:');
+      expect(wrapper.text()).toContain('This is another footnote.');
     });
 
     it('processes and displays reference definitions', async () => {
@@ -120,7 +121,8 @@ This reference tag is a mix of letters and numbers [^footnote].
   });
 
   it('renders table of contents', async () => {
-    renderMarkdown.mockResolvedValueOnce(`
+    renderMarkdown.mockResolvedValueOnce({
+      body: `
 <ul class="section-nav">
 </ul>
 <h1 dir="auto" data-sourcepos="3:1-3:11">
@@ -129,7 +131,8 @@ This reference tag is a mix of letters and numbers [^footnote].
 <h2 dir="auto" data-sourcepos="5:1-5:12">
   Heading 2
 </h2>
-    `);
+    `,
+    });
 
     buildWrapper({
       markdown: `
@@ -145,40 +148,6 @@ This reference tag is a mix of letters and numbers [^footnote].
 
     expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 1');
     expect(wrapper.findByTestId('table-of-contents').text()).toContain('Heading 2');
-  });
-
-  describe('when pasting content', () => {
-    const buildClipboardData = (data = {}) => ({
-      clipboardData: {
-        getData(mimeType) {
-          return data[mimeType];
-        },
-        types: Object.keys(data),
-      },
-    });
-
-    describe('when the clipboard does not contain text/html data', () => {
-      it('processes the clipboard content as markdown', async () => {
-        const processedMarkdown = '<strong>bold text</strong>';
-
-        buildWrapper();
-
-        await waitUntilContentIsLoaded();
-
-        mockRenderMarkdownResponse(processedMarkdown);
-
-        wrapper.find('[contenteditable]').trigger(
-          'paste',
-          buildClipboardData({
-            'text/plain': '**bold text**',
-          }),
-        );
-
-        await waitUntilContentIsLoaded();
-
-        expect(wrapper.find('[contenteditable]').html()).toContain(processedMarkdown);
-      });
-    });
   });
 
   it('bubbles up the keydown event captured by ProseMirror', async () => {

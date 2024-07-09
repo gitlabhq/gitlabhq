@@ -32,10 +32,21 @@ class Projects::WorkItemsController < Projects::ApplicationController
     end
   end
 
+  def show
+    return if show_params[:iid] == 'new'
+
+    @work_item = ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
+      .execute.with_work_item_type.find_by_iid(show_params[:iid])
+  end
+
   private
 
   def import_params
     params.permit(:file)
+  end
+
+  def show_params
+    params.permit(:iid)
   end
 
   def authorize_import_access!

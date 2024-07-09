@@ -138,7 +138,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixSyncedEpicWorkItemParentLinks, fe
     end
   end
 
-  RSpec::Matchers.define :have_synced_parent_link do
+  RSpec::Matchers.define :have_synced_parent_links do
     match do |epic_issue|
       parent_epic = epics.find(epic_issue.epic_id)
       parent_work_item = issues.find(parent_epic.issue_id)
@@ -153,7 +153,7 @@ RSpec.describe Gitlab::BackgroundMigration::FixSyncedEpicWorkItemParentLinks, fe
     end
   end
 
-  RSpec::Matchers.define :have_synced_epic_issue do
+  RSpec::Matchers.define :have_synced_epic_issues do
     match do |parent_link|
       epic = epics.find_by_issue_id(parent_link.work_item_parent_id)
 
@@ -212,8 +212,8 @@ RSpec.describe Gitlab::BackgroundMigration::FixSyncedEpicWorkItemParentLinks, fe
 
       expect(epic_issues.count).to eq(issue_parent_links_with_legacy_epics.count)
 
-      expect(epic_issues.all).to all(have_synced_parent_link)
-      expect(issue_parent_links_with_legacy_epics).to all(have_synced_epic_issue)
+      expect(epic_issues.all).to all(have_synced_parent_links)
+      expect(issue_parent_links_with_legacy_epics).to all(have_synced_epic_issues)
     end
   end
 end

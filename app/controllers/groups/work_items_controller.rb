@@ -18,6 +18,18 @@ module Groups
 
     def show
       not_found unless Feature.enabled?(:namespace_level_work_items, group)
+
+      # the work_items/:iid route renders a Vue app that takes care of the show and new pages.
+      return if show_params[:iid] == 'new'
+
+      @work_item = ::WorkItems::WorkItemsFinder.new(current_user, group_id: group.id)
+        .execute.with_work_item_type.find_by_iid(show_params[:iid])
+    end
+
+    private
+
+    def show_params
+      params.permit(:iid)
     end
   end
 end

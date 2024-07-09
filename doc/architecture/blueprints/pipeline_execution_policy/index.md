@@ -164,6 +164,35 @@ with a new one defined by the pipeline execution policy. Ideal when the entire p
 or replaced, such as enforcing organization-wide CI/CD standards or compliance requirements.
 When multiple policies are applied to a project, if one policy uses the `override_project_ci` strategy, this strategy will take precedence over all other policy strategies.
 
+### Context of the policy pipeline
+
+For each policy pipeline attached to a project, we use the same context as the main pipeline when building jobs.
+This includes the pipeline source, commit SHA, merge request / pipeline scheduler context, etc.
+We do this to ensure that the policy pipeline behaves the same way as the main pipeline. The policy authors
+will know that a policy pipeline is not a separate pipeline, but a set of jobs that are merged into the project pipeline
+and use the same rules as in the main pipeline.
+
+For example, the source of the main pipeline is passed to the policies when building them and their jobs
+because policy pipelines need to know this information to be able to have these configs;
+
+```yaml
+# run policy on scheduled, push, and MR pipelines
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'schedule'
+    - if: $CI_PIPELINE_SOURCE == 'push'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+```
+
+#### Pipelines excluded from policy enforcement
+
+Some pipeline sources are excluded from policy enforcement and pipeline execution policies are not injected into pipelines with these sources.
+These pipeline sources are called ["dangling"](https://gitlab.com/gitlab-org/gitlab/-/blob/fa7bb30a04dd2eab582ff209e119ebfa1fcb9228/app/models/concerns/enums/ci/pipeline.rb#L56-69);
+`webide`, `parent_pipeline`, `ondemand_dast_scan`, `ondemand_dast_validation`, `security_orchestration_policy`, `container_registry_push`.
+
+They are safe to skip from policy enforcement because they are either considered safe from the point of view of the content (on-demand DAST scans, SEP pipelines, etc.)
+or because we enforce the policy upstream (e.g. in parent pipelines instead of child pipelines).
+
 ## Links
 
 - [Pipeline Execution Policy Type](https://gitlab.com/groups/gitlab-org/-/epics/13266#top)

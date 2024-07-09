@@ -172,7 +172,9 @@ describe('content_editor/services/markdown_sourcemap', () => {
     'gets markdown source for a rendered $description',
     async ({ sourceMarkdown, sourceHTML, expectedDoc }) => {
       const { document } = await markdownDeserializer({
-        render: () => sourceHTML,
+        render: () => ({
+          body: sourceHTML,
+        }),
       }).deserialize({
         schema: tiptapEditor.schema,
         markdown: sourceMarkdown,

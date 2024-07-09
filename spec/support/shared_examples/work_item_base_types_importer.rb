@@ -19,13 +19,18 @@ RSpec.shared_examples 'work item base types importer' do
     WorkItems::WidgetDefinition.delete_all
     widget_mapping = ::Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter::WIDGETS_FOR_TYPE
 
-    expect { subject }.to change { WorkItems::WidgetDefinition.count }.from(0).to(widget_mapping.values.flatten.count)
+    expect { subject }.to change { WorkItems::WidgetDefinition.count }
+      .from(0).to(widget_mapping.values.flatten(1).count)
 
     created_widgets = WorkItems::WidgetDefinition.global.map do |widget|
-      { name: widget.work_item_type.name, type: widget.widget_type }
+      { name: widget.work_item_type.name, type: widget.widget_type, options: widget.widget_options }
     end
     expected_widgets = widget_mapping.flat_map do |type_sym, widget_types|
-      widget_types.map { |type| { name: ::WorkItems::Type::TYPE_NAMES[type_sym], type: type.to_s } }
+      widget_types.map do |type|
+        type, type_options = type if type.is_a?(Array)
+
+        { name: ::WorkItems::Type::TYPE_NAMES[type_sym], type: type.to_s, options: type_options }
+      end
     end
 
     expect(created_widgets).to match_array(expected_widgets)
@@ -48,13 +53,13 @@ RSpec.shared_examples 'work item base types importer' do
   it 'upserts default widget definitions if they already exist and type changes' do
     widget = WorkItems::WidgetDefinition.global.find_by_widget_type(:labels)
 
-    widget.update!(widget_type: :weight)
+    widget.update!(widget_type: :assignees)
 
     expect do
       subject
       widget.reload
     end.to not_change(WorkItems::WidgetDefinition, :count).and(
-      change { widget.widget_type }.from('weight').to('labels')
+      change { widget.widget_type }.from('assignees').to('labels')
     )
   end
 

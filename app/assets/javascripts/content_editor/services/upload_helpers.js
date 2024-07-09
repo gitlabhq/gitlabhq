@@ -132,7 +132,7 @@ export const uploadFile = ({ uploadsPath, renderMarkdown, file }) => {
       onUploadProgress: (e) => tap(e.loaded / e.total),
     });
     const { markdown } = data.link;
-    const rendered = await renderMarkdown(markdown);
+    const { body: rendered } = await renderMarkdown(markdown);
 
     return extractAttachmentLinkUrl(rendered);
   });

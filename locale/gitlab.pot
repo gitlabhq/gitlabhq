@@ -4691,9 +4691,6 @@ msgstr ""
 msgid "Admin|Credentials"
 msgstr ""
 
-msgid "Admin|Custom models"
-msgstr ""
-
 msgid "Admin|Deploy Keys"
 msgstr ""
 
@@ -4731,6 +4728,9 @@ msgid "Admin|Push Rules"
 msgstr ""
 
 msgid "Admin|Quarterly reconciliation will occur on %{qrtlyDate}"
+msgstr ""
+
+msgid "Admin|Self-hosted models"
 msgstr ""
 
 msgid "Admin|Settings"
@@ -13522,6 +13522,15 @@ msgstr ""
 msgid "ComplianceFrameworks|Policy name"
 msgstr ""
 
+msgid "ComplianceFrameworks|Project description"
+msgstr ""
+
+msgid "ComplianceFrameworks|Project name"
+msgstr ""
+
+msgid "ComplianceFrameworks|Projects"
+msgstr ""
+
 msgid "ComplianceFrameworks|Required format: %{codeStart}path/file.y[a]ml@group-name/project-name%{codeEnd}. %{linkStart}See some examples%{linkEnd}."
 msgstr ""
 
@@ -13556,6 +13565,9 @@ msgid "ComplianceFrameworks|To unlink this policy and framework, edit the policy
 msgstr ""
 
 msgid "ComplianceFrameworks|Total policies in the group: %{count}"
+msgstr ""
+
+msgid "ComplianceFrameworks|Total projects linked to framework: %{count}"
 msgstr ""
 
 msgid "ComplianceFrameworks|Unable to save this compliance framework. Please try again"
@@ -58305,6 +58317,9 @@ msgid "VersionCheck|You are currently on version %{currentVersion}! We strongly 
 msgstr ""
 
 msgid "Versions"
+msgstr ""
+
+msgid "View"
 msgstr ""
 
 msgid "View File Metadata"

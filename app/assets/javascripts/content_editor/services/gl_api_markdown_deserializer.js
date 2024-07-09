@@ -18,7 +18,7 @@ export default ({ render }) => {
    */
   return {
     deserialize: async ({ schema, markdown }) => {
-      const html = markdown ? await render(markdown) : '<p></p>';
+      const html = markdown ? (await render(markdown)).body : '<p></p>';
       const parser = new DOMParser();
       const { body } = parser.parseFromString(`<body>${html}</body>`, 'text/html');
 

@@ -87,7 +87,7 @@ describe('content_editor/extensions/reference', () => {
           number: 2,
           tiptapEditor,
           action() {
-            renderMarkdown.mockResolvedValueOnce(mockReferenceHtml);
+            renderMarkdown.mockResolvedValueOnce({ body: mockReferenceHtml });
 
             tiptapEditor.commands.insertContent({ type: 'text', text: `${inputRuleText} ` });
             triggerNodeInputRule({ tiptapEditor, inputRuleText: `${inputRuleText} ` });
@@ -103,7 +103,7 @@ describe('content_editor/extensions/reference', () => {
         number: 2,
         tiptapEditor,
         action() {
-          renderMarkdown.mockResolvedValueOnce(RESOLVED_ISSUE_HTML);
+          renderMarkdown.mockResolvedValueOnce({ body: RESOLVED_ISSUE_HTML });
 
           tiptapEditor.commands.insertContent({ type: 'text', text: '#1+ ' });
           triggerNodeInputRule({ tiptapEditor, inputRuleText: '#1+ ' });
@@ -114,7 +114,7 @@ describe('content_editor/extensions/reference', () => {
         number: 2,
         tiptapEditor,
         action() {
-          renderMarkdown.mockResolvedValueOnce(RESOLVED_MERGE_REQUEST_HTML);
+          renderMarkdown.mockResolvedValueOnce({ body: RESOLVED_MERGE_REQUEST_HTML });
 
           tiptapEditor.commands.insertContent({ type: 'text', text: 'was resolved with !1+ ' });
           triggerNodeInputRule({ tiptapEditor, inputRuleText: 'was resolved with !1+ ' });
@@ -146,7 +146,7 @@ describe('content_editor/extensions/reference', () => {
     it('resolves the input rule lazily in the correct position if the user makes a change before the request resolves', async () => {
       let resolvePromise;
       const promise = new Promise((resolve) => {
-        resolvePromise = resolve;
+        resolvePromise = (body) => resolve({ body });
       });
 
       renderMarkdown.mockImplementation(() => promise);

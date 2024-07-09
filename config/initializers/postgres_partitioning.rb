@@ -20,6 +20,7 @@ Gitlab::Database::Partitioning.register_models(
     Ci::BuildSource,
     Ci::Catalog::Resources::Components::Usage,
     Ci::Catalog::Resources::SyncEvent,
+    Ci::FinishedPipelineChSyncEvent,
     Ci::JobAnnotation,
     Ci::JobArtifact,
     Ci::PipelineVariable,

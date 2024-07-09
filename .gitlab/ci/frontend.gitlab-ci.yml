@@ -171,9 +171,10 @@ retrieve-frontend-fixtures:
     expire_in: 31d
     when: always
     paths:
-      - tmp/tests/frontend/
-      - knapsack/
       - crystalball/
+      - knapsack/
+      - log/*.log
+      - tmp/tests/frontend/
 
 # Builds FOSS, and EE fixtures in the EE project.
 # Builds FOSS fixtures in the FOSS project.

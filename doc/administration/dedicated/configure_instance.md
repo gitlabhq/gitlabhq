@@ -88,6 +88,12 @@ You can add a [custom hostname](../../subscriptions/gitlab_dedicated/index.md#br
 
 To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
 
+### SMTP email service
+
+You can configure an [SMTP](../../subscriptions/gitlab_dedicated/index.md#smtp) email service for your GitLab Dedicated instance.
+
+To configure an SMTP email service, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the credentials and settings for your SMTP server.
+
 ### Inbound Private Link
 
 [AWS Private Link](https://docs.aws.amazon.com/vpc/latest/privatelink/what-is-privatelink.html) allows users and applications in your VPC on AWS to securely connect to the GitLab Dedicated endpoint without network traffic going over the public internet.

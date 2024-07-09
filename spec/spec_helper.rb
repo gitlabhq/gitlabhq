@@ -508,6 +508,8 @@ RSpec.configure do |config|
     STRING
 
     config.around(:each, spec_type) do |example|
+      next example.run if example.metadata[:migration_with_transaction]
+
       self.class.use_transactional_tests = false
 
       if DbCleaner.all_connection_classes.any? { |klass| klass.connection.transaction_open? }

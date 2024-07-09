@@ -3,9 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe AddTicketWorkItemType, :migration, feature_category: :service_desk, allowed_to_be_slow: true do
-  include MigrationHelpers::WorkItemTypesHelper
-
+RSpec.describe AddTicketWorkItemType, :migration_with_transaction, feature_category: :service_desk, allowed_to_be_slow: true do
   let(:work_item_types) { table(:work_item_types) }
   let(:work_item_widget_definitions) { table(:work_item_widget_definitions) }
   let(:work_item_hierarchy_restrictions) { table(:work_item_hierarchy_restrictions) }
@@ -21,12 +19,6 @@ RSpec.describe AddTicketWorkItemType, :migration, feature_category: :service_des
       epic: 7,
       ticket: 8
     }
-  end
-
-  after(:all) do
-    # Make sure base types are recreated after running the migration
-    # because migration specs are not run in a transaction
-    reset_work_item_types
   end
 
   before do

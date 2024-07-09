@@ -32,7 +32,7 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
     beforeEach(async () => {
       const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-      renderMarkdown.mockResolvedValueOnce(`<p><strong>${text}</strong></p>`);
+      renderMarkdown.mockResolvedValueOnce({ body: `<p><strong>${text}</strong></p>` });
 
       result = await deserializer.deserialize({
         markdown: '**Bold text**',
@@ -54,7 +54,7 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
         schema: tiptapEditor.schema,
       });
 
-      renderMarkdown.mockResolvedValueOnce(null);
+      renderMarkdown.mockResolvedValueOnce({ body: null });
 
       const result = await deserializer.deserialize({
         markdown: '',

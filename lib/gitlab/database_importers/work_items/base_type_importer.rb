@@ -41,7 +41,7 @@ module Gitlab
             :milestone,
             :notes,
             :iteration,
-            :weight,
+            [:weight, { editable: true, rollup: false }],
             :health_status,
             :notifications,
             :current_user_todos,
@@ -97,7 +97,7 @@ module Gitlab
             :milestone,
             :notes,
             :iteration,
-            :weight,
+            [:weight, { editable: true, rollup: false }],
             :notifications,
             :current_user_todos,
             :award_emoji,
@@ -141,6 +141,7 @@ module Gitlab
             :hierarchy,
             :labels,
             :notes,
+            [:weight, { editable: false, rollup: true }],
             :start_and_due_date,
             :health_status,
             :status,
@@ -162,7 +163,7 @@ module Gitlab
             :milestone,
             :notes,
             :iteration,
-            :weight,
+            [:weight, { editable: true, rollup: false }],
             :health_status,
             :notifications,
             :current_user_todos,
@@ -196,10 +197,13 @@ module Gitlab
             type_name = ::WorkItems::Type::TYPE_NAMES[type_sym]
 
             widget_syms.map do |widget_sym|
+              widget_sym, widget_options = widget_sym if widget_sym.is_a?(Array)
+
               {
                 work_item_type_id: type_ids_by_name[type_name],
                 name: WIDGET_NAMES[widget_sym],
-                widget_type: ::WorkItems::WidgetDefinition.widget_types[widget_sym]
+                widget_type: ::WorkItems::WidgetDefinition.widget_types[widget_sym],
+                widget_options: widget_options
               }
             end
           end

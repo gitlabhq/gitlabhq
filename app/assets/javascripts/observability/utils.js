@@ -52,7 +52,7 @@ export const periodToDate = (timePeriod) => {
  * @returns {{value: string, startDate?: Date, endDate?: Date}} An object containing the validated date range.
  */
 
-function validatedDateRangeQuery(dateRangeValue, dateRangeStart, dateRangeEnd) {
+export function validatedDateRangeQuery(dateRangeValue, dateRangeStart, dateRangeEnd) {
   const DEFAULT_TIME_RANGE = '1h';
   if (dateRangeValue === CUSTOM_DATE_RANGE_OPTION) {
     if (isValidDate(new Date(dateRangeStart)) && isValidDate(new Date(dateRangeEnd))) {

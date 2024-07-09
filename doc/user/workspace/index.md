@@ -186,6 +186,18 @@ With this extension, you can view issues, create and review merge requests, and 
 The extension also powers AI features like GitLab Duo Code Suggestions and GitLab Duo Chat.
 For more information, see [GitLab Workflow extension for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension).
 
+## Extension marketplace
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438491) in GitLab 16.9 [with a flag](../../administration/feature_flags.md) named `allow_extensions_marketplace_in_workspace`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+When `allow_extensions_marketplace_in_workspace` is enabled, you can use the extension marketplace in workspaces.
+An administrator can enable or disable the flag for top-level groups only.
+The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
+
 ## Personal access token
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.

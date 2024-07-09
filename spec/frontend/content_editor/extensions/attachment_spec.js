@@ -112,7 +112,7 @@ describe('content_editor/extensions/attachment', () => {
       },
     });
 
-    renderMarkdown.mockResolvedValue(PROJECT_WIKI_ATTACHMENT_IMAGE_HTML);
+    renderMarkdown.mockResolvedValue({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
 
     const event = Object.assign(new Event(eventType), eventData);
     const handled = tiptapEditor.view.someProp(propName, (eventHandler) => {
@@ -138,7 +138,7 @@ describe('content_editor/extensions/attachment', () => {
       ${'drawioDiagram'} | ${PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML} | ${drawioDiagramFile} | ${(attrs) => drawioDiagram(attrs)}
     `('when the file is $nodeType', ({ nodeType, html, file, mediaType }) => {
       beforeEach(() => {
-        renderMarkdown.mockResolvedValue(html);
+        renderMarkdown.mockResolvedValue({ body: html });
       });
 
       describe('when uploading succeeds', () => {
@@ -243,7 +243,7 @@ describe('content_editor/extensions/attachment', () => {
 
     describe('when the file is a retina image', () => {
       beforeEach(() => {
-        renderMarkdown.mockResolvedValue(PROJECT_WIKI_ATTACHMENT_IMAGE_HTML);
+        renderMarkdown.mockResolvedValue({ body: PROJECT_WIKI_ATTACHMENT_IMAGE_HTML });
       });
 
       describe('when uploading succeeds', () => {
@@ -282,7 +282,7 @@ describe('content_editor/extensions/attachment', () => {
 
     describe('when the file has a zip (or any other attachment) mime type', () => {
       beforeEach(() => {
-        renderMarkdown.mockResolvedValue(markdownApiResult[attachmentFile.name]);
+        renderMarkdown.mockResolvedValue({ body: markdownApiResult[attachmentFile.name] });
       });
 
       describe('when uploading succeeds', () => {
@@ -377,7 +377,7 @@ describe('content_editor/extensions/attachment', () => {
 
         for (const file of files) {
           renderMarkdown.mockImplementation((markdown) =>
-            Promise.resolve(markdownApiResult[markdown.match(/\((.+?)\)$/)[1]]),
+            Promise.resolve({ body: markdownApiResult[markdown.match(/\((.+?)\)$/)[1]] }),
           );
 
           mock

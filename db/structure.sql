@@ -13903,6 +13903,15 @@ CREATE SEQUENCE p_ci_builds_execution_configs_id_seq
 
 ALTER SEQUENCE p_ci_builds_execution_configs_id_seq OWNED BY p_ci_builds_execution_configs.id;
 
+CREATE TABLE p_ci_finished_pipeline_ch_sync_events (
+    pipeline_id bigint NOT NULL,
+    project_namespace_id bigint NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
+    pipeline_finished_at timestamp without time zone NOT NULL,
+    processed boolean DEFAULT false NOT NULL
+)
+PARTITION BY LIST (partition);
+
 CREATE SEQUENCE p_ci_job_annotations_id_seq
     START WITH 1
     INCREMENT BY 1
@@ -19677,6 +19686,7 @@ CREATE TABLE work_item_widget_definitions (
     widget_type smallint NOT NULL,
     disabled boolean DEFAULT false,
     name text,
+    widget_options jsonb,
     CONSTRAINT check_050f2e2328 CHECK ((char_length(name) <= 255))
 );
 
@@ -23489,6 +23499,9 @@ ALTER TABLE ONLY p_ci_builds_execution_configs
 ALTER TABLE ONLY p_ci_finished_build_ch_sync_events
     ADD CONSTRAINT p_ci_finished_build_ch_sync_events_pkey PRIMARY KEY (build_id, partition);
 
+ALTER TABLE ONLY p_ci_finished_pipeline_ch_sync_events
+    ADD CONSTRAINT p_ci_finished_pipeline_ch_sync_events_pkey PRIMARY KEY (pipeline_id, partition);
+
 ALTER TABLE ONLY p_ci_job_annotations
     ADD CONSTRAINT p_ci_job_annotations_pkey PRIMARY KEY (id, partition_id);
 
@@ -26396,6 +26409,8 @@ CREATE INDEX index_ci_daily_build_group_report_results_on_project_and_date ON ci
 CREATE INDEX index_ci_deleted_objects_on_pick_up_at ON ci_deleted_objects USING btree (pick_up_at);
 
 CREATE INDEX index_ci_finished_build_ch_sync_events_for_partitioned_query ON ONLY p_ci_finished_build_ch_sync_events USING btree (((build_id % (100)::bigint)), build_id) WHERE (processed = false);
+
+CREATE INDEX index_ci_finished_pipeline_ch_sync_events_for_partitioned_query ON ONLY p_ci_finished_pipeline_ch_sync_events USING btree (((pipeline_id % (100)::bigint)), pipeline_id) WHERE (processed = false);
 
 CREATE INDEX index_ci_freeze_periods_on_project_id ON ci_freeze_periods USING btree (project_id);
 
@@ -29892,8 +29907,6 @@ CREATE UNIQUE INDEX tmp_index_issues_on_tmp_epic_id ON issues USING btree (tmp_e
 CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING btree (id) WHERE (state <> 2);
 
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
-
-CREATE INDEX tmp_index_vulnerability_dismissal_info ON vulnerabilities USING btree (id) WHERE ((state = 2) AND ((dismissed_at IS NULL) OR (dismissed_by_id IS NULL)));
 
 CREATE INDEX tmp_index_vulnerability_occurrences_id_and_initial_pipline_id ON vulnerability_occurrences USING btree (id, initial_pipeline_id) WHERE (initial_pipeline_id IS NULL);
 

@@ -28,6 +28,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
       push_options: nil,
       source_sha: nil,
       target_sha: nil,
+      partition_id: nil,
       save_on_errors: true)
       params = { ref: ref,
                  before: before,
@@ -35,7 +36,8 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
                  variables_attributes: variables_attributes,
                  push_options: push_options,
                  source_sha: source_sha,
-                 target_sha: target_sha }
+                 target_sha: target_sha,
+                 partition_id: partition_id }
 
       described_class.new(project, user, params).execute(source,
         save_on_errors: save_on_errors,
@@ -51,29 +53,29 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
       it_behaves_like 'pipelines are created without N+1 SQL queries' do
         let(:config1) do
           <<~YAML
-          job1:
-            stage: build
-            script: exit 0
+            job1:
+              stage: build
+              script: exit 0
 
-          job2:
-            stage: test
-            script: exit 0
+            job2:
+              stage: test
+              script: exit 0
           YAML
         end
 
         let(:config2) do
           <<~YAML
-          job1:
-            stage: build
-            script: exit 0
+            job1:
+              stage: build
+              script: exit 0
 
-          job2:
-            stage: test
-            script: exit 0
+            job2:
+              stage: test
+              script: exit 0
 
-          job3:
-            stage: deploy
-            script: exit 0
+            job3:
+              stage: deploy
+              script: exit 0
           YAML
         end
 
@@ -2036,6 +2038,65 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, :
           end
         end
       end
+    end
+
+    unless Gitlab.ee?
+      context 'with partition_id param' do
+        it 'raises error' do
+          expect { execute_service(partition_id: ci_testing_partition_id) }
+            .to raise_error(ArgumentError, "Param `partition_id` is not allowed")
+        end
+      end
+    end
+  end
+
+  describe 'SEQUENCE ordering' do
+    it 'has AssignPartition before FindConfigs to be able to set consistent partition_id for policy jobs' do
+      assign_partition_index, find_configs_index = indexes_in_sequence(
+        Gitlab::Ci::Pipeline::Chain::AssignPartition,
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs
+      )
+      expect(assign_partition_index).to be < find_configs_index
+    end
+
+    it 'has FindConfigs before Skip to disallow pipeline skipping with enforced policy jobs' do
+      find_configs_index, skip_index = indexes_in_sequence(
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs,
+        Gitlab::Ci::Pipeline::Chain::Skip
+      )
+      expect(find_configs_index).to be < skip_index
+    end
+
+    it 'has FindConfigs before Config::Content to force the pipeline creation without project CI config' do
+      find_configs_index, config_content_index = indexes_in_sequence(
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs,
+        Gitlab::Ci::Pipeline::Chain::Config::Content
+      )
+      expect(find_configs_index).to be < config_content_index
+    end
+
+    it 'has MergeJobs after Populate to ensure that pipeline stages are set' do
+      merge_jobs_index, populate_index = indexes_in_sequence(
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::MergeJobs,
+        Gitlab::Ci::Pipeline::Chain::Populate
+      )
+      expect(merge_jobs_index).to be > populate_index
+    end
+
+    it 'has MergeJobs before StopDryRun to make policy jobs visible in dry run' do
+      merge_jobs_index, stop_dry_run_index = indexes_in_sequence(
+        Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::MergeJobs,
+        Gitlab::Ci::Pipeline::Chain::StopDryRun
+      )
+      expect(merge_jobs_index).to be < stop_dry_run_index
+    end
+
+    private
+
+    def indexes_in_sequence(step1, step2)
+      step1_index = described_class::SEQUENCE.find_index(step1)
+      step2_index = described_class::SEQUENCE.find_index(step2)
+      [step1_index, step2_index]
     end
   end
 end

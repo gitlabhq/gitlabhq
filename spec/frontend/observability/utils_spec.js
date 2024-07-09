@@ -5,6 +5,7 @@ import {
   addTimeToDate,
   formattedTimeFromDate,
   isTracingDateRangeOutOfBounds,
+  validatedDateRangeQuery,
 } from '~/observability/utils';
 import {
   CUSTOM_DATE_RANGE_OPTION,
@@ -219,5 +220,38 @@ describe('isTracingDateRangeOutOfBounds', () => {
         endDate: 'baz',
       }),
     ).toBe(true);
+  });
+});
+
+describe('validatedDateRangeQuery', () => {
+  it('returns the default time range when dateRangeValue is not "custom"', () => {
+    const result = validatedDateRangeQuery('1h', '', '');
+    expect(result).toEqual({ value: '1h' });
+  });
+
+  it('returns the default time range when dateRangeStart or dateRangeEnd is invalid', () => {
+    const result = validatedDateRangeQuery('custom', 'invalid', '2023-05-01T00:00:00.000Z');
+    expect(result).toEqual({ value: '1h' });
+  });
+
+  it('returns the custom date range when dateRangeValue is "custom" and dateRangeStart and dateRangeEnd are valid', () => {
+    const startDate = '2023-04-01T00:00:00.000Z';
+    const endDate = '2023-05-01T00:00:00.000Z';
+    const result = validatedDateRangeQuery('custom', startDate, endDate);
+    expect(result).toEqual({
+      value: 'custom',
+      startDate: new Date(startDate),
+      endDate: new Date(endDate),
+    });
+  });
+
+  it('returns the default date range when dateRangeValue is custom but dateRangeStart or dateRangeEnd are invalid', () => {
+    const result = validatedDateRangeQuery('custom', 'foo', 'bar');
+    expect(result).toEqual({ value: '1h' });
+  });
+
+  it('returns the default time range when dateRangeValue is undefined', () => {
+    const result = validatedDateRangeQuery(undefined, '', '');
+    expect(result).toEqual({ value: '1h' });
   });
 });

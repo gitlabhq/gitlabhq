@@ -7,6 +7,7 @@ FactoryBot.define do
 
     name { 'Description' }
     widget_type { 'description' }
+    widget_options { { editable: true, rollup: false } if widget_type == 'weight' }
 
     trait :default do
       namespace { nil }

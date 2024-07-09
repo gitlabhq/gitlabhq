@@ -5,7 +5,7 @@ classes:
 feature_categories:
 - fleet_visibility
 description: Holds references to finished CI builds ready to be synced to ClickHouse
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131902
 milestone: '16.5'
 gitlab_schema: gitlab_ci
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/459997

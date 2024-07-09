@@ -126,17 +126,18 @@ Because information about what widgets are assigned to each work item type is st
 Each record in the table defines mapping of a widget to a work item type. Currently only "global" definitions (definitions with NULL `namespace_id`) are used. In next iterations we plan to allow customization of these mappings. For example table below defines that:
 
 - Weight widget is enabled for work item types 0 and 1
+- Weight widget is not editable for work item type 1 and only includes the rollup value while work item type 0 only includes the editable value
 - in namespace 1 Weight widget is renamed to MyWeight. When user renames widget's name, it makes sense to rename all widget mappings in the namespace - because `name` attribute is denormalized, we have to create namespaced mappings for all work item types for this widget type.
 - Weight widget can be disabled for specific work item types (in namespace 3 it's disabled for work item type 0, while still left enabled for work item type 1)
 
-| ID | `namespace_id` | `work_item_type_id` | `widget_type_enum` | Position | Name         | Disabled |
-|:---|:---------------|:--------------------|:-------------------|:---------|:-------------|:---------|
-| 1  |                | 0                   | 1                  | 1        | Weight       | false    |
-| 2  |                | 1                   | 1                  | 1        | Weight       | false    |
-| 3  | 1              | 0                   | 1                  | 0        | MyWeight     | false    |
-| 4  | 1              | 1                   | 1                  | 0        | MyWeight     | false    |
-| 5  | 2              | 0                   | 1                  | 1        | Other Weight | false    |
-| 6  | 3              | 0                   | 1                  | 1        | Weight       | true     |
+| ID | `namespace_id` | `work_item_type_id` | `widget_type`      | `widget_options`                         | Name         | Disabled |
+|:---|:---------------|:--------------------|:-------------------|:-----------------------------------------|:-------------|:---------|
+| 1  |                | 0                   | 1                  | {'editable' => true, 'rollup' => false } | Weight       | false    |
+| 2  |                | 1                   | 1                  | {'editable' => false, 'rollup' => true } | Weight       | false    |
+| 3  | 1              | 0                   | 1                  | {'editable' => true, 'rollup' => false } | MyWeight     | false    |
+| 4  | 1              | 1                   | 1                  | {'editable' => false, 'rollup' => true } | MyWeight     | false    |
+| 5  | 2              | 0                   | 1                  | {'editable' => true, 'rollup' => false } | Other Weight | false    |
+| 6  | 3              | 0                   | 1                  | {'editable' => true, 'rollup' => false } | Weight       | true     |
 
 ## Backend architecture
 

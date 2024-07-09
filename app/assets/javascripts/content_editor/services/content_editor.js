@@ -31,6 +31,10 @@ export class ContentEditor {
     return this._eventHub;
   }
 
+  get serializer() {
+    return this._serializer;
+  }
+
   get changed() {
     if (!this._pristineDoc) {
       return !this.empty;
@@ -74,6 +78,10 @@ export class ContentEditor {
 
   renderDiagram(code, language) {
     return this._assetResolver.renderDiagram(code, language);
+  }
+
+  explainQuickAction(text) {
+    return this._assetResolver.explainQuickAction(text);
   }
 
   setEditable(editable = true) {
