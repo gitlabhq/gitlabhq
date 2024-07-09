@@ -19,7 +19,7 @@ This document is a work in progress and represents the current state of the Orga
 - Organization: An Organization is the umbrella for one or multiple top-level Groups. Organizations are isolated from each other by default meaning that cross-Namespace features will only work for Namespaces that exist in a single Organization.
 - Top-level Group: Top-level Group is the name given to the topmost Group of all other Groups. Groups and Projects are nested underneath the top-level Group.
 - Cell: A Cell is a set of infrastructure components that contains multiple Organizations. The infrastructure components provided in a Cell are shared among Organizations, but not shared with other Cells. This isolation of infrastructure components means that Cells are independent from each other.
-- User: An Organization has many Users. Joining an Organization makes someone a User of that Organization.
+- User: An Organization has many Users. Joining an Organization makes someone a Member of that Organization.
 - Member: Adding a User to a Group or Project within an Organization makes them a Member. Members are always Users, but Users are not necessarily Members of a Group or Project within an Organization. For instance, a User could just have accepted the invitation to join an Organization, but not be a Member of any Group or Project it contains.
 - Non-User: A Non-User of an Organization means a User is not part of that specific Organization. Non-Users are able to interact with public Groups and Projects of an Organization, and can raise issues and comment on them.
 
@@ -32,9 +32,9 @@ Organizations solve the following problems:
    1. `https://gitlab.com/gitlab-com/`
 1. Allows different Organizations to be isolated. Top-level Groups of the same Organization can interact with each other but not with Groups in other Organizations, providing clear boundaries for an Organization, similar to a self-managed instance. Isolation should have a positive impact on performance and availability as things like User dashboards can be scoped to Organizations.
 1. Allows integration with Cells. Isolating Organizations makes it possible to allocate and distribute them across different Cells.
-1. Removes the need to define hierarchies. An Organization is a container that could be filled with whatever hierarchy/entity set makes sense (Organization, top-level Groups, etc.)
+1. Removes the constraint of having a single hierarchy. An Organization is a container that could be filled with any collection of hierarchies that make sense.
 1. Enables centralized control of user profiles. With an Organization-specific user profile, administrators can control the user's role in a company, enforce user emails, or show a graphical indicator that a user is part of the Organization. An example could be adding a "GitLab employee" stamp on comments.
-1. Organizations bring an on-premise-like experience to GitLab.com. The Organization admin will have access to instance-equivalent Admin Area settings with most of the configuration controlled at the Organization level.
+1. Organizations allows us to better unify the experience on SaaS and self-managed deployments. The Organization admin will have access to instance-equivalent Admin Area settings with most of the configuration controlled at the Organization level. Instance-level workflows like Dashboards can also be shifted to the Organization.
 
 ## Motivation
 
@@ -78,8 +78,8 @@ All instances would set a default Organization.
 
 ### Drawbacks
 
-- It is unclear right now how we would avoid continuing to spend effort to build instance (or not Organization) features, in particular much of the reporting. This is not an issue on GitLab.com as top-level Groups already have this capability, however, it is a challenge on self-managed. If we introduce a built-in Organization (or just none at all) for self-managed, it seems like we would need to continue to build instance/Organization level reporting features as we would not get that for free along with the work to add to Groups.
-- Billing may need to be moved from top-level Groups to the Organization level.
+- By not basing Organizations on the existing namespace construct, it is not clear how we would avoid duplicating the effort of achieving parity for features like reporting between GitLab.com and self-managed, without doing the work twice. (At instance/organization level for top-level reporting, and at group-level for sub-group level reporting)
+- Long term, it may make sense to shift billing from top-level Groups to the Organization level.
 
 ## Data Exploration
 
@@ -109,6 +109,8 @@ The Organization functionality available in each phase is described below.
 The Organization MVC for Cells 1.0 will contain the following functionality:
 
 - Instance setting to allow the creation of multiple Organizations. This will be enabled by default on GitLab.com, and disabled for self-managed GitLab.
+- Organizations for 1.0 will contain the minimal set of features required to implement isolation. Features that are present in top-level groups for SaaS, such as billing or enterprise users, will remain here.
+- The only users who will need to have a role defined and be invited specifically to an Organization are it's Owners. Typical end users will be invited at the group level, re-using the existing invitation workflows. The organization can be inferred by either the group or user.
 - Admin overview of Organizations. All created Organizations are listed in the Admin Area section `Organizations`.
 - All existing top-level Groups on GitLab.com are part of the `default Organization`.
 - Organization Owner. The creation of an Organization appoints that User as the Organization Owner. Once established, the Organization Owner can appoint other Organization Owners.
@@ -186,7 +188,7 @@ Organizations will have an Owner role. Compared to Users, they can perform the f
 | View Organization activity page | ✓ | ✓ (1) |
 | Transfer top-level Group into Organization if Owner of both | ✓ |  |
 
-(1) Users can only see what they have access to.
+(1) Members can only see what they have access to.
 (2) Users can only see Users from Groups and Projects they have access to.
 
 [Roles](../../../user/permissions.md) at the Group and Project level remain as they currently are.

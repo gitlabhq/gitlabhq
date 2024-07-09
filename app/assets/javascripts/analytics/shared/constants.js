@@ -212,7 +212,9 @@ export const METRIC_TOOLTIPS = {
     }),
   },
   [VULNERABILITY_METRICS.CRITICAL]: {
-    description: s__('ValueStreamAnalytics|Critical vulnerabilities over time.'),
+    description: s__(
+      'ValueStreamAnalytics|Number of critical vulnerabilities identified per month.',
+    ),
     groupLink: '-/security/vulnerabilities?severity=CRITICAL',
     projectLink: '-/security/vulnerability_report?severity=CRITICAL',
     docsLink: helpPagePath('user/application_security/vulnerabilities/severities.html'),
@@ -224,7 +226,7 @@ export const METRIC_TOOLTIPS = {
     docsLink: helpPagePath('user/application_security/vulnerabilities/severities.html'),
   },
   [MERGE_REQUEST_METRICS.THROUGHPUT]: {
-    description: s__('ValueStreamAnalytics|The number of merge requests merged by month.'),
+    description: s__('ValueStreamAnalytics|Number of merge requests merged by month.'),
     groupLink: '-/analytics/productivity_analytics',
     projectLink: `-/analytics/merge_request_analytics?start_date=${formatDateParam(
       mrThroughputStartDate,

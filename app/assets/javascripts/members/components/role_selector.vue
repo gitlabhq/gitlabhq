@@ -15,12 +15,18 @@ export default {
     },
     value: {
       type: Object,
-      required: true,
+      required: false,
+      default: null,
     },
     loading: {
       type: Boolean,
       required: false,
       default: false,
+    },
+    headerText: {
+      type: String,
+      required: false,
+      default: s__('MemberRole|Change role'),
     },
   },
   computed: {
@@ -42,10 +48,10 @@ export default {
 
 <template>
   <gl-collapsible-listbox
-    :header-text="s__('MemberRole|Change role')"
+    :header-text="headerText"
     :reset-button-label="manageRolesText"
     :items="roles.formatted"
-    :selected="value.value"
+    :selected="value && value.value"
     :loading="loading"
     block
     @reset="navigateToManageMemberRolesPage"
@@ -60,7 +66,7 @@ export default {
         {{ item.text }}
       </div>
       <div
-        v-if="item.description"
+        v-if="item.memberRoleId && item.description"
         class="gl-text-gray-700 gl-font-sm gl-mt-1 gl-line-clamp-2"
         data-testid="role-description"
       >

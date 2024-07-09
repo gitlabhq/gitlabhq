@@ -44,12 +44,12 @@ export const member = {
   groupManagedAccount: false,
   enterpriseUserOfThisGroup: false,
   validRoles: {
+    'Minimal Access': 5,
     Guest: 10,
     Reporter: 20,
     Developer: 30,
     Maintainer: 40,
     Owner: 50,
-    'Minimal access': 5,
   },
   customRoles: [],
 };

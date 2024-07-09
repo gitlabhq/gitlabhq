@@ -1,18 +1,11 @@
 <script>
-import {
-  GlCollapsibleListbox,
-  GlFormGroup,
-  GlModal,
-  GlDatepicker,
-  GlLink,
-  GlSprintf,
-  GlButton,
-} from '@gitlab/ui';
+import { GlFormGroup, GlModal, GlDatepicker, GlLink, GlSprintf, GlButton } from '@gitlab/ui';
 
 import Tracking from '~/tracking';
 import { sprintf } from '~/locale';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
 import { initialSelectedRole, roleDropdownItems } from 'ee_else_ce/members/utils';
+import RoleSelector from '~/members/components/role_selector.vue';
 import {
   ACCESS_LEVEL,
   ACCESS_EXPIRE_DATE,
@@ -37,7 +30,7 @@ const DEFAULT_SLOTS = [
 
 export default {
   components: {
-    GlCollapsibleListbox,
+    RoleSelector,
     GlFormGroup,
     GlDatepicker,
     GlLink,
@@ -45,8 +38,6 @@ export default {
     GlSprintf,
     GlButton,
     ContentTransition,
-    ManageRolesDropdownFooter: () =>
-      import('ee_component/members/components/action_dropdowns/manage_roles_dropdown_footer.vue'),
   },
   mixins: [Tracking.mixin()],
   inheritAttrs: false,
@@ -147,13 +138,13 @@ export default {
   data() {
     // Be sure to check out reset!
     return {
-      selectedAccessLevel: null,
+      selectedRole: null,
       selectedDate: undefined,
       minDate: new Date(),
     };
   },
   computed: {
-    accessLevelOptions() {
+    roleDropdownItems() {
       return roleDropdownItems(this.accessLevels);
     },
     introText() {
@@ -202,15 +193,16 @@ export default {
     },
   },
   watch: {
-    accessLevelOptions: {
+    roleDropdownItems: {
       immediate: true,
-      handler: 'resetSelectedAccessLevel',
+      handler() {
+        this.resetSelectedAccessLevel();
+      },
     },
   },
   methods: {
     onReset() {
-      // This component isn't necessarily disposed,
-      // so we might need to reset it's state.
+      // This component isn't necessarily disposed, so we might need to reset its state.
       this.resetSelectedAccessLevel();
       this.selectedDate = undefined;
 
@@ -232,16 +224,10 @@ export default {
 
       this.$emit('cancel');
     },
-    onSubmit(e) {
-      // We never want to hide when submitting
-      e.preventDefault();
-
-      const { accessLevel, memberRoleId } = this.accessLevelOptions.flatten.find(
-        (item) => item.value === this.selectedAccessLevel,
-      );
+    onSubmit() {
       this.$emit('submit', {
-        accessLevel,
-        memberRoleId,
+        accessLevel: this.selectedRole.accessLevel,
+        memberRoleId: this.selectedRole.memberRoleId,
         expiresAt: this.selectedDate,
       });
     },
@@ -253,9 +239,7 @@ export default {
         integerValue: this.defaultAccessLevel,
         memberRoleId: this.defaultMemberRoleId,
       };
-      this.selectedAccessLevel = initialSelectedRole(this.accessLevelOptions.flatten, {
-        accessLevel,
-      });
+      this.selectedRole = initialSelectedRole(this.roleDropdownItems.flatten, { accessLevel });
     },
   },
   HEADER_CLOSE_LABEL,
@@ -329,27 +313,14 @@ export default {
               </template>
             </gl-sprintf>
           </template>
-          <gl-collapsible-listbox
-            :id="dropdownId"
-            v-model="selectedAccessLevel"
+
+          <role-selector
+            v-model="selectedRole"
             data-testid="access-level-dropdown"
-            :items="accessLevelOptions.formatted"
+            :roles="roleDropdownItems"
             :loading="isLoadingRoles"
-            block
-          >
-            <template #list-item="{ item }">
-              <div :class="{ 'gl-font-bold': item.memberRoleId }">{{ item.text }}</div>
-              <div
-                v-if="item.description"
-                class="gl-text-gray-700 gl-font-sm gl-pt-1 gl-line-clamp-2 gl-whitespace-normal"
-              >
-                {{ item.description }}
-              </div>
-            </template>
-            <template #footer>
-              <manage-roles-dropdown-footer />
-            </template>
-          </gl-collapsible-listbox>
+            header-text=""
+          />
         </gl-form-group>
 
         <gl-form-group
@@ -380,7 +351,7 @@ export default {
           class="gl-w-full gl-sm-w-auto gl-sm-ml-3!"
           data-testid="invite-modal-submit"
           v-bind="actionPrimary.attributes"
-          @click="onSubmit"
+          @click.prevent="onSubmit"
         >
           {{ actionPrimary.text }}
         </gl-button>

@@ -288,9 +288,7 @@ images. To configure the images, set the `CS_IMAGE_SUFFIX` to `-fips` or modify 
 standard tag plus the `-fips` extension.
 
 NOTE:
-
-The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is
-enabled in the GitLab instance.
+The `-fips` flag is automatically added to `CS_ANALYZER_IMAGE` when FIPS mode is enabled in the GitLab instance.
 
 Container scanning of images in authenticated registries is not supported when [FIPS mode](../../../development/fips_compliance.md#enable-fips-mode)
 is enabled. When `CI_GITLAB_FIPS_MODE` is `"true"`, and `CS_REGISTRY_USER` or `CS_REGISTRY_PASSWORD` is set,
@@ -691,7 +689,7 @@ This report can be viewed in the [Dependency List](../dependency_list/index.md).
 
 You can download CycloneDX SBOMs [the same way as other job artifacts](../../../ci/jobs/job_artifacts.md#download-job-artifacts).
 
-## Container Scanning For Registry
+## Container Scanning for Registry
 
 DETAILS:
 **Tier:** Ultimate
@@ -699,18 +697,28 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/2340) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `container_scanning_for_registry_flag`. Disabled by default.
 
-When an image is pushed with the `latest` tag, a container scanning job is automatically triggered against the default branch of the project.
+When a container image is pushed with the `latest` tag, a container scanning job is automatically triggered in a new pipeline against the default branch.
 
-Unlike regular Container Scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/index.md) to inspect the components detected by the scan.
+Unlike regular container scanning, the scan results do not include a security report. Instead, Container Scanning for Registry relies on [Continuous Vulnerability Scanning](../continuous_vulnerability_scanning/index.md) to inspect the components detected by the scan.
 
-When security findings are identified, GitLab generates vulnerabilities in the project. These vulnerabilities can be viewed under `Container registry vulnerabilities` tab on the [Vulnerability Report](../vulnerability_report/index.md) page.
+When security findings are identified, GitLab populates the [Vulnerability Report](../vulnerability_report/index.md) with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the Vulnerability Report page.
 
-By default there is a limit of `50` scans per project per day.
+NOTE:
+Container Scanning for Registry only populates the Vulnerability Report when a new advisory is published to the [GitLab Advisory Database](../gitlab_advisory_database/index.md). Future iterations will populate the Vulnerability Report with all present advisory data (instead of only newely detected data). For more details, see [epic 8026](https://gitlab.com/groups/gitlab-org/-/epics/8026).
 
 ### Prerequisites
 
-- Ensure that the security configuration [Container Scanning For Registry](../configuration#security-testing) is enabled.
-- The project must contain a repository. Note that if you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project has an initial commit on the default branch.
+- You must have at least the Maintainer role in a project to enable Container Scanning for Registry.
+- The project being used must not be empty. If you are utilizing an empty project solely for storing container images, this feature won't function as intended. As a workaround, ensure the project contains an initial commit on the default branch.
+- By default there is a limit of `50` scans per project per day.
+
+### Enabling Container Scanning for Registry
+
+To enable container scanning for the GitLab Container Registry:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure > Security configuration**.
+1. Scroll down to the **Container Scanning For Registry** section and turn on the toggle.
 
 ## Security Dashboard
 

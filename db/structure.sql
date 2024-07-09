@@ -12635,6 +12635,7 @@ CREATE TABLE merge_request_metrics (
     id bigint NOT NULL,
     first_contribution boolean DEFAULT false NOT NULL,
     pipeline_id bigint,
+    reviewer_first_assigned_at timestamp with time zone,
     CONSTRAINT check_e03d0900bf CHECK ((target_project_id IS NOT NULL))
 );
 

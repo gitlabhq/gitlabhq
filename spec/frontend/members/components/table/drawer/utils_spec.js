@@ -44,7 +44,7 @@ describe('Role details drawer utils', () => {
         mockAxios.onPut(memberPath).replyOnce(200);
 
         const member = { ...memberMock, memberPath, namespace };
-        const role = getRoles(member)[0];
+        const role = getRoles(member)[1];
         await callRoleUpdateApi(member, role);
 
         expect(mockAxios.history.put).toHaveLength(1);

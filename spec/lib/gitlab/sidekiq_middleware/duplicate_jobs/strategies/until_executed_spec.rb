@@ -4,6 +4,10 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecuted do
   it_behaves_like 'deduplicating jobs when scheduling', :until_executed do
+    before do
+      allow(fake_duplicate_job).to receive(:strategy).and_return(:until_executed)
+    end
+
     describe '#perform' do
       let(:proc) { -> {} }
 
@@ -12,6 +16,8 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
         allow(fake_duplicate_job).to receive(:scheduled?) { false }
         allow(fake_duplicate_job).to receive(:options) { {} }
         allow(fake_duplicate_job).to receive(:should_reschedule?) { false }
+        allow(fake_duplicate_job).to receive(:idempotency_key).and_return('abc123')
+        allow(fake_duplicate_job).to receive(:reschedulable?).and_return(false)
       end
 
       it 'deletes the lock after executing' do
@@ -39,14 +45,28 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
         end
       end
 
+      it 'does not acquire exclusive lease' do
+        expect(Gitlab::ExclusiveLeaseHelpers::SleepingLock).not_to receive(:new)
+        expect(fake_duplicate_job).to receive(:delete!).once
+
+        strategy.perform({}) do
+          proc.call
+        end
+      end
+
       context 'when job is reschedulable' do
         before do
+          allow(fake_duplicate_job).to receive(:reschedulable?).and_return(true)
           allow(fake_duplicate_job).to receive(:should_reschedule?) { true }
         end
 
-        it 'reschedules the job if deduplication happened' do
+        it 'acquires exclusive lease and reschedules the job if deduplication happened' do
           expect(fake_duplicate_job).to receive(:delete!).once
           expect(fake_duplicate_job).to receive(:reschedule).once
+
+          expect_next_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock) do |sl|
+            expect(sl).to receive(:obtain).and_call_original
+          end
 
           strategy.perform({}) do
             proc.call

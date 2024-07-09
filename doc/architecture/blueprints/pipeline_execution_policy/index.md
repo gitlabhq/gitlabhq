@@ -152,6 +152,18 @@ This will provide flexibility and allows users to define the behavior for differ
 Jobs defined in a pipeline execution policy will run in the `pipeline-policy` stage. This stage will be injected after the `test` stage.
 If the `test` stage doesn't exist, it will be injected after the `build` stage. If the `build` stage doesn't exist, it will be injected at the beginning of the pipeline.
 
+### Pipeline config strategies
+
+There will be two strategies to handle the pipeline configuration with pipeline execution policies:
+
+1. `inject_ci`: This strategy allows for the addition of custom CI configurations into the existing project pipeline
+without completely replacing the project's original CI configuration. It is suitable when the goal is to enhance
+or extend the current pipeline with additional steps, such as adding new security scans, compliance checks, or custom scripts.
+1. `override_project_ci`: This strategy completely replaces the project's existing CI configuration
+with a new one defined by the pipeline execution policy. Ideal when the entire pipeline needs to be standardized
+or replaced, such as enforcing organization-wide CI/CD standards or compliance requirements.
+When multiple policies are applied to a project, if one policy uses the `override_project_ci` strategy, this strategy will take precedence over all other policy strategies.
+
 ## Links
 
 - [Pipeline Execution Policy Type](https://gitlab.com/groups/gitlab-org/-/epics/13266#top)

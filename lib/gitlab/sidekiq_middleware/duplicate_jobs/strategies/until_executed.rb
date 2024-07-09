@@ -16,9 +16,16 @@ module Gitlab
 
             yield
 
-            should_reschedule = duplicate_job.should_reschedule?
-            # Deleting before rescheduling to make sure we don't deduplicate again.
-            duplicate_job.delete!
+            # early return since not reschedulable. ensure block to handle cleanup.
+            return unless duplicate_job.reschedulable?
+
+            should_reschedule = with_dedup_lock do
+              res = duplicate_job.should_reschedule?
+              # Deleting before rescheduling to make sure we don't deduplicate again.
+              duplicate_job.delete!
+              res
+            end
+
             job_deleted = true
             duplicate_job.reschedule if should_reschedule
           ensure

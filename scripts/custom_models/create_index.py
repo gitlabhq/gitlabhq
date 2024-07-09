@@ -25,11 +25,27 @@ logger = logging.getLogger(__name__)
 
 # Function to parse command-line arguments
 def parse_arguments():
-    parser = argparse.ArgumentParser(description="Generate and upload GitLab docs index.")
-    parser.add_argument("--project_id", help="GitLab project ID", default=278964)
-    parser.add_argument("--version_tag", help="GitLab version tag to include in the URL (e.g., v17.1.0-ee)",
-                        default='master')
-    parser.add_argument("--base_url", help="URL to gitlab instance", default="https://gitlab.com")
+    parser = argparse.ArgumentParser(description="Generate GitLab docs index.")
+
+    parser.add_argument("-o", "--output_path",
+                        help="Output path",
+                        default="docs.db")
+    parser.add_argument("-d", "--download",
+                            help="Downloads GitLab docs from a reference. If disabled, assumes docs are in /docs",
+                            action='store_true')
+    parser.add_argument("--version_tag",
+                        help="GitLab version tag to include in the URL (e.g., v17.1.0-ee). Only used when -d is set",
+                        default="master")
+    parser.add_argument("-u", "--upload",
+                        help='''Uploads documentation as a generic package to a registry defined by project_id and base_url.
+                             Requires GLAB_TOKEN to be defined with a GitLab PAT with api scope''',
+                        action='store_true')
+    parser.add_argument("--base_url",
+                        help="URL to gitlab instance  uploading. Only used when -u is set",
+                        default="https://gitlab.com")
+    parser.add_argument("--project_id",
+                        help="GitLab project ID. Only used when -u is set.",
+                        default=278964)
     return parser.parse_args()
 
 
@@ -126,10 +142,16 @@ def create_database(path, output_path):
         r['processed'] = build_row_corpus(r)
     # sql_tuples = [(r['processed'], r['content'], r['metadata']['filename']) for r in rows_to_insert if r['processed']]
     sql_tuples = [(r['processed'], r['content'], json.dumps(r['metadata'])) for r in rows_to_insert if r['processed']]
+
+    if os.path.exists(output_path):
+        os.remove(output_path)
+        logger.info(f"Deleted existing file at {output_path}")
+
     # Create the database
     conn = sqlite3.connect(output_path)
     c = conn.cursor()
     c.execute("CREATE VIRTUAL TABLE doc_index USING fts5(processed, content, metadata, tokenize='porter trigram');")
+    c.execute("PRAGMA user_version = 1;")
     c.executemany('INSERT INTO doc_index (processed, content, metadata) VALUES (?,?,?)', sql_tuples)
     conn.commit()
     conn.close()
@@ -152,27 +174,30 @@ def upload_to_gitlab(upload_url, file_path, private_token):
 if __name__ == "__main__":
     args = parse_arguments()
 
-    private_token = os.environ['GLAB_TOKEN']
+    if args.upload:
+        private_token = os.environ['GLAB_TOKEN']
 
-    if not private_token:
-        execution_error("Private token must be set.")
+        if not private_token:
+            execution_error("Private token must be set.")
 
-    # Fetch documents based on version tag (if provided)
-    docs_path = fetch_documents(version_tag=args.version_tag)
-    if not docs_path:
-        execution_error("Fetching documents failed")
+    if args.download:
+        docs_path = fetch_documents(version_tag=args.version_tag)
+        if not docs_path:
+            execution_error("Fetching documents failed")
+    else:
+        docs_path = ''
 
-    # Create database
-    timestamp = datetime.datetime.now().strftime("%Y%m%d%H%M%S")
-    output_path = f"{docs_path}/created_index_docs_{timestamp}.db"
+    output_path = args.output_path
     create_database(docs_path, output_path)
     logger.info(f"Database created at {output_path}")
-    # Upload to GitLab
-    if not os.path.exists(output_path):
-        execution_error("Database file not found.")
 
-    url = upload_url(args.base_url, args.project_id, args.version_tag)
+    if args.upload:
+        # Upload to GitLab
+        if not os.path.exists(output_path):
+            execution_error("Database file not found.")
 
-    logger.info(f"Uploading to {url}")
+        url = upload_url(args.base_url, args.project_id, args.version_tag)
 
-    upload_to_gitlab(url, output_path, private_token)
+        logger.info(f"Uploading to {url}")
+
+        upload_to_gitlab(url, output_path, private_token)

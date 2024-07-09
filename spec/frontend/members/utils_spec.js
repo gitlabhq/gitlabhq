@@ -27,6 +27,7 @@ import {
   handleMemberRoleUpdate,
 } from '~/members/utils';
 import showGlobalToast from '~/vue_shared/plugins/global_toast';
+import { BASE_ROLES } from '~/access_level/constants';
 import {
   member as memberMock,
   directMember,
@@ -341,28 +342,18 @@ describe('Members Utils', () => {
 
   describe('roleDropdownItems', () => {
     it('returns properly flatten and formatted dropdowns', () => {
-      const { flatten, formatted } = roleDropdownItems(members[0]);
+      const roles = roleDropdownItems(members[0]);
 
-      expect(flatten).toEqual(formatted);
-      expect(flatten[0]).toMatchObject({
-        text: 'Guest',
-        value: 'role-static-10',
-        accessLevel: 10,
-        memberRoleId: null,
-      });
+      expect(roles).toEqual({ flatten: BASE_ROLES, formatted: BASE_ROLES });
     });
   });
 
   describe('initialSelectedRole', () => {
     it('find and return correct value', () => {
-      expect(
-        initialSelectedRole(
-          [{ accessLevel: 10, memberRoleId: null, text: 'Guest', value: 'role-static-0' }],
-          {
-            accessLevel: { integerValue: 10 },
-          },
-        ),
-      ).toBe('role-static-0');
+      const role = { accessLevel: 10, memberRoleId: null, text: 'Guest', value: 'role-static-0' };
+      const initialRole = initialSelectedRole([role], { accessLevel: { integerValue: 10 } });
+
+      expect(initialRole).toBe(role);
     });
   });
 

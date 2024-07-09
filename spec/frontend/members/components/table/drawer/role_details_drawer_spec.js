@@ -7,7 +7,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RoleDetailsDrawer from '~/members/components/table/drawer/role_details_drawer.vue';
 import MembersTableCell from '~/members/components/table/members_table_cell.vue';
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
-import RoleSelector from '~/members/components/table/drawer/role_selector.vue';
+import RoleSelector from '~/members/components/role_selector.vue';
 import { roleDropdownItems } from '~/members/utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import { member as memberData, updateableMember } from '../../../mock_data';
@@ -15,8 +15,8 @@ import { member as memberData, updateableMember } from '../../../mock_data';
 describe('Role details drawer', () => {
   const dropdownItems = roleDropdownItems(updateableMember);
   const toastShowMock = jest.fn();
-  const role1 = dropdownItems.flatten[4];
-  const role2 = dropdownItems.flatten[2];
+  const currentRole = dropdownItems.flatten[5];
+  const newRole = dropdownItems.flatten[2];
   let axiosMock;
   let wrapper;
 
@@ -36,12 +36,13 @@ describe('Role details drawer', () => {
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findRoleText = () => wrapper.findByTestId('role-text');
   const findRoleSelector = () => wrapper.findComponent(RoleSelector);
+  const findRoleDescription = () => wrapper.findByTestId('description-value');
   const findSaveButton = () => wrapper.findByTestId('save-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
 
   const createWrapperChangeRoleAndClickSave = async () => {
     createWrapper({ member: cloneDeep(updateableMember) });
-    findRoleSelector().vm.$emit('input', role2);
+    findRoleSelector().vm.$emit('input', newRole);
     await nextTick();
     findSaveButton().vm.$emit('click');
 
@@ -101,7 +102,28 @@ describe('Role details drawer', () => {
       });
     });
 
-    describe('permissions', () => {
+    describe('role description', () => {
+      it('shows the header', () => {
+        expect(wrapper.findByTestId('description-header').text()).toBe('Description');
+      });
+
+      it('shows the role description', () => {
+        expect(findRoleDescription().text()).toBe(currentRole.description);
+      });
+
+      it('shows "No description" when there is no role description', async () => {
+        // Create a member that's assigned to a non-existent custom role.
+        const member = { ...updateableMember, accessLevel: { memberRoleId: 999 } };
+        wrapper.setProps({ member });
+        await nextTick();
+        const noDescriptionSpan = findRoleDescription().find('span');
+
+        expect(noDescriptionSpan.text()).toBe('No description');
+        expect(noDescriptionSpan.classes('gl-text-gray-400')).toBe(true);
+      });
+    });
+
+    describe('role permissions', () => {
       it('shows the header', () => {
         expect(wrapper.findByTestId('permissions-header').text()).toBe('Permissions');
       });
@@ -134,7 +156,7 @@ describe('Role details drawer', () => {
       expect(findRoleText().exists()).toBe(false);
       expect(findRoleSelector().props()).toMatchObject({
         roles: dropdownItems,
-        value: role1,
+        value: currentRole,
         loading: false,
       });
     });
@@ -155,7 +177,7 @@ describe('Role details drawer', () => {
   describe('when role is changed', () => {
     beforeEach(() => {
       createWrapper();
-      findRoleSelector().vm.$emit('input', role2);
+      findRoleSelector().vm.$emit('input', newRole);
     });
 
     it('shows save button', () => {
@@ -175,7 +197,7 @@ describe('Role details drawer', () => {
     });
 
     it('shows the new role in the role selector', () => {
-      expect(findRoleSelector().props('value')).toBe(role2);
+      expect(findRoleSelector().props('value')).toBe(newRole);
     });
 
     it('does not call update role API', () => {
@@ -190,7 +212,7 @@ describe('Role details drawer', () => {
       findCancelButton().vm.$emit('click');
       await nextTick();
 
-      expect(findRoleSelector().props('value')).toEqual(role1);
+      expect(findRoleSelector().props('value')).toEqual(currentRole);
     });
   });
 
@@ -203,7 +225,10 @@ describe('Role details drawer', () => {
     });
 
     it('calls update role API with expected data', () => {
-      const expectedData = JSON.stringify({ access_level: 30, member_role_id: null });
+      const expectedData = JSON.stringify({
+        access_level: newRole.accessLevel,
+        member_role_id: newRole.memberRoleId,
+      });
 
       expect(axiosMock.history.put[0].data).toBe(expectedData);
     });
@@ -266,7 +291,7 @@ describe('Role details drawer', () => {
     });
 
     it('resets role back to initial role', () => {
-      expect(findRoleSelector().props('value')).toEqual(role1);
+      expect(findRoleSelector().props('value')).toEqual(currentRole);
     });
 
     it('shows toast', () => {

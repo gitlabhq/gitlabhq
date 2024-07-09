@@ -17,8 +17,8 @@ import {
   getMemberRole,
 } from 'ee_else_ce/members/components/table/drawer/utils';
 import * as Sentry from '~/ci/runner/sentry_utils';
+import RoleSelector from '~/members/components/role_selector.vue';
 import MemberAvatar from '../member_avatar.vue';
-import RoleSelector from './role_selector.vue';
 
 // The API to update members uses different property names for the access level, depending on if it's a user or a group.
 // Users use 'access_level', groups use 'group_access'.
@@ -195,14 +195,13 @@ export default {
             <role-badges :member="member" :role="selectedRole" />
           </dd>
 
-          <template v-if="selectedRole.description">
-            <dt class="gl-mt-6 gl-mb-3" data-testid="description-header">
-              {{ s__('MemberRole|Description') }}
-            </dt>
-            <dd data-testid="description-value">
-              {{ selectedRole.description }}
-            </dd>
-          </template>
+          <dt class="gl-mt-6 gl-mb-3" data-testid="description-header">
+            {{ s__('MemberRole|Description') }}
+          </dt>
+          <dd data-testid="description-value">
+            <template v-if="selectedRole.description">{{ selectedRole.description }}</template>
+            <span v-else class="gl-text-gray-400">{{ s__('MemberRole|No description') }}</span>
+          </dd>
 
           <dt class="gl-mt-6 gl-mb-3" data-testid="permissions-header">
             {{ s__('MemberRole|Permissions') }}

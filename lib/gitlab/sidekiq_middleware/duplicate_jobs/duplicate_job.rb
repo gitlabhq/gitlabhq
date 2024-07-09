@@ -81,6 +81,10 @@ module Gitlab
           with_redis { |r| r.eval(UPDATE_WAL_COOKIE_SCRIPT, keys: [cookie_key], argv: argv) }
         end
 
+        def idempotency_key
+          @idempotency_key ||= job['idempotency_key'] || "#{namespace}:#{idempotency_hash}"
+        end
+
         # Generally speaking, updating a Redis key by deserializing and
         # serializing it on the Redis server is bad for performance. However in
         # the case of DuplicateJobs we know that key updates are rare, and the
@@ -181,6 +185,18 @@ module Gitlab
           job['deferred']
         end
 
+        def strategy
+          return DEFAULT_STRATEGY unless worker_klass
+          return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)
+          return STRATEGY_NONE unless worker_klass.deduplication_enabled?
+
+          worker_klass.get_deduplicate_strategy
+        end
+
+        def reschedulable?
+          !scheduled? && options[:if_deduplicated] == :reschedule_once
+        end
+
         private
 
         attr_writer :existing_wal_locations
@@ -202,14 +218,6 @@ module Gitlab
             job_wal_locations[connection_name],
             existing_wal_locations[connection_name]
           )
-        end
-
-        def strategy
-          return DEFAULT_STRATEGY unless worker_klass
-          return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)
-          return STRATEGY_NONE unless worker_klass.deduplication_enabled?
-
-          worker_klass.get_deduplicate_strategy
         end
 
         def worker_class_name
@@ -237,10 +245,6 @@ module Gitlab
           with_redis { |redis| MessagePack.unpack(redis.get(cookie_key) || "\x80") }
         end
 
-        def idempotency_key
-          @idempotency_key ||= job['idempotency_key'] || "#{namespace}:#{idempotency_hash}"
-        end
-
         def idempotency_hash
           Digest::SHA256.hexdigest(idempotency_string)
         end
@@ -261,10 +265,6 @@ module Gitlab
 
         def existing_wal_locations
           @existing_wal_locations ||= {}
-        end
-
-        def reschedulable?
-          !scheduled? && options[:if_deduplicated] == :reschedule_once
         end
 
         def with_redis(&block)

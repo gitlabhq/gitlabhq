@@ -32240,6 +32240,24 @@ msgstr ""
 msgid "MemberRole|Standard roles"
 msgstr ""
 
+msgid "MemberRole|The Developer role strikes a balance between giving users the necessary access to contribute code while restricting sensitive administrative actions."
+msgstr ""
+
+msgid "MemberRole|The Guest role is for users who need visibility into a project or group but should not have the ability to make changes, such as external stakeholders."
+msgstr ""
+
+msgid "MemberRole|The Maintainer role is primarily used for managing code reviews, approvals, and administrative settings for projects. This role can also manage project memberships."
+msgstr ""
+
+msgid "MemberRole|The Minimal Access role is for users who need the least amount of access into groups and projects. You can assign this role as a default, before giving a user another role with more permissions."
+msgstr ""
+
+msgid "MemberRole|The Owner role is normally assigned to the individual or team responsible for managing and maintaining the group or creating the project. This role has the highest level of administrative control, and can manage all aspects of the group or project, including managing other Owners."
+msgstr ""
+
+msgid "MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code."
+msgstr ""
+
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
 msgstr ""
 
@@ -58073,9 +58091,6 @@ msgstr ""
 msgid "ValueStreamAnalytics|Average number of deployments to production per day. This metric measures how often value is delivered to end users."
 msgstr ""
 
-msgid "ValueStreamAnalytics|Critical vulnerabilities over time."
-msgstr ""
-
 msgid "ValueStreamAnalytics|Dashboard"
 msgstr ""
 
@@ -58118,7 +58133,13 @@ msgstr ""
 msgid "ValueStreamAnalytics|Number of commits pushed to the default branch"
 msgstr ""
 
+msgid "ValueStreamAnalytics|Number of critical vulnerabilities identified per month."
+msgstr ""
+
 msgid "ValueStreamAnalytics|Number of issues closed by month."
+msgstr ""
+
+msgid "ValueStreamAnalytics|Number of merge requests merged by month."
 msgstr ""
 
 msgid "ValueStreamAnalytics|Number of monthly unique users with contributions in the group."
@@ -58143,9 +58164,6 @@ msgid "ValueStreamAnalytics|Shows %{selectedSubjectFilterText} for group '%{grou
 msgstr ""
 
 msgid "ValueStreamAnalytics|Tasks by type"
-msgstr ""
-
-msgid "ValueStreamAnalytics|The number of merge requests merged by month."
 msgstr ""
 
 msgid "ValueStreamAnalytics|The time it takes an organization to recover from a failure in production."

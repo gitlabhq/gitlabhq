@@ -1,3 +1,8 @@
+spec:
+  inputs:
+    cng_path:
+      type: string
+      default: 'build/CNG-mirror'
 ---
 default:
   interruptible: true
@@ -61,6 +66,6 @@ include:
     TOP_UPSTREAM_MERGE_REQUEST_IID: "${TOP_UPSTREAM_MERGE_REQUEST_IID}"
     TOP_UPSTREAM_SOURCE_SHA: "${TOP_UPSTREAM_SOURCE_SHA}"
   trigger:
-    project: ${CI_PROJECT_NAMESPACE}/build/CNG-mirror
+    project: '${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]'
     branch: $TRIGGER_BRANCH
     strategy: depend

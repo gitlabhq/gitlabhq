@@ -66,18 +66,18 @@ Mutation example:
 
 ```plaintext
 mutation {
-  updateWorkItem(input: {
-    workItemId: "gid://gitlab/AnyWorkItem/2207",
-    widgetIdentifier: "description",
-    value: "the updated description"
+  workItemUpdate(input: {
+    id: "gid://gitlab/AnyWorkItem/499"
+    descriptionWidget: {
+      description: "New description"
+    }
   }) {
+    errors
     workItem {
-      id
       description
     }
   }
 }
-
 ```
 
 ### Widget responsibility and structure
