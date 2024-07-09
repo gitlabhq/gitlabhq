@@ -46,6 +46,7 @@ module Gitlab
       def by_custom_domain(host)
         domain = PagesDomain.find_by_domain_case_insensitive(host)
 
+        return unless domain&.enabled?
         return unless domain&.pages_deployed?
 
         ::Pages::VirtualDomain.new(projects: [domain.project], domain: domain)

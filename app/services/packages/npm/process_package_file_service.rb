@@ -19,6 +19,8 @@ module Packages
         with_package_json_entry do |entry|
           raise ExtractionError, 'package.json not found' unless entry
           raise ExtractionError, 'package.json file too large' if entry.size > MAX_FILE_SIZE
+
+          ::Packages::Npm::CheckManifestCoherenceService.new(package, entry).execute
         end
 
         package.default!

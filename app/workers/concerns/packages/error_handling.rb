@@ -15,7 +15,8 @@ module Packages
       ::Packages::Nuget::UpdatePackageFromMetadataService::ZipError,
       ::Packages::Rubygems::ProcessGemService::ExtractionError,
       ::Packages::Rubygems::ProcessGemService::InvalidMetadataError,
-      ::Packages::Npm::ProcessPackageFileService::ExtractionError
+      ::Packages::Npm::ProcessPackageFileService::ExtractionError,
+      ::Packages::Npm::CheckManifestCoherenceService::MismatchError
     ].freeze
 
     def process_package_file_error(package_file:, exception:, extra_log_payload: {})
