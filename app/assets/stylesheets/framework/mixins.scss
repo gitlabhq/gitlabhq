@@ -334,15 +334,6 @@
 
   &:hover,
   &.is-active {
-    .danger-highlight {
-      color: $red-500;
-    }
-
-    .link-highlight {
-      color: $blue-600;
-      fill: $blue-600;
-    }
-
     .award-control-icon-neutral {
       opacity: 0;
     }

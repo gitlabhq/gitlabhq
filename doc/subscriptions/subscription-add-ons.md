@@ -43,8 +43,7 @@ After you purchase GitLab Duo Pro, you can assign seats to billable users to gra
 ### For GitLab.com
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Usage Quotas**.
-1. Select the **GitLab Duo** tab.
+1. Select **Settings > GitLab Duo**.
 1. To the right of the user, turn on the toggle to assign GitLab Duo Pro.
 
 To use Code Suggestions in any project or group, a user must be assigned a seat in at least one top-level group.

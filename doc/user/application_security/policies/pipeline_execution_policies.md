@@ -56,6 +56,16 @@ Note the following:
   - `.pipeline-policy-post` at the very end of the pipeline, after the `.post` stage.
 - Injecting jobs in any of the reserved stages is guaranteed to always work. Execution policy jobs can also be assigned to any standard (build, test, deploy) or user-declared stages. However, in this case, the jobs may be ignored depending on the project pipeline configuration.
 - It is not possible to assign jobs to reserved stages outside of a pipeline execution policy.
+- You should choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names and it can lead to unwanted results if a job exists multiple times in the same pipeline. The `needs` keyword, for example makes one job dependent on another. In case of multiple jobs with the same name, it will randomly depend on one of them.
+
+### Job naming best practice
+
+There is no visible indicator for jobs coming from a security policy. Adding a unique prefix to job names makes it easier to identify them and avoid job name collisions.
+
+Examples:
+
+- `policy1:deployments:sast` - good, unique across policies and projects.
+- `sast` - bad, likely to be used elsewhere.
 
 ### `content` type
 

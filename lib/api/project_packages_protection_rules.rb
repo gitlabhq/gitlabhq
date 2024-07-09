@@ -54,7 +54,8 @@ module API
             desc: 'Package type protected by the rule. For example npm.'
           requires :minimum_access_level_for_push, type: String,
             values: Packages::Protection::Rule.minimum_access_level_for_pushes.keys,
-            desc: 'Minimum GitLab access level able to push a package. For example developer, maintainer, owner.'
+            desc: 'Minimum GitLab access level able to push a package. Must be at least `maintainer`.
+            For example `maintainer`, `owner` or `admin`.'
         end
         post do
           response = ::Packages::Protection::CreateRuleService.new(project: user_project, current_user: current_user,
@@ -89,7 +90,8 @@ module API
               desc: 'Package type protected by the rule. For example npm.'
             optional :minimum_access_level_for_push, type: String,
               values: Packages::Protection::Rule.minimum_access_level_for_pushes.keys,
-              desc: 'Minimum GitLab access level able to push a package. For example developer, maintainer, owner.'
+              desc: 'Minimum GitLab access level able to push a package. Must be at least `maintainer`.
+              For example `maintainer`, `owner` or `admin`.'
           end
           patch do
             package_protection_rule = user_project.package_protection_rules.find(params[:package_protection_rule_id])

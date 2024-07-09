@@ -141,7 +141,7 @@ export default {
     <div class="js-suggestion-diff-header gl-font-bold">
       {{ __('Suggested change') }}
       <a v-if="helpPagePath" :href="helpPagePath" :aria-label="__('Help')" class="js-help-btn">
-        <gl-icon name="question-o" css-classes="link-highlight" />
+        <gl-icon name="question-o" />
       </a>
     </div>
     <gl-badge v-if="isApplied" variant="success" data-testid="applied-badge">
