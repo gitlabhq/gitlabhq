@@ -230,6 +230,14 @@ To resolve the issue:
 
 1. If the error persists, try using a different web browser or an incognito/private browsing window.
 
+#### Error: `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again`
+
+You might get the error `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.` when purchasing compute minutes.
+
+This issue occurs when the credit card form is re-submitted too quickly within a specific timeframe (3 submissions in 1 minute or 6 submissions in 1 hour).
+
+To resolve this issue, wait a few minutes and try the purchase process again.
+
 ## How compute usage is calculated
 
 GitLab uses this formula to calculate the compute usage of a job:

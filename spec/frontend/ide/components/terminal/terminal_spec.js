@@ -125,9 +125,9 @@ describe('IDE Terminal', () => {
         canScrollDown: false,
       });
 
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ canScrollUp: true, canScrollDown: true });
+      const terminalInstance = GLTerminal.mock.instances[0];
+      const scrollHandler = terminalInstance.addScrollListener.mock.calls[0][0];
+      scrollHandler({ canScrollUp: true, canScrollDown: true });
 
       return nextTick().then(() => {
         expect(wrapper.findComponent(TerminalControls).props()).toEqual({

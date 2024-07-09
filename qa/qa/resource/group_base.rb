@@ -16,8 +16,7 @@ module QA
         :name,
         :full_path,
         # Add visibility to enable create private group
-        :visibility,
-        :shared_with_groups
+        :visibility
 
       # Get group projects
       #
@@ -181,7 +180,6 @@ module QA
           :require_two_factor_authentication,
           :share_with_group_lock,
           :subgroup_creation_level,
-          :shared_with_groups,
           :two_factor_grace_period
           # TODO: Add back visibility comparison once https://gitlab.com/gitlab-org/gitlab/-/issues/331252 is fixed
           # :visibility

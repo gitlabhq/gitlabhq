@@ -591,3 +591,16 @@ Once Product Analytics services are running and are connected to your GDK, the t
 ```shell
 bundle exec rspec qa/specs/features/ee/browser_ui/8_monitor/product_analytics/onboarding_spec.rb
 ```
+
+## Tests that require a global server hook
+
+The [`tag_revision_trigger_prereceive_hook_spec`](https://gitlab.com/gitlab-org/gitlab/-/blob/c3342dac0c6c8e9e11ec049b910eac832600b0bf/qa/qa/specs/features/api/3_create/repository/tag_revision_trigger_prereceive_hook_spec.rb) requires a global server hook to be pre-configured in the target test environment. When running this tests against a local GDK, the server hook will need to be configured with:
+
+```shell
+# From the gdk directory
+mkdir -p gitaly-custom-hooks/pre-receive.d
+cp gitlab/qa/gdk/pre-receive gitaly-custom-hooks/pre-receive.d
+chmod +x gitaly-custom-hooks/pre-receive.d/pre-receive
+```
+
+More information on global server hooks can be found in the [server hooks documentation](../../../administration/server_hooks.md#create-the-global-server-hook)

@@ -500,6 +500,14 @@ If your credit card is declined when purchasing a GitLab subscription, possible 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
 
+### Error: `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again`
+
+You might get the error `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.` when purchasing a GitLab subscription.
+
+This issue occurs when the credit card form is re-submitted too quickly within a specific timeframe (3 submissions in 1 minute or 6 submissions in 1 hour).
+
+To resolve this issue, wait a few minutes and try the purchase process again.
+
 ### Check daily and historical billable users
 
 Administrators can get a list of daily and historical billable users in your GitLab instance.

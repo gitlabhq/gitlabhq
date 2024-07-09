@@ -1,5 +1,6 @@
 import { mount } from '@vue/test-utils';
-import { nextTick } from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -66,11 +67,14 @@ const defaultMrProps = () => ({
 });
 
 const getStatusText = () => wrapper.findByTestId('statusText').text();
+const findCancelAutoMergeButton = () => wrapper.find('[data-testid="cancelAutomaticMergeButton"]');
 
 describe('MRWidgetAutoMergeEnabled', () => {
   let oldWindowGl;
+  let mock;
 
   beforeEach(() => {
+    mock = new MockAdapter(axios);
     jest.spyOn(eventHub, '$emit').mockImplementation(() => {});
 
     oldWindowGl = window.gl;
@@ -82,6 +86,7 @@ describe('MRWidgetAutoMergeEnabled', () => {
   });
 
   afterEach(() => {
+    mock.restore();
     window.gl = oldWindowGl;
   });
 
@@ -130,13 +135,8 @@ describe('MRWidgetAutoMergeEnabled', () => {
       factory({
         ...defaultMrProps(),
       });
-      // setData usage is discouraged. See https://gitlab.com/groups/gitlab-org/-/epics/7330 for details
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({
-        isCancellingAutoMerge: true,
-      });
 
-      await nextTick();
+      await findCancelAutoMergeButton().trigger('click');
 
       expect(wrapper.find('.js-cancel-auto-merge').props('loading')).toBe(true);
     });

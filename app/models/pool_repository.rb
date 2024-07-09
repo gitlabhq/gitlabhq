@@ -75,6 +75,13 @@ class PoolRepository < ApplicationRecord
 
   def create_object_pool
     object_pool.create
+  rescue GRPC::AlreadyExists
+    # The object pool already exists. Nothing to do here.
+  rescue GRPC::FailedPrecondition => e
+    # This rescue is temporary until gitaly returns the correct error code for
+    # "repo exists already". Gitaly error messages are not guaranteed to match
+    # and so should not typically be used to determine error type.
+    raise unless e.message.include?('repository exists already')
   end
 
   # The members of the pool should have fetched the missing objects to their own

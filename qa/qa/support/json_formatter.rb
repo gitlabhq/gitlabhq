@@ -44,7 +44,8 @@ module QA
           quarantine: example.metadata[:quarantine],
           screenshot: example.metadata[:screenshot],
           product_group: example.metadata[:product_group],
-          ci_job_url: QA::Runtime::Env.ci_job_url
+          ci_job_url: QA::Runtime::Env.ci_job_url,
+          level: 'E2E'
         }
 
         e = example.exception

@@ -74,24 +74,29 @@ set of widgets for them.
 |---|---|---|---|---|
 | [WorkItemWidgetAssignees](../../../api/graphql/reference/index.md#workitemwidgetassignees) | List of work item assignees | |`Guest`|Yes|
 | [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | Emoji reactions added to work item, including support for upvote/downvote counts | |Anyone who can view|No|
+| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgetcolor) | Set color of a work item. **Note:** Color is available only for epics. | |`Reporter`|No|
 | [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | User todo state of work item | |Anyone who can view|No|
 | [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | Description of work item, including support for edited state, timestamp, and author | |`Reporter`|No|
-| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | Uploaded images and designs | |`Reporter`|No|
+| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | Design attachments for work items | |`Reporter`|No|
+| [WorkItemWidgetDevelopment](../../../api/graphql/reference/index.md#workitemwidgetdevelopment) | Show related branches and merge requests for work items | |`Reporter`|No|
 | [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | Health status assignment support for work item | |`Reporter`|No|
-| [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | Hierarchy of work items, including support for boolean representing presence of children. **Note:** Hierarchy is currently available only for OKRs. | `okrs_mvc` |`Guest`|No|
+| [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | Hierarchy of work items, including support for boolean representing presence of children. | |`Guest`|No|
 | [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | Iteration assignment support for work item | |`Reporter`|No|
 | [WorkItemWidgetLabels](../../../api/graphql/reference/index.md#workitemwidgetlabels) | List of labels added to work items, including support for checking whether scoped labels are supported | |`Reporter`|Yes|
 | [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | List of work items added as related to a given work item, with possible relationship types being `relates_to`, `blocks`, and `blocked_by`. Includes support for individual counts of blocked status, blocked by, blocking, and related to. | |`Guest`|No|
 | [WorkItemWidgetMilestone](../../../api/graphql/reference/index.md#workitemwidgetmilestone) | Milestone assignment support for work item | |`Reporter`|No|
 | [WorkItemWidgetNotes](../../../api/graphql/reference/index.md#workitemwidgetnotes) | List of discussions within a work item | |`Guest`|Yes|
 | [WorkItemWidgetNotifications](../../../api/graphql/reference/index.md#workitemwidgetnotifications) | Notifications subscription status of a work item for current user | |Anyone who can view|No|
+| [WorkItemWidgetParticipants](../../../api/graphql/reference/index.md#workitemwidgetparticipants) | Participants of a work item | |Anyone who can view|No|
 | [WorkItemWidgetProgress](../../../api/graphql/reference/index.md#workitemwidgetprogress) | Progress value of a work item. **Note:** Progress is currently available only for OKRs. | `okrs_mvc` |`Reporter`|No|
+| [WorkItemWidgetRequirementLegacy](../../../api/graphql/reference/index.md#workitemwidgetrequirementlegacy) | Legacy requirements | | |No|
+| [WorkItemWidgetRolledupDates](../../../api/graphql/reference/index.md#workitemwidgetrolledupdates) | Set the start date and due date for epic work items, and roll up the start date and due date from child work items | |`Reporter`|No|
 | [WorkItemWidgetStartAndDueDate](../../../api/graphql/reference/index.md#workitemwidgetstartandduedate) | Set start and due dates for a work item | |`Reporter`|No|
 | [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | Status of a work item when type is Requirement, with possible status types being `unverified`, `satisfied`, or `failed` | | |No|
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | Test reports associated with a work item | | | |
+| [WorkItemWidgetTimeTracking](../../../api/graphql/reference/index.md#workitemwidgettimetracking) | Track total time spent on a work item | |`Reporter`|No|
 | [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | Set weight of a work item | |`Reporter`|No|
 | WorkItemWidgetLock | Lock/Unlock a work item | |`Reporter`|No|
-| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgetcolor) | Set color of a work item. **Note:** Color is currently available only for epics. | |`Reporter`|No|
 
 #### Widget availability (updating)
 
@@ -99,23 +104,28 @@ set of widgets for them.
 |---|---|---|---|---|---|
 | [WorkItemWidgetAssignees](../../../api/graphql/reference/index.md#workitemwidgetassignees) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetAwardEmoji](../../../api/graphql/reference/index.md#workitemwidgetawardemoji) | ✅ | ✔️ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgetcolor) | ✅ | ❌ | ❌ | ❌ | ❌ |
 | [WorkItemWidgetCurrentUserTodos](../../../api/graphql/reference/index.md#workitemwidgetcurrentusertodos) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetDescription](../../../api/graphql/reference/index.md#workitemwidgetdescription) | ✅ | ✅ | ✅ | ✅ | ✅ |
-| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | ❌ | ✅ | ❌ | ❌ | ❌ |
+| [WorkItemWidgetDesigns](../../../api/graphql/reference/index.md#workitemwidgetdesigns) | ✔️ | ✅ | ❌ | ❌ | ❌ |
+| [WorkItemWidgetDevelopment](../../../api/graphql/reference/index.md#workitemwidgetdevelopment) | ❌ | ✅ | ❌ | ❌ | ❌ |
 | [WorkItemWidgetHealthStatus](../../../api/graphql/reference/index.md#workitemwidgethealthstatus) | ✅ | ✅ | ✅ | ✅ | ✅ |
-| [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | ✔ | ✔️ | ❌ | ✅ | ❌ |
+| [WorkItemWidgetHierarchy](../../../api/graphql/reference/index.md#workitemwidgethierarchy) | ✅ | ✅ | ❌ | ✅ | ❌ |
 | [WorkItemWidgetIteration](../../../api/graphql/reference/index.md#workitemwidgetiteration) | ❌ | ✅ | ✅ | ❌ | ❌ |
 | [WorkItemWidgetLabels](../../../api/graphql/reference/index.md#workitemwidgetlabels) | ✅ | ✅ | ✅ | ✅ | ✅ |
-| [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | ✔️ | ✔️ | ✔️ | ✅ | ✅ |
-| [WorkItemWidgetMilestone](../../../api/graphql/reference/index.md#workitemwidgetmilestone) | 🔍 | ✅ | ✅ | ✅ | ❌ |
+| [WorkItemWidgetLinkedItems](../../../api/graphql/reference/index.md#workitemwidgetlinkeditems) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetMilestone](../../../api/graphql/reference/index.md#workitemwidgetmilestone) | ❌ | ✅ | ✅ | ✅ | ❌ |
 | [WorkItemWidgetNotes](../../../api/graphql/reference/index.md#workitemwidgetnotes) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetNotifications](../../../api/graphql/reference/index.md#workitemwidgetnotifications) | ✅ | ✅ | ✅ | ✅ | ✅ |
+| [WorkItemWidgetParticipants](../../../api/graphql/reference/index.md#workitemwidgetparticipants) | ✅ | ✅ | ✅ | ✅ | ✅ |
 | [WorkItemWidgetProgress](../../../api/graphql/reference/index.md#workitemwidgetprogress) | ❌ | ❌ | ❌ | ✅ | ✅ |
-| [WorkItemWidgetStartAndDueDate](../../../api/graphql/reference/index.md#workitemwidgetstartandduedate) | 🔍 | ✅ | ✅ | ❌ | ✅ |
+| [WorkItemWidgetRequirementLegacy](../../../api/graphql/reference/index.md#workitemwidgetrequirementlegacy) | ❌ | ❌ | ❌ | ❌ | ❌ |
+| [WorkItemWidgetRolledupDates](../../../api/graphql/reference/index.md#workitemwidgetrolledupdates) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| [WorkItemWidgetStartAndDueDate](../../../api/graphql/reference/index.md#workitemwidgetstartandduedate) | ❌ | ✅ | ✅ | ❌ | ✅ |
 | [WorkItemWidgetStatus](../../../api/graphql/reference/index.md#workitemwidgetstatus) | ❓ | ❓ | ❓ | ❓ | ❓ |
 | [WorkItemWidgetTestReports](../../../api/graphql/reference/index.md#workitemwidgettestreports) | ❌ | ❌ | ❌ | ❌ | ❌ |
-| [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | 🔍 | ✅ | ✅ | ❌ | ❌ |
-| [WorkItemWidgetColor](../../../api/graphql/reference/index.md#workitemwidgettestreports) | ✅ | ❌ | ❌ | ❌ | ❌ |
+| [WorkItemWidgetTimeTracking](../../../api/graphql/reference/index.md#workitemwidgettimetracking) | ✅ | ✅ | ✅ | ❌ | ❌ |
+| [WorkItemWidgetWeight](../../../api/graphql/reference/index.md#workitemwidgetweight) | ❌ | ✅ | ✅ | ❌ | ❌ |
 
 ##### Legend
 

@@ -35,12 +35,8 @@ module Gitlab
         #
         # @param plan [Hash] Name of the plan
         # @option plan [Hash] Support::Helpers::FREE
-        # @option plan [Hash] Support::Helpers::PREMIUM
         # @option plan [Hash] Support::Helpers::PREMIUM_SELF_MANAGED
-        # @option plan [Hash] Support::Helpers::ULTIMATE
         # @option plan [Hash] Support::Helpers::ULTIMATE_SELF_MANAGED
-        # @option plan [Hash] Support::Helpers::COMPUTE_MINUTES
-        # @option plan [Hash] Support::Helpers::STORAGE
         # @param users_in_license [Integer] Number of users in license
         # @param license_type [Hash] Type of the license
         # @option license_type [String] 'license file'

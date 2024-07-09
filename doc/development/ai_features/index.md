@@ -147,13 +147,41 @@ Enable all feature flags maintained by "group::ai framework" by running this com
 bundle exec rake gitlab:duo:enable_feature_flags
 ```
 
-### Recommended: Run GDK in SaaS mode and enable AI features for a test group
+### Recommended: Run `gitlab:duo:setup` Rake task to prepare the environment
 
-**Why:** By default, GDK runs GitLab as a self-managed instance. But, the Duo
-licensing setup for self-managed is more complex than it is for GitLab.com. If
-the feature you are working on available on GitLab.com, you should
-run GDK in "SaaS" mode so that you can skip the
-[customersDot setup](#option-2-use-your-customersdot-instance-as-a-provider).
+This Rake task ensures that the local environment is ready to run GitLab Duo.
+The task can be run in either SaaS or Self-Managed modes, depending on which installation you currently imitate in GDK.
+
+If you currently run you local GDK as SaaS (imitating GitLab.com), you need to provide the argument to the task:
+`GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup[<test-group-name>]'`
+
+Replace `<test-group-name>` with the name of any top-level group. Duo will be configured for that group. If the
+group doesn't exist, it creates a new one. Make sure the script succeeded. It prints error messages with links
+on how to resolve the error. You can re-run the script until it succeeds.
+
+If you currently run you local GDK as Self-Managed (default for GDK), no arguments for Rake task are expected:
+`GITLAB_SIMULATE_SAAS=0 bundle exec 'rake gitlab:duo:setup'`
+
+It's recommended to run `gdk restart` after the task succeeded.
+
+### Recommended: Set `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` environment variable
+
+If you plan to run you local GDK as Self-Managed (for GDK), it is recommended to set this environment variable.
+It has no effect if you run you local GDK as SaaS, so you can always keep it set.
+
+Setting this environment variable will allow the local GL instance to issue tokens itself, without syncing with CustomersDot first.
+This is similar how GitLab.com operates, and we allow it for development purposes to simplify the setup.
+With it you can skip the [CustomersDot setup](#option-2-use-your-customersdot-instance-as-a-provider).
+This can done by either:
+
+- setting it in the `env.runit` file in your GDK root
+- executing `export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` in your shell (but you need to repeat it for every new session)
+
+You need to restart GDK to apply the change.
+
+If you plan to use local CustomersDot or test cross-service integration, you may want to unset this variable.
+
+### Option A: Run GDK in SaaS mode and enable AI features for a test group
 
 **How:** the following should be set in the `env.runit` file in your GDK root:
 
@@ -163,24 +191,22 @@ run GDK in "SaaS" mode so that you can skip the
 export GITLAB_SIMULATE_SAAS=1
 ```
 
-Run `gdk restart rails` after you update the file so that the value
-is picked up by your local instance.
+or, just for a current session:
 
-If you are running GDK in SaaS mode, you also need to enable Duo
-features for at least one group. To do this, run this command in your `/gitlab` directory:
+```shell
+export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1 && gdk restart
+```
+
+Make sure you run  `gitlab:duo:setup` Rake task `/gitlab` directory:
 
 ```shell
 GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
 ```
 
-Replace `<test-group-name>` with the name of any top-level group. If the
-group doesn't exist, it creates a new one. You might need to
-re-run the script multiple times; it prints error messages with links
-on how to resolve the error.
-
 Membership to a group with Duo features enabled is what enables many AI
 features. To enable AI feature access locally, make sure that your test user is
-a member of the group with Duo features enabled.
+a member of the group with Duo features enabled (`<test-group-name>`)
+and (for some features) have a [seat assigned](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/subscriptions/subscription-add-ons.md#for-gitlabcom).
 
 Finally, you must clear the GitLab-Rails Redis cache. User access to GitLab Duo
 features in SaaS mode is cached in Redis. This cache expires every 60 minutes.
@@ -191,6 +217,37 @@ bundle exec rake cache:clear
 ```
 
 **Troubleshooting:** If you have problems with your setup at this point, double-check your admin settings. When GDK is running, go to admin settings (Navigation -> Admin), then go to general settings (Settings -> General), and expand the "Account and limit" section. Scroll to the bottom of this section to make sure the setting "Allow use of licensed EE features" is toggled on.
+
+### Option B: Run GDK in Self-Managed mode and enable AI features for the instance
+
+**How:** This is the default for GDK. To set it explicitly, the following should be set in the `env.runit` file in your GDK root:
+
+```shell
+# <GDK-root>/env.runit
+
+export GITLAB_SIMULATE_SAAS=0
+```
+
+or, just for a current session:
+
+```shell
+export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=0 && gdk restart
+```
+
+Make sure you executed  `gitlab:duo:setup` Rake task in `/gitlab` directory:
+
+```shell
+GITLAB_SIMULATE_SAAS=0 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup'
+```
+
+and it succeeded.
+
+Some AI features requires a [seat to be assigned](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/subscriptions/subscription-add-ons.md#for-self-managed) to a user to have access.
+If you use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` you need to assign `root`/`admin` user to a seat,
+to receive a "Code completion test was successful" notification from the Health Check
+on the `http://localhost:3000/admin/code_suggestions` page.
+
+Our customers (production environment) do not need to do that to run a Code Suggestions Health Check.
 
 ### Recommended: Test clients in Rails console
 

@@ -107,7 +107,9 @@ export default {
       }
     },
     onInputValidationStateChange(inputId, value) {
-      this.$set(this.inputValidStates, inputId, value);
+      const copy = [...this.inputValidStates];
+      copy[inputId] = value;
+      this.inputValidStates = copy;
     },
     onHighlight(path) {
       this.$emit('update:highlight', path);
