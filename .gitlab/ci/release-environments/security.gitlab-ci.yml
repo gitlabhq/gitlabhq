@@ -1,10 +1,13 @@
+# Similar to .gitlab/ci/release-environments/main.gitlab-ci.yml, for release-environment pipelines in the security mirror.
+# Referenced in .gitlab/ci/release-environments.gitlab-ci.yml to differentiate from the canonical (main) version.
+# This file includes .gitlab/ci/cng/security.gitlab-ci.yml, instead of .gitlab/ci/cng/main.gitlab-ci.yml.
 ---
 include:
   - local: .gitlab/ci/cng/main.gitlab-ci.yml
     inputs:
-      cng_path: 'build/CNG-mirror'
+      cng_path: 'charts/components/images'
   - project: 'gitlab-org/quality/pipeline-common'
-    ref: master
+    ref: '8.18.4'
     file: ci/base.gitlab-ci.yml
 
 stages:
@@ -97,6 +100,9 @@ release-environments-qa:
     GITLAB_INITIAL_ROOT_PASSWORD: "${RELEASE_ENVIRONMENTS_ROOT_PASSWORD}"
     QA_PRAEFECT_REPOSITORY_STORAGE: "default"
     SIGNUP_DISABLED: "true"
+  before_script:
+    - !reference [.qa-base, before_script]
+    - echo "$CI_REGISTRY_PASSWORD" | docker login "$CI_REGISTRY" -u "$CI_REGISTRY_USER" --password-stdin
 
 release-environments-notification-failure:
   stage: finish
