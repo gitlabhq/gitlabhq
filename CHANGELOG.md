@@ -2,6 +2,21 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.6 (2024-07-09)
+
+### Fixed (1 change)
+
+- [Update dependency slack-messenger to v2.3.5](gitlab-org/security/gitlab@4e78461cef64c7423d793de22deffbae7088e7d6)
+
+### Security (6 changes)
+
+- [Disallow serving Pages over disabled custom domains with deployments](gitlab-org/security/gitlab@ff23e03cab7495107b1342b4fa175db63a4acd61) ([merge request](gitlab-org/security/gitlab!4247))
+- [Check if user has ban_group_member access before banning in namespace](gitlab-org/security/gitlab@cadb2dba7f5fe825fab7fe761259e7c1721bebfe) ([merge request](gitlab-org/security/gitlab!4090))
+- [Prevent using quick actions for some bot users](gitlab-org/security/gitlab@951a656e6d530ba7692b03506b7c340bc5ac2788) ([merge request](gitlab-org/security/gitlab!4233))
+- [Disable raw HTML for quick action pipeline](gitlab-org/security/gitlab@1a7f336059af3223b4886e79060b8dc8a17f5482) ([merge request](gitlab-org/security/gitlab!4237))
+- [Disable quick actions unless description changed](gitlab-org/security/gitlab@267f4cf51303f70d5a834a3358fe62b6e981a873) ([merge request](gitlab-org/security/gitlab!4240))
+- [Remove comment support from shrug and tableflip](gitlab-org/security/gitlab@579a180538609ccad2d3930218a5410cb33d3920) ([merge request](gitlab-org/security/gitlab!4230))
+
 ## 16.11.5 (2024-06-25)
 
 ### Fixed (2 changes)
