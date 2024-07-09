@@ -219,6 +219,10 @@ module API
 
     def find_group!(id, organization: nil)
       group = find_group(id, organization: organization)
+      # We need to ensure the namespace is in the context since
+      # it's possible a method such as bypass_session! might log
+      # a message before @group is set.
+      ::Gitlab::ApplicationContext.push(namespace: group) if group
       check_group_access(group)
     end
 

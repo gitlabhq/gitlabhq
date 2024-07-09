@@ -40,7 +40,11 @@ A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In
 Geo::MetricsUpdateWorker.new.perform
 ```
 
-If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 10 minutes, then there may be a performance issue, and the UI may always show "Unhealthy" even if the status eventually does get updated.
+If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 10 minutes, then the status might flap or persist as "Unhealthy", even if the status does occasionally get updated. This might be due to growth in usage, growth in data over time, or performance bugs such as a missing database index.
+
+You can monitor system CPU load with a utility like `top` or `htop`. If PostgreSQL is using a significant amount of CPU, it might indicate that there's a problem, or that the system is underprovisioned. System memory should also be monitored.
+
+If you increase memory, you should also check the PostgreSQL memory-related settings in your `/etc/gitlab/gitlab.rb` configuration.
 
 If it successfully updates the status, then something may be wrong with Sidekiq. Is it running? Do the logs show errors? This job is supposed to be enqueued every minute and might not run if a [job deduplication idempotency](../../../sidekiq/sidekiq_troubleshooting.md#clearing-a-sidekiq-job-deduplication-idempotency-key) key was not cleared properly. It takes an exclusive lease in Redis to ensure that only one of these jobs can run at a time. The primary site updates its status directly in the PostgreSQL database. Secondary sites send an HTTP Post request to the primary site with their status data.
 

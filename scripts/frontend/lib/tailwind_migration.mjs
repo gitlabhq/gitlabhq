@@ -60,6 +60,10 @@ export const mismatchAllowList = [
   '.line-clamp-3',
   '.outline-none',
   '.outline-0',
+  // Tailwind's `bg-none` util applies `background-image: none` while ours does `background: none`.
+  // Our recommendation is to use `bg-transparent` instead. Existing usages of `bg-none` have been
+  // migrated to `bg-transparent` as of this comment.
+  '.bg-none',
 ];
 
 export function loadCSSFromFile(filePath) {

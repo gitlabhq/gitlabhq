@@ -31,6 +31,7 @@ RSpec.describe QA::Tools::Ci::ExportCodePathsMapping do
     allow(Dir).to receive(:glob).with(glob) { file_paths }
     allow(::File).to receive(:read).with(anything).and_return(code_path_mappings_data.to_json)
     stub_env('QA_CODE_PATH_MAPPINGS_GCS_CREDENTIALS', gcs_credentials)
+    stub_env('QA_RUN_TYPE', 'package-and-test')
   end
 
   context "with mapping files present" do

@@ -18,6 +18,17 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
   let_it_be(:project3) { create(:project, namespace: group1, path: 'test', visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
   let_it_be(:archived_project) { create(:project, namespace: group1, archived: true) }
 
+  def expect_log_keys(caller_id:, route:, root_namespace:)
+    expect(API::API::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+      expect(data.stringify_keys).to include(
+        'correlation_id' => an_instance_of(String),
+        'meta.caller_id' => caller_id,
+        'route' => route,
+        'meta.root_namespace' => root_namespace
+      )
+    end
+  end
+
   shared_examples 'group avatar upload' do
     context 'when valid' do
       let(:file_path) { 'spec/fixtures/banana_sample.gif' }
@@ -627,6 +638,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it 'returns 200 for a public group', :aggregate_failures do
+        expect_log_keys(caller_id: "GET /api/:version/groups/:id",
+          route: "/api/:version/groups/:id",
+          root_namespace: group1.path)
+
         get api("/groups/#{group1.id}")
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -1305,6 +1320,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     context "when authenticated as user" do
       context 'with min access level' do
         it 'returns projects with min access level or higher' do
+          expect_log_keys(caller_id: "GET /api/:version/groups/:id/projects",
+            route: "/api/:version/groups/:id/projects",
+            root_namespace: group1.path)
+
           group_guest = create(:user)
           group1.add_guest(group_guest)
           project4 = create(:project, group: group1)
@@ -1927,6 +1946,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
     context 'when authenticated as user' do
       it 'returns the shared groups in the group', :aggregate_failures do
+        expect_log_keys(caller_id: "GET /api/:version/groups/:id/groups/shared",
+          route: "/api/:version/groups/:id/groups/shared",
+          root_namespace: main_group.path)
+
         get api(path, user1)
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -2155,6 +2178,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     context 'when authenticated as user' do
       context 'when user is not member of a public group' do
         it 'returns no subgroups for the public group', :aggregate_failures do
+          expect_log_keys(caller_id: "GET /api/:version/groups/:id/subgroups",
+            route: "/api/:version/groups/:id/subgroups",
+            root_namespace: group1.path)
+
           get api("/groups/#{group1.id}/subgroups", user2)
 
           expect(response).to have_gitlab_http_status(:ok)
@@ -2694,6 +2721,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
     context "when authenticated as admin" do
       it "removes any existing group" do
+        expect_log_keys(caller_id: "DELETE /api/:version/groups/:id",
+          route: "/api/:version/groups/:id",
+          root_namespace: group2.path)
+
         delete api("/groups/#{group2.id}", admin, admin_mode: true)
 
         expect(response).to have_gitlab_http_status(:accepted)
@@ -2809,6 +2840,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it 'only includes groups where the user has permissions to transfer a group to' do
+        expect_log_keys(caller_id: "GET /api/:version/groups/:id/transfer_locations",
+          route: "/api/:version/groups/:id/transfer_locations",
+          root_namespace: source_group.path)
+
         request
 
         expect(group_ids_from_response).to contain_exactly(
@@ -2873,6 +2908,10 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     context 'when promoting a subgroup to a root group' do
       shared_examples_for 'promotes the subgroup to a root group' do
         it 'returns success', :aggregate_failures do
+          expect_log_keys(caller_id: "POST /api/:version/groups/:id/transfer",
+            route: "/api/:version/groups/:id/transfer",
+            root_namespace: group.path)
+
           make_request(user)
 
           expect(response).to have_gitlab_http_status(:created)

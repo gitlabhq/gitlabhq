@@ -164,8 +164,7 @@ Prerequisites:
 1. On the left sidebar, select **Search or go to** and find your project or group.
 1. Select **Plan > Wiki**.
 1. Go to the page you want to delete.
-1. Select **Edit**.
-1. Select **Delete page**.
+1. Select **Wiki actions** (**{ellipsis_v}**), then **Delete page**.
 1. Confirm the deletion.
 
 ## Move or rename a wiki page

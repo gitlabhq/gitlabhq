@@ -10,7 +10,7 @@ participating-stages: []
 
 # Feature Flags usage in GitLab development and operations
 
-This blueprint builds upon [the Development Feature Flags Architecture blueprint](../feature_flags_development/index.md).
+This blueprint builds upon [the Development Feature Flags Architecture blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_development/).
 
 ## Summary
 
@@ -84,7 +84,7 @@ The feature flag rollout process is currently:
 
 ### Technical debt and codebase complexity
 
-[The challenges from the Development Feature Flags Architecture blueprint still stand](../feature_flags_development/index.md#challenges).
+[The challenges from the Development Feature Flags Architecture blueprint still stand](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_development/#challenges).
 
 Additionally, there are new challenges:
 

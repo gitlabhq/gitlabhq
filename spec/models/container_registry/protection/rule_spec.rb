@@ -333,4 +333,46 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
       end
     end
   end
+
+  describe '.for_push_exists_for_multiple_containers' do
+    let_it_be(:project) { create(:project) }
+
+    let_it_be(:ppr_for_maintainer) do
+      create(:container_registry_protection_rule,
+        repository_path_pattern: "#{project.full_path}/my-container-prod*",
+        project: project
+      )
+    end
+
+    let(:repository_paths) {
+      [
+        "#{project.full_path}/my-container-prod-1",
+        "#{project.full_path}/unmatched-container-name"
+      ]
+    }
+
+    subject do
+      described_class
+        .for_push_exists_for_multiple_containers(project_id: project.id, repository_paths: repository_paths)
+        .to_a
+    end
+
+    it do
+      is_expected.to eq([
+        { "repository_path" => repository_paths.first, "protected" => true },
+        { "repository_path" => repository_paths.second, "protected" => false }
+      ])
+    end
+
+    context 'when edge cases' do
+      where(:repository_paths, :expected_result) do
+        nil                             | []
+        []                              | []
+      end
+
+      with_them do
+        it { is_expected.to eq(expected_result) }
+      end
+    end
+  end
 end

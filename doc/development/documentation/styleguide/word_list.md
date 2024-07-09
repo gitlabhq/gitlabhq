@@ -2234,6 +2234,15 @@ Do not use **whilst**. Use [while](#while) instead. **While** is more succinct a
 
 Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing/vale.md) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
 
+## within
+
+When possible, do not use **within**. Use **in** instead, unless you are referring to a time frame, limit, or boundary. For example:
+
+- The upgrade occurs within the four-hour maintenance window.
+- The Wi-Fi signal is accessible within a 30-foot radius.
+
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+
 ## yet
 
 Do not use **yet** when talking about the product or its features. The documentation describes the product as it is today.

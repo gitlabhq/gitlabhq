@@ -10,7 +10,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** GA
 
 Pipeline secret detection scans files after they are committed to a Git repository and pushed to GitLab.
 

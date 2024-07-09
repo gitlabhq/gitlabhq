@@ -380,7 +380,9 @@ export default {
         <div v-if="allBranches" class="gl-mt-2" data-testid="all-branches">
           {{ $options.i18n.allBranches }}
         </div>
-        <code v-else class="gl-bg-none p-0 gl-font-base" data-testid="branch">{{ branch }}</code>
+        <code v-else class="gl-bg-transparent p-0 gl-font-base" data-testid="branch">{{
+          branch
+        }}</code>
         <p v-if="matchingBranchesCount" class="gl-mt-3 gl-mb-0">
           <gl-link :href="matchingBranchesLinkHref">{{ matchingBranchesLinkTitle }}</gl-link>
         </p>

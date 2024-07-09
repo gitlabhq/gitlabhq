@@ -489,41 +489,163 @@ J --> K[::GitlabSchema.subscriptions.trigger]
 
 ## How to implement a new action
 
-### Register a new method
+Implementing a new AI action will require changes in the GitLab monolith as well as in the AI Gateway.
+We'll use the example of wanting to implement an action that allows users to rewrite issue descriptions according to
+a given prompt.
 
-Go to the `Llm::ExecuteMethodService` and add a new method with the new service class you will create.
+### 1. Add your action to the Cloud Connector feature list
 
-```ruby
-class ExecuteMethodService < BaseService
-  METHODS = {
-    # ...
-    amazing_new_ai_feature: Llm::AmazingNewAiFeatureService
-  }.freeze
+The Cloud Connector configuration stores the permissions needed to access your service, as well as additional metadata.
+For more information, see [Cloud Connector: Configuration](../cloud_connector/configuration.md).
+
+```yaml
+# ee/config/cloud_connector/access_data.yml
+
+services:
+  # ...
+  rewrite_description:
+    backend: 'gitlab-ai-gateway'
+    bundled_with:
+      duo_enterprise:
+        unit_primitives:
+          - rewrite_issue_description
 ```
 
-### Create a Service
+### 2. Create an Agent definition in the AI Gateway
+
+In [the AI Gateway project](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist), create a
+new agent definition under `ai_gateway/agents/definitions`. Create a new subfolder corresponding to the name of your
+AI action, and a new YAML file for your agent. Specify the model and provider you wish to use, and the prompts that
+will be fed to the model. You can specify inputs to be plugged into the prompt by using `{}`.
+
+```yaml
+# ai_gateway/agents/definitions/rewrite_description/base.yml
+
+name: Description rewriter
+provider: anthropic
+model: claude-3-sonnet-20240229
+prompt_template:
+  system: |
+    You are a helpful assistant that rewrites the description of resources. You'll be given the current description, and a prompt on how you should rewrite it. Reply only with your rewritten description.
+
+    <description>{description}</description>
+
+    <prompt>{prompt}</prompt>
+```
+
+### 3. Create a Completion class
+
+1. Create a new completion under `ee/lib/gitlab/llm/ai_gateway/completions/` and inherit it from the `Base`
+AI Gateway Completion.
+
+```ruby
+# ee/lib/gitlab/llm/ai_gateway/completions/rewrite_description.rb
+
+module Gitlab
+  module Llm
+    module AiGateway
+      module Completions
+        class RewriteDescription < Base
+          def agent_name
+            'base' # Must match the name of the agent you defined on the AI Gateway
+          end
+
+          def inputs
+            { description: resource.description, prompt: prompt_message.content }
+          end
+        end
+      end
+    end
+  end
+end
+```
+
+### 4. Create a Service
 
 1. Create a new service under `ee/app/services/llm/` and inherit it from the `BaseService`.
 1. The `resource` is the object we want to act on. It can be any object that includes the `Ai::Model` concern. For example it could be a `Project`, `MergeRequest`, or `Issue`.
 
 ```ruby
-# ee/app/services/llm/amazing_new_ai_feature_service.rb
+# ee/app/services/llm/rewrite_description_service.rb
 
 module Llm
-  class AmazingNewAiFeatureService < BaseService
+  class RewriteDescriptionService < BaseService
+    extend ::Gitlab::Utils::Override
+
+    override :valid
+    def valid?
+      super &&
+        # You can restrict which type of resources your service applies to
+        resource.to_ability_name == "issue" &&
+        # Always check that the user is allowed to perform this action on the resource
+        Ability.allowed?(user, :rewrite_description, resource)
+    end
+
     private
 
     def perform
-      ::Llm::CompletionWorker.perform_async(user.id, resource.id, resource.class.name, :amazing_new_ai_feature)
-      success
-    end
-
-    def valid?
-      super && Ability.allowed?(user, :amazing_new_ai_feature, resource)
+      schedule_completion_worker
     end
   end
 end
 ```
+
+### 5. Register the feature in the catalogue
+
+Go to `Gitlab::Llm::Utils::AiFeaturesCatalogue` and add a new entry for your AI action.
+
+```ruby
+class AiFeaturesCatalogue
+  LIST = {
+    # ...
+    rewrite_description: {
+      service_class: ::Gitlab::Llm::AiGateway::Completions::RewriteDescription,
+      feature_category: :ai_abstraction_layer,
+      execute_method: ::Llm::RewriteDescriptionService,
+      maturity: :experimental,
+      self_managed: false,
+      internal: false
+    }
+  }.freeze
+```
+
+## How to migrate an existing action to the AI Gateway
+
+AI actions were initially implemented inside the GitLab monolith. As part of our
+[AI Gateway as the Sole Access Point for Monolith to Access Models Epic](https://gitlab.com/groups/gitlab-org/-/epics/13024)
+we're migrating prompts, model selection and model parameters into the AI Gateway. This will increase the speed at which
+we can deliver improvements to self-managed users, by decoupling prompt and model changes from monolith releases. To
+migrate an existing action:
+
+1. Follow steps 1 through 3 on [How to implement a new action](#how-to-implement-a-new-action).
+1. Modify the entry for your AI action in the catalogue to list the new completion class as the `aigw_service_class`.
+
+```ruby
+class AiFeaturesCatalogue
+  LIST = {
+    # ...
+    generate_description: {
+      service_class: ::Gitlab::Llm::Anthropic::Completions::GenerateDescription,
+      aigw_service_class: ::Gitlab::Llm::AiGateway::Completions::GenerateDescription,
+      prompt_class: ::Gitlab::Llm::Templates::GenerateDescription,
+      feature_category: :ai_abstraction_layer,
+      execute_method: ::Llm::GenerateDescriptionService,
+      maturity: :experimental,
+      self_managed: false,
+      internal: false
+    },
+    # ...
+  }.freeze
+```
+
+When the feature flag `ai_gateway_agents` is enabled, the `aigw_service_class` will be used to process the AI action.
+Once you've validated the correct functioning of your action, you can remove the `aigw_service_class` key and replace
+the `service_class` with the new `AiGateway::Completions` class to make it the permanent provider.
+
+For a complete example of the changes needed to migrate an AI action, see the following MRs:
+
+- [Changes to the GitLab Rails monolith](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/152429)
+- [Changes to the AI Gateway](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/merge_requests/921)
 
 ### Authorization in GitLab-Rails
 
@@ -536,7 +658,7 @@ We recommend to use [policies](../policies.md) to deal with authorization for a 
 1. User is a member of the group/project.
 1. `experiment_features_enabled` settings are set on the `Namespace`.
 
-For our example, we need to implement the `allowed?(:amazing_new_ai_feature)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
+For our example, we need to implement the `allowed?(:rewrite_description)` call. As an example, you can look at the [Issue Policy for the summarize comments feature](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/policies/ee/issue_policy.rb). In our example case, we want to implement the feature for Issues as well:
 
 ```ruby
 # ee/app/policies/ee/issue_policy.rb
@@ -551,14 +673,14 @@ module EE
       end
 
       with_scope :subject
-      condition(:amazing_new_ai_feature_enabled) do
-        ::Feature.enabled?(:amazing_new_ai_feature, subject_container) &&
-          subject_container.licensed_feature_available?(:amazing_new_ai_feature)
+      condition(:rewrite_description_enabled) do
+        ::Feature.enabled?(:rewrite_description, subject_container) &&
+          subject_container.licensed_feature_available?(:rewrite_description)
       end
 
       rule do
-        ai_available & amazing_new_ai_feature_enabled & is_project_member
-      end.enable :amazing_new_ai_feature
+        ai_available & rewrite_description_enabled & is_project_member
+      end.enable :rewrite_description
     end
   end
 end
@@ -640,7 +762,7 @@ The `CompletionWorker` will call the `Completions::Factory` which will initializ
 In our example, we will use VertexAI and implement two new classes:
 
 ```ruby
-# /ee/lib/gitlab/llm/vertex_ai/completions/amazing_new_ai_feature.rb
+# /ee/lib/gitlab/llm/vertex_ai/completions/rewrite_description.rb
 
 module Gitlab
   module Llm
@@ -666,7 +788,7 @@ end
 ```
 
 ```ruby
-# /ee/lib/gitlab/llm/vertex_ai/templates/amazing_new_ai_feature.rb
+# /ee/lib/gitlab/llm/vertex_ai/templates/rewrite_description.rb
 
 module Gitlab
   module Llm
