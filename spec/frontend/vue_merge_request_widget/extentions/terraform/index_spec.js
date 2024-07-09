@@ -1,7 +1,7 @@
 import MockAdapter from 'axios-mock-adapter';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
@@ -99,6 +99,7 @@ describe('Terraform extension', () => {
   });
 
   describe('expanded data', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
     beforeEach(async () => {
       mockPollingApi(HTTP_STATUS_OK, plans, {});
       createComponent();
@@ -134,19 +135,13 @@ describe('Terraform extension', () => {
     });
 
     it('responds with the correct telemetry when the deeply nested "Full log" link is clicked', () => {
-      api.trackRedisHllUserEvent.mockClear();
-      api.trackRedisCounterEvent.mockClear();
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       findActionButton(0).trigger('click');
 
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledTimes(1);
-      expect(api.trackRedisHllUserEvent).toHaveBeenCalledWith(
-        'i_code_review_merge_request_widget_terraform_click_full_report',
-      );
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledTimes(1);
-      expect(api.trackRedisCounterEvent).toHaveBeenCalledWith(
-        'i_code_review_merge_request_widget_terraform_count_click_full_report',
-      );
+      expect(trackEventSpy).toHaveBeenCalledWith('click_full_report_on_merge_request_widget', {
+        label: 'terraform',
+      });
     });
   });
 

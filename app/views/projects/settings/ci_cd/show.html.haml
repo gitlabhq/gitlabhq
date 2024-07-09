@@ -109,7 +109,7 @@
       = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
         = expanded ? _('Collapse') : _('Expand')
       %p.gl-text-secondary
-        = _("Control whether CI/CD job tokens can be used to authenticate with this project.")
+        = _("Control which CI/CD job tokens can be used to authenticate with this project.")
     .settings-content
       = render 'ci/token_access/index'
 

@@ -169,11 +169,11 @@ Following the discussions in the [EPSS epic](https://gitlab.com/groups/gitlab-or
 1. PMDB database is extended with a new table to store EPSS scores.
 1. PMDB infrastructure runs the feeder daily in order to pull and process EPSS data. 
 1. The advisory-processor receives the EPSS data and stores them to the PMDB DB.
-1. PMDB exports EPSS data to existing PMDB advisories bucket.
-    - Create a new directory in the existing bucket to store EPSS data.
+1. PMDB exports EPSS data to a new PMDB EPSS bucket.
+    - Create a new bucket to store EPSS data.
     - Delete former EPSS data once new data is uploaded, as the old data is no longer needed.
     - Truncate EPSS scores to two digits after the dot.
-1. GitLab instances pull data from the PMDB bucket.
+1. GitLab instances pull data from the PMDB EPSS bucket.
     - Create a new table in rails DB to store EPSS data.
 1. GitLab instances expose EPSS data through GraphQL API and present data in vulnerability report and details pages.
 
@@ -201,6 +201,10 @@ compared with the pros and cons of alternatives.
 
 ## Design and implementation details
 
+### Decisions
+
+- [002: Use a new bucket for EPSS data](decisions/002_use_new_bucket.md)
+
 ### Important notes
 
 - All EPSS scores get updated on a daily basis. This is pivotal to this feature's design.
@@ -211,7 +215,7 @@ compared with the pros and cons of alternatives.
 
 - Create a new EPSS table in [PMDB](https://gitlab.com/gitlab-org/security-products/license-db) with an advisory identifier and the EPSS score. This includes changing the [schema](https://gitlab.com/gitlab-org/security-products/license-db/schema) and any necessary migrations.
 - Ingest EPSS data into new PMDB table. We want to keep the EPSS data structure as close as possible to the origin so all of the data may be available to the exporter, and the exporter may choose how to process it. Therefore we will save scores and percentiles with their complete values.
-- Export EPSS scores in separate directory in the advisories bucket.
+- Export EPSS scores in separate bucket.
   - Delete the previous day's export as it is no longer needed after the new one is added.
 - Add new pubsub topics to deployment to be used by PMDB components, using existing terraform modules.
 

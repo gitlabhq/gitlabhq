@@ -53,7 +53,7 @@ module Gitlab
       store.subscribe ::Users::RecordLastActivityWorker,
         to: ::Users::ActivityEvent,
         if: ->(event) do
-          actor = ::Namespace.actor_from_id(event.data[:namespace_id])
+          actor = ::Group.actor_from_id(event.data[:namespace_id])
           Feature.enabled?(:track_member_activity, actor)
         end
     end

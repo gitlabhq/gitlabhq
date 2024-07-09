@@ -142,8 +142,8 @@ DEPENDENCIES
   gitlab-cng!
   gitlab-styles (~> 11.0)
   pry (~> 0.14.2)
-  rspec (~> 3.0)
+  rspec (~> 3.13)
   simplecov (~> 0.22.0)
 
 BUNDLED WITH
-   2.5.9
+   2.5.11

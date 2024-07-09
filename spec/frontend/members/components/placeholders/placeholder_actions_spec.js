@@ -8,8 +8,15 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import PlaceholderActions from '~/members/components/placeholders/placeholder_actions.vue';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
+import importSourceUserReassignMutation from '~/members/placeholders/graphql/mutations/reassign.mutation.graphql';
+import importSourceUserKeepAsPlaceholderMutation from '~/members/placeholders/graphql/mutations/keep_as_placeholder.mutation.graphql';
+import importSourceUserCancelReassignmentMutation from '~/members/placeholders/graphql/mutations/cancel_reassignment.mutation.graphql';
+
 import {
   mockSourceUsers,
+  mockReassignMutationResponse,
+  mockKeepAsPlaceholderMutationResponse,
+  mockCancelReassignmentMutationResponse,
   mockUser1,
   mockUser2,
   mockUsersQueryResponse,
@@ -23,17 +30,33 @@ describe('PlaceholderActions', () => {
   let wrapper;
   let mockApollo;
 
+  const defaultProps = {
+    sourceUser: mockSourceUsers[0],
+  };
   const usersQueryHandler = jest.fn().mockResolvedValue(mockUsersQueryResponse);
+  const reassignMutationHandler = jest.fn().mockResolvedValue(mockReassignMutationResponse);
+  const keepAsPlaceholderMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockKeepAsPlaceholderMutationResponse);
+  const cancelReassignmentMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockCancelReassignmentMutationResponse);
   const $toast = {
     show: jest.fn(),
   };
 
-  const createComponent = ({ queryHandler = usersQueryHandler, props = {} } = {}) => {
-    mockApollo = createMockApollo([[searchUsersQuery, queryHandler]]);
+  const createComponent = ({ seachUsersQueryHandler = usersQueryHandler, props = {} } = {}) => {
+    mockApollo = createMockApollo([
+      [searchUsersQuery, seachUsersQueryHandler],
+      [importSourceUserReassignMutation, reassignMutationHandler],
+      [importSourceUserKeepAsPlaceholderMutation, keepAsPlaceholderMutationHandler],
+      [importSourceUserCancelReassignmentMutation, cancelReassignmentMutationHandler],
+    ]);
 
     wrapper = shallowMountExtended(PlaceholderActions, {
       apolloProvider: mockApollo,
       propsData: {
+        ...defaultProps,
         ...props,
       },
       mocks: { $toast },
@@ -68,7 +91,7 @@ describe('PlaceholderActions', () => {
       const usersFailedQueryHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
 
       createComponent({
-        queryHandler: usersFailedQueryHandler,
+        seachUsersQueryHandler: usersFailedQueryHandler,
       });
       await waitForPromises();
     });
@@ -108,12 +131,27 @@ describe('PlaceholderActions', () => {
 
       it('renders confirm button as "Confirm"', () => {
         expect(findConfirmButton().text()).toBe('Confirm');
+        expect(findConfirmButton().props()).toMatchObject({
+          disabled: false,
+          loading: false,
+        });
       });
 
-      it('emits "confirm" event when Confirm button is clicked', () => {
-        findConfirmButton().vm.$emit('click');
+      describe('when Confirm button is clicked', () => {
+        beforeEach(async () => {
+          findConfirmButton().vm.$emit('click');
+          await nextTick();
+        });
 
-        expect(wrapper.emitted('confirm')[0]).toEqual([undefined]);
+        it('calls keepAsPlaceholder mutation', async () => {
+          expect(findConfirmButton().props('loading')).toBe(true);
+          await waitForPromises();
+          expect(findConfirmButton().props('loading')).toBe(false);
+
+          expect(keepAsPlaceholderMutationHandler).toHaveBeenCalledWith({
+            id: mockSourceUsers[0].id,
+          });
+        });
       });
     });
 
@@ -128,12 +166,28 @@ describe('PlaceholderActions', () => {
 
       it('renders confirm button as "Reassign"', () => {
         expect(findConfirmButton().text()).toBe('Reassign');
+        expect(findConfirmButton().props()).toMatchObject({
+          disabled: false,
+          loading: false,
+        });
       });
 
-      it('emits "confirm" event when Reassign button is clicked', () => {
-        findConfirmButton().vm.$emit('click');
+      describe('when Reassign button is clicked', () => {
+        beforeEach(async () => {
+          findConfirmButton().vm.$emit('click');
+          await nextTick();
+        });
 
-        expect(wrapper.emitted('confirm')[0]).toEqual([mockUser1.id]);
+        it('calls reassign mutation', async () => {
+          expect(findConfirmButton().props('loading')).toBe(true);
+          await waitForPromises();
+          expect(findConfirmButton().props('loading')).toBe(false);
+
+          expect(reassignMutationHandler).toHaveBeenCalledWith({
+            id: mockSourceUsers[0].id,
+            userId: mockUser1.id,
+          });
+        });
       });
     });
   });
@@ -147,7 +201,7 @@ describe('PlaceholderActions', () => {
         .mockResolvedValueOnce(mockUsersQueryResponse);
 
       createComponent({
-        queryHandler: usersPaginatedQueryHandler,
+        seachUsersQueryHandler: usersPaginatedQueryHandler,
       });
       await waitForPromises();
     });
@@ -181,18 +235,18 @@ describe('PlaceholderActions', () => {
           expect(user).toMatchObject({
             id: allUsers[index].id,
             name: allUsers[index].name,
-            username: `@${allUsers[index].username}`,
+            value: allUsers[index].id,
           });
         });
       });
     });
   });
 
-  describe('when status is pending_assignment', () => {
+  describe('when status is PENDING_ASSIGNMENT', () => {
     beforeEach(() => {
       createComponent({
         props: {
-          placeholder: { status: 'pending_assignment' },
+          sourceUser: { status: 'PENDING_ASSIGNMENT' },
         },
       });
     });
@@ -211,13 +265,13 @@ describe('PlaceholderActions', () => {
   });
 
   describe('when status is AWAITING_APPROVAL', () => {
-    const mockPlaceholder = mockSourceUsers[3];
+    const mockSourceUser = mockSourceUsers[1];
 
     beforeEach(() => {
       createComponent({
         props: {
-          placeholder: {
-            ...mockPlaceholder,
+          sourceUser: {
+            ...mockSourceUser,
             status: 'AWAITING_APPROVAL',
           },
         },
@@ -226,7 +280,7 @@ describe('PlaceholderActions', () => {
 
     it('renders disabled listbox with @username toggle text', () => {
       expect(findListbox().props()).toMatchObject({
-        toggleText: mockPlaceholder.reassignToUser.username,
+        toggleText: `@${mockSourceUser.reassignToUser.username}`,
         disabled: true,
       });
     });
@@ -249,21 +303,32 @@ describe('PlaceholderActions', () => {
       expect($toast.show).toHaveBeenCalledWith('Notification email sent.');
     });
 
-    it('emits "cancel" event when Cancel button is clicked', () => {
-      findCancelButton().vm.$emit('click');
+    describe('when Cancel button is clicked', () => {
+      beforeEach(async () => {
+        findCancelButton().vm.$emit('click');
+        await nextTick();
+      });
 
-      expect(wrapper.emitted('cancel')[0]).toEqual([]);
+      it('calls cancelReassignment mutation', async () => {
+        expect(findCancelButton().props('loading')).toBe(true);
+        await waitForPromises();
+        expect(findCancelButton().props('loading')).toBe(false);
+
+        expect(cancelReassignmentMutationHandler).toHaveBeenCalledWith({
+          id: mockSourceUser.id,
+        });
+      });
     });
   });
 
   describe('when status is REASSIGNMENT_IN_PROGRESS', () => {
-    const mockPlaceholder = mockSourceUsers[3];
+    const mockSourceUser = mockSourceUsers[3];
 
     beforeEach(() => {
       createComponent({
         props: {
-          placeholder: {
-            ...mockPlaceholder,
+          sourceUser: {
+            ...mockSourceUser,
             status: 'REASSIGNMENT_IN_PROGRESS',
           },
         },
@@ -272,7 +337,7 @@ describe('PlaceholderActions', () => {
 
     it('renders disabled listbox with @username toggle text', () => {
       expect(findListbox().props()).toMatchObject({
-        toggleText: mockPlaceholder.reassignToUser.username,
+        toggleText: `@${mockSourceUser.reassignToUser.username}`,
         disabled: true,
       });
     });

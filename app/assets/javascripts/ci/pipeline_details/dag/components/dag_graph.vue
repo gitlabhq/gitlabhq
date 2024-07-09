@@ -28,11 +28,7 @@ export default {
     containerClasses: ['dag-graph-container', 'gl-display-flex', 'gl-flex-direction-column'].join(
       ' ',
     ),
-    hoverFadeClasses: [
-      'gl-cursor-pointer',
-      'gl-duration-slow',
-      'gl-transition-timing-function-ease',
-    ].join(' '),
+    hoverFadeClasses: ['gl-cursor-pointer', 'gl-duration-slow', 'gl-ease-ease'].join(' '),
   },
   gitLabColorRotation: [
     '#e17223',

@@ -1,0 +1,32 @@
+.gl-mx-auto{ class: 'sm:gl-w-1/2' }
+  .gl-justify-start.gl-items-center
+    .gl-heading-1
+      = s_('DeviceAuth|Authorize device to access to your GitLab account.')
+    .gl-text-secondary
+      = s_('DeviceAuth|Please make sure that you intended to authorize this device.')
+    .gl-flex.gl-items-center.gl-gap-2.gl-py-5
+      = render Pajamas::AvatarComponent.new(current_user, size: 24, avatar_options: { data: { testid: 'user_avatar_content' }, title: current_user.username })
+      .gl-pl-1
+        %strong= current_user.name
+      &middot;
+      .gl-text-secondary
+        %span= current_user.to_reference
+    - if current_user.admin?
+      = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false, alert_options: { class: 'gl-mb-5'}) do |c|
+        - c.with_body do
+          = s_('DeviceAuth|You are an administrator, which means authorizing access will allow it to interact with GitLab as an administrator as well.')
+    .div
+      - if @scopes.present?
+        .gl-mt-3
+          .gl-heading-4
+            = s_('DeviceAuth|Scopes associated with this request:') + " #{@scopes}"
+    .div
+      = form_with url: oauth_device_authorizations_authorize_url, method: :post, class: 'inline gl-pr-3' do |f|
+        .form-group.row
+          .col-lg-8.col-sm-10
+            = f.hidden_field :user_code, value: params[:user_code]
+        .div
+          = render Pajamas::ButtonComponent.new(type: :submit,
+            variant: :confirm,
+            button_options: { id: 'commit-changes', testid: 'authorization-button'}) do
+            = s_('DeviceAuth|Confirm')

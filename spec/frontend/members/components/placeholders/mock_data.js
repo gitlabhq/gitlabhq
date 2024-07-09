@@ -56,7 +56,6 @@ export const mockSourceUsers = [
   }),
   createMockSourceUser(6, {
     status: 'KEEP_AS_PLACEHOLDER',
-    reassignToUser: true,
   }),
   createMockSourceUser(7, {
     status: 'COMPLETED',
@@ -84,6 +83,44 @@ export const mockSourceUsersQueryResponse = ({ pageInfo = {} } = {}) => ({
     },
   },
 });
+
+export const mockReassignMutationResponse = {
+  data: {
+    importSourceUserReassign: {
+      errors: [],
+      importSourceUser: {
+        ...mockSourceUsers[0],
+        status: 'AWAITING_APPROVAL',
+        reassignToUser: createMockReassignUser(1),
+      },
+      __typename: 'ImportSourceUserReassignPayload',
+    },
+  },
+};
+export const mockKeepAsPlaceholderMutationResponse = {
+  data: {
+    importSourceUserKeepAsPlaceholder: {
+      errors: [],
+      importSourceUser: {
+        ...mockSourceUsers[0],
+        status: 'KEEP_AS_PLACEHOLDER',
+      },
+      __typename: 'ImportSourceUserKeepAsPlaceholderPayload',
+    },
+  },
+};
+export const mockCancelReassignmentMutationResponse = {
+  data: {
+    importSourceUserCancelReassignment: {
+      errors: [],
+      importSourceUser: {
+        ...mockSourceUsers[0],
+        status: 'PENDING_ASSIGNMENT',
+      },
+      __typename: 'ImportSourceUserCancelReassignmentPayload',
+    },
+  },
+};
 
 export const mockUser1 = {
   __typename: 'UserCore',

@@ -4,6 +4,7 @@ import { debounce, isEmpty, isNull } from 'lodash';
 import { GlAvatarLabeled, GlButton, GlCollapsibleListbox } from '@gitlab/ui';
 import { __, s__ } from '~/locale';
 import { createAlert } from '~/alert';
+import { getFirstPropertyValue } from '~/lib/utils/common_utils';
 
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
@@ -11,13 +12,15 @@ import {
   PLACEHOLDER_STATUS_AWAITING_APPROVAL,
   PLACEHOLDER_STATUS_REASSIGNING,
 } from '~/import_entities/import_groups/constants';
+import importSourceUserReassignMutation from '../../placeholders/graphql/mutations/reassign.mutation.graphql';
+import importSourceUserKeepAsPlaceholderMutation from '../../placeholders/graphql/mutations/keep_as_placeholder.mutation.graphql';
+import importSourceUserCancelReassignmentMutation from '../../placeholders/graphql/mutations/cancel_reassignment.mutation.graphql';
 
 const USERS_PER_PAGE = 20;
 
 const createUserObject = (user) => ({
   ...user,
   text: user.name,
-  username: `@${user.username}`,
   value: user.id,
 });
 
@@ -29,7 +32,7 @@ export default {
     GlCollapsibleListbox,
   },
   props: {
-    placeholder: {
+    sourceUser: {
       type: Object,
       required: false,
       default: () => ({}),
@@ -38,6 +41,9 @@ export default {
 
   data() {
     return {
+      isConfirmLoading: false,
+      isCancelLoading: false,
+      isNotifyLoading: false,
       isLoadingInitial: true,
       isLoadingMore: false,
       isValidated: false,
@@ -97,7 +103,7 @@ export default {
       }
 
       if (this.selectedUser) {
-        return this.selectedUser.username;
+        return `@${this.selectedUser.username}`;
       }
 
       return s__('UserMapping|Select user');
@@ -112,16 +118,16 @@ export default {
     },
 
     statusIsAwaitingApproval() {
-      return this.placeholder.status === PLACEHOLDER_STATUS_AWAITING_APPROVAL;
+      return this.sourceUser.status === PLACEHOLDER_STATUS_AWAITING_APPROVAL;
     },
     statusIsReassigning() {
-      return this.placeholder.status === PLACEHOLDER_STATUS_REASSIGNING;
+      return this.sourceUser.status === PLACEHOLDER_STATUS_REASSIGNING;
     },
   },
 
   created() {
     if (this.statusIsAwaitingApproval || this.statusIsReassigning) {
-      this.selectedUser = this.placeholder.reassignToUser;
+      this.selectedUser = this.sourceUser.reassignToUser;
     }
 
     this.debouncedSetSearch = debounce(this.setSearch, DEFAULT_DEBOUNCE_AND_THROTTLE_MS);
@@ -176,15 +182,64 @@ export default {
     },
 
     onNotify() {
+      this.isNotifyLoading = true;
       this.$toast.show(s__('UserMapping|Notification email sent.'));
+      this.isNotifyLoading = false;
     },
     onCancel() {
-      this.$emit('cancel');
+      this.isCancelLoading = true;
+      this.$apollo
+        .mutate({
+          mutation: importSourceUserCancelReassignmentMutation,
+          variables: {
+            id: this.sourceUser.id,
+          },
+        })
+        .then(({ data }) => {
+          const { errors } = getFirstPropertyValue(data);
+          if (errors?.length) {
+            createAlert({ message: errors.join() });
+          }
+        })
+        .catch(() => {
+          createAlert({
+            message: s__(
+              'UserMapping|There was a problem cancelling placeholder user reassignment.',
+            ),
+          });
+        })
+        .finally(() => {
+          this.isCancelLoading = false;
+        });
     },
     onConfirm() {
       this.isValidated = true;
       if (!this.userSelectInvalid) {
-        this.$emit('confirm', this.selectedUserValue);
+        this.isConfirmLoading = true;
+        this.$apollo
+          .mutate({
+            mutation: this.selectedUser.id
+              ? importSourceUserReassignMutation
+              : importSourceUserKeepAsPlaceholderMutation,
+            variables: {
+              id: this.sourceUser.id,
+              ...(this.selectedUser.id ? { userId: this.selectedUser.id } : {}),
+            },
+          })
+          .then(({ data }) => {
+            const { errors } = getFirstPropertyValue(data);
+            if (errors?.length) {
+              createAlert({ message: errors.join() });
+            }
+          })
+          .catch(() => {
+            createAlert({
+              message: s__('UserMapping|There was a problem reassigning placeholder user.'),
+            });
+          })
+          .finally(() => {
+            this.isConfirmLoading = false;
+          });
       }
     },
   },
@@ -220,7 +275,7 @@ export default {
             :size="32"
             :src="item.avatarUrl"
             :label="item.text"
-            :sub-label="item.username"
+            :sub-label="`@${item.username}`"
           />
         </template>
 
@@ -246,15 +301,28 @@ export default {
     </div>
 
     <template v-if="statusIsAwaitingApproval || statusIsReassigning">
-      <gl-button :disabled="statusIsReassigning" data-testid="notify-button" @click="onNotify">{{
-        s__('UserMapping|Notify again')
-      }}</gl-button>
-      <gl-button :disabled="statusIsReassigning" data-testid="cancel-button" @click="onCancel">{{
-        __('Cancel')
-      }}</gl-button>
+      <gl-button
+        :disabled="statusIsReassigning"
+        :loading="isNotifyLoading"
+        data-testid="notify-button"
+        @click="onNotify"
+        >{{ s__('UserMapping|Notify again') }}</gl-button
+      >
+      <gl-button
+        :disabled="statusIsReassigning"
+        :loading="isCancelLoading"
+        data-testid="cancel-button"
+        @click="onCancel"
+        >{{ __('Cancel') }}</gl-button
+      >
     </template>
-    <gl-button v-else variant="confirm" data-testid="confirm-button" @click="onConfirm">{{
-      confirmText
-    }}</gl-button>
+    <gl-button
+      v-else
+      variant="confirm"
+      :loading="isConfirmLoading"
+      data-testid="confirm-button"
+      @click="onConfirm"
+      >{{ confirmText }}</gl-button
+    >
   </div>
 </template>

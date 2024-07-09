@@ -261,7 +261,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def last_published_at
-    return unless migrated_and_can_access_the_gitlab_api?
+    return unless gitlab_api_client.supports_gitlab_api?
 
     timestamp_string = gitlab_api_client_repository_details['last_published_at']
     DateTime.iso8601(timestamp_string)

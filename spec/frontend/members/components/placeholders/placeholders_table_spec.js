@@ -102,42 +102,32 @@ describe('PlaceholdersTable', () => {
     const firstRow = findTableRows().at(0);
     const actions = firstRow.findComponent(PlaceholderActions);
 
-    expect(actions.props('placeholder')).toEqual(mockSourceUsers[0]);
+    expect(actions.props('sourceUser')).toEqual(mockSourceUsers[0]);
   });
 
-  it('renders avatar for final user when item is reassigned', () => {
+  it('renders avatar for placeholderUser when item status is KEEP_AS_PLACEHOLDER', () => {
     createComponent({ mountFn: mount });
 
     const reassignedItemRow = findTableRows().at(5);
     const actionsAvatar = reassignedItemRow.findAllComponents(GlAvatarLabeled).at(1);
-    const { reassignToUser } = mockSourceUsers[5];
+    const { placeholderUser } = mockSourceUsers[5];
+
+    expect(actionsAvatar.props()).toMatchObject({
+      label: placeholderUser.name,
+      subLabel: `@${placeholderUser.username}`,
+    });
+  });
+
+  it('renders avatar for reassignToUser when item status is COMPLETED', () => {
+    createComponent({ mountFn: mount });
+
+    const reassignedItemRow = findTableRows().at(6);
+    const actionsAvatar = reassignedItemRow.findAllComponents(GlAvatarLabeled).at(1);
+    const { reassignToUser } = mockSourceUsers[6];
 
     expect(actionsAvatar.props()).toMatchObject({
       label: reassignToUser.name,
       subLabel: `@${reassignToUser.username}`,
-    });
-  });
-
-  describe('actions events', () => {
-    beforeEach(() => {
-      createComponent({ mountFn: mount });
-    });
-
-    it('emits "confirm" event with item and selectedUserId', () => {
-      const selectedUserId = 647;
-      const actions = findTableRows().at(2).findComponent(PlaceholderActions);
-
-      actions.vm.$emit('confirm', selectedUserId);
-
-      expect(wrapper.emitted('confirm')[0]).toEqual([mockSourceUsers[2], selectedUserId]);
-    });
-
-    it('emits "cancel" event with item and selectedUserId', () => {
-      const actions = findTableRows().at(2).findComponent(PlaceholderActions);
-
-      actions.vm.$emit('cancel');
-
-      expect(wrapper.emitted('cancel')[0]).toEqual([mockSourceUsers[2]]);
     });
   });
 

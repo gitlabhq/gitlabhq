@@ -1,0 +1,11 @@
+---
+table_name: oauth_device_grants
+classes:
+- Doorkeeper::DeviceAuthorizationGrant::DeviceGrant
+feature_categories:
+- system_access
+description: Used for OAuth device grant flow
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155494
+milestone: '17.2'
+gitlab_schema: gitlab_main
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463785

@@ -13616,6 +13616,30 @@ CREATE SEQUENCE oauth_applications_id_seq
 
 ALTER SEQUENCE oauth_applications_id_seq OWNED BY oauth_applications.id;
 
+CREATE TABLE oauth_device_grants (
+    id bigint NOT NULL,
+    resource_owner_id bigint,
+    application_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    last_polling_at timestamp with time zone,
+    expires_in integer NOT NULL,
+    scopes text DEFAULT ''::text NOT NULL,
+    device_code text NOT NULL,
+    user_code text,
+    CONSTRAINT check_a6271f2c07 CHECK ((char_length(device_code) <= 255)),
+    CONSTRAINT check_b0459113c7 CHECK ((char_length(scopes) <= 255)),
+    CONSTRAINT check_b36370c6df CHECK ((char_length(user_code) <= 255))
+);
+
+CREATE SEQUENCE oauth_device_grants_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE oauth_device_grants_id_seq OWNED BY oauth_device_grants.id;
+
 CREATE TABLE oauth_openid_requests (
     id integer NOT NULL,
     access_grant_id integer NOT NULL,
@@ -21086,6 +21110,8 @@ ALTER TABLE ONLY oauth_access_tokens ALTER COLUMN id SET DEFAULT nextval('oauth_
 
 ALTER TABLE ONLY oauth_applications ALTER COLUMN id SET DEFAULT nextval('oauth_applications_id_seq'::regclass);
 
+ALTER TABLE ONLY oauth_device_grants ALTER COLUMN id SET DEFAULT nextval('oauth_device_grants_id_seq'::regclass);
+
 ALTER TABLE ONLY oauth_openid_requests ALTER COLUMN id SET DEFAULT nextval('oauth_openid_requests_id_seq'::regclass);
 
 ALTER TABLE ONLY onboarding_progresses ALTER COLUMN id SET DEFAULT nextval('onboarding_progresses_id_seq'::regclass);
@@ -23435,6 +23461,9 @@ ALTER TABLE ONLY oauth_access_tokens
 
 ALTER TABLE ONLY oauth_applications
     ADD CONSTRAINT oauth_applications_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY oauth_device_grants
+    ADD CONSTRAINT oauth_device_grants_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY oauth_openid_requests
     ADD CONSTRAINT oauth_openid_requests_pkey PRIMARY KEY (id);
@@ -28118,6 +28147,12 @@ CREATE INDEX index_oauth_applications_on_owner_id_and_owner_type ON oauth_applic
 
 CREATE UNIQUE INDEX index_oauth_applications_on_uid ON oauth_applications USING btree (uid);
 
+CREATE INDEX index_oauth_device_grants_on_application_id ON oauth_device_grants USING btree (application_id);
+
+CREATE UNIQUE INDEX index_oauth_device_grants_on_device_code ON oauth_device_grants USING btree (device_code);
+
+CREATE UNIQUE INDEX index_oauth_device_grants_on_user_code ON oauth_device_grants USING btree (user_code);
+
 CREATE INDEX index_oauth_openid_requests_on_access_grant_id ON oauth_openid_requests USING btree (access_grant_id);
 
 CREATE UNIQUE INDEX index_on_deploy_keys_id_and_type_and_public ON keys USING btree (id, type) WHERE (public = true);
@@ -29591,8 +29626,6 @@ CREATE INDEX index_vulnerability_occurrence_pipelines_occurrence_id_and_id ON vu
 CREATE INDEX index_vulnerability_occurrence_pipelines_on_pipeline_id ON vulnerability_occurrence_pipelines USING btree (pipeline_id);
 
 CREATE INDEX index_vulnerability_occurrences_deduplication ON vulnerability_occurrences USING btree (project_id, report_type, project_fingerprint);
-
-CREATE INDEX index_vulnerability_occurrences_for_issue_links_migration ON vulnerability_occurrences USING btree (project_id, report_type, encode(project_fingerprint, 'hex'::text));
 
 CREATE INDEX index_vulnerability_occurrences_for_override_uuids_logic ON vulnerability_occurrences USING btree (project_id, report_type, location_fingerprint);
 
@@ -32097,6 +32130,9 @@ ALTER TABLE ONLY zoekt_replicas
 
 ALTER TABLE ONLY analytics_cycle_analytics_group_stages
     ADD CONSTRAINT fk_3078345d6d FOREIGN KEY (stage_event_hash_id) REFERENCES analytics_cycle_analytics_stage_event_hashes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY oauth_device_grants
+    ADD CONSTRAINT fk_308d5b76fe FOREIGN KEY (application_id) REFERENCES oauth_applications(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY lists
     ADD CONSTRAINT fk_30f2a831f4 FOREIGN KEY (iteration_id) REFERENCES sprints(id) ON DELETE CASCADE;

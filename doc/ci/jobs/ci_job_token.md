@@ -300,16 +300,26 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags.md) named `allow_push_repository_for_job_token`. Disabled by default.
 
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
 WARNING:
 Pushing via job token is still in development and is not yet optimized for performance.
 If you enable this feature for testing, you must thoroughly test and implement validation measures
 to prevent infinite loops of "push" pipelines triggering more pipelines.
 
-By default, pushing to a project repository by authenticating with a job token is disabled.
-To enable this ability, you can:
+By default, the ability to Git push to a project repository by authenticating with a job token is disabled.
 
-- Feature flag named `allow_push_repository_for_job_token` should be enabled.
-- Enable the [`pushRepositoryForJobTokenAllowed`](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate) GraphQL endpoint.
-- Enable the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-project) REST API endpoint.
+To grant permission to job tokens generated in your project to push to the project's repository:
 
-You are only permitted to push to the repository of the project where the job is running.
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Token Access**.
+1. In the **Permissions** section, select **Allow Git push requests to the repository**.
+
+The job token has the same access permissions as the user that started the job.
+
+You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-project)
+parameter in the `projects` REST API endpoint.

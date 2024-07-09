@@ -38,6 +38,11 @@ InitializerConnections.raise_if_new_database_connection do
       controllers discovery: 'jwks'
     end
 
+    use_doorkeeper_device_authorization_grant do
+      controller device_authorizations: 'oauth/device_authorizations',
+        device_codes: 'oauth/device_codes'
+    end
+
     # Add OPTIONS method for CORS preflight requests
     match '/oauth/userinfo' => 'doorkeeper/openid_connect/userinfo#show', via: :options
     match '/oauth/discovery/keys' => 'jwks#keys', via: :options
@@ -286,6 +291,7 @@ InitializerConnections.raise_if_new_database_connection do
     draw :api
     draw :activity_pub
     draw :customers_dot
+    draw :device_auth
     draw :sidekiq
     draw :help
     draw :google_api

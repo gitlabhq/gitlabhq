@@ -184,7 +184,8 @@ export const EXTENSION_ICON_CLASS = {
 
 export const VIEW_MERGE_REQUEST_WIDGET = 'view_merge_request_widget';
 export const TELEMETRY_WIDGET_EXPANDED = 'WIDGET_EXPANDED';
-export const TELEMETRY_WIDGET_FULL_REPORT_CLICKED = 'WIDGET_FULL_REPORT_CLICKED';
+export const CLICK_FULL_REPORT_ON_MERGE_REQUEST_WIDGET =
+  'click_full_report_on_merge_request_widget';
 
 export { STATE_MACHINE };
 

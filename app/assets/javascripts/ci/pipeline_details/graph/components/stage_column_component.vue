@@ -218,10 +218,7 @@ export default {
           :pipeline-id="pipelineId"
           :stage-name="showStageName ? group.stageName : ''"
           :css-class-job-name="$options.jobClasses"
-          :class="[
-            { 'gl-opacity-3': isFadedOut(group.name) },
-            'gl-duration-slow gl-transition-timing-function-ease',
-          ]"
+          :class="[{ 'gl-opacity-3': isFadedOut(group.name) }, 'gl-duration-slow gl-ease-ease']"
           @pipelineActionRequestComplete="$emit('refreshPipelineGraph')"
           @setSkipRetryModal="$emit('setSkipRetryModal')"
         />

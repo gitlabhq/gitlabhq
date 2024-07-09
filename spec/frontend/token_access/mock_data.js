@@ -292,3 +292,33 @@ export const inboundUpdateScopeSuccessResponse = {
     },
   },
 };
+
+export const mockPermissionsQueryResponse = (pushRepositoryForJobTokenAllowed = false) => ({
+  data: {
+    project: {
+      id: 'gid://gitlab/Project/20',
+      name: 'ops',
+      ciCdSettings: {
+        pushRepositoryForJobTokenAllowed,
+        __typename: 'ProjectCiCdSetting',
+      },
+      __typename: 'Project',
+    },
+  },
+});
+
+export const mockPermissionsMutationResponse = ({
+  pushRepositoryForJobTokenAllowed = true,
+  errors = [],
+} = {}) => ({
+  data: {
+    projectCiCdSettingsUpdate: {
+      ciCdSettings: {
+        pushRepositoryForJobTokenAllowed,
+        __typename: 'ProjectCiCdSetting',
+      },
+      errors,
+      __typename: 'Project',
+    },
+  },
+});

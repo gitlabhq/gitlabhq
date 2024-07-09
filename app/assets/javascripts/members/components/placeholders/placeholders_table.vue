@@ -84,17 +84,19 @@ export default {
 
     isReassignedItem(item) {
       return (
-        (item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER ||
-          item.status === PLACEHOLDER_STATUS_COMPLETED) &&
-        item.reassignToUser
+        item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER ||
+        item.status === PLACEHOLDER_STATUS_COMPLETED
       );
     },
+    reassginedUser(item) {
+      if (item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER) {
+        return item.placeholderUser;
+      }
+      if (item.status === PLACEHOLDER_STATUS_COMPLETED) {
+        return item.reassignToUser;
+      }
 
-    onCancel(item) {
-      this.$emit('cancel', item);
-    },
-    onConfirm(item, selectedUserId) {
-      this.$emit('confirm', item, selectedUserId);
+      return {};
     },
   },
 };
@@ -134,18 +136,13 @@ export default {
 
       <template #cell(actions)="{ item }">
         <gl-avatar-labeled
-          v-if="isReassignedItem(item) && item.reassignToUser"
+          v-if="isReassignedItem(item)"
           :size="32"
-          :src="item.reassignToUser.avatarUrl"
-          :label="item.reassignToUser.name"
-          :sub-label="`@${item.reassignToUser.username}`"
+          :src="reassginedUser(item).avatarUrl"
+          :label="reassginedUser(item).name"
+          :sub-label="`@${reassginedUser(item).username}`"
         />
-        <placeholder-actions
-          v-else
-          :placeholder="item"
-          @confirm="onConfirm(item, $event)"
-          @cancel="onCancel(item)"
-        />
+        <placeholder-actions v-else :source-user="item" />
       </template>
     </gl-table>
 

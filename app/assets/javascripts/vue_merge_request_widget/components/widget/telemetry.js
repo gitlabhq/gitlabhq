@@ -5,7 +5,7 @@ import { InternalEvents } from '~/tracking';
 import {
   VIEW_MERGE_REQUEST_WIDGET,
   TELEMETRY_WIDGET_EXPANDED,
-  TELEMETRY_WIDGET_FULL_REPORT_CLICKED,
+  CLICK_FULL_REPORT_ON_MERGE_REQUEST_WIDGET,
 } from '../../constants';
 
 function simplifyWidgetName(componentName) {
@@ -43,7 +43,6 @@ function whenable(bus) {
 function defaultBehaviorEvents({ bus, config }) {
   const when = whenable(bus);
   const isExpanded = when(TELEMETRY_WIDGET_EXPANDED);
-  const fullReportIsClicked = when(TELEMETRY_WIDGET_FULL_REPORT_CLICKED);
   const toHll = config?.uniqueUser || {};
   const toCounts = config?.counter || {};
   const user = api.trackRedisHllUserEvent.bind(api);
@@ -75,13 +74,6 @@ function defaultBehaviorEvents({ bus, config }) {
       },
     });
   }
-
-  if (toHll.clickFullReport) {
-    fullReportIsClicked({ execute: user, track: toHll.clickFullReport });
-  }
-  if (toCounts.clickFullReport) {
-    fullReportIsClicked({ execute: count, track: toCounts.clickFullReport });
-  }
 }
 
 function baseTelemetry(componentName) {
@@ -101,11 +93,9 @@ function baseTelemetry(componentName) {
   return {
     uniqueUser: {
       expand: [`${baseRedisEventName(simpleExtensionName)}_expand`],
-      clickFullReport: [`${baseRedisEventName(simpleExtensionName)}_click_full_report`],
     },
     counter: {
       expand: [`${baseRedisEventName(simpleExtensionName)}_count_expand`],
-      clickFullReport: [`${baseRedisEventName(simpleExtensionName)}_count_click_full_report`],
     },
   };
 }
@@ -126,7 +116,9 @@ export function createTelemetryHub(componentName) {
       bus.$emit(TELEMETRY_WIDGET_EXPANDED, { type });
     },
     fullReportClicked() {
-      bus.$emit(TELEMETRY_WIDGET_FULL_REPORT_CLICKED);
+      InternalEvents.trackEvent(CLICK_FULL_REPORT_ON_MERGE_REQUEST_WIDGET, {
+        label: baseWidgetName(simplifyWidgetName(componentName)),
+      });
     },
     /* I want a Record here: #{ ...config } // and then the comment would be: This is for debugging only, changing your reference to it does nothing. 😘 */
     config: Object.freeze({ ...config }), // This is *intended* to be for debugging only, but it's pretty mutable, and it has references to live data in child props
