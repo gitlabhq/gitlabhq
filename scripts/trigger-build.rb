@@ -136,7 +136,7 @@ module Trigger
     def normalize_stable_branch_name(branch_name)
       if ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-cn'
         branch_name.delete_suffix('-jh')
-      elsif ENV['CI_PROJECT_NAMESPACE'] == 'gitlab-org'
+      elsif ["gitlab-org", "gitlab-org/security"].include?(ENV['CI_PROJECT_NAMESPACE'])
         branch_name.delete_suffix('-ee')
       end
     end
