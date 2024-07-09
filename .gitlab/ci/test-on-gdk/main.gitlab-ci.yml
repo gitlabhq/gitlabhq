@@ -67,22 +67,6 @@ download-knapsack-report:
     - .download-knapsack-report
     - .rules:download-knapsack
 
-test-on-gdk-smoke:
-  extends:
-    - .run-tests
-  parallel: 2
-  variables:
-    TEST_GDK_TAGS: "--tag smoke"
-  rules:
-    - when: always
-
-test-on-gdk-full:
-  extends:
-    - .run-tests
-  parallel: 5
-  rules:
-    - when: manual
-
 # ==========================================
 # Post test stage
 # ==========================================
