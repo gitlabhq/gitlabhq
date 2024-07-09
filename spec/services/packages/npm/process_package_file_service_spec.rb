@@ -20,6 +20,10 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
         package.project_id,
         package.name
       )
+      expect_next_instance_of(::Packages::Npm::CheckManifestCoherenceService, package,
+        instance_of(Gem::Package::TarReader::Entry)) do |service|
+        expect(service).to receive(:execute)
+      end
       expect(package).to receive(:default!)
 
       service.execute
