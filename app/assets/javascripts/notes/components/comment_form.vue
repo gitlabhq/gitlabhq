@@ -361,7 +361,12 @@ export default {
           {{ error }}
         </gl-alert>
         <div class="timeline-content timeline-content-form">
-          <form ref="commentForm" class="new-note common-note-form gfm-form js-main-target-form">
+          <form
+            ref="commentForm"
+            class="new-note common-note-form gfm-form js-main-target-form"
+            data-testid="comment-form"
+            @submit.stop.prevent
+          >
             <comment-field-layout
               :with-alert-container="true"
               :noteable-data="getNoteableData"

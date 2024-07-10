@@ -81,6 +81,18 @@ You can also ask to explain specific job errors by copy-pasting the error messag
 
 Alternatively, you can use [root cause analysis in CI/CD](../gitlab_duo/experiments.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
+## Explain a vulnerability
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+**LLMs:** Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+
+`/vulnerability_explain` is a special command you can use when you are viewing a SAST vulnerability report.
+
+[Learn more](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
+
 ## Explain code in the IDE
 
 DETAILS:

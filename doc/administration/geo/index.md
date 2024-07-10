@@ -160,6 +160,9 @@ NOTE:
 When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
+NOTE:
+If you are only using `HTTPS` for external/internal URLs, it is not necessary to open port 80 in the firewall.
+
 #### Internal URL
 
 HTTP requests from any Geo secondary site to the primary Geo site use the Internal URL of the primary

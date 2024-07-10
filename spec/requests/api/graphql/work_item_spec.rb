@@ -181,6 +181,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   }
                 }
                 hasChildren
+                hasParent
               }
             }
           GRAPHQL
@@ -198,7 +199,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                     hash_including('id' => child_link1.work_item.to_gid.to_s),
                     hash_including('id' => child_link2.work_item.to_gid.to_s)
                   ]) },
-                'hasChildren' => true
+                'hasChildren' => true,
+                'hasParent' => false
               )
             )
           )
@@ -232,7 +234,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                     [
                       hash_including('id' => child_link1.work_item.to_gid.to_s)
                     ]) },
-                  'hasChildren' => true
+                  'hasChildren' => true,
+                  'hasParent' => false
                 )
               )
             )
@@ -251,7 +254,8 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                   'type' => 'HIERARCHY',
                   'parent' => hash_including('id' => parent_link.work_item_parent.to_gid.to_s),
                   'children' => { 'nodes' => match_array([]) },
-                  'hasChildren' => false
+                  'hasChildren' => false,
+                  'hasParent' => true
                 )
               )
             )

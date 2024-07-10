@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Types::WorkItems::Widgets::HierarchyType, feature_category: :team_planning do
   it 'exposes the expected fields' do
-    expected_fields = %i[parent children has_children ancestors type]
+    expected_fields = %i[parent children has_children has_parent ancestors type]
 
     expect(described_class).to have_graphql_fields(*expected_fields)
   end

@@ -29,6 +29,9 @@ module Types
         field :has_children, GraphQL::Types::Boolean,
           null: false, description: 'Indicates if the work item has children.'
 
+        field :has_parent, GraphQL::Types::Boolean,
+          null: false, method: :has_parent?, description: 'Indicates if the work item has a parent.'
+
         # rubocop: disable CodeReuse/ActiveRecord
         def has_children?
           BatchLoader::GraphQL.for(object.work_item.id).batch(default_value: false) do |ids, loader|

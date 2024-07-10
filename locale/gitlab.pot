@@ -56037,7 +56037,7 @@ msgstr ""
 msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
 msgstr ""
 
-msgid "Trial| By selecting Continue or registering through a third party, you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}."
+msgid "Trial| By selecting Continue or registering through a third party, you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
 msgstr ""
 
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
@@ -56046,7 +56046,7 @@ msgstr ""
 msgid "Trial|Continue"
 msgstr ""
 
-msgid "Trial|Cookie Policy"
+msgid "Trial|Cookie Policy."
 msgstr ""
 
 msgid "Trial|GitLab Subscription Agreement"

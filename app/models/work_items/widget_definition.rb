@@ -11,9 +11,9 @@ module WorkItems
     validates :name, uniqueness: { case_sensitive: false, scope: [:namespace_id, :work_item_type_id] }
     validates :name, length: { maximum: 255 }
 
-    validates :widget_options, if: ->(d) { d.widget_type == 'weight' },
+    validates :widget_options, if: :weight?,
       json_schema: { filename: 'work_item_weight_widget_options', hash_conversion: true }
-    validates :widget_options, absence: true, if: ->(d) { d.widget_type != 'weight' }
+    validates :widget_options, absence: true, unless: :weight?
 
     scope :enabled, -> { where(disabled: false) }
     scope :global, -> { where(namespace: nil) }

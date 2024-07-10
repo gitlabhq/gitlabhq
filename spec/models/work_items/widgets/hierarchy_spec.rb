@@ -28,6 +28,22 @@ RSpec.describe WorkItems::Widgets::Hierarchy, feature_category: :team_planning d
     it { is_expected.to eq(parent_link.work_item_parent) }
   end
 
+  describe '#has_parent?' do
+    subject { described_class.new(task.reload).has_parent? }
+
+    context 'when parent is present' do
+      specify do
+        create(:parent_link, work_item: task, work_item_parent: work_item_parent)
+
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'when parent is not present' do
+      it { is_expected.to eq(false) }
+    end
+  end
+
   describe '#children' do
     let_it_be_with_reload(:parent_link1) { create(:parent_link, work_item_parent: work_item_parent, work_item: task) }
     let_it_be_with_reload(:parent_link2) { create(:parent_link, work_item_parent: work_item_parent) }
