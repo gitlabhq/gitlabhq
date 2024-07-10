@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.0.4 (2024-07-09)
+
+### Fixed (1 change)
+
+- [Update dependency slack-messenger to v2.3.5](gitlab-org/security/gitlab@8800f576925de4fcf00d46f707a70e1e81e5f00a)
+
+### Security (9 changes)
+
+- [Disallow serving Pages over disabled custom domains with deployments](gitlab-org/security/gitlab@760d6115e963e744ee55230be45e9fc3c138a73d) ([merge request](gitlab-org/security/gitlab!4248))
+- [Check npm package name, version and scripts coherence](gitlab-org/security/gitlab@f3b322c5e20036e380ac15b3b2614d9bcc800e75) ([merge request](gitlab-org/security/gitlab!4158))
+- [Check for create_deploy_token policy before creating deploy token](gitlab-org/security/gitlab@87ab0448c48a0ac45540986f4f7429cbc0db3e04) ([merge request](gitlab-org/security/gitlab!4168))
+- [Check if user has ban_group_member access before banning in namespace](gitlab-org/security/gitlab@1b69ccb4a7e7e16372a926d7e2954aec76cdc0fd) ([merge request](gitlab-org/security/gitlab!4087))
+- [Prevent privilege escalation via custom role](gitlab-org/security/gitlab@288e1493a3c16689993d7cbbd7f60cd9bdeffcc0) ([merge request](gitlab-org/security/gitlab!4198))
+- [Prevent using quick actions for some bot users](gitlab-org/security/gitlab@5b8aef69fc74e5aba42d65591902a151a1654316) ([merge request](gitlab-org/security/gitlab!4232))
+- [Disable raw HTML for quick action pipeline](gitlab-org/security/gitlab@0ca2b123f1f627e68b73a1699fbefbb4a70c28d1) ([merge request](gitlab-org/security/gitlab!4236))
+- [Disable quick actions unless description changed](gitlab-org/security/gitlab@9e5397fbd82497083cd69f526a13caea1b5efd21) ([merge request](gitlab-org/security/gitlab!4239))
+- [Remove comment support from shrug and tableflip](gitlab-org/security/gitlab@e378c24c4a1a8dd323bd157bce29b21cca1e0701) ([merge request](gitlab-org/security/gitlab!4228))
+
 ## 17.0.3 (2024-06-25)
 
 ### Fixed (5 changes)

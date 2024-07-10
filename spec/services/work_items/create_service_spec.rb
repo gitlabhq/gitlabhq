@@ -56,7 +56,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
           it 'saves the work item and applies the quick action' do
             expect(service_result).to be_success
             expect(work_item).to be_persisted
-            expect(work_item.description).to eq(' ¯\＿(ツ)＿/¯')
+            expect(work_item.description).to eq('¯\＿(ツ)＿/¯')
           end
         end
       end

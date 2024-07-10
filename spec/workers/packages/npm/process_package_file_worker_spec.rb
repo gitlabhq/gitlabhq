@@ -26,7 +26,7 @@ RSpec.describe Packages::Npm::ProcessPackageFileWorker, type: :worker, feature_c
       it 'does not call the service' do
         expect(Packages::Npm::ProcessPackageFileService).not_to receive(:new)
 
-        worker.perform(-1)
+        worker.perform(non_existing_record_id)
       end
     end
 
@@ -46,6 +46,30 @@ RSpec.describe Packages::Npm::ProcessPackageFileWorker, type: :worker, feature_c
         )
 
         worker.perform(package_file.id)
+      end
+
+      context 'with manefist coherence mismatch error' do
+        let(:exception) do
+          Packages::Npm::CheckManifestCoherenceService::MismatchError.new('Package manifest is not coherent')
+        end
+
+        before do
+          allow_next_instance_of(Packages::Npm::ProcessPackageFileService, package_file) do |service|
+            allow(service).to receive(:execute).and_raise(exception)
+          end
+        end
+
+        it 'calls the error handling service & sets the package status to error' do
+          expect(worker).to receive(:process_package_file_error).with(
+            package_file: package_file,
+            exception: exception
+          ).and_call_original
+
+          worker.perform(package_file.id)
+
+          expect(package_file.package.reset).to be_error
+          expect(package_file.package.status_message).to eq('Package manifest is not coherent')
+        end
       end
     end
   end

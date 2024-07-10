@@ -19,6 +19,8 @@ module Packages
         with_package_json_entry do |entry|
           raise ExtractionError, 'package.json not found' unless entry
           raise ExtractionError, 'package.json file too large' if entry.size > MAX_FILE_SIZE
+
+          ::Packages::Npm::CheckManifestCoherenceService.new(package, entry).execute
         end
 
         package.default!
@@ -37,15 +39,18 @@ module Packages
       end
 
       def with_package_json_entry
-        entry = package_file.file.use_open_file(unlink_early: false) do |open_file|
+        package_file.file.use_open_file(unlink_early: false) do |open_file|
           Zlib::GzipReader.open(open_file.file_path) do |gz|
+            found = false
+
             Gem::Package::TarReader.new(gz).seek(PACKAGE_JSON_ENTRY_PATH) do |entry|
-              next entry
+              found = true
+              yield entry
             end
+
+            yield unless found
           end
         end
-
-        yield entry
       end
     end
   end

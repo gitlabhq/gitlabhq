@@ -67,7 +67,7 @@ RSpec.shared_examples 'update work item description widget' do
       it_behaves_like 'quick action is applied' do
         let(:new_description) { "/tableflip updated description\n/shrug\n/cc @#{developer.username}" }
         # note: \cc performs no action since 15.0
-        let(:filtered_description) { "updated description (╯°□°)╯︵ ┻━┻\n ¯\\＿(ツ)＿/¯\n/cc @#{developer.username}" }
+        let(:filtered_description) { "(╯°□°)╯︵ ┻━┻\n¯\\＿(ツ)＿/¯\n/cc @#{developer.username}" }
         let(:expected_response) do
           {
             'widgets' => include({

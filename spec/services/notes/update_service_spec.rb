@@ -131,6 +131,35 @@ RSpec.describe Notes::UpdateService, feature_category: :team_planning do
           ])
         end
       end
+
+      context 'when existing note contains quick actions' do
+        let!(:note) { create(:note, project: project, noteable: issue, author: user2, note: "foo\n/close\nbar") }
+
+        before do
+          update_note(edit_note_text)
+          note.reload
+          note.noteable.reload
+        end
+
+        context 'when a quick action exists in original note' do
+          let(:edit_note_text) { { note: "foo\n/close\nbar\nbaz" } }
+
+          it 'sanitizes/removes any quick actions and does not execute them' do
+            expect(note.note).to eq "foo\nbar\nbaz"
+            expect(note.noteable.open?).to be_truthy
+          end
+        end
+
+        context 'when a new quick action is used in new note' do
+          let(:edit_note_text) { { note: "bar\n/react :smile:\nfoo" } }
+
+          it 'executes any quick actions not in unedited note' do
+            expect(note.note).to eq "bar\nfoo"
+            expect(note.noteable.award_emoji.first.name).to eq 'smile'
+            expect(note.noteable.open?).to be_truthy
+          end
+        end
+      end
     end
 
     context 'when note text was not changed' do

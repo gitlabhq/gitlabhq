@@ -37,16 +37,21 @@ module Banzai
         private
 
         def render_options
-          return OPTIONS unless sourcepos_disabled? || headers_disabled?
+          return OPTIONS unless sourcepos_disabled? || headers_disabled? || raw_html_disabled?
 
           OPTIONS.merge(
             sourcepos: !sourcepos_disabled?,
-            header_ids: headers_disabled? ? nil : OPTIONS[:header_ids]
+            header_ids: headers_disabled? ? nil : OPTIONS[:header_ids],
+            unsafe: !raw_html_disabled?
           )
         end
 
         def headers_disabled?
           context[:no_header_anchors]
+        end
+
+        def raw_html_disabled?
+          context[:disable_raw_html]
         end
       end
     end
