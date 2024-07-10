@@ -33,7 +33,16 @@ module Banzai
         private
 
         def render_options
-          sourcepos_disabled? ? OPTIONS.merge(sourcepos: false) : OPTIONS
+          return OPTIONS unless sourcepos_disabled? || raw_html_disabled?
+
+          OPTIONS.merge(
+            sourcepos: !sourcepos_disabled?,
+            unsafe: !raw_html_disabled?
+          )
+        end
+
+        def raw_html_disabled?
+          context[:disable_raw_html]
         end
       end
     end

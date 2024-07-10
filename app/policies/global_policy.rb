@@ -26,6 +26,23 @@ class GlobalPolicy < BasePolicy
 
   condition(:service_account, scope: :user) { @user&.service_account? }
 
+  condition(:bot, scope: :user) { @user&.bot? }
+
+  # By default bots should not be allowed to use quick actions as they have too many permissions and it can lead to
+  # surprises. We should scope down this allowlist over time as we confirm if these bots actually need to use quick
+  # actions.
+  condition(:bot_with_quick_actions_permitted) do
+    @user.alert_bot? ||
+      @user.project_bot? ||
+      @user.support_bot? ||
+      @user.admin_bot? ||
+      @user.service_account?
+  end
+
+  rule { bot & ~bot_with_quick_actions_permitted }.policy do
+    prevent :use_quick_actions
+  end
+
   rule { anonymous }.policy do
     prevent :log_in
     prevent :receive_notifications

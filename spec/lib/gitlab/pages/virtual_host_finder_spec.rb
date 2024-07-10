@@ -30,10 +30,18 @@ RSpec.describe Gitlab::Pages::VirtualHostFinder, feature_category: :pages do
         create(:pages_deployment, project: project)
       end
 
-      it 'returns the virual domain when there are pages deployed for the project' do
+      it 'returns the virtual domain' do
         expect(virtual_domain).to be_an_instance_of(Pages::VirtualDomain)
         expect(virtual_domain.lookup_paths.length).to eq(1)
         expect(virtual_domain.lookup_paths.first.project_id).to eq(project.id)
+      end
+
+      context 'when the domain is disabled' do
+        let_it_be(:pages_domain) { create(:pages_domain, :disabled, project: project) }
+
+        it 'does not return the virtual domain' do
+          expect(virtual_domain).to be_nil
+        end
       end
     end
   end

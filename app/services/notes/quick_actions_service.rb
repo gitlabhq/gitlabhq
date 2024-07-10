@@ -40,7 +40,10 @@ module Notes
         params: options
       )
 
-      interpret_service.execute(note.note, note.noteable)
+      # NOTE: old_note would be nil if the note hasn't changed or it is a new record
+      old_note, _ = note.note_change
+
+      interpret_service.execute_with_original_text(note.note, note.noteable, original_text: old_note)
     end
 
     # Applies updates extracted to note#noteable
