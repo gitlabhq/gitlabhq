@@ -15,7 +15,7 @@ easier for unauthorized people to sign in to your account.
 
 Some organizations require you to meet certain requirements when choosing a password.
 
-Improve the security of your account with [two-factor authentication](account/two_factor_authentication.md)
+Improve the security of your account with [two-factor authentication](account/two_factor_authentication.md).
 
 ## Choose your password
 

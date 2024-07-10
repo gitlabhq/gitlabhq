@@ -1458,5 +1458,12 @@ RSpec.describe Issues::UpdateService, :mailer, feature_category: :team_planning 
       let(:existing_issue) { create(:issue, project: project) }
       let(:issuable) { described_class.new(container: project, current_user: user, params: params).execute(existing_issue) }
     end
+
+    it_behaves_like 'issuable record does not run quick actions when not editing description' do
+      let(:label) { create(:label, project: project) }
+      let(:assignee) { create(:user, maintainer_of: project) }
+      let(:existing_issue) { create(:issue, project: project, description: old_description) }
+      let(:updated_issuable) { described_class.new(container: project, current_user: user, params: params).execute(existing_issue) }
+    end
   end
 end

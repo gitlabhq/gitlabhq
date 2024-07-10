@@ -523,7 +523,7 @@ apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new
 
 You might get the error `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.` when purchasing a GitLab subscription.
 
-This issue occurs when the credit card form is re-submitted too quickly within a specific timeframe (3 submissions in 1 minute or 6 submissions in 1 hour).
+This issue occurs when the credit card form is re-submitted too quickly within a specific time frame (three submissions within one minute or six submissions within one hour).
 
 To resolve this issue, wait a few minutes and try the purchase process again.
 

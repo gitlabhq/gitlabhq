@@ -185,7 +185,10 @@ export default {
       this.submitForm();
     },
     setPasswordComplexity({ name, value }) {
-      this.$set(this.form, name, value);
+      this.form = {
+        ...this.form,
+        [name]: value,
+      };
     },
     submitForm() {
       this.$refs.form.submit();

@@ -52,7 +52,6 @@ Because this is an experimental feature,
 | `work_item_epics`                             | Consolidated flag that contains all the changes needed to get epic work items to work for a given group. | Group | **Required** |
 | `synced_epic_work_item_editable`              | Allows editing epic work items when they have a legacy epic.                                             | Group | **Required** |
 | `work_items_rolledup_dates`                   | Calculates the start and due dates in a hierarchy for work items.                                        | Group | **Required** |
-| `epic_and_work_item_labels_unification`       | Delegates labels between epics and epic work item.                                                       | Group | **Required** |
 | `epic_and_work_item_associations_unification` | Delegates other epic and work item associations.                                                         | Group | **Required** |
 | `epic_and_work_item_notes_unification`        | Delegates notes between epics and work item.                                                             | Group | **Required** |
 

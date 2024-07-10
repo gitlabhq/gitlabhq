@@ -61,15 +61,6 @@ You might have jobs or pipelines that run unexpectedly when using `rules:changes
 
 With merged results pipelines, the internal commit that GitLab creates is used as a base to compare against. This commit likely contains more changes than the tip of the MR branch, which causes unexpected outcomes.
 
-### Merged results pipelines are not created
-
-In GitLab 13.7 and earlier, merged results pipelines might not be created due
-to a disabled [feature flag](../../user/feature_flags.md). This feature flag
-[was removed](https://gitlab.com/gitlab-org/gitlab/-/issues/299115) in GitLab 13.8.
-Upgrade to 13.8 or later, or make sure the `:merge_ref_auto_sync`
-[feature flag is enabled](../../administration/feature_flags.md#check-if-a-feature-flag-is-enabled)
-on your GitLab instance.
-
 ### Successful merged results pipeline overrides a failed branch pipeline
 
 A failed branch pipeline is sometimes ignored when the

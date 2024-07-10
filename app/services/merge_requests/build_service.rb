@@ -9,7 +9,7 @@ module MergeRequests
       self.merge_request = MergeRequest.new
       # TODO: this should handle all quick actions that don't have side effects
       # https://gitlab.com/gitlab-org/gitlab-foss/issues/53658
-      merge_quick_actions_into_params!(merge_request, only: [:target_branch])
+      merge_quick_actions_into_params!(merge_request, params: params, only: [:target_branch])
 
       # Assign the projects first so we can use policies for `filter_params`
       merge_request.author = current_user

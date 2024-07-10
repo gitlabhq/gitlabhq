@@ -32,6 +32,9 @@ module QuickActions
       end.compact
     end
 
+    # IMPORTANT: unsafe! Use `execute_with_original_text` instead as it handles cleanup of any residual quick actions
+    # left in the original description.
+    #
     # Takes a text and interprets the commands that are extracted from it.
     # Returns the content without commands, a hash of changes to be applied to a record
     # and a string containing the execution_message to show to the user.
@@ -46,6 +49,26 @@ module QuickActions
       extract_updates(commands)
 
       [content, @updates, execution_messages_for(commands), command_names(commands)]
+    end
+
+    # Similar to `execute` except also tries to extract any quick actions from original_text,
+    # and if found removes them from the main list of quick actions.
+    def execute_with_original_text(new_text, quick_action_target, only: nil, original_text: nil)
+      sanitized_new_text, new_command_params, execution_messages, command_names = execute(
+        new_text, quick_action_target, only: only
+      )
+
+      if original_text
+        _, original_command_params = self.class.new(
+          container: container,
+          current_user: current_user,
+          params: params
+        ).execute(original_text, quick_action_target, only: only)
+
+        new_command_params = (new_command_params.to_a - original_command_params.to_a).to_h if original_command_params
+      end
+
+      [sanitized_new_text, new_command_params, execution_messages, command_names]
     end
 
     # Takes a text and interprets the commands that are extracted from it.

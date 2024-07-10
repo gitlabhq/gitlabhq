@@ -1383,6 +1383,13 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
       let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_merge_request) }
     end
 
+    it_behaves_like 'issuable record does not run quick actions when not editing description' do
+      let(:label) { create(:label, project: project) }
+      let(:assignee) { create(:user, maintainer_of: project) }
+      let(:existing_merge_request) { create(:merge_request, source_project: project, description: old_description) }
+      let(:updated_issuable) { described_class.new(project: project, current_user: user, params: params).execute(existing_merge_request) }
+    end
+
     context 'updating labels' do
       context 'when merge request is not merged' do
         let(:label_a) { label }

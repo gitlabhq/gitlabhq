@@ -60,18 +60,16 @@ module WorkItems
     def interpret_quick_actions!(work_item, widget_params, attributes = {})
       return unless work_item.has_widget?(:description)
 
-      description_param = widget_params[::WorkItems::Widgets::Description.api_symbol]
-      return unless description_param
+      widget_description_param = widget_params[::WorkItems::Widgets::Description.api_symbol]
+      return unless widget_description_param
 
-      original_description = description_param.fetch(:description, work_item.description)
+      merge_quick_actions_into_params!(work_item, params: widget_description_param)
 
-      description, command_params = QuickActions::InterpretService
-                                      .new(container: work_item.resource_parent, current_user: current_user)
-                                      .execute(original_description, work_item)
+      # cleanup `description` param so that it is not passed into common params after transform_quick_action_params
+      quick_action_params = widget_description_param.dup
+      quick_action_params.delete(:description)
 
-      description_param[:description] = description if description && description != original_description
-
-      parsed_params = work_item.transform_quick_action_params(command_params)
+      parsed_params = work_item.transform_quick_action_params(quick_action_params)
 
       widget_params.merge!(parsed_params[:widgets])
       attributes.merge!(parsed_params[:common])

@@ -13,6 +13,7 @@ module Gitlab
           :merge_when_pipeline_succeeds,
           :milestone,
           :remove_source_branch,
+          :squash,
           :target,
           :target_project,
           :title,

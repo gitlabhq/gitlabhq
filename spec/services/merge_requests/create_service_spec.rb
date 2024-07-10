@@ -391,7 +391,9 @@ RSpec.describe MergeRequests::CreateService, :clean_gitlab_redis_shared_state, f
         }
       end
 
-      let(:issuable) { described_class.new(project: project, current_user: user, params: params).execute }
+      let(:issuable) do
+        described_class.new(project: project, current_user: user, params: params.merge(default_params)).execute
+      end
     end
 
     context 'Quick actions' do

@@ -52,7 +52,7 @@ DETAILS:
 
 - Helps you write code more efficiently by generating code and showing suggestions as you type.
 - Large language model (LLM) for code completion: Vertex AI Codey [`code-gecko`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/code-gecko)
-- LLM for code generation: Anthropic [`claude-3-sonnet-20240229`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-sonnet)
+- LLM for code generation: Anthropic [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)
 - [View documentation](../project/repository/code_suggestions/index.md).
 

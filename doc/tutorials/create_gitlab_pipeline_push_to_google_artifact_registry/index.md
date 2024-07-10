@@ -18,7 +18,7 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
 1. Create or select a Google Cloud project.
 
     NOTE:
-    If you don't plan to keep the resources that you create in this procedure, create a new Google Cloud project instead of selecting an existing project. After you finish these steps, you can delete the project, removing all resources associated with the project.
+    If you don't plan to keep the resources that you create in this procedure, then create a new Google Cloud project instead of selecting an existing project. After you finish these steps, you can delete the project, removing all resources associated with the project.
 
     To create a Google Cloud project, run the following command:
 
@@ -70,7 +70,7 @@ Learn how to connect GitLab to Google Cloud and create a GitLab pipeline using r
 
     ```dockerfile
     # Dockerfile for test purposes. Generates a new random image in every build.
-    FROM alpine:latest
+    FROM alpine:3.15.11
     RUN dd if=/dev/urandom of=random bs=10 count=1
     ```
 

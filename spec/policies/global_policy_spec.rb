@@ -5,12 +5,12 @@ require 'spec_helper'
 RSpec.describe GlobalPolicy, feature_category: :shared do
   include TermsHelper
 
+  HasUserType::BOT_USER_TYPES.each do |type| # rubocop:disable RSpec/UselessDynamicDefinition -- False positive
+    type_sym = type.to_sym
+    let_it_be(type_sym) { create(:user, type_sym) }
+  end
+
   let_it_be(:admin_user) { create(:admin) }
-  let_it_be(:project_bot) { create(:user, :project_bot) }
-  let_it_be(:service_account) { create(:user, :service_account) }
-  let_it_be(:migration_bot) { create(:user, :migration_bot) }
-  let_it_be(:security_bot) { create(:user, :security_bot) }
-  let_it_be(:llm_bot) { create(:user, :llm_bot) }
   let_it_be_with_reload(:current_user) { create(:user) }
   let_it_be(:user) { create(:user) }
 
@@ -702,6 +702,32 @@ RSpec.describe GlobalPolicy, feature_category: :shared do
       let(:current_user) { nil }
 
       it { is_expected.to be_disallowed(:create_instance_runner) }
+    end
+  end
+
+  describe 'use_quick_actions' do
+    HasUserType::BOT_USER_TYPES.each do |bot|
+      context "with #{bot}" do
+        let(:current_user) { public_send(bot) }
+
+        if bot.in?(%w[alert_bot project_bot support_bot admin_bot service_account])
+          it { is_expected.to be_allowed(:use_quick_actions) }
+        else
+          it { is_expected.to be_disallowed(:use_quick_actions) }
+        end
+      end
+    end
+
+    context 'with regular user' do
+      let(:current_user) { user }
+
+      it { is_expected.to be_allowed(:use_quick_actions) }
+    end
+
+    context 'with anonymous' do
+      let(:current_user) { nil }
+
+      it { is_expected.to be_disallowed(:use_quick_actions) }
     end
   end
 

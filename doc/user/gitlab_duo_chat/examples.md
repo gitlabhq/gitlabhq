@@ -255,5 +255,4 @@ Use the following commands to quickly accomplish specific tasks.
 | /tests                 | [Write tests](#write-tests-in-the-ide)                                              |
 | /explain               | [Explain code](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)              |
 | /vulnerability_explain | [Explain current vulnerability](../gitlab_duo/index.md#vulnerability-explanation)   |
-|                        | [Explain current vulnerability](../application_security/vulnerabilities/index.md#explaining-a-vulnerability) |
 | /refactor              | [Refactor the code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)        |

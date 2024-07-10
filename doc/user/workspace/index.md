@@ -182,8 +182,11 @@ For more information, see the [VS Code documentation](https://code.visualstudio.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385157) in GitLab 17.2.
 
 The GitLab Workflow extension for VS Code is configured by default in workspaces.
-With this extension, you can view issues, create and review merge requests, and manage CI/CD pipelines.
-The extension also powers AI features like GitLab Duo Code Suggestions and GitLab Duo Chat.
+
+With this extension, you can view issues, create merge requests, and manage CI/CD pipelines.
+This extension also powers AI features like [GitLab Duo Code Suggestions](../project/repository/code_suggestions/index.md)
+and [GitLab Duo Chat](../gitlab_duo_chat/index.md).
+
 For more information, see [GitLab Workflow extension for VS Code](https://gitlab.com/gitlab-org/gitlab-vscode-extension).
 
 ## Extension marketplace
@@ -196,6 +199,7 @@ For more information, see the history.
 
 When `allow_extensions_marketplace_in_workspace` is enabled, you can use the extension marketplace in workspaces.
 An administrator can enable or disable the flag for top-level groups only.
+
 The extension marketplace connects to the [Open VSX Registry](https://open-vsx.org/).
 
 ## Personal access token
@@ -203,8 +207,10 @@ The extension marketplace connects to the [Open VSX Registry](https://open-vsx.o
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129715) in GitLab 16.4.
 > - `api` permission [added](https://gitlab.com/gitlab-org/gitlab/-/issues/385157) in GitLab 17.2.
 
-When you [create a workspace](configuration.md#create-a-workspace), you get a personal access token with `write_repository` and `api` permissions.
-This token is used to initially clone the project while starting the workspace and to configure the GitLab Workflow extension for VS Code.
+When you [create a workspace](configuration.md#create-a-workspace), you get a personal access token
+with `write_repository` and `api` permissions.
+This token is used to initially clone the project while starting the workspace
+and to configure the GitLab Workflow extension for VS Code.
 
 Any Git operation you perform in the workspace uses this token for authentication and authorization.
 When you terminate the workspace, the token is revoked.

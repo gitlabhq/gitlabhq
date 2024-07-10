@@ -3002,6 +3002,12 @@ msgstr ""
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr ""
 
+msgid "Add %{shrug}"
+msgstr ""
+
+msgid "Add %{tableflip}"
+msgstr ""
+
 msgid "Add CHANGELOG"
 msgstr ""
 
@@ -6293,12 +6299,6 @@ msgid "AppearanceSettings|Last edit"
 msgstr ""
 
 msgid "AppearanceSettings|Preview last save:"
-msgstr ""
-
-msgid "Append the comment with %{shrug}"
-msgstr ""
-
-msgid "Append the comment with %{tableflip}"
 msgstr ""
 
 msgid "Append the hostname of your GitLab instance to the status check name."
