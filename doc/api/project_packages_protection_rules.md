@@ -114,7 +114,7 @@ curl --request POST \
     }'
 ```
 
-### Update a package protection rule
+## Update a package protection rule
 
 Update a package protection rule for a project.
 

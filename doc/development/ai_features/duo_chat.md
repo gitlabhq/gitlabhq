@@ -613,7 +613,7 @@ flow of how we construct a Chat prompt:
    which calls `ai_client.stream`
   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L20-27))
 1. `ai_client.stream` routes to `Gitlab::Llm::AiGateway::Client#stream`, which
-   makes an API request to the AI Gateway `/v1/chat/completion` endpoint
+   makes an API request to the AI Gateway `/v1/chat/agent` endpoint
    ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/ai_gateway/client.rb#L64-82))
 1. We've now made our first request to the AI Gateway. If the LLM says that the
    answer to the first request is a final answer, we

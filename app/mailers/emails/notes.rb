@@ -14,7 +14,7 @@ module Emails
       setup_note_mail(note_id, recipient_id)
 
       @issue = @note.noteable
-      @target_url = project_issue_url(*note_target_url_options)
+      @target_url = Gitlab::UrlBuilder.build(@issue, **note_target_url_query_params)
       mail_answer_note_thread(
         @issue,
         @note,
@@ -85,6 +85,7 @@ module Emails
       @note = note_id.is_a?(Note) ? note_id : Note.find(note_id)
       @project = @note.project
       @group = @note.noteable.try(:group)
+      @group ||= @note.noteable.resource_parent if @note.noteable.try(:resource_parent).is_a?(Group)
       @recipient = User.find(recipient_id)
 
       if (@project || @group) && @note.persisted?

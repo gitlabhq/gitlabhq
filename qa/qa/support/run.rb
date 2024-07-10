@@ -21,7 +21,7 @@ module QA
         end
       end
 
-      def run(command_str, env: [], max_attempts: 1, sleep_internal: 0, log_prefix: '')
+      def run(command_str, raise_on_failure: true, env: [], max_attempts: 1, sleep_internal: 0, log_prefix: '')
         command = [*env, command_str, '2>&1'].compact.join(' ')
         result = nil
 
@@ -36,8 +36,11 @@ module QA
           result.success?
         end
 
-        unless result.success?
-          raise CommandError, "The command #{result.command} failed (#{result.exitstatus}) with the following output:\n#{result.response}"
+        raise_error = raise_on_failure && !result.success?
+
+        if raise_error
+          raise CommandError,
+            "The command #{result.command} failed (#{result.exitstatus}) with the following output:\n#{result.response}"
         end
 
         result

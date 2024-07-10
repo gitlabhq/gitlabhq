@@ -228,7 +228,10 @@ FactoryBot.define do
       discussion = discussion.to_discussion if discussion.is_a?(Note)
       next unless discussion
 
-      note.assign_attributes(discussion.reply_attributes.merge(project: discussion.project))
+      parent_attributes = { project: discussion.project, namespace: discussion.namespace }.compact
+      note.assign_attributes(
+        discussion.reply_attributes.merge(parent_attributes)
+      )
     end
   end
 end

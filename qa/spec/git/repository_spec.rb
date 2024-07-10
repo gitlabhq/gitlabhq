@@ -9,7 +9,7 @@ RSpec.describe QA::Git::Repository do
     let(:repo_uri_with_credentials) { 'http://root@foo/bar.git' }
     let(:env_vars) { [%q(HOME="temp")] }
     let(:extra_env_vars) { [] }
-    let(:run_params) { { env: env_vars + extra_env_vars, sleep_internal: 0, log_prefix: "Git: " } }
+    let(:run_params) { { raise_on_failure: true, env: env_vars + extra_env_vars, sleep_internal: 0, log_prefix: "Git: " } }
     let(:repository) do
       described_class.new(command_retry_sleep_interval: 0).tap do |r|
         r.uri = repo_uri

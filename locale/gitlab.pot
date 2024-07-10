@@ -8711,18 +8711,6 @@ msgstr ""
 msgid "Block user"
 msgstr ""
 
-msgid "BlockSeatOverages|%{root_namespace_name} has exceeded the number of seats in its subscription and is now %{link_start}read-only%{link_end}. To remove the read-only state, reduce the number of users in your top-level group to make seats available, or purchase more seats for the subscription."
-msgstr ""
-
-msgid "BlockSeatOverages|The top-level group %{root_namespace_name} is now read-only."
-msgstr ""
-
-msgid "BlockSeatOverages|To remove the %{link_start}read-only%{link_end} state, ask a user with the Owner role for %{root_namespace_name} to reduce the number of users in the group, or to purchase more seats for the subscription."
-msgstr ""
-
-msgid "BlockSeatOverages|Your top-level group %{root_namespace_name} is now read-only."
-msgstr ""
-
 msgid "BlockSeatOverages|Your top-level group is over the number of seats in its subscription and has been placed in a read-only state."
 msgstr ""
 
@@ -25869,9 +25857,6 @@ msgid "GroupsTree|Loading groups"
 msgstr ""
 
 msgid "GroupsTree|Options"
-msgstr ""
-
-msgid "GroupsTree|Search by name"
 msgstr ""
 
 msgid "Groups|An error occurred updating this group. Please try again."
@@ -45247,6 +45232,9 @@ msgstr ""
 msgid "Runners|A runner configuration is where you configure runners based on your requirements. Each runner in this table represents a %{linkStart}single runner entry%{linkEnd} in the %{codeStart}config.toml%{codeEnd}. Multiple runners can be linked to the same configuration. When there are multiple runners in a configuration, the one that contacted GitLab most recently displays here."
 msgstr ""
 
+msgid "Runners|Active"
+msgstr ""
+
 msgid "Runners|Active runners"
 msgstr ""
 
@@ -45911,9 +45899,6 @@ msgid "Runners|Runners are the agents that run your CI/CD jobs."
 msgstr ""
 
 msgid "Runners|Runners performance"
-msgstr ""
-
-msgid "Runners|Running"
 msgstr ""
 
 msgid "Runners|Running Jobs"
@@ -51662,6 +51647,9 @@ msgid "SubscriptionBanner|Export license usage file"
 msgstr ""
 
 msgid "SubscriptionBanner|Upload new license"
+msgstr ""
+
+msgid "SubscriptionGroupsNew|Group URL %{error}"
 msgstr ""
 
 msgid "SubscriptionGroupsNew|Group name %{error}"

@@ -84,14 +84,13 @@ module Ci
       where(system_xid: system_xid)
     end
 
-    scope :with_running_builds, -> do
-      where('EXISTS(?)',
-        Ci::Build.select(1)
+    scope :with_executing_builds, -> do
+      where_exists(
+        Ci::Build
           .joins(:runner_manager_build)
-          .running
+          .executing
           .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.runner_id")
           .where("#{::Ci::RunnerManagerBuild.quoted_table_name}.runner_machine_id = #{quoted_table_name}.id")
-          .limit(1)
       )
     end
 

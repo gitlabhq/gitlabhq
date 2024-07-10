@@ -18,7 +18,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'createModelPath' => "/#{project.full_path}/-/ml/models/new",
         'canWriteModelRegistry' => true,
         'maxAllowedFileSize' => 10737418240,
-        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/"
+        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/",
+        'markdownPreviewPath' => "http://localhost/#{project.full_path}/-/ml/preview_markdown"
       })
     end
 

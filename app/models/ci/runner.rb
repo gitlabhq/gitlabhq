@@ -115,9 +115,9 @@ module Ci
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where(arel_table[:contacted_at].gt(recent_queue_deadline)) }
-    scope :with_running_builds, -> do
-      where('EXISTS(?)',
-        ::Ci::Build.running.select(1)
+    scope :with_executing_builds, -> do
+      where_exists(
+        ::Ci::Build.executing
           .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.id")
       )
     end

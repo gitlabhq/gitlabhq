@@ -11,6 +11,8 @@ module Types
 
       present_using ::Ml::ModelPresenter
 
+      markdown_field :description_html, null: true
+
       field :id, ::Types::GlobalIDType[::Ml::Model], null: false, description: 'ID of the model.'
 
       field :name, ::GraphQL::Types::String, null: false, description: 'Name of the model.'
@@ -42,6 +44,10 @@ module Types
       field :version, ::Types::Ml::ModelVersionType, null: true,
         description: 'Version of the model.',
         resolver: ::Resolvers::Ml::FindModelVersionResolver
+
+      def description_html_resolver
+        ::MarkupHelper.markdown(object.description, context.to_h.dup)
+      end
     end
     # rubocop: enable Graphql/AuthorizeTypes
   end

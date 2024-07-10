@@ -126,12 +126,12 @@ module QA
         run_git("git rev-parse --abbrev-ref HEAD").to_s
       end
 
-      def push_changes(branch = @default_branch, push_options: nil, max_attempts: 3)
+      def push_changes(branch = @default_branch, push_options: nil, max_attempts: 3, raise_on_failure: true)
         cmd = ['git push']
         cmd << push_options_hash_to_string(push_options)
         cmd << uri
         cmd << branch
-        run_git(cmd.compact.join(' '), max_attempts: max_attempts).to_s
+        run_git(cmd.compact.join(' '), raise_on_failure: raise_on_failure, max_attempts: max_attempts).to_s
       end
 
       def push_all_branches
@@ -333,9 +333,10 @@ module QA
         read_netrc_content.grep(/^#{Regexp.escape(netrc_content)}$/).any?
       end
 
-      def run_git(command_str, env: env_vars, max_attempts: 1)
+      def run_git(command_str, raise_on_failure: true, env: env_vars, max_attempts: 1)
         run(
           command_str,
+          raise_on_failure: raise_on_failure,
           env: env,
           max_attempts: max_attempts,
           sleep_internal: command_retry_sleep_interval,

@@ -5,7 +5,7 @@ import Contributors from './contributors.vue';
 
 export default {
   component: Contributors,
-  title: 'ce/contributors/contributors',
+  title: 'contributors/contributors',
   decorators: [withVuexStore],
   args: {
     commitsPath: '/gitlab-org/gitlab/-/commits/master?ref_type=heads',

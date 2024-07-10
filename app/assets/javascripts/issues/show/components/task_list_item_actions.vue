@@ -8,7 +8,7 @@ export default {
     GlDisclosureDropdown,
     GlDisclosureDropdownItem,
   },
-  inject: ['issuableType'],
+  inject: ['id', 'issuableType'],
   computed: {
     showConvertToTaskItem() {
       return [TYPE_INCIDENT, TYPE_ISSUE].includes(this.issuableType);
@@ -16,10 +16,16 @@ export default {
   },
   methods: {
     convertToTask() {
-      eventHub.$emit('convert-task-list-item', this.$el.closest('li').dataset.sourcepos);
+      eventHub.$emit('convert-task-list-item', this.eventPayload());
     },
     deleteTaskListItem() {
-      eventHub.$emit('delete-task-list-item', this.$el.closest('li').dataset.sourcepos);
+      eventHub.$emit('delete-task-list-item', this.eventPayload());
+    },
+    eventPayload() {
+      return {
+        id: this.id,
+        sourcepos: this.$el.closest('li').dataset.sourcepos,
+      };
     },
   },
 };

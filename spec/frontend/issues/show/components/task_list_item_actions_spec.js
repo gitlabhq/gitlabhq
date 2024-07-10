@@ -1,4 +1,5 @@
 import { GlDisclosureDropdown } from '@gitlab/ui';
+import { setHTMLFixture } from 'helpers/fixtures';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { TYPE_EPIC, TYPE_INCIDENT, TYPE_ISSUE } from '~/issues/constants';
 import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
@@ -14,14 +15,18 @@ describe('TaskListItemActions component', () => {
   const findDeleteItem = () => wrapper.findByTestId('delete');
 
   const mountComponent = ({ issuableType = TYPE_ISSUE } = {}) => {
-    const li = document.createElement('li');
-    li.dataset.sourcepos = '3:1-3:10';
-    li.appendChild(document.createElement('div'));
-    document.body.appendChild(li);
+    setHTMLFixture(`
+      <li data-sourcepos="3:1-3:10">
+        <div></div>
+      </li>
+    `);
 
     wrapper = shallowMountExtended(TaskListItemActions, {
-      provide: { issuableType },
-      attachTo: document.querySelector('div'),
+      provide: {
+        id: 'gid://gitlab/WorkItem/818',
+        issuableType,
+      },
+      attachTo: 'div',
     });
   };
 
@@ -60,13 +65,19 @@ describe('TaskListItemActions component', () => {
     it('emits event when `Convert to task` dropdown item is clicked', () => {
       findConvertToTaskItem().vm.$emit('action');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('convert-task-list-item', '3:1-3:10');
+      expect(eventHub.$emit).toHaveBeenCalledWith('convert-task-list-item', {
+        id: 'gid://gitlab/WorkItem/818',
+        sourcepos: '3:1-3:10',
+      });
     });
 
     it('emits event when `Delete` dropdown item is clicked', () => {
       findDeleteItem().vm.$emit('action');
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('delete-task-list-item', '3:1-3:10');
+      expect(eventHub.$emit).toHaveBeenCalledWith('delete-task-list-item', {
+        id: 'gid://gitlab/WorkItem/818',
+        sourcepos: '3:1-3:10',
+      });
     });
   });
 });

@@ -405,7 +405,7 @@ When we have a blueprint merged ideally the confidence should move to 👍 becau
 | Routing                          | group::tenant scale               | [Blueprint](../http_routing_service.md)                                        | 👍         |
 | Cell Control Plane               | group::Delivery/team::Foundations | To-Do                                                                     | 👎         |
 | Cell Sizing                      | team::Scalability-Observability   | [To-Do](https://gitlab.com/gitlab-com/gl-infra/scalability/-/issues/2838) | 👎         |
-| CI Runners                       | team::Scalability-Practices       | To-Do                                                                     | 👎         |
+| CI Runners                       | team::Scalability-Practices       | [Blueprint](runner.md)                                                    | 👎         |
 | Databases                        | team::Database Reliability        | [Blueprint](postgresql.md)                                                | 👍         |
 | Deployments                      | group::Delivery                   | [Blueprint](deployments.md)                                               | 👍         |
 | Observability                    | team::Scalability-Observability   | [Blueprint](observability.md)                                             | 👎         |

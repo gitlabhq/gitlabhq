@@ -24,4 +24,10 @@ RSpec.describe QA::Support::Run do
 
     expect { class_instance.run(command) }.to raise_error(QA::Support::Run::CommandError, /The command .* failed \(1\) with the following output:\nFAILURE/)
   end
+
+  it 'returns the error message in a non-zero response when raise_on_failure is false' do
+    allow(Open3).to receive(:capture2e).and_return([+'FAILURE', double(exitstatus: 1)])
+
+    expect(class_instance.run(command, raise_on_failure: false).response).to eql('FAILURE')
+  end
 end

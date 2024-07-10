@@ -26356,6 +26356,7 @@ Machine learning model in the model registry.
 | <a id="mlmodelcandidates"></a>`candidates` | [`MlCandidateConnection`](#mlcandidateconnection) | Version candidates of the model. (see [Connections](#connections)) |
 | <a id="mlmodelcreatedat"></a>`createdAt` | [`Time!`](#time) | Date of creation. |
 | <a id="mlmodeldescription"></a>`description` | [`String`](#string) | Description of the model. |
+| <a id="mlmodeldescriptionhtml"></a>`descriptionHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `description`. |
 | <a id="mlmodelid"></a>`id` | [`MlModelID!`](#mlmodelid) | ID of the model. |
 | <a id="mlmodellatestversion"></a>`latestVersion` | [`MlModelVersion`](#mlmodelversion) | Latest version of the model. |
 | <a id="mlmodelname"></a>`name` | [`String!`](#string) | Name of the model. |

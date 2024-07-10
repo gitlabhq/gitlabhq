@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import GroupItem from 'jh_else_ce/groups/components/group_item.vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import GroupFolder from './components/group_folder.vue';
-import GroupsExploreApp from './components/groups_explore_app.vue';
+import GroupsListWithFilteredSearchApp from './components/groups_list_with_filtered_search_app.vue';
 
 export const createRouter = () => {
   const routes = [{ path: '/', name: 'root' }];
@@ -17,8 +17,8 @@ export const createRouter = () => {
   return router;
 };
 
-export const initGroupsExplore = () => {
-  const el = document.getElementById('js-groups-explore');
+export const initGroupsListWithFilteredSearch = ({ filteredSearchNamespace, EmptyState }) => {
+  const el = document.getElementById('js-groups-list-with-filtered-search');
 
   if (!el) return false;
 
@@ -30,8 +30,7 @@ export const initGroupsExplore = () => {
   const {
     dataset: { appData },
   } = el;
-  const { groupsEmptyStateIllustration, emptySearchIllustration, endpoint, initialSort } =
-    convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { endpoint, initialSort } = convertObjectPropsToCamelCase(JSON.parse(appData));
 
   Vue.use(VueRouter);
   const router = createRouter();
@@ -39,10 +38,18 @@ export const initGroupsExplore = () => {
   return new Vue({
     el,
     name: 'GroupsExploreRoot',
-    provide: { groupsEmptyStateIllustration, emptySearchIllustration, endpoint, initialSort },
     router,
     render(createElement) {
-      return createElement(GroupsExploreApp);
+      return createElement(GroupsListWithFilteredSearchApp, {
+        props: {
+          filteredSearchNamespace,
+          endpoint,
+          initialSort,
+        },
+        scopedSlots: {
+          'empty-state': () => createElement(EmptyState),
+        },
+      });
     },
   });
 };

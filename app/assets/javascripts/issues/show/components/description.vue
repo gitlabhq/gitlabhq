@@ -26,9 +26,10 @@ import { renderGFM } from '~/behaviors/markdown/render_gfm';
 import eventHub from '../event_hub';
 import animateMixin from '../mixins/animate';
 import {
-  deleteTaskListItem,
   convertDescriptionWithNewSort,
+  deleteTaskListItem,
   extractTaskTitleAndDescription,
+  insertNextToTaskListItemText,
 } from '../utils';
 import TaskListItemActions from './task_list_item_actions.vue';
 
@@ -265,12 +266,15 @@ export default {
     createTaskListItemActions() {
       const app = new Vue({
         el: document.createElement('div'),
-        provide: { issuableType: this.issuableType },
+        provide: { id: this.issueId, issuableType: this.issuableType },
         render: (createElement) => createElement(TaskListItemActions),
       });
       return app.$el;
     },
-    convertTaskListItem(sourcepos) {
+    convertTaskListItem({ id, sourcepos }) {
+      if (this.issueId !== id) {
+        return;
+      }
       const oldDescription = this.descriptionText;
       const { newDescription, taskDescription, taskTitle } = deleteTaskListItem(
         oldDescription,
@@ -279,7 +283,10 @@ export default {
       this.$emit('saveDescription', newDescription);
       this.createTask({ taskTitle, taskDescription, oldDescription });
     },
-    deleteTaskListItem(sourcepos) {
+    deleteTaskListItem({ id, sourcepos }) {
+      if (this.issueId !== id) {
+        return;
+      }
       const { newDescription } = deleteTaskListItem(this.descriptionText, sourcepos);
       this.$emit('saveDescription', newDescription);
     },
@@ -290,26 +297,10 @@ export default {
 
       taskListItems?.forEach((item) => {
         const dropdown = this.createTaskListItemActions();
-        this.insertNextToTaskListItemText(dropdown, item);
+        insertNextToTaskListItemText(dropdown, item);
         this.addPointerEventListeners(item, '.task-list-item-actions');
         this.hasTaskListItemActions = true;
       });
-    },
-    insertNextToTaskListItemText(element, listItem) {
-      const children = Array.from(listItem.children);
-      const paragraph = children.find((el) => el.tagName === 'P');
-      const list = children.find((el) => el.classList.contains('task-list'));
-      if (paragraph) {
-        // If there's a `p` element, then it's a multi-paragraph task item
-        // and the task text exists within the `p` element as the last child
-        paragraph.append(element);
-      } else if (list) {
-        // Otherwise, the task item can have a child list which exists directly after the task text
-        list.insertAdjacentElement('beforebegin', element);
-      } else {
-        // Otherwise, the task item is a simple one where the task text exists as the last child
-        listItem.append(element);
-      }
     },
     stripClientState(description) {
       return description.replaceAll('<details open="true">', '<details>');

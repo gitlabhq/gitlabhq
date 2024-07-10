@@ -1,12 +1,13 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
-import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
-import { descriptionTextWithCheckboxes, descriptionHtmlWithCheckboxes } from '../mock_data';
+import eventHub from '~/issues/show/event_hub';
+import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
+import { descriptionHtmlWithCheckboxes, descriptionTextWithCheckboxes } from '../mock_data';
 
 jest.mock('~/behaviors/markdown/render_gfm');
 
-describe('WorkItemDescription', () => {
+describe('WorkItemDescriptionRendered', () => {
   let wrapper;
 
   const findCheckboxAtIndex = (index) => wrapper.findAll('input[type="checkbox"]').at(index);
@@ -24,6 +25,7 @@ describe('WorkItemDescription', () => {
   } = {}) => {
     wrapper = shallowMount(WorkItemDescriptionRendered, {
       propsData: {
+        workItemId: 'gid://gitlab/WorkItem/818',
         workItemDescription,
         canEdit,
       },
@@ -122,6 +124,32 @@ describe('WorkItemDescription', () => {
       const updatedDescription = `- [ ] todo 1\n- [ ] todo 2`;
       expect(wrapper.emitted('descriptionUpdated')).toEqual([[updatedDescription]]);
       expect(wrapper.find('[data-test-id="description-read-more"]').exists()).toBe(false);
+    });
+  });
+
+  describe('task list item actions', () => {
+    describe('deleting the task list item', () => {
+      it('emits an event to update the description with the deleted task list item', () => {
+        const description = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 2
+      1. [ ] item 3
+   1. [ ] item 4;`;
+        const newDescription = `Tasks
+
+1. [ ] item 1
+   1. [ ] item 3
+   1. [ ] item 4;`;
+        createComponent({ workItemDescription: { description } });
+
+        eventHub.$emit('delete-task-list-item', {
+          id: 'gid://gitlab/WorkItem/818',
+          sourcepos: '4:4-5:19',
+        });
+
+        expect(wrapper.emitted('descriptionUpdated')).toEqual([[newDescription]]);
+      });
     });
   });
 });

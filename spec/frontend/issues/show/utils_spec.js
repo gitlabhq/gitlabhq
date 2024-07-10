@@ -1,7 +1,9 @@
+import { setHTMLFixture } from 'helpers/fixtures';
 import {
-  deleteTaskListItem,
   convertDescriptionWithNewSort,
+  deleteTaskListItem,
   extractTaskTitleAndDescription,
+  insertNextToTaskListItemText,
 } from '~/issues/show/utils';
 
 describe('app/assets/javascripts/issues/show/utils.js', () => {
@@ -405,6 +407,89 @@ description`;
       it('uses the title and description with no modifications', () => {
         expect(extractTaskTitleAndDescription(title, description)).toEqual({ title, description });
       });
+    });
+  });
+});
+
+describe('insertNextToTaskListItemText', () => {
+  const dropdown = document.createElement('div');
+  dropdown.classList.add('dropdown');
+
+  describe('when simple checkbox with text', () => {
+    it('inserts element as sibling to checkbox, last child of ul element', () => {
+      setHTMLFixture(`
+        <div class="description">
+          <div class="md">
+            <ul data-sourcepos="1:1-1:9" class="task-list">
+              <li data-sourcepos="1:1-1:9" class="task-list-item">
+                <input type="checkbox" class="task-list-item-checkbox">
+                one
+              </li>
+            </ul>
+          </div>
+        </div>
+      `);
+      const listItem = document.querySelector('.task-list-item');
+      insertNextToTaskListItemText(dropdown, listItem);
+
+      expect(listItem.lastChild).toBe(dropdown);
+    });
+  });
+
+  describe('when checkbox with nested checkbox', () => {
+    it('inserts element as sibling to checkbox, before the nested checkbox', () => {
+      setHTMLFixture(`
+        <div class="description">
+          <div class="md">
+            <ul data-sourcepos="1:1-1:9" class="task-list">
+              <li data-sourcepos="1:1-3:14" class="task-list-item">
+                <input type="checkbox" class="task-list-item-checkbox">
+                one
+                <ul data-sourcepos="2:3-3:14" class="task-list">
+                  <li data-sourcepos="2:3-2:14" class="task-list-item">
+                    <input type="checkbox" class="task-list-item-checkbox">
+                    two
+                  </li>
+                  <li data-sourcepos="3:3-3:14" class="task-list-item enabled">
+                    <input type="checkbox" class="task-list-item-checkbox">
+                    three
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      `);
+      const listItem = document.querySelector('.task-list-item');
+      insertNextToTaskListItemText(dropdown, listItem);
+
+      expect(listItem.lastElementChild.previousSibling).toBe(dropdown);
+    });
+  });
+
+  describe('when multi-paragraph checkbox', () => {
+    it('inserts element as sibling to checkbox, inside p element', () => {
+      setHTMLFixture(`
+        <div class="description">
+          <div class="md">
+            <ul data-sourcepos="1:1-1:9" class="task-list">
+              <li data-sourcepos="1:1-3:11" class="task-list-item">
+                <p data-sourcepos="1:3-1:9">
+                  <input type="checkbox" class="task-list-item-checkbox">
+                  one
+                </p>
+                <p data-sourcepos="3:3-3:11">
+                  paragraph
+                </p>
+              </li>
+            </ul>
+          </div>
+        </div>
+      `);
+      const listItem = document.querySelector('.task-list-item');
+      insertNextToTaskListItemText(dropdown, listItem);
+
+      expect(listItem.firstElementChild.lastElementChild).toBe(dropdown);
     });
   });
 });

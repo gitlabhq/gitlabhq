@@ -3,30 +3,34 @@ import { isEqual } from 'lodash';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
 import { RECENT_SEARCHES_STORAGE_KEY_GROUPS } from '~/filtered_search/recent_searches_storage_keys';
 import {
-  EXPLORE_SORTING_ITEMS,
+  GROUPS_LIST_SORTING_ITEMS,
   SORTING_ITEM_NAME,
-  EXPLORE_FILTERED_SEARCH_TERM_KEY,
-  EXPLORE_FILTERED_SEARCH_NAMESPACE,
+  GROUPS_LIST_FILTERED_SEARCH_TERM_KEY,
 } from '../constants';
 import GroupsService from '../service/groups_service';
 import GroupsStore from '../store/groups_store';
 import eventHub from '../event_hub';
 import GroupsApp from './app.vue';
-import EmptyState from './empty_states/groups_explore_empty_state.vue';
 
 export default {
-  filteredSearch: {
-    tokens: [],
-    namespace: EXPLORE_FILTERED_SEARCH_NAMESPACE,
-    recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
-    searchTermKey: EXPLORE_FILTERED_SEARCH_TERM_KEY,
-  },
   components: {
     FilteredSearchAndSort,
     GroupsApp,
-    EmptyState,
   },
-  inject: ['endpoint', 'initialSort'],
+  props: {
+    filteredSearchNamespace: {
+      type: String,
+      required: true,
+    },
+    initialSort: {
+      type: String,
+      required: true,
+    },
+    endpoint: {
+      type: String,
+      required: true,
+    },
+  },
   data() {
     return {
       service: new GroupsService(this.endpoint),
@@ -34,6 +38,14 @@ export default {
     };
   },
   computed: {
+    filteredSearch() {
+      return {
+        tokens: [],
+        namespace: this.filteredSearchNamespace,
+        recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_GROUPS,
+        searchTermKey: GROUPS_LIST_FILTERED_SEARCH_TERM_KEY,
+      };
+    },
     sortByQuery() {
       return this.$route.query?.sort;
     },
@@ -45,7 +57,7 @@ export default {
     },
     activeSortItem() {
       return (
-        EXPLORE_SORTING_ITEMS.find(
+        GROUPS_LIST_SORTING_ITEMS.find(
           (sortItem) => sortItem.asc === this.sortBy || sortItem.desc === this.sortBy,
         ) || SORTING_ITEM_NAME
       );
@@ -64,7 +76,7 @@ export default {
       return this.activeSortItem.asc === this.sortBy;
     },
     sortOptions() {
-      return EXPLORE_SORTING_ITEMS.map((sortItem) => {
+      return GROUPS_LIST_SORTING_ITEMS.map((sortItem) => {
         return {
           value: this.isAscending ? sortItem.asc : sortItem.desc,
           text: sortItem.label,
@@ -104,14 +116,14 @@ export default {
       this.pushQuery({ ...this.routeQueryWithoutPagination, sort: sortBy });
     },
     onFilter(filtersQuery) {
-      const search = filtersQuery[EXPLORE_FILTERED_SEARCH_TERM_KEY];
+      const search = filtersQuery[GROUPS_LIST_FILTERED_SEARCH_TERM_KEY];
 
       eventHub.$emit('fetchFilteredAndSortedGroups', {
         filterGroupsBy: search,
         sortBy: this.sortBy,
       });
       this.pushQuery({
-        ...(search ? { [EXPLORE_FILTERED_SEARCH_TERM_KEY]: search } : {}),
+        ...(search ? { [GROUPS_LIST_FILTERED_SEARCH_TERM_KEY]: search } : {}),
         sort: this.sortByQuery,
       });
     },
@@ -122,12 +134,10 @@ export default {
 <template>
   <div>
     <filtered-search-and-sort
-      :filtered-search-namespace="$options.filteredSearch.namespace"
-      :filtered-search-tokens="$options.filteredSearch.tokens"
-      :filtered-search-term-key="$options.filteredSearch.searchTermKey"
-      :filtered-search-recent-searches-storage-key="
-        $options.filteredSearch.recentSearchesStorageKey
-      "
+      :filtered-search-namespace="filteredSearch.namespace"
+      :filtered-search-tokens="filteredSearch.tokens"
+      :filtered-search-term-key="filteredSearch.searchTermKey"
+      :filtered-search-recent-searches-storage-key="filteredSearch.recentSearchesStorageKey"
       :filtered-search-query="$route.query"
       :is-ascending="isAscending"
       :sort-options="sortOptions"
@@ -138,7 +148,7 @@ export default {
     />
     <groups-app :service="service" :store="store">
       <template #empty-state>
-        <empty-state />
+        <slot name="empty-state"></slot>
       </template>
     </groups-app>
   </div>

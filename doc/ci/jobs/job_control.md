@@ -10,14 +10,9 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-When a new pipeline starts, GitLab checks the pipeline configuration to determine
-which jobs should run in that pipeline. You can configure jobs to run depending on
-factors like the status of variables, or the pipeline type.
-
-To configure a job to be included or excluded from certain pipelines, use [`rules`](job_rules.md).
-
-Use [`needs`](../yaml/index.md#needs) to configure a job to run as soon as the
-earlier jobs it depends on finish running.
+Before a new pipeline starts, GitLab checks the pipeline configuration to determine
+which jobs can run in that pipeline. You can configure jobs to run depending on
+conditions like the value of variables or the pipeline type with [`rules`](job_rules.md).
 
 ## Create a job that must be run manually
 
@@ -39,8 +34,7 @@ Manual jobs can be either optional or blocking.
 In optional manual jobs:
 
 - [`allow_failure`](../yaml/index.md#allow_failure) is `true`, which is the default
-  setting for jobs that have `when: manual` and no [`rules`](../yaml/index.md#rules),
-  or `when: manual` defined outside of `rules`.
+  setting for jobs that have `when: manual` defined outside of `rules`.
 - The status does not contribute to the overall pipeline status. A pipeline can
   succeed even if all of its manual jobs fail.
 
@@ -69,7 +63,9 @@ You can also [add custom CI/CD variables when running a manual job](index.md#spe
 
 ### Add a confirmation dialog for manual jobs
 
-Use [`manual_confirmation`](../yaml/index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs. The confirmation dialog helps to prevent accidental deployments or deletions, especially for sensitive jobs like those that deploy to production.
+Use [`manual_confirmation`](../yaml/index.md#manual_confirmation) with `when: manual` to add a confirmation dialog for manual jobs.
+The confirmation dialog helps to prevent accidental deployments or deletions,
+especially for sensitive jobs like those that deploy to production.
 
 Users are prompted to confirm the action before the manual job runs, which provides an additional layer of safety and control.
 
@@ -185,7 +181,8 @@ Test Boosters reports usage statistics to the author.
 
 ### Run a one-dimensional matrix of parallel jobs
 
-You can create a one-dimensional matrix of parallel jobs:
+To run a job multiple times in parallel in a single pipeline, but with different variable values for each instance of the job,
+use the [`parallel:matrix`](../yaml/index.md#parallelmatrix) keyword:
 
 ```yaml
 deploystacks:
@@ -197,8 +194,6 @@ deploystacks:
       - PROVIDER: [aws, ovh, gcp, vultr]
   environment: production/$PROVIDER
 ```
-
-You can also [create a multi-dimensional matrix](../yaml/index.md#parallelmatrix).
 
 ### Run a matrix of parallel trigger jobs
 
@@ -240,6 +235,8 @@ keyword for dynamic runner selection:
 ```yaml
 deploystacks:
   stage: deploy
+  script:
+    - bin/deploy
   parallel:
     matrix:
       - PROVIDER: aws
@@ -251,7 +248,7 @@ deploystacks:
   environment: $PROVIDER/$STACK
 ```
 
-#### Fetch artifacts from a `parallel:matrix` job
+### Fetch artifacts from a `parallel:matrix` job
 
 You can fetch artifacts from a job created with [`parallel:matrix`](../yaml/index.md#parallelmatrix)
 by using the [`dependencies`](../yaml/index.md#dependencies) keyword. Use the job name

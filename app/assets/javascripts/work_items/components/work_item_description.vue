@@ -353,8 +353,11 @@ export default {
     <work-item-description-rendered
       v-else
       :work-item-description="workItemDescription"
+      :work-item-id="workItemId"
+      :work-item-type="workItemType"
       :can-edit="canEdit"
       :disable-truncation="disableTruncation"
+      :is-updating="isSubmitting"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />

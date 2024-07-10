@@ -293,11 +293,9 @@ module GroupsHelper
     dropdown_data
   end
 
-  def groups_explore_app_data
+  def groups_list_with_filtered_search_app_data(endpoint)
     {
-      endpoint: explore_groups_path(format: :json),
-      empty_search_illustration: image_path('illustrations/empty-state/empty-search-md.svg'),
-      groups_empty_state_illustration: image_path('illustrations/empty-state/empty-groups-md.svg'),
+      endpoint: endpoint,
       initial_sort: project_list_sort_by
     }.to_json
   end

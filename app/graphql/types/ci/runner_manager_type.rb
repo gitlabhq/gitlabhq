@@ -52,7 +52,7 @@ module Types
 
       def job_execution_status
         BatchLoader::GraphQL.for(runner_manager.id).batch(key: :running_builds_exist) do |runner_manager_ids, loader|
-          statuses = ::Ci::RunnerManager.id_in(runner_manager_ids).with_running_builds.index_by(&:id)
+          statuses = ::Ci::RunnerManager.id_in(runner_manager_ids).with_executing_builds.index_by(&:id)
 
           runner_manager_ids.each do |runner_manager_id|
             loader.call(runner_manager_id, statuses[runner_manager_id] ? :running : :idle)

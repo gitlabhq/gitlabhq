@@ -2,18 +2,18 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard Group', feature_category: :groups_and_projects do
+RSpec.describe 'Dashboard Group', :js, feature_category: :groups_and_projects do
   before do
     sign_in(create(:user))
   end
 
-  it 'defaults sort dropdown to last created' do
+  it 'defaults sort dropdown to Created date' do
     visit dashboard_groups_path
 
-    expect(page).to have_button('Last created')
+    expect(page).to have_button('Created date')
   end
 
-  it 'creates new group', :js do
+  it 'creates new group' do
     visit dashboard_groups_path
     find_by_testid('new-group-button').click
     click_link 'Create group'

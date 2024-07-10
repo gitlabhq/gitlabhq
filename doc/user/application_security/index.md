@@ -531,7 +531,7 @@ You can interact with the results of the security scanning tools in several loca
 
 - [Scan information in merge requests](#merge-request)
 - [Project Security Dashboard](security_dashboard/index.md#project-security-dashboard)
-- [Security pipeline tab](security_dashboard/index.md)
+- [Security pipeline tab](vulnerability_report/pipeline.md)
 - [Group Security Dashboard](security_dashboard/index.md#group-security-dashboard)
 - [Security Center](security_dashboard/index.md#security-center)
 - [Vulnerability Report](vulnerability_report/index.md)

@@ -7,7 +7,7 @@ const chartData = generateRawData(30, 4);
 
 export default {
   component: ContributorAreaChart,
-  title: 'ce/contributors/contributor_area_chart',
+  title: 'contributors/contributor_area_chart',
   decorators: [withVuexStore],
   args: {
     data: getMasterChartData(parsedData({ chartData })),

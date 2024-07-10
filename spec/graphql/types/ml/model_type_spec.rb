@@ -4,11 +4,21 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
   let_it_be(:model) { create(:ml_models, :with_latest_version_and_package, description: 'A description') }
+  let_it_be(:model_markdown) { create(:ml_models, :with_latest_version_and_package, description: 'A **description**') }
   let_it_be(:project) { model.project }
+  let_it_be(:project_markdown) { model_markdown.project }
   let_it_be(:candidates) { Array.new(2) { create(:ml_candidates, experiment: model.default_experiment) } }
+  let_it_be(:candidates_markdown) do
+    Array.new(2) do
+      create(:ml_candidates, experiment: model_markdown.default_experiment)
+    end
+  end
 
   let_it_be(:model_id) { GitlabSchema.id_from_object(model).to_s }
   let_it_be(:model_version_id) { GitlabSchema.id_from_object(model.latest_version).to_s }
+
+  let_it_be(:model_id_markdown) { GitlabSchema.id_from_object(model_markdown).to_s }
+  let_it_be(:model_version_id_markdown) { GitlabSchema.id_from_object(model_markdown.latest_version).to_s }
 
   let(:query) do
     %(
@@ -16,6 +26,7 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
           mlModel(id: "#{model_id}") {
             id
             description
+            descriptionHtml
             name
             versionCount
             candidateCount
@@ -33,13 +44,39 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
       )
   end
 
+  let(:query_markdown) do
+    %(
+        query {
+          mlModel(id: "#{model_id_markdown}") {
+            id
+            description
+            descriptionHtml
+            name
+            versionCount
+            candidateCount
+            latestVersion {
+              id
+            }
+            version(modelVersionId: "#{model_version_id_markdown}") {
+              id
+            }
+            _links {
+              showPath
+            }
+          }
+        }
+      )
+  end
+
+  let(:data) { GitlabSchema.execute(query, context: { current_user: project.owner }).as_json }
+
   specify { expect(described_class.description).to eq('Machine learning model in the model registry') }
 
-  subject(:data) { GitlabSchema.execute(query, context: { current_user: project.owner }).as_json }
+  subject(:data_markdown) { GitlabSchema.execute(query_markdown, context: { current_user: project.owner }).as_json }
 
   it 'includes all the fields' do
     expected_fields = %w[id name versions candidates version_count _links created_at latest_version description
-      candidate_count description version]
+      candidate_count description version description_html]
 
     expect(described_class).to include_graphql_fields(*expected_fields)
   end
@@ -51,6 +88,8 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
       'id' => model_id,
       'name' => model.name,
       'description' => 'A description',
+      'descriptionHtml' =>
+        '<p data-sourcepos="1:1-1:13" dir="auto">A description</p>',
       'latestVersion' => {
         'id' => model_version_id
       },
@@ -61,6 +100,29 @@ RSpec.describe GitlabSchema.types['MlModel'], feature_category: :mlops do
       'candidateCount' => 2,
       '_links' => {
         'showPath' => "/#{project.full_path}/-/ml/models/#{model.id}"
+      }
+    })
+  end
+
+  it 'computes the correct properties with markdown' do
+    model_data = data_markdown.dig('data', 'mlModel')
+
+    expect(model_data).to eq({
+      'id' => model_id_markdown,
+      'name' => model_markdown.name,
+      'description' => model_markdown.description,
+      'descriptionHtml' =>
+        '<p data-sourcepos="1:1-1:17" dir="auto">A <strong data-sourcepos="1:3-1:17">description</strong></p>',
+      'latestVersion' => {
+        'id' => model_version_id_markdown
+      },
+      'version' => {
+        'id' => model_version_id_markdown
+      },
+      'versionCount' => 1,
+      'candidateCount' => 2,
+      '_links' => {
+        'showPath' => "/#{project_markdown.full_path}/-/ml/models/#{model_markdown.id}"
       }
     })
   end
