@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.1.2 (2024-07-09)
+
+### Fixed (2 changes)
+
+- [Update dependency slack-messenger to v2.3.5](gitlab-org/security/gitlab@e21a4599ab21cc6f6b89ca432d9557ed72169c85)
+- [Fix MailRoom not loading in Omnibus](gitlab-org/security/gitlab@5547c1164c494705bf29595062124ff8cb266cb3)
+
+### Security (9 changes)
+
+- [Disallow serving Pages over disabled custom domains with deployments](gitlab-org/security/gitlab@176442d616a111667481f22186560925d1175c67) ([merge request](gitlab-org/security/gitlab!4245))
+- [Check npm package name, version and scripts coherence](gitlab-org/security/gitlab@917d805ce57e5d0439b4a4c757967d494014a97d) ([merge request](gitlab-org/security/gitlab!4212))
+- [Check for create_deploy_token policy before creating deploy token](gitlab-org/security/gitlab@8ae4e9b0b25bec92561698da3c7d0495d6ba61bc) ([merge request](gitlab-org/security/gitlab!4209))
+- [Check if user has ban_group_member access before banning in namespace](gitlab-org/security/gitlab@eefb608987d64b9cf58411b8520f260d1fb9b1c3) ([merge request](gitlab-org/security/gitlab!4091))
+- [Prevent privilege escalation via custom role](gitlab-org/security/gitlab@a618e86dc4585b0fef049f75f13acf0eec00656d) ([merge request](gitlab-org/security/gitlab!4199))
+- [Prevent using quick actions for some bot users](gitlab-org/security/gitlab@5789cc333d04d76ffb4c79239e71be1910f12229) ([merge request](gitlab-org/security/gitlab!4231))
+- [Disable raw HTML for quick action pipeline](gitlab-org/security/gitlab@7db9b002b803cb6b53a3e6ce3f8d9b15107e7464) ([merge request](gitlab-org/security/gitlab!4235))
+- [Disable quick actions unless description changed](gitlab-org/security/gitlab@a1800c591b38df0e2d143df3ee56f76b4f3a914f) ([merge request](gitlab-org/security/gitlab!4234))
+- [Remove comment support from shrug and tableflip](gitlab-org/security/gitlab@fb6bcef1935dc3a7dd60def448a652769c86ee62) ([merge request](gitlab-org/security/gitlab!4229))
+
 ## 17.1.1 (2024-06-25)
 
 ### Fixed (1 change)

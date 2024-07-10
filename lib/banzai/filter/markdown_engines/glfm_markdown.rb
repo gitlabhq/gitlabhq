@@ -38,13 +38,14 @@ module Banzai
         private
 
         def render_options
-          return OPTIONS unless sourcepos_disabled? || headers_disabled? || autolink_disabled?
+          return OPTIONS unless sourcepos_disabled? || headers_disabled? || autolink_disabled? || raw_html_disabled?
 
           OPTIONS.merge(
             sourcepos: !sourcepos_disabled?,
             header_ids: headers_disabled? ? nil : OPTIONS[:header_ids],
             autolink: !autolink_disabled?,
-            relaxed_autolinks: !autolink_disabled?
+            relaxed_autolinks: !autolink_disabled?,
+            unsafe: !raw_html_disabled?
           )
         end
 
@@ -54,6 +55,10 @@ module Banzai
 
         def autolink_disabled?
           context[:autolink] == false
+        end
+
+        def raw_html_disabled?
+          context[:disable_raw_html]
         end
       end
     end

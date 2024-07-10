@@ -387,7 +387,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       let_it_be(:child) { create(:work_item, :objective, project: project) }
       let_it_be(:second_child) { create(:work_item, :objective, project: project) }
       let_it_be(:note_text) { "/add_child #{child.to_reference}, #{second_child.to_reference}" }
-      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+      let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
       let_it_be(:children) { [child, second_child] }
 
       shared_examples 'adds child work items' do
@@ -423,7 +423,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
       let_it_be_with_reload(:child) { create(:work_item, :objective, project: project) }
       let_it_be(:note_text) { "/remove_child #{child.to_reference}" }
-      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+      let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
       before do
         create(:parent_link, work_item_parent: noteable, work_item: child)
@@ -465,7 +465,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       let_it_be_with_reload(:noteable) { create(:work_item, :objective, project: project) }
       let_it_be_with_reload(:parent) { create(:work_item, :objective, project: project) }
       let_it_be(:note_text) { "/set_parent #{parent.to_reference}" }
-      let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+      let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
       shared_examples 'sets work item parent' do
         it 'leaves the note empty' do
@@ -536,7 +536,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       context 'when user is not allowed to promote work item' do
         let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
         let_it_be(:note_text) { '/promote_to issue' }
-        let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+        let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
         before do
           project.team.find_member(maintainer.id).destroy!
@@ -551,7 +551,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       context 'on a task' do
         let_it_be_with_reload(:noteable) { create(:work_item, :task, project: project) }
         let_it_be(:note_text) { '/promote_to Issue' }
-        let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+        let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
         it_behaves_like 'promotes work item', from: 'task', to: 'issue'
 
@@ -565,7 +565,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
       context 'on an issue' do
         let_it_be_with_reload(:noteable) { create(:work_item, :issue, project: project) }
         let_it_be(:note_text) { '/promote_to Incident' }
-        let_it_be(:note) { create(:note, noteable: noteable, project: project, note: note_text) }
+        let_it_be(:note) { build(:note, noteable: noteable, project: project, note: note_text) }
 
         it_behaves_like 'promotes work item', from: 'issue', to: 'incident'
 
@@ -573,6 +573,38 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
           let_it_be(:note_text) { '/promote_to incident' }
 
           it_behaves_like 'promotes work item', from: 'issue', to: 'incident'
+        end
+      end
+    end
+
+    context 'when existing note contains quick actions' do
+      let(:note_text) { "foo\n/close\nbar" }
+
+      before do
+        note.save!
+        note.note = edit_note_text
+      end
+
+      context 'when a quick action exists in original note' do
+        let(:edit_note_text) { "foo\n/close\nbar\nbaz" }
+
+        it 'sanitizes/removes any quick actions and does not execute them' do
+          content = execute(note)
+
+          expect(content).to eq "foo\nbar\nbaz"
+          expect(note.noteable.open?).to be_truthy
+        end
+      end
+
+      context 'when a new quick action is used in new note' do
+        let(:edit_note_text) { "bar\n/react :smile:\nfoo" }
+
+        it 'executes any quick actions not in unedited note' do
+          content = execute(note)
+
+          expect(content).to eq "bar\nfoo"
+          expect(note.noteable.award_emoji.first.name).to eq 'smile'
+          expect(note.noteable.open?).to be_truthy
         end
       end
     end

@@ -211,18 +211,16 @@ module Gitlab
           end
         end
 
-        desc { _("Append the comment with %{shrug}") % { shrug: SHRUG } }
-        params '<Comment>'
+        desc { _("Add %{shrug}") % { shrug: SHRUG } }
         types ::Issuable
-        substitution :shrug do |comment|
-          "#{comment} #{SHRUG}"
+        substitution :shrug do
+          SHRUG
         end
 
-        desc { _("Append the comment with %{tableflip}") % { tableflip: TABLEFLIP } }
-        params '<Comment>'
+        desc { _("Add %{tableflip}") % { tableflip: TABLEFLIP } }
         types ::Issuable
-        substitution :tableflip do |comment|
-          "#{comment} #{TABLEFLIP}"
+        substitution :tableflip do
+          TABLEFLIP
         end
 
         desc { _('Set severity') }
