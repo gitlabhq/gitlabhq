@@ -517,7 +517,7 @@ trade-off:
 - Integration tests are a bit more expensive, but don't abuse them. A system test
   is often better than an integration test that is stubbing a lot of internals.
 - System tests are expensive (compared to unit tests), even more if they require
-  a JavaScript driver. Make sure to follow the guidelines in the [Speed](best_practices.md#test-speed)
+  a JavaScript driver. Make sure to follow the guidelines in the [Speed](best_practices.md#test-slowness)
   section.
 
 Another way to see it is to think about the "cost of tests", this is well

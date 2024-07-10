@@ -22055,9 +22055,6 @@ msgstr ""
 msgid "Failed to protect the branch"
 msgstr ""
 
-msgid "Failed to protect the environment"
-msgstr ""
-
 msgid "Failed to publish issue on status page."
 msgstr ""
 
@@ -37163,6 +37160,9 @@ msgstr ""
 msgid "Owasp|A9:2017 Using Components with Known Vulnerabilities"
 msgstr ""
 
+msgid "Owasp|Non-OWASP Top 10"
+msgstr ""
+
 msgid "Owned by %{image_tag}"
 msgstr ""
 
@@ -42985,9 +42985,6 @@ msgstr ""
 msgid "ProtectedEnvironment|Approvers"
 msgstr ""
 
-msgid "ProtectedEnvironment|Environment"
-msgstr ""
-
 msgid "ProtectedEnvironment|Environment '%{environment_name}' is already protected"
 msgstr ""
 
@@ -43030,9 +43027,6 @@ msgstr ""
 msgid "ProtectedEnvironment|Protected Environment (%{protected_environments_count})"
 msgstr ""
 
-msgid "ProtectedEnvironment|Protected Environments"
-msgstr ""
-
 msgid "ProtectedEnvironment|Required approvals"
 msgstr ""
 
@@ -43048,13 +43042,7 @@ msgstr ""
 msgid "ProtectedEnvironment|Select groups"
 msgstr ""
 
-msgid "ProtectedEnvironment|There are currently no protected environments."
-msgstr ""
-
 msgid "ProtectedEnvironment|Unprotect"
-msgstr ""
-
-msgid "ProtectedEnvironment|Unprotect environment"
 msgstr ""
 
 msgid "ProtectedEnvironment|Users with at least the Developer role can write to unprotected environments. Are you sure you want to unprotect %{environment_name}?"

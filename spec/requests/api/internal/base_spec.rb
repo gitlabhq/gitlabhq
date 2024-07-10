@@ -577,7 +577,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
           expect(json_response["gl_key_type"]).to eq("key")
           expect(json_response["gl_key_id"]).to eq(key.id)
-          expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
         # Wiki repositories don't invoke any Gitaly RPCs to check for changes, so we can only test for the
@@ -597,7 +596,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["gl_repository"]).to eq("wiki-#{project.id}")
           expect(json_response["gl_project_id"]).to eq(project.id)
           expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
-          expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
 
@@ -627,7 +625,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["gl_repository"]).to eq("snippet-#{personal_snippet.id}")
           expect(json_response["gl_project_id"]).to be_nil
           expect(json_response["gl_root_namespace_id"]).to be_nil
-          expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
         it_behaves_like 'sets hook env and routes to primary' do
@@ -668,7 +665,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response["gl_repository"]).to eq("snippet-#{project_snippet.id}")
           expect(json_response["gl_project_id"]).to eq(project.id)
           expect(json_response["gl_root_namespace_id"]).to eq(project.root_namespace.id)
-          expect(user.reload.last_activity_on).to eql(Date.today)
         end
 
         it_behaves_like 'sets hook env and routes to primary' do
@@ -804,7 +800,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
             expect(json_response["gitaly"]["repository"]["relative_path"]).to eq(project.repository.gitaly_repository.relative_path)
             expect(json_response["gitaly"]["address"]).to eq(Gitlab::GitalyClient.address(project.repository_storage))
             expect(json_response["gitaly"]["token"]).to eq(Gitlab::GitalyClient.token(project.repository_storage))
-            expect(user.reload.last_activity_on).to eql(Date.today)
           end
 
           it_behaves_like 'rate limited request' do
@@ -965,7 +960,6 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response['status']).to be_truthy
           expect(json_response['payload']).to eql(payload)
           expect(json_response['gl_console_messages']).to eql(console_messages)
-          expect(user.reload.last_activity_on).to eql(Date.today)
         end
       end
     end

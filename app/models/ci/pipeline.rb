@@ -280,6 +280,7 @@ module Ci
 
       after_transition any => UNLOCKABLE_STATUSES do |pipeline|
         pipeline.run_after_commit do
+          Ci::PipelineFinishedWorker.perform_async(pipeline.id)
           Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
         end
       end

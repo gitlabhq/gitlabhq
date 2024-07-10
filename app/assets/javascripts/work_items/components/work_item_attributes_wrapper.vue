@@ -85,7 +85,10 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_ROLLEDUP_DATES);
     },
     workItemWeight() {
-      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+      /** TODO remove this check after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158021 is merged */
+      return (
+        this.isWidgetPresent(WIDGET_TYPE_WEIGHT) && this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC
+      );
     },
     workItemParticipants() {
       return this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS);

@@ -355,6 +355,14 @@ sudo gitlab-ctl registry-database import --step-three
 
 After that command exists successfully, the registry is now fully migrated to the database!
 
+#### Post Migration
+
+It may take approximately 48 hours post migration to see your registry storage
+decrease. This is a normal and expected part of online garbage collection, as this
+delay ensures that online garbage collection does not interfere with image pushes.
+Check out the [monitor online garbage collection](#online-garbage-collection-monitoring) section
+to see how to monitor the progress and health of the online garbage collector.
+
 ## Manage schema migrations
 
 Use the following commands to run the schema migrations for the Container registry metadata database.
@@ -409,6 +417,8 @@ pay special attention to logs filtered by `component=registry.gc.*`.
 Use monitoring tools like Prometheus and Grafana to visualize and track garbage collection metrics,
 focusing on metrics with a prefix of `registry_gc_*`. These include the number of objects
 marked for deletion, objects successfully deleted, run intervals, and durations.
+See [enable the registry debug server](container_registry.md#enable-the-registry-debug-server)
+for how to enable Prometheus.
 
 ### Queue monitoring
 

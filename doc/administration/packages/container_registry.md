@@ -1669,6 +1669,26 @@ curl "localhost:5001/debug/health"
 curl "localhost:5001/debug/vars"
 ```
 
+#### Enable Registry Prometheus Metrics
+
+If the debug server is enabled, you can also enable Prometheus metrics. This endpoint exposes highly detailed telemetry
+related to almost all registry operations.
+
+```ruby
+registry['debug'] = {
+  'prometheus' => {
+    'enabled' => true,
+    'path' => '/metrics'
+  }
+}
+```
+
+Use curl to request debug output from Prometheus:
+
+```shell
+curl "localhost:5001/debug/metrics"
+```
+
 ### Tags with an empty name
 
 If using [AWS DataSync](https://aws.amazon.com/datasync/)

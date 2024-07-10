@@ -378,10 +378,12 @@ export default {
       />
     </div>
 
-    <div v-if="stateToRender !== $options.stateMap.emptyState" class="gl-display-flex">
-      <div class="row-content-block gl-display-flex gl-flex-grow-1 gl-border-b-0">
+    <div v-if="stateToRender !== $options.stateMap.emptyState" class="gl-flex">
+      <div
+        class="row-content-block gl-max-w-full gl-flex max-sm:gl-flex-wrap gl-gap-4 gl-flex-grow gl-border-b-0"
+      >
         <pipelines-filtered-search
-          class="gl-display-flex gl-flex-grow-1 gl-mr-4"
+          class="gl-flex gl-flex-grow gl-max-w-full"
           :project-id="projectId"
           :default-branch-name="defaultBranchName"
           :params="validatedParams"
@@ -389,6 +391,8 @@ export default {
         />
         <gl-collapsible-listbox
           v-model="visibilityPipelineIdType"
+          class="max-sm:gl-flex-grow"
+          toggle-class="gl-flex-grow"
           :toggle-text="selectedPipelineKeyOption.text"
           :items="$options.pipelineKeyOptions"
           @select="changeVisibilityPipelineIDType"
