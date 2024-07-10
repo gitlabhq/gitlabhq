@@ -210,7 +210,13 @@ class Wiki
   #
   # Returns an Array of GitLab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def list_pages(direction: DIRECTION_ASC, load_content: false, limit: 0, offset: 0)
+  def list_pages(
+    direction: DIRECTION_ASC,
+    load_content: false,
+    size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE,
+    limit: 0,
+    offset: 0
+  )
     create_wiki_repository unless repository_exists?
 
     paths = list_page_paths(limit: limit, offset: offset)
@@ -230,7 +236,7 @@ class Wiki
     end
     sort_pages!(pages, direction)
     pages = pages.take(limit) if limit > 0
-    fetch_pages_content!(pages) if load_content
+    fetch_pages_content!(pages, size_limit: size_limit) if load_content
 
     pages
   end
@@ -566,10 +572,10 @@ class Wiki
     pages.reverse! if direction == DIRECTION_DESC
   end
 
-  def fetch_pages_content!(pages)
+  def fetch_pages_content!(pages, size_limit: Gitlab::Git::Blob::MAX_DATA_DISPLAY_SIZE)
     blobs =
       repository
-      .blobs_at(pages.map { |page| [default_branch, page.path] })
+      .blobs_at(pages.map { |page| [default_branch, page.path] }, blob_size_limit: size_limit)
       .to_h { |blob| [blob.path, blob.data] }
 
     pages.each do |page|

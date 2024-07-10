@@ -939,7 +939,6 @@ Layout/LineLength:
     - 'ee/app/services/epics/update_service.rb'
     - 'ee/app/services/external_status_checks/create_service.rb'
     - 'ee/app/services/geo/blob_upload_service.rb'
-    - 'ee/app/services/geo/event_service.rb'
     - 'ee/app/services/geo/file_registry_removal_service.rb'
     - 'ee/app/services/geo/framework_repository_sync_service.rb'
     - 'ee/app/services/geo/request_service.rb'

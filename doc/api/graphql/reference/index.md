@@ -1628,6 +1628,31 @@ Input type: `AiSelfHostedModelCreateInput`
 | <a id="mutationaiselfhostedmodelcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationaiselfhostedmodelcreateselfhostedmodel"></a>`selfHostedModel` | [`AiSelfHostedModel`](#aiselfhostedmodel) | Self-hosted model after mutation. |
 
+### `Mutation.aiSelfHostedModelDelete`
+
+Deletes a self-hosted model.
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Input type: `AiSelfHostedModelDeleteInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiselfhostedmodeldeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiselfhostedmodeldeleteid"></a>`id` | [`AiSelfHostedModelID!`](#aiselfhostedmodelid) | Global ID of the self-hosted model to delete. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationaiselfhostedmodeldeleteclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationaiselfhostedmodeldeleteerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationaiselfhostedmodeldeleteselfhostedmodel"></a>`selfHostedModel` | [`AiSelfHostedModel`](#aiselfhostedmodel) | Self-hosted model after mutation. |
+
 ### `Mutation.aiSelfHostedModelUpdate`
 
 Updates a self-hosted model.

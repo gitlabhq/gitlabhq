@@ -982,7 +982,6 @@ RSpec/NamedSubject:
     - 'ee/spec/services/geo/cache_invalidation_event_store_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/container_repository_sync_spec.rb'
-    - 'ee/spec/services/geo/event_service_spec.rb'
     - 'ee/spec/services/geo/file_registry_removal_service_spec.rb'
     - 'ee/spec/services/geo/framework_repository_sync_service_spec.rb'
     - 'ee/spec/services/geo/graphql_request_service_spec.rb'

@@ -329,9 +329,9 @@ calculations start again from `0`.
 
 For example, if you have a monthly quota of `10,000` compute minutes:
 
-- On **April 1**, you have `10,000` compute minutes.
+- On **1st April**, you have `10,000` compute minutes.
 - During April, you use only `6,000` of the `10,000` compute minutes.
-- On **May 1**, the accumulated compute usage resets to `0`, and you have `10,000` compute minutes to use again
+- On **1st May**, the accumulated compute usage resets to `0`, and you have `10,000` compute minutes to use again
   during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.

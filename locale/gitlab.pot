@@ -47286,16 +47286,10 @@ msgstr ""
 msgid "Secrets|Add secret"
 msgstr ""
 
-msgid "Secrets|Audit log"
-msgstr ""
-
 msgid "Secrets|Created"
 msgstr ""
 
 msgid "Secrets|Delete"
-msgstr ""
-
-msgid "Secrets|Details"
 msgstr ""
 
 msgid "Secrets|Edit %{id}"

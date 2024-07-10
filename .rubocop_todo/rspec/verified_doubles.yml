@@ -173,7 +173,6 @@ RSpec/VerifiedDoubles:
     - 'ee/spec/workers/compliance_management/chain_of_custody_report_worker_spec.rb'
     - 'ee/spec/workers/geo/container_repository_sync_worker_spec.rb'
     - 'ee/spec/workers/geo/destroy_worker_spec.rb'
-    - 'ee/spec/workers/geo/event_worker_spec.rb'
     - 'ee/spec/workers/geo/prune_event_log_worker_spec.rb'
     - 'ee/spec/workers/geo/registry_sync_worker_spec.rb'
     - 'ee/spec/workers/geo/reverification_batch_worker_spec.rb'
