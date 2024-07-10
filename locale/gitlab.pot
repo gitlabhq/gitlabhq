@@ -46490,10 +46490,19 @@ msgstr ""
 msgid "ScanExecutionPolicy|Add new condition"
 msgstr ""
 
+msgid "ScanExecutionPolicy|Are you sure you want to create merge request fot this policy?"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Back to edit policy"
+msgstr ""
+
 msgid "ScanExecutionPolicy|Choose a method to execute code"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Conditions"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Create merge request"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Create new scan profile"
@@ -46545,6 +46554,9 @@ msgid "ScanExecutionPolicy|Only one variable can be added at a time."
 msgstr ""
 
 msgid "ScanExecutionPolicy|Override"
+msgstr ""
+
+msgid "ScanExecutionPolicy|Potential overload for infrastructure"
 msgstr ""
 
 msgid "ScanExecutionPolicy|Run %{scan} with the following options:"
@@ -46608,6 +46620,9 @@ msgid "ScanExecutionPolicy|The file at that project, ref, and path doesn't exist
 msgstr ""
 
 msgid "ScanExecutionPolicy|The file path can't be empty"
+msgstr ""
+
+msgid "ScanExecutionPolicy|This scan execution policy will generate a large number of pipelines, which can have a significant performance impact. To reduce potential performance issues, consider creating separate policies for smaller subsets of projects."
 msgstr ""
 
 msgid "ScanExecutionPolicy|Triggers:"

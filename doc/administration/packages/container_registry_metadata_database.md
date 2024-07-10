@@ -551,3 +551,51 @@ If either of these values is set to `on`, you must disable it:
 1. Restart your Postgres server to apply these settings.
 1. Try to [apply schema migrations](#apply-schema-migrations) again, if applicable.
 1. Restart the registry `sudo gitlab-ctl restart registry`.
+
+### Error: `cannot import all repositories while the tags table has entries`
+
+If you try to [migrate existing registries](#existing-registries) and encounter the following error:
+
+```shell
+ERRO[0000] cannot import all repositories while the tags table has entries, you must truncate the table manually before retrying,
+see https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html#troubleshooting
+common_blobs=true dry_run=false error="tags table is not empty"
+```
+
+This error happens when there are existing entries in the `tags` table of the registry database,
+which can happen if you:
+
+- Attempted the [one step migration](#one-step-migration) and encountered errors.
+- Attempted the [three-step migration](#three-step-migration) process and encountered errors.
+- Stopped the migration process on purpose.
+- Tried to run the migration again after any of the above.
+- Ran the migration against the wrong configuration file.
+
+To resolve this issue, you must delete the existing entries in the tags table.
+You must truncate the table manually on your PostgreSQL instance:
+
+1. Edit `/etc/gitlab/gitlab.rb` and ensure the metadata database is **disabled**:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => false,
+     'host' => 'localhost',
+     'port' => 5432,
+     'user' => 'registry-database-user',
+     'password' => 'registry-database-password',
+     'dbname' => 'registry-database-name',
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslcert' => '/path/to/cert.pem',
+     'sslkey' => '/path/to/private.key',
+     'sslrootcert' => '/path/to/ca.pem'
+   }
+   ```
+
+1. Connect to your registry database using a PostgreSQL client.
+1. Truncate the `tags` table to remove all existing entries:
+
+   ```sql
+   TRUNCATE TABLE tags RESTART IDENTITY CASCADE;
+   ```
+
+1. After truncating the `tags` table, try running the migration process again.

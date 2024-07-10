@@ -4,6 +4,7 @@ import { setImmediate } from 'timers';
 import Dexie from 'dexie';
 import { IDBKeyRange, IDBFactory } from 'fake-indexeddb';
 import 'helpers/shared_test_setup';
+import { forgetConsoleCalls, getConsoleCalls, throwErrorFromCalls } from 'helpers/console_watcher';
 
 const indexedDB = new IDBFactory();
 
@@ -18,6 +19,15 @@ afterEach(() =>
     jest.runOnlyPendingTimers();
   }),
 );
+
+afterEach(() => {
+  const consoleCalls = getConsoleCalls();
+  forgetConsoleCalls();
+
+  if (consoleCalls.length) {
+    throwErrorFromCalls(consoleCalls);
+  }
+});
 
 afterEach(async () => {
   const dbs = await indexedDB.databases();

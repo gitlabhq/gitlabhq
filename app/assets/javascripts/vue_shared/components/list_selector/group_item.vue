@@ -44,9 +44,9 @@ export default {
 </script>
 
 <template>
-  <span class="gl-display-flex gl-align-items-center gl-gap-3">
-    <hidden-groups-item v-if="isHiddenGroups" class="gl-flex-grow-1" />
-    <div v-else class="gl-display-flex gl-align-items-center gl-gap-2 gl-flex-grow-1">
+  <div class="gl-flex gl-items-center gl-gap-3">
+    <hidden-groups-item v-if="isHiddenGroups" class="gl-grow" />
+    <div v-else class="gl-flex gl-items-center gl-gap-3 gl-grow">
       <gl-avatar
         :alt="fullName"
         :entity-name="fullName"
@@ -54,7 +54,7 @@ export default {
         :src="avatarUrl"
         fallback-on-error
       />
-      <span class="gl-display-flex gl-flex-direction-column">
+      <span class="gl-flex gl-flex-col">
         <span class="gl-font-bold">{{ fullName }}</span>
         <span class="gl-text-gray-600">@{{ name }}</span>
       </span>
@@ -68,5 +68,5 @@ export default {
       category="tertiary"
       @click="$emit('delete', data.id)"
     />
-  </span>
+  </div>
 </template>

@@ -10695,20 +10695,6 @@ CREATE SEQUENCE geo_nodes_id_seq
 
 ALTER SEQUENCE geo_nodes_id_seq OWNED BY geo_nodes.id;
 
-CREATE TABLE geo_repositories_changed_events (
-    id bigint NOT NULL,
-    geo_node_id integer NOT NULL
-);
-
-CREATE SEQUENCE geo_repositories_changed_events_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE geo_repositories_changed_events_id_seq OWNED BY geo_repositories_changed_events.id;
-
 CREATE TABLE ghost_user_migrations (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -20864,8 +20850,6 @@ ALTER TABLE ONLY geo_node_statuses ALTER COLUMN id SET DEFAULT nextval('geo_node
 
 ALTER TABLE ONLY geo_nodes ALTER COLUMN id SET DEFAULT nextval('geo_nodes_id_seq'::regclass);
 
-ALTER TABLE ONLY geo_repositories_changed_events ALTER COLUMN id SET DEFAULT nextval('geo_repositories_changed_events_id_seq'::regclass);
-
 ALTER TABLE ONLY ghost_user_migrations ALTER COLUMN id SET DEFAULT nextval('ghost_user_migrations_id_seq'::regclass);
 
 ALTER TABLE ONLY gitlab_subscription_histories ALTER COLUMN id SET DEFAULT nextval('gitlab_subscription_histories_id_seq'::regclass);
@@ -23017,9 +23001,6 @@ ALTER TABLE ONLY geo_node_statuses
 
 ALTER TABLE ONLY geo_nodes
     ADD CONSTRAINT geo_nodes_pkey PRIMARY KEY (id);
-
-ALTER TABLE ONLY geo_repositories_changed_events
-    ADD CONSTRAINT geo_repositories_changed_events_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY ghost_user_migrations
     ADD CONSTRAINT ghost_user_migrations_pkey PRIMARY KEY (id);
@@ -27288,8 +27269,6 @@ CREATE INDEX index_geo_nodes_on_access_key ON geo_nodes USING btree (access_key)
 CREATE UNIQUE INDEX index_geo_nodes_on_name ON geo_nodes USING btree (name);
 
 CREATE INDEX index_geo_nodes_on_primary ON geo_nodes USING btree ("primary");
-
-CREATE INDEX index_geo_repositories_changed_events_on_geo_node_id ON geo_repositories_changed_events USING btree (geo_node_id);
 
 CREATE INDEX index_ghost_user_migrations_on_consume_after_id ON ghost_user_migrations USING btree (consume_after, id);
 
@@ -32254,9 +32233,6 @@ ALTER TABLE ONLY releases
 ALTER TABLE ONLY workspace_variables
     ADD CONSTRAINT fk_494e093520 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY geo_event_log
-    ADD CONSTRAINT fk_4a99ebfd60 FOREIGN KEY (repositories_changed_event_id) REFERENCES geo_repositories_changed_events(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY user_namespace_callouts
     ADD CONSTRAINT fk_4b1257f385 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
@@ -34236,9 +34212,6 @@ ALTER TABLE ONLY release_links
 
 ALTER TABLE ONLY milestone_releases
     ADD CONSTRAINT fk_rails_754f27dbfa FOREIGN KEY (release_id) REFERENCES releases(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY geo_repositories_changed_events
-    ADD CONSTRAINT fk_rails_75ec0fefcc FOREIGN KEY (geo_node_id) REFERENCES geo_nodes(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY resource_label_events
     ADD CONSTRAINT fk_rails_75efb0a653 FOREIGN KEY (epic_id) REFERENCES epics(id) ON DELETE CASCADE;
