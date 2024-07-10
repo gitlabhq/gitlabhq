@@ -343,6 +343,26 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="querydevopsadoptionenablednamespacesdisplaynamespaceid"></a>`displayNamespaceId` | [`NamespaceID`](#namespaceid) | Filter by display namespace. |
 
+### `Query.duoWorkflowEvents`
+
+List the events for a Duo Workflow.
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Returns [`DuoWorkflowEventConnection!`](#duoworkfloweventconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryduoworkfloweventsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Array of request IDs to fetch. |
+
 ### `Query.echo`
 
 Testing endpoint to validate the API with.
@@ -12490,6 +12510,29 @@ The edge type for [`DoraPerformanceScoreCount`](#doraperformancescorecount).
 | <a id="doraperformancescorecountedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="doraperformancescorecountedgenode"></a>`node` | [`DoraPerformanceScoreCount`](#doraperformancescorecount) | The item at the end of the edge. |
 
+#### `DuoWorkflowEventConnection`
+
+The connection type for [`DuoWorkflowEvent`](#duoworkflowevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkfloweventconnectionedges"></a>`edges` | [`[DuoWorkflowEventEdge]`](#duoworkfloweventedge) | A list of edges. |
+| <a id="duoworkfloweventconnectionnodes"></a>`nodes` | [`[DuoWorkflowEvent]`](#duoworkflowevent) | A list of nodes. |
+| <a id="duoworkfloweventconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DuoWorkflowEventEdge`
+
+The edge type for [`DuoWorkflowEvent`](#duoworkflowevent).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkfloweventedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="duoworkfloweventedgenode"></a>`node` | [`DuoWorkflowEvent`](#duoworkflowevent) | The item at the end of the edge. |
+
 #### `EgressNodeConnection`
 
 The connection type for [`EgressNode`](#egressnode).
@@ -20662,6 +20705,20 @@ Aggregated DORA score counts for projects for the last complete month.
 | <a id="doraperformancescorecountmediumprojectscount"></a>`mediumProjectsCount` | [`Int`](#int) | Number of projects that score "medium" on the metric. |
 | <a id="doraperformancescorecountmetricname"></a>`metricName` | [`String!`](#string) | Name of the DORA metric. |
 | <a id="doraperformancescorecountnodataprojectscount"></a>`noDataProjectsCount` | [`Int`](#int) | Number of projects with no data for the metric. |
+
+### `DuoWorkflowEvent`
+
+Events that describe the history and progress of a Duo Workflow.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkfloweventcheckpoint"></a>`checkpoint` | [`JsonString`](#jsonstring) | Checkpoint of the event. |
+| <a id="duoworkfloweventerrors"></a>`errors` | [`[String!]`](#string) | Message errors. |
+| <a id="duoworkfloweventmetadata"></a>`metadata` | [`JsonString`](#jsonstring) | Metadata associated with the event. |
+| <a id="duoworkfloweventparenttimestamp"></a>`parentTimestamp` | [`Time`](#time) | Time of the parent event. |
+| <a id="duoworkfloweventtimestamp"></a>`timestamp` | [`Time`](#time) | Time of the event. |
 
 ### `EgressNode`
 
@@ -29468,6 +29525,23 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projecttimelogsstarttime"></a>`startTime` | [`Time`](#time) | List timelogs within a time range where the logged time is equal to or after startTime. |
 | <a id="projecttimelogsusername"></a>`username` | [`String`](#string) | List timelogs for a user. |
 
+##### `Project.valueStreamDashboardUsageOverview`
+
+Aggregated usage counts within the project.
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Returns [`ValueStreamDashboardCount`](#valuestreamdashboardcount).
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="projectvaluestreamdashboardusageoverviewidentifier"></a>`identifier` | [`ValueStreamDashboardProjectLevelMetric!`](#valuestreamdashboardprojectlevelmetric) | Type of counts to retrieve. |
+| <a id="projectvaluestreamdashboardusageoverviewtimeframe"></a>`timeframe` | [`Timeframe!`](#timeframe) | Counts recorded during this time frame, usually from beginning of the month until the end of the month (the system runs monthly aggregations). |
+
 ##### `Project.valueStreams`
 
 Value streams available to the project.
@@ -34917,7 +34991,7 @@ Issue type.
 
 | Value | Description |
 | ----- | ----------- |
-| <a id="issuetypeepic"></a>`EPIC` **{warning-solid}** | **Introduced** in GitLab 16.7. **Status**: Experiment. Epic issue type. Available only when feature flag `namespace_level_work_items` is enabled. |
+| <a id="issuetypeepic"></a>`EPIC` **{warning-solid}** | **Introduced** in GitLab 16.7. **Status**: Experiment. Epic issue type. Available only when feature epics is available and the feature flag `work_item_epics` is enabled. |
 | <a id="issuetypeincident"></a>`INCIDENT` | Incident issue type. |
 | <a id="issuetypeissue"></a>`ISSUE` | Issue issue type. |
 | <a id="issuetypekey_result"></a>`KEY_RESULT` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Key Result issue type. Available only when feature flag `okrs_mvc` is enabled. |
@@ -36263,6 +36337,17 @@ Possible identifier types for a measurement.
 | <a id="valuestreamdashboardmetricprojects"></a>`PROJECTS` | Project count. |
 | <a id="valuestreamdashboardmetricusers"></a>`USERS` | User count. |
 
+### `ValueStreamDashboardProjectLevelMetric`
+
+Possible identifier types for project-level measurement.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="valuestreamdashboardprojectlevelmetriccontributors"></a>`CONTRIBUTORS` | Contributor count. EXPERIMENTAL: Only available on the SaaS version of GitLab when the ClickHouse database backend is enabled. |
+| <a id="valuestreamdashboardprojectlevelmetricissues"></a>`ISSUES` | Issue count. |
+| <a id="valuestreamdashboardprojectlevelmetricmerge_requests"></a>`MERGE_REQUESTS` | Merge request count. |
+| <a id="valuestreamdashboardprojectlevelmetricpipelines"></a>`PIPELINES` | Pipeline count. |
+
 ### `ValueStreamStageEvent`
 
 Stage event identifiers.
@@ -36637,6 +36722,12 @@ An example `AiAgentID` is: `"gid://gitlab/Ai::Agent/1"`.
 A `AiAgentVersionID` is a global ID. It is encoded as a string.
 
 An example `AiAgentVersionID` is: `"gid://gitlab/Ai::AgentVersion/1"`.
+
+### `AiDuoWorkflowsWorkflowID`
+
+A `AiDuoWorkflowsWorkflowID` is a global ID. It is encoded as a string.
+
+An example `AiDuoWorkflowsWorkflowID` is: `"gid://gitlab/Ai::DuoWorkflows::Workflow/1"`.
 
 ### `AiModelID`
 

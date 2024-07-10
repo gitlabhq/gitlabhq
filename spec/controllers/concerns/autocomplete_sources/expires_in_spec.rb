@@ -18,6 +18,10 @@ RSpec.describe AutocompleteSources::ExpiresIn, feature_category: :global_search 
       render json: []
     end
 
+    def issues
+      render json: []
+    end
+
     def not_cached
       render json: []
     end
@@ -28,6 +32,7 @@ RSpec.describe AutocompleteSources::ExpiresIn, feature_category: :global_search 
       get "members" => "anonymous#members"
       get "commands" => "anonymous#commands"
       get "labels" => "anonymous#labels"
+      get "issues" => "anonymous#issues"
       get "not_cached" => "anonymous#not_cached"
     end
   end

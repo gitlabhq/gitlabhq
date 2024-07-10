@@ -219,6 +219,12 @@ module Trigger
       }
     end
 
+    def simple_forwarded_variables
+      super.merge({
+        'TOP_UPSTREAM_SOURCE_REF_SLUG' => ENV['CI_COMMIT_REF_SLUG']
+      })
+    end
+
     def version_param_value(_version_file)
       raw_version = super
 

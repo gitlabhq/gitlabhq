@@ -9,15 +9,15 @@ module Groups
       push_force_frontend_feature_flag(:work_items, group&.work_items_feature_flag_enabled?)
       push_force_frontend_feature_flag(:work_items_beta, group&.work_items_beta_feature_flag_enabled?)
       push_force_frontend_feature_flag(:work_items_alpha, group&.work_items_alpha_feature_flag_enabled?)
-      push_frontend_feature_flag(:namespace_level_work_items, group)
+      push_force_frontend_feature_flag(:namespace_level_work_items, group&.namespace_work_items_enabled?)
     end
 
     def index
-      not_found unless Feature.enabled?(:namespace_level_work_items, group)
+      not_found unless group&.namespace_work_items_enabled?
     end
 
     def show
-      not_found unless Feature.enabled?(:namespace_level_work_items, group)
+      not_found unless group&.namespace_work_items_enabled?
 
       # the work_items/:iid route renders a Vue app that takes care of the show and new pages.
       return if show_params[:iid] == 'new'

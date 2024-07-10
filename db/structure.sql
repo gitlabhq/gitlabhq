@@ -13140,7 +13140,10 @@ CREATE TABLE ml_models (
     name text NOT NULL,
     description text,
     user_id integer,
+    cached_markdown_version integer,
+    description_html text,
     CONSTRAINT check_1fd2cc7d93 CHECK ((char_length(name) <= 255)),
+    CONSTRAINT check_51a38acdaa CHECK ((char_length(description_html) <= 50000)),
     CONSTRAINT check_d0c47d63b5 CHECK ((char_length(description) <= 5000))
 );
 

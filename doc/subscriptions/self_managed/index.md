@@ -38,13 +38,10 @@ Prorated charges are not possible without a quarterly usage report.
 
 ## View user totals
 
-View the amount of users in your instance to determine if they exceed the amount
-paid for in your subscription.
+View the lists of users in your instance:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Users**.
-
-The lists of users are displayed.
 
 ### Billable users
 
@@ -136,7 +133,7 @@ GitLab has several features which can help you manage the number of users:
 Subscription data can be automatically synchronized between your self-managed instance and GitLab.
 To enable subscription data synchronization you must have:
 
-- GitLab Enterprise Edition (EE), version 14.1 or later.
+- GitLab Enterprise Edition (EE).
 - Connection to the internet, and must not have an offline environment.
 - [Activated](../../administration/license.md) your instance with an activation code.
 

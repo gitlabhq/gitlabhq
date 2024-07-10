@@ -116,6 +116,15 @@ module WorkItems
       base_types.keys.excluding('objective', 'key_result', 'epic', 'ticket')
     end
 
+    # method overridden in EE to perform the corresponding checks for the Epic type
+    def self.allowed_group_level_types(resource_parent)
+      if Feature.enabled?(:create_group_level_work_items, resource_parent, type: :wip)
+        base_types.keys.excluding('epic')
+      else
+        []
+      end
+    end
+
     def default?
       namespace.blank?
     end

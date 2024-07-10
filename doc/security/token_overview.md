@@ -92,7 +92,7 @@ Deploy tokens can be managed by project maintainers and owners.
 
 This is useful, for example, for cloning repositories to your Continuous Integration (CI) server. By using deploy keys, you don't have to set up a fake user account.
 
-Project maintainers and owners can add or enable a deploy key for a project repository
+Project maintainers and owners can add or enable a deploy key for a project repository.
 
 ## Runner authentication tokens
 

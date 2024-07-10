@@ -947,6 +947,11 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_rolledup_dates)
   end
 
+  # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature
+  def namespace_work_items_enabled?
+    ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
+  end
+
   def supports_lock_on_merge?
     feature_flag_enabled_for_self_or_ancestor?(:enforce_locked_labels_on_merge, type: :ops)
   end

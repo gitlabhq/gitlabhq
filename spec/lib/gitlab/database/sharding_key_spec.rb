@@ -206,6 +206,41 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
+  it 'does not allow tables with FK references to be permanently exempted', :aggregate_failures do
+    tables_exempted_from_sharding_table_names = tables_exempted_from_sharding.map(&:table_name)
+
+    tables_exempted_from_sharding.each do |entry|
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/471182
+      tables_to_be_fixed = %w[clusters geo_nodes zoekt_nodes]
+      pending 'These tables need to be fixed' if entry.table_name.in?(tables_to_be_fixed)
+
+      fks = referenced_foreign_keys(entry.table_name).to_a
+
+      fks.reject! { |fk| fk.constrained_table_name.in?(tables_exempted_from_sharding_table_names) }
+
+      # rubocop:disable Layout/LineLength -- sorry, long URL
+      expect(fks).to be_empty,
+        "#{entry.table_name} is exempted from sharding, but has foreign key references to it.\n" \
+        "For more information, see " \
+        "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+        "The tables with foreign key references are:\n\n" \
+        "#{fks.map(&:constrained_table_name).join("\n")}"
+      # rubocop:enable Layout/LineLength
+
+      lfks = referenced_loose_foreign_keys(entry.table_name)
+      lfks.reject! { |lfk| lfk.from_table.in?(tables_exempted_from_sharding_table_names) }
+
+      # rubocop:disable Layout/LineLength -- sorry, long URL
+      expect(lfks).to be_empty,
+        "#{entry.table_name} is exempted from sharding, but has loose foreign key references to it.\n" \
+        "For more information, see " \
+        "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+        "The tables with loose foreign key references are:\n\n" \
+        "#{lfks.map(&:from_table).join("\n")}"
+      # rubocop:enable Layout/LineLength
+    end
+  end
+
   it 'allows tables that have a sharding key to only have a cell-local schema' do
     expect(tables_with_sharding_keys_not_in_cell_local_schema).to be_empty,
       "Tables: #{tables_with_sharding_keys_not_in_cell_local_schema.join(',')} have a sharding key defined, " \

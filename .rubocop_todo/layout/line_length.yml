@@ -2,10 +2,6 @@
 # Cop supports --autocorrect.
 Layout/LineLength:
   Exclude:
-    - 'app/controllers/abuse_reports_controller.rb'
-    - 'app/controllers/admin/application_settings_controller.rb'
-    - 'app/controllers/admin/groups_controller.rb'
-    - 'app/controllers/admin/identities_controller.rb'
     - 'app/controllers/admin/impersonation_tokens_controller.rb'
     - 'app/controllers/admin/keys_controller.rb'
     - 'app/controllers/admin/projects_controller.rb'

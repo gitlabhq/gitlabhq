@@ -16698,9 +16698,6 @@ msgstr ""
 msgid "DastProfiles|A site profile defines the attributes and configuration details of your deployed application, website, or API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
-msgid "DastProfiles|AJAX spider"
-msgstr ""
-
 msgid "DastProfiles|API"
 msgstr ""
 
@@ -16810,9 +16807,6 @@ msgid "DastProfiles|Excluded paths"
 msgstr ""
 
 msgid "DastProfiles|Excluded paths (optional)"
-msgstr ""
-
-msgid "DastProfiles|Headers will appear in vulnerability reports. %{linkStart}Only some headers are automatically masked%{linkEnd}."
 msgstr ""
 
 msgid "DastProfiles|Hide debug messages"
@@ -16966,9 +16960,6 @@ msgid "DastProfiles|This scanner profile is currently being used by a policy. To
 msgstr ""
 
 msgid "DastProfiles|This site profile is currently being used by a policy. To make edits you must remove it from the active policy."
-msgstr ""
-
-msgid "DastProfiles|Turn on AJAX spider"
 msgstr ""
 
 msgid "DastProfiles|URL"
@@ -36179,6 +36170,9 @@ msgstr ""
 msgid "Offline"
 msgstr ""
 
+msgid "Offline license"
+msgstr ""
+
 msgid "Oh no!"
 msgstr ""
 
@@ -36625,6 +36619,9 @@ msgid "One or more of your personal access tokens have expired."
 msgstr ""
 
 msgid "One or more of your personal access tokens will expire in %{days_to_expire} days or less:"
+msgstr ""
+
+msgid "Online license"
 msgstr ""
 
 msgid "Only %{workspaceType} members with %{permissions} can view or be notified about this %{issuableType}."
@@ -55603,9 +55600,6 @@ msgstr ""
 msgid "Total memory (GB)"
 msgstr ""
 
-msgid "Total spans"
-msgstr ""
-
 msgid "Total test time for all commits/merges"
 msgstr ""
 
@@ -55631,9 +55625,6 @@ msgid "TotalRefCountIndicator|1000+"
 msgstr ""
 
 msgid "Trace Details"
-msgstr ""
-
-msgid "Trace start"
 msgstr ""
 
 msgid "Tracing"
@@ -55747,6 +55738,9 @@ msgstr ""
 msgid "Tracing|Status"
 msgstr ""
 
+msgid "Tracing|This trace has %{totalSpans} spans. For performance reasons, we only show the first %{spansLimit} spans."
+msgstr ""
+
 msgid "Tracing|Time range"
 msgstr ""
 
@@ -55762,7 +55756,13 @@ msgstr ""
 msgid "Tracing|Toggle child spans"
 msgstr ""
 
+msgid "Tracing|Total spans"
+msgstr ""
+
 msgid "Tracing|Trace ID"
+msgstr ""
+
+msgid "Tracing|Trace start"
 msgstr ""
 
 msgid "Tracing|Traces"
@@ -56230,6 +56230,9 @@ msgid "Type changed successfully."
 msgstr ""
 
 msgid "Type to search"
+msgstr ""
+
+msgid "Type:"
 msgstr ""
 
 msgid "URL"
@@ -58605,7 +58608,7 @@ msgstr ""
 msgid "Visual Studio Code (SSH)"
 msgstr ""
 
-msgid "VsdContributorCount|the ClickHouse data store is not available for this group"
+msgid "VsdContributorCount|the ClickHouse data store is not available for this namespace"
 msgstr ""
 
 msgid "Vulnerabilities"

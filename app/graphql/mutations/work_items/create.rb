@@ -14,7 +14,7 @@ module Mutations
       authorize :create_work_item
 
       MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR = 'Please provide either projectPath or namespacePath argument, but not both.'
-      DISABLED_FF_ERROR = 'namespace_level_work_items feature flag is disabled. Only project paths allowed.'
+      DISABLED_FF_ERROR = 'create_group_level_work_items feature flag is disabled. Only project paths allowed.'
 
       argument :assignees_widget, ::Types::WorkItems::Widgets::AssigneesInputType,
                required: false,
@@ -70,10 +70,10 @@ module Mutations
       def resolve(project_path: nil, namespace_path: nil, **attributes)
         container_path = project_path || namespace_path
         container = authorized_find!(container_path)
-        check_feature_available!(container)
-
         params = global_id_compatibility_params(attributes).merge(author_id: current_user.id)
         type = ::WorkItems::Type.find(attributes[:work_item_type_id])
+
+        check_feature_available!(container, type)
         widget_params = extract_widget_params!(type, params, container)
 
         create_result = ::WorkItems::CreateService.new(
@@ -93,16 +93,22 @@ module Mutations
 
       private
 
-      def check_feature_available!(container)
-        return unless container.is_a?(::Group) && Feature.disabled?(:namespace_level_work_items, container)
+      def check_feature_available!(container, type)
+        return unless container.is_a?(::Group)
+        return if ::WorkItems::Type.allowed_group_level_types(container).include?(type.base_type)
 
-        raise Gitlab::Graphql::Errors::ArgumentError, DISABLED_FF_ERROR
+        raise_feature_not_available_error!(type)
       end
 
       def global_id_compatibility_params(params)
         params[:work_item_type_id] = params[:work_item_type_id]&.model_id
 
         params
+      end
+
+      # type is used in overridden EE method
+      def raise_feature_not_available_error!(_type)
+        raise Gitlab::Graphql::Errors::ArgumentError, DISABLED_FF_ERROR
       end
     end
   end

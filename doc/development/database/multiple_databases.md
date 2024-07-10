@@ -237,7 +237,13 @@ to the table's database dictionary file. This can be used for:
 - tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541)
 - tables that mandatorily need to be present per cell to support a cell's operations, have unique data per cell, but cannot have a sharding key defined. For example, `zoekt_nodes`.
 
-When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
+When tables are exempted from sharding key requirements, they also do not show up in our
+[progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
+
+Exempted tables must not have foreign key, or loose foreign key references, as
+this may cause the target cell's database to have foreign key violations when data is
+moved.
+See [#471182](https://gitlab.com/gitlab-org/gitlab/-/issues/471182) for examples and possible solutions.
 
 ### The impact of `gitlab_schema`
 

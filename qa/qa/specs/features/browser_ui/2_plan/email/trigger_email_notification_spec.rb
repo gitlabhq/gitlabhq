@@ -27,7 +27,7 @@ module QA
 
         mailhog_items = mailhog_json.dig('items')
 
-        expect(mailhog_items).to include(an_object_satisfying { |o| /project was granted/ === mailhog_item_subject(o) })
+        expect(mailhog_items).to include(an_object_satisfying { |o| mailhog_item_subject(o)&.include?('project was granted') })
       end
 
       private
