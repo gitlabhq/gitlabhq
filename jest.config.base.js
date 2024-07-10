@@ -273,6 +273,7 @@ module.exports = (path, options = {}) => {
       url: TEST_HOST,
     },
     testRunner: 'jest-jasmine2',
+    prettierPath: undefined,
     snapshotSerializers: [
       '<rootDir>/spec/frontend/__helpers__/html_string_serializer.js',
       '<rootDir>/spec/frontend/__helpers__/clean_html_element_serializer.js',

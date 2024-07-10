@@ -14,7 +14,7 @@
     - "1\n" # Enum-select: Copy & continue
     - "y\n" # Create file
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
@@ -39,7 +39,7 @@
     - "1\n" # Enum-select: Copy & continue
     - "y\n" # Create file
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
@@ -69,7 +69,7 @@
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/metrics/counts_28d/count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_monthly.yml
@@ -92,7 +92,7 @@
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
@@ -122,7 +122,7 @@
     - "\n" # Accept URL from event definition
     - "2\n" # Override tier -> Select: [premium, ultimate]
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: ee/config/metrics/counts_all/count_total_internal_events_cli_used.yml
@@ -147,11 +147,121 @@
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
+- description: Create a metric and then another metric with copied events
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - 'internal_events_cli_used' # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\n" # Select: Weekly count of unique users
+    - "who defined an internal event using the CLI\n" # Input description
+    - "\n" # Submit weekly description for monthly
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "y\n" # Create file
+    - "2\n" # Create another metric with the same events
+    - "\e[A" # Arrow up to: Total count of events
+    - "\n" # Select: Total count of events
+    - "when an event was defined using the CLI\n" # Input description
+    - "1\n" # Select: Copy & continue
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
+    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
+
+- description: Create a metric and then another metric with different events
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - 'internal_events_cli_used' # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\n" # Select: Weekly count of unique users
+    - "who defined an internal event using the CLI\n" # Input description
+    - "\n" # Submit weekly description for monthly
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "y\n" # Create file
+    - "3\n" # Create another metric
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - 'internal_events_cli_used' # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\e[A" # Arrow up to: Total count of events
+    - "\n" # Select: Total count of events
+    - "when an event was defined using the CLI\n" # Input description
+    - "1\n" # Select: Copy & continue
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
+    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
+
+- description: Creates a metric and then an event
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - 'internal_events_cli_used' # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\n" # Select: Weekly count of unique users
+    - "who defined an internal event using the CLI\n" # Input description
+    - "\n" # Submit weekly description for monthly
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "y\n" # Create file
+    - "2\n" # Create another metric
+    - "\e[A" # Arrow up to: Total count of events
+    - "\n" # Select: Total count of events
+    - "when an event was defined using the CLI\n" # Input description
+    - "1\n" # Select: Copy & continue
+    - "y\n" # Create file
+    - "1\n" # Create an event
+    - "Internal Event CLI is opened\n" # Submit description
+    - "internal_events_cli_opened\n" # Submit action name
+    - "6\n" # Select: None
+    - "\n" # Select (add props): None! Continue to next step!
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "2\n" # Select [premium, ultimate]
+    - "y\n" # Create file
+    - "4\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_internal_events_cli_used_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event.yml
+    - path: config/metrics/counts_7d/count_distinct_user_id_from_internal_events_cli_used_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event.yml
+    - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/metrics/total_single_event.yml
+    - path: ee/config/events/internal_events_cli_opened.yml
+      content: spec/fixtures/scripts/internal_events/events/ee_event_without_identifiers.yml
 
 - description: User overwrites metric that already exists
   inputs:
@@ -170,7 +280,7 @@
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Overwrite file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/metrics/counts_all/count_total_internal_events_cli_used.yml
@@ -193,4 +303,4 @@
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "n\n" # Don't overwrite file
-    - "2\n" # Exit
+    - "5\n" # Exit

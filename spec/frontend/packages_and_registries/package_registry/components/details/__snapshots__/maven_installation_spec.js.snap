@@ -36,14 +36,14 @@ exports[`MavenInstallation kotlin renders all the messages 1`] = `
   <code-instruction-stub
     class="gl-mb-5"
     copytext="Copy Gradle Kotlin DSL install command"
-    instruction="implementation(\\"appGroup:appName:appVersion\\")"
+    instruction="implementation("appGroup:appName:appVersion")"
     label="Gradle Kotlin DSL install command"
     trackingaction="copy_kotlin_install_command"
     trackinglabel="code_instruction"
   />
   <code-instruction-stub
     copytext="Copy add Gradle Kotlin DSL repository command"
-    instruction="maven(\\"http://gdk.test:3000/api/v4/projects/1/packages/maven\\")"
+    instruction="maven("http://gdk.test:3000/api/v4/projects/1/packages/maven")"
     label="Add Gradle Kotlin DSL repository command"
     multiline="true"
     trackingaction="copy_kotlin_add_to_source_command"

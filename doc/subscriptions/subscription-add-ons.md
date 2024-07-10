@@ -35,7 +35,7 @@ To purchase GitLab Duo Pro seats, you can use the Customers Portal, or you can c
 
 Prerequisites:
 
-- You must purchase the GitLab Duo Pro add-on.
+- You must purchase the GitLab Duo Pro add-on, or have the GitLab Duo Pro trial.
 - For self-managed and GitLab Dedicated, the GitLab Duo Pro add-on is available for GitLab 16.8 and later only.
 
 After you purchase GitLab Duo Pro, you can assign seats to billable users to grant access to the add-on.

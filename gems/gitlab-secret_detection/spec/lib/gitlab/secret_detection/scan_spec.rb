@@ -36,7 +36,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         },
         {
           "id" => "gitlab_feed_token_v2",
-          "description" => "GitLab Feed Token",
+          "description" => "GitLab Feed token",
           "regex" => "\bglft-[0-9a-zA-Z_-]{20}\b",
           "tags" => ["gitlab"],
           "keywords" => ["glft"]

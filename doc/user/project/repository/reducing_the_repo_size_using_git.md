@@ -67,6 +67,10 @@ To purge files from a GitLab repository:
    This project export contains a backup copy of your repository *and* refs
    we can use to purge files from your repository.
 
+   If the full project export fails to complete reliably due to the project size, you can use the
+   [Project relations export API](../../../api/project_relations_export.md) to obtain a copy of
+   the repository independently of the other export components.
+
 1. Decompress the backup using `tar`:
 
    ```shell

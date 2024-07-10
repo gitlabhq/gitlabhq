@@ -24,7 +24,7 @@ module Import
     end
 
     def importable_orgs
-      client_orgs.to_a
+      client_orgs.map(&:to_h)
     end
 
     def client_orgs

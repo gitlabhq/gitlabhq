@@ -34,7 +34,7 @@ The below reflects the current retention periods of GitLab AI model [Sub-Process
 
 All of these AI providers are under data protection agreements with GitLab that prohibit the use of Customer Content for their own purposes, except to perform their independent legal obligations.
 
-GitLab retains input and output for up to 30 days for the purpose of troubleshooting, debugging, and addressing latency issues.
+GitLab does not retain input and output data unless customers provide consent through a GitLab [Support Ticket](https://about.gitlab.com/support/portal/).
 
 ## Training data
 

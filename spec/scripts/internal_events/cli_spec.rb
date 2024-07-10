@@ -30,7 +30,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   # Shared examples used for examples defined in new_events.yml & new_metrics.yml fixtures.
   # Note: Expects CLI to be exited using the 'Exit' option or completing definition flow
-  shared_examples 'creates the right defintion files' do |description, test_case = {}|
+  shared_examples 'creates the right definition files' do |description, test_case = {}|
     # For expected keystroke mapping, see https://github.com/piotrmurach/tty-reader/blob/master/lib/tty/reader/keys.rb
     let(:keystrokes) { test_case.dig('inputs', 'keystrokes') || [] }
     let(:input_files) { test_case.dig('inputs', 'files') || [] }
@@ -115,7 +115,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   context 'when creating new events' do
     YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_events.yml')).each do |test_case|
-      it_behaves_like 'creates the right defintion files', test_case['description'], test_case
+      it_behaves_like 'creates the right definition files', test_case['description'], test_case
     end
 
     context 'with invalid event name' do
@@ -135,7 +135,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   context 'when creating new metrics' do
     YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_metrics.yml')).each do |test_case|
-      it_behaves_like 'creates the right defintion files', test_case['description'], test_case
+      it_behaves_like 'creates the right definition files', test_case['description'], test_case
     end
 
     context 'when creating a metric from multiple events' do
@@ -1024,7 +1024,7 @@ RSpec.describe Cli, feature_category: :service_ping do
       stub_product_groups(nil)
     end
 
-    it_behaves_like 'creates the right defintion files',
+    it_behaves_like 'creates the right definition files',
       'Creates a new event with product stage/section/group input manually' do
       let(:keystrokes) do
         [
@@ -1037,14 +1037,14 @@ RSpec.describe Cli, feature_category: :service_ping do
           "analytics_instrumentation\n", # Input group
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
-          "3\n" # Exit
+          "4\n" # Exit
         ]
       end
 
       let(:output_files) { [{ 'path' => event2_filepath, 'content' => event2_content }] }
     end
 
-    it_behaves_like 'creates the right defintion files',
+    it_behaves_like 'creates the right definition files',
       'Creates a new metric with product stage/section/group input manually' do
       let(:keystrokes) do
         [
@@ -1065,7 +1065,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "1\n", # Select: [free, premium, ultimate]
           "y\n", # Create file
           "y\n", # Create file
-          "2\n" # Exit
+          "5\n" # Exit
         ]
       end
 
@@ -1097,7 +1097,7 @@ RSpec.describe Cli, feature_category: :service_ping do
       stub_helper(:fetch_window_height, '')
     end
 
-    it_behaves_like 'creates the right defintion files',
+    it_behaves_like 'creates the right definition files',
       'Terminal size does not prevent file creation' do
       let(:keystrokes) do
         [
@@ -1110,7 +1110,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "instrumentation\n", # Filter & select group
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
-          "3\n" # Exit
+          "4\n" # Exit
         ]
       end
 

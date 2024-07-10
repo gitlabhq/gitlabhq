@@ -4865,6 +4865,12 @@ msgstr ""
 msgid "AiImpactAnalytics|The usage data may be incomplete due to backend calculations starting after upgrade to GitLab 16.11. For more information, see %{linkStart}epic 12978%{linkEnd}."
 msgstr ""
 
+msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
+msgstr ""
+
+msgid "AiPowered|GitLab Duo features"
+msgstr ""
+
 msgid "Akismet"
 msgstr ""
 
@@ -38449,7 +38455,7 @@ msgstr ""
 msgid "PipelineCharts|There was an error parsing the data for the charts."
 msgstr ""
 
-msgid "PipelineCharts|Total pipelines"
+msgid "PipelineCharts|Total pipeline runs"
 msgstr ""
 
 msgid "PipelineEditorFileTree|Configuration files added with the include keyword"
@@ -38893,7 +38899,13 @@ msgstr ""
 msgid "Pipelines|An error occurred while trying to fetch the completed merge train."
 msgstr ""
 
+msgid "Pipelines|An error occurred while trying to remove the car from the train."
+msgstr ""
+
 msgid "Pipelines|An error occurred while updating the trigger token. Please try again."
+msgstr ""
+
+msgid "Pipelines|Are you sure you want to remove the merge request %{title} from the merge train?"
 msgstr ""
 
 msgid "Pipelines|Are you sure you want to run this pipeline?"
@@ -39020,6 +39032,12 @@ msgid "Pipelines|Ready to set up CI/CD for your project?"
 msgstr ""
 
 msgid "Pipelines|Rebasing creates a pipeline that runs code originating from a forked project merge request. Consequently there are potential security implications, such as the exposure of CI variables."
+msgstr ""
+
+msgid "Pipelines|Remove from merge train"
+msgstr ""
+
+msgid "Pipelines|Removing the merge request from the merge train will restart the pipelines for all merge requests queued after it. For more information, see the %{linkStart}documentation.%{linkEnd}"
 msgstr ""
 
 msgid "Pipelines|Retry %{jobName} Job"
@@ -41662,6 +41680,9 @@ msgstr ""
 msgid "ProjectSettings|Git Large File Storage (LFS)"
 msgstr ""
 
+msgid "ProjectSettings|GitLab Duo"
+msgstr ""
+
 msgid "ProjectSettings|Global"
 msgstr ""
 
@@ -41945,6 +41966,9 @@ msgid "ProjectSettings|Transfer project"
 msgstr ""
 
 msgid "ProjectSettings|Upstream project"
+msgstr ""
+
+msgid "ProjectSettings|Use AI-powered features in this project."
 msgstr ""
 
 msgid "ProjectSettings|Used for every new merge request."
@@ -48061,6 +48085,9 @@ msgstr ""
 msgid "SecurityOrchestration|Requires no approvals if any of the following occur:"
 msgstr ""
 
+msgid "SecurityOrchestration|Resolved"
+msgstr ""
+
 msgid "SecurityOrchestration|Roles"
 msgstr ""
 
@@ -48188,6 +48215,9 @@ msgid "SecurityOrchestration|Summary of syntax changes:"
 msgstr ""
 
 msgid "SecurityOrchestration|The following branches do not exist on this development project: %{branches}. Please review all protected branches to ensure the values are accurate before updating this policy."
+msgstr ""
+
+msgid "SecurityOrchestration|Then automatically set the status of these vulnerabilities to %{type}."
 msgstr ""
 
 msgid "SecurityOrchestration|There are no exception branches yet."

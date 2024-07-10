@@ -603,6 +603,20 @@ project.update!(column: value)
 See [Feature flags in the development of GitLab](controls.md#process) for details on how to use ChatOps
 to selectively enable or disable feature flags in GitLab-provided environments, like staging and production.
 
+#### Instance actor
+
+WARNING:
+Instance-wide feature flags should only be used when a feature is tied in to an entire instance. Always prioritize other actors first.
+
+In some cases, you may want a feature flag to be enabled for an entire instance and not based on an actor. A great example are the Admin settings, where it would be impossible to enable the Feature Flag based on a group or a project since they are both `undefined`. 
+
+The user actor would cause confusion since a Feature Flag might be enabled for a user who is not an admin, but disabled for a user who is.
+
+Instead, it is possible to use the `:instance` symbol as the second argument to `Feature.enabled?`, which will be sanitized as a GitLab instance.
+
+```ruby
+Feature.enabled?(:feature_flag, :instance)
+
 #### Current request actor
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132078) in GitLab 16.5

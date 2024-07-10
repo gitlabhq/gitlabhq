@@ -39,7 +39,7 @@ See [issue #411931](https://gitlab.com/gitlab-org/gitlab/-/issues/411931) for de
 
 ## 4. Evaluation
 
-We expect the [majority of Users to perform most of their activity in one single Organization](../../organization/index.md#data-exploration).
+We expect the [majority of Users to perform most of their activity in one single Organization](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization#data-exploration).
 This is why we deem it acceptable to scope the User Profile to an Organization at first.
 More discovery is necessary to understand which aspects of the current User Profile are relevant to showcase contributions in a global context.
 

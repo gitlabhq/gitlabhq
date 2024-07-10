@@ -8,7 +8,7 @@ exports[`NugetInstallation renders all the messages 1`] = `
   />
   <code-instruction-stub
     copytext="Copy NuGet Command"
-    instruction="nuget install @gitlab-org/package-15 -Source \\"GitLab\\""
+    instruction="nuget install @gitlab-org/package-15 -Source "GitLab""
     label="NuGet Command"
     trackingaction="copy_nuget_install_command"
     trackinglabel="code_instruction"
@@ -20,7 +20,7 @@ exports[`NugetInstallation renders all the messages 1`] = `
   </h3>
   <code-instruction-stub
     copytext="Copy NuGet Setup Command"
-    instruction="nuget source Add -Name \\"GitLab\\" -Source \\"http://gdk.test:3000/api/v4/projects/1/packages/nuget/index.json\\" -UserName <your_username> -Password <your_token>"
+    instruction="nuget source Add -Name "GitLab" -Source "http://gdk.test:3000/api/v4/projects/1/packages/nuget/index.json" -UserName <your_username> -Password <your_token>"
     label="Add NuGet Source"
     trackingaction="copy_nuget_setup_command"
     trackinglabel="code_instruction"

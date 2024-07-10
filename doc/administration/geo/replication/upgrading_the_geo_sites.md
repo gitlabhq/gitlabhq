@@ -68,4 +68,4 @@ everything is working correctly:
 1. Test the data replication by pushing code to the **primary** site and see if it
    is received by **secondary** sites.
 
-If you encounter any issues, see the [Geo troubleshooting guide](troubleshooting.md).
+If you encounter any issues, see the [Geo troubleshooting guide](troubleshooting/index.md).

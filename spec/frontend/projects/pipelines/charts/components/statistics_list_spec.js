@@ -29,7 +29,7 @@ describe('StatisticsList', () => {
     expect(findFailedPipelinesLink().attributes('href')).toBe(failedPipelinesLink);
   });
 
-  describe('with no failed piplines link', () => {
+  describe('with no failed pipelines link', () => {
     beforeEach(() => {
       wrapper = shallowMount(Component, {
         propsData: {

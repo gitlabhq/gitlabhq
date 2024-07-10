@@ -33,8 +33,8 @@ export default {
 
       return [
         {
-          label: s__('PipelineCharts|Total pipelines'),
-          identifier: 'total-pipelines',
+          label: s__('PipelineCharts|Total pipeline runs'),
+          identifier: 'total-pipeline-runs',
           value: formatNumber(this.counts.total),
         },
         {

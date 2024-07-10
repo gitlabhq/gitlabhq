@@ -36,84 +36,84 @@ describe('DateRangeFilter', () => {
     expect(dateRangesDropdown.exists()).toBe(true);
     expect(dateRangesDropdown.props('selected')).toBe(defaultProps.selected.value);
     expect(dateRangesDropdown.props('dateRangeOptions')).toMatchInlineSnapshot(`
-      Array [
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-23T03:55:00.000Z,
-          "text": "Last 5 minutes",
-          "value": "5m",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-23T03:45:00.000Z,
-          "text": "Last 15 minutes",
-          "value": "15m",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-23T03:30:00.000Z,
-          "text": "Last 30 minutes",
-          "value": "30m",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-23T03:00:00.000Z,
-          "text": "Last 1 hour",
-          "value": "1h",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-23T00:00:00.000Z,
-          "text": "Last 4 hours",
-          "value": "4h",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-22T16:00:00.000Z,
-          "text": "Last 12 hours",
-          "value": "12h",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-22T04:00:00.000Z,
-          "text": "Last 24 hours",
-          "value": "24h",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-16T04:00:00.000Z,
-          "text": "Last 7 days",
-          "value": "7d",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-09T04:00:00.000Z,
-          "text": "Last 14 days",
-          "value": "14d",
-        },
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-03-24T04:00:00.000Z,
-          "text": "Last 30 days",
-          "value": "30d",
-        },
-      ]
-    `);
+[
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-23T03:55:00.000Z,
+    "text": "Last 5 minutes",
+    "value": "5m",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-23T03:45:00.000Z,
+    "text": "Last 15 minutes",
+    "value": "15m",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-23T03:30:00.000Z,
+    "text": "Last 30 minutes",
+    "value": "30m",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-23T03:00:00.000Z,
+    "text": "Last 1 hour",
+    "value": "1h",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-23T00:00:00.000Z,
+    "text": "Last 4 hours",
+    "value": "4h",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-22T16:00:00.000Z,
+    "text": "Last 12 hours",
+    "value": "12h",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-22T04:00:00.000Z,
+    "text": "Last 24 hours",
+    "value": "24h",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-16T04:00:00.000Z,
+    "text": "Last 7 days",
+    "value": "7d",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-09T04:00:00.000Z,
+    "text": "Last 14 days",
+    "value": "14d",
+  },
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-03-24T04:00:00.000Z,
+    "text": "Last 30 days",
+    "value": "30d",
+  },
+]
+`);
   });
 
   it('renders dateRangeOptions based on dateOptions if specified', () => {
     mount({ ...defaultProps, dateOptions: [{ value: '7m', title: 'Last 7 minutes' }] });
 
     expect(findDateRangesDropdown().props('dateRangeOptions')).toMatchInlineSnapshot(`
-      Array [
-        Object {
-          "endDate": 2024-04-23T04:00:00.000Z,
-          "startDate": 2024-04-23T03:53:00.000Z,
-          "text": "Last 7 minutes",
-          "value": "7m",
-        },
-      ]
-    `);
+[
+  {
+    "endDate": 2024-04-23T04:00:00.000Z,
+    "startDate": 2024-04-23T03:53:00.000Z,
+    "text": "Last 7 minutes",
+    "value": "7m",
+  },
+]
+`);
   });
 
   it('does not set the selected value if not specified', () => {

@@ -232,14 +232,14 @@ describe('dropzone_input', () => {
 
       it('passes attach file button as `clickable` to dropzone', () => {
         dropzoneInput(form);
-        expect($.fn.dropzone.mock.calls[0][0]).toMatchObject({ clickable: attachFileButton });
+        expect($.fn.dropzone.mock.calls[0][0].clickable).toEqual(attachFileButton);
       });
     });
 
     describe('if attach file button does not exist', () => {
       it('passes attach file button as `clickable`, if it exists', () => {
         dropzoneInput(form);
-        expect($.fn.dropzone.mock.calls[0][0]).toMatchObject({ clickable: true });
+        expect($.fn.dropzone.mock.calls[0][0].clickable).toEqual(true);
       });
     });
   });

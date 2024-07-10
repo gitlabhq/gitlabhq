@@ -17,3 +17,4 @@
     ).to_context.to_json.to_json}
     gl.snowplowPseudonymizedPageUrl = #{masked_page_url(group: namespace, project: @project).to_json};
     gl.maskedDefaultReferrerUrl = #{masked_referrer_url(request.referer).to_json};
+    gl.ga4MeasurementId = 'G-ENFH3X7M5Y';

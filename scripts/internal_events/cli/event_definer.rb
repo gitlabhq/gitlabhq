@@ -209,17 +209,24 @@ module InternalEventsCli
       next_step = cli.select("How would you like to proceed?", **select_opts) do |menu|
         menu.enum "."
 
-        if File.exist?(event.file_path)
-          menu.choice "Create Metric -- define a new metric using #{event.action}.yml", :add_metric
-        else
-          menu.choice "Save & Create Metric -- save #{event.action}.yml and define a matching metric", :save_and_add
-        end
+        menu.choice "New Event -- define another event", :new_event
+
+        choice = if File.exist?(event.file_path)
+                   ["Create Metric -- define a new metric using #{event.action}.yml", :add_metric]
+                 else
+                   ["Save & Create Metric -- save #{event.action}.yml and define a matching metric", :save_and_add]
+                 end
+
+        menu.default choice[0]
+        menu.choice(*choice)
 
         menu.choice "View Usage -- look at code examples for #{event.action}.yml", :view_usage
         menu.choice 'Exit', :exit
       end
 
       case next_step
+      when :new_event
+        InternalEventsCli::EventDefiner.new(cli).run
       when :add_metric
         MetricDefiner.new(cli, event.file_path).run
       when :save_and_add

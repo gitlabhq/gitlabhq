@@ -1,307 +1,218 @@
-# This file contains a subset of rules pulled from the original source file.
-# Original Source: https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/gitleaks.toml
-# Reference: https://gitlab.com/gitlab-org/gitlab/-/issues/427011
+# This file is auto-generated, do not edit.
+# See the README.md of the secrets analyzer for more info: https://gitlab.com/gitlab-org/security-products/analyzers/secrets/-/blob/master/README.md#syncing-tags
 title = "gitleaks config"
-
 [[rules]]
-id = "gitlab_personal_access_token"
 description = "GitLab Personal Access Token"
-regex = '''\bglpat-[0-9a-zA-Z_\-]{20}\b'''
-tags = ["gitlab", "revocation_type"]
-keywords = [
-    "glpat",
-]
-
+id = "gitlab_personal_access_token"
+keywords = ["glpat"]
+regex = "\\bglpat-[0-9a-zA-Z_\\-]{20}\\b"
+tags = ["gitlab", "revocation_type", "gitlab_blocking"]
 [[rules]]
-id = "gitlab_pipeline_trigger_token"
 description = "GitLab Pipeline Trigger Token"
-regex = '''\bglptt-[0-9a-zA-Z_\-]{40}\b'''
-tags = ["gitlab"]
-keywords = [
-    "glptt",
-]
-
+id = "gitlab_pipeline_trigger_token"
+keywords = ["glptt"]
+regex = "\\bglptt-[0-9a-zA-Z_\\-]{40}\\b"
+tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
-id = "gitlab_runner_registration_token"
 description = "GitLab Runner Registration Token"
-regex = '''\bGR1348941[0-9a-zA-Z_\-]{20}\b'''
-tags = ["gitlab"]
-keywords = [
-    "GR1348941",
-]
-
+id = "gitlab_runner_registration_token"
+keywords = ["GR1348941"]
+regex = "\\bGR1348941[0-9a-zA-Z_\\-]{20}\\b"
+tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
-id = "gitlab_runner_auth_token"
 description = "GitLab Runner Authentication Token"
-regex = '''\bglrt-[0-9a-zA-Z_\-]{20}\b'''
-tags = ["gitlab"]
-keywords = [
-    "glrt",
-]
-
+id = "gitlab_runner_auth_token"
+keywords = ["glrt"]
+regex = "\\bglrt-[0-9a-zA-Z_\\-]{20}\\b"
+tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
-id = "gitlab_oauth_app_secret"
 description = "GitLab OAuth Application Secrets"
-regex = '''\bgloas-[0-9a-zA-Z_\-]{64}\b'''
-tags = ["gitlab"]
-keywords = [
-    "gloas",
-]
-
+id = "gitlab_oauth_app_secret"
+keywords = ["gloas"]
+regex = "\\bgloas-[0-9a-zA-Z_\\-]{64}\\b"
+tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
+description = "GitLab Feed token"
 id = "gitlab_feed_token_v2"
-description = "GitLab Feed Token"
-regex = '''\bglft-[0-9a-zA-Z_\-]{20}\b'''
-tags = ["gitlab"]
-keywords = [
-    "glft",
-]
-
+keywords = ["glft"]
+regex = "\\bglft-[0-9a-zA-Z_\\-]{20}\\b"
+tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
-id = "gitlab_kubernetes_agent_token"
 description = "GitLab Agent for Kubernetes token"
-regex = '''\bglagent-[0-9a-zA-Z_\-]{50}\b'''
-tags = ["gitlab"]
-keywords = [
-    "glagent",
-]
-
+id = "gitlab_kubernetes_agent_token"
+keywords = ["glagent"]
+regex = "\\bglagent-[0-9a-zA-Z_\\-]{50}\\b"
+tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
-id = "gitlab_incoming_email_token"
 description = "GitLab Incoming email token"
-regex = '''\bglimt-[0-9a-zA-Z_\-]{25}\b'''
-tags = ["gitlab"]
-keywords = [
-    "glimt",
-]
-
+id = "gitlab_incoming_email_token"
+keywords = ["glimt"]
+regex = "\\bglimt-[0-9a-zA-Z_\\-]{25}\\b"
+tags = ["gitlab", "gitlab_blocking"]
 [[rules]]
-id = "AWS"
 description = "AWS Access Token"
-regex = '''\bAKIA[0-9A-Z]{16}\b'''
-tags = ["aws", "revocation_type"]
-keywords = [
-    "AKIA",
-]
-
+id = "AWS"
+keywords = ["AKIA"]
+regex = "\\bAKIA[0-9A-Z]{16}\\b"
+tags = ["aws", "revocation_type", "gitlab_blocking"]
 [[rules]]
-id = "Github Personal Access Token"
 description = "Github Personal Access Token"
-regex = '''ghp_[0-9a-zA-Z]{36}'''
-keywords = [
-    "ghp_",
-]
-
+id = "Github Personal Access Token"
+keywords = ["ghp_"]
+regex = "ghp_[0-9a-zA-Z]{36}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Github OAuth Access Token"
 description = "Github OAuth Access Token"
-regex = '''gho_[0-9a-zA-Z]{36}'''
-keywords = [
-    "gho_",
-]
-
+id = "Github OAuth Access Token"
+keywords = ["gho_"]
+regex = "gho_[0-9a-zA-Z]{36}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Github App Token"
 description = "Github App Token"
-regex = '''(ghu|ghs)_[0-9a-zA-Z]{36}'''
-keywords = [
-    "ghu_",
-    "ghs_"
-]
-
+id = "Github App Token"
+keywords = ["ghu_", "ghs_"]
+regex = "(ghu|ghs)_[0-9a-zA-Z]{36}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Github Refresh Token"
 description = "Github Refresh Token"
-regex = '''ghr_[0-9a-zA-Z]{76}'''
-keywords = [
-    "ghr_"
-]
-
+id = "Github Refresh Token"
+keywords = ["ghr_"]
+regex = "ghr_[0-9a-zA-Z]{76}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Shopify shared secret"
 description = "Shopify shared secret"
-regex = '''shpss_[a-fA-F0-9]{32}'''
-keywords = [
-    "shpss_"
-]
-
+id = "Shopify shared secret"
+keywords = ["shpss_"]
+regex = "shpss_[a-fA-F0-9]{32}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Shopify access token"
 description = "Shopify access token"
-regex = '''shpat_[a-fA-F0-9]{32}'''
-keywords = [
-    "shpat_"
-]
-
+id = "Shopify access token"
+keywords = ["shpat_"]
+regex = "shpat_[a-fA-F0-9]{32}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Shopify custom app access token"
 description = "Shopify custom app access token"
-regex = '''shpca_[a-fA-F0-9]{32}'''
-keywords = [
-    "shpca_"
-]
-
+id = "Shopify custom app access token"
+keywords = ["shpca_"]
+regex = "shpca_[a-fA-F0-9]{32}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Shopify private app access token"
 description = "Shopify private app access token"
-regex = '''shppa_[a-fA-F0-9]{32}'''
-keywords = [
-    "shppa_"
-]
-
+id = "Shopify private app access token"
+keywords = ["shppa_"]
+regex = "shppa_[a-fA-F0-9]{32}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Slack token"
 description = "Slack token"
-regex = '''xox[baprs]-([0-9a-zA-Z]{10,48})'''
-keywords = [
-    "xoxb","xoxa","xoxp","xoxr","xoxs",
-]
-
+id = "Slack token"
+keywords = ["xoxb", "xoxa", "xoxp", "xoxr", "xoxs"]
+regex = "xox[baprs]-([0-9a-zA-Z]{10,48})"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Stripe"
 description = "Stripe"
-regex = '''(?i)(sk|pk)_(test|live)_[0-9a-z]{10,32}'''
-keywords = [
-    "sk_test","pk_test","sk_live","pk_live",
-]
-
+id = "Stripe"
+keywords = ["sk_test", "pk_test", "sk_live", "pk_live"]
+regex = "(?i)(sk|pk)_(test|live)_[0-9a-z]{10,32}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "PyPI upload token"
 description = "PyPI upload token"
-regex = '''pypi-AgEIcHlwaS5vcmc[A-Za-z0-9-_]{50,1000}'''
-tags = ["pypi", "revocation_type"]
-keywords = [
-    "pypi-AgEIcHlwaS5vcmc",
-]
-
+id = "PyPI upload token"
+keywords = ["pypi-AgEIcHlwaS5vcmc"]
+regex = "pypi-AgEIcHlwaS5vcmc[A-Za-z0-9-_]{50,1000}"
+tags = ["pypi", "revocation_type", "gitlab_blocking"]
 [[rules]]
-id = "Google (GCP) Service-account"
 description = "Google (GCP) Service-account"
-tags = ["gitlab_partner_token", "revocation_type"]
-regex = '''\"private_key\":\s*\"-{5}BEGIN PRIVATE KEY-{5}[\s\S]*?",'''
-keywords = [
-    "service_account",
-]
-
+id = "Google (GCP) Service-account"
+keywords = ["service_account"]
+regex = "\\\"private_key\\\":\\s*\\\"-{5}BEGIN PRIVATE KEY-{5}[\\s\\S]*?\","
+tags = ["gitlab_partner_token", "revocation_type", "gitlab_blocking"]
 [[rules]]
-id = "GCP API key"
 description = "GCP API keys can be misused to gain API quota from billed projects"
-tags = ["gitlab_partner_token", "revocation_type"]
-regex = '''(?i)\b(AIza[0-9A-Za-z-_]{35})(?:['|\"|\n|\r|\s|\x60|;]|$)'''
+id = "GCP API key"
+keywords = ["AIza"]
+regex = "(?i)\\b(AIza[0-9A-Za-z-_]{35})(?:['|\\\"|\\n|\\r|\\s|\\x60|;]|$)"
 secretGroup = 1
-keywords = [
-    "AIza",
-]
-
+tags = ["gitlab_partner_token", "revocation_type", "gitlab_blocking"]
 [[rules]]
-id = "GCP OAuth client secret"
 description = "GCP OAuth client secrets can be misused to spoof your application"
-tags = ["gitlab_partner_token", "revocation_type"]
-regex = '''GOCSPX-[a-zA-Z0-9_-]{28}'''
-keywords = [
-    "GOCSPX-",
-]
-
+id = "GCP OAuth client secret"
+keywords = ["GOCSPX-"]
+regex = "GOCSPX-[a-zA-Z0-9_-]{28}"
+tags = ["gitlab_partner_token", "revocation_type", "gitlab_blocking"]
 [[rules]]
-id = "Grafana API token"
 description = "Grafana API token"
-regex = '''['\"]eyJrIjoi(?i)[a-z0-9-_=]{72,92}['\"]'''
-keywords = [
-    "grafana",
-]
-
+id = "Grafana API token"
+keywords = ["grafana"]
+regex = "['\\\"]eyJrIjoi(?i)[a-z0-9-_=]{72,92}['\\\"]"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Hashicorp Terraform user/org API token"
 description = "Hashicorp Terraform user/org API token"
-regex = '''['\"](?i)[a-z0-9]{14}\.atlasv1\.[a-z0-9-_=]{60,70}['\"]'''
-keywords = [
-    "atlasv1",
-    "hashicorp",
-    "terraform"
-]
-
+id = "Hashicorp Terraform user/org API token"
+keywords = ["atlasv1", "hashicorp", "terraform"]
+regex = "['\\\"](?i)[a-z0-9]{14}\\.atlasv1\\.[a-z0-9-_=]{60,70}['\\\"]"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Hashicorp Vault batch token"
 description = "Hashicorp Vault batch token"
-regex = '''b\.AAAAAQ[0-9a-zA-Z_-]{156}'''
-keywords = [
-    "hashicorp",
-    "AAAAAQ",
-    "vault"
-]
-
+id = "Hashicorp Vault batch token"
+keywords = ["hashicorp", "AAAAAQ", "vault"]
+regex = "b\\.AAAAAQ[0-9a-zA-Z_-]{156}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Mailchimp API key"
 description = "Mailchimp API key"
-regex = '''(?i)(mailchimp[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-f0-9]{32}-us20)['\"]'''
+id = "Mailchimp API key"
+keywords = ["mailchimp"]
+regex = "(?i)(mailchimp[a-z0-9_ .\\-,]{0,25})(=|>|:=|\\|\\|:|<=|=>|:).{0,5}['\\\"]([a-f0-9]{32}-us20)['\\\"]"
 secretGroup = 3
-keywords = [
-    "mailchimp",
-]
-
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Mailgun private API token"
 description = "Mailgun private API token"
-regex = '''(?i)(mailgun[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"](key-[a-f0-9]{32})['\"]'''
+id = "Mailgun private API token"
+keywords = ["mailgun"]
+regex = "(?i)(mailgun[a-z0-9_ .\\-,]{0,25})(=|>|:=|\\|\\|:|<=|=>|:).{0,5}['\\\"](key-[a-f0-9]{32})['\\\"]"
 secretGroup = 3
-keywords = [
-    "mailgun",
-]
-
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Mailgun webhook signing key"
 description = "Mailgun webhook signing key"
-regex = '''(?i)(mailgun[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([a-h0-9]{32}-[a-h0-9]{8}-[a-h0-9]{8})['\"]'''
+id = "Mailgun webhook signing key"
+keywords = ["mailgun"]
+regex = "(?i)(mailgun[a-z0-9_ .\\-,]{0,25})(=|>|:=|\\|\\|:|<=|=>|:).{0,5}['\\\"]([a-h0-9]{32}-[a-h0-9]{8}-[a-h0-9]{8})['\\\"]"
 secretGroup = 3
-keywords = [
-    "mailgun",
-]
-
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "New Relic user API Key"
 description = "New Relic user API Key"
-regex = '''['\"](NRAK-[A-Z0-9]{27})['\"]'''
-keywords = [
-    "NRAK",
-]
-
+id = "New Relic user API Key"
+keywords = ["NRAK"]
+regex = "['\\\"](NRAK-[A-Z0-9]{27})['\\\"]"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "New Relic user API ID"
 description = "New Relic user API ID"
-regex = '''(?i)(newrelic[a-z0-9_ .\-,]{0,25})(=|>|:=|\|\|:|<=|=>|:).{0,5}['\"]([A-Z0-9]{64})['\"]'''
+id = "New Relic user API ID"
+keywords = ["newrelic"]
+regex = "(?i)(newrelic[a-z0-9_ .\\-,]{0,25})(=|>|:=|\\|\\|:|<=|=>|:).{0,5}['\\\"]([A-Z0-9]{64})['\\\"]"
 secretGroup = 3
-keywords = [
-    "newrelic",
-]
-
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "npm access token"
 description = "npm access token"
-regex = '''['\"](npm_(?i)[a-z0-9]{36})['\"]'''
-keywords = [
-    "npm_",
-]
-
+id = "npm access token"
+keywords = ["npm_"]
+regex = "['\\\"](npm_(?i)[a-z0-9]{36})['\\\"]"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Rubygem API token"
 description = "Rubygem API token"
-regex = '''rubygems_[a-f0-9]{48}'''
-keywords = [
-    "rubygems_",
-]
-
+id = "Rubygem API token"
+keywords = ["rubygems_"]
+regex = "rubygems_[a-f0-9]{48}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Segment Public API token"
 description = "Segment Public API token"
-regex = '''sgp_[a-zA-Z0-9]{64}'''
-keywords = [
-    "sgp_",
-]
-
+id = "Segment Public API token"
+keywords = ["sgp_"]
+regex = "sgp_[a-zA-Z0-9]{64}"
+tags = ["gitlab_blocking"]
 [[rules]]
-id = "Sendgrid API token"
 description = "Sendgrid API token"
-regex = '''SG\.(?i)[a-z0-9_\-\.]{66}'''
-keywords = [
-    "sendgrid",
-]
+id = "Sendgrid API token"
+keywords = ["sendgrid"]
+regex = "SG\\.(?i)[a-z0-9_\\-\\.]{66}"
+tags = ["gitlab_blocking"]

@@ -1,35 +1,11 @@
 ---
-owning-stage: "~devops::verify"
-description: 'GitLab CI Events Proposal 2: Using the rules keyword'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-2-using-the-rules-keyword/'
+remove_date: '2025-07-08'
 ---
 
-# GitLab CI Events Proposal 2: Using the `rules` keyword
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-2-using-the-rules-keyword/).
 
-Can we do it with our current [`rules`](../../../ci/yaml/index.md#rules) system?
-
-```yaml
-workflow:
-  rules:
-    - events: ["package/*"]
-
-test_package_published:
-  script: echo testing published package
-  rules:
-    - events: ["package/published"]
-
-test_package_removed:
-  script: echo testing removed package
-  rules:
-    - events: ["package/removed"]
-```
-
-1. We don't upsert subscriptions to the database.
-1. We'll have a single worker which runs when something happens in GitLab.
-1. The worker just tries to create a pipeline with the correct parameters.
-1. Pipeline runs when `rules` subsystem finds a job to run.
-
-## Challenges
-
-1. For every defined event run, we need to enqueue a new pipeline creation worker.
-1. Creating pipelines and selecting builds to run is a relatively expensive operation
-1. This will not work on GitLab.com scale.
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

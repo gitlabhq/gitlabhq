@@ -8,17 +8,17 @@ describe('Optimistic responses', () => {
   describe('updateGroupPackagesSettingsOptimisticResponse', () => {
     it('returns the correct structure', () => {
       expect(updateGroupPackagesSettingsOptimisticResponse({ foo: 'bar' })).toMatchInlineSnapshot(`
-        Object {
-          "__typename": "Mutation",
-          "updateNamespacePackageSettings": Object {
-            "__typename": "UpdateNamespacePackageSettingsPayload",
-            "errors": Array [],
-            "packageSettings": Object {
-              "foo": "bar",
-            },
-          },
-        }
-      `);
+{
+  "__typename": "Mutation",
+  "updateNamespacePackageSettings": {
+    "__typename": "UpdateNamespacePackageSettingsPayload",
+    "errors": [],
+    "packageSettings": {
+      "foo": "bar",
+    },
+  },
+}
+`);
     });
   });
 
@@ -26,17 +26,17 @@ describe('Optimistic responses', () => {
     it('returns the correct structure', () => {
       expect(updateGroupDependencyProxySettingsOptimisticResponse({ foo: 'bar' }))
         .toMatchInlineSnapshot(`
-        Object {
-          "__typename": "Mutation",
-          "updateDependencyProxySettings": Object {
-            "__typename": "UpdateDependencyProxySettingsPayload",
-            "dependencyProxySetting": Object {
-              "foo": "bar",
-            },
-            "errors": Array [],
-          },
-        }
-      `);
+{
+  "__typename": "Mutation",
+  "updateDependencyProxySettings": {
+    "__typename": "UpdateDependencyProxySettingsPayload",
+    "dependencyProxySetting": {
+      "foo": "bar",
+    },
+    "errors": [],
+  },
+}
+`);
     });
   });
 
@@ -44,17 +44,17 @@ describe('Optimistic responses', () => {
     it('returns the correct structure', () => {
       expect(updateDependencyProxyImageTtlGroupPolicyOptimisticResponse({ foo: 'bar' }))
         .toMatchInlineSnapshot(`
-        Object {
-          "__typename": "Mutation",
-          "updateDependencyProxyImageTtlGroupPolicy": Object {
-            "__typename": "UpdateDependencyProxyImageTtlGroupPolicyPayload",
-            "dependencyProxyImageTtlPolicy": Object {
-              "foo": "bar",
-            },
-            "errors": Array [],
-          },
-        }
-      `);
+{
+  "__typename": "Mutation",
+  "updateDependencyProxyImageTtlGroupPolicy": {
+    "__typename": "UpdateDependencyProxyImageTtlGroupPolicyPayload",
+    "dependencyProxyImageTtlPolicy": {
+      "foo": "bar",
+    },
+    "errors": [],
+  },
+}
+`);
     });
   });
 });

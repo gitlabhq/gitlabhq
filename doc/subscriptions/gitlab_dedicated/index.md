@@ -90,17 +90,11 @@ Email sent from GitLab Dedicated uses [Amazon Simple Email Service (Amazon SES)]
 
 If you would rather send application email using an SMTP server instead of Amazon SES, you can [configure your own email service](../../administration/dedicated/configure_instance.md#smtp-email-service).
 
-### Compliance
+### Compliance and certifications
 
-#### Certifications
+GitLab Dedicated is trusted by highly regulated customers in part due to our ability to transparently demonstrate compliance with various regulations, certifications, and compliance frameworks.
 
-GitLab Dedicated offers the following [compliance certifications](https://about.gitlab.com/security/):
-
-- SOC 2 Type 2 Report (Security, Confidentiality, and Availability criteria)
-- ISO/IEC 27001:2013
-- ISO/IEC 27017:2015
-- ISO/IEC 27018:2019
-- TISAX (Assessment Level: 2; Objective: Info high)
+You can view compliance and certification details, and download compliance artifacts from the [GitLab Dedicated Trust Center](https://trust.gitlab.com/?product=gitlab-dedicated).
 
 #### Isolation
 

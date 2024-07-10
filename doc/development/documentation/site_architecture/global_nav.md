@@ -7,17 +7,16 @@ description: "Learn how GitLab docs' global navigation works and how to add new 
 
 # Global navigation
 
-Global navigation is the left-most pane in the documentation. You can use the
-"global nav" to browse the content.
+Global navigation (global nav) is the left-most pane in the documentation. You can use the
+global nav to browse the content.
 
 Research shows that people use Google to search for GitLab product documentation. When they land on a result,
 we want them to find topics nearby that are related to the content they're reading. The global nav provides this information.
 
 At the highest level, our global nav is **workflow-based**. Navigation needs to help users build a mental model of how to use GitLab.
-The levels under each of the higher workflow-based topics are the names of features.
-For example:
+The levels under each of the higher workflow-based topics are the names of features. For example:
 
-**Use GitLab** (_workflow_) **> Build your application** (_workflow_) **> CI/CD** (_feature_) **> Pipelines** (_feature_)
+**Use GitLab** (_workflow_) **> Build your application** (_workflow_) **> Get started** (_feature_)**> CI/CD** (_feature_) **> Pipelines** (_feature_)
 
 While some older sections of the nav are alphabetical, the nav should primarily be workflow-based.
 
@@ -63,14 +62,8 @@ Documentation pages can be said to belong in the following groups:
 
 With these groups in mind, the following are general rules for where new items should be added.
 
-- User documentation for:
-  - Group-level features belongs under **Groups**.
-  - Project-level features belongs under **Projects**.
-  - Features outside a group or project level (sometimes called "instance-level") can be placed at
-    the top-level, but care must be taken not to overwhelm that top-level space. If possible, such
-    features could be grouped in some way.
-  - Outside the above, most other miscellaneous user documentation belongs under **User**.
-- Administration documentation belongs under **Administrator**.
+- User documentation belongs in **Use GitLab**.
+- Administration documentation belongs under **Administer**.
 - Other documentation belongs at the top-level, but care must be taken to not create an enormously
   long top-level navigation, which defeats the purpose of it.
 
@@ -121,6 +114,23 @@ The global nav has five levels:
         - Doc
 
 You can view this structure in [the `navigation.yml` file](https://gitlab.com/gitlab-org/gitlab-docs/-/blob/main/content/_data/navigation.yaml).
+
+### Use GitLab section
+
+In addition to feature documentation, each category in the **Use GitLab** section should contain:
+
+- A [top-level page](../topic_types/top_level_page.md).
+- A [Get started page](../topic_types/get_started.md).
+
+This ensures a repeatable pattern that familiarizes users with how to navigate the documentation.
+
+The structure for the **Use GitLab** section is:
+
+- Use GitLab
+  - Top-level page
+    - Get started page
+    - Feature
+    - Feature
 
 ## Composition
 

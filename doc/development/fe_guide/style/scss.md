@@ -166,7 +166,7 @@ to match the Pajamas design system and to prefix CSS utility classes with `gl-`.
 This means that in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/padding)
 the spacing, sizing, and color CSS utility classes may not match. Also, the `gl-`
 prefix will not be shown. Here is our
-[spacing scale](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js#L4) 
+[spacing scale](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js#L4)
 and [colors](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/24a08b50da6bd3d34fb3f8d24f84436d90d165f6/src/tokens/build/tailwind/tokens.cjs).
 In the future we plan to utilize [Tailwind config viewer](https://github.com/rogden/tailwind-config-viewer)
 to have a Tailwind CSS documentation site specific to GitLab.
@@ -337,6 +337,26 @@ makes things harder to override.
 Do not use any selector prefixed with `js-` for styling purposes. These
 selectors are intended for use only with JavaScript to allow for removal or
 renaming without breaking styling.
+
+## Selectors with Util CSS Classes
+
+Do not use utility CSS classes as selectors in your stylesheets. These classes
+are likely to change, requiring updates to the selectors and making the
+implementation harder to maintain. Instead, use another existing CSS class or
+add a new custom CSS class for styling elements. This approach improves
+maintainability and reduces the risk of bugs.
+
+```scss
+// ❌ Bad
+.gl-mb-5 {
+  /* ... */
+}
+
+// ✅ Good
+.component-header {
+  /* ... */
+}
+```
 
 ## Using `extend` at-rule
 

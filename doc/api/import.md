@@ -39,7 +39,7 @@ POST /import/github
 | `repo_id`                  | integer | yes      | GitHub repository ID                                                                                                                                                                |
 | `new_name`                 | string  | no       | Name of the new project. Also used as the new path so must not start or end with a special character and must not contain consecutive special characters. |
 | `target_namespace`         | string  | yes      | Namespace to import repository into. Supports subgroups like `/namespace/subgroup`. In GitLab 15.8 and later, must not be blank                                                     |
-| `github_hostname`          | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com.                                                                                                                       |
+| `github_hostname`          | string  | no  | Custom GitHub Enterprise hostname. Do not set for GitHub.com. From GitLab 16.5 to GitLab 17.1, you must include the path `/api/v3`.                                                                    |
 | `optional_stages`          | object  | no  | [Additional items to import](../user/project/import/github.md#select-additional-items-to-import). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/373705) in GitLab 15.5 |
 | `timeout_strategy`          | string | no  | Strategy for handling import timeouts. Valid values are `optimistic` (continue to next stage of import) or `pessimistic` (fail immediately). Defaults to `pessimistic`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422979) in GitLab 16.5. |
 

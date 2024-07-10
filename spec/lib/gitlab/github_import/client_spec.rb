@@ -506,6 +506,40 @@ RSpec.describe Gitlab::GithubImport::Client, feature_category: :importers do
         expect(client.api_endpoint).to eq(endpoint)
       end
     end
+
+    context 'with a custom host' do
+      subject(:client) { described_class.new('foo', host: host) }
+
+      let(:host) { 'http://github-enterprise.com' }
+
+      it 'adds /api/v3 to the URL' do
+        expect(client.api_endpoint).to eq('http://github-enterprise.com/api/v3')
+      end
+
+      context 'when the host ends with /api/v3' do
+        let(:host) { 'http://github-enterprise.com/api/v3' }
+
+        it 'does not add /api/v3 to the URL' do
+          expect(client.api_endpoint).to eq('http://github-enterprise.com/api/v3')
+        end
+      end
+
+      context 'when host is github.com' do
+        let(:host) { 'https://github.com' }
+
+        it 'does not add /api/v3 to the URL' do
+          expect(client.api_endpoint).to eq('https://github.com')
+        end
+      end
+
+      context 'when host includes an API version different from v3' do
+        let(:host) { 'http://github-enterprise.com/api/v4' }
+
+        it 'keeps the provided version' do
+          expect(client.api_endpoint).to eq('http://github-enterprise.com/api/v4')
+        end
+      end
+    end
   end
 
   describe '#web_endpoint' do

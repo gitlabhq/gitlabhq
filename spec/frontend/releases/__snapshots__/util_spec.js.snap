@@ -1,10 +1,10 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`releases/util.js convertAllReleasesGraphQLResponse matches snapshot 1`] = `
-Object {
-  "data": Array [
-    Object {
-      "_links": Object {
+{
+  "data": [
+    {
+      "_links": {
         "__typename": "ReleaseLinks",
         "closedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.2&scope=all&state=closed",
         "closedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.2&scope=all&state=closed",
@@ -15,40 +15,40 @@ Object {
         "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.2",
         "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.2",
       },
-      "assets": Object {
+      "assets": {
         "count": 4,
-        "links": Array [],
-        "sources": Array [
-          Object {
+        "links": [],
+        "sources": [
+          {
             "__typename": "ReleaseSource",
             "format": "zip",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.zip",
           },
-          Object {
+          {
             "__typename": "ReleaseSource",
             "format": "tar.gz",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.tar.gz",
           },
-          Object {
+          {
             "__typename": "ReleaseSource",
             "format": "tar.bz2",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.tar.bz2",
           },
-          Object {
+          {
             "__typename": "ReleaseSource",
             "format": "tar",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.2/releases-project-v1.2.tar",
           },
         ],
       },
-      "author": Object {
+      "author": {
         "__typename": "UserCore",
         "avatarUrl": "https://www.gravatar.com/avatar/47420c558894b028457615db5156a52e6b791b829a6ca611656bb2560f9dbfc3?s=80&d=identicon",
         "id": Any<String>,
         "username": "user1",
         "webUrl": "http://localhost/user1",
       },
-      "commit": Object {
+      "commit": {
         "shortId": "b83d6e39",
         "title": "Merge branch 'branch-merged' into 'master'",
       },
@@ -67,17 +67,17 @@ Object {
           🤷
         </gl-emoji>
       </p>,
-      "evidences": Array [],
+      "evidences": [],
       "historicalRelease": false,
-      "milestones": Array [],
+      "milestones": [],
       "name": "The second release",
       "releasedAt": 2019-01-10T00:00:00.000Z,
       "tagName": "v1.2",
       "tagPath": "/releases-namespace/releases-project/-/tags/v1.2",
       "upcomingRelease": true,
     },
-    Object {
-      "_links": Object {
+    {
+      "_links": {
         "__typename": "ReleaseLinks",
         "closedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=closed",
         "closedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=closed",
@@ -88,10 +88,10 @@ Object {
         "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
         "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
       },
-      "assets": Object {
+      "assets": {
         "count": 8,
-        "links": Array [
-          Object {
+        "links": [
+          {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-3",
             "id": "gid://gitlab/Releases::Link/13",
@@ -99,7 +99,7 @@ Object {
             "name": "Image",
             "url": "https://example.com/image",
           },
-          Object {
+          {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-2",
             "id": "gid://gitlab/Releases::Link/12",
@@ -107,7 +107,7 @@ Object {
             "name": "Package",
             "url": "https://example.com/package",
           },
-          Object {
+          {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-1",
             "id": "gid://gitlab/Releases::Link/11",
@@ -115,7 +115,7 @@ Object {
             "name": "Runbook",
             "url": "http://localhost/releases-namespace/releases-project/runbook",
           },
-          Object {
+          {
             "__typename": "ReleaseAssetLink",
             "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/linux-amd64",
             "id": "gid://gitlab/Releases::Link/10",
@@ -124,37 +124,37 @@ Object {
             "url": "https://downloads.example.com/bin/gitlab-linux-amd64",
           },
         ],
-        "sources": Array [
-          Object {
+        "sources": [
+          {
             "__typename": "ReleaseSource",
             "format": "zip",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.zip",
           },
-          Object {
+          {
             "__typename": "ReleaseSource",
             "format": "tar.gz",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.tar.gz",
           },
-          Object {
+          {
             "__typename": "ReleaseSource",
             "format": "tar.bz2",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.tar.bz2",
           },
-          Object {
+          {
             "__typename": "ReleaseSource",
             "format": "tar",
             "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.tar",
           },
         ],
       },
-      "author": Object {
+      "author": {
         "__typename": "UserCore",
         "avatarUrl": "https://www.gravatar.com/avatar/47420c558894b028457615db5156a52e6b791b829a6ca611656bb2560f9dbfc3?s=80&d=identicon",
         "id": Any<String>,
         "username": "user1",
         "webUrl": "http://localhost/user1",
       },
-      "commit": Object {
+      "commit": {
         "shortId": "b83d6e39",
         "title": "Merge branch 'branch-merged' into 'master'",
       },
@@ -178,8 +178,8 @@ Object {
           🚀
         </gl-emoji>
       </p>,
-      "evidences": Array [
-        Object {
+      "evidences": [
+        {
           "__typename": "ReleaseEvidence",
           "collectedAt": "2018-12-03T00:00:00Z",
           "filepath": Any<String>,
@@ -188,12 +188,12 @@ Object {
         },
       ],
       "historicalRelease": false,
-      "milestones": Array [
-        Object {
+      "milestones": [
+        {
           "__typename": "Milestone",
           "description": "The 12.3 milestone",
           "id": "gid://gitlab/Milestone/123",
-          "issueStats": Object {
+          "issueStats": {
             "closed": 3,
             "total": 5,
           },
@@ -202,11 +202,11 @@ Object {
           "webPath": undefined,
           "webUrl": "/releases-namespace/releases-project/-/milestones/1",
         },
-        Object {
+        {
           "__typename": "Milestone",
           "description": "The 12.4 milestone",
           "id": "gid://gitlab/Milestone/124",
-          "issueStats": Object {
+          "issueStats": {
             "closed": 1,
             "total": 4,
           },
@@ -223,7 +223,7 @@ Object {
       "upcomingRelease": true,
     },
   ],
-  "paginationInfo": Object {
+  "paginationInfo": {
     "__typename": "PageInfo",
     "endCursor": Any<String>,
     "hasNextPage": false,
@@ -234,17 +234,17 @@ Object {
 `;
 
 exports[`releases/util.js convertOneReleaseForEditingGraphQLResponse matches snapshot 1`] = `
-Object {
-  "data": Object {
-    "_links": Object {
+{
+  "data": {
+    "_links": {
       "__typename": "ReleaseLinks",
       "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
       "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
     },
-    "assets": Object {
+    "assets": {
       "count": undefined,
-      "links": Array [
-        Object {
+      "links": [
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/awesome-app-3",
           "id": "gid://gitlab/Releases::Link/13",
@@ -252,7 +252,7 @@ Object {
           "name": "Image",
           "url": "https://example.com/image",
         },
-        Object {
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/awesome-app-2",
           "id": "gid://gitlab/Releases::Link/12",
@@ -260,7 +260,7 @@ Object {
           "name": "Package",
           "url": "https://example.com/package",
         },
-        Object {
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/awesome-app-1",
           "id": "gid://gitlab/Releases::Link/11",
@@ -268,7 +268,7 @@ Object {
           "name": "Runbook",
           "url": "http://localhost/releases-namespace/releases-project/runbook",
         },
-        Object {
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetPath": "/binaries/linux-amd64",
           "id": "gid://gitlab/Releases::Link/10",
@@ -277,26 +277,26 @@ Object {
           "url": "https://downloads.example.com/bin/gitlab-linux-amd64",
         },
       ],
-      "sources": Array [],
+      "sources": [],
     },
     "author": undefined,
     "createdAt": 2018-12-03T00:00:00.000Z,
     "description": "Best. Release. **Ever.** :rocket:",
-    "evidences": Array [],
-    "milestones": Array [
-      Object {
+    "evidences": [],
+    "milestones": [
+      {
         "__typename": "Milestone",
         "id": "gid://gitlab/Milestone/123",
-        "issueStats": Object {},
+        "issueStats": {},
         "stats": undefined,
         "title": "12.3",
         "webPath": undefined,
         "webUrl": undefined,
       },
-      Object {
+      {
         "__typename": "Milestone",
         "id": "gid://gitlab/Milestone/124",
-        "issueStats": Object {},
+        "issueStats": {},
         "stats": undefined,
         "title": "12.4",
         "webPath": undefined,
@@ -312,9 +312,9 @@ Object {
 `;
 
 exports[`releases/util.js convertOneReleaseGraphQLResponse matches snapshot 1`] = `
-Object {
-  "data": Object {
-    "_links": Object {
+{
+  "data": {
+    "_links": {
       "__typename": "ReleaseLinks",
       "closedIssuesUrl": "http://localhost/releases-namespace/releases-project/-/issues?release_tag=v1.1&scope=all&state=closed",
       "closedMergeRequestsUrl": "http://localhost/releases-namespace/releases-project/-/merge_requests?release_tag=v1.1&scope=all&state=closed",
@@ -325,10 +325,10 @@ Object {
       "self": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
       "selfUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1",
     },
-    "assets": Object {
+    "assets": {
       "count": 8,
-      "links": Array [
-        Object {
+      "links": [
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-3",
           "id": "gid://gitlab/Releases::Link/13",
@@ -336,7 +336,7 @@ Object {
           "name": "Image",
           "url": "https://example.com/image",
         },
-        Object {
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-2",
           "id": "gid://gitlab/Releases::Link/12",
@@ -344,7 +344,7 @@ Object {
           "name": "Package",
           "url": "https://example.com/package",
         },
-        Object {
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/awesome-app-1",
           "id": "gid://gitlab/Releases::Link/11",
@@ -352,7 +352,7 @@ Object {
           "name": "Runbook",
           "url": "http://localhost/releases-namespace/releases-project/runbook",
         },
-        Object {
+        {
           "__typename": "ReleaseAssetLink",
           "directAssetUrl": "http://localhost/releases-namespace/releases-project/-/releases/v1.1/downloads/binaries/linux-amd64",
           "id": "gid://gitlab/Releases::Link/10",
@@ -361,37 +361,37 @@ Object {
           "url": "https://downloads.example.com/bin/gitlab-linux-amd64",
         },
       ],
-      "sources": Array [
-        Object {
+      "sources": [
+        {
           "__typename": "ReleaseSource",
           "format": "zip",
           "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.zip",
         },
-        Object {
+        {
           "__typename": "ReleaseSource",
           "format": "tar.gz",
           "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.tar.gz",
         },
-        Object {
+        {
           "__typename": "ReleaseSource",
           "format": "tar.bz2",
           "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.tar.bz2",
         },
-        Object {
+        {
           "__typename": "ReleaseSource",
           "format": "tar",
           "url": "http://localhost/releases-namespace/releases-project/-/archive/v1.1/releases-project-v1.1.tar",
         },
       ],
     },
-    "author": Object {
+    "author": {
       "__typename": "UserCore",
       "avatarUrl": "https://www.gravatar.com/avatar/47420c558894b028457615db5156a52e6b791b829a6ca611656bb2560f9dbfc3?s=80&d=identicon",
       "id": Any<String>,
       "username": "user1",
       "webUrl": "http://localhost/user1",
     },
-    "commit": Object {
+    "commit": {
       "shortId": "b83d6e39",
       "title": "Merge branch 'branch-merged' into 'master'",
     },
@@ -415,8 +415,8 @@ Object {
         🚀
       </gl-emoji>
     </p>,
-    "evidences": Array [
-      Object {
+    "evidences": [
+      {
         "__typename": "ReleaseEvidence",
         "collectedAt": "2018-12-03T00:00:00Z",
         "filepath": Any<String>,
@@ -425,12 +425,12 @@ Object {
       },
     ],
     "historicalRelease": false,
-    "milestones": Array [
-      Object {
+    "milestones": [
+      {
         "__typename": "Milestone",
         "description": "The 12.3 milestone",
         "id": "gid://gitlab/Milestone/123",
-        "issueStats": Object {
+        "issueStats": {
           "closed": 3,
           "total": 5,
         },
@@ -439,11 +439,11 @@ Object {
         "webPath": undefined,
         "webUrl": "/releases-namespace/releases-project/-/milestones/1",
       },
-      Object {
+      {
         "__typename": "Milestone",
         "description": "The 12.4 milestone",
         "id": "gid://gitlab/Milestone/124",
-        "issueStats": Object {
+        "issueStats": {
           "closed": 1,
           "total": 4,
         },

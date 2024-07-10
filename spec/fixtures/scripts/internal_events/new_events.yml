@@ -11,13 +11,13 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
-    - "1\n" # Select: Create Metric --- define a new metric
+    - "\n" # Select: Create Metric --- define a new metric
     - "\e[A" # Arrow up to: Total count of events
     - "\n" # Select: Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml
@@ -40,7 +40,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select [free, premium, ultimate]
     - "y\n" # Create file
-    - "3\n" # Exit
+    - "4\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml
@@ -63,7 +63,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select [free, premium, ultimate]
     - "y\n" # Create file
-    - "3\n" # Exit
+    - "4\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_closed.yml
@@ -82,7 +82,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "2\n" # Select [premium, ultimate]
     - "y\n" # Create file
-    - "3\n" # Exit
+    - "4\n" # Exit
   outputs:
     files:
     - path: ee/config/events/internal_events_cli_opened.yml
@@ -137,7 +137,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "2\n" # Select [premium, ultimate]
     - "y\n" # Create file
-    - "3\n" # Exit
+    - "4\n" # Exit
   outputs:
     files:
     - path: ee/config/events/internal_events_cli_opened.yml
@@ -156,7 +156,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
-    - "2\n" # Select: View Usage
+    - "3\n" # Select: View Usage
     - "9\n" # Exit
   outputs:
     files:
@@ -176,13 +176,13 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select: [free, premium, ultimate]
     - "n\n" # Create file
-    - "1\n" # Select: Save event & create Metric --- define a new metric
+    - "\n" # Select: Save event & create Metric --- define a new metric
     - "\e[A" # Arrow up to: Total count of events
     - "\n" # Select: Total count of events
     - "when an event was defined using the CLI\n" # Input description
     - "1\n" # Select: Copy & continue
     - "y\n" # Create file
-    - "2\n" # Exit
+    - "5\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml
@@ -203,7 +203,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
-    - "3\n" # Exit
+    - "4\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml
@@ -226,11 +226,42 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
-    - "3\n" # Exit
+    - "4\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml
       content: spec/fixtures/scripts/internal_events/events/event_with_additional_properties.yml
+
+- description: Creates two events
+  inputs:
+    keystrokes:
+    - "1\n" # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
+    - "Engineer uses Internal Event CLI to define a new event\n" # Submit description
+    - "internal_events_cli_used\n" # Submit action name
+    - "1\n" # Select: [namespace, project, user]
+    - "\n" # Select (add props): None! Continue to next step!
+    - "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143433\n" # Submit MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "1\n" # Select: [free, premium, ultimate]
+    - "y\n" # Create file
+    - "1\n" # Create another event
+    - "Internal Event CLI is opened\n" # Submit description
+    - "internal_events_cli_opened\n" # Submit action name
+    - "6\n" # Select: None
+    - "\n" # Select (add props): None! Continue to next step!
+    - "\n" # Skip MR URL
+    - "instrumentation" # Filters to the analytics instrumentation group
+    - "\n" # Accept analytics:monitor:analytics_instrumentation
+    - "2\n" # Select [premium, ultimate]
+    - "y\n" # Create file
+    - "4\n" # Exit
+  outputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_mr_url.yml
+    - path: ee/config/events/internal_events_cli_opened.yml
+      content: spec/fixtures/scripts/internal_events/events/ee_event_without_identifiers.yml
 
 - description: Auto-proceeds to MR selection when event uses all additional properties
   inputs:
@@ -250,7 +281,7 @@
     - "\n" # Accept analytics:monitor:analytics_instrumentation
     - "1\n" # Select: [free, premium, ultimate]
     - "y\n" # Create file
-    - "3\n" # Exit
+    - "4\n" # Exit
   outputs:
     files:
     - path: config/events/internal_events_cli_used.yml

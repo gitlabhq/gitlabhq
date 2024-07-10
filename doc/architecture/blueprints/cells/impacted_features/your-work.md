@@ -49,7 +49,7 @@ Your Work will be scoped to an Organization, giving the user an overview of all 
 ## 4. Evaluation
 
 Scoping Your Work to an Organization makes sense in the context of the [proposed Organization navigation](https://gitlab.com/gitlab-org/gitlab/-/issues/417778).
-Considering that [we expect most users to work in a single Organization](../../organization/index.md#data-exploration), we deem this impact acceptable.
+Considering that [we expect most users to work in a single Organization](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/#data-exploration), we deem this impact acceptable.
 
 ## 4.1. Pros
 

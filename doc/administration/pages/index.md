@@ -104,6 +104,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -202,6 +203,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -225,18 +227,19 @@ Prerequisites:
    external_url "http://example.com"
    pages_external_url 'http://example.io'
 
-   pages_nginx['enable'] = true
-
    # Set this flag to enable this feature
    gitlab_pages["namespace_in_path"] = true
    ```
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-NGINX uses the custom proxy header `X-Gitlab-Namespace-In-Path`
-to send the namespace to the GitLab Pages daemon.
-
 The resulting URL scheme is `http://example.io/<namespace>/<project_slug>`.
+
+WARNING:
+GitLab Pages supports only one URL scheme at a time:
+with wildcard DNS, or without wildcard DNS.
+If you enable `namespace_in_path`, existing GitLab Pages websites
+are accessible only on domains without wildcard DNS.
 
 ### Wildcard domains with TLS support
 
@@ -291,6 +294,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/17584) as an [experiment](../../policy/experiment-beta-support.md) in GitLab 16.7.
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148621) to [beta](../../policy/experiment-beta-support.md) in GitLab 16.11.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab-pages/-/issues/1111) implementation from NGINX to the GitLab Pages codebase in GitLab 17.2.
 
 FLAG:
 On self-managed GitLab, by default this feature is available.
@@ -315,7 +319,6 @@ daemon doesn't listen to the outside world:
    external_url "https://example.com"
    pages_external_url 'https://example.io'
 
-   pages_nginx['enable'] = true
    pages_nginx['redirect_http_to_https'] = true
 
    # Set this flag to enable this feature
@@ -344,10 +347,13 @@ daemon doesn't listen to the outside world:
 
 1. [Reconfigure GitLab](../restart_gitlab.md#reconfigure-a-linux-package-installation).
 
-NGINX uses the custom proxy header `X-Gitlab-Namespace-In-Path`
-to send the namespace to the GitLab Pages daemon.
-
 The resulting URL scheme is `https://example.io/<namespace>/<project_slug>`.
+
+WARNING:
+GitLab Pages supports only one URL scheme at a time:
+with wildcard DNS, or without wildcard DNS.
+If you enable `namespace_in_path`, existing GitLab Pages websites
+are accessible only on domains without wildcard DNS.
 
 ### Wildcard domains with TLS-terminating Load Balancer
 
@@ -393,7 +399,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `artifacts_server`                      | Enable viewing [artifacts](../job_artifacts.md) in GitLab Pages.                                                                                                                                                                                                                                           |
 | `artifacts_server_timeout`              | Timeout (in seconds) for a proxied request to the artifacts server.                                                                                                                                                                                                                                        |
 | `artifacts_server_url`                  | API URL to proxy artifact requests to. Defaults to GitLab `external URL` + `/api/v4`, for example `https://gitlab.com/api/v4`. When running a [separate Pages server](#running-gitlab-pages-on-a-separate-server), this URL must point to the main GitLab server's API.                                    |
-| `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`, for example `https://projects.example.io/auth`. When `namespace_in_path` is enabled, defaults to `pages_external_url` + `/projects/auth`, for example `https://example.io/projects/auth`.   |
+| `auth_redirect_uri`                     | Callback URL for authenticating with GitLab. Defaults to project's subdomain of `pages_external_url` + `/auth`, for example `https://projects.example.io/auth`. When `namespace_in_path` is enabled, defaults to `pages_external_url` + `/projects/auth`, for example `https://example.io/projects/auth`.  |
 | `auth_secret`                           | Secret key for signing authentication requests. Leave blank to pull automatically from GitLab during OAuth registration.                                                                                                                                                                                   |
 | `client_cert`                           | Client certificate used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details.                                                                                                                             |
 | `client_key`                            | Client key used for mutual TLS with the GitLab API. See [Support mutual TLS when calling the GitLab API](#support-mutual-tls-when-calling-the-gitlab-api) for details.                                                                                                                                     |
@@ -426,7 +432,7 @@ control over how the Pages daemon runs and serves content in your environment.
 | `log_directory`                         | Absolute path to a log directory.                                                                                                                                                                                                                                                                          |
 | `log_format`                            | The log output format: `text` or `json`.                                                                                                                                                                                                                                                                   |
 | `log_verbose`                           | Verbose logging, true/false.                                                                                                                                                                                                                                                                               |
-| `namespace_in_path`                     | (Beta) Enable or disable namespace in the URL path. This requires `pages_nginx[enable] = true`. Sets `rewrite` configuration in NGINX to support [without wildcard DNS setup](#for-namespace-in-url-path-without-wildcard-dns). Default: `false`.                                                       |
+| `namespace_in_path`                     | (Beta) Enable or disable namespace in the URL path to support [without wildcard DNS setup](#for-namespace-in-url-path-without-wildcard-dns). Default: `false`.                                                                                                                                             |
 | `propagate_correlation_id`              | Set to true (false by default) to re-use existing Correlation ID from the incoming request header `X-Request-ID` if present. If a reverse proxy sets this header, the value is propagated in the request chain.                                                                                            |
 | `max_connections`                       | Limit on the number of concurrent connections to the HTTP, HTTPS or proxy listeners.                                                                                                                                                                                                                       |
 | `max_uri_length`                        | The maximum length of URIs accepted by GitLab Pages. Set to 0 for unlimited length.                                                                                                                                                                                                                        |

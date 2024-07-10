@@ -14,14 +14,14 @@ participating-stages: []
 
 ## Summary
 
-This design document outlines a system for storing and querying logs which will be a part of GitLab Observability Backend (GOB), together with [tracing](../observability_tracing/index.md) and [metrics](../observability_metrics/index.md).
+This design document outlines a system for storing and querying logs which will be a part of GitLab Observability Backend (GOB), together with [tracing](../observability_tracing/index.md) and [metrics](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_metrics/).
 At its core the system is leveraging [OpenTelemetry logging](https://opentelemetry.io/docs/specs/otel/logs/) specification for data ingestion and ClickHouse database for storage.
 The users will interact with the data through GitLab UI.
 The system itself is multi-tenant and offers our users a way to store their application logs, query them, and in future iterations correlate with other observability signals (traces, errors, metrics, etc...).
 
 ## Motivation
 
-After [tracing](../observability_tracing/index.md) and [metrics](../observability_metrics/index.md), logging is the last observability signal that we need to support to be able to provide our users with a fully-fledged observability solution.
+After [tracing](../observability_tracing/index.md) and [metrics](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_metrics/), logging is the last observability signal that we need to support to be able to provide our users with a fully-fledged observability solution.
 
 One could argue that logging itself is also the most important observability signal because it is so widespread.
 It predates metrics and tracing in the history of application observability and is usually implemented as one of the first things during development.
@@ -55,7 +55,7 @@ Without logging support, it would be very hard if not impossible to fully unders
 
 ## Proposal
 
-The architecture of logs ingestion follows the patterns outlined in the [tracing](../observability_tracing/index.md) and [metrics](../observability_metrics/index.md) proposals:
+The architecture of logs ingestion follows the patterns outlined in the [tracing](../observability_tracing/index.md) and [metrics](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_metrics/) proposals:
 
 ![System Overview](system_overview.png)
 
@@ -585,7 +585,7 @@ The `()|AND|OR` are nesting operands and can only include other non-nesting oper
 We may defer the implementation of the nesting operands for later iterations.
 There is implicit AND between the operands at the top level of the query structure.
 
-The query schema is intentionally kept simple compared to [the one used in the metrics proposal](../observability_metrics/index.md#api-structure).
+The query schema is intentionally kept simple compared to [the one used in the metrics proposal](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_metrics/#api-structure).
 We may add fields like `QueryContext`, `BackendContext`, etc... in later iterations once a need arises.
 For now, we keep the schema as simple as possible and just make sure that the API is versioned so that we can change it easily in the future.
 
