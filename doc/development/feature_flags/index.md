@@ -616,6 +616,7 @@ Instead, it is possible to use the `:instance` symbol as the second argument to 
 
 ```ruby
 Feature.enabled?(:feature_flag, :instance)
+```
 
 #### Current request actor
 

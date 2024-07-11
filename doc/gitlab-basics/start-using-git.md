@@ -8,6 +8,16 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Learn more about the most commonly used Git commands.
 
+## `git add`
+
+Use `git add` to files to the staging area.
+
+```shell
+git add <file_path>
+```
+
+You can recursively stage changes from the current working directory with `git add .`, or stage all changes in the Git repository with `git add --all`.
+
 ## `git blame`
 
 Use `git blame` to report which users changed which parts of a file.
@@ -16,7 +26,7 @@ Use `git blame` to report which users changed which parts of a file.
 git blame <file_name>
 ```
 
-You can use `git blame -L <line_start>, <line_end>` to check a only
+You can use `git blame -L <line_start>, <line_end>` to check a
 specific range of lines.
 
 For example, to check which user most recently modified line five of
@@ -27,6 +37,20 @@ $ git blame -L 5, 5 example.txt
 123abc (Zhang Wei 2021-07-04 12:23:04 +0000 5)
 ```
 
+## `git bisect`
+
+Use `git bisect`to use binary search to find the commit that introduced a bug.
+
+Start by identifying a commit that is "bad" (contains the bug) and a commit that is "good" (doesn't contain the bug).
+
+```shell
+git bisect start
+git bisect bad                 # Current version is bad
+git bisect good v2.6.13-rc2    # v2.6.13-rc2 is known to be good
+```
+
+`git bisect`then picks a commit in between the two points and asks you identify if the commit is "good" or "bad" with `git bisect good`or `git bisect bad`. Repeat the process until the commit is found.
+
 ## `git checkout`
 
 Use `git checkout` to switch to a specific branch.
@@ -36,6 +60,33 @@ git checkout <branch_name>
 ```
 
 To create a new branch and switch to it, use `git checkout -b <branch_name>`.
+
+## `git clone`
+
+Use `git clone` to copy an existing Git repository.
+
+```shell
+git clone <repository>
+```
+
+## `git commit`
+
+Use `git commit` to commits staged changes to the repository.
+
+```shell
+git commit -m "<commit_message>"
+```
+
+If the commit message contains a blank line, the first line becomes
+the commit subject while the remainder becomes the commit body. Use
+the subject to briefly summarize a change, and the commit body to
+provide additional details.
+
+Use `git commit --amend` to modify the most recent commit
+
+```shell
+git commit --amend
+```
 
 ## `git init`
 
@@ -61,6 +112,22 @@ time you cloned or pulled the project.
 git pull <optional_remote> <branch_name>
 ```
 
+## `git push`
+
+Use `git push` to update remote refs.
+
+```shell
+git push
+```
+
+## `git reflog`
+
+To display a list of changes to the Git reference logs, use `git reflog`.
+
+```shell
+git reflog
+```
+
 ## `git remote add`
 
 Use `git remote add` to tell Git which remote repository in GitLab is
@@ -72,14 +139,6 @@ git remote add <remote_name> <repository_url>
 
 When you clone a repository, by default the source repository is
 associated with the remote name `origin`.
-
-## `git reflog`
-
-To display a list of changes to the Git reference logs, use `git reflog`.
-
-```shell
-git reflog
-```
 
 By default, `git reflog` shows a list of changes to `HEAD`.
 
@@ -131,4 +190,12 @@ To undo a commit, use `git reset` to rewind the commit history and continue on f
 
 ```shell
 git reset
+```
+
+## `git status`
+
+To undo a commit, use `git status` to show the status of working directory and staged files.
+
+```shell
+git status
 ```

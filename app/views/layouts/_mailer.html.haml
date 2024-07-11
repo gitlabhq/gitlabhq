@@ -10,15 +10,15 @@
     -# so we do not inline it with vite. Similar solution to:
     -# app/views/layouts/errors.html.haml
     - if vite_enabled?
-      = universal_stylesheet_link_tag 'mailer_client_specific', data: { premailer: 'ignore' }
+      = universal_stylesheet_link_tag 'mailers/mailer_client_specific', data: { premailer: 'ignore' }
     - else
       -# Avoid premailer processing of client-specific styles (@media tag not supported)
       -# We need to inline the contents here because mail clients (e.g. iOS Mail, Outlook)
       -# do not support linked stylesheets.
       %style{ type: 'text/css', 'data-premailer': 'ignore' }
-        = asset_to_string('mailer_client_specific.css').html_safe
+        = asset_to_string('mailers/mailer_client_specific.css').html_safe
 
-    = universal_stylesheet_link_tag 'mailer'
+    = universal_stylesheet_link_tag 'mailers/mailer'
   %body
     = yield :preview_text
     -# Test stub for RSpec testing of Notify and associated modules

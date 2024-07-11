@@ -3,6 +3,8 @@ import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import autoprefixer from 'autoprefixer';
 import postcss from 'postcss';
+import postcssCustomProperties from 'postcss-custom-properties';
+import postcssGlobalData from '@csstools/postcss-global-data';
 import { compile, Logger } from 'sass';
 import glob from 'glob';
 /* eslint-disable import/extensions */
@@ -185,6 +187,14 @@ export function resolveCompilationTargetsForVite() {
 function createPostCSSProcessors() {
   return {
     tailwind: postcss([tailwindcss(tailwindConfig), autoprefixer()]),
+    mailers: postcss([
+      tailwindcss(tailwindConfig),
+      postcssGlobalData({
+        files: [path.join(ROOT_PATH, 'node_modules/@gitlab/ui/src/tokens/build/css/tokens.css')],
+      }),
+      postcssCustomProperties({ preserve: false }),
+      autoprefixer(),
+    ]),
     default: postcss([autoprefixer()]),
   };
 }
@@ -219,7 +229,13 @@ export async function compileAllStyles({
   }
 
   async function postProcessCSS(content, source) {
-    const processor = content.css.includes('@apply') ? processors.tailwind : processors.default;
+    let processor = processors.default;
+
+    if (source.includes('/mailers/')) {
+      processor = processors.mailers;
+    } else if (content.css.includes('@apply')) {
+      processor = processors.tailwind;
+    }
 
     return processor.process(content.css, {
       from: source,

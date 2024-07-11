@@ -9,7 +9,7 @@
    ],
    "overrides": [
     {
-      "files": ["app/assets/stylesheets/mailer.scss"],
+      "files": ["app/assets/stylesheets/mailers/mailer.scss"],
       "rules": {
         "color-hex-length": "long"
       }

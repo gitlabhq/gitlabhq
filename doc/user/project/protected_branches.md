@@ -21,7 +21,8 @@ A protected branch controls:
 - Which users can push to the branch.
 - If users can force push to the branch.
 - If changes to files listed in the CODEOWNERS file can be pushed directly to the branch.
-- Which users can unprotect the branch.
+- Which users, groups, or access levels can unprotect the branch using the
+  [Protected branches API](../../api/protected_branches.md#update-a-protected-branch).
 - Which users can modify the branch via the [Commits API](../../api/commits.md).
 
 The [default branch](repository/branches/default.md) for your repository is protected by default.
@@ -220,9 +221,9 @@ You can allow everyone with write access to push to the protected branch.
 
 ## Allow deploy keys to push to a protected branch
 
-You can permit the owner of a [deploy key](deploy_keys/index.md) to push to a protected branch.
-The deploy key works, even if the user isn't a member of the related project. However, the owner of the deploy
-key must have at least read access to the project.
+> - More restrictions on deploy keys [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/425926) in GitLab 16.5 [with a flag](../../administration/feature_flags.md) named `check_membership_in_protected_ref_access`. Disabled by default.
+
+You can push to a protected branch with a [deploy key](deploy_keys/index.md).
 
 Prerequisites:
 
@@ -232,6 +233,9 @@ Prerequisites:
   project.
 - The deploy key must have [write access](deploy_keys/index.md#permissions) to your project
   repository.
+- The owner of the deploy key must have at least read access to the project.
+- If the `check_membership_in_protected_ref_access` feature flag is enabled, the owner of the
+  deploy key must also be a member of the project.
 
 To allow a deploy key to push to a protected branch:
 

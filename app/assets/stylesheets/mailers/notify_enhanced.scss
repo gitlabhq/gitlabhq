@@ -22,10 +22,10 @@
 // gitlab styles
 @import 'bootstrap_migration_variables';
 @import 'bootstrap_migration_reset';
-@import 'framework/gfm';
-@import 'framework/kbd';
-@import 'framework/tables';
-@import 'framework/typography';
+@import '../framework/gfm';
+@import '../framework/kbd';
+@import '../framework/tables';
+@import '../framework/typography';
 
 body {
   font-family: $regular-font;

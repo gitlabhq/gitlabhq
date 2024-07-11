@@ -430,10 +430,7 @@ export default {
       this.isStickyHeaderShowing = false;
     },
     showStickyHeader() {
-      // only if scrolled under the work item's title
-      if (this.$refs?.title?.$el.offsetTop < window.pageYOffset) {
-        this.isStickyHeaderShowing = true;
-      }
+      this.isStickyHeaderShowing = true;
     },
     updateDraft(type, value) {
       this.draftData[type] = value;

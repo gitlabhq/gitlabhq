@@ -1908,7 +1908,7 @@
     <!-- foo -->*bar*
     <p><em>baz</em></p>
   static: |-
-    *bar*
+    <!-- foo -->*bar*
     <p data-sourcepos="2:1-2:5" dir="auto"><em data-sourcepos="2:1-2:5">baz</em></p>
   wysiwyg: |-
     <p dir="auto">*bar*
@@ -1930,8 +1930,11 @@
     bar
        baz -->
     <p>okay</p>
-  static: |2-
+  static: |-
+    <!-- Foo
 
+    bar
+       baz -->
     <p data-sourcepos="5:1-5:4" dir="auto">okay</p>
   wysiwyg: |-
     <p dir="auto">okay</p>
@@ -1985,10 +1988,12 @@
       <!-- foo -->
     <pre><code>&lt;!-- foo --&gt;
     </code></pre>
-  static: "  \n<div class=\"gl-relative markdown-code-block js-markdown-code\">\n<pre
-    data-sourcepos=\"3:5-3:16\" class=\"code highlight js-syntax-highlight language-plaintext\"
-    v-pre=\"true\"><code><span id=\"LC1\" class=\"line\" lang=\"plaintext\">&lt;!--
-    foo --&gt;</span></code></pre>\n<copy-code></copy-code>\n</div>"
+  static: |2-
+      <!-- foo -->
+    <div class="gl-relative markdown-code-block js-markdown-code">
+    <pre data-sourcepos="3:5-3:16" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">&lt;!-- foo --&gt;</span></code></pre>
+    <copy-code></copy-code>
+    </div>
   wysiwyg: |-
     <pre dir="auto" class="content-editor-code-block undefined code highlight"><code>&lt;!-- foo --&gt;</code></pre>
 04_06_00__leaf_blocks__html_blocks__036:
@@ -4308,7 +4313,7 @@
     <li data-sourcepos="1:1-1:5">foo</li>
     <li data-sourcepos="2:1-3:0">bar</li>
     </ul>
-
+    <!-- -->
     <ul data-sourcepos="6:1-7:5" dir="auto">
     <li data-sourcepos="6:1-6:5">baz</li>
     <li data-sourcepos="7:1-7:5">bim</li>
@@ -4340,7 +4345,7 @@
     <p data-sourcepos="5:5-5:7">foo</p>
     </li>
     </ul>
-
+    <!-- -->
     <div class="gl-relative markdown-code-block js-markdown-code">
     <pre data-sourcepos="9:5-9:8" class="code highlight js-syntax-highlight language-plaintext" v-pre="true"><code><span id="LC1" class="line" lang="plaintext">code</span></code></pre>
     <copy-code></copy-code>
@@ -7379,14 +7384,15 @@
     <p>foo <!-- this is a
     comment - with hyphen --></p>
   static: |-
-    <p data-sourcepos="1:1-2:25" dir="auto">foo </p>
+    <p data-sourcepos="1:1-2:25" dir="auto">foo <!-- this is a
+    comment - with hyphen --></p>
   wysiwyg: |-
     <p dir="auto">foo </p>
 06_11_00__inlines__raw_html__014:
   canonical: |
     <p>foo &lt;!-- not a comment -- two hyphens --&gt;</p>
   static: |-
-    <p data-sourcepos="1:1-1:41" dir="auto">foo </p>
+    <p data-sourcepos="1:1-1:41" dir="auto">foo <!-- not a comment -- two hyphens --></p>
   wysiwyg: |-
     <p dir="auto">foo &lt;!-- not a comment -- two hyphens --&gt;</p>
 06_11_00__inlines__raw_html__015:
@@ -7394,7 +7400,7 @@
     <p>foo &lt;!--&gt; foo --&gt;</p>
     <p>foo &lt;!-- foo---&gt;</p>
   static: |-
-    <p data-sourcepos="1:1-1:17" dir="auto">foo  foo --&gt;</p>
+    <p data-sourcepos="1:1-1:17" dir="auto">foo <!----> foo --&gt;</p>
     <p data-sourcepos="3:1-3:16" dir="auto">foo &lt;!-- foo---&gt;</p>
   wysiwyg: |-
     <p dir="auto">foo &lt;!--&gt; foo --&gt;</p>

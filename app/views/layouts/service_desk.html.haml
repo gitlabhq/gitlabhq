@@ -6,13 +6,13 @@
       GitLab
     -# haml-lint:enable NoPlainNodes
     - if Feature.enabled?(:enhanced_notify_css)
-      = universal_stylesheet_link_tag 'notify_enhanced'
+      = universal_stylesheet_link_tag 'mailers/notify_enhanced'
       %style{ type: 'text/css', 'data-premailer': 'ignore' }
         -# The MUA automatically turns some text into links.
         -# Match the color of explicit links ($blue-600 from typography.scss).
         a { color: #1068bf; }
     - else
-      = universal_stylesheet_link_tag 'notify'
+      = universal_stylesheet_link_tag 'mailers/notify'
     = yield :head
   %body
     = html_header_message

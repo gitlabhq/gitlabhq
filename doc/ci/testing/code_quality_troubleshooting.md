@@ -217,3 +217,13 @@ To gain insight into the errors, you can execute a GraphQL query using the follo
      }
    }
    ```
+
+## No report artifact is created
+
+With certain Runner configurations, the Code Quality scanning job may not have access to your source code.
+If this happens, the `gl-code-quality-report.json` artifact won't be created.
+
+To resolve this issue, either:
+
+- Use the [documented Runner configuration for Docker-in-Docker](../docker/using_docker_build.md#use-docker-in-docker), which uses privileged mode instead of Docker socket binding.
+- Apply the [community workaround in issue 32027](https://gitlab.com/gitlab-org/gitlab/-/issues/32027#note_1318822628) if you wish to continue using Docker socket binding.

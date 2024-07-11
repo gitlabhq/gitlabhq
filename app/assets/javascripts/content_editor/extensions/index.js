@@ -41,6 +41,7 @@ export { default as Loading } from './loading';
 export { default as MathInline } from './math_inline';
 export { default as OrderedList } from './ordered_list';
 export { default as Paragraph } from './paragraph';
+export { default as HTMLComment } from './html_comment';
 export { default as Reference } from './reference';
 export { default as ReferenceLabel } from './reference_label';
 export { default as ReferenceDefinition } from './reference_definition';
