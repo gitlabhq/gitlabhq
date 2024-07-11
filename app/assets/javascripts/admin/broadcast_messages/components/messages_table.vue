@@ -2,7 +2,7 @@
 import { GlBroadcastMessage, GlButton, GlTableLite, GlModal, GlModalDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
-import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
 const DEFAULT_TD_CLASSES = '!gl-align-baseline';
 
@@ -89,7 +89,7 @@ export default {
   ],
   methods: {
     formatDate(dateString) {
-      return formatDate(new Date(dateString));
+      return localeDateFormat.asDateTimeFull.format(new Date(dateString));
     },
   },
 };

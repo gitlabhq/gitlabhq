@@ -75,9 +75,6 @@ You can also use an image from any third-party registry.
 
 ## Deploy your application to ECS
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207962) in GitLab 12.9.
-> - The `Deploy-ECS.gitlab-ci.yml` template was [moved](https://gitlab.com/gitlab-org/gitlab/-/issues/220821) to `AWS/Deploy-ECS.gitlab-ci.yml` in GitLab 13.2.
-
 You can automate deployments of your application to your [Amazon ECS](https://aws.amazon.com/ecs/)
 cluster.
 
@@ -89,8 +86,7 @@ Prerequisites:
 - Create an ECS task definition, where the value for the `containerDefinitions[].name` attribute is
   the same as the `Container name` defined in your targeted ECS service. The task definition can be:
   - An existing task definition in ECS.
-  - [In GitLab 13.3 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/222618),
-    a JSON file in your GitLab project. Use the
+  - A JSON file in your GitLab project. Use the
     [template in the AWS documentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/create-task-definition.html#task-definition-template)
     and save the file in your project. For example `<project-root>/ci/aws/task-definition.json`.
 
@@ -148,8 +144,6 @@ these templates may change. Do not override these job names in your own pipeline
 because the override stops working when the name changes.
 
 ## Deploy your application to EC2
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/201742) in GitLab 13.5.
 
 GitLab provides a template, called `AWS/CF-Provision-and-Deploy-EC2`,
 to assist you in deploying to Amazon EC2.

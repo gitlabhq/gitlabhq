@@ -26,6 +26,7 @@ module Ci
       return Ci::Pipeline.none unless Ability.allowed?(current_user, :read_pipeline, project)
 
       items = prefiltered_pipelines
+      items = by_ids(items)
       items = by_iids(items)
       items = by_scope(items)
       items = by_status(items)
@@ -74,6 +75,14 @@ module Ci
       return pipelines if params[:source] == 'parent_pipeline'
 
       pipelines.no_child
+    end
+
+    def by_ids(items)
+      if params[:ids].present?
+        items.id_in(params[:ids])
+      else
+        items
+      end
     end
 
     def by_iids(items)

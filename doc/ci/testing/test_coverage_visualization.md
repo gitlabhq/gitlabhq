@@ -75,8 +75,6 @@ The visualization cannot be displayed if the blocking manual job did not run.
 
 ### Data expiration
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/321323) in GitLab 13.12, the latest data is kept regardless of expiry time.
-
 By default, the data used to draw the visualization on the merge request expires **one week** after creation.
 
 ### Coverage report from child pipeline

@@ -101,7 +101,7 @@ export default {
     <date-ranges-dropdown
       :selected="dateRange.value"
       :date-range-options="dateRangeOptions"
-      disable-selected-day-count
+      disable-date-range-string
       @selected="onSelectPredefinedDateRange"
       @customDateRangeSelected="onSelectCustomDateRange"
     />

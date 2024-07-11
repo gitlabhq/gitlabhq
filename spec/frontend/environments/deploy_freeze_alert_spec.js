@@ -6,7 +6,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import DeployFreezeAlert from '~/environments/components/deploy_freeze_alert.vue';
 import deployFreezesQuery from '~/environments/graphql/queries/deploy_freezes.query.graphql';
-import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
 const ENVIRONMENT_NAME = 'staging';
 
@@ -74,11 +74,15 @@ describe('~/environments/components/deploy_freeze_alert.vue', () => {
     });
 
     it('shows the start time of the most recent freeze period', () => {
-      expect(alert.text()).toContain(`from ${formatDate(deployFreezes[1].startTime)}`);
+      expect(alert.text()).toContain(
+        `from ${localeDateFormat.asDateTimeFull.format(deployFreezes[1].startTime)}`,
+      );
     });
 
     it('shows the end time of the most recent freeze period', () => {
-      expect(alert.text()).toContain(`to ${formatDate(deployFreezes[1].endTime)}`);
+      expect(alert.text()).toContain(
+        `to ${localeDateFormat.asDateTimeFull.format(deployFreezes[1].endTime)}`,
+      );
     });
 
     it('shows a link to the docs', () => {

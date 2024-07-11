@@ -10,8 +10,6 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
-
 Use Code Quality to analyze your source code's quality and complexity. This helps keep your
 project's code simple, readable, and easier to maintain. Code Quality should supplement your
 other review processes, not replace them.
@@ -52,12 +50,10 @@ Code Quality results are shown in the:
 
 ### Merge request widget
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/212499) to GitLab Free in 13.2.
-
 Code Quality analysis results display in the merge request widget area if a report from the target
 branch is available for comparison. The merge request widget displays Code Quality findings and resolutions that
 were introduced by the changes made in the merge request. Multiple Code Quality findings with identical
-fingerprints display as a single entry in the merge request widget, each individual finding is available in the
+fingerprints display as a single entry in the merge request widget. Each individual finding is available in the
 full report available in the **Pipeline** details view.
 
 ![Code Quality Widget](img/code_quality_widget_13_11.png)

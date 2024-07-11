@@ -67,7 +67,6 @@ describe('Pipelines', () => {
   let mutationMock;
 
   const withPermissionsProps = {
-    ciLintPath: '/ci/lint',
     resetCachePath: `${mockProjectPath}/settings/ci_cd/reset_cache`,
     newPipelinePath: `${mockProjectPath}/pipelines/new`,
     ciRunnerSettingsPath: `${mockProjectPath}/-/settings/ci_cd#js-runners-settings`,
@@ -93,7 +92,6 @@ describe('Pipelines', () => {
 
   const findTab = (tab) => wrapper.findByTestId(`pipelines-tab-${tab}`);
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
-  const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
   const findStagesDropdownToggle = () =>
     wrapper.find('.mini-pipeline-graph-dropdown [data-testid="base-dropdown-toggle"]');
@@ -184,7 +182,6 @@ describe('Pipelines', () => {
         expect(findNavigationControls().exists()).toBe(false);
 
         expect(findRunPipelineButton().exists()).toBe(false);
-        expect(findCiLintButton().exists()).toBe(false);
         expect(findCleanCacheButton().exists()).toBe(false);
       });
 
@@ -231,10 +228,6 @@ describe('Pipelines', () => {
         expect(findRunPipelineButton().attributes('href')).toBe(
           withPermissionsProps.newPipelinePath,
         );
-      });
-
-      it('renders CI lint link', () => {
-        expect(findCiLintButton().attributes('href')).toBe(withPermissionsProps.ciLintPath);
       });
 
       it('renders Clear runner cache button', () => {
@@ -641,10 +634,6 @@ describe('Pipelines', () => {
         );
       });
 
-      it('renders CI lint link', () => {
-        expect(findCiLintButton().attributes('href')).toBe(withPermissionsProps.ciLintPath);
-      });
-
       it('renders Clear runner cache button', () => {
         expect(findCleanCacheButton().text()).toBe('Clear runner caches');
       });
@@ -699,7 +688,6 @@ describe('Pipelines', () => {
         expect(findNavigationTabs().exists()).toBe(false);
         expect(findTab('all').exists()).toBe(false);
         expect(findRunPipelineButton().exists()).toBe(false);
-        expect(findCiLintButton().exists()).toBe(false);
         expect(findCleanCacheButton().exists()).toBe(false);
       });
     });
@@ -721,7 +709,6 @@ describe('Pipelines', () => {
       it('does not render tabs or buttons', () => {
         expect(findTab('all').exists()).toBe(false);
         expect(findRunPipelineButton().exists()).toBe(false);
-        expect(findCiLintButton().exists()).toBe(false);
         expect(findCleanCacheButton().exists()).toBe(false);
       });
     });
@@ -739,7 +726,6 @@ describe('Pipelines', () => {
 
       it('does not render buttons', () => {
         expect(findRunPipelineButton().exists()).toBe(false);
-        expect(findCiLintButton().exists()).toBe(false);
         expect(findCleanCacheButton().exists()).toBe(false);
       });
 
@@ -841,7 +827,6 @@ describe('Pipelines', () => {
 
       it('does not render buttons', () => {
         expect(findRunPipelineButton().exists()).toBe(false);
-        expect(findCiLintButton().exists()).toBe(false);
         expect(findCleanCacheButton().exists()).toBe(false);
       });
 
@@ -868,8 +853,6 @@ describe('Pipelines', () => {
         expect(findRunPipelineButton().attributes('href')).toBe(
           withPermissionsProps.newPipelinePath,
         );
-
-        expect(findCiLintButton().attributes('href')).toBe(withPermissionsProps.ciLintPath);
         expect(findCleanCacheButton().text()).toBe('Clear runner caches');
       });
 

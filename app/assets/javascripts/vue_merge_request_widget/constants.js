@@ -183,7 +183,7 @@ export const EXTENSION_ICON_CLASS = {
 };
 
 export const VIEW_MERGE_REQUEST_WIDGET = 'view_merge_request_widget';
-export const TELEMETRY_WIDGET_EXPANDED = 'WIDGET_EXPANDED';
+export const EXPAND_MERGE_REQUEST_WIDGET = 'expand_merge_request_widget';
 export const CLICK_FULL_REPORT_ON_MERGE_REQUEST_WIDGET =
   'click_full_report_on_merge_request_widget';
 

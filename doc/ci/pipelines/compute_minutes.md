@@ -51,8 +51,6 @@ The triggered downstream pipeline consumes compute minutes the same as other pip
 
 ## Set the compute quota for all namespaces
 
-> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
-
 By default, GitLab instances do not have a compute quota.
 The default value for the quota is `0`, which is unlimited.
 However, you can change this default value.
@@ -72,8 +70,6 @@ To change the default quota that applies to all namespaces:
 If a quota is already defined for a specific namespace, this value does not change that quota.
 
 ## Set the compute quota for a specific namespace
-
-> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 You can override the global value and set a compute quota
 for a specific namespace.

@@ -274,11 +274,6 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
 
         where(:instrumentation_class, :options, :is_valid) do
           'AnotherClass'                      | { event: 'a', widget: 'b' } | false
-          'MergeRequestWidgetExtensionMetric' | { event: 'a', widget: 'b' } | true
-          'MergeRequestWidgetExtensionMetric' | { event: 'a', widget: 2 } | false
-          'MergeRequestWidgetExtensionMetric' | { event: 'a', widget: 'b', c: 'd' } | false
-          'MergeRequestWidgetExtensionMetric' | { event: 'a' } | false
-          'MergeRequestWidgetExtensionMetric' | { widget: 'b' } | false
           'RedisMetric'                       | { event: 'a', prefix: 'b', include_usage_prefix: true } | true
           'RedisMetric'                       | { event: 'a', prefix: nil, include_usage_prefix: true } | true
           'RedisMetric'                       | { event: 'a', prefix: 'b', include_usage_prefix: 2 } | false

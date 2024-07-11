@@ -2,7 +2,7 @@
 stage: core platform
 group: database
 description: 'Cells: Unique sequences'
-status: ongoing
+status: accepted
 ---
 
 <!-- vale gitlab.FutureTense = NO -->
@@ -15,18 +15,16 @@ Cells will use many distinct and not connected databases, each of them having a 
 At a minimum, any ID referenced between a Cell and the shared schema will need to be unique across the cluster to avoid ambiguous references.
 Further to required global IDs, it might also be desirable to retain globally unique IDs for all database rows to allow moving organizations between Cells.
 
-## 1. Decision
-
-Secondary cells will have bigint IDs while provisioning and the primary cell's sequences will be altered to make sure it
-doesn't overlap with the other cell's sequences.
-
-More details on the decision taken and other solutions evaluated can be found [here](decisions/008_database_sequences.md).
-
 ## 1. Goal
 
-Each cell will use Topology service's [Sequence Service](topology_service.md#sequence-service) to get the range of
-sequences to use. Topology service will make sure the given sequence range is unique across the cluster.
+Is to have non-overlapping sequences across the cluster, so that there will not be a problem while moving organizations between cells.
 
-## 3. Workflow
+## 2. Decision
 
-This section will get updated with the functional diagrams on the completion of [core-platform-section/data-stores/-/issues/106](https://gitlab.com/gitlab-org/core-platform-section/data-stores/-/issues/106).
+Secondary cells will have bigint IDs while provisioning and each cell will reach out to the Topology Service to get
+the sequence range, TS will ensure that the sequence ranges are not colliding with other cells.
+
+The range got from the SequenceService will be used to set `maxval` and `minval` for all existing ID sequences and any
+newly created IDs.
+
+Logic to compute to the sequence range and the interactions between cells and the topology service can be found [here](topology_service.md#workflow).

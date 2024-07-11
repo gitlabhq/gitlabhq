@@ -422,8 +422,6 @@ before the selected job is highlighted:
 
 ### Pipeline mini graphs
 
-> - Pipeline mini graph in the pipeline editor [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/337514) in GitLab 14.5.
-
 Pipeline mini graphs take less space and can tell you at a quick glance if all jobs passed
 or something failed. They show all related jobs for a single commit and the net result
 of each stage of your pipeline. You can quickly see what failed and fix it.

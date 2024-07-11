@@ -131,48 +131,147 @@ session_prefix = "cell1:"
 
 ### Sequence Service
 
+On initial provisioning, each cell will reach out to the SequenceService to get the range of IDs for their ID sequences.
+Topology Service will make sure that the given range is not overlapping with other cell's sequences.
+
+#### Logic to compute the range
+
+```mermaid
+graph TD
+  A[64 bits] --> |1 bit - MSB| B[Sign]
+  A -->|6 bits| C[Intentionally reserved]
+  A -->|16 bits| D[Cell's Leased ID]
+  A -->|41 bits| E[Sequence]
+```
+
+The provisioning service (it's not yet decided where/how this service will be), will assign unique auto-incrementing
+lease ID for each cell, starting with `zero` for the primary cell. It will use the above bit allocation to compute
+sequence's `minval` and `maxval` for each cell and this data will be captured in TS's `config.toml`.
+
+```toml
+[[cells]]
+id = 0
+address = "cell-us-1.gitlab.com"
+sequence_range = [0, 4398046511103]
+
+[[cells]]
+id = 1
+address = "cell-us-2.gitlab.com"
+sequence_range = [4398046511104, 8796093022207]
+```
+
+41 bits can support ~2 trillion IDs (2199,023,255,551) per cell (per sequence). At the time of writing, the largest ID is
+11,098,430,930 (primary key of _security_findings_ table), so it's 200 times the current largest ID, which should be (more than) sufficient.
+
+6 MSBs are intentionally `reserved` for 2 purposes
+
+1. To increase the number of cells, if needed.
+1. To allow us to switch to a variant of ULID ID allocation in future without interfering with the existing IDs. Since
+   ULID based ID allocator will have the `timestamp` value in the MSBs, reserving only one bit would have been sufficient but
+   more bits are reserved to have the sequence bits at minimum.
+
+More details on the decision taken and other solutions evaluated can be found [here](decisions/008_database_sequences.md)
+and the reasoning behind choosing the logic to generate sequence ranges can be found [here](https://gitlab.com/gitlab-org/gitlab/-/issues/465809).
+
 ```proto
-message LeaseSequenceRequest {
-  string uuid = 3;
-  string table_name = 1;
-  int64 block_size = 2;
+// sequence_request.proto
+
+message GetCellSequenceInfoRequest {
+  optional string cell_name = 1; // if missing, it is deduced from the current context
+}
+
+message SequenceRange {
+  required int64 minval = 1;
+  required int64 maxval = 2;
+}
+
+message GetCellSequenceInfoResponse {
+  CellInfo cell_info = 1;
+  repeated SequenceRange ranges = 2;
 }
 
 service SequenceService {
-  rpc ValidateSequence(ValidateSequenceRequest) returns (ValidateSequenceResponse) {}
-  rpc LeaseSequence(LeaseSequenceRequest) returns (LeaseSequenceRequest) {}
-  rpc ReleaseSequence(ReleaseSequenceRequest) returns (ReleaseSequenceRequest) {}
+  rpc GetCellSequenceInfo(GetCellSequenceInfoRequest) returns (GetCellSequenceInfoResponse) {}
 }
 ```
 
-The purpose of this service is to be the global allocator of [Database Sequences](decisions/008_database_sequences.md).
-
-#### Sequence Allocation workflow
-
-Sequences will be allocated once, at the Cell provisioning.
+#### Workflow
 
 ```mermaid
 sequenceDiagram
-    box
-        participant Cell 1
-        participant Cell 1 DB
-    end
-    box
-        participant Cell 2
-        participant Cell 2 DB
-    end
-    participant GS as GS / Sequence Service;
-
-    critical Allocate sequence to projects
-        Cell 1 ->>+ GS: LeaseSequence(projects, 1_000_000);
-        GS -->>- Cell 1: SequenceInfo(projects, start: 10_000_000, size: 1_000_000)
-        Cell 1 ->> Cell 1 DB: ALTER SEQUENCE projects_id_seq <br/>MINVALUE 10_000_000 <br/>MAXVALUE 10_999_999 <br/>START WITH 10_000_000
+    box Cell 1
+        participant Cell 1 sequences rake AS rake gitlab:db:alter_sequences_range
+        participant Cell 1 migration AS db/migrate
+        participant Cell 1 TS AS Topology Service Client
+        participant Cell 1 DB AS DB
+        participant Cell 1 metadata rake AS rake gitlab:export_cells_metadata
     end
 
-    critical Allocate sequence to projects
-        Cell 2 ->> GS: LeaseSequence(projects, 1_000_000);
-        GS ->> Cell 2: SequenceInfo(projects, start: 11_000_000, size: 1_000_000)
-        Cell 2 ->> Cell 2 DB: ALTER SEQUENCE projects_id_seq <br/>MINVALUE 11_000_000 <br/>MAXVALUE 11_999_999 <br/>START WITH 11_000_000
+    box Cell 2
+        participant Cell 2 sequences rake AS rake gitlab:db:alter_sequences_range
+        participant Cell 2 migration AS db/migrate
+        participant Cell 2 TS AS Topology Service Client
+        participant Cell 2 DB AS DB
+        participant Cell 2 metadata rake AS rake gitlab:export_cells_metadata
+    end
+
+    box Topology Service
+        participant Sequence Service
+        participant config.toml
+    end
+
+    box
+        participant File Storage
+    end
+
+    par
+        Cell 1 sequences rake ->>+ Cell 1 TS: get_sequence_range
+        Cell 1 TS ->>+ Sequence Service: SequenceService.GetCellSequenceInfo()
+        Sequence Service -> config.toml: Uses cell 1's `sequence_range` from the config
+        Sequence Service ->>- Cell 1 TS: CellSequenceInfo(minval: int64, maxval: int64)
+        Cell 1 TS -->>- Cell 1 sequences rake: [minval, maxval]
+        loop For each existing Sequence
+            Cell 1 sequences rake ->>+ Cell 1 DB: ALTER SEQUENCE [seq_name] <br>MINVALUE {minval} MAXVALUE {maxval}
+            Cell 1 DB -->>- Cell 1 sequences rake: Done
+        end
+        Cell 1 migration ->>+ Cell 1 TS: get_sequence_range
+        Cell 1 TS ->>+ Sequence Service: SequenceService.GetCellSequenceInfo()
+        Sequence Service -> config.toml: Uses cell 1's `sequence_range` from the config
+        Sequence Service ->>- Cell 1 TS: CellSequenceInfo(minval: int64, maxval: int64)
+        Cell 1 TS -->>- Cell 1 migration: [minval, maxval]
+        Cell 1 migration ->>+ Cell 1 DB: [On new ID column creation]<br>CREATE SEQUENCE [seq_name] <br> MINVALUE {minval} MAXVALUE {maxval}
+        Cell 1 DB -->>- Cell 1 migration: Done
+    and
+        Cell 2 sequences rake ->>+ Cell 2 TS: get_sequence_range
+        Cell 2 TS ->>+ Sequence Service: SequenceService.GetCellSequenceInfo()
+        Sequence Service -> config.toml: Uses cell 2's `sequence_range` from the config
+        Sequence Service ->>- Cell 2 TS: CellSequenceInfo(minval: int64, maxval: int64)
+        Cell 2 TS -->>- Cell 2 sequences rake: [minval, maxval]
+        loop For each existing Sequence
+            Cell 2 sequences rake ->>+ Cell 2 DB: ALTER SEQUENCE [seq_name] <br>MINVALUE {minval} MAXVALUE {maxval}
+            Cell 2 DB -->>- Cell 2 sequences rake: Done
+        end
+        Cell 2 migration ->>+ Cell 2 TS: get_sequence_range
+        Cell 2 TS ->>+ Sequence Service: SequenceService.GetCellSequenceInfo()
+        Sequence Service -> config.toml: Uses cell 1's `sequence_range` from the config
+        Sequence Service ->>- Cell 2 TS: CellSequenceInfo(minval: int64, maxval: int64)
+        Cell 2 TS -->>- Cell 2 migration: [minval, maxval]
+        Cell 2 migration ->>+ Cell 2 DB: [On new ID column creation]<br>CREATE SEQUENCE [seq_name] <br> MINVALUE {minval} MAXVALUE {maxval}
+        Cell 2 DB -->>- Cell 2 migration: Done
+    end
+
+    loop Every x minute
+        Cell 1 metadata rake -->>+ File Storage: artifacts cells metadata <br> (will include maxval used by each sequence)
+    end
+
+    loop Every x minute
+        Cell 2 metadata rake -->>+ File Storage: artifacts cells metadata <br> (will include maxval used by each sequence)
+    end
+
+    critical Reuse unused sequence range from decommissioned cells
+        Sequence Service ->>+ File Storage: fetchSequenceMetadata(cell_id)
+        File Storage -->>- Sequence Service: SequenceMetadata
+        Note right of Sequence Service: If possible will use the unused ID range for new cells
     end
 ```
 

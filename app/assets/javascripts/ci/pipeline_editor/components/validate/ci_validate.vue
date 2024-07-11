@@ -30,6 +30,7 @@ export const i18n = {
     'PipelineEditor|Configuration content has changed. Re-run validation for updated results.',
   ),
   cta: s__('PipelineEditor|Validate pipeline'),
+  lint: s__('PipelineEditor|Lint CI/CD sample'),
   ctaDisabledTooltip: s__('PipelineEditor|Waiting for CI content to load...'),
   errorAlertTitle: s__('PipelineEditor|Pipeline simulation completed with errors'),
   help: __('Help'),
@@ -212,7 +213,7 @@ export default {
           name="question-o"
           class="gl-ml-1 gl-fill-blue-500"
           category="secondary"
-          variant="confirm"
+          variant="link"
           :aria-label="$options.i18n.help"
         />
       </div>
@@ -258,6 +259,14 @@ export default {
             {{ $options.i18n.cta }}
           </gl-button>
         </div>
+        <gl-button
+          v-if="ciLintPath"
+          class="gl-mt-3 gl-ml-3"
+          :href="ciLintPath"
+          data-testid="lint-button"
+        >
+          {{ $options.i18n.lint }}
+        </gl-button>
         <gl-tooltip
           v-if="isInitialCiContentLoading"
           :target="() => $refs.simulatePipelineButton"

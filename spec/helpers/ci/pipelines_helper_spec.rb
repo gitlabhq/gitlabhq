@@ -43,7 +43,6 @@ RSpec.describe Ci::PipelinesHelper, feature_category: :continuous_integration do
         :pipeline_schedules_path,
         :can_create_pipeline,
         :new_pipeline_path,
-        :ci_lint_path,
         :reset_cache_path,
         :has_gitlab_ci,
         :pipeline_editor_path,

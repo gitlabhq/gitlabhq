@@ -194,7 +194,7 @@ git reset
 
 ## `git status`
 
-To undo a commit, use `git status` to show the status of working directory and staged files.
+Use `git status` to show the status of working directory and staged files.
 
 ```shell
 git status

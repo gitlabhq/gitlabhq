@@ -1,22 +1,11 @@
 ---
-owning-stage: "~devops::verify"
-description: 'GitLab Secrets Manager ADR 005: Non-hierarchical key structure for secrets in OpenBao'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/secret_manager/decisions/005_secrets_key_structure/'
+remove_date: '2025-07-08'
 ---
 
-# GitLab Secrets Manager ADR 005: Non-hierarchical key structure for secrets in OpenBao
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/secret_manager/decisions/005_secrets_key_structure/).
 
-## Context
-
-In GitLab, we have a hierarchical structure for projects and their parent namespaces wherein names can be identical in certain parts of the paths. We want to ensure that there are no conflicts with secrets paths across the hierarchy and across all customers when we store then in OpenBao.
-
-## Decision
-
-While secrets are defined in a hierarchical fashion in the GitLab UI, the secret key paths are structured in a flat manner.
-
-Consider the following example path of a project with nested namespaces:
-
-- `gitlab-org/ci-cd/verify/test-project`
-  - The secrets for the top-level group `gitlab-org` are stored under `kv-v2/data/namespaces/ci/<ID of gitlab-org>`
-  - The secrets for the subgroup `verify` are stored under `kv-v2/data/namespaces/ci/<ID of verify>`
-  - The secrets for the project `test-project` are stored under `kv-v2/data/projects/ci/<ID of test-project>`
-  - Note the use of `ci/` prefix so that we can group different types of secrets.
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

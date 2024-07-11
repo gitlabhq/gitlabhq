@@ -62,11 +62,6 @@ export default {
       type: Boolean,
       required: true,
     },
-    ciLintPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
     resetCachePath: {
       type: String,
       required: false,
@@ -166,9 +161,7 @@ export default {
     },
 
     shouldRenderButtons() {
-      return (
-        (this.newPipelinePath || this.resetCachePath || this.ciLintPath) && this.shouldRenderTabs
-      );
+      return (this.newPipelinePath || this.resetCachePath) && this.shouldRenderTabs;
     },
 
     shouldRenderPagination() {
@@ -372,7 +365,6 @@ export default {
         v-if="shouldRenderButtons"
         :new-pipeline-path="newPipelinePath"
         :reset-cache-path="resetCachePath"
-        :ci-lint-path="ciLintPath"
         :is-reset-cache-button-loading="isResetCacheButtonLoading"
         @resetRunnersCache="handleResetRunnersCache"
       />

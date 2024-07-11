@@ -11,33 +11,6 @@
       {
         "properties": {
           "instrumentation_class": {
-            "const": "MergeRequestWidgetExtensionMetric"
-          },
-          "options": {
-            "type": "object",
-            "properties": {
-              "event": {
-                "type": "string"
-              },
-              "widget": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "event",
-              "widget"
-            ],
-            "additionalProperties": false
-          }
-        },
-        "required": [
-          "instrumentation_class",
-          "options"
-        ]
-      },
-      {
-        "properties": {
-          "instrumentation_class": {
             "const": "RedisMetric"
           },
           "options": {

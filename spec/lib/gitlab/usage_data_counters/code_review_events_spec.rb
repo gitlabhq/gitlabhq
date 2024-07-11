@@ -19,6 +19,7 @@ RSpec.describe 'Code review events' do
       i_code_review_create_note_in_ipynb_diff_commit
       i_code_review_merge_request_widget_license_compliance_warning
       click_full_report_on_merge_request_widget
+      expand_merge_request_widget
     ]
 
     all_code_review_events = Gitlab::Usage::MetricDefinition.all.flat_map do |definition|

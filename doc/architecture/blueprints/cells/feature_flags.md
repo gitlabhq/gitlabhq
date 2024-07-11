@@ -15,14 +15,14 @@ coach: "@rymai"
 This document is to cover GitLab current usage and future use of Feature Flags when used in Development specifically with use on the Cells Infrastructure. Reference our development documentation for Feature Flags here:
 
 - [Development Documentation](../../../development/feature_flags/index.md)
-- [Blueprint Implementation](../feature_flags_development/index.md)
-- [Blueprint Operations Proposal](../feature_flags_usage_in_dev_and_ops/index.md)
+- [Blueprint Implementation](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_development/)
+- [Blueprint Operations Proposal](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_usage_in_dev_and_ops/)
 
 :warning: Do not confuse this with the GitLab Application feature set of [Feature Flags](../../../operations/feature_flags.md).
 
 ### Current Usage
 
-Feature Flags play a vital role in the Development of GitLab. Chunks of code have the ability to be tested in a safe manner increasing confidence that a new feature will operate both as desired and at the scale of .com. Cells introduces a new set of challenges on top of already existing bits of technical debt related to the wide adoption of Feature Flags. Reference our existing blueprint for Feature Flags for further information: [Feature Flag Use Cases](../../blueprints/feature_flags_usage_in_dev_and_ops/index.md#feature-flag-use-cases)
+Feature Flags play a vital role in the Development of GitLab. Chunks of code have the ability to be tested in a safe manner increasing confidence that a new feature will operate both as desired and at the scale of .com. Cells introduces a new set of challenges on top of already existing bits of technical debt related to the wide adoption of Feature Flags. Reference our existing blueprint for Feature Flags for further information: [Feature Flag Use Cases](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_usage_in_dev_and_ops/#feature-flag-use-cases)
 
 ### Challenges in Cells
 

@@ -538,12 +538,6 @@ li.note {
   cursor: text;
 }
 
-/**
-🚨 Do not use these classes — they clash with the Gitlab UI design system and will be removed. 🚨
-See https://gitlab.com/gitlab-org/gitlab/issues/36857 for more details.
-**/
-.gl-line-height-14 { line-height: $gl-line-height-14; }
-
 // --- moved from labels.scss when moving to page_bundles ---
 // Fix scoped label padding in cases where old markdown uses the old label structure */
 .gl-label-text + .gl-label-text {

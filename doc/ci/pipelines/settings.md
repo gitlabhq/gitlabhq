@@ -209,8 +209,7 @@ a repository.
    The maximum value is `1000`. To disable shallow clone and make GitLab CI/CD
    fetch all branches and tags each time, keep the value empty or set to `0`.
 
-In GitLab versions 14.7 and later, newly created projects have a default `git depth`
-value of `20`. GitLab versions 14.6 and earlier have a default `git depth` value of `50`.
+Newly created projects have a default `git depth` value of `20`.
 
 This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/index.md#shallow-cloning)
 in the `.gitlab-ci.yml` file.

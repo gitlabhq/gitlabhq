@@ -9,6 +9,11 @@ module Resolvers
 
       alias_method :project, :object
 
+      argument :id, Types::GlobalIDType[::Ci::Pipeline],
+        required: false,
+        description: 'Global ID of the Pipeline. For example, "gid://gitlab/Ci::Pipeline/314".',
+        prepare: ->(pipeline_id, _ctx) { pipeline_id.model_id }
+
       argument :iid, GraphQL::Types::ID,
         required: false,
         description: 'IID of the Pipeline. For example, "1".'
@@ -17,21 +22,23 @@ module Resolvers
         required: false,
         description: 'SHA of the Pipeline. For example, "dyd0f15ay83993f5ab66k927w28673882x99100b".'
 
+      validates required: { one_of: [:id, :iid, :sha], message: 'Provide one of ID, IID or SHA' }
+
       def self.resolver_complexity(args, child_complexity:)
         complexity = super
         complexity - 10
       end
 
-      def ready?(iid: nil, sha: nil, **args)
-        raise Gitlab::Graphql::Errors::ArgumentError, 'Provide one of an IID or SHA' unless iid.present? ^ sha.present?
-
-        super
-      end
-
-      def resolve(iid: nil, sha: nil, **args)
+      def resolve(id: nil, iid: nil, sha: nil, **args)
         self.lookahead = args.delete(:lookahead)
 
-        if iid
+        if id
+          BatchLoader::GraphQL.for(id).batch(key: project) do |ids, loader|
+            finder = ::Ci::PipelinesFinder.new(project, current_user, ids: ids)
+
+            apply_lookahead(finder.execute).each { |pipeline| loader.call(pipeline.id.to_s, pipeline) }
+          end
+        elsif iid
           BatchLoader::GraphQL.for(iid).batch(key: project) do |iids, loader|
             finder = ::Ci::PipelinesFinder.new(project, current_user, iids: iids)
 

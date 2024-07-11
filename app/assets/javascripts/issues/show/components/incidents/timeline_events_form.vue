@@ -251,7 +251,7 @@ export default {
             <div id="timeline-form-hint" class="gl-sr-only">{{ $options.i18n.hint }}</div>
             <div
               aria-hidden="true"
-              class="gl-absolute gl-text-gray-500 gl-font-sm gl-line-height-14 gl-right-4 gl-bottom-3"
+              class="gl-absolute gl-text-gray-500 gl-text-sm gl-right-4 gl-bottom-2"
             >
               {{ timelineTextRemainingCount }}
             </div>

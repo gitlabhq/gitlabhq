@@ -94,10 +94,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           wait_for_requests
         end
 
-        it 'renders "CI lint" link' do
-          expect(page).to have_link('CI lint')
-        end
-
         it 'renders "Run pipeline" link' do
           expect(page).to have_link('Run pipeline')
         end

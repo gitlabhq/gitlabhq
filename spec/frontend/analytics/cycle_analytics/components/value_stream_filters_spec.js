@@ -81,7 +81,9 @@ describe('ValueStreamFilters', () => {
 
       describe('date range filters', () => {
         it('should render date ranges dropdown', () => {
-          expect(findDateRangesDropdown().exists()).toBe(true);
+          expect(findDateRangesDropdown().props()).toMatchObject({
+            selected: DATE_RANGE_LAST_30_DAYS_VALUE,
+          });
         });
 
         it('should not render date range picker', () => {

@@ -144,8 +144,6 @@ In this example:
 
 ### `include`
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
-
 Use `include` to include external YAML files in your CI/CD configuration.
 You can split one long `.gitlab-ci.yml` file into multiple files to increase readability,
 or reduce duplication of the same configuration in multiple places.
@@ -1447,12 +1445,11 @@ job:
 
 #### `artifacts:public`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294503) in GitLab 16.7. Feature flag `non_public_artifacts` removed.
 
 NOTE:
-`artifacts:public` is now superceded by [`artifacts:access`](#artifactsaccess) which
+`artifacts:public` is now superseded by [`artifacts:access`](#artifactsaccess) which
 has more options.
 
 Use `artifacts:public` to determine whether the job artifacts should be
@@ -4038,9 +4035,9 @@ using variables.
 
 Use `rules` to include or exclude jobs in pipelines.
 
-Rules are evaluated when the pipeline is created, and evaluated *in order*
-until the first match. When a match is found, the job is either included or excluded from the pipeline,
-depending on the configuration.
+Rules are evaluated when the pipeline is created, and evaluated *in order*. When a match is found,
+no more rules are checked and the job is either included or excluded from the pipeline
+depending on the configuration. If no rules match, the job is not added to the pipeline.
 
 `rules` accepts an array of rules. Each rules must have at least one of:
 
@@ -4077,11 +4074,13 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 
 - If an `if` statement is true, add the job to the pipeline.
 - If an `if` statement is true, but it's combined with `when: never`, do not add the job to the pipeline.
-- If an `if` statement is false, do not add the job to the pipeline, then check the next `rules` item (if any more exist).
+- If an `if` statement is false, check the next `rules` item (if any more exist).
 
-`if` clauses are evaluated based on the values of [CI/CD variables](../variables/index.md)
-or [predefined CI/CD variables](../variables/predefined_variables.md), with
-[some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+`if` clauses are evaluated:
+
+- Based on the values of [CI/CD variables](../variables/index.md) or [predefined CI/CD variables](../variables/predefined_variables.md),
+  with [some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- In order, following [`rules` execution flow](#rules).
 
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
 to configure the job behavior, or with [`workflow`](#workflow) to configure the pipeline behavior.
@@ -5306,8 +5305,6 @@ successfully complete before starting.
 
 #### `trigger:forward`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213729) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 14.10.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 15.1. [Feature flag `ci_trigger_forward_variables`](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) removed.
 
 Use `trigger:forward` to specify what to forward to the downstream pipeline. You can control
