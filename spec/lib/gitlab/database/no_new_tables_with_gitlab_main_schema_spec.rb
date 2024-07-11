@@ -12,7 +12,6 @@ RSpec.describe 'new tables with gitlab_main schema', feature_category: :cell do
   # Specific tables can be exempted from this requirement, and such tables must be added to the `exempted_tables` list.
   let!(:exempted_tables) do
     [
-      "sbom_source_packages",                            # https://gitlab.com/gitlab-org/gitlab/-/issues/437718
       "oauth_device_grants"                              # https://gitlab.com/gitlab-org/gitlab/-/issues/463785
     ]
   end
