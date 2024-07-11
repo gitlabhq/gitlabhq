@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :build_artifacts do
+RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::BatchFromList, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   describe '#orphan_objects' do
     before do
       Gitlab.config.artifacts.object_store.tap do |config|

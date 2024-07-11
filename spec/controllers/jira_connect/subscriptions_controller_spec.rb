@@ -77,6 +77,7 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
 
     before do
       group.add_maintainer(user)
+      allow(PropagateIntegrationWorker).to receive(:perform_async)
     end
 
     subject { post :create, params: { jwt: jwt, namespace_path: group.path, format: :json } }

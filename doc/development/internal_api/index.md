@@ -1305,6 +1305,8 @@ to update upcoming reconciliations for namespaces.
 
 Use a PUT command to update `upcoming_reconciliations`.
 
+#### Old API (deprecated, [New API](#new-update-upcoming_reconciliations-api))
+
 ```plaintext
 PUT /internal/upcoming_reconciliations
 ```
@@ -1335,7 +1337,40 @@ Example response:
 200
 ```
 
+#### New Update upcoming_reconciliations API
+
+```plaintext
+PUT /internal/gitlab_subscriptions/namespaces/:namespace_id/upcoming_reconciliations
+```
+
+| Attribute          | Type       | Required | Description |
+|:-------------------|:-----------|:---------|:------------|
+| `upcoming_reconciliations` | array | yes | Array of upcoming reconciliations |
+
+Each array element contains:
+
+| Attribute          | Type       | Required | Description |
+|:-------------------|:-----------|:---------|:------------|
+| `next_reconciliation_date` | date | yes | Date of the next reconciliation |
+| `display_alert_from`       | date | yes | Start date to display alert of upcoming reconciliation |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" --header "Content-Type: application/json" \
+     --data '{"upcoming_reconciliations": [{"next_reconciliation_date": "12 Jun 2021", "display_alert_from": "05 Jun 2021"}]}' \
+     "https://gitlab.com/api/v4/internal/gitlab_subscriptions/129/upcoming_reconciliations"
+```
+
+Example response:
+
+```plaintext
+200
+```
+
 ### Delete an `upcoming_reconciliation`
+
+#### Old API (deprecated, [New API](#new-delete-upcoming_reconciliations-api))
 
 Use a DELETE command to delete an `upcoming_reconciliation`.
 
@@ -1352,6 +1387,28 @@ Example request:
 ```shell
 curl --request DELETE \
   --url "http://localhost:3000/api/v4/internal/upcoming_reconciliations?namespace_id=22" \
+  --header 'PRIVATE-TOKEN: <admin_access_token>'
+```
+
+Example response:
+
+```plaintext
+204
+```
+
+#### New delete upcoming_reconciliations API
+
+Use a DELETE command to delete an `upcoming_reconciliation`.
+
+```plaintext
+DELETE /internal/gitlab_subscriptions/namespaces/:namespace_id/upcoming_reconciliations
+```
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --url "http://localhost:3000/api/v4/internal/gitlab_subscriptions/namespaces/22/upcoming_reconciliations" \
   --header 'PRIVATE-TOKEN: <admin_access_token>'
 ```
 

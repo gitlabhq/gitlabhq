@@ -9,6 +9,7 @@ module Ci
     belongs_to :project
     belongs_to :namespace_mirror, primary_key: :namespace_id, foreign_key: :namespace_id, inverse_of: :project_mirrors
     has_many :builds, primary_key: :project_id, foreign_key: :project_id, inverse_of: :project_mirror
+    has_many :pipelines, primary_key: :project_id, foreign_key: :project_id, inverse_of: :project_mirror
 
     scope :by_namespace_id, ->(namespace_id) { where(namespace_id: namespace_id) }
     scope :by_project_id, ->(project_id) { where(project_id: project_id) }

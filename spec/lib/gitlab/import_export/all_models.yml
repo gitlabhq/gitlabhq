@@ -276,7 +276,6 @@ merge_request_diff:
 - merge_request_diff_detail
 - merge_request_diff_files
 - merge_request_diff_llm_summary
-- merge_request_review_llm_summaries
 merge_request_diff_commits:
 - merge_request_diff
 - commit_author
@@ -361,6 +360,7 @@ ci_pipelines:
 - build_trace_chunks
 - pipeline_metadata
 - build_execution_configs
+- project_mirror
 pipeline_metadata:
 - project
 - pipeline

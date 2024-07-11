@@ -43,6 +43,7 @@ module Gitlab
 
           def with_dedup_lock
             return yield unless @duplicate_job.strategy == :until_executed && @duplicate_job.reschedulable?
+            return yield unless Feature.enabled?(:use_sidekiq_dedup_lock, type: :beta) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- global flags
 
             in_lock(dedup_lock_key, ttl: DEFAULT_LOCK_KEY_TTL, retries: MAX_RETRIES, sleep_sec: LOCK_RETRY_SLEEP) do
               yield

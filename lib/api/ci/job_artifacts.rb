@@ -7,7 +7,7 @@ module API
 
       before { authenticate_non_get! }
 
-      feature_category :build_artifacts
+      feature_category :job_artifacts
 
       # EE::API::Ci::JobArtifacts would override the following helpers
       helpers do

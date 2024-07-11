@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe ProtectedBranch, feature_category: :source_code_management do
   it_behaves_like 'protected ref', :protected_branch
+  it_behaves_like 'protected ref with access levels for', :merge
+  it_behaves_like 'protected ref with access levels for', :push
 
   subject { build_stubbed(:protected_branch) }
 

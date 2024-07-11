@@ -18,13 +18,9 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
     end
 
     context "when until_executed", if: strategy_name == :until_executed do
-      before do
-        allow(fake_duplicate_job).to receive(:options).ordered.and_return({})
-      end
-
-      context 'when until_executed job is not reschedulable' do
+      context 'with use_sidekiq_dedup_lock feature flag disabled' do
         before do
-          allow(fake_duplicate_job).to receive(:reschedulable?).and_return(false)
+          stub_feature_flags(use_sidekiq_dedup_lock: false)
         end
 
         it 'does not obtain exclusive lease' do
@@ -41,34 +37,60 @@ RSpec.shared_examples 'deduplicating jobs when scheduling' do |strategy_name|
         end
       end
 
-      it 'obtains exclusive lease when checking for duplicates' do
-        # twice in `.deduplicatable_job?`, once in `.expiry`
-        expect(fake_duplicate_job).to receive(:scheduled?).exactly(3).times.ordered.and_return(false)
-        expect(fake_duplicate_job).to(
-          receive(:check!)
-            .with(fake_duplicate_job.duplicate_key_ttl)
-            .ordered
-            .and_return('a jid'))
-        expect(fake_duplicate_job).to receive(:duplicate?).ordered.and_return(false)
-        expect_next_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock) do |sl|
-          expect(sl).to receive(:obtain).and_call_original
+      context 'with use_sidekiq_dedup_lock feature flag enabled' do
+        before do
+          stub_feature_flags(use_sidekiq_dedup_lock: true)
+          allow(fake_duplicate_job).to receive(:options).ordered.and_return({})
         end
 
-        expect { |b| strategy.schedule({}, &b) }.to yield_control
-      end
+        context 'when until_executed job is not reschedulable' do
+          before do
+            allow(fake_duplicate_job).to receive(:reschedulable?).and_return(false)
+          end
 
-      it 'reschedules jobs after failing to acquire lock' do
-        # twice in `.deduplicatable_job?`
-        expect(fake_duplicate_job).to receive(:scheduled?).twice.ordered.and_return(false)
+          it 'does not obtain exclusive lease' do
+            expect(fake_duplicate_job).to receive(:scheduled?).exactly(3).times.ordered.and_return(false)
+            expect(fake_duplicate_job).to(
+              receive(:check!)
+                .with(fake_duplicate_job.duplicate_key_ttl)
+                .ordered
+                .and_return('a jid'))
+            expect(fake_duplicate_job).to receive(:duplicate?).ordered.and_return(false)
+            expect(Gitlab::ExclusiveLeaseHelpers::SleepingLock).not_to receive(:new)
 
-        expect_next_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock) do |sl|
-          expect(sl).to receive(:obtain)
-            .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+            expect { |b| strategy.schedule({}, &b) }.to yield_control
+          end
         end
 
-        expect(Gitlab::SidekiqLogging::DeduplicationLogger.instance).to receive(:lock_error_log)
+        it 'obtains exclusive lease when checking for duplicates' do
+          # twice in `.deduplicatable_job?`, once in `.expiry`
+          expect(fake_duplicate_job).to receive(:scheduled?).exactly(3).times.ordered.and_return(false)
+          expect(fake_duplicate_job).to(
+            receive(:check!)
+              .with(fake_duplicate_job.duplicate_key_ttl)
+              .ordered
+              .and_return('a jid'))
+          expect(fake_duplicate_job).to receive(:duplicate?).ordered.and_return(false)
+          expect_next_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock) do |sl|
+            expect(sl).to receive(:obtain).and_call_original
+          end
 
-        expect { |b| strategy.schedule({}, &b) }.to yield_control
+          expect { |b| strategy.schedule({}, &b) }.to yield_control
+        end
+
+        it 'reschedules jobs after failing to acquire lock' do
+          # twice in `.deduplicatable_job?`
+          expect(fake_duplicate_job).to receive(:scheduled?).twice.ordered.and_return(false)
+
+          expect_next_instance_of(Gitlab::ExclusiveLeaseHelpers::SleepingLock) do |sl|
+            expect(sl).to receive(:obtain)
+              .and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+          end
+
+          expect(Gitlab::SidekiqLogging::DeduplicationLogger.instance).to receive(:lock_error_log)
+
+          expect { |b| strategy.schedule({}, &b) }.to yield_control
+        end
       end
     end
 

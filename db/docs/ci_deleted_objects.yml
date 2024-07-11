@@ -3,7 +3,7 @@ table_name: ci_deleted_objects
 classes:
 - Ci::DeletedObject
 feature_categories:
-- build_artifacts
+- job_artifacts
 description: Allows efficient batch deletion of data in object storage.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/9bf76fe03f8edf4f67023448161af27abb8fb521
 milestone: '13.5'

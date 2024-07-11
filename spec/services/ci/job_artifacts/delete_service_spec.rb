@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::DeleteService, feature_category: :build_artifacts do
+RSpec.describe Ci::JobArtifacts::DeleteService, feature_category: :job_artifacts do
   let_it_be(:build, reload: true) do
     create(:ci_build, :artifacts, :trace_artifact, artifacts_expire_at: 100.days.from_now)
   end

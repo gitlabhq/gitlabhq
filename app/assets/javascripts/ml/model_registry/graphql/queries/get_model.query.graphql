@@ -2,6 +2,7 @@ query getModel($id: MlModelID!) {
   mlModel(id: $id) {
     id
     description
+    descriptionHtml
     name
     versionCount
     candidateCount

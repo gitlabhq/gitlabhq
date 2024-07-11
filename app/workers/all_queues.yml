@@ -284,7 +284,7 @@
   :tags: []
 - :name: cronjob:ci_pipeline_artifacts_expire_artifacts
   :worker_name: Ci::PipelineArtifacts::ExpireArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -329,7 +329,7 @@
   :tags: []
 - :name: cronjob:ci_schedule_unlock_pipelines_in_queue_cron
   :worker_name: Ci::ScheduleUnlockPipelinesInQueueCronWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -365,7 +365,7 @@
   :tags: []
 - :name: cronjob:ci_update_locked_unknown_artifacts
   :worker_name: Ci::UpdateLockedUnknownArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :throttled
   :resource_boundary: :unknown
@@ -509,7 +509,7 @@
   :tags: []
 - :name: cronjob:expire_build_artifacts
   :worker_name: ExpireBuildArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -653,7 +653,7 @@
   :tags: []
 - :name: cronjob:object_storage_delete_stale_direct_uploads
   :worker_name: ObjectStorage::DeleteStaleDirectUploadsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -779,7 +779,7 @@
   :tags: []
 - :name: cronjob:projects_schedule_refresh_build_artifacts_size_statistics
   :worker_name: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2840,7 +2840,7 @@
   :tags: []
 - :name: ci_job_artifacts_expire_project_build_artifacts
   :worker_name: Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2876,7 +2876,7 @@
   :tags: []
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3173,7 +3173,7 @@
   :tags: []
 - :name: google_cloud_fetch_google_ip_list
   :worker_name: GoogleCloud::FetchGoogleIpListWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3866,7 +3866,7 @@
   :tags: []
 - :name: projects_refresh_build_artifacts_size_statistics
   :worker_name: Projects::RefreshBuildArtifactsSizeStatisticsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task', :silence_stdout, feature_category: :build_artifacts do
+RSpec.describe 'gitlab:refresh_project_statistics_build_artifacts_size rake task', :silence_stdout, feature_category: :job_artifacts do
   let(:rake_task) { 'gitlab:refresh_project_statistics_build_artifacts_size' }
 
   describe 'enqueuing build artifacts size statistics refresh for given list of project IDs' do

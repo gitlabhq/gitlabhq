@@ -1370,8 +1370,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
           .not_to change(subject.merge_requests_closing_issues, :count)
       end
 
-      it 'caches issues from another project with issues enabled' do
-        project = create(:project, :public, issues_enabled: true)
+      it 'caches issues from another project with issues enabled even if autoclose_referenced_issues is disabled' do
+        project = create(:project, :public, issues_enabled: true, autoclose_referenced_issues: false)
         issue = create(:issue, project: project)
         commit = double('commit1', safe_message: "Fixes #{issue.to_reference(full: true)}")
         allow(subject).to receive(:commits).and_return([commit])
@@ -1832,13 +1832,13 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       expect(subject.closes_issues).to be_empty
     end
 
-    it 'ignores referenced issues when auto-close is disabled' do
+    it 'does not ignore referenced issues when auto-close is disabled' do
       subject.project.update!(autoclose_referenced_issues: false)
 
       allow(subject.project).to receive(:default_branch)
         .and_return(subject.target_branch)
 
-      expect(subject.closes_issues).to be_empty
+      expect(subject.closes_issues).to contain_exactly(issue0, issue1)
     end
   end
 

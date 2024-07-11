@@ -61,3 +61,13 @@ RSpec.shared_examples 'protected ref' do
     end
   end
 end
+
+RSpec.shared_examples 'protected ref with access levels for' do |type|
+  describe 'protected_ref_access_levels(*types)' do
+    let(:type_access_levels) { :"#{type}_access_levels" }
+
+    it { is_expected.to have_many(type_access_levels).inverse_of(described_class.model_name.singular) }
+
+    it { is_expected.to accept_nested_attributes_for(type_access_levels).allow_destroy(true) }
+  end
+end

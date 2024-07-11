@@ -1378,7 +1378,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/models/license.rb'
     - 'ee/app/models/members/member_role.rb'
     - 'ee/app/models/merge_request/predictions.rb'
-    - 'ee/app/models/merge_request/review_llm_summary.rb'
     - 'ee/app/models/merge_requests/compliance_violation.rb'
     - 'ee/app/models/merge_trains/car.rb'
     - 'ee/app/models/package_metadata/package.rb'

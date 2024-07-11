@@ -81,7 +81,9 @@ domains:
       - pipeline_composition
       - secrets_management
       - fleet_visibility
-      - build_artifacts
+      - job_artifacts
+      - pipeline_reports
+      - secure_artifacts
       - code_testing
 
   CloudConnector:
@@ -99,7 +101,7 @@ domains:
     feature_categories:
       - code_suggestions
 
-  Compliance:
+  ComplianceManagement:
     description:
     feature_categories:
       - compliance_management

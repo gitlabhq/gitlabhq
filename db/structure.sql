@@ -10,6 +10,19 @@ CREATE EXTENSION IF NOT EXISTS btree_gist;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+CREATE FUNCTION assign_p_ci_build_tags_id_value() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."id" IS NOT NULL THEN
+  RAISE WARNING 'Manually assigning ids is not allowed, the value will be ignored';
+END IF;
+NEW."id" := nextval('p_ci_build_tags_id_seq'::regclass);
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION assign_p_ci_builds_execution_configs_id_value() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -2127,6 +2140,15 @@ CREATE TABLE p_ci_build_sources (
     partition_id bigint NOT NULL,
     project_id bigint NOT NULL,
     source smallint NOT NULL
+)
+PARTITION BY LIST (partition_id);
+
+CREATE TABLE p_ci_build_tags (
+    id bigint NOT NULL,
+    tag_id bigint NOT NULL,
+    build_id bigint NOT NULL,
+    partition_id bigint NOT NULL,
+    project_id bigint NOT NULL
 )
 PARTITION BY LIST (partition_id);
 
@@ -12669,30 +12691,6 @@ CREATE SEQUENCE merge_request_requested_changes_id_seq
 
 ALTER SEQUENCE merge_request_requested_changes_id_seq OWNED BY merge_request_requested_changes.id;
 
-CREATE TABLE merge_request_review_llm_summaries (
-    id bigint NOT NULL,
-    user_id bigint,
-    review_id bigint NOT NULL,
-    merge_request_diff_id bigint NOT NULL,
-    created_at timestamp with time zone NOT NULL,
-    updated_at timestamp with time zone NOT NULL,
-    provider smallint NOT NULL,
-    content text NOT NULL,
-    cached_markdown_version integer,
-    content_html text,
-    project_id bigint,
-    CONSTRAINT check_72802358e9 CHECK ((char_length(content) <= 2056))
-);
-
-CREATE SEQUENCE merge_request_review_llm_summaries_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-ALTER SEQUENCE merge_request_review_llm_summaries_id_seq OWNED BY merge_request_review_llm_summaries.id;
-
 CREATE TABLE merge_request_reviewers (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -13906,6 +13904,15 @@ CREATE SEQUENCE p_catalog_resource_sync_events_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_catalog_resource_sync_events_id_seq OWNED BY p_catalog_resource_sync_events.id;
+
+CREATE SEQUENCE p_ci_build_tags_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE p_ci_build_tags_id_seq OWNED BY p_ci_build_tags.id;
 
 CREATE SEQUENCE p_ci_builds_execution_configs_id_seq
     START WITH 1
@@ -21043,8 +21050,6 @@ ALTER TABLE ONLY merge_request_predictions ALTER COLUMN merge_request_id SET DEF
 
 ALTER TABLE ONLY merge_request_requested_changes ALTER COLUMN id SET DEFAULT nextval('merge_request_requested_changes_id_seq'::regclass);
 
-ALTER TABLE ONLY merge_request_review_llm_summaries ALTER COLUMN id SET DEFAULT nextval('merge_request_review_llm_summaries_id_seq'::regclass);
-
 ALTER TABLE ONLY merge_request_reviewers ALTER COLUMN id SET DEFAULT nextval('merge_request_reviewers_id_seq'::regclass);
 
 ALTER TABLE ONLY merge_request_user_mentions ALTER COLUMN id SET DEFAULT nextval('merge_request_user_mentions_id_seq'::regclass);
@@ -23331,9 +23336,6 @@ ALTER TABLE ONLY merge_request_predictions
 ALTER TABLE ONLY merge_request_requested_changes
     ADD CONSTRAINT merge_request_requested_changes_pkey PRIMARY KEY (id);
 
-ALTER TABLE ONLY merge_request_review_llm_summaries
-    ADD CONSTRAINT merge_request_review_llm_summaries_pkey PRIMARY KEY (id);
-
 ALTER TABLE ONLY merge_request_reviewers
     ADD CONSTRAINT merge_request_reviewers_pkey PRIMARY KEY (id);
 
@@ -23519,6 +23521,9 @@ ALTER TABLE ONLY p_ci_build_names
 
 ALTER TABLE ONLY p_ci_build_sources
     ADD CONSTRAINT p_ci_build_sources_pkey PRIMARY KEY (build_id, partition_id);
+
+ALTER TABLE ONLY p_ci_build_tags
+    ADD CONSTRAINT p_ci_build_tags_pkey PRIMARY KEY (id, partition_id);
 
 ALTER TABLE ONLY p_ci_builds_execution_configs
     ADD CONSTRAINT p_ci_builds_execution_configs_pkey PRIMARY KEY (id, partition_id);
@@ -27845,14 +27850,6 @@ CREATE INDEX index_merge_request_requested_changes_on_project_id ON merge_reques
 
 CREATE INDEX index_merge_request_requested_changes_on_user_id ON merge_request_requested_changes USING btree (user_id);
 
-CREATE INDEX index_merge_request_review_llm_summaries_on_mr_diff_id ON merge_request_review_llm_summaries USING btree (merge_request_diff_id);
-
-CREATE INDEX index_merge_request_review_llm_summaries_on_project_id ON merge_request_review_llm_summaries USING btree (project_id);
-
-CREATE INDEX index_merge_request_review_llm_summaries_on_review_id ON merge_request_review_llm_summaries USING btree (review_id);
-
-CREATE INDEX index_merge_request_review_llm_summaries_on_user_id ON merge_request_review_llm_summaries USING btree (user_id);
-
 CREATE UNIQUE INDEX index_merge_request_reviewers_on_merge_request_id_and_user_id ON merge_request_reviewers USING btree (merge_request_id, user_id);
 
 CREATE INDEX index_merge_request_reviewers_on_project_id ON merge_request_reviewers USING btree (project_id);
@@ -28266,6 +28263,12 @@ CREATE INDEX index_p_ci_build_names_on_project_id_and_build_id ON ONLY p_ci_buil
 CREATE INDEX index_p_ci_build_names_on_search_vector ON ONLY p_ci_build_names USING gin (search_vector);
 
 CREATE INDEX index_p_ci_build_sources_on_project_id_and_build_id ON ONLY p_ci_build_sources USING btree (project_id, build_id);
+
+CREATE INDEX index_p_ci_build_tags_on_build_id_and_partition_id ON ONLY p_ci_build_tags USING btree (build_id, partition_id);
+
+CREATE INDEX index_p_ci_build_tags_on_project_id ON ONLY p_ci_build_tags USING btree (project_id);
+
+CREATE UNIQUE INDEX index_p_ci_build_tags_on_tag_id_and_build_id_and_partition_id ON ONLY p_ci_build_tags USING btree (tag_id, build_id, partition_id);
 
 CREATE INDEX index_p_ci_builds_execution_configs_on_pipeline_id ON ONLY p_ci_builds_execution_configs USING btree (pipeline_id);
 
@@ -31593,6 +31596,8 @@ ALTER INDEX p_ci_job_artifacts_expire_at_job_id_idx1 ATTACH PARTITION tmp_index_
 
 ALTER INDEX p_ci_builds_token_encrypted_partition_id_idx ATTACH PARTITION unique_ci_builds_token_encrypted_and_partition_id;
 
+CREATE TRIGGER assign_p_ci_build_tags_id_trigger BEFORE INSERT ON p_ci_build_tags FOR EACH ROW EXECUTE FUNCTION assign_p_ci_build_tags_id_value();
+
 CREATE TRIGGER assign_p_ci_builds_execution_configs_id_trigger BEFORE INSERT ON p_ci_builds_execution_configs FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_execution_configs_id_value();
 
 CREATE TRIGGER assign_p_ci_builds_id_trigger BEFORE INSERT ON p_ci_builds FOR EACH ROW EXECUTE FUNCTION assign_p_ci_builds_id_value();
@@ -31736,8 +31741,6 @@ CREATE TRIGGER trigger_94514aeadc50 BEFORE INSERT OR UPDATE ON deployment_approv
 CREATE TRIGGER trigger_9699ea03bb37 BEFORE INSERT OR UPDATE ON related_epic_links FOR EACH ROW EXECUTE FUNCTION trigger_9699ea03bb37();
 
 CREATE TRIGGER trigger_96a76ee9f147 BEFORE INSERT OR UPDATE ON design_management_versions FOR EACH ROW EXECUTE FUNCTION trigger_96a76ee9f147();
-
-CREATE TRIGGER trigger_98ad3a4c1d35 BEFORE INSERT OR UPDATE ON merge_request_review_llm_summaries FOR EACH ROW EXECUTE FUNCTION trigger_98ad3a4c1d35();
 
 CREATE TRIGGER trigger_9e137c16de79 BEFORE INSERT OR UPDATE ON vulnerability_findings_remediations FOR EACH ROW EXECUTE FUNCTION trigger_9e137c16de79();
 
@@ -32355,9 +32358,6 @@ ALTER TABLE ONLY user_achievements
 ALTER TABLE ONLY merge_requests
     ADD CONSTRAINT fk_6149611a04 FOREIGN KEY (assignee_id) REFERENCES users(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY merge_request_review_llm_summaries
-    ADD CONSTRAINT fk_6154a9cb89 FOREIGN KEY (review_id) REFERENCES reviews(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY member_approvals
     ADD CONSTRAINT fk_619f381144 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
@@ -32616,9 +32616,6 @@ ALTER TABLE ONLY releases
 ALTER TABLE ONLY protected_tags
     ADD CONSTRAINT fk_8e4af87648 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
-ALTER TABLE ONLY merge_request_review_llm_summaries
-    ADD CONSTRAINT fk_8ec009c6ab FOREIGN KEY (merge_request_diff_id) REFERENCES merge_request_diffs(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
     ADD CONSTRAINT fk_8ed182d7da FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
 
@@ -32702,9 +32699,6 @@ ALTER TABLE ONLY protected_branch_push_access_levels
 
 ALTER TABLE ONLY deployment_merge_requests
     ADD CONSTRAINT fk_a064ff4453 FOREIGN KEY (environment_id) REFERENCES environments(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY merge_request_review_llm_summaries
-    ADD CONSTRAINT fk_a09309bbeb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issues
     ADD CONSTRAINT fk_a194299be1 FOREIGN KEY (moved_to_id) REFERENCES issues(id) ON DELETE SET NULL;
@@ -33014,9 +33008,6 @@ ALTER TABLE ONLY custom_emoji
 
 ALTER TABLE ONLY bulk_import_entities
     ADD CONSTRAINT fk_d06d023c30 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY merge_request_review_llm_summaries
-    ADD CONSTRAINT fk_d07eeb6392 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY project_mirror_data
     ADD CONSTRAINT fk_d1aad367d7 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -34293,6 +34284,9 @@ ALTER TABLE ONLY audit_events_instance_streaming_event_type_filters
 ALTER TABLE ONLY required_code_owners_sections
     ADD CONSTRAINT fk_rails_817708cf2d FOREIGN KEY (protected_branch_id) REFERENCES protected_branches(id) ON DELETE CASCADE;
 
+ALTER TABLE p_ci_build_tags
+    ADD CONSTRAINT fk_rails_8284d35c66 FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY namespace_ldap_settings
     ADD CONSTRAINT fk_rails_82cd0ad4bb FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
@@ -34937,6 +34931,9 @@ ALTER TABLE ONLY packages_rpm_repository_files
 
 ALTER TABLE ONLY packages_rpm_metadata
     ADD CONSTRAINT fk_rails_d79f02264b FOREIGN KEY (package_id) REFERENCES packages_packages(id) ON DELETE CASCADE;
+
+ALTER TABLE p_ci_build_tags
+    ADD CONSTRAINT fk_rails_d7bd025909 FOREIGN KEY (partition_id, build_id) REFERENCES p_ci_builds(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
 
 ALTER TABLE ONLY note_metadata
     ADD CONSTRAINT fk_rails_d853224d37 FOREIGN KEY (note_id) REFERENCES notes(id) ON DELETE CASCADE;

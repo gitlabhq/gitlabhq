@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :build_artifacts do
+RSpec.describe Ci::JobArtifacts::TrackArtifactReportService, feature_category: :pipeline_reports do
   describe '#execute', :clean_gitlab_redis_shared_state do
     let_it_be(:group) { create(:group, :private) }
     let_it_be(:project) { create(:project, group: group) }

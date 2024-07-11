@@ -95,6 +95,7 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
   describe 'DELETE /-/jira_connect/subscriptions/:id' do
     let_it_be(:installation) { create(:jira_connect_installation, instance_url: 'http://self-managed-gitlab.com') }
     let_it_be(:subscription) { create(:jira_connect_subscription, installation: installation) }
+    let(:stub_service_response) { ::ServiceResponse.success }
 
     let(:qsh) do
       Atlassian::Jwt.create_query_string_hash('https://gitlab.test/subscriptions', 'GET', 'https://gitlab.test')
@@ -106,6 +107,9 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
 
     before do
       stub_application_setting(jira_connect_proxy_url: 'https://gitlab.com')
+      allow_next_instance_of(JiraConnectSubscriptions::DestroyService) do |service|
+        allow(service).to receive(:execute).and_return(stub_service_response)
+      end
     end
 
     it 'allows cross-origin requests', :aggregate_failures do
@@ -114,6 +118,21 @@ RSpec.describe JiraConnect::SubscriptionsController, feature_category: :integrat
       expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
       expect(response.headers['Access-Control-Allow-Methods']).to eq 'DELETE, OPTIONS'
       expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+
+    context 'when the service responds with an error' do
+      let(:stub_service_response) { ::ServiceResponse.error(message: 'some error', reason: :unprocessable_entity) }
+
+      it 'rejects request with status-code', :aggregate_failures do
+        delete "/-/jira_connect/subscriptions/#{subscription.id}", params: params, headers: cors_request_headers
+
+        expect(response.headers['Access-Control-Allow-Origin']).to eq 'https://gitlab.com'
+        expect(response.headers['Access-Control-Allow-Methods']).to eq 'DELETE, OPTIONS'
+        expect(response.headers['Access-Control-Allow-Credentials']).to be_nil
+        expect(response.body).to eq "{\"error\":\"some error\"}"
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
     end
   end
 end

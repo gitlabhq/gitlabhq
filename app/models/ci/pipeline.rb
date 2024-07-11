@@ -49,6 +49,7 @@ module Ci
     alias_method :jobs_git_ref, :git_ref
 
     belongs_to :project, inverse_of: :all_pipelines
+    belongs_to :project_mirror, primary_key: :project_id, foreign_key: :project_id, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_pipelines
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'

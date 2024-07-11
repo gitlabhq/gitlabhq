@@ -10,7 +10,7 @@ class ExpireBuildArtifactsWorker # rubocop:disable Scalability/IdempotentWorker
   include CronjobQueue
   # rubocop:enable Scalability/CronWorkerContext
 
-  feature_category :build_artifacts
+  feature_category :job_artifacts
 
   def perform
     artifacts_count = Ci::JobArtifacts::DestroyAllExpiredService.new.execute

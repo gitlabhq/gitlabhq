@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Packages::CleanupArtifactWorker, feature_category: :build_artifacts do
+RSpec.describe ::Packages::CleanupArtifactWorker, feature_category: :package_registry do
   let_it_be(:worker_class) do
     Class.new do
       def self.name

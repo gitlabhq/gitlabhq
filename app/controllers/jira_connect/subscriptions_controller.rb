@@ -46,14 +46,12 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
   end
 
   def destroy
-    subscription = current_jira_installation.subscriptions.find(params[:id])
+    result = destroy_service.execute
 
-    if !jira_user&.jira_admin?
-      render json: { error: 'forbidden' }, status: :forbidden
-    elsif subscription.destroy
+    if result.success?
       render json: { success: true }
     else
-      render json: { error: subscription.errors.full_messages.join(', ') }, status: :unprocessable_entity
+      render json: { error: result.message }, status: result[:reason]
     end
   end
 
@@ -68,6 +66,12 @@ class JiraConnect::SubscriptionsController < JiraConnect::ApplicationController
 
   def create_service
     JiraConnectSubscriptions::CreateService.new(current_jira_installation, current_user, namespace_path: params['namespace_path'], jira_user: jira_user)
+  end
+
+  def destroy_service
+    subscription = current_jira_installation.subscriptions.find(params[:id])
+
+    JiraConnectSubscriptions::DestroyService.new(subscription, jira_user)
   end
 
   def allow_rendering_in_iframe

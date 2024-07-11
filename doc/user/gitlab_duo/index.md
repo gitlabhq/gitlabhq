@@ -108,6 +108,16 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw)
 - [View documentation](../project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers).
 
+### Merge commit generation
+
+DETAILS:
+**Tier:** Premium and Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+- Helps you merge more quickly by generating meaningful commit messages.
+- LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison).
+- [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message).
+
 ## Beta features
 
 ### Merge request template population
@@ -192,17 +202,6 @@ DETAILS:
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=Bx6Zajyuy9k&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#summarize-a-code-review).
-
-### Merge and squash commit generation
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
-
-- Helps you merge more quickly by generating meaningful commit messages.
-- LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison).
-- [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-or-squash-commit-message).
 
 ### Root cause analysis
 

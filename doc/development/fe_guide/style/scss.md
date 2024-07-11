@@ -358,6 +358,26 @@ maintainability and reduces the risk of bugs.
 }
 ```
 
+## Selectors with ARIA attributes
+
+Do not use any attribute selector with ARIA for styling purposes. These
+attributes and roles are intended for supporting assistive technology.
+The structure of the components annotated with ARIA might change
+and so its styling. We need to be able to move these roles and attributes
+to different elements, without breaking styling.
+
+```scss
+// Bad
+&[aria-expanded=false] &-header {
+  border-bottom: 0;
+}
+
+// Good
+&.is-collapsed &-header {
+  border-bottom: 0;
+}
+```
+
 ## Using `extend` at-rule
 
 Usage of the `extend` at-rule is prohibited due to

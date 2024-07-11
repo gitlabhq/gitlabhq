@@ -347,9 +347,9 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
         project2.update!(autoclose_referenced_issues: false)
       end
 
-      it 'omits the issue reference' do
+      it 'still includes the issue reference' do
         message = "Closes #{cross_reference}"
-        expect(subject.closed_by_message(message)).to be_empty
+        expect(subject.closed_by_message(message)).to contain_exactly(issue2)
       end
     end
 
@@ -476,14 +476,9 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
         project.update!(autoclose_referenced_issues: false)
       end
 
-      it 'excludes same project references' do
-        message = "Awesome commit (Closes #{reference})"
-        expect(subject.closed_by_message(message)).to eq([])
-      end
-
-      it 'includes issues from other projects with autoclose enabled' do
-        message = "Closes #{cross_reference}"
-        expect(subject.closed_by_message(message)).to eq([issue2])
+      it 'still includes issues from projects that have the setting disabled' do
+        message = "Closes #{cross_reference} Closes #{reference}"
+        expect(subject.closed_by_message(message)).to contain_exactly(issue, issue2)
       end
     end
   end

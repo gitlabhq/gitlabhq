@@ -22,6 +22,10 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
       expect(subject[:status]).to eq(:error)
       expect(subject).to include(status_attributes)
     end
+
+    it 'does not create jira cloud app integration' do
+      expect { subject }.not_to change { Integration.count }
+    end
   end
 
   context 'remote user does not have access' do
@@ -41,12 +45,38 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
   end
 
   context 'when user does have access' do
-    it 'creates a subscription' do
-      expect { subject }.to change { installation.subscriptions.count }.from(0).to(1)
+    before do
+      allow(PropagateIntegrationWorker).to receive(:perform_async)
     end
 
-    it 'returns success' do
+    it 'creates a subscription' do
+      expect { subject }.to change { installation.subscriptions.count }.from(0).to(1)
       expect(subject[:status]).to eq(:success)
+    end
+
+    it 'creates an active jira cloud app integration for the group and returns success' do
+      expect { subject }.to change { Integrations::JiraCloudApp.for_group(group).count }.from(0).to(1)
+      expect(subject[:status]).to eq(:success)
+
+      expect(Integrations::JiraCloudApp.for_group(group).first).to be_active
+      expect(PropagateIntegrationWorker).to have_received(:perform_async)
+    end
+
+    it 'does not create integration when feature flag is disabled and returns success' do
+      stub_feature_flags(enable_jira_connect_configuration: false)
+
+      expect(subject[:status]).to eq(:success)
+
+      expect { subject }.not_to change { Integrations::JiraCloudApp.count }
+      expect(PropagateIntegrationWorker).not_to have_received(:perform_async)
+    end
+
+    context 'when group has an existing inactive integration' do
+      let_it_be(:integration) { create(:jira_cloud_app_integration, :group, :inactive, group: group) }
+
+      it 'activates the integration' do
+        expect { subject }.to change { integration.reload.active }.to eq(true)
+      end
     end
 
     context 'namespace has projects' do
@@ -65,6 +95,50 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
 
         subject
       end
+    end
+
+    context 'when project has non-inheriting inactive jira cloud app integration' do
+      let_it_be(:project_1) { create(:project, group: group) }
+
+      let_it_be(:project_integration) do
+        create(:jira_cloud_app_integration, :inactive, project: project_1, inherit_from_id: nil)
+      end
+
+      it 'activates the integration, but keeps it as non-inheriting' do
+        expect { subject }.to change { project_integration.reload.active }.to eq(true)
+        expect(project_integration.inherit_from_id).to be_nil
+      end
+    end
+  end
+
+  context 'when group has inheriting inactive jira cloud app integrations' do
+    let_it_be(:subgroup_1) { create(:group, parent: group) }
+    let_it_be(:subgroup_2) { create(:group, parent: group) }
+    let_it_be(:project_1) { create(:project, group: subgroup_1) }
+    let_it_be(:group_integration) { create(:jira_cloud_app_integration, :group, :inactive, group: group) }
+    let_it_be(:jira_integration) do
+      create(:jira_integration, :group, :inactive, group: group, inherit_from_id: group_integration.id)
+    end
+
+    let_it_be(:subgroup_integration_1) do
+      create(:jira_cloud_app_integration, :group, :inactive, group: subgroup_1, inherit_from_id: group_integration.id)
+    end
+
+    let_it_be(:project_integration_1) do
+      create(:jira_cloud_app_integration, :inactive, project: project_1, inherit_from_id: group_integration.id)
+    end
+
+    before do
+      allow(PropagateIntegrationWorker).to receive(:perform_async)
+    end
+
+    it 'activate existing jira cloud app integrations if subscription saved successfully' do
+      expect(subject[:status]).to eq(:success)
+
+      expect(group_integration.reload).to be_active
+      expect(subgroup_integration_1.reload).to be_active
+      expect(project_integration_1.reload).to be_active
+      expect(jira_integration.reload).not_to be_active
     end
   end
 

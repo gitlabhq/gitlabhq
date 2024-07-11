@@ -52,7 +52,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   ]
   feature_category :pipeline_composition, [:create]
   feature_category :code_testing, [:test_report]
-  feature_category :build_artifacts, [:downloadable_artifacts]
+  feature_category :job_artifacts, [:downloadable_artifacts]
 
   def index
     @pipelines = Ci::PipelinesFinder

@@ -12,7 +12,7 @@ module Ci
     include CronjobQueue
     # rubocop:enable Scalability/CronWorkerContext
 
-    feature_category :build_artifacts
+    feature_category :job_artifacts
 
     def perform
       artifact_counts = Ci::JobArtifacts::UpdateUnknownLockedStatusService.new.execute

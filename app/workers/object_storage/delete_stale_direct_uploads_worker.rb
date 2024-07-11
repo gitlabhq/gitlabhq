@@ -12,7 +12,7 @@ module ObjectStorage
 
     # TODO: Determine proper feature category for this, as object storage is a shared feature.
     # For now, only build artifacts use this worker.
-    feature_category :build_artifacts
+    feature_category :job_artifacts
     idempotent!
     deduplicate :until_executed
 

@@ -1,0 +1,9 @@
+---
+name: ci_pipelines_data_ingestion_to_click_house
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470079
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158362
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470495
+milestone: '17.2'
+group: group::runner
+type: wip
+default_enabled: false

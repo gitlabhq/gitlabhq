@@ -15,6 +15,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { MODEL_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { createModelResponses, createModelVersionResponses } from '../graphql_mock_data';
 
 Vue.use(VueApollo);
@@ -60,6 +61,7 @@ describe('ModelCreate', () => {
       provide: {
         projectPath: 'some/project',
         maxAllowedFileSize: 99999,
+        markdownPreviewPath: '/markdown-preview',
       },
       directives: {
         GlModal: createMockDirective('gl-modal'),
@@ -86,6 +88,7 @@ describe('ModelCreate', () => {
     await waitForPromises();
   };
   const findArtifactZoneLabel = () => wrapper.findByTestId('importArtifactZoneLabel');
+  const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
   const findModelNameGroup = () => wrapper.findByTestId('nameGroupId');
 
   describe('Initial state', () => {
@@ -103,6 +106,26 @@ describe('ModelCreate', () => {
         expect(getBinding(findModalButton().element, 'gl-modal').value).toBe(
           MODEL_CREATION_MODAL_ID,
         );
+      });
+    });
+
+    describe('Markdown editor', () => {
+      it('should show markdown editor', () => {
+        createWrapper();
+
+        expect(findMarkdownEditor().exists()).toBe(true);
+
+        expect(findMarkdownEditor().props()).toMatchObject({
+          enableContentEditor: true,
+          formFieldProps: {
+            id: 'model-description',
+            name: 'model-description',
+            placeholder: 'Enter a model description',
+          },
+          markdownDocsPath: '/help/user/markdown',
+          renderMarkdownPath: '/markdown-preview',
+          uploadsPath: '',
+        });
       });
     });
 
@@ -307,8 +330,8 @@ describe('ModelCreate', () => {
     beforeEach(async () => {
       createWrapper();
       findNameInput().vm.$emit('input', 'gpt-alice-1');
+      findMarkdownEditor().vm.$emit('input', 'My model description');
       findVersionInput().vm.$emit('input', '1.0.0');
-      findDescriptionInput().vm.$emit('input', 'My model description');
       findVersionDescriptionInput().vm.$emit('input', 'My version description');
       await Vue.nextTick();
       zone().vm.$emit('change', file);

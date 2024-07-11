@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe 'User views project artifacts page', :js, feature_category: :build_artifacts do
+RSpec.describe 'User views project artifacts page', :js, feature_category: :job_artifacts do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:pipeline) { create(:ci_empty_pipeline, project: project) }
   let_it_be(:job_with_artifacts) { create(:ci_build, :artifacts, name: 'test1', pipeline: pipeline) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Upload ci artifact', :api, :js, feature_category: :build_artifacts do
+RSpec.describe 'Upload ci artifact', :api, :js, feature_category: :job_artifacts do
   include_context 'file upload requests helpers'
 
   let_it_be(:user) { create(:user, :admin) }

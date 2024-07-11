@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifact, feature_category: :build_artifacts do
+RSpec.describe Ci::JobArtifact, feature_category: :job_artifacts do
   let(:artifact) { create(:ci_job_artifact, :archive) }
 
   describe "Associations" do

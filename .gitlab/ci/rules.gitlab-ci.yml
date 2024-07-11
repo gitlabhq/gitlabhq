@@ -956,18 +956,6 @@
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only-setup-test-env", rules]
 
-.build-images:rules:build-qa-image-as-if-foss:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-default-branch-schedule-nightly
-      variables:
-        ARCH: amd64,arm64
-    - !reference [".build-images:rules:build-qa-image-merge-requests", rules]
-
 # When new minor release tag is pushed, re-tag gdk image with pattern ignored by registry cleanup
 .build-images:rules:retag-gdk-image:
   rules:
@@ -1266,13 +1254,6 @@
       when: never
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - !reference [".frontend:rules:assets-shared", rules]
-
-.frontend:rules:compile-production-assets-as-if-foss:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [.frontend:rules:compile-production-assets, rules]
 
 .frontend:rules:compile-test-assets:
   rules:
@@ -1715,7 +1696,8 @@
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
 
-.qa:rules:package-and-test-ce:
+# Note: If any changes are made to this rule, the following should also be updated - .qa:rules:package-and-test-ce:follow-up
+.qa:rules:package-and-test-ce:start:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-security-merge-request
@@ -1730,6 +1712,26 @@
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:
+        ARCH: amd64,arm64
+        CREATE_TEST_FAILURE_ISSUES: "true"
+        PROCESS_TEST_RESULTS: "true"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false"
+
+.qa:rules:package-and-test-ce:follow-up:
+  rules:
+    - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-security-merge-request
+      changes: *qa-patterns
+      allow_failure: true
+    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-security-merge-request
+      changes: *code-patterns
+      allow_failure: true
+    - <<: *if-default-branch-schedule-nightly
+      allow_failure: true
+      variables:
+        ARCH: amd64,arm64
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
@@ -1758,12 +1760,29 @@
 
 .qa:rules:e2e:test-on-cng:
   rules:
+    # Until https://gitlab.com/gitlab-org/quality/quality-engineering/CNG-mirror is stable enough,
+    # test-on-cng should not be part of development flow.
+    # Once it's ready, delete the two following rules, and uncomment the commented lines below.
+    - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
       allow_failure: true
+    # - <<: *if-merge-request-targeting-stable-branch
+    #   when: never
+    # - <<: *if-security-merge-request
+    #   when: never
+    # - <<: *if-security-schedule
+    #   when: never
+    # - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    # - !reference [".prevent-tier-2-and-below", rules]
+    # - !reference [".qa:rules:e2e-blocking-base-after", rules]
+    # - !reference [".qa:rules:e2e-schedule-blocking", rules]
+    # - <<: *if-merge-request
+    #   changes: *cng-orchestrator-patterns
+
 
 .qa:rules:package-and-test-nightly:
   rules:

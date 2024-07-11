@@ -48,20 +48,6 @@ After you purchase GitLab Duo Pro, you can assign seats to billable users to gra
 
 To use Code Suggestions in any project or group, a user must be assigned a seat in at least one top-level group.
 
-#### Enable automatic assignment of new users
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13637) in GitLab 17.0 [with a flag](../administration/feature_flags.md) named `auto_assign_gitlab_duo_pro_seats`.
-
-You can enable automatic assignment of GitLab Duo Pro seats for new users. When this feature is enabled,
-any member added to a top-level group, subgroup, or project is automatically allocated a GitLab Duo Pro
-seat if one is available.
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand **Permissions and group features**.
-1. Locate **GitLab Duo Pro seats**.
-1. Select the **Automatic assignment of GitLab Duo Pro seats** checkbox.
-
 ### For self-managed
 
 Prerequisites:

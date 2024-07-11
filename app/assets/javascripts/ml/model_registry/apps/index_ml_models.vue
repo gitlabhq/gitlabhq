@@ -32,6 +32,7 @@ export default {
       mlflowTrackingUrl: this.mlflowTrackingUrl,
       projectPath: this.projectPath,
       maxAllowedFileSize: this.maxAllowedFileSize,
+      markdownPreviewPath: this.markdownPreviewPath,
     };
   },
   props: {
@@ -51,6 +52,10 @@ export default {
     },
     maxAllowedFileSize: {
       type: Number,
+      required: true,
+    },
+    markdownPreviewPath: {
+      type: String,
       required: true,
     },
   },

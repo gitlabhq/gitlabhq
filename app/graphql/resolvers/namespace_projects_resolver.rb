@@ -7,6 +7,12 @@ module Resolvers
       default_value: false,
       description: 'Include also subgroup projects.'
 
+    argument :include_sibling_projects, GraphQL::Types::Boolean,
+      required: false,
+      default_value: false,
+      description: 'Include also projects from parent group.',
+      alpha: { milestone: '17.2' }
+
     argument :include_archived, GraphQL::Types::Boolean,
       required: false,
       default_value: true,
@@ -70,6 +76,7 @@ module Resolvers
     def finder_params(args)
       {
         include_subgroups: args.dig(:include_subgroups),
+        include_sibling_projects: args.dig(:include_sibling_projects),
         include_archived: args.dig(:include_archived),
         not_aimed_for_deletion: args.dig(:not_aimed_for_deletion),
         sort: args.dig(:sort),

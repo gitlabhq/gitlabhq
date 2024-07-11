@@ -2291,9 +2291,6 @@ msgstr ""
 msgid "API key"
 msgstr ""
 
-msgid "API?"
-msgstr ""
-
 msgid "APIFuzzing|$VARIABLE_WITH_PASSWORD"
 msgstr ""
 
@@ -4742,7 +4739,7 @@ msgstr ""
 msgid "Admin|Settings"
 msgstr ""
 
-msgid "Admin|Spam Logs"
+msgid "Admin|Spam logs"
 msgstr ""
 
 msgid "Admin|Subscription"
@@ -22887,6 +22884,9 @@ msgstr ""
 msgid "ForksDivergence|View merge request"
 msgstr ""
 
+msgid "Framework id(s) %{missing_ids} are invalid."
+msgstr ""
+
 msgid "Framework successfully deleted"
 msgstr ""
 
@@ -28325,6 +28325,9 @@ msgstr ""
 msgid "Invalid Insights config file detected"
 msgstr ""
 
+msgid "Invalid JiraConnectSubscriptions"
+msgstr ""
+
 msgid "Invalid OS"
 msgstr ""
 
@@ -33616,9 +33619,6 @@ msgstr ""
 msgid "MlModelRegistry|Deleting this model version will delete the associated artifacts."
 msgstr ""
 
-msgid "MlModelRegistry|Details"
-msgstr ""
-
 msgid "MlModelRegistry|Drop or %{linkStart}select%{linkEnd} artifact to attach"
 msgstr ""
 
@@ -33707,6 +33707,9 @@ msgid "MlModelRegistry|May not contain spaces."
 msgstr ""
 
 msgid "MlModelRegistry|Metadata"
+msgstr ""
+
+msgid "MlModelRegistry|Model card"
 msgstr ""
 
 msgid "MlModelRegistry|Model deleted successfully"
@@ -34970,6 +34973,9 @@ msgid "No milestone"
 msgstr ""
 
 msgid "No more seats in subscription"
+msgstr ""
+
+msgid "No more than %{max_frameworks} compliance frameworks can be updated at the same time."
 msgstr ""
 
 msgid "No more than %{max_issues} issues can be updated at the same time"
@@ -43498,7 +43504,7 @@ msgstr ""
 msgid "Rebase source branch on the target branch."
 msgstr ""
 
-msgid "Recaptcha verified?"
+msgid "Recaptcha verified"
 msgstr ""
 
 msgid "Receive any notifications from GitLab."
@@ -51014,7 +51020,7 @@ msgstr ""
 msgid "Source Branch"
 msgstr ""
 
-msgid "Source IP"
+msgid "Source IP:"
 msgstr ""
 
 msgid "Source branch"
@@ -51125,13 +51131,13 @@ msgstr ""
 msgid "Spam Check API key"
 msgstr ""
 
-msgid "Spam Logs"
-msgstr ""
-
 msgid "Spam and Anti-bot Protection"
 msgstr ""
 
 msgid "Spam log successfully submitted as ham."
+msgstr ""
+
+msgid "Spam logs"
 msgstr ""
 
 msgid "Specific branches"
@@ -57414,9 +57420,6 @@ msgid "User OAuth applications"
 msgstr ""
 
 msgid "User Settings"
-msgstr ""
-
-msgid "User Status"
 msgstr ""
 
 msgid "User and IP rate limits"

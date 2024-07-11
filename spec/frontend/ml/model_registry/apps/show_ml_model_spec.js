@@ -122,10 +122,6 @@ describe('ml/model_registry/apps/show_ml_model', () => {
       expect(findTitleArea().props('title')).toBe('MyModel');
     });
 
-    it('subheader is set to description', () => {
-      expect(findTitleArea().text()).toContain(model.description);
-    });
-
     it('sets version metadata item to version count', () => {
       expect(findVersionCountMetadataItem().props('text')).toBe(`${model.versionCount} version`);
     });
@@ -173,7 +169,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     beforeEach(() => createWrapper());
 
     it('has a details tab', () => {
-      expect(findDetailTab().attributes('title')).toBe('Details');
+      expect(findDetailTab().attributes('title')).toBe('Model card');
     });
 
     it('shows the number of versions in the tab', () => {

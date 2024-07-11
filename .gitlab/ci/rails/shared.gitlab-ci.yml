@@ -174,9 +174,6 @@ include:
       section_end "knapsack-report-issues"
     - tooling/bin/push_job_metrics || true
 
-  allow_failure:
-    exit_codes: !reference [.rspec-base, variables, SUCCESSFULLY_RETRIED_TEST_EXIT_CODE]
-
 .base-artifacts:
   artifacts:
     expire_in: 31d

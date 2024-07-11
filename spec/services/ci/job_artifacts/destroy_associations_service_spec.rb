@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::DestroyAssociationsService, feature_category: :build_artifacts do
+RSpec.describe Ci::JobArtifacts::DestroyAssociationsService, feature_category: :job_artifacts do
   let_it_be(:project_1) { create(:project) }
   let_it_be(:project_2) { create(:project) }
 

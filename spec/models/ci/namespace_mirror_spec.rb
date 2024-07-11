@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::NamespaceMirror do
+RSpec.describe Ci::NamespaceMirror, feature_category: :continuous_integration do
   let!(:group1) { create(:group) }
   let!(:group2) { create(:group, parent: group1) }
   let!(:group3) { create(:group, parent: group2) }

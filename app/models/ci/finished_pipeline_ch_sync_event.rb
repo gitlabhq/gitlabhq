@@ -3,6 +3,7 @@
 module Ci
   class FinishedPipelineChSyncEvent < Ci::ApplicationRecord
     include EachBatch
+    include FromUnion
     include IgnorableColumns
     include PartitionedTable
 
@@ -26,7 +27,22 @@ module Ci
     validates :pipeline_finished_at, presence: true
     validates :project_namespace_id, presence: true
 
-    scope :order_by_pipeline_id, -> { order(:pipeline_id) }
+    scope :order_by_pipeline_id, -> do
+      keyset_aware_order = Gitlab::Pagination::Keyset::Order.build([
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'pipeline_id',
+          order_expression: Ci::FinishedPipelineChSyncEvent.arel_table[:pipeline_id].asc,
+          nullable: :not_nullable
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'project_namespace_id',
+          order_expression: Ci::FinishedPipelineChSyncEvent.arel_table[:project_namespace_id].asc,
+          nullable: :not_nullable
+        )
+      ])
+
+      order(keyset_aware_order)
+    end
 
     scope :pending, -> { where(processed: false) }
     scope :for_partition, ->(partition) { where(partition: partition) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_category: :build_artifacts do
+RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsService, feature_category: :job_artifacts do
   let_it_be(:project) { create(:project) }
   let_it_be(:pipeline, reload: true) { create(:ci_pipeline, :unlocked, project: project) }
 

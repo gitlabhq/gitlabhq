@@ -75,7 +75,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:project_mirror) }
+    it { is_expected.to belong_to(:project_mirror).with_foreign_key('project_id') }
 
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)

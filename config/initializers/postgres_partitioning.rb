@@ -17,6 +17,7 @@ Gitlab::Database::Partitioning.register_models(
     Ci::BuildMetadata,
     Ci::BuildExecutionConfig,
     Ci::BuildName,
+    Ci::BuildTag,
     Ci::BuildSource,
     Ci::Catalog::Resources::Components::Usage,
     Ci::Catalog::Resources::SyncEvent,

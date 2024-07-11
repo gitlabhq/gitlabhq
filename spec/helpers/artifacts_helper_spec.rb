@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe ArtifactsHelper, feature_category: :build_artifacts do
+RSpec.describe ArtifactsHelper, feature_category: :job_artifacts do
   let_it_be(:user) { build_stubbed(:user) }
   let_it_be(:project) { build_stubbed(:project) }
 

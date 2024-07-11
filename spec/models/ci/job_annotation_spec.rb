@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobAnnotation, feature_category: :build_artifacts do
+RSpec.describe Ci::JobAnnotation, feature_category: :job_artifacts do
   let_it_be_with_refind(:job) { create(:ci_build, :success) }
 
   describe 'validations' do

@@ -13,6 +13,8 @@ RSpec.describe 'shared/snippets/_snippet.html.haml' do
   end
 
   context 'snippet with statistics' do
+    let_it_be(:snippet) { create(:snippet) }
+
     it 'renders correct file count and tooltip' do
       snippet.statistics.file_count = 3
 

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ScheduleUnlockPipelinesInQueueCronWorker, :unlock_pipelines, feature_category: :build_artifacts do
+RSpec.describe Ci::ScheduleUnlockPipelinesInQueueCronWorker, :unlock_pipelines, feature_category: :job_artifacts do
   let(:worker) { described_class.new }
 
   describe '#perform' do

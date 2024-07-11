@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe ProtectedTag, feature_category: :source_code_management do
   it_behaves_like 'protected ref', :protected_tag
+  it_behaves_like 'protected ref with access levels for', :create
 
   describe 'Associations' do
     it { is_expected.to belong_to(:project).touch(true) }

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :build_artifacts do
+RSpec.describe Ci::JobArtifacts::DestroyBatchService, feature_category: :job_artifacts do
   let(:artifacts) { Ci::JobArtifact.where(id: [artifact_with_file.id, artifact_without_file.id]) }
   let(:skip_projects_on_refresh) { false }
   let(:service) do

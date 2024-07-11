@@ -1,71 +1,86 @@
 - user = spam_log.user
 %tr
-  %td
-    = time_ago_with_tooltip(spam_log.created_at)
-  %td
-    - if user
-      = link_to user.name, [:admin, user]
-      .light.small
-        = _('Joined %{user_created_time}').html_safe % { user_created_time: time_ago_with_tooltip(user.created_at) }
-    - else
-      = _('(removed)')
-  %td
-    = spam_log.source_ip
-  %td
-    = spam_log.via_api? ? 'Y' : 'N'
-  %td
-    = spam_log.recaptcha_verified ? 'Y' : 'N'
-  %td
-    = spam_log.noteable_type
-  %td
-    = spam_log.title
-  %td
-    = truncate(spam_log.description, length: 100)
-  %td
-    = moderation_status(user)
-  %td
-    - if user
-      = render Pajamas::ButtonComponent.new(size: :small,
-        variant: :danger,
-        method: :delete,
-        href: admin_spam_log_path(spam_log, remove_user: true),
-        button_options: { class: ' gl-mb-3', data: { confirm: _("User %{user_name} will be removed! Are you sure?") % { user_name: user.name }, confirm_btn_variant: 'danger' } }) do
-        = _('Remove user')
-    -# TODO: Remove conditonal once spamcheck supports this https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/spam/spamcheck/-/issues/190
-    - if akismet_enabled?
-      - if spam_log.submitted_as_ham?
-        = render Pajamas::ButtonComponent.new(size: :small,
-          button_options: { class: 'disabled gl-mb-3'}) do
-          = _("Submitted as ham")
+  %td{ data: { label: _('Date') } }
+    .md:gl-whitespace-nowrap= time_ago_with_tooltip(spam_log.created_at)
+  %td{ data: { label: _('User') } }
+    %div
+      - if user
+        .gl-mb-3= link_to user.name, [:admin, user]
+        .gl-text-sm
+          = sprite_icon('clock', css_class: "gl-mr-1 gl-fill-icon-subtle gl-icon", size: 12)
+          = _('Joined %{user_created_time}').html_safe % { user_created_time: time_ago_with_tooltip(user.created_at) }
       - else
-        = render Pajamas::ButtonComponent.new(size: :small,
-          method: :post,
-          href: mark_as_ham_admin_spam_log_path(spam_log),
-          button_options: { class: ' gl-mb-3' }) do
-          = _('Submit as ham')
-    - if user && !user.blocked?
-      = render Pajamas::ButtonComponent.new(size: :small,
-        method: :put,
-        href: block_admin_user_path(user),
-        button_options: { class: 'gl-mb-3', data: {confirm: _('User will be blocked! Are you sure?')} }) do
-        = _('Block user')
-    - else
-      = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'disabled gl-mb-3'}) do
-        = _("Already blocked")
-    - if user && !user.trusted?
-      = render Pajamas::ButtonComponent.new(size: :small,
-        method: :put,
-        href: trust_admin_user_path(user),
-        button_options: { class: 'gl-mb-3', data: {confirm: _('User will be allowed to create possible spam! Are you sure?')} }) do
-        = _('Trust user')
-    - else
-      = render Pajamas::ButtonComponent.new(size: :small,
-        method: :put,
-        href: untrust_admin_user_path(user),
-        button_options: { class: 'gl-mb-3', data: {confirm: _('User will not be allowed to create possible spam! Are you sure?')} }) do
-        = _('Untrust user')
-    = render Pajamas::ButtonComponent.new(size: :small,
-      method: :delete,
-      href: [:admin, spam_log],
-      button_options: { class: 'js-remove-tr', remote: true, }) do
-      = _('Remove log')
+        = _('(removed)')
+      .gl-text-sm
+        = sprite_icon('earth', css_class: "gl-mr-1 gl-fill-icon-subtle gl-icon", size: 12)
+        = _('Source IP:')
+        = spam_log.source_ip
+      .md:gl-whitespace-nowrap.gl-mt-2
+        = render Pajamas::BadgeComponent.new(moderation_status(user), variant: :muted)
+        - if spam_log.via_api?
+          = render Pajamas::BadgeComponent.new(_('API'), variant: :muted)
+        - if spam_log.recaptcha_verified?
+          = render Pajamas::BadgeComponent.new(_('Recaptcha verified'), variant: :muted)
+  %td{ data: { label: _('Type') } }
+    = spam_log.noteable_type
+  %td{ data: { label: _('Details') } }
+    %div
+      .gl-text-bold= spam_log.title
+      .gl-mt-3= truncate(spam_log.description, length: 200)
+  %td{ data: { label: _('Actions') } }
+    .dropdown
+      = render Pajamas::ButtonComponent.new(icon: 'ellipsis_v', category: :tertiary, button_options: { 'aria-label': 'More actions', data: { title: 'More actions', toggle: 'dropdown', container: 'body' }})
+      %ul.dropdown-menu.dropdown-menu-sort.dropdown-menu-right
+        -# TODO: Remove conditonal once spamcheck supports this https://gitlab.com/gitlab-com/gl-security/engineering-and-research/automation-team/spam/spamcheck/-/issues/190
+        - if akismet_enabled?
+          %li
+            - if spam_log.submitted_as_ham?
+              = render Pajamas::ButtonComponent.new(category: :tertiary,
+                button_options: { class: 'disabled menu-item'}) do
+                = _("Submitted as ham")
+            - else
+              = render Pajamas::ButtonComponent.new(category: :tertiary,
+                method: :post,
+                href: mark_as_ham_admin_spam_log_path(spam_log),
+                button_options: { class: 'menu-item' }) do
+                = _('Submit as ham')
+        - if user && !user.blocked?
+          %li
+            = render Pajamas::ButtonComponent.new(category: :tertiary,
+              method: :put,
+              href: block_admin_user_path(user),
+              button_options: { class: 'menu-item', data: {confirm: _('User will be blocked! Are you sure?')} }) do
+              = _('Block user')
+        - else
+          %li
+            = render Pajamas::ButtonComponent.new(category: :tertiary,
+              button_options: { class: 'disabled menu-item'}) do
+              = _("Already blocked")
+        - if user && !user.trusted?
+          %li
+            = render Pajamas::ButtonComponent.new(category: :tertiary,
+              method: :put,
+              href: trust_admin_user_path(user),
+              button_options: { class: 'menu-item', data: {confirm: _('User will be allowed to create possible spam! Are you sure?')} }) do
+              = _('Trust user')
+        - else
+          %li
+            = render Pajamas::ButtonComponent.new(category: :tertiary,
+              method: :put,
+              href: untrust_admin_user_path(user),
+              button_options: { class: 'menu-item', data: {confirm: _('User will not be allowed to create possible spam! Are you sure?')} }) do
+              = _('Untrust user')
+        %li
+          = render Pajamas::ButtonComponent.new(category: :tertiary,
+            method: :delete,
+            href: [:admin, spam_log],
+            button_options: { class: 'menu-item js-remove-tr', remote: true, }) do
+            = _('Remove log')
+        - if user
+          %li
+            = render Pajamas::ButtonComponent.new(category: :tertiary,
+              variant: :danger,
+              method: :delete,
+              href: admin_spam_log_path(spam_log, remove_user: true),
+              button_options: { class: 'menu-item focus:!gl-bg-gray-50', data: { confirm: _("User %{user_name} will be removed! Are you sure?") % { user_name: user.name }, confirm_btn_variant: 'danger' } }) do
+              %span.text-danger= _('Remove user')

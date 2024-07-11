@@ -100,21 +100,52 @@ RSpec.describe NotePolicy, feature_category: :team_planning do
 
     context 'when the noteable is a personal snippet' do
       let(:noteable) { create(:personal_snippet, :public) }
-      let(:note) { create(:note, noteable: noteable) }
+      let(:other_user) { create(:user) }
+      let(:note) { create(:note_on_personal_snippet, noteable: noteable) }
 
       it_behaves_like 'a note on a public noteable'
 
       context 'when user is the author of the personal snippet' do
-        let(:note) { create(:note, noteable: noteable, author: user) }
+        let(:noteable) { create(:personal_snippet, :public, author: user) }
+        let(:note) { create(:note_on_personal_snippet, noteable: noteable, author: user) }
 
         it 'can edit note' do
           expect(policy).to be_allowed(:read_note, :award_emoji, :admin_note, :reposition_note, :resolve_note)
         end
 
-        context 'when it is private' do
+        context 'when the note is private' do
           let(:noteable) { create(:personal_snippet, :private) }
 
           it_behaves_like 'user cannot read or act on the note'
+        end
+
+        context 'when the note is authored by another user' do
+          let(:note) { create(:note_on_personal_snippet, noteable: noteable, author: other_user) }
+
+          it 'can edit note' do
+            expect(policy).to be_allowed(:read_note, :award_emoji, :admin_note, :reposition_note, :resolve_note)
+          end
+        end
+      end
+
+      context 'when the user is admin' do
+        let(:admin) { create(:admin) }
+        let(:policy) { described_class.new(admin, note) }
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'can edit note made by other users' do
+            expect(policy).to be_allowed(:read_note, :award_emoji, :admin_note, :reposition_note, :resolve_note)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it_behaves_like 'a note on a public noteable'
+
+          context 'when the note is private' do
+            let(:noteable) { create(:personal_snippet, :private) }
+
+            it_behaves_like 'user cannot read or act on the note'
+          end
         end
       end
     end

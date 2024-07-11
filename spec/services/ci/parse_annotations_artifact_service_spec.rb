@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ParseAnnotationsArtifactService, feature_category: :build_artifacts do
+RSpec.describe Ci::ParseAnnotationsArtifactService, feature_category: :job_artifacts do
   let_it_be(:project) { create(:project) }
 
   let_it_be_with_reload(:build) { create(:ci_build, project: project) }

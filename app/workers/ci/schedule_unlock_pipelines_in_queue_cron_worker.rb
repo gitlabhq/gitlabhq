@@ -11,7 +11,7 @@ module Ci
     include CronjobQueue
     # rubocop:enable Scalability/CronWorkerContext
 
-    feature_category :build_artifacts
+    feature_category :job_artifacts
     idempotent!
 
     def perform(...)

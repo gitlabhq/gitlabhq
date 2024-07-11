@@ -1,7 +1,6 @@
 import { GlTab } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ModelDetail from '~/ml/model_registry/components/model_detail.vue';
-import ModelVersionDetail from '~/ml/model_registry/components/model_version_detail.vue';
 import EmptyState from '~/ml/model_registry/components/model_list_empty_state.vue';
 import { MODEL_VERSION_CREATION_MODAL_ID } from '~/ml/model_registry/constants';
 import { model, modelWithoutVersion } from '../graphql_mock_data';
@@ -16,7 +15,6 @@ const createWrapper = (modelProp = model) => {
   });
 };
 
-const findModelVersionDetail = () => wrapper.findComponent(ModelVersionDetail);
 const findEmptyState = () => wrapper.findComponent(EmptyState);
 const findVersionLink = () => wrapper.findByTestId('model-version-link');
 
@@ -24,10 +22,6 @@ describe('ShowMlModel', () => {
   describe('when it has latest version', () => {
     beforeEach(() => {
       createWrapper();
-    });
-
-    it('displays the version', () => {
-      expect(findModelVersionDetail().props('modelVersion')).toBe(model.latestVersion);
     });
 
     it('displays a link to latest version', () => {
@@ -51,10 +45,6 @@ describe('ShowMlModel', () => {
         primaryText: 'Create model version',
         modalId: MODEL_VERSION_CREATION_MODAL_ID,
       });
-    });
-
-    it('does not render model version detail', () => {
-      expect(findModelVersionDetail().exists()).toBe(false);
     });
   });
 });

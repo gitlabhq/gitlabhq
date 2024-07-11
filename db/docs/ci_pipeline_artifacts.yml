@@ -3,7 +3,7 @@ table_name: ci_pipeline_artifacts
 classes:
 - Ci::PipelineArtifact
 feature_categories:
-- build_artifacts
+- job_artifacts
 description: Stores aggregated artifacts produced by a pipeline.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/37969
 milestone: '13.3'

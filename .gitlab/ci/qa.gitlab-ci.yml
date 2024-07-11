@@ -192,11 +192,11 @@ e2e:post-run-e2e-message:
 e2e:package-and-test-ce:
   extends:
     - e2e:package-and-test-ee
-    - .qa:rules:package-and-test-ce
+    - .qa:rules:package-and-test-ce:follow-up
   needs:
     - build-assets-image as-if-foss
     - build-qa-image as-if-foss
-    - e2e-test-pipeline-generate
+    - e2e-test-pipeline-generate as-if-foss
   variables:
     FOSS_ONLY: "1"
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ce:${RELEASE_IMAGE_TAG}"

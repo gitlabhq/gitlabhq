@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobAnnotationEntity, feature_category: :build_artifacts do
+RSpec.describe Ci::JobAnnotationEntity, feature_category: :job_artifacts do
   let(:entity) { described_class.new(annotation) }
 
   let(:job) { build(:ci_build) }

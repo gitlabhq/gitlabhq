@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe GoogleCloud::FetchGoogleIpListWorker, feature_category: :build_artifacts do
+RSpec.describe GoogleCloud::FetchGoogleIpListWorker, feature_category: :job_artifacts do
   describe '#perform' do
     it 'returns success' do
       allow_next_instance_of(CloudSeed::GoogleCloud::FetchGoogleIpListService) do |service|

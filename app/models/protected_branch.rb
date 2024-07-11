@@ -94,10 +94,6 @@ class ProtectedBranch < ApplicationRecord
     where(fuzzy_arel_match(:name, query.downcase))
   end
 
-  def allow_multiple?(type)
-    type == :push
-  end
-
   def self.downcase_humanized_name
     name.underscore.humanize.downcase
   end

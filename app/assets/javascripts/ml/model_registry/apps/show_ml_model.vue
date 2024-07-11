@@ -191,9 +191,6 @@ export default {
             <metadata-item icon="machine-learning" :text="versionsCountLabel" />
           </template>
 
-          <template #sub-header>
-            {{ description }}
-          </template>
           <template #right-actions>
             <model-version-create v-if="canWriteModelRegistry" :model-gid="modelGid" />
 
@@ -215,7 +212,10 @@ export default {
 
         <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
           <gl-tabs class="gl-mt-4" :value="tabIndex">
-            <gl-tab :title="s__('MlModelRegistry|Details')" @click="goTo($options.ROUTE_DETAILS)" />
+            <gl-tab
+              :title="s__('MlModelRegistry|Model card')"
+              @click="goTo($options.ROUTE_DETAILS)"
+            />
             <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
               <template #title>
                 {{ s__('MlModelRegistry|Versions') }}

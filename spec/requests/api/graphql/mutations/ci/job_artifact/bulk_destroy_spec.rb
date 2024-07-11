@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'BulkDestroy', feature_category: :build_artifacts do
+RSpec.describe 'BulkDestroy', feature_category: :job_artifacts do
   include GraphqlHelpers
 
   let(:maintainer) { create(:user) }

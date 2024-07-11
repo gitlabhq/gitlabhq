@@ -31,8 +31,7 @@ module Gitlab
       @extractor.analyze(closing_statements.join(" "))
 
       @extractor.issues.reject do |issue|
-        @extractor.project.forked_from?(issue.project) ||
-          !issue.project.autoclose_referenced_issues
+        @extractor.project.forked_from?(issue.project)
       end
     end
   end

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Ci::PipelineArtifacts::DestroyAllExpiredService, :clean_gitlab_redis_shared_state,
-  feature_category: :build_artifacts do
+  feature_category: :job_artifacts do
   let(:service) { described_class.new }
 
   describe '.execute' do

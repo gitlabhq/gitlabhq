@@ -24,7 +24,7 @@ To view spam logs:
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
 1. Select **Spam Logs**.
-1. Optional. To resolve a spam log, select a log and then select **Remove user**, **Block user**, **Remove log**, or **Trust user**.
+1. Optional. To resolve a spam log, select **More actions** (**{ellipsis_v}**), then **Remove user**, **Block user**, **Remove log**, or **Trust user**.
 
 ### Resolving spam logs
 

@@ -12,6 +12,8 @@ import {
 import { __, s__ } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
+import { helpPagePath } from '~/helpers/help_page_helper';
 import { semverRegex, noSpacesRegex } from '~/lib/utils/regexp';
 import { uploadModel } from '../services/upload_model';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
@@ -21,6 +23,7 @@ import { emptyArtifactFile, MODEL_CREATION_MODAL_ID } from '../constants';
 export default {
   name: 'ModelCreate',
   components: {
+    MarkdownEditor,
     GlAlert,
     GlButton,
     GlModal,
@@ -33,22 +36,38 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['projectPath', 'maxAllowedFileSize'],
+  inject: ['projectPath', 'maxAllowedFileSize', 'markdownPreviewPath'],
+  props: {
+    initialValue: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    disableAttachments: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
   data() {
     return {
       name: null,
       version: null,
-      description: null,
+      description: this.initialValue || '',
       versionDescription: null,
       errorMessage: null,
       selectedFile: emptyArtifactFile,
       modelData: null,
       versionData: null,
+      markdownDocPath: helpPagePath('user/markdown'),
     };
   },
   computed: {
     showImportArtifactZone() {
       return this.version && this.name;
+    },
+    autocompleteDataSources() {
+      return gl.GfmAutoComplete?.dataSources;
     },
     modelNameIsValid() {
       return this.name && noSpacesRegex.test(this.name);
@@ -165,8 +184,18 @@ export default {
     hideAlert() {
       this.errorMessage = null;
     },
+    setDescription(newText) {
+      if (!this.isSubmitting) {
+        this.description = newText;
+      }
+    },
   },
   i18n: {},
+  descriptionFormFieldProps: {
+    placeholder: s__('MlModelRegistry|Enter a model description'),
+    id: 'model-description',
+    name: 'model-description',
+  },
   modal: {
     id: MODEL_CREATION_MODAL_ID,
     actionSecondary: {
@@ -240,12 +269,21 @@ export default {
           label-for="descriptionId"
           optional
           :optional-text="$options.modal.optionalText"
+          class="common-note-form gfm-form js-main-target-form gl-flex-grow-1 new-note"
         >
-          <gl-form-textarea
-            id="descriptionId"
-            v-model="description"
+          <markdown-editor
+            ref="markdownEditor"
             data-testid="descriptionId"
+            :value="description"
+            enable-autocomplete
+            :autocomplete-data-sources="autocompleteDataSources"
+            :enable-content-editor="true"
+            :form-field-props="$options.descriptionFormFieldProps"
+            :render-markdown-path="markdownPreviewPath"
+            :markdown-docs-path="markdownDocPath"
+            :disable-attachments="disableAttachments"
             :placeholder="$options.modal.nameDescriptionPlaceholder"
+            @input="setDescription"
           />
         </gl-form-group>
         <gl-form-group

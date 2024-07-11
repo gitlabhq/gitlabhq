@@ -6,7 +6,7 @@ RSpec.describe ObjectStorage::CDN::GoogleCDN,
   :use_clean_rails_memory_store_caching,
   :use_clean_rails_redis_caching,
   :sidekiq_inline,
-  feature_category: :build_artifacts do # the google cdn is currently only used by build artifacts
+  feature_category: :job_artifacts do # the google cdn is currently only used by build artifacts
   include StubRequests
 
   let(:key) { SecureRandom.hex }

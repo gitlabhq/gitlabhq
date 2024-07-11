@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker, feature_category: :build_artifacts do
+RSpec.describe Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker, feature_category: :job_artifacts do
   subject(:worker) { described_class.new }
 
   describe '#perform' do

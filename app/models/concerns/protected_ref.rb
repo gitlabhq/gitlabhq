@@ -13,10 +13,6 @@ module ProtectedRef
     delegate :matching, :matches?, :wildcard?, to: :ref_matcher
 
     scope :for_project, ->(project) { where(project: project) }
-
-    def allow_multiple?(type)
-      false
-    end
   end
 
   def commit
@@ -25,24 +21,11 @@ module ProtectedRef
 
   class_methods do
     def protected_ref_access_levels(*types)
+      protected_ref = model_name.singular
       types.each do |type|
-        # We need to set `inverse_of` to make sure the `belongs_to`-object is set
-        # when creating children using `accepts_nested_attributes_for`.
-        #
-        # If we don't `protected_branch` or `protected_tag` would be empty and
-        # `project` cannot be delegated to it, which in turn would cause validations
-        # to fail.
-        has_many :"#{type}_access_levels", inverse_of: self.model_name.singular
-
-        # Overridden in EE with `if: -> { false }` so this validation does not apply on an EE instance.
-        validates :"#{type}_access_levels",
-          length: {
-            is: 1,
-            message: "are restricted to a single instance per #{self.model_name.human}."
-          },
-          unless: -> { allow_multiple?(type) || importing? }
-
-        accepts_nested_attributes_for :"#{type}_access_levels", allow_destroy: true
+        access_levels_for_type = :"#{type}_access_levels"
+        has_many access_levels_for_type, inverse_of: protected_ref
+        accepts_nested_attributes_for access_levels_for_type, allow_destroy: true
       end
     end
 

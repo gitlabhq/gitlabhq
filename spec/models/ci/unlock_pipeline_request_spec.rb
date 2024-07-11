@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::UnlockPipelineRequest, :unlock_pipelines, :clean_gitlab_redis_shared_state, feature_category: :build_artifacts do
+RSpec.describe Ci::UnlockPipelineRequest, :unlock_pipelines, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   describe '.enqueue' do
     let(:pipeline_id) { 123 }
 

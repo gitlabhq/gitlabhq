@@ -161,7 +161,7 @@ To fix this, ensure the AWS role is assigned to the correct GitLab nodes.
 
 When using AWS authorization with Advanced search, the region must be valid.
 
-### No permissions for [indices:data/write/bulk]
+### No permissions for `[indices:data/write/bulk]`
 
 When using fine-grained access control with an IAM role or a role created using AWS OpenSearch Dashboards, you might
 encounter the following error:

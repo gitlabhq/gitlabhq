@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ObjectStorage::CDN, feature_category: :build_artifacts do
+RSpec.describe ObjectStorage::CDN, feature_category: :job_artifacts do
   let(:uploader_class) do
     Class.new(GitlabUploader) do
       include ObjectStorage::Concern
