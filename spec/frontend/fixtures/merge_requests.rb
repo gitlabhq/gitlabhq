@@ -67,7 +67,7 @@ RSpec
   it 'merge_requests/merge_request_with_single_assignee_feature.html' do
     stub_licensed_features(multiple_merge_request_assignees: false)
 
-    render_merge_request(merge_request)
+    render_merge_request_edit(merge_request)
   end
 
   it 'merge_requests/merge_request_of_current_user.html' do
@@ -232,6 +232,16 @@ RSpec
 
   def render_merge_request(merge_request)
     get :show, params: {
+      namespace_id: project.namespace.to_param,
+      project_id: project,
+      id: merge_request.to_param
+    }, format: :html
+
+    expect(response).to be_successful
+  end
+
+  def render_merge_request_edit(merge_request)
+    get :edit, params: {
       namespace_id: project.namespace.to_param,
       project_id: project,
       id: merge_request.to_param

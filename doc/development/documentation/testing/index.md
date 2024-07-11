@@ -210,12 +210,49 @@ and all updates should first be made there.
 On a regular basis, the changes made in `gitlab` project to the Vale and markdownlint configuration should be
 synchronized to the other projects. In each of the [supported projects](#supported-projects):
 
-1. Create a new branch.
-1. Copy the configuration files from the `gitlab` project into this branch, overwriting
-   the project's old configuration. Make sure no project-specific changes from the `gitlab`
-   project are included. For example, [`RelativeLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/RelativeLinks.yml)
-   is hard coded for specific projects.
-1. Create a merge request and submit it to a technical writer for review and merge.
+1. Create a new branch. Add `docs-` to the beginning or `-docs` to the end of the branch name. Some projects use this
+   convention to limit the jobs that run.
+1. Copy the configuration files from the `gitlab` project. For example, in the root directory of the project, run:
+
+   ```shell
+   # Copy markdownlint configuration file
+   cp ../gitlab/.markdownlint-cli2.yaml .
+   # Copy Vale configuration files for a project with documentation stored in 'docs' directory
+   cp -r ../gitlab/doc/.vale docs
+   ```
+
+1. Review the diff created for `.markdownlint-cli2.yaml`. For example, run:
+
+   ```shell
+   git diff .markdownlint-cli2.yaml
+   ```
+
+1. Remove any changes that aren't required. For example, `customRules` is only used in the `gitlab` project.
+1. Review the diffs created for the Vale configuration. For example, run:
+
+   ```shell
+   git diff docs
+   ```
+
+1. Remove unneeded changes to `RelativeLinks.yml`. This rule is specific to each project.
+1. Remove any `.tmpl` files. These files are only used in the `gitlab` project.
+1. Run `markdownlint-cli2` to check for any violations of the new rules. For example:
+
+   ```shell
+   markdownlint-cli2 docs/**/*.md
+   ```
+
+1. Run Vale to check for any violations of the new rules. For example:
+
+   ```shell
+   vale --minAlertLevel error docs
+   ```
+
+1. Commit the changes to the new branch. Some projects require
+   [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) so check the contributing information for the
+   project before committing.
+
+1. Submit a merge request for review.
 
 ## Update linting images
 

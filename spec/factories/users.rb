@@ -133,6 +133,10 @@ FactoryBot.define do
       user_type { :placeholder }
     end
 
+    trait :import_user do
+      user_type { :import_user }
+    end
+
     trait :external do
       external { true }
     end

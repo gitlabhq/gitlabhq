@@ -43,10 +43,9 @@ describe('~/projects/pipelines/charts/components/pipeline_charts.vue', () => {
 
       expect(list.exists()).toBe(true);
       expect(list.props('counts')).toEqual({
-        total: 34,
-        success: 23,
-        failed: 1,
-        successRatio: (23 / (23 + 1)) * 100,
+        total: 40,
+        successRatio: (23 / 40) * 100,
+        failureRatio: (1 / 40) * 100,
       });
     });
 

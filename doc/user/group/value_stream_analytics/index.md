@@ -77,6 +77,8 @@ Value streams are container objects for the stages. You can have multiple value 
 
 ### Value stream stage events
 
+> - Merge request first reviewer assigned event [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466383) in GitLab 17.2. Reviewer assignment events in merge requests created or updated prior to GitLab 17.2 are not available for reporting.
+
 Events are the smallest building blocks of the value stream analytics feature. A stage consists of a start event and an end event.
 
 The following stage events are available:
@@ -95,6 +97,7 @@ The following stage events are available:
 - MR created
 - MR first commit time
 - MR first assigned
+- MR first reviewer assigned
 - MR first deployed
 - MR label added
 - MR label removed

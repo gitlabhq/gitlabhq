@@ -6968,7 +6968,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context "with bot users" do
-        %i[project_bot service_account security_policy_bot].each do |user_type|
+        %i[project_bot service_account security_policy_bot import_user].each do |user_type|
           context "when user is #{user_type}" do
             let(:user) { build(:user, user_type) }
 
@@ -8128,6 +8128,14 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when user is a security_policy bot user' do
       before do
         user.update!(user_type: 'security_policy_bot')
+      end
+
+      it_behaves_like 'does not require password to be present'
+    end
+
+    context 'when user is an import user' do
+      before do
+        user.update!(user_type: 'import_user')
       end
 
       it_behaves_like 'does not require password to be present'

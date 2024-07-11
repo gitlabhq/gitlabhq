@@ -1227,8 +1227,16 @@ RSpec.describe GroupPolicy, feature_category: :system_access do
         it_behaves_like 'disallows all dependency proxy access'
       end
 
+      context 'import user' do
+        let_it_be(:import_user) { create(:user, user_type: :import_user, developer_of: group) }
+
+        subject { described_class.new(import_user, group) }
+
+        it_behaves_like 'disallows all dependency proxy access'
+      end
+
       context 'all other user types' do
-        User::USER_TYPES.except(:human, :project_bot, :placeholder).each_value do |user_type|
+        User::USER_TYPES.except(:human, :project_bot, :placeholder, :import_user).each_value do |user_type|
           context "with user_type #{user_type}" do
             before do
               current_user.update!(user_type: user_type)

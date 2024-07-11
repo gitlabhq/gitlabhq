@@ -1,53 +1,11 @@
 ---
-creation-date: "2024-05-07"
-authors: [ "@fabiopitino" ]
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/decisions/001_modular_application_domain/'
+remove_date: '2025-07-08'
 ---
 
-# Modular Monolith ADR 001: Modularize the application domain
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/decisions/001_modular_application_domain/).
 
-## Context
-
-Before we modularize a codebase we first needed to define how we are going to divide it.
-
-## Decision
-
-We start by focusing on the application domain (backend business logic) leaving the
-application adapters (Web controllers and views, REST/GraphQL endpoints) outside the
-scope of the modularization initially.
-
-The reasons for this are:
-
-1. Code in application adapters may not always align with a specific
-   domain. For example: a project settings endpoint or a merge request page contain
-   references to many domains.
-1. There was a need to run separate Rails nodes for the SaaS architecture using different
-   profiles in order to save on memory.
-   For example: on SaaS we wanted to be able to spin up more Sidekiq nodes without the need
-   to load the whole Rails application. The assumption is that for running Sidekiq we don't
-   need ActionCable, REST endpoints, GraphQL mutations or Rails views.
-   We only need the application domain and infrastructure code.
-   This could still be true even with the introduction of [Cells](../../cells/index.md) but
-   we need to re-evaluate this assumption.
-1. Keep the scope and effort smaller. Tackling only domain code is easier to understand than
-   the complexity of how to breakdown the application adapters and all their edge cases.
-
-The decision to scope out application adapters is not final and we decided to defer
-it to later.
-
-Finally, the infrastructure code containing technical concerns (typically the `lib/`) will
-be part of a common "platform" module that every domain module will depend on in order to function.
-
-The "platform" module can be broken down into independent libraries extracted as gems.
-
-## Consequences
-
-We focus on modularizing business logic primarily we simplify the rules and guidelines for
-engineers. We can apply the same set of patterns across modules.
-
-## Alternatives
-
-We looked into including application adapters to the modularization effort but noticed that:
-
-1. Modularizing adapters is more delicate as we need to preserve user-facing dependencies like
-   routes.
-1. The size of the adapters code is much smaller than the whole application domain.
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

@@ -15,8 +15,13 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
 
   let(:base_params) { { note: 'Test' } }
   let(:params) { {} }
+  let(:executing_user) { nil }
 
-  subject(:new_note) { described_class.new(project, user, base_params.merge(params)).execute }
+  subject(:new_note) do
+    described_class
+      .new(project, user, base_params.merge(params))
+      .execute(executing_user: executing_user)
+  end
 
   describe '#execute' do
     context 'when in_reply_to_discussion_id is specified' do
@@ -62,6 +67,25 @@ RSpec.describe Notes::BuildService, feature_category: :team_planning do
 
         it 'sets an error' do
           expect(new_note.errors[:base]).to include('Discussion to reply to cannot be found')
+        end
+
+        context 'when executing_user is specified' do
+          context 'and executing_user has access to discussion' do
+            let(:executing_user) { author }
+
+            it 'sets the note up to be in reply to that note' do
+              expect(new_note).to be_valid
+              expect(new_note.in_reply_to?(note)).to be_truthy
+            end
+          end
+
+          context 'and executing_user also has no access to discussion' do
+            let(:executing_user) { other_user }
+
+            it 'sets an error' do
+              expect(new_note.errors[:base]).to include('Discussion to reply to cannot be found')
+            end
+          end
         end
       end
 

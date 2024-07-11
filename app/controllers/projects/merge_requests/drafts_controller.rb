@@ -57,7 +57,7 @@ class Projects::MergeRequests::DraftsController < Projects::MergeRequests::Appli
   end
 
   def publish
-    result = DraftNotes::PublishService.new(merge_request, current_user).execute(draft_note(allow_nil: true))
+    result = DraftNotes::PublishService.new(merge_request, current_user).execute(draft: draft_note(allow_nil: true))
 
     if create_note_params[:note]
       ::Notes::CreateService.new(@project, current_user, create_note_params).execute

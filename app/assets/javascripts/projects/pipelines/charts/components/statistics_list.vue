@@ -4,7 +4,7 @@ import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { SUPPORTED_FORMATS, getFormatter } from '~/lib/utils/unit_format';
 import { s__, formatNumber } from '~/locale';
 
-const defaultPrecision = 2;
+const defaultPrecision = 0;
 
 export default {
   components: {
@@ -38,20 +38,15 @@ export default {
           value: formatNumber(this.counts.total),
         },
         {
-          label: s__('PipelineCharts|Success ratio'),
+          label: s__('PipelineCharts|Failure rate'),
+          identifier: 'failure-ratio',
+          value: formatPercent(this.counts.failureRatio, defaultPrecision),
+          link: this.failedPipelinesLink,
+        },
+        {
+          label: s__('PipelineCharts|Success rate'),
           identifier: 'success-ratio',
           value: formatPercent(this.counts.successRatio, defaultPrecision),
-        },
-        {
-          label: s__('PipelineCharts|Successful pipelines'),
-          identifier: 'successful-pipelines',
-          value: formatNumber(this.counts.success),
-        },
-        {
-          label: s__('PipelineCharts|Failed pipelines'),
-          identifier: 'failed-pipelines',
-          value: formatNumber(this.counts.failed),
-          link: this.failedPipelinesLink,
         },
       ];
     },
@@ -74,9 +69,13 @@ export default {
         :should-animate="true"
         use-delimiters
       />
-      <gl-link v-if="shouldDisplayLink(statistic)" class="gl-p-2" :href="statistic.link">{{
-        s__('Pipeline|See details')
-      }}</gl-link>
+      <gl-link
+        v-if="shouldDisplayLink(statistic)"
+        class="gl-p-2"
+        :href="statistic.link"
+        data-event-tracking="click_view_all_link_in_pipeline_analytics"
+        >{{ s__('Pipeline|View all') }}</gl-link
+      >
     </div>
   </div>
 </template>

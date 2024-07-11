@@ -532,6 +532,7 @@ class Project < ApplicationRecord
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :jira_dvcs_server_last_sync_at, to: :feature_usage
   delegate :last_pipeline, to: :commit, allow_nil: true
+  delegate :import_user, to: :root_ancestor
 
   with_options to: :team do
     delegate :members, prefix: true

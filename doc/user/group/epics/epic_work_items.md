@@ -54,6 +54,11 @@ Because this is an experimental feature,
 | `work_items_rolledup_dates`                   | Calculates the start and due dates in a hierarchy for work items.                                        | Group | **Required** |
 | `epic_and_work_item_associations_unification` | Delegates other epic and work item associations.                                                         | Group | **Required** |
 
+## Feedback
+
+If you run into any issue while trying out this change, you can use
+[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/463598) to provide more details.
+
 ## Related topics
 
 - [Work items development](../../../development/work_items.md)

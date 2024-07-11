@@ -16242,6 +16242,9 @@ msgstr ""
 msgid "CycleAnalyticsEvent|Merge request merged"
 msgstr ""
 
+msgid "CycleAnalyticsEvent|Merge request reviewer first assigned"
+msgstr ""
+
 msgid "CycleAnalyticsStage|Code"
 msgstr ""
 
@@ -20997,9 +21000,6 @@ msgid "Error loading viewer"
 msgstr ""
 
 msgid "Error occurred when fetching sidebar data"
-msgstr ""
-
-msgid "Error occurred when saving assignees"
 msgstr ""
 
 msgid "Error occurred when saving reviewers"
@@ -32973,9 +32973,6 @@ msgstr ""
 msgid "Merges this merge request immediately."
 msgstr ""
 
-msgid "Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{docsLinkStart}documentation%{docsLinkEnd} for more information."
-msgstr ""
-
 msgid "Mermaid diagram"
 msgstr ""
 
@@ -38457,13 +38454,10 @@ msgstr ""
 msgid "PipelineCharts|CI/CD Analytics"
 msgstr ""
 
-msgid "PipelineCharts|Failed pipelines"
+msgid "PipelineCharts|Failure rate"
 msgstr ""
 
-msgid "PipelineCharts|Success ratio"
-msgstr ""
-
-msgid "PipelineCharts|Successful pipelines"
+msgid "PipelineCharts|Success rate"
 msgstr ""
 
 msgid "PipelineCharts|There was an error parsing the data for the charts."
@@ -39312,9 +39306,6 @@ msgstr ""
 msgid "Pipeline|Running"
 msgstr ""
 
-msgid "Pipeline|See details"
-msgstr ""
-
 msgid "Pipeline|Skipped"
 msgstr ""
 
@@ -39379,6 +39370,9 @@ msgid "Pipeline|Variable"
 msgstr ""
 
 msgid "Pipeline|Variables"
+msgstr ""
+
+msgid "Pipeline|View all"
 msgstr ""
 
 msgid "Pipeline|View commit"
@@ -51371,6 +51365,9 @@ msgstr ""
 msgid "Status checks must pass."
 msgstr ""
 
+msgid "Status not supported"
+msgstr ""
+
 msgid "Status was retried."
 msgstr ""
 
@@ -60586,10 +60583,16 @@ msgstr ""
 msgid "Workspaces"
 msgstr ""
 
+msgid "Workspaces|%{workspaceName} has been terminated."
+msgstr ""
+
 msgid "Workspaces|A devfile defines the development environment for a GitLab project. A workspace must have a valid devfile in the Git reference you use."
 msgstr ""
 
 msgid "Workspaces|A workspace is a virtual sandbox environment for your code in GitLab."
+msgstr ""
+
+msgid "Workspaces|Active"
 msgstr ""
 
 msgid "Workspaces|Agents connect workspaces to your Kubernetes cluster. To create a workspace with an allowed agent, group members must have at least the Developer role."
@@ -60680,6 +60683,12 @@ msgid "Workspaces|Learn more."
 msgstr ""
 
 msgid "Workspaces|New workspace"
+msgstr ""
+
+msgid "Workspaces|No active workspaces. Create a workspace to get started."
+msgstr ""
+
+msgid "Workspaces|No terminated workspaces to show."
 msgstr ""
 
 msgid "Workspaces|Path to devfile"
@@ -63506,10 +63515,13 @@ msgstr ""
 msgid "mrWidget|Merged by"
 msgstr ""
 
-msgid "mrWidget|Merging immediately is not recommended. The merged changes could cause pipeline failures on the target branch, and the changes will not be validated against the commits being added by the merge requests currently in the merge train. Read the %{linkStart}documentation%{linkEnd} for more information."
+msgid "mrWidget|Merging immediately is not recommended because your changes won't be validated by the merge train, and any running merge train pipelines will be restarted. %{docsLinkStart}What are the risks?%{docsLinkEnd}"
 msgstr ""
 
-msgid "mrWidget|Merging immediately isn't recommended as it may negatively impact the existing merge train. Read the %{linkStart}documentation%{linkEnd} for more information."
+msgid "mrWidget|Merging immediately is not recommended because your changes won't be validated by the merge train, and any running merge train pipelines will be restarted. %{docsLinkStart}What are the risks?%{docsLinkEnd}."
+msgstr ""
+
+msgid "mrWidget|Merging immediately is not recommended. The merged changes could cause pipeline failures on the target branch, and the changes will not be validated against the commits being added by the merge requests currently in the merge train. Read the %{linkStart}documentation%{linkEnd} for more information."
 msgstr ""
 
 msgid "mrWidget|Migrate to GitLab CI/CD from Jenkins"

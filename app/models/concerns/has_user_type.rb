@@ -20,7 +20,8 @@ module HasUserType
     service_account: 13,
     llm_bot: 14,
     placeholder: 15,
-    duo_code_review_bot: 16
+    duo_code_review_bot: 16,
+    import_user: 17
   }.with_indifferent_access.freeze
 
   BOT_USER_TYPES = %w[

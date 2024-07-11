@@ -481,35 +481,6 @@ RSpec.describe IssuablesHelper, feature_category: :team_planning do
     end
   end
 
-  describe '#assignee_sidebar_data' do
-    let(:user) { create(:user) }
-    let(:merge_request) { nil }
-
-    subject { helper.assignee_sidebar_data(user, merge_request: merge_request) }
-
-    it 'returns hash of assignee data' do
-      is_expected.to eql({
-        avatar_url: user.avatar_url,
-        name: user.name,
-        username: user.username
-      })
-    end
-
-    context 'with merge_request' do
-      let(:merge_request) { build_stubbed(:merge_request) }
-
-      where(can_merge: [true, false])
-
-      with_them do
-        before do
-          allow(merge_request).to receive(:can_be_merged_by?).and_return(can_merge)
-        end
-
-        it { is_expected.to include({ can_merge: can_merge }) }
-      end
-    end
-  end
-
   describe '#issuable_squash_option?' do
     using RSpec::Parameterized::TableSyntax
 

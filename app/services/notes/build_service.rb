@@ -2,9 +2,10 @@
 
 module Notes
   class BuildService < ::BaseService
-    def execute
+    def execute(executing_user: nil)
       in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
       external_author = params.delete(:external_author)
+      executing_user ||= current_user
 
       discussion = nil
 
@@ -16,7 +17,7 @@ module Notes
       if in_reply_to_discussion_id.present?
         discussion = find_discussion(in_reply_to_discussion_id)
 
-        return discussion_not_found unless discussion && can?(current_user, :create_note, discussion.noteable)
+        return discussion_not_found unless discussion && can?(executing_user, :create_note, discussion.noteable)
 
         discussion = discussion.convert_to_discussion! if discussion.can_convert_to_discussion?
 

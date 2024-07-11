@@ -30,7 +30,7 @@ module API
       def publish_draft_note(params:)
         ::DraftNotes::PublishService
           .new(merge_request(params: params), current_user)
-          .execute(get_draft_note(params: params))
+          .execute(draft: get_draft_note(params: params))
       end
 
       def publish_draft_notes(params:)

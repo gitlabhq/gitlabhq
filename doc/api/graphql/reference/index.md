@@ -36424,6 +36424,7 @@ Stage event identifiers.
 | <a id="valuestreamstageeventmerge_request_last_build_started"></a>`MERGE_REQUEST_LAST_BUILD_STARTED` | Merge request last build started event. |
 | <a id="valuestreamstageeventmerge_request_last_edited"></a>`MERGE_REQUEST_LAST_EDITED` | Merge request last edited event. |
 | <a id="valuestreamstageeventmerge_request_merged"></a>`MERGE_REQUEST_MERGED` | Merge request merged event. |
+| <a id="valuestreamstageeventmerge_request_reviewer_first_assigned"></a>`MERGE_REQUEST_REVIEWER_FIRST_ASSIGNED` | Merge request reviewer first assigned event. |
 | <a id="valuestreamstageeventplan_stage_start"></a>`PLAN_STAGE_START` | Plan stage start event. |
 
 ### `VerificationStateEnum`

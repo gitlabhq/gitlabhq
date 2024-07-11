@@ -45,7 +45,7 @@ Prerequisites:
   - Must be between 2 and 255 characters in length.
   - Must only include non-accented letters, digits, `_`, `-`, and `.`.
   - Must not:
-    - Start with `-`.
+    - Start with `_`, `-`, or `.`.
     - Contain emoji.
     - End with `.` or `.<reserved file extension>`, for example `jon.png`, `jon.git` or `jon.atom`. However,
       `jonpng` is valid.

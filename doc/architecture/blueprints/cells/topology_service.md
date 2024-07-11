@@ -432,7 +432,7 @@ sequenceDiagram
 
 [Spanner](https://cloud.google.com/spanner) will be a new data store introduced into the GitLab Stack, the reasons we are going with Spanner are:
 
-1. It supports Multi-Regional read-write access with a lot less operations when compared to PostgreSQL helping with out [regional DR](../disaster_recovery/index.md)
+1. It supports Multi-Regional read-write access with a lot less operations when compared to PostgreSQL helping with out [regional DR](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/disaster_recovery/)
 1. The data is read heavy not write heavy.
 1. Spanner provides [99.999%](https://cloud.google.com/spanner/sla) SLA when using Multi-Regional deployments.
 1. Provides consistency whilst still being globally distributed.
@@ -547,7 +547,7 @@ However looking at the [performance documentation](https://cloud.google.com/span
 
 ## Disaster Recovery
 
-We must stay in our [Disaster Recovery targets](../disaster_recovery/index.md#dr-implementation-targets) for the Topology Service.
+We must stay in our [Disaster Recovery targets](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/disaster_recovery/#dr-implementation-targets) for the Topology Service.
 Ideally, we need smaller windows for recovery because this service is in the critical path.
 
 The service is stateless, which should be much easier to deploy to multiple regions using [runway](https://gitlab.com/groups/gitlab-com/gl-infra/-/epics/1206).

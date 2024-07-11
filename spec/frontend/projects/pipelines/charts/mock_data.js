@@ -3,6 +3,7 @@ export const counts = {
   success: 20000,
   total: 40000,
   successRatio: 50,
+  failureRatio: 50,
   totalDuration: 116158,
 };
 
@@ -49,7 +50,7 @@ export const mockPipelineCount = {
   data: {
     project: {
       id: '1',
-      totalPipelines: { count: 34, __typename: 'PipelineConnection' },
+      totalPipelines: { count: 40, __typename: 'PipelineConnection' },
       successfulPipelines: { count: 23, __typename: 'PipelineConnection' },
       failedPipelines: { count: 1, __typename: 'PipelineConnection' },
       totalPipelineDuration: 2471,

@@ -268,6 +268,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
 
   has_many :bulk_imports
+  has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_one  :trusted_with_spam_attribute, -> { UserCustomAttribute.trusted_with_spam }, class_name: 'UserCustomAttribute'
@@ -2263,7 +2264,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def terms_accepted?
-    return true if project_bot? || service_account? || security_policy_bot?
+    return true if project_bot? || service_account? || security_policy_bot? || import_user?
 
     if Feature.enabled?(:enforce_acceptance_of_changed_terms)
       !!ApplicationSetting::Term.latest&.accepted_by_user?(self)

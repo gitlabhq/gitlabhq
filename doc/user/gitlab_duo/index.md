@@ -56,26 +56,6 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://youtu.be/ds7SG1wgcVM)
 - [View documentation](../project/repository/code_suggestions/index.md).
 
-### Vulnerability resolution
-
-DETAILS:
-**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md) add-on
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-- Help resolve a vulnerability by generating a merge request that addresses it.
-- LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
-- [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
-
-### Vulnerability explanation
-
-DETAILS:
-**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-- Helps you understand vulnerabilities, how they can be exploited, and how to fix them.
-- LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
-- [View documentation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
-
 ### Code explanation in the IDE
 
 DETAILS:
@@ -117,6 +97,26 @@ DETAILS:
 - Helps you merge more quickly by generating meaningful commit messages.
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison).
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message).
+
+### Vulnerability explanation
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+- Helps you understand vulnerabilities, how they can be exploited, and how to fix them.
+- LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
+- [View documentation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
+
+### Vulnerability resolution
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md) add-on
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+- Help resolve a vulnerability by generating a merge request that addresses it.
+- LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
+- [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
 
 ## Beta features
 
