@@ -19,6 +19,9 @@ RSpec.shared_examples 'internal event tracking' do
       matching_rules = definition.event_selection_rules.map do |event_selection_rule|
         next unless event_selection_rule.name == event
 
+        # Only include unique metrics if the unique_identifier_name is present in the spec
+        next if event_selection_rule.unique_identifier_name && !try(event_selection_rule.unique_identifier_name)
+
         event_selection_rule.filter.all? do |property_name, value|
           try(property_name) == value
         end

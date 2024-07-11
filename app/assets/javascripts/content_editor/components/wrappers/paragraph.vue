@@ -27,7 +27,12 @@ export default {
       insertTrailingBreak: false,
     };
   },
-  mounted() {
+  computed: {
+    hasQuickActionExplanation() {
+      return this.hasQuickAction && this.quickActionExplanation;
+    },
+  },
+  async mounted() {
     this.updateQuickActionExplanation = debounce(
       this.updateQuickActionExplanation,
       DEFAULT_DEBOUNCE_AND_THROTTLE_MS,
@@ -35,9 +40,7 @@ export default {
   },
   methods: {
     async updateNodeView() {
-      const isRootElement =
-        this.$refs.nodeViewWrapper.$el.parentElement.classList.contains('ProseMirror');
-
+      const isRootElement = this.$el.parentElement?.classList.contains('ProseMirror');
       const content = this.contentEditor.serializer.serialize({ doc: this.node.content }) || '';
 
       this.hasQuickAction = isRootElement && quickActionRegex.test(content);
@@ -47,7 +50,7 @@ export default {
     },
 
     async updateQuickActionExplanation(content) {
-      this.quickActionExplanation = await this.contentEditor.explainQuickAction(content);
+      this.quickActionExplanation = await this.contentEditor.explainQuickAction(content.trim());
     },
   },
 };
@@ -55,18 +58,13 @@ export default {
 <template>
   <editor-state-observer @transaction="updateNodeView">
     <node-view-wrapper
-      ref="nodeViewWrapper"
       as="p"
-      :class="{ 'gl-flex gl-align-items-baseline': quickActionExplanation }"
+      :class="{ 'gl-flex gl-align-items-baseline': hasQuickActionExplanation }"
     >
-      <node-view-content
-        ref="nodeViewContent"
-        as="span"
-        :class="{ '!gl-whitespace-nowrap': quickActionExplanation }"
-      />
+      <node-view-content ref="nodeViewContent" as="span" />
       <span
-        v-if="quickActionExplanation"
-        class="gl-text-sm gl-text-secondary gl-italic gl-flex-shrink-0"
+        v-if="hasQuickActionExplanation"
+        class="gl-text-sm gl-text-secondary gl-italic"
         contenteditable="false"
       >
         &nbsp;&middot; {{ quickActionExplanation }}</span

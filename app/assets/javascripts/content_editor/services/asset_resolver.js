@@ -1,4 +1,5 @@
 import { memoize } from 'lodash';
+import { n__ } from '~/locale';
 
 const parser = new DOMParser();
 
@@ -43,6 +44,19 @@ export default class AssetResolver {
 
     const { body } = parser.parseFromString(html, 'text/html') || {};
     const p = body.querySelectorAll('p');
+
+    const labelsLength = p[0]?.querySelectorAll('.gl-label').length;
+    if (labelsLength >= 1) {
+      if (text.startsWith('/label')) return n__('Adds a label.', 'Adds %d labels.', labelsLength);
+      if (text.startsWith('/unlabel'))
+        return n__('Removes a label.', 'Removes %d labels.', labelsLength);
+      if (text.startsWith('/relabel'))
+        return n__(
+          'Replaces all labels with %d label.',
+          'Replaces all labels with %d labels.',
+          labelsLength,
+        );
+    }
 
     return p[0]?.textContent;
   });

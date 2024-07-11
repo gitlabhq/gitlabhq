@@ -5,7 +5,7 @@ import $ from 'jquery';
 import { mapActions, mapGetters, mapState } from 'vuex';
 import { createAlert } from '~/alert';
 import { STATUS_CLOSED, STATUS_MERGED, STATUS_OPEN, STATUS_REOPENED } from '~/issues/constants';
-import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
+import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import {
   capitalizeFirstCharacter,
   convertToCamelCase,
@@ -245,11 +245,9 @@ export default {
           noteData.data.note.type = constants.DISCUSSION_NOTE;
         }
 
-        if (containsSensitiveToken(this.note)) {
-          const confirmed = await confirmSensitiveAction();
-          if (!confirmed) {
-            return;
-          }
+        const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: this.note });
+        if (!confirmSubmit) {
+          return;
         }
 
         this.note = ''; // Empty textarea while being requested. Repopulate in catch

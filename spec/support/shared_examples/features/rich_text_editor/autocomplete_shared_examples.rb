@@ -94,7 +94,7 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
         expect(find(suggestions_dropdown)).to have_text('My Cool Label')
         send_keys :enter
 
-        expect(find(content_editor_testid)).to have_text('Adds My Cool Label label.')
+        expect(find(content_editor_testid)).to have_text('Adds a label.')
       end
 
       it 'adds the correct prefix and explanation for /milestone' do

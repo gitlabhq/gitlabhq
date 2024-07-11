@@ -51,6 +51,8 @@ module Gitlab
 
         def possible_controller_labels
           all_controller_labels.select do |labelset|
+            next false if uninitialized_endpoints.member?(labelset[:endpoint_id])
+
             if known_git_endpoints.include?(labelset[:endpoint_id])
               Gitlab::Metrics::Environment.git?
             else
@@ -61,6 +63,8 @@ module Gitlab
 
         def possible_api_labels
           all_api_labels.select do |labelset|
+            next false if uninitialized_endpoints.member?(labelset[:endpoint_id])
+
             if known_git_endpoints.include?(labelset[:endpoint_id])
               Gitlab::Metrics::Environment.git?
             else
@@ -115,6 +119,12 @@ module Gitlab
             "Repositories::LfsStorageController#upload_authorize",
             "Repositories::LfsStorageController#upload_finalize"
           ]
+        end
+
+        def uninitialized_endpoints
+          @uninitialized_endpoints ||= Set.new(YAML.safe_load(
+            File.read(Rails.root.join("lib/gitlab/metrics/rails_slis_uninitialized_endpoints.yml"))
+          ))
         end
       end
     end

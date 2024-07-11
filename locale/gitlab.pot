@@ -2996,6 +2996,9 @@ msgstr ""
 msgid "Add %{child_ref} as a child item."
 msgstr ""
 
+msgid "Add %{contentType}"
+msgstr ""
+
 msgid "Add %{linkStart}assets%{linkEnd} to your Release. GitLab automatically includes read-only assets, like source code and release evidence."
 msgstr ""
 
@@ -3427,6 +3430,11 @@ msgstr ""
 
 msgid "Adds a Zoom meeting."
 msgstr ""
+
+msgid "Adds a label."
+msgid_plural "Adds %d labels."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Adds a resource link"
 msgstr ""
@@ -6912,9 +6920,6 @@ msgid "Archived in this version"
 msgstr ""
 
 msgid "Archiving the project makes it entirely read-only. It is hidden from the dashboard and doesn't display in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
-msgstr ""
-
-msgid "Are you ABSOLUTELY SURE you wish to delete this group?"
 msgstr ""
 
 msgid "Are you absolutely sure?"
@@ -17451,6 +17456,9 @@ msgstr ""
 msgid "Delete group"
 msgstr ""
 
+msgid "Delete group immediately"
+msgstr ""
+
 msgid "Delete group immediately?"
 msgstr ""
 
@@ -17473,6 +17481,9 @@ msgid "Delete pipeline"
 msgstr ""
 
 msgid "Delete project"
+msgstr ""
+
+msgid "Delete project immediately"
 msgstr ""
 
 msgid "Delete release"
@@ -17517,9 +17528,6 @@ msgid "Delete this attachment"
 msgstr ""
 
 msgid "Delete this epic and release all child items?"
-msgstr ""
-
-msgid "Delete this project"
 msgstr ""
 
 msgid "Delete user list"
@@ -17582,9 +17590,6 @@ msgstr ""
 msgid "Deleted commits:"
 msgstr ""
 
-msgid "Deleted group can not be restored!"
-msgstr ""
-
 msgid "Deleted projects cannot be restored!"
 msgstr ""
 
@@ -17604,9 +17609,6 @@ msgid "Deleting protected branches is blocked by security policies"
 msgstr ""
 
 msgid "Deleting the project will delete its repository and all related resources, including issues and merge requests."
-msgstr ""
-
-msgid "Deleting this group also deletes all child projects, including archived projects, and their resources."
 msgstr ""
 
 msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
@@ -19624,6 +19626,9 @@ msgid "Each project can also have an issue tracker and a wiki."
 msgstr ""
 
 msgid "Edit"
+msgstr ""
+
+msgid "Edit %{contentType}"
 msgstr ""
 
 msgid "Edit %{name}"
@@ -23814,7 +23819,7 @@ msgstr ""
 msgid "GitLab username"
 msgstr ""
 
-msgid "GitLab uses %{linkStart}Sidekiq%{linkEnd} to process background jobs"
+msgid "GitLab uses %{link_start}Sidekiq%{link_end} to process background jobs"
 msgstr ""
 
 msgid "GitLab version"
@@ -38296,9 +38301,6 @@ msgstr ""
 msgid "Permalink"
 msgstr ""
 
-msgid "Permanently delete group"
-msgstr ""
-
 msgid "Permissions"
 msgstr ""
 
@@ -44144,6 +44146,11 @@ msgstr ""
 msgid "Removes %{reviewer_text} %{reviewer_references}."
 msgstr ""
 
+msgid "Removes a label."
+msgid_plural "Removes %d labels."
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "Removes all labels."
 msgstr ""
 
@@ -44245,6 +44252,11 @@ msgstr ""
 
 msgid "Replaced all labels with %{label_references} %{label_text}."
 msgstr ""
+
+msgid "Replaces all labels with %d label."
+msgid_plural "Replaces all labels with %d labels."
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Replaces the clone URL root."
 msgstr ""
@@ -47262,14 +47274,18 @@ msgstr ""
 msgid "SecretDetection|Secret push protection is enabled"
 msgstr ""
 
-msgid "SecretDetection|This comment appears to have a token in it. Are you sure you want to add it?"
-msgstr ""
-
-msgid "SecretDetection|This description appears to have a token in it. Are you sure you want to add it?"
-msgstr ""
+msgid "SecretDetection|This %{contentType} appears to have the following secret in it. Are you sure you want to add this %{contentType}?"
+msgid_plural "SecretDetection|This %{contentType} appears to have the following secrets in it. Are you sure you want to add this %{contentType}?"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "SecretDetection|This feature has been disabled at the instance level. Please reach out to your instance administrator to request activation."
 msgstr ""
+
+msgid "SecretDetection|Warning: Potential secret detected"
+msgid_plural "SecretDetection|Warning: Potential secrets detected"
+msgstr[0] ""
+msgstr[1] ""
 
 msgid "Secrets"
 msgstr ""
@@ -54015,16 +54031,16 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified."
 msgstr ""
 
-msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this project contains. %{strongOpen}There is no going back.%{strongClose}"
+msgid "This action will permanently delete this group, including its subgroups and projects."
 msgstr ""
 
-msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} on %{date} and everything this project contains."
+msgid "This action will permanently delete this project, including all its resources."
 msgstr ""
 
-msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} on %{date} and everything this project contains. %{strongOpen}There is no going back.%{strongClose}"
+msgid "This action will place this group, including its subgroups and projects, in a pending deletion state for %{deletion_delayed_period} days, and delete it permanently on %{date}."
 msgstr ""
 
-msgid "This action will %{strongOpen}permanently remove%{strongClose} %{codeOpen}%{group}%{codeClose} %{strongOpen}immediately%{strongClose}."
+msgid "This action will place this project, including all its resources, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{strongOpen}%{date}%{strongClose}."
 msgstr ""
 
 msgid "This also resolves all related threads"
@@ -54219,9 +54235,6 @@ msgstr ""
 msgid "This group"
 msgstr ""
 
-msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_delayed_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
-msgstr ""
-
 msgid "This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -54250,6 +54263,9 @@ msgid "This group is linked to a subscription"
 msgstr ""
 
 msgid "This group is not permitted to create compliance violations"
+msgstr ""
+
+msgid "This group is scheduled for deletion on %{date}. This action will permanently delete this group, including its subgroups and projects, %{strong_open}immediately%{strong_close}. This action cannot be undone."
 msgstr ""
 
 msgid "This group is scheduled to be deleted on %{date}. You are about to delete this group, including its subgroups and projects, immediately. This action cannot be undone."
@@ -54561,6 +54577,9 @@ msgid "This project is not subscribed to any project pipelines."
 msgstr ""
 
 msgid "This project is public. Non-members can guess the Service Desk email address, because it contains the group and project name. %{linkStart}How do I create a custom email address?%{linkEnd}"
+msgstr ""
+
+msgid "This project is scheduled for deletion on %{strongOpen}%{date}%{strongClose}. This action will permanently delete this project, including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone."
 msgstr ""
 
 msgid "This project manages its dependencies using %{strong_start}%{manager_name}%{strong_end}"
@@ -59761,6 +59780,9 @@ msgid "Who will be using this GitLab trial?"
 msgstr ""
 
 msgid "Who will be using this group?"
+msgstr ""
+
+msgid "Why am I seeing this warning?"
 msgstr ""
 
 msgid "Why are you signing up? (optional)"

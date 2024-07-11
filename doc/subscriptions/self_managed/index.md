@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Purchase
+group: Subscription Management
 description: Billable users, renewal and upgrade info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -144,7 +144,7 @@ When your instance is activated, and data is synchronized, the following process
 - Subscription updates, such as adding more seats or upgrading a GitLab tier.
 
 At approximately 03:00 UTC, a daily synchronization job sends subscription data to the Customers
-Portal. For this reason, updates and renewals may not apply immediately.
+Portal. For this reason, updates and renewals might not apply immediately.
 
 The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port
 `443`. If the job fails, it retries up to 12 times over approximately 17 hours.
@@ -216,7 +216,13 @@ Example of a license sync request:
 }
 ```
 
-### Manually synchronize your subscription details
+### Manually synchronize subscription data
+
+Prerequisites:
+
+- GitLab Enterprise Edition (EE).
+- Connection to the internet, and must not have an offline environment.
+- [Activated](../../administration/license.md) your instance with an activation code.
 
 You can manually synchronize your subscription details at any time.
 

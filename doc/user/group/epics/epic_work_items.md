@@ -53,7 +53,6 @@ Because this is an experimental feature,
 | `synced_epic_work_item_editable`              | Allows editing epic work items when they have a legacy epic.                                             | Group | **Required** |
 | `work_items_rolledup_dates`                   | Calculates the start and due dates in a hierarchy for work items.                                        | Group | **Required** |
 | `epic_and_work_item_associations_unification` | Delegates other epic and work item associations.                                                         | Group | **Required** |
-| `epic_and_work_item_notes_unification`        | Delegates notes between epics and work item.                                                             | Group | **Required** |
 
 ## Related topics
 

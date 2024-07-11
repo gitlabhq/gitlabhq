@@ -14,7 +14,7 @@ import { mergeUrlParams, getLocationHash, getParameterValues } from '~/lib/utils
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
-import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
+import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { isCollapsed } from '~/diffs/utils/diff_file';
 import {
   INLINE_DIFF_VIEW_TYPE,
@@ -614,11 +614,9 @@ export const saveDiffDiscussion = async ({ state, dispatch }, { note, formData }
     ...formData,
   });
 
-  if (containsSensitiveToken(note)) {
-    const confirmed = await confirmSensitiveAction();
-    if (!confirmed) {
-      return null;
-    }
+  const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: note });
+  if (!confirmSubmit) {
+    return null;
   }
 
   return dispatch('saveNote', postData, { root: true })

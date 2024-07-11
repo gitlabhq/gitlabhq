@@ -290,6 +290,7 @@ Project Owners can do any listed action, and also can delete pipelines:
 This table shows granted privileges for jobs triggered by specific roles.
 
 Project Owners can do any listed action, but no users can push source and LFS together.
+Guest users and members with the Reporter role cannot do any of these actions.
 
 | Action                                       | Developer | Maintainer | Notes |
 |----------------------------------------------|:---------:|:----------:|-------|
@@ -302,8 +303,6 @@ Project Owners can do any listed action, but no users can push source and LFS to
 | Pull container images from internal projects |     ✓     |     ✓      | Developers and Maintainers: Only if the triggering user is not an external user. |
 | Pull container images from private projects  |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
 | Push container images to current project     |     ✓     |     ✓      | You cannot push container images to other projects. |
-
-Guest users and members with the Reporter role cannot do any of these actions.
 
 ## Group members permissions
 

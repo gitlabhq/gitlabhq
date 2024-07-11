@@ -715,6 +715,8 @@
   - 1
 - - search_zoekt_delete_project
   - 1
+- - search_zoekt_delete_project_event
+  - 1
 - - search_zoekt_indexing_task
   - 1
 - - search_zoekt_namespace_indexer

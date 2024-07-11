@@ -31,14 +31,13 @@ import eventHub from '~/notes/event_hub';
 import diffsEventHub from '~/diffs/event_hub';
 import { handleLocationHash, historyPushState, scrollToElement } from '~/lib/utils/common_utils';
 import setWindowLocation from 'helpers/set_window_location_helper';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { diffMetadata } from '../mock_data/diff_metadata';
 
 jest.mock('~/alert');
 
-jest.mock('~/lib/utils/secret_detection', () => ({
-  confirmSensitiveAction: jest.fn(() => Promise.resolve(false)),
-  containsSensitiveToken: jest.requireActual('~/lib/utils/secret_detection').containsSensitiveToken,
-}));
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
+confirmAction.mockResolvedValueOnce(false);
 
 const endpointDiffForPath = '/diffs/set/endpoint/path';
 
@@ -1176,7 +1175,7 @@ describe('DiffsStoreActions', () => {
       diffFile: getDiffFileMock(),
       noteableData: {},
     };
-    const note = {};
+    const note = '';
     const state = {
       commit: {
         id: commitId,
@@ -1198,7 +1197,7 @@ describe('DiffsStoreActions', () => {
       });
     });
 
-    it('should not add note with sensitive token', async () => {
+    it('should not allow adding note with sensitive token', async () => {
       const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
 
       await diffActions.saveDiffDiscussion(
@@ -1206,6 +1205,12 @@ describe('DiffsStoreActions', () => {
         { note: sensitiveMessage, formData },
       );
       expect(dispatch).not.toHaveBeenCalled();
+      expect(confirmAction).toHaveBeenCalledWith(
+        '',
+        expect.objectContaining({
+          title: 'Warning: Potential secret detected',
+        }),
+      );
     });
   });
 

@@ -12,6 +12,7 @@ describe('Project remove modal', () => {
 
   const defaultProps = {
     confirmPhrase: 'foo',
+    buttonText: 'Delete project',
     formPath: 'some/path',
     isFork: false,
     issuesCount: 1,
@@ -45,6 +46,7 @@ describe('Project remove modal', () => {
     it('passes confirmPhrase and formPath props to the shared delete button', () => {
       expect(findSharedDeleteButton().props()).toEqual({
         confirmPhrase: defaultProps.confirmPhrase,
+        buttonText: defaultProps.buttonText,
         forksCount: defaultProps.forksCount,
         formPath: defaultProps.formPath,
         isFork: defaultProps.isFork,

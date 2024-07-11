@@ -4158,7 +4158,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
     end
   end
 
-  context 'with external authorization service', :deliver_mails_inline do
+  context 'with external authorization service and a specified project', :deliver_mails_inline do
     let(:issue) { create(:issue) }
     let(:project) { issue.project }
     let(:note) { create(:note, noteable: issue, project: project) }
@@ -4182,32 +4182,18 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
         enable_external_authorization_service_check
       end
 
-      it 'does not send an email' do
-        expect(Notify).not_to receive(:new_issue_email)
+      it 'checks external auth and sends an email if successful' do
+        expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).at_least(:once).with(anything, "default_label", any_args).and_return(true)
+        expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
 
         subject.new_issue(issue, member)
       end
 
-      context 'with admin user' do
-        before do
-          member.update!(admin: true)
-        end
+      it 'checks external auth and does not send an email if denied' do
+        expect(::Gitlab::ExternalAuthorization).to receive(:access_allowed?).at_least(:once).with(anything, "default_label", any_args).and_return(false)
+        expect(Notify).not_to receive(:new_issue_email)
 
-        context 'when admin mode is enabled', :enable_admin_mode do
-          it 'still delivers email to admins' do
-            expect(Notify).to receive(:new_issue_email).at_least(:once).with(member.id, issue.id, nil).and_call_original
-
-            subject.new_issue(issue, member)
-          end
-        end
-
-        context 'when admin mode is disabled' do
-          it 'does not send an email' do
-            expect(Notify).not_to receive(:new_issue_email)
-
-            subject.new_issue(issue, member)
-          end
-        end
+        subject.new_issue(issue, member)
       end
     end
   end

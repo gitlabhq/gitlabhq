@@ -10,6 +10,10 @@ import {
   RESOLVED_VULNERABILITY_HTML,
 } from '../test_constants';
 
+const labelCamryHtml = `<span class="gl-label"><a class="gfm gfm-label has-tooltip gl-link gl-label-link" title="" data-placement="top" data-container="body" data-project="7" data-label="101" data-link-reference="false" data-link="false" data-original="~101" data-reference-type="label" href="/gitlab-org/gitlab-test/-/issues?label_name=Camry"><span style="background-color: #e88c97" data-html="true" data-container="body" class="gl-label-text gl-label-text-light">Camry</span></a></span>`;
+const labelCorollaWagonHtml = `<span class="gl-label"><a class="gfm gfm-label has-tooltip gl-link gl-label-link" title="" data-placement="top" data-container="body" data-project="7" data-label="104" data-link-reference="false" data-link="false" data-original="~104" data-reference-type="label" href="/gitlab-org/gitlab-test/-/issues?label_name=Corolla+Wagon"><span style="background-color: #23d305" data-html="true" data-container="body" class="gl-label-text gl-label-text-dark">Corolla Wagon</span></a></span>`;
+const labelBriostHtml = `<span class="gl-label"><a class="gfm gfm-label has-tooltip gl-link gl-label-link" title="" data-placement="top" data-container="body" data-project="7" data-label="59" data-link-reference="false" data-link="false" data-original="~59" data-reference-type="label" href="/gitlab-org/gitlab-test/-/issues?label_name=Briost"><span style="background-color: #cb8d88" data-html="true" data-container="body" class="gl-label-text gl-label-text-light">Briost</span></a></span>`;
+
 describe('content_editor/services/asset_resolver', () => {
   let renderMarkdown;
   let assetResolver;
@@ -153,6 +157,20 @@ describe('content_editor/services/asset_resolver', () => {
       renderMarkdown.mockResolvedValue();
 
       expect(await assetResolver.explainQuickAction('/close')).toBe('');
+    });
+
+    it.each`
+      text                                   | resolvedHtml                                                                             | result
+      ${'/label ~Camry'}                     | ${`<p>Adds ${labelCamryHtml} label.</p>`}                                                | ${'Adds a label.'}
+      ${'/label ~Camry ~"Corolla Wagon"'}    | ${`<p>Adds ${labelCamryHtml} ${labelCorollaWagonHtml} labels.</p>`}                      | ${'Adds 2 labels.'}
+      ${'/unlabel ~Briost'}                  | ${`<p>Removes ${labelBriostHtml} label.</p>`}                                            | ${'Removes a label.'}
+      ${'/unlabel ~Briost ~"Corolla Wagon"'} | ${`<p>Removes ${labelBriostHtml} ${labelCorollaWagonHtml} labels.</p>`}                  | ${'Removes 2 labels.'}
+      ${'/relabel ~Briost'}                  | ${`<p>Replaces all labels with ${labelBriostHtml} label.</p>`}                           | ${'Replaces all labels with 1 label.'}
+      ${'/relabel ~Briost ~"Corolla Wagon"'} | ${`<p>Replaces all labels with ${labelBriostHtml} ${labelCorollaWagonHtml} labels.</p>`} | ${'Replaces all labels with 2 labels.'}
+    `('resolves explanation of \'$text\' to "$result"', async ({ text, resolvedHtml, result }) => {
+      renderMarkdown.mockResolvedValue({ references: { commands: resolvedHtml } });
+
+      expect(await assetResolver.explainQuickAction(text)).toBe(result);
     });
   });
 
