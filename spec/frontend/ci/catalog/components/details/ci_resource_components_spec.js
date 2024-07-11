@@ -136,7 +136,9 @@ describe('CiResourceComponents', () => {
           firstComponent.inputs.forEach((input) => {
             expect(findComponents().at(0).text()).toContain(input.name);
             expect(findComponents().at(0).text()).toContain(input.default);
+            expect(findComponents().at(0).text()).toContain(input.description);
             expect(findComponents().at(0).text()).toContain('Yes');
+            expect(findComponents().at(0).text()).toContain(input.type);
           });
         });
       });

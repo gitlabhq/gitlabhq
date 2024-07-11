@@ -4320,6 +4320,8 @@ In this example:
 
 **Additional details**:
 
+- In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
+  See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
@@ -4375,6 +4377,11 @@ docker-build-2:
 ```
 
 In this example, both jobs have the same behavior.
+
+**Additional details**:
+
+- In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
+  See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
 
 ##### `rules:exists:project`
 

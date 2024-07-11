@@ -11,6 +11,8 @@ RSpec.describe Packages::Conan::Metadatum, type: :model, feature_category: :pack
 
   describe 'validations' do
     let(:fifty_one_characters) { 'f_a' * 17 }
+    let(:thirty_three_characters) { 'a' * 33 }
+    let(:seventeen_characters) { 'a' * 17 }
 
     it { is_expected.to validate_presence_of(:package) }
     it { is_expected.to validate_presence_of(:package_username) }
@@ -45,6 +47,41 @@ RSpec.describe Packages::Conan::Metadatum, type: :model, feature_category: :pack
       it { is_expected.not_to allow_value("my/channel").for(:package_channel) }
       it { is_expected.not_to allow_value("my(channel)").for(:package_channel) }
       it { is_expected.not_to allow_value("my@channel").for(:package_channel) }
+    end
+
+    describe '#architecture' do
+      it { is_expected.to validate_length_of(:architecture).is_at_most(32) }
+      it { is_expected.not_to allow_value(thirty_three_characters).for(:architecture) }
+    end
+
+    describe '#os' do
+      it { is_expected.to validate_length_of(:os).is_at_most(32) }
+      it { is_expected.not_to allow_value(thirty_three_characters).for(:os) }
+    end
+
+    describe '#build_type' do
+      it { is_expected.to validate_length_of(:build_type).is_at_most(32) }
+      it { is_expected.not_to allow_value(thirty_three_characters).for(:build_type) }
+    end
+
+    describe '#compiler' do
+      it { is_expected.to validate_length_of(:compiler).is_at_most(32) }
+      it { is_expected.not_to allow_value(thirty_three_characters).for(:compiler) }
+    end
+
+    describe '#compiler_libcxx' do
+      it { is_expected.to validate_length_of(:compiler_libcxx).is_at_most(32) }
+      it { is_expected.not_to allow_value(thirty_three_characters).for(:compiler_libcxx) }
+    end
+
+    describe '#compiler_cppstd' do
+      it { is_expected.to validate_length_of(:compiler_cppstd).is_at_most(32) }
+      it { is_expected.not_to allow_value(thirty_three_characters).for(:compiler_cppstd) }
+    end
+
+    describe '#compiler_version' do
+      it { is_expected.to validate_length_of(:compiler_version).is_at_most(16) }
+      it { is_expected.not_to allow_value(seventeen_characters).for(:compiler_version) }
     end
 
     describe '#username_channel_none_values' do

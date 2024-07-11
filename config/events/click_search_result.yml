@@ -1,0 +1,25 @@
+---
+description: Which results are clicked on Global Search page
+internal_events: true
+action: click_search_result
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: search result scope
+  value:
+    description: result position
+  property:
+    description: search term
+product_group: global_search
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156499
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

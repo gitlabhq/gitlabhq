@@ -12,8 +12,10 @@ query getCiCatalogResourceComponents($fullPath: ID!) {
             includePath
             inputs {
               name
-              required
               default
+              description
+              required
+              type
             }
           }
         }

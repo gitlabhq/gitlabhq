@@ -433,16 +433,11 @@ policies from running.
 ## Experimental features
 
 DETAILS:
-**Status:** Experiment
+**Status:** Experiment has ended
 
-These experimental features have limitations:
+This experiment has concluded and will not continue. After receiving feedback within this experiment, we will be focusing our efforts on a new policy type for enforcement of custom CI. The experiment will be removed in 17.3.
 
-1. Enforcing pipeline execution using the pipeline execution action in projects
-   without a `.gitlab-ci.yml` is not supported.
-1. The pipeline execution action cannot be used with a scheduled trigger type.
-
-Have feedback on our experimental features? We'd love to hear it! Please share your thoughts in our
-[feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/434425).
+Learn more about the [pipeline execution policy](pipeline_execution_policies.md).
 
 ### Pipeline execution policy action
 

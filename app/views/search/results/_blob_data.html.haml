@@ -1,7 +1,7 @@
 .js-blob-result.gl-mt-3.gl-mb-5{ data: { testid: 'result-item-content' } }
   .file-holder.file-holder-top-border
     .js-file-title.file-title{ data: { testid: 'file-title-content' } }
-      = link_to blob_link, data: {track_action: 'click_text', track_label: 'blob_path', track_property: 'search_result'} do
+      = link_to blob_link, data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term } do
         = sprite_icon('document')
         %strong
           = search_blob_title(project, path)

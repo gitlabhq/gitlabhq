@@ -14015,7 +14015,21 @@ CREATE TABLE packages_conan_metadata (
     updated_at timestamp with time zone NOT NULL,
     package_username character varying(255) NOT NULL,
     package_channel character varying(255) NOT NULL,
-    project_id bigint
+    project_id bigint,
+    os text,
+    architecture text,
+    build_type text,
+    compiler text,
+    compiler_version text,
+    compiler_libcxx text,
+    compiler_cppstd text,
+    CONSTRAINT check_15f3356ff2 CHECK ((char_length(architecture) <= 32)),
+    CONSTRAINT check_3dc474bc51 CHECK ((char_length(compiler_version) <= 16)),
+    CONSTRAINT check_52abd85dde CHECK ((char_length(compiler_libcxx) <= 32)),
+    CONSTRAINT check_535bd0bf5b CHECK ((char_length(os) <= 32)),
+    CONSTRAINT check_a0b998cb1b CHECK ((char_length(build_type) <= 32)),
+    CONSTRAINT check_e57d0def27 CHECK ((char_length(compiler_cppstd) <= 32)),
+    CONSTRAINT check_e7f03884b8 CHECK ((char_length(compiler) <= 32))
 );
 
 CREATE SEQUENCE packages_conan_metadata_id_seq

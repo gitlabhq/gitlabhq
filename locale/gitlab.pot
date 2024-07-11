@@ -11126,7 +11126,10 @@ msgstr ""
 msgid "CiCatalogComponent|Component details not available"
 msgstr ""
 
-msgid "CiCatalogComponent|Default Value"
+msgid "CiCatalogComponent|Default value"
+msgstr ""
+
+msgid "CiCatalogComponent|Description"
 msgstr ""
 
 msgid "CiCatalogComponent|Inputs"
@@ -11142,6 +11145,9 @@ msgid "CiCatalogComponent|There was an error fetching this resource's components
 msgstr ""
 
 msgid "CiCatalogComponent|This tab displays auto-collected information about the components in the repository, but no information was found."
+msgstr ""
+
+msgid "CiCatalogComponent|Type"
 msgstr ""
 
 msgid "CiCatalog|All"
@@ -54591,6 +54597,9 @@ msgid "This repository was last checked %{last_check_timestamp}. The check %{str
 msgstr ""
 
 msgid "This repository was last checked %{last_check_timestamp}. The check passed."
+msgstr ""
+
+msgid "This resource has no comments to summarize"
 msgstr ""
 
 msgid "This runner will only run on pipelines triggered on protected branches"

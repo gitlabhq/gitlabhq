@@ -1,0 +1,8 @@
+---
+name: summarize_notes_with_duo
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156650
+rollout_issue_url:
+milestone: '17.2'
+type: development
+group: group::project management
+default_enabled: false

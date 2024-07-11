@@ -14,6 +14,9 @@ class Packages::Conan::Metadatum < ApplicationRecord
 
   validate :username_channel_none_values
 
+  validates :os, :architecture, :build_type, :compiler, :compiler_libcxx, :compiler_cppstd, length: { maximum: 32 }
+  validates :compiler_version, length: { maximum: 16 }
+
   def recipe
     "#{package.name}/#{package.version}@#{package_username}/#{package_channel}"
   end

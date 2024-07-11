@@ -97,12 +97,13 @@
     = render ::Layouts::CrudComponent.new(_('Group members'),
       icon: 'user',
       count: @group.users_count) do |c|
-      - c.with_actions do
-        = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
+      - c.with_description do
         - direct_members_link = link_to('', help_page_path('user/project/members/index', anchor: 'membership-types'))
         - direct_members_message = s_('The number of direct members in the current group. Members in subgroups are not included. %{link_start}What is a direct member%{link_end}?')
         - if @group.root?
-          .gl-text-sm.gl-text-secondary.gl-pt-3= safe_format(direct_members_message, tag_pair(direct_members_link, :link_start, :link_end))
+          = safe_format(direct_members_message, tag_pair(direct_members_link, :link_start, :link_end))
+      - c.with_actions do
+        = render 'shared/members/manage_access_button', path: group_group_members_path(@group)
       - c.with_body do
         %ul.content-list.group-users-list.members-list
           = render partial: 'shared/members/member',

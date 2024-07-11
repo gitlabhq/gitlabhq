@@ -1,1 +1,5 @@
-= render partial: 'search/results/issuable', object: merge_request
+- index = local_assigns.fetch(:index, nil)
+- merge_request = local_assigns.fetch(:result, nil)
+- position = index + 1
+
+= render partial: 'search/results/issuable', object: merge_request, locals: { position: position }

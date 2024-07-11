@@ -1,5 +1,6 @@
 <script>
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import DiscussionFilter from './discussion_filter.vue';
 
 export default {
@@ -10,7 +11,7 @@ export default {
       import('ee_component/notes/components/note_actions/ai_summarize_notes.vue'),
     MrDiscussionFilter: () => import('./mr_discussion_filter.vue'),
   },
-  mixins: [glFeatureFlagsMixin()],
+  mixins: [glAbilitiesMixin(), glFeatureFlagsMixin()],
   inject: {
     showTimelineViewToggle: {
       default: false,
@@ -38,7 +39,11 @@ export default {
   },
   computed: {
     showAiActions() {
-      return this.resourceGlobalId && this.glFeatures.summarizeComments;
+      return (
+        this.resourceGlobalId &&
+        this.glAbilities.summarizeComments &&
+        this.glFeatures.summarizeComments
+      );
     },
   },
 };

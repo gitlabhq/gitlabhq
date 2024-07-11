@@ -1,6 +1,10 @@
+- index = local_assigns.fetch(:index, nil)
+- wiki_blob = local_assigns.fetch(:result, nil)
+- position = index + 1
+
 %div{ class: 'search-result-row gl-pb-3! gl-mt-5 gl-mb-0!' }
   %span.gl-display-flex.gl-align-items-center
-    = link_to wiki_blob_link(wiki_blob), data: { track_action: 'click_text', track_label: "wiki_title", track_property: 'search_result' }, class: 'gl-w-full' do
+    = link_to wiki_blob_link(wiki_blob), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term }, class: 'gl-w-full' do
       %span.term.str-truncated.gl-font-bold= ::Wiki.canonicalize_filename(wiki_blob.path)
   .description.term.col-sm-10.gl-px-0
     = simple_search_highlight_and_truncate(wiki_blob.data, @search_term)

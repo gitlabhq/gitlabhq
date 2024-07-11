@@ -85,8 +85,8 @@ RSpec.describe 'search/_results', feature_category: :global_search do
           it 'renders the click text event tracking attributes' do
             render
 
-            expect(rendered).to have_selector('[data-track-action=click_text]')
-            expect(rendered).to have_selector('[data-track-property=search_result]')
+            expect(rendered).to have_selector('[data-event-tracking=click_search_result]')
+            expect(rendered).to have_selector("[data-event-label=#{scope}]")
           end
         end
 
@@ -94,8 +94,8 @@ RSpec.describe 'search/_results', feature_category: :global_search do
           it 'does not render the click text event tracking attributes' do
             render
 
-            expect(rendered).not_to have_selector('[data-track-action=click_text]')
-            expect(rendered).not_to have_selector('[data-track-property=search_result]')
+            expect(rendered).not_to have_selector('[data-event-tracking=click_search_result]')
+            expect(rendered).not_to have_selector("[data-event-label=#{scope}]")
           end
         end
       end
@@ -135,8 +135,8 @@ RSpec.describe 'search/_results', feature_category: :global_search do
           it 'renders the click text event tracking attributes' do
             render
 
-            expect(rendered).to have_selector('[data-track-action=click_text]')
-            expect(rendered).to have_selector('[data-track-property=search_result]')
+            expect(rendered).to have_selector('[data-event-tracking=click_search_result]')
+            expect(rendered).to have_selector("[data-event-label=#{scope}]")
           end
         end
 
@@ -144,8 +144,8 @@ RSpec.describe 'search/_results', feature_category: :global_search do
           it 'does not render the click text event tracking attributes' do
             render
 
-            expect(rendered).not_to have_selector('[data-track-action=click_text]')
-            expect(rendered).not_to have_selector('[data-track-property=search_result]')
+            expect(rendered).not_to have_selector('[data-event-tracking=click_search_result]')
+            expect(rendered).not_to have_selector("[data-event-label=#{scope}]")
           end
         end
 

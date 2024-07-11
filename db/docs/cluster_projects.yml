@@ -10,5 +10,4 @@ milestone: '10.2'
 gitlab_schema: gitlab_main_cell
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-sharding_key:
-  project_id: projects
+exempt_from_sharding: true # Table is scheduled for removal
