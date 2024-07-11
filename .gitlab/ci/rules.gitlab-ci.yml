@@ -1674,6 +1674,8 @@
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-fork-merge-request
       when: never
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-merge-request-labels-run-cs-evaluation
 
 .qa:rules:code-suggestions-eval:
@@ -1733,6 +1735,8 @@
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: [*if-default-branch-schedule-nightly, *qa-e2e-test-schedule-variables]
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-merge-request
       changes: *qa-patterns
 
