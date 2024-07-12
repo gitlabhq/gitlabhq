@@ -37,7 +37,7 @@ const createMockSourceUser = (index, { status, reassignToUser = false } = {}) =>
 
 export const mockSourceUsers = [
   createMockSourceUser(1, {
-    status: 'PENDING_ASSIGNMENT',
+    status: 'PENDING_REASSIGNMENT',
   }),
   createMockSourceUser(2, {
     status: 'AWAITING_APPROVAL',
@@ -115,7 +115,7 @@ export const mockCancelReassignmentMutationResponse = {
       errors: [],
       importSourceUser: {
         ...mockSourceUsers[0],
-        status: 'PENDING_ASSIGNMENT',
+        status: 'PENDING_REASSIGNMENT',
       },
       __typename: 'ImportSourceUserCancelReassignmentPayload',
     },

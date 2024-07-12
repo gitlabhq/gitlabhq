@@ -13,7 +13,7 @@ RSpec.describe GitlabSchema.types['ImportSourceUserStatus'], feature_category: :
           COMPLETED
           FAILED
           KEEP_AS_PLACEHOLDER
-          PENDING_ASSIGNMENT
+          PENDING_REASSIGNMENT
           REASSIGNMENT_IN_PROGRESS
           REJECTED
         ]

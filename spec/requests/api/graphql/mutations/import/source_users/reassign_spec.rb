@@ -60,7 +60,7 @@ RSpec.describe 'Reassign an import source user', feature_category: :importers do
         post_graphql_mutation(mutation, current_user: current_user)
 
         expect(mutation_response['errors']).to be_present
-        expect(mutation_response['importSourceUser']['status']).to eq('PENDING_ASSIGNMENT')
+        expect(mutation_response['importSourceUser']['status']).to eq('PENDING_REASSIGNMENT')
       end
     end
   end

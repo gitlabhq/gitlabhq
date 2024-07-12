@@ -22,7 +22,7 @@ RSpec.describe Import::SourceUsers::CancelReassignmentService, feature_category:
         expect(result.payload.reload).to eq(import_source_user)
         expect(result.payload.reassigned_by_user).to eq(nil)
         expect(result.payload.reassign_to_user).to eq(nil)
-        expect(result.payload.pending_assignment?).to eq(true)
+        expect(result.payload.pending_reassignment?).to eq(true)
       end
     end
 

@@ -45,14 +45,14 @@ RSpec.describe 'Cancel an reassignment of an import source user', feature_catego
       group.add_owner(current_user)
     end
 
-    it 'sets import user source status back to pending_assignment', :aggregate_failures do
+    it 'sets import user source status back to pending_reassignment', :aggregate_failures do
       post_graphql_mutation(mutation, current_user: current_user)
 
       import_source_user = mutation_response['importSourceUser']
 
       expect(import_source_user['reassignedToUser']).to eq(nil)
       expect(import_source_user['reassignedByUser']).to eq(nil)
-      expect(import_source_user['status']).to eq('PENDING_ASSIGNMENT')
+      expect(import_source_user['status']).to eq('PENDING_REASSIGNMENT')
     end
 
     context 'when cancelation fails' do

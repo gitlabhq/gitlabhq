@@ -34962,7 +34962,7 @@ Import source.
 | <a id="importsourceuserstatuscompleted"></a>`COMPLETED` | An import source user mapping that is completed. |
 | <a id="importsourceuserstatusfailed"></a>`FAILED` | An import source user mapping that is failed. |
 | <a id="importsourceuserstatuskeep_as_placeholder"></a>`KEEP_AS_PLACEHOLDER` | An import source user mapping that is keep as placeholder. |
-| <a id="importsourceuserstatuspending_assignment"></a>`PENDING_ASSIGNMENT` | An import source user mapping that is pending assignment. |
+| <a id="importsourceuserstatuspending_reassignment"></a>`PENDING_REASSIGNMENT` | An import source user mapping that is pending reassignment. |
 | <a id="importsourceuserstatusreassignment_in_progress"></a>`REASSIGNMENT_IN_PROGRESS` | An import source user mapping that is reassignment in progress. |
 | <a id="importsourceuserstatusrejected"></a>`REJECTED` | An import source user mapping that is rejected. |
 

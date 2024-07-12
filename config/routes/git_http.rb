@@ -11,6 +11,7 @@ scope(path: '*repository_path', format: false) do
 
         # GitLab-Shell Git over SSH requests
         post '/ssh-upload-pack', action: :ssh_upload_pack
+        post '/ssh-receive-pack', action: :ssh_receive_pack
       end
 
       # NOTE: LFS routes are exposed on all repository types, but we still check for

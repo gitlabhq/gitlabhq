@@ -31,7 +31,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
   describe 'state machine' do
     it 'begins in pending state' do
-      expect(described_class.new.pending_assignment?).to eq(true)
+      expect(described_class.new.pending_reassignment?).to eq(true)
     end
   end
 
@@ -119,7 +119,7 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
   end
 
   describe '#reassignable_status?' do
-    reassignable_statuses = [:pending_assignment, :rejected]
+    reassignable_statuses = [:pending_reassignment, :rejected]
     all_states = described_class.state_machines[:status].states
 
     all_states.reject { |state| reassignable_statuses.include?(state.name) }.each do |state|

@@ -242,11 +242,11 @@ describe('PlaceholderActions', () => {
     });
   });
 
-  describe('when status is PENDING_ASSIGNMENT', () => {
+  describe('when status is PENDING_REASSIGNMENT', () => {
     beforeEach(() => {
       createComponent({
         props: {
-          sourceUser: { status: 'PENDING_ASSIGNMENT' },
+          sourceUser: { status: 'PENDING_REASSIGNMENT' },
         },
       });
     });

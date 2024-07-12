@@ -793,6 +793,29 @@ We are removing the Needs tab from the pipeline view, as it duplicates the infor
 
 <div class="deprecation " data-milestone="17.3">
 
+### FIPS-compliant Secure analyzers will change from UBI Minimal to UBI Micro
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.2</span>
+- Removal in GitLab <span class="milestone">17.3</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/471869).
+</div>
+
+We're updating the base image of some of the analyzers used to scan your code for security vulnerabilities.
+We're only changing the analyzer images that are already based on Red Hat Universal Base Image (UBI), so this change only affects you if you've specifically enabled [FIPS mode](https://docs.gitlab.com/ee/development/fips_compliance.html) for security scanning.
+The default images that GitLab security scans use are not affected because they aren't based on UBI.
+
+In GitLab 17.3, we will change the base image of the UBI-based analyzers from UBI Minimal to [UBI Micro](https://www.redhat.com/en/blog/introduction-ubi-micro), which includes fewer unnecessary packages and omits a package manager.
+The updated images will be smaller and will be affected by fewer vulnerabilities in packages provided by the operating system.
+
+GitLab's [Statement of Support](https://about.gitlab.com/support/statement-of-support/#ci-cd-templates) excludes undocumented customizations, including those that rely on specific contents of the analyzer image.
+For example, installing additional packages in a `before_script` is not a supported modification.
+Nevertheless, if you rely on this type of customization, see the [deprecation issue for this change](https://gitlab.com/gitlab-org/gitlab/-/issues/471869#action-required) to learn how to respond to this change or to provide feedback about your current customizations.
+
+</div>
+
+<div class="deprecation " data-milestone="17.3">
+
 ### Group vulnerability report by OWASP top 10 2017 is deprecated
 
 <div class="deprecation-notes">

@@ -299,7 +299,7 @@ GET /projects/:id/integrations/buildkite
 
 ## Campfire Classic
 
-You can integrate with Campfire Classic. Note that Campfire Classic is an old product that is
+You can integrate with Campfire Classic. However, Campfire Classic is an old product that is
 [no longer sold](https://gitlab.com/gitlab-org/gitlab/-/issues/329337) by Basecamp.
 
 ### Set up Campfire Classic
