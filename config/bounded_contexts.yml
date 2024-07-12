@@ -118,7 +118,7 @@ domains:
       - dependency_management
 
   DependencyProxy:
-    description:
+    description: Dependency Proxy for container images.
     feature_categories:
       - virtual_registry
       - package_registry
@@ -227,7 +227,7 @@ domains:
       - cell
 
   Packages:
-    description:
+    description: Package registry implementation for each supported format (such as Maven, NPM, NuGet, ...).
     feature_categories:
       - package_registry
       - mlops
@@ -309,6 +309,11 @@ domains:
     description:
     feature_categories:
       - consumables_cost_management
+
+  VirtualRegistries:
+    description: Virtual registries implementation that manage artifacts (packages or container images) from external upstreams.
+    feature_categories:
+      - virtual_registry
 
   Vulnerabilities:
     description: Vulnerability management

@@ -768,27 +768,17 @@ RSpec.describe Projects::PipelinesController, feature_category: :continuous_inte
     [
       {
         chart_param: 'time-to-restore-service',
-        event: 'p_analytics_ci_cd_time_to_restore_service'
+        event: 'visit_ci_cd_time_to_restore_service_tab'
       },
       {
         chart_param: 'change-failure-rate',
-        event: 'p_analytics_ci_cd_change_failure_rate'
+        event: 'visit_ci_cd_failure_rate_tab'
       }
     ].each do |tab|
-      it_behaves_like 'tracking unique visits', :charts do
-        let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
-        let(:target_id) { ['p_analytics_pipelines', tab[:event]] }
-      end
+      it 'tracks internal events' do
+        request_params = { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] }
 
-      it_behaves_like 'Snowplow event tracking with RedisHLL context' do
-        subject { get :charts, params: request_params, format: :html }
-
-        let(:request_params) { { namespace_id: project.namespace, project_id: project, id: pipeline.id, chart: tab[:chart_param] } }
-        let(:category) { described_class.name }
-        let(:action) { 'perform_analytics_usage_action' }
-        let(:namespace) { project.namespace }
-        let(:label) { 'redis_hll_counters.analytics.analytics_total_unique_counts_monthly' }
-        let(:property) { 'p_analytics_pipelines' }
+        expect { get :charts, params: request_params, format: :html }.to trigger_internal_events(tab[:event])
       end
     end
 

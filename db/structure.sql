@@ -18900,6 +18900,64 @@ CREATE SEQUENCE value_stream_dashboard_counts_id_seq
 
 ALTER SEQUENCE value_stream_dashboard_counts_id_seq OWNED BY value_stream_dashboard_counts.id;
 
+CREATE TABLE virtual_registries_packages_maven_registries (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cache_validity_hours smallint DEFAULT 1 NOT NULL,
+    CONSTRAINT check_b3fbe8eb62 CHECK ((cache_validity_hours >= 0))
+);
+
+CREATE SEQUENCE virtual_registries_packages_maven_registries_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_packages_maven_registries_id_seq OWNED BY virtual_registries_packages_maven_registries.id;
+
+CREATE TABLE virtual_registries_packages_maven_registry_upstreams (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    registry_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL
+);
+
+CREATE SEQUENCE virtual_registries_packages_maven_registry_upstreams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_packages_maven_registry_upstreams_id_seq OWNED BY virtual_registries_packages_maven_registry_upstreams.id;
+
+CREATE TABLE virtual_registries_packages_maven_upstreams (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    url text NOT NULL,
+    encrypted_credentials bytea,
+    encrypted_credentials_iv bytea,
+    CONSTRAINT check_26c0572777 CHECK ((char_length(url) <= 255)),
+    CONSTRAINT check_4af2999ab8 CHECK ((octet_length(encrypted_credentials_iv) <= 1020)),
+    CONSTRAINT check_b9e3bfa31a CHECK ((octet_length(encrypted_credentials) <= 1020))
+);
+
+CREATE SEQUENCE virtual_registries_packages_maven_upstreams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_packages_maven_upstreams_id_seq OWNED BY virtual_registries_packages_maven_upstreams.id;
+
 CREATE TABLE vs_code_settings (
     id bigint NOT NULL,
     user_id bigint NOT NULL,
@@ -21563,6 +21621,12 @@ ALTER TABLE ONLY users_star_projects ALTER COLUMN id SET DEFAULT nextval('users_
 ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_statistics_id_seq'::regclass);
 
 ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextval('value_stream_dashboard_counts_id_seq'::regclass);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registries_id_seq'::regclass);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registry_upstreams_id_seq'::regclass);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_upstreams_id_seq'::regclass);
 
 ALTER TABLE ONLY vs_code_settings ALTER COLUMN id SET DEFAULT nextval('vs_code_settings_id_seq'::regclass);
 
@@ -24265,6 +24329,15 @@ ALTER TABLE ONLY value_stream_dashboard_counts
 
 ALTER TABLE ONLY verification_codes
     ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (created_at, visitor_id_code, code, phone);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registries
+    ADD CONSTRAINT virtual_registries_packages_maven_registries_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
+    ADD CONSTRAINT virtual_registries_packages_maven_registry_upstreams_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_upstreams
+    ADD CONSTRAINT virtual_registries_packages_maven_upstreams_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY vs_code_settings
     ADD CONSTRAINT vs_code_settings_pkey PRIMARY KEY (id);
@@ -29535,6 +29608,10 @@ CREATE UNIQUE INDEX index_verification_codes_on_phone_and_visitor_id_code ON ONL
 
 COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-specific index';
 
+CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_registries_packages_maven_registry_upstreams USING btree (group_id);
+
+CREATE INDEX index_virtual_reg_pkgs_maven_upstreams_on_group_id ON virtual_registries_packages_maven_upstreams USING btree (group_id);
+
 CREATE UNIQUE INDEX index_vuln_findings_on_uuid_including_vuln_id_1 ON vulnerability_occurrences USING btree (uuid) INCLUDE (vulnerability_id);
 
 CREATE UNIQUE INDEX index_vuln_historical_statistics_on_project_id_and_date ON vulnerability_historical_statistics USING btree (project_id, date);
@@ -30090,6 +30167,12 @@ CREATE UNIQUE INDEX unique_zoekt_enabled_namespaces_on_root_namespace_id ON zoek
 CREATE UNIQUE INDEX unique_zoekt_shards_uuid ON zoekt_shards USING btree (uuid);
 
 CREATE INDEX user_follow_users_followee_id_idx ON user_follow_users USING btree (followee_id);
+
+CREATE UNIQUE INDEX virtual_reg_packages_maven_reg_upstreams_on_unique_reg_ids ON virtual_registries_packages_maven_registry_upstreams USING btree (registry_id);
+
+CREATE UNIQUE INDEX virtual_reg_packages_maven_reg_upstreams_on_unique_upstream_ids ON virtual_registries_packages_maven_registry_upstreams USING btree (upstream_id);
+
+CREATE UNIQUE INDEX virtual_registries_pkgs_maven_registries_on_unique_group_ids ON virtual_registries_packages_maven_registries USING btree (group_id);
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
 
@@ -33775,6 +33858,9 @@ ALTER TABLE ONLY wiki_page_slugs
 ALTER TABLE ONLY board_labels
     ADD CONSTRAINT fk_rails_362b0600a3 FOREIGN KEY (label_id) REFERENCES labels(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY virtual_registries_packages_maven_upstreams
+    ADD CONSTRAINT fk_rails_3649ef6e9a FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY merge_request_blocks
     ADD CONSTRAINT fk_rails_364d4bea8b FOREIGN KEY (blocked_merge_request_id) REFERENCES merge_requests(id) ON DELETE CASCADE;
 
@@ -33816,6 +33902,9 @@ ALTER TABLE ONLY cluster_groups
 
 ALTER TABLE ONLY note_diff_files
     ADD CONSTRAINT fk_rails_3d66047aeb FOREIGN KEY (diff_note_id) REFERENCES notes(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
+    ADD CONSTRAINT fk_rails_3dc6bd8333 FOREIGN KEY (upstream_id) REFERENCES virtual_registries_packages_maven_upstreams(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY snippet_user_mentions
     ADD CONSTRAINT fk_rails_3e00189191 FOREIGN KEY (snippet_id) REFERENCES snippets(id) ON DELETE CASCADE;
@@ -33990,6 +34079,9 @@ ALTER TABLE ONLY geo_node_namespace_links
 
 ALTER TABLE ONLY abuse_events
     ADD CONSTRAINT fk_rails_55101e588c FOREIGN KEY (abuse_report_id) REFERENCES abuse_reports(id);
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registries
+    ADD CONSTRAINT fk_rails_555e85e52c FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY issuable_metric_images
     ADD CONSTRAINT fk_rails_56417a5a7f FOREIGN KEY (issue_id) REFERENCES issues(id) ON DELETE CASCADE;
@@ -34323,6 +34415,9 @@ ALTER TABLE ONLY group_wiki_repository_states
 
 ALTER TABLE ONLY cluster_enabled_grants
     ADD CONSTRAINT fk_rails_8336ce35af FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
+    ADD CONSTRAINT fk_rails_838d054752 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dast_site_profiles
     ADD CONSTRAINT fk_rails_83e309d69e FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
@@ -34737,6 +34832,9 @@ ALTER TABLE ONLY packages_composer_cache_files
 
 ALTER TABLE ONLY abuse_trust_scores
     ADD CONSTRAINT fk_rails_b903079eb4 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams
+    ADD CONSTRAINT fk_rails_b991fff0be FOREIGN KEY (registry_id) REFERENCES virtual_registries_packages_maven_registries(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY dora_configurations
     ADD CONSTRAINT fk_rails_b9b8d90ddb FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

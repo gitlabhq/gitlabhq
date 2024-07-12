@@ -355,8 +355,6 @@
 - merge_request_action
 - o_pipeline_authoring_unique_users_committing_ciconfigfile
 - o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
-- p_analytics_ci_cd_change_failure_rate
-- p_analytics_ci_cd_time_to_restore_service
 - p_analytics_code_reviews
 - p_analytics_insights
 - p_analytics_issues

@@ -123,28 +123,14 @@ describe('ProjectsPipelinesChartsApp', () => {
     });
 
     describe('event tracking', () => {
-      describe('RedisHLL events', () => {
-        it.each`
-          testId                           | event
-          ${'time-to-restore-service-tab'} | ${'p_analytics_ci_cd_time_to_restore_service'}
-          ${'change-failure-rate-tab'}     | ${'p_analytics_ci_cd_change_failure_rate'}
-        `('tracks the $event event when clicked', ({ testId, event }) => {
-          const trackApiSpy = jest.spyOn(API, 'trackRedisHllUserEvent');
-
-          expect(trackApiSpy).not.toHaveBeenCalled();
-
-          wrapper.findByTestId(testId).vm.$emit('click');
-
-          expect(trackApiSpy).toHaveBeenCalledWith(event);
-        });
-      });
-
       describe('Internal Events RedisHLL events', () => {
         it.each`
-          testId                        | event
-          ${'pipelines-tab'}            | ${'p_analytics_ci_cd_pipelines'}
-          ${'deployment-frequency-tab'} | ${'p_analytics_ci_cd_deployment_frequency'}
-          ${'lead-time-tab'}            | ${'p_analytics_ci_cd_lead_time'}
+          testId                           | event
+          ${'pipelines-tab'}               | ${'p_analytics_ci_cd_pipelines'}
+          ${'deployment-frequency-tab'}    | ${'p_analytics_ci_cd_deployment_frequency'}
+          ${'lead-time-tab'}               | ${'p_analytics_ci_cd_lead_time'}
+          ${'time-to-restore-service-tab'} | ${'visit_ci_cd_time_to_restore_service_tab'}
+          ${'change-failure-rate-tab'}     | ${'visit_ci_cd_failure_rate_tab'}
         `('tracks the $event event when clicked', ({ testId, event }) => {
           const trackApiSpy = jest.spyOn(API, 'trackInternalEvent');
 
@@ -176,18 +162,6 @@ describe('ProjectsPipelinesChartsApp', () => {
               },
             },
           });
-        });
-
-        it.each`
-          tab
-          ${'time-to-restore-service-tab'}
-          ${'change-failure-rate-tab'}
-        `('does not track when tab $tab is clicked', ({ tab }) => {
-          const trackingSpy = mockTracking(undefined, wrapper.element, jest.spyOn);
-
-          wrapper.findByTestId(tab).vm.$emit('click');
-
-          expect(trackingSpy).not.toHaveBeenCalled();
         });
       });
     });

@@ -7,6 +7,7 @@ module Mutations
 
       include Mutations::SpamProtection
       include FindsNamespace
+      include Mutations::WorkItems::SharedArguments
       include Mutations::WorkItems::Widgetable
 
       description "Creates a work item."
@@ -16,44 +17,39 @@ module Mutations
       MUTUALLY_EXCLUSIVE_ARGUMENTS_ERROR = 'Please provide either projectPath or namespacePath argument, but not both.'
       DISABLED_FF_ERROR = 'create_group_level_work_items feature flag is disabled. Only project paths allowed.'
 
-      argument :assignees_widget, ::Types::WorkItems::Widgets::AssigneesInputType,
-               required: false,
-               description: 'Input for assignees widget.'
-      argument :confidential, GraphQL::Types::Boolean,
-               required: false,
-               description: 'Sets the work item confidentiality.'
-      argument :description, GraphQL::Types::String,
-               required: false,
-               description: copy_field_description(Types::WorkItemType, :description),
-               deprecated: { milestone: '16.9', reason: 'use description widget instead' }
-      argument :description_widget, ::Types::WorkItems::Widgets::DescriptionInputType,
-               required: false,
-               description: 'Input for description widget.'
-      argument :hierarchy_widget, ::Types::WorkItems::Widgets::HierarchyCreateInputType,
-               required: false,
-               description: 'Input for hierarchy widget.'
-      argument :labels_widget, ::Types::WorkItems::Widgets::LabelsCreateInputType,
-               required: false,
-               description: 'Input for labels widget.'
-      argument :milestone_widget, ::Types::WorkItems::Widgets::MilestoneInputType,
-               required: false,
-               description: 'Input for milestone widget.'
-      argument :namespace_path, GraphQL::Types::ID,
-               required: false,
-               description: 'Full path of the namespace(project or group) the work item is created in.'
-      argument :project_path, GraphQL::Types::ID,
-               required: false,
-               description: 'Full path of the project the work item is associated with.',
-               deprecated: {
-                 reason: 'Please use namespace_path instead. That will cover for both projects and groups',
-                 milestone: '15.10'
-               }
-      argument :title, GraphQL::Types::String,
-               required: true,
-               description: copy_field_description(Types::WorkItemType, :title)
-      argument :work_item_type_id, ::Types::GlobalIDType[::WorkItems::Type],
-               required: true,
-               description: 'Global ID of a work item type.'
+      argument :description,
+        GraphQL::Types::String,
+        required: false,
+        description: copy_field_description(Types::WorkItemType, :description),
+        deprecated: { milestone: '16.9', reason: 'use description widget instead' }
+      argument :hierarchy_widget,
+        ::Types::WorkItems::Widgets::HierarchyCreateInputType,
+        required: false,
+        description: 'Input for hierarchy widget.'
+      argument :labels_widget,
+        ::Types::WorkItems::Widgets::LabelsCreateInputType,
+        required: false,
+        description: 'Input for labels widget.'
+      argument :namespace_path,
+        GraphQL::Types::ID,
+        required: false,
+        description: 'Full path of the namespace(project or group) the work item is created in.'
+      argument :project_path,
+        GraphQL::Types::ID,
+        required: false,
+        description: 'Full path of the project the work item is associated with.',
+        deprecated: {
+          reason: 'Please use namespace_path instead. That will cover for both projects and groups',
+          milestone: '15.10'
+        }
+      argument :title,
+        GraphQL::Types::String,
+        required: true,
+        description: copy_field_description(Types::WorkItemType, :title)
+      argument :work_item_type_id,
+        ::Types::GlobalIDType[::WorkItems::Type],
+        required: true,
+        description: 'Global ID of a work item type.'
 
       field :work_item, Types::WorkItemType,
             null: true,

@@ -7,10 +7,55 @@ module Mutations
       description "Updates a work item by Global ID."
 
       include Mutations::SpamProtection
-      include Mutations::WorkItems::UpdateArguments
+      include Mutations::WorkItems::SharedArguments
       include Mutations::WorkItems::Widgetable
 
       authorize :read_work_item
+
+      argument :award_emoji_widget,
+        ::Types::WorkItems::Widgets::AwardEmojiUpdateInputType,
+        required: false,
+        description: 'Input for emoji reactions widget.'
+      argument :current_user_todos_widget,
+        ::Types::WorkItems::Widgets::CurrentUserTodosInputType,
+        required: false,
+        description: 'Input for to-dos widget.'
+      argument :hierarchy_widget,
+        ::Types::WorkItems::Widgets::HierarchyUpdateInputType,
+        required: false,
+        description: 'Input for hierarchy widget.'
+      argument :id,
+        ::Types::GlobalIDType[::WorkItem],
+        required: true,
+        description: 'Global ID of the work item.'
+      argument :labels_widget,
+        ::Types::WorkItems::Widgets::LabelsUpdateInputType,
+        required: false,
+        description: 'Input for labels widget.'
+      argument :notes_widget,
+        ::Types::WorkItems::Widgets::NotesInputType,
+        required: false,
+        description: 'Input for notes widget.'
+      argument :notifications_widget,
+        ::Types::WorkItems::Widgets::NotificationsUpdateInputType,
+        required: false,
+        description: 'Input for notifications widget.'
+      argument :start_and_due_date_widget,
+        ::Types::WorkItems::Widgets::StartAndDueDateUpdateInputType,
+        required: false,
+        description: 'Input for start and due date widget.'
+      argument :state_event,
+        Types::WorkItems::StateEventEnum,
+        description: 'Close or reopen a work item.',
+        required: false
+      argument :time_tracking_widget,
+        ::Types::WorkItems::Widgets::TimeTracking::TimeTrackingInputType,
+        required: false,
+        description: 'Input for time tracking widget.'
+      argument :title,
+        GraphQL::Types::String,
+        required: false,
+        description: copy_field_description(Types::WorkItemType, :title)
 
       field :work_item, Types::WorkItemType,
             null: true,

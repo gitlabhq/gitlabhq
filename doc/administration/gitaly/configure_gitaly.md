@@ -395,7 +395,7 @@ You can't define Gitaly servers with some as a local Gitaly server
 server (with `gitaly_address`) unless you use
 [mixed configuration](#mixed-configuration).
 
-Configure Gitaly clients in one of two ways:
+Configure Gitaly clients in one of two ways. These instructions are for unencrypted connections but you can also enable [TLS support](tls_support.md):
 
 ::Tabs
 
