@@ -18,6 +18,7 @@ module Import
 
     def initialize(params)
       @params = params
+      @auth = nil
     end
 
     def execute
@@ -26,6 +27,11 @@ module Import
       if !uri || !uri.hostname || Project::VALID_IMPORT_PROTOCOLS.exclude?(uri.scheme)
         return ServiceResponse.error(message: "#{@params[:url]} is not a valid URL")
       end
+
+      # Credentials extracted from URL will be rewritten
+      # if credentials were also set via params
+      extract_auth_credentials!(uri)
+      set_auth_from_params
 
       return ServiceResponse.success if uri.scheme == 'git'
 
@@ -46,6 +52,22 @@ module Import
 
     private
 
+    attr_reader :auth
+
+    def extract_auth_credentials!(uri)
+      if uri.userinfo.present?
+        @auth = { username: uri.user, password: uri.password }
+
+        # Remove username/password params from URL after extraction,
+        # because they will be sent via Basic authorization header
+        uri.userinfo = nil
+      end
+    end
+
+    def set_auth_from_params
+      @auth = { username: @params[:user], password: @params[:password] } if @params[:user].present?
+    end
+
     def http_get_and_extract_first_chunks(url)
       # We are interested only in the first chunks of the response
       # So we're using stream_body: true and breaking when receive enough body
@@ -59,15 +81,6 @@ module Import
       end
 
       [response, response_body]
-    end
-
-    def auth
-      unless @params[:user].to_s.blank?
-        {
-          username: @params[:user],
-          password: @params[:password]
-        }
-      end
     end
 
     def validate(uri, response, response_body)

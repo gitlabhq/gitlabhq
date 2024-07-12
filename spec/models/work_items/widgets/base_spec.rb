@@ -17,6 +17,14 @@ RSpec.describe WorkItems::Widgets::Base do
     it { is_expected.to eq(:base) }
   end
 
+  describe '#widget_definition' do
+    let(:widget_definition) { build(:widget_definition) }
+
+    subject { described_class.new(work_item, widget_definition: widget_definition).widget_definition }
+
+    it { is_expected.to eq(widget_definition) }
+  end
+
   describe '.process_quick_action_param' do
     subject { described_class.process_quick_action_param(:label_ids, [1, 2]) }
 

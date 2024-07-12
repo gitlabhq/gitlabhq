@@ -269,14 +269,14 @@ module SearchHelper
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: _("API Help"),           url: help_page_path("api/index") },
-      { category: "Help", label: _("Markdown Help"),      url: help_page_path("user/markdown") },
-      { category: "Help", label: _("Permissions Help"),   url: help_page_path("user/permissions") },
-      { category: "Help", label: _("Public Access Help"), url: help_page_path("user/public_access") },
-      { category: "Help", label: _("Rake Tasks Help"),    url: help_page_path("raketasks/index") },
-      { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("user/ssh") },
-      { category: "Help", label: _("System Hooks Help"),  url: help_page_path("administration/system_hooks") },
-      { category: "Help", label: _("Webhooks Help"),      url: help_page_path("user/project/integrations/webhooks") }
+      { category: "Help", label: _("API Help"),                     url: help_page_path("api/index") },
+      { category: "Help", label: _("Markdown Help"),                url: help_page_path("user/markdown") },
+      { category: "Help", label: _("Permissions Help"),             url: help_page_path("user/permissions") },
+      { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access") },
+      { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/index") },
+      { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh") },
+      { category: "Help", label: s_("Webhooks|System hooks help"),  url: help_page_path("administration/system_hooks") },
+      { category: "Help", label: _("Webhooks Help"),                url: help_page_path("user/project/integrations/webhooks") }
     ]
   end
 

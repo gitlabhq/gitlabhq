@@ -56,24 +56,24 @@ export default {
       @hidden="emitHidden"
     >
       <template #toggle>
-        <button class="gl-border-0 gl-rounded-base">
+        <button class="gl-rounded-base gl-border-0">
           <gl-sprintf :message="$options.i18n.button">
             <template #superKey>
-              <kbd class="gl-font-base gl-py-2 vertical-align-normalization">{{ modKey }}</kbd>
+              <kbd class="vertical-align-normalization gl-py-2 gl-text-base">{{ modKey }}</kbd>
             </template>
             <template #link2="{ content }">
-              <kbd class="gl-font-base gl-py-2 vertical-align-normalization">{{ content }}</kbd>
+              <kbd class="vertical-align-normalization gl-py-2 gl-text-base">{{ content }}</kbd>
             </template>
           </gl-sprintf>
         </button>
       </template>
       <template #header>
-        <span class="gl-p-4 gl-border-b-1 gl-border-b-solid gl-border-gray-200">
+        <span class="gl-border-b-1 gl-border-gray-200 gl-p-4 gl-border-b-solid">
           {{ $options.i18n.header }}
         </span>
       </template>
       <template #list-item="{ item }">
-        <span class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
+        <span class="gl-flex gl-items-center gl-justify-between">
           <span data-testid="listbox-item-text">{{ item.text }}</span>
           <kbd>{{ item.value }}</kbd>
         </span>

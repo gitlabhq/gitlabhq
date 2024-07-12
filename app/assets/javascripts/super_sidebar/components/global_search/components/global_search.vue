@@ -159,7 +159,7 @@ export default {
       return '';
     },
     commandHighlightClass() {
-      return darkModeEnabled() ? 'gl-bg-gray-10!' : 'gl-bg-gray-50!';
+      return darkModeEnabled() ? '!gl-bg-gray-10' : '!gl-bg-gray-50';
     },
   },
   watch: {
@@ -389,7 +389,7 @@ export default {
     hide-header-close
     scrollable
     :title="$options.i18n.COMMAND_PALETTE"
-    body-class="gl-p-0! !gl-min-h-26"
+    body-class="!gl-p-0 !gl-min-h-26"
     modal-class="global-search-modal"
     :centered="false"
     @shown="onSearchModalShown"
@@ -398,9 +398,9 @@ export default {
     <form
       role="search"
       :aria-label="$options.i18n.SEARCH_OR_COMMAND_MODE_PLACEHOLDER"
-      class="gl-relative gl-rounded-lg gl-w-full gl-pb-0"
+      class="gl-relative gl-w-full gl-rounded-lg gl-pb-0"
     >
-      <div class="input-box-wrapper gl-bg-white gl-border-b -gl-mb-1 gl-p-2">
+      <div class="input-box-wrapper gl-border-b -gl-mb-1 gl-bg-white gl-p-2">
         <gl-search-box-by-type
           id="search"
           ref="searchInput"
@@ -436,10 +436,10 @@ export default {
       </span>
       <div
         ref="resultsList"
-        class="global-search-results gl-w-full gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-overflow-hidden"
+        class="global-search-results gl-flex gl-w-full gl-grow gl-flex-col gl-overflow-hidden"
         @keydown="onKeydown"
       >
-        <scroll-scrim class="gl-flex-grow-1 gl-overflow-x-hidden!" data-testid="nav-container">
+        <scroll-scrim class="gl-grow !gl-overflow-x-hidden" data-testid="nav-container">
           <div class="gl-pb-3">
             <command-palette-items
               v-if="isCommandMode"
@@ -481,9 +481,7 @@ export default {
       </template>
     </form>
     <template #modal-footer>
-      <div
-        class="gl-display-flex gl-flex-grow-1 gl-m-0 gl-align-middle gl-justify-content-space-between"
-      >
+      <div class="gl-m-0 gl-flex gl-grow gl-justify-between gl-align-middle">
         <span class="gl-text-gray-500"
           >{{ $options.i18n.COMMAND_PALETTE_TIP }} <command-palette-lottery
         /></span>

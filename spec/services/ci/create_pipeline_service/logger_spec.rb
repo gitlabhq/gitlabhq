@@ -47,7 +47,8 @@ RSpec.describe Ci::CreatePipelineService, # rubocop: disable RSpec/FilePath
     end
 
     context 'when the duration is under the threshold' do
-      it 'does not create a log entry but it collects the data' do
+      it 'does not create a log entry but it collects the data',
+        quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464035' do
         expect(Gitlab::AppJsonLogger).not_to receive(:info)
         expect(pipeline).to be_created_successfully
 

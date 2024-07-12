@@ -2,7 +2,7 @@
 
 exports[`SearchItem should render the item 1`] = `
 <div
-  class="gl-align-items-center gl-display-flex"
+  class="gl-flex gl-items-center"
 >
   <gl-avatar-stub
     alt="avatar"
@@ -15,7 +15,7 @@ exports[`SearchItem should render the item 1`] = `
     src="https://www.gravatar.com/avatar/a9638f4ec70148d51e56bf05ad41e993?s=80&d=identicon"
   />
   <span
-    class="gl-display-flex gl-flex-direction-column"
+    class="gl-flex gl-flex-col"
   >
     <span
       class="gl-text-gray-900"
@@ -28,7 +28,7 @@ exports[`SearchItem should render the item 1`] = `
 
 exports[`SearchItem should render the item 2`] = `
 <div
-  class="gl-align-items-center gl-display-flex"
+  class="gl-flex gl-items-center"
 >
   <gl-icon-stub
     class="gl-flex-shrink-0 gl-mr-3"
@@ -37,7 +37,7 @@ exports[`SearchItem should render the item 2`] = `
     variant="current"
   />
   <span
-    class="gl-display-flex gl-flex-direction-column"
+    class="gl-flex gl-flex-col"
   >
     <span
       class="gl-text-gray-900"
@@ -50,7 +50,7 @@ exports[`SearchItem should render the item 2`] = `
 
 exports[`SearchItem should render the item 3`] = `
 <div
-  class="gl-align-items-center gl-display-flex"
+  class="gl-flex gl-items-center"
 >
   <gl-avatar-stub
     alt="avatar"
@@ -63,7 +63,7 @@ exports[`SearchItem should render the item 3`] = `
     src="/project/avatar/1/avatar.png"
   />
   <span
-    class="gl-display-flex gl-flex-direction-column"
+    class="gl-flex gl-flex-col"
   >
     <span
       class="gl-text-gray-900"
@@ -71,7 +71,7 @@ exports[`SearchItem should render the item 3`] = `
       MockProject1
     </span>
     <span
-      class="gl-font-sm gl-text-gray-500"
+      class="gl-text-gray-500 gl-text-sm"
     >
       Gitlab Org / MockProject1
     </span>
@@ -81,7 +81,7 @@ exports[`SearchItem should render the item 3`] = `
 
 exports[`SearchItem should render the item 4`] = `
 <div
-  class="gl-align-items-center gl-display-flex"
+  class="gl-flex gl-items-center"
 >
   <gl-avatar-stub
     alt="avatar"
@@ -94,7 +94,7 @@ exports[`SearchItem should render the item 4`] = `
     src=""
   />
   <span
-    class="gl-display-flex gl-flex-direction-column"
+    class="gl-flex gl-flex-col"
   >
     <span
       class="gl-text-gray-900"

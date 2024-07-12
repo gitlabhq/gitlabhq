@@ -212,6 +212,14 @@ RSpec.describe Gitlab::Usage::MetricDefinition, feature_category: :service_ping 
       end
     end
 
+    context "validation errors" do
+      it "has descriptive error messages" do
+        attributes.delete(:tier)
+
+        expect(described_class.new(path, attributes).validation_errors.first).to match(/"missing_keys"=>\["tier"\]/)
+      end
+    end
+
     context 'conditional validations' do
       context 'when metric has broken status' do
         it 'has to have repair issue url provided' do

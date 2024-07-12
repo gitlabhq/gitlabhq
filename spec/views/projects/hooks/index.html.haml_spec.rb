@@ -14,11 +14,11 @@ RSpec.describe 'projects/hooks/index' do
     assign :hook, new_hook
   end
 
-  it 'renders webhooks page with "Project Hooks"' do
+  it 'renders webhooks page with "Webhooks"' do
     render
 
     expect(rendered).to have_css('h4', text: _('Webhooks'))
-    expect(rendered).to have_text('Project Hooks')
+    expect(rendered).to have_text('Webhooks')
     expect(rendered).not_to have_css('.gl-badge', text: _('Disabled'))
     expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Failed to connect'))
     expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Fails to connect'))

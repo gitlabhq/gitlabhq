@@ -88,7 +88,7 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw)
 - [View documentation](../project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers).
 
-### Merge commit generation
+### Merge commit message generation
 
 DETAILS:
 **Tier:** Premium and Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).

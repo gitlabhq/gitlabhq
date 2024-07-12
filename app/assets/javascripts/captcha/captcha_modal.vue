@@ -148,5 +148,5 @@ export default {
     <div ref="captcha"></div>
     <p>{{ __('We want to be sure it is you, please confirm you are not a robot.') }}</p>
   </gl-modal>
-  <div v-else ref="captcha" class="gl-display-inline-block"></div>
+  <div v-else ref="captcha" class="gl-inline-block"></div>
 </template>

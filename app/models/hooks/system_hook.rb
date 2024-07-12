@@ -24,7 +24,7 @@ class SystemHook < WebHook
   end
 
   def pluralized_name
-    _('System Hooks')
+    s_('Webhooks|System hooks')
   end
 
   def help_path

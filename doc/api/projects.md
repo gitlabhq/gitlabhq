@@ -2796,7 +2796,7 @@ When there is a system error (`404` and `422` HTTP status codes):
 
 ## Hooks
 
-Also called Project Hooks and Webhooks. These are different for [System Hooks](system_hooks.md)
+Also called project hooks and webhooks. These are different for [system hooks](system_hooks.md)
 that are system-wide.
 
 ### List project hooks

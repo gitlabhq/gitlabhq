@@ -28,6 +28,7 @@ RSpec.describe CommitStatus, feature_category: :continuous_integration do
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:ci_stage) }
+  it { is_expected.to validate_presence_of(:project) }
   it { is_expected.to validate_inclusion_of(:status).in_array(%w[pending running failed success canceled]) }
 
   it { is_expected.to validate_length_of(:ref).is_at_most(255) }

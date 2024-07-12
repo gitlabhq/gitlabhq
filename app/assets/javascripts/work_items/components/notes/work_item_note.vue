@@ -330,6 +330,7 @@ export default {
         :work-item-id="workItemId"
         :autofocus="isEditing"
         :is-work-item-confidential="isWorkItemConfidential"
+        :full-path="fullPath"
         class="gl-pl-3 gl-mt-3"
         @cancelEditing="isEditing = false"
         @submitForm="updateNote"

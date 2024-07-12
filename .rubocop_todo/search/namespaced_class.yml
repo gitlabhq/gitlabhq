@@ -158,7 +158,6 @@ Search/NamespacedClass:
     - 'ee/lib/gem_extensions/elasticsearch/model/client.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/indexing/instance_methods.rb'
     - 'ee/lib/gem_extensions/elasticsearch/model/response/records.rb'
-    - 'ee/lib/gitlab/elastic/bool_expr.rb'
     - 'ee/lib/gitlab/elastic/bulk_indexer.rb'
     - 'ee/lib/gitlab/elastic/client.rb'
     - 'ee/lib/gitlab/elastic/document_reference.rb'

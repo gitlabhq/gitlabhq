@@ -60,7 +60,7 @@ module Sidebars
 
         def health_check_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Health Check'),
+            title: _('Health check'),
             link: admin_health_check_path,
             active_routes: { controller: 'health_check' },
             item_id: :health_check

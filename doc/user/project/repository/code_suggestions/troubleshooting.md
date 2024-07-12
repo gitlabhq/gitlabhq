@@ -64,7 +64,7 @@ To enable debug logging for the Language Server (LS), enable **GitLab › Ls: De
 ### Code Suggestions not displayed in JetBrains IDEs
 
 1. Ensure you have properly [set up the extension](https://gitlab.com/gitlab-org/editor-extensions/gitlab-intellij-plugin#setup).
-1. From the **Tools > GitLab Duo** menu, select **Verify setup**. Make sure the Health Check passes.
+1. From the **Tools > GitLab Duo** menu, select **Verify setup**. Make sure the health check passes.
 1. Verify that your JetBrains IDE natively supports the language of the file you are
    working on. Go to **Settings** > **Languages & Frameworks** to see the full list of
    languages and frameworks supported by your JetBrains IDE.

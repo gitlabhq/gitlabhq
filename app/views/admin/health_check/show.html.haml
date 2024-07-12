@@ -1,8 +1,8 @@
-- page_title _('Health Check')
+- page_title _('Health check')
 - no_errors = @errors.blank?
 
-#div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_health_check_pageload' } }
-%h1.page-title.gl-font-size-h-display= page_title
+= render ::Layouts::PageHeadingComponent.new(page_title), options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_health_check_pageload' } }
+
 = render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
   - c.with_body do
     #{ s_('HealthCheck|Access token is') }
@@ -21,7 +21,7 @@
     %li
       %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
     = render_if_exists 'admin/health_check/health_check_url'
-%hr
+
 = render Pajamas::CardComponent.new do |c|
   - c.with_header do
     Current Status:

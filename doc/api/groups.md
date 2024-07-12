@@ -1707,8 +1707,8 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Also called Group Hooks and Webhooks.
-These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
+Also called Group hooks and Webhooks.
+These are different from [system hooks](system_hooks.md) that are system wide and [project hooks](projects.md#hooks) that are limited to one project.
 
 ### List group hooks
 
@@ -2433,11 +2433,11 @@ DELETE /groups/:id/push_rule
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `group_agnostic_token_revocation`. Disabled by default.
 
 FLAG:
-The availability of this feature is controlled by a feature flag. 
+The availability of this feature is controlled by a feature flag.
 For more information, see the history.
 
 Revoke a token, if it has access to the group or any of its subgroups
-and projects. If the token is revoked, or was already revoked, its 
+and projects. If the token is revoked, or was already revoked, its
 details are returned in the response.
 
 The following criteria must be met:

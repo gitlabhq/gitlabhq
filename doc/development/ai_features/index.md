@@ -244,10 +244,10 @@ and it succeeded.
 
 Some AI features requires a [seat to be assigned](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/subscriptions/subscription-add-ons.md#for-self-managed) to a user to have access.
 If you use `CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1` you need to assign `root`/`admin` user to a seat,
-to receive a "Code completion test was successful" notification from the Health Check
+to receive a "Code completion test was successful" notification from the health check
 on the `http://localhost:3000/admin/code_suggestions` page.
 
-Our customers (production environment) do not need to do that to run a Code Suggestions Health Check.
+Our customers (production environment) do not need to do that to run a Code Suggestions health check.
 
 ### Recommended: Test clients in Rails console
 

@@ -4753,9 +4753,6 @@ msgstr ""
 msgid "Admin|Subscription"
 msgstr ""
 
-msgid "Admin|System Hooks"
-msgstr ""
-
 msgid "Admin|The number of max seats in your namespace exceeds the number of seats in your subscription. On %{qrtlyDate}, quarterly reconciliation occurs and you are automatically billed a prorated amount for the overage. No action is needed from you. If you have a credit card on file, it will be charged. Otherwise, you will receive an invoice. For more information about the timing of the invoicing process, view the documentation."
 msgstr ""
 
@@ -19658,9 +19655,6 @@ msgstr ""
 msgid "Edit Geo Site"
 msgstr ""
 
-msgid "Edit Group Hook"
-msgstr ""
-
 msgid "Edit Identity"
 msgstr ""
 
@@ -19674,9 +19668,6 @@ msgid "Edit Release"
 msgstr ""
 
 msgid "Edit Slack integration"
-msgstr ""
-
-msgid "Edit System Hook"
 msgstr ""
 
 msgid "Edit application"
@@ -22406,9 +22397,6 @@ msgstr ""
 msgid "File %{current} of %{total}"
 msgstr ""
 
-msgid "File Hooks"
-msgstr ""
-
 msgid "File Tree"
 msgstr ""
 
@@ -22736,10 +22724,10 @@ msgstr ""
 msgid "For more information, go to the "
 msgstr ""
 
-msgid "For more information, see the File Hooks documentation."
+msgid "For more information, see the developer console. Try to reload the page or sign out and in again. If the issue persists, %{reportIssueStart}report a problem%{reportIssueEnd}."
 msgstr ""
 
-msgid "For more information, see the developer console. Try to reload the page or sign out and in again. If the issue persists, %{reportIssueStart}report a problem%{reportIssueEnd}."
+msgid "For more information, see the file hooks documentation."
 msgstr ""
 
 msgid "For the GitLab Team to keep your subscription data up to date, this is a reminder to report your license usage on a monthly basis, or at the cadence set in your agreement with GitLab. This allows us to simplify the billing process for overages and renewals. To report your usage data, export your license usage file and email it to %{renewal_service_email}. If you need an updated license, GitLab will send the license to the email address registered in the %{customers_dot}, and you can upload this license to your instance."
@@ -25021,9 +25009,6 @@ msgstr ""
 msgid "Group Git LFS status:"
 msgstr ""
 
-msgid "Group Hooks"
-msgstr ""
-
 msgid "Group Owner must have signed in with SAML before enabling Group Managed Accounts"
 msgstr ""
 
@@ -26147,7 +26132,7 @@ msgstr ""
 msgid "Health"
 msgstr ""
 
-msgid "Health Check"
+msgid "Health check"
 msgstr ""
 
 msgid "Health information can be retrieved from the following endpoints. More information is available"
@@ -48617,7 +48602,22 @@ msgstr ""
 msgid "SecurityReports|Confirm dismissal"
 msgstr ""
 
+msgid "SecurityReports|Container Scanning for Registry scans the latest tag of each image for vulnerabilities. %{linkStart}How do I enable Container Scanning for Registry?%{linkEnd}"
+msgstr ""
+
+msgid "SecurityReports|Container Scanning for Registry scans the latest tag of each image. It scans for vulnerabilities in the container %{linkStart}registry%{linkEnd} when an image or database is updated."
+msgstr ""
+
+msgid "SecurityReports|Container Scanning for registry is active"
+msgstr ""
+
 msgid "SecurityReports|Container registry vulnerabilities"
+msgstr ""
+
+msgid "SecurityReports|Container scanning for registry is not enabled"
+msgstr ""
+
+msgid "SecurityReports|Container scanning for registry scans the latest tag of each image. It scans for vulnerabilities in the container registry when an image or database is updated."
 msgstr ""
 
 msgid "SecurityReports|Create Jira issue"
@@ -52323,12 +52323,6 @@ msgid "SynthaxHighlightingTheme|Solarized Light"
 msgstr ""
 
 msgid "System"
-msgstr ""
-
-msgid "System Hooks"
-msgstr ""
-
-msgid "System Hooks Help"
 msgstr ""
 
 msgid "System default (%{default})"
@@ -59470,6 +59464,12 @@ msgstr ""
 msgid "Webhooks|Do not show sensitive data such as tokens in the UI."
 msgstr ""
 
+msgid "Webhooks|Edit group hook"
+msgstr ""
+
+msgid "Webhooks|Edit system hook"
+msgstr ""
+
 msgid "Webhooks|Enable SSL verification"
 msgstr ""
 
@@ -59482,7 +59482,13 @@ msgstr ""
 msgid "Webhooks|Feature flag events"
 msgstr ""
 
+msgid "Webhooks|File hooks"
+msgstr ""
+
 msgid "Webhooks|Go to webhooks"
+msgstr ""
+
+msgid "Webhooks|Group hooks"
 msgstr ""
 
 msgid "Webhooks|Header name"
@@ -59561,6 +59567,12 @@ msgid "Webhooks|Show full URL"
 msgstr ""
 
 msgid "Webhooks|Subgroup events"
+msgstr ""
+
+msgid "Webhooks|System hooks"
+msgstr ""
+
+msgid "Webhooks|System hooks help"
 msgstr ""
 
 msgid "Webhooks|Tag push events"

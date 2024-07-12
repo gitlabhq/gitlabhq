@@ -259,13 +259,13 @@ export default {
   <div>
     <gl-loading-icon v-if="loading" size="lg" class="gl-my-5" />
 
-    <ul v-else-if="hasResults" class="gl-p-0 gl-m-0 gl-list-none">
+    <ul v-else-if="hasResults" class="gl-m-0 gl-list-none gl-p-0">
       <gl-disclosure-dropdown-group
         v-for="(group, index) in groups"
         :key="index"
         :group="group"
         bordered
-        :class="{ 'gl-mt-0!': index === 0 }"
+        :class="{ '!gl-mt-0': index === 0 }"
       >
         <template #list-item="{ item }">
           <search-item :item="item" :search-query="searchQuery" />
@@ -273,7 +273,7 @@ export default {
       </gl-disclosure-dropdown-group>
     </ul>
 
-    <div v-else-if="hasSearchQuery && !hasResults" class="gl-text-gray-700 gl-pl-5 gl-py-3">
+    <div v-else-if="hasSearchQuery && !hasResults" class="gl-py-3 gl-pl-5 gl-text-gray-700">
       {{ __('No results found') }}
     </div>
   </div>

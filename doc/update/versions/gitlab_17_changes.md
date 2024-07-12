@@ -55,10 +55,10 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
   Project.where(repository_storage: 'duplicate-path').update_all(repository_storage: 'default')
   ```
 
-- Migration failures when upgrading from GitLab 16.x directly to GitLab 17.1.
+- Migration failures when upgrading from GitLab 16.x directly to GitLab 17.1.0 or 17.1.1.
 
-  Due to a bug in GitLab 17.1 where a background job completion did not get enforced correctly, there
-  can be failures when upgrading directly to GitLab 17.1.
+  Due to a bug in GitLab 17.1.0 and 17.1.1 where a background job completion did not get enforced correctly, there
+  can be failures when upgrading directly to GitLab 17.1.0 and 17.1.1.
   The error during the migration of the upgrade looks like the following:
 
   ```shell
@@ -84,7 +84,8 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
     ```
 
   Now you should be able to complete the migrations in GitLab 17.1 and finish
-  the upgrade.
+  the upgrade. This bug has been fixed with GitLab 17.1.2 and upgrading from GitLab 16.x directly to 17.1.2 will not
+  cause these issues.
 
 ### Linux package installations
 
@@ -124,7 +125,7 @@ For more information, see the:
   For more information, see [merge request 155806](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155806).
 - Git 2.44.0 and later is required by Gitaly. For self-compiled installations,
   you should use the [Git version provided by Gitaly](../../install/installation.md#git).
-- Upgrading to GitLab 17.1 or having unfinished background migrations from GitLab 17.0 can result
+- Upgrading to GitLab 17.1.0 or 17.1.1 or having unfinished background migrations from GitLab 17.0 can result
   in a failure when running the migrations.
   This is due to a bug.
-  [Issue 468875](https://gitlab.com/gitlab-org/gitlab/-/issues/468875) tracks fixing this behavior.
+  [Issue 468875](https://gitlab.com/gitlab-org/gitlab/-/issues/468875) has been fixed with GitLab 17.1.2.

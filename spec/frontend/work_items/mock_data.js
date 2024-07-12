@@ -1050,7 +1050,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetTimeTracking',
               type: 'TIME_TRACKING',
-              timeEstimate: '5h',
+              timeEstimate: 5,
               timelogs: {
                 nodes: [
                   {
@@ -1077,7 +1077,7 @@ export const workItemResponseFactory = ({
                 ],
                 __typename: 'WorkItemTimelogConnection',
               },
-              totalTimeSpent: '3h',
+              totalTimeSpent: 3,
             }
           : { type: 'MOCK TYPE' },
         participantsWidgetPresent

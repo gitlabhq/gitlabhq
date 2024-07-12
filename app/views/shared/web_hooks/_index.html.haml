@@ -1,4 +1,4 @@
-= render ::Layouts::CrudComponent.new(hook_class.underscore.humanize.titleize.pluralize,
+= render ::Layouts::CrudComponent.new(title,
   icon: 'hook',
   count: hooks.size,
   toggle_text: _('Add new webhook')) do |c|

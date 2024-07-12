@@ -120,7 +120,7 @@ class WorkItem < Issue
   def widgets
     strong_memoize(:widgets) do
       work_item_type.widgets(resource_parent).map do |widget_definition|
-        widget_definition.widget_class.new(self)
+        widget_definition.widget_class.new(self, widget_definition: widget_definition)
       end
     end
   end

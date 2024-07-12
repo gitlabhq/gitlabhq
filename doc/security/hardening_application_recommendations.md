@@ -14,7 +14,7 @@ web interface.
 ## System hooks
 
 1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **System Hooks**.
+1. Select **System hooks**.
 
 In a typical hardened environment, internal information is not transmitted or stored
 outside of the system. For an offline environment system, this is

@@ -326,6 +326,9 @@ export default {
         'gl-flex': true,
       };
     },
+    workItemPresent() {
+      return !isEmpty(this.workItem);
+    },
   },
   mounted() {
     if (this.modalWorkItemIid) {
@@ -565,6 +568,7 @@ export default {
                 @error="updateError = $event"
               />
               <work-item-actions
+                v-if="workItemPresent"
                 :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :hide-subscribe="newTodoAndNotificationsEnabled"

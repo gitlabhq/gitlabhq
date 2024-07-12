@@ -31,12 +31,12 @@ export default {
       aria-hidden="true"
     />
 
-    <div class="gl-flex-grow-1 gl-text-truncate">
+    <div class="gl-grow gl-truncate">
       {{ item.title }}
       <div
         v-if="item.subtitle"
         data-testid="subtitle"
-        class="gl-font-sm gl-text-gray-500 gl-text-truncate"
+        class="gl-truncate gl-text-sm gl-text-gray-500"
       >
         {{ item.subtitle }}
       </div>

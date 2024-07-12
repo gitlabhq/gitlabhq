@@ -286,7 +286,7 @@ On the EC2 dashboard, look for **Load Balancers** in the left navigation bar:
       - `gitlab-loadbalancer-ssh-target` - TCP Protocol for port 22
    1. Select **IPv4** as the IP address type.
    1. Select `gitlab-vpc` from the VPC dropdown list.
-   1. For `gitlab-loadbalancer-http-target` Health checks, you should [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health Check endpoints](../../administration/monitoring/health_check.md)
+   1. For `gitlab-loadbalancer-http-target` Health checks, you should [use the Readiness check endpoint](../../administration/load_balancer.md#readiness-check). You must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html) to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health check endpoints](../../administration/monitoring/health_check.md)
    1. For `gitlab-loadbalancer-ssh-target` Health checks, select **TCP**.
       - Assign `gitlab-loadbalancer-http-target` to both port 80 and 443 listener.
       - Assign `gitlab-loadbalancer-ssh-target` to port 22 listener.
@@ -713,7 +713,7 @@ That concludes the configuration changes for our GitLab instance. Next, we creat
 
 ### IP allowlist
 
-We must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html) of the `gitlab-vpc` we created earlier to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health Check endpoints](../../administration/monitoring/health_check.md)
+We must add [the VPC IP Address Range (CIDR)](https://docs.aws.amazon.com/elasticloadbalancing/latest/network/load-balancer-security-groups.html) of the `gitlab-vpc` we created earlier to the [IP allowlist](../../administration/monitoring/ip_allowlist.md) for the [Health check endpoints](../../administration/monitoring/health_check.md)
 
 1. Edit `/etc/gitlab/gitlab.rb`:
 

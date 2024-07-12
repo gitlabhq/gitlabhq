@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe "Admin Health Check", :js, feature_category: :error_budgets do
+RSpec.describe "Admin health check", :js, feature_category: :error_budgets do
   include StubENV
   include Spec::Support::Helpers::ModalHelpers
   let_it_be(:admin) { create(:admin) }
@@ -19,7 +19,7 @@ RSpec.describe "Admin Health Check", :js, feature_category: :error_budgets do
     end
 
     it 'has a health check access token' do
-      page.has_text? 'Health Check'
+      page.has_text? 'Health check'
       page.has_text? 'Health information can be retrieved'
 
       token = Gitlab::CurrentSettings.health_check_access_token

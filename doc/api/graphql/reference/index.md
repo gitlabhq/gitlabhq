@@ -33259,6 +33259,18 @@ Represents a labels widget definition.
 | <a id="workitemwidgetdefinitionlabelsallowsscopedlabels"></a>`allowsScopedLabels` | [`Boolean!`](#boolean) | Indicates whether scoped labels are available. |
 | <a id="workitemwidgetdefinitionlabelstype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
 
+### `WorkItemWidgetDefinitionWeight`
+
+Represents a weight widget definition.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="workitemwidgetdefinitionweighteditable"></a>`editable` | [`Boolean!`](#boolean) | Indicates whether editable weight is available. |
+| <a id="workitemwidgetdefinitionweightrollup"></a>`rollUp` | [`Boolean!`](#boolean) | Indicates whether rolled up weight is available. |
+| <a id="workitemwidgetdefinitionweighttype"></a>`type` | [`WorkItemWidgetType!`](#workitemwidgettype) | Widget type. |
+
 ### `WorkItemWidgetDescription`
 
 Represents a description widget.
@@ -33297,6 +33309,7 @@ Represents a development widget.
 | <a id="workitemwidgetdevelopmentclosingmergerequests"></a>`closingMergeRequests` | [`WorkItemClosingMergeRequestConnection`](#workitemclosingmergerequestconnection) | Merge requests that will close the work item when merged. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopmentfeatureflags"></a>`featureFlags` | [`FeatureFlagConnection`](#featureflagconnection) | Feature flags associated with the work item. (see [Connections](#connections)) |
 | <a id="workitemwidgetdevelopmenttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
+| <a id="workitemwidgetdevelopmentwillautoclosebymergerequest"></a>`willAutoCloseByMergeRequest` | [`Boolean!`](#boolean) | Whether the work item will automatically be closed when a closing merge request is merged. |
 
 ### `WorkItemWidgetHealthStatus`
 
@@ -33545,8 +33558,10 @@ Represents a weight widget.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="workitemwidgetweightrolledupweight"></a>`rolledUpWeight` | [`Int`](#int) | Rolled up weight of the work item. |
 | <a id="workitemwidgetweighttype"></a>`type` | [`WorkItemWidgetType`](#workitemwidgettype) | Widget type. |
 | <a id="workitemwidgetweightweight"></a>`weight` | [`Int`](#int) | Weight of the work item. |
+| <a id="workitemwidgetweightwidgetdefinition"></a>`widgetDefinition` | [`WorkItemWidgetDefinitionWeight`](#workitemwidgetdefinitionweight) | Weight widget definition. |
 
 ### `Workspace`
 
@@ -38796,6 +38811,7 @@ Implementations:
 - [`WorkItemWidgetDefinitionGeneric`](#workitemwidgetdefinitiongeneric)
 - [`WorkItemWidgetDefinitionHierarchy`](#workitemwidgetdefinitionhierarchy)
 - [`WorkItemWidgetDefinitionLabels`](#workitemwidgetdefinitionlabels)
+- [`WorkItemWidgetDefinitionWeight`](#workitemwidgetdefinitionweight)
 
 ##### Fields
 
