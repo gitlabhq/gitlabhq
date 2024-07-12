@@ -4,6 +4,7 @@ description: "Use GitLab Pages to deploy your static website. Follow these steps
 steps:
   - inputs:
       - label: Select your build image
+        monospace: true
         description: A Docker image, used to create an instance where your job runs.
         placeholder: node:lts
         widget: text
@@ -20,6 +21,7 @@ steps:
       image: $BUILD_IMAGE
   - inputs:
       - label: Installation Steps
+        monospace: true
         description: "Enter steps to set up a local build environment, like installing dependencies."
         placeholder: npm ci
         widget: list
@@ -29,6 +31,7 @@ steps:
       before_script: $INSTALLATION_STEPS
   - inputs:
       - label: Build Steps
+        monospace: true
         description: "Enter steps to build a production version of your application."
         widget: list
         target: $BUILD_STEPS

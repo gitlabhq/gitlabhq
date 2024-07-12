@@ -100,14 +100,30 @@ export default {
           key: ['title'],
         });
       }
+
       return this.searchLabels;
     },
     labelsList() {
-      return this.visibleLabels?.map(({ id, title, color }) => ({
-        value: id,
-        text: title,
-        color,
-      }));
+      const visibleLabels =
+        this.visibleLabels?.map(({ id, title, color }) => ({
+          value: id,
+          text: title,
+          color,
+        })) || [];
+
+      if (this.searchTerm || this.itemValues.length === 0) {
+        return visibleLabels;
+      }
+
+      const selectedLabels = visibleLabels.filter(({ value }) => this.itemValues.includes(value));
+      const unselectedLabels = visibleLabels.filter(
+        ({ value }) => !this.itemValues.includes(value),
+      );
+
+      return [
+        { options: selectedLabels, text: __('Selected') },
+        { options: unselectedLabels, text: __('All'), textSrOnly: true },
+      ];
     },
     labelsWidget() {
       return this.workItem?.widgets?.find(isLabelsWidget);

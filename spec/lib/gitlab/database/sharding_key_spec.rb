@@ -212,7 +212,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
 
     tables_exempted_from_sharding.each do |entry|
       # See https://gitlab.com/gitlab-org/gitlab/-/issues/471182
-      tables_to_be_fixed = %w[clusters geo_nodes zoekt_nodes]
+      tables_to_be_fixed = %w[geo_nodes zoekt_nodes]
       pending 'These tables need to be fixed' if entry.table_name.in?(tables_to_be_fixed)
 
       fks = referenced_foreign_keys(entry.table_name).to_a

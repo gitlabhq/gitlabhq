@@ -7864,13 +7864,13 @@ msgstr ""
 msgid "Background Jobs"
 msgstr ""
 
-msgid "Background Migrations"
-msgstr ""
-
 msgid "Background color"
 msgstr ""
 
-msgid "BackgroundMigrations|Background Migrations"
+msgid "Background migrations"
+msgstr ""
+
+msgid "BackgroundMigrations|Background migrations"
 msgstr ""
 
 msgid "BackgroundMigrations|Background migrations are used to perform data migrations when a migration exceeds the time limits set by GitLab. %{linkStart}Learn more%{linkEnd}"
@@ -8023,7 +8023,7 @@ msgstr ""
 msgid "Batch size"
 msgstr ""
 
-msgid "Batched Job|Background Migrations"
+msgid "Batched Job|Background migrations"
 msgstr ""
 
 msgid "Batched Job|Batched Job (Id: %{id})"

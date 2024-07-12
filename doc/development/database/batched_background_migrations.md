@@ -6,7 +6,7 @@ info: "See the Technical Writers assigned to Development Guidelines: https://han
 
 # Batched background migrations
 
-Batched Background Migrations should be used to perform data migrations whenever a
+Batched background migrations should be used to perform data migrations whenever a
 migration exceeds [the time limits](../migration_style_guide.md#how-long-a-migration-should-take)
 in our guidelines. For example, you can use batched background
 migrations to migrate data that's stored in a single JSON column

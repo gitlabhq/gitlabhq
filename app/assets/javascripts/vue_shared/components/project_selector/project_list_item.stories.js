@@ -14,7 +14,7 @@ const Template = (args, { argTypes }) => ({
 export const Default = Template.bind({});
 Default.args = {
   project: {
-    id: '1',
+    id: 1,
     name: 'MyProject',
     name_with_namespace: 'path / to / MyProject',
   },

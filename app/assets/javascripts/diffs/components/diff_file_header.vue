@@ -291,7 +291,7 @@ export default {
     :class="{
       'gl-z-dropdown-menu!': idState.moreActionsShown,
     }"
-    class="js-file-title file-title file-title-flex-parent gl-border"
+    class="js-file-title file-title file-title-flex-parent"
     data-testid="file-title-container"
     :data-qa-file-name="filePath"
     @click.self="handleToggleFile"

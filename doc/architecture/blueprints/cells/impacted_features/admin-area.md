@@ -24,7 +24,7 @@ This introduces challenges with Admin Area pages that allow you to manage data t
 There are consequences for Admin Area pages that contain data that span "the whole instance" as the Admin Area pages may be served by any Cell or possibly just one Cell.
 There are already many parts of the Admin Area that will have data that span many Cells.
 For example lists of all Groups, Projects, Topics, Jobs, Analytics, Applications and more.
-There are also administrative monitoring capabilities in the Admin Area that will span many Cells such as the "Background Jobs" and "Background Migrations" pages.
+There are also administrative monitoring capabilities in the Admin Area that will span many Cells such as the "Background Jobs" and "Background migrations" pages.
 
 ## 2. Data flow
 

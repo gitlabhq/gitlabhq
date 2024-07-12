@@ -1,4 +1,4 @@
-- add_to_breadcrumbs s_('Batched Job|Background Migrations'), admin_background_migrations_path(database: params[:database])
+- add_to_breadcrumbs s_('Batched Job|Background migrations'), admin_background_migrations_path(database: params[:database])
 - add_to_breadcrumbs @job.batched_background_migration_id, admin_background_migration_path(@job.batched_migration, database: params[:database])
 - breadcrumb_title sprintf(s_('Batched Job|Batched Job (Id: %{id})'), { id: @job.id.to_s})
 - page_title @job.id, s_('BatchedJob|Batched Jobs')

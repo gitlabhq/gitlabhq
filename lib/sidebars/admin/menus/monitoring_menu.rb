@@ -42,7 +42,7 @@ module Sidebars
 
         def background_migrations_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Background Migrations'),
+            title: _('Background migrations'),
             link: admin_background_migrations_path,
             active_routes: { controller: 'background_migrations' },
             item_id: :background_migrations

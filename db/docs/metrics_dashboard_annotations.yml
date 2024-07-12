@@ -1,7 +1,6 @@
 ---
 table_name: metrics_dashboard_annotations
-classes:
-- Metrics::Dashboard::Annotation
+classes: []
 feature_categories:
 - metrics
 description: TODO

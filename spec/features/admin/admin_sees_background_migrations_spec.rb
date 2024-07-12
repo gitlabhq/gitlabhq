@@ -26,13 +26,13 @@ RSpec.describe "Admin > Admin sees background migrations", feature_category: :da
 
     within_testid('super-sidebar') do
       click_on 'Monitoring'
-      click_on 'Background Migrations'
+      click_on 'Background migrations'
     end
 
     expect(page).to have_current_path(admin_background_migrations_path)
 
     within_testid('super-sidebar') do
-      expect(page).to have_css('a[aria-current="page"]', text: 'Background Migrations')
+      expect(page).to have_css('a[aria-current="page"]', text: 'Background migrations')
     end
   end
 

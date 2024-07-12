@@ -131,6 +131,7 @@ export default {
       :validate="validate"
       :widget="input.widget"
       class="gl-mb-8"
+      :monospace="input.monospace"
       v-bind="input"
       @highlight="onHighlight"
       @update:valid="(validationState) => onInputValidationStateChange(i, validationState)"
