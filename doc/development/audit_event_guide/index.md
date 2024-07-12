@@ -6,15 +6,15 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Audit event development guidelines
 
-This guide provides an overview of how Audit Events work, and how to instrument
+This guide provides an overview of how audit events work, and how to instrument
 new audit events.
 
-## What are Audit Events?
+## What are audit events?
 
-Audit Events are a tool for GitLab owners and administrators to view records of important
+Audit events are a tool for GitLab owners and administrators to view records of important
 actions performed across the application.
 
-## What should not be Audit Events?
+## What should not be audit events?
 
 While any events could trigger an Audit Event, not all events should. In general, events that are not good candidates for audit events are:
 
@@ -38,7 +38,7 @@ To instrument an audit event, the following attributes should be provided:
 | `message`    | String                              | true      | Message describing the action ([not translated](#i18n-and-the-audit-event-message-attribute)) |
 | `created_at` | DateTime                            | false     | The time when the action occurred. Defaults to `DateTime.current` |
 
-## How to instrument new Audit Events
+## How to instrument new audit events
 
 1. Create a [YAML type definition](#add-a-new-audit-event-type) for the new audit event.
 1. Call `Gitlab::Audit::Auditor.audit`, passing an action block.

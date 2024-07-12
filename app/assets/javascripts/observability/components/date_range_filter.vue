@@ -31,6 +31,11 @@ export default {
       required: false,
       default: null,
     },
+    dateTimeRangePickerState: {
+      type: Boolean,
+      required: false,
+      default: null,
+    },
   },
   data() {
     return {
@@ -113,6 +118,7 @@ export default {
       :max-date-range="maxDateRange"
       :default-max-date="defaultMaxDate"
       :default-min-date="defaultMinDate"
+      :state="dateTimeRangePickerState"
       @input="onCustomRangeSelected"
     />
   </div>

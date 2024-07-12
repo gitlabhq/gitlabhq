@@ -86,6 +86,8 @@ RSpec.describe Sidebars::Projects::Menus::DeploymentsMenu, feature_category: :na
 
           it { is_expected.to be_nil }
         end
+
+        it_behaves_like 'access rights checks'
       end
 
       describe 'when pages are not enabled' do

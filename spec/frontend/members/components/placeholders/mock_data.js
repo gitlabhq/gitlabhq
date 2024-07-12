@@ -109,6 +109,19 @@ export const mockKeepAsPlaceholderMutationResponse = {
     },
   },
 };
+export const mockResendNotificationMutationResponse = {
+  data: {
+    importSourceUserResendNotification: {
+      errors: [],
+      importSourceUser: {
+        ...mockSourceUsers[0],
+        status: 'AWAITING_APPROVAL',
+        reassignToUser: createMockReassignUser(1),
+      },
+      __typename: 'ImportSourceUserResendNotificationPayload',
+    },
+  },
+};
 export const mockCancelReassignmentMutationResponse = {
   data: {
     importSourceUserCancelReassignment: {

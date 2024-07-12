@@ -129,4 +129,11 @@ describe('DatetimeRangePicker', () => {
 
     expect(wrapper.emitted().input).toBeUndefined();
   });
+
+  it('sets the state props of the underlying components', () => {
+    createComponent({ ...defaultProps, state: false });
+
+    expect(findGlDaterangePicker().props('startPickerState')).toEqual(false);
+    expect(findGlDaterangePicker().props('endPickerState')).toEqual(false);
+  });
 });

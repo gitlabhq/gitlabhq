@@ -226,4 +226,17 @@ describe('DateRangeFilter', () => {
 
     expect(findDatetimeRangesPicker().props('maxDateRange')).toBe(7);
   });
+
+  it('sets dateTimeRangePickerState to state', () => {
+    mount({
+      selected: {
+        value: 'custom',
+        startDate: new Date('2022-01-01'),
+        endDate: new Date('2022-01-02'),
+      },
+      dateTimeRangePickerState: false,
+    });
+
+    expect(findDatetimeRangesPicker().props('state')).toBe(false);
+  });
 });

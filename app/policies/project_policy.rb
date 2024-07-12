@@ -665,7 +665,10 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:merge_request))
   end
 
-  rule { pages_disabled }.prevent :read_pages_content
+  rule { pages_disabled }.policy do
+    prevent :read_pages_content
+    prevent(*create_read_update_admin_destroy(:pages))
+  end
 
   rule { issues_disabled & merge_requests_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:label))

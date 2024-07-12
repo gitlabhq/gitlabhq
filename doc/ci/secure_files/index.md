@@ -83,6 +83,6 @@ with the [`download-secure-files`](https://gitlab.com/gitlab-org/incubation-engi
 tool. This tool automatically verifies the checksum of each file as it is downloaded.
 
 Any project member with at least the Developer role can access Project-level secure files.
-Interactions with Project-level secure files are not included in Audit Events, but
+Interactions with Project-level secure files are not included in audit events, but
 [issue 117](https://gitlab.com/gitlab-org/incubation-engineering/mobile-devops/readme/-/issues/117)
 proposes adding this functionality.

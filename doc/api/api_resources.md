@@ -159,7 +159,7 @@ The following API resources are available outside of project and group contexts 
 |:---------------------------------------------------------------------------------------------|:-------------------------------------------------------------------------------------------------|
 | [Appearance](appearance.md)                                                                  | `/application/appearance`                                                                        |
 | [Applications](applications.md)                                                              | `/applications`                                                                                  |
-| [Audit Events](audit_events.md)                                                              | `/audit_events`                                                                                  |
+| [Audit events](audit_events.md)                                                              | `/audit_events`                                                                                  |
 | [Avatar](avatar.md)                                                                          | `/avatar`                                                                                        |
 | [Broadcast messages](broadcast_messages.md)                                                  | `/broadcast_messages`                                                                            |
 | [Code snippets](snippets.md)                                                                 | `/snippets`                                                                                      |

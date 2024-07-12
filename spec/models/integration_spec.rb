@@ -1674,7 +1674,7 @@ RSpec.describe Integration, feature_category: :integrations do
   end
 
   describe '#async_execute' do
-    let(:integration) { described_class.new(id: 123) }
+    let(:integration) { build(:jenkins_integration, id: 123) }
     let(:data) { { object_kind: 'build' } }
     let(:serialized_data) { data.deep_stringify_keys }
     let(:supported_events) { %w[push build] }
@@ -1696,6 +1696,18 @@ RSpec.describe Integration, feature_category: :integrations do
 
       it 'does not queue a worker' do
         expect(Integrations::ExecuteWorker).not_to receive(:perform_async)
+
+        async_execute
+      end
+
+      it 'writes a log' do
+        expect(Gitlab::IntegrationsLogger).to receive(:info).with(
+          hash_including(
+            message: 'async_execute did nothing due to event not being supported',
+            integration_class: 'Integrations::Jenkins',
+            event: 'build'
+          )
+        ).and_call_original
 
         async_execute
       end

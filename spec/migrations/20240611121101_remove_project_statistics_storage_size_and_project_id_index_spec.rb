@@ -4,7 +4,9 @@ require 'spec_helper'
 
 require_migration!
 
-RSpec.describe RemoveProjectStatisticsStorageSizeAndProjectIdIndex, feature_category: :consumables_cost_management do
+RSpec.describe RemoveProjectStatisticsStorageSizeAndProjectIdIndex,
+  feature_category: :consumables_cost_management,
+  schema: 20240611121101 do
   let(:migration) { described_class.new }
   let(:postgres_async_indexes) { table(:postgres_async_indexes) }
 

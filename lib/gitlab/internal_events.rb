@@ -94,9 +94,7 @@ module Gitlab
         return unless event_definition
 
         event_definition.event_selection_rules.each do |event_selection_rule|
-          matches_filter = event_selection_rule.filter.all? do |property_name, value|
-            additional_properties[property_name] == value
-          end
+          matches_filter = event_selection_rule.matches?(additional_properties)
 
           next unless matches_filter
 

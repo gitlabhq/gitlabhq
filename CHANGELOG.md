@@ -10214,7 +10214,7 @@ No changes.
 - [Environment Update GraphQL Mutation](gitlab-org/gitlab@a30be2ee991ee80915eac59cff28a79e5facecf2) ([merge request](gitlab-org/gitlab!120561))
 - [Enable work items type quick action](gitlab-org/gitlab@9802d0da4f4eea6dbfd9fed3a6b1963d7857909b) ([merge request](gitlab-org/gitlab!120839))
 - [Add audit events schema definitions](gitlab-org/gitlab@8c20ecb957509c79736e24127ad63e6ce2713c18) ([merge request](gitlab-org/gitlab!120805)) **GitLab Enterprise Edition**
-- [[Audit Events] Synchronous database index addition](gitlab-org/gitlab@49cdd7e4b9584985615c08749d1306951c747b80) ([merge request](gitlab-org/gitlab!120599)) **GitLab Enterprise Edition**
+- [[Audit events] Synchronous database index addition](gitlab-org/gitlab@49cdd7e4b9584985615c08749d1306951c747b80) ([merge request](gitlab-org/gitlab!120599)) **GitLab Enterprise Edition**
 - [Support password reset from any verified email](gitlab-org/gitlab@94069d38c9cd63202cc21e7febfaaad596052c0d) ([merge request](gitlab-org/gitlab!119231))
 - [Add HLL counter for users that create a dashboard](gitlab-org/gitlab@ecee89037f8307c562b70f86a5667b427d951fee) ([merge request](gitlab-org/gitlab!119790)) **GitLab Enterprise Edition**
 - [Add support for `/.well-known/change-password` URL](gitlab-org/gitlab@f51bcb5a895439628b8ee49cc7dc59033026cc47) ([merge request](gitlab-org/gitlab!119630))
@@ -10575,7 +10575,7 @@ No changes.
 - [Revert to using SearchService for user autocomplete](gitlab-org/gitlab@95cd097985f47b1d3cbe42f06a81fed3b9d70069) ([merge request](gitlab-org/gitlab!122289))
 - [Display completed training urls](gitlab-org/gitlab@ad59dd1b42fa66c0c9ba8e858b3be3cc26807c7b) ([merge request](gitlab-org/gitlab!122366)) **GitLab Enterprise Edition**
 - [Reshedule links related migration with](gitlab-org/gitlab@8f84c5dce446494689114a9eb93e656051c0f70c) ([merge request](gitlab-org/gitlab!121404))
-- [[Audit Events] Provide all audit events under a group via the API](gitlab-org/gitlab@794911016bb0294a5cf0229374298f2a0caa20a7) ([merge request](gitlab-org/gitlab!115898)) **GitLab Enterprise Edition**
+- [[Audit events] Provide all audit events under a group via the API](gitlab-org/gitlab@794911016bb0294a5cf0229374298f2a0caa20a7) ([merge request](gitlab-org/gitlab!115898)) **GitLab Enterprise Edition**
 - [Add option to not show banner broadcast message in CLI](gitlab-org/gitlab@f87b9bf9f487fcb44a248e3937107c2fa80e8703) ([merge request](gitlab-org/gitlab!122000))
 - [Branches: Branch item update](gitlab-org/gitlab@546c5e551ac1f56231c5bea4af5b5ee10376e779) ([merge request](gitlab-org/gitlab!119637))
 - [Update usage charts to use compute terminology](gitlab-org/gitlab@9ffd5f636fefed33d226f913225d8fd0671be04a) ([merge request](gitlab-org/gitlab!122015)) **GitLab Enterprise Edition**
@@ -11044,7 +11044,7 @@ No changes.
 - [Add emoji awards for work item](gitlab-org/gitlab@1ce458ee16d86aa0e760c7dfb32797db05bd2197) ([merge request](gitlab-org/gitlab!119585)) **GitLab Enterprise Edition**
 - [GraphQL project fields for refs containing a commit](gitlab-org/gitlab@2fea8e046fcdd05ab6cebf7e11198e5b446995bc) ([merge request](gitlab-org/gitlab!116705))
 - [Make group-level git protocol control available](gitlab-org/gitlab@4f6f078c27f4f62e169097edbd30eaf7926f34eb) ([merge request](gitlab-org/gitlab!113360))
-- [[Audit Events] Asynchronous database index addition](gitlab-org/gitlab@ec1804b76ef4af2bd807f2f6a3cd9c2423d14fdc) ([merge request](gitlab-org/gitlab!120581)) **GitLab Enterprise Edition**
+- [[Audit events] Asynchronous database index addition](gitlab-org/gitlab@ec1804b76ef4af2bd807f2f6a3cd9c2423d14fdc) ([merge request](gitlab-org/gitlab!120581)) **GitLab Enterprise Edition**
 - [Show alert about any configured deploy freezes](gitlab-org/gitlab@40ccf5c48df47d07b2d72c3bfca6705063d26726) ([merge request](gitlab-org/gitlab!120351))
 - [Model and table for google cloud logging integration](gitlab-org/gitlab@98ece342bb378c4b971d8440f0a9990b6a15d0cf) ([merge request](gitlab-org/gitlab!119943))
 - [Add to do widget for work items](gitlab-org/gitlab@7dcd1687a054b299a3e9a8a6def44cd27e4006dc) ([merge request](gitlab-org/gitlab!118135)) **GitLab Enterprise Edition**

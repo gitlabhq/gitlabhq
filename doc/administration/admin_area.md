@@ -486,13 +486,13 @@ For details of these log files and their contents, see [Log system](logs/index.m
 
 The content of each log file is listed in chronological order. To minimize performance issues, a maximum 2000 lines of each log file are shown.
 
-### Audit Events
+### Audit events
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-The **Audit Events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
+The **Audit events** page lists changes made within the GitLab server. With this information you can control, analyze, and track every change.
 
 ### Statistics
 

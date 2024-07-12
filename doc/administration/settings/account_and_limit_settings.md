@@ -283,7 +283,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-To maintain integrity of user details in [Audit Events](../../administration/audit_event_reports.md), GitLab administrators can choose to disable a user's ability to change their profile name.
+To maintain integrity of user details in [audit events](../../administration/audit_event_reports.md), GitLab administrators can choose to disable a user's ability to change their profile name.
 
 To do this:
 

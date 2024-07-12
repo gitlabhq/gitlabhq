@@ -15,6 +15,10 @@
 
 RSpec.shared_examples 'internal event tracking' do
   let(:all_metrics) do
+    additional_properties = Gitlab::InternalEvents::ALLOWED_ADDITIONAL_PROPERTIES.to_h do |key, _val|
+      [key, try(key)]
+    end
+
     Gitlab::Usage::MetricDefinition.all.filter_map do |definition|
       matching_rules = definition.event_selection_rules.map do |event_selection_rule|
         next unless event_selection_rule.name == event
@@ -22,9 +26,7 @@ RSpec.shared_examples 'internal event tracking' do
         # Only include unique metrics if the unique_identifier_name is present in the spec
         next if event_selection_rule.unique_identifier_name && !try(event_selection_rule.unique_identifier_name)
 
-        event_selection_rule.filter.all? do |property_name, value|
-          try(property_name) == value
-        end
+        event_selection_rule.matches?(additional_properties)
       end
 
       definition.key if matching_rules.flatten.any?

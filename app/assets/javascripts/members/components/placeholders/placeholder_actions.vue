@@ -14,6 +14,7 @@ import {
 } from '~/import_entities/import_groups/constants';
 import importSourceUserReassignMutation from '../../placeholders/graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '../../placeholders/graphql/mutations/keep_as_placeholder.mutation.graphql';
+import importSourceUseResendNotificationMutation from '../../placeholders/graphql/mutations/resend_notification.mutation.graphql';
 import importSourceUserCancelReassignmentMutation from '../../placeholders/graphql/mutations/cancel_reassignment.mutation.graphql';
 
 const USERS_PER_PAGE = 20;
@@ -183,8 +184,31 @@ export default {
 
     onNotify() {
       this.isNotifyLoading = true;
-      this.$toast.show(s__('UserMapping|Notification email sent.'));
-      this.isNotifyLoading = false;
+      this.$apollo
+        .mutate({
+          mutation: importSourceUseResendNotificationMutation,
+          variables: {
+            id: this.sourceUser.id,
+          },
+        })
+        .then(({ data }) => {
+          const { errors } = getFirstPropertyValue(data);
+          if (errors?.length) {
+            createAlert({ message: errors.join() });
+          } else {
+            this.$toast.show(s__('UserMapping|Notification email sent.'));
+          }
+        })
+        .catch((error) => {
+          createAlert({
+            message:
+              error?.message ||
+              s__('UserMapping|There was a problem resending notification email.'),
+          });
+        })
+        .finally(() => {
+          this.isNotifyLoading = false;
+        });
     },
     onCancel() {
       this.isCancelLoading = true;

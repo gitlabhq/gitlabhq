@@ -392,7 +392,8 @@ optional authentication, and optional Git SHA. The variable uses the following f
 ```
 
 NOTE:
-A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE`.
+A local `.gitlab/secret-detection-ruleset.toml` file in the project takes precedence over `SECRET_DETECTION_RULESET_GIT_REFERENCE` by default or if `SECURE_ENABLE_LOCAL_CONFIGURATION` is set to `true`.
+If you set `SECURE_ENABLE_LOCAL_CONFIGURATION` to `false`, the local file is ignored and the default configuration or `SECRET_DETECTION_RULESET_GIT_REFERENCE` (if set) is used.
 
 The following example includes the Pipeline Secret Detection template in a project to be scanned and specifies
 the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable for referencing a separate project configuration.

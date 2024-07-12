@@ -17,11 +17,6 @@ class Projects::PagesController < Projects::ApplicationController
   end
 
   def show
-    unless @project.pages_enabled?
-      render :disabled
-      return
-    end
-
     if @project.pages_show_onboarding?
       redirect_to action: 'new'
       return

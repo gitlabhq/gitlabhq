@@ -10,12 +10,14 @@ import PlaceholderActions from '~/members/components/placeholders/placeholder_ac
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
 import importSourceUserReassignMutation from '~/members/placeholders/graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '~/members/placeholders/graphql/mutations/keep_as_placeholder.mutation.graphql';
+import importSourceUserResendNotificationMutation from '~/members/placeholders/graphql/mutations/resend_notification.mutation.graphql';
 import importSourceUserCancelReassignmentMutation from '~/members/placeholders/graphql/mutations/cancel_reassignment.mutation.graphql';
 
 import {
   mockSourceUsers,
   mockReassignMutationResponse,
   mockKeepAsPlaceholderMutationResponse,
+  mockResendNotificationMutationResponse,
   mockCancelReassignmentMutationResponse,
   mockUser1,
   mockUser2,
@@ -41,6 +43,9 @@ describe('PlaceholderActions', () => {
   const cancelReassignmentMutationHandler = jest
     .fn()
     .mockResolvedValue(mockCancelReassignmentMutationResponse);
+  const resendNotificationMutationHandler = jest
+    .fn()
+    .mockResolvedValue(mockResendNotificationMutationResponse);
   const $toast = {
     show: jest.fn(),
   };
@@ -50,6 +55,7 @@ describe('PlaceholderActions', () => {
       [searchUsersQuery, seachUsersQueryHandler],
       [importSourceUserReassignMutation, reassignMutationHandler],
       [importSourceUserKeepAsPlaceholderMutation, keepAsPlaceholderMutationHandler],
+      [importSourceUserResendNotificationMutation, resendNotificationMutationHandler],
       [importSourceUserCancelReassignmentMutation, cancelReassignmentMutationHandler],
     ]);
 
@@ -297,10 +303,22 @@ describe('PlaceholderActions', () => {
       expect(findConfirmButton().exists()).toBe(false);
     });
 
-    it('shows toast when Notify button is clicked', () => {
-      findNotifyButton().vm.$emit('click');
+    describe('when Notify button is clicked', () => {
+      beforeEach(async () => {
+        findNotifyButton().vm.$emit('click');
+        await nextTick();
+      });
 
-      expect($toast.show).toHaveBeenCalledWith('Notification email sent.');
+      it('calls resendNotification mutation and calls toast', async () => {
+        expect(findNotifyButton().props('loading')).toBe(true);
+        await waitForPromises();
+        expect(findNotifyButton().props('loading')).toBe(false);
+
+        expect(resendNotificationMutationHandler).toHaveBeenCalledWith({
+          id: mockSourceUser.id,
+        });
+        expect($toast.show).toHaveBeenCalledWith('Notification email sent.');
+      });
     });
 
     describe('when Cancel button is clicked', () => {

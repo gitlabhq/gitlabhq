@@ -704,7 +704,16 @@ class Integration < ApplicationRecord
 
   def async_execute(data)
     return if ::Gitlab::SilentMode.enabled?
-    return unless supported_events.include?(data[:object_kind])
+
+    # Temporarily log when we return within this method to gather data for
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/382999
+    unless supported_events.include?(data[:object_kind])
+      log_info(
+        'async_execute did nothing due to event not being supported',
+        event: data[:object_kind]
+      )
+      return
+    end
 
     Integrations::ExecuteWorker.perform_async(id, data.deep_stringify_keys)
   end

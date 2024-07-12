@@ -48,6 +48,12 @@ module Gitlab
         unique_identifier_name.nil?
       end
 
+      def matches?(additional_properties)
+        filter.all? do |property_name, value|
+          additional_properties[property_name] == value
+        end
+      end
+
       # Implementing `==` to make sure that `a == b` is true if and only if `a` and `b` have equal properties
       # Checks equality by comparing each attribute.
       # @param [Object] Object to be compared

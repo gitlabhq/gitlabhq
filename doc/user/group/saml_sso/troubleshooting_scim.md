@@ -252,7 +252,7 @@ invalid JSON primitives (such as `.`). Removing or URL encoding these characters
 
 ### `(Field) can't be blank` sync error
 
-When checking the Audit Events for the provisioning, you sometimes see a
+When checking the audit events for the provisioning, you sometimes see a
 `Namespace can't be blank, Name can't be blank, and User can't be blank.` error.
 
 This error can occur because not all required fields (such as first name and last name) are present for all users
