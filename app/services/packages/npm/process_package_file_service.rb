@@ -4,7 +4,7 @@ module Packages
   module Npm
     class ProcessPackageFileService
       ExtractionError = Class.new(StandardError)
-      PACKAGE_JSON_ENTRY_PATH = '*/package.json'
+      PACKAGE_JSON_ENTRY_PATH = 'package/package.json'
       MAX_FILE_SIZE = 4.megabytes
 
       delegate :package, to: :package_file

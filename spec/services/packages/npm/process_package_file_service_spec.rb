@@ -79,22 +79,12 @@ RSpec.describe ::Packages::Npm::ProcessPackageFileService, feature_category: :pa
       it_behaves_like 'raising an error', 'package.json file too large'
     end
 
-    context 'with custom root folder name' do
-      before do
-        allow_next_instance_of(Gem::Package::TarReader::Entry) do |instance|
-          allow(instance).to receive(:full_name).and_return('custom/package.json')
-        end
-      end
-
-      it_behaves_like 'processing the package file'
-    end
-
     context 'with multiple package.json entries' do
       before do
         allow(Gem::Package::TarReader).to receive(:new).and_return([
-          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg1/package.json'),
-          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg2/package.json'),
-          instance_double(Gem::Package::TarReader::Entry, full_name: 'pkg3/package.json')
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'package/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'package2/package.json'),
+          instance_double(Gem::Package::TarReader::Entry, full_name: 'package3/package.json')
         ])
       end
 
