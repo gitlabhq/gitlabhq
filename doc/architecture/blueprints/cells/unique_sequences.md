@@ -1,30 +1,11 @@
 ---
-stage: core platform
-group: database
-description: 'Cells: Unique sequences'
-status: accepted
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/unique_sequences/'
+remove_date: '2025-07-08'
 ---
 
-<!-- vale gitlab.FutureTense = NO -->
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/unique_sequences/).
 
-# Cells: Unique Sequences
-
-GitLab today ensures that every database row create has a unique ID, allowing to access a merge request, CI Job or Project by a known global ID.
-Cells will use many distinct and not connected databases, each of them having a separate ID for most entities.
-
-At a minimum, any ID referenced between a Cell and the shared schema will need to be unique across the cluster to avoid ambiguous references.
-Further to required global IDs, it might also be desirable to retain globally unique IDs for all database rows to allow moving organizations between Cells.
-
-## 1. Goal
-
-Is to have non-overlapping sequences across the cluster, so that there will not be a problem while moving organizations between cells.
-
-## 2. Decision
-
-Secondary cells will have bigint IDs while provisioning and each cell will reach out to the Topology Service to get
-the sequence range, TS will ensure that the sequence ranges are not colliding with other cells.
-
-The range got from the SequenceService will be used to set `maxval` and `minval` for all existing ID sequences and any
-newly created IDs.
-
-Logic to compute to the sequence range and the interactions between cells and the topology service can be found [here](topology_service.md#workflow).
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

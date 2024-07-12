@@ -6,7 +6,7 @@ RSpec.describe Ci::CancelRedundantPipelinesWorker, feature_category: :continuous
   let_it_be(:project) { create(:project) }
 
   let(:prev_pipeline) { create(:ci_pipeline, project: project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  let(:pipeline) { create(:ci_pipeline, project: project, sha: 'new-sha') }
 
   describe '#perform' do
     subject(:perform) { described_class.new.perform(pipeline.id) }

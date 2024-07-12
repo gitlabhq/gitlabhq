@@ -643,43 +643,25 @@ export async function fetchLogsSearchMetadata(
   }
 }
 
-export function fetchUsageData() {
-  return {
-    events: {
-      6: {
-        start_ts: 1717200000000000000,
-        end_ts: 1719705600000000000,
-        aggregated_total: 132,
-        aggregated_per_feature: {
-          metrics: 50,
-          logs: 32,
-          tracing: 50,
-        },
-        data: {
-          metrics: [[1719446400000000000, 100]],
-        },
-        data_breakdown: 'daily',
-        data_unit: '',
-      },
-    },
-    storage: {
-      6: {
-        start_ts: 1717200000000000000,
-        end_ts: 1719705600000000000,
-        aggregated_total: 58476,
-        aggregated_per_feature: {
-          metrics: 15000,
-          logs: 15000,
-          tracing: 28476,
-        },
-        data: {
-          metrics: [[1719446400000000000, 58476]],
-        },
-        data_breakdown: 'daily',
-        data_unit: 'bytes',
-      },
-    },
-  };
+export async function fetchUsageData(analyticsUrl, { period } = {}) {
+  try {
+    const params = new URLSearchParams();
+
+    if (period?.month) {
+      params.append('month', period?.month);
+    }
+    if (period?.year) {
+      params.append('year', period?.year);
+    }
+
+    const { data } = await axios.get(analyticsUrl, {
+      withCredentials: true,
+      params,
+    });
+    return data;
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
 }
 
 /** ****
@@ -766,6 +748,6 @@ export function buildClient(config) {
       fetchMetricSearchMetadata(metricsSearchMetadataUrl, metricName, metricType),
     fetchLogs: (options) => fetchLogs(logsSearchUrl, options),
     fetchLogsSearchMetadata: (options) => fetchLogsSearchMetadata(logsSearchMetadataUrl, options),
-    fetchUsageData: () => fetchUsageData(analyticsUrl),
+    fetchUsageData: (options) => fetchUsageData(analyticsUrl, options),
   };
 }

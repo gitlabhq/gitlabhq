@@ -19530,7 +19530,13 @@ msgstr ""
 msgid "DuoProTrial|GitLab Duo Pro is only available for purchase for Premium and Ultimate users."
 msgstr ""
 
+msgid "DuoProTrial|Learn about GitLab Duo"
+msgstr ""
+
 msgid "DuoProTrial|Learn about features"
+msgstr ""
+
+msgid "DuoProTrial|Looking to do more with AI?"
 msgstr ""
 
 msgid "DuoProTrial|Organizational controls"
@@ -19551,6 +19557,9 @@ msgstr ""
 msgid "DuoProTrial|Test generation"
 msgstr ""
 
+msgid "DuoProTrial|To regain access to features like Code Suggestions and Chat, purchase the subscription add-on for GitLab Duo Pro."
+msgstr ""
+
 msgid "DuoProTrial|To register for a trial of GitLab Duo Pro, you must be an Owner of a top-level group that has an active paid subscription or is on an Ultimate trial."
 msgstr ""
 
@@ -19563,10 +19572,16 @@ msgstr ""
 msgid "DuoProTrial|You have successfully created a trial subscription for GitLab Duo Pro. It will expire on %{exp_date}.%{new_line}To get started, enable the GitLab Duo Pro add-on for team members on this page by turning on the toggle for each team member. The subscription may take a minute to sync, so refresh the page if it's not visible yet."
 msgstr ""
 
+msgid "DuoProTrial|You no longer have access to GitLab Duo Pro features"
+msgstr ""
+
 msgid "DuoProTrial|You've got %{daysRemaining} day left in your GitLab Duo Pro trial"
 msgid_plural "DuoProTrial|You've got %{daysRemaining} days left in your GitLab Duo Pro trial"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "DuoProTrial|Your %{duration}-day trial has ended"
+msgstr ""
 
 msgid "DuoProTrial|Your trial ends on %{strongStart}%{trialEndDate}%{strongEnd}. To continue using features in GitLab Duo Pro, purchase a subscription add-on."
 msgstr ""
@@ -32940,6 +32955,9 @@ msgstr ""
 msgid "Merged"
 msgstr ""
 
+msgid "Merged %{timeAgo} by"
+msgstr ""
+
 msgid "Merged as assignee (1 week ago)"
 msgstr ""
 
@@ -36097,6 +36115,9 @@ msgstr ""
 msgid "Observability|Failed to load observability usage data."
 msgstr ""
 
+msgid "Observability|Filter data by month:"
+msgstr ""
+
 msgid "Observability|Get started with GitLab Observability"
 msgstr ""
 
@@ -36143,9 +36164,6 @@ msgid "Observability|To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "Observability|Tracing, Metrics & Logs"
-msgstr ""
-
-msgid "Observability|Usage breakdown"
 msgstr ""
 
 msgid "Observability|View our %{docsLink} for further instructions on how to use these features."
@@ -56930,6 +56948,9 @@ msgid "Upvotes"
 msgstr ""
 
 msgid "Usage"
+msgstr ""
+
+msgid "Usage breakdown"
 msgstr ""
 
 msgid "Usage statistics"

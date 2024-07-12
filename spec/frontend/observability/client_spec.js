@@ -1445,4 +1445,75 @@ describe('buildClient', () => {
       });
     });
   });
+
+  describe('fetchUsageData', () => {
+    const mockResponse = {
+      events: {
+        6: {
+          start_ts: 1717200000000000000,
+          end_ts: 1719705600000000000,
+          aggregated_total: 132,
+          aggregated_per_feature: {
+            metrics: 50,
+            logs: 32,
+            tracing: 50,
+          },
+          data: {
+            metrics: [[1719446400000000000, 100]],
+          },
+          data_breakdown: 'daily',
+          data_unit: '',
+        },
+      },
+      storage: {
+        6: {
+          start_ts: 1717200000000000000,
+          end_ts: 1719705600000000000,
+          aggregated_total: 58476,
+          aggregated_per_feature: {
+            metrics: 15000,
+            logs: 15000,
+            tracing: 28476,
+          },
+          data: {
+            metrics: [[1719446400000000000, 58476]],
+          },
+          data_breakdown: 'daily',
+          data_unit: 'bytes',
+        },
+      },
+    };
+    beforeEach(() => {
+      axiosMock.onGet(analyticsUrl).reply(200, mockResponse);
+    });
+
+    it('fetches analytics data from URL', async () => {
+      const result = await client.fetchUsageData();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(analyticsUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+      });
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('adds a month query param if specified', async () => {
+      await client.fetchUsageData({ period: { month: '06' } });
+
+      expect(getQueryParam()).toBe('month=06');
+    });
+
+    it('adds a year query param if specified', async () => {
+      await client.fetchUsageData({ period: { year: '2024' } });
+
+      expect(getQueryParam()).toBe('year=2024');
+    });
+
+    it('ignores empty period param', async () => {
+      await client.fetchUsageData({ period: {} });
+
+      expect(getQueryParam()).toBe('');
+    });
+  });
 });

@@ -617,65 +617,6 @@ RSpec.shared_examples 'work items iteration' do
   end
 end
 
-RSpec.shared_context 'with work_items_rolledup_dates' do |flag|
-  before do
-    stub_feature_flags(work_items_rolledup_dates: flag)
-
-    page.refresh
-    wait_for_all_requests
-  end
-end
-
-RSpec.shared_examples 'work items rolled up dates' do
-  let(:work_item_rolledup_dates_selector) { '[data-testid="work-item-rolledup-dates"]' }
-
-  include_context 'with work_items_rolledup_dates', true
-
-  it 'passes axe automated accessibility testing in closed state' do
-    expect(page).to have_selector(work_item_rolledup_dates_selector)
-    expect(page).to be_axe_clean.within(work_item_rolledup_dates_selector)
-  end
-
-  it 'passes axe automated accessibility testing in open state' do
-    within(work_item_rolledup_dates_selector) do
-      click_button _('Edit')
-      wait_for_requests
-
-      expect(page).to be_axe_clean.within(work_item_rolledup_dates_selector)
-    end
-  end
-
-  context 'when edit is clicked' do
-    it 'selects and updates the dates to fixed once selected', :aggregate_failures do
-      expect(find_field('Inherited')).to be_checked
-
-      find_and_click_edit(work_item_rolledup_dates_selector)
-
-      within work_item_rolledup_dates_selector do
-        fill_in 'Start', with: '2021-01-01'
-        fill_in 'Due', with: '2021-01-02'
-      end
-
-      # Click outside to save
-      find("body").click
-
-      within work_item_rolledup_dates_selector do
-        expect(find_field('Fixed')).to be_checked
-        expect(page).to have_text('Start: Jan 1, 2021')
-        expect(page).to have_text('Due: Jan 2, 2021')
-      end
-    end
-  end
-
-  context 'when feature flag is disabled' do
-    include_context 'with work_items_rolledup_dates', false
-
-    it 'does not show rolled up dates' do
-      expect(page).not_to have_selector(work_item_rolledup_dates_selector)
-    end
-  end
-end
-
 RSpec.shared_examples 'work items time tracking' do
   it 'passes axe automated accessibility testing for estimate and time spent modals', :aggregate_failures do
     click_button 'estimate'

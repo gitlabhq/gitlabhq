@@ -18,8 +18,11 @@ You can [comment on](#comment-on-snippets), [clone](#clone-snippets), and
 [syntax highlighting](#filenames), [embedding](#embed-snippets), [downloading](#download-snippets),
 and you can maintain your snippets with the [snippets API](../api/snippets.md).
 
-You can create and manage your snippets through the GitLab user interface, or by
-using the [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md).
+You can create and manage your snippets with:
+
+- The GitLab user interface.
+- The [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md).
+- The [`glab` CLI](../editor_extensions/gitlab_cli/index.md).
 
 ![Example of a snippet](img/snippet_sample_v16_6.png)
 
@@ -47,6 +50,9 @@ You can create snippets in multiple ways, depending on whether you want to creat
        **New snippet**.
      - From a project: On the left sidebar, select **Create new** (**{plus}**). Below **In GitLab**, select **New snippet**.
      - From any other page: On the left sidebar, select **Create new** (**{plus}**) and then **New snippet**.
+     - From the `glab` CLI, using the
+       [`glab snippet create`](https://gitlab.com/gitlab-org/cli/-/blob/main/docs/source/snippet/create.md) command.
+       For full instructions, see the command's documentation.
      - If you installed the [GitLab Workflow VS Code extension](../editor_extensions/visual_studio_code/index.md),
        use the [`Gitlab: Create snippet` command](https://marketplace.visualstudio.com/items?itemName=GitLab.gitlab-workflow#create-snippet).
    - **To create a project snippet**: Go to your project's page. Select

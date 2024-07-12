@@ -6,12 +6,12 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Cells Development Guidelines
 
-For background of GitLab Cells, refer to the [blueprint](../../architecture/blueprints/cells/index.md).
+For background of GitLab Cells, refer to the [design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
 
 ## Essential and additional workflows
 
 To make the application work within the GitLab Cells architecture, we need to fix various
-[workflows](../../architecture/blueprints/cells/index.md#2-workflows).
+[workflows](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#2-workflows).
 
 Here is the suggested approach:
 

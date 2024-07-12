@@ -1,24 +1,11 @@
 ---
-owning-stage: "~devops::data stores" # because Tenant Scale is under this
-description: 'Cells ADR 002: One GCP Project per Cell'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/002_gcp_project_boundary/'
+remove_date: '2025-07-08'
 ---
 
-# Cells ADR 002: One GCP Project per Cell
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/002_gcp_project_boundary/).
 
-## Context
-
-We discussed whether we should have each Cell in its own GCP project or have all Cells in one GCP project in [this issue](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/25067).
-
-## Decision
-
-It was unanimously decided that we should have one GCP project per Cell. Doing so gives us better isolation between Cells, compatibility with current Dedicated tooling, less likelihood of running into per-project quotas, and easier change rollouts (we can roll out changes per-project).
-
-There is no limit to how many projects we can create.
-
-## Consequences
-
-This decision means that inter-Cell networking becomes slightly less straightforward. However, it is not clear at this point if it's actually needed, and it's [being discussed](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/25069)
-
-## Alternatives
-
-The choices discussed above are really the only two possible outcomes.
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

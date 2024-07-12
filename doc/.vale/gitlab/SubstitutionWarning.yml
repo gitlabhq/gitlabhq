@@ -49,6 +49,7 @@ swap:
   once that: "after that"
   once the: "after the"
   once you: "after you"
+  open telemetry: "OpenTelemetry"
   pack file: packfile
   pack files: packfiles
   pop-up window: "dialog"

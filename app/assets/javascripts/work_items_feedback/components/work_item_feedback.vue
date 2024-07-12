@@ -28,7 +28,7 @@ export default {
           :target="$options.badgeId"
           :show="shouldShowCallout"
           data-testid="work-item-feedback-popover"
-          triggers="focus click manual"
+          triggers="focus click manual blur"
           placement="bottom"
           show-close-button
           @close-button-clicked="dismiss"

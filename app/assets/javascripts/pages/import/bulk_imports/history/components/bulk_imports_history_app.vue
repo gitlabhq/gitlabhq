@@ -161,10 +161,13 @@ export default {
         const updateItem = this.historyItems[updateItemIndex];
 
         if (updateItem.status !== update.status_name) {
-          this.$set(this.historyItems, updateItemIndex, {
+          const copy = [...this.historyItems];
+          copy[updateItemIndex] = {
             ...updateItem,
             status: update.status_name,
-          });
+          };
+
+          this.historyItems = copy;
         }
       },
     });
@@ -295,7 +298,7 @@ export default {
           </gl-link>
           <span v-else>{{ destinationText(item) }}</span>
         </template>
-        <template #cell(created_at)="{ value }">
+        <template #cell(created_at)="{ value = '' }">
           <time-ago :time="value" />
         </template>
         <template #cell(status)="{ value, item }">

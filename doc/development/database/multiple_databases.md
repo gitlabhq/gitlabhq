@@ -11,7 +11,7 @@ To allow GitLab to scale further we
 The main databases are `main`, `ci`, and (optionally) `sec`. GitLab supports being run with one, two, or three databases.
 On GitLab.com we are using separate `main` and `ci` databases.
 
-For the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture, we are decomposing
+For the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture, we are decomposing
 the databases further, to introduce another database `gitlab_main_clusterwide`.
 
 ## GitLab Schema
@@ -28,8 +28,8 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 
 | Database | Description | Notes |
 | -------- | ----------- | ------- |
-| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
-| `gitlab_main_clusterwide` | All tables where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](../../architecture/blueprints/cells/index.md) architecture. For example, `users` and `application_settings`.| For the [Cells 1.0 architecture](../../architecture/blueprints/cells/iterations/cells-1.0.md), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
+| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
+| `gitlab_main_clusterwide` | All tables where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `users` and `application_settings`.| For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
 | `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
 | `gitlab_shared` | All application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`. | |
@@ -51,9 +51,9 @@ The usage of schema enforces the base class to be used:
 
 ### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
-Depending on the use case, your feature may be [cell-local or clusterwide](../../architecture/blueprints/cells/index.md#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
+Depending on the use case, your feature may be [cell-local or clusterwide](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
 
-When you choose the appropriate schema for tables, consider the following guidelines as part of the [Cells](../../architecture/blueprints/cells/index.md) architecture:
+When you choose the appropriate schema for tables, consider the following guidelines as part of the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture:
 
 - Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
 - Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group. This is crucial because it has scaling implications and may require reconsideration of the schema choice.
@@ -77,7 +77,7 @@ All newly created cell-local tables are required to have a `sharding_key`
 defined in the corresponding `db/docs/` file for that table.
 
 The purpose of the sharding key is documented in the
-[Organization isolation blueprint](../../architecture/blueprints/organization/isolation.md),
+[Organization isolation blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/isolation/),
 but in short this column is used to provide a standard way of determining which
 Organization owns a particular row in the database. The column will be used in
 the future to enforce constraints on data not cross Organization boundaries. It
@@ -149,7 +149,7 @@ sharding key.
 Developers may also choose to use `namespace_id` only for tables that can
 belong to a project where the feature used by the table is being developed
 following the
-[Consolidating Groups and Projects blueprint](../../architecture/blueprints/consolidating_groups_and_projects/index.md).
+[Consolidating Groups and Projects blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/).
 In that case the `namespace_id` would need to be the ID of the
 `ProjectNamespace` and not the group that the namespace belongs to.
 
@@ -935,7 +935,7 @@ to limit the modes where tests can run, and skip them on any other modes.
 By default, we do not setup the `main_clusterwide` connection in CI pipelines. However, if you add the label `~"pipeline:run-clusterwide-db"`, the pipelines will run with 3 connections, `main`, `ci` and `main_clusterwide`.
 
 NOTE:
-This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by  **group::tenant scale**  to test out changes while building [Cells](../../architecture/blueprints/cells/index.md).
+This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by  **group::tenant scale**  to test out changes while building [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
 
 ## Locking writes on the tables that don't belong to the database schemas
 

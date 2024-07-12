@@ -54,8 +54,16 @@ const getTrialStatusWidgetData = (sidebarData) => {
     sidebarData.duo_pro_trial_status_widget_data_attrs &&
     sidebarData.duo_pro_trial_status_popover_data_attrs
   ) {
-    const { containerId, trialDaysUsed, trialDuration, percentageComplete, widgetUrl } =
-      convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
+    const {
+      containerId,
+      trialDaysUsed,
+      trialDuration,
+      percentageComplete,
+      widgetUrl,
+      groupId,
+      featureId,
+      dismissEndpoint,
+    } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
 
     const { daysRemaining, trialEndDate, purchaseNowUrl } = convertObjectPropsToCamelCase(
       sidebarData.duo_pro_trial_status_popover_data_attrs,
@@ -69,6 +77,9 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDuration: Number(trialDuration),
       percentageComplete: Number(percentageComplete),
       widgetUrl,
+      groupId,
+      featureId,
+      dismissEndpoint,
       daysRemaining,
       targetId: containerId,
       trialEndDate: new Date(trialEndDate),
