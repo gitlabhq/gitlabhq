@@ -198,21 +198,27 @@ module Gitlab
 
           reviewer_state = state.strip.presence
 
+          @execution_message[:submit_review] = if result[:status] == :success
+                                                 [_('Submitted the current review.')]
+                                               else
+                                                 [result[:message]]
+                                               end
+
           if reviewer_state === 'approve'
-            ::MergeRequests::ApprovalService
+            approval_success = ::MergeRequests::ApprovalService
               .new(project: quick_action_target.project, current_user: current_user)
               .execute(quick_action_target)
+
+            @execution_message[:submit_review] << if approval_success
+                                                    _('Approved the current merge request.')
+                                                  else
+                                                    _('Failed to approve the current merge request.')
+                                                  end
           elsif MergeRequestReviewer.states.key?(reviewer_state)
             ::MergeRequests::UpdateReviewerStateService
               .new(project: quick_action_target.project, current_user: current_user)
               .execute(quick_action_target, reviewer_state)
           end
-
-          @execution_message[:submit_review] = if result[:status] == :success
-                                                 _('Submitted the current review.')
-                                               else
-                                                 result[:message]
-                                               end
         end
 
         ########################################################################

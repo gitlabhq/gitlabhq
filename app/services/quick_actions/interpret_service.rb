@@ -177,7 +177,7 @@ module QuickActions
     end
 
     def map_commands(commands, method)
-      commands.map do |name_or_alias, arg|
+      commands.flat_map do |name_or_alias, arg|
         definition = self.class.definition_by_name(name_or_alias)
         next unless definition
 

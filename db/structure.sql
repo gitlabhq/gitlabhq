@@ -2473,6 +2473,15 @@ CREATE TABLE p_ci_finished_build_ch_sync_events (
 )
 PARTITION BY LIST (partition);
 
+CREATE TABLE p_ci_finished_pipeline_ch_sync_events (
+    pipeline_id bigint NOT NULL,
+    project_namespace_id bigint NOT NULL,
+    partition bigint DEFAULT 1 NOT NULL,
+    pipeline_finished_at timestamp without time zone NOT NULL,
+    processed boolean DEFAULT false NOT NULL
+)
+PARTITION BY LIST (partition);
+
 CREATE TABLE project_audit_events (
     id bigint DEFAULT nextval('shared_audit_event_id_seq'::regclass) NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -13938,15 +13947,6 @@ CREATE SEQUENCE p_ci_builds_execution_configs_id_seq
     CACHE 1;
 
 ALTER SEQUENCE p_ci_builds_execution_configs_id_seq OWNED BY p_ci_builds_execution_configs.id;
-
-CREATE TABLE p_ci_finished_pipeline_ch_sync_events (
-    pipeline_id bigint NOT NULL,
-    project_namespace_id bigint NOT NULL,
-    partition bigint DEFAULT 1 NOT NULL,
-    pipeline_finished_at timestamp without time zone NOT NULL,
-    processed boolean DEFAULT false NOT NULL
-)
-PARTITION BY LIST (partition);
 
 CREATE SEQUENCE p_ci_job_annotations_id_seq
     START WITH 1

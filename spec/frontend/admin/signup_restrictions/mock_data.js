@@ -22,6 +22,8 @@ export const rawMockData = {
   passwordLowercaseRequired: 'true',
   passwordUppercaseRequired: 'true',
   passwordSymbolRequired: 'true',
+  promotionManagementAvailable: 'true',
+  enableMemberPromotionManagement: 'true',
 };
 
 export const mockData = {
@@ -48,4 +50,6 @@ export const mockData = {
   passwordLowercaseRequired: true,
   passwordUppercaseRequired: true,
   passwordSymbolRequired: true,
+  promotionManagementAvailable: true,
+  enableMemberPromotionManagement: true,
 };

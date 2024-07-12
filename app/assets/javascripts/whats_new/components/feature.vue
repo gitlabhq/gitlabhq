@@ -48,7 +48,7 @@ export default {
       :data-track-property="feature.documentation_link"
     >
       <div
-        class="whats-new-item-image gl-bg-size-cover"
+        class="whats-new-item-image gl-bg-cover"
         :style="`background-image: url(${feature.image_url});`"
       >
         <span class="gl-sr-only">{{ feature.name }}</span>

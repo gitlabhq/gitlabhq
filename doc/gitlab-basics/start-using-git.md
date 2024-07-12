@@ -82,7 +82,7 @@ the commit subject while the remainder becomes the commit body. Use
 the subject to briefly summarize a change, and the commit body to
 provide additional details.
 
-Use `git commit --amend` to modify the most recent commit
+Use `git commit --amend` to modify the most recent commit.
 
 ```shell
 git commit --amend
@@ -128,6 +128,8 @@ To display a list of changes to the Git reference logs, use `git reflog`.
 git reflog
 ```
 
+By default, `git reflog` shows a list of changes to `HEAD`.
+
 ## `git remote add`
 
 Use `git remote add` to tell Git which remote repository in GitLab is
@@ -139,8 +141,6 @@ git remote add <remote_name> <repository_url>
 
 When you clone a repository, by default the source repository is
 associated with the remote name `origin`.
-
-By default, `git reflog` shows a list of changes to `HEAD`.
 
 ## `git log`
 

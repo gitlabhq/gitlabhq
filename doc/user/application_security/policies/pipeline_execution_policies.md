@@ -50,7 +50,8 @@ the following sections and tables provide an alternative.
 Note the following:
 
 - Jobs variables from pipeline execution policies take precedence over the project's CI/CD configuration.
-- Users triggering a pipeline must have at least read access to CI file specified in `content`.
+- Users triggering a pipeline must have at least read access to the pipeline execution file specified in the pipeline execution policy, otherwise the pipelines do not start.
+- If the pipeline execution file gets deleted or renamed, the pipelines in projects with the policy enforced might stop working.
 - Pipeline execution policy jobs can be assigned to one of the two reserved stages:
   - `.pipeline-policy-pre` at the beginning of the pipeline, before the `.pre` stage.
   - `.pipeline-policy-post` at the very end of the pipeline, after the `.post` stage.

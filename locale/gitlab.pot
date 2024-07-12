@@ -6419,6 +6419,9 @@ msgid_plural "ApplicationSettings|Approve %d users"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "ApplicationSettings|Approve role promotions"
+msgstr ""
+
 msgid "ApplicationSettings|Approve users"
 msgstr ""
 
@@ -6484,6 +6487,9 @@ msgstr ""
 msgid "ApplicationSettings|Require admin approval for new sign-ups"
 msgstr ""
 
+msgid "ApplicationSettings|Require admin approval when a non-billable user is moving into a billable role."
+msgstr ""
+
 msgid "ApplicationSettings|Require lowercase letters"
 msgstr ""
 
@@ -6500,6 +6506,9 @@ msgid "ApplicationSettings|Restricts sign-ups for email addresses that match the
 msgstr ""
 
 msgid "ApplicationSettings|Save changes"
+msgstr ""
+
+msgid "ApplicationSettings|Seat controls"
 msgstr ""
 
 msgid "ApplicationSettings|See %{linkStart}password policy guidelines%{linkEnd}."
@@ -21861,6 +21870,9 @@ msgid "Failed to add emoji. Please try again"
 msgstr ""
 
 msgid "Failed to apply commands."
+msgstr ""
+
+msgid "Failed to approve the current merge request."
 msgstr ""
 
 msgid "Failed to archive a design. Please try again."
@@ -48125,6 +48137,9 @@ msgstr ""
 msgid "SecurityOrchestration|Run %{scannerStart}%{scanner}%{scannerEnd} with the following options:"
 msgstr ""
 
+msgid "SecurityOrchestration|Run a %{scannerStart}%{scanner}%{scannerEnd} scan with the following options:"
+msgstr ""
+
 msgid "SecurityOrchestration|Run a DAST scan with Scan Profile A and Site Profile A when a pipeline run against the main branch."
 msgstr ""
 
@@ -56926,10 +56941,10 @@ msgstr ""
 msgid "Usage"
 msgstr ""
 
-msgid "Usage Trends"
+msgid "Usage statistics"
 msgstr ""
 
-msgid "Usage statistics"
+msgid "Usage trends"
 msgstr ""
 
 msgid "UsageQuotas|(of %{totalStorageSize})"

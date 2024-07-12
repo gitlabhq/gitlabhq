@@ -952,6 +952,10 @@ class Group < Namespace
     ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
   end
 
+  def create_group_level_work_items_feature_flag_enabled?
+    ::Feature.enabled?(:create_group_level_work_items, self, type: :wip)
+  end
+
   def supports_lock_on_merge?
     feature_flag_enabled_for_self_or_ancestor?(:enforce_locked_labels_on_merge, type: :ops)
   end

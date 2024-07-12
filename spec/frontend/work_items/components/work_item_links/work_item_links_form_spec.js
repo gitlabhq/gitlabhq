@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
@@ -79,6 +79,7 @@ describe('WorkItemLinksForm', () => {
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
     updateMutation = updateMutationResolver,
     isGroup = false,
+    createGroupLevelWorkItems = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
@@ -98,6 +99,9 @@ describe('WorkItemLinksForm', () => {
         parentWorkItemType,
         childrenType,
         formType,
+        glFeatures: {
+          createGroupLevelWorkItems,
+        },
       },
       provide: {
         hasIterationsFeature,
@@ -339,6 +343,26 @@ describe('WorkItemLinksForm', () => {
         },
       });
     });
+
+    it('requires project selection if group level work item creation is disabled', async () => {
+      await createComponent({
+        parentConfidential: false,
+        isGroup: true,
+        parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+        childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+        createGroupLevelWorkItems: false,
+      });
+
+      findInput().vm.$emit('input', 'Example title');
+
+      expect(findAddChildButton().props('disabled')).toBe(true);
+
+      findProjectSelector().vm.$emit('selectProject', projectData[0]);
+
+      await nextTick();
+
+      expect(findAddChildButton().props('disabled')).toBe(false);
+    });
   });
 
   describe('adding an existing work item', () => {
@@ -461,6 +485,7 @@ describe('WorkItemLinksForm', () => {
         },
       });
     });
+
     it('does not send the iteration widget to mutation when parent has no iteration associated', async () => {
       await createComponent({
         hasIterationsFeature: true,

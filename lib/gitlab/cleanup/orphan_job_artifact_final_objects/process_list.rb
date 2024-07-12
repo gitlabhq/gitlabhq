@@ -6,13 +6,14 @@ module Gitlab
       class ProcessList
         BATCH_SIZE = Rails.env.development? ? 5 : 1000
         DELETED_LIST_FILENAME_PREFIX = 'deleted_from--'
-        CURSOR_TRACKER_REDIS_KEY = 'orphan-job-artifact-objects-cleanup-cursor-tracker'
+        CURSOR_TRACKER_REDIS_KEY_PREFIX = 'orphan-job-artifact-objects-cleanup-cursor-tracker--'
 
         def initialize(filename: nil, force_restart: false, logger: Gitlab::AppLogger)
           @force_restart = force_restart
           @logger = logger
           @orphan_list_filename = filename || GenerateList::DEFAULT_FILENAME
           @deleted_list_filename = build_deleted_list_filename
+          @cursor_tracker_key = build_cursor_tracker_key
         end
 
         def run!
@@ -36,7 +37,7 @@ module Gitlab
 
         attr_reader :orphan_list_file, :orphan_list_filename,
           :deleted_list_file, :deleted_list_filename,
-          :force_restart, :logger
+          :cursor_tracker_key, :force_restart, :logger
 
         def build_deleted_list_filename
           dirname = File.dirname(orphan_list_filename)
@@ -48,6 +49,10 @@ module Gitlab
             dirname,
             basename
           )
+        end
+
+        def build_cursor_tracker_key
+          "#{CURSOR_TRACKER_REDIS_KEY_PREFIX}#{File.basename(orphan_list_filename)}"
         end
 
         def initialize_files
@@ -88,10 +93,10 @@ module Gitlab
 
         def get_last_cursor_position
           Gitlab::Redis::SharedState.with do |redis|
-            position = redis.get(CURSOR_TRACKER_REDIS_KEY)
+            position = redis.get(cursor_tracker_key)
 
             if position
-              log_info("Resuming from last cursor position: #{position}")
+              log_info("Resuming from last cursor position tracked in #{cursor_tracker_key}: #{position}")
             else
               log_info("No last cursor position found, starting from beginning.")
             end
@@ -103,14 +108,14 @@ module Gitlab
         def save_current_cursor_position(position)
           Gitlab::Redis::SharedState.with do |redis|
             # Set TTL to 1 week (86400 * 7 seconds)
-            redis.set(CURSOR_TRACKER_REDIS_KEY, position, ex: 604_800)
+            redis.set(cursor_tracker_key, position, ex: 604_800)
             log_info("Saved current cursor position: #{position}")
           end
         end
 
         def clear_last_cursor_position
           Gitlab::Redis::SharedState.with do |redis|
-            redis.del(CURSOR_TRACKER_REDIS_KEY)
+            redis.del(cursor_tracker_key)
           end
         end
 

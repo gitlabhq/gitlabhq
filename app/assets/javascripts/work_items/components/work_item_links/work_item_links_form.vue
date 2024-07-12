@@ -1,6 +1,7 @@
 <script>
 import { GlFormGroup, GlForm, GlButton, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild } from '../../graphql/cache_utils';
 import groupWorkItemTypesQuery from '../../graphql/group_work_item_types.query.graphql';
@@ -32,6 +33,7 @@ export default {
     WorkItemTokenInput,
     WorkItemProjectsListbox,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['hasIterationsFeature', 'isGroup'],
   props: {
     fullPath: {
@@ -202,12 +204,28 @@ export default {
     parentMilestoneId() {
       return this.parentMilestone?.id;
     },
+    canCreateGroupLevelWorkItems() {
+      return this.glFeatures.createGroupLevelWorkItems;
+    },
+    hasSuppliedNewItemName() {
+      return this.search.length > 0;
+    },
+    hasSelectedProject() {
+      return this.selectedProject !== null && this.selectedProject !== undefined;
+    },
     canSubmitForm() {
       if (this.isCreateForm) {
-        if (this.isGroup && !this.workItemChildIsEpic) {
-          return this.search.length > 0 && this.selectedProject !== null;
+        if (this.isGroup) {
+          if (this.workItemChildIsEpic) {
+            // must supply name, project will be ignored in request
+            return this.hasSuppliedNewItemName;
+          }
+          if (!this.canCreateGroupLevelWorkItems) {
+            // must supply name and project
+            return this.hasSuppliedNewItemName && this.hasSelectedProject;
+          }
         }
-        return this.search.length > 0;
+        return this.hasSuppliedNewItemName;
       }
       return this.workItemsToAdd.length > 0 && this.areWorkItemsToAddValid;
     },

@@ -9,6 +9,7 @@ import { mockData } from '../mock_data';
 jest.mock('~/lib/utils/csrf', () => ({ token: 'mock-csrf-token' }));
 
 describe('Signup Form', () => {
+  /** @type {import('helpers/vue_test_utils_helper').ExtendedWrapper} */
   let wrapper;
   let formSubmitSpy;
 

@@ -2304,12 +2304,24 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             expect_next_instance_of(
               MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
             ) do |service|
-              expect(service).to receive(:execute).with(merge_request)
+              expect(service).to receive(:execute).with(merge_request).and_return(true)
             end
 
             _, _, message = service.execute('/submit_review approve', merge_request)
 
-            expect(message).to eq(_('Submitted the current review.'))
+            expect(message).to eq(_('Submitted the current review. Approved the current merge request.'))
+          end
+
+          it 'adds error message when approval service fails' do
+            expect_next_instance_of(
+              MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request).and_return(false)
+            end
+
+            _, _, message = service.execute('/submit_review approve', merge_request)
+
+            expect(message).to eq(_('Submitted the current review. Failed to approve the current merge request.'))
           end
         end
 
