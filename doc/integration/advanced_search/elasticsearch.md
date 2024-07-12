@@ -347,7 +347,7 @@ To enable advanced search:
    ```
 
 1. Optional. Monitor the status of background jobs.
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the left sidebar, select **Monitoring > Background jobs**.
    1. On the Sidekiq dashboard, select **Queues** and wait for the `elastic_commit_indexer`
       and `elastic_wiki_indexer` queues to drop to `0`.
       These queues contain jobs to index code and wiki data for groups and projects.
@@ -972,7 +972,7 @@ due to large volumes of data being indexed, follow these steps:
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in the Admin Area under **Monitoring > Background Jobs > Queues Tab**
+   You can view the jobs in the Admin Area under **Monitoring > Background jobs > Queues Tab**
    and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell

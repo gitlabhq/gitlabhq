@@ -17,10 +17,26 @@ import PipelineArtifacts from '~/ci/pipelines_page/components/pipelines_artifact
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import TooltipOnTruncate from '~/vue_shared/components/tooltip_on_truncate/tooltip_on_truncate.vue';
+import mergeRequestEventTypeQuery from '../queries/merge_request_event_type.query.graphql';
 import runPipelineMixin from '../mixins/run_pipeline';
 
 export default {
   name: 'MRWidgetPipeline',
+  apollo: {
+    mergeRequestEventType: {
+      query: mergeRequestEventTypeQuery,
+      variables() {
+        return {
+          projectPath: this.targetProjectFullPath,
+          iid: `${this.iid}`,
+        };
+      },
+      skip() {
+        return !this.retargeted;
+      },
+      update: (d) => d.project?.mergeRequest?.pipelines?.nodes?.[0]?.mergeRequestEventType,
+    },
+  },
   components: {
     CiIcon,
     GlLink,
@@ -93,15 +109,15 @@ export default {
       required: false,
       default: false,
     },
-    detatchedPipeline: {
+    targetProjectFullPath: {
       type: String,
-      required: false,
-      default: null,
+      required: true,
     },
   },
   data() {
     return {
       isCreatingPipeline: false,
+      mergeRequestEventType: null,
     };
   },
   computed: {
@@ -200,7 +216,7 @@ export default {
         }}
       </p>
       <gl-button
-        v-if="detatchedPipeline"
+        v-if="mergeRequestEventType"
         category="tertiary"
         variant="confirm"
         size="small"

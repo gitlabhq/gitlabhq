@@ -85,4 +85,8 @@ RSpec.describe ClickHouseWorker, feature_category: :database do
     expect(worker.get_pause_control).to eq(:click_house_migration)
     expect(another_worker.get_pause_control).to be_nil
   end
+
+  it 'marks the worker as having external dependencies' do
+    expect(worker.worker_has_external_dependencies?).to be_truthy
+  end
 end

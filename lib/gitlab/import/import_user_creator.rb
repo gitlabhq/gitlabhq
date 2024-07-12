@@ -42,7 +42,7 @@ module Gitlab
           username: username_and_email_generator.username,
           email: username_and_email_generator.email
         ) do |u|
-          u.assign_personal_namespace(Organizations::Organization.default_organization)
+          u.assign_personal_namespace(root_ancestor.organization)
         end
       end
 

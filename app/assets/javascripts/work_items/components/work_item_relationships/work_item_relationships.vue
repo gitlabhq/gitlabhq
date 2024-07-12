@@ -191,7 +191,7 @@ export default {
     },
   },
   i18n: {
-    title: s__('WorkItem|Linked Items'),
+    title: s__('WorkItem|Linked items'),
     fetchError: s__('WorkItem|Something went wrong when fetching items. Please refresh this page.'),
     emptyStateMessage: s__(
       "WorkItem|Link items together to show that they're related or that one is blocking others.",

@@ -55,7 +55,7 @@ module Types
           statuses = ::Ci::RunnerManager.id_in(runner_manager_ids).with_executing_builds.index_by(&:id)
 
           runner_manager_ids.each do |runner_manager_id|
-            loader.call(runner_manager_id, statuses[runner_manager_id] ? :running : :idle)
+            loader.call(runner_manager_id, statuses[runner_manager_id] ? :active : :idle)
           end
         end
       end

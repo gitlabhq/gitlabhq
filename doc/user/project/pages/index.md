@@ -313,6 +313,8 @@ With this configuration, users will have the access to each GitLab Pages deploym
 When using [environments](../../../ci/environments/index.md) for pages, all pages environments are
 listed on the project environment list.
 
+You can also [group similar environments](../../../ci/environments/index.md#group-similar-environments) together.
+
 ### Deployments deletion
 
 #### Auto-clean

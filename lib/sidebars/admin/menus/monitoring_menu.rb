@@ -51,7 +51,7 @@ module Sidebars
 
         def background_jobs_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Background Jobs'),
+            title: _('Background jobs'),
             link: admin_background_jobs_path,
             active_routes: { controller: 'background_jobs' },
             item_id: :background_jobs

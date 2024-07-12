@@ -446,9 +446,9 @@ The **System information** page provides the following statistics:
 
 These statistics are updated only when you go to the **System information** page, or you refresh the page in your browser.
 
-### Background Jobs
+### Background jobs
 
-The **Background Jobs** page displays the Sidekiq dashboard. Sidekiq is used by GitLab to
+The **Background jobs** page displays the Sidekiq dashboard. Sidekiq is used by GitLab to
 perform processing in the background.
 
 The Sidekiq dashboard consists of the following elements:

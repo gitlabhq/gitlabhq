@@ -169,6 +169,8 @@
   - 1
 - - ci_cancel_redundant_pipelines
   - 1
+- - ci_click_house_finished_pipelines_sync
+  - 1
 - - ci_delete_objects
   - 1
 - - ci_initialize_pipelines_iid_sequence

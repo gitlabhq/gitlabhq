@@ -264,6 +264,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_click_house_finished_pipelines_sync_cron
+  :worker_name: Ci::ClickHouse::FinishedPipelinesSyncCronWorker
+  :feature_category: :fleet_visibility
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_delete_unit_tests
   :worker_name: Ci::DeleteUnitTestsWorker
   :feature_category: :code_testing
@@ -2816,6 +2825,15 @@
   :feature_category: :continuous_integration
   :has_external_dependencies: false
   :urgency: :high
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
+- :name: ci_click_house_finished_pipelines_sync
+  :worker_name: Ci::ClickHouse::FinishedPipelinesSyncWorker
+  :feature_category: :fleet_visibility
+  :has_external_dependencies: true
+  :urgency: :throttled
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: true

@@ -34066,8 +34066,8 @@ Runner cloud provider.
 
 | Value | Description |
 | ----- | ----------- |
+| <a id="cirunnerjobexecutionstatusactive"></a>`ACTIVE` **{warning-solid}** | **Introduced** in GitLab 17.2. **Status**: Experiment. Runner is busy. |
 | <a id="cirunnerjobexecutionstatusidle"></a>`IDLE` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Runner is idle. |
-| <a id="cirunnerjobexecutionstatusrunning"></a>`RUNNING` **{warning-solid}** | **Introduced** in GitLab 15.7. **Status**: Experiment. Runner is executing jobs. |
 
 ### `CiRunnerMembershipFilter`
 

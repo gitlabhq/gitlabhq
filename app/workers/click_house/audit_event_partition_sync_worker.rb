@@ -7,7 +7,6 @@ module ClickHouse
 
     idempotent!
     data_consistency :delayed
-    worker_has_external_dependencies! # the worker interacts with a ClickHouse database
     feature_category :compliance_management
     deduplicate :until_executed, including_scheduled: true # The second job can be skipped if first job hasn't run yet.
 

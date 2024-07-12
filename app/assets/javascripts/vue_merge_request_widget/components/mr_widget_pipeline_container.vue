@@ -93,7 +93,7 @@ export default {
       :retargeted="mr.retargeted"
       :target-project-id="mr.targetProjectId"
       :iid="mr.iid"
-      :detatched-pipeline="mr.detatchedPipeline"
+      :target-project-full-path="mr.targetProjectFullPath"
     />
     <template #footer>
       <div v-if="mr.exposedArtifactsPath" class="js-exposed-artifacts">

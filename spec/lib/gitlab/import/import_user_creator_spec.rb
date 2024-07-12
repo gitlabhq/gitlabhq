@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Import::ImportUserCreator, feature_category: :importers do
-  let(:group) { create(:group) }
+  let(:group) { create(:group, organization: create(:organization)) }
 
   subject(:service) { described_class.new(portable: group) }
 
@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Import::ImportUserCreator, feature_category: :importers d
 
     expect(user.user_type).to eq('import_user')
     expect(group.reload.import_user).to eq(user)
+    expect(user.namespace.organization).to eq(group.organization)
   end
 
   context 'when import user already exists' do
