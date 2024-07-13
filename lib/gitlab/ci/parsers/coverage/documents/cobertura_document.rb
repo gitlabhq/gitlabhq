@@ -92,6 +92,7 @@ module Gitlab
             end
 
             def determine_filename(filename)
+              filename = unixify(filename)
               return filename unless sources.any?
 
               full_filename = nil

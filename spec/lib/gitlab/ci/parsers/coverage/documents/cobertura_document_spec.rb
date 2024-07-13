@@ -299,6 +299,28 @@ RSpec.describe Gitlab::Ci::Parsers::Coverage::Documents::CoberturaDocument,
               end
             end
           end
+
+          context 'when there is a single <class> with a relative filename' do
+            let(:paths) { ['app/subfolder/user.rb'] }
+
+            context 'with a single line' do
+              let(:classes_xml) do
+                <<~EOF
+                  <packages><package name="app"><classes>
+                    <class filename="subfolder\\user.rb"><lines>
+                      <line number="1" hits="2"/>
+                    </lines></class>
+                  </classes></package></packages>
+                EOF
+              end
+
+              it 'parses XML and returns a single file with the filename relative to project root' do
+                expect { parse_report }.not_to raise_error
+
+                expect(coverage_report.files).to eq({ 'app/subfolder/user.rb' => { 1 => 2 } })
+              end
+            end
+          end
         end
 
         context 'and has multiple sources with a pattern for Go projects' do
