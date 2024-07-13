@@ -34,7 +34,7 @@ GitLab defaults its time zone to UTC. It has a global time zone configuration pa
 
 To obtain a list of time zones, sign in to your GitLab application server and run a command that generates a list of time zones in TZInfo format for the server. For example, install `timedatectl` and run `timedatectl list-timezones`.
 
-To update, add the time zone that best applies to your location. For example:
+To update its time zone, open `/etc/gitlab/gitlab.rb` in a text editor and search for the line containing 'time_zone'. Uncomment this line, and replace 'UTC' with the time zone that best applies to your location. For example:
 
 ```ruby
 gitlab_rails['time_zone'] = 'America/New_York'
