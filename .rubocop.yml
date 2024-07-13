@@ -1121,6 +1121,8 @@ Search/NamespacedClass:
     - 'spec/migrations/**/*.rb'
     - 'app/experiments/**/*_experiment.rb'
     - 'ee/app/experiments/**/*_experiment.rb'
+    - 'lib/gitlab/background_migration/**/*.rb'
+    - 'ee/lib/ee/gitlab/background_migration/**/*.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/**/*.rb'

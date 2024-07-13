@@ -51,7 +51,7 @@ Prerequisites:
 
 In Sourcegraph:
 
-1. Go to the site Admin Area.
+1. Go to the site Admin area.
 1. Optional. [Configure your GitLab external service](https://docs.sourcegraph.com/admin/external_service/gitlab).
    If your GitLab repositories are already searchable in Sourcegraph, you can skip this step.
 1. Confirm that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.
@@ -66,7 +66,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sourcegraph**.
 1. Select **Enable Sourcegraph**.

@@ -37,7 +37,7 @@ module QA
           end
 
           def go_to_admin_area
-            go_to_places_item("Admin Area")
+            go_to_places_item("Admin area")
 
             return unless has_text?('Enter admin mode', wait: 1.0)
 
@@ -50,7 +50,7 @@ module QA
           def has_admin_area_link?(wait: Capybara.default_max_wait_time)
             open_global_search_modal
 
-            has_element?('places-item-link', places_item: "Admin Area", wait: wait)
+            has_element?('places-item-link', places_item: "Admin area", wait: wait)
           end
 
           def search_for(term)

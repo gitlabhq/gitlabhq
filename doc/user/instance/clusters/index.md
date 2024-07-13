@@ -22,7 +22,7 @@ projects.
 
 To view the instance level Kubernetes clusters:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Kubernetes**.
 
 ## Cluster precedence

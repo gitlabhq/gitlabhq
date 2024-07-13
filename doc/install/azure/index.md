@@ -251,7 +251,7 @@ in this section whenever you need to update GitLab.
 
 To determine the version of GitLab you're currently running:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Dashboard**.
 1. Find the version under the **Components** table.
 
@@ -291,7 +291,7 @@ To update GitLab to the latest version:
    before anything else.
    ```
 
-Refresh your GitLab instance in the browser and go to the Admin Area. You should now have an
+Refresh your GitLab instance in the browser and go to the Admin area. You should now have an
 up-to-date GitLab instance.
 
 ## Next steps and further configuration

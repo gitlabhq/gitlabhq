@@ -16,7 +16,7 @@ You can use **Sign-in restrictions** to customize authentication restrictions fo
 
 To access sign-in restriction settings:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand the **Sign-in restrictions** section.
 
@@ -47,7 +47,7 @@ When Admin Mode is enabled, it applies to all administrators on the instance.
 When Admin Mode is enabled for an instance, administrators:
 
 - Are allowed to access group and projects for which they are members.
-- Cannot access the **Admin Area**.
+- Cannot access the **Admin area**.
 
 ### Enable Admin Mode for your instance
 
@@ -77,7 +77,7 @@ Open the [Rails console](../operations/rails_console.md) and run the following:
 
 To enable Admin Mode through the UI:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-in restrictions**.
 1. Select **Enable Admin Mode**.

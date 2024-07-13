@@ -12,13 +12,13 @@ RSpec.describe Sidebars::Admin::Panel, feature_category: :navigation do
 
   describe '#aria_label' do
     it 'returns the correct aria label' do
-      expect(panel.aria_label).to eq(_('Admin Area'))
+      expect(panel.aria_label).to eq(_('Admin area'))
     end
   end
 
   describe '#super_sidebar_context_header' do
     it 'returns a hash with the correct title and icon' do
-      expect(panel.super_sidebar_context_header).to eq(_('Admin Area'))
+      expect(panel.super_sidebar_context_header).to eq(_('Admin area'))
     end
   end
 

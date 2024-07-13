@@ -215,7 +215,7 @@ Prerequisites:
 
 To add an instance variable:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Select **Add variable** and fill in the details:
@@ -286,7 +286,7 @@ Prerequisites:
 
 To mask a variable:
 
-1. For the group, project, or in the Admin Area, select **Settings > CI/CD**.
+1. For the group, project, or in the Admin area, select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Mask variable** checkbox.
@@ -766,7 +766,7 @@ use this setting for control over the environment the pipeline runs in.
 
 #### By minimum role
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1
 
 When the `restrict_user_defined_variables` option is enabled, you can specify which
 [roles](../../user/permissions.md#roles) can override variables with the

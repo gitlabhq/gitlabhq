@@ -11,7 +11,7 @@ module Sidebars
 
       override :aria_label
       def aria_label
-        s_("Admin|Admin Area")
+        s_("Admin|Admin area")
       end
 
       override :super_sidebar_context_header

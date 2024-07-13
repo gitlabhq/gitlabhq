@@ -115,7 +115,7 @@ Prerequisites:
 To turn off GitLab Duo for an instance:
 
 <!-- vale gitlab.Substitutions = NO -->
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**
 1. Expand **AI-powered features**.
 1. Clear the **Use Duo features** checkbox.

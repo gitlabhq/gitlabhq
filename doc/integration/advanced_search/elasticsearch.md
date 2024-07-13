@@ -64,7 +64,7 @@ For a single node search cluster, the functional cluster health status is always
 The search index updates after you:
 
 - Add data to the database or repository.
-- [Enable advanced search](#enable-advanced-search) in the Admin Area.
+- [Enable advanced search](#enable-advanced-search) in the Admin area.
 
 NOTE:
 Before you use a new Elasticsearch cluster in production, see the
@@ -329,7 +329,7 @@ Prerequisites:
 
 To enable advanced search:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Configure the [advanced search settings](#advanced-search-configuration) for
    your Elasticsearch cluster. Do not select the **Search with Elasticsearch enabled** checkbox yet.
@@ -374,7 +374,7 @@ You can only use the **Index all projects** setting to perform
 initial indexing, not to re-create an index from scratch.
 To enable advanced search with **Index all projects**:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Select the **Elasticsearch indexing** checkbox, then select **Save changes**.
 1. Select **Index all projects**.
@@ -471,7 +471,7 @@ You can improve the language support for Chinese and Japanese languages by utili
 To enable language support:
 
 1. Install the desired plugins, refer to [Elasticsearch documentation](https://www.elastic.co/guide/en/elasticsearch/plugins/7.9/installation.html) for plugins installation instructions. The plugins must be installed on every node in the cluster, and each node must be restarted after installation. For a list of plugins, see the table later in this section.
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Locate **Custom analyzers: language support**.
 1. Enable plugins support for **Indexing**.
@@ -499,7 +499,7 @@ Prerequisites:
 
 To disable advanced search in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Clear the **Elasticsearch indexing** and **Search with Elasticsearch enabled** checkboxes.
 1. Select **Save changes**.
@@ -524,7 +524,7 @@ Prerequisites:
 
 To resume indexing:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
@@ -554,7 +554,7 @@ Prerequisites:
 To trigger the reindexing process:
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**.
 1. Select **Trigger cluster reindexing**.
@@ -576,7 +576,7 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Expand **Elasticsearch zero-downtime reindexing**, and you'll
    find the following options:
@@ -631,7 +631,7 @@ To abandon the unfinished reindexing job and resume indexing:
    bundle exec rake gitlab:elastic:mark_reindex_failed RAILS_ENV=production
    ```
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Clear the **Pause Elasticsearch indexing** checkbox.
@@ -724,7 +724,7 @@ debug why the migration was halted and make any changes before retrying the migr
 
 When you believe you've fixed the cause of the failure:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Inside the **Elasticsearch migration halted** alert box, select **Retry migration**. The migration is scheduled to be retried in the background.
@@ -972,7 +972,7 @@ due to large volumes of data being indexed, follow these steps:
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in the Admin Area under **Monitoring > Background jobs > Queues Tab**
+   You can view the jobs in the Admin area under **Monitoring > Background jobs > Queues Tab**
    and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell

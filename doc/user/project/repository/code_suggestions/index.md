@@ -127,7 +127,7 @@ having higher latency.
 
 To disable direct connections to the gateway:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **AI-powered features**.
 1. Select the **Disable direct connections for code suggestions** checkbox.

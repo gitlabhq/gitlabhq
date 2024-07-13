@@ -21,7 +21,7 @@ and can no longer be changed:
 
 To enable merge request approval settings for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Push Rules**.
 1. Expand **Merge request approvals**.
 1. Choose the required options.

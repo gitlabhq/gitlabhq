@@ -417,7 +417,7 @@ To switch Git LFS to use pure SSH protocol:
 
 You can see the total storage used for LFS objects for groups and projects in:
 
-- The Admin Area
+- The Admin area
 - The [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
 
 ## Related topics

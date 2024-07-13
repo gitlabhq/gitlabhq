@@ -25,7 +25,7 @@ you do not expect public users to sign up for an account.
 
 To disable sign ups:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Clear the **Sign-up enabled** checkbox, then select **Save changes**.
@@ -45,7 +45,7 @@ administrator before they can start using their account. It is only applicable i
 
 To require administrator approval for new sign ups:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Select the **Require admin approval for new sign-ups** checkbox, then select **Save changes**.
@@ -69,7 +69,7 @@ their email address before they are allowed to sign in.
 
 To enforce confirmation of the email address used for new sign ups:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Email confirmation settings**, select **Hard**.
@@ -111,7 +111,7 @@ Prerequisites:
 
 To set a user cap:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Enter a number in **User cap**.
@@ -130,7 +130,7 @@ Prerequisites:
 
 To remove the user cap:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Remove the number from **User cap**.
@@ -157,7 +157,7 @@ You can add additional complexity requirements. Changes to password complexity r
 
 Existing passwords are unaffected. To change password complexity requirements:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. Under **Minimum password length (number of characters)**, select additional password complexity requirements. You can require numbers, uppercase letters, lowercase letters,
@@ -186,7 +186,7 @@ reduce the risk of malicious users creating spam accounts with disposable email 
 
 To create an email domain allowlist or denylist:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Sign-up restrictions**.
 1. For the allowlist, you must enter the list manually. For the denylist, you can enter the list

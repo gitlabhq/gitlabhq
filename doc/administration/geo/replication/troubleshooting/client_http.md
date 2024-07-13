@@ -74,7 +74,7 @@ To resolve this issue:
 If you still get this error, you can further increase the buffer size by repeating the steps above
 and changing the `8k` size, for example by doubling it to `16k`.
 
-### Geo Admin Area shows 'Unknown' for health status and 'Request failed with status code 401'
+### Geo Admin area shows 'Unknown' for health status and 'Request failed with status code 401'
 
 If using a load balancer, ensure that the load balancer's URL is set as the `external_url` in the
 `/etc/gitlab/gitlab.rb` of the nodes behind the load balancer.
@@ -139,10 +139,10 @@ The bug causes all wildcard domains (`.example.com`) to be ignored except for th
 
 You can have only one wildcard domain in the `no_proxy` list.
 
-### Geo Admin Area returns 404 error for a secondary site
+### Geo Admin area returns 404 error for a secondary site
 
 Sometimes `sudo gitlab-rake gitlab:geo:check` indicates that **Rails nodes of the secondary** sites are
-healthy, but a 404 Not Found error message for the **secondary** site is returned in the Geo Admin Area on the web interface for
+healthy, but a 404 Not Found error message for the **secondary** site is returned in the Geo Admin area on the web interface for
 the **primary** site.
 
 To resolve this issue:

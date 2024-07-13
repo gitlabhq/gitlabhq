@@ -383,7 +383,7 @@ module SidebarsHelper
 
     if current_user&.can_admin_all_resources?
       links.append(
-        { title: s_('Navigation|Admin Area'), link: admin_root_path, icon: 'admin' }
+        { title: s_('Navigation|Admin area'), link: admin_root_path, icon: 'admin' }
       )
     end
 

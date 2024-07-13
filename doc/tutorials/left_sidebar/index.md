@@ -76,8 +76,8 @@ Select **Search or go to** and then select **Your work**:
 
 Then, on the left sidebar, **Your work** is displayed.
 
-## Go to the Admin Area
+## Go to the Admin area
 
-The Admin Area is also available on the left sidebar at the bottom:
+The Admin area is also available on the left sidebar at the bottom:
 
-![Admin Area](img/admin_area_v16_7.png)
+![Admin area](img/admin_area_v16_7.png)

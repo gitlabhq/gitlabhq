@@ -54,7 +54,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **GitLab Duo**.
    - If the **GitLab Duo** menu item is not available, synchronize your subscription
      after purchase:

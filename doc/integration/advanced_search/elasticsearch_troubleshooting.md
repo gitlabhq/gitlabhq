@@ -108,7 +108,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the Admin Area under **Settings > Search** check that the
+- From the Admin area under **Settings > Search** check that the
   advanced search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
@@ -448,7 +448,7 @@ These settings limit indexing to 2000 documents per minute.
 
 To adjust worker settings:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Select the **Requeue indexing workers** checkbox.

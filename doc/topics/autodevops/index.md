@@ -77,7 +77,7 @@ Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching bui
 Depending on your instance type, you can enable or disable Auto DevOps at the
 following levels:
 
-| Instance type       | [Project](#at-the-project-level) | [Group](#at-the-group-level) | [Instance](#at-the-instance-level) (Admin Area)  |
+| Instance type       | [Project](#at-the-project-level) | [Group](#at-the-group-level) | [Instance](#at-the-instance-level) (Admin area)  |
 |---------------------|------------------------|------------------------|------------------------|
 | GitLab SaaS         | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 | GitLab self-managed | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |
@@ -166,7 +166,7 @@ Prerequisites:
 
 To enable Auto DevOps for your instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Auto DevOps**.
 1. Select the **Default to Auto DevOps pipeline** checkbox.

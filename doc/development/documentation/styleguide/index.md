@@ -1030,10 +1030,10 @@ To create a group:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 ```
 
-To open the Admin Area:
+To open the Admin area:
 
 ```markdown
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > CI/CD**.
 ```
 

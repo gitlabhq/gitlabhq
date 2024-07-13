@@ -132,7 +132,7 @@ all GitLab Duo features.
 Follow [the process to obtain an EE license](https://handbook.gitlab.com/handbook/developer-onboarding/#working-on-gitlab-ee-developer-licenses)
 for your local instance and [upload the license](../../administration/license_file.md).
 
-To verify that the license is applied, go to **Admin Area** > **Subscription**
+To verify that the license is applied, go to **Admin area** > **Subscription**
 and check the subscription plan.
 
 ### Required: Enable feature flags in GitLab-Rails

@@ -55,7 +55,7 @@ Before following any of those steps, make sure you have `root` access to the
 **secondary** to promote it, since there isn't provided an automated way to
 promote a Geo replica and perform a failover.
 
-On the **secondary** site, go to the **Admin Area > Geo** dashboard to
+On the **secondary** site, go to the **Admin area > Geo** dashboard to
 review its status. Replicated objects (shown in green) should be close to 100%,
 and there should be no failures (shown in red). If a large proportion of
 objects aren't yet replicated (shown in gray), consider giving the site more
@@ -119,7 +119,7 @@ follow these steps to avoid unnecessary data loss:
       connection.
 
    1. On the **primary** site:
-      1. On the left sidebar, at the bottom, select **Admin Area**..
+      1. On the left sidebar, at the bottom, select **Admin area**..
       1. On the left sidebar, select **Monitoring > Background jobs**.
       1. On the Sidekiq dashboard, select **Cron**.
       1. Select `Disable All` to disable any non-Geo periodic background jobs.
@@ -137,7 +137,7 @@ follow these steps to avoid unnecessary data loss:
       [data not managed by Geo](../../replication/datatypes.md#limitations-on-replicationverification),
       trigger the final replication process now.
    1. On the **primary** site:
-      1. On the left sidebar, at the bottom, select **Admin Area**.
+      1. On the left sidebar, at the bottom, select **Admin area**.
       1. On the left sidebar, select **Monitoring > Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
          those with `geo` in the name to drop to 0.
@@ -152,7 +152,7 @@ follow these steps to avoid unnecessary data loss:
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** site:
-      1. On the left sidebar, at the bottom, select **Admin Area**.
+      1. On the left sidebar, at the bottom, select **Admin area**.
       1. On the left sidebar, select **Monitoring > Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
          queues to drop to 0 queued and 0 running jobs.

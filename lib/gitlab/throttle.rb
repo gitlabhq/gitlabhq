@@ -13,7 +13,7 @@ module Gitlab
       Gitlab::CurrentSettings.current_application_settings
     end
 
-    # Returns true if we should use the Admin Area protected paths throttle
+    # Returns true if we should use the Admin area protected paths throttle
     def self.protected_paths_enabled?
       self.settings.throttle_protected_paths_enabled?
     end

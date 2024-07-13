@@ -40,7 +40,7 @@ Prorated charges are not possible without a quarterly usage report.
 
 View the lists of users in your instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Users**.
 
 ### Billable users
@@ -63,7 +63,7 @@ A user is not counted as a billable user if:
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
     - Other [internal users](../../development/internal_users.md#internal-users).
 
-The amount of **Billable users** is reported once a day in the Admin Area.
+The amount of **Billable users** is reported once a day in the Admin area.
 
 ### Maximum users
 
@@ -226,7 +226,7 @@ Prerequisites:
 
 You can manually synchronize your subscription details at any time.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
 1. In the **Subscription details** section, select **Sync** (**{retry}**).
 
@@ -236,7 +236,7 @@ A job is queued. When the job finishes, the subscription details are updated.
 
 If you are an administrator, you can view the status of your subscription:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
 
 The **Subscription** page includes the following details:
@@ -258,7 +258,7 @@ It also displays the following information:
 
 If you are an administrator, you can export your license usage into a CSV:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.
 
@@ -318,7 +318,7 @@ is the number of _maximum users_ that exceed the users in subscription for the c
 You must pay for this number of users either before renewal, or at the time of renewal. This is
 called the _true up_ process.
 
-To view the number of users over subscription go to the **Admin Area**.
+To view the number of users over subscription go to the **Admin area**.
 
 ##### Users over subscription example
 
@@ -466,7 +466,7 @@ For example, if a license has a start date of January 1, 2024 and an end date of
 
 ## Activate a license file or key
 
-If you have a license file or key, you can activate it [in the Admin Area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+If you have a license file or key, you can activate it [in the Admin area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 
 ## Contact Support
 

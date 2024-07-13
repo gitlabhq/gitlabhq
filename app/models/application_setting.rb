@@ -7,6 +7,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   include ChronicDurationAttribute
   include IgnorableColumns
   include Sanitizable
+  include SafelyChangeColumnDefault
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
@@ -18,12 +19,14 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[toggle_security_policies_policy_scope lock_toggle_security_policies_policy_scope], remove_with: '17.2', remove_after: '2024-07-12'
   ignore_columns %i[arkose_labs_verify_api_url], remove_with: '17.4', remove_after: '2024-08-09'
 
+  columns_changing_default :security_policy_scheduled_scans_max_concurrency
+
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
-    'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+    'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
 
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
-    'Admin Area > Settings > General > Kroki'
+    'Admin area > Settings > General > Kroki'
 
   # Validate URIs in this model according to the current value of the `deny_all_requests_except_allowed` property,
   # rather than the persisted value.

@@ -262,7 +262,7 @@ module SearchHelper
   # Autocomplete results for settings pages, for admins
   def default_autocomplete_admin
     [
-      { category: "Jump to", label: _("Admin Area / Dashboard"), url: admin_root_path }
+      { category: "Jump to", label: _("Admin area / Dashboard"), url: admin_root_path }
     ]
   end
 

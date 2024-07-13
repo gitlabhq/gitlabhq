@@ -80,7 +80,7 @@ If you implemented the server hook code correctly, it should execute when the Gi
 
 To create server hooks for a repository:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Go to **Overview > Projects** and select the project you want to add a server hook to.
 1. On the page that appears, locate the value of **Relative path**. This path is where server
    hooks must be located.

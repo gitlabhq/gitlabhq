@@ -155,7 +155,7 @@ GitLab performs monthly upgrades to your instance with the latest patch release 
 
 #### Unscheduled maintenance
 
-GitLab may conduct unscheduled maintenance to address high-severity issues affecting the security, availability, or reliability of your instance.
+GitLab may conduct [unscheduled maintenance](../../administration/dedicated/create_instance.md#emergency-maintenance) to address high-severity issues affecting the security, availability, or reliability of your instance.
 
 ### Application
 

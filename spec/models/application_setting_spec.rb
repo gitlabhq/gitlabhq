@@ -428,7 +428,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
             [
               'must be a valid relative or absolute URL. ' \
               'Please check your Grafana URL setting in ' \
-              'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+              'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
             ])
         end
       end
@@ -442,7 +442,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
             [
               'is blocked: Only allowed schemes are http, https. Please check your ' \
               'Grafana URL setting in ' \
-              'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+              'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
             ])
         end
       end

@@ -28,19 +28,19 @@ repository consistency checks, some disabled checks, and how to configure consis
 
 To check a project's repository using GitLab UI:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Projects**.
 1. Select the project to check.
 1. In the **Repository check** section, select **Trigger repository check**.
 
 The checks run asynchronously so it may take a few minutes before the check result is visible on the
-project page in the Admin Area. If the checks fail, see [what to do](#what-to-do-if-a-check-failed).
+project page in the Admin area. If the checks fail, see [what to do](#what-to-do-if-a-check-failed).
 
 ## Enable repository checks for all projects
 
 Instead of checking repositories manually, GitLab can be configured to run the checks periodically:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. Enable **Enable repository checks**.
@@ -93,7 +93,7 @@ If a repository check fails, locate the error in the [`repocheck.log` file](logs
 
 If periodic repository checks cause false alarms, you can clear all repository check states:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Repository**.
 1. Expand **Repository maintenance**.
 1. Select **Clear all repository checks**.

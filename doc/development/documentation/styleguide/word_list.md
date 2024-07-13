@@ -91,9 +91,9 @@ Do not confuse **add** with [**create**](#create).
 
 Do not use **Add new**.
 
-## Admin Area
+## Admin area
 
-Use title case for **Admin Area**. The UI uses title case.
+Use sentence case for **Admin area**. The UI uses title case.
 
 Do not use **administrator area**, **administration area**, or other variants.
 
@@ -206,7 +206,7 @@ Do not use **and so on**. Instead, be more specific. For more information, see t
 
 ## area
 
-Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
+Use [**section**](#section) instead of **area**. The only exception is [the Admin area](#admin-area).
 
 ## as
 

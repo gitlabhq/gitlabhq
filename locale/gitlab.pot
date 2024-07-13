@@ -3463,12 +3463,6 @@ msgstr ""
 msgid "Admin"
 msgstr ""
 
-msgid "Admin Area"
-msgstr ""
-
-msgid "Admin Area / Dashboard"
-msgstr ""
-
 msgid "Admin Mode"
 msgstr ""
 
@@ -3476,6 +3470,12 @@ msgid "Admin Note"
 msgstr ""
 
 msgid "Admin Notifications"
+msgstr ""
+
+msgid "Admin area"
+msgstr ""
+
+msgid "Admin area / Dashboard"
 msgstr ""
 
 msgid "Admin message"
@@ -4684,7 +4684,7 @@ msgstr ""
 msgid "Admin|Additional users must be reviewed and approved by a system administrator. Learn more about %{help_link_start}usage caps%{help_link_end}."
 msgstr ""
 
-msgid "Admin|Admin Area"
+msgid "Admin|Admin area"
 msgstr ""
 
 msgid "Admin|Admin notes"
@@ -6387,7 +6387,7 @@ msgstr ""
 msgid "Application: %{name}"
 msgstr ""
 
-msgid "ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area."
+msgid "ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin area."
 msgstr ""
 
 msgid "ApplicationSettings|Add a link to Grafana"
@@ -34411,7 +34411,7 @@ msgstr ""
 msgid "Navigation|%{title} removed from pinned items"
 msgstr ""
 
-msgid "Navigation|Admin Area"
+msgid "Navigation|Admin area"
 msgstr ""
 
 msgid "Navigation|Analyze"
@@ -45519,10 +45519,10 @@ msgstr ""
 msgid "Runners|Executor"
 msgstr ""
 
-msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin Area in Settings &gt; CI/CD."
+msgid "Runners|Existing runners are not affected. To permit runner registration for all groups, enable this setting in the Admin area in Settings &gt; CI/CD."
 msgstr ""
 
-msgid "Runners|Existing runners are not affected. To permit runner registration for all projects, enable this setting in the Admin Area in Settings &gt; CI/CD."
+msgid "Runners|Existing runners are not affected. To permit runner registration for all projects, enable this setting in the Admin area in Settings &gt; CI/CD."
 msgstr ""
 
 msgid "Runners|Export as CSV"
@@ -47940,7 +47940,7 @@ msgstr ""
 msgid "SecurityOrchestration|Hide extra projects"
 msgstr ""
 
-msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the main branch, then require two approvals from any two members of the application security team are required."
+msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the main branch, then require two approvals from any two members of the application security team."
 msgstr ""
 
 msgid "SecurityOrchestration|If any scanner finds a vulnerability that was previously detected but no longer found in a subsequent scan, then automatically set the status to Resolved."
@@ -53668,7 +53668,7 @@ msgstr ""
 msgid "There are no commits yet."
 msgstr ""
 
-msgid "There are no custom project templates set up for this GitLab instance. They are enabled from GitLab's Admin Area. Contact your GitLab instance administrator to setup custom project templates."
+msgid "There are no custom project templates set up for this GitLab instance. They are enabled from GitLab's Admin area. Contact your GitLab instance administrator to setup custom project templates."
 msgstr ""
 
 msgid "There are no issues to show"

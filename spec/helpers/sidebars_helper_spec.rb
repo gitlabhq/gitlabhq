@@ -466,7 +466,7 @@ RSpec.describe SidebarsHelper, feature_category: :navigation do
       end
 
       let_it_be(:admin_area_link) do
-        { title: s_('Navigation|Admin Area'), link: '/admin', icon: 'admin' }
+        { title: s_('Navigation|Admin area'), link: '/admin', icon: 'admin' }
       end
 
       subject do

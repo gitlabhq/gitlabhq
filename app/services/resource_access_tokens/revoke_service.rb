@@ -20,7 +20,7 @@ module ResourceAccessTokens
       access_token.revoke!
 
       success_message = "Access token #{access_token.name} has been revoked"
-      unless Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource)
+      unless Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
         destroy_bot_user
         success_message += " and the bot user has been scheduled for deletion"
       end

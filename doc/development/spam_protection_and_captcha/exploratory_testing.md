@@ -273,7 +273,7 @@ GraphQL response:
 
 ### Scenario: Akismet enabled, CAPTCHA disabled
 
-For this scenario, ensure you clear **Enable reCAPTCHA** in the Admin Area settings as described above.
+For this scenario, ensure you clear **Enable reCAPTCHA** in the Admin area settings as described above.
 If CAPTCHA is not enabled, any request flagged as potential spam fails with no chance to resubmit,
 even if it could otherwise be resubmitted if CAPTCHA were enabled and successfully solved.
 

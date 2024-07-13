@@ -201,14 +201,28 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
               end
             end
 
-            it 'project bot membership expires when PAT expires' do
+            it 'project bot membership does not expire when PAT expires' do
               response = subject
               access_token = response.payload[:access_token]
               project_bot = access_token.user
 
-              expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(
-                max_pat_access_token_lifetime.to_date
-              )
+              expect(resource.members.find_by(user_id: project_bot.id).expires_at).to be_nil
+            end
+
+            context 'when retain_resource_access_token_user_after_revoke is disabled' do
+              before do
+                stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+              end
+
+              it 'project bot membership expires when PAT expires' do
+                response = subject
+                access_token = response.payload[:access_token]
+                project_bot = access_token.user
+
+                expect(resource.members.find_by(user_id: project_bot.id).expires_at).to eq(
+                  max_pat_access_token_lifetime.to_date
+                )
+              end
             end
           end
 
@@ -222,7 +236,19 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
               expect(access_token.expires_at).to eq(params[:expires_at])
             end
 
-            context 'expiry of the project bot member' do
+            it 'sets the project bot to not expire' do
+              response = subject
+              access_token = response.payload[:access_token]
+              project_bot = access_token.user
+
+              expect(resource.members.find_by(user_id: project_bot.id).expires_at).to be_nil
+            end
+
+            context 'when retain_resource_access_token_user_after_revoke is disabled' do
+              before do
+                stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+              end
+
               it 'sets the project bot to expire on the same day as the token' do
                 response = subject
                 access_token = response.payload[:access_token]

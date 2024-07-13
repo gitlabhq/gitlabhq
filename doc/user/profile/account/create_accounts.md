@@ -14,7 +14,7 @@ DETAILS:
 You can create users:
 
 - [Manually through the sign-in page](#create-users-on-sign-in-page).
-- [Manually in the Admin Area](#create-users-in-admin-area).
+- [Manually in the Admin area](#create-users-in-admin-area).
 - [Manually using the API](../../../api/users.md).
 - [Automatically through user authentication integrations](#create-users-through-authentication-integrations).
 
@@ -29,7 +29,7 @@ Users can create their own accounts by either:
 - Selecting the **Register now** link on the sign-in page.
 - Navigating to your GitLab instance's sign-up link. For example: `https://gitlab.example.com/users/sign_up`.
 
-## Create users in Admin Area
+## Create users in Admin area
 
 Prerequisites:
 
@@ -37,7 +37,7 @@ Prerequisites:
 
 To create a user manually:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. Select **New user**.
 1. Complete the required fields, such as name, username, and email.

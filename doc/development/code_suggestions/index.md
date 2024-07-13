@@ -85,5 +85,5 @@ with the deployed staging AI Gateway. To do this:
    1. Optional. Remove any active license.
    1. Add the new activation code.
 
-1. Inside your GDK, navigate to Admin Area > GitLab Duo Pro, go to `/admin/code_suggestions`
+1. Inside your GDK, navigate to Admin area > GitLab Duo Pro, go to `/admin/code_suggestions`
 1. Filter users to find `root` and click the toggle to assign a GitLab Duo Pro add-on seat to the root user

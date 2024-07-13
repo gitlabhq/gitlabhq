@@ -77,6 +77,17 @@ DETAILS:
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=zWhwuixUkYU&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat/examples.md#write-tests-in-the-ide).
 
+### GitLab Duo for the CLI
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com
+**Status:** Experiment, Self-managed, GitLab Dedicated
+
+- `glab duo ask` helps you discover or recall `git` commands when and where you need them.
+- LLM: Vertex AI Codey [`codechat-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/codechat-bison)
+- [View documentation](../../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli).
+
 ### Suggested Reviewers
 
 DETAILS:
@@ -179,17 +190,6 @@ DETAILS:
 - View documentation for explaining code in:
   - [A file](../../user/project/repository/code_explain.md).
   - [A merge request](../../user/project/merge_requests/changes.md#explain-code-in-a-merge-request).
-
-### GitLab Duo for the CLI
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
-
-- `glab duo ask` helps you discover or recall `git` commands when and where you need them.
-- LLM: Vertex AI Codey [`codechat-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/codechat-bison)
-- [View documentation](../../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli).
 
 ### Code review summary
 
