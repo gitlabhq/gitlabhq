@@ -15,14 +15,82 @@ DETAILS:
 > - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/391543) in GitLab 16.0.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136744) in GitLab 16.7. Feature flag `remote_development_feature_flag` removed.
 
-When you [set up workspace infrastructure](configuration.md#set-up-workspace-infrastructure),
-you must configure the GitLab agent.
-The workspace settings are available in the agent
-configuration file under `remote_development`.
+As part of [setting up workspace infrastructure](configuration.md#set-up-workspace-infrastructure), you must configure a GitLab agent to support workspaces. This guide assumes that a GitLab Agent is already installed in the Kubernetes cluster.
 
-You can use any agent in the top-level group of your workspace project
-and in the subgroups of the top-level group, provided that the agent
-is properly configured for remote development.
+Prerequisites:
+
+- The agent configuration must have the `remote_development` module enabled, and the required fields of this module must be correctly set. For more information, see [workspace settings](#workspace-settings).
+- The agent must be **allowed** in a group for the purpose of creating workspaces. During workspace creation, users can select allowed agents that are associated with any parent group of the workspace project.
+- The workspace creator must have the Developer role to the project of the agent.
+
+## Agent authorization in a Group for creating workspaces
+
+> - New authorization strategy [introduced](https://gitlab.com/groups/gitlab-org/-/epics/14025) in GitLab 17.2.
+
+With the new authorization strategy that replaces the [legacy authorization strategy](#legacy-agent-authorization-strategy), group owners and administrators can control which cluster agents can be used for hosting workspaces in a group.
+
+For example, if the path to your workspace project is `top-group/subgroup-1/subgroup-2/workspace-project`, you can use any configured agent for either `top-group`, `subgroup-1` or `subgroup-2` group.
+
+```mermaid
+%%{init: {'theme':'neutral'}}%%
+
+graph TD;
+
+    classDef active fill:lightgreen, stroke:#green, color:green, stroke-width:1px;
+
+    topGroup[Top Group, allowed Agent 1]
+    subgroup1[Subgroup 1, allowed Agent 2]
+    subgroup2[Subgroup 2, allowed Agent 3]
+    wp(Woekspace Project, Agent 1, 2 & 3 all available)
+
+    topGroup --> subgroup1
+    subgroup1 --> subgroup2
+    subgroup2 --> wp
+
+    class wp active;
+```
+
+If a cluster agent is allowed for one group, for example `subgroup-1`, then the cluster agent is available for all projects under `subgroup-1` (including nested projects) to create a workspace. Therefore, you must consider the group where a cluster agent is allowed, as it might affect the scope within which a cluster agent may be available for hosting workspaces.
+
+## Allow a cluster agent for workspaces in a group
+
+Prerequisites:
+
+- The [workspace infrastructure](configuration.md#set-up-workspace-infrastructure) must be set up.
+- You must be an administrator or group owner.
+
+To allow a cluster agent for workspaces in a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Settings > Workspaces**.
+1. In the **Group agents** section, select the **All agents** tab.
+1. From the list of available agents, find the agent with status **Blocked**, and select **Allow**.
+1. On the confirmation dialog, select **Allow agent**.
+
+The status of the selected agent is updated to **Allowed**, and the agent is displayed in the **Allowed agents** tab.
+
+## Remove an allowed cluster agent for workspaces within a group
+
+Prerequisites:
+
+- The [workspace infrastructure](configuration.md#set-up-workspace-infrastructure) must be set up.
+- You must be an administrator or group owner.
+
+To remove an allowed cluster agent from a group:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. On the left sidebar, select **Settings > Workspaces**.
+1. In the **Group agents** section, select the **Allowed agents** tab.
+1. From the list of allowed agents, find the agent you want to remove, and select **Block**.
+1. On the confirmation dialog, select **Block agent**.
+
+The status of the selected agent is updated to **Blocked**, and the agent is removed from the **Allowed agents** tab.
+
+Removing an allowed cluster agent from a group does not immediately stop running workspaces using this agent. Running workspaces will stop after the configured termation period, or being manually stopped.
+
+## Legacy agent authorization strategy
+
+In GitLab 17.1 and earlier, an agent doesn't have to be allowed to be available in a group for creating workspaces. You can use an agent present anywhere in the top-level group (or the root group) of a workspace project to create a workspace, as long as the remote development module is enabled and you have at least the Developer role in the root group.
 For example, if the path to your workspace project is `top-group/subgroup-1/subgroup-2/workspace-project`,
 you can use any configured agent in `top-group` and in any of its subgroups.
 
