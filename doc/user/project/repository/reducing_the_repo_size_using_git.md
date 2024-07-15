@@ -204,10 +204,12 @@ To clean up a repository:
 1. Upload a list of objects. For example, a `commit-map` file created by `git filter-repo` which is located in the
    `filter-repo` directory.
 
-   If your `commit-map` file is larger than about 250 KB or 3000 lines, the file can be split and uploaded piece by piece:
+   If your `commit-map` file is too large, the background cleanup process might time out and fail.
+   As a result, the repository size isn't reduced as expected.
+   To address this, split the file and upload it in parts, for example:
 
    ```shell
-   split -l 3000 filter-repo/commit-map filter-repo/commit-map-
+   split -l 20000 filter-repo/commit-map filter-repo/commit-map-
    ```
 
 1. Select **Start cleanup**.

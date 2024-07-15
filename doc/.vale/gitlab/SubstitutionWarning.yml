@@ -16,6 +16,8 @@ swap:
   air(?:-| )?gapped: "offline environment"
   bullet: "list item"
   (?<!right-)click(?!-through): "select"
+  cancelled: "canceled"
+  cancelling: "canceling"
   code base: "codebase"
   config: "configuration"
   confirmation box: "confirmation dialog"

@@ -24,18 +24,17 @@ RSpec.describe "Admin health check", :js, feature_category: :error_budgets do
 
       token = Gitlab::CurrentSettings.health_check_access_token
 
-      expect(page).to have_content("Access token is #{token}")
-      expect(page).to have_selector('#health-check-token', text: token)
+      expect(find_by_testid('health_check_token').value).to eq token
     end
 
     describe 'reload access token' do
       it 'changes the access token' do
         orig_token = Gitlab::CurrentSettings.health_check_access_token
-        click_link 'Reset health check access token'
+        click_link 'Reset token'
         accept_gl_confirm('Are you sure you want to reset the health check token?')
 
         expect(page).to have_content('New health check access token has been generated!')
-        expect(find('#health-check-token').text).not_to eq orig_token
+        expect(find_by_testid('health_check_token').text).not_to eq orig_token
       end
     end
   end

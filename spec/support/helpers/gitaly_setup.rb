@@ -152,6 +152,7 @@ module GitalySetup
     begin
       try_connect!(service, toml)
     rescue StandardError
+      process_details(pid)
       Process.kill('TERM', pid)
       raise
     end
@@ -198,7 +199,7 @@ module GitalySetup
 
   def try_connect!(service, toml)
     LOGGER.debug "Trying to connect to #{service}: "
-    timeout = 20
+    timeout = 40
     delay = 0.1
     connect = connect_proc(toml)
 
@@ -406,5 +407,13 @@ module GitalySetup
 
   def gitaly_with_transactions?
     Gitlab::Utils.to_boolean(ENV['GITALY_TRANSACTIONS_ENABLED'], default: false)
+  end
+
+  private
+
+  # Logs the details of the process with the given pid.
+  def process_details(pid)
+    output = `ps -p #{pid} -o pid,ppid,state,%cpu,%mem,etime,args`
+    LOGGER.debug output
   end
 end
