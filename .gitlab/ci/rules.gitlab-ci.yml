@@ -2002,6 +2002,12 @@
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request-labels-run-without-gitaly-transactions
 
+.rails:rules:ee-only-gitaly-without-transactions:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:gitaly-without-transactions", rules]
+
 .rails:rules:ee-and-foss-migration:
   rules:
     - <<: *if-fork-merge-request

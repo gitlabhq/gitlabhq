@@ -20,7 +20,7 @@ RSpec.describe Sidebars::Projects::Menus::SecurityComplianceMenu do
     end
 
     context 'when user is authenticated' do
-      context 'when the Security and Compliance is disabled' do
+      context 'when the Security and compliance is disabled' do
         let_it_be(:project) { create(:project, :security_and_compliance_disabled) }
 
         before do
@@ -32,7 +32,7 @@ RSpec.describe Sidebars::Projects::Menus::SecurityComplianceMenu do
         it { is_expected.to be_falsey }
       end
 
-      context 'when the Security and Compliance is not disabled' do
+      context 'when the Security and compliance is not disabled' do
         it { is_expected.to be_truthy }
       end
     end

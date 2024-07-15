@@ -2,6 +2,8 @@
 
 module Banzai
   class UploadsFinder
+    include FinderMethods
+
     def initialize(parent:)
       @parent = parent
     end

@@ -256,6 +256,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :create_jira_connect_subscription
     enable :maintainer_access
     enable :read_upload
+    enable :admin_upload
     enable :destroy_upload
     enable :admin_push_rules
   end

@@ -2615,7 +2615,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'access_security_and_compliance' do
-    context 'when the "Security and Compliance" is enabled' do
+    context 'when the "Security and compliance" is enabled' do
       before do
         project.project_feature.update!(security_and_compliance_access_level: Featurable::PRIVATE)
       end
@@ -2661,7 +2661,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    context 'when the "Security and Compliance" is not enabled' do
+    context 'when the "Security and compliance" is not enabled' do
       before do
         project.project_feature.update!(security_and_compliance_access_level: Featurable::DISABLED)
       end

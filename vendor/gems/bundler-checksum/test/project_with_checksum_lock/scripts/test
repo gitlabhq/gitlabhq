@@ -1,6 +1,13 @@
-#!/bin/sh
+#!/bin/bash
+set -euo pipefail
+IFS=$'\n\t'
 
-set -xe
+if [[ $(bundler -v) == *"$BUNDLER_VERSION"* ]]; then
+  echo "Bundler version matches desired version: ${BUNDLER_VERSION}"
+else
+  echo "Bundler version $(bundler -v) does not match desired version: ${BUNDLER_VERSION}"
+  exit 1
+fi
 
 # Check there's no differences after re-initialising
 ruby -I ../../lib ../../bin/bundler-checksum init

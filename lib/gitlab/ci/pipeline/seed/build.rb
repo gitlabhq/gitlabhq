@@ -70,6 +70,7 @@ module Gitlab
               .deep_merge(allow_failure_criteria_attributes)
               .deep_merge(@cache.cache_attributes)
               .deep_merge(runner_tags)
+              .deep_merge(build_execution_config_attribute)
           end
 
           def bridge?
@@ -93,6 +94,19 @@ module Gitlab
           private
 
           delegate :logger, to: :@context
+
+          def build_execution_config_attribute
+            run_value = @seed_attributes.dig(:options, :run)
+            return {} unless ::Feature.enabled?(:pipeline_run_keyword, @pipeline.project) && run_value.present?
+
+            execution_config = ::Ci::BuildExecutionConfig.new(
+              project: @pipeline.project,
+              pipeline: @pipeline,
+              run_steps: run_value
+            )
+
+            { execution_config: execution_config }
+          end
 
           def all_of_only?
             @only.all? { |spec| spec.satisfied_by?(@pipeline, evaluate_context) }

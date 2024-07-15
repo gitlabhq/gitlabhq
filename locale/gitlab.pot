@@ -41880,7 +41880,7 @@ msgstr ""
 msgid "ProjectSettings|Search for topic"
 msgstr ""
 
-msgid "ProjectSettings|Security and Compliance"
+msgid "ProjectSettings|Security and compliance"
 msgstr ""
 
 msgid "ProjectSettings|Security and compliance for this project."
@@ -47455,7 +47455,7 @@ msgstr ""
 msgid "Security Policy project already exists."
 msgstr ""
 
-msgid "Security and Compliance"
+msgid "Security and compliance"
 msgstr ""
 
 msgid "Security capabilities"

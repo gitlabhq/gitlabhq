@@ -2599,7 +2599,11 @@ POST /projects/:id/restore
 |-----------|-------------------|----------|-------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
-## Upload a file
+## Markdown uploads
+
+Markdown uploads are files uploaded to a project that can be referenced in Markdown text in an issue, merge request, snippet, or wiki page.
+
+### Upload a file
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112450) in GitLab 15.10. Feature flag `enforce_max_attachment_size_upload_api` removed.
 
@@ -2639,6 +2643,95 @@ Returned object:
 The returned `url` is relative to the project path. The returned `full_path` is
 the absolute path to the file. In Markdown contexts, the link is expanded when
 the format in `markdown` is used.
+
+### List uploads
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+Get all uploads of the project sorted by `created_at` in descending order.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /projects/:id/uploads
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads"
+```
+
+Returned object:
+
+```json
+[
+  {
+    "id": 1,
+    "size": 1024,
+    "filename": "image.png",
+    "created_at":"2024-06-20T15:53:03.067Z",
+    "uploaded_by": {
+      "id": 18,
+      "name" : "Alexandra Bashirian",
+      "username" : "eileen.lowe"
+    }
+  },
+  {
+    "id": 2,
+    "size": 512,
+    "filename": "other-image.png",
+    "created_at":"2024-06-19T15:53:03.067Z",
+    "uploaded_by": null
+  }
+]
+```
+
+### Download an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /projects/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
+```
+
+### Delete an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+DELETE /projects/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
+```
 
 ## Upload a project avatar
 

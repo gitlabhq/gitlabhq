@@ -1177,12 +1177,20 @@ Use the full phrase **dropdown list** instead.
 
 ## license
 
-When writing about licenses:
+Licenses are different than subscriptions.
 
-- Do not use variations such as [**cloud license**](#cloud-licensing), **offline license**, or **legacy license**.
-- Do not use interchangeably with **subscription**:
-  - A license grants users access to the subscription they purchased, and contains information such as the number of seats they purchased and subscription dates.
-  - A subscription is the subscription tier that the user purchases.
+- A license grants users access to the subscription they purchased. The license includes information like the number of seats and subscription dates.
+- A subscription is the subscription tier that the user purchases.
+
+Do not use the term [**cloud license**](#cloud-licensing).
+
+The following terms are displayed in the UI and in emails. You can use them when necessary:
+
+- **Online license** - a license synchronized with GitLab
+- **Offline license** - a license not synchronized with GitLab
+- **Legacy license** - a license created before synchronization was possible
+
+However, if you can, rather than using the term, use the more specific description instead.
 
 Use:
 

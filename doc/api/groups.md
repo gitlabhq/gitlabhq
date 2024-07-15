@@ -1701,6 +1701,99 @@ Example response:
 }
 ```
 
+## Markdown uploads
+
+Markdown uploads are files uploaded to a group that can be referenced in Markdown text in an epic or wiki page.
+
+### List uploads
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+Get all uploads of the group sorted by `created_at` in descending order.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /groups/:id/uploads
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads"
+```
+
+Returned object:
+
+```json
+[
+  {
+    "id": 1,
+    "size": 1024,
+    "filename": "image.png",
+    "created_at":"2024-06-20T15:53:03.067Z",
+    "uploaded_by": {
+      "id": 18,
+      "name" : "Alexandra Bashirian",
+      "username" : "eileen.lowe"
+    }
+  },
+  {
+    "id": 2,
+    "size": 512,
+    "filename": "other-image.png",
+    "created_at":"2024-06-19T15:53:03.067Z",
+    "uploaded_by": null
+  }
+]
+```
+
+### Download an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /groups/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
+```
+
+### Delete an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+DELETE /groups/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
+```
+
 ## Hooks
 
 DETAILS:

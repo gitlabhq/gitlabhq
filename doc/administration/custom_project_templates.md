@@ -57,7 +57,7 @@ Prerequisites:
 1. Review the project's
    [feature settings](../user/project/settings/index.md#configure-project-features-and-permissions).
    All enabled project features should be set to **Everyone With Access**, except
-   **GitLab Pages** and **Security and Compliance**.
+   **GitLab Pages** and **Security and compliance**.
 
 Repository and database information that are copied over to each new project are
 identical to the data exported with the [GitLab Project Import/Export](../user/project/settings/import_export.md).

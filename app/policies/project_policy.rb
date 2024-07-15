@@ -613,6 +613,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_project_aws
     enable :admin_secure_files
     enable :read_upload
+    enable :admin_upload
     enable :destroy_upload
     enable :admin_incident_management_timeline_event_tag
     enable :stop_environment

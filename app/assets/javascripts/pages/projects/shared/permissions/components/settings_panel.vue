@@ -77,7 +77,7 @@ export default {
     ),
     duoLabel: s__('ProjectSettings|GitLab Duo'),
     duoHelpText: s__('ProjectSettings|Use AI-powered features in this project.'),
-    securityAndComplianceLabel: s__('ProjectSettings|Security and Compliance'),
+    securityAndComplianceLabel: s__('ProjectSettings|Security and compliance'),
     snippetsLabel: s__('ProjectSettings|Snippets'),
     wikiLabel: s__('ProjectSettings|Wiki'),
     pucWarningLabel: s__('ProjectSettings|Warn about Potentially Unwanted Characters'),

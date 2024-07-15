@@ -1,0 +1,58 @@
+run_with_step_script:
+  run:
+    - name: hello_steps
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step
+      script: echo 'Hello!'
+      inputs:
+        echo: hello steps!
+
+run_without_name:
+  run:
+    step: some reference
+
+run_without_name_script:
+  run:
+    script: rspec
+
+run_with_invalid_key:
+  run:
+    - name: step1
+      invalid_key: value1
+
+run_with_empty_string:
+  run: ''
+
+run_with_non_array:
+  run: "not an array"
+
+run_with_invalid_env:
+  run:
+    - name: invalid_env
+      script: echo 'Test'
+      env:
+        - not_a_key_value_pair
+
+run_with_invalid_inputs:
+  run:
+    - name: invalid_inputs
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/step1
+      inputs:
+        - not_an_object
+
+run_with_missing_step_and_script:
+  run:
+    - name: missing_required
+      env:
+        TEST: 'value'
+
+run_with_invalid_step_value:
+  run:
+    - name: invalid_step
+      step: 123  # Should be a string
+
+run_with_invalid_script_value:
+  run:
+    - name: invalid_script
+      script:
+        - not_a_string
+        - 123

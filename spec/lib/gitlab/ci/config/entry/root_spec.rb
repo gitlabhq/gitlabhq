@@ -433,7 +433,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Root do
       describe '#errors' do
         it 'reports errors about missing script or trigger' do
           expect(root.errors)
-            .to include 'jobs rspec config should implement a script: or a trigger: keyword'
+            .to include 'jobs rspec config should implement the script:, run:, or trigger: keyword'
         end
       end
     end

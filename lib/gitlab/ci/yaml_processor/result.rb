@@ -126,6 +126,7 @@ module Gitlab
               before_script: job[:before_script],
               script: job[:script],
               manual_confirmation: job[:manual_confirmation],
+              run: job[:run],
               after_script: job[:after_script],
               hooks: job[:hooks],
               environment: job[:environment],

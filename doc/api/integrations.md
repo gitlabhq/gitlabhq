@@ -99,7 +99,7 @@ Parameters:
 | `app_store_private_key_file_name` | string | yes | Apple App Store Connect private key filename. |
 | `app_store_private_key` | string | yes | Apple App Store Connect private key. |
 | `app_store_protected_refs` | boolean | no | Set variables on protected branches and tags only. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Apple App Store Connect
 
@@ -133,7 +133,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `api_key` | string | yes | User API token. The user must have access to the task. All comments are attributed to this user. |
 | `restrict_to_branch` | string | no | Comma-separated list of branches to be automatically inspected. Leave blank to include all branches. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Asana
 
@@ -167,7 +167,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The authentication token. |
 | `subdomain` | string | no | The subdomain setting. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Assembla
 
@@ -206,7 +206,7 @@ Parameters:
 | `build_key` | string | yes | Bamboo build plan key (for example, `KEY`). |
 | `username` | string | yes | User with API access to the Bamboo server. |
 | `password` | string | yes | Password of the user. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Atlassian Bamboo
 
@@ -241,7 +241,7 @@ Parameters:
 | `new_issue_url` | string | yes |  URL of the new issue. |
 | `issues_url` | string | yes | URL of the issue. |
 | `project_url` | string | yes | URL of the project. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Bugzilla
 
@@ -279,7 +279,7 @@ Parameters:
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Buildkite
 
@@ -317,7 +317,7 @@ Parameters:
 | `token`       | string  | yes     | API authentication token from Campfire Classic. To get the token, sign in to Campfire Classic and select **My info**. |
 | `subdomain`   | string  | no    | `.campfirenow.com` subdomain when you're signed in. |
 | `room`        | string  | no    | ID portion of the Campfire Classic room URL. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Campfire Classic
 
@@ -353,7 +353,7 @@ Parameters:
 | ------------- | ------ | -------- | -------------- |
 | `issues_url`  | string | yes     | URL of the issue.     |
 | `project_url` | string | yes     | URL of the project.   |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable ClickUp
 
@@ -386,7 +386,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `confluence_url` | string | yes | URL of the Confluence Workspace hosted on `atlassian.net`. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Confluence Workspace
 
@@ -421,7 +421,7 @@ Parameters:
 | `new_issue_url` | string | yes |  URL of the new issue. |
 | `issues_url` | string | yes | URL of the issue. |
 | `project_url` | string | yes | URL of the project. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable a custom issue tracker
 
@@ -460,7 +460,7 @@ Parameters:
 | `datadog_site`         | string  | no    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
 | `datadog_tags`         | string  | no    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`                                                                                                 |
 | `archive_trace_events` | boolean | no    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3). |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Datadog
 
@@ -495,7 +495,7 @@ Parameters:
 | `diffblue_license_key` | string | yes | Diffblue Cover license key. |
 | `diffblue_access_token_name` | string | yes | Access token name used by Diffblue Cover in pipelines. |
 | `diffblue_access_token_secret` | string  | yes | Access token secret used by Diffblue Cover in pipelines. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Diffblue Cover
 
@@ -556,7 +556,7 @@ Parameters:
 | `tag_push_channel` | string | no | The webhook override to receive notifications for tag push events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
 | `wiki_page_channel` | string | no | The webhook override to receive notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Discord Notifications
 
@@ -594,7 +594,7 @@ Parameters:
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Drone
 
@@ -632,7 +632,7 @@ Parameters:
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. Notifications are always fired for tag pushes. The default value is `all`. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable emails on push
 
@@ -667,7 +667,7 @@ Parameters:
 | `new_issue_url` | string | yes | URL of the new issue. |
 | `project_url`   | string | yes | URL of the project. |
 | `issues_url`    | string | yes | URL of the issue. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable EWM
 
@@ -700,7 +700,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `external_wiki_url` | string | yes | URL of the external wiki. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable an external wiki
 
@@ -760,7 +760,7 @@ Parameters:
 | Parameter | Type | Required | Description                                   |
 | --------- | ---- | -------- |-----------------------------------------------|
 | `token` | string | yes | GitGuardian API token with `scan` scope. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable GitGuardian
 
@@ -799,7 +799,7 @@ Parameters:
 | `token` | string | yes | GitHub API token with `repo:status` OAuth scope. |
 | `repository_url` | string | yes | GitHub repository URL. |
 | `static_context` | boolean | no | Append the hostname of your GitLab instance to the [status check name](../user/project/integrations/github.md#static-or-dynamic-status-check-names). |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable GitHub
 
@@ -853,7 +853,7 @@ Parameters:
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
 | `vulnerability_events` | boolean | no | Enable notifications for vulnerability events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable GitLab for Slack app
 
@@ -898,7 +898,7 @@ Parameters:
 | `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
 | `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Chat
 
@@ -943,7 +943,7 @@ Parameters:
 | `artifact_registry_project_id` | string | yes | ID of the Google Cloud project. |
 | `artifact_registry_location` | string | yes | Location of the Artifact Registry repository. |
 | `artifact_registry_repositories` | string | yes | Repository of Artifact Registry. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Artifact Management
 
@@ -989,7 +989,7 @@ Parameters:
 | `workload_identity_federation_project_number` | integer | yes | Google Cloud project number for the Workload Identity Federation. |
 | `workload_identity_pool_id` | string | yes | ID of the Workload Identity Pool. |
 | `workload_identity_pool_provider_id` | string | yes | ID of the Workload Identity Pool provider. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Cloud Identity and Access Management
 
@@ -1025,7 +1025,7 @@ Parameters:
 | `service_account_key` | string | yes | Google Play service account key. |
 | `service_account_key_file_name` | string | yes | File name of the Google Play service account key. |
 | `google_play_protected_refs` | boolean | no | Set variables on protected branches and tags only. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Play
 
@@ -1061,7 +1061,7 @@ Parameters:
 | `project_name` | string | yes | The name of the project in the Harbor instance. For example, `testproject`. |
 | `username` | string | yes | The username created in the Harbor interface. |
 | `password` | string | yes | The password of the user. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Harbor
 
@@ -1098,7 +1098,7 @@ Parameters:
 | `server_host` | string | no | localhost. |
 | `server_port` | integer | no | 6659. |
 | `colorize_messages` | boolean | no | Colorize messages. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable irker
 
@@ -1138,7 +1138,7 @@ Parameters:
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Jenkins
 
@@ -1180,7 +1180,7 @@ Parameters:
 | `password` | string | yes | The password of the user. |
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable JetBrains TeamCity
 
@@ -1227,7 +1227,7 @@ Parameters:
 | `comment_on_event_enabled` | boolean | no | Enable comments in Jira issues on each GitLab event (commit or merge request). |
 | `issues_enabled` | boolean | no | Enable viewing Jira issues in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
 | `project_keys` | array of strings | no | Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Jira
 
@@ -1285,7 +1285,7 @@ Parameters:
 | `tag_push_channel` | string | no | The name of the channel to receive notifications for tag push events. |
 | `pipeline_channel` | string | no | The name of the channel to receive notifications for pipeline events. |
 | `wiki_page_channel` | string | no | The name of the channel to receive notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Mattermost notifications
 
@@ -1318,7 +1318,7 @@ Parameters:
 | Parameter | Type   | Required | Description           |
 | --------- | ------ | -------- | --------------------- |
 | `token`   | string | yes      | The Mattermost token. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Mattermost slash commands
 
@@ -1363,7 +1363,7 @@ Parameters:
 | `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
 | `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Microsoft Teams notifications
 
@@ -1400,7 +1400,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `mock_service_url` | string | yes | URL of the Mock CI integration. |
 | `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Mock CI
 
@@ -1438,7 +1438,7 @@ Parameters:
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Packagist
 
@@ -1474,7 +1474,7 @@ Parameters:
 |-----------------|--------|----------|-----------------------|
 | `issues_url`    | string | yes     | URL of the issue.     |
 | `project_url`   | string | yes     | URL of the project.   |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Phorge
 
@@ -1511,7 +1511,7 @@ Parameters:
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `notify_only_default_branch` | boolean | no | Send notifications for the default branch. |
 | `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable pipeline status emails
 
@@ -1545,7 +1545,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Pivotal Tracker token. |
 | `restrict_to_branch` | boolean | no | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Pivotal Tracker
 
@@ -1589,7 +1589,7 @@ Parameters:
 | `push_events` | boolean | no | Enable notifications for push events. |
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Pumble
 
@@ -1626,7 +1626,7 @@ Parameters:
 | `priority` | string | yes | The priority. |
 | `device` | string | no | Leave blank for all active devices. |
 | `sound` | string | no | The sound of the notification. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Pushover
 
@@ -1661,7 +1661,7 @@ Parameters:
 | `new_issue_url` | string | yes | URL of the new issue. |
 | `project_url` | string | yes | URL of the project. |
 | `issues_url` | string | yes | URL of the issue. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Redmine
 
@@ -1727,7 +1727,7 @@ Parameters:
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
 | `wiki_page_channel` | string | no | The name of the channel to receive notifications for wiki page events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Slack notifications
 
@@ -1760,7 +1760,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Slack token. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Slack slash commands
 
@@ -1822,7 +1822,7 @@ Parameters:
 |-------------------------|--------|----------|-------------------------------|
 | `url`                   | string | yes      | URL of the Squash TM webhook. |
 | `token`                 | string | no       | Secret token.                 |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Squash TM
 
@@ -1869,7 +1869,7 @@ Parameters:
 | `confidential_note_events` | boolean | yes | Enable notifications for confidential note events. |
 | `pipeline_events` | boolean | yes | Enable notifications for pipeline events. |
 | `wiki_page_events` | boolean | yes | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Telegram
 
@@ -1913,7 +1913,7 @@ Parameters:
 | `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
 | `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Unify Circuit
 
@@ -1957,7 +1957,7 @@ Parameters:
 | `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
 | `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Webex Teams
 
@@ -1991,7 +1991,7 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `issues_url` | string | yes | URL of the issue. |
 | `project_url` | string | yes | URL of the project. |
-| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable YouTrack
 

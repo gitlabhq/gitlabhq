@@ -4,7 +4,7 @@ module Organizations
   class GroupsFinder < GroupsFinder
     def execute
       groups = find_union(filtered_groups, Group)
-      groups = groups.without_deleted if Feature.enabled?(:filter_deleted_groups, current_user)
+      groups = groups.without_deleted
 
       unless default_organization?
         cte = Gitlab::SQL::CTE.new(:filtered_groups_cte, groups, materialized: false)

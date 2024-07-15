@@ -66,6 +66,12 @@ include:
   variables:
     GITALY_TRANSACTIONS_ENABLED: "false"
 
+.ee-only-gitaly-without-transactions:
+  extends:
+    - .rails:rules:ee-only-gitaly-without-transactions
+  variables:
+    GITALY_TRANSACTIONS_ENABLED: "false"
+
 .rspec-base-needs:
   needs:
     - !reference [.repo-from-artifacts, needs]

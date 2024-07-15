@@ -336,28 +336,27 @@ rspec system pg14 no_gitaly_transactions:
 rspec-ee migration pg14 no_gitaly_transactions:
   extends:
     - rspec-ee migration pg14
-    - .gitaly-without-transactions
+    - .ee-only-gitaly-without-transactions
 
 rspec-ee background_migration pg14 no_gitaly_transactions:
   extends:
     - rspec-ee background_migration pg14
-    - .gitaly-without-transactions
+    - .ee-only-gitaly-without-transactions
 
 rspec-ee unit pg14 no_gitaly_transactions:
   extends:
     - rspec-ee unit pg14
-    - .gitaly-without-transactions
+    - .ee-only-gitaly-without-transactions
 
 rspec-ee integration pg14 no_gitaly_transactions:
   extends:
     - rspec-ee integration pg14
-    - .gitaly-without-transactions
+    - .ee-only-gitaly-without-transactions
 
 rspec-ee system pg14 no_gitaly_transactions:
   extends:
     - rspec-ee system pg14
-    - .gitaly-without-transactions
-
+    - .ee-only-gitaly-without-transactions
 
 # Dedicated job to test DB library code against PG13.
 # Note that these are already tested against PG13 in the `rspec unit pg13` / `rspec-ee unit pg13` jobs.

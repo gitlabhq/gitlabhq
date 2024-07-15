@@ -880,6 +880,49 @@
         }
       ]
     },
+    "steps": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "required": [
+              "step"
+            ]
+          },
+          {
+            "required": [
+              "script"
+            ]
+          }
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Unique identifier for this step."
+          },
+          "step": {
+            "type": "string",
+            "description": "Reference to the step to invoke."
+          },
+          "env": {
+            "$ref": "#/definitions/globalVariables"
+          },
+          "inputs": {
+            "$ref": "#/definitions/inputs"
+          },
+          "script": {
+            "type": "string",
+            "description": "Shell script to evaluate."
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "description": "A single step invocation."
+      }
+    },
     "optional_script": {
       "oneOf": [
         {
@@ -1741,6 +1784,10 @@
         "script": {
           "$ref": "#/definitions/script",
           "markdownDescription": "Shell scripts executed by the Runner. The only required property of jobs. Be careful with special characters (e.g. `:`, `{`, `}`, `&`) and use single or double quotes to avoid issues. [Learn More](https://docs.gitlab.com/ee/ci/yaml/#script)"
+        },
+        "run": {
+          "$ref": "#/definitions/steps",
+          "markdownDescription": "Specifies a list of steps to execute in the job. The `run` keyword is an alternative to `script` and allows for more advanced job configuration. Each step is an object that defines a single task or command. Use either `run` or `script` in a job, but not both, otherwise the pipeline will error out."
         },
         "stage": {
           "description": "Define what stage the job will run in.",

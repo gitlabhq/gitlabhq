@@ -475,6 +475,99 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
             end
           end
 
+          context 'with run keyword' do
+            let(:execution_config) { create(:ci_builds_execution_configs, :with_step_and_script) }
+
+            context 'when job has execution_config with run_steps' do
+              let(:job) do
+                create(
+                  :ci_build,
+                  :pending,
+                  :queued,
+                  pipeline: pipeline,
+                  name: 'spinach',
+                  stage: 'test',
+                  stage_idx: 0,
+                  execution_config: execution_config
+                )
+              end
+
+              it 'returns job with the run steps' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response['run']).to eq(execution_config.run_steps.to_json)
+              end
+
+              it 'returns nil for the steps' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response['steps']).to be_nil
+              end
+
+              context 'when feature flag is disabled' do
+                before do
+                  stub_feature_flags(pipeline_run_keyword: false)
+                end
+
+                it 'returns nil for run steps' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(json_response['run']).to be_nil
+                end
+              end
+            end
+
+            context 'when job does not have execution config' do
+              let(:job) do
+                create(
+                  :ci_build,
+                  :pending,
+                  :queued,
+                  pipeline: pipeline,
+                  name: 'spinach',
+                  stage: 'test',
+                  stage_idx: 0
+                )
+              end
+
+              let(:expected_steps) do
+                [
+                  {
+                    "name" => "script",
+                    "script" => ["ls -a"],
+                    "timeout" => 3600,
+                    "when" => "on_success",
+                    "allow_failure" => false
+                  }
+                ]
+              end
+
+              it 'returns nil for run steps' do
+                request_job
+
+                expect(response).to have_gitlab_http_status(:created)
+                expect(json_response['run']).to be_nil
+              end
+
+              context 'when feature flag is disabled' do
+                before do
+                  stub_feature_flags(pipeline_run_keyword: false)
+                end
+
+                it 'returns nil for run steps' do
+                  request_job
+
+                  expect(response).to have_gitlab_http_status(:created)
+                  expect(json_response['run']).to be_nil
+                  expect(json_response['steps']).to eq(expected_steps)
+                end
+              end
+            end
+          end
+
           describe 'updates runner info' do
             it { expect { request_job }.to change { runner.reload.contacted_at } }
 

@@ -17,11 +17,15 @@ You can use [`include`](index.md#include) to include external YAML files in your
 To include a single configuration file, use `include` by itself with a single file
 with either of these syntax options:
 
-- ```yaml
+- On the same line:
+
+  ```yaml
   include: 'my-config.yml'
   ```
 
-- ```yaml
+- As a single item in an array:
+
+  ```yaml
   include:
     - 'my-config.yml'
   ```

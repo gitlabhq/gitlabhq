@@ -70,17 +70,5 @@ RSpec.describe Organizations::GroupsFinder, feature_category: :groups_and_projec
 
       expect(result).not_to include(public_group)
     end
-
-    context 'when filter_deleted_groups feature flag is disabled' do
-      before do
-        stub_feature_flags(filter_deleted_groups: false)
-      end
-
-      it 'includes deleted groups' do
-        public_group.namespace_details.update!(pending_delete: true)
-
-        expect(result).to include(public_group)
-      end
-    end
   end
 end

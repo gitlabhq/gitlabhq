@@ -145,7 +145,7 @@ RSpec.describe Projects::Ci::LintsController do
       it 'assigns result with errors' do
         expect(parsed_body['errors']).to match_array(
           [
-            'jobs rubocop config should implement a script: or a trigger: keyword',
+            'jobs rubocop config should implement the script:, run:, or trigger: keyword',
             'jobs config should contain at least one visible job'
           ])
       end
@@ -154,7 +154,9 @@ RSpec.describe Projects::Ci::LintsController do
         subject { post :create, params: params.merge(dry_run: 'true') }
 
         it 'assigns result with errors' do
-          expect(parsed_body['errors']).to eq(['jobs rubocop config should implement a script: or a trigger: keyword'])
+          expect(
+            parsed_body['errors']
+          ).to match_array(['jobs rubocop config should implement the script:, run:, or trigger: keyword'])
         end
 
         it_behaves_like 'returns a successful validation'

@@ -14,11 +14,12 @@ module Gitlab
           ALLOWED_KEYS = %i[tags script image services start_in artifacts
                             cache dependencies before_script after_script hooks
                             coverage retry parallel timeout
-                            release id_tokens publish pages manual_confirmation].freeze
+                            release id_tokens publish pages manual_confirmation run].freeze
 
           validations do
             validates :config, allowed_keys: Gitlab::Ci::Config::Entry::Job.allowed_keys + PROCESSABLE_ALLOWED_KEYS
-            validates :script, presence: true
+            validates :config, mutually_exclusive_keys: %i[script run]
+            validates :script, presence: true, if: -> { config.is_a?(Hash) && !config.key?(:run) }
 
             with_options allow_nil: true do
               validates :when, type: String, inclusion: {
@@ -29,6 +30,12 @@ module Gitlab
               validates :dependencies, array_of_strings: true
               validates :allow_failure, hash_or_boolean: true
               validates :manual_confirmation, type: String
+              validates :run, json_schema: {
+                base_directory: 'app/validators/json_schemas',
+                detail_errors: true,
+                filename: 'run_steps',
+                hash_conversion: true
+              }
             end
 
             validates :start_in, duration: { limit: '1 week' }, if: :delayed?
@@ -137,11 +144,14 @@ module Gitlab
           attributes :script, :tags, :when, :dependencies,
             :needs, :retry, :parallel, :start_in,
             :timeout, :release,
-            :allow_failure, :publish, :pages, :manual_confirmation
+            :allow_failure, :publish, :pages, :manual_confirmation, :run
 
           def self.matching?(name, config)
-            !name.to_s.start_with?('.') &&
-              config.is_a?(Hash) && config.key?(:script)
+            if ::Gitlab::Ci::Config::FeatureFlags.enabled?(:pipeline_run_keyword, type: :gitlab_com_derisk)
+              !name.to_s.start_with?('.') && config.is_a?(Hash) && (config.key?(:script) || config.key?(:run))
+            else
+              !name.to_s.start_with?('.') && config.is_a?(Hash) && config.key?(:script)
+            end
           end
 
           def self.visible?
@@ -178,7 +188,8 @@ module Gitlab
               id_tokens: id_tokens_value,
               publish: publish,
               pages: pages,
-              manual_confirmation: self.manual_confirmation
+              manual_confirmation: self.manual_confirmation,
+              run: ::Gitlab::Ci::Config::FeatureFlags.enabled?(:pipeline_run_keyword, type: :gitlab_com_derisk) ? run : nil
             ).compact
           end
 
