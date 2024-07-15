@@ -15,7 +15,7 @@ DETAILS:
 > - [Enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140825) in GitLab 16.8.
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/425242) in GitLab 16.10.
 
-With compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
+With the compliance frameworks report, you can see all the compliance frameworks in a group. Each row of the report shows:
 
 - Framework name.
 - Associated projects.
