@@ -37,3 +37,5 @@ module RecordUserLastActivity
     )
   end
 end
+
+RecordUserLastActivity.prepend_mod

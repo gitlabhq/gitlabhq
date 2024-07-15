@@ -66,7 +66,7 @@ To enable the Advanced SAST analyzer:
    content.
 1. If there is already an include of `Jobs/SAST.latest.gitlab-ci.yml`,
 GitLab Advanced SAST is already configured.
-There is no additional step needed. 
+There is no additional step needed.
 1. If there is already an `include:` line, add `- template: Jobs/SAST.gitlab-ci.yml`
    below that line then paste only the `gitlab-advanced-sast:` block to the bottom of the file,
    otherwise paste the whole block to the bottom of the file.

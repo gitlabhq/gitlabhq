@@ -396,7 +396,7 @@ For example:
 WARNING:
 GitLab 17.1 and earlier are [affected by a race condition](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158412) that can cause data loss. The problem affects
 repositories that have been forked and use GitLab [object pools](../repository_storage_paths.md#hashed-object-pools). To avoid data loss, **only restore backups by using GitLab
-17.2 or later**. 
+17.2 or later**.
 
 You can restore specific repositories using the `REPOSITORIES_PATHS` and the `SKIP_REPOSITORIES_PATHS` options.
 Both options accept a comma-separated list of project and group paths. If you

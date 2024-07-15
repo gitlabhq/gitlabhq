@@ -211,6 +211,10 @@
   - 1
 - - compliance_management_pending_status_check
   - 1
+- - compliance_management_pipl_update_user_country_access_logs
+  - 1
+- - compliance_management_pipl_user_paid_status_check
+  - 1
 - - compliance_management_project_framework_export_mailer
   - 1
 - - compliance_management_standards_adherence_export_mailer

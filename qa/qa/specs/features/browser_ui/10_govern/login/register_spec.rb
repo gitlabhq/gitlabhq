@@ -16,7 +16,7 @@ module QA
   end
 
   RSpec.describe 'Govern', :skip_signup_disabled, :requires_admin, product_group: :authentication do
-    describe 'while LDAP is enabled', :orchestrated, :ldap_no_tls,
+    describe 'while LDAP is enabled', :blocking, :orchestrated, :ldap_no_tls,
       testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347934' do
       let!(:personal_access_token) { Runtime::Env.personal_access_token }
 

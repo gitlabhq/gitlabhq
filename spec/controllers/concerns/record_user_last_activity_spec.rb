@@ -19,7 +19,7 @@ RSpec.describe RecordUserLastActivity, feature_category: :seat_cost_management d
       end
 
       def request
-        @request ||= Struct.new(:get?).new(true)
+        @request ||= Struct.new(:get?, :env).new(true, { 'HTTP_CF_IPCOUNTRY' => 'US' })
       end
     end
     # rubocop:enable Rails/ApplicationController

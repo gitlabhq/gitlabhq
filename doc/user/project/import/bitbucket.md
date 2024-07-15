@@ -39,7 +39,7 @@ When importing:
 - References to pull requests and issues are preserved.
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as
   private in GitLab as well.
-- Imported issues, merge requests, and comments have an **Imported** badge in GitLab. 
+- Imported issues, merge requests, and comments have an **Imported** badge in GitLab.
 
 NOTE:
 The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.org/), not with Bitbucket

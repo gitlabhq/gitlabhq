@@ -449,7 +449,7 @@ To determine if there are any differences:
 
 ## Check the database for schema inconsistencies
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11. 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390719) in GitLab 15.11.
 
 This Rake task checks the database schema for any inconsistencies and prints them in the terminal.
 This task is intended as a diagnostic tool to proactively monitor known issues.

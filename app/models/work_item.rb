@@ -204,7 +204,7 @@ class WorkItem < Issue
   override :parent_link_confidentiality
   def parent_link_confidentiality
     if confidential? && work_item_children.public_only.exists?
-      errors.add(:base, _('A confidential work item cannot have a parent that already has non-confidential children.'))
+      errors.add(:base, _('All child items must be confidential in order to turn on confidentiality.'))
     end
 
     if !confidential? && work_item_parent&.confidential?

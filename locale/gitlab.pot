@@ -1922,9 +1922,6 @@ msgstr ""
 msgid "A confidential issue must have only confidential children. Make any child items confidential and try again."
 msgstr ""
 
-msgid "A confidential work item cannot have a parent that already has non-confidential children."
-msgstr ""
-
 msgid "A deleted user"
 msgstr ""
 
@@ -5258,6 +5255,9 @@ msgid "All branches"
 msgstr ""
 
 msgid "All changes are committed"
+msgstr ""
+
+msgid "All child items must be confidential in order to turn on confidentiality."
 msgstr ""
 
 msgid "All eligible users"

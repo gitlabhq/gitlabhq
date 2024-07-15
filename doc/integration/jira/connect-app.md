@@ -122,10 +122,10 @@ You can connect GitLab to your IT service project to track your deployments.
 1. Select **Connect Pipeline > GitLab**, then copy the **Service ID** at the end of the setup flow.
 1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
-1. Select **GitLab for Jira Cloud app**. 
+1. Select **GitLab for Jira Cloud app**.
 1. In the **Service ID** field, enter the service ID that you want to map into this project. To use multiple service IDs, add a comma between each service ID.
 
-You can map up to 100 services to each GitLab project. 
+You can map up to 100 services to each GitLab project.
 
 For more information about deployment tracking in Jira, see [Set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/).
 

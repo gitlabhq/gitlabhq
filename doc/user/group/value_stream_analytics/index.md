@@ -32,6 +32,8 @@ Value stream analytics helps businesses:
 
 Value stream analytics is available for projects and groups.
 
+For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
+
 ## Feature availability
 
 Value stream analytics offers different features at the project and group level for FOSS and licensed versions.
@@ -313,6 +315,9 @@ The table shows a list of related workflow items for the selected stage. Based o
 
 - Issues
 - Merge requests
+
+NOTE:
+The end date for each predefined date range is the current day, and is included in the number of days selected. For example, the start date for `Last 30 days` is 29 days prior to the current day for a total of 30 days.
 
 ### Data filters
 

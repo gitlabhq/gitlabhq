@@ -792,7 +792,7 @@ However, GitLab cannot parse the following SAML response snippets:
            </Attribute>
   ```
 
-- This will fail because, even though the `FriendlyName` has a supported value, the `Name` attribute does not.  
+- This will fail because, even though the `FriendlyName` has a supported value, the `Name` attribute does not.
 
   ```xml
            <Attribute FriendlyName="firstname" Name="urn:oid:2.5.4.42">
@@ -1026,7 +1026,7 @@ SAML can automatically identify a user as an
 [external user](../administration/external_users.md), based on the `external_groups`
 setting.
 
-**NOTE**: 
+**NOTE**:
 If the attribute specified in `groups_attribute` is incorrect or missing then the user will
 access as a standard user.
 

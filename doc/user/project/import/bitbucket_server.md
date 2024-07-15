@@ -57,7 +57,7 @@ When importing:
 
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as private in GitLab as
   well.
-- Imported merge requests and comments have an **Imported** badge in GitLab. 
+- Imported merge requests and comments have an **Imported** badge in GitLab.
 
 When closed or merged pull requests are imported, commit SHAs that do not exist in the repository are fetched from the Bitbucket server
 to make sure pull requests have commits tied to them:

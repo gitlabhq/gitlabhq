@@ -370,7 +370,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
 
           expect(parent).not_to be_valid
           expect(parent.errors[:base]).to include(
-            _('A confidential work item cannot have a parent that already has non-confidential children.')
+            _('All child items must be confidential in order to turn on confidentiality.')
           )
         end
 

@@ -541,7 +541,7 @@ In GitLab 16.5 and later, you might get an error that states `Import failed due 
 
 This issue occurs because, in GitLab 16.5, the path prefix `api/v3` was removed from the GitHub importer. This happened because the importer stopped using the `Gitlab::LegacyGithubImport::Client`. This client automatically added the `api/v3` prefix on imports from a GitHub Enterprise URL.
 
-To work around this error, [add the `api/v3` prefix](https://gitlab.com/gitlab-org/gitlab/-/issues/438358#note_1978902725) when importing from a GitHub Enterprise URL. 
+To work around this error, [add the `api/v3` prefix](https://gitlab.com/gitlab-org/gitlab/-/issues/438358#note_1978902725) when importing from a GitHub Enterprise URL.
 
 ### Errors when importing large projects
 

@@ -39,7 +39,7 @@ To scale the context awareness and hence to scale creation, ideation, and learni
 
 To make this more tangible, here is an example.
 
-Generating a commit message based on the changes is best implemented into the commit 
+Generating a commit message based on the changes is best implemented into the commit
 message writing workflow.
 
 - Without AI, commit message writing may take ten seconds.
@@ -47,7 +47,7 @@ message writing workflow.
 
 Using Chat for commit message writing would probably take longer than writing the message oneself. The user would have to switch to the Chat window, type the request and then copy the result into the commit message field.
 
-That said, it does not mean that Chat can't write commit messages, nor that it would be prevented from doing so. If Chat has the commit context (which may be added at some point for reasons other than commit message writing), the user can certainly ask to do anything with this commit content, including writing a commit message. But users are certainly unlikely to do that with Chat as they would only loose time. Note: the resulting commit messages may be different if created from chat with a prompt written by the user vs. a static prompt behind a purpose-built commit message creation. 
+That said, it does not mean that Chat can't write commit messages, nor that it would be prevented from doing so. If Chat has the commit context (which may be added at some point for reasons other than commit message writing), the user can certainly ask to do anything with this commit content, including writing a commit message. But users are certainly unlikely to do that with Chat as they would only loose time. Note: the resulting commit messages may be different if created from chat with a prompt written by the user vs. a static prompt behind a purpose-built commit message creation.
 
 ## Set up GitLab Duo Chat
 

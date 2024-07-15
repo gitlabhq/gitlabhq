@@ -2154,7 +2154,6 @@ Layout/LineLength:
     - 'ee/spec/workers/compliance_management/merge_requests/compliance_violations_worker_spec.rb'
     - 'ee/spec/workers/concerns/elastic/indexing_control_spec.rb'
     - 'ee/spec/workers/elastic/migration_worker_spec.rb'
-    - 'ee/spec/workers/elastic_association_indexer_worker_spec.rb'
     - 'ee/spec/workers/geo/destroy_worker_spec.rb'
     - 'ee/spec/workers/geo/prune_event_log_worker_spec.rb'
     - 'ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb'

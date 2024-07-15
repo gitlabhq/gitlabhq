@@ -100,7 +100,7 @@ They are not recommendations.
 
    If you are using GitLab 16.11 and earlier, explicitly disable any [queue selectors](#queue-selectors-deprecated)
    that might be enabled:
-   
+
    ```ruby
    sidekiq['queue_selector'] = false
    ```
