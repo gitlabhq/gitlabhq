@@ -1,4 +1,5 @@
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { builders } from 'prosemirror-test-builder';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/extensions/paragraph', () => {
   let tiptapEditor;
@@ -8,9 +9,7 @@ describe('content_editor/extensions/paragraph', () => {
   beforeEach(() => {
     tiptapEditor = createTestEditor();
 
-    ({
-      builders: { doc, p },
-    } = createDocBuilder({ tiptapEditor }));
+    ({ doc, paragraph: p } = builders(tiptapEditor.schema));
   });
 
   describe('Shift-Enter shortcut', () => {

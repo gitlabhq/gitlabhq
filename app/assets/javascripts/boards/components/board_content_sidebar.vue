@@ -164,7 +164,7 @@ export default {
       return referencePath.slice(0, referencePath.indexOf('#'));
     },
     showWorkItemEpics() {
-      return this.glFeatures.displayWorkItemEpicIssueSidebar;
+      return this.glFeatures.workItemEpics;
     },
     showEpicSidebarDropdownWidget() {
       return this.epicFeatureAvailable && !this.isIncidentSidebar && this.activeBoardIssuable.id;

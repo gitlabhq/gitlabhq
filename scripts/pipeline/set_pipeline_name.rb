@@ -4,7 +4,16 @@
 # We need to take some precautions when using the `gitlab` gem in this project.
 #
 # See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
-require 'gitlab' unless Object.const_defined?(:Gitlab)
+if Object.const_defined?(:RSpec)
+  # Ok, we're testing, we know we're going to stub `Gitlab`, so we just ignore
+else
+  require 'gitlab'
+
+  if Gitlab.singleton_class.method_defined?(:com?)
+    abort 'lib/gitlab.rb is loaded, and this means we can no longer load the client and we cannot proceed'
+  end
+end
+
 require 'net/http'
 
 class SetPipelineName

@@ -39048,6 +39048,7 @@ Attributes for defining a CI/CD variable.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="complianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
+| <a id="complianceframeworkfiltersids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | IDs of the compliance framework. |
 | <a id="complianceframeworkfiltersnot"></a>`not` | [`NegatedComplianceFrameworkFilters`](#negatedcomplianceframeworkfilters) | Negated compliance framework filter input. |
 | <a id="complianceframeworkfilterspresencefilter"></a>`presenceFilter` | [`ComplianceFrameworkPresenceFilter`](#complianceframeworkpresencefilter) | Checks presence of compliance framework of the project, "none" and "any" values are supported. |
 
@@ -39292,6 +39293,7 @@ A year and month input for querying product analytics usage data.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="negatedcomplianceframeworkfiltersid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | ID of the compliance framework. |
+| <a id="negatedcomplianceframeworkfiltersids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | IDs of the compliance framework. |
 
 ### `NegatedEpicBoardIssueInput`
 

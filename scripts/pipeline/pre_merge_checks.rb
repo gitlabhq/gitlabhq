@@ -1,8 +1,17 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+if Object.const_defined?(:RSpec)
+  # Ok, we're testing, we know we're going to stub `Gitlab`, so we just ignore
+else
+  require 'gitlab'
+
+  if Gitlab.singleton_class.method_defined?(:com?)
+    abort 'lib/gitlab.rb is loaded, and this means we can no longer load the client and we cannot proceed'
+  end
+end
+
 require 'time'
-require 'gitlab' unless Object.const_defined?(:Gitlab)
 
 class PreMergeChecks
   DEFAULT_API_ENDPOINT = "https://gitlab.com/api/v4"

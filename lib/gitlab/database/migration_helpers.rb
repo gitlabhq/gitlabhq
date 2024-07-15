@@ -1233,8 +1233,15 @@ into similar problems in the future (e.g. when new tables are created).
         end
       end
 
-      def lock_tables(*tables, mode: :access_exclusive)
-        execute("LOCK TABLE #{tables.join(', ')} IN #{mode.to_s.upcase.tr('_', ' ')} MODE")
+      def lock_tables(*tables, mode: :access_exclusive, only: nil, nowait: nil)
+        only_param = only && 'ONLY'
+        nowait_param = nowait && 'NOWAIT'
+        tables_param = tables.map { |t| quote_table_name(t) }.join(', ')
+        mode_param = mode.to_s.upcase.tr('_', ' ')
+
+        execute(<<~SQL.squish)
+          LOCK TABLE #{only_param} #{tables_param} IN #{mode_param} MODE #{nowait_param}
+        SQL
       end
 
       private

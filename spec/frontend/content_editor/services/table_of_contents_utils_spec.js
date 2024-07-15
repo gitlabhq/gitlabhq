@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import Heading from '~/content_editor/extensions/heading';
 import {
   toTree,
@@ -5,7 +6,7 @@ import {
   fillEmpty,
   getHeadingsFromDOM,
 } from '~/content_editor/services/table_of_contents_utils';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/services/table_of_content_utils', () => {
   const headings = [
@@ -94,14 +95,7 @@ describe('content_editor/services/table_of_content_utils', () => {
       extensions: [Heading],
     });
 
-    const {
-      builders: { heading, doc },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        heading: { nodeType: Heading.name },
-      },
-    });
+    const { heading, doc } = builders(tiptapEditor.schema);
 
     it('gets all headings as a tree in a tiptap document', () => {
       const initialDoc = doc(

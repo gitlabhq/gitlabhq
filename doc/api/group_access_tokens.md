@@ -47,6 +47,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
       "active" : true,
       "created_at" : "2021-01-20T22:11:48.151Z",
       "revoked" : false,
+      "last_used_at": null,
       "access_level": 40
    },
    {
@@ -60,6 +61,7 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
       "active" : false,
       "created_at" : "2021-01-21T12:12:38.123Z",
       "revoked" : true,
+      "last_used_at": "2021-02-13T10:34:57.178Z",
       "access_level": 40
    }
 ]

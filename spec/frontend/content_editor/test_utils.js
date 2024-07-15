@@ -1,21 +1,11 @@
 import { flatMap } from 'lodash';
 import { Node } from '@tiptap/core';
 import { Editor } from '@tiptap/vue-2';
-import { builders, eq } from 'prosemirror-test-builder';
 import { nextTick } from 'vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import * as builtInExtensions from '~/content_editor/extensions';
 
 export const DEFAULT_WAIT_TIMEOUT = 100;
-
-export const createDocBuilder = ({ tiptapEditor, names = {} }) => {
-  const docBuilders = builders(tiptapEditor.schema, {
-    p: { nodeType: 'paragraph' },
-    ...names,
-  });
-
-  return { eq, builders: docBuilders };
-};
 
 export const emitEditorEvent = ({ tiptapEditor, event, params = {} }) => {
   tiptapEditor.emit(event, { editor: tiptapEditor, ...params });

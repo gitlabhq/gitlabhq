@@ -301,7 +301,7 @@ class IssuableBaseService < ::BaseContainerService
   def set_crm_contacts(issuable, add_crm_contact_emails, remove_crm_contact_emails = [])
     return unless add_crm_contact_emails.present? || remove_crm_contact_emails.present?
 
-    ::Issues::SetCrmContactsService.new(project: project, current_user: current_user, params: { add_emails: add_crm_contact_emails, remove_emails: remove_crm_contact_emails }).execute(issuable)
+    ::Issues::SetCrmContactsService.new(container: project, current_user: current_user, params: { add_emails: add_crm_contact_emails, remove_emails: remove_crm_contact_emails }).execute(issuable)
   end
 
   def before_create(issuable)

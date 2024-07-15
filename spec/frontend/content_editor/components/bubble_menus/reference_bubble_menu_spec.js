@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import { GlLoadingIcon, GlListboxItem, GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -6,7 +7,7 @@ import ReferenceBubbleMenu from '~/content_editor/components/bubble_menus/refere
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import Reference from '~/content_editor/extensions/reference';
-import { createTestEditor, emitEditorEvent, createDocBuilder } from '../../test_utils';
+import { createTestEditor, emitEditorEvent } from '../../test_utils';
 
 const mockWorkItem = {
   href: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/12',
@@ -51,14 +52,7 @@ describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
     contentEditor = { resolveReference: jest.fn().mockImplementation(() => new Promise(() => {})) };
     eventHub = eventHubFactory();
 
-    ({
-      builders: { doc, p, reference },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        reference: { nodeType: Reference.name },
-      },
-    }));
+    ({ doc, paragraph: p, reference } = builders(tiptapEditor.schema));
   };
 
   const expectedDocs = {

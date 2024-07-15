@@ -1,5 +1,6 @@
+import { builders } from 'prosemirror-test-builder';
 import MathInline from '~/content_editor/extensions/math_inline';
-import { createTestEditor, createDocBuilder, triggerMarkInputRule } from '../test_utils';
+import { createTestEditor, triggerMarkInputRule } from '../test_utils';
 
 describe('content_editor/extensions/math_inline', () => {
   let tiptapEditor;
@@ -10,14 +11,7 @@ describe('content_editor/extensions/math_inline', () => {
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [MathInline] });
 
-    ({
-      builders: { doc, p, mathInline },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        details: { markType: MathInline.name },
-      },
-    }));
+    ({ doc, paragraph: p, mathInline } = builders(tiptapEditor.schema));
   });
 
   it.each`

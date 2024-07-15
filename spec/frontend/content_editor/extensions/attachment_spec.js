@@ -1,6 +1,7 @@
 import fs from 'fs';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
+import { builders } from 'prosemirror-test-builder';
 import Attachment from '~/content_editor/extensions/attachment';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';
@@ -10,7 +11,7 @@ import Link from '~/content_editor/extensions/link';
 import { VARIANT_DANGER } from '~/alert';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import { createTestEditor, createDocBuilder, expectDocumentAfterTransaction } from '../test_utils';
+import { createTestEditor, expectDocumentAfterTransaction } from '../test_utils';
 import {
   PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
   PROJECT_WIKI_ATTACHMENT_IMAGE_SVG_HTML,
@@ -81,17 +82,14 @@ describe('content_editor/extensions/attachment', () => {
     });
 
     ({
-      builders: { doc, p, image, audio, video, link, drawioDiagram },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        image: { nodeType: Image.name },
-        link: { nodeType: Link.name },
-        audio: { nodeType: Audio.name },
-        video: { nodeType: Video.name },
-        drawioDiagram: { nodeType: DrawioDiagram.name },
-      },
-    }));
+      doc,
+      paragraph: p,
+      image,
+      audio,
+      video,
+      link,
+      drawioDiagram,
+    } = builders(tiptapEditor.schema));
 
     mock = new MockAdapter(axios);
   });

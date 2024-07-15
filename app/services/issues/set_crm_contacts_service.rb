@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Issues
-  class SetCrmContactsService < ::BaseProjectService
+  class SetCrmContactsService < ::BaseContainerService
     MAX_ADDITIONAL_CONTACTS = 6
 
     # Replacing contacts by email is not currently supported
@@ -52,7 +52,7 @@ module Issues
     end
 
     def add_by_email
-      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(project_group.root_ancestor, emails(:add_emails))
+      contact_ids = ::CustomerRelations::Contact.find_ids_by_emails(container.root_ancestor, emails(:add_emails))
       add_by_id(contact_ids)
     end
 

@@ -1,6 +1,7 @@
+import { builders } from 'prosemirror-test-builder';
 import Details from '~/content_editor/extensions/details';
 import DetailsContent from '~/content_editor/extensions/details_content';
-import { createTestEditor, createDocBuilder, triggerKeyboardInput } from '../test_utils';
+import { createTestEditor, triggerKeyboardInput } from '../test_utils';
 
 describe('content_editor/extensions/details_content', () => {
   let tiptapEditor;
@@ -12,15 +13,7 @@ describe('content_editor/extensions/details_content', () => {
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [Details, DetailsContent] });
 
-    ({
-      builders: { doc, p, details, detailsContent },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        details: { nodeType: Details.name },
-        detailsContent: { nodeType: DetailsContent.name },
-      },
-    }));
+    ({ doc, paragraph: p, details, detailsContent } = builders(tiptapEditor.schema));
   });
 
   describe('shortcut: Enter', () => {

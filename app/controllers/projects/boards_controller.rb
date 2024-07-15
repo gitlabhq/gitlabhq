@@ -7,7 +7,6 @@ class Projects::BoardsController < Projects::ApplicationController
   before_action :check_issues_available!
   before_action do
     push_frontend_feature_flag(:board_multi_select, project)
-    push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, project)
   end
 
   feature_category :team_planning

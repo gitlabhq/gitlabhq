@@ -54,7 +54,7 @@ processing it, and returns any syntax or semantic errors. The `YAML Processor` c
 
 The `CreatePipelineService` receives the abstract data structure returned by the `YAML Processor`,
 which then converts it to persisted models (like pipeline, stages, and jobs). After that, the pipeline is ready
-to be processed. Processing a pipeline means running the jobs in order of execution (stage or DAG)
+to be processed. Processing a pipeline means running the jobs in order of execution (stage or `needs`)
 until either one of the following:
 
 - All expected jobs have been executed.
@@ -109,7 +109,7 @@ A job with the `created` state isn't seen by the runner yet. To make it possible
 1. The job is created in the very first stage of the pipeline.
 1. The job required a manual start and it has been triggered.
 1. All jobs from the previous stage have completed successfully. In this case we transition all jobs from the next stage to `pending`.
-1. The job specifies DAG dependencies using `needs:` and all the dependent jobs are completed.
+1. The job specifies needs dependencies using `needs:` and all the dependent jobs are completed.
 1. The job has not been [dropped](#dropping-stuck-builds) because of its not-runnable state by [`Ci::PipelineCreation::DropNotRunnableBuildsService`](https://gitlab.com/gitlab-org/gitlab/-/blob/v16.0.4-ee/ee/app/services/ci/pipeline_creation/drop_not_runnable_builds_service.rb).
 
 When the runner is connected, it requests the next `pending` job to run by polling the server continuously.

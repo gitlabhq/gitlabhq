@@ -1570,8 +1570,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/workers/ldap_group_sync_worker.rb'
     - 'ee/app/workers/ldap_sync_worker.rb'
     - 'ee/app/workers/licenses/reset_submit_license_usage_data_banner_worker.rb'
-    - 'ee/app/workers/llm/embedding/gitlab_documentation/cleanup_previous_versions_records_worker.rb'
-    - 'ee/app/workers/llm/embedding/gitlab_documentation/create_db_embeddings_per_doc_file_worker.rb'
     - 'ee/app/workers/members_destroyer/clean_up_group_protected_branch_rules_worker.rb'
     - 'ee/app/workers/merge_request_reset_approvals_worker.rb'
     - 'ee/app/workers/new_epic_worker.rb'

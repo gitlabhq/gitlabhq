@@ -1,7 +1,8 @@
+import { builders } from 'prosemirror-test-builder';
 import createMarkdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
 import Bold from '~/content_editor/extensions/bold';
 import HTMLComment from '~/content_editor/extensions/html_comment';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/services/gl_api_markdown_deserializer', () => {
   let renderMarkdown;
@@ -16,15 +17,7 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
       extensions: [Bold, HTMLComment],
     });
 
-    ({
-      builders: { doc, p, bold, htmlComment },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        bold: { markType: Bold.name },
-        htmlComment: { nodeType: HTMLComment.name },
-      },
-    }));
+    ({ doc, paragraph: p, bold, htmlComment } = builders(tiptapEditor.schema));
     renderMarkdown = jest.fn();
   });
 

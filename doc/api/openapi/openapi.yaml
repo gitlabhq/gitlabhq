@@ -2791,7 +2791,7 @@ paths:
                   format: int32
                 ci_needs_size_limit:
                   type: integer
-                  description: Maximum number of DAG dependencies that a job can have
+                  description: Maximum number of needs dependencies that a job can have
                   format: int32
                 ci_registered_group_runners:
                   type: integer

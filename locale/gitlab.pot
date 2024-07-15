@@ -4009,9 +4009,6 @@ msgstr ""
 msgid "AdminSettings|Maximum includes"
 msgstr ""
 
-msgid "AdminSettings|Maximum number of DAG dependencies that a job can have"
-msgstr ""
-
 msgid "AdminSettings|Maximum number of Instance-level CI/CD variables that can be defined"
 msgstr ""
 
@@ -4022,6 +4019,9 @@ msgid "AdminSettings|Maximum number of downstream pipelines in a pipeline's hier
 msgstr ""
 
 msgid "AdminSettings|Maximum number of jobs in a single pipeline"
+msgstr ""
+
+msgid "AdminSettings|Maximum number of needs dependencies that a job can have"
 msgstr ""
 
 msgid "AdminSettings|Maximum number of pipeline schedules"
@@ -4183,7 +4183,7 @@ msgstr ""
 msgid "AdminSettings|This cost factor will be applied to the storage consumed by forks."
 msgstr ""
 
-msgid "AdminSettings|This limit cannot be disabled. Set to 0 to block all DAG dependencies."
+msgid "AdminSettings|This limit cannot be disabled. Set to 0 to block all job (needs) dependencies."
 msgstr ""
 
 msgid "AdminSettings|To enable Registration Features, first enable Service Ping."
@@ -16378,9 +16378,6 @@ msgstr ""
 msgid "CycleAnalytics|seconds"
 msgstr ""
 
-msgid "DAG visualization requires at least 3 dependent jobs."
-msgstr ""
-
 msgid "DAST configuration not found"
 msgstr ""
 
@@ -26896,7 +26893,7 @@ msgstr ""
 msgid "If using GitHub, you’ll see pipeline statuses on GitHub for your commits and pull requests. %{more_info_link}"
 msgstr ""
 
-msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}."
+msgid "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} dependencies between jobs in this tab."
 msgstr ""
 
 msgid "If you are unable to sign in or recover your password, contact a GitLab administrator."
@@ -30771,9 +30768,6 @@ msgstr ""
 msgid "Learn more about GitLab"
 msgstr ""
 
-msgid "Learn more about Needs relationships"
-msgstr ""
-
 msgid "Learn more about Service Desk"
 msgstr ""
 
@@ -30808,6 +30802,9 @@ msgid "Learn more about linking issues and incidents"
 msgstr ""
 
 msgid "Learn more about max seats used"
+msgstr ""
+
+msgid "Learn more about needs dependencies"
 msgstr ""
 
 msgid "Learn more about seats owed"
@@ -34523,6 +34520,9 @@ msgid "Needs"
 msgstr ""
 
 msgid "Needs attention"
+msgstr ""
+
+msgid "Needs visualization requires at least 3 dependent jobs."
 msgstr ""
 
 msgid "Network"

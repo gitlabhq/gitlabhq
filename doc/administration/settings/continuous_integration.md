@@ -260,7 +260,7 @@ from the Admin area:
    - **Total number of jobs in currently active pipelines**
    - **Maximum number of pipeline subscriptions to and from a project**
    - **Maximum number of pipeline schedules**
-   - **Maximum number of DAG dependencies that a job can have**
+   - **Maximum number of needs dependencies that a job can have**
    - **Maximum number of runners registered per group**
    - **Maximum number of runners registered per project**
    - **Maximum number of downstream pipelines in a pipeline's hierarchy tree**

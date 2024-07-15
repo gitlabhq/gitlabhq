@@ -88,7 +88,7 @@ IID. The link to the artifacts can also be accessed from the **Experiment Candid
 
 ## View CI information
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119788) in 16.1
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119788) in GitLab 16.1.
 
 Candidates can be associated to the CI job that created them, allowing quick links to the merge request, pipeline, and user that triggered the pipeline:
 

@@ -114,7 +114,7 @@
                 .form-group
                   = f.label :ci_needs_size_limit, plan_limit_setting_description(:ci_needs_size_limit)
                   = f.number_field :ci_needs_size_limit, class: 'form-control gl-form-input'
-                  .form-text.text-muted= s_('AdminSettings|This limit cannot be disabled. Set to 0 to block all DAG dependencies.')
+                  .form-text.text-muted= s_('AdminSettings|This limit cannot be disabled. Set to 0 to block all job (needs) dependencies.')
                 .form-group
                   = f.label :ci_registered_group_runners, plan_limit_setting_description(:ci_registered_group_runners)
                   = f.number_field :ci_registered_group_runners, class: 'form-control gl-form-input'

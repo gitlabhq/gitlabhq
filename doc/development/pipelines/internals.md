@@ -438,7 +438,7 @@ For this scenario, you have to:
 
 Additionally, `scripts/utils.sh` is always downloaded from the API when this pattern is used (this file contains the code for `.fast-no-clone-job`).
 
-#### Runner tags
+### Runner tags
 
 On GitLab.com, both unprivileged and privileged runners are
 available. For projects in the `gitlab-org` group and forks of those
@@ -459,3 +459,87 @@ no matching runners are available.
 
 See [the GitLab Repositories handbook page](https://handbook.gitlab.com/handbook/engineering/gitlab-repositories/#cicd-configuration)
 for more information.
+
+### Using the `gitlab` Ruby gem in the canonical project
+
+When calling `require 'gitlab'` in the canonical project, it will require the `lib/gitlab.rb` file when `$LOAD_PATH` has `lib`, which happens when we're loading the application (`config/application.rb`) or tests (`spec/spec_helper.rb`).
+
+This means we're not able to load the `gitlab` gem under the above conditions and even if we can, the constant name will conflict, breaking internal assumptions and causing random errors.
+If you are working on a script that is using [the `gitlab` Ruby gem](https://github.com/NARKOZ/gitlab), you will need to take a few precautions:
+
+#### 1 - Conditional require of the gem
+
+To avoid potential conflicts, only require the `gitlab` gem if the `Gitlab` constant isn't defined:
+
+```ruby
+# Bad
+require 'gitlab'
+
+# Good
+if Object.const_defined?(:RSpec)
+  # Ok, we're testing, we know we're going to stub `Gitlab`, so we just ignore
+else
+  require 'gitlab'
+
+  if Gitlab.singleton_class.method_defined?(:com?)
+    abort 'lib/gitlab.rb is loaded, and this means we can no longer load the client and we cannot proceed'
+  end
+end
+```
+
+#### 2 - Mock the `gitlab` gem entirely in your specs
+
+In your specs, `require 'gitlab'` will reference the `lib/gitlab.rb` file:
+
+```ruby
+# Bad
+allow(GitLab).to receive(:a_method).and_return(...)
+
+# Good
+client = double('GitLab')
+# In order to easily stub the client, consider using a method to return the client.
+# We can then stub the method to return our fake client, which we can further stub its methods.
+#
+# This is the pattern followed below
+let(:instance) { described_class.new }
+
+allow(instance).to receive(:gitlab).and_return(client)
+allow(client).to receive(:a_method).and_return(...)
+```
+
+In case you need to query jobs for instance, the following snippet will be useful:
+
+```ruby
+# Bad
+allow(GitLab).to receive(:pipeline_jobs).and_return(...)
+
+# Good
+#
+# rubocop:disable RSpec/VerifiedDoubles -- We do not load the Gitlab client directly
+client = double('GitLab')
+allow(instance).to receive(:gitlab).and_return(client)
+
+jobs = ['job1', 'job2']
+allow(client).to yield_jobs(:pipeline_jobs, jobs)
+
+def yield_jobs(api_method, jobs)
+  messages = receive_message_chain(api_method, :auto_paginate)
+
+  jobs.inject(messages) do |stub, job_name|
+    stub.and_yield(double(name: job_name))
+  end
+end
+# rubocop:enable RSpec/VerifiedDoubles
+```
+
+#### 3 - Do not call your script with `bundle exec`
+
+Executing with `bundle exec` will change the `$LOAD_PATH` for Ruby, and it will load `lib/gitlab.rb` when calling `require 'gitlab'`:
+
+```shell
+# Bad
+bundle exec scripts/my-script.rb
+
+# Good
+scripts/my-script.rb
+```

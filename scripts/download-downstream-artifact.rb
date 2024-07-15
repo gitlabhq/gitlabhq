@@ -2,6 +2,9 @@
 
 # frozen_string_literal: true
 
+# We need to take some precautions when using the `gitlab` gem in this project.
+#
+# See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
 require 'gitlab'
 
 require_relative 'api/default_options'

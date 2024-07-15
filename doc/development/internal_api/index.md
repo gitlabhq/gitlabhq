@@ -1934,3 +1934,106 @@ Example:
 ```json
 { "op": "Add", "path": "name.formatted", "value": "New Name" }
 ```
+
+## Namespaces
+
+### Get a namespace by ID
+
+```plaintext
+GET /internal/gitlab_subscriptions/namespaces/:id
+```
+
+Parameters:
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "group1",
+  "path": "group1",
+  "kind": "group",
+  "full_path": "group1",
+  "parent_id": null,
+  "avatar_url": null,
+  "web_url": "https://gitlab.example.com/groups/group1",
+  "members_count_with_descendants": 2,
+  "billable_members_count": 2,
+  "max_seats_used": 0,
+  "seats_in_use": 0,
+  "plan": "default",
+  "end_date": null,
+  "trial_ends_on": null,
+  "trial": false,
+  "root_repository_size": 100,
+  "projects_count": 3
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
+### Update a namespace
+
+Use a PUT command to update an existing namespace.
+
+```plaintext
+PUT /internal/gitlab_subscriptions/namespaces/:id
+```
+
+Parameters:
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+| `shared_runners_minutes_limit` | integer | no | Compute minutes quota |
+| `extra_shared_runners_minutes_limit` |  integer | no | Extra compute minutes |
+| `additional_purchased_storage_size` |  integer | no | Additional storage size |
+| `additional_purchased_storage_ends_on` |  date | no | Additional purchased storage Ends on |
+| `gitlab_subscription_attributes` |  hash | no |  Hash object containing GitLab Subscription attributes. Accepts `seats`,`max_seats_used`,`plan_code`,`end_date`,`auto_renew`,`trial`,`trial_ends_on`,`trial_starts_on`,`trial_extension_type` |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1 --data '{"shared_runners_minutes_limit":1000}'"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "group1",
+  "path": "group1",
+  "kind": "group",
+  "full_path": "group1",
+  "parent_id": null,
+  "avatar_url": null,
+  "web_url": "https://gitlab.example.com/groups/group1",
+  "members_count_with_descendants": 2,
+  "billable_members_count": 2,
+  "max_seats_used": 0,
+  "seats_in_use": 0,
+  "plan": "default",
+  "end_date": null,
+  "trial_ends_on": null,
+  "trial": false,
+  "root_repository_size": 100,
+  "projects_count": 3
+}
+```
+
+#### Known consumers
+
+- CustomersDot

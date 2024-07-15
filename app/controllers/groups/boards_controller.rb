@@ -7,7 +7,6 @@ class Groups::BoardsController < Groups::ApplicationController
 
   before_action do
     push_frontend_feature_flag(:board_multi_select, group)
-    push_frontend_feature_flag(:display_work_item_epic_issue_sidebar, group)
   end
 
   feature_category :team_planning

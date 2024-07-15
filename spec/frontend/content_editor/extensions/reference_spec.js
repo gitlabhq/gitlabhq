@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import Reference from '~/content_editor/extensions/reference';
 import ReferenceLabel from '~/content_editor/extensions/reference_label';
 import AssetResolver from '~/content_editor/services/asset_resolver';
@@ -11,12 +12,7 @@ import {
   RESOLVED_USER_HTML,
   RESOLVED_VULNERABILITY_HTML,
 } from '../test_constants';
-import {
-  createTestEditor,
-  createDocBuilder,
-  triggerNodeInputRule,
-  waitUntilTransaction,
-} from '../test_utils';
+import { createTestEditor, triggerNodeInputRule, waitUntilTransaction } from '../test_utils';
 
 describe('content_editor/extensions/reference', () => {
   let tiptapEditor;
@@ -35,15 +31,7 @@ describe('content_editor/extensions/reference', () => {
       extensions: [Reference.configure({ assetResolver }), ReferenceLabel],
     });
 
-    ({
-      builders: { doc, p, reference, referenceLabel },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        reference: { nodeType: Reference.name },
-        referenceLabel: { nodeType: ReferenceLabel.name },
-      },
-    }));
+    ({ doc, paragraph: p, reference, referenceLabel } = builders(tiptapEditor.schema));
   });
 
   describe('when typing a valid reference input rule', () => {

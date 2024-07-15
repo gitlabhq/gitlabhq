@@ -76,7 +76,7 @@ can choose a custom limit. For example, to set the limit to `100`:
 Plan.default.actual_limits.update!(ci_needs_size_limit: 100)
 ```
 
-To disable directed acyclic graphs (DAG), set the limit to `0`. Pipelines with jobs
+To disable `needs` dependencies, set the limit to `0`. Pipelines with jobs
 configured to use `needs` then return the error `job can only need 0 others`.
 
 ## Change maximum scheduled pipeline frequency

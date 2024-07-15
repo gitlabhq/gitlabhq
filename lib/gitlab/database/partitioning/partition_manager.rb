@@ -138,7 +138,7 @@ module Gitlab
             klass: self.class,
             logger: Gitlab::AppLogger,
             connection: connection
-          ).run(&block)
+          ).run(raise_on_exhaustion: true, &block)
         end
 
         def table_partitioned?
@@ -160,7 +160,7 @@ module Gitlab
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
             # Running ANALYZE on partitioned table will go through itself and its partitions
-            connection.execute("ANALYZE #{model.quoted_table_name}")
+            connection.execute("ANALYZE (SKIP_LOCKED) #{model.quoted_table_name}")
           end
         end
 

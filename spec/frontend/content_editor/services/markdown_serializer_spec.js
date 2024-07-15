@@ -1,7 +1,8 @@
+import { builders } from 'prosemirror-test-builder';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
-import { createTiptapEditor, createDocBuilder } from '../test_utils';
+import { createTiptapEditor } from '../test_utils';
 
 jest.mock('~/emoji');
 
@@ -10,50 +11,48 @@ const tiptapEditor = createTiptapEditor([Sourcemap]);
 const text = (val) => tiptapEditor.state.schema.text(val);
 
 const {
-  builders: {
-    audio,
-    doc,
-    blockquote,
-    bold,
-    bulletList,
-    code,
-    codeBlock,
-    details,
-    detailsContent,
-    div,
-    descriptionItem,
-    descriptionList,
-    drawioDiagram,
-    emoji,
-    footnoteDefinition,
-    footnoteReference,
-    figure,
-    figureCaption,
-    heading,
-    hardBreak,
-    highlight,
-    horizontalRule,
-    htmlComment,
-    image,
-    inlineDiff,
-    italic,
-    link,
-    listItem,
-    orderedList,
-    paragraph,
-    referenceDefinition,
-    reference,
-    referenceLabel,
-    strike,
-    table,
-    tableCell,
-    tableHeader,
-    tableRow,
-    taskItem,
-    taskList,
-    video,
-  },
-} = createDocBuilder({ tiptapEditor });
+  audio,
+  doc,
+  blockquote,
+  bold,
+  bulletList,
+  code,
+  codeBlock,
+  details,
+  detailsContent,
+  div,
+  descriptionItem,
+  descriptionList,
+  drawioDiagram,
+  emoji,
+  footnoteDefinition,
+  footnoteReference,
+  figure,
+  figureCaption,
+  heading,
+  hardBreak,
+  highlight,
+  horizontalRule,
+  htmlComment,
+  image,
+  inlineDiff,
+  italic,
+  link,
+  listItem,
+  orderedList,
+  paragraph,
+  referenceDefinition,
+  reference,
+  referenceLabel,
+  strike,
+  table,
+  tableCell,
+  tableHeader,
+  tableRow,
+  taskItem,
+  taskList,
+  video,
+} = builders(tiptapEditor.schema);
 
 const serializeWithOptions = (options, ...content) =>
   new MarkdownSerializer().serialize({ doc: doc(...content) }, options);

@@ -1,6 +1,7 @@
+import { builders } from 'prosemirror-test-builder';
 import { ContentEditor } from '~/content_editor/services/content_editor';
 import eventHubFactory from '~/helpers/event_hub_factory';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/services/content_editor', () => {
   let contentEditor;
@@ -15,11 +16,7 @@ describe('content_editor/services/content_editor', () => {
     const tiptapEditor = createTestEditor();
     jest.spyOn(tiptapEditor, 'destroy');
 
-    ({
-      builders: { doc, p },
-    } = createDocBuilder({
-      tiptapEditor,
-    }));
+    ({ doc, paragraph: p } = builders(tiptapEditor.schema));
 
     serializer = { serialize: jest.fn() };
     deserializer = { deserialize: jest.fn() };

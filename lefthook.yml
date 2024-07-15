@@ -129,6 +129,11 @@ pre-push:
       tags: secrets
       files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
       run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks detect --log-opts="$(git merge-base origin/master HEAD)..HEAD" --no-banner --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'
+    reminder-to-validate-ci-config:
+      tags: ci config
+      files: git diff --name-only --diff-filter=d $(git merge-base origin/master HEAD)..HEAD
+      glob: '{.gitlab-ci.yml,.gitlab/**/*.yml}'
+      run: "echo '🚨WARNING: You are modifying ci pipeline configurations. Please test your changes by running `bundle exec rspec spec/dot_gitlab_ci/job_dependency_spec.rb`. If you think we are missing test coverage for your changes, please add them.'"
 
   scripts:
     'merge_conflicts':
@@ -156,6 +161,11 @@ pre-commit:
       tags: secrets
       files: git diff --name-only --diff-filter=d --staged
       run: 'if command -v gitleaks > /dev/null 2>&1; then gitleaks protect --no-banner --staged --redact --verbose; else echo "WARNING: gitleaks is not installed. Please install it. See https://github.com/zricethezav/gitleaks#installing."; fi'
+    reminder-to-validate-ci-config:
+      tags: ci config
+      files: git diff --name-only --diff-filter=d --staged
+      glob: '{.gitlab-ci.yml,.gitlab/**/*.yml}'
+      run: "echo '🚨WARNING: You are modifying ci pipeline configurations. Please test your changes by running `bundle exec rspec spec/dot_gitlab_ci/job_dependency_spec.rb`. If you think we are missing test coverage for your changes, please add them.'"
 
 auto-fix:
   parallel: true

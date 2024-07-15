@@ -64,8 +64,8 @@ RSpec.describe 'admin/application_settings/_ci_cd' do
       expect(rendered).to have_field('Maximum number of pipeline schedules', type: 'number')
       expect(page.find_field('Maximum number of pipeline schedules').value).to eq('40')
 
-      expect(rendered).to have_field('Maximum number of DAG dependencies that a job can have', type: 'number')
-      expect(page.find_field('Maximum number of DAG dependencies that a job can have').value).to eq('50')
+      expect(rendered).to have_field('Maximum number of needs dependencies that a job can have', type: 'number')
+      expect(page.find_field('Maximum number of needs dependencies that a job can have').value).to eq('50')
 
       expect(rendered).to have_field('Maximum number of runners registered per group', type: 'number')
       expect(page.find_field('Maximum number of runners registered per group').value).to eq('60')
