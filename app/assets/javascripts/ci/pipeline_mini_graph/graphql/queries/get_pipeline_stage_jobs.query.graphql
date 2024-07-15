@@ -8,6 +8,7 @@ query getPipelineStageJobs($id: CiStageID!) {
           id
           action {
             id
+            confirmationMessage
             icon
             path
             title

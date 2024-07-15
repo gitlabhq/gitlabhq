@@ -17,7 +17,7 @@ the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
 To answer a user's question asked in the Chat interface, GitLab sends a
 [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb)
 to the Rails backend. Rails backend sends then instructions to the Large
-Language Model (LLM) through the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
+Language Model (LLM) through the [AI Gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
 ## Which use cases lend themselves most to contributing to Chat?
 

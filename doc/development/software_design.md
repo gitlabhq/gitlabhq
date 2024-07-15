@@ -54,7 +54,7 @@ for STI, exposed to the user, or if it would be a breaking change.
 ## Bounded contexts
 
 See the [Bounded Contexts working group](https://handbook.gitlab.com/handbook/company/working-groups/bounded-contexts/) and
-[GitLab Modular Monolith blueprint](../architecture/blueprints/modular_monolith/index.md) for more context on the
+[GitLab Modular Monolith design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/modular_monolith/) for more context on the
 goals, motivations, and direction related to Bounded Contexts.
 
 ### Use namespaces to define bounded contexts

@@ -1,12 +1,15 @@
 <script>
 import { GlDisclosureDropdownItem, GlTooltipDirective } from '@gitlab/ui';
 import { sprintf } from '~/locale';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
 import JobNameComponent from '~/ci/common/private/job_name_component.vue';
+import JobActionButton from './job_action_button.vue';
 
 export default {
   name: 'JobItem',
   components: {
+    JobActionButton,
     JobNameComponent,
     GlDisclosureDropdownItem,
   },
@@ -21,6 +24,9 @@ export default {
     },
   },
   computed: {
+    hasJobAction() {
+      return Boolean(this.status?.action?.id);
+    },
     item() {
       return {
         text: this.job.name,
@@ -36,7 +42,7 @@ export default {
       if (this.isDelayedJob) {
         return sprintf(statusTooltip, { remainingTime: this.remainingTime });
       }
-      return statusTooltip;
+      return capitalizeFirstCharacter(statusTooltip);
     },
   },
 };
@@ -44,13 +50,21 @@ export default {
 <template>
   <gl-disclosure-dropdown-item :item="item">
     <template #list-item>
-      <job-name-component
-        v-gl-tooltip.viewport.left
-        class="-gl-my-2"
-        :title="tooltipText"
-        :name="job.name"
-        :status="status"
-      />
+      <div class="gl-flex -gl-my-2 gl-h-6">
+        <job-name-component
+          v-gl-tooltip.viewport.left
+          class="-gl-my-2"
+          :title="tooltipText"
+          :name="job.name"
+          :status="status"
+        />
+        <job-action-button
+          v-if="hasJobAction"
+          :job-id="job.id"
+          :job-action="status.action"
+          :job-name="job.name"
+        />
+      </div>
     </template>
   </gl-disclosure-dropdown-item>
 </template>

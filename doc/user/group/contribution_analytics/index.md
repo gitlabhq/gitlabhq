@@ -73,7 +73,7 @@ On GitLab self-managed, when you configure the ClickHouse integration, the Click
 For more information, see:
 
 - [ClickHouse integration guidelines](../../../integration/clickhouse.md)
-- [ClickHouse usage at GitLab](../../../architecture/blueprints/clickhouse_usage/index.md)
+- [ClickHouse usage at GitLab](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/clickhouse_usage/)
 
 ## Contribution analytics GraphQL API
 

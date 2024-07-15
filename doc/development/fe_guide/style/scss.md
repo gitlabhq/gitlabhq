@@ -41,7 +41,7 @@ result (such as `ml-1` becoming `gl-ml-2`).
 ### Tailwind CSS
 
 We are in the process of migrating our CSS utility class setup to [Tailwind CSS](https://tailwindcss.com/).
-See the [Tailwind CSS blueprint](../../../architecture/blueprints/tailwindcss/index.md) for motivation, proposal,
+See the [Tailwind CSS design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/tailwindcss/) for motivation, proposal,
 and implementation details.
 
 #### Tailwind CSS basics

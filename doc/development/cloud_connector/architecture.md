@@ -297,4 +297,4 @@ sequenceDiagram
 
 ## References
 
-- [Cloud Connector blueprints and ADRs](../../architecture/blueprints/cloud_connector/index.md)
+- [Cloud Connector design documents and ADRs](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cloud_connector/)

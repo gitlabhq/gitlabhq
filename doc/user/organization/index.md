@@ -69,8 +69,8 @@ To view the organizations you have access to:
 ## Switch organizations
 
 NOTE:
-Switching between organizations is not supported in [Cells 1.0](../../architecture/blueprints/cells/iterations/cells-1.0.md),
-but is supported in [Cells 1.5](../../architecture/blueprints/cells/iterations/cells-1.5.md).
+Switching between organizations is not supported in [Cells 1.0](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/),
+but is supported in [Cells 1.5](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.5/).
 
 To switch organizations:
 
@@ -112,4 +112,4 @@ The Organization description field supports a limited subset of [GitLab Flavored
 ## Related topics
 
 - [Organization developer documentation](../../development/organization/index.md)
-- [Organization blueprint](../../architecture/blueprints/organization/index.md)
+- [Organization design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/organization/)

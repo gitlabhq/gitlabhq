@@ -108,7 +108,7 @@ You can remove the cookie-based language selector from the footer of the sign-in
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/375708) in GitLab 15.9.
 
-Customize the icon, display name, short name, and description for your Progessive Web App (PWA). For more information, see [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps).
+Customize the icon, display name, short name, and description for your Progressive Web App (PWA). For more information, see [Progressive Web App](https://developer.mozilla.org/en-US/docs/Web/Progressive_web_apps).
 
 To add a Progressive Web App name and short name:
 

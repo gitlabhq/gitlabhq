@@ -70,6 +70,42 @@ export const pipelineStage = {
   },
 };
 
+// for `job_action_button_spec.js`
+export const mockJobActions = [
+  {
+    __typename: 'StatusAction',
+    confirmationMessage: null,
+    id: 'Ci::Build-pending-1001',
+    icon: 'cancel',
+    path: '/flightjs/Flight/-/jobs/1001/cancel',
+    title: 'Cancel',
+  },
+  {
+    __typename: 'StatusAction',
+    confirmationMessage: null,
+    id: 'Ci::Build-manual-1001',
+    icon: 'play',
+    path: '/flightjs/Flight/-/jobs/1001/play',
+    title: 'Run',
+  },
+  {
+    __typename: 'StatusAction',
+    confirmationMessage: null,
+    id: 'Ci::Build-success-1001',
+    icon: 'retry',
+    path: '/flightjs/Flight/-/jobs/1001/retry',
+    title: 'Run again',
+  },
+  {
+    __typename: 'StatusAction',
+    confirmationMessage: null,
+    id: 'Ci::Build-scheduled-1001',
+    icon: 'time-out',
+    path: '/flightjs/Flight/-/jobs/1001/unschedule',
+    title: 'Unschedule',
+  },
+];
+
 // for `job_item_spec.js`
 export const mockPipelineJob = {
   __typename: 'CiJob',
@@ -80,6 +116,7 @@ export const mockPipelineJob = {
     action: {
       __typename: 'StatusAction',
       id: 'Ci::Build-success-1001',
+      confirmationMessage: null,
       icon: 'cancel',
       path: '/flightjs/Flight/-/jobs/1001/cancel',
       title: 'Cancel',
@@ -113,6 +150,7 @@ export const mockPipelineStageJobs = {
               action: {
                 __typename: 'StatusAction',
                 id: 'Ci::Build-success-1001',
+                confirmationMessage: null,
                 icon: 'retry',
                 path: '/flightjs/Flight/-/jobs/1001/retry',
                 title: 'Retry',
@@ -136,6 +174,7 @@ export const mockPipelineStageJobs = {
               action: {
                 __typename: 'StatusAction',
                 id: 'Ci::Build-success-1002',
+                confirmationMessage: null,
                 icon: 'retry',
                 path: '/flightjs/Flight/-/jobs/1001/retry',
                 title: 'Retry',

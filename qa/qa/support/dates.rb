@@ -20,6 +20,11 @@ module QA
         new_date.strftime("%b %-d, %Y")
       end
 
+      def format_date_without_year(date)
+        new_date = DateTime.strptime(date, "%Y/%m/%d")
+        new_date.strftime("%b %-d")
+      end
+
       private
 
       def current_date

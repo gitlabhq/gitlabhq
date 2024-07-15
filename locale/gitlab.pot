@@ -21672,6 +21672,9 @@ msgstr ""
 msgid "Expires %{preposition} %{expires_at}"
 msgstr ""
 
+msgid "Expiring soon"
+msgstr ""
+
 msgid "Explain why you're reporting the user."
 msgstr ""
 
@@ -36169,6 +36172,9 @@ msgstr ""
 msgid "Observability|Tracing, Metrics & Logs"
 msgstr ""
 
+msgid "Observability|Usage by day"
+msgstr ""
+
 msgid "Observability|View our %{docsLink} for further instructions on how to use these features."
 msgstr ""
 
@@ -47329,13 +47335,16 @@ msgstr ""
 msgid "Secrets|Enter a key name"
 msgstr ""
 
+msgid "Secrets|Expires"
+msgstr ""
+
 msgid "Secrets|Failed to load secret. Please try again later."
 msgstr ""
 
 msgid "Secrets|Intervals"
 msgstr ""
 
-msgid "Secrets|Last accessed"
+msgid "Secrets|Last used"
 msgstr ""
 
 msgid "Secrets|Name"
@@ -47369,6 +47378,9 @@ msgid "Secrets|Select environment"
 msgstr ""
 
 msgid "Secrets|Set expiration"
+msgstr ""
+
+msgid "Secrets|Status"
 msgstr ""
 
 msgid "Secrets|Stored secrets"

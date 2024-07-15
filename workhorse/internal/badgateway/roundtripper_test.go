@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -73,12 +74,12 @@ func TestClientDisconnect499(t *testing.T) {
 
 	go func() {
 		req, err := http.NewRequestWithContext(clientContext, "GET", ts.URL, nil)
-		require.NoError(t, err, "build request")
+		assert.NoError(t, err, "build request")
 
 		rt := NewRoundTripper(false, http.DefaultTransport)
 		response, err := rt.RoundTrip(req)
-		require.NoError(t, err, "perform roundtrip")
-		require.NoError(t, response.Body.Close())
+		assert.NoError(t, err, "perform roundtrip")
+		assert.NoError(t, response.Body.Close())
 
 		clientResponse <- response
 	}()

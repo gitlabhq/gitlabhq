@@ -21,7 +21,7 @@ viewed and addressed.
 For a video overview, see [Design Management](https://www.youtube.com/watch?v=CCMtCqdK_aM).
 <!-- Video published on 2019-07-11 -->
 
-## Requirements
+## Prerequisites
 
 - [Git Large File Storage (LFS)](../../../topics/git/lfs/index.md) must be enabled:
   - On GitLab.com, LFS is already enabled.
@@ -57,14 +57,6 @@ You can upload files of the following types as designs:
 - WEBP
 
 Support for PDF files is tracked in [issue 32811](https://gitlab.com/gitlab-org/gitlab/-/issues/32811).
-
-## Known issues
-
-- Design Management data isn't deleted when:
-  - [A project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429).
-  - [An issue is deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427).
-- Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
-  and in GitLab 16.1 and later it can be [verified by Geo as well](https://gitlab.com/gitlab-org/gitlab/-/issues/355660).
 
 ## View a design
 
@@ -193,6 +185,17 @@ To archive multiple designs at once:
 
 1. Select the checkboxes on the designs you want to archive.
 1. Select **Archive selected**.
+
+## Design management data persistence
+
+- Design Management data is not deleted when:
+  - [A project is destroyed](https://gitlab.com/gitlab-org/gitlab/-/issues/13429).
+  - [An issue is deleted](https://gitlab.com/gitlab-org/gitlab/-/issues/13427).
+
+### Replicate design management data
+
+Design Management data [can be replicated](../../../administration/geo/replication/datatypes.md#limitations-on-replicationverification)
+and in GitLab 16.1 and later it can be [verified by Geo as well](https://gitlab.com/gitlab-org/gitlab/-/issues/355660).
 
 ## Markdown and rich text editors for descriptions
 

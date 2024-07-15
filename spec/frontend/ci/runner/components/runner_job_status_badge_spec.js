@@ -5,7 +5,6 @@ import {
   I18N_JOB_STATUS_ACTIVE,
   I18N_JOB_STATUS_IDLE,
   JOB_STATUS_ACTIVE,
-  JOB_STATUS_RUNNING,
   JOB_STATUS_IDLE,
 } from '~/ci/runner/constants';
 
@@ -24,10 +23,9 @@ describe('RunnerTypeBadge', () => {
   };
 
   it.each`
-    jobStatus             | classes                                         | text
-    ${JOB_STATUS_ACTIVE}  | ${['gl-text-blue-600!', 'gl-border-blue-600!']} | ${I18N_JOB_STATUS_ACTIVE}
-    ${JOB_STATUS_RUNNING} | ${['gl-text-blue-600!', 'gl-border-blue-600!']} | ${I18N_JOB_STATUS_ACTIVE}
-    ${JOB_STATUS_IDLE}    | ${['gl-text-gray-700!', 'gl-border-gray-500!']} | ${I18N_JOB_STATUS_IDLE}
+    jobStatus            | classes                                         | text
+    ${JOB_STATUS_ACTIVE} | ${['gl-text-blue-600!', 'gl-border-blue-600!']} | ${I18N_JOB_STATUS_ACTIVE}
+    ${JOB_STATUS_IDLE}   | ${['gl-text-gray-700!', 'gl-border-gray-500!']} | ${I18N_JOB_STATUS_IDLE}
   `(
     'renders $jobStatus job status with "$text" text and styles',
     ({ jobStatus, classes, text }) => {

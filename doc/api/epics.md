@@ -12,7 +12,7 @@ DETAILS:
 
 WARNING:
 The Epics REST API was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/460668) in GitLab 17.0
-and is planned for removal in v5 of the API. Use the [Work Items API](../architecture/blueprints/work_items/index.md) instead.
+and is planned for removal in v5 of the API. Use the [Work Items API](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/work_items/) instead.
 This change is a breaking change.
 
 Every API call to epic must be authenticated.

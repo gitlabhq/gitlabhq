@@ -538,6 +538,7 @@ def find_and_click_clear(selector)
 end
 
 RSpec.shared_examples 'work items iteration' do
+  include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
   let_it_be(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
   let_it_be(:iteration) do
@@ -594,7 +595,7 @@ RSpec.shared_examples 'work items iteration' do
 
       within(work_item_iteration_selector) do
         expect(page).to have_text(iteration_cadence.title)
-        expect(page).to have_text(iteration.period)
+        expect(page).to have_text(iteration_period_display(iteration))
       end
 
       find_and_click_edit(work_item_iteration_selector)
@@ -611,7 +612,7 @@ RSpec.shared_examples 'work items iteration' do
         wait_for_requests
 
         select_listbox_item(iteration.period)
-        expect(page).to have_text(iteration.period)
+        expect(page).to have_text(iteration_period_display(iteration))
       end
     end
   end

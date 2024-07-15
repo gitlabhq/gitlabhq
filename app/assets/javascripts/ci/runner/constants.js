@@ -164,7 +164,6 @@ export const STATUS_STALE = 'STALE';
 // CiRunnerJobExecutionStatus
 
 export const JOB_STATUS_ACTIVE = 'ACTIVE';
-export const JOB_STATUS_RUNNING = 'RUNNING';
 export const JOB_STATUS_IDLE = 'IDLE';
 
 // CiRunnerAccessLevel

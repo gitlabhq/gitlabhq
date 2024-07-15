@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 
@@ -82,7 +83,7 @@ func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) strin
 	srv := grpc.NewServer(testhelper.WithSidechannel())
 	gitalypb.RegisterSmartHTTPServiceServer(srv, s)
 	go func() {
-		require.NoError(t, srv.Serve(ln))
+		assert.NoError(t, srv.Serve(ln))
 	}()
 
 	t.Cleanup(func() {

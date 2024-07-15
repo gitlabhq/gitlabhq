@@ -4,7 +4,6 @@ import {
   I18N_JOB_STATUS_ACTIVE,
   I18N_JOB_STATUS_IDLE,
   JOB_STATUS_ACTIVE,
-  JOB_STATUS_RUNNING,
   JOB_STATUS_IDLE,
 } from '../constants';
 
@@ -26,7 +25,6 @@ export default {
     badge() {
       switch (this.jobStatus) {
         case JOB_STATUS_ACTIVE:
-        case JOB_STATUS_RUNNING:
           return {
             classes: 'gl-text-blue-600! gl-shadow-inner-1-gray-400 gl-border-blue-600!',
             label: I18N_JOB_STATUS_ACTIVE,

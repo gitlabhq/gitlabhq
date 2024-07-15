@@ -12,7 +12,7 @@ SaaS and self-managed installations.
 
 ## Consolidate groups and projects
 
-- [Architecture blueprint](../../architecture/blueprints/consolidating_groups_and_projects/index.md)
+- [Architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/)
 
 One facet of the Organization initiative is to consolidate groups and projects,
 addressing the feature disparity between them. Some features, such as epics, are
@@ -79,6 +79,6 @@ When working on settings, we need to make sure that:
 
 ## Related topics
 
-- [Consolidating groups and projects](../../architecture/blueprints/consolidating_groups_and_projects/index.md)
+- [Consolidating groups and projects](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/consolidating_groups_and_projects/)
   architecture documentation
 - [Organization user documentation](../../user/organization/index.md)

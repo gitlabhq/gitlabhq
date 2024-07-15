@@ -16,7 +16,7 @@ to AI that you think could benefit from being in this list, add it!
   service is ready. Eventually, the AI Gateway will be used to host endpoints that
   proxy requests to AI providers, removing the need for the GitLab Rails monolith
   to integrate and communicate directly with third-party Large Language Models (LLMs).
-  [Blueprint](../../architecture/blueprints/ai_gateway/index.md).
+  [Design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 - **Air-Gapped Model**: A hosted model that is internal to an organisations intranet only. In the context of GitLab AI features, this could be connected to an air-gapped GitLab instance.
 - **Bring Your Own Model (BYOM)**: A third-party model to be connected to one or more GitLab Duo features. Could be an off-the-shelf Open Source (OS) model, a fine-tuned model, or a closed source model. GitLab is planning to support specific, validated BYOMs for GitLab Duo features, but does not currently support or plan to support general BYOM use for GitLab Duo features.
 - **Chat Evaluation**: automated mechanism for determining the helpfulness and
@@ -68,7 +68,7 @@ to AI that you think could benefit from being in this list, add it!
   on prompts with various third-party AI Services.
   [Code](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/prompt-library).
 - **Prompt Registry**: stored, versioned prompts used to interact with third-party
-  AI Services. [Blueprint](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135872).
+  AI Services. [Design document proposal MR (closed)](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135872).
 - **Prompt**: Natural language instructions sent to an LLM to perform certain tasks. [Prompt guidelines](prompts.md).
 - **RAG (Retrieval Augmented Generation)**: RAG provide contextual data to an LLM as part of a query to personalise results. RAG is used to inject additional context into a prompt to decrease hallucinations and improve the quality of outputs.
 - **RAG Pipeline**: A mechanism used to take

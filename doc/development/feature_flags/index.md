@@ -17,10 +17,10 @@ All newly-introduced feature flags should be [disabled by default](https://handb
 WARNING:
 All newly-introduced feature flags should be [used with an actor](controls.md#percentage-based-actor-selection).
 
-Blueprints:
+Design documents:
 
-- (Latest) [Feature Flags usage in GitLab development and operations](../../architecture/blueprints/feature_flags_usage_in_dev_and_ops/index.md)
-- [Development Feature Flags Architecture](../../architecture/blueprints/feature_flags_development/index.md)
+- (Latest) [Feature Flags usage in GitLab development and operations](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_usage_in_dev_and_ops/)
+- [Development Feature Flags Architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/feature_flags_development/)
 
 This document is the subject of continued work as part of an epic to [improve internal usage of feature flags](https://gitlab.com/groups/gitlab-org/-/epics/3551). Raise any suggestions as new issues and attach them to the epic.
 

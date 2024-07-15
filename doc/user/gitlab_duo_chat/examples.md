@@ -17,7 +17,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, and JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai), [Vertex AI Search](https://cloud.google.com/enterprise-search)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), [Vertex AI Search](https://cloud.google.com/enterprise-search)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on self-managed in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ai_gateway_docs_search`. Enabled by default.
@@ -34,7 +34,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.1.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -60,11 +60,12 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for self-managed and GitLab Dedicated in GitLab 16.8.
 > - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149619) from `claude-2.1` to `claude-3-sonnet` in GitLab 17.2.
+> - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157696) from `claude-3-sonnet` to `claude-3-5-sonnet` in GitLab 17.2.
 
 You can ask GitLab Duo Chat to create a CI/CD configuration:
 
@@ -99,7 +100,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -127,7 +128,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -148,7 +149,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.

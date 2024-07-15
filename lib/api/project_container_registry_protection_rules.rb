@@ -69,6 +69,48 @@ module API
           present response[:container_registry_protection_rule],
             with: Entities::Projects::ContainerRegistry::Protection::Rule
         end
+
+        params do
+          requires :protection_rule_id, type: Integer,
+            desc: 'The ID of the container protection rule'
+        end
+        resource ':protection_rule_id' do
+          desc 'Update a container protection rule for a project' do
+            success Entities::Projects::ContainerRegistry::Protection::Rule
+            failure [
+              { code: 400, message: 'Bad Request' },
+              { code: 401, message: 'Unauthorized' },
+              { code: 403, message: 'Forbidden' },
+              { code: 404, message: 'Not Found' },
+              { code: 422, message: 'Unprocessable Entity' }
+            ]
+            tags %w[projects]
+            hidden true
+          end
+          params do
+            optional :repository_path_pattern, type: String,
+              desc: 'Container repository path pattern protected by the protection rule.
+              For example `flight/flight-*`. Wildcard character `*` allowed.'
+            optional :minimum_access_level_for_push, type: String,
+              values: ContainerRegistry::Protection::Rule.minimum_access_level_for_pushes.keys << "",
+              desc: 'Minimum GitLab access level to allow to push container images to the container registry.
+              For example maintainer, owner or admin. To unset the value, use an empty string `""`.'
+            optional :minimum_access_level_for_delete, type: String,
+              values: ContainerRegistry::Protection::Rule.minimum_access_level_for_deletes.keys << "",
+              desc: 'Minimum GitLab access level to allow to delete container images in the container registry.
+              For example maintainer, owner or admin. To unset the value, use an empty string `""`.'
+          end
+          patch do
+            protection_rule = user_project.container_registry_protection_rules.find(params[:protection_rule_id])
+            response = ::ContainerRegistry::Protection::UpdateRuleService.new(protection_rule,
+              current_user: current_user, params: declared_params(include_missing: false)).execute
+
+            render_api_error!({ error: response.message }, :unprocessable_entity) if response.error?
+
+            present response[:container_registry_protection_rule],
+              with: Entities::Projects::ContainerRegistry::Protection::Rule
+          end
+        end
       end
     end
   end

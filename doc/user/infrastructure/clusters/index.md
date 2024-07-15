@@ -45,7 +45,7 @@ Follow this [epic](https://gitlab.com/groups/gitlab-org/configure/-/epics/8)
 for updates.
 
 You can find technical information about why we moved away from cluster certificates into
-the GitLab agent model on the [agent's blueprint documentation](../../../architecture/blueprints/gitlab_to_kubernetes_communication/index.md).
+the GitLab agent model on the [agent's design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_to_kubernetes_communication/).
 
 If you need more time to migrate to GitLab agent, you can [enable the feature flag](../../../administration/feature_flags.md)
 named `certificate_based_clusters`, which was [introduced in GitLab 15.0](../../../update/deprecations.md#self-managed-certificate-based-integration-with-kubernetes).

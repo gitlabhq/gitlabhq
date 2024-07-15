@@ -31,9 +31,8 @@ DETAILS:
 
 - Help you write and understand code faster, get up to speed on the status of projects,
   and quickly learn about GitLab by answering your questions in a chat window.
-- LLM: Anthropic [`claude-3-sonnet-20240229`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-sonnet),
+  Anthropic [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet),
   Anthropic [`claude-3-haiku-20240307`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku),
-  [`claude-2.1`](https://docs.anthropic.com/en/docs/legacy-model-guide#anthropics-legacy-models),
   and [Vertex AI Search](https://cloud.google.com/enterprise-search).
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat.md).

@@ -15,7 +15,7 @@ module Tooling
         :warning: You have added `gitlab_main_clusterwide` as the schema for this table. We expect most tables to use the
         `gitlab_main_cell` schema instead, as using the clusterwide schema can have significant scaling implications.
 
-        Please see the [guidelines on choosing gitlab schema](https://docs.gitlab.com/ee/development/database/multiple_databases.html#guidelines-on-choosing-between-gitlab_main_cell-and-gitlab_main_clusterwide-schema) for more information.
+        Please see the [guidelines on choosing gitlab schema](https://docs.gitlab.com/ee/development/cells/index.html#guidelines-on-choosing-between-gitlab_main_cell-and-gitlab_main_clusterwide-schema) for more information.
 
         Please consult with ~"group::tenant scale" if you believe that the clusterwide schema is the best fit for this table.
       MESSAGE_MARKDOWN

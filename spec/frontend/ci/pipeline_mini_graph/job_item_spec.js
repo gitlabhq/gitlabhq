@@ -1,4 +1,5 @@
 import { shallowMount } from '@vue/test-utils';
+import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import JobItem from '~/ci/pipeline_mini_graph/job_item.vue';
 import JobNameComponent from '~/ci/common/private/job_name_component.vue';
 
@@ -39,9 +40,9 @@ describe('JobItem', () => {
     });
 
     it('sets the correct tooltip for the job item', () => {
-      expect(findJobNameComponent().attributes('title')).toBe(
-        mockPipelineJob.detailedStatus.tooltip,
-      );
+      const tooltip = capitalizeFirstCharacter(mockPipelineJob.detailedStatus.tooltip);
+
+      expect(findJobNameComponent().attributes('title')).toBe(tooltip);
     });
   });
 });

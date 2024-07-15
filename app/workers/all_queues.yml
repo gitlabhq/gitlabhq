@@ -3252,6 +3252,15 @@
   :weight: 2
   :idempotent: true
   :tags: []
+- :name: import_load_placeholder_references
+  :worker_name: Import::LoadPlaceholderReferencesWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_refresh_import_jid
   :worker_name: Gitlab::Import::RefreshImportJidWorker
   :feature_category: :importers

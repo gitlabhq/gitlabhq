@@ -15,7 +15,6 @@ import { BV_HIDE_TOOLTIP } from '~/lib/utils/constants';
 import { n__, s__ } from '~/locale';
 import Tracking from '~/tracking';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { formatDate } from '~/lib/utils/datetime_utility';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import setActiveBoardItemMutation from 'ee_else_ce/boards/graphql/client/set_active_board_item.mutation.graphql';
 import AccessorUtilities from '~/lib/utils/accessor';
@@ -301,16 +300,6 @@ export default {
           message: s__('Boards|An error occurred while updating the list. Please try again.'),
         });
       }
-    },
-    /**
-     * TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/344619
-     * This method also exists as a utility function in ee/../iterations/utils.js
-     * Remove the duplication when the EE code is separated from this compoment.
-     */
-    getIterationPeriod({ startDate, dueDate }) {
-      const start = formatDate(startDate, 'mmm d, yyyy', true);
-      const due = formatDate(dueDate, 'mmm d, yyyy', true);
-      return `${start} - ${due}`;
     },
     updateLocalCollapsedStatus(collapsed) {
       this.$apollo.mutate({
