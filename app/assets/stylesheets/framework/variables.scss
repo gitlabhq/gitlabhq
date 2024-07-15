@@ -508,8 +508,8 @@ $board-swimlanes-headers-height: 64px;
 /*
 Source Editor theme overrides
 */
-$source-editor-hover-light-text-color: #ececef;
-$source-editor-hover-dark-text-color: #333238;
+$source-editor-hover-light-text-color: $gl-color-neutral-50;
+$source-editor-hover-dark-text-color: $gl-color-neutral-900;
 
 /**
  Bootstrap 4.2.0 introduced new icons for validating forms.

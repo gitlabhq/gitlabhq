@@ -53647,9 +53647,6 @@ msgstr ""
 msgid "There are no SSH keys with access to your account."
 msgstr ""
 
-msgid "There are no Spam Logs"
-msgstr ""
-
 msgid "There are no approval rules for the given `represent_as` parameter. Use a valid User/Group/Role name instead."
 msgstr ""
 
@@ -53714,6 +53711,9 @@ msgid "There are no packages yet"
 msgstr ""
 
 msgid "There are no secure files yet."
+msgstr ""
+
+msgid "There are no spam logs"
 msgstr ""
 
 msgid "There are no topics to show"

@@ -50,4 +50,4 @@ The possible values include:
 - [Spam and CAPTCHA support in the GraphQL API](../../api/graphql/index.md#resolve-mutations-detected-as-spam)
 - [Spam and CAPTCHA support in the REST API](../../api/rest/index.md#resolve-requests-detected-as-spam)
 - [reCAPTCHA Spam and Anti-bot Protection](../../integration/recaptcha.md)
-- [Akismet and Spam Logs](../../integration/akismet.md)
+- [Akismet and spam logs](../../integration/akismet.md)

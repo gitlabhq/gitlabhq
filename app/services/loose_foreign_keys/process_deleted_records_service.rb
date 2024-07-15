@@ -4,9 +4,10 @@ module LooseForeignKeys
   class ProcessDeletedRecordsService
     BATCH_SIZE = 1000
 
-    def initialize(connection:, modification_tracker: LooseForeignKeys::ModificationTracker.new)
+    def initialize(connection:, logger: Sidekiq.logger, modification_tracker: LooseForeignKeys::ModificationTracker.new)
       @connection = connection
       @modification_tracker = modification_tracker
+      @logger = logger
     end
 
     def execute
@@ -31,6 +32,7 @@ module LooseForeignKeys
             loose_foreign_key_definitions: loose_foreign_key_definitions,
             deleted_parent_records: records,
             connection: connection,
+            logger: logger,
             modification_tracker: modification_tracker)
           .execute
 
@@ -55,7 +57,7 @@ module LooseForeignKeys
 
     private
 
-    attr_reader :connection, :modification_tracker
+    attr_reader :connection, :logger, :modification_tracker
 
     def db_config_name
       ::Gitlab::Database.db_config_name(connection)

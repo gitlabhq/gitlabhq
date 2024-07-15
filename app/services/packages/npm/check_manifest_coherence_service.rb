@@ -9,9 +9,6 @@ module Packages
       MANIFEST_NOT_COHERENT_ERROR = 'Package manifest is not coherent'
       VERSION_NOT_COMPLIANT_ERROR = 'Version in package.json is not SemVer compliant'
 
-      delegate :npm_metadatum, to: :package, private: true
-      delegate :package_json_scripts, to: :npm_metadatum, private: true, allow_nil: true
-
       def initialize(package, package_json_entry)
         @package = package
         @package_json_entry = package_json_entry
@@ -31,8 +28,7 @@ module Packages
 
       def coherent?(package_json)
         package_json['name'] == package.name &&
-          same_version?(package_json['version'], package.version) &&
-          (package_json['scripts'] || {}) == (package_json_scripts || {})
+          same_version?(package_json['version'], package.version)
       end
 
       def same_version?(version1, version2)

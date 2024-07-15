@@ -97,10 +97,10 @@ To create an application:
 
 1. Find your group ID:
    1. On the left sidebar, select **Search or go to** and find the top-level group with the `animal` project. For example, if your project URL is `https://gitlab.com/tankui/observability/animal`, the top-level group is `tanuki`.
-   1. On the group overview page, in the upper-right corner, select **Actions ({ellipsis_v})**.
+   1. On the group overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
    1. Select **Copy group ID**. Save the copied ID for later.
 1. Find your project ID:
-   1. On the `animal` project overview page, in the upper-right corner, select **Actions ({ellipsis_v})**.
+   1. On the `animal` project overview page, in the upper-right corner, select **Actions** (**{ellipsis_v}**).
    1. Select **Copy project ID**. Save the copied ID for later.
 
 1. Edit `.env` and add the following code:

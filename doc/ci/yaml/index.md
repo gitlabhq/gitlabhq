@@ -848,7 +848,7 @@ to a pipeline with `include`. Use `include:inputs` to define the values to use w
 
 Use the inputs to customize the behavior of the configuration when included in CI/CD configuration.
 
-Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
+Use the interpolation format `$[[ inputs.input-id ]]` to reference the values outside of the header section.
 Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
 configuration is merged with the contents of the `.gitlab-ci.yml` file.
 

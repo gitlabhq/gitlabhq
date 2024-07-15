@@ -88,47 +88,47 @@ const hardcodedColorsToCSSVarsMap = {
   shadow: {}, // This util already uses hardcoded colors in its legacy version
   'shadow-x0-y2-b4-s0': {}, // This util already uses hardcoded colors in its legacy version
   'shadow-sm': {
-    '#1f1e2414': '--t-gray-a-08', // The dark theme override does not yet exist
+    '#05050614': '--gl-color-alpha-dark-8', // The dark theme override does not yet exist
   },
   'shadow-md': {
-    '#1f1e2429': '--t-gray-a-16', // The dark theme override does not yet exist
+    '#05050629': '--gl-color-alpha-dark-6', // The dark theme override does not yet exist
   },
   'shadow-lg': {
-    '#1f1e2429': '--t-gray-a-16', // The dark theme override does not yet exist
+    '#05050629': '--gl-color-alpha-dark-6', // The dark theme override does not yet exist
   },
   'text-contrast-light': {}, // The legacy util references the $white-contrast variable for which we have no dark theme override
   'text-black-normal': {
-    '#333': '--gray-900',
+    '#333': '--gl-text-color-default',
   },
   'text-body': {
-    '#333238': '--gl-text-primary',
+    '#28272d': '--gl-text-color-default',
   },
   'text-secondary': {
     '#737278': '--gl-text-secondary',
   },
   'border-gray-a-08': {
-    '#1f1e2414': '--t-gray-a-08', // The dark theme override does not yet exist
+    '#05050614': '--gl-color-alpha-dark-8', // The dark theme override does not yet exist
   },
   'inset-border-1-gray-a-08': {
-    '#1f1e2414': '--t-gray-a-08', // The dark theme override does not yet exist
+    '#05050614': '--gl-color-alpha-dark-8', // The dark theme override does not yet exist
   },
   'border-gray-a-24': {
-    '#1f1e243d': '--t-gray-a-24', // The dark theme override does not yet exist
+    '#0505063d': '--gl-color-alpha-dark-24', // The dark theme override does not yet exist
   },
   border: {
-    '#dcdcde': '--gray-100',
+    '#dcdcde': '--gl-border-color-default',
   },
   'border-t': {
-    '#dcdcde': '--gray-100',
+    '#dcdcde': '--gl-border-color-default',
   },
   'border-r': {
-    '#dcdcde': '--gray-100',
+    '#dcdcde': '--gl-border-color-default',
   },
   'border-b': {
-    '#dcdcde': '--gray-100',
+    '#dcdcde': '--gl-border-color-default',
   },
   'border-l': {
-    '#dcdcde': '--gray-100',
+    '#dcdcde': '--gl-border-color-default',
   },
   '-focus': {
     '#fff': '--white',
@@ -166,7 +166,7 @@ export function getColorTokens(tokens) {
  * Returns a reverse mapping of hex values to tokens, e.g.
  *
  * {
- *   '#333238': [ 'color-neutral-900', 'icon-color-strong', 'gray-900' ]
+ *   '#28272d': [ 'color-neutral-900', 'icon-color-strong', 'gray-900' ]
  * }
  *
  * @param rawTokens
@@ -205,7 +205,7 @@ export const darkModeTokenToHex = Object.fromEntries(
 
 // We overwrite the following classes in
 // app/assets/stylesheets/themes/_dark.scss
-darkModeTokenToHex['t-gray-a-08'] = '#fbfafd14'; // rgba($gray-950, 0.08);
+darkModeTokenToHex['gl-color-alpha-dark-8'] = '#fbfafd14'; // rgba($gray-950, 0.08);
 darkModeTokenToHex['gl-text-secondary'] = '#bfbfc3'; // $gray-700
 
 function isImportant(selector) {

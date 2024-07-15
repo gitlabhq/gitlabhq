@@ -161,7 +161,7 @@ requirements:
     FedRAMP requires organizations to monitor accounts for atypical use
     (AC-2(12)). GitLab empowers users to flag abuse in abuse reports,
     where administrators can remove access pending investigation. Spam
-    logs are consolidated in the Spam Logs section of the Admin area.
+    logs are consolidated in the **Spam logs** section of the Admin area.
     Administrators can remove, block, or trust users flagged in that
     area.
 

@@ -879,13 +879,6 @@ do not say:
 
 You can use **GA** to indicate general availability if you spell it out on first use.
 
-## Git suggestions
-
-Use sentence case for **Git suggestions**.
-
-On first mention on a page, use **GitLab Duo Git suggestions**.
-Thereafter, use **Git suggestions** by itself.
-
 ## GitLab
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
@@ -916,7 +909,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Vulnerability explanation
 - GitLab Duo Vulnerability resolution
 - GitLab Duo Test generation
-- GitLab Duo Git suggestions
+- GitLab Duo for the CLI
 - GitLab Duo Root cause analysis
 - GitLab Duo Issue description generation
 

@@ -31,7 +31,8 @@ RSpec.describe 'cross-database foreign keys' do
       'user_group_callouts.user_id',                          # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
       'subscription_user_add_on_assignments.user_id',         # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
       'subscription_add_on_purchases.subscription_add_on_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
-      'sbom_occurrences.source_package_id'                    # https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins
+      'sbom_occurrences.source_package_id',                   # https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins
+      'sbom_occurrences.source_id'                            # https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins
     ]
   end
 
