@@ -1,6 +1,7 @@
 <script>
 import {
   GlAlert,
+  GlButton,
   GlDropdown,
   GlDropdownItem,
   GlEmptyState,
@@ -53,6 +54,7 @@ const DEFAULT_PAGE_SIZE = PAGE_SIZES[0];
 export default {
   components: {
     GlAlert,
+    GlButton,
     GlDropdown,
     GlDropdownItem,
     GlEmptyState,
@@ -398,7 +400,10 @@ export default {
           : {}),
       };
 
-      this.$set(this.importTargets, group.id, newImportTarget);
+      this.importTargets = {
+        ...this.importTargets,
+        [group.id]: newImportTarget,
+      };
       this.validateImportTarget(newImportTarget);
     },
 
@@ -594,11 +599,14 @@ export default {
       }
 
       const cancellationToken = axios.CancelToken.source();
-      this.$set(this.importTargets, group.id, {
-        ...importTarget,
-        cancellationToken,
-        validationErrors: [],
-      });
+      this.importTargets = {
+        ...this.importTargets,
+        [group.id]: {
+          ...importTarget,
+          cancellationToken,
+          validationErrors: [],
+        },
+      };
 
       if (!importTarget.targetNamespace) {
         return;
@@ -653,9 +661,16 @@ export default {
         <img :src="$options.gitlabLogo" class="gl-w-6 gl-h-6" />
         <span>{{ s__('BulkImport|Import groups by direct transfer') }}</span>
       </h1>
-      <gl-link :href="historyPath" class="gl-ml-auto" data-testid="history-link">{{
-        s__('BulkImport|History')
-      }}</gl-link>
+      <gl-button
+        size="small"
+        variant="confirm"
+        category="secondary"
+        :href="historyPath"
+        class="gl-ml-auto"
+        data-testid="history-link"
+      >
+        {{ s__('BulkImport|View import history') }}
+      </gl-button>
     </div>
     <gl-alert
       v-if="unavailableFeatures.length > 0 && unavailableFeaturesAlertVisible"

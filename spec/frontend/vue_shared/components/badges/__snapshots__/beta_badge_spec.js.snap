@@ -3,7 +3,7 @@
 exports[`Beta badge component renders the badge 1`] = `
 <div>
   <a
-    class="badge badge-neutral badge-pill gl-badge gl-cursor-pointer md"
+    class="badge badge-neutral badge-pill gl-badge gl-cursor-pointer"
     href="#"
     target="_self"
   >

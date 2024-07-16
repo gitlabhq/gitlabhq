@@ -33,7 +33,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedReviewer do
       author_id: review_requester.id,
       system: true,
       created_at: issue_event.created_at,
-      updated_at: issue_event.created_at
+      updated_at: issue_event.created_at,
+      imported_from: 'github'
     }.stringify_keys
   end
 

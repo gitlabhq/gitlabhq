@@ -1,3 +1,4 @@
+import { GlAlert, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import VueApollo from 'vue-apollo';
 import Vue, { nextTick } from 'vue';
@@ -46,6 +47,8 @@ describe('Container Expiration Policy Settings Form', () => {
   const findOlderThanDropdown = () => wrapper.find('[data-testid="older-than-dropdown"]');
   const findRemoveRegexInput = () => wrapper.find('[data-testid="remove-regex-input"]');
 
+  const findAlert = () => wrapper.findComponent(GlAlert);
+
   const submitForm = () => {
     findForm().trigger('submit');
     return waitForPromises();
@@ -61,6 +64,7 @@ describe('Container Expiration Policy Settings Form', () => {
       stubs: {
         GlCard,
         GlLoadingIcon,
+        GlSprintf,
       },
       propsData: { ...props },
       provide,
@@ -119,6 +123,22 @@ describe('Container Expiration Policy Settings Form', () => {
       },
     });
   };
+
+  describe('alert', () => {
+    beforeEach(() => {
+      mountComponent();
+    });
+
+    it('is not dismissible', () => {
+      expect(findAlert().props('dismissible')).toBe(false);
+    });
+
+    it('contains right text', () => {
+      expect(findAlert().text()).toMatchInterpolatedText(
+        'Both keep and remove regex patterns are automatically surrounded with %{codeStart}\\A%{codeEnd} and %{codeStart}\\Z%{codeEnd} anchors, so you do not need to include them. However, make sure to take this into account when choosing and testing your regex patterns.',
+      );
+    });
+  });
 
   describe.each`
     model              | finder                   | fieldName         | type          | defaultValue

@@ -32,7 +32,8 @@ module Users
       project_repository_limit_alert_error_threshold: 22, # EE-only
       namespace_over_storage_users_combined_alert: 23, # EE-only
       all_seats_used_alert: 24, # EE-only
-      compliance_framework_settings_moved_callout: 25 # EE-only
+      compliance_framework_settings_moved_callout: 25, # EE-only
+      expired_duo_pro_trial_widget: 26 # EE-only
     }
 
     validates :group, presence: true

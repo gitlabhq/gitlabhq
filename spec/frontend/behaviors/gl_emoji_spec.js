@@ -155,6 +155,10 @@ describe('gl_emoji', () => {
               group: {
                 id: 1,
                 customEmoji: {
+                  pageInfo: {
+                    hasNextPage: false,
+                    endCursor: 'test',
+                  },
                   nodes: [{ id: 1, name: 'parrot', url: 'parrot.gif' }],
                 },
               },
@@ -163,7 +167,6 @@ describe('gl_emoji', () => {
         ],
       ]);
 
-      window.gon = { features: { customEmoji: true } };
       document.body.dataset.groupFullPath = 'test-group';
 
       await initEmojiMock(emojiData);

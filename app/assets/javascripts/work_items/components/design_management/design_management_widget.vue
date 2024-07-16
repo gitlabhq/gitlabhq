@@ -22,6 +22,11 @@ export default {
       required: false,
       default: '',
     },
+    workItemIid: {
+      type: String,
+      required: false,
+      default: null,
+    },
   },
   apollo: {
     designCollection: {
@@ -104,7 +109,12 @@ export default {
           :key="design.id"
           class="col-md-6 col-lg-3 gl-mt-5 gl-px-3 gl-bg-transparent gl-shadow-none js-design-tile"
         >
-          <design v-bind="design" class="gl-bg-white" :is-uploading="false" />
+          <design
+            v-bind="design"
+            class="gl-bg-white"
+            :is-uploading="false"
+            :work-item-iid="workItemIid"
+          />
         </li>
       </ol>
       <router-view :key="$route.fullPath" :all-designs="designs" />

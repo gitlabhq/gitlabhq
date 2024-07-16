@@ -83,7 +83,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
         active: runner.active,
         paused: !runner.active,
         status: runner.status.to_s.upcase,
-        job_execution_status: runner.builds.running.any? ? 'RUNNING' : 'IDLE',
+        job_execution_status: runner.builds.executing.any? ? 'ACTIVE' : 'IDLE',
         maximum_timeout: runner.maximum_timeout,
         access_level: runner.access_level.to_s.upcase,
         run_untagged: runner.run_untagged,
@@ -122,7 +122,7 @@ RSpec.describe 'Query.runner(id)', :freeze_time, feature_category: :fleet_visibi
               architecture_name: runner_manager.architecture,
               platform_name: runner_manager.platform,
               status: runner_manager.status.to_s.upcase,
-              job_execution_status: runner_manager.builds.running.any? ? 'RUNNING' : 'IDLE'
+              job_execution_status: runner_manager.builds.executing.any? ? 'ACTIVE' : 'IDLE'
             )
           end,
           "pageInfo" => anything

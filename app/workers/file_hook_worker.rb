@@ -13,7 +13,7 @@ class FileHookWorker # rubocop:disable Scalability/IdempotentWorker
     success, message = Gitlab::FileHook.execute(file_name, data)
 
     unless success
-      Gitlab::FileHookLogger.error("File Hook Error => #{file_name}: #{message}")
+      Gitlab::FileHookLogger.error("File hook error => #{file_name}: #{message}")
     end
 
     true

@@ -1,6 +1,7 @@
 <script>
 import { GlFormGroup, GlForm, GlButton, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import { __, s__, sprintf } from '~/locale';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild } from '../../graphql/cache_utils';
 import groupWorkItemTypesQuery from '../../graphql/group_work_item_types.query.graphql';
@@ -32,6 +33,7 @@ export default {
     WorkItemTokenInput,
     WorkItemProjectsListbox,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: ['hasIterationsFeature', 'isGroup'],
   props: {
     fullPath: {
@@ -107,6 +109,7 @@ export default {
       selectedProject: null,
       childToCreateTitle: null,
       confidential: this.parentConfidential,
+      submitInProgress: false,
     };
   },
   computed: {
@@ -123,7 +126,7 @@ export default {
         confidential: this.parentConfidential || this.confidential,
       };
 
-      if (this.selectedProject) {
+      if (this.selectedProject && !this.workItemChildIsEpic) {
         workItemInput = {
           ...workItemInput,
           namespacePath: this.selectedProject.fullPath,
@@ -201,12 +204,28 @@ export default {
     parentMilestoneId() {
       return this.parentMilestone?.id;
     },
+    canCreateGroupLevelWorkItems() {
+      return this.glFeatures.createGroupLevelWorkItems;
+    },
+    hasSuppliedNewItemName() {
+      return this.search.length > 0;
+    },
+    hasSelectedProject() {
+      return this.selectedProject !== null && this.selectedProject !== undefined;
+    },
     canSubmitForm() {
       if (this.isCreateForm) {
-        if (this.isGroup && !this.workItemChildIsEpic) {
-          return this.search.length > 0 && this.selectedProject !== null;
+        if (this.isGroup) {
+          if (this.workItemChildIsEpic) {
+            // must supply name, project will be ignored in request
+            return this.hasSuppliedNewItemName;
+          }
+          if (!this.canCreateGroupLevelWorkItems) {
+            // must supply name and project
+            return this.hasSuppliedNewItemName && this.hasSelectedProject;
+          }
         }
-        return this.search.length > 0;
+        return this.hasSuppliedNewItemName;
       }
       return this.workItemsToAdd.length > 0 && this.areWorkItemsToAddValid;
     },
@@ -234,6 +253,11 @@ export default {
       );
     },
   },
+  watch: {
+    workItemsToAdd() {
+      this.unsetError();
+    },
+  },
   methods: {
     getConfidentialityTooltipTarget() {
       // We want tooltip to be anchored to `input` within checkbox component
@@ -244,6 +268,7 @@ export default {
       this.error = null;
     },
     addChild() {
+      this.submitInProgress = true;
       this.$apollo
         .mutate({
           mutation: updateWorkItemMutation,
@@ -269,12 +294,14 @@ export default {
         })
         .finally(() => {
           this.search = '';
+          this.submitInProgress = false;
         });
     },
     createChild() {
       if (!this.canSubmitForm) {
         return;
       }
+      this.submitInProgress = true;
       this.$apollo
         .mutate({
           mutation: createWorkItemMutation,
@@ -304,6 +331,7 @@ export default {
         .finally(() => {
           this.search = '';
           this.childToCreateTitle = null;
+          this.submitInProgress = false;
         });
     },
   },
@@ -391,7 +419,7 @@ export default {
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
-      <div v-if="error" class="gl-text-red-500">
+      <div v-if="error" class="gl-text-red-500" data-testid="work-items-error">
         {{ error }}
       </div>
     </div>
@@ -401,6 +429,7 @@ export default {
       size="small"
       type="submit"
       :disabled="!canSubmitForm"
+      :loading="submitInProgress"
       data-testid="add-child-button"
       class="gl-mr-2"
     >

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 # Seed database with:
+#   1. 1 organization
 #   1. 2 root groups, one with 2 sub-groups and another with 1 sub-group
 #   1. 1 project in each of the sub-groups
 #   1. 1 instance runner, 1 shared project runner, and group/project runners in some groups/projects

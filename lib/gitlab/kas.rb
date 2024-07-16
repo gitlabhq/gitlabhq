@@ -2,7 +2,8 @@
 
 module Gitlab
   module Kas
-    INTERNAL_API_REQUEST_HEADER = 'Gitlab-Kas-Api-Request'
+    INTERNAL_API_AGENTK_REQUEST_HEADER = 'Gitlab-Agentk-Api-Request'
+    INTERNAL_API_KAS_REQUEST_HEADER = 'Gitlab-Kas-Api-Request'
     VERSION_FILE = 'GITLAB_KAS_VERSION'
     JWT_ISSUER = 'gitlab-kas'
     JWT_AUDIENCE = 'gitlab'
@@ -12,7 +13,7 @@ module Gitlab
 
     class << self
       def verify_api_request(request_headers)
-        decode_jwt(request_headers[INTERNAL_API_REQUEST_HEADER], issuer: JWT_ISSUER, audience: JWT_AUDIENCE)
+        decode_jwt(request_headers[INTERNAL_API_KAS_REQUEST_HEADER], issuer: JWT_ISSUER, audience: JWT_AUDIENCE)
       rescue JWT::DecodeError
         nil
       end

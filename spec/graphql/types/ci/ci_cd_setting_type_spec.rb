@@ -9,6 +9,7 @@ RSpec.describe Types::Ci::CiCdSettingType, feature_category: :continuous_integra
     expected_fields = %w[
       inbound_job_token_scope_enabled job_token_scope_enabled
       keep_latest_artifact merge_pipelines_enabled project
+      push_repository_for_job_token_allowed
     ]
 
     if Gitlab.ee?

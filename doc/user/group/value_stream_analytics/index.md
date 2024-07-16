@@ -32,6 +32,8 @@ Value stream analytics helps businesses:
 
 Value stream analytics is available for projects and groups.
 
+For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
+
 ## Feature availability
 
 Value stream analytics offers different features at the project and group level for FOSS and licensed versions.
@@ -77,6 +79,8 @@ Value streams are container objects for the stages. You can have multiple value 
 
 ### Value stream stage events
 
+> - Merge request first reviewer assigned event [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/466383) in GitLab 17.2. Reviewer assignment events in merge requests created or updated prior to GitLab 17.2 are not available for reporting.
+
 Events are the smallest building blocks of the value stream analytics feature. A stage consists of a start event and an end event.
 
 The following stage events are available:
@@ -95,6 +99,7 @@ The following stage events are available:
 - MR created
 - MR first commit time
 - MR first assigned
+- MR first reviewer assigned
 - MR first deployed
 - MR label added
 - MR label removed
@@ -310,6 +315,9 @@ The table shows a list of related workflow items for the selected stage. Based o
 
 - Issues
 - Merge requests
+
+NOTE:
+The end date for each predefined date range is the current day, and is included in the number of days selected. For example, the start date for `Last 30 days` is 29 days prior to the current day for a total of 30 days.
 
 ### Data filters
 

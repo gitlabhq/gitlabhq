@@ -130,6 +130,24 @@ RSpec.describe JiraConnectInstallation, feature_category: :integrations do
     end
   end
 
+  describe 'create_branch_url' do
+    context 'when the jira installation is not for a self-managed instance' do
+      let(:installation) { build(:jira_connect_installation) }
+
+      subject(:create_branch) { installation.create_branch_url }
+
+      it { is_expected.to eq(nil) }
+    end
+
+    context 'when the jira installation is for a self-managed instance' do
+      let(:installation) { build(:jira_connect_installation, instance_url: 'https://example.com') }
+
+      subject(:create_branch) { installation.create_branch_url }
+
+      it { is_expected.to eq('https://example.com/-/jira_connect/branches/new') }
+    end
+  end
+
   describe 'proxy?' do
     let(:installation) { build(:jira_connect_installation) }
 

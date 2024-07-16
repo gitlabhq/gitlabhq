@@ -344,11 +344,80 @@ To migrate back to local storage:
 
 ::EndTabs
 
+## Pure SSH transfer protocol
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11872) in GitLab 17.2.
+
+[`git-lfs` 3.0.0](https://github.com/git-lfs/git-lfs/blob/main/CHANGELOG.md#300-24-sep-2021)
+released support for using SSH as the transfer protocol instead of HTTP.
+SSH is handled transparently by the `git-lfs` command line tool.
+
+Prerequisites:
+
+- The `git-lfs` version must be [v3.5.1](https://github.com/git-lfs/git-lfs/releases/tag/v3.5.1) or higher.
+
+To switch Git LFS to use pure SSH protocol:
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_shell['lfs_pure_ssh_protocol'] = true
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_shell['lfs_pure_ssh_protocol'] = true
+   ```
+
+1. Save the file and restart GitLab and its services:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab-shell/config.yml`:
+
+   ```yaml
+   lfs:
+      pure_ssh_protocol: true
+   ```
+
+1. Save the file and restart GitLab Shell:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab-shell.target
+
+   # For systems running SysV init
+   sudo service gitlab-shell restart
+   ```
+
+::EndTabs
+
 ## Storage statistics
 
 You can see the total storage used for LFS objects for groups and projects in:
 
-- The Admin Area
+- The Admin area
 - The [groups](../../api/groups.md) and [projects](../../api/projects.md) APIs
 
 ## Related topics

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'JobArtifactsDestroy', feature_category: :build_artifacts do
+RSpec.describe 'JobArtifactsDestroy', feature_category: :job_artifacts do
   include GraphqlHelpers
 
   let_it_be(:user) { create(:user) }

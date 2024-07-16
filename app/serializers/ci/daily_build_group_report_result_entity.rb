@@ -5,7 +5,7 @@ module Ci
     expose :date
 
     ::Ci::DailyBuildGroupReportResult::PARAM_TYPES.each do |type|
-      expose type, if: lambda { |report_result, options| options[:param_type] == type } do |report_result, options|
+      expose type, if: ->(report_result, options) { options[:param_type] == type } do |report_result, options|
         report_result.data[options[:param_type]]
       end
     end

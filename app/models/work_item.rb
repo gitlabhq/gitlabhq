@@ -22,7 +22,7 @@ class WorkItem < Issue
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
     foreign_key: :work_item_id, source: :work_item
-  has_many :work_item_children_by_relative_position, -> { work_item_children_keyset_order },
+  has_many :work_item_children_by_relative_position, ->(work_item) { work_item_children_keyset_order(work_item) },
     through: :child_links, class_name: 'WorkItem',
     foreign_key: :work_item_id, source: :work_item
 
@@ -65,22 +65,28 @@ class WorkItem < Issue
       )
     end
 
-    def work_item_children_keyset_order
-      keyset_order = Gitlab::Pagination::Keyset::Order.build([
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :relative_position,
-          column_expression: WorkItems::ParentLink.arel_table[:relative_position],
-          order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
-          nullable: :nulls_last
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: :created_at,
-          order_expression: WorkItem.arel_table[:created_at].asc,
-          nullable: :not_nullable
-        )
-      ])
+    def work_item_children_keyset_order_config
+      Gitlab::Pagination::Keyset::Order.build(
+        [
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'parent_link_relative_position',
+            column_expression: WorkItems::ParentLink.arel_table[:relative_position],
+            order_expression: WorkItems::ParentLink.arel_table[:relative_position].asc.nulls_last,
+            add_to_projections: true,
+            nullable: :nulls_last
+          ),
+          Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+            attribute_name: 'work_item_id',
+            order_expression: WorkItems::ParentLink.arel_table['work_item_id'].asc
+          )
+        ]
+      )
+    end
 
-      includes(:parent_link).order(keyset_order)
+    def work_item_children_keyset_order(_work_item)
+      keyset_order = work_item_children_keyset_order_config
+
+      keyset_order.apply_cursor_conditions(includes(:parent_link)).reorder(keyset_order)
     end
 
     def linked_items_keyset_order
@@ -113,8 +119,8 @@ class WorkItem < Issue
 
   def widgets
     strong_memoize(:widgets) do
-      work_item_type.widgets(resource_parent).map do |widget_class|
-        widget_class.new(self)
+      work_item_type.widgets(resource_parent).map do |widget_definition|
+        widget_definition.widget_class.new(self, widget_definition: widget_definition)
       end
     end
   end
@@ -142,7 +148,7 @@ class WorkItem < Issue
   end
 
   def supported_quick_action_commands
-    commands_for_widgets = work_item_type.widgets(resource_parent).flat_map(&:quick_action_commands).uniq
+    commands_for_widgets = work_item_type.widget_classes(resource_parent).flat_map(&:quick_action_commands).uniq
 
     COMMON_QUICK_ACTIONS_COMMANDS + commands_for_widgets
   end
@@ -153,7 +159,7 @@ class WorkItem < Issue
     common_params = command_params.dup
     widget_params = {}
 
-    work_item_type.widgets(resource_parent)
+    work_item_type.widget_classes(resource_parent)
           .filter { |widget| widget.respond_to?(:quick_action_params) }
           .each do |widget|
             widget.quick_action_params
@@ -198,7 +204,7 @@ class WorkItem < Issue
   override :parent_link_confidentiality
   def parent_link_confidentiality
     if confidential? && work_item_children.public_only.exists?
-      errors.add(:base, _('A confidential work item cannot have a parent that already has non-confidential children.'))
+      errors.add(:base, _('All child items must be confidential in order to turn on confidentiality.'))
     end
 
     if !confidential? && work_item_parent&.confidential?

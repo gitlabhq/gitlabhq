@@ -75,7 +75,7 @@ the tiers are no longer mentioned in GitLab documentation:
   - [Contribution Analytics](../user/group/contribution_analytics/index.md)
   - [Merge Request Analytics](../user/analytics/merge_request_analytics.md)
   - [Code Review Analytics](../user/analytics/code_review_analytics.md)
-  - [Audit Events](../administration/audit_event_reports.md)
+  - [Audit events](../administration/audit_event_reports.md)
 - Rake tasks:
   - [Displaying GitLab license information](../administration/raketasks/maintenance.md#show-gitlab-license-information)
 - Reference Architecture information:

@@ -25,7 +25,6 @@ describe('CI Icon component', () => {
   it('should render a span element and an icon', () => {
     createComponent();
 
-    expect(wrapper.attributes('size')).toBe('md');
     expect(findIcon().exists()).toBe(true);
   });
 

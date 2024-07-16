@@ -1,79 +1,127 @@
+import { escape } from 'lodash';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
-import { s__, __ } from '~/locale';
+import { helpPagePath } from '~/helpers/help_page_helper';
+import { __, n__, sprintf } from '~/locale';
+import sensitiveDataPatterns from './secret_detection_patterns';
 
-export const i18n = {
-  defaultPrompt: s__(
-    'SecretDetection|This comment appears to have a token in it. Are you sure you want to add it?',
-  ),
-  descriptionPrompt: s__(
-    'SecretDetection|This description appears to have a token in it. Are you sure you want to add it?',
-  ),
-  primaryBtnText: __('Proceed'),
+const CONTENT_TYPE = {
+  COMMENT: 'comment',
+  DESCRIPTION: 'description',
 };
 
-export const containsSensitiveToken = (message) => {
-  const patPrefix = window.gon?.pat_prefix || 'glpat-';
+const defaultContentType = CONTENT_TYPE.COMMENT;
 
-  const sensitiveDataPatterns = [
-    {
-      name: 'GitLab Personal Access Token',
-      regex: `${patPrefix}[0-9a-zA-Z_-]{20}`,
-    },
-    {
-      // eslint-disable-next-line @gitlab/require-i18n-strings
-      name: 'Feed Token',
-      regex: 'feed_token=[0-9a-zA-Z_-]{20}|glft-[0-9a-zA-Z_-]{20}|glft-[a-h0-9]+-[0-9]+_',
-    },
-    {
-      name: 'GitLab OAuth Application Secret',
-      regex: `gloas-[0-9a-zA-Z_-]{64}`,
-    },
-    {
-      name: 'GitLab Deploy Token',
-      regex: `gldt-[0-9a-zA-Z_-]{20}`,
-    },
-    {
-      name: 'GitLab SCIM OAuth Access Token',
-      regex: `glsoat-[0-9a-zA-Z_-]{20}`,
-    },
-    {
-      name: 'GitLab CI Build (Job) Token',
-      regex: `glcbt-[0-9a-zA-Z]{1,5}_[0-9a-zA-Z_-]{20}`,
-    },
-    {
-      name: 'GitLab Feature Flags Client Token',
-      regex: `glffct-[0-9a-zA-Z_-]{20}`,
-    },
-    {
-      name: 'GitLab Runner Token',
-      regex: 'glrt-[0-9a-zA-Z_-]{20}',
-    },
-    {
-      name: 'GitLab Incoming Mail Token',
-      regex: 'glimt-[0-9a-zA-Z_-]{25}',
-    },
-    {
-      name: 'GitLab Agent for Kubernetes Token',
-      regex: 'glagent-[0-9a-zA-Z_-]{50}',
-    },
-    {
-      name: 'GitLab Pipeline Trigger Token',
-      regex: 'glptt-[0-9a-zA-Z_-]{40}',
-    },
-  ];
+const documentationHref = helpPagePath(
+  'user/application_security/secret_detection/pipeline/index',
+  {
+    anchor: 'warnings-for-potential-leaks-in-text-content',
+  },
+);
 
-  for (const rule of sensitiveDataPatterns) {
+const i18n = {
+  title: (count) =>
+    n__(
+      'SecretDetection|Warning: Potential secret detected',
+      'SecretDetection|Warning: Potential secrets detected',
+      count,
+    ),
+  promptMessage: (count) =>
+    n__(
+      'SecretDetection|This %{contentType} appears to have the following secret in it. Are you sure you want to add this %{contentType}?',
+      'SecretDetection|This %{contentType} appears to have the following secrets in it. Are you sure you want to add this %{contentType}?',
+      count,
+    ),
+  primaryBtnText: __('Add %{contentType}'),
+  secondaryBtnText: __('Edit %{contentType}'),
+  helpString: __('Why am I seeing this warning?'),
+};
+
+const redactString = (inputString) => {
+  if (inputString.length <= 9) return inputString;
+
+  const prefix = inputString.substring(0, 5); // Keep the first 5 characters
+  const suffix = inputString.substring(inputString.length - 4); // Keep the last 4 characters
+  const redactLength = inputString.length - prefix.length - suffix.length;
+
+  return `${prefix}${'*'.repeat(redactLength)}${suffix}`;
+};
+
+const formatMessage = (findings, contentType) => {
+  const header = sprintf(i18n.promptMessage(findings.length), { contentType });
+
+  const matchedPatterns = findings.map(({ patternName, matchedString }) => {
+    const redactedString = redactString(matchedString);
+    return `<li>${escape(patternName)}: ${escape(redactedString)}</li>`;
+  });
+
+  const message = `
+    ${header}
+    <p><ul>
+      ${matchedPatterns.join('')}
+    </ul>
+    <a href="${documentationHref}" target="_blank" rel="noopener noreferrer">
+      ${i18n.helpString}
+    </a>
+  `;
+
+  return message;
+};
+
+const containsSensitiveToken = (message) => {
+  if (!message || typeof message !== 'string') {
+    return null;
+  }
+  const findings = [];
+
+  for (const rule of sensitiveDataPatterns()) {
     const regex = new RegExp(rule.regex, 'gi');
-    if (regex.test(message)) {
-      return true;
+    const matches = message.match(regex);
+
+    if (matches) {
+      matches.forEach((match) => {
+        findings.push({
+          patternName: rule.name,
+          matchedString: match,
+        });
+      });
     }
   }
-  return false;
+
+  return findings.length > 0 ? findings : false;
 };
 
-export async function confirmSensitiveAction(prompt = i18n.defaultPrompt) {
-  return confirmAction(prompt, {
+const confirmSensitiveAction = (findings = [], contentType = defaultContentType) => {
+  const title = i18n.title(findings.length);
+  const modalHtmlMessage = formatMessage(findings, contentType);
+  const primaryBtnText = sprintf(i18n.primaryBtnText, { contentType });
+  const secondaryBtnText = sprintf(i18n.secondaryBtnText, { contentType });
+
+  return confirmAction('', {
+    title,
+    modalHtmlMessage,
     primaryBtnVariant: 'danger',
-    primaryBtnText: i18n.primaryBtnText,
+    primaryBtnText,
+    secondaryBtnText,
+    hideCancel: true,
   });
-}
+};
+
+/**
+ * Determines if the provided content contains sensitive patterns and confirms with the user when found.
+ * @param {object} params - Parameters for detection and confirmation.
+ * @param {string} params.content - The content to be checked for sensitive patterns.
+ * @param {string} params.contentType - Type of content being checked.
+ * @returns {Promise<boolean>} A Promise that resolves to:
+ *   - true if no sensitive patterns are found.
+ *   - true if sensitive patterns are found and the user chooses to proceed with them.
+ *   - false if sensitive patterns are found and the user chooses to update the content.
+ */
+const detectAndConfirmSensitiveTokens = ({ content, contentType }) => {
+  const sensitiveTokens = containsSensitiveToken(content);
+  if (!sensitiveTokens) {
+    return Promise.resolve(true);
+  }
+  return confirmSensitiveAction(sensitiveTokens, contentType);
+};
+
+export { detectAndConfirmSensitiveTokens, CONTENT_TYPE };

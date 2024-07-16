@@ -75,7 +75,7 @@ export default {
             :data-clipboard-text="link"
             :data-testid="testId"
             icon="copy-to-clipboard"
-            class="gl-display-inline-flex"
+            class="gl-inline-flex"
           />
         </template>
       </gl-form-input-group>

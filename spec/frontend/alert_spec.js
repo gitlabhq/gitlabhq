@@ -130,6 +130,26 @@ describe('Flash', () => {
         );
       });
 
+      describe('when dismissible', () => {
+        it('renders dismiss button', () => {
+          alert = createAlert({ message: mockMessage });
+
+          expect(
+            document.querySelector('.flash-container .gl-alert button.gl-dismiss-btn'),
+          ).not.toBeNull();
+        });
+      });
+
+      describe('when non-dismissible', () => {
+        it('does not render dismiss button', () => {
+          alert = createAlert({ message: mockMessage, dismissible: false });
+
+          expect(
+            document.querySelector('.flash-container .gl-alert button.gl-dismiss-btn'),
+          ).toBeNull();
+        });
+      });
+
       describe('with title', () => {
         const mockTitle = 'my title';
 

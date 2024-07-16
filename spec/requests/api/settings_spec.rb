@@ -328,6 +328,24 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(ApplicationSetting.first.default_branch_protection_defaults).to eq(expected_update)
     end
 
+    context 'when default_branch_protection_defaults is set to No one' do
+      it "updates default_branch_protection_defaults" do
+        put api("/application/settings", admin),
+          params: {
+            default_branch_protection_defaults: {
+              allowed_to_push: [{ access_level: 0 }],
+              allowed_to_merge: [{ access_level: 0 }]
+            }
+          }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response['default_branch_protection_defaults']).to eq(
+          "allowed_to_merge" => [{ "access_level" => 0 }],
+          "allowed_to_push" => [{ "access_level" => 0 }]
+        )
+      end
+    end
+
     it "supports legacy performance_bar_allowed_group_id" do
       put api("/application/settings", admin),
         params: { performance_bar_allowed_group_id: group.full_path }

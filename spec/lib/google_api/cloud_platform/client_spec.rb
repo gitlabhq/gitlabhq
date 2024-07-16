@@ -358,14 +358,14 @@ RSpec.describe GoogleApi::CloudPlatform::Client do
       expect_any_instance_of(Google::Apis::SqladminV1beta4::SQLAdminService)
         .to receive(:insert_instance)
               .with(gcp_project_id,
-                    having_attributes(
-                      class: ::Google::Apis::SqladminV1beta4::DatabaseInstance,
-                      name: instance_name,
-                      root_password: root_password,
-                      database_version: database_version,
-                      region: region,
-                      settings: instance_of(Google::Apis::SqladminV1beta4::Settings)
-                    ))
+                having_attributes(
+                  class: ::Google::Apis::SqladminV1beta4::DatabaseInstance,
+                  name: instance_name,
+                  root_password: root_password,
+                  database_version: database_version,
+                  region: region,
+                  settings: instance_of(Google::Apis::SqladminV1beta4::Settings)
+                ))
               .and_return(operation)
       is_expected.to eq(operation)
     end

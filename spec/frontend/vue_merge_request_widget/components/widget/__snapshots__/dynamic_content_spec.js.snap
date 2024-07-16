@@ -72,7 +72,6 @@ exports[`~/vue_merge_request_widget/components/widget/dynamic_content.vue render
             </div>
             <gl-badge-stub
               iconsize="md"
-              size="md"
               variant="info"
             >
               Badge is optional. Text to be displayed inside badge

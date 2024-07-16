@@ -2615,7 +2615,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
   end
 
   describe 'access_security_and_compliance' do
-    context 'when the "Security and Compliance" is enabled' do
+    context 'when the "Security and compliance" is enabled' do
       before do
         project.project_feature.update!(security_and_compliance_access_level: Featurable::PRIVATE)
       end
@@ -2661,7 +2661,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       end
     end
 
-    context 'when the "Security and Compliance" is not enabled' do
+    context 'when the "Security and compliance" is not enabled' do
       before do
         project.project_feature.update!(security_and_compliance_access_level: Featurable::DISABLED)
       end
@@ -3557,6 +3557,54 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
     end
   end
 
+  describe 'pages' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ability, :current_user, :access_level, :allowed) do
+      :admin_pages | ref(:maintainer) | Featurable::ENABLED  | true
+      :admin_pages | ref(:reporter)   | Featurable::ENABLED  | false
+      :admin_pages | ref(:guest)      | Featurable::ENABLED  | false
+      :admin_pages | ref(:non_member) | Featurable::ENABLED  | false
+
+      :update_pages | ref(:maintainer) | Featurable::ENABLED  | true
+      :update_pages | ref(:reporter)   | Featurable::ENABLED  | false
+      :update_pages | ref(:guest)      | Featurable::ENABLED  | false
+      :update_pages | ref(:non_member) | Featurable::ENABLED  | false
+
+      :remove_pages | ref(:maintainer) | Featurable::ENABLED  | true
+      :remove_pages | ref(:reporter)   | Featurable::ENABLED  | false
+      :remove_pages | ref(:guest)      | Featurable::ENABLED  | false
+      :remove_pages | ref(:non_member) | Featurable::ENABLED  | false
+
+      :read_pages | ref(:maintainer) | Featurable::ENABLED  | true
+      :read_pages | ref(:reporter)   | Featurable::ENABLED  | false
+      :read_pages | ref(:guest)      | Featurable::ENABLED  | false
+      :read_pages | ref(:non_member) | Featurable::ENABLED  | false
+
+      :read_pages_content | ref(:maintainer) | Featurable::ENABLED  | true
+      :read_pages_content | ref(:reporter)   | Featurable::ENABLED  | true
+      :read_pages_content | ref(:reporter)   | Featurable::PRIVATE  | true
+      :read_pages_content | ref(:reporter)   | Featurable::DISABLED | false
+      :read_pages_content | ref(:guest)      | Featurable::ENABLED  | true
+      :read_pages_content | ref(:guest)      | Featurable::PRIVATE  | true
+      :read_pages_content | ref(:guest)      | Featurable::DISABLED | false
+      :read_pages_content | ref(:non_member) | Featurable::ENABLED  | true
+      :read_pages_content | ref(:non_member) | Featurable::PRIVATE  | false
+      :read_pages_content | ref(:non_member) | Featurable::DISABLED | false
+    end
+    with_them do
+      before do
+        project.project_feature.update!(pages_access_level: access_level)
+      end
+
+      if params[:allowed]
+        it { expect_allowed(ability) }
+      else
+        it { expect_disallowed(ability) }
+      end
+    end
+  end
+
   describe 'read_model_registry' do
     using RSpec::Parameterized::TableSyntax
 
@@ -3704,19 +3752,24 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
     let(:policy) { :build_push_code }
 
-    where(:user_role, :project_visibility, :push_repository_for_job_token_allowed, :self_referential_project, :allowed) do
-      :maintainer | :public   | true  | true  | true
-      :owner      | :public   | true  | true  | true
-      :maintainer | :private  | true  | true  | true
-      :developer  | :public   | true  | true  | true
-      :reporter   | :public   | true  | true  | false
-      :guest      | :public   | true  | true  | false
-      :guest      | :private  | true  | true  | false
-      :guest      | :internal | true  | true  | false
-      :anonymous  | :public   | true  | true  | false
-      :maintainer | :public   | false | true  | false
-      :maintainer | :public   | true  | false | false
-      :maintainer | :public   | false | false | false
+    where(:user_role, :project_visibility, :push_repository_for_job_token_allowed, :self_referential_project, :allowed, :ff_disabled) do
+      :maintainer | :public   | true  | true  | true  | false
+      :owner      | :public   | true  | true  | true  | false
+      :maintainer | :private  | true  | true  | true  | false
+      :developer  | :public   | true  | true  | true  | false
+      :reporter   | :public   | true  | true  | false | false
+      :guest      | :public   | true  | true  | false | false
+      :guest      | :private  | true  | true  | false | false
+      :guest      | :internal | true  | true  | false | false
+      :anonymous  | :public   | true  | true  | false | false
+      :maintainer | :public   | false | true  | false | false
+      :maintainer | :public   | true  | false | false | false
+      :maintainer | :public   | false | false | false | false
+      :maintainer | :public   | true  | true  | false | true
+      :owner      | :public   | true  | true  | false | true
+      :maintainer | :private  | true  | true  | false | true
+      :developer  | :public   | true  | true  | false | true
+      :reporter   | :public   | true  | true  | false | true
     end
 
     with_them do
@@ -3730,6 +3783,8 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
       let(:scope_project) { public_send(:private_project) }
 
       before do
+        stub_feature_flags(allow_push_repository_for_job_token: false) if ff_disabled
+
         project.add_guest(guest)
         project.add_reporter(reporter)
         project.add_developer(developer)

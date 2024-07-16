@@ -36,7 +36,7 @@ module EmailHelpers
 
   def should_email(user, times: 1, recipients: email_recipients)
     amount = sent_to_user(user, recipients: recipients)
-    failed_message = lambda { "User #{user.username} (#{user.id}): email test failed (expected #{times}, got #{amount})" }
+    failed_message = -> { "User #{user.username} (#{user.id}): email test failed (expected #{times}, got #{amount})" }
     expect(amount).to eq(times), failed_message
   end
 
@@ -61,7 +61,14 @@ module EmailHelpers
   end
 
   def have_referable_subject(referable, include_project: true, reply: false)
-    prefix = (include_project && referable.project ? "#{referable.project.name} | " : '').freeze
+    prefix = if include_project && referable.project
+               "#{referable.project.name} | "
+             elsif referable.is_a?(Issue) && referable.group_level?
+               "#{referable.namespace.name} | "
+             else
+               ""
+             end.freeze
+
     prefix = "Re: #{prefix}" if reply
 
     suffix = "#{referable.title} (#{referable.to_reference})"

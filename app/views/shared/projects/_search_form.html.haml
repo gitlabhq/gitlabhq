@@ -1,11 +1,10 @@
 - placeholder = local_assigns[:search_form_placeholder] ? search_form_placeholder : _('Filter by name')
 - admin_view ||= false
-- top_padding = admin_view ? 'gl-lg-pt-3' : ''
 
-= form_tag filter_projects_path, method: :get, class: "project-filter-form gl-display-flex! gl-flex-wrap gl-w-full gl-gap-3 #{top_padding}", data: { testid: 'project-filter-form-container' }, id: 'project-filter-form' do |f|
+= form_tag filter_projects_path, method: :get, class: "project-filter-form !gl-flex gl-flex-wrap gl-w-full gl-gap-3", data: { testid: 'project-filter-form-container' }, id: 'project-filter-form' do |f|
   = search_field_tag :name, params[:name],
     placeholder: placeholder,
-    class: "project-filter-form-field form-control input-short js-projects-list-filter gl-m-0!",
+    class: "project-filter-form-field form-control input-short js-projects-list-filter !gl-m-0 gl-grow",
     spellcheck: false,
     id: 'project-filter-form-field',
     autofocus: local_assigns[:autofocus]
@@ -28,7 +27,7 @@
   - if params[:language].present?
     = hidden_field_tag :language, params[:language]
 
-  .dropdown{ class: 'gl-m-0!' }
+  .dropdown{ class: '!gl-m-0' }
     = dropdown_toggle(search_language_placeholder, { toggle: 'dropdown', testid: 'project-language-dropdown' })
     %ul.dropdown-menu.dropdown-menu-right.dropdown-menu-selectable
       %li
@@ -48,8 +47,5 @@
     - if params[:namespace_id].present?
       - namespace = Namespace.find(params[:namespace_id])
     - selected_text = "#{namespace.kind}: #{namespace.full_path}" if namespace
-    .gl-display-flex.gl-w-full.gl-md-w-auto{ class: 'gl-m-0!' }
+    .gl-flex.gl-w-full.gl-md-w-auto{ class: '!gl-m-0' }
       .js-namespace-select{ data: { field_name: 'namespace_id', selected_id: namespace&.id, selected_text: selected_text, update_location: 'true' } }
-
-    = link_button_to new_project_path, class: 'gl-display-inline gl-mb-0!', variant: :confirm do
-      = _('New Project')

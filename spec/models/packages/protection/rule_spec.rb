@@ -264,4 +264,74 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
       end
     end
   end
+
+  describe '.for_push_exists_for_multiple_packages' do
+    let_it_be(:project_with_ppr) { create(:project) }
+
+    let_it_be(:ppr_for_maintainer) do
+      create(:package_protection_rule,
+        package_name_pattern: '@my-scope/my-package-prod*',
+        project: project_with_ppr,
+        package_type: :npm
+      )
+    end
+
+    let(:package_names) {
+      %w[
+        @my-scope/my-package-prod-1
+        @my-scope/my-package-prod-unmatched-package-type
+        @my-scope/unmatched-package-name
+        @my-scope/unmatched-package-name-and-package-type
+      ]
+    }
+
+    let(:package_types) do
+      [
+        Packages::Package.package_types[:npm],
+        Packages::Package.package_types[:maven],
+        Packages::Package.package_types[:npm],
+        Packages::Package.package_types[:maven]
+      ]
+    end
+
+    subject do
+      described_class
+        .for_push_exists_for_multiple_packages(
+          project_id: project_with_ppr.id,
+          package_names: package_names,
+          package_types: package_types
+        )
+        .to_a
+    end
+
+    it do
+      is_expected.to eq([
+        { "package_name" => '@my-scope/my-package-prod-1',
+          "package_type" => Packages::Package.package_types[:npm],
+          "protected" => true },
+        { "package_name" => '@my-scope/my-package-prod-unmatched-package-type',
+          "package_type" => Packages::Package.package_types[:maven],
+          "protected" => false },
+        { "package_name" => '@my-scope/unmatched-package-name',
+          "package_type" => Packages::Package.package_types[:npm],
+          "protected" => false },
+        { "package_name" => '@my-scope/unmatched-package-name-and-package-type',
+          "package_type" => Packages::Package.package_types[:maven],
+          "protected" => false }
+      ])
+    end
+
+    context 'when edge cases' do
+      where(:package_names, :package_types, :expected_result) do
+        nil                             | nil | []
+        []                              | []  | []
+        nil                             | []  | []
+        %w[@my-scope/my-package-prod-1] | []  | []
+      end
+
+      with_them do
+        it { is_expected.to eq([]) }
+      end
+    end
+  end
 end

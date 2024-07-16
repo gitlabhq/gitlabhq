@@ -15,7 +15,7 @@ module Gitlab
 
             validate do
               each_unmatched_job do |name|
-                errors.add(name.to_s, 'config should implement a script: or a trigger: keyword')
+                errors.add(name.to_s, 'config should implement the script:, run:, or trigger: keyword')
               end
 
               unless has_visible_job?

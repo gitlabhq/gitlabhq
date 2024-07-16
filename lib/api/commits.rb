@@ -130,7 +130,7 @@ module API
         commit_count = offset + commits.size + 1
         paginated_commits = Kaminari.paginate_array(commits, total_count: commit_count)
 
-        present paginate(paginated_commits, exclude_total_headers: true), with: serializer
+        present paginate(paginated_commits, exclude_total_headers: true, without_count: true), with: serializer
       end
 
       desc 'Commit multiple file changes as one commit' do

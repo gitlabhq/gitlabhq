@@ -13,6 +13,12 @@ MSG
 BLUEPRINT_LONG_MESSAGE = <<~MSG
 ## Architecture Evolution Review
 
+:exclamation: We plan to [move the architecture and design documents](https://gitlab.com/gitlab-com/content-sites/handbook/-/issues/279)
+to the [public GitLab handbook](https://handbook.gitlab.com/handbook/engineering/architecture/).
+This will change how you contribute to the documents. Follow the
+[migration issue](https://gitlab.com/gitlab-com/content-sites/handbook/-/issues/279)
+and join the `#architecture` and `#handbook` Slack channels for updates.
+
 #{BLUEPRINT_SHORT_MESSAGE}
 
 The following files, which might require the additional review, have been changed:

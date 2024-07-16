@@ -4,16 +4,6 @@ export default () => ({
    */
   isLoading: false,
   /**
-   * configuration object, set once at store creation with the following structure
-   * {
-   *  resourceId: String,
-   *  pageType: String,
-   *  emptyListIllustration: String,
-   *  comingSoon: { projectPath: String, suggestedContributions : String } | null;
-   * }
-   */
-  config: {},
-  /**
    * Each object in `packages` has the following structure:
    * {
    *   id: String

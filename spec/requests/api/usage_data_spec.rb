@@ -5,6 +5,17 @@ require 'spec_helper'
 RSpec.describe API::UsageData, feature_category: :service_ping do
   let_it_be(:user) { create(:user) }
 
+  shared_examples 'does not allow web request without CSRF token' do
+    it 'returns 401 response when CSRF check fails on web request' do
+      allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
+      sign_in(user)
+
+      post api(endpoint), params: { event: known_event }
+
+      expect(response).to have_gitlab_http_status(:unauthorized)
+    end
+  end
+
   describe 'GET /usage_data/service_ping' do
     let(:endpoint) { '/usage_data/service_ping' }
 
@@ -63,16 +74,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     let(:known_event) { "diff_searches" }
     let(:unknown_event) { 'unknown' }
 
-    context 'without CSRF token' do
-      it 'returns forbidden' do
-        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
-
-        post api(endpoint, user), params: { event: known_event }
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
     context 'without authentication' do
       it 'returns 401 response' do
         post api(endpoint), params: { event: known_event }
@@ -81,10 +82,11 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
     end
 
+    include_examples 'does not allow web request without CSRF token'
+
     context 'with authentication' do
       before do
         stub_application_setting(usage_ping_enabled: true)
-        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
       end
 
       context 'when event is missing from params' do
@@ -96,12 +98,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
 
       context 'with correct params' do
-        before do
-          stub_application_setting(usage_ping_enabled: true)
-
-          allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
-        end
-
         it 'returns status :ok' do
           expect(Gitlab::UsageDataCounters::BaseCounter).to receive(:count).with("searches")
 
@@ -132,16 +128,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     let(:known_event) { 'g_compliance_dashboard' }
     let(:unknown_event) { 'unknown' }
 
-    context 'without CSRF token' do
-      it 'returns forbidden' do
-        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
-
-        post api(endpoint, user), params: { event: known_event }
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
     context 'without authentication' do
       it 'returns 401 response' do
         post api(endpoint), params: { event: known_event }
@@ -150,10 +136,23 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       end
     end
 
+    include_examples 'does not allow web request without CSRF token'
+
     context 'with authentication' do
       before do
         stub_application_setting(usage_ping_enabled: true)
-        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(true)
+      end
+
+      context 'with web authentication but without CSRF token' do
+        it 'returns 401 response' do
+          allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
+
+          sign_in(user)
+
+          post api(endpoint), params: { event: known_event }
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
       end
 
       context 'when event is missing from params' do
@@ -195,16 +194,6 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
     let(:namespace_id) { 123 }
     let(:project_id) { 123 }
 
-    context 'without CSRF token' do
-      it 'returns forbidden' do
-        allow(Gitlab::RequestForgeryProtection).to receive(:verified?).and_return(false)
-
-        post api(endpoint, user), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-
     context 'without authentication' do
       it 'returns 401 response' do
         post api(endpoint), params: { event: known_event, namespace_id: namespace_id, project_id: project_id }
@@ -226,6 +215,8 @@ RSpec.describe API::UsageData, feature_category: :service_ping do
       before do
         stub_application_setting(usage_ping_enabled: true)
       end
+
+      include_examples 'does not allow web request without CSRF token'
 
       context 'with correct params' do
         it 'returns status ok' do

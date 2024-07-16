@@ -1,0 +1,15 @@
+.gl-mx-auto{ class: 'sm:gl-w-1/2' }
+  .gl-justify-start.gl-items-center
+    .gl-heading-1
+      = s_('DeviceAuth|Authorize device to access to your GitLab account.')
+    .div
+      = form_with url: confirm_oauth_device_path, method: :post, class: 'inline gl-pr-3' do |f|
+        .form-group.row
+          .col-lg-8.col-sm-10
+            = f.label :user_code
+            = text_field_tag :user_code, params[:user_code]
+        .div
+          = render Pajamas::ButtonComponent.new(type: :submit,
+            variant: :confirm,
+            button_options: { id: 'commit-changes', testid: 'authorization-button'}) do
+            = s_('DeviceAuth|Authorize')

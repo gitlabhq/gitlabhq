@@ -1,11 +1,10 @@
 ---
 table_name: metrics_dashboard_annotations
-classes:
-- Metrics::Dashboard::Annotation
+classes: []
 feature_categories:
 - metrics
 description: TODO
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27583
 milestone: '13.0'
 gitlab_schema: gitlab_main
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/464344
+exempt_from_sharding: true # Table is scheduled for removal

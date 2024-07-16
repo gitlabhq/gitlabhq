@@ -10,7 +10,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
       'HS256'
     )
 
-    { Gitlab::Kas::INTERNAL_API_REQUEST_HEADER => jwt_token }
+    { Gitlab::Kas::INTERNAL_API_KAS_REQUEST_HEADER => jwt_token }
   end
 
   let(:jwt_secret) { SecureRandom.random_bytes(Gitlab::Kas::SECRET_LENGTH) }
@@ -22,7 +22,7 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
   shared_examples 'authorization' do
     context 'not authenticated' do
       it 'returns 401' do
-        send_request(headers: { Gitlab::Kas::INTERNAL_API_REQUEST_HEADER => '' })
+        send_request(headers: { Gitlab::Kas::INTERNAL_API_KAS_REQUEST_HEADER => '' })
 
         expect(response).to have_gitlab_http_status(:unauthorized)
       end
@@ -202,16 +202,39 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           {
             k8s_api_proxy_requests_unique_users_via_ci_access: event_data,
             k8s_api_proxy_requests_unique_users_via_user_access: event_data,
-            k8s_api_proxy_requests_unique_users_via_pat_access: event_data
+            k8s_api_proxy_requests_unique_users_via_pat_access: event_data,
+            register_agent_at_kas: [{
+              project_id: projects.each_value.first.id,
+              agent_version: "v17.1.0",
+              architecture: "arm64"
+            },
+              {
+                project_id: projects.values.last.id,
+                agent_version: "v17.0.0",
+                architecture: "amd64"
+              }]
           }
         end
 
         it 'tracks events and returns no_content', :aggregate_failures do
-          events[:agent_users_using_ci_tunnel] = events.values.flatten
+          events[:agent_users_using_ci_tunnel] = events.slice(
+            :k8s_api_proxy_requests_unique_users_via_ci_access,
+            :k8s_api_proxy_requests_unique_users_via_user_access,
+            :k8s_api_proxy_requests_unique_users_via_pat_access
+          ).values.flatten
+
           events.each do |event_name, event_list|
+            additional_properties = {}
             event_list.each do |event|
+              if event_name == :register_agent_at_kas
+                additional_properties = {
+                  label: event[:agent_version],
+                  property: event[:architecture]
+                }
+              end
+
               expect(Gitlab::InternalEvents).to receive(:track_event)
-                                                  .with(event_name.to_s, user: users[event[:user_id]], project: projects[event[:project_id]])
+                                                  .with(event_name.to_s, additional_properties: additional_properties, user: users[event[:user_id]], project: projects[event[:project_id]])
                                                   .exactly(request_count).times
             end
           end
@@ -229,7 +252,8 @@ RSpec.describe API::Internal::Kubernetes, feature_category: :deployment_manageme
           {
             k8s_api_proxy_requests_unique_users_via_ci_access: [],
             k8s_api_proxy_requests_unique_users_via_user_access: [],
-            k8s_api_proxy_requests_unique_users_via_pat_access: []
+            k8s_api_proxy_requests_unique_users_via_pat_access: [],
+            register_agent_at_kas: []
           }
         end
 

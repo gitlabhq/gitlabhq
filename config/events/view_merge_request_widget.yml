@@ -1,0 +1,22 @@
+
+---
+description: Tracks views of merge request widgets
+internal_events: true
+action: view_merge_request_widget
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: Type of widget like accessibility, code quality etc.
+product_group: code_review
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156609
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

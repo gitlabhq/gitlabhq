@@ -32,9 +32,11 @@ export default (server) => {
   });
 
   server.post('/api/v4/projects/:id/repository/commits', (schema, request) => {
-    const { branch: branchName, commit_message: message, actions } = JSON.parse(
-      request.requestBody,
-    );
+    const {
+      branch: branchName,
+      commit_message: message,
+      actions,
+    } = JSON.parse(request.requestBody);
 
     const branch = schema.branches.findBy({ name: branchName });
     const prevCommit = branch

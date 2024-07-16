@@ -86,6 +86,16 @@ RSpec.describe UserPreference, feature_category: :user_profile do
       end
     end
 
+    describe 'organization_groups_projects_display' do
+      it 'is set to 0 by default' do
+        pref = described_class.new
+
+        expect(pref.organization_groups_projects_display).to eq('projects')
+      end
+
+      it { is_expected.to define_enum_for(:organization_groups_projects_display).with_values(projects: 0, groups: 1) }
+    end
+
     describe 'user belongs to the home organization' do
       let_it_be(:organization) { create(:organization) }
 

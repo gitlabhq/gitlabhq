@@ -55,6 +55,7 @@ RSpec.describe API::SystemHooks, feature_category: :webhooks do
       { repository_update_events: true }
     end
 
-    it_behaves_like 'web-hook API endpoints test hook', ''
+    it_behaves_like 'POST webhook API endpoints with a branch filter', ''
+    it_behaves_like 'PUT webhook API endpoints with a branch filter', ''
   end
 end

@@ -18,7 +18,7 @@ export default {
   <gl-disclosure-dropdown
     :toggle-text="__('Add')"
     size="small"
-    placement="right"
+    placement="bottom-end"
     :items="actions"
   />
 </template>

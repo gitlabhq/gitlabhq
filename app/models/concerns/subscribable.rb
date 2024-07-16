@@ -131,3 +131,5 @@ module Subscribable
     end
   end
 end
+
+Subscribable.prepend_mod

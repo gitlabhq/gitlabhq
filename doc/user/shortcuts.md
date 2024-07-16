@@ -43,7 +43,6 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your To-Do List page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
 | <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
-| <kbd>Escape</kbd>                  | Hide tooltips or popovers. |
 | <kbd>g</kbd>, then <kbd>x</kbd>     | Toggle between [GitLab](https://gitlab.com/) and [GitLab Next](https://next.gitlab.com/) (GitLab SaaS only). |
 | <kbd>.</kbd>                       | Open the [Web IDE](project/web_ide/index.md). |
 
@@ -59,8 +58,8 @@ descriptions):
 | <kbd>Command</kbd> + <kbd>i</kbd>       | <kbd>Control</kbd> + <kbd>i</kbd> | Italicize the selected text (surround it with `_`). |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd> | Strike through the selected text (surround it with `~~`). |
 | <kbd>Command</kbd> + <kbd>k</kbd>       | <kbd>Control</kbd> + <kbd>k</kbd> | Add a link (surround the selected text with `[]()`). |
-| <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Indent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
-| <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>&#91;</kbd> |  Outdent list item. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
+| <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Indent text. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
+| <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>&#91;</kbd> |  Outdent text. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/351924) in GitLab 15.3. |
 | <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> |  Submit or save changes |
 
 The shortcuts for editing in text fields are always enabled, even if other
@@ -105,7 +104,6 @@ These shortcuts are available when viewing issues:
 | <kbd>l</kbd>                  | Change label. |
 | <kbd>c</kbd> + <kbd>r</kbd>   | Copy issue reference. |
 | <kbd>r</kbd>                  | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
-| <kbd>.</kbd>                  | Open the [Web IDE](project/web_ide/index.md). |
 | <kbd>→</kbd>                  | Go to the next design. |
 | <kbd>←</kbd>                  | Go to the previous design. |
 | <kbd>Escape</kbd>             | Close the design. |
@@ -264,12 +262,12 @@ These shortcuts are available when editing a file with the
 
 | macOS shortcut | Windows shortcut | Description |
 |----------------|------------------|-------------|
-| <kbd>Command</kbd> + <kbd>C</kbd> | <kbd>Control</kbd> + <kbd>C</kbd> | Copy |
-| <kbd>Command</kbd> + <kbd>X</kbd> | <kbd>Control</kbd> + <kbd>X</kbd> | Cut |
-| <kbd>Command</kbd> + <kbd>V</kbd> | <kbd>Control</kbd> + <kbd>V</kbd> | Paste |
-| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Paste without formatting |
-| <kbd>Command</kbd> + <kbd>Z</kbd> | <kbd>Control</kbd> + <kbd>Z</kbd> | Undo |
-| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>V</kbd> | Redo |
+| <kbd>Command</kbd> + <kbd>c</kbd> | <kbd>Control</kbd> + <kbd>c</kbd> | Copy |
+| <kbd>Command</kbd> + <kbd>x</kbd> | <kbd>Control</kbd> + <kbd>x</kbd> | Cut |
+| <kbd>Command</kbd> + <kbd>v</kbd> | <kbd>Control</kbd> + <kbd>v</kbd> | Paste |
+| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>v</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>v</kbd> | Paste without formatting |
+| <kbd>Command</kbd> + <kbd>z</kbd> | <kbd>Control</kbd> + <kbd>z</kbd> | Undo |
+| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>v</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>v</kbd> | Redo |
 | <kbd>Shift</kbd> + <kbd>Enter</kbd> | <kbd>Shift</kbd> + <kbd>Enter</kbd> | Add a line break |
 
 #### Formatting
@@ -279,20 +277,18 @@ These shortcuts are available when editing a file with the
 | <kbd>Command</kbd> + <kbd>b</kbd> | <kbd>Control</kbd> + <kbd>b</kbd>  | Bold |
 | <kbd>Command</kbd> + <kbd>i</kbd> | <kbd>Control</kbd> + <kbd>i</kbd>   | Italic |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd>  | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>x</kbd>   | Strikethrough |
-| <kbd>Command</kbd> + <kbd>e</kbd> | <kbd>Control</kbd> + <kbd>e</kbd>   | Code |
 | <kbd>Command</kbd> + <kbd>k</kbd> | <kbd>Control</kbd> + <kbd>k</kbd>   | Insert a link |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | Apply normal text style |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>1</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>1</kbd> | Apply heading style 1 |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>2</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>2</kbd> | Apply heading style 2 |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>3</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>3</kbd> | Apply heading style 3 |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>4</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>4</kbd> | Apply heading style 4 |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>5</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>5</kbd> | Apply heading style 5 |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>6</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>6</kbd> | Apply heading style 6 |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>0</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>0</kbd> | Apply normal text style |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>1</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>1</kbd> | Apply heading style 1 |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>2</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>2</kbd> | Apply heading style 2 |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>3</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>3</kbd> | Apply heading style 3 |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>4</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>4</kbd> | Apply heading style 4 |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>5</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>5</kbd> | Apply heading style 5 |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>6</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>6</kbd> | Apply heading style 6 |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>7</kbd> | Ordered list |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>8</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>8</kbd> | Unordered list |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>9</kbd> | Task list |
-| <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>b</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>b</kbd> | Blockquote |
-| <kbd>Command</kbd> + <kbd>Alt</kbd> + <kbd>c</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>c</kbd> | Code block |
+| <kbd>Command</kbd> + <kbd>Option</kbd> + <kbd>c</kbd> | <kbd>Control</kbd> + <kbd>Alt</kbd> + <kbd>c</kbd> | Code block |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>h</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>h</kbd> | Highlight |
 | <kbd>Command</kbd> + <kbd>,</kbd> | <kbd>Control</kbd> + <kbd>,</kbd> | Subscript |
 | <kbd>Command</kbd> + <kbd>.</kbd> | <kbd>Control</kbd> + <kbd>.</kbd> | Superscript |
@@ -311,15 +307,6 @@ These shortcuts are available when editing a file with the
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>↑</kbd> | Extend selection to the beginning of the document |
 | <kbd>Command</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>↓</kbd>  | Extend selection to the end of the document |
 
-### Filtered search
-
-These shortcuts are available when using a [filtered search input](search/index.md):
-
-| macOS shortcut       | Windows shortcut                       | Description |
-|----------------------|----------------------------------------|-------------|
-| <kbd>Command</kbd>   | <kbd>Delete</kbd>                      | Clear entire search filter. |
-| <kbd>Option</kbd>    | <kbd>Control</kbd> + <kbd>Delete</kbd> | Clear one token at a time. |
-
 ## Epics
 
 DETAILS:
@@ -330,7 +317,6 @@ These shortcuts are available when viewing [epics](group/epics/index.md):
 
 | Keyboard shortcut            | Description       |
 |------------------------------|-------------------|
-| <kbd>r</kbd>                 | Start writing a comment. Pre-selected text is quoted in the comment. Can't be used to reply in a thread. |
 | <kbd>e</kbd>                 | Edit description. |
 | <kbd>l</kbd>                 | Change label.     |
 | <kbd>c</kbd> + <kbd>r</kbd>  | Copy epic reference. |

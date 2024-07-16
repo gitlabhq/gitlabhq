@@ -4,7 +4,7 @@ import { Plugin } from '@tiptap/pm/state';
 
 const createDotsLoader = () => {
   const root = document.createElement('span');
-  root.classList.add('gl-display-inline-flex', 'gl-align-items-center');
+  root.classList.add('gl-inline-flex', 'gl-align-items-center');
   root.innerHTML = '<span class="gl-dots-loader gl-mx-2"><span></span></span>';
   return root;
 };

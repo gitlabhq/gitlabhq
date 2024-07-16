@@ -43,17 +43,8 @@ RSpec.describe 'Merge request > User resolves Draft', :js, feature_category: :co
     end
 
     it 'retains merge request data after clicking Resolve WIP status' do
-      # rubocop:disable RSpec/AvoidConditionalStatements -- remove when Auto merge goes to Foss
-      # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146730
-      expected_message = if Gitlab.ee?
-                           "Set to auto-merge"
-                         else
-                           "Merge blocked:"
-                         end
-      # rubocop:enable RSpec/AvoidConditionalStatements
-
       expect(page.find('.ci-widget-content')).to have_content("Pipeline ##{pipeline.id}")
-      expect(page).to have_content expected_message
+      expect(page).to have_content "Set to auto-merge"
 
       page.within('.mr-state-widget') do
         click_button('Mark as ready')

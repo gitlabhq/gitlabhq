@@ -58,6 +58,18 @@ module PersonalAccessTokens
     def update_bot_membership(target_user, expires_at)
       return if target_user.human?
 
+      if resource && Feature.enabled?(:retain_resource_access_token_user_after_revoke, resource.root_ancestor)
+        # Tokens created before the feature flag is enabled will have an
+        # expiring membership. We must explicitly set it to nil to
+        # - stop the membership from expiring on its old expiry date
+        # - retain the membership when this token does eventually expire
+        #   or get revoked.
+        #
+        # Applies only to Resource (Group and Project) Access Tokens
+        # not Personal Access Tokens.
+        expires_at = nil
+      end
+
       target_user.members.update(expires_at: expires_at)
     end
 

@@ -35,22 +35,5 @@ RSpec.describe WorkItems::Widgets::LabelsService::CreateService, feature_categor
         end
       end
     end
-
-    context 'when widget does not exist in new type' do
-      let(:params) { {} }
-
-      before do
-        allow(service).to receive(:new_type_excludes_widget?).and_return(true)
-      end
-
-      it "sets label params as empty" do
-        expect(service.prepare_create_params(params: params)).to include(
-          {
-            add_label_ids: [],
-            label_ids: []
-          }
-        )
-      end
-    end
   end
 end

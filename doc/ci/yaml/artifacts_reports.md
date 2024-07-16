@@ -250,7 +250,7 @@ GitLab can display the results of one or more reports in:
 
 The `dotenv` report collects a set of environment variables as artifacts.
 
-The collected variables are registered as runtime-created variables of the job, 
+The collected variables are registered as runtime-created variables of the job,
 which you can [use in subsequent job scripts](../variables/index.md#pass-an-environment-variable-to-another-job)
 or to [set dynamic environment URLs after a job finishes](../environments/index.md#set-a-dynamic-environment-url).
 
@@ -355,8 +355,6 @@ DETAILS:
 The `repository_xray` report collects information about your repository for use by AI in code suggestions.
 
 ## `artifacts:reports:sast`
-
-> - [Moved](https://gitlab.com/groups/gitlab-org/-/epics/2098) from GitLab Ultimate to GitLab Free in 13.3.
 
 The `sast` report collects [SAST vulnerabilities](../../user/application_security/sast/index.md).
 The collected SAST report uploads to GitLab as an artifact.

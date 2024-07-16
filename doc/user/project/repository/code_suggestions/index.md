@@ -24,10 +24,24 @@ Write code more efficiently by using generative AI to suggest code while you're 
 
 With GitLab Duo Code Suggestions, you get:
 
-- Code completion, which suggests completions to the current line you are typing.
+- Code completion, which suggests completions to the current line you are
+  typing. Code completion is used in most situations to quickly complete one
+  or a few lines of code.
 - Code generation, which generates code based on a natural language code
-  comment block. Write a comment like `# Type more here`, then press <kbd>Enter</kbd> to generate
-  code based on the context of your comment and the rest of your code.
+  comment block. Write a comment like `# check if code suggestions are
+  enabled for current user`, then press <kbd>Enter</kbd> to generate code based
+  on the context of your comment and the rest of your code.
+
+  Code generation requests are slower than code completion requests, but provide
+  more accurate responses because:
+  - A larger LLM is used.
+  - Additional context is sent in the request, for example,
+    the libraries used by the project.
+
+  Code generation is used when the:
+  - User writes a comment and hits <kbd>Enter</kbd>.
+  - File being edited is less than five lines of code.
+  - User enters an empty function or method.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).
@@ -97,6 +111,27 @@ This API connection securely transmits a context window from your IDE/editor to 
   - Algorithms or large code blocks might take more than 10 seconds to generate.
   - Streaming of code generation responses is supported in VS Code, leading to faster average response times. Other supported IDEs offer slower response times and will return the generated code in a single block.
 
+### Disable direct connections to the AI Gateway
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462791) in GitLab 17.2 [with a flag](../../../../administration/feature_flags.md) named `code_suggestions_direct_access`. Disabled by default.
+
+Prerequisites:
+
+- You must be an administrator for the GitLab self-managed instance.
+
+To minimize latency for code completion requests, these requests are sent from the IDE directly to the AI Gateway.
+For this direct connection to work, the IDE must be able to connect to `https://cloud.gitlab.com:443`. If this is not
+possible (for example, because of network restrictions), you can disable direct connections for all users. If you do this,
+code completion requests are sent indirectly through the GitLab self-managed instance, and might result in your requests
+having higher latency.
+
+To disable direct connections to the gateway:
+
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Settings > General**.
+1. Expand **AI-powered features**.
+1. Select the **Disable direct connections for code suggestions** checkbox.
+
 ## Inference window context
 
 Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
@@ -107,11 +142,20 @@ Because of LLM limits and performance reasons, the content of the currently
 opened file is truncated:
 
 - For code completion: to 2048 tokens (roughly 8192 characters).
-- For code generation: to 50,000 characters.
+- For code generation: to 142,856 tokens (roughly 500,000 characters).
 
 Content above the cursor is prioritized over content below the cursor. The content
 above the cursor is truncated from the left side, and content below the cursor
-is truncated from the right side.
+is truncated from the right side. These numbers represent the maximum input context
+size for Code Suggestions.
+
+## Output length
+
+Because of LLM limits and for performance reasons, the output of Code Suggestions
+is limited:
+
+- For code completion: to 64 tokens (roughly 256 characters).
+- For code generation: to 2048 tokens (roughly 7168 characters).
 
 ## Accuracy of results
 

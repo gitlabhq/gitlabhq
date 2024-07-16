@@ -252,7 +252,6 @@ RSpec/ExpectInHook:
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/namespace_mirror_spec.rb'
     - 'spec/models/ci/pipeline_spec.rb'
-    - 'spec/models/ci/runner_spec.rb'
     - 'spec/models/clusters/platforms/kubernetes_spec.rb'
     - 'spec/models/clusters/providers/aws_spec.rb'
     - 'spec/models/clusters/providers/gcp_spec.rb'

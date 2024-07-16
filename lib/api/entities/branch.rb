@@ -36,7 +36,7 @@ module API
           type: 'boolean',
           example: true
         } do |repo_branch, options|
-        ::ProtectedBranch.developers_can?(:push, repo_branch.name, protected_refs: options[:project].protected_branches)
+        ::ProtectedBranch.developers_can?(:push, repo_branch.name, protected_refs: options[:project].all_protected_branches)
       end
 
       expose :developers_can_merge,
@@ -44,7 +44,7 @@ module API
           type: 'boolean',
           example: true
         } do |repo_branch, options|
-        ::ProtectedBranch.developers_can?(:merge, repo_branch.name, protected_refs: options[:project].protected_branches)
+        ::ProtectedBranch.developers_can?(:merge, repo_branch.name, protected_refs: options[:project].all_protected_branches)
       end
 
       expose :can_push,

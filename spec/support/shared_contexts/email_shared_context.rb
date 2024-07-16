@@ -170,15 +170,21 @@ RSpec.shared_examples 'note handler shared examples' do |forwardable|
 
     it 'adds all attachments' do
       expect_next_instance_of(Gitlab::Email::AttachmentUploader) do |uploader|
-        expect(uploader).to receive(:execute).with(upload_parent: project, uploader_class: FileUploader).and_return(
-          [
-            {
-              url: 'uploads/image.png',
-              alt: 'image',
-              markdown: markdown
-            }
-          ]
-        )
+        expect(uploader).to receive(:execute)
+                            .with(
+                              upload_parent: project,
+                              uploader_class: FileUploader,
+                              author: user
+                            )
+                            .and_return(
+                              [
+                                {
+                                  url: 'uploads/image.png',
+                                  alt: 'image',
+                                  markdown: markdown
+                                }
+                              ]
+                            )
       end
 
       receiver.execute

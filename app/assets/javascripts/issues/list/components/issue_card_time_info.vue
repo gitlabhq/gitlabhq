@@ -97,11 +97,7 @@ export default {
 
 <template>
   <span>
-    <span
-      v-if="milestone"
-      class="issuable-milestone gl-mr-3 gl-text-truncate gl-max-w-26 gl-display-inline-block gl-align-bottom"
-      data-testid="issuable-milestone"
-    >
+    <span v-if="milestone" class="issuable-milestone gl-mr-3" data-testid="issuable-milestone">
       <gl-link
         v-gl-tooltip
         :href="milestoneLink"

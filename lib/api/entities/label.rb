@@ -3,7 +3,7 @@
 module API
   module Entities
     class Label < Entities::LabelBasic
-      with_options if: lambda { |_, options| options[:with_counts] } do
+      with_options if: ->(_, options) { options[:with_counts] } do
         expose :open_issues_count do |label, options|
           label.open_issues_count(options[:current_user])
         end

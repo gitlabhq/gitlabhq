@@ -5,7 +5,6 @@ import IssueBoardFilteredSearch from 'ee_else_ce/boards/components/issue_board_f
 import { getBoardQuery } from 'ee_else_ce/boards/boards_util';
 import { setError } from '../graphql/cache_updates';
 import ConfigToggle from './config_toggle.vue';
-import NewBoardButton from './new_board_button.vue';
 import ToggleFocus from './toggle_focus.vue';
 import BoardOptions from './board_options.vue';
 
@@ -15,7 +14,6 @@ export default {
     BoardsSelector,
     IssueBoardFilteredSearch,
     ConfigToggle,
-    NewBoardButton,
     ToggleFocus,
     EpicBoardFilteredSearch: () =>
       import('ee_component/boards/components/epic_filtered_search.vue'),
@@ -105,7 +103,6 @@ export default {
             @updateBoard="$emit('updateBoard', $event)"
             @showBoardModal="setCurrentForm"
           />
-          <new-board-button @showBoardModal="setCurrentForm" />
           <div class="gl-flex md:!gl-hidden gl-gap-2 gl-align-items-center">
             <board-options
               :show-epic-lane-option="swimlanesFeatureAvailable && isSignedIn"

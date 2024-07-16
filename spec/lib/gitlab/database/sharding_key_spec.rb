@@ -13,9 +13,11 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'merge_request_diff_commits_b5377a7a34', # has a desired sharding key instead
       'merge_request_diff_files_99208b8fac', # has a desired sharding key instead
       'ml_model_metadata', # has a desired sharding key instead.
+      'p_ci_finished_pipeline_ch_sync_events', # https://gitlab.com/gitlab-org/gitlab/-/issues/470152
       'p_ci_pipeline_variables', # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
       'p_ci_stages', # https://gitlab.com/gitlab-org/gitlab/-/issues/448630
-      'sbom_occurrences_vulnerabilities' # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
+      'sbom_occurrences_vulnerabilities', # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
+      'sbom_source_packages' # https://gitlab.com/gitlab-org/gitlab/-/issues/437718
     ]
   end
 
@@ -29,7 +31,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       *['boards.project_id', 'boards.group_id'],
       *['bulk_import_exports.project_id', 'bulk_import_exports.group_id'],
       'ci_pipeline_schedules.project_id',
-      'ci_runner_namespaces.namespace_id',
       'ci_sources_pipelines.project_id',
       'ci_triggers.project_id',
       'gpg_signatures.project_id',
@@ -38,7 +39,6 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'member_roles.namespace_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444161
       *['milestones.project_id', 'milestones.group_id'],
       'pages_domains.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/442178,
-      'remote_mirrors.project_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444643
       'sprints.group_id',
       *['todos.project_id', 'todos.group_id']
     ]
@@ -82,7 +82,10 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       # aggregated table, a worker ensures eventual consistency
       'analytics_cycle_analytics_issue_stage_events.group_id',
       # aggregated table, a worker ensures eventual consistency
-      'analytics_cycle_analytics_merge_request_stage_events.group_id'
+      'analytics_cycle_analytics_merge_request_stage_events.group_id',
+      # This is event log table for gitlab_subscriptions and should not be deleted.
+      # See more: https://gitlab.com/gitlab-org/gitlab/-/issues/462598#note_1949768698
+      'gitlab_subscription_histories.namespace_id'
     ]
   end
 
@@ -204,6 +207,41 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
+  it 'does not allow tables with FK references to be permanently exempted', :aggregate_failures do
+    tables_exempted_from_sharding_table_names = tables_exempted_from_sharding.map(&:table_name)
+
+    tables_exempted_from_sharding.each do |entry|
+      # See https://gitlab.com/gitlab-org/gitlab/-/issues/471182
+      tables_to_be_fixed = %w[geo_nodes zoekt_nodes]
+      pending 'These tables need to be fixed' if entry.table_name.in?(tables_to_be_fixed)
+
+      fks = referenced_foreign_keys(entry.table_name).to_a
+
+      fks.reject! { |fk| fk.constrained_table_name.in?(tables_exempted_from_sharding_table_names) }
+
+      # rubocop:disable Layout/LineLength -- sorry, long URL
+      expect(fks).to be_empty,
+        "#{entry.table_name} is exempted from sharding, but has foreign key references to it.\n" \
+        "For more information, see " \
+        "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+        "The tables with foreign key references are:\n\n" \
+        "#{fks.map(&:constrained_table_name).join("\n")}"
+      # rubocop:enable Layout/LineLength
+
+      lfks = referenced_loose_foreign_keys(entry.table_name)
+      lfks.reject! { |lfk| lfk.from_table.in?(tables_exempted_from_sharding_table_names) }
+
+      # rubocop:disable Layout/LineLength -- sorry, long URL
+      expect(lfks).to be_empty,
+        "#{entry.table_name} is exempted from sharding, but has loose foreign key references to it.\n" \
+        "For more information, see " \
+        "https://docs.gitlab.com/ee/development/database/multiple_databases.html#exempting-certain-tables-from-having-sharding-keys.\n" \
+        "The tables with loose foreign key references are:\n\n" \
+        "#{lfks.map(&:from_table).join("\n")}"
+      # rubocop:enable Layout/LineLength
+    end
+  end
+
   it 'allows tables that have a sharding key to only have a cell-local schema' do
     expect(tables_with_sharding_keys_not_in_cell_local_schema).to be_empty,
       "Tables: #{tables_with_sharding_keys_not_in_cell_local_schema.join(',')} have a sharding key defined, " \
@@ -235,7 +273,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       Starting from GitLab #{starting_from_milestone}, we expect all new tables to define a `sharding_key`.
 
       To choose an appropriate sharding_key for this table please refer
-      to our guidelines at https://docs.gitlab.com/ee/development/database/multiple_databases.html#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
+      to our guidelines at https://docs.gitlab.com/ee/development/cells/index.html#defining-a-sharding-key-for-all-cell-local-tables, or consult with the Tenant Scale group.
     HEREDOC
   end
 

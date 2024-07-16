@@ -25,10 +25,11 @@ describe('kubernetes_logs', () => {
 
   const kasTunnelUrl = mockKasTunnelUrl;
   const projectPath = 'gitlab-org/test-project';
+  const gitlabAgentId = '1';
 
   const configuration = createK8sAccessConfiguration({
     kasTunnelUrl,
-    gitlabAgentId: '1',
+    gitlabAgentId,
   });
   let k8sLogsQueryMock;
   let environmentDataMock;
@@ -127,7 +128,7 @@ describe('kubernetes_logs', () => {
       expect(findLoadingIcon().exists()).toBe(false);
     });
     it('should render error state', () => {
-      expect(findAlert().text()).toBe(error.message);
+      expect(findAlert().text()).toBe(`Error: ${error.message}`);
     });
     it('should render empty state', () => {
       expect(findEmptyState().exists()).toBe(true);
@@ -206,7 +207,7 @@ describe('kubernetes_logs', () => {
         });
         it('should provide correct header details to the logs viewer', () => {
           expect(findLogsViewer().text()).toBe(
-            `Namespace: ${kubernetesNamespace}Pod: ${defaultProps.podName}`,
+            `Agent ID: ${gitlabAgentId}Namespace: ${kubernetesNamespace}Pod: ${defaultProps.podName}`,
           );
         });
       });
@@ -226,7 +227,7 @@ describe('kubernetes_logs', () => {
           expect(findLoadingIcon().exists()).toBe(false);
         });
         it('should render error state', () => {
-          expect(findAlert().text()).toBe(errorMessage);
+          expect(findAlert().text()).toBe(`Error: ${errorMessage}`);
         });
         it('should render empty state', () => {
           expect(findEmptyState().exists()).toBe(true);
@@ -269,7 +270,7 @@ describe('kubernetes_logs', () => {
         await waitForPromises();
 
         expect(findLogsViewer().text()).toBe(
-          `Namespace: ${kubernetesNamespace}Pod: ${defaultProps.podName}Container: my-container`,
+          `Agent ID: ${gitlabAgentId}Namespace: ${kubernetesNamespace}Pod: ${defaultProps.podName}Container: my-container`,
         );
       });
     });

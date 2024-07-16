@@ -9,13 +9,8 @@ export default function initImportProjectMembersModal() {
     return false;
   }
 
-  const {
-    projectId,
-    projectName,
-    reloadPageOnSubmit,
-    usersLimitDataset,
-    addSeatsHref,
-  } = el.dataset;
+  const { projectId, projectName, reloadPageOnSubmit, usersLimitDataset, addSeatsHref } =
+    el.dataset;
 
   return new Vue({
     el,

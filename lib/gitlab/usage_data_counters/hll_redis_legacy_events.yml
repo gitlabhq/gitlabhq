@@ -355,8 +355,6 @@
 - merge_request_action
 - o_pipeline_authoring_unique_users_committing_ciconfigfile
 - o_pipeline_authoring_unique_users_pushing_mr_ciconfigfile
-- p_analytics_ci_cd_change_failure_rate
-- p_analytics_ci_cd_time_to_restore_service
 - p_analytics_code_reviews
 - p_analytics_insights
 - p_analytics_issues
@@ -524,8 +522,6 @@
 - p_ci_templates_workflows_branch_pipelines
 - p_ci_templates_workflows_mergerequest_pipelines
 - p_terraform_state_api_unique_users
-- package_pulled_by_guest
-- package_pushed_using_deploy_token
 - project_action
 - project_created_analytics_dashboard
 - project_initialized_product_analytics

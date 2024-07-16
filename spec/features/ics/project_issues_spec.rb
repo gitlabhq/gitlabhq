@@ -89,7 +89,7 @@ RSpec.describe 'Project Issues Calendar Feed', feature_category: :groups_and_pro
         expected_description = (+"DESCRIPTION:Find out more at #{issue_url(issue)}").insert(75, ' ')
         expect(body).to have_text(expected_description)
         expect(body).to have_text("DTSTART;VALUE=DATE:#{Date.tomorrow.strftime('%Y%m%d')}")
-        expect(body).to have_text("URL:#{issue_url(issue)}")
+        expect(body).to have_text("URI:#{issue_url(issue)}")
         expect(body).to have_text('TRANSP:TRANSPARENT')
       end
     end

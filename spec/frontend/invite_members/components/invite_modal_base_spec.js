@@ -1,22 +1,12 @@
-import {
-  GlCollapsibleListbox,
-  GlDatepicker,
-  GlFormGroup,
-  GlLink,
-  GlSprintf,
-  GlModal,
-  GlIcon,
-} from '@gitlab/ui';
+import { GlDatepicker, GlFormGroup, GlLink, GlSprintf, GlModal, GlIcon } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { stubComponent } from 'helpers/stub_component';
+import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
-import {
-  mountExtended,
-  shallowMountExtended,
-  extendedWrapper,
-} from 'helpers/vue_test_utils_helper';
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import InviteModalBase from '~/invite_members/components/invite_modal_base.vue';
 import ContentTransition from '~/vue_shared/components/content_transition.vue';
+import RoleSelector from '~/members/components/role_selector.vue';
+import { roleDropdownItems } from '~/members/utils';
 
 import {
   CANCEL_BUTTON_TEXT,
@@ -29,6 +19,7 @@ import { propsData, membersPath, purchasePath } from '../mock_data/modal_base';
 
 describe('InviteModalBase', () => {
   let wrapper;
+  const dropdownItems = roleDropdownItems({ validRoles: propsData.accessLevels });
 
   const createComponent = ({ props = {}, stubs = {}, mountFn = shallowMountExtended } = {}) => {
     const requiredStubs =
@@ -50,18 +41,14 @@ describe('InviteModalBase', () => {
         ...props,
       },
       stubs: {
-        GlModal: stubComponent(GlModal, {
-          template:
-            '<div><slot name="modal-title"></slot><slot></slot><slot name="modal-footer"></slot></div>',
-        }),
+        GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
         ...requiredStubs,
         ...stubs,
       },
     });
   };
 
-  const findCollapsibleListbox = () => extendedWrapper(wrapper.findComponent(GlCollapsibleListbox));
-  const findCollapsibleListboxOptions = () => findCollapsibleListbox().findAllByRole('option');
+  const findRoleSelector = () => wrapper.findComponent(RoleSelector);
   const findDatepicker = () => wrapper.findComponent(GlDatepicker);
   const findLink = () => wrapper.findComponent(GlLink);
   const findIcon = () => wrapper.findComponent(GlIcon);
@@ -106,7 +93,7 @@ describe('InviteModalBase', () => {
       });
     });
 
-    describe('rendering the access levels dropdown', () => {
+    describe('rendering the role selector', () => {
       beforeEach(() => {
         createComponent({
           props: { isLoadingRoles: true },
@@ -114,42 +101,29 @@ describe('InviteModalBase', () => {
         });
       });
 
+      it('passes roles to the dropdown', () => {
+        const expectedRoles = roleDropdownItems({ validRoles: propsData.accessLevels });
+
+        expect(findRoleSelector().props('roles')).toEqual(expectedRoles);
+      });
+
       it('passes `isLoadingRoles` prop to the dropdown', () => {
-        expect(findCollapsibleListbox().props('loading')).toBe(true);
+        expect(findRoleSelector().props('loading')).toBe(true);
       });
 
       it('sets the default dropdown text to the default access level name', () => {
-        expect(findCollapsibleListbox().exists()).toBe(true);
-        const option = findCollapsibleListbox().find('[aria-selected]');
-        expect(option.text()).toBe('Reporter');
+        expect(findRoleSelector().props('value').text).toBe('Reporter');
       });
 
-      it('updates the selection base on changes in the dropdown', async () => {
-        wrapper.setProps({ accessLevels: { validRoles: [] } });
-        expect(findCollapsibleListbox().props('selected')).not.toHaveLength(0);
+      it('resets the dropdown to the default option when modal is canceled', async () => {
+        findRoleSelector().vm.$emit('input', dropdownItems.flatten[2]);
         await nextTick();
+        // Sanity check to verify that the selected role is not the default.
+        expect(findRoleSelector().props('value').text).toBe('Developer');
 
-        expect(findCollapsibleListboxOptions()).toHaveLength(0);
-        expect(findCollapsibleListbox().props('selected')).toHaveLength(0);
-      });
-
-      it('reset the dropdown to the default option', async () => {
-        const developerOption = findCollapsibleListboxOptions().at(2);
-        await developerOption.trigger('click');
-
-        let option;
-        option = findCollapsibleListbox().find('[aria-selected]');
-        expect(option.text()).toBe('Developer');
-
-        // Reset the dropdown by clicking cancel button
         await findCancelButton().trigger('click');
 
-        option = findCollapsibleListbox().find('[aria-selected]');
-        expect(option.text()).toBe('Reporter');
-      });
-
-      it('renders dropdown items for each accessLevel', () => {
-        expect(findCollapsibleListboxOptions()).toHaveLength(5);
+        expect(findRoleSelector().props('value').text).toEqual('Reporter');
       });
     });
 
@@ -236,7 +210,8 @@ describe('InviteModalBase', () => {
     });
 
     describe('when users limit is not reached', () => {
-      const textRegex = /Select a role\s*Read more about role permissions\s*Access expiration date \(optional\)/;
+      const textRegex =
+        /Select a role\s*Read more about role permissions\s*Access expiration date \(optional\)/;
 
       beforeEach(() => {
         createComponent({ props: { reachedLimit: false }, stubs: { GlModal, GlFormGroup } });
@@ -245,7 +220,7 @@ describe('InviteModalBase', () => {
       it('renders correct blocks', () => {
         expect(findIcon().exists()).toBe(false);
         expect(findDisabledInput().exists()).toBe(false);
-        expect(findCollapsibleListbox().exists()).toBe(true);
+        expect(findRoleSelector().exists()).toBe(true);
         expect(findDatepicker().exists()).toBe(true);
         expect(wrapper.findComponent(GlModal).text()).toMatch(textRegex);
       });

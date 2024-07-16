@@ -4,8 +4,11 @@ module Notes
   class CreateService < ::Notes::BaseService
     include IncidentManagement::UsageData
 
-    def execute(skip_capture_diff_note_position: false, skip_merge_status_trigger: false)
-      note = Notes::BuildService.new(project, current_user, params.except(:merge_request_diff_head_sha)).execute
+    def execute(skip_capture_diff_note_position: false, skip_merge_status_trigger: false, executing_user: nil)
+      note =
+        Notes::BuildService
+          .new(project, current_user, params.except(:merge_request_diff_head_sha))
+          .execute(executing_user: executing_user)
 
       # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
       note_valid = Gitlab::GitalyClient.allow_n_plus_1_calls do

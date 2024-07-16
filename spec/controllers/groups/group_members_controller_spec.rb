@@ -296,7 +296,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
           expect(controller).to set_flash.to 'User was successfully removed from group.'
           expect(response).to redirect_to(group_group_members_path(group))
           expect(group.members).not_to include member
-          expect(sub_group.members).to include sub_member
+          expect(sub_group.reload.members).to include sub_member
         end
 
         it '[HTML] removes user from members including subgroups and projects', :aggregate_failures do
@@ -305,7 +305,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
           expect(controller).to set_flash.to 'User was successfully removed from group and any subgroups and projects.'
           expect(response).to redirect_to(group_group_members_path(group))
           expect(group.members).not_to include member
-          expect(sub_group.members).not_to include sub_member
+          expect(sub_group.reload.members).not_to include sub_member
         end
 
         it '[JS] removes user from members', :aggregate_failures do

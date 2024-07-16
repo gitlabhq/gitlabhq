@@ -122,7 +122,7 @@ module Gitlab
       []
     end
 
-    def failed?
+    def failed?(_scope)
       false
     end
 

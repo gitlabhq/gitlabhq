@@ -49,7 +49,7 @@ export default {
         ></template
       >
       <template #badge="{ content }">
-        <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-2">
+        <gl-badge v-if="isBusy" variant="warning" class="gl-ml-2">
           {{ content }}
         </gl-badge>
       </template>

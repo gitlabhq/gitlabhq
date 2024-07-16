@@ -2,7 +2,6 @@
 description: Integration usage event
 category: integrations class
 action: perform_integrations_action
-property_description: the name of the performed action
 identifiers:
 - project
 - user
@@ -17,3 +16,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  property:
+    description: the name of the performed action

@@ -115,14 +115,14 @@ export default {
         <gl-sprintf :message="modalMessage">
           <template #branchName>
             <strong>
-              <code class="gl-white-space-pre-wrap">{{ branchName }}</code>
+              <code class="gl-whitespace-pre-wrap">{{ branchName }}</code>
             </strong>
           </template>
         </gl-sprintf>
         <p v-if="!merged" class="gl-mb-0 gl-mt-4">
           <gl-sprintf :message="$options.i18n.unmergedWarning">
             <template #defaultBranchName>
-              <code class="gl-white-space-pre-wrap">{{ defaultBranchName }}</code>
+              <code class="gl-whitespace-pre-wrap">{{ defaultBranchName }}</code>
             </template>
           </gl-sprintf>
         </p>
@@ -144,7 +144,7 @@ export default {
               {{ content }}
             </template>
           </gl-sprintf>
-          <code class="gl-white-space-pre-wrap">{{ branchName }}</code>
+          <code class="gl-whitespace-pre-wrap">{{ branchName }}</code>
           <gl-form-input
             v-model="enteredBranchName"
             name="delete_branch_input"

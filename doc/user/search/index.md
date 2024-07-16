@@ -167,19 +167,3 @@ To search for a commit SHA:
 
 If a single result is returned, GitLab redirects to the commit result
 and gives you the option to return to the search results page.
-
-## Run a search from history
-
-You can run a search from history for issues and merge requests.
-Search history is stored locally in your browser.
-
-To run a search from history:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. To view recent searches:
-
-   - For issues, select **Plan > Issues**.
-   - For merge requests, select **Code > Merge requests**.
-
-1. To the left of the search box, select **Recent searches** (**{history}**).
-1. From the dropdown list, select a search.

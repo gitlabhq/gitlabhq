@@ -264,6 +264,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: cronjob:ci_click_house_finished_pipelines_sync_cron
+  :worker_name: Ci::ClickHouse::FinishedPipelinesSyncCronWorker
+  :feature_category: :fleet_visibility
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: cronjob:ci_delete_unit_tests
   :worker_name: Ci::DeleteUnitTestsWorker
   :feature_category: :code_testing
@@ -284,7 +293,7 @@
   :tags: []
 - :name: cronjob:ci_pipeline_artifacts_expire_artifacts
   :worker_name: Ci::PipelineArtifacts::ExpireArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -329,7 +338,7 @@
   :tags: []
 - :name: cronjob:ci_schedule_unlock_pipelines_in_queue_cron
   :worker_name: Ci::ScheduleUnlockPipelinesInQueueCronWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -365,7 +374,7 @@
   :tags: []
 - :name: cronjob:ci_update_locked_unknown_artifacts
   :worker_name: Ci::UpdateLockedUnknownArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :throttled
   :resource_boundary: :unknown
@@ -509,7 +518,7 @@
   :tags: []
 - :name: cronjob:expire_build_artifacts
   :worker_name: ExpireBuildArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -653,7 +662,7 @@
   :tags: []
 - :name: cronjob:object_storage_delete_stale_direct_uploads
   :worker_name: ObjectStorage::DeleteStaleDirectUploadsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -779,7 +788,7 @@
   :tags: []
 - :name: cronjob:projects_schedule_refresh_build_artifacts_size_statistics
   :worker_name: Projects::ScheduleRefreshBuildArtifactsSizeStatisticsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2199,6 +2208,15 @@
   :weight: 5
   :idempotent: true
   :tags: []
+- :name: pipeline_processing:ci_pipeline_finished
+  :worker_name: Ci::PipelineFinishedWorker
+  :feature_category: :continuous_integration
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :cpu
+  :weight: 5
+  :idempotent: true
+  :tags: []
 - :name: pipeline_processing:ci_resource_groups_assign_resource_from_resource_group
   :worker_name: Ci::ResourceGroups::AssignResourceFromResourceGroupWorker
   :feature_category: :continuous_delivery
@@ -2811,6 +2829,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: ci_click_house_finished_pipelines_sync
+  :worker_name: Ci::ClickHouse::FinishedPipelinesSyncWorker
+  :feature_category: :fleet_visibility
+  :has_external_dependencies: true
+  :urgency: :throttled
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: ci_delete_objects
   :worker_name: Ci::DeleteObjectsWorker
   :feature_category: :continuous_integration
@@ -2831,7 +2858,7 @@
   :tags: []
 - :name: ci_job_artifacts_expire_project_build_artifacts
   :worker_name: Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -2867,7 +2894,7 @@
   :tags: []
 - :name: ci_unlock_pipelines_in_queue
   :worker_name: Ci::UnlockPipelinesInQueueWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3164,7 +3191,7 @@
   :tags: []
 - :name: google_cloud_fetch_google_ip_list
   :worker_name: GoogleCloud::FetchGoogleIpListWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -3223,6 +3250,15 @@
   :urgency: :low
   :resource_boundary: :cpu
   :weight: 2
+  :idempotent: true
+  :tags: []
+- :name: import_load_placeholder_references
+  :worker_name: Import::LoadPlaceholderReferencesWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
   :idempotent: true
   :tags: []
 - :name: import_refresh_import_jid
@@ -3857,7 +3893,7 @@
   :tags: []
 - :name: projects_refresh_build_artifacts_size_statistics
   :worker_name: Projects::RefreshBuildArtifactsSizeStatisticsWorker
-  :feature_category: :build_artifacts
+  :feature_category: :job_artifacts
   :has_external_dependencies: false
   :urgency: :low
   :resource_boundary: :unknown
@@ -4097,6 +4133,15 @@
   :resource_boundary: :unknown
   :weight: 1
   :idempotent: false
+  :tags: []
+- :name: users_record_last_activity
+  :worker_name: Users::RecordLastActivityWorker
+  :feature_category: :seat_cost_management
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
   :tags: []
 - :name: users_track_namespace_visits
   :worker_name: Users::TrackNamespaceVisitsWorker

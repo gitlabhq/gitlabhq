@@ -3,7 +3,7 @@ table_name: p_ci_job_artifacts
 classes:
 - Ci::JobArtifact
 feature_categories:
-- continuous_integration
+- job_artifacts
 description: Routing table for ci_job_artifacts
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143039
 milestone: '16.10'

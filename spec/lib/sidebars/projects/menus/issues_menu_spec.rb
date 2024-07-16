@@ -85,4 +85,43 @@ RSpec.describe Sidebars::Projects::Menus::IssuesMenu, feature_category: :navigat
       end
     end
   end
+
+  describe 'Menu Items' do
+    subject { described_class.new(context).renderable_items.index { |e| e.item_id == item_id } }
+
+    describe 'Service Desk' do
+      let(:item_id) { :service_desk }
+
+      describe 'when service desk is supported' do
+        before do
+          allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
+        end
+
+        describe 'when service desk is enabled' do
+          before do
+            project.update!(service_desk_enabled: true)
+          end
+
+          it { is_expected.not_to be_nil }
+        end
+
+        describe 'when service desk is disabled' do
+          before do
+            project.update!(service_desk_enabled: false)
+          end
+
+          it { is_expected.to be_nil }
+        end
+      end
+
+      describe 'when service desk is unsupported' do
+        before do
+          allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(false)
+          project.update!(service_desk_enabled: true)
+        end
+
+        it { is_expected.to be_nil }
+      end
+    end
+  end
 end

@@ -31,21 +31,18 @@ the Vulnerability Report's [Activity filter](../vulnerability_report/index.md#ac
 ## Explaining a vulnerability
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Beta
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10368) in GitLab 16.0 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
 > - Promoted to [beta](../../../policy/experiment-beta-support.md#beta) status in GitLab 16.2.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10642) in GitLab 17.2.
 
 GitLab can help you with a vulnerability by using a large language model to:
 
 - Summarize the vulnerability.
 - Help developers and security analysts to understand the vulnerability, how it could be exploited, and how to fix it.
 - Provide a suggested mitigation.
-
-For a click-through demo, see [Resolving vulnerabilities with GitLab Duo (AI)](https://tech-marketing.gitlab.io/static-demos/pt-explain-vulnerability.html).
-<!-- Demo published on 2024-02-24 -->
 
 ### Vulnerability explanation
 
@@ -55,28 +52,30 @@ understand a vulnerability and its possible mitigation.
 Prerequisites:
 
 - You must have the GitLab Ultimate subscription tier.
+- Have a paid GitLab Duo Enterprise seat.
+- [GitLab Duo](../../ai_features_enable.md) must be enabled for the group or instance.
 - You must be a member of the project.
-- The vulnerability must be a SAST finding.
-
-Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
+- The vulnerability must be from a SAST scanner.
 
 To explain the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Security and Compliance > Vulnerability report**.
-1. In the **Tool** dropdown list, select **SAST**.
+1. Select **Secure > Vulnerability report**.
+1. Optional. To remove the default filters, select **Clear** (**{clear}**).
+1. Above the list of vulnerabilities, select the filter bar.
+1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
+1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want explained.
-1. At the bottom of the vulnerability's page, select **Try it out**.
+1. Do one of the following:
+
+   - Select the text below the vulnerability description that reads _You can also use AI by asking GitLab Duo Chat to explain this vulnerability and a suggested fix._
+   - In the upper right, from the **Resolve with merge request** dropdown list, select **Explain vulnerability**, then select **Explain vulnerability**.
+   - Open GitLab Duo Chat and use the [explain a vulnerability](../../../user/gitlab_duo_chat/examples.md#explain-a-vulnerability) command by typing `/vulnerability_explain`.
 
 The response is shown on the right side of the page.
 
-![Explain this vulnerability](img/explain_this_vulnerability_beta_v16_3.png)
-
-On GitLab.com this feature is available. By default, it is powered by Google's `text-bison-001`
-model. In the event of degraded performance with that model, the feature instead uses Anthropic's
-`claude` model.
-
-We cannot guarantee that the large language model produces results that are correct. Use the
+On GitLab.com this feature is available. By default, it is powered by Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+model. We cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 
 ### Data shared with third-party AI APIs
@@ -85,23 +84,19 @@ The following data is shared with third-party AI APIs:
 
 - Vulnerability title (which might contain the filename, depending on which scanner is used).
 - Vulnerability identifiers.
-- Code block, but only if the "Send code with prompt" checkbox is selected (single and multi-line as instructed by the vulnerability
-  record).
 - Filename.
 
 ## Vulnerability resolution
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10783) in GitLab 17.2.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
-resolves the vulnerability.
-
-On GitLab.com this feature is available. By default, it is powered by Google's `code-bison-001`
+resolves the vulnerability. By default, it is powered by Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
 model.
 
 We cannot guarantee that the large language model produces results that are correct. Use the
@@ -109,7 +104,7 @@ explanation with caution.
 
 Prerequisites:
 
-- You must have the GitLab Ultimate subscription tier.
+- You must have the GitLab Ultimate subscription tier and GitLab Duo Enterprise.
 - You must be a member of the project.
 - The vulnerability must be a SAST finding.
 
@@ -118,10 +113,14 @@ Learn more about [how to enable all GitLab Duo features](../../ai_features_enabl
 To resolve the vulnerability:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Security and Compliance > Vulnerability report**.
-1. In the **Tool** dropdown list, select **SAST**.
+1. Select **Secure > Vulnerability report**.
+1. Optional. To remove the default filters, select **Clear** (**{clear}**).
+1. Above the list of vulnerabilities, select the filter bar.
+1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
+1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
-1. At the top of the vulnerability's page, from the **Resolve with merge request** dropdown list, select **Resolve with AI**.
+1. In the upper-right corner,
+   select **Resolve with merge request**.
 
 A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
 then process the merge request according to your standard workflow.

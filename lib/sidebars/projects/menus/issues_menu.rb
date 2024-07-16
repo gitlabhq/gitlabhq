@@ -111,6 +111,8 @@ module Sidebars
         end
 
         def service_desk_menu_item
+          return ::Sidebars::NilMenuItem.new(item_id: :service_desk) unless context.project.service_desk_enabled?
+
           ::Sidebars::MenuItem.new(
             title: _('Service Desk'),
             link: service_desk_project_issues_path(context.project),

@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import Bold from '~/content_editor/extensions/bold';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import ListItem from '~/content_editor/extensions/list_item';
@@ -5,7 +6,7 @@ import Table from '~/content_editor/extensions/table';
 import TableCell from '~/content_editor/extensions/table_cell';
 import TableRow from '~/content_editor/extensions/table_row';
 import TableHeader from '~/content_editor/extensions/table_header';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/extensions/table', () => {
   let tiptapEditor;
@@ -24,19 +25,13 @@ describe('content_editor/extensions/table', () => {
     });
 
     ({
-      builders: { doc, p, table, tableCell, tableHeader, tableRow },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        bold: { markType: Bold.name },
-        table: { nodeType: Table.name },
-        tableHeader: { nodeType: TableHeader.name },
-        tableCell: { nodeType: TableCell.name },
-        tableRow: { nodeType: TableRow.name },
-        bulletList: { nodeType: BulletList.name },
-        listItem: { nodeType: ListItem.name },
-      },
-    }));
+      doc,
+      paragraph: p,
+      table,
+      tableCell,
+      tableHeader,
+      tableRow,
+    } = builders(tiptapEditor.schema));
 
     initialDoc = doc(
       table(

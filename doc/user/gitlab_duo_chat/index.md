@@ -44,6 +44,38 @@ Visual Studio support is
 You can express interest in other IDE extension support
 [in this issue](https://gitlab.com/gitlab-org/editor-extensions/meta/-/issues/78).
 
+## The context Chat is aware of
+
+GitLab Duo Chat is sometimes aware of the context you're working in.
+Other times, you must be more specific with your request.
+
+In the GitLab UI, GitLab Duo Chat knows about these areas:
+
+| Area    | How to ask Chat  |
+|---------|------------------|
+| Epics   | From the epic, ask about `this epic`, `this`, or the URL. From any UI area, ask about the URL. |
+| Issues  | From the issue, ask about `this issue`, `this`, or the URL. From any UI area, ask about the URL. |
+| Code files | From the single file, ask about `this code` or `this file`. From any UI area, ask about the URL. |
+
+In the IDEs, GitLab Duo Chat knows about these areas:
+
+| Area    | How to ask Chat  |
+|---------|------------------|
+| Selected lines in the editor | With the lines selected, ask about `this code` or `this file`. Chat is not aware of the file; you must select the lines you want to ask about. |
+| Epics   | Ask about the URL. |
+| Issues  | Ask about the URL. |
+
+In addition, in the IDEs, when you use any of the slash commands,
+like `/explain`, `/refactor`, or `/tests,` Duo Chat has access to the
+code you selected.
+
+Duo Chat always has access to:
+
+- GitLab documentation.
+- General programming and coding knowledge.
+
+We are continuously working to expand contextual awareness of Chat to include more types of content.
+
 ## Use GitLab Duo Chat in the GitLab UI
 
 1. In the upper-right corner, select **GitLab Duo Chat**. A drawer opens on the right side of your screen.
@@ -136,34 +168,6 @@ read the blog post:
 [10 best practices for using AI-powered GitLab Duo Chat](https://about.gitlab.com/blog/2024/04/02/10-best-practices-for-using-ai-powered-gitlab-duo-chat/).
 
 [View examples of how to use GitLab Duo Chat](../gitlab_duo_chat/examples.md).
-
-## Get code explained, refactored, or generate tests
-
-In VS Code, JetBrains IDEs, or in the Web IDE, you can
-have code explained, refactored, or generate test for it.
-
-1. Select code in your editor.
-1. In the **Chat** box, type one the following slash commands:
-   - [`/explain`](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)
-   - [`/refactor`](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)
-   - [`/tests`](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)
-
-Alternatively, use the context menu to perform these tasks.
-
-When you use a slash command, you can also add additional instructions, for example: `/tests using the Boost.Test framework`.
-
-## Delete or reset the conversation
-
-To delete all conversations permanently and clear the chat window:
-
-- In the text box, type `/clear` and select **Send**.
-
-To start a new conversation, but keep the previous conversations visible in the chat window:
-
-- In the text box, type `/reset` and select **Send**.
-
-In both cases, the conversation history will not be considered when you ask new questions.
-Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
 
 ## Give feedback
 

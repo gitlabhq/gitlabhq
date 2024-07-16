@@ -110,7 +110,7 @@ projects that need updating. Those projects can be:
   timestamp that is more recent than the `last_repository_successful_sync_at`
   timestamp in the `Geo::ProjectRegistry` model.
 - Manual: The administrator can manually flag a repository to resync in the
-  [Geo Admin Area](../administration/geo_sites.md).
+  [Geo Admin area](../administration/geo_sites.md).
 
 When we fail to fetch a repository on the secondary `RETRIES_BEFORE_REDOWNLOAD`
 times, Geo does a so-called _re-download_. It will do a clean clone
@@ -199,7 +199,7 @@ sequenceDiagram
   S->>TDB: Insert to `job_artifact_registry`
 ```
 
-- [Sidekiq-cron](https://github.com/ondrejbartas/sidekiq-cron) enqueues a `Geo::Secondary::RegistryConsistencyWorker` job every minute. As long as it is actively doing work (creating and deleting rows), this job immediately re-enqueues itself. This job uses an exclusive lease to prevent multiple instances of itself from running simultaneously.
+- [Sidekiq-cron](https://github.com/sidekiq-cron/sidekiq-cron) enqueues a `Geo::Secondary::RegistryConsistencyWorker` job every minute. As long as it is actively doing work (creating and deleting rows), this job immediately re-enqueues itself. This job uses an exclusive lease to prevent multiple instances of itself from running simultaneously.
 - [Sidekiq](architecture.md#sidekiq) picks up `Geo::Secondary::RegistryConsistencyWorker` job
   - Sidekiq queries `ci_job_artifacts` table for up to 10000 rows
   - Sidekiq queries `job_artifact_registry` table for up to 10000 rows
@@ -465,7 +465,7 @@ basically hashes all Git refs together and stores that hash in the
 The **secondary** site does the same to calculate the hash of its
 clone, and compares the hash with the value the **primary** site
 calculated. If there is a mismatch, Geo will mark this as a mismatch
-and the administrator can see this in the [Geo Admin Area](../administration/geo_sites.md).
+and the administrator can see this in the [Geo Admin area](../administration/geo_sites.md).
 
 ## Geo proxying
 

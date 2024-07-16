@@ -154,9 +154,10 @@ To change the location of a group's dashboards:
 
 ### Project dashboards
 
-Dashboards are usually defined in the project where the analytics data is being retrieved from.
+By default custom dashboards are saved to the current project, because
+dashboards are usually defined in the project where the analytics data is retrieved from.
 However, you can also have a separate project for dashboards.
-This is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
+This setup is recommended if you want to enforce specific access rules to the dashboard definitions or share dashboards across multiple projects.
 
 NOTE:
 You can share dashboards only between projects that are located in the same group.
@@ -261,11 +262,10 @@ To create a custom visualization:
 1. Select **Visualization designer**.
 1. In the **Visualization title** field, enter the name of your visualization.
 1. From the **Visualization type** dropdown list, select a visualization type.
-1. In the **What metric do you want to visualize?** section, select the metric you want to query.
-1. Optional. To refine your query, select a dimension.
+1. In the **What metric do you want to visualize?** section, select a [measure or a dimension](#visualization-query-builder).
 1. Select **Save**.
 
-After you saved a visualization, you can add it to a new or existing custom dashboard in the same project.
+After you save a visualization, you can add it to a new or existing custom dashboard in the same project.
 
 ### Generate a custom visualization with GitLab Duo
 
@@ -299,6 +299,24 @@ To generate a custom visualization with GitLab Duo using a natural language quer
 1. Select **Save**.
 
 After you save a visualization, you can add it to a new or existing custom dashboard in the same project.
+
+### Visualization query builder
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/14098) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `analytics_visualization_designer_filtering`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/469461) in GitLab 17.2. Feature flag `analytics_visualization_designer_filtering` removed.
+
+You can use measures and dimensions to filter and refine the results of a custom visualization:
+
+- Measures: Properties that can be calculated. Measures are aggregated by default.
+- Dimensions: Attributes related to a measure. You can add multiple dimensions to a measure.
+
+You can filter by custom event names with select measures:
+
+- `Tracked events count`
+- `Tracked events unique user count`
+
+NOTE:
+When you change or remove a measure then dependent dimensions may also be removed.
 
 ## Troubleshooting
 

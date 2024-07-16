@@ -12,7 +12,7 @@ module Gitlab
       rack_attack::Request.include(Gitlab::RackAttack::Request)
 
       # This is Rack::Attack::DEFAULT_THROTTLED_RESPONSE, modified to allow a custom response
-      rack_attack.throttled_responder = lambda do |request|
+      rack_attack.throttled_responder = ->(request) do
         throttled_headers = Gitlab::RackAttack.throttled_response_headers(
           request.env['rack.attack.matched'], request.env['rack.attack.match_data']
         )

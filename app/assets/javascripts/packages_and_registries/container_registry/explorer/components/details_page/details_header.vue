@@ -199,7 +199,7 @@ export default {
       <gl-disclosure-dropdown
         category="tertiary"
         icon="ellipsis_v"
-        placement="right"
+        placement="bottom-end"
         :toggle-text="$options.i18n.MORE_ACTIONS_TEXT"
         text-sr-only
         no-caret

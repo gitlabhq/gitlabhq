@@ -18,7 +18,13 @@ export function initRelatedIssues() {
       fullPath: el.dataset.fullPath,
       hasIssueWeightsFeature: parseBoolean(el.dataset.hasIssueWeightsFeature),
       hasIterationsFeature: parseBoolean(el.dataset.hasIterationsFeature),
-      reportAbusePath: el.dataset.reportAbusePath,
+      isGroup: parseBoolean(el.dataset.isGroup),
+      // for work item modal
+      canAdminLabel: el.dataset.wiCanAdminLabel,
+      groupPath: el.dataset.wiGroupPath,
+      issuesListPath: el.dataset.wiIssuesListPath,
+      labelsManagePath: el.dataset.wiLabelsManagePath,
+      reportAbusePath: el.dataset.wiReportAbusePath,
     },
     render: (createElement) =>
       createElement(RelatedIssuesRoot, {

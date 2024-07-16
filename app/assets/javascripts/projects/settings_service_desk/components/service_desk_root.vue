@@ -53,6 +53,9 @@ export default {
     projectKey: {
       default: '',
     },
+    areTicketsConfidentialByDefault: {
+      default: false,
+    },
     reopenIssueOnExternalParticipantNote: {
       default: false,
     },
@@ -118,6 +121,7 @@ export default {
       fileTemplateProjectId,
       outgoingName,
       projectKey,
+      areTicketsConfidentialByDefault,
       reopenIssueOnExternalParticipantNote,
       addExternalParticipantsFromCc,
     }) {
@@ -127,6 +131,7 @@ export default {
         issue_template_key: selectedTemplate,
         outgoing_name: outgoingName,
         project_key: projectKey,
+        tickets_confidential_by_default: areTicketsConfidentialByDefault,
         reopen_issue_on_external_participant_note: reopenIssueOnExternalParticipantNote,
         add_external_participants_from_cc: addExternalParticipantsFromCc,
         service_desk_enabled: this.isEnabled,
@@ -200,8 +205,10 @@ export default {
       :initial-selected-file-template-project-id="selectedFileTemplateProjectId"
       :initial-outgoing-name="outgoingName"
       :initial-project-key="projectKey"
+      :initial-are-tickets-confidential-by-default="areTicketsConfidentialByDefault"
       :initial-reopen-issue-on-external-participant-note="reopenIssueOnExternalParticipantNote"
       :initial-add-external-participants-from-cc="addExternalParticipantsFromCc"
+      :public-project="publicProject"
       :templates="templates"
       :is-template-saving="isTemplateSaving"
       @save="onSaveTemplate"

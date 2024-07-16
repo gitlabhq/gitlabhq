@@ -197,63 +197,54 @@ RSpec.shared_examples 'work items assignees' do
 end
 
 RSpec.shared_examples 'work items labels' do
-  let(:label_title_selector) { '[data-testid="labels-title"]' }
-  let(:labels_input_selector) { '[data-testid="work-item-labels-input"]' }
-  let(:work_item_labels_selector) { '[data-testid="work-item-labels"]' }
+  it 'adds and removes a label' do
+    within_testid 'work-item-labels' do
+      expect(page).not_to have_css '.gl-label', text: label.title
 
-  it 'successfully applies the label by searching' do
-    expect(work_item.reload.labels).not_to include(label)
+      click_button 'Edit'
+      select_listbox_item(label.title)
+      click_button 'Apply'
 
-    find_and_click_edit(work_item_labels_selector)
+      expect(page).to have_css '.gl-label', text: label.title
 
-    select_listbox_item(label.title)
+      click_button 'Edit'
+      click_button 'Clear'
 
-    find("body").click
-    wait_for_all_requests
-
-    expect(work_item.reload.labels).to include(label)
-    within(work_item_labels_selector) do
-      expect(page).to have_link(label.title)
+      expect(page).not_to have_css '.gl-label', text: label.title
     end
   end
 
-  it 'successfully removes all users on clear all button click' do
-    expect(work_item.reload.labels).not_to include(label)
-
-    find_and_click_edit(work_item_labels_selector)
-
-    select_listbox_item(label.title)
-
-    find("body").click
-    wait_for_requests
-
-    expect(work_item.reload.labels).to include(label)
-
-    find_and_click_edit(work_item_labels_selector)
-
-    find_and_click_clear(work_item_labels_selector)
-    wait_for_all_requests
-
-    expect(work_item.reload.labels).not_to include(label)
-  end
-
-  it 'updates the assignee in real-time' do
+  it 'updates the assigned labels in real-time when another user updates the label' do
     using_session :other_session do
       visit work_items_path
-      expect(work_item.reload.labels).not_to include(label)
+
+      expect(page).not_to have_css '.gl-label', text: label.title
     end
 
-    find_and_click_edit(work_item_labels_selector)
+    within_testid 'work-item-labels' do
+      click_button 'Edit'
+      select_listbox_item(label.title)
+      click_button 'Apply'
 
-    select_listbox_item(label.title)
+      expect(page).to have_css '.gl-label', text: label.title
+    end
 
-    find("body").click
-    wait_for_all_requests
-
-    expect(work_item.reload.labels).to include(label)
+    expect(page).to have_css '.gl-label', text: label.title
 
     using_session :other_session do
-      expect(work_item.reload.labels).to include(label)
+      expect(page).to have_css '.gl-label', text: label.title
+    end
+  end
+
+  it 'creates, auto-selects, and adds new label' do
+    within_testid 'work-item-labels' do
+      click_button 'Edit'
+      click_button 'Create project label'
+      send_keys 'Quintessence'
+      click_button 'Create'
+      click_button 'Apply'
+
+      expect(page).to have_css '.gl-label', text: 'Quintessence'
     end
   end
 end
@@ -547,6 +538,7 @@ def find_and_click_clear(selector)
 end
 
 RSpec.shared_examples 'work items iteration' do
+  include Features::IterationHelpers
   let(:work_item_iteration_selector) { '[data-testid="work-item-iteration"]' }
   let_it_be(:iteration_cadence) { create(:iterations_cadence, group: group, active: true) }
   let_it_be(:iteration) do
@@ -603,7 +595,7 @@ RSpec.shared_examples 'work items iteration' do
 
       within(work_item_iteration_selector) do
         expect(page).to have_text(iteration_cadence.title)
-        expect(page).to have_text(iteration.period)
+        expect(page).to have_text(iteration_period_display(iteration))
       end
 
       find_and_click_edit(work_item_iteration_selector)
@@ -620,67 +612,8 @@ RSpec.shared_examples 'work items iteration' do
         wait_for_requests
 
         select_listbox_item(iteration.period)
-        expect(page).to have_text(iteration.period)
+        expect(page).to have_text(iteration_period_display(iteration))
       end
-    end
-  end
-end
-
-RSpec.shared_context 'with work_items_rolledup_dates' do |flag|
-  before do
-    stub_feature_flags(work_items_rolledup_dates: flag)
-
-    page.refresh
-    wait_for_all_requests
-  end
-end
-
-RSpec.shared_examples 'work items rolled up dates' do
-  let(:work_item_rolledup_dates_selector) { '[data-testid="work-item-rolledup-dates"]' }
-
-  include_context 'with work_items_rolledup_dates', true
-
-  it 'passes axe automated accessibility testing in closed state' do
-    expect(page).to have_selector(work_item_rolledup_dates_selector)
-    expect(page).to be_axe_clean.within(work_item_rolledup_dates_selector)
-  end
-
-  it 'passes axe automated accessibility testing in open state' do
-    within(work_item_rolledup_dates_selector) do
-      click_button _('Edit')
-      wait_for_requests
-
-      expect(page).to be_axe_clean.within(work_item_rolledup_dates_selector)
-    end
-  end
-
-  context 'when edit is clicked' do
-    it 'selects and updates the dates to fixed once selected', :aggregate_failures do
-      expect(find_field('Inherited')).to be_checked
-
-      find_and_click_edit(work_item_rolledup_dates_selector)
-
-      within work_item_rolledup_dates_selector do
-        fill_in 'Start', with: '2021-01-01'
-        fill_in 'Due', with: '2021-01-02'
-      end
-
-      # Click outside to save
-      find("body").click
-
-      within work_item_rolledup_dates_selector do
-        expect(find_field('Fixed')).to be_checked
-        expect(page).to have_text('Start: Jan 1, 2021')
-        expect(page).to have_text('Due: Jan 2, 2021')
-      end
-    end
-  end
-
-  context 'when feature flag is disabled' do
-    include_context 'with work_items_rolledup_dates', false
-
-    it 'does not show rolled up dates' do
-      expect(page).not_to have_selector(work_item_rolledup_dates_selector)
     end
   end
 end

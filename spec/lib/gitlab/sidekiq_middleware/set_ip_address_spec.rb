@@ -47,22 +47,4 @@ RSpec.describe Gitlab::SidekiqMiddleware::SetIpAddress, feature_category: :syste
       end
     end
   end
-
-  describe '#call with sidekiq_ip_address disabled' do
-    before do
-      stub_feature_flags(sidekiq_ip_address: false)
-    end
-
-    context 'when the IP address is present' do
-      it 'does not set the IP address' do
-        expect(::Gitlab::IpAddressState).not_to receive(:with).with(ip_address)
-
-        described_class.new.call(worker, job, queue) do
-          expect(::Gitlab::IpAddressState.current).to eq(nil)
-        end
-
-        expect(::Gitlab::IpAddressState.current).to eq(nil)
-      end
-    end
-  end
 end

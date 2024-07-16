@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe 'gitlab:db:truncate_legacy_tables', :silence_stdout, :reestablished_active_record_base,
-               :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
+  :suppress_gitlab_schemas_validate_connection, feature_category: :cell do
   let(:main_connection) { ApplicationRecord.connection }
   let(:ci_connection) { Ci::ApplicationRecord.connection }
   let(:test_gitlab_main_table) { '_test_gitlab_main_table' }

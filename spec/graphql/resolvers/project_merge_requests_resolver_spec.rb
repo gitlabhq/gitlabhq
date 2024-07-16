@@ -9,6 +9,7 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
   let_it_be(:current_user) { create(:user, developer_of: project) }
   let_it_be(:other_user) { create(:user) }
   let_it_be(:reviewer) { create(:user) }
+  let_it_be(:label) { create(:label, project: project) }
 
   let_it_be(:merge_request) do
     create(
@@ -19,7 +20,8 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
       author: other_user,
       assignee: other_user,
       milestone: create(:milestone, project: project),
-      reviewers: [reviewer]
+      reviewers: [reviewer],
+      labels: [label]
     )
   end
 
@@ -135,6 +137,14 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
         'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.') do
         resolve_mr(project, milestone_title: 'test', milestone_wildcard_id: 'ANY')
       end
+    end
+  end
+
+  context 'with label name param' do
+    it 'filters merge requests by label name' do
+      result = resolve_mr(project, label_name: [label.name])
+
+      expect(result).to contain_exactly(merge_request)
     end
   end
 

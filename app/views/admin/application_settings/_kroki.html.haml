@@ -1,14 +1,12 @@
 - expanded = integration_expanded?('kroki_')
-%section.settings.as-kroki.no-animate#js-kroki-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Kroki')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki.')
-      = link_to _('Learn more.'), help_page_path('administration/integration/kroki'), target: '_blank', rel: 'noopener noreferrer'
-  .settings-content
+
+= render ::Layouts::SettingsBlockComponent.new(_('Kroki'),
+  id: 'js-kroki-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Users can render diagrams in AsciiDoc, Markdown, reStructuredText, and Textile documents using Kroki.')
+    = link_to _('Learn more.'), help_page_path('administration/integration/kroki'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-kroki-settings'), html: { class: 'fieldset-form', id: 'kroki-settings' } do |f|
       = form_errors(@application_setting) if expanded
 

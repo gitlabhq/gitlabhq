@@ -8,6 +8,8 @@ RSpec.describe GraphqlController, feature_category: :integrations do
   # two days is enough to make timezones irrelevant
   let_it_be(:last_activity_on) { 2.days.ago.to_date }
 
+  let(:app_context) { Gitlab::ApplicationContext.current }
+
   describe 'rescue_from' do
     let_it_be(:message) { 'green ideas sleep furiously' }
 
@@ -326,6 +328,32 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         end
       end
 
+      context 'with an expired token' do
+        let(:token) { create(:personal_access_token, :expired, user: user, scopes: [:api]) }
+
+        it_behaves_like 'invalid token'
+
+        it 'registers token_expire in application context' do
+          subject
+
+          expect(app_context['meta.auth_fail_reason']).to eq('token_expired')
+          expect(app_context['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{token.id}")
+        end
+      end
+
+      context 'with a revoked token' do
+        let(:token) { create(:personal_access_token, :revoked, user: user, scopes: [:api]) }
+
+        it_behaves_like 'invalid token'
+
+        it 'registers token_expire in application context' do
+          subject
+
+          expect(app_context['meta.auth_fail_reason']).to eq('token_revoked')
+          expect(app_context['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{token.id}")
+        end
+      end
+
       context 'with an invalid token' do
         context 'with auth header' do
           subject do
@@ -433,7 +461,8 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       it "assigns username in ApplicationContext" do
         subject
 
-        expect(Gitlab::ApplicationContext.current).to include('meta.user' => user.username)
+        expect(app_context).to include('meta.user' => user.username)
+        expect(app_context.keys).not_to include('meta.auth_fail_reason', 'meta.auth_fail_token_id')
       end
 
       it 'calls the track api when trackable method' do
@@ -513,7 +542,8 @@ RSpec.describe GraphqlController, feature_category: :integrations do
       it "does not assign a username in ApplicationContext" do
         subject
 
-        expect(Gitlab::ApplicationContext.current.key?('meta.user')).to be false
+        expect(app_context.key?('meta.user')).to be false
+        expect(app_context.keys).not_to include('meta.auth_fail_reason', 'meta.auth_fail_token_id')
       end
     end
 
@@ -645,11 +675,11 @@ RSpec.describe GraphqlController, feature_category: :integrations do
         end
       end
 
-      it 'fails if the GraphiQL gem version is not 1.8.0' do
+      it 'fails if the GraphiQL gem version is not 1.10.0' do
         # We cache the IntrospectionQuery based on the default IntrospectionQuery by GraphiQL. If this spec fails,
         # GraphiQL has been updated, so we should check whether the IntropsectionQuery we cache is still valid.
         # It is stored in `app/graphql/cached_introspection_query.rb#query_string`
-        expect(GraphiQL::Rails::VERSION).to eq("1.8.0")
+        expect(GraphiQL::Rails::VERSION).to eq("1.10.0")
       end
     end
   end

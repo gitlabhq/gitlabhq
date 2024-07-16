@@ -1,6 +1,4 @@
 .modal-header {
-  background-color: $modal-body-bg;
-
   .page-title,
   .modal-title {
     max-width: 100%;
@@ -33,7 +31,6 @@
 }
 
 .modal-body {
-  background-color: $modal-body-bg;
   line-height: $line-height-base;
   position: relative;
   min-height: $modal-body-height;

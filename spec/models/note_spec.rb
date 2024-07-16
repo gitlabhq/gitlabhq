@@ -89,6 +89,14 @@ RSpec.describe Note, feature_category: :team_planning do
       end
     end
 
+    context 'when noteable is an abuse report' do
+      subject { build(:note, noteable: build_stubbed(:abuse_report), project: nil, namespace: nil) }
+
+      it 'is not valid without project or namespace' do
+        is_expected.to be_invalid
+      end
+    end
+
     describe 'max notes limit' do
       let_it_be(:noteable) { create(:issue) }
       let_it_be(:existing_note) { create(:note, project: noteable.project, noteable: noteable) }

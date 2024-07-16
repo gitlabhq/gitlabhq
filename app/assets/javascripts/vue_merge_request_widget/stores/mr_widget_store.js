@@ -8,6 +8,7 @@ import {
   MT_MERGE_STRATEGY,
   MWCP_MERGE_STRATEGY,
   MWPS_MERGE_STRATEGY,
+  MTWCP_MERGE_STRATEGY,
   STATE_MACHINE,
   stateToTransitionMap,
 } from '../constants';
@@ -181,7 +182,6 @@ export default class MergeRequestStore {
   setGraphqlData(project) {
     const { mergeRequest } = project;
     const pipeline = mergeRequest.headPipeline;
-    const pipelines = mergeRequest.pipelines?.nodes;
 
     this.updateStatusState(mergeRequest.state);
 
@@ -199,7 +199,6 @@ export default class MergeRequestStore {
       this.ciStatus = `${this.ciStatus}-with-warnings`;
     }
 
-    this.detatchedPipeline = pipelines.length ? pipelines[0].mergeRequestEventType : null;
     this.commitsCount = mergeRequest.commitCount;
     this.branchMissing =
       mergeRequest.detailedMergeStatus !== 'NOT_OPEN' &&
@@ -369,6 +368,9 @@ export default class MergeRequestStore {
     if (availableAutoMergeStrategies.includes(MWPS_MERGE_STRATEGY)) {
       return MWPS_MERGE_STRATEGY;
     }
+    if (availableAutoMergeStrategies.includes(MTWCP_MERGE_STRATEGY)) {
+      return MTWCP_MERGE_STRATEGY;
+    }
 
     return undefined;
   }
@@ -394,7 +396,7 @@ export default class MergeRequestStore {
   }
 
   get preventMerge() {
-    return this.isApprovalNeeded;
+    return this.isApprovalNeeded && this.preferredAutoMergeStrategy !== MWCP_MERGE_STRATEGY;
   }
 
   // Because the state machine doesn't yet handle every state and transition,

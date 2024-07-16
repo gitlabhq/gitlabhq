@@ -40,6 +40,10 @@ class SearchService
     # overridden in EE
   end
 
+  def search_type_errors
+    # overridden in EE
+  end
+
   def global_search?
     project.blank? && group.blank?
   end
@@ -58,10 +62,9 @@ class SearchService
   delegate :valid_terms_count?, :valid_query_length?, to: :params
 
   def search_results
-    strong_memoize(:search_results) do
-      abuse_detected? ? Gitlab::EmptySearchResults.new : search_service.execute
-    end
+    abuse_detected? ? ::Search::EmptySearchResults.new : search_service.execute
   end
+  strong_memoize_attr :search_results
 
   def search_objects(preload_method = nil)
     @search_objects ||= redact_unauthorized_results(

@@ -276,6 +276,7 @@ export const modelWithoutVersion = {
 export const model = {
   id: 'gid://gitlab/Ml::Model/1',
   description: 'A model description',
+  descriptionHtml: 'A model description',
   name: 'gitlab_amazing_model',
   versionCount: 1,
   candidateCount: 0,

@@ -316,11 +316,11 @@ module Gitlab
 
           Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
-                 table_name: table_name,
-                 parent_table_name: parent_table_name,
-                 partitioning_column: partitioning_column,
-                 zero_partition_value: initial_partitioning_value
-                ).prepare_for_partitioning(async: async)
+              table_name: table_name,
+              parent_table_name: parent_table_name,
+              partitioning_column: partitioning_column,
+              zero_partition_value: initial_partitioning_value
+            ).prepare_for_partitioning(async: async)
         end
 
         def revert_preparing_constraint_for_list_partitioning(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
@@ -328,11 +328,11 @@ module Gitlab
 
           Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
-                 table_name: table_name,
-                 parent_table_name: parent_table_name,
-                 partitioning_column: partitioning_column,
-                 zero_partition_value: initial_partitioning_value
-                ).revert_preparation_for_partitioning
+              table_name: table_name,
+              parent_table_name: parent_table_name,
+              partitioning_column: partitioning_column,
+              zero_partition_value: initial_partitioning_value
+            ).revert_preparation_for_partitioning
         end
 
         def convert_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:, lock_tables: [])
@@ -340,11 +340,11 @@ module Gitlab
 
           Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
-                 table_name: table_name,
-                 parent_table_name: parent_table_name,
-                 partitioning_column: partitioning_column,
-                 zero_partition_value: initial_partitioning_value
-                ).partition
+              table_name: table_name,
+              parent_table_name: parent_table_name,
+              partitioning_column: partitioning_column,
+              zero_partition_value: initial_partitioning_value
+            ).partition
         end
 
         def revert_converting_table_to_first_list_partition(table_name:, partitioning_column:, parent_table_name:, initial_partitioning_value:)
@@ -352,11 +352,11 @@ module Gitlab
 
           Gitlab::Database::Partitioning::List::ConvertTable
             .new(migration_context: self,
-                 table_name: table_name,
-                 parent_table_name: parent_table_name,
-                 partitioning_column: partitioning_column,
-                 zero_partition_value: initial_partitioning_value
-                ).revert_partitioning
+              table_name: table_name,
+              parent_table_name: parent_table_name,
+              partitioning_column: partitioning_column,
+              zero_partition_value: initial_partitioning_value
+            ).revert_partitioning
         end
 
         private
@@ -560,7 +560,7 @@ module Gitlab
 
         def replace_table(original_table_name, replacement_table_name, replaced_table_name, primary_key_name)
           replace_table = Gitlab::Database::Partitioning::ReplaceTable.new(connection,
-              original_table_name.to_s, replacement_table_name, replaced_table_name, primary_key_name)
+            original_table_name.to_s, replacement_table_name, replaced_table_name, primary_key_name)
 
           transaction do
             drop_sync_trigger(original_table_name)

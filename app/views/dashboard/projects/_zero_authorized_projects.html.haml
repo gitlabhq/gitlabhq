@@ -1,11 +1,9 @@
-.container
-  = render_if_exists 'dashboard/projects/joining_a_project_alert'
-  .gl-text-center.gl-pt-6.gl-pb-7
-    %h2.gl-font-size-h1{ data: { testid: 'welcome-title-content' } }
-      = _('Welcome to GitLab')
-    %p.gl-m-0
-      = _('Faster releases. Better code. Less pain.')
-  - if current_user.admin?
-    = render "blank_state_admin_welcome"
-  - else
-    = render "blank_state_welcome"
+%h1.page-title.gl-text-size-h-display.gl-text-center.gl-mt-11{ data: { testid: 'welcome-title-content' } }
+  = safe_format(_('Welcome to GitLab, %{name}!'), name: current_user.first_name)
+%p.gl-text-center.gl-mb-7= _('Ready to get started with GitLab? Follow these steps to get familiar with us:')
+
+= render_if_exists 'dashboard/projects/joining_a_project_alert'
+- if current_user.admin?
+  = render "blank_state_admin_welcome"
+- else
+  = render "blank_state_welcome"

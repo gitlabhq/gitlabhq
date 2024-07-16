@@ -267,7 +267,7 @@ pages:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH # Run on default branch (with default PAGES_PREFIX)
     - if: $CI_COMMIT_BRANCH == "staging" # Run on master (with default PAGES_PREFIX)
       variables:
-        PAGES_PREFIX: '-stg-' # Prefix with -stg- for the staging branch
+        PAGES_PREFIX: '_stg' # Prefix with _stg for the staging branch
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" # Conditionally change the prefix for Merge Requests
       when: manual # Run pages manually on Merge Requests
       variables:
@@ -312,6 +312,8 @@ pages:
 With this configuration, users will have the access to each GitLab Pages deployment through the UI.
 When using [environments](../../../ci/environments/index.md) for pages, all pages environments are
 listed on the project environment list.
+
+You can also [group similar environments](../../../ci/environments/index.md#group-similar-environments) together.
 
 ### Deployments deletion
 

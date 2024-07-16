@@ -92,7 +92,7 @@ To configure the GitLab for Jira Cloud app:
 1. Optional. To link a self-managed GitLab instance with Jira, select **Change GitLab version**.
    1. Select all checkboxes, then select **Next**.
    1. Enter your **GitLab instance URL**, then select **Save**.
-1. Select **Sign in to GitLab**, then enter your credentials.
+1. Select **Sign in to GitLab**, then enter your username and password. The integration doesn't support single-sign on such as SAML during configuration.
 1. Select **Authorize**. A list of groups is now visible.
 1. Select **Link groups**.
 1. To link to a group, select **Link**.
@@ -102,6 +102,32 @@ To configure the GitLab for Jira Cloud app:
 After you link to a GitLab group, data is synced to Jira for all projects in that group.
 The initial data sync happens in batches of 20 projects per minute.
 For groups with many projects, the data sync for some projects is delayed.
+
+## Configure Jira Service Management
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460663) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `enable_jira_connect_configuration`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Prerequisites:
+
+- The GitLab for Jira app must be installed.
+
+You can connect GitLab to your IT service project to track your deployments.
+
+1. In Jira Service Management, in your service project, go to **Project settings > Change management**.
+1. Select **Connect Pipeline > GitLab**, then copy the **Service ID** at the end of the setup flow.
+1. In GitLab, on the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Integrations**.
+1. Select **GitLab for Jira Cloud app**.
+1. In the **Service ID** field, enter the service ID that you want to map into this project. To use multiple service IDs, add a comma between each service ID.
+
+You can map up to 100 services to each GitLab project.
+
+For more information about deployment tracking in Jira, see [Set up deployment tracking](https://support.atlassian.com/jira-service-management-cloud/docs/set-up-deployment-tracking/).
 
 ## Update the GitLab for Jira Cloud app
 

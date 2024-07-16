@@ -1,4 +1,4 @@
-import Vue from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
@@ -19,6 +19,7 @@ import {
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   SEARCH_DEBOUNCE,
+  WORK_ITEM_TYPE_ENUM_EPIC,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
@@ -48,6 +49,7 @@ const findWorkItemTypeId = (typeName) => {
 
 const workItemTypeIdForTask = findWorkItemTypeId('Task');
 const workItemTypeIdForIssue = findWorkItemTypeId('Issue');
+const workItemTypeIdForEpic = findWorkItemTypeId('Epic');
 
 describe('WorkItemLinksForm', () => {
   /**
@@ -56,6 +58,7 @@ describe('WorkItemLinksForm', () => {
   let wrapper;
 
   const updateMutationResolver = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
+  const updateMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const availableWorkItemsResolver = jest.fn().mockResolvedValue(availableWorkItemsResponse);
   const projectWorkItemTypesResolver = jest
@@ -74,7 +77,9 @@ describe('WorkItemLinksForm', () => {
     formType = FORM_TYPES.create,
     parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
+    updateMutation = updateMutationResolver,
     isGroup = false,
+    createGroupLevelWorkItems = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
@@ -83,7 +88,7 @@ describe('WorkItemLinksForm', () => {
         [groupWorkItemTypesQuery, groupWorkItemTypesResolver],
         [groupProjectsForLinksWidgetQuery, groupProjectsFormLinksWidgetResolver],
         [relatedProjectsForLinksWidgetQuery, relatedProjectsForLinksWidgetResolver],
-        [updateWorkItemMutation, updateMutationResolver],
+        [updateWorkItemMutation, updateMutation],
         [createWorkItemMutation, createMutationResolver],
       ]),
       propsData: {
@@ -94,6 +99,9 @@ describe('WorkItemLinksForm', () => {
         parentWorkItemType,
         childrenType,
         formType,
+        glFeatures: {
+          createGroupLevelWorkItems,
+        },
       },
       provide: {
         hasIterationsFeature,
@@ -112,6 +120,7 @@ describe('WorkItemLinksForm', () => {
   const findTooltip = () => wrapper.findComponent(GlTooltip);
   const findAddChildButton = () => wrapper.findByTestId('add-child-button');
   const findValidationElement = () => wrapper.findByTestId('work-items-invalid');
+  const findErrorMessageElement = () => wrapper.findByTestId('work-items-error');
   const findProjectSelector = () => wrapper.findComponent(WorkItemProjectsListbox);
 
   beforeEach(() => {
@@ -297,14 +306,70 @@ describe('WorkItemLinksForm', () => {
         );
       });
     });
+
+    it('doesnt include selected project when switching from project to group level child', async () => {
+      await createComponent({
+        parentConfidential: false,
+        isGroup: true,
+        parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+        childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+      });
+
+      findInput().vm.$emit('input', 'Pretending to add an issue');
+
+      findProjectSelector().vm.$emit('selectProject', projectData[0]);
+
+      await wrapper.setProps({
+        childrenType: WORK_ITEM_TYPE_ENUM_EPIC,
+      });
+
+      findInput().vm.$emit('input', 'Actually adding an epic');
+
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+
+      await waitForPromises();
+
+      expect(createMutationResolver).toHaveBeenCalledWith({
+        input: {
+          title: 'Actually adding an epic',
+          projectPath: 'group-a',
+          workItemTypeId: workItemTypeIdForEpic,
+          hierarchyWidget: {
+            parentId: 'gid://gitlab/WorkItem/1',
+          },
+          confidential: false,
+        },
+      });
+    });
+
+    it('requires project selection if group level work item creation is disabled', async () => {
+      await createComponent({
+        parentConfidential: false,
+        isGroup: true,
+        parentWorkItemType: WORK_ITEM_TYPE_VALUE_EPIC,
+        childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
+        createGroupLevelWorkItems: false,
+      });
+
+      findInput().vm.$emit('input', 'Example title');
+
+      expect(findAddChildButton().props('disabled')).toBe(true);
+
+      findProjectSelector().vm.$emit('selectProject', projectData[0]);
+
+      await nextTick();
+
+      expect(findAddChildButton().props('disabled')).toBe(false);
+    });
   });
 
   describe('adding an existing work item', () => {
-    const selectAvailableWorkItemTokens = () => {
-      findWorkItemTokenInput().vm.$emit(
-        'input',
-        availableWorkItemsResponse.data.workspace.workItems.nodes,
-      );
+    const selectAvailableWorkItemTokens = (
+      tokens = availableWorkItemsResponse.data.workspace.workItems.nodes,
+    ) => {
+      findWorkItemTokenInput().vm.$emit('input', tokens);
     };
 
     beforeEach(async () => {
@@ -369,6 +434,28 @@ describe('WorkItemLinksForm', () => {
         ),
       );
     });
+
+    it('clears form error when token input is updated', async () => {
+      await createComponent({ formType: FORM_TYPES.add, updateMutation: updateMutationRejection });
+      await selectAvailableWorkItemTokens();
+
+      // Trigger form submission
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+      await waitForPromises();
+
+      // Assert if error was shown
+      expect(findErrorMessageElement().exists()).toBe(true);
+
+      // Trigger Token input update, causing error to clear
+      await selectAvailableWorkItemTokens(
+        availableWorkItemsResponse.data.workspace.workItems.nodes.slice(0, 2),
+      );
+
+      // Assert if error was cleared
+      expect(findErrorMessageElement().exists()).toBe(false);
+    });
   });
 
   describe('associate iteration with task', () => {
@@ -398,6 +485,7 @@ describe('WorkItemLinksForm', () => {
         },
       });
     });
+
     it('does not send the iteration widget to mutation when parent has no iteration associated', async () => {
       await createComponent({
         hasIterationsFeature: true,

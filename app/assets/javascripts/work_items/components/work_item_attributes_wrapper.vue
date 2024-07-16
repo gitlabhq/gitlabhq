@@ -46,6 +46,7 @@ export default {
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
   },
   mixins: [glFeatureFlagMixin()],
+  inject: ['hasSubepicsFeature'],
   props: {
     fullPath: {
       type: String,
@@ -84,7 +85,11 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_ROLLEDUP_DATES);
     },
     workItemWeight() {
-      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+      /** TODO remove this check after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158021 is merged */
+      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC) {
+        return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+      }
+      return false;
     },
     workItemParticipants() {
       return this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS);
@@ -108,6 +113,9 @@ export default {
       return (
         this.glFeatures.workItemsRolledupDates && this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC
       );
+    },
+    showParent() {
+      return this.workItemType === WORK_ITEM_TYPE_VALUE_EPIC ? this.hasSubepicsFeature : true;
     },
     workItemParent() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
@@ -178,6 +186,7 @@ export default {
     <template v-if="workItemRolledupDates && showRolledupDates">
       <work-item-rolledup-dates
         :can-update="canUpdate"
+        :full-path="fullPath"
         :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
         :due-date-fixed="workItemRolledupDates.dueDateFixed"
         :due-date-inherited="workItemRolledupDates.dueDate"
@@ -254,7 +263,7 @@ export default {
         @error="$emit('error', $event)"
       />
     </template>
-    <template v-if="workItemHierarchy">
+    <template v-if="workItemHierarchy && showParent">
       <work-item-parent
         class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
         :can-update="canUpdate"

@@ -16,5 +16,4 @@ GraphQL/UnnecessaryFieldAlias:
     - 'ee/app/graphql/types/dast/profile_type.rb'
     - 'ee/app/graphql/types/dora/performance_score_connection_type.rb'
     - 'ee/app/graphql/types/group_release_stats_type.rb'
-    - 'ee/app/graphql/types/merge_requests/review_llm_summary_type.rb'
     - 'ee/app/graphql/types/requirements_management/requirement_type.rb'

@@ -7,9 +7,12 @@ RSpec.describe Types::Ci::Catalog::Resources::Components::InputType, feature_cat
 
   it 'exposes the expected fields' do
     expected_fields = %i[
-      name
       default
+      description
+      name
+      regex
       required
+      type
     ]
 
     expect(described_class).to have_graphql_fields(*expected_fields)

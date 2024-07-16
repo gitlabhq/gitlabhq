@@ -44,12 +44,14 @@ export function removeAgentFromStore(store, deleteClusterAgent, query, variables
       draftData.project.clusterAgents.nodes = draftData.project.clusterAgents.nodes.filter(
         ({ id }) => id !== deleteClusterAgent.id,
       );
-      draftData.project.ciAccessAuthorizedAgents.nodes = draftData.project.ciAccessAuthorizedAgents.nodes.filter(
-        ({ agent }) => agent.id !== deleteClusterAgent.id,
-      );
-      draftData.project.userAccessAuthorizedAgents.nodes = draftData.project.userAccessAuthorizedAgents.nodes.filter(
-        ({ agent }) => agent.id !== deleteClusterAgent.id,
-      );
+      draftData.project.ciAccessAuthorizedAgents.nodes =
+        draftData.project.ciAccessAuthorizedAgents.nodes.filter(
+          ({ agent }) => agent.id !== deleteClusterAgent.id,
+        );
+      draftData.project.userAccessAuthorizedAgents.nodes =
+        draftData.project.userAccessAuthorizedAgents.nodes.filter(
+          ({ agent }) => agent.id !== deleteClusterAgent.id,
+        );
     });
 
     store.writeQuery({

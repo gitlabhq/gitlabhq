@@ -44,6 +44,10 @@ module Gitlab
             { belongs_to_key => issuable_db_id(issue_event) }
           end
 
+          def imported_from
+            ::Import::HasImportSource::IMPORT_SOURCES[:github]
+          end
+
           def import_settings
             @import_settings ||= Gitlab::GithubImport::Settings.new(project)
           end

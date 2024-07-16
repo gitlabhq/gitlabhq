@@ -9,7 +9,7 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       animationdecimalplaces="0"
       id="reference-0"
       shouldanimate="true"
-      title="Total pipelines"
+      title="Total pipeline runs"
       titleiconclass=""
       unit=""
       usedelimiters="true"
@@ -22,45 +22,33 @@ exports[`StatisticsList displays the counts data with labels 1`] = `
       animationdecimalplaces="0"
       id="reference-1"
       shouldanimate="true"
-      title="Success ratio"
+      title="Failure rate"
       titleiconclass=""
       unit=""
       usedelimiters="true"
-      value="50.00%"
+      value="50%"
       variant="muted"
     />
+    <gl-link-stub
+      class="gl-p-2"
+      data-event-tracking="click_view_all_link_in_pipeline_analytics"
+      href="/flightjs/Flight/-/pipelines?page=1&scope=all&status=failed"
+    >
+      View all
+    </gl-link-stub>
   </div>
   <div>
     <gl-single-stat-stub
       animationdecimalplaces="0"
       id="reference-2"
       shouldanimate="true"
-      title="Successful pipelines"
+      title="Success rate"
       titleiconclass=""
       unit=""
       usedelimiters="true"
-      value="20,000"
+      value="50%"
       variant="muted"
     />
-  </div>
-  <div>
-    <gl-single-stat-stub
-      animationdecimalplaces="0"
-      id="reference-3"
-      shouldanimate="true"
-      title="Failed pipelines"
-      titleiconclass=""
-      unit=""
-      usedelimiters="true"
-      value="20,000"
-      variant="muted"
-    />
-    <gl-link-stub
-      class="gl-p-2"
-      href="/flightjs/Flight/-/pipelines?page=1&scope=all&status=failed"
-    >
-      See details
-    </gl-link-stub>
   </div>
 </div>
 `;

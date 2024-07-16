@@ -84,7 +84,7 @@ site's URL matches its external URL.
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
 1. Find the affected **secondary** site and select **Edit**.
 1. Ensure the **URL** field matches the value found in `/etc/gitlab/gitlab.rb`

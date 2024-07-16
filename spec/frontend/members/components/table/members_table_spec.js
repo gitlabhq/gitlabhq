@@ -1,8 +1,7 @@
-import { GlTable, GlButton, GlBadge } from '@gitlab/ui';
+import { GlTable, GlButton } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
-import { cloneDeep } from 'lodash';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import CreatedAt from '~/members/components/table/created_at.vue';
 import ExpirationDatepicker from '~/members/components/table/expiration_datepicker.vue';
@@ -13,7 +12,7 @@ import MemberActivity from '~/members/components/table/member_activity.vue';
 import MembersTable from '~/members/components/table/members_table.vue';
 import MembersPagination from '~/members/components/table/members_pagination.vue';
 import MaxRole from '~/members/components/table/max_role.vue';
-import RoleDetailsDrawer from '~/members/components/table/role_details_drawer.vue';
+import RoleDetailsDrawer from '~/members/components/table/drawer/role_details_drawer.vue';
 import {
   MEMBERS_TAB_TYPES,
   MEMBER_STATE_CREATED,
@@ -27,6 +26,7 @@ import {
 import {
   member as memberMock,
   directMember,
+  updateableMember,
   invite,
   accessRequest,
   privateGroup,
@@ -42,11 +42,11 @@ describe('MembersTable', () => {
   const createStore = (state = {}) => {
     return new Vuex.Store({
       modules: {
-        [MEMBERS_TAB_TYPES.invite]: {
+        [MEMBERS_TAB_TYPES.user]: {
           namespaced: true,
           state: {
             members: [],
-            memberPath: 'invite/path/:id',
+            memberPath: 'user/path/:id',
             tableFields: [],
             tableAttrs: {
               tr: { 'data-testid': 'member-row' },
@@ -69,7 +69,7 @@ describe('MembersTable', () => {
         sourceId: 1,
         currentUserId: 1,
         canManageMembers: true,
-        namespace: MEMBERS_TAB_TYPES.invite,
+        namespace: MEMBERS_TAB_TYPES.user,
         namespaceReachedLimit: false,
         namespaceUserLimit: 1,
         glFeatures: { showRoleDetailsInDrawer },
@@ -87,7 +87,6 @@ describe('MembersTable', () => {
   const findTable = () => wrapper.findComponent(GlTable);
   const findRoleDetailsDrawer = () => wrapper.findComponent(RoleDetailsDrawer);
   const findRoleButton = () => wrapper.findComponent(GlButton);
-  const findCustomRoleBadge = () => wrapper.findByTestId('max-role').findComponent(GlBadge);
   const findTableCellByMemberId = (tableCellLabel, memberId) =>
     wrapper
       .findByTestId(`members-table-row-${memberId}`)
@@ -134,37 +133,6 @@ describe('MembersTable', () => {
         createMaxRoleComponent();
 
         expect(findRoleButton().text()).toBe('Owner');
-      });
-
-      describe('custom role badge', () => {
-        it('shows the badge for a custom role', () => {
-          const member = cloneDeep(memberMock);
-          member.accessLevel.memberRoleId = 1;
-          createMaxRoleComponent(member);
-
-          expect(findCustomRoleBadge().props('size')).toBe('sm');
-          expect(findCustomRoleBadge().text()).toBe('Custom role');
-        });
-
-        it('does not show badge for a standard role', () => {
-          createMaxRoleComponent();
-
-          expect(findCustomRoleBadge().exists()).toBe(false);
-        });
-      });
-
-      describe('disabled state', () => {
-        it.each`
-          phrase        | busy
-          ${'disables'} | ${true}
-          ${'enables'}  | ${false}
-        `('$phrase the button when the drawer busy state is $busy', async ({ busy }) => {
-          createMaxRoleComponent();
-          findRoleDetailsDrawer().vm.$emit('busy', busy);
-          await nextTick();
-
-          expect(findRoleButton().props('disabled')).toBe(busy);
-        });
       });
     });
 
@@ -326,12 +294,12 @@ describe('MembersTable', () => {
 
     describe('with member selected', () => {
       beforeEach(() => {
-        createComponent({ members: [memberMock], tableFields: ['maxRole'] });
+        createComponent({ members: [updateableMember], tableFields: ['maxRole'] });
         return findRoleButton().trigger('click');
       });
 
       it('passes member to drawer', () => {
-        expect(findRoleDetailsDrawer().props('member')).toBe(memberMock);
+        expect(findRoleDetailsDrawer().props('member')).toEqual(updateableMember);
       });
 
       it('clears member when drawer is closed', async () => {

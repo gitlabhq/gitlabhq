@@ -29,6 +29,11 @@
       "minimum": 0,
       "description": "Number of requests allowed to the GET /api/v4/groups/:id/projects API."
     },
+    "group_shared_groups_api_limit": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of requests allowed to the GET /api/v4/groups/:id/groups/shared API."
+    },
     "groups_api_limit": {
       "type": "integer",
       "minimum": 0,

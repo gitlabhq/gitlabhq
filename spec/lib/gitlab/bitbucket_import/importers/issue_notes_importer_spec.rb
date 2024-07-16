@@ -49,6 +49,7 @@ RSpec.describe Gitlab::BitbucketImport::Importers::IssueNotesImporter, :clean_gi
       expect(note.author).to eq(bitbucket_user)
       expect(note.created_at).to eq(Date.today)
       expect(note.updated_at).to eq(Date.today)
+      expect(note.imported_from).to eq('bitbucket')
     end
 
     it 'converts mentions in the note' do

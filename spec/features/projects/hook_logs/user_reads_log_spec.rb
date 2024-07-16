@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Hook logs', feature_category: :groups_and_projects do
+RSpec.describe 'Hook logs', feature_category: :webhooks do
   let(:project) { create(:project) }
   let(:project_hook) { create(:project_hook, project: project) }
   let(:web_hook_log) { create(:web_hook_log, web_hook: project_hook, response_body: 'Hello World') }

@@ -140,7 +140,7 @@ module InternalEventsCli
           "\n\n   Technical description:  #{metric.technical_description}"
         ].compact.join(' ')
 
-        last_line_of_prompt = "\n  Finish the description:  #{format_info("#{metric.prefix}...")}"
+        last_line_of_prompt = "\n  Finish the description:  #{format_info("#{metric.description_prefix}...")}"
 
         cli.say("\n")
         cli.say(multiline_prompt)
@@ -160,7 +160,7 @@ module InternalEventsCli
 
         cli.say("\n") # looks like multiline input, but isn't. Spacer improves clarity.
 
-        metric.description = "#{metric.prefix} #{base_description}"
+        metric.description = "#{metric.description_prefix} #{base_description}"
       end
     end
 
@@ -277,12 +277,30 @@ module InternalEventsCli
         #{divider}
       TEXT
 
-      cli.select("How would you like to proceed?", **select_opts) do |menu|
+      actions = selected_events.map(&:action).join(', ')
+      next_step = cli.select("How would you like to proceed?", **select_opts) do |menu|
         menu.enum "."
-        menu.choice "View Usage -- look at code examples for #{@selected_event_paths.first}", -> do
-          UsageViewer.new(cli, @selected_event_paths.first, selected_events.first).run
-        end
-        menu.choice 'Exit', -> { cli.say Text::FEEDBACK_NOTICE }
+
+        menu.choice "New Event -- define a new event", :new_event
+        menu.choice "New Metric -- define another metric for #{actions}", :new_metric_with_events
+        menu.choice "New Metric -- define another metric", :new_metric
+        choice = "View Usage -- look at code examples for event #{selected_events.first.action}"
+        menu.default choice
+        menu.choice choice, :view_usage
+        menu.choice 'Exit', :exit
+      end
+
+      case next_step
+      when :new_event
+        InternalEventsCli::EventDefiner.new(cli).run
+      when :new_metric_with_events
+        MetricDefiner.new(cli, @selected_event_paths).run
+      when :new_metric
+        MetricDefiner.new(cli).run
+      when :view_usage
+        UsageViewer.new(cli, @selected_event_paths.first, selected_events.first).run
+      when :exit
+        cli.say Text::FEEDBACK_NOTICE
       end
     end
 

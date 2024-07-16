@@ -228,7 +228,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
           it 'does not mark parent work item as confidential' do
             expect { execute(note) }.to not_change { noteable.reload.confidential }.from(false)
-            expect(noteable.errors[:base]).to include('A confidential work item cannot have a parent that already has non-confidential children.')
+            expect(noteable.errors[:base]).to include('All child items must be confidential in order to turn on confidentiality.')
           end
         end
 
@@ -803,7 +803,7 @@ RSpec.describe Notes::QuickActionsService, feature_category: :team_planning do
 
         expect(apply_updates.success?).to be false
         expect(apply_updates.message)
-          .to include("A confidential work item cannot have a parent that already has non-confidential children.")
+          .to include("All child items must be confidential in order to turn on confidentiality.")
       end
     end
 

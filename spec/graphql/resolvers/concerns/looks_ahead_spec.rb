@@ -93,7 +93,7 @@ RSpec.describe LooksAhead do
   end
 
   before_all do
-    stub_feature_flags(epic_and_work_item_labels_unification: false)
+    stub_feature_flags(epic_and_work_item_associations_unification: false)
   end
 
   def run_query(gql_query)

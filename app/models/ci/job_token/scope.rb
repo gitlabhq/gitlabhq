@@ -25,10 +25,9 @@ module Ci
       end
 
       def accessible?(accessed_project)
-        self_referential?(accessed_project) || (
-          outbound_accessible?(accessed_project) &&
-          inbound_accessible?(accessed_project)
-        )
+        return true if self_referential?(accessed_project)
+
+        outbound_accessible?(accessed_project) && inbound_accessible?(accessed_project)
       end
 
       def outbound_projects
@@ -67,11 +66,17 @@ module Ci
       end
 
       def inbound_accessible?(accessed_project)
-        # if the setting is disabled any project is considered to be in scope.
-        return true unless accessed_project.ci_inbound_job_token_scope_enabled?
+        if accessed_project.ci_inbound_job_token_scope_enabled?
+          ::Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter.increment(legacy: false)
 
-        inbound_linked_as_accessible?(accessed_project) ||
-          group_linked_as_accessible?(accessed_project)
+          inbound_linked_as_accessible?(accessed_project) ||
+            group_linked_as_accessible?(accessed_project)
+        else
+          ::Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter.increment(legacy: true)
+
+          # if the setting is disabled any project is considered to be in scope.
+          true
+        end
       end
 
       # We don't check the inbound allowlist here. That is because

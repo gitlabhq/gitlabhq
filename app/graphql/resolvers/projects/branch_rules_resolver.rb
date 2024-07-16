@@ -18,7 +18,7 @@ module Resolvers
       private
 
       def protected_branches
-        apply_lookahead(project.protected_branches.sorted_by_name)
+        apply_lookahead(project.all_protected_branches.sorted_by_name)
       end
     end
   end

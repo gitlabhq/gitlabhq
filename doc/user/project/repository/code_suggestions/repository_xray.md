@@ -73,3 +73,17 @@ After the initial x-ray job completes and uploads the repository analysis report
 The X-Ray data for your project updates each time a CI/CD pipeline containing the `xray`
 job is run. To learn more about pipeline configuration and triggers, see the
 [pipelines documentation](../../../../ci/pipelines/merge_request_pipelines.md).
+
+## Troubleshooting
+
+### `401: Unauthorized` when running Repository X-Ray
+
+When running Repository X-Ray, you might get an error that states `401: Unauthorized`.
+
+A Duo Pro add-on is linked to a group when you buy that add-on. To solve the error, ensure
+that your current project is part of a group with the Duo Pro add-on.
+
+This link can be either of the following:
+
+- Direct, that is, the project is in a group that has the Duo Pro add-on.
+- Indirect, for example, the parent group of the current project's group has the Duo Pro add-on.

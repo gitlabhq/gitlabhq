@@ -55,8 +55,7 @@ describe('IDE commit message field', () => {
 
       it('highlights characters over 50 length', async () => {
         await wrapper.setProps({
-          text:
-            'text less than 50 chars that should not highlighted. text more than 50 should be highlighted',
+          text: 'text less than 50 chars that should not highlighted. text more than 50 should be highlighted',
         });
 
         expect(findHighlights()).toHaveLength(1);
@@ -80,8 +79,7 @@ describe('IDE commit message field', () => {
 
       it('highlights body text more than 72 characters', async () => {
         await wrapper.setProps({
-          text:
-            'subject line\nbody content that will be highlighted when it is more than 72 characters in length',
+          text: 'subject line\nbody content that will be highlighted when it is more than 72 characters in length',
         });
 
         expect(findHighlights()).toHaveLength(2);
@@ -91,8 +89,7 @@ describe('IDE commit message field', () => {
 
       it('highlights body text & subject line', async () => {
         await wrapper.setProps({
-          text:
-            'text less than 50 chars that should not highlighted\nbody content that will be highlighted when it is more than 72 characters in length',
+          text: 'text less than 50 chars that should not highlighted\nbody content that will be highlighted when it is more than 72 characters in length',
         });
 
         expect(findHighlights()).toHaveLength(2);

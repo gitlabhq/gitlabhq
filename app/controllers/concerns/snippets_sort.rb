@@ -4,6 +4,6 @@ module SnippetsSort
   extend ActiveSupport::Concern
 
   def sort_param
-    params[:sort].presence || 'updated_desc'
+    pagination_params[:sort].presence || 'updated_desc'
   end
 end

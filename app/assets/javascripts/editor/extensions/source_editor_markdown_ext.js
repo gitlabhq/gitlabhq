@@ -83,8 +83,12 @@ export class EditorMarkdownExtension {
         instance.setPosition(pos);
       },
       insertMarkdown: (instance, e) => {
-        const { mdTag: tag, mdBlock: blockTag, mdPrepend, mdSelect: select } =
-          e.currentTarget?.dataset || e;
+        const {
+          mdTag: tag,
+          mdBlock: blockTag,
+          mdPrepend,
+          mdSelect: select,
+        } = e.currentTarget?.dataset || e;
 
         insertMarkdownText({
           tag,

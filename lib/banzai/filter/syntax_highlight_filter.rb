@@ -11,7 +11,7 @@ module Banzai
     #
     class SyntaxHighlightFilter < TimeoutHtmlPipelineFilter
       prepend Concerns::PipelineTimingCheck
-      include OutputSafety
+      include Concerns::OutputSafety
 
       CSS_CLASSES = 'code highlight js-syntax-highlight'
 

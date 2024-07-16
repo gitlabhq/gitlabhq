@@ -1,9 +1,6 @@
 description: "Click pipeline empty state template"
 category: default
 action: template_clicked
-label_description: "Template name or \"Getting-Started\""
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: activation
@@ -16,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "Template name or \"Getting-Started\""

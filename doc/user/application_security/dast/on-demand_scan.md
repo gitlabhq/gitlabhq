@@ -18,7 +18,7 @@ Only run DAST scans against a test server.
 ## On-demand scans
 
 > - Runner tags selection [enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111499) in GitLab 16.3.
-> - Browser based on-demand DAST scans [deployed behind the feature flag `dast_ods_browser_based_scanner`](https://gitlab.com/gitlab-org/gitlab/-/issues/430212) in GitLab 16.8.
+> - Browser based on-demand DAST scans available from GitLab 17.0 since [proxy-based DAST was removed in the same version](../../../update/deprecations.md#proxy-based-dast-deprecated).
 
 An on-demand DAST scan runs outside the DevOps life cycle. Changes in your repository don't trigger
 the scan. You must either start it manually, or schedule it to run. For on-demand DAST scans,
@@ -338,8 +338,8 @@ app.get('/dast-website-target', function(req, res) {
 
 ## Scanner profile
 
-> - Deprecated AJAX Spider option with the [introduction of Browser based on-demand DAST scans behind feature flag `dast_ods_browser_based_scanner`](https://gitlab.com/gitlab-org/gitlab/-/issues/430210).
-> - Renamed spider timeout to crawl timeout with the [introduction of Browser based on-demand DAST scans behind feature flag `dast_ods_browser_based_scanner`](https://gitlab.com/gitlab-org/gitlab/-/issues/430210).
+> - Deprecated AJAX Spider option with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
+> - Renamed spider timeout to crawl timeout with the introduction of Browser based on-demand DAST scans in GitLab 17.0.
 
 A scanner profile defines the configuration details of a security scanner. A scanner profile can be
 referenced in `.gitlab-ci.yml` and on-demand scans.

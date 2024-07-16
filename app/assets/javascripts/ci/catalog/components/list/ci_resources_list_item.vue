@@ -15,7 +15,6 @@ import { formatDate, getTimeago } from '~/lib/utils/datetime_utility';
 import { toNounSeriesText } from '~/lib/utils/grammar';
 import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import Markdown from '~/vue_shared/components/markdown/non_gfm_markdown.vue';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { CI_RESOURCE_DETAILS_PAGE_NAME } from '../../router/constants';
 import { VERIFICATION_LEVEL_UNVERIFIED } from '../../constants';
 import CiVerificationBadge from '../shared/ci_verification_badge.vue';
@@ -40,7 +39,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     resource: {
       type: Object,
@@ -89,9 +87,6 @@ export default {
     },
     hasReleasedVersion() {
       return Boolean(this.latestVersion?.createdAt);
-    },
-    isPopularityFeatureEnabled() {
-      return Boolean(this.glFeatures?.ciCatalogPopularity);
     },
     isVerified() {
       return this.resource?.verificationLevel !== VERIFICATION_LEVEL_UNVERIFIED;
@@ -142,7 +137,6 @@ export default {
       // Override the <a> tag if no modifier key is held down to use Vue router and not
       // open a new tab.
       e.preventDefault();
-
       // Push to the decoded URL to avoid all the / being encoded
       this.$router.push({ path: decodeURIComponent(this.resourceId) });
     },
@@ -182,12 +176,9 @@ export default {
           <b> {{ resource.name }}</b>
         </gl-link>
         <div class="gl-display-flex gl-flex-grow-1 gl-md-justify-content-space-between">
-          <gl-badge size="sm" class="gl-h-5 gl-align-self-center" variant="info">{{
-            name
-          }}</gl-badge>
+          <gl-badge class="gl-h-5 gl-align-self-center" variant="info">{{ name }}</gl-badge>
           <div class="gl-display-flex gl-align-items-center gl-ml-3">
             <div
-              v-if="isPopularityFeatureEnabled"
               v-gl-tooltip.top
               class="gl-display-flex gl-align-items-center gl-mr-3"
               :title="usageText"
@@ -223,7 +214,7 @@ export default {
           <div
             v-if="hasComponents"
             data-testid="ci-resource-component-names"
-            class="gl-font-sm gl-mt-1 gl-display-inline-flex gl-flex-wrap gl-text-gray-900"
+            class="gl-font-sm gl-mt-1 gl-inline-flex gl-flex-wrap gl-text-gray-900"
           >
             <span class="gl-font-bold"> &#8226; {{ $options.i18n.components }} </span>
             <gl-sprintf :message="componentNamesSprintfMessage">

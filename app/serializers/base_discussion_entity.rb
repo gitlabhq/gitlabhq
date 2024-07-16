@@ -40,6 +40,8 @@ class BaseDiscussionEntity < Grape::Entity
     expose :resolved_at
 
     expose :resolve_path do |discussion|
+      next unless discussion.project
+
       resolve_project_discussion_path(discussion.project, discussion.noteable_collection_name, discussion.noteable, discussion.id)
     end
 

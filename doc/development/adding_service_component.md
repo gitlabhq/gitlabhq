@@ -48,7 +48,7 @@ In addition, it needs to cover the following:
 
 The first iteration should be to add the ability to connect and use the service as an externally installed component. Often this involves providing settings in GitLab to connect to the service, or allow connections from it. And then shipping documentation on how to install and configure the service with GitLab.
 
-[Elasticsearch](../integration/advanced_search/elasticsearch.md#install-elasticsearch) is an example of a service that has been integrated this way. Many of the other services, including internal projects like Gitaly, started off as separately installed alternatives.
+[Elasticsearch](../integration/advanced_search/elasticsearch.md#install-elasticsearch-or-aws-opensearch-cluster) is an example of a service that has been integrated this way. Many of the other services, including internal projects like Gitaly, started off as separately installed alternatives.
 
 **For services that depend on the existing GitLab codebase:**
 

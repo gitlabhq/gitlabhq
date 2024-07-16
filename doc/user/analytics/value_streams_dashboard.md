@@ -34,6 +34,8 @@ With the Value Streams Dashboard, you can:
 - Drill down into individual projects or metrics to take actions for improvement.
 - Understand the impact of adding AI to the software development life cycle (SDLC) and demonstrate the return on investment (ROI) of investments in GitLab Duo.
 
+For a click-through demo, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
+
 NOTE:
 Data displayed on the Value Streams Dashboard is continuously collected in the backend.
 If you upgrade to the Ultimate tier, you get access to historical data, and can view metrics about past GitLab usage and performance.
@@ -159,11 +161,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.
-
-FLAG:
-On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`.
-On GitLab.com this feature is available.
-On GitLab Dedicated this feature is not available.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/451873) in GitLab 17.2. Feature flag `ai_impact_analytics_dashboard` removed.
 
 AI Impact analytics displays SDLC metrics for a group or project in the month-to-date and the past six months. You can use this table to observe how changes in the AI usage metric correlate with changes in other metrics.
 
@@ -171,7 +169,7 @@ The metric **Monthly Code Suggestions Usage rate** represents users that engage 
 
 The month-over-month comparison of the AI Usage unique users rate gives a more accurate indication of this metric, as it eliminates factors such as developer experience level and project type or complexity.
 
-The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members.
+The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members. To learn more about AI Impact analytics, see the blog post [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
 
 NOTE:
 Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
@@ -247,7 +245,7 @@ then builds a report using [GitLab Flavored Markdown](../../user/markdown.md),
 and opens an issue in a specified project.
 The issue includes a comparison metrics table in Markdown format.
 
-See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report).
+See an [example scheduled report](https://gitlab.com/components/vsd-reports-generator#example-for-monthly-executive-value-streams-report). To learn more, see the blog post [New Scheduled Reports Generation tool simplifies value stream management](https://about.gitlab.com/blog/2024/06/20/new-scheduled-reports-generation-tool-simplifies-value-stream-management/).
 
 ## Customize the dashboard panels
 

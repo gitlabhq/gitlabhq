@@ -203,7 +203,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         expect { subject }
           .to change { Ci::Pipeline.count }.by(1)
         expect(subject).to be_error
-        expect(subject.message).to match_array(["jobs job config should implement a script: or a trigger: keyword"])
+        expect(subject.message)
+          .to match_array(["jobs job config should implement the script:, run:, or trigger: keyword"])
       end
 
       it 'creates a new pipeline in a downstream project' do
@@ -590,7 +591,8 @@ RSpec.describe Ci::CreateDownstreamPipelineService, '#execute', feature_category
         expect { subject }
           .to change { Ci::Pipeline.count }.by(1)
         expect(subject).to be_error
-        expect(subject.message).to match_array(["jobs invalid config should implement a script: or a trigger: keyword"])
+        expect(subject.message)
+          .to match_array(["jobs invalid config should implement the script:, run:, or trigger: keyword"])
       end
 
       it 'creates a new pipeline in the downstream project' do

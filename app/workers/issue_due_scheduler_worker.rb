@@ -11,7 +11,13 @@ class IssueDueSchedulerWorker # rubocop:disable Scalability/IdempotentWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform
-    project_ids = Issue.opened.due_tomorrow.group(:project_id).pluck(:project_id).map { |id| [id] }
+    project_ids = Issue
+      .with_issue_type(:issue)
+      .opened
+      .due_tomorrow
+      .group(:project_id)
+      .pluck(:project_id)
+      .map { |id| [id] }
 
     MailScheduler::IssueDueWorker.bulk_perform_async(project_ids) # rubocop:disable Scalability/BulkPerformWithContext
   end

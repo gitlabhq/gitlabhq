@@ -23,8 +23,6 @@ module QA
         example.run
 
         ssh_key.remove_via_api!
-
-        Page::Main::Menu.perform(&:sign_out_if_signed_in)
       end
 
       it 'user pushes to the repository', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347734' do

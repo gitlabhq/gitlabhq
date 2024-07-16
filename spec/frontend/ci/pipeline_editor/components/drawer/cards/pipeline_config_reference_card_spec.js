@@ -69,12 +69,8 @@ describe('Pipeline config reference card', () => {
     };
 
     it('tracks help page links', () => {
-      const {
-        CI_EXAMPLES_LINK,
-        CI_HELP_LINK,
-        CI_NEEDS_LINK,
-        CI_YAML_LINK,
-      } = pipelineEditorTrackingOptions.actions.helpDrawerLinks;
+      const { CI_EXAMPLES_LINK, CI_HELP_LINK, CI_NEEDS_LINK, CI_YAML_LINK } =
+        pipelineEditorTrackingOptions.actions.helpDrawerLinks;
 
       testTracker(findCiExamplesLink(), CI_EXAMPLES_LINK);
       testTracker(findCiIntroLink(), CI_HELP_LINK);

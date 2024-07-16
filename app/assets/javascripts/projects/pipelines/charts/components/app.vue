@@ -1,6 +1,5 @@
 <script>
 import { GlTabs, GlTab } from '@gitlab/ui';
-import API from '~/api';
 import { mergeUrlParams, updateHistory, getParameterValues } from '~/lib/utils/url_utility';
 import { InternalEvents } from '~/tracking';
 import PipelineCharts from './pipeline_charts.vue';
@@ -22,8 +21,8 @@ export default {
   piplelinesTabEvent: 'p_analytics_ci_cd_pipelines',
   deploymentFrequencyTabEvent: 'p_analytics_ci_cd_deployment_frequency',
   leadTimeTabEvent: 'p_analytics_ci_cd_lead_time',
-  timeToRestoreServiceTabEvent: 'p_analytics_ci_cd_time_to_restore_service',
-  changeFailureRateTabEvent: 'p_analytics_ci_cd_change_failure_rate',
+  timeToRestoreServiceTabEvent: 'visit_ci_cd_time_to_restore_service_tab',
+  changeFailureRateTabEvent: 'visit_ci_cd_failure_rate_tab',
   mixins: [InternalEvents.mixin()],
   inject: {
     shouldRenderDoraCharts: {
@@ -77,13 +76,6 @@ export default {
         updateHistory({ url: path, title: window.title });
       }
     },
-    trackTabClick(event, trackWithInternalEvents = false) {
-      if (trackWithInternalEvents) {
-        this.trackEvent(event);
-        return;
-      }
-      API.trackRedisHllUserEvent(event);
-    },
   },
 };
 </script>
@@ -93,7 +85,7 @@ export default {
       <gl-tab
         :title="__('Pipelines')"
         data-testid="pipelines-tab"
-        @click="trackTabClick($options.piplelinesTabEvent, true)"
+        @click="trackEvent($options.piplelinesTabEvent)"
       >
         <pipeline-charts />
       </gl-tab>
@@ -101,28 +93,28 @@ export default {
         <gl-tab
           :title="__('Deployment frequency')"
           data-testid="deployment-frequency-tab"
-          @click="trackTabClick($options.deploymentFrequencyTabEvent, true)"
+          @click="trackEvent($options.deploymentFrequencyTabEvent)"
         >
           <deployment-frequency-charts />
         </gl-tab>
         <gl-tab
           :title="__('Lead time')"
           data-testid="lead-time-tab"
-          @click="trackTabClick($options.leadTimeTabEvent, true)"
+          @click="trackEvent($options.leadTimeTabEvent)"
         >
           <lead-time-charts />
         </gl-tab>
         <gl-tab
           :title="s__('DORA4Metrics|Time to restore service')"
           data-testid="time-to-restore-service-tab"
-          @click="trackTabClick($options.timeToRestoreServiceTabEvent)"
+          @click="trackEvent($options.timeToRestoreServiceTabEvent)"
         >
           <time-to-restore-service-charts />
         </gl-tab>
         <gl-tab
           :title="s__('DORA4Metrics|Change failure rate')"
           data-testid="change-failure-rate-tab"
-          @click="trackTabClick($options.changeFailureRateTabEvent)"
+          @click="trackEvent($options.changeFailureRateTabEvent)"
         >
           <change-failure-rate-charts />
         </gl-tab>

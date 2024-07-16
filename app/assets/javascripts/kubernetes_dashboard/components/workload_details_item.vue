@@ -47,7 +47,8 @@ export default {
   <li class="gl-leading-20 gl-py-3 gl-border-b-solid gl-border-b-2 gl-border-b-gray-100">
     <div
       :class="{
-        'gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center': collapsible,
+        'gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center':
+          collapsible,
       }"
     >
       <slot name="label">

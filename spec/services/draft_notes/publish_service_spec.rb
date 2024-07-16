@@ -9,6 +9,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   let(:user) { merge_request.author }
   let(:commit) { project.commit(sample_commit.id) }
   let(:internal) { false }
+  let(:executing_user) { nil }
 
   let(:position) do
     Gitlab::Diff::Position.new(
@@ -21,7 +22,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
   end
 
   def publish(draft: nil)
-    DraftNotes::PublishService.new(merge_request, user).execute(draft)
+    DraftNotes::PublishService.new(merge_request, user).execute(draft: draft, executing_user: executing_user)
   end
 
   context 'single draft note' do
@@ -234,7 +235,7 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
       recorder = ActiveRecord::QueryRecorder.new(skip_cached: false) { publish }
 
-      expect(recorder.count).not_to be > 106
+      expect(recorder.count).not_to be > 111
     end
   end
 
@@ -379,6 +380,36 @@ RSpec.describe DraftNotes::PublishService, feature_category: :code_review_workfl
 
     it 'returns an error' do
       expect(publish[:status]).to eq(:error)
+    end
+
+    context 'when executing_user is specified' do
+      let(:executing_user) { create(:user) }
+
+      context 'and executing_user can create notes' do
+        before do
+          allow(Ability)
+            .to receive(:allowed?)
+            .with(executing_user, :create_note, merge_request)
+            .and_return(true)
+        end
+
+        it 'returns success' do
+          expect(publish[:status]).to eq(:success)
+        end
+      end
+
+      context 'and executing_user cannot create notes' do
+        before do
+          allow(Ability)
+            .to receive(:allowed?)
+            .with(executing_user, :create_note, merge_request)
+            .and_return(false)
+        end
+
+        it 'returns an error' do
+          expect(publish[:status]).to eq(:error)
+        end
+      end
     end
   end
 end

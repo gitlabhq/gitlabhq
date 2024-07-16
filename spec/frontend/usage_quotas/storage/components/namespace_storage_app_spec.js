@@ -112,10 +112,8 @@ describe('NamespaceStorageApp', () => {
         });
 
         it('will receive relevant props', () => {
-          const {
-            containerRegistrySize,
-            containerRegistrySizeIsEstimated,
-          } = namespace.rootStorageStatistics;
+          const { containerRegistrySize, containerRegistrySizeIsEstimated } =
+            namespace.rootStorageStatistics;
 
           expect(findContainerRegistry().props()).toEqual({
             containerRegistrySize,

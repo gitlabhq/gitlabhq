@@ -91,14 +91,14 @@ RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibilit
         end
       end
 
-      it 'shows a running status badge that links to jobs tab' do
+      it 'shows an Active status badge that links to jobs tab' do
         runner = create(:ci_runner, :project, projects: [project])
         job = create(:ci_build, :running, runner: runner)
 
         visit admin_runners_path
 
         within_runner_row(runner.id) do
-          click_on(s_('Runners|Running'))
+          click_on(s_('Runners|Active'))
         end
 
         expect(current_url).to match(admin_runner_path(runner))
@@ -601,7 +601,7 @@ RSpec.describe "Admin Runners", :freeze_time, feature_category: :fleet_visibilit
 
   describe "Runner edit page", :js do
     let_it_be(:project1) { create(:project) }
-    let_it_be(:project2) { create(:project) }
+    let_it_be(:project2) { create(:project, organization: project1.organization) }
     let_it_be(:project_runner) { create(:ci_runner, :unregistered, :project) }
 
     before do

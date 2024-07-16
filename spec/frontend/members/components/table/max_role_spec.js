@@ -197,7 +197,7 @@ describe('MaxRole', () => {
 
     await nextTick();
 
-    expect(findListbox().props('placement')).toBe('right');
+    expect(findListbox().props('placement')).toBe('bottom-end');
   });
 
   it('sets the dropdown alignment to left on desktop', async () => {
@@ -206,6 +206,6 @@ describe('MaxRole', () => {
 
     await nextTick();
 
-    expect(findListbox().props('placement')).toBe('left');
+    expect(findListbox().props('placement')).toBe('bottom-start');
   });
 });

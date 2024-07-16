@@ -1,21 +1,39 @@
 import { chunk, memoize, uniq } from 'lodash';
-import { getCookie, setCookie } from '~/lib/utils/common_utils';
+import { getCookie, removeCookie } from '~/lib/utils/common_utils';
 import { initEmojiMap, getEmojiCategoryMap } from '~/emoji';
 import {
   EMOJIS_PER_ROW,
   EMOJI_ROW_HEIGHT,
   CATEGORY_ROW_HEIGHT,
   FREQUENTLY_USED_KEY,
-  FREQUENTLY_USED_COOKIE_KEY,
+  FREQUENTLY_USED_EMOJIS_STORAGE_KEY,
 } from '../constants';
 
 export const generateCategoryHeight = (emojisLength) =>
   emojisLength * EMOJI_ROW_HEIGHT + CATEGORY_ROW_HEIGHT;
 
-export const getFrequentlyUsedEmojis = () => {
-  const savedEmojis = getCookie(FREQUENTLY_USED_COOKIE_KEY);
+/**
+ * Helper function to transition legacy cookie-based emoji storage to localStorage.
+ * Sets localStorage to the value of the cookie and removes the cookie.
+ */
+const swapCookieToLocalStorage = () => {
+  const cookieContent = getCookie(FREQUENTLY_USED_EMOJIS_STORAGE_KEY);
+  localStorage.setItem(FREQUENTLY_USED_EMOJIS_STORAGE_KEY, cookieContent);
+  removeCookie(FREQUENTLY_USED_EMOJIS_STORAGE_KEY);
+};
 
-  if (!savedEmojis) return null;
+export const getFrequentlyUsedEmojis = () => {
+  let savedEmojis = localStorage.getItem(FREQUENTLY_USED_EMOJIS_STORAGE_KEY);
+
+  if (!savedEmojis) {
+    const savedEmojisfromCookie = getCookie(FREQUENTLY_USED_EMOJIS_STORAGE_KEY);
+
+    if (!savedEmojisfromCookie) {
+      return null;
+    }
+    savedEmojis = savedEmojisfromCookie;
+    swapCookieToLocalStorage();
+  }
 
   const emojis = chunk(uniq(savedEmojis.split(',')), 9);
 
@@ -30,13 +48,17 @@ export const getFrequentlyUsedEmojis = () => {
 
 export const addToFrequentlyUsed = (emoji) => {
   const frequentlyUsedEmojis = uniq(
-    (getCookie(FREQUENTLY_USED_COOKIE_KEY) || '')
+    (
+      localStorage.getItem(FREQUENTLY_USED_EMOJIS_STORAGE_KEY) ||
+      getCookie(FREQUENTLY_USED_EMOJIS_STORAGE_KEY) ||
+      ''
+    )
       .split(',')
       .filter((e) => e)
       .concat(emoji),
   );
 
-  setCookie(FREQUENTLY_USED_COOKIE_KEY, frequentlyUsedEmojis.join(','));
+  localStorage.setItem(FREQUENTLY_USED_EMOJIS_STORAGE_KEY, frequentlyUsedEmojis.join(','));
 };
 
 export const hasFrequentlyUsedEmojis = () => getFrequentlyUsedEmojis() !== null;

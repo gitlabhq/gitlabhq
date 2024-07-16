@@ -99,8 +99,21 @@ module Gitlab
             !self.dml_mode?
           end
 
+          # There is a special case where CREATE VIEW DDL statement can include DML statements.
+          # For this case, +select_tables+ should be empty, to avoid false positives.
+          #
+          # @example
+          #          CREATE VIEW issues AS SELECT * FROM tickets
           def dml_tables(parsed)
-            parsed.pg.select_tables + parsed.pg.dml_tables
+            select_tables = self.dml_from_create_view?(parsed) ? [] : parsed.pg.select_tables
+
+            select_tables + parsed.pg.dml_tables
+          end
+
+          def dml_from_create_view?(parsed)
+            return unless ddl_mode?
+
+            QueryAnalyzerHelpers.dml_from_create_view?(parsed)
           end
 
           def dml_schemas(tables)

@@ -1528,7 +1528,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
         it "returns the number of commits in the whole repository" do
           options = { all: true }
 
-          expect(repository.count_commits(options)).to eq(323)
+          expect(repository.count_commits(options)).to eq(325)
         end
       end
 

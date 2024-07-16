@@ -52,7 +52,10 @@ describe('Reusable form component', () => {
 
     handler = jest.fn().mockImplementation((key) => DEFAULT_RESPONSES[key]);
 
-    const hanlderWithKey = (key) => (...args) => handler(key, ...args);
+    const hanlderWithKey =
+      (key) =>
+      (...args) =>
+        handler(key, ...args);
 
     fakeApollo = createMockApollo([
       [createContactMutation, hanlderWithKey('createContact')],

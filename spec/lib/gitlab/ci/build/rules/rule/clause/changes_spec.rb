@@ -255,6 +255,19 @@ RSpec.describe Gitlab::Ci::Build::Rules::Rule::Clause::Changes, feature_category
           )
         end
       end
+
+      context 'when using variable expansion' do
+        let(:context) { instance_double(Gitlab::Ci::Build::Context::Base) }
+        let(:variables_hash) { { 'FEATURE_BRANCH_NAME_PREFIX' => 'feature_' } }
+        let(:globs) { { paths: ['file2.txt'], compare_to: '${FEATURE_BRANCH_NAME_PREFIX}1' } }
+        let(:pipeline) { build(:ci_pipeline, project: project, ref: 'feature_2', sha: project.commit('feature_2').sha) }
+
+        before do
+          allow(context).to receive(:variables_hash).and_return(variables_hash)
+        end
+
+        it { is_expected.to be_truthy }
+      end
     end
   end
 end

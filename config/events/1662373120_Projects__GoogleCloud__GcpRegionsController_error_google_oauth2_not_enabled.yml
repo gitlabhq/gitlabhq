@@ -2,9 +2,6 @@
 description: Google OAuth2 not enabled on GitLab instance
 category: Projects::GoogleCloud::GcpRegionsController
 action: error_google_oauth2_not_enabled
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -66,12 +66,18 @@ include:
   variables:
     GITALY_TRANSACTIONS_ENABLED: "false"
 
+.ee-only-gitaly-without-transactions:
+  extends:
+    - .rails:rules:ee-only-gitaly-without-transactions
+  variables:
+    GITALY_TRANSACTIONS_ENABLED: "false"
+
 .rspec-base-needs:
   needs:
-    - job: "clone-gitlab-repo"
-      optional: true  # Optional so easier to switch in between
+    - !reference [.repo-from-artifacts, needs]
     - job: "setup-test-env"
     - job: "retrieve-tests-metadata"
+    - job: "compile-test-assets"
 
 .rspec-base:
   extends:
@@ -89,7 +95,6 @@ include:
     EVENT_PROF: "sql.active_record"
   needs:
     - !reference [.rspec-base-needs, needs]
-    - job: "compile-test-assets"
     - job: "detect-tests"
       optional: true
   script:
@@ -174,9 +179,6 @@ include:
       fi
       section_end "knapsack-report-issues"
     - tooling/bin/push_job_metrics || true
-
-  allow_failure:
-    exit_codes: !reference [.rspec-base, variables, SUCCESSFULLY_RETRIED_TEST_EXIT_CODE]
 
 .base-artifacts:
   artifacts:

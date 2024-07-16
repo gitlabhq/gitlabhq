@@ -2279,119 +2279,6 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     end
   end
 
-  describe "POST /projects/:id/uploads/authorize" do
-    let(:headers) { workhorse_internal_api_request_header.merge({ 'HTTP_GITLAB_WORKHORSE' => 1 }) }
-    let(:path) { "/projects/#{project.id}/uploads/authorize" }
-
-    context 'with authorized user' do
-      it "returns 200" do
-        post api(path, user), headers: headers
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['MaximumSize']).to eq(project.max_attachment_size)
-      end
-    end
-
-    context 'with unauthorized user' do
-      it "returns 404" do
-        post api(path, user2), headers: headers
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
-
-    context 'with exempted project' do
-      before do
-        stub_env('GITLAB_UPLOAD_API_ALLOWLIST', project.id)
-      end
-
-      it "returns 200" do
-        post api(path, user), headers: headers
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(json_response['MaximumSize']).to eq(1.gigabyte)
-      end
-    end
-
-    context 'with no Workhorse headers' do
-      it "returns 403" do
-        post api(path, user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
-      end
-    end
-  end
-
-  describe "POST /projects/:id/uploads" do
-    let(:file) { fixture_file_upload("spec/fixtures/dk.png", "image/png") }
-    let(:path) { "/projects/#{project.id}/uploads" }
-
-    before do
-      project
-    end
-
-    it "uploads the file and returns its info" do
-      expect_next_instance_of(UploadService) do |instance|
-        expect(instance).to receive(:override_max_attachment_size=).with(project.max_attachment_size).and_call_original
-      end
-
-      post api(path, user), params: { file: file }
-
-      expect(response).to have_gitlab_http_status(:created)
-      expect(json_response['alt']).to eq("dk")
-      expect(json_response['url']).to start_with("/uploads/")
-      expect(json_response['url']).to end_with("/dk.png")
-      expect(json_response['full_path']).to start_with("/-/project/#{project.id}/uploads")
-    end
-
-    it "does not leave the temporary file in place after uploading, even when the tempfile reaper does not run" do
-      tempfile = Tempfile.new('foo')
-      path = tempfile.path
-
-      allow_any_instance_of(Rack::TempfileReaper).to receive(:call) do |instance, env|
-        instance.instance_variable_get(:@app).call(env)
-      end
-
-      expect(path).not_to be(nil)
-      expect(Rack::Multipart::Parser::TEMPFILE_FACTORY).to receive(:call).and_return(tempfile)
-
-      post api(path, user), params: { file: fixture_file_upload("spec/fixtures/dk.png", "image/png") }
-
-      expect(tempfile.path).to be(nil)
-      expect(File.exist?(path)).to be(false)
-    end
-
-    shared_examples 'capped upload attachments' do |upload_allowed|
-      it "limits the upload to 1 GiB" do
-        expect_next_instance_of(UploadService) do |instance|
-          expect(instance).to receive(:override_max_attachment_size=).with(1.gigabyte).and_call_original
-        end
-
-        post api(path, user), params: { file: file }
-
-        expect(response).to have_gitlab_http_status(:created)
-      end
-
-      it "logs a warning if file exceeds attachment size" do
-        allow(Gitlab::CurrentSettings).to receive(:max_attachment_size).and_return(0)
-
-        expect(Gitlab::AppLogger).to receive(:info).with(
-          hash_including(message: 'File exceeds maximum size', upload_allowed: upload_allowed))
-            .and_call_original
-
-        post api(path, user), params: { file: file }
-      end
-    end
-
-    context 'with exempted project' do
-      before do
-        stub_env('GITLAB_UPLOAD_API_ALLOWLIST', project.id)
-      end
-
-      it_behaves_like 'capped upload attachments', true
-    end
-  end
-
   describe "GET /projects/:id/groups" do
     let_it_be(:root_group) { create(:group, :public, name: 'root group') }
     let_it_be(:project_group) { create(:group, :public, parent: root_group, name: 'project group') }
@@ -2666,9 +2553,26 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       end
 
       context 'the project is a public fork' do
-        it 'hides details of a public fork parent' do
+        it 'shows details of a public fork parent' do
           public_project = create(:project, :repository, :public)
           fork = fork_project(public_project)
+
+          get api("/projects/#{fork.id}")
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['forked_from_project']).to include('id' => public_project.id)
+        end
+
+        it 'hides details of a private fork parent' do
+          public_project = create(:project, :repository, :public)
+          parent_user = create(:user)
+          public_project.team.add_developer(parent_user)
+
+          fork = fork_project(public_project, user)
+
+          # Make the parent private
+          public_project.visibility = Gitlab::VisibilityLevel::PRIVATE
+          public_project.save!
 
           get api("/projects/#{fork.id}")
 
@@ -3306,7 +3210,8 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
           'build_timeout',
           'auto_devops_enabled',
           'auto_devops_deploy_strategy',
-          'import_error'
+          'import_error',
+          'ci_push_repository_for_job_token_allowed'
         )
       end
     end
@@ -3947,7 +3852,7 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
       measure_project.add_developer(create(:user))
       measure_project.add_developer(create(:user)) # make this 2nd one to find any n+1
 
-      unresolved_n_plus_ones = 27 # 27 queries added per member
+      unresolved_n_plus_ones = 28 # 28 queries added per member
 
       expect do
         post api("/projects/#{project.id}/import_project_members/#{measure_project.id}", user)
@@ -4055,6 +3960,20 @@ RSpec.describe API::Projects, :aggregate_failures, feature_category: :groups_and
     it_behaves_like 'PUT request permissions for admin mode' do
       let(:params) { { visibility: 'internal' } }
       let(:failed_status_code) { :not_found }
+    end
+
+    describe 'updating ci_push_repository_for_job_token_allowed attribute' do
+      it 'is disabled by default' do
+        expect(project.ci_push_repository_for_job_token_allowed).to be_falsey
+      end
+
+      it 'enables push to repository using job token' do
+        put(api(path, user), params: { ci_push_repository_for_job_token_allowed: true })
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(project.reload.ci_push_repository_for_job_token_allowed).to be_truthy
+        expect(json_response['ci_push_repository_for_job_token_allowed']).to eq(true)
+      end
     end
 
     describe 'updating packages_enabled attribute' do

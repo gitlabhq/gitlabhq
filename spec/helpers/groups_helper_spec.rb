@@ -651,7 +651,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
   end
 
   describe '#access_level_roles_user_can_assign' do
-    subject { helper.access_level_roles_user_can_assign(group) }
+    subject { helper.access_level_roles_user_can_assign(group, group.access_level_roles) }
 
     let_it_be(:group) { create(:group) }
     let_it_be_with_reload(:user) { create(:user) }
@@ -714,14 +714,14 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
         end
 
         it 'returns the access levels that are peers or lower' do
-          expect(helper.access_level_roles_user_can_assign(grand_parent)).to be_empty
-          expect(helper.access_level_roles_user_can_assign(parent)).to eq({
+          expect(helper.access_level_roles_user_can_assign(grand_parent, group.access_level_roles)).to be_empty
+          expect(helper.access_level_roles_user_can_assign(parent, group.access_level_roles)).to eq({
             'Guest' => ::Gitlab::Access::GUEST,
             'Reporter' => ::Gitlab::Access::REPORTER,
             'Developer' => ::Gitlab::Access::DEVELOPER
           })
-          expect(helper.access_level_roles_user_can_assign(child)).to eq(::Gitlab::Access.options)
-          expect(helper.access_level_roles_user_can_assign(grand_child)).to eq(::Gitlab::Access.options_with_owner)
+          expect(helper.access_level_roles_user_can_assign(child, group.access_level_roles)).to eq(::Gitlab::Access.options)
+          expect(helper.access_level_roles_user_can_assign(grand_child, group.access_level_roles)).to eq(::Gitlab::Access.options_with_owner)
         end
       end
 

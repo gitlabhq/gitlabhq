@@ -12,19 +12,7 @@ module Gitlab
               raise ArgumentError, 'missing config content' unless @command.config_content
 
               result = logger.instrument(:pipeline_config_process, once: true) do
-                processor = ::Gitlab::Ci::YamlProcessor.new(
-                  @command.config_content, {
-                    project: project,
-                    pipeline: @pipeline,
-                    sha: @pipeline.sha,
-                    source: @pipeline.source,
-                    user: current_user,
-                    parent_pipeline: parent_pipeline,
-                    pipeline_config: @command.pipeline_config,
-                    logger: logger
-                  }
-                )
-
+                processor = ::Gitlab::Ci::YamlProcessor.new(@command.config_content, yaml_processor_opts)
                 processor.execute
               end
 
@@ -54,6 +42,19 @@ module Gitlab
 
             private
 
+            def yaml_processor_opts
+              {
+                project: project,
+                pipeline: @pipeline,
+                sha: @pipeline.sha,
+                source: @pipeline.source,
+                user: current_user,
+                parent_pipeline: parent_pipeline,
+                pipeline_config: @command.pipeline_config,
+                logger: logger
+              }
+            end
+
             def add_warnings_to_pipeline(warnings)
               return unless warnings.present?
 
@@ -65,3 +66,5 @@ module Gitlab
     end
   end
 end
+
+Gitlab::Ci::Pipeline::Chain::Config::Process.prepend_mod

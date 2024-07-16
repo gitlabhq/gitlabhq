@@ -28,6 +28,8 @@ import {
   WIDGET_TYPE_PARTICIPANTS,
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_GID,
+  WIDGET_TYPE_LABELS,
+  WIDGET_TYPE_ROLLEDUP_DATES,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import groupWorkItemTypesQuery from '../graphql/group_work_item_types.query.graphql';
@@ -39,6 +41,7 @@ import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
+import WorkItemLabels from './work_item_labels.vue';
 import WorkItemLoading from './work_item_loading.vue';
 
 export default {
@@ -52,10 +55,13 @@ export default {
     WorkItemDescription,
     WorkItemTitle,
     WorkItemAssignees,
+    WorkItemLabels,
     WorkItemLoading,
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
+    WorkItemRolledupDates: () =>
+      import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
   },
   inject: ['fullPath', 'isGroup'],
   props: {
@@ -79,7 +85,6 @@ export default {
       selectedWorkItemTypeId: null,
       loading: false,
       showWorkItemTypeSelect: false,
-      newWorkItemPath: newWorkItemFullPath(this.fullPath),
     };
   },
   apollo: {
@@ -94,7 +99,7 @@ export default {
         };
       },
       skip() {
-        return !this.fullPath;
+        return !this.fullPath || !this.selectedWorkItemTypeName;
       },
       update(data) {
         return data?.workspace?.workItem ?? {};
@@ -119,13 +124,22 @@ export default {
       update(data) {
         return data.workspace?.workItemTypes?.nodes;
       },
-      result() {
+      async result() {
         if (!this.workItemTypes?.length) {
           return;
         }
         if (this.workItemTypes?.length === 1) {
           this.selectedWorkItemTypeId = this.workItemTypes[0].id;
         } else {
+          this.workItemTypes.forEach(async (workItemType) => {
+            await setNewWorkItemCache(
+              this.isGroup,
+              this.fullPath,
+              workItemType?.widgetDefinitions,
+              workItemType.name,
+              workItemType.id,
+            );
+          });
           this.showWorkItemTypeSelect = true;
         }
       },
@@ -135,6 +149,9 @@ export default {
     },
   },
   computed: {
+    newWorkItemPath() {
+      return newWorkItemFullPath(this.fullPath, this.selectedWorkItemTypeName);
+    },
     isLoading() {
       return this.$apollo.queries.workItemTypes.loading || this.$apollo.queries.workItem.loading;
     },
@@ -143,6 +160,9 @@ export default {
     },
     workItemAssignees() {
       return findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
+    },
+    workItemLabels() {
+      return findWidget(WIDGET_TYPE_LABELS, this.workItem);
     },
     workItemHealthStatus() {
       return findWidget(WIDGET_TYPE_HEALTH_STATUS, this.workItem);
@@ -161,27 +181,28 @@ export default {
     selectedWorkItemType() {
       return this.workItemTypes?.find((item) => item.id === this.selectedWorkItemTypeId);
     },
+    selectedWorkItemTypeName() {
+      return this.selectedWorkItemType?.name;
+    },
     formOptions() {
       return [{ value: null, text: s__('WorkItem|Select type') }, ...this.workItemTypesForSelect];
     },
     createErrorText() {
-      const workItemType = this.selectedWorkItemType?.name;
-      return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, workItemType);
+      return sprintfWorkItem(I18N_WORK_ITEM_ERROR_CREATING, this.selectedWorkItemTypeName);
     },
     createWorkItemText() {
-      const workItemType = this.selectedWorkItemType?.name;
-      return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, workItemType);
+      return sprintfWorkItem(I18N_WORK_ITEM_CREATE_BUTTON_LABEL, this.selectedWorkItemTypeName);
     },
     makeConfidentialText() {
       return sprintfWorkItem(
         s__(
           'WorkItem|This %{workItemType} is confidential and should only be visible to users having at least Reporter access.',
         ),
-        this.selectedWorkItemType?.name,
+        this.selectedWorkItemTypeName,
       );
     },
     titleText() {
-      return sprintfWorkItem(s__('WorkItem|New %{workItemType}'), this.selectedWorkItemType?.name);
+      return sprintfWorkItem(s__('WorkItem|New %{workItemType}'), this.selectedWorkItemTypeName);
     },
     canUpdate() {
       return this.workItem?.userPermissions?.updateWorkItem;
@@ -198,6 +219,10 @@ export default {
     workItemAssigneeIds() {
       const assigneesWidget = findWidget(WIDGET_TYPE_ASSIGNEES, this.workItem);
       return assigneesWidget?.assignees?.nodes?.map((assignee) => assignee.id) || [];
+    },
+    workItemLabelIds() {
+      const labelsWidget = findWidget(WIDGET_TYPE_LABELS, this.workItem);
+      return labelsWidget?.labels?.nodes?.map((label) => label.id) || [];
     },
     workItemColorValue() {
       const colorWidget = findWidget(WIDGET_TYPE_COLOR, this.workItem);
@@ -217,6 +242,21 @@ export default {
       const descriptionWidget = findWidget(WIDGET_TYPE_DESCRIPTION, this.workItem);
       return descriptionWidget?.description;
     },
+    workItemRolledupDates() {
+      return findWidget(WIDGET_TYPE_ROLLEDUP_DATES, this.workItem);
+    },
+    workItemDueDateFixed() {
+      return this.workItemRolledupDates?.dueDateFixed;
+    },
+    workItemStartDateFixed() {
+      return this.workItemRolledupDates?.startDateFixed;
+    },
+    workItemDueDateIsFixed() {
+      return this.workItemRolledupDates?.dueDateIsFixed;
+    },
+    workItemStartDateIsFixed() {
+      return this.workItemRolledupDates?.startDateIsFixed;
+    },
   },
   methods: {
     isWidgetSupported(widgetType) {
@@ -227,17 +267,6 @@ export default {
     validate(newValue) {
       const title = newValue || this.workItemTitle;
       this.isTitleValid = Boolean(title.trim());
-    },
-    updateCache() {
-      if (!this.selectedWorkItemTypeId) {
-        return;
-      }
-      setNewWorkItemCache(
-        this.isGroup,
-        this.fullPath,
-        this.selectedWorkItemType?.widgetDefinitions,
-        this.workItemType,
-      );
     },
     async updateDraftData(type, value) {
       if (type === 'title') {
@@ -251,6 +280,7 @@ export default {
             input: {
               isGroup: this.isGroup,
               fullPath: this.fullPath,
+              workItemType: this.selectedWorkItemTypeName || this.workItemTypeName,
               [type]: value,
             },
           },
@@ -296,6 +326,21 @@ export default {
       if (this.isWidgetSupported(WIDGET_TYPE_HEALTH_STATUS)) {
         workItemCreateInput.healthStatusWidget = {
           healthStatus: this.workItemHealthStatusValue,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_LABELS)) {
+        workItemCreateInput.labelsWidget = {
+          labelIds: this.workItemLabelIds,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_ROLLEDUP_DATES)) {
+        workItemCreateInput.rolledupDatesWidget = {
+          dueDateIsFixed: this.workItemDueDateIsFixed,
+          startDateIsFixed: this.workItemStartDateIsFixed,
+          startDateFixed: this.workItemStartDateFixed,
+          dueDateFixed: this.workItemDueDateFixed,
         };
       }
 
@@ -367,98 +412,127 @@ export default {
             v-model="selectedWorkItemTypeId"
             :options="formOptions"
             class="gl-max-w-26"
-            @change="updateCache"
           />
         </gl-form-group>
       </div>
-      <work-item-title
-        ref="title"
-        data-testid="title-input"
-        is-editing
-        :is-valid="isTitleValid"
-        :title="workItemTitle"
-        @updateDraft="updateDraftData('title', $event)"
-        @updateWorkItem="createWorkItem"
-      />
-      <div data-testid="work-item-overview" class="work-item-overview">
-        <section>
-          <work-item-description
-            edit-mode
-            :autofocus="false"
-            :full-path="fullPath"
-            create-flow
-            :show-buttons-below-field="false"
-            :work-item-id="$options.NEW_WORK_ITEM_GID"
-            :work-item-iid="$options.NEW_WORK_ITEM_IID"
-            @error="updateError = $event"
-            @updateDraft="updateDraftData('description', $event)"
-          />
-          <gl-form-group :label="__('Confidentiality')" label-for="work-item-confidential">
-            <gl-form-checkbox
-              id="work-item-confidential"
-              v-model="isConfidential"
-              data-testid="confidential-checkbox"
-              @change="updateDraftData('confidential', $event)"
-            >
-              {{ makeConfidentialText }}
-            </gl-form-checkbox>
-          </gl-form-group>
-        </section>
-        <aside
-          v-if="hasWidgets"
-          data-testid="work-item-overview-right-sidebar"
-          class="work-item-overview-right-sidebar"
-          :class="{ 'is-modal': true }"
-        >
-          <template v-if="workItemAssignees">
-            <work-item-assignees
-              class="gl-mb-5 js-assignee"
-              :can-update="canUpdate"
+      <div v-if="selectedWorkItemTypeId" data-testid="create-work-item">
+        <work-item-title
+          ref="title"
+          data-testid="title-input"
+          is-editing
+          :is-valid="isTitleValid"
+          :title="workItemTitle"
+          @updateDraft="updateDraftData('title', $event)"
+          @updateWorkItem="createWorkItem"
+        />
+        <div data-testid="work-item-overview" class="work-item-overview">
+          <section>
+            <work-item-description
+              edit-mode
+              :autofocus="false"
               :full-path="fullPath"
-              :work-item-id="workItem.id"
-              :assignees="workItemAssignees.assignees.nodes"
-              :participants="workItemParticipantNodes"
-              :work-item-author="workItemAuthor"
-              :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
-              :work-item-type="workItemType"
-              :can-invite-members="workItemAssignees.canInviteMembers"
-              @error="$emit('error', $event)"
+              create-flow
+              :show-buttons-below-field="false"
+              :work-item-id="$options.NEW_WORK_ITEM_GID"
+              :work-item-iid="$options.NEW_WORK_ITEM_IID"
+              :work-item-type-name="selectedWorkItemTypeName"
+              @error="updateError = $event"
+              @updateDraft="updateDraftData('description', $event)"
             />
-          </template>
-          <template v-if="workItemHealthStatus">
-            <work-item-health-status
-              class="gl-mb-5"
-              :health-status="workItemHealthStatus.healthStatus"
-              :can-update="canUpdate"
-              :work-item-id="workItem.id"
-              :work-item-iid="workItem.iid"
-              :work-item-type="workItemType"
-              :full-path="fullPath"
-              @error="$emit('error', $event)"
-            />
-          </template>
-          <template v-if="workItemColor">
-            <work-item-color
-              class="gl-mb-5"
-              :work-item="workItem"
-              :full-path="fullPath"
-              :can-update="canUpdate"
-              @error="$emit('error', $event)"
-            />
-          </template>
-        </aside>
-        <div class="gl-py-3 gl-flex gl-gap-3 gl-col-start-1">
-          <gl-button
-            variant="confirm"
-            :loading="loading"
-            data-testid="create-button"
-            @click="createWorkItem"
+            <gl-form-group :label="__('Confidentiality')" label-for="work-item-confidential">
+              <gl-form-checkbox
+                id="work-item-confidential"
+                v-model="isConfidential"
+                data-testid="confidential-checkbox"
+                @change="updateDraftData('confidential', $event)"
+              >
+                {{ makeConfidentialText }}
+              </gl-form-checkbox>
+            </gl-form-group>
+          </section>
+          <aside
+            v-if="hasWidgets"
+            data-testid="work-item-overview-right-sidebar"
+            class="work-item-overview-right-sidebar"
+            :class="{ 'is-modal': true }"
           >
-            {{ createWorkItemText }}
-          </gl-button>
-          <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
-            {{ __('Cancel') }}
-          </gl-button>
+            <template v-if="workItemAssignees">
+              <work-item-assignees
+                class="gl-mb-5 js-assignee"
+                :can-update="canUpdate"
+                :full-path="fullPath"
+                :work-item-id="workItem.id"
+                :assignees="workItemAssignees.assignees.nodes"
+                :participants="workItemParticipantNodes"
+                :work-item-author="workItemAuthor"
+                :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
+                :work-item-type="selectedWorkItemTypeName"
+                :can-invite-members="workItemAssignees.canInviteMembers"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemLabels">
+              <work-item-labels
+                class="gl-mb-5 js-labels"
+                create-flow
+                :can-update="canUpdate"
+                :full-path="fullPath"
+                :work-item-id="workItem.id"
+                :work-item-iid="workItem.iid"
+                :work-item-type="selectedWorkItemTypeName"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemRolledupDates">
+              <work-item-rolledup-dates
+                :can-update="canUpdate"
+                :full-path="fullPath"
+                :due-date-is-fixed="workItemRolledupDates.dueDateIsFixed"
+                :due-date-fixed="workItemRolledupDates.dueDateFixed"
+                :due-date-inherited="workItemRolledupDates.dueDate"
+                :start-date-is-fixed="workItemRolledupDates.startDateIsFixed"
+                :start-date-fixed="workItemRolledupDates.startDateFixed"
+                :start-date-inherited="workItemRolledupDates.startDate"
+                :work-item-type="selectedWorkItemTypeName"
+                :work-item="workItem"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemHealthStatus">
+              <work-item-health-status
+                class="gl-mb-5"
+                :health-status="workItemHealthStatus.healthStatus"
+                :can-update="canUpdate"
+                :work-item-id="workItem.id"
+                :work-item-iid="workItem.iid"
+                :work-item-type="selectedWorkItemTypeName"
+                :full-path="fullPath"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemColor">
+              <work-item-color
+                class="gl-mb-5"
+                :work-item="workItem"
+                :full-path="fullPath"
+                :can-update="canUpdate"
+                @error="$emit('error', $event)"
+              />
+            </template>
+          </aside>
+          <div class="gl-py-3 gl-flex gl-gap-3 gl-col-start-1">
+            <gl-button
+              variant="confirm"
+              :loading="loading"
+              data-testid="create-button"
+              @click="createWorkItem"
+            >
+              {{ createWorkItemText }}
+            </gl-button>
+            <gl-button type="button" data-testid="cancel-button" @click="handleCancelClick">
+              {{ __('Cancel') }}
+            </gl-button>
+          </div>
         </div>
       </div>
     </template>

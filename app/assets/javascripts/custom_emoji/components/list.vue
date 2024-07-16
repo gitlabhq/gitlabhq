@@ -105,7 +105,7 @@ export default {
         <gl-tab>
           <template #title>
             {{ __('Emoji') }}
-            <gl-badge size="sm" class="gl-tab-counter-badge">{{ count }}</gl-badge>
+            <gl-badge class="gl-tab-counter-badge">{{ count }}</gl-badge>
           </template>
           <gl-table-lite
             :items="customEmojis"

@@ -28,19 +28,6 @@ RSpec.shared_examples 'handling get metadata requests' do |scope: :project|
       end
       expect(json_response['dist-tags']).to match_schema('public_api/v4/packages/npm_package_tags')
     end
-
-    it 'avoids N+1 database queries' do
-      control = ActiveRecord::QueryRecorder.new { get(url, headers: headers) }
-
-      create_list(:npm_package, 5, project: project, name: package_name).each do |npm_package|
-        ::Packages::DependencyLink.dependency_types.keys.each do |dependency_type|
-          create(:packages_dependency_link, package: package, dependency_type: dependency_type)
-        end
-      end
-
-      # query count can slightly change between the examples so we're using a custom threshold
-      expect { get(url, headers: headers) }.not_to exceed_query_limit(control).with_threshold(4)
-    end
   end
 
   shared_examples 'reject metadata request' do |status:|

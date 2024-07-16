@@ -34,7 +34,9 @@ export default {
   },
   computed: {
     completedCount() {
-      return this.taskCompletionStatus.completed_count;
+      // The new Work Item GraphQL endpoint returns `completedCount` instead, so added a fallback
+      // to it for the work item view
+      return this.taskCompletionStatus.completed_count ?? this.taskCompletionStatus.completedCount;
     },
     count() {
       return this.taskCompletionStatus.count;

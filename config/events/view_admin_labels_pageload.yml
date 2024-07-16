@@ -1,0 +1,16 @@
+---
+description: Tracks pageviews for the admin labels page
+internal_events: true
+action: view_admin_labels_pageload
+identifiers:
+- user
+product_group: personal_productivity
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157524
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

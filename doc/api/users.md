@@ -681,7 +681,11 @@ DETAILS:
 **Offering:** Self-managed, GitLab Dedicated
 
 Deletes a user. Available only for administrators.
-This returns a `204 No Content` status code if the operation was successfully, `404` if the resource was not found or `409` if the user cannot be soft deleted.
+This returns a:
+
+- `204 No Content` status code if the operation was successful.
+- `404` if the resource was not found.
+- `409` if the user cannot be soft deleted.
 
 ```plaintext
 DELETE /users/:id
@@ -1058,7 +1062,7 @@ Example response:
 
 ## User counts
 
-Get the counts (same as in the upper-right menu) of the authenticated user.
+Get the counts (same as in the upper-left menu) of the authenticated user.
 
 | Attribute                         | Type   | Description                                                                  |
 | --------------------------------- | ------ | ---------------------------------------------------------------------------- |
@@ -1404,7 +1408,7 @@ This also adds an audit event.
 
 Deletes key owned by the authenticated user.
 
-This returns a `204 No Content` status code if the operation was successfully
+This returns a `204 No Content` status code if the operation was successful
 or `404` if the resource was not found.
 
 ```plaintext

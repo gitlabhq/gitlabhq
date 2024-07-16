@@ -845,7 +845,85 @@ Example response:
 }
 ```
 
-### Retrieve a subscription
+### Retrieve a subscription (internal API)
+
+Use a GET command to view an existing subscription. Requests from CustomersDot are being migrated to this endpoint.
+
+```plaintext
+GET /internal/gitlab_subscriptions/namespaces/:id/gitlab_subscription
+```
+
+Example request:
+
+```shell
+curl --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/gitlab_subscription"
+```
+
+Example response:
+
+```json
+{
+  "plan": {
+    "code": "premium",
+    "name": "premium",
+    "trial": false,
+    "auto_renew": null,
+    "upgradable": false,
+    "exclude_guests": false
+  },
+  "usage": {
+    "seats_in_subscription": 80,
+    "seats_in_use": 82,
+    "max_seats_used": 82,
+    "seats_owed": 2
+  },
+  "billing": {
+    "subscription_start_date": "2020-07-15",
+    "subscription_end_date": "2021-07-15",
+    "trial_ends_on": null
+  }
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
+### Retrieve owners
+
+Use a GET command to get direct owners of the namespace. Requests from CustomersDot are being migrated to this endpoint.
+
+```plaintext
+GET /internal/gitlab_subscriptions/namespaces/:id/owners
+```
+
+Example request:
+
+```shell
+curl --header "TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1234/owners"
+```
+
+Example response:
+
+```json
+[
+  {
+    "user": {
+      "id": 1,
+      "username": "john_smith",
+      "name": "John Smith"
+    },
+    "access_level": 50,
+    "notification_email": "name@example.com",
+  }
+]
+```
+
+#### Known consumers
+
+- CustomersDot
+
+### Retrieve a subscription (namespaces API)
 
 Use a GET command to view an existing subscription.
 
@@ -885,9 +963,9 @@ Example response:
 }
 ```
 
-### Known consumers
+#### Known consumers
 
-- CustomersDot
+- CustomersDot (deprecated - [being removed](https://gitlab.com/gitlab-org/customers-gitlab-com/-/issues/9773))
 
 ## Subscription add-on purchases (excluding storage and compute packs)
 
@@ -1000,10 +1078,41 @@ Example response:
 
 - CustomersDot
 
+## Users
+
+### Retrieve a user (internal API)
+
+Use a GET command to get the User object based on user ID.
+
+```plaintext
+GET /internal/gitlab_subscriptions/users/:id
+```
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/users/:id"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "username": "john_smith",
+  "name": "John Smith",
+  "web_url": "http://localhost:3000/john_smith"
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
 ## Storage limit exclusions
 
 The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.
-These endpoints can only be consumed in the Admin Area of GitLab.com.
+These endpoints can only be consumed in the Admin area of GitLab.com.
 
 ### Retrieve storage limit exclusions
 
@@ -1099,7 +1208,7 @@ Example response:
 
 ### Known consumers
 
-- GitLab.com Admin Area
+- GitLab.com Admin area
 
 ## Compute quota provisioning
 
@@ -1196,6 +1305,8 @@ to update upcoming reconciliations for namespaces.
 
 Use a PUT command to update `upcoming_reconciliations`.
 
+#### Old API (deprecated, [New API](#new-update-upcoming_reconciliations-api))
+
 ```plaintext
 PUT /internal/upcoming_reconciliations
 ```
@@ -1226,7 +1337,40 @@ Example response:
 200
 ```
 
+#### New Update upcoming_reconciliations API
+
+```plaintext
+PUT /internal/gitlab_subscriptions/namespaces/:namespace_id/upcoming_reconciliations
+```
+
+| Attribute          | Type       | Required | Description |
+|:-------------------|:-----------|:---------|:------------|
+| `upcoming_reconciliations` | array | yes | Array of upcoming reconciliations |
+
+Each array element contains:
+
+| Attribute          | Type       | Required | Description |
+|:-------------------|:-----------|:---------|:------------|
+| `next_reconciliation_date` | date | yes | Date of the next reconciliation |
+| `display_alert_from`       | date | yes | Start date to display alert of upcoming reconciliation |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" --header "Content-Type: application/json" \
+     --data '{"upcoming_reconciliations": [{"next_reconciliation_date": "12 Jun 2021", "display_alert_from": "05 Jun 2021"}]}' \
+     "https://gitlab.com/api/v4/internal/gitlab_subscriptions/129/upcoming_reconciliations"
+```
+
+Example response:
+
+```plaintext
+200
+```
+
 ### Delete an `upcoming_reconciliation`
+
+#### Old API (deprecated, [New API](#new-delete-upcoming_reconciliations-api))
 
 Use a DELETE command to delete an `upcoming_reconciliation`.
 
@@ -1243,6 +1387,28 @@ Example request:
 ```shell
 curl --request DELETE \
   --url "http://localhost:3000/api/v4/internal/upcoming_reconciliations?namespace_id=22" \
+  --header 'PRIVATE-TOKEN: <admin_access_token>'
+```
+
+Example response:
+
+```plaintext
+204
+```
+
+#### New delete upcoming_reconciliations API
+
+Use a DELETE command to delete an `upcoming_reconciliation`.
+
+```plaintext
+DELETE /internal/gitlab_subscriptions/namespaces/:namespace_id/upcoming_reconciliations
+```
+
+Example request:
+
+```shell
+curl --request DELETE \
+  --url "http://localhost:3000/api/v4/internal/gitlab_subscriptions/namespaces/22/upcoming_reconciliations" \
   --header 'PRIVATE-TOKEN: <admin_access_token>'
 ```
 
@@ -1437,7 +1603,7 @@ Example response:
 Returns a `201` status code if successful.
 
 NOTE:
-After you create a group SCIM identity for a user, you can see that SCIM identity in the Admin Area.
+After you create a group SCIM identity for a user, you can see that SCIM identity in the Admin area.
 
 ### Update a single SCIM provisioned user
 
@@ -1768,3 +1934,106 @@ Example:
 ```json
 { "op": "Add", "path": "name.formatted", "value": "New Name" }
 ```
+
+## Namespaces
+
+### Get a namespace by ID
+
+```plaintext
+GET /internal/gitlab_subscriptions/namespaces/:id
+```
+
+Parameters:
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+
+Example request:
+
+```shell
+curl --request GET --header "PRIVATE-TOKEN: <admin_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "group1",
+  "path": "group1",
+  "kind": "group",
+  "full_path": "group1",
+  "parent_id": null,
+  "avatar_url": null,
+  "web_url": "https://gitlab.example.com/groups/group1",
+  "members_count_with_descendants": 2,
+  "billable_members_count": 2,
+  "max_seats_used": 0,
+  "seats_in_use": 0,
+  "plan": "default",
+  "end_date": null,
+  "trial_ends_on": null,
+  "trial": false,
+  "root_repository_size": 100,
+  "projects_count": 3
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
+### Update a namespace
+
+Use a PUT command to update an existing namespace.
+
+```plaintext
+PUT /internal/gitlab_subscriptions/namespaces/:id
+```
+
+Parameters:
+
+| Attribute | Type           | Required | Description |
+| --------- | -------------- | -------- | ----------- |
+| `id`      | integer/string | yes      | ID or [URL-encoded path of the namespace](../../api/rest/index.md#namespaced-path-encoding) |
+| `shared_runners_minutes_limit` | integer | no | Compute minutes quota |
+| `extra_shared_runners_minutes_limit` |  integer | no | Extra compute minutes |
+| `additional_purchased_storage_size` |  integer | no | Additional storage size |
+| `additional_purchased_storage_ends_on` |  date | no | Additional purchased storage Ends on |
+| `gitlab_subscription_attributes` |  hash | no |  Hash object containing GitLab Subscription attributes. Accepts `seats`,`max_seats_used`,`plan_code`,`end_date`,`auto_renew`,`trial`,`trial_ends_on`,`trial_starts_on`,`trial_extension_type` |
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.com/api/v4/internal/gitlab_subscriptions/namespaces/1 --data '{"shared_runners_minutes_limit":1000}'"
+```
+
+Example response:
+
+```json
+{
+  "id": 1,
+  "name": "group1",
+  "path": "group1",
+  "kind": "group",
+  "full_path": "group1",
+  "parent_id": null,
+  "avatar_url": null,
+  "web_url": "https://gitlab.example.com/groups/group1",
+  "members_count_with_descendants": 2,
+  "billable_members_count": 2,
+  "max_seats_used": 0,
+  "seats_in_use": 0,
+  "plan": "default",
+  "end_date": null,
+  "trial_ends_on": null,
+  "trial": false,
+  "root_repository_size": 100,
+  "projects_count": 3
+}
+```
+
+#### Known consumers
+
+- CustomersDot

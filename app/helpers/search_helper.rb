@@ -50,11 +50,11 @@ module SearchHelper
 
   def scope_specific_results(term, scope)
     case scope&.to_sym
-    when :project
+    when :projects
       projects_autocomplete(term)
-    when :user
+    when :users
       users_autocomplete(term)
-    when :issue
+    when :issues
       recent_issues_autocomplete(term)
     else
       []
@@ -262,21 +262,21 @@ module SearchHelper
   # Autocomplete results for settings pages, for admins
   def default_autocomplete_admin
     [
-      { category: "Jump to", label: _("Admin Area / Dashboard"), url: admin_root_path }
+      { category: "Jump to", label: _("Admin area / Dashboard"), url: admin_root_path }
     ]
   end
 
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { category: "Help", label: _("API Help"),           url: help_page_path("api/index") },
-      { category: "Help", label: _("Markdown Help"),      url: help_page_path("user/markdown") },
-      { category: "Help", label: _("Permissions Help"),   url: help_page_path("user/permissions") },
-      { category: "Help", label: _("Public Access Help"), url: help_page_path("user/public_access") },
-      { category: "Help", label: _("Rake Tasks Help"),    url: help_page_path("raketasks/index") },
-      { category: "Help", label: _("SSH Keys Help"),      url: help_page_path("user/ssh") },
-      { category: "Help", label: _("System Hooks Help"),  url: help_page_path("administration/system_hooks") },
-      { category: "Help", label: _("Webhooks Help"),      url: help_page_path("user/project/integrations/webhooks") }
+      { category: "Help", label: _("API Help"),                     url: help_page_path("api/index") },
+      { category: "Help", label: _("Markdown Help"),                url: help_page_path("user/markdown") },
+      { category: "Help", label: _("Permissions Help"),             url: help_page_path("user/permissions") },
+      { category: "Help", label: _("Public Access Help"),           url: help_page_path("user/public_access") },
+      { category: "Help", label: _("Rake Tasks Help"),              url: help_page_path("raketasks/index") },
+      { category: "Help", label: _("SSH Keys Help"),                url: help_page_path("user/ssh") },
+      { category: "Help", label: s_("Webhooks|System hooks help"),  url: help_page_path("administration/system_hooks") },
+      { category: "Help", label: _("Webhooks Help"),                url: help_page_path("user/project/integrations/webhooks") }
     ]
   end
 
@@ -481,6 +481,7 @@ module SearchHelper
     opts =
       {
         id: "filtered-search-#{type}",
+        'aria-label': _('Add search filter'),
         placeholder: placeholder,
         data: {
           'username-params' => UserSerializer.new.represent(@users)

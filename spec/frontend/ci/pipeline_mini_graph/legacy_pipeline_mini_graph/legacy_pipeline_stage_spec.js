@@ -74,21 +74,17 @@ describe('Pipelines stage component', () => {
       createComponent({ updateDropdown: true });
 
       mock.onGet(dropdownPath).reply(HTTP_STATUS_OK, legacyStageReply);
-
-      await openStageDropdown();
+      await findDropdownToggle().trigger('click');
     });
 
-    it('displays loading state while jobs are being fetched', async () => {
-      // eslint-disable-next-line no-restricted-syntax
-      wrapper.setData({ isLoading: true });
-      await waitForPromises();
-
+    it('displays loading state while jobs are being fetched', () => {
       expect(findLoadingState().exists()).toBe(true);
       expect(findLoadingState().text()).toBe(LegacyPipelineStage.i18n.loadingText);
     });
 
     it('does not display loading state after jobs have been fetched', async () => {
       await waitForPromises();
+      await nextTick();
 
       expect(findLoadingState().exists()).toBe(false);
     });

@@ -85,7 +85,7 @@ describe('CompareVersions', () => {
 
       expect(treeListBtn.exists()).toBe(true);
       expect(treeListBtn.attributes('aria-label')).toBe('Hide file browser');
-      expect(treeListBtn.props('icon')).toBe('file-tree');
+      expect(treeListBtn.props('icon')).toBe('sidebar');
     });
 
     it('should render comparison dropdowns with correct values', () => {

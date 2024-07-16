@@ -769,6 +769,54 @@ beforeEach(() => {
 });
 ```
 
+## Console warnings and errors in tests
+
+Unexpected console warnings and errors are indicative of problems in our production code.
+We want our test environment to be strict, so your tests should fail when unexpected
+`console.error` or `console.warn` calls are made.
+
+### Ignoring console messages from watcher
+
+Since there's a lot of code outside of our control, there are some console messages that
+are ignored by default and will **not** fail a test if used. This list of ignored
+messages can be maintained where we call `setupConsoleWatcher`. Example:
+
+```javascript
+setupConsoleWatcher({
+  ignores: [
+    ...,
+    // Any call to `console.error('Foo bar')`  or `console.warn('Foo bar')` will be ignored by our console watcher.
+    'Foo bar',
+    // Use regex to allow for flexible message matching.
+    /Lorem ipsum/,
+  ]
+});
+```
+
+If a specific test needs to ignore a specific message for a `describe` block, use the
+`ignoreConsoleMessages` helper near the top of the `describe`. This automatically
+calls `beforeAll` and `afterAll` to set up/teardown this set of ignored for the test
+context.
+
+Use this sparingly and only if absolutely necessary for test maintainability. Example:
+
+```javascript
+import { ignoreConsoleMessages } from 'helpers/console_watcher';
+
+describe('foos/components/foo.vue', () => {
+  describe('when blooped', () => {
+    // Will not fail a test if `console.warn('Lorem ipsum')` is called
+    ignoreConsoleMessages([
+      /^Lorem ipsum/
+    ]);
+  });
+
+  describe('default', () => {
+    // Will fail a test if `console.warn('Lorem ipsum')` is called
+  });
+});
+```
+
 ## Factories
 
 TBU
@@ -1537,6 +1585,8 @@ Feature tests live in `spec/features` folder. You should look for existing files
   ```
 
 You can also prefix this command with `WEBDRIVER_HEADLESS=0` which will run the test by opening an actual browser on your computer that you can see, which is very useful for debugging.
+
+To use Firefox, instead of Chrome, prefix the command with `WEBDRIVER=firefox`.
 
 ### How to write a test
 

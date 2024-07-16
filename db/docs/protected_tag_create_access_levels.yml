@@ -19,3 +19,4 @@ desired_sharding_key:
         table: protected_tags
         sharding_key: project_id
         belongs_to: protected_tag
+desired_sharding_key_migration_job_name: BackfillProtectedTagCreateAccessLevelsProjectId

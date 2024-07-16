@@ -1,1 +1,5 @@
-= render partial: 'search/results/issuable', object: issue
+- index = local_assigns.fetch(:index, nil)
+- issue = local_assigns.fetch(:result, nil)
+- position = index + 1
+
+= render partial: 'search/results/issuable', object: issue, locals: { position: position }

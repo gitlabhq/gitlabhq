@@ -1,14 +1,11 @@
 - expanded = integration_expanded?('eks_')
-%section.settings.as-eks.no-animate#js-eks-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Amazon EKS')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Amazon EKS integration allows you to provision EKS clusters from GitLab.')
 
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Amazon EKS'),
+  id: 'js-eks-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Amazon EKS integration allows you to provision EKS clusters from GitLab.')
+  - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-eks-settings'), html: { class: 'fieldset-form', id: 'eks-settings' } do |f|
       = form_errors(@application_setting)
 

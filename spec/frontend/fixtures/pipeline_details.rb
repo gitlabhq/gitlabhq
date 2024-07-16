@@ -35,4 +35,12 @@ RSpec.describe "GraphQL Pipeline details", '(JavaScript fixtures)', type: :reque
 
     expect_graphql_errors_to_be_empty
   end
+
+  it "pipelines/anonymous_pipeline_details.json" do
+    query = get_graphql_query_as_string(pipeline_details_query_path, with_base_path: false)
+
+    post_graphql(query, current_user: nil, variables: { projectPath: project.full_path, iid: pipeline.iid })
+
+    expect_graphql_errors_to_be_empty
+  end
 end

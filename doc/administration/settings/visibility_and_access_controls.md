@@ -20,13 +20,13 @@ Prerequisites:
 
 To access the visibility and access control options:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 
 ## Define which roles can create projects
 
-Instance-level protections for project creation define which roles can
+You can add project creation protections to your instance. These protections define which roles can
 [add projects to a group](../../user/group/index.md#specify-who-can-add-projects-to-a-group)
 on the instance. To alter which roles have permission to create projects:
 
@@ -34,7 +34,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. For **Default project creation protection**, select the desired roles:
@@ -57,12 +57,12 @@ Prerequisites:
 
 To restrict project deletion to only administrators:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to:
    - (GitLab 15.1 and later) **Allowed to delete projects**, and select **Administrators**.
-   - (GitLab 15.0 and earlier) **Default project deletion protection** and select **Only admins can delete project**.
+   - (GitLab 15.0 and earlier) **Default project deletion protection**, and select **Only admins can delete project**.
 1. Select **Save changes**.
 
 ## Deletion protection
@@ -77,21 +77,21 @@ DETAILS:
 > - [Removed option to delete immediately](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.11 [with a flag](../feature_flags.md) named `always_perform_delayed_deletion`. Disabled by default.
 > - Enabled delayed deletion by default and removed the option to delete immediately [on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/393622) and [on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/119606) in GitLab 16.0.
 
-Instance-level protection against accidental deletion of groups and projects.
+These protections help guard against accidental deletion of groups and projects on your instance.
 
 ### Retention period
 
 > - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/352960) in GitLab 15.1.
 
 Groups and projects remain restorable during the retention period you define. By default,
-this is 7 days, but you can change it. If you set the retention period to `0`, GitLab
+this is 7 days, but you can change it. If you set the retention period to `0` days, GitLab
 removes deleted groups and projects immediately. You can't restore them.
 
-In GitLab 15.1 and later, the retention period must be between `1` and `90`.
-If the retention period was `0` before the 15.1 update, the next time you change
+In GitLab 15.1 and later, the retention period must be between `1` and `90` days.
+If, before the 15.1 update, you set the retention period to `0` days, the next time you change
 any application setting, GitLab:
 
-- Changes the retention period to `1`.
+- Changes the retention period to `1` day.
 - Disables deletion protection.
 
 ### Delayed project deletion
@@ -102,23 +102,35 @@ any application setting, GitLab:
 Prerequisites:
 
 - You must be an administrator.
+- You must enable delayed project deletion for groups before you can enable it for projects.
+  Deletion protection is not available for projects only.
+- When disabled, GitLab 15.1 and later enforces this delayed-deletion setting, and you can't override it.
 
 To configure delayed project deletion:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+::Tabs
+
+:::TabTitle GitLab 16.0 and later
+
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Scroll to **Deletion protection** and set the retention period to a value between `1` and `90` days.
+1. Select **Save changes**.
+
+:::TabTitle GitLab 15.11 and earlier
+
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to:
-   - In GitLab 16.0 and later: **Deletion protection** and set the retention period to a value between `1` and `90`.
-   - In GitLab 15.11 with `always_perform_delayed_deletion` feature flag enabled: **Deletion protection** and set the retention period to a value between `1` and `90`.
+   - In GitLab 15.11 with `always_perform_delayed_deletion` feature flag enabled: **Deletion protection** and set the retention period to a value between `1` and `90` days.
    - In GitLab 15.1 to 15.10: **Deletion protection** and select **Keep deleted groups and projects**, then set the retention period.
    - In GitLab 15.0 and earlier: **Default delayed project protection** and select **Enable delayed project deletion by
      default for newly-created groups**, then set the retention period.
 1. Select **Save changes**.
 
-Deletion protection is not available for projects only (without being also being enabled for groups).
-
-GitLab 15.1 and later enforces this setting on groups when disabled. You can't override this setting.
+::EndTabs
 
 ### Delayed group deletion
 
@@ -127,11 +139,16 @@ GitLab 15.1 and later enforces this setting on groups when disabled. You can't o
 
 Groups remain restorable if the retention period is `1` or more days.
 
-In GitLab 15.1 and later, enable delayed group deletion by setting **Deletion projection** to **Keep deleted**.
-In GitLab 15.11 and later with the `always_perform_delayed_deletion` feature flag enabled, or in GitLab 16.0 and later:
+In GitLab 16.0 and later, the **Keep deleted** option is removed, and delayed group deletion is the default.
 
-- The **Keep deleted** option is removed.
-- Delayed group deletion is the default.
+To enable delayed group deletion in GitLab 15:
+
+1. GitLab 15.11 only: enable the `always_perform_delayed_deletion` feature flag.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. For **Deletion projection**, select **Keep deleted**.
+1. Select **Save changes**.
 
 ### Override defaults and delete immediately
 
@@ -149,18 +166,15 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Select the desired default project visibility:
-   - **Private** - Project access must be granted explicitly to each user. If this
-     project is part of a group, access is granted to members of the group.
-   - **Internal** - The project can be accessed by any authenticated user except external users.
-   - **Public** - The project can be accessed without any authentication.
+   - **Private** - Grant project access explicitly to each user. If this
+     project is part of a group, grants access to members of the group.
+   - **Internal** - Any authenticated user, except external users, can access the project.
+   - **Public** - Any user can access the project without any authentication.
 1. Select **Save changes**.
-
-For more details on project visibility, see
-[Project visibility](../../user/public_access.md).
 
 ## Configure snippet visibility defaults
 
@@ -170,14 +184,16 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
-1. Select the desired default snippet visibility.
+1. For **Default snippet visibility**, select your desired visibility level:
+   - **Private**.
+   - **Internal**. This setting is disabled for new projects, groups, and snippets on GitLab.com.
+     Existing snippets using the `Internal` visibility setting keep this setting. To learn more
+     about this change, see [issue 12388](https://gitlab.com/gitlab-org/gitlab/-/issues/12388).
+   - **Public**.
 1. Select **Save changes**.
-
-For more details on snippet visibility, read
-[Snippet visibility](../../user/snippets.md).
 
 ## Configure group visibility defaults
 
@@ -187,12 +203,12 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
-1. Select the desired default group visibility:
+1. For **Default group visibility**, select your desired visibility level:
    - **Private** - Only members can view the group and its projects.
-   - **Internal** - Any authenticated user (except external users) can view the group and any internal projects.
+   - **Internal** - Any authenticated user, except external users, can view the group and any internal projects.
    - **Public** - Authentication is not required to view the group and any public projects.
 1. Select **Save changes**.
 
@@ -215,10 +231,10 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
-1. In the **Restricted visibility levels** section, select the desired visibility levels to restrict.
+1. For **Restricted visibility levels**, select the desired visibility levels to restrict.
    - If you restrict the **Public** level:
       - Only administrators can create public groups, projects, and snippets.
       - User profiles are visible to only authenticated users through the Web interface.
@@ -241,32 +257,26 @@ communicate with GitLab. Disabling an access protocol does not block port access
 server itself. The ports used for the protocol, SSH or HTTP(S), are still accessible.
 The GitLab restrictions apply at the application level.
 
-To specify the enabled Git access protocols:
+GitLab allows Git actions only for the protocols you select:
+
+- If you enable both SSH and HTTP(S), users can choose either protocol.
+- If you enable only one protocol, project pages show only the allowed protocol's
+  URL, with no option to change it.
+
+To specify the enabled Git access protocols for all projects on your instance:
 
 Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
-1. Select the desired Git access protocols:
-   - Both SSH and HTTP(S)
-   - Only SSH
-   - Only HTTP(S)
+1. For **Enabled Git access protocols**, select your desired protocols:
+   - Both SSH and HTTP(S).
+   - Only SSH.
+   - Only HTTP(S).
 1. Select **Save changes**.
-
-If you enable both SSH and HTTP(S), users can choose either protocol.
-If you enable only one protocol:
-
-- The project page shows only the allowed protocol's URL, with no option to
-  change it.
-- GitLab shows a tooltip when you hover over the protocol for the URL, if user action
-  (such as adding a SSH key or setting a password) is required:
-
-  ![Project URL with SSH only access](../settings/img/restricted_url.png)
-
-GitLab only allows Git actions for the protocols you select.
 
 WARNING:
 GitLab [allows the HTTP(S) protocol](https://gitlab.com/gitlab-org/gitlab-foss/-/merge_requests/18021)
@@ -276,7 +286,7 @@ This happens even if you select **Only SSH**, because GitLab Runner and CI/CD jo
 ## Customize Git clone URL for HTTP(S)
 
 You can customize project Git clone URLs for HTTP(S), which affects the clone
-panel. For example, if:
+panel shown to users on a project's page. For example, if:
 
 - Your GitLab instance is at `https://example.com`, then project clone URLs are like
   `https://example.com/foo/bar.git`.
@@ -284,13 +294,13 @@ panel. For example, if:
   you can set this setting to `https://git.example.com/gitlab/`.
 
 To specify a custom Git clone URL for HTTP(S) in `gitlab.rb`, set a new value for
-`gitlab_rails['gitlab_ssh_host']`. To specify it from the GitLab UI:
+`gitlab_rails['gitlab_ssh_host']`. To specify a new value from the GitLab UI:
 
 Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Enter a root URL for **Custom Git clone URL for HTTP(S)**.
@@ -298,11 +308,11 @@ Prerequisites:
 
 ## Configure defaults for RSA, DSA, ECDSA, ED25519, ECDSA_SK, ED25519_SK SSH keys
 
-These options specify the permitted types and lengths for SSH keys.
+These options specify the [permitted types and lengths](../../security/ssh_keys_restrictions.md) for SSH keys.
 
 To specify a restriction for each key type:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Go to **RSA SSH keys**.
@@ -314,8 +324,6 @@ To specify a restriction for each key type:
    - At least 1024 bits.
 1. Select **Save changes**.
 
-For more details, see [SSH key restrictions](../../security/ssh_keys_restrictions.md).
-
 ## Enable project mirroring
 
 GitLab enables project mirroring by default. If you disable it, both
@@ -323,13 +331,13 @@ GitLab enables project mirroring by default. If you disable it, both
 [push mirroring](../../user/project/repository/mirror/push.md) no longer
 work in every repository. They can only be re-enabled by an administrator user on a per-project basis.
 
-To allow project maintainers on your instance to configure mirroring at the project level:
+To allow project maintainers on your instance to configure mirroring per project:
 
 Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Repository**.
 1. Expand **Repository mirroring**.
 1. Select **Allow project maintainers to configure repository mirroring**.
@@ -340,26 +348,26 @@ Prerequisites:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87579) in GitLab 15.1 [with a flag](../feature_flags.md) named `group_ip_restrictions_allow_global`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) in GitLab 15.4. [Feature flag `group_ip_restrictions_allow_global`](https://gitlab.com/gitlab-org/gitlab/-/issues/366445) removed.
 
-Administrators can combine IP address ranges with [group-level IP restrictions](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address).
-Use globally-allowed IP addresses to allow aspects of the GitLab installation to work even when group-level IP address
-restrictions are set.
+Administrators can combine IP address ranges with
+[IP restrictions per group](../../user/group/access_and_permissions.md#restrict-group-access-by-ip-address).
+Use globally-allowed IP addresses to allow aspects of the GitLab installation to work even when IP address
+restrictions are set per group.
 
-For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, you can specify that range as globally-allowed.
-This means GitLab Pages can still fetch artifacts from pipelines even if group-level IP address restrictions don't
+For example, if the GitLab Pages daemon runs on the `10.0.0.0/24` range, you can specify that range as globally allowed.
+GitLab Pages can still fetch artifacts from pipelines, even if IP address restrictions for the group don't
 include the `10.0.0.0/24` range.
 
-To add a IP address range to the group-level allowlist:
+To add a IP address range to the allowlist for a group:
 
 Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In **Globally-allowed IP ranges**, provide a list of IP address ranges. This list:
    - Has no limit on the number of IP address ranges.
-   - Has a size limit of 1 GB.
    - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
      this list by authorization type.
 1. Select **Save changes**.

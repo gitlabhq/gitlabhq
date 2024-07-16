@@ -32,7 +32,6 @@ exports[`Design management toolbar component renders design and updated data 1`]
         <imported-badge-stub
           class="gl-ml-2"
           importabletype="design"
-          size="sm"
         />
       </h2>
       <small

@@ -153,7 +153,7 @@ export default {
               <gl-sprintf :message="$options.i18n.legal">
                 <template #link="{ content }">
                   <a
-                    class="gl-text-decoration-underline gl-text-gray-500"
+                    class="gl-underline gl-text-gray-500"
                     :href="$options.privacyLink"
                     target="_blank"
                     rel="noreferrer nofollow"

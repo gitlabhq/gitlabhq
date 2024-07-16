@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", feature_category: :build_artifacts do
+RSpec.describe ::Ci::JobArtifacts::BulkDeleteByProjectService, "#execute", feature_category: :job_artifacts do
   subject(:execute) do
     described_class.new(
       job_artifact_ids: job_artifact_ids,

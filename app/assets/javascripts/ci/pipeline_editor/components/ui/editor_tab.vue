@@ -139,7 +139,7 @@ export default {
   <gl-tab :lazy="isLazy" v-bind="$attrs" v-on="$listeners">
     <template #title>
       <span>{{ title }}</span>
-      <gl-badge v-if="hasBadgeTitle" class="gl-ml-2" size="sm" :variant="badgeVariant">{{
+      <gl-badge v-if="hasBadgeTitle" class="gl-ml-2" :variant="badgeVariant">{{
         badgeTitle
       }}</gl-badge>
     </template>

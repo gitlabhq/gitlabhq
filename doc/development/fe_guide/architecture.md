@@ -28,7 +28,7 @@ When the work ahead may affect more than a single group, stage or potentially an
 
 This is well documented in the handbook, but to touch on it shortly, it is **the best way** to propose large changes and gather the required feedback and support to move forward. These documents are version controlled, keep evolving with time and are a great way to share a complex understanding across the entire organization. They also require a coach, which is a great way to involve someone with a lot of experience with larger changes. This process is shared across all engineering departments and is owned by the CTO.
 
-To see all Design Documents, you can check the [Architecture at GitLab page](../../architecture/index.md)
+To see all Design Documents, you can check the [Architecture at GitLab page](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/)
 
 ### Frontend RFCs (deprecated)
 

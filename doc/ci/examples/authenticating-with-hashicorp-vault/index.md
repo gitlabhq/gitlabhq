@@ -16,6 +16,10 @@ and the token is scheduled to be removed in GitLab 17.0. Use
 [ID tokens to authenticate with HashiCorp Vault](../../secrets/id_token_authentication.md#automatic-id-token-authentication-with-hashicorp-vault)
 instead, as demonstrated on this page.
 
+NOTE:
+Starting in Vault 1.17, [JWT auth login requires bound audiences on the role](https://developer.hashicorp.com/vault/docs/upgrading/upgrade-to-1.17.x#jwt-auth-login-requires-bound-audiences-on-the-role)
+when the JWT contains an `aud` claim. The `aud` claim can be a single string or a list of strings.
+
 This tutorial demonstrates how to authenticate, configure, and read secrets with HashiCorp's Vault from GitLab CI/CD.
 
 ## Prerequisites
@@ -163,6 +167,7 @@ $ vault write auth/jwt/role/myproject-staging - <<EOF
   "policies": ["myproject-staging"],
   "token_explicit_max_ttl": 60,
   "user_claim": "user_email",
+  "bound_audiences": "https://vault.example.com",
   "bound_claims": {
     "project_id": "22",
     "ref": "master",
@@ -181,6 +186,7 @@ $ vault write auth/jwt/role/myproject-production - <<EOF
   "policies": ["myproject-production"],
   "token_explicit_max_ttl": 60,
   "user_claim": "user_email",
+  "bound_audiences": "https://vault.example.com",
   "bound_claims_type": "glob",
   "bound_claims": {
     "project_id": "22",
@@ -278,7 +284,7 @@ The following job, when run for the default branch, can read secrets under `secr
 job_with_secrets:
   id_tokens:
     VAULT_ID_TOKEN:
-      aud: https://example.vault.com
+      aud: https://vault.example.com
   secrets:
     STAGING_DB_PASSWORD:
       vault: secret/myproject/staging/db/password@secrets # authenticates using $VAULT_ID_TOKEN
@@ -288,6 +294,8 @@ job_with_secrets:
 
 In this example:
 
+- `id_tokens` - The JSON Web Token (JWT) used for OIDC authentication. The `aud` claim
+  is set to match the `bound_audiences` parameter of the Vault JWT authentication method.
 - `@secrets` - The vault name, where your Secrets Engines are enabled.
 - `secret/myproject/staging/db` - The path location of the secret in Vault.
 - `password` The field to be fetched within the referenced secret.
@@ -297,6 +305,8 @@ In this example:
 You can control ID token access to Vault secrets by using Vault protections
 and GitLab features. For example, restrict the token by:
 
+- Using Vault [bound audiences](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-audiences)
+  for specific ID token `aud` claims.
 - Using Vault [bound claims](https://developer.hashicorp.com/vault/docs/auth/jwt#bound-claims)
   for specific groups using `group_claim`.
 - Hard coding values for Vault bound claims based on the `user_login` and `user_email`

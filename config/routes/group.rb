@@ -10,7 +10,7 @@ constraints(::Constraints::GroupUrlConstrainer.new) do
       # These routes are legit and the cop rule will be improved in
       # https://gitlab.com/gitlab-org/gitlab/-/issues/230703
       get :edit, as: :edit_group # rubocop:disable Cop/PutGroupRoutesUnderScope
-      get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: lambda { |req| req.format == :ics } # rubocop:disable Cop/PutGroupRoutesUnderScope
+      get :issues, as: :issues_group_calendar, action: :issues_calendar, constraints: ->(req) { req.format == :ics } # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :issues, as: :issues_group # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :merge_requests, as: :merge_requests_group # rubocop:disable Cop/PutGroupRoutesUnderScope
       get :projects, as: :projects_group # rubocop:disable Cop/PutGroupRoutesUnderScope

@@ -3,20 +3,16 @@ import Autosave from '~/autosave';
 import { setHTMLFixture, resetHTMLFixture } from 'helpers/fixtures';
 import IssuableForm from '~/issuable/issuable_form';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
 import { mockTracking } from 'helpers/tracking_helper';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import { TEST_HOST } from 'helpers/test_constants';
+import waitForPromises from 'helpers/wait_for_promises';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { getSaveableFormChildren } from './helpers';
 
 jest.mock('~/autosave');
-
-jest.mock('~/lib/utils/secret_detection', () => {
-  return {
-    ...jest.requireActual('~/lib/utils/secret_detection'),
-    confirmSensitiveAction: jest.fn(() => Promise.resolve(false)),
-  };
-});
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
+confirmAction.mockResolvedValueOnce(false);
 
 const createIssuable = (form) => {
   return new IssuableForm(form);
@@ -127,11 +123,12 @@ describe('IssuableForm', () => {
         expect(instance.autosaves.get('title').reset).toHaveBeenCalledTimes(1);
       });
 
-      it('resets autosave when submit', () => {
+      it('resets autosave when submit', async () => {
         const resetAutosave = jest.spyOn(IssuableForm.prototype, 'resetAutosave');
         createIssuable($form);
 
         $form.submit();
+        await waitForPromises();
 
         expect(resetAutosave).toHaveBeenCalledTimes(1);
       });
@@ -260,7 +257,7 @@ describe('IssuableForm', () => {
       issueDescription = null;
     });
 
-    it('submits the form when no token is present', () => {
+    it('submits the form when no token is present', async () => {
       issueDescription.value = 'sample message';
 
       const handleSubmit = jest.spyOn(IssuableForm.prototype, 'handleSubmit');
@@ -268,6 +265,7 @@ describe('IssuableForm', () => {
       createIssuable($form);
 
       $form.submit();
+      await waitForPromises();
 
       expect(handleSubmit).toHaveBeenCalled();
       expect(resetAutosave).toHaveBeenCalled();
@@ -297,7 +295,7 @@ describe('IssuableForm', () => {
       });
     });
 
-    it('prevents form submission when token is present', () => {
+    it('prevents form submission when token is present', async () => {
       issueDescription.value = sensitiveMessage;
 
       const handleSubmit = jest.spyOn(IssuableForm.prototype, 'handleSubmit');
@@ -305,10 +303,14 @@ describe('IssuableForm', () => {
       createIssuable($form);
 
       $form.submit();
+      await waitForPromises();
 
       expect(handleSubmit).toHaveBeenCalled();
-      expect(confirmSensitiveAction).toHaveBeenCalledWith(i18n.descriptionPrompt);
       expect(resetAutosave).not.toHaveBeenCalled();
+      expect(confirmAction).toHaveBeenCalledWith(
+        '',
+        expect.objectContaining({ title: 'Warning: Potential secret detected' }),
+      );
     });
   });
 });

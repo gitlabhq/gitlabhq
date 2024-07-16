@@ -29,8 +29,9 @@ configuration added with the [`includes` keyword](yaml/index.md#include).
 To check CI/CD configuration with the CI lint tool:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
-1. In the upper-right corner, select **CI lint**.
+1. Select **Build > Pipeline editor**.
+1. Select the **Validate** tab.
+1. Select **Lint CI/CD sample**.
 1. Paste a copy of the CI/CD configuration you want to check into the text box.
 1. Select **Validate**.
 
@@ -48,8 +49,9 @@ Prerequisites:
 To simulate a pipeline:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Build > Pipelines**.
-1. In the upper-right corner, select **CI lint**.
+1. Select **Build > Pipeline editor**.
+1. Select the **Validate** tab.
+1. Select **Lint CI/CD sample**.
 1. Paste a copy of the CI/CD configuration you want to check into the text box.
 1. Select **Simulate pipeline creation for the default branch**.
 1. Select **Validate**.

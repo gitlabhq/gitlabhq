@@ -24,6 +24,9 @@ describe('initMembersApp', () => {
       requestFormatter: () => ({}),
       filteredSearchBar: { show: false },
     },
+    [MEMBERS_TAB_TYPES.placeholder]: {
+      requestFormatter: () => ({}),
+    },
   };
 
   const setup = () => {
@@ -56,6 +59,15 @@ describe('initMembersApp', () => {
       expect(membersStore).toHaveBeenCalledWith({
         ...parsedData[MEMBERS_TAB_TYPES.user],
         ...options[MEMBERS_TAB_TYPES.user],
+      });
+    });
+
+    it('inits placeholders store', () => {
+      setup();
+
+      expect(membersStore).toHaveBeenCalledTimes(Object.keys(options).length);
+      expect(membersStore).toHaveBeenCalledWith({
+        ...options[MEMBERS_TAB_TYPES.placeholder],
       });
     });
   });

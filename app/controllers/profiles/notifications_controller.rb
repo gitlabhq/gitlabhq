@@ -31,7 +31,7 @@ class Profiles::NotificationsController < Profiles::ApplicationController
   private
 
   def user_groups
-    GroupsFinder.new(current_user, all_available: false).execute.order_name_asc.page(params[:page])
+    GroupsFinder.new(current_user, all_available: false).execute.order_name_asc.page(pagination_params[:page])
   end
 
   # rubocop: disable CodeReuse/ActiveRecord

@@ -29,16 +29,16 @@ export const TARGET_NAMESPACE_FIELD = 'targetNamespace';
 
 export const ROOT_NAMESPACE = { fullPath: '', id: null };
 
-const PLACEHOLDER_STATUS_PENDING_ASSIGNMENT = 'pending_assignment';
-const PLACEHOLDER_STATUS_AWAITING_APPROVAL = 'awaiting_approval';
-const PLACEHOLDER_STATUS_REJECTED = 'rejected';
-const PLACEHOLDER_STATUS_REASSIGNING = 'reassigning'; // backend state still pending
-const PLACEHOLDER_STATUS_FAILED = 'failed';
-const PLACEHOLDER_STATUS_SAVED = 'saved'; // backend state still pending
-const PLACEHOLDER_STATUS_COMPLETED = 'completed';
+const PLACEHOLDER_STATUS_PENDING_REASSIGNMENT = 'PENDING_REASSIGNMENT';
+export const PLACEHOLDER_STATUS_AWAITING_APPROVAL = 'AWAITING_APPROVAL';
+const PLACEHOLDER_STATUS_REJECTED = 'REJECTED';
+export const PLACEHOLDER_STATUS_REASSIGNING = 'REASSIGNMENT_IN_PROGRESS';
+const PLACEHOLDER_STATUS_FAILED = 'FAILED';
+export const PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER = 'KEEP_AS_PLACEHOLDER';
+export const PLACEHOLDER_STATUS_COMPLETED = 'COMPLETED';
 
 export const placeholderUserBadges = {
-  [PLACEHOLDER_STATUS_PENDING_ASSIGNMENT]: {
+  [PLACEHOLDER_STATUS_PENDING_REASSIGNMENT]: {
     text: __('Not started'),
     variant: 'muted',
     tooltip: s__('UserMapping|Reassignment has not started.'),
@@ -63,7 +63,7 @@ export const placeholderUserBadges = {
     variant: 'danger',
     tooltip: s__('UserMapping|Reassignment failed.'),
   },
-  [PLACEHOLDER_STATUS_SAVED]: {
+  [PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER]: {
     text: s__('UserMapping|Kept as placeholder'),
     variant: 'success',
     tooltip: s__('UserMapping|Placeholder user was made permanent.'),

@@ -179,7 +179,7 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
         id="reference-1"
       >
         <stop
-          class="primary-stop"
+          class="background-stop"
           offset="0%"
         >
           <animate
@@ -190,7 +190,7 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
           />
         </stop>
         <stop
-          class="secondary-stop"
+          class="shimmer-stop"
           offset="50%"
         >
           <animate
@@ -201,7 +201,7 @@ exports[`Resizable Skeleton Loader default setup renders the bars, labels, and g
           />
         </stop>
         <stop
-          class="primary-stop"
+          class="background-stop"
           offset="100%"
         >
           <animate
@@ -396,7 +396,7 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
         id="reference-1"
       >
         <stop
-          class="primary-stop"
+          class="background-stop"
           offset="0%"
         >
           <animate
@@ -407,7 +407,7 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
           />
         </stop>
         <stop
-          class="secondary-stop"
+          class="shimmer-stop"
           offset="50%"
         >
           <animate
@@ -418,7 +418,7 @@ exports[`Resizable Skeleton Loader with custom settings renders the correct posi
           />
         </stop>
         <stop
-          class="primary-stop"
+          class="background-stop"
           offset="100%"
         >
           <animate

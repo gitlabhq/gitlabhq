@@ -5,7 +5,7 @@ module API
     module Validators
       class CheckAssigneesCount < Grape::Validations::Validators::Base
         def self.coerce
-          lambda do |value|
+          ->(value) do
             case value
             when String, Array
               Array.wrap(value)

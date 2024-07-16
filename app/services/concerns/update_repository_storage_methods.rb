@@ -33,11 +33,11 @@ module UpdateRepositoryStorageMethods
       mirror_repositories
     end
 
-    repository_storage_move.finish_replication!
-
     repository_storage_move.transaction do
       track_repository(destination_storage_name)
     end
+
+    repository_storage_move.finish_replication!
 
     remove_old_paths unless same_filesystem?
 

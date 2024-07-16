@@ -104,12 +104,8 @@ export default {
 
       try {
         // TLDR: when we load a page, if there's next and/or previous pages existing, we'll load their data as well to improve percepted performance.
-        const {
-          endCursor,
-          hasPreviousPage,
-          hasNextPage,
-          startCursor,
-        } = newProject.environment.deployments.pageInfo;
+        const { endCursor, hasPreviousPage, hasNextPage, startCursor } =
+          newProject.environment.deployments.pageInfo;
 
         // At the moment we have a limit of deployments being requested only from a signle environment entity per query,
         // and apparently two batched queries count as one on server-side

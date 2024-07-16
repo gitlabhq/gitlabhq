@@ -109,7 +109,12 @@ Even when creation is disabled, you can still use and revoke existing project ac
 
 ## Bot users for projects
 
-Bot users for projects are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default. When enabled new bot users are made members with no expiry date and, when the token is later revoked or expires, the bot user is retained. It is not deleted and its records are not moved to the Ghost User.
+
+FLAG:
+The behavior of the bot user after the project access token is revoked is controlled by a feature flag. For more information, see the history.
+
+Bot users for projects are [GitLab-created non-billable users](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a project access token, a bot user is created and added to the project.
 This user is not a billable user, so it does not count toward the license limit.
 
@@ -124,7 +129,7 @@ API calls made with a project access token are associated with the corresponding
 
 Bot users for projects:
 
-- Are included in a project's member list but cannot be modified.
+- Are included in a project's member list but cannot be modified. The membership expires when the token expires.
 - Cannot be added to any other project.
 - Can have a maximum role of Owner for a project. For more information, see
   [Create a project access token](../../../api/project_access_tokens.md#create-a-project-access-token).

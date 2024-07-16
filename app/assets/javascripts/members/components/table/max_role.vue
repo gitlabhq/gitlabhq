@@ -44,7 +44,7 @@ export default {
       busy: false,
       isDesktop: false,
       memberRoleId: this.member.accessLevel.memberRoleId ?? null,
-      selectedRole: initialSelectedRole(accessLevelOptions.flatten, this.member),
+      selectedRole: initialSelectedRole(accessLevelOptions.flatten, this.member)?.value,
     };
   },
   computed: {
@@ -121,7 +121,7 @@ export default {
   <div>
     <gl-collapsible-listbox
       v-if="permissions.canUpdate"
-      :placement="isDesktop ? 'left' : 'right'"
+      :placement="isDesktop ? 'bottom-start' : 'bottom-end'"
       :header-text="__('Change role')"
       :disabled="disabled"
       :loading="busy"
@@ -135,7 +135,7 @@ export default {
           {{ item.text }}
         </div>
         <div
-          v-if="item.description"
+          v-if="item.memberRoleId && item.description"
           class="gl-text-gray-700 gl-font-sm gl-pt-1 gl-line-clamp-2 gl-whitespace-normal"
         >
           {{ item.description }}

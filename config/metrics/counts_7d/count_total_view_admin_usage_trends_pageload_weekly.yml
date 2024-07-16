@@ -1,0 +1,21 @@
+---
+key_path: counts.count_total_view_admin_usage_trends_pageload_weekly
+description: Weekly count of total users who visited the admin usage trends page
+product_group: personal_productivity
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156817
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: view_admin_usage_trends_pageload

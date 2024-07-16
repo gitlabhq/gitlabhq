@@ -21,7 +21,7 @@ class Integration < ApplicationRecord
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker
     datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
-    gitlab_slack_application hangouts_chat harbor irker jira
+    gitlab_slack_application hangouts_chat harbor irker jira jira_cloud_app
     mattermost mattermost_slash_commands microsoft_teams packagist phorge pipelines_email
     pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
     unify_circuit webex_teams youtrack zentao
@@ -129,7 +129,7 @@ class Integration < ApplicationRecord
   scope :with_default_settings, -> { where.not(inherit_from_id: nil) }
   scope :with_custom_settings, -> { where(inherit_from_id: nil) }
   scope :for_group, ->(group) {
-    types = available_integration_types(include_project_specific: false, include_instance_specific: false)
+    types = available_integration_types(include_project_specific: false)
     where(group_id: group, type: types)
   }
 
@@ -335,6 +335,8 @@ class Integration < ApplicationRecord
         (Gitlab::CurrentSettings.slack_app_enabled || Gitlab.dev_or_test_env?)
       names.delete('gitlab_slack_application')
     end
+
+    names.delete('jira_cloud_app') unless Feature.enabled?(:enable_jira_connect_configuration) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
 
     names
   end
@@ -627,6 +629,10 @@ class Integration < ApplicationRecord
     false
   end
 
+  def self.pluck_group_id
+    pluck(:group_id)
+  end
+
   def form_fields
     fields.reject { _1[:api_only] == true || (_1.key?(:if) && _1[:if] != true) }
   end
@@ -698,7 +704,16 @@ class Integration < ApplicationRecord
 
   def async_execute(data)
     return if ::Gitlab::SilentMode.enabled?
-    return unless supported_events.include?(data[:object_kind])
+
+    # Temporarily log when we return within this method to gather data for
+    # https://gitlab.com/gitlab-org/gitlab/-/issues/382999
+    unless supported_events.include?(data[:object_kind])
+      log_info(
+        'async_execute did nothing due to event not being supported',
+        event: data[:object_kind]
+      )
+      return
+    end
 
     Integrations::ExecuteWorker.perform_async(id, data.deep_stringify_keys)
   end

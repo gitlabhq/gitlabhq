@@ -30,7 +30,7 @@
   .commit-detail.flex-list.gl-display-flex.gl-justify-content-space-between.gl-align-items-center.gl-flex-grow-1.gl-min-w-0
     .commit-content{ data: { testid: 'commit-content' } }
       - if view_details && merge_request
-        = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: ["commit-row-message item-title js-onboarding-commit-item", ("font-italic" if commit.message.empty?)]
+        = link_to commit.title, project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: ["commit-row-message item-title js-onboarding-commit-item", ("font-italic" if commit.message.empty?)], data: link_data_attrs
       - else
         = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title js-onboarding-commit-item #{'font-italic' if commit.message.empty?}", data: link_data_attrs)
       %span.commit-row-message.d-inline.d-sm-none
@@ -54,7 +54,7 @@
       = render_if_exists 'projects/commits/project_namespace', show_project_name: show_project_name, project: project
 
       - if commit.description?
-        %pre{ class: ["commit-row-description gl-mb-3 gl-white-space-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")] }
+        %pre{ class: ["commit-row-description gl-mb-3 gl-whitespace-pre-wrap", (collapsible ? "js-toggle-content" : "!gl-block")] }
           = preserve(markdown_field(commit, :description))
 
     .commit-actions.flex-row
@@ -66,7 +66,8 @@
             = link_to tags.first, project_commits_path(project, tags.first, ref_type: 'tags'), class: 'gl-text-truncate gl-max-w-15'
 
       - if request.xhr?
-        = render partial: 'projects/commit/signature', object: commit.signature
+        - if commit.has_signature?
+          = render partial: 'projects/commit/signature', object: commit.signature
       - else
         = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
 

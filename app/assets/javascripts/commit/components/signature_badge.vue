@@ -51,7 +51,7 @@ export default {
       class="gl-border-0 gl-outline-none gl-p-0 gl-bg-transparent"
       :aria-label="statusConfig.label"
     >
-      <gl-badge :variant="statusConfig.variant" size="md">
+      <gl-badge :variant="statusConfig.variant">
         {{ statusConfig.label }}
       </gl-badge>
     </button>

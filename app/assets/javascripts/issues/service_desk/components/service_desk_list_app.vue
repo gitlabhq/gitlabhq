@@ -206,17 +206,11 @@ export default {
         [STATUS_ALL]: allIssues?.count,
       };
     },
-    currentTabCount() {
-      return this.tabCounts[this.state] ?? 0;
-    },
     showPaginationControls() {
-      return (
-        this.serviceDeskIssues.length > 0 &&
-        (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage)
-      );
+      return !this.isLoading && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
     },
-    showPageSizeControls() {
-      return this.currentTabCount > DEFAULT_PAGE_SIZE;
+    showPageSizeSelector() {
+      return this.serviceDeskIssues.length > 0;
     },
     isLoading() {
       return this.$apollo.loading;
@@ -437,10 +431,9 @@ export default {
 
       this.$router.push({ query: this.urlParams });
     },
-    handlePageSizeChange(newPageSize) {
-      const pageParam = getParameterByName(PARAM_LAST_PAGE_SIZE) ? 'lastPageSize' : 'firstPageSize';
-      this.pageParams[pageParam] = newPageSize;
-      this.pageSize = newPageSize;
+    handlePageSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.pageParams = getInitialPageParams(pageSize);
       scrollUp();
 
       this.$router.push({ query: this.urlParams });
@@ -570,7 +563,7 @@ export default {
       :issuables-loading="isLoading"
       :initial-filter-value="filterTokens"
       :show-pagination-controls="showPaginationControls"
-      :show-page-size-change-controls="showPageSizeControls"
+      :show-page-size-selector="showPageSizeSelector"
       :sort-options="sortOptions"
       :initial-sort-by="sortKey"
       :is-manual-ordering="isManualOrdering"

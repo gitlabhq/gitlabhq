@@ -586,8 +586,7 @@ describe('GfmAutoComplete', () => {
             '<img src="./group.jpg" alt="my-group" class="avatar rect-avatar avatar-inline s24 gl-mr-2"/>',
           title: 'My Group',
           search: 'MyGroup my-group',
-          icon:
-            '<svg class="s16 vertical-align-middle gl-ml-2"><use xlink:href="/icons.svg#notifications-off" /></svg>',
+          icon: '<svg class="s16 vertical-align-middle gl-ml-2"><use xlink:href="/icons.svg#notifications-off" /></svg>',
         },
       ]);
     });

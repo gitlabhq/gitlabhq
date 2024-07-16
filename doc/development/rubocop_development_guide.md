@@ -155,6 +155,18 @@ located in `.rubocop_todo/gitlab/namespaced_class.yml`.
 
 Make sure to commit any changes in `.rubocop_todo/` after running the Rake task.
 
+## Periodically generating RuboCop todo files
+
+Due to code changes, some RuboCop offenses get automatically fixed over time. To avoid reintroducing these offenses,
+we periodically regenerate the `.rubocop_todo` files.
+
+We use the [housekeeper gem](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper) for this purpose.
+It regenerates the `.rubocop_todo` files and creates a merge request.
+A reviewer is randomly assigned to review the generated merge request.
+
+To run the keep locally follow [these steps](https://gitlab.com/gitlab-org/gitlab/-/tree/master/gems/gitlab-housekeeper#running-for-real)
+and run `bundle exec gitlab-housekeeper -k Keeps::GenerateRubocopTodos`.
+
 ## Reveal existing RuboCop exceptions
 
 To reveal existing RuboCop exceptions in the code that have been excluded via `.rubocop_todo.yml` and
@@ -163,4 +175,4 @@ To reveal existing RuboCop exceptions in the code that have been excluded via `.
 This allows you to reveal existing RuboCop exceptions during your daily work cycle and fix them along the way.
 
 NOTE:
-Define permanent `Exclude`s in `.rubocop.yml` instead of `.rubocop_todo/**/*.yml`.
+Define `Include`s and permanent `Exclude`s in `.rubocop.yml` instead of `.rubocop_todo/**/*.yml`.

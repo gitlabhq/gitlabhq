@@ -106,7 +106,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         end
 
         it 'contains only errors' do
-          error_message = 'jobs invalid config should implement a script: or a trigger: keyword'
+          error_message = 'jobs invalid config should implement the script:, run:, or trigger: keyword'
           expect(pipeline.yaml_errors).to eq(error_message)
           expect(pipeline.error_messages.map(&:content)).to contain_exactly(error_message)
           expect(pipeline.errors.full_messages).to contain_exactly(error_message)

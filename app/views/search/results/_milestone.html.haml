@@ -1,5 +1,9 @@
+- index = local_assigns.fetch(:index, nil)
+- milestone = local_assigns.fetch(:result, nil)
+- position = index + 1
+
 .search-result-row
-  = link_to project_milestone_path(milestone.project, milestone), class: 'gl-font-bold gl-text-black-normal', data: {track_action: 'click_text', track_label: 'milestone_title', track_property: 'search_result'} do
+  = link_to project_milestone_path(milestone.project, milestone), class: 'gl-font-bold gl-text-black-normal', data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term } do
     %span.term.str-truncated= simple_search_highlight_and_truncate(milestone.title, @search_term)
 
   - if milestone.project_milestone?

@@ -61,9 +61,8 @@ export default {
       return uniq(fileNames).join(' ').trim();
     },
     summary() {
-      const {
-        data: { parsingInProgress = false, hasSuiteError = false, summary = {} } = {},
-      } = this.collapsedData;
+      const { data: { parsingInProgress = false, hasSuiteError = false, summary = {} } = {} } =
+        this.collapsedData;
 
       if (parsingInProgress) {
         return { title: this.$options.i18n.loading };

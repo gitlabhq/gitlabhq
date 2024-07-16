@@ -648,7 +648,8 @@ export default {
       :data-board="list.id"
       :data-board-type="list.listType"
       :class="{
-        'gl-bg-red-50 gl-rounded-bottom-left-base gl-rounded-bottom-right-base': boardItemsSizeExceedsMax,
+        'gl-bg-red-50 gl-rounded-bottom-left-base gl-rounded-bottom-right-base':
+          boardItemsSizeExceedsMax,
         'gl-overflow-hidden': disableScrollingWhenMutationInProgress,
         'gl-overflow-y-auto': !disableScrollingWhenMutationInProgress,
       }"

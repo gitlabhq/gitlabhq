@@ -43,12 +43,12 @@ RSpec.describe GitlabScriptTagHelper do
     end
 
     it 'returns a script tag with a nonce using argument syntax with options' do
-      expect(helper.javascript_tag( 'alert(1)', type: 'application/javascript').to_s).to eq tag_with_nonce_and_type
+      expect(helper.javascript_tag('alert(1)', type: 'application/javascript').to_s).to eq tag_with_nonce_and_type
     end
 
     # This scenario does not really make sense, but it's supported so we test it
     it 'returns a script tag with a nonce using argument and block syntax with options' do
-      expect(helper.javascript_tag( '// ignored', type: 'application/javascript') { 'alert(1)' }.to_s).to eq tag_with_nonce_and_type
+      expect(helper.javascript_tag('// ignored', type: 'application/javascript') { 'alert(1)' }.to_s).to eq tag_with_nonce_and_type
     end
   end
 

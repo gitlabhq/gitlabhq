@@ -58,6 +58,6 @@ export default {
     :aria-label="visibilityTooltip"
     :name="visibilityIcon"
     :title="visibilityTooltip"
-    class="gl-display-inline-flex gl-text-secondary"
+    class="gl-inline-flex gl-text-secondary"
   />
 </template>

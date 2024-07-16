@@ -23,7 +23,7 @@ exports[`publish_method renders 1`] = `
     variant="current"
   />
   <gl-link-stub
-    class="gl-mr-2 gl-text-decoration-underline"
+    class="gl-mr-2 gl-underline"
     data-testid="pipeline-sha"
     href="/namespace14/project14/-/commit/b83d6e391c22777fca1ed3012fce84f633d7fed0"
   >

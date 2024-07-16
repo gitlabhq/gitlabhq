@@ -11,6 +11,9 @@ RSpec.describe 'Monitor dropdown sidebar', :js, feature_category: :shared do
   before do
     project.add_role(user, role) if role
     sign_in(user)
+
+    project.update!(service_desk_enabled: true)
+    allow(Gitlab::ServiceDesk).to receive(:supported?).and_return(true)
   end
 
   shared_examples 'shows common Monitor menu item based on the access level' do

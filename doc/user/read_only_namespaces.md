@@ -29,9 +29,6 @@ To restore a namespace to its standard state, you can:
   - [Reduce the number of members](free_user_limit.md#manage-members-in-your-group-namespace) in your namespace.
   - [Start a free trial](https://gitlab.com/-/trial_registrations/new), which includes an unlimited number of members.
   - [Purchase a paid tier](https://about.gitlab.com/pricing/).
-- For exceeded storage quota:
-  - [Purchase more storage for the namespace](../subscriptions/gitlab_com/index.md#purchase-more-storage-and-transfer).
-  - [Manage your storage usage](usage_quotas.md#manage-storage-usage).
 
 ## Restricted actions
 
@@ -48,6 +45,4 @@ When you try to execute a restricted action in a read-only namespace, you might 
 
 ## Related topics
 
-- [Frequently Asked Questions - GitLab SaaS Free Tier](https://about.gitlab.com/pricing/faq-efficient-free-tier/)
 - [Free user limit](free_user_limit.md)
-- [Storage usage quotas](usage_quotas.md)

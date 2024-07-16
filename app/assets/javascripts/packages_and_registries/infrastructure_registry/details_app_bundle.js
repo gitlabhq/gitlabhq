@@ -8,22 +8,33 @@ Vue.use(Translate);
 
 export default () => {
   const el = document.querySelector('#js-vue-packages-detail');
-  const { package: packageJson, canDelete: canDeleteStr, ...rest } = el.dataset;
+  const {
+    package: packageJson,
+    canDelete: canDeleteStr,
+    gitlabHost,
+    projectPath,
+    projectName,
+    projectListUrl,
+    svgPath,
+  } = el.dataset;
   const packageEntity = JSON.parse(packageJson);
   const canDelete = parseBoolean(canDeleteStr);
 
   const store = createStore({
     packageEntity,
     packageFiles: packageEntity.package_files,
-    canDelete,
-    ...rest,
   });
 
   return new Vue({
     el,
     store,
     provide: {
-      titleComponent: 'TerraformTitle',
+      canDelete,
+      gitlabHost,
+      projectListUrl,
+      projectName,
+      projectPath,
+      svgPath,
     },
     render(createElement) {
       return createElement(PackagesApp);

@@ -120,7 +120,7 @@ export default {
     >
       <template #cell(name)="{ item }">
         <gl-link
-          class="gl-display-inline-flex gl-align-items-center gl-hover-text-decoration-none gl-text-body!"
+          class="gl-inline-flex gl-align-items-center gl-hover-text-decoration-none gl-text-body!"
           :href="item.full_path"
         >
           <project-avatar

@@ -51,19 +51,19 @@ RSpec.describe Ci::DailyBuildGroupReportResult, feature_category: :continuous_in
             project_id: rspec_coverage.project_id,
             ref_path: rspec_coverage.ref_path,
             last_pipeline_id: new_pipeline.id,
+            partition_id: new_pipeline.partition_id,
             date: rspec_coverage.date,
             group_name: 'rspec',
-            data: { 'coverage' => 81.0 },
-            partition_id: 100
+            data: { 'coverage' => 81.0 }
           },
           {
             project_id: rspec_coverage.project_id,
             ref_path: rspec_coverage.ref_path,
             last_pipeline_id: new_pipeline.id,
+            partition_id: new_pipeline.partition_id,
             date: rspec_coverage.date,
             group_name: 'karma',
-            data: { 'coverage' => 87.0 },
-            partition_id: 100
+            data: { 'coverage' => 87.0 }
           }
         ])
 

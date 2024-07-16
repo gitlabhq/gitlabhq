@@ -11,15 +11,32 @@ RSpec.describe GroupAccessTokens::RotateService, feature_category: :system_acces
     subject(:response) { described_class.new(current_user, token, group).execute }
 
     shared_examples_for 'rotates the token successfully' do
-      it 'rotates the token and sets the bot user expires at', :freeze_time do
+      it 'rotates the token and does not set the bot user expires at', :freeze_time do
         expect(response).to be_success
 
         new_token = response.payload[:personal_access_token]
 
         expect(new_token.token).not_to eq(token.token)
-        expect(new_token.expires_at).to eq(Date.today + 1.week)
+        expect(new_token.expires_at).to eq(1.week.from_now.to_date)
         expect(new_token.user).to eq(token.user)
-        expect(bot_user_membership.reload.expires_at).to eq(new_token.expires_at)
+        expect(bot_user_membership.reload.expires_at).to be_nil
+      end
+
+      context 'when retain_resource_access_token_user_after_revoke FF is disabled' do
+        before do
+          stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+        end
+
+        it 'rotates the token and sets the bot user expires at', :freeze_time do
+          expect(response).to be_success
+
+          new_token = response.payload[:personal_access_token]
+
+          expect(new_token.token).not_to eq(token.token)
+          expect(new_token.expires_at).to eq(1.week.from_now.to_date)
+          expect(new_token.user).to eq(token.user)
+          expect(bot_user_membership.reload.expires_at).to eq(new_token.expires_at)
+        end
       end
     end
 

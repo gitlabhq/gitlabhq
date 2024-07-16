@@ -6,7 +6,7 @@ module RemoteDevelopment
       include Messages
 
       # @param [Hash] context
-      # @return [Result]
+      # @return [Gitlab::Fp::Result]
       def self.validate(context)
         context => {
           settings: {
@@ -16,24 +16,24 @@ module RemoteDevelopment
         }
 
         unless partial_reconciliation_interval_seconds > 0
-          return Result.err(SettingsPartialReconciliationIntervalSecondsValidationFailed.new(
-            details: "Partial reconciliation interval must be greater than zero")
-                           )
+          return Gitlab::Fp::Result.err(SettingsPartialReconciliationIntervalSecondsValidationFailed.new(
+            details: "Partial reconciliation interval must be greater than zero"
+          ))
         end
 
         unless full_reconciliation_interval_seconds > 0
-          return Result.err(SettingsFullReconciliationIntervalSecondsValidationFailed.new(
-            details: "Full reconciliation interval must be greater than zero")
-                           )
+          details = "Full reconciliation interval must be greater than zero"
+          return Gitlab::Fp::Result.err(SettingsFullReconciliationIntervalSecondsValidationFailed.new(details: details))
         end
 
         if full_reconciliation_interval_seconds <= partial_reconciliation_interval_seconds
-          return Result.err(SettingsPartialReconciliationIntervalSecondsValidationFailed.new(
-            details: "Partial reconciliation interval must be less than full reconciliation interval")
-                           )
+          details = "Partial reconciliation interval must be less than full reconciliation interval"
+          return Gitlab::Fp::Result.err(
+            SettingsPartialReconciliationIntervalSecondsValidationFailed.new(details: details)
+          )
         end
 
-        Result.ok(context)
+        Gitlab::Fp::Result.ok(context)
       end
     end
   end

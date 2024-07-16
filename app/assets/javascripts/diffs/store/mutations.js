@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import {
   DIFF_FILE_MANUAL_COLLAPSE,
@@ -295,7 +294,10 @@ export default {
     state.currentDiffFileId = fileId;
   },
   [types.SET_DIFF_FILE_VIEWED](state, { id, seen }) {
-    Vue.set(state.viewedDiffFileIds, id, seen);
+    state.viewedDiffFileIds = {
+      ...state.viewedDiffFileIds,
+      [id]: seen,
+    };
   },
   [types.OPEN_DIFF_FILE_COMMENT_FORM](state, formData) {
     state.commentForms.push({
@@ -370,8 +372,7 @@ export default {
   },
   [types.SET_FILE_FORCED_OPEN](state, { filePath, forced = true }) {
     const file = state.diffFiles.find((f) => f.file_path === filePath);
-
-    Vue.set(file.viewer, 'forceOpen', forced);
+    file.viewer.forceOpen = forced;
   },
   [types.SET_CURRENT_VIEW_DIFF_FILE_LINES](state, { filePath, lines }) {
     const file = state.diffFiles.find((f) => f.file_path === filePath);

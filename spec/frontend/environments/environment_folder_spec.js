@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { stubTransition } from 'helpers/stub_transition';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import EnvironmentsFolder from '~/environments/components/environment_folder.vue';
 import EnvironmentItem from '~/environments/components/new_environment_item.vue';
 import { resolvedEnvironmentsApp, resolvedFolder } from './graphql/mock_data';
@@ -18,7 +18,17 @@ describe('~/environments/components/environments_folder.vue', () => {
   let intervalMock;
   let nestedEnvironment;
 
-  const findLink = () => wrapper.findByRole('link', { name: s__('Environments|Show all') });
+  const findLink = () => wrapper.findByText(s__('Environments|See all environments.'));
+  const findMessage = () =>
+    wrapper.findByText(
+      sprintf(
+        s__(
+          'Environments|Showing %{listedEnvironmentsCount} of %{totalEnvironmentsCount} environments in this folder.',
+        ),
+        { listedEnvironmentsCount: 2, totalEnvironmentsCount: 4 },
+      ),
+    );
+  const findFolderMessageElement = () => wrapper.findByTestId('environment-folder-message-element');
 
   const createApolloProvider = () => {
     const mockResolvers = { Query: { folder: environmentFolderMock, interval: intervalMock } };
@@ -77,13 +87,10 @@ describe('~/environments/components/environments_folder.vue', () => {
       });
 
       it('is collapsed by default', () => {
-        const link = findLink();
-
         expect(collapse.props('visible')).toBe(false);
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
         expect(iconNames).toEqual(['chevron-lg-right', 'folder-o']);
         expect(folderName.classes('gl-font-bold')).toBe(false);
-        expect(link.exists()).toBe(false);
       });
 
       it('opens on click and starts polling', async () => {
@@ -93,14 +100,11 @@ describe('~/environments/components/environments_folder.vue', () => {
         jest.advanceTimersByTime(2000);
         await waitForPromises();
 
-        const link = findLink();
-
         expect(button.attributes('aria-label')).toBe(__('Collapse'));
         expect(collapse.props('visible')).toBe(true);
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
         expect(iconNames).toEqual(['chevron-lg-down', 'folder-open']);
         expect(folderName.classes('gl-font-bold')).toBe(true);
-        expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
 
         expect(environmentFolderMock).toHaveBeenCalledTimes(2);
       });
@@ -128,6 +132,36 @@ describe('~/environments/components/environments_folder.vue', () => {
         await collapseButton.trigger('click');
 
         expect(environmentFolderMock).toHaveBeenCalledTimes(2);
+      });
+
+      describe('when there are more environments to show inside the folder', () => {
+        it('displays the message with the correct text and a link to navigate to all environments', async () => {
+          environmentFolderMock.mockReturnValue({ ...resolvedFolder, activeCount: 4 });
+          wrapper = createWrapper({ scope: 'active', nestedEnvironment }, createApolloProvider());
+
+          await nextTick();
+          await waitForPromises();
+
+          const link = findLink();
+          const message = findMessage();
+          const element = findFolderMessageElement();
+
+          expect(element.exists()).toBe(true);
+          expect(link.attributes('href')).toBe(nestedEnvironment.latest.folderPath);
+          expect(message.exists()).toBe(true);
+        });
+      });
+
+      describe('when all available environments inside the folder are shown', () => {
+        it("doesn't display the message and a link", () => {
+          const link = findLink();
+          const message = findMessage();
+          const element = findFolderMessageElement();
+
+          expect(element.exists()).toBe(false);
+          expect(link.exists()).toBe(false);
+          expect(message.exists()).toBe(false);
+        });
       });
     });
   });

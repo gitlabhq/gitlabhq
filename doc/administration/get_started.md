@@ -148,7 +148,13 @@ You can restore a backup only to **the exact same version and type** (Community 
 
 ### Back up GitLab SaaS
 
-Backups of GitLab databases and file systems are taken every 24 hours, and are kept for two weeks on a rolling schedule. All backups are encrypted.
+Backups of our production databases are taken hourly through
+[disk snapshots](https://cloud.google.com/compute/docs/disks/snapshots) and every
+24 hours through [wal-g base backups](https://github.com/wal-g/wal-g), with
+[continuous archiving or WAL transaction log files](https://www.postgresql.org/docs/current/continuous-archiving.html)
+streamed into GCS for point-in-time recovery.
+
+All backups are encrypted. After 90 days, backups are deleted.
 
 - GitLab SaaS creates backups to ensure your data is secure, but you can't use these methods to export or back up your data yourself.
 - Issues are stored in the database. They can't be stored in Git itself.
@@ -243,7 +249,7 @@ Rate limits also improve the security of your application.
 
 ### Configure rate limits for self-managed GitLab
 
-You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
+You can make changes to your default rate limits from the Admin area. For more information about configuration, see the [Admin area page](../security/rate_limits.md#configurable-limits).
 
 - Define [issues rate limits](settings/rate_limit_on_issues_creation.md) to set a maximum number of issue creation requests per minute, per user.
 - Enforce [user and IP rate limits](settings/user_and_ip_rate_limits.md) for unauthenticated web requests.
@@ -261,7 +267,7 @@ Rate limits also improve the security of your application.
 
 ### Configure rate limits for GitLab SaaS
 
-You can make changes to your default rate limits from the Admin Area. For more information about configuration, see the [Admin Area page](../security/rate_limits.md#configurable-limits).
+You can make changes to your default rate limits from the Admin area. For more information about configuration, see the [Admin area page](../security/rate_limits.md#configurable-limits).
 
 - Review the rate limit page.
 - Read our [API page](../api/rest/index.md) for more information about API and rate limiting.

@@ -31,8 +31,10 @@ describe('UserCalloutDismisser', () => {
   const MOCK_FEATURE_NAME = 'mock_feature_name';
 
   // Query handlers
-  const successHandlerFactory = (dismissedCallouts = []) => () =>
-    Promise.resolve(userCalloutsResponse(dismissedCallouts));
+  const successHandlerFactory =
+    (dismissedCallouts = []) =>
+    () =>
+      Promise.resolve(userCalloutsResponse(dismissedCallouts));
   const anonUserHandler = () => Promise.resolve(anonUserCalloutsResponse());
   const errorHandler = () => Promise.reject(new Error('query error'));
   const pendingHandler = () => new Promise(() => {});

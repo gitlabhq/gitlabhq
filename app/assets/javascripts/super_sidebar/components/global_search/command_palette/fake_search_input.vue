@@ -23,12 +23,12 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-pointer-events-none fake-input">
+  <div class="fake-input gl-pointer-events-none gl-flex">
     <span class="gl-opacity-0" data-testid="search-scope">{{ scope }}&nbsp;</span>
     <span
       v-if="!userInput"
       data-testid="search-scope-placeholder"
-      class="gl-text-gray-500 gl-pointer-events-none"
+      class="gl-pointer-events-none gl-text-gray-500"
       >{{ placeholder }}</span
     >
   </div>

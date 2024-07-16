@@ -87,9 +87,9 @@ module Gitlab
                 connection.execute partition.to_sql
 
                 Gitlab::AppLogger.info(message: "Created partition",
-                                       partition_name: partition.partition_name,
-                                       table_name: partition.table,
-                                       connection_name: @connection_name)
+                  partition_name: partition.partition_name,
+                  table_name: partition.table,
+                  connection_name: @connection_name)
 
                 lock_partitions_for_writes(partition) if should_lock_for_writes?
               end
@@ -114,7 +114,7 @@ module Gitlab
           connection.execute partition.to_detach_sql
 
           Postgresql::DetachedPartition.create!(table_name: partition.partition_name,
-                                                drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now)
+            drop_after: RETAIN_DETACHED_PARTITIONS_FOR.from_now)
 
           Gitlab::AppLogger.info(
             message: "Detached Partition",
@@ -138,7 +138,7 @@ module Gitlab
             klass: self.class,
             logger: Gitlab::AppLogger,
             connection: connection
-          ).run(&block)
+          ).run(raise_on_exhaustion: true, &block)
         end
 
         def table_partitioned?
@@ -160,7 +160,7 @@ module Gitlab
 
           primary_transaction(statement_timeout: STATEMENT_TIMEOUT) do
             # Running ANALYZE on partitioned table will go through itself and its partitions
-            connection.execute("ANALYZE #{model.quoted_table_name}")
+            connection.execute("ANALYZE (SKIP_LOCKED) #{model.quoted_table_name}")
           end
         end
 

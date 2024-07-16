@@ -1,6 +1,9 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
+# We need to take some precautions when using the `gitlab` gem in this project.
+#
+# See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
 require 'gitlab'
 
 module Trigger
@@ -217,6 +220,12 @@ module Trigger
         "CE_PIPELINE" => Trigger.ee? ? nil : "true", # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
         "EE_PIPELINE" => Trigger.ee? ? "true" : nil # Always set a value, even an empty string, so that the downstream pipeline can correctly check it.
       }
+    end
+
+    def simple_forwarded_variables
+      super.merge({
+        'TOP_UPSTREAM_SOURCE_REF_SLUG' => ENV['CI_COMMIT_REF_SLUG']
+      })
     end
 
     def version_param_value(_version_file)

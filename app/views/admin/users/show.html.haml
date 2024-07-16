@@ -1,6 +1,7 @@
 - add_to_breadcrumbs _("Users"), admin_users_path
 - breadcrumb_title @user.name
 - page_title @user.name, _("Users")
+- list_item_classes = '!gl-grid md:gl-grid-cols-3 gl-gap-x-3'
 = render 'admin/users/head'
 
 .row
@@ -13,7 +14,7 @@
           %li
             = render Pajamas::AvatarComponent.new(@user, size: 64, class: 'gl-mr-3')
           %li
-            %span.light= _('Profile page:')
+            %span.gl-text-secondary= _('Profile page:')
             %strong
               = link_to user_path(@user) do
                 = @user.username
@@ -26,130 +27,132 @@
         = _('Account:')
       - c.with_body do
         %ul.content-list
-          %li
-            %span.light= _('Name:')
-            %strong= @user.name
-          %li
-            %span.light= _('Username:')
-            %strong
-              = @user.username
-          %li
-            %span.light= _('Email:')
-            %strong
-              = render partial: 'shared/email_with_badge', locals: { email: mail_to(@user.email), verified: @user.confirmed? }
-          %li{ data: { testid: 'email-verification-last-sent-at' } }
-            %span.light= s_('UserProfile|Email verification last sent at:')
-            %strong
-              = @user.confirmation_sent_at&.to_fs(:medium) || _('never')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Name:')
+            .gl-col-span-2
+              %strong= @user.name
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Username:')
+            .gl-col-span-2
+              %strong= @user.username
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Email:')
+            .gl-col-span-2
+              %strong= render partial: 'shared/email_with_badge', locals: { email: mail_to(@user.email), verified: @user.confirmed? }
+          %li{ class: list_item_classes, data: { testid: 'email-verification-last-sent-at' } }
+            %span.gl-text-secondary= s_('UserProfile|Email verification last sent at:')
+            .gl-col-span-2
+              %strong= @user.confirmation_sent_at&.to_fs(:medium) || _('never')
           - @user.emails.reject(&:user_primary_email?).each do |email|
-            %li
-              %span.light= _('Secondary email:')
-              %strong
-                = render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
-              = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'gl-float-right', title: _('Remove secondary email'), id: "remove_email_#{email.id}", variant: :danger, size: :small, icon: 'close'
-          %li
-            %span.light ID:
-            %strong{ data: { testid: 'user-id-content' } }
-              = @user.id
-          %li
-            %span.light= _('Namespace ID:')
-            %strong
-              = @user.namespace_id
+            %li{ class: list_item_classes }
+              %span.gl-text-secondary= _('Secondary email:')
+              .gl-col-span-2
+                %strong= render partial: 'shared/email_with_badge', locals: { email: email.email, verified: email.confirmed? }
+                = link_button_to nil, remove_email_admin_user_path(@user, email), data: { confirm: _("Are you sure you want to remove %{email}?") % { email: email.email }, 'confirm-btn-variant': 'danger' }, method: :delete, class: 'gl-float-right', title: _('Remove secondary email'), id: "remove_email_#{email.id}", variant: :danger, size: :small, icon: 'close'
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary ID:
+            .gl-col-span-2
+              %strong{ data: { testid: 'user-id-content' } }= @user.id
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Namespace ID:')
+            .gl-col-span-2
+              %strong= @user.namespace_id
 
-          %li.two-factor-status
-            %span.light= _('Two-factor Authentication:')
-            %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'cred' }
-              - if @user.two_factor_enabled?
-                = _('Enabled')
-                = link_button_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'gl-float-right', title: _('Disable Two-factor Authentication'), variant: :danger, size: :small
-              - else
-                = _('Disabled')
+          %li.two-factor-status{ class: list_item_classes }
+            %span.gl-text-secondary= _('Two-factor Authentication:')
+            .gl-col-span-2
+              %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'cred' }
+                - if @user.two_factor_enabled?
+                  = _('Enabled')
+                  = link_button_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'gl-float-right', title: _('Disable Two-factor Authentication'), variant: :danger, size: :small
+                - else
+                  = _('Disabled')
 
           = render_if_exists 'admin/namespace_plan_info', namespace: @user.namespace
 
-          %li
-            %span.light= _('External User:')
-            %strong
-              = @user.external? ? _('Yes') : _('No')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('External User:')
+            .gl-col-span-2
+              %strong= @user.external? ? _('Yes') : _('No')
 
           = render_if_exists 'admin/users/provisioned_by', user: @user
           = render_if_exists 'admin/users/enterprise_group', user: @user
 
-          %li
-            %span.light= _('Can create top level groups:')
-            %strong
-              = @user.allow_user_to_create_group_and_project? && @user.can_create_group ? _('Yes') : _('No')
-          %li
-            %span.light= _('Private profile:')
-            %strong
-              = @user.private_profile ? _('Yes') : _('No')
-          %li
-            %span.light= _('Personal projects limit:')
-            %strong
-              = @user.projects_limit
-          %li
-            %span.light= _('Member since:')
-            %strong
-              = @user.created_at.to_fs(:medium)
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Can create top level groups:')
+            .gl-col-span-2
+              %strong= @user.allow_user_to_create_group_and_project? && @user.can_create_group ? _('Yes') : _('No')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Private profile:')
+            .gl-col-span-2
+              %strong= @user.private_profile ? _('Yes') : _('No')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Personal projects limit:')
+            .gl-col-span-2
+              %strong= @user.projects_limit
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Member since:')
+            .gl-col-span-2
+              %strong= @user.created_at.to_fs(:medium)
           - if @user.confirmed_at
-            %li
-              %span.light= _('Confirmed at:')
-              %strong
-                = @user.confirmed_at.to_fs(:medium)
+            %li{ class: list_item_classes }
+              %span.gl-text-secondary= _('Confirmed at:')
+              .gl-col-span-2
+                %strong= @user.confirmed_at.to_fs(:medium)
           - else
-            %li
-              %span.light= _('Confirmed:')
-              %strong.cred
-                = _('No')
+            %li{ class: list_item_classes }
+              %span.gl-text-secondary= _('Confirmed:')
+              .gl-col-span-2
+                %strong.cred= _('No')
 
-          %li
-            %span.light= _('Current sign-in IP:')
-            %strong
-              = @user.current_sign_in_ip || _('never')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Current sign-in IP:')
+            .gl-col-span-2
+              %strong= @user.current_sign_in_ip || _('never')
 
-          %li
-            %span.light= _('Current sign-in at:')
-            %strong
-              = @user.current_sign_in_at&.to_fs(:medium) || _('never')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Current sign-in at:')
+            .gl-col-span-2
+              %strong= @user.current_sign_in_at&.to_fs(:medium) || _('never')
 
-          %li
-            %span.light= _('Last sign-in IP:')
-            %strong
-              = @user.last_sign_in_ip || _('never')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Last sign-in IP:')
+            .gl-col-span-2
+              %strong= @user.last_sign_in_ip || _('never')
 
-          %li
-            %span.light= _('Last sign-in at:')
-            %strong
-              = @user.last_sign_in_at&.to_fs(:medium) || _('never')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Last sign-in at:')
+            .gl-col-span-2
+              %strong= @user.last_sign_in_at&.to_fs(:medium) || _('never')
 
-          %li
-            %span.light= _('Sign-in count:')
-            %strong
-              = @user.sign_in_count
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _('Sign-in count:')
+            .gl-col-span-2
+              %strong= @user.sign_in_count
 
-          %li
-            %span.light= _("Highest role:")
-            %strong
-              = Gitlab::Access.human_access_with_none(@user.highest_role)
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _("Highest role:")
+            .gl-col-span-2
+              %strong= Gitlab::Access.human_access_with_none(@user.highest_role)
 
-          %li
-            %span.light= _("Email reset removed at:")
-            %strong
-              = @user.email_reset_offered_at || _('never')
+          %li{ class: list_item_classes }
+            %span.gl-text-secondary= _("Email reset removed at:")
+            .gl-col-span-2
+              %strong= @user.email_reset_offered_at || _('never')
 
           = render_if_exists 'admin/users/using_license_seat', user: @user
 
           - if @user.ldap_user?
-            %li
-              %span.light= _('LDAP uid:')
-              %strong
-                = @user.ldap_identity.extern_uid
+            %li{ class: list_item_classes }
+              %span.gl-text-secondary= _('LDAP uid:')
+              .gl-col-span-2
+                %strong= @user.ldap_identity.extern_uid
 
           - if @user.created_by
-            %li
-              %span.light= _('Created by:')
-              %strong
-                = link_to @user.created_by.name, [:admin, @user.created_by]
+            %li{ class: list_item_classes }
+              %span.gl-text-secondary= _('Created by:')
+              .gl-col-span-2
+                %strong= link_to @user.created_by.name, [:admin, @user.created_by]
 
           = render_if_exists 'namespaces/shared_runner_status', namespace: @user.namespace
 

@@ -31,7 +31,7 @@ module Integrations
 
       no_data_error(s_('TestHooks|Ensure the project has issues.')) unless issue.present?
 
-      issue.to_hook_data(current_user)
+      issue.to_hook_data(current_user, action: 'open')
     end
 
     def merge_requests_events_data
@@ -39,7 +39,7 @@ module Integrations
 
       no_data_error(s_('TestHooks|Ensure the project has merge requests.')) unless merge_request.present?
 
-      merge_request.to_hook_data(current_user)
+      merge_request.to_hook_data(current_user, action: 'open')
     end
 
     def job_events_data

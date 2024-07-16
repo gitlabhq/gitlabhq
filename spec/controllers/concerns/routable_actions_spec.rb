@@ -168,7 +168,7 @@ RSpec.describe RoutableActions do
     end
 
     it 'performs checks in the context of the controller' do
-      check = lambda { |routable, path_info| redirect_to routable }
+      check = ->(routable, path_info) { redirect_to routable }
       allow(subject).to receive(:not_found_actions).and_return([check])
 
       get_routable(routable)

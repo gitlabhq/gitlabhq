@@ -23,7 +23,7 @@ Maintenance Mode allows most external actions that do not change internal state.
 Enable Maintenance Mode as an administrator in one of these ways:
 
 - **Web UI**:
-  1. On the left sidebar, at the bottom, select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -47,7 +47,7 @@ Enable Maintenance Mode as an administrator in one of these ways:
 Disable Maintenance Mode in one of three ways:
 
 - **Web UI**:
-  1. On the left sidebar, at the bottom, select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **Maintenance Mode**, and toggle **Enable Maintenance Mode**.
      You can optionally add a message for the banner as well.
@@ -122,7 +122,7 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 | `POST` | Paths ending with `/compare`| Git revision routes. |
 | `POST` | `.git/git-upload-pack` | To allow Git pull/clone. |
 | `POST` | `/api/v4/internal` | [internal API routes](../../development/internal_api/index.md) |
-| `POST` | `/admin/sidekiq` | To allow management of background jobs in the Admin Area |
+| `POST` | `/admin/sidekiq` | To allow management of background jobs in the Admin area |
 | `POST` | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
 | `POST` | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
 
@@ -181,8 +181,8 @@ you should disable all cron jobs except for those related to Geo.
 
 To monitor queues and disable jobs:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Background Jobs**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Background jobs**.
 1. In the Sidekiq dashboard, select **Cron** and disable jobs individually or all at once by selecting **Disable All**.
 
 ### Incident management

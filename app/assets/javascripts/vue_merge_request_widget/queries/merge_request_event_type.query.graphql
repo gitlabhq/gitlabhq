@@ -1,0 +1,14 @@
+query mergeRequestEventTypeQuery($projectPath: ID!, $iid: String!) {
+  project(fullPath: $projectPath) {
+    id
+    mergeRequest(iid: $iid) {
+      id
+      pipelines(first: 1) {
+        nodes {
+          id
+          mergeRequestEventType
+        }
+      }
+    }
+  }
+}

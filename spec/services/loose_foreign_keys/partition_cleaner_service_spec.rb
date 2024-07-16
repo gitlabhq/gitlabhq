@@ -70,11 +70,14 @@ RSpec.describe LooseForeignKeys::PartitionCleanerService, feature_category: :dat
       context 'when the query generation is incorrect (paranoid check)' do
         it 'raises error if the foreign key condition is missing' do
           expect_next_instance_of(LooseForeignKeys::PartitionCleanerService) do |instance|
-            expect(instance).to receive(:update_query).and_return('wrong query')
+            expect(instance).to receive(:update_query).and_return('wrong query').twice
           end
 
-          expect { cleaner_service.execute }
-            .to raise_error(/FATAL: foreign key condition is missing from the generated query/)
+          expect(Sidekiq.logger)
+            .to receive(:error)
+            .with("FATAL: foreign key condition is missing from the generated query: wrong query").twice
+
+          cleaner_service.execute
         end
       end
     end

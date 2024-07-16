@@ -237,11 +237,11 @@ module Gitlab
       end
 
       def api_endpoint
-        @host || custom_api_endpoint || default_api_endpoint
+        formatted_host || custom_api_endpoint || default_api_endpoint
       end
 
       def web_endpoint
-        @host || custom_api_endpoint || ::Octokit::Default.web_endpoint
+        formatted_host || custom_api_endpoint || ::Octokit::Default.web_endpoint
       end
 
       def custom_api_endpoint
@@ -275,6 +275,16 @@ module Gitlab
       end
 
       private
+
+      def formatted_host
+        strong_memoize(:formatted_host) do
+          next if @host.nil?
+
+          uri = URI.parse(@host)
+          uri.path = '/api/v3' if uri.host != 'github.com' && !uri.path.start_with?('/api/')
+          uri.to_s
+        end
+      end
 
       def with_retry
         Retriable.retriable(on: CLIENT_CONNECTION_ERROR, on_retry: on_retry) do

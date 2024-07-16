@@ -169,6 +169,7 @@ export const workItemQueryResponse = {
             '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
           lastEditedAt: null,
           lastEditedBy: null,
+          taskCompletionStatus: null,
         },
         {
           __typename: 'WorkItemWidgetAssignees',
@@ -910,12 +911,14 @@ export const workItemResponseFactory = ({
   discussionLocked = false,
   canInviteMembers = false,
   labelsWidgetPresent = true,
+  hierarchyWidgetPresent = true,
   linkedItemsWidgetPresent = true,
   colorWidgetPresent = true,
   labels = mockLabels,
   allowsScopedLabels = false,
   lastEditedAt = null,
   lastEditedBy = null,
+  taskCompletionStatus = null,
   withCheckboxes = false,
   parent = mockParent.parent,
   workItemType = taskType,
@@ -972,6 +975,7 @@ export const workItemResponseFactory = ({
             : '<p data-sourcepos="1:1-1:19" dir="auto">some <strong>great</strong> text</p>',
           lastEditedAt,
           lastEditedBy,
+          taskCompletionStatus,
         },
         assigneesWidgetPresent
           ? {
@@ -1046,7 +1050,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetTimeTracking',
               type: 'TIME_TRACKING',
-              timeEstimate: '5h',
+              timeEstimate: 5,
               timelogs: {
                 nodes: [
                   {
@@ -1073,7 +1077,7 @@ export const workItemResponseFactory = ({
                 ],
                 __typename: 'WorkItemTimelogConnection',
               },
-              totalTimeSpent: '3h',
+              totalTimeSpent: 3,
             }
           : { type: 'MOCK TYPE' },
         participantsWidgetPresent
@@ -1135,41 +1139,43 @@ export const workItemResponseFactory = ({
               },
             }
           : { type: 'MOCK TYPE' },
-        {
-          __typename: 'WorkItemWidgetHierarchy',
-          type: 'HIERARCHY',
-          hasChildren: true,
-          children: {
-            nodes: [
-              {
-                id: 'gid://gitlab/WorkItem/444',
-                iid: '5',
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: null,
-                confidential: false,
-                title: '123',
-                state: 'OPEN',
-                webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
-                reference: 'test-project-path#5',
-                namespace: {
-                  fullPath: 'test-project-path',
-                },
-                workItemType: {
-                  id: '1',
-                  name: 'Task',
-                  iconName: 'issue-type-task',
-                },
-                widgets: [
+        hierarchyWidgetPresent
+          ? {
+              __typename: 'WorkItemWidgetHierarchy',
+              type: 'HIERARCHY',
+              hasChildren: true,
+              children: {
+                nodes: [
                   {
-                    type: 'HIERARCHY',
-                    hasChildren: false,
+                    id: 'gid://gitlab/WorkItem/444',
+                    iid: '5',
+                    createdAt: '2022-08-03T12:41:54Z',
+                    closedAt: null,
+                    confidential: false,
+                    title: '123',
+                    state: 'OPEN',
+                    webUrl: '/gitlab-org/gitlab-test/-/work_items/5',
+                    reference: 'test-project-path#5',
+                    namespace: {
+                      fullPath: 'test-project-path',
+                    },
+                    workItemType: {
+                      id: '1',
+                      name: 'Task',
+                      iconName: 'issue-type-task',
+                    },
+                    widgets: [
+                      {
+                        type: 'HIERARCHY',
+                        hasChildren: false,
+                      },
+                    ],
                   },
                 ],
               },
-            ],
-          },
-          parent,
-        },
+              parent,
+            }
+          : { type: 'MOCK TYPE' },
         notesWidgetPresent
           ? {
               __typename: 'WorkItemWidgetNotes',
@@ -2992,8 +2998,7 @@ export const mockWorkItemNotesByIidResponse = {
                     nodes: [
                       {
                         id: 'gid://gitlab/IterationNote/addbc177f7664699a135130ab05ffb78c57e4db3',
-                        body:
-                          'changed iteration to Et autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022',
+                        body: 'changed iteration to Et autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022',
                         bodyHtml:
                           '\u003cp data-sourcepos="1:1-1:36" dir="auto"\u003echanged iteration to \u003ca href="/groups/flightjs/-/iterations/5352" data-reference-type="iteration" data-original="*iteration:5352" data-link="false" data-link-reference="false" data-project="6" data-iteration="5352" data-container="body" data-placement="top" title="Iteration" class="gfm gfm-iteration has-tooltip"\u003eEt autem debitis nam suscipit eos ut. Jul 13, 2022 - Jul 19, 2022\u003c/a\u003e\u003c/p\u003e',
                         systemNoteIconName: 'iteration',
@@ -3938,8 +3943,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                           descriptionVersion: {
                             id: 'gid://gitlab/DescriptionVersion/199',
                             description: 'Desc2',
-                            diff:
-                              '<span class="idiff">Desc</span><span class="idiff deletion">1</span><span class="idiff addition">2</span>',
+                            diff: '<span class="idiff">Desc</span><span class="idiff deletion">1</span><span class="idiff addition">2</span>',
                             diffPath: '/gnuwget/Wget2/-/issues/79/descriptions/199/diff',
                             deletePath: '/gnuwget/Wget2/-/issues/79/descriptions/199',
                             canDelete: true,
@@ -4004,8 +4008,7 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
                           descriptionVersion: {
                             id: 'gid://gitlab/DescriptionVersion/200',
                             description: 'Desc3',
-                            diff:
-                              '<span class="idiff">Desc</span><span class="idiff deletion">2</span><span class="idiff addition">3</span>',
+                            diff: '<span class="idiff">Desc</span><span class="idiff deletion">2</span><span class="idiff addition">3</span>',
                             diffPath: '/gnuwget/Wget2/-/issues/79/descriptions/200/diff',
                             deletePath: '/gnuwget/Wget2/-/issues/79/descriptions/200',
                             canDelete: true,
@@ -4374,9 +4377,9 @@ export const mockFrequentlyUsedProjects = [
 export const createWorkItemQueryResponse = {
   data: {
     workspace: {
-      id: 'new-workspace-workitem-id',
+      id: 'full-path-epic-id',
       workItem: {
-        id: 'gid://gitlab/WorkItem/new',
+        id: 'gid://gitlab/WorkItem/new-epic',
         iid: NEW_WORK_ITEM_IID,
         archived: false,
         title: '',
@@ -4390,7 +4393,7 @@ export const createWorkItemQueryResponse = {
         reference: 'gitlab-org#56',
         createNoteEmail: null,
         namespace: {
-          id: 'gid://gitlab/Group/24',
+          id: 'full-path-epic-id',
           fullPath: 'full-path',
           name: 'Gitlab Org',
           __typename: 'Namespace',
@@ -4440,6 +4443,11 @@ export const createWorkItemQueryResponse = {
               name: 'Administrator',
               webPath: '/root',
               __typename: 'UserCore',
+            },
+            taskCompletionStatus: {
+              completedCount: 0,
+              count: 4,
+              __typename: 'TaskCompletionStatus',
             },
             __typename: 'WorkItemWidgetDescription',
           },

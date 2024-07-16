@@ -1144,6 +1144,55 @@ entry.
 
 - [Update Web IDE dependency to receive duo fixes](gitlab-org/gitlab@47323c05565dd32ea4de9f999adbd9f7aa8748e3) ([merge request](gitlab-org/gitlab!154064))
 
+## 17.0.4 (2024-07-09)
+
+### Fixed (1 change)
+
+- [Update dependency slack-messenger to v2.3.5](gitlab-org/security/gitlab@8800f576925de4fcf00d46f707a70e1e81e5f00a)
+
+### Security (9 changes)
+
+- [Disallow serving Pages over disabled custom domains with deployments](gitlab-org/security/gitlab@760d6115e963e744ee55230be45e9fc3c138a73d) ([merge request](gitlab-org/security/gitlab!4248))
+- [Check npm package name, version and scripts coherence](gitlab-org/security/gitlab@f3b322c5e20036e380ac15b3b2614d9bcc800e75) ([merge request](gitlab-org/security/gitlab!4158))
+- [Check for create_deploy_token policy before creating deploy token](gitlab-org/security/gitlab@87ab0448c48a0ac45540986f4f7429cbc0db3e04) ([merge request](gitlab-org/security/gitlab!4168))
+- [Check if user has ban_group_member access before banning in namespace](gitlab-org/security/gitlab@1b69ccb4a7e7e16372a926d7e2954aec76cdc0fd) ([merge request](gitlab-org/security/gitlab!4087))
+- [Prevent privilege escalation via custom role](gitlab-org/security/gitlab@288e1493a3c16689993d7cbbd7f60cd9bdeffcc0) ([merge request](gitlab-org/security/gitlab!4198))
+- [Prevent using quick actions for some bot users](gitlab-org/security/gitlab@5b8aef69fc74e5aba42d65591902a151a1654316) ([merge request](gitlab-org/security/gitlab!4232))
+- [Disable raw HTML for quick action pipeline](gitlab-org/security/gitlab@0ca2b123f1f627e68b73a1699fbefbb4a70c28d1) ([merge request](gitlab-org/security/gitlab!4236))
+- [Disable quick actions unless description changed](gitlab-org/security/gitlab@9e5397fbd82497083cd69f526a13caea1b5efd21) ([merge request](gitlab-org/security/gitlab!4239))
+- [Remove comment support from shrug and tableflip](gitlab-org/security/gitlab@e378c24c4a1a8dd323bd157bce29b21cca1e0701) ([merge request](gitlab-org/security/gitlab!4228))
+
+## 17.0.3 (2024-06-25)
+
+### Fixed (5 changes)
+
+- [Only enumerate commits in pre-receive check if push came from Web](gitlab-org/security/gitlab@fd87b2983859ab11a131febccdea4945a5fd73bb)
+- [Only allow documented token types for GraphQL authentication](gitlab-org/security/gitlab@b1d1a51dfd983646ad3fbf4c22e55cf323dcb9e5)
+- [Fix error when calling GQL ciConfig endpoint with include:component](gitlab-org/security/gitlab@c20626b033fbae85138bb303b29286e6b47229ac)
+- [Update an expired test certificate](gitlab-org/security/gitlab@d21feaf61f993b889af7485289239fef62c84267)
+- [Fix missing filename when downloading generic package in release page](gitlab-org/security/gitlab@6254d8691b2cfb9ee2f656424c98f29882e8d36d)
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/security/gitlab@06c6e4bc40bfe359ebabf0046394211d04f995c9)
+
+### Security (14 changes)
+
+- [Security fixes for banzai pipeline](gitlab-org/security/gitlab@04cbf788c8a0fb668d47692f44dd5abbc1ee3230) ([merge request](gitlab-org/security/gitlab!4183))
+- [Fix the catastrophic backtracking in openapi regex](gitlab-org/security/gitlab@3994786908e1a966616069fdb263e2840126a8b0) ([merge request](gitlab-org/security/gitlab!4143))
+- [Use permitted_params for standalone and multiplex queries](gitlab-org/security/gitlab@cc0c469450103d6f6d97dd8fe571e80bfe6f9f89) ([merge request](gitlab-org/security/gitlab!4149))
+- [Fix for Private job artifacts can be accessed by any user](gitlab-org/security/gitlab@95756b0b374a618477b2f2fbd1b9a41d61786f12) ([merge request](gitlab-org/security/gitlab!4195))
+- [Remove search results from public projects with unauthorized repos](gitlab-org/security/gitlab@9bc323c63aeb0811786b9ebb916645da6a4a49f3) ([merge request](gitlab-org/security/gitlab!4074))
+- [Do not run a new pipeline on re-target](gitlab-org/security/gitlab@5da8934f84edaa663910eaa104b657086bfa9a18) ([merge request](gitlab-org/security/gitlab!4188))
+- [Add limits on autolinker regex](gitlab-org/security/gitlab@d930c4bb3cc692c821eee6df82fc3567eb4ccb53) ([merge request](gitlab-org/security/gitlab!4127))
+- [Fix clickjacking on OAuth application page](gitlab-org/security/gitlab@0d7cd1b4ea7c28030c52306710c9f88a5bb6382e) ([merge request](gitlab-org/security/gitlab!4062))
+- [Hide branch merge request if merge requests are private](gitlab-org/security/gitlab@323293651d6e441bf719b54494180f8c37bb2c05) ([merge request](gitlab-org/security/gitlab!4201))
+- [Remove collapseLongCommitList method](gitlab-org/security/gitlab@c40bfcd824d029a8ff7bec05e294337e8a7dcc05) ([merge request](gitlab-org/security/gitlab!4204))
+- [Pass SSO session data to Sidekiq](gitlab-org/security/gitlab@a189575f905a48e85f06865f0e10d8d15c00e303) ([merge request](gitlab-org/security/gitlab!4160))
+- [Prevent non-members from using promote_to quick action for quick actions](gitlab-org/security/gitlab@0335cfbb28fab459c8cbba8ec3d2ca9a3127947c) ([merge request](gitlab-org/security/gitlab!4157))
+- [Reject deletion of security policy project approval rules](gitlab-org/security/gitlab@fedbaa529d358e72f299fd94b263ce39cfd55fe2) ([merge request](gitlab-org/security/gitlab!4105))
+- [Mitigate ReDoS attacks via `method_call_regex`](gitlab-org/security/gitlab@dba917caf0103a2247949eaa31389458c44e2190) ([merge request](gitlab-org/security/gitlab!4163))
+
 ## 17.0.2 (2024-06-11)
 
 ### Fixed (1 change)
@@ -2039,6 +2088,50 @@ entry.
 - [Migrate self-managed custom roles to the instance-level roles](gitlab-org/gitlab@46ab664a1877f8b761c2b25e13e01561d56cf6fd) ([merge request](gitlab-org/gitlab!147829))
 - [Feature cleanup flag wiki_content_background_job](gitlab-org/gitlab@c39a37db4a6112456052c11bf5fd1afa9c23bd6d) by @ivantedja ([merge request](gitlab-org/gitlab!148820))
 
+## 16.11.6 (2024-07-09)
+
+### Fixed (1 change)
+
+- [Update dependency slack-messenger to v2.3.5](gitlab-org/security/gitlab@4e78461cef64c7423d793de22deffbae7088e7d6)
+
+### Security (6 changes)
+
+- [Disallow serving Pages over disabled custom domains with deployments](gitlab-org/security/gitlab@ff23e03cab7495107b1342b4fa175db63a4acd61) ([merge request](gitlab-org/security/gitlab!4247))
+- [Check if user has ban_group_member access before banning in namespace](gitlab-org/security/gitlab@cadb2dba7f5fe825fab7fe761259e7c1721bebfe) ([merge request](gitlab-org/security/gitlab!4090))
+- [Prevent using quick actions for some bot users](gitlab-org/security/gitlab@951a656e6d530ba7692b03506b7c340bc5ac2788) ([merge request](gitlab-org/security/gitlab!4233))
+- [Disable raw HTML for quick action pipeline](gitlab-org/security/gitlab@1a7f336059af3223b4886e79060b8dc8a17f5482) ([merge request](gitlab-org/security/gitlab!4237))
+- [Disable quick actions unless description changed](gitlab-org/security/gitlab@267f4cf51303f70d5a834a3358fe62b6e981a873) ([merge request](gitlab-org/security/gitlab!4240))
+- [Remove comment support from shrug and tableflip](gitlab-org/security/gitlab@579a180538609ccad2d3930218a5410cb33d3920) ([merge request](gitlab-org/security/gitlab!4230))
+
+## 16.11.5 (2024-06-25)
+
+### Fixed (2 changes)
+
+- [Only allow documented token types for GraphQL authentication](gitlab-org/security/gitlab@29cf595d53bc1d05edb662004c5ac76a8d497065)
+- [Update an expired test certificate](gitlab-org/security/gitlab@7d482c5924e4b61a1889029147367631c1b435ad)
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](gitlab-org/security/gitlab@e60607a2d4377cdb872b65d756d0e478e01e0f1c)
+- [Enable invert_emails_disabled_to_emails_enabled by default](gitlab-org/security/gitlab@a2adc31b3fe5b8160922c42df31ab3b12ecc5b7b)
+
+### Security (14 changes)
+
+- [Security fixes for banzai pipeline](gitlab-org/security/gitlab@7a7560ebf98b9e3fed749c0895c7fe952a35d0e6) ([merge request](gitlab-org/security/gitlab!4182))
+- [Fix the catastrophic backtracking in openapi regex](gitlab-org/security/gitlab@6561fa187bd297a664c7fee8d1bbb546fb6f197e) ([merge request](gitlab-org/security/gitlab!4144))
+- [Use permitted_params for standalone and multiplex queries](gitlab-org/security/gitlab@7be6c33aa9ed53d8713a098a48ad5b5265fd4801) ([merge request](gitlab-org/security/gitlab!4148))
+- [Fix for Private job artifacts can be accessed by any user](gitlab-org/security/gitlab@eff1ae75283fafff1204063fc9c5fa43d90439b0) ([merge request](gitlab-org/security/gitlab!4196))
+- [Remove search results from public projects with unauthorized repos](gitlab-org/security/gitlab@5e1513db50b3ada45a991d39fde0cd4cadd4bb88) ([merge request](gitlab-org/security/gitlab!4042))
+- [Do not run a new pipeline on re-target](gitlab-org/security/gitlab@f68c020c8d2a2dc53187a65857f3312a025af3f4) ([merge request](gitlab-org/security/gitlab!4189))
+- [Add limits on autolinker regex](gitlab-org/security/gitlab@d79a1a8333484bf9537af2907767fad0ec1ad240) ([merge request](gitlab-org/security/gitlab!4128))
+- [Fix clickjacking on OAuth application page](gitlab-org/security/gitlab@05b187a7860fc02b68eced70e882a807d7a0e784) ([merge request](gitlab-org/security/gitlab!4024))
+- [Hide branch merge request if merge requests are private](gitlab-org/security/gitlab@5973f83550e4b6341ca3f3fdbd29759a46b31bb6) ([merge request](gitlab-org/security/gitlab!4206))
+- [Remove collapseLongCommitList method](gitlab-org/security/gitlab@279c1eee6676df9e25b723fd971dcf5c7134effd) ([merge request](gitlab-org/security/gitlab!4207))
+- [Pass SSO session data to Sidekiq](gitlab-org/security/gitlab@e3147a7c301acf2d5e474745e594ff319f6e7f37) ([merge request](gitlab-org/security/gitlab!4161))
+- [Prevent non-members from using promote_to quick action for quick actions](gitlab-org/security/gitlab@6424c7ad252809a13bc14d61ba15a6a377cd5a30) ([merge request](gitlab-org/security/gitlab!4156))
+- [Reject deletion of security policy project approval rules](gitlab-org/security/gitlab@0e86b08d33fcfca547fb0e95ef462e4240bcf00e) ([merge request](gitlab-org/security/gitlab!4106))
+- [Mitigate ReDoS attacks via `method_call_regex`](gitlab-org/security/gitlab@6e3fb9ff027fa56e62db093c4291c5d562550c2d) ([merge request](gitlab-org/security/gitlab!4164))
+
 ## 16.11.4 (2024-06-11)
 
 ### Security (4 changes)
@@ -2701,6 +2794,16 @@ entry.
 - [Drop promote_ultimate_features_at column](gitlab-org/gitlab@b5dbcc83686be21fbf90d176bfd07707f21d1518) ([merge request](gitlab-org/gitlab!145706))
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
+
+## 16.10.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@adb50cc178e81e75b78f6b10cafc79cd6be9a43c) ([merge request](gitlab-org/gitlab!156394))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@7f51cdccdd702a4f92607d52b6d4e3884c8e5234) ([merge request](gitlab-org/gitlab!155266))
 
 ## 16.10.7 (2024-06-11)
 
@@ -3481,6 +3584,16 @@ No changes.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.9 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@8fb9c678564e11392eab4d2001e60f751d6a86bc) ([merge request](gitlab-org/gitlab!156395))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@a079122ed2976df0f023ef55cef4a1585e31b5ce) ([merge request](gitlab-org/gitlab!155267))
 
 ## 16.9.8 (2024-05-09)
 
@@ -4312,6 +4425,16 @@ No changes.
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
 
+## 16.8.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@5b316194aee0927d3aeb6812f116d30bec8d6e37) ([merge request](gitlab-org/gitlab!156396))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@48caa37b7717dfabfdab4af472ba51de1303ae74) ([merge request](gitlab-org/gitlab!155268))
+
 ## 16.8.7 (2024-04-12)
 
 No changes.
@@ -4884,6 +5007,16 @@ No changes.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@bd3b4aff0df30ae03bc8ce0372b72dd0f7171696) ([merge request](gitlab-org/gitlab!156397))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@c9c79c94d95d2314f607ccdad1a1c525154c58f9) ([merge request](gitlab-org/gitlab!155269))
 
 ## 16.7.7 (2024-03-06)
 
@@ -5865,6 +5998,16 @@ No changes.
 ### fixed EE: true (1 change)
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
+
+## 16.6.8 (2024-06-25)
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](gitlab-org/gitlab@5df73aee0ffd7904fce472b2dc65ffbf8b0c6794) ([merge request](gitlab-org/gitlab!156398))
+
+### Changed (1 change)
+
+- [Add a banner informing about token expiration](gitlab-org/gitlab@882e550f0353f8a4c46a9ef21829c91d474d50a6) ([merge request](gitlab-org/gitlab!155270))
 
 ## 16.6.7 (2024-02-07)
 
@@ -10071,7 +10214,7 @@ No changes.
 - [Environment Update GraphQL Mutation](gitlab-org/gitlab@a30be2ee991ee80915eac59cff28a79e5facecf2) ([merge request](gitlab-org/gitlab!120561))
 - [Enable work items type quick action](gitlab-org/gitlab@9802d0da4f4eea6dbfd9fed3a6b1963d7857909b) ([merge request](gitlab-org/gitlab!120839))
 - [Add audit events schema definitions](gitlab-org/gitlab@8c20ecb957509c79736e24127ad63e6ce2713c18) ([merge request](gitlab-org/gitlab!120805)) **GitLab Enterprise Edition**
-- [[Audit Events] Synchronous database index addition](gitlab-org/gitlab@49cdd7e4b9584985615c08749d1306951c747b80) ([merge request](gitlab-org/gitlab!120599)) **GitLab Enterprise Edition**
+- [[Audit events] Synchronous database index addition](gitlab-org/gitlab@49cdd7e4b9584985615c08749d1306951c747b80) ([merge request](gitlab-org/gitlab!120599)) **GitLab Enterprise Edition**
 - [Support password reset from any verified email](gitlab-org/gitlab@94069d38c9cd63202cc21e7febfaaad596052c0d) ([merge request](gitlab-org/gitlab!119231))
 - [Add HLL counter for users that create a dashboard](gitlab-org/gitlab@ecee89037f8307c562b70f86a5667b427d951fee) ([merge request](gitlab-org/gitlab!119790)) **GitLab Enterprise Edition**
 - [Add support for `/.well-known/change-password` URL](gitlab-org/gitlab@f51bcb5a895439628b8ee49cc7dc59033026cc47) ([merge request](gitlab-org/gitlab!119630))
@@ -10432,7 +10575,7 @@ No changes.
 - [Revert to using SearchService for user autocomplete](gitlab-org/gitlab@95cd097985f47b1d3cbe42f06a81fed3b9d70069) ([merge request](gitlab-org/gitlab!122289))
 - [Display completed training urls](gitlab-org/gitlab@ad59dd1b42fa66c0c9ba8e858b3be3cc26807c7b) ([merge request](gitlab-org/gitlab!122366)) **GitLab Enterprise Edition**
 - [Reshedule links related migration with](gitlab-org/gitlab@8f84c5dce446494689114a9eb93e656051c0f70c) ([merge request](gitlab-org/gitlab!121404))
-- [[Audit Events] Provide all audit events under a group via the API](gitlab-org/gitlab@794911016bb0294a5cf0229374298f2a0caa20a7) ([merge request](gitlab-org/gitlab!115898)) **GitLab Enterprise Edition**
+- [[Audit events] Provide all audit events under a group via the API](gitlab-org/gitlab@794911016bb0294a5cf0229374298f2a0caa20a7) ([merge request](gitlab-org/gitlab!115898)) **GitLab Enterprise Edition**
 - [Add option to not show banner broadcast message in CLI](gitlab-org/gitlab@f87b9bf9f487fcb44a248e3937107c2fa80e8703) ([merge request](gitlab-org/gitlab!122000))
 - [Branches: Branch item update](gitlab-org/gitlab@546c5e551ac1f56231c5bea4af5b5ee10376e779) ([merge request](gitlab-org/gitlab!119637))
 - [Update usage charts to use compute terminology](gitlab-org/gitlab@9ffd5f636fefed33d226f913225d8fd0671be04a) ([merge request](gitlab-org/gitlab!122015)) **GitLab Enterprise Edition**
@@ -10901,7 +11044,7 @@ No changes.
 - [Add emoji awards for work item](gitlab-org/gitlab@1ce458ee16d86aa0e760c7dfb32797db05bd2197) ([merge request](gitlab-org/gitlab!119585)) **GitLab Enterprise Edition**
 - [GraphQL project fields for refs containing a commit](gitlab-org/gitlab@2fea8e046fcdd05ab6cebf7e11198e5b446995bc) ([merge request](gitlab-org/gitlab!116705))
 - [Make group-level git protocol control available](gitlab-org/gitlab@4f6f078c27f4f62e169097edbd30eaf7926f34eb) ([merge request](gitlab-org/gitlab!113360))
-- [[Audit Events] Asynchronous database index addition](gitlab-org/gitlab@ec1804b76ef4af2bd807f2f6a3cd9c2423d14fdc) ([merge request](gitlab-org/gitlab!120581)) **GitLab Enterprise Edition**
+- [[Audit events] Asynchronous database index addition](gitlab-org/gitlab@ec1804b76ef4af2bd807f2f6a3cd9c2423d14fdc) ([merge request](gitlab-org/gitlab!120581)) **GitLab Enterprise Edition**
 - [Show alert about any configured deploy freezes](gitlab-org/gitlab@40ccf5c48df47d07b2d72c3bfca6705063d26726) ([merge request](gitlab-org/gitlab!120351))
 - [Model and table for google cloud logging integration](gitlab-org/gitlab@98ece342bb378c4b971d8440f0a9990b6a15d0cf) ([merge request](gitlab-org/gitlab!119943))
 - [Add to do widget for work items](gitlab-org/gitlab@7dcd1687a054b299a3e9a8a6def44cd27e4006dc) ([merge request](gitlab-org/gitlab!118135)) **GitLab Enterprise Edition**

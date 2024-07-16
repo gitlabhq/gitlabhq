@@ -110,8 +110,8 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
         expect(Gitlab::Cleanup::OrphanJobArtifactFiles)
           .to receive(:new)
           .with(dry_run: false,
-                niceness: anything,
-                logger: anything)
+            niceness: anything,
+            logger: anything)
           .and_call_original
 
         rake_task
@@ -144,8 +144,8 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
         expect(Gitlab::Cleanup::OrphanLfsFileReferences)
           .to receive(:new)
           .with(project,
-                dry_run: false,
-                logger: anything)
+            dry_run: false,
+            logger: anything)
           .and_call_original
 
         rake_task
@@ -193,19 +193,19 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
       project.repository.raw.create_branch(delete_branch_name, "master")
 
       create(:merge_request, :merged, :remove_source_branch, source_project: project, target_project: project,
-     source_branch: delete_branch_name, target_branch: 'master')
+        source_branch: delete_branch_name, target_branch: 'master')
     end
 
     let!(:mr2) do
       project.repository.raw.create_branch(keep_branch_name, "master")
 
       create(:merge_request, :merged, source_project: project, target_project: project, source_branch: keep_branch_name,
-     target_branch: 'master')
+        target_branch: 'master')
     end
 
     let!(:mr3) do
       create(:merge_request, :remove_source_branch, source_project: project, target_project: project,
-     source_branch: keep_branch_name, target_branch: 'master')
+        source_branch: keep_branch_name, target_branch: 'master')
     end
 
     let!(:mr4) do
@@ -214,7 +214,7 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
 
     let!(:mr5) do
       create(:merge_request, :merged, :remove_source_branch, source_branch: 'test', source_project: project,
-             target_project: project, target_branch: 'master')
+        target_project: project, target_branch: 'master')
     end
 
     let!(:protected) do
@@ -260,7 +260,7 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
         project.repository.raw.create_branch(delete_me_not, "master")
 
         create(:merge_request, :merged, :remove_source_branch, source_project: project, target_project: project,
-               source_branch: delete_me_not, target_branch: 'master')
+          source_branch: delete_me_not, target_branch: 'master')
       end
 
       before do
@@ -306,7 +306,7 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
           project.repository.raw.create_branch(delete_me_not, "master")
 
           create(:merge_request, :opened, :remove_source_branch, source_project: project, target_project: project,
-                 source_branch: delete_me_not, target_branch: 'master')
+            source_branch: delete_me_not, target_branch: 'master')
         end
 
         it 'does not delete the branch of the merged/open mr' do
@@ -364,7 +364,7 @@ RSpec.describe 'gitlab:cleanup rake tasks', :silence_stdout do
       before do
         Gitlab::Redis::Sessions.with do |redis|
           redis.set(ActiveSession.key_name(user.id, existing_session_id),
-                    ActiveSession.new(session_id: 'x').dump)
+            ActiveSession.new(session_id: 'x').dump)
           redis.sadd(ActiveSession.lookup_key_name(user.id), (1..10).to_a)
         end
       end

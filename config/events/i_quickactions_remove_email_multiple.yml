@@ -2,9 +2,6 @@
 description: Count usage of /remove_email quickaction with multiple arguments
 internal_events: true
 action: i_quickactions_remove_email_multiple
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

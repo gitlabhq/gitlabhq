@@ -90,14 +90,31 @@ RSpec.describe Mutations::MergeRequests::Accept do
 
     context 'when MR has head pipeline' do
       let(:merge_request) { create(:merge_request, :with_head_pipeline, source_project: project) }
-      let(:strategy) { ::Types::MergeStrategyEnum.values['MERGE_WHEN_PIPELINE_SUCCEEDS'].value }
+      let(:strategy) { ::Types::MergeStrategyEnum.values['MERGE_WHEN_CHECKS_PASS'].value }
       let(:additional_args) { { auto_merge_strategy: strategy } }
 
-      it "can use the MERGE_WHEN_PIPELINE_SUCCEEDS strategy" do
+      it "can use the MERGE_WHEN_CHECKS_PASS strategy" do
         expect_next_found_instance_of(MergeRequest) do |instance|
           expect(instance).not_to receive(:merge_async)
         end
         expect(result).to include(errors: be_empty, merge_request: be_auto_merge_enabled)
+      end
+
+      context 'when merge_when_checks_pass is off' do
+        before do
+          stub_feature_flags(merge_when_checks_pass: false)
+        end
+
+        let(:merge_request) { create(:merge_request, :with_head_pipeline, source_project: project) }
+        let(:strategy) { ::Types::MergeStrategyEnum.values['MERGE_WHEN_PIPELINE_SUCCEEDS'].value }
+        let(:additional_args) { { auto_merge_strategy: strategy } }
+
+        it "can use the MERGE_WHEN_PIPELINE_SUCCEEDS strategy" do
+          expect_next_found_instance_of(MergeRequest) do |instance|
+            expect(instance).not_to receive(:merge_async)
+          end
+          expect(result).to include(errors: be_empty, merge_request: be_auto_merge_enabled)
+        end
       end
     end
   end

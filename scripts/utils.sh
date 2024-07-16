@@ -97,7 +97,6 @@ function bundle_install_script() {
 
   gem --version
   bundle --version
-  gem install bundler --no-document --conservative --version 2.4.11
   test -d jh && bundle config set --local gemfile 'jh/Gemfile'
   bundle config set path "$(pwd)/vendor"
   bundle config set clean 'true'

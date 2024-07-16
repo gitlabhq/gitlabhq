@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Admin::BroadcastMessagesController, :enable_admin_mode, feature_category: :onboarding do
+RSpec.describe Admin::BroadcastMessagesController, :enable_admin_mode, feature_category: :notifications do
   let(:broadcast_message) { build(:broadcast_message) }
   let(:broadcast_message_params) { broadcast_message.as_json(root: true, only: [:message, :starts_at, :ends_at]) }
 

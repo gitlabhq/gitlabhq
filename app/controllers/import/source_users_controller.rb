@@ -28,6 +28,10 @@ module Import
       end
     end
 
+    def show
+      redirect_to(root_path, alert: _('The invitation is not valid')) unless source_user.awaiting_approval?
+    end
+
     private
 
     def check_current_user_matches_invite!

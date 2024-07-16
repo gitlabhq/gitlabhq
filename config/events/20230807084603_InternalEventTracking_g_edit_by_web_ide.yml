@@ -2,9 +2,6 @@
 description: A file has been edited from the Web IDE
 internal_events: true
 action: g_edit_by_web_ide
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

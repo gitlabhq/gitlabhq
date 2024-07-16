@@ -1,12 +1,9 @@
 description: "Click toggle external button on diff"
 category: default
 action: click_toggle_external_button
-label_description: "`diff_toggle_external_button`"
-property_description: "`diff_toggle_external`"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: ""
+product_group: code_review
 milestone:
 introduced_by_url:
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`diff_toggle_external_button`"
+  property:
+    description: "`diff_toggle_external`"

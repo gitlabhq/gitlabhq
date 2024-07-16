@@ -9,7 +9,6 @@ import BoardTopBar from '~/boards/components/board_top_bar.vue';
 import BoardsSelector from '~/boards/components/boards_selector.vue';
 import ConfigToggle from '~/boards/components/config_toggle.vue';
 import IssueBoardFilteredSearch from '~/boards/components/issue_board_filtered_search.vue';
-import NewBoardButton from '~/boards/components/new_board_button.vue';
 import ToggleFocus from '~/boards/components/toggle_focus.vue';
 import * as cacheUpdates from '~/boards/graphql/cache_updates';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
@@ -83,10 +82,6 @@ describe('BoardTopBar', () => {
 
     it('renders IssueBoardFilteredSearch component', () => {
       expect(wrapper.findComponent(IssueBoardFilteredSearch).exists()).toBe(true);
-    });
-
-    it('renders NewBoardButton component', () => {
-      expect(wrapper.findComponent(NewBoardButton).exists()).toBe(true);
     });
 
     it('renders ConfigToggle component', () => {

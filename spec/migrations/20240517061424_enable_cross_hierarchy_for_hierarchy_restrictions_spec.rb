@@ -4,8 +4,6 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe EnableCrossHierarchyForHierarchyRestrictions, :migration, feature_category: :portfolio_management do
-  include MigrationHelpers::WorkItemTypesHelper
-
   let(:work_item_types) { table(:work_item_types) }
   let(:task_type) { find_work_item_type(:task) }
   let(:issue_type) { find_work_item_type(:issue) }

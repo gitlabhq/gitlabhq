@@ -25,6 +25,7 @@ class ApplicationController < BaseActionController
   include FlocOptOut
   include CheckRateLimit
   include RequestPayloadLogger
+  include StrongPaginationParams
 
   before_action :authenticate_user!, except: [:route_not_found]
   before_action :enforce_terms!, if: :should_enforce_terms?

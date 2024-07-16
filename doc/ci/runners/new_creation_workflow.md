@@ -22,7 +22,7 @@ runners. The legacy workflow that uses registration tokens is deprecated and wil
 
 For information about the current development status of the new workflow, see [epic 7663](https://gitlab.com/groups/gitlab-org/-/epics/7663).
 
-For information about the technical design and reasons for the new architecture, see [Next GitLab Runner Token Architecture](../../architecture/blueprints/runner_tokens/index.md).
+For information about the technical design and reasons for the new architecture, see [Next GitLab Runner Token Architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/runner_tokens/).
 
 If you experience problems or have concerns about the new runner registration workflow,
 or if the following information is not sufficient,
@@ -78,7 +78,7 @@ To continue using registration tokens after GitLab 17.0:
 - On GitLab.com, you can manually [enable the legacy runner registration process](runners_scope.md#enable-use-of-runner-registration-tokens-in-projects-and-groups)
   in the top-level group settings until GitLab 18.0.
 - On GitLab self-managed, you can manually [enable the legacy runner registration process](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens)
-  in the Admin Area settings until GitLab 18.0.
+  in the Admin area settings until GitLab 18.0.
 
 ## Impact on existing runners
 

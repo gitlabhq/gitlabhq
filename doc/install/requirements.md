@@ -310,7 +310,7 @@ GitLab supports the following web browsers:
 - [Google Chrome](https://www.google.com/chrome/)
 - [Chromium](https://www.chromium.org/getting-involved/dev-channel/)
 - [Apple Safari](https://www.apple.com/safari/)
-- [Microsoft Edge](https://www.microsoft.com/en-us/edge?form=MA13FJ)
+- [Microsoft Edge](https://www.microsoft.com/en-us/edge?form=MA13QK)
 
 For the listed web browsers, GitLab supports:
 

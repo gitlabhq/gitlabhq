@@ -26,9 +26,9 @@ RSpec.describe 'sidekiq.rake', :aggregate_failures, :silence_stdout do
 
       expect(::Gitlab::SidekiqMigrateJobs)
         .to receive(:new).with(a_hash_including('PostReceive' => 'default',
-                                                'MergeWorker' => 'default',
-                                                'DeleteDiffFilesWorker' => 'delete_diff_files'),
-                                                logger: an_instance_of(Logger)).and_return(migrator)
+          'MergeWorker' => 'default',
+          'DeleteDiffFilesWorker' => 'delete_diff_files'),
+          logger: an_instance_of(Logger)).and_return(migrator)
 
       expect(migrator).to receive(:migrate_set).with(sidekiq_set).and_call_original
 
@@ -66,8 +66,8 @@ RSpec.describe 'sidekiq.rake', :aggregate_failures, :silence_stdout do
 
       expect(::Gitlab::SidekiqMigrateJobs)
         .to receive(:new).with(a_hash_including('PostReceive' => 'default',
-                                                'MergeWorker' => 'default'),
-                               logger: an_instance_of(Logger)).and_return(migrator)
+          'MergeWorker' => 'default'),
+          logger: an_instance_of(Logger)).and_return(migrator)
 
       expect(migrator).to receive(:migrate_queues).and_call_original
 

@@ -4,9 +4,8 @@ import { GlTooltipDirective, GlFormCheckbox } from '@gitlab/ui';
 import { createNamespacedHelpers } from 'vuex';
 import { s__ } from '~/locale';
 
-const { mapActions: mapCommitActions, mapGetters: mapCommitGetters } = createNamespacedHelpers(
-  'commit',
-);
+const { mapActions: mapCommitActions, mapGetters: mapCommitGetters } =
+  createNamespacedHelpers('commit');
 
 export default {
   components: { GlFormCheckbox },

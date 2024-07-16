@@ -1,0 +1,21 @@
+---
+description: User clicks include forks in zoekt scope on search resullts page
+internal_events: true
+action: click_zoekt_include_forks_on_search_results_page
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  property:
+    description: search term
+product_group: global_search
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154099
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

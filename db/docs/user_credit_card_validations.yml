@@ -3,7 +3,7 @@ table_name: user_credit_card_validations
 classes:
 - Users::CreditCardValidation
 feature_categories:
-- subscription_management
+- insider_threat
 description: Stores whether the user has completed a first time validation to run CI pipelines
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60626
 milestone: '13.12'

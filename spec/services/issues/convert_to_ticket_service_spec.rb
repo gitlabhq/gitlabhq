@@ -14,7 +14,7 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
       issue.reset
 
       expect(issue).to have_attributes(
-        confidential: true,
+        confidential: expected_confidentiality,
         author: support_bot,
         service_desk_reply_to: 'user@example.com'
       )
@@ -45,6 +45,7 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
 
     let(:email) { nil }
     let(:service) { described_class.new(target: issue, current_user: user, email: email) }
+    let(:expected_confidentiality) { true }
 
     let(:error_underprivileged) { _("You don't have permission to manage this issue.") }
     let(:error_already_ticket) { s_("ServiceDesk|Cannot convert to ticket because it is already a ticket.") }
@@ -82,6 +83,52 @@ RSpec.describe Issues::ConvertToTicketService, feature_category: :service_desk d
         let(:email) { 'user@example.com' }
 
         it_behaves_like 'a successful service execution'
+
+        context 'when issue already is confidential' do
+          before do
+            issue.update!(confidential: true)
+          end
+
+          it_behaves_like 'a successful service execution'
+        end
+
+        context 'with service desk setting' do
+          let_it_be_with_reload(:service_desk_setting) { create(:service_desk_setting, project: project) }
+
+          it_behaves_like 'a successful service execution'
+
+          context 'when tickets should not be confidential by default' do
+            let(:expected_confidentiality) { false }
+
+            before do
+              service_desk_setting.update!(tickets_confidential_by_default: false)
+            end
+
+            it_behaves_like 'a successful service execution'
+
+            context 'when project is public' do
+              # Tickets are always confidential by default in public projects
+              let(:expected_confidentiality) { true }
+
+              before do
+                project.update!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+              end
+
+              it_behaves_like 'a successful service execution'
+            end
+
+            context 'when issue already is confidential' do
+              # Do not change the confidentiality of an already confidential issue
+              let(:expected_confidentiality) { true }
+
+              before do
+                issue.update!(confidential: true)
+              end
+
+              it_behaves_like 'a successful service execution'
+            end
+          end
+        end
 
         context 'when issue is Service Desk issue' do
           let(:error_message) { error_already_ticket }

@@ -1,0 +1,11 @@
+mutation RestorePagesDeployment($deploymentId: PagesDeploymentID!) {
+  restorePagesDeployment(input: { id: $deploymentId }) {
+    errors
+    pagesDeployment {
+      id
+      active
+      deletedAt
+      updatedAt
+    }
+  }
+}

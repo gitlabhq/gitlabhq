@@ -284,6 +284,20 @@ describe('WorkItemsListApp component', () => {
       });
     });
 
+    describe('when "page-size-change" event is emitted by IssuableList', () => {
+      it('updates list with new page size', async () => {
+        mountComponent();
+        await waitForPromises();
+
+        findIssuableList().vm.$emit('page-size-change', 50);
+        await nextTick();
+
+        expect(defaultQueryHandler).toHaveBeenLastCalledWith(
+          expect.objectContaining({ firstPageSize: 50 }),
+        );
+      });
+    });
+
     describe('when "sort" event is emitted by IssuableList', () => {
       it.each(Object.keys(urlSortParams))(
         'updates to the new sort when payload is `%s`',

@@ -17,6 +17,8 @@ describe('utils', () => {
             'passwordLowercaseRequired',
             'passwordUppercaseRequired',
             'passwordSymbolRequired',
+            'promotionManagementAvailable',
+            'enableMemberPromotionManagement',
           ],
         }),
       ).toEqual(mockData);

@@ -51,6 +51,7 @@ describe('WorkItemDescription', () => {
     isEditing = false,
     isGroup = false,
     workItemIid = '1',
+    workItemTypeId = workItemQueryResponse.data.workItem.workItemType.id,
     editMode = false,
     showButtonsBelowField,
   } = {}) => {
@@ -70,6 +71,7 @@ describe('WorkItemDescription', () => {
         fullPath: 'test-project-path',
         workItemId: id,
         workItemIid,
+        workItemTypeId,
         editMode,
         showButtonsBelowField,
       },
@@ -102,6 +104,7 @@ describe('WorkItemDescription', () => {
         autocompleteDataSources: autocompleteDataSources({ fullPath, iid }),
       });
     });
+
     it('shows edited by text', async () => {
       const lastEditedAt = '2022-09-21T06:18:42Z';
       const lastEditedBy = {
@@ -234,6 +237,46 @@ describe('WorkItemDescription', () => {
       const updatedDesc = 'updated desc with inline editing disabled';
       findMarkdownEditor().vm.$emit('input', updatedDesc);
       expect(wrapper.emitted('updateDraft')).toEqual([[updatedDesc]]);
+    });
+  });
+
+  describe('checklist count visibility', () => {
+    const taskCompletionStatus = {
+      completedCount: 0,
+      count: 4,
+    };
+
+    describe('when checklist exists', () => {
+      it('when edit mode is active, checklist count is not visible', async () => {
+        await createComponent({
+          editMode: true,
+          workItemResponse: workItemByIidResponseFactory({ taskCompletionStatus }),
+        });
+
+        expect(findEditedAt().exists()).toBe(false);
+      });
+
+      it('when edit mode is inactive, checklist count is visible', async () => {
+        await createComponent({
+          editMode: false,
+          workItemResponse: workItemByIidResponseFactory({ taskCompletionStatus }),
+        });
+
+        expect(findEditedAt().exists()).toBe(true);
+        expect(findEditedAt().props()).toMatchObject({
+          taskCompletionStatus,
+        });
+      });
+    });
+
+    describe('when checklist does not exist', () => {
+      it('checklist count is not visible', async () => {
+        await createComponent({
+          workItemResponse: workItemByIidResponseFactory({ taskCompletionStatus: null }),
+        });
+
+        expect(findEditedAt().exists()).toBe(false);
+      });
     });
   });
 });

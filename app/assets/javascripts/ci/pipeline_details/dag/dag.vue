@@ -99,7 +99,7 @@ export default {
   errorTexts: {
     [LOAD_FAILURE]: __('We are currently unable to fetch data for this graph.'),
     [PARSE_FAILURE]: __('There was an error parsing the data for this graph.'),
-    [UNSUPPORTED_DATA]: __('DAG visualization requires at least 3 dependent jobs.'),
+    [UNSUPPORTED_DATA]: __('Needs visualization requires at least 3 dependent jobs.'),
     [DEFAULT]: __('An unknown error occurred while loading this graph.'),
   },
   emptyStateTexts: {
@@ -108,9 +108,9 @@ export default {
       'Using the %{codeStart}needs%{codeEnd} keyword makes jobs run before their stage is reached. Jobs run as soon as their %{codeStart}needs%{codeEnd} relationships are met, which speeds up your pipelines.',
     ),
     secondDescription: __(
-      "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} relationships between jobs in this tab as a %{linkStart}Directed Acyclic Graph (DAG)%{linkEnd}.",
+      "If you add %{codeStart}needs%{codeEnd} to jobs in your pipeline you'll be able to view the %{codeStart}needs%{codeEnd} dependencies between jobs in this tab.",
     ),
-    button: __('Learn more about Needs relationships'),
+    button: __('Learn more about needs dependencies'),
   },
   computed: {
     failure() {
@@ -149,7 +149,10 @@ export default {
   },
   methods: {
     addAnnotationToMap({ uid, source, target }) {
-      this.$set(this.annotationsMap, uid, { source, target });
+      this.annotationsMap = {
+        ...this.annotationsMap,
+        [uid]: { source, target },
+      };
     },
     processGraphData(data) {
       let parsed;

@@ -43,13 +43,9 @@ RSpec.shared_examples 'merge quick action' do
         it 'schedules to merge the MR' do
           add_note("/merge")
 
-          if Gitlab.ee?
-            expect(page).to(
-              have_content("Scheduled to merge this merge request (Merge when checks pass).")
-            )
-          else
-            expect(page).to have_content "Scheduled to merge this merge request (Merge when pipeline succeeds)."
-          end
+          expect(page).to(
+            have_content("Scheduled to merge this merge request (Merge when checks pass).")
+          )
 
           expect(merge_request.reload).to be_auto_merge_enabled
           expect(merge_request.reload).not_to be_merged

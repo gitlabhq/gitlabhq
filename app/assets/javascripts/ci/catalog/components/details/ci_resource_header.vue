@@ -133,7 +133,6 @@ export default {
             <gl-badge
               v-if="hasLatestVersion"
               v-gl-tooltip
-              size="sm"
               class="gl-ml-3 gl-my-1"
               variant="info"
               :href="latestVersion.path"
@@ -158,7 +157,7 @@ export default {
           text-sr-only
           icon="ellipsis_v"
           category="tertiary"
-          placement="right"
+          placement="bottom-end"
           class="note-action-button more-actions-toggle"
           no-caret
         >

@@ -149,7 +149,7 @@ module Gitlab
         def setup_diff
           diff = @relation_hash.delete('diff_export') || @relation_hash.delete('utf8_diff')
 
-          parsed_relation_hash['diff'] = diff
+          parsed_relation_hash['diff'] = diff.delete("\x00")
         end
 
         def setup_pipeline

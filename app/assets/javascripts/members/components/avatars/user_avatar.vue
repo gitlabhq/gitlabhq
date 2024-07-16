@@ -94,7 +94,7 @@ export default {
           ></span>
         </div>
         <div v-for="badge in badges" :key="badge.text" class="gl-p-1">
-          <gl-badge size="sm" :variant="badge.variant">
+          <gl-badge :variant="badge.variant">
             {{ badge.text }}
           </gl-badge>
         </div>

@@ -51,7 +51,7 @@ module Gitlab
 
           statements << alter_column_default(original_table, primary_key_column, expression: nil)
           statements << alter_column_default(replacement_table, primary_key_column,
-              expression: "nextval('#{quote_table_name(sequence)}'::regclass)")
+            expression: "nextval('#{quote_table_name(sequence)}'::regclass)")
 
           statements << alter_sequence_owned_by(sequence, replacement_table, primary_key_column)
 

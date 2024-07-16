@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import Reference from '~/content_editor/extensions/reference';
 import ReferenceLabel from '~/content_editor/extensions/reference_label';
 import AssetResolver from '~/content_editor/services/asset_resolver';
@@ -11,12 +12,7 @@ import {
   RESOLVED_USER_HTML,
   RESOLVED_VULNERABILITY_HTML,
 } from '../test_constants';
-import {
-  createTestEditor,
-  createDocBuilder,
-  triggerNodeInputRule,
-  waitUntilTransaction,
-} from '../test_utils';
+import { createTestEditor, triggerNodeInputRule, waitUntilTransaction } from '../test_utils';
 
 describe('content_editor/extensions/reference', () => {
   let tiptapEditor;
@@ -35,15 +31,7 @@ describe('content_editor/extensions/reference', () => {
       extensions: [Reference.configure({ assetResolver }), ReferenceLabel],
     });
 
-    ({
-      builders: { doc, p, reference, referenceLabel },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        reference: { nodeType: Reference.name },
-        referenceLabel: { nodeType: ReferenceLabel.name },
-      },
-    }));
+    ({ doc, paragraph: p, reference, referenceLabel } = builders(tiptapEditor.schema));
   });
 
   describe('when typing a valid reference input rule', () => {
@@ -87,7 +75,7 @@ describe('content_editor/extensions/reference', () => {
           number: 2,
           tiptapEditor,
           action() {
-            renderMarkdown.mockResolvedValueOnce(mockReferenceHtml);
+            renderMarkdown.mockResolvedValueOnce({ body: mockReferenceHtml });
 
             tiptapEditor.commands.insertContent({ type: 'text', text: `${inputRuleText} ` });
             triggerNodeInputRule({ tiptapEditor, inputRuleText: `${inputRuleText} ` });
@@ -103,7 +91,7 @@ describe('content_editor/extensions/reference', () => {
         number: 2,
         tiptapEditor,
         action() {
-          renderMarkdown.mockResolvedValueOnce(RESOLVED_ISSUE_HTML);
+          renderMarkdown.mockResolvedValueOnce({ body: RESOLVED_ISSUE_HTML });
 
           tiptapEditor.commands.insertContent({ type: 'text', text: '#1+ ' });
           triggerNodeInputRule({ tiptapEditor, inputRuleText: '#1+ ' });
@@ -114,7 +102,7 @@ describe('content_editor/extensions/reference', () => {
         number: 2,
         tiptapEditor,
         action() {
-          renderMarkdown.mockResolvedValueOnce(RESOLVED_MERGE_REQUEST_HTML);
+          renderMarkdown.mockResolvedValueOnce({ body: RESOLVED_MERGE_REQUEST_HTML });
 
           tiptapEditor.commands.insertContent({ type: 'text', text: 'was resolved with !1+ ' });
           triggerNodeInputRule({ tiptapEditor, inputRuleText: 'was resolved with !1+ ' });
@@ -146,7 +134,7 @@ describe('content_editor/extensions/reference', () => {
     it('resolves the input rule lazily in the correct position if the user makes a change before the request resolves', async () => {
       let resolvePromise;
       const promise = new Promise((resolve) => {
-        resolvePromise = resolve;
+        resolvePromise = (body) => resolve({ body });
       });
 
       renderMarkdown.mockImplementation(() => promise);

@@ -2,9 +2,6 @@
 description: Label was changed on an issue
 internal_events: true
 action: g_project_management_issue_label_changed
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

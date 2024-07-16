@@ -358,6 +358,22 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.in_namespaces_with_cte' do
+    let_it_be(:issue) { create(:issue, project: reusable_project) }
+    let_it_be(:other_project) { create(:project) }
+    let_it_be(:other_issue) { create(:issue, project: other_project) }
+
+    subject(:in_namespaces_with_cte) { described_class.in_namespaces_with_cte(Namespace.where(id: issue.namespace_id)) }
+
+    it 'returns issues from a given namespace' do
+      expect(in_namespaces_with_cte).to match_array(issue)
+    end
+
+    it 'can be used with other scopes' do
+      expect(in_namespaces_with_cte.with_work_item_type).to match_array(issue)
+    end
+  end
+
   context 'order by upvotes' do
     let!(:issue) { create(:issue) }
     let!(:issue2) { create(:issue) }

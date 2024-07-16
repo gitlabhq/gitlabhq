@@ -151,11 +151,6 @@
   padding-left: $gl-spacing-scale-12;
 }
 
-.gl-sm-mr-auto {
-  @media (min-width: $breakpoint-md) {
-    margin-right: auto;
-  }
-}
 
 .gl-min-w-12 {
   min-width: $gl-spacing-scale-12;

@@ -25,7 +25,6 @@ Style/ArgumentsForwarding:
     - 'app/models/network/commit.rb'
     - 'app/models/project.rb'
     - 'app/models/system/broadcast_message.rb'
-    - 'app/models/wiki.rb'
     - 'app/presenters/gitlab/blame_presenter.rb'
     - 'app/services/base_count_service.rb'
     - 'app/services/concerns/projects/remove_refs.rb'

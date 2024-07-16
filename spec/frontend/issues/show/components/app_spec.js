@@ -15,6 +15,7 @@ import PinnedLinks from '~/issues/show/components/pinned_links.vue';
 import eventHub from '~/issues/show/event_hub';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_OK, HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { visitUrl } from '~/lib/utils/url_utility';
 import {
   appProps,
@@ -28,6 +29,8 @@ import {
 jest.mock('~/alert');
 jest.mock('~/lib/utils/url_utility');
 jest.mock('~/behaviors/markdown/render_gfm');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
+confirmAction.mockResolvedValueOnce(false);
 
 const REALTIME_REQUEST_STACK = [initialRequest, secondRequest];
 
@@ -492,6 +495,21 @@ describe('Issuable output', () => {
       await waitForPromises();
 
       expect(axiosMock.history.put[0].data).toContain(description);
+    });
+
+    it('blocks sensitive content', async () => {
+      const description = 'token: glpat-cgyKc1k_AsnEpmP-5fRL!';
+      findDescription().vm.$emit('saveDescription', description);
+
+      await waitForPromises();
+
+      expect(axiosMock.history.put).toHaveLength(0);
+      expect(confirmAction).toHaveBeenCalledWith(
+        '',
+        expect.objectContaining({
+          title: 'Warning: Potential secret detected',
+        }),
+      );
     });
   });
 });

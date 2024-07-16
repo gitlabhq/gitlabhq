@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-There are two primary ways to incorporate [Docker](https://www.docker.com) into your CI/CD workflow:
+You can incorporate [Docker](https://www.docker.com) into your CI/CD workflow in two primary ways:
 
 - **[Run your CI/CD jobs](using_docker_images.md) in Docker containers.**
 

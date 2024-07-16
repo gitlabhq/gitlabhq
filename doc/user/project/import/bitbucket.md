@@ -13,6 +13,7 @@ DETAILS:
 > - Parallel imports from Bitbucket Cloud [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412614) in GitLab 16.6 [with a flag](../../../administration/feature_flags.md) named `bitbucket_parallel_importer`. Disabled by default.
 > - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.6.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423530) in GitLab 16.7. Feature flag `bitbucket_parallel_importer` removed.
+> - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461210) in GitLab 17.2.
 
 Import your projects from Bitbucket Cloud to GitLab.
 
@@ -20,21 +21,25 @@ The Bitbucket importer can import:
 
 - Repository description
 - Git repository data
-- Issues
-- Issue comments
-- Pull requests
-- Pull request comments
+- Issues, including comments
+- Pull requests, including comments
 - Milestones
 - Wiki
 - Labels
 - Milestones
 - LFS objects
 
+The Bitbucket importer cannot import:
+
+- Pull request approvals
+- Approval rules
+
 When importing:
 
 - References to pull requests and issues are preserved.
 - Repository public access is retained. If a repository is private in Bitbucket, it's created as
   private in GitLab as well.
+- Imported issues, merge requests, and comments have an **Imported** badge in GitLab.
 
 NOTE:
 The Bitbucket Cloud importer works only with [Bitbucket.org](https://bitbucket.org/), not with Bitbucket
@@ -51,7 +56,6 @@ For pull requests:
 
 - If the source SHA does not exist in the repository, the importer attempts to set the source commit to the merge commit SHA.
 - The merge request assignee is set to the author. Reviewers are set with usernames matching Bitbucket identities in GitLab.
-- Approvals are not imported.
 - Merge requests in GitLab can be either can be either `opened`, `closed` or `merged`.
 
 For issues:

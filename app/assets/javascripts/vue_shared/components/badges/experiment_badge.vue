@@ -17,18 +17,11 @@ export default {
     listItemCanBeRemoved: s__('ExperimentBadge|Could be changed or removed at any time.'),
     listItemTestAgreement: s__('ExperimentBadge|Are subject to the GitLab Testing Agreement.'),
   },
-  props: {
-    size: {
-      type: String,
-      required: false,
-      default: 'md',
-    },
-  },
 };
 </script>
 
 <template>
-  <hover-badge :label="$options.i18n.badgeLabel" :size="size" :title="$options.i18n.popoverTitle">
+  <hover-badge :label="$options.i18n.badgeLabel" :title="$options.i18n.popoverTitle">
     <p>{{ $options.i18n.descriptionParagraph }}</p>
 
     <p class="gl-mb-0">{{ $options.i18n.listIntroduction }}</p>

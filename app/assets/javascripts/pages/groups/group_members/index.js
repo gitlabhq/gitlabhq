@@ -53,6 +53,9 @@ const APP_OPTIONS = {
     tableFields: SHARED_FIELDS.concat('requested'),
     requestFormatter: groupMemberRequestFormatter,
   },
+  [MEMBERS_TAB_TYPES.placeholder]: {
+    requestFormatter: groupMemberRequestFormatter,
+  },
   ...GROUPS_APP_OPTIONS,
 };
 

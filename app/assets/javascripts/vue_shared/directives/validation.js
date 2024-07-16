@@ -46,32 +46,34 @@ const getInputElement = (el) => {
 
 const isEveryFieldValid = (form) => Object.values(form.fields).every(({ state }) => state === true);
 
-const createValidator = (feedbackMap) => ({ el, form, reportInvalidInput = false }) => {
-  const { name } = el;
+const createValidator =
+  (feedbackMap) =>
+  ({ el, form, reportInvalidInput = false }) => {
+    const { name } = el;
 
-  if (!name) {
-    if (process.env.NODE_ENV === 'development') {
-      // eslint-disable-next-line no-console
-      console.warn(
-        '[gitlab] the validation directive requires the given input to have "name" attribute',
-      );
+    if (!name) {
+      if (process.env.NODE_ENV === 'development') {
+        // eslint-disable-next-line no-console
+        console.warn(
+          '[gitlab] the validation directive requires the given input to have "name" attribute',
+        );
+      }
+      return;
     }
-    return;
-  }
 
-  const formField = form.fields[name];
-  const isValid = el.checkValidity();
+    const formField = form.fields[name];
+    const isValid = el.checkValidity();
 
-  // This makes sure we always report valid fields - this can be useful for cases where the consuming
-  // component's logic depends on certain fields being in a valid state.
-  // Invalid input, on the other hand, should only be reported once we want to display feedback to the user.
-  // (eg.: After a field has been touched and moved away from, a submit-button has been clicked, ...)
-  formField.state = reportInvalidInput ? isValid : isValid || null;
-  formField.feedback = reportInvalidInput ? getFeedbackForElement(feedbackMap, el) : '';
+    // This makes sure we always report valid fields - this can be useful for cases where the consuming
+    // component's logic depends on certain fields being in a valid state.
+    // Invalid input, on the other hand, should only be reported once we want to display feedback to the user.
+    // (eg.: After a field has been touched and moved away from, a submit-button has been clicked, ...)
+    formField.state = reportInvalidInput ? isValid : isValid || null;
+    formField.feedback = reportInvalidInput ? getFeedbackForElement(feedbackMap, el) : '';
 
-  // eslint-disable-next-line no-param-reassign
-  form.state = isEveryFieldValid(form);
-};
+    // eslint-disable-next-line no-param-reassign
+    form.state = isEveryFieldValid(form);
+  };
 
 /**
  * Takes an object that allows to add or change custom feedback messages.

@@ -50,3 +50,5 @@ export const modelExperimentsHelpPath = helpPagePath(
 );
 
 export const modelRegistryHelpPath = helpPagePath('user/project/ml/model_registry/index.md');
+
+export const duoHelpPath = helpPagePath('user/ai_features');

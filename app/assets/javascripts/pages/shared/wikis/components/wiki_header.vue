@@ -68,6 +68,8 @@ export default {
   },
   methods: {
     onKeyUp(event) {
+      if (/input|textearea/i.test(event.currentTarget.activeElement.tagName)) return false;
+
       if (event.key === 'e') {
         this.$emit('is-editing', true);
       }

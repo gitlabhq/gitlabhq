@@ -3,12 +3,12 @@ import { GlLoadingIcon } from '@gitlab/ui';
 import ObservabilityContainer from '~/observability/components/observability_container.vue';
 import { s__ } from '~/locale';
 import { createAlert } from '~/alert';
-import ObservabilityEmptyState from './observability_empty_state.vue';
+import ObservabilityNotEnabledEmptyState from './observability_not_enabled_empty_state.vue';
 
 export default {
   components: {
     ObservabilityContainer,
-    ObservabilityEmptyState,
+    ObservabilityNotEnabledEmptyState,
     GlLoadingIcon,
   },
   props: {
@@ -85,7 +85,7 @@ export default {
     </div>
 
     <template v-else-if="isObservabilityStatusKnown">
-      <observability-empty-state
+      <observability-not-enabled-empty-state
         v-if="isObservabilityDisabled"
         @enable-observability="onEnableObservability"
       />

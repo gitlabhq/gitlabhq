@@ -1,5 +1,6 @@
+import { builders } from 'prosemirror-test-builder';
 import Image from '~/content_editor/extensions/image';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/extensions/image', () => {
   let tiptapEditor;
@@ -10,14 +11,7 @@ describe('content_editor/extensions/image', () => {
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [Image] });
 
-    ({
-      builders: { doc, p, image },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        image: { nodeType: Image.name },
-      },
-    }));
+    ({ doc, paragraph: p, image } = builders(tiptapEditor.schema));
   });
 
   it('sets the draggable option to true', () => {

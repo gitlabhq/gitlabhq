@@ -665,7 +665,7 @@ The total number of custom domains per GitLab Pages website is limited to `150` 
 
 The default limit for [GitLab self-managed](../subscriptions/self_managed/index.md) is `0` (unlimited).
 To set a limit on your self-managed instance, use the
-[Admin Area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
+[Admin area](pages/index.md#set-maximum-number-of-gitlab-pages-custom-domains-for-a-project).
 
 ### Number of extra Pages deployments when using multiple deployments
 
@@ -1037,7 +1037,7 @@ The default maximum file size for a package that's uploaded to the [GitLab packa
 The [maximum file sizes on GitLab.com](../user/gitlab_com/index.md#package-registry-limits)
 might be different.
 
-To set these limits for a self-managed installation, you can do it [through the Admin Area](settings/continuous_integration.md#package-file-size-limits)
+To set these limits for a self-managed installation, you can do it [through the Admin area](settings/continuous_integration.md#package-file-size-limits)
 or run the following in the
 [GitLab Rails console](operations/rails_console.md#starting-a-rails-console-session):
 

@@ -34,7 +34,8 @@ module Gitlab
             state_id: MergeRequest.available_states[object[:state]],
             author_id: user_finder.author_id(object),
             created_at: object[:created_at],
-            updated_at: object[:updated_at]
+            updated_at: object[:updated_at],
+            imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:bitbucket_server]
           }
 
           creator = Gitlab::Import::MergeRequestCreator.new(project)

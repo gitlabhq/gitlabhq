@@ -2,9 +2,6 @@
 description: Invite members modal is canceled
 category: invite_members_modal
 action: click_cancel
-label_description: area/source of invite members modal being triggered
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project
@@ -20,4 +17,7 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: area/source of invite members modal being triggered
 

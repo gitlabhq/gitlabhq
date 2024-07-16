@@ -12,6 +12,7 @@ class Projects::WorkItemsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, project&.work_items_alpha_feature_flag_enabled?)
+    push_frontend_feature_flag(:namespace_level_work_items, project&.group)
   end
 
   feature_category :team_planning
@@ -31,10 +32,21 @@ class Projects::WorkItemsController < Projects::ApplicationController
     end
   end
 
+  def show
+    return if show_params[:iid] == 'new'
+
+    @work_item = ::WorkItems::WorkItemsFinder.new(current_user, project_id: project.id)
+      .execute.with_work_item_type.find_by_iid(show_params[:iid])
+  end
+
   private
 
   def import_params
     params.permit(:file)
+  end
+
+  def show_params
+    params.permit(:iid)
   end
 
   def authorize_import_access!

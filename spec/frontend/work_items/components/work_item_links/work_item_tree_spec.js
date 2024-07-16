@@ -1,24 +1,23 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToggle } from '@gitlab/ui';
-import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import waitForPromises from 'helpers/wait_for_promises';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemTree from '~/work_items/components/work_item_links/work_item_tree.vue';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinksForm from '~/work_items/components/work_item_links/work_item_links_form.vue';
 import WorkItemActionsSplitButton from '~/work_items/components/work_item_links/work_item_actions_split_button.vue';
 import WorkItemTreeActions from '~/work_items/components/work_item_links/work_item_tree_actions.vue';
-import getAllowedWorkItemChildTypes from '~/work_items//graphql/work_item_allowed_children.query.graphql';
 import {
   FORM_TYPES,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
+  WORK_ITEM_TYPE_ENUM_EPIC,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_VALUE_EPIC,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
 } from '~/work_items/constants';
-import { childrenWorkItems, allowedChildrenTypesResponse } from '../../mock_data';
+import { childrenWorkItems } from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -33,8 +32,6 @@ describe('WorkItemTree', () => {
   const findShowLabelsToggle = () => wrapper.findComponent(GlToggle);
   const findTreeActions = () => wrapper.findComponent(WorkItemTreeActions);
 
-  const allowedChildrenTypesHandler = jest.fn().mockResolvedValue(allowedChildrenTypesResponse);
-
   const createComponent = ({
     workItemType = 'Objective',
     workItemIid = '2',
@@ -42,11 +39,10 @@ describe('WorkItemTree', () => {
     confidential = false,
     children = childrenWorkItems,
     canUpdate = true,
+    canUpdateChildren = true,
+    hasSubepicsFeature = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemTree, {
-      apolloProvider: createMockApollo([
-        [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
-      ]),
       propsData: {
         fullPath: 'test/project',
         workItemType,
@@ -56,6 +52,10 @@ describe('WorkItemTree', () => {
         confidential,
         children,
         canUpdate,
+        canUpdateChildren,
+      },
+      provide: {
+        hasSubepicsFeature,
       },
       stubs: { WidgetWrapper },
     });
@@ -96,13 +96,6 @@ describe('WorkItemTree', () => {
     expect(findWidgetWrapper().props('error')).toBe(errorMessage);
   });
 
-  it('fetches allowed children types for current work item', async () => {
-    createComponent();
-    await waitForPromises();
-
-    expect(allowedChildrenTypesHandler).toHaveBeenCalled();
-  });
-
   it.each`
     option                   | formType             | childType
     ${'New objective'}       | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_OBJECTIVE}
@@ -127,10 +120,57 @@ describe('WorkItemTree', () => {
     },
   );
 
+  describe('when subepics are not available', () => {
+    it.each`
+      option              | formType             | childType
+      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+    `(
+      'when triggering action $option, renders the form passing $formType and $childType',
+      async ({ formType, childType }) => {
+        createComponent({ hasSubepicsFeature: false, workItemType: 'Epic' });
+
+        wrapper.vm.showAddForm(formType, childType);
+        await nextTick();
+
+        expect(findForm().exists()).toBe(true);
+        expect(findForm().props()).toMatchObject({
+          formType,
+          childrenType: childType,
+        });
+      },
+    );
+  });
+
+  describe('when subepics are available', () => {
+    it.each`
+      option              | formType             | childType
+      ${'New issue'}      | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+      ${'Existing issue'} | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_ISSUE}
+      ${'New epic'}       | ${FORM_TYPES.create} | ${WORK_ITEM_TYPE_ENUM_EPIC}
+      ${'Existing epic'}  | ${FORM_TYPES.add}    | ${WORK_ITEM_TYPE_ENUM_EPIC}
+    `(
+      'when triggering action $option, renders the form passing $formType and $childType',
+      async ({ formType, childType }) => {
+        createComponent({ hasSubepicsFeature: true, workItemType: 'Epic' });
+
+        wrapper.vm.showAddForm(formType, childType);
+        await nextTick();
+
+        expect(findForm().exists()).toBe(true);
+        expect(findForm().props()).toMatchObject({
+          formType,
+          childrenType: childType,
+        });
+      },
+    );
+  });
+
   describe('when no permission to update', () => {
     beforeEach(() => {
       createComponent({
         canUpdate: false,
+        canUpdateChildren: false,
       });
     });
 

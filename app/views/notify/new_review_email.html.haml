@@ -14,4 +14,3 @@
   - discussion.first_note.project = @project if discussion&.first_note
   - target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{note.id}")
   = render 'note_email', note: note, diff_limit: 3, target_url: target_url, note_style: "border-bottom:4px solid #ededed; padding-bottom: 1em;", include_stylesheet_link: false, discussion: discussion, author: @author
-= render_if_exists 'notify/review_summary'

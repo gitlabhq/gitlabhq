@@ -60,7 +60,7 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     end
 
     it 'expands when filtering groups' do
-      fill_in 'filter', with: nested_group.name
+      search(nested_group.name)
       wait_for_requests
 
       expect(page).not_to have_content(group.name)
@@ -70,20 +70,21 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     end
 
     it 'resets search when user cleans the input' do
-      fill_in 'filter', with: group.name
+      search(group.name)
       wait_for_requests
 
       expect(page).to have_content(group.name)
       expect(page).not_to have_content(nested_group.parent.name)
 
-      fill_in 'filter', with: ''
-      page.find('[name="filter"]').send_keys(:enter)
+      find_by_testid('filtered-search-clear-button').click
       wait_for_requests
 
       expect(page).to have_content(group.name)
       expect(page).to have_content(nested_group.parent.name)
       expect(page).not_to have_content(another_group.name)
-      expect(page.all('.js-groups-list-holder .groups-list li').length).to eq 2
+      within find_by_testid('groups-list-tree-container') do
+        expect(find_all('li').length).to eq 2
+      end
     end
   end
 
@@ -247,5 +248,12 @@ RSpec.describe 'Dashboard Groups page', :js, feature_category: :groups_and_proje
     it 'shows empty state' do
       expect(page).to have_content(s_('GroupsEmptyState|A group is a collection of several projects'))
     end
+  end
+
+  def search(term)
+    filter_input = find_by_testid('filtered-search-term-input')
+    filter_input.click
+    filter_input.set(term)
+    click_button 'Search'
   end
 end

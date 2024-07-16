@@ -58,7 +58,7 @@ the difference between Geo and Gitaly Cluster, see [Comparison to Geo](../gitaly
 
 ## How it works
 
-This is a brief summary of how Geo works in your GitLab environment. For a more detailed information, see the [Geo Development page](/ee/development/geo.md).
+This is a brief summary of how Geo works in your GitLab environment. For a more detailed information, see the [Geo Development page](../../development/geo.md).
 
 Your Geo instance can be used for cloning and fetching projects, in addition to reading any data. This makes working with large repositories over large distances much faster.
 
@@ -160,15 +160,18 @@ NOTE:
 When using HTTPS protocol for port 443, you must add an SSL certificate to the load balancers.
 If you wish to terminate SSL at the GitLab application server instead, use TCP protocol.
 
+NOTE:
+If you are only using `HTTPS` for external/internal URLs, it is not necessary to open port 80 in the firewall.
+
 #### Internal URL
 
 HTTP requests from any Geo secondary site to the primary Geo site use the Internal URL of the primary
-Geo site. If this is not explicitly defined in the primary Geo site settings in the Admin Area, the
+Geo site. If this is not explicitly defined in the primary Geo site settings in the Admin area, the
 public URL of the primary site is used.
 
 To update the internal URL of the primary Geo site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
 1. Select **Edit** on the primary site.
 1. Change the **Internal URL**, then select **Save changes**.
@@ -206,7 +209,7 @@ This list of limitations only reflects the latest version of GitLab. If you are 
   GitLab instances based on our [Reference Architectures](../reference_architectures/index.md), including automation of common daily tasks.
   [Epic 1465](https://gitlab.com/groups/gitlab-org/-/epics/1465) proposes to improve Geo installation even more.
 - Real-time updates of issues/merge requests (for example, via long polling) doesn't work on the **secondary** site.
-- [Selective synchronization](replication/configuration.md#selective-synchronization) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
+- [Selective synchronization](replication/selective_synchronization.md) only limits what repositories and files are replicated. The entire PostgreSQL data is still replicated. Selective synchronization is not built to accommodate compliance / export control use cases.
 - [Pages access control](../../user/project/pages/pages_access_control.md) doesn't work on secondaries. See [GitLab issue #9336](https://gitlab.com/gitlab-org/gitlab/-/issues/9336) for details.
 - [Disaster recovery](disaster_recovery/index.md) for deployments that have multiple secondary sites causes downtime due to the need to perform complete re-synchronization and re-configuration of all non-promoted secondaries to follow the new primary site.
 - For Git over SSH, to make the project clone URL display correctly regardless of which site you are browsing, secondary sites must use the same port as the primary. [GitLab issue #339262](https://gitlab.com/gitlab-org/gitlab/-/issues/339262) proposes to remove this limitation.

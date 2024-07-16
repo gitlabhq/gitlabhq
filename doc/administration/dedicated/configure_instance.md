@@ -13,7 +13,7 @@ DETAILS:
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin Area](../../administration/admin_area.md).
+Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin area](../../administration/admin_area.md).
 
 Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 These environment settings cannot be changed by tenants.
@@ -62,25 +62,37 @@ You will only receive email notifications for changes made by a Switchboard tena
 
 You can use the configuration change log to track the changes made to your GitLab Dedicated instance, including:
 
-- **Configuration change:** Name of the configuration setting that changed.
-- **User:** Email address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `GitLab Operator`.
-- **IP:** IP address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `Unavailable`.
-- **Status:** Whether the configuration change is initiated, in progress, completed, or deferred.
-- **Start time:** Start date and time when the configuration change is initiated, in UTC.
-- **End time:** End date and time when the configuration change is deployed, in UTC.
+- Configuration change: Name of the configuration setting that changed.
+- User: Email address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `GitLab Operator`.
+- IP: IP address of the user that made the configuration change. For changes made by a GitLab Operator, this value will appear as `Unavailable`.
+- Status: Whether the configuration change is initiated, in progress, completed, or deferred.
+- Start time: Start date and time when the configuration change is initiated, in UTC.
+- End time: End date and time when the configuration change is deployed, in UTC.
 
 Each configuration change has a status:
 
-- **Initiated:** Configuration change is made in Switchboard, but not yet deployed to the instance.
-- **In progress:** Configuration change is currently being deployed to the instance.
-- **Complete:** Configuration change has been deployed to the instance.
-- **Delayed** Initial job to deploy a change has failed and the change has not yet been assigned to a new job.
+- Initiated: Configuration change is made in Switchboard, but not yet deployed to the instance.
+- In progress: Configuration change is currently being deployed to the instance.
+- Complete: Configuration change has been deployed to the instance.
+- Delayed: Initial job to deploy a change has failed and the change has not yet been assigned to a new job.
 
 To view the configuration change log:
 
 1. Sign in to [Switchboard](https://console.gitlab-dedicated.com/).
 1. Select your tenant.
 1. At the top of the page, select **Configuration change log**.
+
+### Bring your own domain
+
+You can add a [custom hostname](../../subscriptions/gitlab_dedicated/index.md#bring-your-own-domain) for your GitLab Dedicated instance. Optionally, you can also provide a custom hostname for the bundled container registry and KAS services.
+
+To add a custom hostname after your instance is created, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+
+### SMTP email service
+
+You can configure an [SMTP](../../subscriptions/gitlab_dedicated/index.md#smtp) email service for your GitLab Dedicated instance.
+
+To configure an SMTP email service, submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) with the credentials and settings for your SMTP server.
 
 ### Inbound Private Link
 
@@ -101,21 +113,26 @@ To enable the Inbound Private Link:
 
 ### Outbound Private Link
 
-NOTE:
-If you plan to add a PrivateLink connection (either [inbound](#inbound-private-link) or [outbound](#outbound-private-link)) to your environment, and you require the connections to be available in specific Availability Zones, you must provide up to two [Availability Zone IDs](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) to your account team during onboarding. If not specified, GitLab selects two random Availability Zone IDs where the connections are available.
+Outbound private links allow your GitLab Dedicated instance and the hosted runners for GitLab Dedicated to securely communicate with services running in your VPC on AWS without exposing any traffic to the public internet.
 
-Consider the following when using Outbound Private Links:
+This type of connection allows GitLab functionality to access private services:
 
-- Outbound Private Links allow the GitLab Dedicated instance to securely communicate with services running in your VPC on AWS. This type of connection
-  can execute [webhooks](../../user/project/integrations/webhooks.md) where the targeted services are running in your VPC, import or mirror projects
-  and repositories, or use any other GitLab functionality to access private services.
-- You can only establish Private Links between VPCs in the same region. Therefore, you can only establish a connection in the regions you selected for
-  your Dedicated instance.
-- The Network Load Balancer (NLB) that backs the Endpoint Service at your end must be enabled in at least one of the Availability Zones to which your Dedicated instance was
-  deployed. This is not the user-facing name such as `us-east-1a`, but the underlying [Availability Zone ID](https://docs.aws.amazon.com/ram/latest/userguide/working-with-az-ids.html).
-  If you did not specify these during onboarding to Dedicated, you must either:
-  - Ask for the Availability Zone IDs in the ticket you raise to enable the link and ensure the NLB is enabled in those AZs, or
-  - Ensure the NLB has is enabled in every Availability Zone in the region.
+- For the GitLab Dedicated instance:
+
+  - [webhooks](../../user/project/integrations/webhooks.md)
+  - import or mirror projects and repositories
+
+- For hosted runners:
+
+  - custom secrets managers
+  - artifacts or job images stored in your infrastructure
+  - deployments into your infrastructure
+
+Consider the following:
+
+- You can only establish private links between VPCs in the same region. Therefore, you can only establish a connection in the regions specified for your Dedicated instance.
+- The connection requires the [Availability Zone IDs (AZ IDs)](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html#az-ids) for the Availability Zones (AZs) in the regions that you selected during onboarding.
+- If you did not specify any AZs during onboarding to Dedicated, GitLab randomly selects the AZ IDs.
 
 You can view the `Reverse Private Link IAM Principal` attribute in the **Tenant Details** section of Switchboard.
 
@@ -124,6 +141,9 @@ To enable an Outbound Private Link:
 1. [Create the Endpoint service](https://docs.aws.amazon.com/vpc/latest/privatelink/create-endpoint-service.html) through which your internal service
    will be available to GitLab Dedicated. Provide the associated `Service Endpoint Name` on a new
    [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650).
+1. Make sure you have configured a Network Load Balancer (NLB) for the endpoint service in the AZs to which your Dedicated instance was deployed. If you did not specify these during onboarding to Dedicated, you must either:
+    - Submit a [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650) to request the AZ IDs required to enable the connection and ensure the NLB is enabled in those AZs.
+    - Ensure the NLB is enabled in every AZ in the region.
 1. In your [support ticket](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=4414917877650), GitLab will provide you with the ARN of an
    IAM role that will be initiating the connection to your endpoint service. You must ensure this ARN is included, or otherwise covered by other
    entries, in the list of "Allowed Principals" on the Endpoint Service, as described by the [AWS documentation](https://docs.aws.amazon.com/vpc/latest/privatelink/configure-endpoint-service.html#add-remove-permissions).
@@ -295,7 +315,10 @@ An invitation to use Switchboard is sent to the user.
 
 #### Manage notification preferences
 
-You can specify whether or not you want to receive email notifications from Switchboard.
+You can specify whether you want to receive email notifications from Switchboard. You will only receive notifications after you:
+
+- Receive an email invitation and first sign in to Switchboard.
+- Set up a password and two-factor authentication (2FA) for your user account.
 
 To manage your own email notification preferences:
 

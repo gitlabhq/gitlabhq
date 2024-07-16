@@ -152,7 +152,7 @@ export default {
     :data-item-path="item.referencePath"
     :style="cardStyle"
     data-testid="board-card"
-    class="board-card gl-p-5 gl-rounded-base gl-leading-normal gl-relative gl-mb-3"
+    class="board-card gl-p-4 gl-rounded-base gl-leading-normal gl-relative gl-mb-3"
     @click="toggleIssue($event)"
   >
     <board-card-inner

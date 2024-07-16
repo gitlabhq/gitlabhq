@@ -8,7 +8,7 @@ class AddFkFromPCiBuildNamesToPCiBuildsOnPartitionIdAndBuildId < Gitlab::Databas
   disable_ddl_transaction!
 
   SOURCE_TABLE_NAME = :p_ci_build_names
-  TARGET_TABLE_NAME = :ci_builds
+  TARGET_TABLE_NAME = :p_ci_builds
   FK_NAME = :fk_rails_bc221a297a
 
   def up

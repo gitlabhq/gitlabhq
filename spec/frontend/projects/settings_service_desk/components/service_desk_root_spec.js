@@ -22,6 +22,7 @@ describe('ServiceDeskRoot', () => {
     isIssueTrackerEnabled: true,
     outgoingName: 'GitLab Support Bot',
     projectKey: 'key',
+    areTicketsConfidentialByDefault: false,
     reopenIssueOnExternalParticipantNote: true,
     addExternalParticipantsFromCc: true,
     selectedTemplate: 'Bug',
@@ -61,6 +62,7 @@ describe('ServiceDeskRoot', () => {
         incomingEmail: provideData.initialIncomingEmail,
         initialOutgoingName: provideData.outgoingName,
         initialProjectKey: provideData.projectKey,
+        initialAreTicketsConfidentialByDefault: provideData.areTicketsConfidentialByDefault,
         initialReopenIssueOnExternalParticipantNote:
           provideData.reopenIssueOnExternalParticipantNote,
         initialAddExternalParticipantsFromCc: provideData.addExternalParticipantsFromCc,
@@ -69,6 +71,7 @@ describe('ServiceDeskRoot', () => {
         isEnabled: provideData.initialIsEnabled,
         isIssueTrackerEnabled: provideData.isIssueTrackerEnabled,
         isTemplateSaving: false,
+        publicProject: provideData.publicProject,
         templates: provideData.templates,
       });
     });
@@ -149,6 +152,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            areTicketsConfidentialByDefault: false,
             reopenIssueOnExternalParticipantNote: true,
             addExternalParticipantsFromCc: true,
           };
@@ -164,6 +168,7 @@ describe('ServiceDeskRoot', () => {
             outgoing_name: 'GitLab Support Bot',
             project_key: 'key',
             service_desk_enabled: true,
+            tickets_confidential_by_default: false,
             reopen_issue_on_external_participant_note: true,
             add_external_participants_from_cc: true,
           });
@@ -184,6 +189,7 @@ describe('ServiceDeskRoot', () => {
             selectedTemplate: 'Bug',
             outgoingName: 'GitLab Support Bot',
             projectKey: 'key',
+            tickets_confidential_by_default: false,
             reopen_issue_on_external_participant_note: true,
             addExternalParticipantsFromCc: true,
           };

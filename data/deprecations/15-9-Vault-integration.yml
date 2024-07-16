@@ -17,7 +17,7 @@
 #
 # REQUIRED FIELDS
 #
-- title: "HashiCorp Vault integration will no longer use CI_JOB_JWT by default"
+- title: "HashiCorp Vault integration will no longer use the `CI_JOB_JWT` CI/CD job token by default"
   announcement_milestone: "15.9"  # (required) The milestone when this feature was first announced as deprecated.
   removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   breaking_change: true  # (required) Change to false if this is not a breaking change.

@@ -58,6 +58,11 @@ To install the GDK:
    curl "https://gitlab.com/gitlab-org/gitlab-development-kit/-/raw/main/support/install" | bash
    ```
 
+   This script clones the GitLab Development Kit (GDK) repository into a new subdirectory, and sets up necessary dependencies using the `asdf` version manager (including Ruby, Node.js, PostgreSQL, Redis, and more).
+
+   NOTE:
+   If you're using another version manager for those dependencies, refer to the [troubleshooting section](#error-no-version-is-set-for-command) to avoid conflicts.
+
 1. For the message `Where would you like to install the GDK? [./gitlab-development-kit]`,
    press <kbd>Enter</kbd> to accept the default location.
 1. For the message `Which GitLab repo URL would you like to clone?`, enter the GitLab community fork URL:
@@ -133,6 +138,11 @@ For more advanced troubleshooting, continue to the [Troubleshoot GDK](#troublesh
 
 ## Troubleshoot GDK
 
+NOTE:
+For more advanced troubleshooting, see
+the [troubleshooting documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting)
+and the [#contribute channel on Discord](https://discord.com/channels/778180511088640070/997442331202564176).
+
 If you encounter issues, go to the `gitlab-development-kit/gitlab`
 directory and run `gdk doctor`.
 
@@ -143,9 +153,27 @@ yarn install && bundle install
 bundle exec rails db:migrate RAILS_ENV=development
 ```
 
-For more advanced troubleshooting, see
-the [troubleshooting documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/tree/main/doc/troubleshooting)
-and the [#contribute channel on Discord](https://discord.com/channels/778180511088640070/997442331202564176).
+### Error: No version is set for command
+
+If you already use another version manager in your system, you may encounter the "No version is set for command <command>" error.
+To resolve this issue, you can temporarily comment out the sourcing of `asdf.sh` in your shell:
+
+1. Open your shell configuration file (for example, `.zshrc`, `.bashrc`):
+
+   ```shell
+   nano <path-to-shell-config>
+   ```
+
+1. Comment out the following line:
+
+   ```shell
+   # Added by GDK bootstrap
+   # source ~/.asdf/asdf.sh
+   ```
+
+1. After making these changes, restart your shell or terminal session for the modifications to take effect.
+
+To use `asdf` again, revert any previous changes.
 
 ## Change the code
 

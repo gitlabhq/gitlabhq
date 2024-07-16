@@ -2,9 +2,6 @@
 description: GCP region configured
 category: Projects::GoogleCloud::GcpRegionsController
 action: configure_region
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

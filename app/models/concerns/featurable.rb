@@ -108,7 +108,7 @@ module Featurable
   private
 
   def allowed_access_levels
-    validator = lambda do |field|
+    validator = ->(field) do
       level = public_send(field) || ENABLED # rubocop:disable GitlabSecurity/PublicSend
       not_allowed = level > ENABLED
       self.errors.add(field, "cannot have public visibility level") if not_allowed

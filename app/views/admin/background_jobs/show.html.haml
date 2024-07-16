@@ -1,10 +1,9 @@
-- page_title _("Background Jobs")
+- page_title _("Background jobs")
+- sidekiq_link = link_to('', 'https://sidekiq.org/', target: '_blank', rel: 'noopener noreferrer')
+- page_description = safe_format(_('GitLab uses %{link_start}Sidekiq%{link_end} to process background jobs'), tag_pair(sidekiq_link, :link_start, :link_end))
 
-%h1.page-title.gl-font-size-h-display= _('Background Jobs')
-%p.light
-  - sidekiq_link_url = 'http://sidekiq.org/'
-  - sidekiq_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: sidekiq_link_url }
-  = html_escape(_('GitLab uses %{linkStart}Sidekiq%{linkEnd} to process background jobs')) % { linkStart: sidekiq_link_start, linkEnd: '</a>'.html_safe }
+= render ::Layouts::PageHeadingComponent.new(_('Background jobs'),
+  description: page_description,
+  options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_background_jobs_pageload' } })
 
-%hr
 %iframe{ src: sidekiq_path, width: '100%', height: 970, style: "border: 0" }

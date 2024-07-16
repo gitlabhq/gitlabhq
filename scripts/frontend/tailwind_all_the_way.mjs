@@ -5,10 +5,9 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-
 import _ from 'lodash';
 import postcss from 'postcss';
-import prettier from 'prettier';
+import * as prettier from 'prettier';
 
 import tailwindcss from 'tailwindcss/lib/plugin.js';
 import {
@@ -144,14 +143,17 @@ export async function toMinimalUtilities() {
   const { css: tailwindClasses } = await postcss([
     tailwindcss({
       ...tailwindConfig,
+      // We must ensure the GitLab UI plugin is disabled during this run so that whatever it defines
+      // is purged out of the CSS-in-Js.
+      presets: [
+        {
+          ...tailwindConfig.presets[0],
+          plugins: [],
+        },
+      ],
       // Disable all core plugins, all we care about are the legacy utils
       // that are provided via addUtilities.
       corePlugins: [],
-      // We must ensure the GitLab UI plugin is disabled during this run so that whatever it defines
-      // is purged out of the CSS-in-Js.
-      plugins: tailwindConfig.plugins.filter(
-        (plugin) => plugin.handler.name !== 'gitLabUIUtilities',
-      ),
     }),
   ]).process('@tailwind utilities;', { map: false, from: undefined });
 
@@ -221,12 +223,10 @@ export async function convertUtilsToCSSInJS({ buildOnlyUsed = false } = {}) {
       // We only want to generate the utils based on the fresh
       // allUtilitiesFile
       content: [allUtilitiesFile],
-      // We are disabling all plugins but the GitLab UI one which contains legitimate utils that
-      // will need to be backported to GitLab UI.
-      // This prevents the css-to-js import from causing trouble.
-      plugins: tailwindConfig.plugins.filter(
-        (plugin) => plugin.handler.name === 'gitLabUIUtilities',
-      ),
+      // We are disabling all plugins to prevent the CSS-in-Js import from causing trouble.
+      // The GitLab UI preset still registers its own plugin, which we need to define legitimate
+      // custom utils.
+      plugins: [],
     }),
   ]).process(await readFile(tailwindSource, 'utf-8'), { map: false, from: undefined });
 

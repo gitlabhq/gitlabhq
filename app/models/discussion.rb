@@ -15,6 +15,7 @@ class Discussion
 
   delegate :created_at,
     :project,
+    :namespace,
     :author,
     :noteable,
     :commit_id,

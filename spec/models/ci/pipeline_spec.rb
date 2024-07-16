@@ -20,6 +20,7 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
   it_behaves_like 'having unique enum values'
 
   it { is_expected.to belong_to(:project) }
+  it { is_expected.to belong_to(:project_mirror).with_foreign_key('project_id') }
   it { is_expected.to belong_to(:user) }
   it { is_expected.to belong_to(:auto_canceled_by).class_name('Ci::Pipeline').inverse_of(:auto_canceled_pipelines) }
   it { is_expected.to belong_to(:pipeline_schedule) }
@@ -104,6 +105,11 @@ RSpec.describe Ci::Pipeline, :mailer, factory_default: :keep, feature_category: 
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:all_pipelines)
       expect(Project.reflect_on_association(:all_pipelines).has_inverse?).to eq(:project)
       expect(Project.reflect_on_association(:ci_pipelines).has_inverse?).to eq(:project)
+    end
+
+    it 'has a bidirectional relationship with project mirror' do
+      expect(described_class.reflect_on_association(:project_mirror).has_inverse?).to eq(:pipelines)
+      expect(Ci::ProjectMirror.reflect_on_association(:pipelines).has_inverse?).to eq(:project_mirror)
     end
 
     describe '#latest_builds' do

@@ -44,6 +44,32 @@ sast:
   rules:
     - when: never
 
+gitlab-advanced-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SEARCH_MAX_DEPTH: 20
+    SAST_ANALYZER_IMAGE_TAG: 0
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
+  rules:
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
+      exists:
+        - '**/*.py'
+        - '**/*.go'
+        - '**/*.java'
+    - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+      when: never
+    - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
+      exists:
+        - '**/*.py'
+        - '**/*.go'
+        - '**/*.java'
+
 bandit-sast:
   extends: .sast-analyzer
   script:
@@ -166,6 +192,8 @@ semgrep-sast:
         - '**/*.c++'
         - '**/*.cp'
         - '**/*.cxx'
+        - '**/*.h'
+        - '**/*.hpp'
         - '**/*.go'
         - '**/*.java'
         - '**/*.html'
@@ -192,6 +220,8 @@ semgrep-sast:
         - '**/*.c++'
         - '**/*.cp'
         - '**/*.cxx'
+        - '**/*.h'
+        - '**/*.hpp'
         - '**/*.go'
         - '**/*.java'
         - '**/*.html'

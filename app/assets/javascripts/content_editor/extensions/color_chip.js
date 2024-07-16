@@ -27,7 +27,7 @@ const highlightColors = (doc) => {
     const from = position;
     const to = from + text.length;
     const decoration = Decoration.inline(from, to, {
-      class: 'gl-display-inline-flex gl-align-items-center content-editor-color-chip',
+      class: 'gl-inline-flex gl-align-items-center content-editor-color-chip',
       style: `--gl-color-chip-color: ${text}`,
     });
 

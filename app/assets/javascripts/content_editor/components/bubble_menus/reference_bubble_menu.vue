@@ -9,6 +9,7 @@ import { __ } from '~/locale';
 import Reference from '../../extensions/reference';
 import ReferenceLabel from '../../extensions/reference_label';
 import EditorStateObserver from '../editor_state_observer.vue';
+import { REFERENCE_TYPES } from '../../constants/reference_types';
 import BubbleMenu from './bubble_menu.vue';
 
 const REFERENCE_NODE_TYPES = [Reference.name, ReferenceLabel.name];
@@ -43,40 +44,46 @@ export default {
     };
   },
   computed: {
+    isWorkItem() {
+      return this.referenceType === REFERENCE_TYPES.WORK_ITEM;
+    },
     isIssue() {
-      return this.referenceType === 'issue';
+      return this.referenceType === REFERENCE_TYPES.ISSUE;
     },
     isMergeRequest() {
-      return this.referenceType === 'merge_request';
+      return this.referenceType === REFERENCE_TYPES.MERGE_REQUEST;
     },
     isEpic() {
-      return this.referenceType === 'epic';
+      return this.referenceType === REFERENCE_TYPES.EPIC;
     },
     isExpandable() {
-      return this.isIssue || this.isMergeRequest || this.isEpic;
+      return this.isIssue || this.isWorkItem || this.isMergeRequest || this.isEpic;
+    },
+    showSummary() {
+      return !this.isEpic;
     },
     textFormats() {
       return [
         {
           value: '',
-          text: this.$options.i18n.referenceId[this.referenceType],
+          text: this.$options.i18n.referenceId,
           matcher: (text) => !text.endsWith('+') && !text.endsWith('+s'),
           getText: () => this.text,
           shouldShow: true,
         },
         {
           value: '+',
-          text: this.$options.i18n.referenceTitle[this.referenceType],
+          text: this.$options.i18n.referenceTitle,
           matcher: (text) => text.endsWith('+'),
           getText: () => this.expandedText,
           shouldShow: true,
         },
         {
           value: '+s',
-          text: this.$options.i18n.referenceSummary[this.referenceType],
+          text: this.$options.i18n.referenceSummary,
           matcher: (text) => text.endsWith('+s'),
           getText: () => this.fullyExpandedText,
-          shouldShow: this.isIssue || this.isMergeRequest,
+          shouldShow: this.showSummary,
         },
       ];
     },
@@ -138,31 +145,11 @@ export default {
     placement: 'bottom',
   },
   i18n: {
-    referenceId: {
-      issue: __('Issue ID'),
-      merge_request: __('Merge request ID'),
-      epic: __('Epic ID'),
-    },
-    referenceTitle: {
-      issue: __('Issue title'),
-      merge_request: __('Merge request title'),
-      epic: __('Epic title'),
-    },
-    referenceSummary: {
-      issue: __('Issue summary'),
-      merge_request: __('Merge request summary'),
-      epic: __('Epic summary'),
-    },
-    copyURLLabel: {
-      issue: __('Copy issue URL'),
-      merge_request: __('Copy merge request URL'),
-      epic: __('Copy epic URL'),
-    },
-    removeLabel: {
-      issue: __('Remove issue reference'),
-      merge_request: __('Remove merge request reference'),
-      epic: __('Remove epic reference'),
-    },
+    referenceId: __('ID'),
+    referenceTitle: __('Title'),
+    referenceSummary: __('Summary'),
+    copyURLLabel: __('Copy URL'),
+    removeLabel: __('Remove reference'),
   },
 };
 </script>
@@ -196,8 +183,8 @@ export default {
           category="tertiary"
           size="medium"
           data-testid="copy-reference-url"
-          :aria-label="$options.i18n.copyURLLabel[referenceType]"
-          :title="$options.i18n.copyURLLabel[referenceType]"
+          :aria-label="$options.i18n.copyURLLabel"
+          :title="$options.i18n.copyURLLabel"
           icon="copy-to-clipboard"
           @click="copyReferenceURL"
         />
@@ -207,8 +194,8 @@ export default {
           category="tertiary"
           size="medium"
           data-testid="remove-reference"
-          :aria-label="$options.i18n.removeLabel[referenceType]"
-          :title="$options.i18n.removeLabel[referenceType]"
+          :aria-label="$options.i18n.removeLabel"
+          :title="$options.i18n.removeLabel"
           icon="remove"
           @click="removeReference"
         />

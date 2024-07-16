@@ -14,13 +14,92 @@ RSpec.shared_examples 'web-hook API endpoints test hook' do |prefix|
   end
 end
 
-RSpec.shared_examples 'web-hook API endpoints with branch-filter' do |prefix|
-  describe "POST #{prefix}/hooks" do
-    it "returns a 422 error if branch filter is not valid" do
-      post api(collection_uri, user, admin_mode: user.admin?),
-        params: { url: "http://example.com", push_events_branch_filter: '~badbranchname/' }
+RSpec.shared_examples 'POST webhook API endpoints with a branch filter' do |prefix|
+  before do
+    post api(collection_uri, user, admin_mode: user.admin?), params: params.merge(url: "http://example.com")
+  end
 
-      expect(response).to have_gitlab_http_status(:unprocessable_entity)
+  describe "POST #{prefix}/hooks" do
+    context "when setting push_events_branch_filter" do
+      let(:params) { { push_events_branch_filter: 'some-wildcard' } }
+
+      it "returns created response" do
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to a_hash_including('push_events_branch_filter' => 'some-wildcard',
+          'branch_filter_strategy' => 'wildcard')
+      end
+    end
+
+    context "when setting push_events_branch_filter with branch_filter_strategy regex" do
+      let(:params) { { push_events_branch_filter: 'some-regex', 'branch_filter_strategy' => 'regex' } }
+
+      it "returns created response" do
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to a_hash_including('push_events_branch_filter' => 'some-regex',
+          'branch_filter_strategy' => 'regex')
+      end
+    end
+
+    context "when setting push_events_branch_filter to ^regex with branch_filter_strategy regex" do
+      let(:params) { { push_events_branch_filter: '^regex', 'branch_filter_strategy' => 'regex' } }
+
+      it "returns created response" do
+        expect(response).to have_gitlab_http_status(:created)
+        expect(json_response).to a_hash_including('push_events_branch_filter' => '^regex',
+          'branch_filter_strategy' => 'regex')
+      end
+    end
+
+    it_behaves_like 'POST/PUT webhook API endpoints with a branch filter'
+  end
+end
+
+RSpec.shared_examples 'PUT webhook API endpoints with a branch filter' do |prefix|
+  before do
+    put api(hook_uri, user, admin_mode: user.admin?), params: params.merge(url: "http://example.com")
+  end
+
+  describe "PUT #{prefix}/hooks" do
+    context "when setting push_events_branch_filter with branch_filter_strategy regex" do
+      let(:params) { { push_events_branch_filter: 'some-regex', 'branch_filter_strategy' => 'regex' } }
+
+      it "returns ok" do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to a_hash_including('push_events_branch_filter' => 'some-regex',
+          'branch_filter_strategy' => 'regex')
+      end
+    end
+
+    context "when setting push_events_branch_filter without branch_filter_strategy regex" do
+      let(:params) { { push_events_branch_filter: '^regex', branch_filter_strategy: 'regex' } }
+
+      it "returns ok" do
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(json_response).to a_hash_including('push_events_branch_filter' => '^regex',
+          'branch_filter_strategy' => 'regex')
+      end
+    end
+
+    it_behaves_like 'POST/PUT webhook API endpoints with a branch filter'
+  end
+end
+
+RSpec.shared_examples 'POST/PUT webhook API endpoints with a branch filter' do
+  describe "POST/PUT hooks" do
+    context "when branch_filter_strategy is not valid" do
+      let(:params) { { push_events_branch_filter: '~badbranchname/', 'branch_filter_strategy' => 'bla' } }
+
+      it "returns a 400 error" do
+        expect(response).to have_gitlab_http_status(:bad_request)
+      end
+    end
+
+    context "when push_events_branch_filter is not valid" do
+      let(:params) { { push_events_branch_filter: '~badbranchname/' } }
+
+      it "returns a 422 error" do
+        expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
     end
   end
 end

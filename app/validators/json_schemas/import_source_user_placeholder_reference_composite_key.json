@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Stores composite_key data for imported records that are mapped to placeholder users",
+  "type": "object",
+  "minProperties": 1,
+  "patternProperties": {
+    ".*": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9]+$"
+        },
+        {
+          "type": "integer"
+        }
+      ]
+    }
+  }
+}

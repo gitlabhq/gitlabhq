@@ -1,6 +1,6 @@
 ---
 stage: Fulfillment
-group: Purchase
+group: Subscription Management
 description: Billable users, renewal and upgrade info.
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
@@ -38,13 +38,10 @@ Prorated charges are not possible without a quarterly usage report.
 
 ## View user totals
 
-View the amount of users in your instance to determine if they exceed the amount
-paid for in your subscription.
+View the lists of users in your instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Users**.
-
-The lists of users are displayed.
 
 ### Billable users
 
@@ -58,7 +55,7 @@ A user is not counted as a billable user if:
 - They have only the [Minimal Access role](../../user/permissions.md#users-with-minimal-access) on self-managed Ultimate subscriptions or any GitLab.com subscriptions.
 - They have only the [Guest or Minimal Access roles on an Ultimate subscription](#free-guest-users).
 - They do not have project or group memberships on an Ultimate subscription.
-- The account is a GitLab-created service account:
+- The account is a GitLab-created account:
   - [Ghost User](../../user/profile/account/delete_account.md#associated-records).
   - Bots such as:
     - [Support Bot](../../user/project/service_desk/configure.md#support-bot-user).
@@ -66,7 +63,7 @@ A user is not counted as a billable user if:
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
     - Other [internal users](../../development/internal_users.md#internal-users).
 
-The amount of **Billable users** is reported once a day in the Admin Area.
+The amount of **Billable users** is reported once a day in the Admin area.
 
 ### Maximum users
 
@@ -136,7 +133,7 @@ GitLab has several features which can help you manage the number of users:
 Subscription data can be automatically synchronized between your self-managed instance and GitLab.
 To enable subscription data synchronization you must have:
 
-- GitLab Enterprise Edition (EE), version 14.1 or later.
+- GitLab Enterprise Edition (EE).
 - Connection to the internet, and must not have an offline environment.
 - [Activated](../../administration/license.md) your instance with an activation code.
 
@@ -147,7 +144,7 @@ When your instance is activated, and data is synchronized, the following process
 - Subscription updates, such as adding more seats or upgrading a GitLab tier.
 
 At approximately 03:00 UTC, a daily synchronization job sends subscription data to the Customers
-Portal. For this reason, updates and renewals may not apply immediately.
+Portal. For this reason, updates and renewals might not apply immediately.
 
 The data is sent securely through an encrypted HTTPS connection to `customers.gitlab.com` on port
 `443`. If the job fails, it retries up to 12 times over approximately 17 hours.
@@ -219,13 +216,19 @@ Example of a license sync request:
 }
 ```
 
-### Manually synchronize your subscription details
+### Manually synchronize subscription data
+
+Prerequisites:
+
+- GitLab Enterprise Edition (EE).
+- Connection to the internet, and must not have an offline environment.
+- [Activated](../../administration/license.md) your instance with an activation code.
 
 You can manually synchronize your subscription details at any time.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
-1. In the **Subscription details** section, select **Sync subscription details**.
+1. In the **Subscription details** section, select **Sync** (**{retry}**).
 
 A job is queued. When the job finishes, the subscription details are updated.
 
@@ -233,7 +236,7 @@ A job is queued. When the job finishes, the subscription details are updated.
 
 If you are an administrator, you can view the status of your subscription:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
 
 The **Subscription** page includes the following details:
@@ -255,7 +258,7 @@ It also displays the following information:
 
 If you are an administrator, you can export your license usage into a CSV:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
 1. In the upper-right corner, select **Export license usage file**.
 
@@ -315,7 +318,7 @@ is the number of _maximum users_ that exceed the users in subscription for the c
 You must pay for this number of users either before renewal, or at the time of renewal. This is
 called the _true up_ process.
 
-To view the number of users over subscription go to the **Admin Area**.
+To view the number of users over subscription go to the **Admin area**.
 
 ##### Users over subscription example
 
@@ -463,7 +466,7 @@ For example, if a license has a start date of January 1, 2024 and an end date of
 
 ## Activate a license file or key
 
-If you have a license file or key, you can activate it [in the Admin Area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+If you have a license file or key, you can activate it [in the Admin area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 
 ## Contact Support
 
@@ -499,6 +502,14 @@ If your credit card is declined when purchasing a GitLab subscription, possible 
 
 Check with your financial institution to confirm if any of these reasons apply. If they don't
 apply, contact [GitLab Support](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
+
+### Error: `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again`
+
+You might get the error `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.` when purchasing a GitLab subscription.
+
+This issue occurs when the credit card form is re-submitted too quickly within a specific time frame (three submissions within one minute or six submissions within one hour).
+
+To resolve this issue, wait a few minutes and try the purchase process again.
 
 ### Check daily and historical billable users
 

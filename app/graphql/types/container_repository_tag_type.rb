@@ -13,6 +13,7 @@ module Types
     field :created_at, Types::TimeType, null: true, description: 'Timestamp when the tag was created.'
     field :digest, GraphQL::Types::String, null: true, description: 'Digest of the tag.'
     field :location, GraphQL::Types::String, null: false, description: 'URL of the tag.'
+    field :media_type, GraphQL::Types::String, null: true, description: 'Media type of the tag.'
     field :name, GraphQL::Types::String, null: false, description: 'Name of the tag.'
     field :path, GraphQL::Types::String, null: false, description: 'Path of the tag.'
     field :published_at, Types::TimeType, null: true, description: 'Timestamp when the tag was published.'

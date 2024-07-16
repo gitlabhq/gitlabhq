@@ -55,7 +55,6 @@ Lint/SymbolConversion:
     - 'ee/spec/features/groups/analytics/cycle_analytics/charts_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/filters_and_data_spec.rb'
     - 'ee/spec/features/groups/analytics/cycle_analytics/multiple_value_streams_spec.rb'
-    - 'ee/spec/helpers/billing_plans_helper_spec.rb'
     - 'ee/spec/helpers/push_rules_helper_spec.rb'
     - 'ee/spec/models/concerns/elastic/repository_spec.rb'
     - 'ee/spec/models/plan_spec.rb'

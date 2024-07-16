@@ -4,7 +4,7 @@ import { differenceBy } from 'lodash';
 import { s__, __, sprintf } from '~/locale';
 import { createAlert } from '~/alert';
 import { fetchPolicies } from '~/lib/graphql';
-import { TYPENAME_PROJECT } from '~/graphql_shared/constants';
+import { TYPENAME_PROJECT, TYPENAME_GROUP } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { capitalizeFirstCharacter } from '~/lib/utils/text_utility';
 import globalToast from '~/vue_shared/plugins/global_toast';
@@ -90,6 +90,7 @@ export default {
         variables: {
           input: {
             projectIds: this.extractProjectIds(uniqueList),
+            groupIds: this.extractGroupIds(uniqueList),
             integrationName: BEYOND_IDENTITY_INTEGRATION_NAME,
           },
         },
@@ -112,6 +113,11 @@ export default {
       return exclusions
         .filter((exclusion) => exclusion.type === PROJECT_TYPE)
         .map((exclusion) => convertToGraphQLId(TYPENAME_PROJECT, exclusion.id));
+    },
+    extractGroupIds(exclusions) {
+      return exclusions
+        .filter((exclusion) => exclusion.type === GROUP_TYPE)
+        .map((exclusion) => convertToGraphQLId(TYPENAME_GROUP, exclusion.id));
     },
     nextPage(item) {
       this.cursor = { after: item, last: null, before: null };
@@ -139,7 +145,8 @@ export default {
         mutation: deleteExclusion,
         variables: {
           input: {
-            projectIds: [exclusionToRemove.id],
+            projectIds: this.extractProjectIds([exclusionToRemove]),
+            groupIds: this.extractGroupIds([exclusionToRemove]),
             integrationName: BEYOND_IDENTITY_INTEGRATION_NAME,
           },
         },

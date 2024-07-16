@@ -736,6 +736,76 @@ The attributes are case-sensitive.
 | First Name      | `first_name`, `firstname`, `firstName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/givenname` |
 | Last Name       | `last_name`, `lastname`, `lastName`, `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname`, `http://schemas.microsoft.com/ws/2008/06/identity/claims/surname`   |
 
+When GitLab receives a SAML response from a SAML SSO provider, GitLab looks for the following values in the attribute `name` field:
+
+- `"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname"`
+- `"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname"`
+- `"http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"`
+- `firstname`
+- `lastname`
+- `email`
+
+You must include these values correctly in the attribute `Name` field so that GitLab can parse the SAML response. For example, GitLab can parse the following SAML response snippets:
+
+- This is accepted because the `Name` attribute is set to one of the required values from the previous table.
+
+  ```xml
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
+
+- This is accepted because the `Name` attribute matches one of the values from the previous table.
+
+  ```xml
+           <Attribute Name="firstname">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute Name="lastname">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute Name="email">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
+
+However, GitLab cannot parse the following SAML response snippets:
+
+- This will not be accepted because value in the `Name` attribute is not one of the supported
+  values in the previous table.
+
+  ```xml
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/firstname">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/lastname">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute Name="http://schemas.xmlsoap.org/ws/2005/05/identity/claims/mail">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
+
+- This will fail because, even though the `FriendlyName` has a supported value, the `Name` attribute does not.
+
+  ```xml
+           <Attribute FriendlyName="firstname" Name="urn:oid:2.5.4.42">
+               <AttributeValue>Alvin</AttributeValue>
+           </Attribute>
+           <Attribute FriendlyName="lastname" Name="urn:oid:2.5.4.4">
+               <AttributeValue>Test</AttributeValue>
+           </Attribute>
+           <Attribute FriendlyName="email" Name="urn:oid:0.9.2342.19200300.100.1.3">
+               <AttributeValue>alvintest@example.com</AttributeValue>
+           </Attribute>
+  ```
+
 See [`attribute_statements`](#map-saml-response-attribute-names) for:
 
 - Custom assertion configuration examples.
@@ -758,9 +828,6 @@ Support for these groups depends on:
 
 - Your [subscription](https://about.gitlab.com/pricing/).
 - Whether you've installed [GitLab Enterprise Edition (EE)](https://about.gitlab.com/install/).
-- The [name of the SAML provider](#configure-saml-support-in-gitlab). Group
-  memberships are only supported by a single SAML provider named
-  `saml`.
 
 | Group                        | Tier               | GitLab Enterprise Edition (EE) Only? |
 |------------------------------|--------------------|--------------------------------------|
@@ -803,6 +870,8 @@ membership is required to sign in.
 
 If you do not set `required_groups` or leave the setting empty, anyone with proper
 authentication can use the service.
+
+If the attribute specified in `groups_attribute` is incorrect or missing then all users will be blocked.
 
 ::Tabs
 
@@ -956,6 +1025,10 @@ response, configure GitLab to identify:
 SAML can automatically identify a user as an
 [external user](../administration/external_users.md), based on the `external_groups`
 setting.
+
+**NOTE**:
+If the attribute specified in `groups_attribute` is incorrect or missing then the user will
+access as a standard user.
 
 Example configuration:
 
@@ -1111,6 +1184,8 @@ response, configure GitLab to identify:
 
 Use the `admin_groups` setting to configure GitLab to identify which groups grant
 the user administrator access.
+
+If the attribute specified in `groups_attribute` is incorrect or missing then users will lose their administrator access.
 
 Example configuration:
 
@@ -1269,6 +1344,8 @@ response, configure GitLab to identify:
 
 Use the `auditor_groups` setting to configure GitLab to identify which groups include
 users with [auditor access](../administration/auditor_users.md).
+
+If the attribute specified in `groups_attribute` is incorrect or missing then users will lose their auditor access.
 
 Example configuration:
 

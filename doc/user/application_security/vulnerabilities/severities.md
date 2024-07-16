@@ -98,15 +98,19 @@ All fuzz testing results are reported as Unknown. They should be reviewed and tr
 
 |  GitLab analyzer                                                                                         | Outputs severity levels? | Native severity level type | Native severity level example      |
 |----------------------------------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|
-| [`security-code-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan)     | **{check-circle}** Yes   | String                     | `CRITICAL`, `HIGH`, `MEDIUM` in [analyzer version 3.2.0 and later](https://gitlab.com/gitlab-org/security-products/analyzers/security-code-scan/-/blob/master/CHANGELOG.md#v320). In earlier versions, hardcoded to `Unknown`. |
-| [`brakeman`](https://gitlab.com/gitlab-org/security-products/analyzers/brakeman)                         | **{check-circle}** Yes   | String                     | `HIGH`, `MEDIUM`, `LOW`            |
 | [`sobelow`](https://gitlab.com/gitlab-org/security-products/analyzers/sobelow)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Unknown` |
-| [`nodejs-scan`](https://gitlab.com/gitlab-org/security-products/analyzers/nodejs-scan)                   | **{check-circle}** Yes   | String                     | `INFO`, `WARNING`, `ERROR`         |
-| [`flawfinder`](https://gitlab.com/gitlab-org/security-products/analyzers/flawfinder)                     | **{check-circle}** Yes   | Integer                    | `0`, `1`, `2`, `3`, `4`, `5`       |
 | [`SpotBugs`](https://gitlab.com/gitlab-org/security-products/analyzers/spotbugs)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `11`, `12`, `18`    |
-| [`phpcs-security-audit`](https://gitlab.com/gitlab-org/security-products/analyzers/phpcs-security-audit) | **{check-circle}** Yes   | String                     | `ERROR`, `WARNING`                 |
 | [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex)                         | **{check-circle}** Yes   | Integer                    | `1`, `2`, `3`, `4`, `5`            |
 | [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec)                           | **{check-circle}** Yes   | String                     | `CriticalSeverity`, `InfoSeverity` |
-| [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets)                           | **{check-circle}** Yes   | Not applicable             | Hardcodes all severity levels to `Critical` |
 | [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep)                           | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` |
+
+## IaC Scanning
+
+|  GitLab analyzer                                                                                         | Outputs severity levels? | Native severity level type | Native severity level example      |
+|----------------------------------------------------------------------------------------------------------|--------------------------|----------------------------|------------------------------------|
 | [`kics`](https://gitlab.com/gitlab-org/security-products/analyzers/kics)                                 | **{check-circle}** Yes   | String                     | `error`, `warning`, `note`, `none` (gets mapped to `info` in [analyzer version 3.7.0 and later](https://gitlab.com/gitlab-org/security-products/analyzers/kics/-/releases/v3.7.0)) |
+
+## Secret Detection
+
+The GitLab [`secrets`](https://gitlab.com/gitlab-org/security-products/analyzers/secrets) analyzer hardcodes all severity levels to `Critical`.
+[Epic 10320](https://gitlab.com/groups/gitlab-org/-/epics/10320) proposes to adopt more granular severity ratings.

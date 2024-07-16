@@ -12,10 +12,6 @@ MARKDOWN
 
 POST_TABLE_MESSAGE = <<MARKDOWN
 
-**Please check reviewer's status!**
-- ![available](https://gitlab-org.gitlab.io/gitlab-roulette/status-png/_success.png){width=12} Reviewer is available!
-- ![unavailable](https://gitlab-org.gitlab.io/gitlab-roulette/status-png/_alert.png){width=12} Reviewer is unavailable!
-
 Please refer to [documentation page](https://docs.gitlab.com/ee/development/code_review.html#reviewer-roulette)
 for guidance on how you can benefit from the Reviewer Roulette, or use the
 [GitLab Review Workload Dashboard](https://gitlab-org.gitlab.io/gitlab-roulette/)

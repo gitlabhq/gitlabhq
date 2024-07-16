@@ -111,16 +111,6 @@ RSpec.describe Gitlab::Import::MentionsConverter, :clean_gitlab_redis_shared_sta
             "`@{1111:11-11}`, `@{2222:22-22}` and `@{3333:33-33}` with \n`@{1111:11-11}` again on a newline"
           )
         end
-
-        context 'and bitbucket_cloud_convert_mentions_to_users feature flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_cloud_convert_mentions_to_users: false)
-          end
-
-          it 'does not replace any mentions' do
-            expect(converted_text).to eq(text)
-          end
-        end
       end
 
       context 'if multiple mentions map to user text' do
@@ -136,16 +126,6 @@ RSpec.describe Gitlab::Import::MentionsConverter, :clean_gitlab_redis_shared_sta
           expect(converted_text).to eq(
             "`@John Doe`, `@Jane Doe` and `@{3333:33-33}` with \n`@John Doe` again on a newline"
           )
-        end
-
-        context 'and bitbucket_cloud_convert_mentions_to_users feature flag is disabled' do
-          before do
-            stub_feature_flags(bitbucket_cloud_convert_mentions_to_users: false)
-          end
-
-          it 'does not replace any mentions' do
-            expect(converted_text).to eq(text)
-          end
         end
       end
     end

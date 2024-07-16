@@ -109,8 +109,9 @@ export const platformArchitectures = ({ platform }) => {
 };
 
 export const installScript = ({ platform, architecture }) => {
-  const downloadLocation = DOWNLOAD_LOCATIONS[platform].find(({ arch }) => arch === architecture)
-    .url;
+  const downloadLocation = DOWNLOAD_LOCATIONS[platform].find(
+    ({ arch }) => arch === architecture,
+  ).url;
 
   return importInstallScript({ platform })
     .replace(

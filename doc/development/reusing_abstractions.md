@@ -143,7 +143,7 @@ Service classes represent operations that coordinates changes between models
 1. When there is no operation, there is no need to execute a service. The class would
    probably be better designed as an entity, a value object, or a policy.
 
-When implementing a service class, consider:
+When implementing a service class, consider using the following patterns:
 
 1. A service class initializer should contain in its arguments:
    1. A [model](#models) instance that is being acted upon. Should be first positional
@@ -187,15 +187,28 @@ When implementing a service class, consider:
       end
       ```
 
-1. It implements a single public instance method `#execute`, which invokes service class behavior:
+1. The service class should implements a single public instance method `#execute`, which invokes service class behavior:
    - The `#execute` method takes no arguments. All required data is passed into initializer.
-   - Optional. If needed, the `#execute` method returns its result via [`ServiceResponse`](#serviceresponse).
+
+1. If a return value is needed, the `#execute` method should returns its result via [`ServiceResponse`](#serviceresponse) object.
 
 Several base classes implement the service classes convention. You may consider inheriting from:
 
 - `BaseContainerService` for services scoped by container (project or group).
 - `BaseProjectService` for services scoped to projects.
 - `BaseGroupService` for services scoped to groups.
+
+For some domains or [bounded contexts](software_design.md#bounded-contexts), it may make sense for
+service classes to use different patterns. For example, the Remote Development domain uses a
+[layered architecture](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#layered-architecture)
+with domain logic isolated to a separate domain layer following a standard pattern, which allows for a very
+[minimal service layer](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#minimal-service-layer)
+which consists of only a single reusable `CommonService` class. It also uses
+[functional patterns with stateless singleton class methods](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#functional-patterns).
+See the Remote Development [service layer code example](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/remote_development/README.md#service-layer-code-example) for more details.
+However, even though the invocation signature of services via this pattern is different,
+it still respects the standard Service Class contract of always returning all results via a
+[`ServiceResponse`](#serviceresponse) object.
 
 Classes that are not service objects should be
 [created elsewhere](software_design.md#use-namespaces-to-define-bounded-contexts),

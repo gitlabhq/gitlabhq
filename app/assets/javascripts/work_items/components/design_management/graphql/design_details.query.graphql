@@ -1,4 +1,6 @@
 #import "./fragments/design_file.fragment.graphql"
+#import "./fragments/discussion_resolved_status.fragment.graphql"
+#import "./fragments/design_note.fragment.graphql"
 
 query getDesignDetails(
   $fullPath: ID!
@@ -19,6 +21,18 @@ query getDesignDetails(
               designs(atVersion: $atVersion, filenames: $filenames) {
                 nodes {
                   ...DesignFile
+                  discussions {
+                    nodes {
+                      id
+                      replyId
+                      ...ResolvedStatus
+                      notes {
+                        nodes {
+                          ...DesignNote
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

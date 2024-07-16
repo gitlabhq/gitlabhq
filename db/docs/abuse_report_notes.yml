@@ -1,0 +1,10 @@
+---
+table_name: abuse_report_notes
+classes:
+- AntiAbuse::Reports::Note
+feature_categories:
+- insider_threat
+description: Stores notes and discussions around abuse reports
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156146
+milestone: '17.2'
+gitlab_schema: gitlab_main_clusterwide

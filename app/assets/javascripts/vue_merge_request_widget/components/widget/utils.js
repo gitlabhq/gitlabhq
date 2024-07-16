@@ -68,9 +68,9 @@ export const generateText = (text) => {
   }
   if (typeof text === 'object' && typeof text.text === 'string' && typeof text.href === 'string') {
     return createText(
-      `${
-        text.prependText ? `${escapeText(text.prependText)} ` : ''
-      }<a class="gl-text-decoration-underline" href="${text.href}">${escapeText(text.text)}</a>`,
+      `${text.prependText ? `${escapeText(text.prependText)} ` : ''}<a class="gl-underline" href="${
+        text.href
+      }">${escapeText(text.text)}</a>`,
     );
   }
 

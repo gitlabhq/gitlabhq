@@ -8,21 +8,21 @@ RSpec.describe Gitlab::Suggestions::CommitMessage, feature_category: :code_revie
 
   def create_suggestion(merge_request, file_path, new_line, to_content, author)
     position = Gitlab::Diff::Position.new(old_path: file_path,
-                                          new_path: file_path,
-                                          old_line: nil,
-                                          new_line: new_line,
-                                          diff_refs: merge_request.diff_refs)
+      new_path: file_path,
+      old_line: nil,
+      new_line: new_line,
+      diff_refs: merge_request.diff_refs)
 
     diff_note = create(:diff_note_on_merge_request,
-                       noteable: merge_request,
-                       author: author,
-                       position: position,
-                       project: project)
+      noteable: merge_request,
+      author: author,
+      position: position,
+      project: project)
 
     create(:suggestion,
-           :content_from_repo,
-           note: diff_note,
-           to_content: to_content)
+      :content_from_repo,
+      note: diff_note,
+      to_content: to_content)
   end
 
   let_it_be(:user) do

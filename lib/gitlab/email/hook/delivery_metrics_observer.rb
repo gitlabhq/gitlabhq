@@ -17,14 +17,14 @@ module Gitlab
         def self.delivery_attempts_counter
           strong_memoize(:delivery_attempts_counter) do
             Gitlab::Metrics.counter(:gitlab_emails_delivery_attempts_total,
-                                    'Counter of total emails delivery attempts')
+              'Counter of total emails delivery attempts')
           end
         end
 
         def self.delivered_emails_counter
           strong_memoize(:delivered_emails_counter) do
             Gitlab::Metrics.counter(:gitlab_emails_delivered_total,
-                                    'Counter of total emails delievered')
+              'Counter of total emails delievered')
           end
         end
       end

@@ -130,18 +130,5 @@ RSpec.shared_examples 'User views wiki sidebar' do
         expect(wiki_new_page_link).to eq "#{wiki_link}/%7Bnew_page_title%7D"
       end
     end
-
-    context 'when there are more than 15 existing pages' do
-      before do
-        create(:wiki_page, wiki: wiki, title: 'my page 16')
-      end
-
-      it 'shows the first 15 pages in the sidebar' do
-        visit wiki_path(wiki)
-
-        expect(page).to have_text('my page', count: 15)
-        expect(page).to have_link('View all pages')
-      end
-    end
   end
 end

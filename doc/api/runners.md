@@ -29,7 +29,7 @@ There are two tokens to take into account when connecting a runner with GitLab.
 | Token | Description |
 | ----- | ----------- |
 | Registration token | Token used to [register the runner](https://docs.gitlab.com/runner/register/). It can be [obtained through GitLab](../ci/runners/index.md). |
-| Authentication token | Token used to authenticate the runner with the GitLab instance. It is obtained automatically when you [register a runner](https://docs.gitlab.com/runner/register/) or by the Runner API when you manually [register a runner](#create-an-instance-runner) or [reset the authentication token](#reset-runners-authentication-token-by-using-the-runner-id). You can also obtain the authentication token using [Create a runner](users.md#create-a-runner-linked-to-a-user) API method. |
+| Authentication token | Token used to authenticate the runner with the GitLab instance. The token is obtained automatically when you [register a runner](https://docs.gitlab.com/runner/register/) or by the Runners API when you manually [register a runner](#create-a-runner) or [reset the authentication token](#reset-runners-authentication-token-by-using-the-runner-id). You can also obtain the token by using the [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) endpoint. |
 
 Here's an example of how the two tokens are used in runner registration:
 
@@ -67,7 +67,7 @@ GET /runners?tag_list=tag1,tag2
 |------------------|--------------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `scope`          | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                                                 |
 | `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                 |
-| `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, and `never_contacted`. `active` and `paused` are also possible values which were deprecated and will be removed in a future version of the REST API |
+| `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
 | `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                              |
 | `tag_list`       | string array | no       | A list of runner tags                                                                                                                                                                                                |
 | `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241`                                                                                                                            |
@@ -150,7 +150,7 @@ GET /runners/all?tag_list=tag1,tag2
 |------------------|--------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `scope`          | string       | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `specific`, `shared`, `active`, `paused`, `online` and `offline`; showing all runners if none provided                              |
 | `type`           | string       | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                    |
-| `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, and `never_contacted`. `active` and `paused` are also possible values which were deprecated and will be removed in a future version of the REST API    |
+| `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
 | `paused`         | boolean      | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                                 |
 | `tag_list`       | string array | no       | A list of runner tags                                                                                                                                                                                                   |
 | `version_prefix` | string       | no       | The prefix of the version of the runners to return. For example, `15.0`, `16.1.241`                                                                                                                               |
@@ -537,6 +537,53 @@ Example response:
 ]
 ```
 
+## List runner's managers
+
+List all the managers of a runner.
+
+```plaintext
+GET /runners/:id/managers
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id`      | integer | yes      | The ID of a runner  |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/runners/1/managers"
+```
+
+Example response:
+
+```json
+[
+    {
+      "id": 1,
+      "system_id": "s_89e5e9956577",
+      "version": "16.11.1",
+      "revision": "535ced5f",
+      "platform": "linux",
+      "architecture": "amd64",
+      "created_at": "2024-06-09T11:12:02.507Z",
+      "contacted_at": "2024-06-09T06:30:09.355Z",
+      "ip_address": "127.0.0.1",
+      "status": "offline"
+    },
+    {
+        "id": 2,
+        "system_id": "runner-2",
+        "version": "16.11.0",
+        "revision": "91a27b2a",
+        "platform": "linux",
+        "architecture": "amd64",
+        "created_at": "2024-06-09T09:12:02.507Z",
+      "contacted_at": "2024-06-09T06:30:09.355Z",
+        "ip_address": "127.0.0.1",
+        "status": "offline",
+
+    }
+]
+
 ## List project's runners
 
 List all runners available in the project, including from ancestor groups and [any allowed shared runners](../ci/runners/runners_scope.md#enable-instance-runners-for-a-project).
@@ -559,7 +606,7 @@ GET /projects/:id/runners?tag_list=tag1,tag2
 | `id`             | integer/string | yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user                                                                                                  |
 | `scope`          | string         | no       | Deprecated: Use `type` or `status` instead. The scope of runners to return, one of: `active`, `paused`, `online` and `offline`; showing all runners if none provided                                                 |
 | `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`                                                                                                                                 |
-| `status`         | string       | no       | The status of runners to return, one of: `online`, `offline`, `stale`, and `never_contacted`. `active` and `paused` are also possible values which were deprecated and will be removed in a future version of the REST API    |
+| `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
 | `paused`         | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                              |
 | `tag_list`       | string array   | no       | A list of runner tags                                                                                                                                                                                                |
 | `version_prefix` | string         | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241`                                                                                                                            |
@@ -708,7 +755,7 @@ GET /groups/:id/runners?tag_list=tag1,tag2
 |------------------|----------------|----------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `id`             | integer        | yes      | The ID of the group owned by the authenticated user                                                                                                                                                                     |
 | `type`           | string         | no       | The type of runners to return, one of: `instance_type`, `group_type`, `project_type`. The `project_type` value is [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/351466) and will be removed in GitLab 15.0 |
-| `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, and `never_contacted`. `active` and `paused` are also possible values which were deprecated and will be removed in a future version of the REST API    |
+| `status`         | string         | no       | The status of runners to return, one of: `online`, `offline`, `stale`, or `never_contacted`.<br/>Other possible values are the deprecated `active` and `paused`.<br/>Requesting `offline` runners might also return `stale` runners because `stale` is included in `offline`. |
 | `paused`         | boolean        | no       | Whether to include only runners that are accepting or ignoring new jobs                                                                                                                                                 |
 | `tag_list`       | string array   | no       | A list of runner tags                                                                                                                                                                                                   |
 | `version_prefix` | string         | no       | The prefix of the version of the runners to return. For example, `15.0`, `14`, `16.1.241`                                                                                                                               |
@@ -776,9 +823,15 @@ Example response:
 ]
 ```
 
-## Create an instance runner
+## Create a runner
 
-Create a runner for the instance.
+WARNING:
+This endpoint returns an `HTTP 410 Gone` status code if registration with runner registration tokens
+is disabled in the project or group settings. If registration with runner registration tokens
+is disabled, use the [`POST /user/runners`](users.md#create-a-runner-linked-to-a-user) endpoint
+to create and register runners instead.
+
+Create a runner with a runner registration token.
 
 ```plaintext
 POST /runners
@@ -788,7 +841,7 @@ POST /runners
 |--------------------|--------------|----------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `token`            | string       | yes      | [Registration token](#registration-and-authentication-tokens)                                                                                                                                  |
 | `description`      | string       | no       | Description of the runner                                                                                                                                                                      |
-| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version`, `platform`, and `architecture` are displayed in the Admin Area of the UI |
+| `info`             | hash         | no       | Runner's metadata. You can include `name`, `version`, `revision`, `platform`, and `architecture`, but only `version`, `platform`, and `architecture` are displayed in the Admin area of the UI |
 | `active`           | boolean      | no       | Deprecated: Use `paused` instead. Specifies if the runner is allowed to receive new jobs                                                                                                       |
 | `paused`           | boolean      | no       | Specifies if the runner should ignore new jobs                                                                                                                                                 |
 | `locked`           | boolean      | no       | Specifies if the runner should be locked for the current project                                                                                                                               |

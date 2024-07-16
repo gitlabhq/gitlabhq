@@ -2,8 +2,8 @@
 
 source 'https://rubygems.org'
 
-gem 'gitlab-qa', '~> 14', '>= 14.10.0', require: 'gitlab/qa'
-gem 'gitlab_quality-test_tooling', '~> 1.28.0', require: false
+gem 'gitlab-qa', '~> 14', '>= 14.12.0', require: 'gitlab/qa'
+gem 'gitlab_quality-test_tooling', '~> 1.30.0', require: false
 gem 'gitlab-utils', path: '../gems/gitlab-utils'
 gem 'activesupport', '~> 7.0.8.4' # This should stay in sync with the root's Gemfile
 gem 'allure-rspec', '~> 2.24.5'
@@ -11,7 +11,7 @@ gem 'capybara', '~> 3.40.0'
 gem 'capybara-screenshot', '~> 1.0.26'
 gem 'rake', '~> 13', '>= 13.2.1'
 gem 'rspec', '~> 3.13'
-gem 'selenium-webdriver', '= 4.21.1'
+gem 'selenium-webdriver', '= 4.22.0'
 gem 'airborne', '~> 0.3.7', require: false # airborne is messing with rspec sandboxed mode so not requiring by default
 gem 'rest-client', '~> 2.1.0'
 gem 'rspec_junit_formatter', '~> 0.6.0'
@@ -22,25 +22,27 @@ gem 'rotp', '~> 6.3.0'
 gem 'parallel', '~> 1.25', '>= 1.25.1'
 gem 'rainbow', '~> 3.1.1'
 gem 'rspec-parameterized', '~> 1.0.2'
-gem 'octokit', '~> 9.1.0'
+gem 'octokit', '~> 9.1.0', require: false
 gem "faraday-retry", "~> 2.2", ">= 2.2.1"
 gem 'zeitwerk', '~> 2.6', '>= 2.6.15'
 gem 'influxdb-client', '~> 3.1'
 gem 'terminal-table', '~> 3.0.2', require: false
 gem 'slack-notifier', '~> 2.4', require: false
-gem 'fog-google', '~> 1.19', require: false
+gem 'googleauth', '~> 1.9.0', require: false # see: https://gitlab.com/gitlab-org/gitlab/-/issues/449019
+gem 'fog-google', '~> 1.24', '>= 1.24.1', require: false
 gem 'fog-core', '2.1.0', require: false # fog-google generates a ton of warnings with latest core
 gem "warning", "~> 1.4"
 
 gem 'chemlab', '~> 0.11', '>= 0.11.1'
 gem 'chemlab-library-www-gitlab-com', '~> 0.1', '>= 0.1.1'
+gem 'chemlab-library-gitlab', path: 'gems/chemlab-gitlab'
 
 # dependencies for jenkins client
 gem 'nokogiri', '~> 1.16', '>= 1.16.6'
 
 gem 'deprecation_toolkit', '~> 2.2.0', require: false
 
-gem 'factory_bot', '~> 6.3.0'
+gem 'factory_bot', '~> 6.4.6'
 
 group :development do
   gem 'pry-byebug', '~> 3.10.1', platform: :mri
@@ -48,6 +50,6 @@ group :development do
 end
 
 group :ci do
-  gem 'gitlab-cng', path: '../gems/gitlab-cng'
+  gem 'gitlab-cng', path: 'gems/gitlab-cng'
   gem 'junit_merge', '~> 0.1.2'
 end

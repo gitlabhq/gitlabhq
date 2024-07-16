@@ -6,12 +6,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # GitLab Duo Chat
 
+GitLab Duo Chat aims to assist users with AI in ideation and creation tasks as well as in learning tasks across the entire Software Development Lifecycle (SDLC) to make them faster and more efficient.
+
 [Chat](../../user/gitlab_duo_chat.md) is a part of the [GitLab Duo](../../user/ai_features.md)
 offering.
-
-How Chat describes itself: "I am GitLab Duo Chat, an AI assistant focused on
-helping developers with DevSecOps, software development, source code, project
-management, CI/CD, and GitLab. Please feel free to engage me in these areas."
 
 Chat can answer different questions and perform certain tasks. It's done with
 the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
@@ -19,7 +17,37 @@ the help of [prompts](glossary.md) and [tools](#adding-a-new-tool).
 To answer a user's question asked in the Chat interface, GitLab sends a
 [GraphQL request](https://gitlab.com/gitlab-org/gitlab/-/blob/4cfd0af35be922045499edb8114652ba96fcba63/ee/app/graphql/mutations/ai/action.rb)
 to the Rails backend. Rails backend sends then instructions to the Large
-Language Model (LLM) through the [AI Gateway](../../architecture/blueprints/ai_gateway/index.md).
+Language Model (LLM) through the [AI Gateway](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
+
+## Which use cases lend themselves most to contributing to Chat?
+
+We aim to employ the Chat for all use cases and workflows that can benefit from a **conversational** interaction **between** **a user** and **an AI** that is driven by a large language model (LLM). Typically, these are:
+
+- **Creation and ideation** task as well as **Learning** tasks that are more effectively and more efficiently solved through iteration than through a one-shot interaction.
+- **Tasks** that are typically satisfiable with one-shot interactions but **that might need refinement or could turn into a conversation**.
+- Among the latter are tasks where the **AI may not get it right the first time but** where **users can easily course correct** by telling the AI more precisely what they need. For instance, "Explain this code" is a common question that most of the time would result in a satisfying answer, but sometimes the user may have additional questions.
+- **Tasks that benefit from the history of a conversation**, so neither the user nor the AI need to repeat themselves.
+
+The chat aims to be context aware and ultimately have access to all the resources in GitLab that the user has access to. Initially, this context was limited to the content of individual issues and epics, as well as GitLab documentation. Since then additional contexts have been added, such as code selection and code files. Currently, work is underway contributing vulnerability context and pipeline job context, so that users can ask questions about these contexts.
+
+To scale the context awareness and hence to scale creation, ideation, and learning use cases across the entire DevSecOps domain, the Duo Chat team welcomes contributions to the chat platform from other GitLab teams and the wider community. They are the experts for the use cases and workflows to accelerate.
+
+### Which use cases are better implemented as stand-alone AI features or at least also as stand-alone AI features?
+
+- Narrowly scoped tasks that be can accelerated by deeply integrating AI into an existing workflow.
+- That can't benefit from conversations with AI.
+
+To make this more tangible, here is an example.
+
+Generating a commit message based on the changes is best implemented into the commit
+message writing workflow.
+
+- Without AI, commit message writing may take ten seconds.
+- When autopopulating an AI-generated commit message in the **Commit message** field in the IDE, this brings the task down to one second.
+
+Using Chat for commit message writing would probably take longer than writing the message oneself. The user would have to switch to the Chat window, type the request and then copy the result into the commit message field.
+
+That said, it does not mean that Chat can't write commit messages, nor that it would be prevented from doing so. If Chat has the commit context (which may be added at some point for reasons other than commit message writing), the user can certainly ask to do anything with this commit content, including writing a commit message. But users are certainly unlikely to do that with Chat as they would only loose time. Note: the resulting commit messages may be different if created from chat with a prompt written by the user vs. a static prompt behind a purpose-built commit message creation.
 
 ## Set up GitLab Duo Chat
 
@@ -246,7 +274,7 @@ To run the QA Evaluation test locally, the following environment variables
 must be exported:
 
 ```ruby
-REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
+ANTHROPIC_API_KEY='your-key' VERTEX_AI_PROJECT='your-project-id' REAL_AI_REQUEST=1 bundle exec rspec ee/spec/lib/gitlab/llm/completions/chat_real_requests_spec.rb
 ```
 
 ## Testing with CI
@@ -585,7 +613,7 @@ flow of how we construct a Chat prompt:
    which calls `ai_client.stream`
   ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/chain/requests/ai_gateway.rb#L20-27))
 1. `ai_client.stream` routes to `Gitlab::Llm::AiGateway::Client#stream`, which
-   makes an API request to the AI Gateway `/v1/chat/completion` endpoint
+   makes an API request to the AI Gateway `/v1/chat/agent` endpoint
    ([code](https://gitlab.com/gitlab-org/gitlab/-/blob/e88256b1acc0d70ffc643efab99cad9190529312/ee/lib/gitlab/llm/ai_gateway/client.rb#L64-82))
 1. We've now made our first request to the AI Gateway. If the LLM says that the
    answer to the first request is a final answer, we
@@ -615,7 +643,9 @@ flow of how we construct a Chat prompt:
 GitLab Duo Chat has error codes with specified meanings to assist in debugging.
 Currently, they are only logged, but in the future, they will be displayed on the UI.
 
-When developing for GitLab Duo Chat, please include these error codes when returning an error, especially a user-facing error.
+See the [GitLab Duo Chat troubleshooting documentation](../../user/gitlab_duo_chat/troubleshooting.md) for a list of all GitLab Duo Chat error codes.
+
+When developing for GitLab Duo Chat, please include these error codes when returning an error and [document them](../../user/gitlab_duo_chat/troubleshooting.md), especially for user-facing errors.
 
 ### Error Code Format
 

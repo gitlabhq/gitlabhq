@@ -47,7 +47,7 @@ sign in.
 
 To view user sign ups pending approval:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Pending approval**, and press <kbd>Enter</kbd>.
 
@@ -55,11 +55,11 @@ To view user sign ups pending approval:
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A user sign up pending approval can be approved or rejected from the Admin Area.
+A user sign up pending approval can be approved or rejected from the Admin area.
 
 To approve or reject a user sign up:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Pending approval** and press <kbd>Enter</kbd>.
 1. For the user sign up you want to approve or reject, select the vertical ellipsis (**{ellipsis_v}**), then **Approve** or **Reject**.
@@ -96,21 +96,21 @@ You can block a user's access to the instance.
 
 To block a user:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. For the user you want to block, select the vertical ellipsis (**{ellipsis_v}**), then **Block**.
 
 The user receives an email notification that their account has been blocked. After this email, they no longer receive notifications.
 
-To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin Area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
+To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
 
 ### Unblock a user
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A blocked user can be unblocked from the Admin Area. To do this:
+A blocked user can be unblocked from the Admin area. To do this:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. For the user you want to unblock, select the vertical ellipsis (**{ellipsis_v}**), then **Unblock**.
@@ -124,7 +124,7 @@ Users can also be unblocked using the [GitLab API](../api/users.md#unblock-user)
 The unblock option may be unavailable for LDAP users. To enable the unblock option,
 the LDAP identity first needs to be deleted:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. Select a user.
@@ -154,7 +154,7 @@ Prerequisites:
 
 To deactivate a user:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. For the user you want to deactivate, select the vertical ellipsis (**{ellipsis_v}**) and then **Deactivate**.
 1. On the dialog, select **Deactivate**.
@@ -176,7 +176,7 @@ Administrators can enable automatic deactivation of users who either:
 
 To do this:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Under **Dormant users**, check **Deactivate dormant users after a period of inactivity**.
@@ -226,11 +226,11 @@ A maximum of 240,000 users can be deleted per day.
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A deactivated user can be activated from the Admin Area.
+A deactivated user can be activated from the Admin area.
 
 To do this:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Deactivated** and press <kbd>Enter</kbd>.
 1. For the user you want to activate, select the vertical ellipsis (**{ellipsis_v}**), then **Activate**.
@@ -260,9 +260,9 @@ A banned user:
 
 To block a user and hide their contributions, administrators can ban the user.
 
-Users can be banned using the Admin Area. To do this:
+Users can be banned using the Admin area. To do this:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. For the user you want to ban, select the vertical ellipsis (**{ellipsis_v}**), then **Ban user**.
 
@@ -270,9 +270,9 @@ Users can be banned using the Admin Area. To do this:
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A banned user can be unbanned using the Admin Area. To do this:
+A banned user can be unbanned using the Admin area. To do this:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. In the search box , filter by **State=Banned** and press <kbd>Enter</kbd>.
 1. For the user you want to unban, select the vertical ellipsis (**{ellipsis_v}**), then **Unban user**.
@@ -282,9 +282,9 @@ The user's state is set to active and they consume a
 
 ## Delete a user
 
-Use the Admin Area to delete users.
+Use the Admin area to delete users.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. For the user you want to delete, select the vertical ellipsis (**{ellipsis_v}**), then **Delete user**.
 1. Type the username.
@@ -295,7 +295,7 @@ You can only delete a user if there are inherited or direct owners of a group. Y
 
 You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. For the user you want to delete, select the vertical ellipsis (**{ellipsis_v}**), then **Delete user and contributions**.
 1. Type the username.
@@ -309,7 +309,7 @@ Before 15.1, additionally groups of which deleted user were the only owner among
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-You can trust and untrust users from the Admin Area.
+You can trust and untrust users from the Admin area.
 
 By default, a user is not trusted and is blocked from creating issues, notes, and snippets considered to be spam. When you trust a user, they can create issues, notes, and snippets without being blocked.
 
@@ -321,7 +321,7 @@ Prerequisites:
 
 :::TabTitle Trust a user
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. Select a user.
 1. From the **User administration** dropdown list, select **Trust user**.
@@ -331,7 +331,7 @@ The user is trusted.
 
 :::TabTitle Untrust a user
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Trusted** and press <kbd>Enter</kbd>.
 1. Select a user.

@@ -66,11 +66,15 @@ module Notes
       !to_discussion.individual_note?
     end
 
-    def discussion_class(noteable = nil)
+    def discussion_class(other_noteable = nil)
+      return IndividualNoteDiscussion unless other_noteable
+
+      sync_object = other_noteable.try(:sync_object)
+
       # When commit notes are rendered on an MR's Discussion page, they are
       # displayed in one discussion instead of individually.
       # See also `#discussion_id` and `Discussion.override_discussion_id`.
-      if noteable && noteable != self.noteable
+      if !sync_object.present? && !current_noteable?(other_noteable)
         OutOfContextDiscussion
       else
         IndividualNoteDiscussion
@@ -92,6 +96,12 @@ module Notes
       else
         false
       end
+    end
+
+    private
+
+    def current_noteable?(other_noteable)
+      other_noteable.id == noteable&.id && other_noteable.base_class_name == noteable&.base_class_name
     end
   end
 end

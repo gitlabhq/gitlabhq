@@ -1,0 +1,18 @@
+---
+description: GitLab Pages deployment created
+internal_events: true
+action: create_pages_deployment
+identifiers:
+- project
+- namespace
+- user
+product_group: knowledge
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157474
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

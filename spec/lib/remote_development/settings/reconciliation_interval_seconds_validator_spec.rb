@@ -23,7 +23,7 @@ RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidat
 
   context "when partial_reconciliation_interval_seconds and full_reconciliation_interval_seconds is valid" do
     it "return an ok Result containing the original context which was passed" do
-      expect(result).to eq(Result.ok(context))
+      expect(result).to eq(Gitlab::Fp::Result.ok(context))
     end
   end
 

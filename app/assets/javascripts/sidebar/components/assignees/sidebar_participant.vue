@@ -61,7 +61,7 @@ export default {
         :class="{ '!gl-left-6': selected }"
         :size="12"
       />
-      <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-2">
+      <gl-badge v-if="isBusy" variant="warning" class="gl-ml-2">
         {{ $options.i18n.busy }}
       </gl-badge>
     </template>

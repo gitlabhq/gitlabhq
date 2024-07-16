@@ -79,7 +79,7 @@ Raise an issue in the GitLab CE or EE repositories to report the issue. Include 
 
 Isolate the source of the n+1 problem. This is usually a loop that results in Gitaly being called for each
 element in an array. If you are unable to isolate the problem, contact a member
-of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members) for assistance.
+of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/-/group_members) for assistance.
 
 After the source has been found, wrap it in an `allow_n_plus_1_calls` block, as follows:
 

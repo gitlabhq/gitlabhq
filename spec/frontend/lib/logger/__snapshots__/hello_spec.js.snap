@@ -1,8 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`~/lib/logger/hello logHello when on dot_com console logs a friendly hello message including the careers page 1`] = `
-Array [
-  Array [
+[
+  [
     "%cWelcome to GitLab!%c
 
 Does this page need fixes or improvements? Open an issue or contribute a merge request to help make GitLab more lovable. At GitLab, everyone can contribute!
@@ -17,8 +17,8 @@ Does this page need fixes or improvements? Open an issue or contribute a merge r
 `;
 
 exports[`~/lib/logger/hello logHello when on self managed console logs a friendly hello message without including the careers page 1`] = `
-Array [
-  Array [
+[
+  [
     "%cWelcome to GitLab!%c
 
 Does this page need fixes or improvements? Open an issue or contribute a merge request to help make GitLab more lovable. At GitLab, everyone can contribute!

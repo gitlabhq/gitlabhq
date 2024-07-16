@@ -3,6 +3,9 @@
 module Ci
   class PipelineMessage < Ci::ApplicationRecord
     include Ci::Partitionable
+    include SafelyChangeColumnDefault
+
+    columns_changing_default :partition_id
 
     MAX_CONTENT_LENGTH = 10_000
 

@@ -229,7 +229,6 @@ Configure Gitaly server.
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -396,7 +395,7 @@ You can't define Gitaly servers with some as a local Gitaly server
 server (with `gitaly_address`) unless you use
 [mixed configuration](#mixed-configuration).
 
-Configure Gitaly clients in one of two ways:
+Configure Gitaly clients in one of two ways. These instructions are for unencrypted connections but you can also enable [TLS support](tls_support.md):
 
 ::Tabs
 
@@ -532,7 +531,7 @@ reconfigure the GitLab application servers to remove the `default` entry from `g
 To work around the limitation:
 
 1. Define an additional storage location on the new Gitaly service and configure the additional storage to be `default`.
-1. In the [Admin Area](../repository_storage_paths.md#configure-where-new-repositories-are-stored), set `default` to a weight of zero
+1. In the [Admin area](../repository_storage_paths.md#configure-where-new-repositories-are-stored), set `default` to a weight of zero
    to prevent repositories being stored there.
 
 ### Disable Gitaly where not required (optional)

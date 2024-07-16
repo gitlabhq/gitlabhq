@@ -75,7 +75,7 @@ Prerequisites:
 
 After you create a custom role for your self-managed instance, you can assign that custom role to a user in any group or subgroup in that instance.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Roles and Permissions**.
 1. Select **New role**.
 1. In **Base role to use as template**, select an existing default role.
@@ -120,7 +120,7 @@ Prerequisites:
 
 - You must be an administrator for the self-managed instance.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Roles and Permissions**.
 1. Select the vertical ellipsis (**{ellipsis_v}**) for the custom role, then
    select **Edit role**.
@@ -138,7 +138,7 @@ Prerequisites:
 You can remove a custom role from a group only if no members have that role. See [unassign a custom role from a group or project member](#unassign-a-custom-role-from-a-group-or-project-member).
 
 1. On the left sidebar:
-   - For self-managed, at the bottom, select **Admin Area**.
+   - For self-managed, at the bottom, select **Admin area**.
    - For SaaS, select **Search or go to** and find your group.
 1. Select **Settings > Roles and Permissions**.
 1. Select **Custom Roles**.

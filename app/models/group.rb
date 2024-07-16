@@ -222,7 +222,19 @@ class Group < Namespace
   end
 
   scope :excluding_restricted_visibility_levels_for_user, ->(user) do
-    user.can_admin_all_resources? ? all : where.not(visibility_level: Gitlab::CurrentSettings.restricted_visibility_levels)
+    return all if user.can_admin_all_resources?
+
+    case Gitlab::CurrentSettings.restricted_visibility_levels.sort
+    when [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PUBLIC],
+         [Gitlab::VisibilityLevel::PRIVATE]
+      where.not(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+    when [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL]
+      where.not(visibility_level: [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL])
+    when Gitlab::VisibilityLevel.values
+      none
+    else
+      all
+    end
   end
 
   scope :project_creation_allowed, ->(user) do
@@ -933,6 +945,15 @@ class Group < Namespace
 
   def work_items_rolledup_dates_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:work_items_rolledup_dates)
+  end
+
+  # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature
+  def namespace_work_items_enabled?
+    ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
+  end
+
+  def create_group_level_work_items_feature_flag_enabled?
+    ::Feature.enabled?(:create_group_level_work_items, self, type: :wip)
   end
 
   def supports_lock_on_merge?

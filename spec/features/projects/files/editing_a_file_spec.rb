@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Projects > Files > User wants to edit a file', feature_category: :groups_and_projects do
+RSpec.describe 'Projects > Files > User wants to edit a file', feature_category: :source_code_management do
   include ProjectForksHelper
   let(:project) { create(:project, :repository, :public) }
   let(:user) { project.first_owner }

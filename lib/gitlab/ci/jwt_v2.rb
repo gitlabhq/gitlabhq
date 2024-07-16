@@ -23,7 +23,7 @@ module Gitlab
 
       attr_reader :aud, :target_audience
 
-      def reserved_claims
+      def default_payload
         super.merge({
           iss: Gitlab.config.gitlab.url,
           sub: "project_path:#{project.full_path}:ref_type:#{ref_type}:ref:#{source_ref}",
@@ -32,13 +32,14 @@ module Gitlab
         }.compact)
       end
 
-      def custom_claims
+      def predefined_claims
         additional_custom_claims = {
           runner_id: runner&.id,
           runner_environment: runner_environment,
           sha: pipeline.sha,
           project_visibility: Gitlab::VisibilityLevel.string_level(project.visibility_level),
-          user_identities: user_identities
+          user_identities: user_identities,
+          target_audience: target_audience
         }.compact
 
         mapper = ClaimMapper.new(project_config, pipeline)

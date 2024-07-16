@@ -402,16 +402,6 @@ RSpec.describe BlobPresenter do
       expect(presenter.base64_encoded_blob).to include("cmVxdWlyZSAnZmlsZXV0")
       expect(presenter.base64_encoded_blob).to include("R1cwogIGVuZAplbmQK\n")
     end
-
-    context 'when ff unicode_escaped_blob is disabled' do
-      before do
-        stub_feature_flags(unicode_escaped_blob: false)
-      end
-
-      it 'returns nil' do
-        expect(presenter.base64_encoded_blob).to be_nil
-      end
-    end
   end
 
   describe '#raw_plain_data' do

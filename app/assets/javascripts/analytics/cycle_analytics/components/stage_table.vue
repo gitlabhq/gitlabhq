@@ -211,9 +211,7 @@ export default {
     >
       <template v-if="stageCount" #head(title)="data">
         <span>{{ data.label }}</span
-        ><gl-badge class="gl-ml-3" size="sm"
-          ><formatted-stage-count :stage-count="stageCount"
-        /></gl-badge>
+        ><gl-badge class="gl-ml-3"><formatted-stage-count :stage-count="stageCount" /></gl-badge>
       </template>
       <template #head(duration)="data">
         <span data-testid="vsa-stage-header-duration">{{ data.label }}</span>

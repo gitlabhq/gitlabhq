@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 require 'spec_helper'
 
-RSpec.describe ::Packages::Npm::PackageFinder do
+RSpec.describe ::Packages::Npm::PackageFinder, feature_category: :package_registry do
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_refind(:package) { create(:npm_package, project: project) }
 
@@ -26,6 +26,7 @@ RSpec.describe ::Packages::Npm::PackageFinder do
         end
 
         it_behaves_like example_name
+        it_behaves_like 'avoids N+1 database queries in the package registry'
       end
     end
 
@@ -34,6 +35,7 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       let_it_be(:namespace) { user.namespace }
 
       it_behaves_like example_name
+      it_behaves_like 'avoids N+1 database queries in the package registry'
     end
   end
 
@@ -62,6 +64,7 @@ RSpec.describe ::Packages::Npm::PackageFinder do
       let(:finder) { described_class.new(package_name, project: project) }
 
       it_behaves_like 'finding packages by name'
+      it_behaves_like 'avoids N+1 database queries in the package registry'
 
       context 'set to nil' do
         let(:project) { nil }
@@ -79,6 +82,8 @@ RSpec.describe ::Packages::Npm::PackageFinder do
         let_it_be(:namespace) { nil }
 
         it { is_expected.to be_empty }
+
+        it_behaves_like 'avoids N+1 database queries in the package registry'
       end
     end
   end

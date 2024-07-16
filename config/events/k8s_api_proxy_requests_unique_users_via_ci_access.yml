@@ -2,9 +2,6 @@
 description: Kubernetes API proxy request using the CI/CD Tunnel via CI Access
 internal_events: true
 action: k8s_api_proxy_requests_unique_users_via_ci_access
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - user

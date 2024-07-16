@@ -47,10 +47,12 @@ export const getAccessLevelInputFromEdges = (edges) => {
 
     if (node.group?.id !== undefined) {
       result.groupId = node.group.id;
+      delete result.accessLevel; // backend only expects groupId
     }
 
     if (node.user?.id !== undefined) {
       result.userId = node.user.id;
+      delete result.accessLevel; // backend only expects userId
     }
 
     return Object.keys(result).length > 0 ? [result] : [];

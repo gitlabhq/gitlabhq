@@ -110,6 +110,26 @@ end
 
 # Usage:
 #
+#   it_behaves_like 'not a filter timeout' do
+#     let(:text) { 'some text' }
+#   end
+RSpec.shared_examples 'not a filter timeout' do
+  it 'does not use Gitlab::RenderTimeout' do
+    allow_next_instance_of(described_class) do |instance|
+      allow(instance).to receive(:call_with_timeout) do
+        sleep(0.2)
+        text
+      end
+    end
+
+    expect(Gitlab::RenderTimeout).not_to receive(:timeout).and_call_original
+
+    filter(text)
+  end
+end
+
+# Usage:
+#
 #   it_behaves_like 'pipeline timing check'
 RSpec.shared_examples 'pipeline timing check' do |context: {}|
   it 'checks the pipeline timing' do

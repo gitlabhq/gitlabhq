@@ -14,7 +14,7 @@ module Gitlab
           :chat_data, :allow_mirror_update, :bridge, :content, :dry_run, :logger, :execution_policy_dry_run,
           # These attributes are set by Chains during processing:
           :config_content, :yaml_processor_result, :workflow_rules_result, :pipeline_seed,
-          :pipeline_config, :execution_policy_pipelines
+          :pipeline_config, :pipeline_execution_policies, :partition_id
         ) do
           include Gitlab::Utils::StrongMemoize
 
@@ -32,6 +32,10 @@ module Gitlab
           # :nocov:
           def execution_policy_mode?
             false # to be overridden in EE
+          end
+
+          def pipeline_policy_context
+            # to be overridden in EE
           end
           # :nocov:
           # rubocop:enable Gitlab/NoCodeCoverageComment

@@ -11,12 +11,8 @@ export const initProjectsExploreFilteredSearchAndSort = () => {
     dataset: { appData },
   } = el;
 
-  const {
-    initialSort,
-    programmingLanguages,
-    starredExploreProjectsPath,
-    exploreRootPath,
-  } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { initialSort, programmingLanguages, starredExploreProjectsPath, exploreRootPath } =
+    convertObjectPropsToCamelCase(JSON.parse(appData));
 
   return new Vue({
     el,

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :onboarding do
+RSpec.describe 'Admin Broadcast Messages', :js, feature_category: :notifications do
   context 'when creating and editing' do
     it 'previews, creates and edits a broadcast message' do
       admin = create(:admin)

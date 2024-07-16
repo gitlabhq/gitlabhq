@@ -70,6 +70,7 @@ export default {
       projectPath: this.projectPath,
       canWriteModelRegistry: this.canWriteModelRegistry,
       maxAllowedFileSize: this.maxAllowedFileSize,
+      latestVersion: this.latestVersion,
     };
   },
   props: {
@@ -100,6 +101,11 @@ export default {
     maxAllowedFileSize: {
       type: Number,
       required: true,
+    },
+    latestVersion: {
+      type: String,
+      required: false,
+      default: null,
     },
   },
   apollo: {
@@ -185,9 +191,6 @@ export default {
             <metadata-item icon="machine-learning" :text="versionsCountLabel" />
           </template>
 
-          <template #sub-header>
-            {{ description }}
-          </template>
           <template #right-actions>
             <model-version-create v-if="canWriteModelRegistry" :model-gid="modelGid" />
 
@@ -209,17 +212,20 @@ export default {
 
         <load-or-error-or-show :is-loading="isLoading" :error-message="errorMessage">
           <gl-tabs class="gl-mt-4" :value="tabIndex">
-            <gl-tab :title="s__('MlModelRegistry|Details')" @click="goTo($options.ROUTE_DETAILS)" />
+            <gl-tab
+              :title="s__('MlModelRegistry|Model card')"
+              @click="goTo($options.ROUTE_DETAILS)"
+            />
             <gl-tab @click="goTo($options.ROUTE_VERSIONS)">
               <template #title>
                 {{ s__('MlModelRegistry|Versions') }}
-                <gl-badge size="sm" class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
+                <gl-badge class="gl-tab-counter-badge">{{ versionCount }}</gl-badge>
               </template>
             </gl-tab>
             <gl-tab @click="goTo($options.ROUTE_CANDIDATES)">
               <template #title>
                 {{ s__('MlModelRegistry|Version candidates') }}
-                <gl-badge size="sm" class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
+                <gl-badge class="gl-tab-counter-badge">{{ candidateCount }}</gl-badge>
               </template>
             </gl-tab>
 

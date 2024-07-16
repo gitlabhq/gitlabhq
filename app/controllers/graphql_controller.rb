@@ -237,7 +237,6 @@ class GraphqlController < ApplicationController
   def execute_query
     variables = build_variables(permitted_params[:variables])
     operation_name = permitted_params[:operationName]
-
     GitlabSchema.execute(query, variables: variables, context: context, operation_name: operation_name)
   end
 
@@ -286,7 +285,7 @@ class GraphqlController < ApplicationController
   def authorize_access_api!
     if current_user.nil? &&
         request_authenticator.authentication_token_present?
-      render_error('Invalid token', status: :unauthorized)
+      return render_error('Invalid token', status: :unauthorized)
     end
 
     return if can?(current_user, :access_api)
@@ -322,6 +321,8 @@ class GraphqlController < ApplicationController
   end
 
   def execute_introspection_query
+    context[:introspection] = true
+
     if introspection_query_can_use_cache?
       # Context for caching: https://gitlab.com/gitlab-org/gitlab/-/issues/409448
       Rails.cache.fetch(

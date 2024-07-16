@@ -77,7 +77,7 @@ If this check fails:
 ### Check clock synchronization
 
 Authentication between Praefect and the Gitaly servers requires the server times to be
-in sync so the token check succeeds.
+within 60 seconds of each other, so that the token check succeeds.
 
 This check helps identify the root cause of `permission denied`
 [errors being logged by Praefect](troubleshooting.md#permission-denied-errors-appearing-in-gitaly-or-praefect-logs-when-accessing-repositories).
@@ -90,7 +90,7 @@ checking with NTP service at  and allowed clock drift 60000ms [correlation_id: <
 Failed (fatal) error: gitaly node at tcp://[gitlab.example-instance.com]:8075: rpc error: code = DeadlineExceeded desc = context deadline exceeded
 ```
 
-To resolve this issue, set an environment variable on all Praefect servers to point to an accessible internal NTP server. For example:
+To resolve this issue, set an environment variable on all Praefect servers to point to an accessible internal [Network Time Protocol](https://en.wikipedia.org/wiki/Network_Time_Protocol) (NTP) server. For example:
 
 ```shell
 export NTP_HOST=ntp.example.com

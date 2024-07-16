@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
+require 'rspec-parameterized'
 
 RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_category: :shared do
   let(:schemes) { %w[http https] }
@@ -35,6 +36,64 @@ RSpec.describe Gitlab::HTTP_V2::UrlBlocker, :stub_invalid_dns_only, feature_cate
           let(:expected_hostname) { 'example.org' }
           let(:expected_use_proxy) { false }
         end
+      end
+    end
+
+    context 'when one flag requring IP validation is enabled' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:import_url) { 'https://localhost' }
+
+      where(:deny_all_requests_except_allowed, :dns_rebind_protection, :allow_local_network, :allow_localhost) do
+        true | false | true | true
+        false | true | true | true
+        false | false | false | true
+        false | false | true | false
+      end
+
+      with_them do
+        let(:options) do
+          {
+            deny_all_requests_except_allowed: deny_all_requests_except_allowed,
+            dns_rebind_protection: dns_rebind_protection,
+            allow_local_network: allow_local_network,
+            allow_localhost: allow_localhost,
+            schemes: schemes
+          }
+        end
+
+        it 'attempts to validate IP' do
+          expect(described_class).to receive(:validate_resolved_uri).and_return(
+            described_class::Result.new(import_url, 'localhost', false))
+
+          subject
+        end
+      end
+    end
+
+    context 'when all forms of IP validation are disabled' do
+      let(:options) do
+        {
+          deny_all_requests_except_allowed: false,
+          dns_rebind_protection: false,
+          allow_local_network: true,
+          allow_localhost: true,
+          schemes: schemes
+        }
+      end
+
+      let(:import_url) { 'https://localhost' }
+      let(:expected_uri) { 'https://localhost' }
+      let(:expected_hostname) { nil }
+      let(:expected_use_proxy) { false }
+
+      it 'does not attempt to resolve IPs' do
+        expect(Addrinfo).not_to receive(:getaddrinfo)
+
+        uri, hostname = subject
+
+        expect(uri).to eq(Addressable::URI.parse(expected_uri))
+        expect(hostname).to eq(expected_hostname)
       end
     end
   end

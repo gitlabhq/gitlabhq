@@ -8,6 +8,7 @@ gitlab_schemas:
   - gitlab_pm
 lock_gitlab_schemas:
   - gitlab_ci
+  - gitlab_sec
 # Note that we use ActiveRecord::Base here and not ApplicationRecord.
 # This is deliberate, as: 
 # - the load balancer must be enabled for _all_ models

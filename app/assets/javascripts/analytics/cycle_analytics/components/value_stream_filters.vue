@@ -163,7 +163,6 @@ export default {
           data-testid="vsa-predefined-date-ranges-dropdown"
           :selected="dateRangeOption"
           :tooltip="maxDateRangeTooltip"
-          include-end-date-in-days-selected
           :include-custom-date-range-option="hasDateRangeFilter"
           @selected="onSelectPredefinedDateRange"
           @customDateRangeSelected="onSelectCustomDateRange"
@@ -175,7 +174,7 @@ export default {
           :end-date="endDate"
           :max-date="currentDate"
           :max-date-range="$options.maxDateRange"
-          :include-selected-date="true"
+          include-selected-date
           class="js-daterange-picker"
           @change="$emit('setDateRange', $event)"
         />

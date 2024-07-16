@@ -65,7 +65,7 @@ RSpec.describe 'value stream analytics events', feature_category: :team_planning
       expect(json_response['events'].first['iid']).to eq(first_mr_iid)
     end
 
-    it 'lists the staging events' do
+    it 'lists the staging events', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444510' do
       get project_cycle_analytics_staging_path(project, format: :json)
 
       expect(json_response['events']).not_to be_empty

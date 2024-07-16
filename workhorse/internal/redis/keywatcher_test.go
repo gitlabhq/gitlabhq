@@ -186,8 +186,8 @@ func TestKeyChangesWhenWatching(t *testing.T) {
 				<-ready
 				val, err := kw.WatchKey(ctx, runnerKey, tc.watchValue, time.Second)
 
-				require.NoError(t, err, "Expected no error")
-				require.Equal(t, tc.expectedStatus, val, "Expected value")
+				assert.NoError(t, err, "Expected no error")
+				assert.Equal(t, tc.expectedStatus, val, "Expected value")
 			}()
 
 			processMessages(t, kw, 1, tc.processedValue, ready, wg)
@@ -238,8 +238,8 @@ func TestKeyChangesParallel(t *testing.T) {
 					<-ready
 					val, err := kw.WatchKey(ctx, runnerKey, tc.watchValue, time.Second)
 
-					require.NoError(t, err, "Expected no error")
-					require.Equal(t, tc.expectedStatus, val, "Expected value")
+					assert.NoError(t, err, "Expected no error")
+					assert.Equal(t, tc.expectedStatus, val, "Expected value")
 				}()
 			}
 
@@ -264,13 +264,13 @@ func TestShutdown(t *testing.T) {
 		defer wg.Done()
 		val, err := kw.WatchKey(ctx, runnerKey, "something", 10*time.Second)
 
-		require.NoError(t, err, "Expected no error")
-		require.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
+		assert.NoError(t, err, "Expected no error")
+		assert.Equal(t, WatchKeyStatusNoChange, val, "Expected value not to change")
 	}()
 
 	go func() {
 		defer wg.Done()
-		require.Eventually(t, func() bool { return countSubscribers(kw, runnerKey) == 1 }, 10*time.Second, time.Millisecond)
+		assert.Eventually(t, func() bool { return countSubscribers(kw, runnerKey) == 1 }, 10*time.Second, time.Millisecond)
 
 		kw.Shutdown()
 	}()

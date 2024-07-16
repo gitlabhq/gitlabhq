@@ -34,6 +34,9 @@ module AwardEmojis
     def todoable
       strong_memoize(:todoable) do
         case awardable
+        when DiscussionNote
+          # Only update todos associated with the discussion if note is part of a thread
+          awardable.to_discussion
         when Note
           # We don't create todos for personal snippet comments for now
           awardable.noteable unless awardable.for_personal_snippet?

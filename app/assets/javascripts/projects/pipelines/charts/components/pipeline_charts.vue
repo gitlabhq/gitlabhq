@@ -158,21 +158,26 @@ export default {
       };
     },
     successRatio() {
-      const { successfulPipelines, failedPipelines } = this.counts;
+      const { successfulPipelines, totalPipelines } = this.counts;
       const successfulCount = successfulPipelines?.count;
-      const failedCount = failedPipelines?.count;
-      const ratio = (successfulCount / (successfulCount + failedCount)) * 100;
+      const totalCount = totalPipelines?.count || 0;
 
-      return failedCount === 0 ? 100 : ratio;
+      return totalCount === 0 ? 100 : (successfulCount / totalCount) * 100;
+    },
+    failureRatio() {
+      const { failedPipelines, totalPipelines } = this.counts;
+      const failedCount = failedPipelines?.count;
+      const totalCount = totalPipelines?.count || 0;
+
+      return totalCount === 0 ? 0 : (failedCount / totalCount) * 100;
     },
     formattedCounts() {
-      const { totalPipelines, successfulPipelines, failedPipelines } = this.counts;
+      const { totalPipelines } = this.counts;
 
       return {
         total: totalPipelines?.count,
-        success: successfulPipelines?.count,
-        failed: failedPipelines?.count,
         successRatio: this.successRatio,
+        failureRatio: this.failureRatio,
       };
     },
     areaCharts() {

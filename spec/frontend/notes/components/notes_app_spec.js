@@ -210,10 +210,11 @@ describe('note_app', () => {
         expect(wrapper.find('.js-vue-issue-note-form').exists()).toBe(true);
       });
 
-      it('calls the store action to update the note', () => {
+      it('calls the store action to update the note', async () => {
         jest.spyOn(axios, 'put').mockImplementation(() => Promise.resolve({ data: {} }));
         wrapper.find('.js-vue-issue-note-form').value = 'this is a note';
         wrapper.find('.js-vue-issue-save').trigger('click');
+        await waitForPromises();
 
         expect(axios.put).toHaveBeenCalled();
       });
@@ -232,10 +233,11 @@ describe('note_app', () => {
         expect(wrapper.find('.js-vue-issue-note-form').exists()).toBe(true);
       });
 
-      it('updates the note and resets the edit form', () => {
+      it('updates the note and resets the edit form', async () => {
         jest.spyOn(axios, 'put').mockImplementation(() => Promise.resolve({ data: {} }));
         wrapper.find('.js-vue-issue-note-form').value = 'this is a note';
         wrapper.find('.js-vue-issue-save').trigger('click');
+        await waitForPromises();
 
         expect(axios.put).toHaveBeenCalled();
       });

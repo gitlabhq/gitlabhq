@@ -30,7 +30,7 @@ RSpec.describe 'projects/issues/_related_issues.html.haml', feature_category: :t
       render
 
       expect(rendered).to have_selector(
-        ".js-related-issues-root[data-report-abuse-path=\"#{add_category_abuse_reports_path}\"]"
+        ".js-related-issues-root[data-wi-report-abuse-path=\"#{add_category_abuse_reports_path}\"]"
       )
     end
   end

@@ -7,14 +7,8 @@ export default () => {
 
   if (!el) return null;
 
-  const {
-    projects,
-    isSignedIn,
-    signInPath,
-    slackLinkPath,
-    gitlabLogoPath,
-    slackLogoPath,
-  } = el.dataset;
+  const { projects, isSignedIn, signInPath, slackLinkPath, gitlabLogoPath, slackLogoPath } =
+    el.dataset;
 
   return new Vue({
     el,

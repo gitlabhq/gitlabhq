@@ -76,7 +76,7 @@ can choose a custom limit. For example, to set the limit to `100`:
 Plan.default.actual_limits.update!(ci_needs_size_limit: 100)
 ```
 
-To disable directed acyclic graphs (DAG), set the limit to `0`. Pipelines with jobs
+To disable `needs` dependencies, set the limit to `0`. Pipelines with jobs
 configured to use `needs` then return the error `job can only need 0 others`.
 
 ## Change maximum scheduled pipeline frequency
@@ -175,7 +175,7 @@ in GitLab 18.0. Runner authentication tokens should be used instead. For more in
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the Admin Area.
+- Runner registration tokens must be [enabled](../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the Admin area.
 
 ```ruby
 Gitlab::CurrentSettings.current_application_settings.runners_registration_token

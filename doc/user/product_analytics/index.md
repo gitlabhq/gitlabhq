@@ -131,24 +131,9 @@ and cascade to all projects by default.
 
 To enable product analytics on your instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Analytics**.
-1. Expand **Product analytics** and enter the configuration values.
-1. Select **Save changes**.
-
-### Group-level settings
-
-Prerequisites:
-
-- You must have the Owner role for the group.
-
-NOTE:
-These group-level settings are available for top-level groups and cascade to all projects that belong to the group.
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > General**.
-1. Expand the **Permissions and group features** section.
-1. Check **Use experiment and beta features** checkbox.
+1. Enter the configuration values.
 1. Select **Save changes**.
 
 ### Project-level settings

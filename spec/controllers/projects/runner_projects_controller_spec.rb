@@ -6,7 +6,7 @@ RSpec.describe Projects::RunnerProjectsController, feature_category: :fleet_visi
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
   let_it_be(:project) { create(:project, group: group) }
-  let_it_be(:source_project) { create(:project) }
+  let_it_be(:source_project) { create(:project, organization: project.organization) }
 
   before do
     sign_in(user)

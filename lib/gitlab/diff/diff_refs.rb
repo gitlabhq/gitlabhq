@@ -48,9 +48,9 @@ module Gitlab
           straight = start_sha == base_sha
 
           CompareService.new(project, head_sha).execute(project,
-                                                        start_sha,
-                                                        base_sha: base_sha,
-                                                        straight: straight)
+            start_sha,
+            base_sha: base_sha,
+            straight: straight)
         end
       end
     end

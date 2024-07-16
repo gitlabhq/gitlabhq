@@ -175,6 +175,16 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
         expect(results.size).to eq(1)
         expect(results.first).to include(path: "/#{project.full_path}/-/wikis/page1", slug: 'page1', title: 'page1')
       end
+
+      it 'loads real title of the page from frontmatter if present' do
+        create(:wiki_page, wiki: wiki, title: 'page3', content: "---\ntitle: Real title\n---\ncontent3")
+
+        service = described_class.new(project, user)
+        results = service.wikis
+
+        expect(results.size).to eq(2)
+        expect(results.last).to include(path: "/#{project.full_path}/-/wikis/page3", slug: 'page3', title: 'Real title')
+      end
     end
 
     context 'when user cannot read wiki' do
@@ -241,7 +251,7 @@ RSpec.describe Projects::AutocompleteService, feature_category: :groups_and_proj
   describe '#labels_as_hash' do
     def expect_labels_to_equal(labels, expected_labels)
       expect(labels.size).to eq(expected_labels.size)
-      extract_title = lambda { |label| label['title'] }
+      extract_title = ->(label) { label['title'] }
       expect(labels.map(&extract_title)).to match_array(expected_labels.map(&extract_title))
     end
 

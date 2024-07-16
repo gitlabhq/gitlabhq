@@ -5,7 +5,13 @@ import { issuesListClient } from '~/issues/list';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
 import { convertToGraphQLId } from '~/graphql_shared/utils';
 import { getBaseURL } from '~/lib/utils/url_utility';
-import { findHierarchyWidgetChildren, isNotesWidget, newWorkItemFullPath } from '../utils';
+import { convertEachWordToTitleCase } from '~/lib/utils/text_utility';
+import {
+  findHierarchyWidgetChildren,
+  isNotesWidget,
+  newWorkItemFullPath,
+  newWorkItemId,
+} from '../utils';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_COLOR,
@@ -22,7 +28,6 @@ import {
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_IID,
-  NEW_WORK_ITEM_GID,
 } from '../constants';
 import groupWorkItemByIidQuery from './group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
@@ -194,7 +199,13 @@ export const removeHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }
   });
 };
 
-export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, workItemType) => {
+export const setNewWorkItemCache = async (
+  isGroup,
+  fullPath,
+  widgetDefinitions,
+  workItemType,
+  workItemTypeId,
+) => {
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_ASSIGNEES,
     WIDGET_TYPE_LABELS,
@@ -215,6 +226,7 @@ export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, 
     return;
   }
 
+  const workItemTitleCase = convertEachWordToTitleCase(workItemType.split('_').join(' '));
   const availableWidgets = widgetDefinitions?.flatMap((i) => i.type);
   const currentUserId = convertToGraphQLId(TYPENAME_USER, gon?.current_user_id);
   const baseURL = getBaseURL();
@@ -227,6 +239,7 @@ export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, 
     descriptionHtml: '',
     lastEditedAt: null,
     lastEditedBy: null,
+    taskCompletionStatus: null,
     __typename: 'WorkItemWidgetDescription',
   });
 
@@ -257,8 +270,8 @@ export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, 
         );
         widgets.push({
           type: 'ASSIGNEES',
-          allowsMultipleAssignees: assigneesWidgetData.allowsMultipleAssignees,
-          canInviteMembers: assigneesWidgetData.canInviteMembers,
+          allowsMultipleAssignees: assigneesWidgetData.allowsMultipleAssignees || false,
+          canInviteMembers: assigneesWidgetData.canInviteMembers || false,
           assignees: {
             nodes: [],
             __typename: 'UserCoreConnection',
@@ -390,17 +403,19 @@ export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, 
     ? issuesListApolloProvider
     : apolloProvider;
 
+  const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
+
   cacheProvider.clients.defaultClient.cache.writeQuery({
     query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
     variables: {
-      fullPath: newWorkItemFullPath(fullPath),
+      fullPath: newWorkItemPath,
       iid: NEW_WORK_ITEM_IID,
     },
     data: {
       workspace: {
-        id: newWorkItemFullPath(fullPath),
+        id: newWorkItemPath,
         workItem: {
-          id: NEW_WORK_ITEM_GID,
+          id: newWorkItemId(workItemType),
           iid: NEW_WORK_ITEM_IID,
           archived: false,
           title: '',
@@ -414,9 +429,9 @@ export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, 
           reference: '',
           createNoteEmail: null,
           namespace: {
-            id: newWorkItemFullPath(fullPath),
+            id: newWorkItemPath,
             fullPath,
-            name: newWorkItemFullPath(fullPath),
+            name: newWorkItemPath,
             __typename: 'Namespace', // eslint-disable-line @gitlab/require-i18n-strings
           },
           author: {
@@ -429,8 +444,8 @@ export const setNewWorkItemCache = async (isGroup, fullPath, widgetDefinitions, 
             __typename: 'UserCore',
           },
           workItemType: {
-            id: 'mock-work-item-type-id',
-            name: workItemType,
+            id: workItemTypeId || 'mock-work-item-type-id',
+            name: workItemTitleCase,
             iconName: 'issue-type-epic',
             __typename: 'WorkItemType',
           },

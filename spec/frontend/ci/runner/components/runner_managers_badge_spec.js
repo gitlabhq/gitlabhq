@@ -48,10 +48,4 @@ describe('RunnerTypeBadge', () => {
     expect(findBadge().text()).toBe('1,000');
     expect(getTooltip().value).toContain('1,000');
   });
-
-  it('passes arbitrary attributes to badge', () => {
-    createComponent({ props: { count: 2, size: 'sm' } });
-
-    expect(findBadge().props('size')).toBe('sm');
-  });
 });

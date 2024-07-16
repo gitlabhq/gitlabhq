@@ -2,6 +2,7 @@
 issues:
 - subscriptions
 - award_emoji
+- own_award_emoji
 - author
 - assignees
 - updated_by
@@ -22,6 +23,10 @@ issues:
 - own_label_links
 - labels
 - own_labels
+- own_notes
+- own_resource_state_events
+- own_resource_label_events
+- own_description_versions
 - sync_object
 - last_edited_by
 - todos
@@ -165,6 +170,7 @@ snippets:
 - snippet_repository
 - statistics
 - repository_storage_moves
+- organization
 releases:
 - author
 - project
@@ -270,7 +276,6 @@ merge_request_diff:
 - merge_request_diff_detail
 - merge_request_diff_files
 - merge_request_diff_llm_summary
-- merge_request_review_llm_summaries
 merge_request_diff_commits:
 - merge_request_diff
 - commit_author
@@ -355,6 +360,7 @@ ci_pipelines:
 - build_trace_chunks
 - pipeline_metadata
 - build_execution_configs
+- project_mirror
 pipeline_metadata:
 - project
 - pipeline
@@ -613,6 +619,7 @@ project:
 - teamcity_integration
 - pushover_integration
 - jira_integration
+- jira_cloud_app_integration
 - zentao_integration
 # dingtalk_integration JiHu-specific, see https://jihulab.com/gitlab-cn/gitlab/-/merge_requests/417
 - dingtalk_integration
@@ -642,6 +649,7 @@ project:
 - notes
 - snippets
 - hooks
+- all_protected_branches
 - protected_branches
 - protected_tags
 - project_members
@@ -1011,6 +1019,7 @@ design_versions: *version
 epic:
 - subscriptions
 - award_emoji
+- own_award_emoji
 - description_versions
 - author
 - assignee
@@ -1022,6 +1031,10 @@ epic:
 - own_label_links
 - labels
 - own_labels
+- own_notes
+- own_resource_state_events
+- own_resource_label_events
+- own_description_versions
 - sync_object
 - todos
 - metrics
@@ -1044,6 +1057,7 @@ epic:
 - boards_epic_user_preferences
 - epic_board_positions
 - work_item
+- own_subscriptions
 epic_issue:
 - epic
 - issue

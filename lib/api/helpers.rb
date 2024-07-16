@@ -2,6 +2,7 @@
 
 module API
   module Helpers
+    include Gitlab::Allowable
     include Gitlab::Utils
     include Helpers::Caching
     include Helpers::Pagination
@@ -218,6 +219,10 @@ module API
 
     def find_group!(id, organization: nil)
       group = find_group(id, organization: organization)
+      # We need to ensure the namespace is in the context since
+      # it's possible a method such as bypass_session! might log
+      # a message before @group is set.
+      ::Gitlab::ApplicationContext.push(namespace: group) if group
       check_group_access(group)
     end
 
@@ -352,6 +357,10 @@ module API
       forbidden!(reason) unless can?(current_user, action, subject)
     end
 
+    def authorize_any!(abilities, subject = :global, reason = nil)
+      forbidden!(reason) unless can_any?(current_user, abilities, subject)
+    end
+
     def authorize_push_project
       authorize! :push_code, user_project
     end
@@ -434,10 +443,6 @@ module API
 
     def require_pages_config_enabled!
       not_found! unless Gitlab.config.pages.enabled
-    end
-
-    def can?(object, action, subject = :global)
-      Ability.allowed?(object, action, subject)
     end
 
     # Checks the occurrences of required attributes, each attribute must be present in the params hash
@@ -686,7 +691,7 @@ module API
         redirect_params = {}
         if content_disposition
           response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: content_disposition, filename: file.filename)
-          redirect_params[:query] = { 'response-content-disposition': response_disposition, 'response-content-type': file.content_type }
+          redirect_params[:query] = { 'response-content-disposition' => response_disposition, 'response-content-type' => file.content_type }
         end
 
         file_url = ObjectStorage::CDN::FileUrl.new(file: file, ip_address: ip_address, redirect_params: redirect_params)

@@ -38,6 +38,10 @@ FactoryBot.define do
       status { 'failed' }
     end
 
+    trait :canceling do
+      status { 'canceling' }
+    end
+
     trait :canceled do
       status { 'canceled' }
     end

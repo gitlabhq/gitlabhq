@@ -68,12 +68,22 @@ module API
           .execute
       end
 
+      def authorized_params?(group, params)
+        return true if can?(current_user, :admin_group, group)
+
+        can?(current_user, :admin_runner, group) &&
+          params.keys == [:shared_runners_setting]
+      end
+
       # This is a separate method so that EE can extend its behaviour, without
       # having to modify this code directly.
       #
       def update_group(group)
+        safe_params = translate_params_for_compatibility
+        return unauthorized! unless authorized_params?(group, safe_params)
+
         ::Groups::UpdateService
-          .new(group, current_user, translate_params_for_compatibility)
+          .new(group, current_user, safe_params)
           .execute
       end
 
@@ -291,7 +301,7 @@ module API
         group.preload_shared_group_links
 
         mark_throttle! :update_namespace_name, scope: group if params.key?(:name) && params[:name].present?
-        authorize! :admin_group, group
+        authorize_any! [:admin_group, :admin_runner], group
 
         group.remove_avatar! if params.key?(:avatar) && params[:avatar].nil?
 
@@ -331,6 +341,31 @@ module API
         check_subscription! group
 
         delete_group(group)
+      end
+
+      desc 'Get a list of shared groups this group was invited to' do
+        success Entities::Group
+        is_array true
+        tags %w[groups]
+      end
+      params do
+        optional :visibility, type: String, values: Gitlab::VisibilityLevel.string_values,
+          desc: 'Limit by visibility'
+        optional :order_by, type: String, values: %w[name path id similarity], default: 'name', desc: 'Order by name, path, id or similarity if searching'
+        optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
+
+        use :pagination
+        use :with_custom_attributes
+      end
+      get ":id/groups/shared", feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_shared_groups_api)
+        end
+
+        group = find_group!(params[:id])
+        groups = ::Namespaces::Groups::SharedGroupsFinder.new(group, current_user, declared(params)).execute
+        groups = order_groups(groups).with_api_scopes
+        present_groups params, groups
       end
 
       desc 'Get a list of projects in this group.' do
@@ -545,6 +580,48 @@ module API
         no_content!
       end
       # rubocop: enable CodeReuse/ActiveRecord
+
+      desc 'Revoke a single token' do
+        detail <<-DETAIL
+Revoke a token, if it has access to the group or any of its subgroups
+and projects. If the token is revoked, or was already revoked, its
+details are returned in the response.
+
+The following criteria must be met:
+
+- The group must be a top-level group.
+- You must have Owner permission in the group.
+- The token type is one of:
+  - Personal Access Token
+  - Group Access Token
+  - Project Access Token
+  - Group Deploy Token
+
+This feature is gated by the :group_agnostic_token_revocation feature flag.
+        DETAIL
+      end
+      params do
+        requires :id, type: String, desc: 'The ID of a top-level group'
+        requires :token, type: String, desc: 'The token to revoke'
+      end
+      post ":id/tokens/revoke", urgency: :low, feature_category: :groups_and_projects do
+        group = find_group!(params[:id])
+        not_found! unless Feature.enabled?(:group_agnostic_token_revocation, group)
+        bad_request!('Must be a top-level group') if group.subgroup?
+        authorize! :admin_group, group
+
+        result = ::Groups::AgnosticTokenRevocationService.new(group, current_user, params[:token]).execute
+
+        if result.success?
+          status :ok
+          present result.payload[:token], with: "API::Entities::#{result.payload[:type]}".constantize
+        else
+          # No matter the error, we always return a 422.
+          # This prevents disclosing cases like: token is invalid,
+          # or token is valid but in a different group.
+          unprocessable_entity!
+        end
+      end
     end
   end
 end

@@ -64,8 +64,7 @@ describe('~/environments/components/new_environment_item.vue', () => {
   it('truncates the name if it is very long', () => {
     const environment = {
       ...resolvedEnvironment,
-      name:
-        'this is a really long name that should be truncated because otherwise it would look strange in the UI',
+      name: 'this is a really long name that should be truncated because otherwise it would look strange in the UI',
     };
     wrapper = createWrapper({ propsData: { environment }, apolloProvider: createApolloProvider() });
 

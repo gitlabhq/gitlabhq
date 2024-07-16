@@ -42,7 +42,7 @@ export default {
       :class="{ flex: !workItem.available }"
     >
       <span
-        class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-display-inline-flex gl-align-items-center gl-justify-content-center gl-leading-normal"
+        class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-inline-flex gl-align-items-center gl-justify-content-center gl-leading-normal"
         data-testid="work-item-wrapper"
       >
         <span
@@ -50,7 +50,7 @@ export default {
             backgroundColor: workItem.backgroundColor,
             color: workItem.color,
           }"
-          class="gl-rounded-base gl-mr-2 gl-display-inline-flex justify-content-center gl-align-items-center hierarchy-icon-wrapper"
+          class="gl-rounded-base gl-mr-2 gl-inline-flex justify-content-center gl-align-items-center hierarchy-icon-wrapper"
         >
           <gl-icon :size="workItem.iconSize || 12" :name="workItem.icon" />
         </span>
@@ -62,7 +62,6 @@ export default {
         v-if="!workItem.available"
         variant="info"
         icon="license"
-        size="sm"
         class="gl-ml-3 gl-align-self-center"
         >{{ workItem.license }}</gl-badge
       >
@@ -98,7 +97,7 @@ export default {
           />
           <span
             :key="nestedWorkItem.id"
-            class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-display-inline-flex gl-align-items-center gl-justify-content-center gl-mt-2 gl-leading-normal"
+            class="gl-border-gray-100 gl-border-1 gl-border-solid gl-rounded-base gl-pl-2 gl-pt-2 gl-pb-2 gl-pr-3 gl-inline-flex gl-align-items-center gl-justify-content-center gl-mt-2 gl-leading-normal"
             :class="nestedWorkItemTypeMargin(index, workItem)"
           >
             <span
@@ -106,7 +105,7 @@ export default {
                 backgroundColor: nestedWorkItem.backgroundColor,
                 color: nestedWorkItem.color,
               }"
-              class="gl-rounded-base gl-mr-2 gl-display-inline-flex justify-content-center gl-align-items-center hierarchy-icon-wrapper"
+              class="gl-rounded-base gl-mr-2 gl-inline-flex justify-content-center gl-align-items-center hierarchy-icon-wrapper"
             >
               <gl-icon :size="nestedWorkItem.iconSize || 12" :name="nestedWorkItem.icon" />
             </span>

@@ -74,13 +74,23 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
         expect(page).to have_link("New merge request in #{project.name}")
       end
     end
+
+    it 'passes axe automated accessibility testing' do
+      expect(page).to be_axe_clean.within('#content-body')
+    end
   end
 
   context 'no merge requests exist' do
-    it 'shows an empty state' do
+    before do
       visit merge_requests_dashboard_path(assignee_username: current_user.username)
+    end
 
+    it 'shows an empty state' do
       expect(page).to have_selector('.gl-empty-state')
+    end
+
+    it 'passes axe automated accessibility testing' do
+      expect(page).to be_axe_clean.within('#content-body')
     end
   end
 
@@ -144,6 +154,19 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
       )
     end
 
+    let!(:detailed_merge_request) do
+      create(
+        :merge_request,
+        source_branch: 'accessibility_fix',
+        assignees: [current_user],
+        target_project: public_project,
+        source_project: forked_project,
+        author: author_user,
+        reviewers: [current_user],
+        labels: [label]
+      )
+    end
+
     let!(:other_merge_request) do
       create(
         :merge_request,
@@ -159,8 +182,8 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
 
     it 'includes assigned and reviewers in badge' do
       within('#merge-requests') do
-        expect(page).to have_css("a", text: 'Assigned 2')
-        expect(page).to have_css("a", text: 'Review requests 1')
+        expect(page).to have_css("a", text: 'Assigned 3')
+        expect(page).to have_css("a", text: 'Review requests 2')
       end
     end
 
@@ -224,6 +247,10 @@ RSpec.describe 'Dashboard Merge Requests', :js, feature_category: :code_review_w
       visit project_merge_requests_path(project)
 
       expect(find('.issues-filters')).to have_content(s_('SortOptions|Priority'))
+    end
+
+    it 'passes axe automated accessibility testing' do
+      expect(page).to be_axe_clean.within('#content-body')
     end
   end
 

@@ -19,9 +19,6 @@ module Ci
 
     extend ::Gitlab::Utils::Override
 
-    ignore_column %i[config version revision platform architecture ip_address executor_type],
-      remove_with: '17.2', remove_after: '2024-07-22'
-
     add_authentication_token_field :token,
       encrypted: :optional,
       expires_at: :compute_token_expiration,
@@ -118,9 +115,9 @@ module Ci
     scope :ordered, -> { order(id: :desc) }
 
     scope :with_recent_runner_queue, -> { where(arel_table[:contacted_at].gt(recent_queue_deadline)) }
-    scope :with_running_builds, -> do
-      where('EXISTS(?)',
-        ::Ci::Build.running.select(1)
+    scope :with_executing_builds, -> do
+      where_exists(
+        ::Ci::Build.executing
           .where("#{::Ci::Build.quoted_table_name}.runner_id = #{quoted_table_name}.id")
       )
     end

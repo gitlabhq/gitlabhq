@@ -49,6 +49,8 @@ RSpec.describe 'Getting Ci Cd Setting', feature_category: :continuous_integratio
       expect(settings_data['jobTokenScopeEnabled']).to eql project.ci_cd_settings.job_token_scope_enabled?
       expect(settings_data['inboundJobTokenScopeEnabled']).to eql(
         project.ci_cd_settings.inbound_job_token_scope_enabled?)
+      expect(settings_data['pushRepositoryForJobTokenAllowed']).to eql(
+        project.ci_cd_settings.push_repository_for_job_token_allowed?)
 
       if Gitlab.ee?
         expect(settings_data['mergeTrainsEnabled']).to eql project.ci_cd_settings.merge_trains_enabled?

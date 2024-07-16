@@ -96,7 +96,7 @@ export default {
     </div>
     <gl-disclosure-dropdown
       v-if="canUpdateTimelineEvent"
-      placement="right"
+      placement="bottom-end"
       class="event-note-actions gl-align-self-start"
       icon="ellipsis_v"
       text-sr-only

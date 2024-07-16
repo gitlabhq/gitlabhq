@@ -87,7 +87,6 @@ They are not recommendations.
    instance:
 
    ```ruby
-   sidekiq['queue_selector'] = false
    sidekiq['queue_groups'] = [
      # Run two high-urgency processes
      'high-urgency',
@@ -97,6 +96,13 @@ They are not recommendations.
      # Run one 'catchall' process on the default and mailers queues
      'default,mailers'
    ]
+   ```
+
+   If you are using GitLab 16.11 and earlier, explicitly disable any [queue selectors](#queue-selectors-deprecated)
+   that might be enabled:
+
+   ```ruby
+   sidekiq['queue_selector'] = false
    ```
 
 1. Save the file and reconfigure GitLab:

@@ -6,20 +6,20 @@ module Namespaces
       include Gitlab::Utils::StrongMemoize
 
       ALLOWED_ATTRIBUTES = %i[maven_duplicates_allowed
-                              maven_duplicate_exception_regex
-                              generic_duplicates_allowed
-                              generic_duplicate_exception_regex
-                              maven_package_requests_forwarding
-                              nuget_duplicates_allowed
-                              nuget_duplicate_exception_regex
-                              terraform_module_duplicates_allowed
-                              terraform_module_duplicate_exception_regex
-                              npm_package_requests_forwarding
-                              pypi_package_requests_forwarding
-                              lock_maven_package_requests_forwarding
-                              lock_npm_package_requests_forwarding
-                              lock_pypi_package_requests_forwarding
-                              nuget_symbol_server_enabled].freeze
+        maven_duplicate_exception_regex
+        generic_duplicates_allowed
+        generic_duplicate_exception_regex
+        maven_package_requests_forwarding
+        nuget_duplicates_allowed
+        nuget_duplicate_exception_regex
+        terraform_module_duplicates_allowed
+        terraform_module_duplicate_exception_regex
+        npm_package_requests_forwarding
+        pypi_package_requests_forwarding
+        lock_maven_package_requests_forwarding
+        lock_npm_package_requests_forwarding
+        lock_pypi_package_requests_forwarding
+        nuget_symbol_server_enabled].freeze
 
       def execute
         return ServiceResponse.error(message: 'Access Denied', http_status: 403) unless allowed?

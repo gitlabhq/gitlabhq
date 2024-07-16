@@ -2,9 +2,6 @@
 description: Perform Git operation (read/write/push)
 category: EventCreateService
 action: project_action
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 product_group: source_code

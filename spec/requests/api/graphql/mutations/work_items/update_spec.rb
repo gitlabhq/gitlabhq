@@ -561,7 +561,10 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         let_it_be(:invalid_parent) { create(:work_item, :task, project: project) }
 
         context 'when parent work item type is invalid' do
-          let(:error) { "#{work_item.to_reference} cannot be added: is not allowed to add this type of parent" }
+          let(:error) do
+            "#{invalid_parent.to_reference} cannot be added: it's not allowed to add this type of parent item"
+          end
+
           let(:input) do
             { 'hierarchyWidget' => { 'parentId' => invalid_parent.to_global_id.to_s }, 'title' => 'new title' }
           end
@@ -720,7 +723,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
         let(:input) { { 'hierarchyWidget' => { 'childrenIds' => children_ids } } }
         let(:error) do
-          "#{invalid_child.to_reference} cannot be added: is not allowed to add this type of parent"
+          "#{invalid_child.to_reference} cannot be added: it's not allowed to add this type of parent item"
         end
 
         context 'when child work item type is invalid' do

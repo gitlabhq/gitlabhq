@@ -40,9 +40,9 @@ export const SEARCH_SCOPE_PLACEHOLDER = {
 };
 
 export const SEARCH_SCOPE = {
-  [USER_HANDLE]: 'user',
-  [PROJECT_HANDLE]: 'project',
-  [ISSUE_HANDLE]: 'issue',
+  [USER_HANDLE]: 'users',
+  [PROJECT_HANDLE]: 'projects',
+  [ISSUE_HANDLE]: 'issues',
 };
 
 export const GLOBAL_COMMANDS_GROUP_TITLE = s__('CommandPalette|Global Commands');

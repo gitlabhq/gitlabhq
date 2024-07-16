@@ -5,22 +5,22 @@ require 'spec_helper'
 RSpec.describe Gitlab::Suggestions::FileSuggestion do
   def create_suggestion(new_line, to_content, lines_above = 0, lines_below = 0)
     position = Gitlab::Diff::Position.new(old_path: file_path,
-                                          new_path: file_path,
-                                          old_line: nil,
-                                          new_line: new_line,
-                                          diff_refs: merge_request.diff_refs)
+      new_path: file_path,
+      old_line: nil,
+      new_line: new_line,
+      diff_refs: merge_request.diff_refs)
 
     diff_note = create(:diff_note_on_merge_request,
-                       noteable: merge_request,
-                       position: position,
-                       project: project)
+      noteable: merge_request,
+      position: position,
+      project: project)
 
     create(:suggestion,
-           :content_from_repo,
-           note: diff_note,
-           lines_above: lines_above,
-           lines_below: lines_below,
-           to_content: to_content)
+      :content_from_repo,
+      note: diff_note,
+      lines_above: lines_above,
+      lines_below: lines_below,
+      to_content: to_content)
   end
 
   let_it_be(:user) { create(:user) }
@@ -49,8 +49,8 @@ RSpec.describe Gitlab::Suggestions::FileSuggestion do
     def stub_suggestions(line_index_spans)
       fake_suggestions = line_index_spans.map do |span|
         double("Suggestion",
-               from_line_index: span[:from_line_index],
-               to_line_index: span[:to_line_index])
+          from_line_index: span[:from_line_index],
+          to_line_index: span[:to_line_index])
       end
 
       allow(file_suggestion).to(receive(:suggestions).and_return(fake_suggestions))

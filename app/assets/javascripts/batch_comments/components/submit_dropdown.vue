@@ -206,7 +206,7 @@ export default {
 <template>
   <gl-disclosure-dropdown
     ref="submitDropdown"
-    placement="right"
+    placement="bottom-end"
     class="submit-review-dropdown"
     :class="{ 'submit-review-dropdown-animated': shouldAnimateReviewButton }"
     data-testid="submit-review-dropdown"

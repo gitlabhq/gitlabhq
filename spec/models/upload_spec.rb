@@ -62,6 +62,8 @@ RSpec.describe Upload do
   end
 
   describe 'scopes' do
+    let_it_be(:project) { create(:project) }
+
     describe '.for_model_type_and_id' do
       let(:avatar_uploads) { create_list(:upload, 2) }
       let(:attachment_uploads) { create_list(:upload, 2, :attachment_upload) }
@@ -71,6 +73,27 @@ RSpec.describe Upload do
 
         expect(described_class.for_model_type_and_id(Note, model_ids))
           .to contain_exactly(attachment_uploads.first)
+      end
+    end
+
+    describe '.for_uploader' do
+      let_it_be(:avatar_upload) { create(:upload, model: project) }
+      let_it_be(:favicon_upload) { create(:upload, :favicon_upload, model: project) }
+
+      it 'returns uploads matching given uploader class' do
+        expect(described_class.for_uploader(AvatarUploader)).to contain_exactly(avatar_upload)
+      end
+
+      it 'returns uploads matching given uploader class name' do
+        expect(described_class.for_uploader('AvatarUploader')).to contain_exactly(avatar_upload)
+      end
+    end
+
+    describe '.order_by_created_at_desc' do
+      let(:uploads) { create_list(:upload, 3, model: project) }
+
+      it 'returns uploads ordered by created_at descending' do
+        expect(described_class.order_by_created_at_desc).to eq(uploads.reverse)
       end
     end
   end

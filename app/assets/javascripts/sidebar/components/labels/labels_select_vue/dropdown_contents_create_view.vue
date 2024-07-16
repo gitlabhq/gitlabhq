@@ -54,7 +54,7 @@ export default {
 </script>
 
 <template>
-  <div class="labels-select-contents-create js-labels-create">
+  <div class="labels-select-contents-create">
     <div class="dropdown-title gl-flex gl-items-center pt-0 pb-2 gl-mb-0">
       <gl-button
         :aria-label="__('Go back')"
@@ -77,7 +77,7 @@ export default {
     <div class="dropdown-input">
       <gl-form-input
         v-model.trim="labelTitle"
-        :placeholder="__('Name new label')"
+        :placeholder="__('Label name')"
         :autofocus="true"
         data-testid="label-title"
       />

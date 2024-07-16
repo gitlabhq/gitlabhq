@@ -33,6 +33,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
 
     it 'shows project issues link in breadcrumbs' do
       within_testid('breadcrumb-links') do
+        expect(page).to have_link(project.name, href: project_path(project))
         expect(page).to have_link('Issues', href: project_issues_path(project))
       end
     end

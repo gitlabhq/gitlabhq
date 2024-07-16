@@ -20,7 +20,7 @@ export default {
 <template>
   <a
     :id="lineId"
-    class="gl-inline-block gl-w-8 gl-pr-2 -gl-ml-8 gl-select-none gl-text-right"
+    class="gl-inline-block gl-w-9 gl-pr-2 -gl-ml-9 gl-select-none gl-text-right"
     :href="lineHref"
   >
     {{ lineNumber }}

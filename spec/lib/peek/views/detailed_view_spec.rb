@@ -52,7 +52,7 @@ RSpec.describe Peek::Views::DetailedView, :request_store do
         expect(threshold_view.results)
           .to include(details: a_collection_containing_exactly(
             { duration: 1.0, warnings: [] },
-                       { duration: 6.0, warnings: ['6.0 over 5'] }
+            { duration: 6.0, warnings: ['6.0 over 5'] }
           ))
       end
     end
@@ -74,7 +74,7 @@ RSpec.describe Peek::Views::DetailedView, :request_store do
       expect(no_threshold_view.results)
         .to include(details: a_collection_containing_exactly(
           { duration: 100000, warnings: [] },
-                     { duration: 100000, warnings: [] }
+          { duration: 100000, warnings: [] }
         ))
     end
   end

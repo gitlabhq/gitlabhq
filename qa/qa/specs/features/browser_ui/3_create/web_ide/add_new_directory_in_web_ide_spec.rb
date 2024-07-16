@@ -23,7 +23,7 @@ module QA
           Page::Project::WebIDE::VSCode.perform(&:wait_for_ide_to_load)
         end
 
-        it 'throws an error', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386760' do
+        it 'throws an error', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386760' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.create_new_folder(directory_name)
 
@@ -40,7 +40,7 @@ module QA
           Page::Project::WebIDE::VSCode.perform(&:wait_for_ide_to_load)
         end
 
-        it 'shows successfully but not able to be committed',
+        it 'shows successfully but not able to be committed', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386761' do
           Page::Project::WebIDE::VSCode.perform do |ide|
             ide.create_new_folder(directory_name)

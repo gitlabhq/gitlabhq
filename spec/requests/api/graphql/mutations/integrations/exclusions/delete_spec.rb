@@ -6,6 +6,7 @@ RSpec.describe Mutations::Integrations::Exclusions::Delete, feature_category: :i
   include GraphqlHelpers
 
   let_it_be(:project) { create(:project) }
+  let_it_be(:project2) { create(:project, :in_subgroup) }
   let_it_be(:admin_user) { create(:admin) }
   let_it_be(:user) { create(:user) }
   let(:current_user) { admin_user }
@@ -48,6 +49,36 @@ RSpec.describe Mutations::Integrations::Exclusions::Delete, feature_category: :i
 
       context 'and the integration is active for the instance' do
         let!(:instance_integration) { create(:beyond_identity_integration) }
+
+        context 'and there is a group exclusion', :sidekiq_inline do
+          let!(:group_exclusion) do
+            create(:beyond_identity_integration, group: project2.root_namespace, active: false, inherit_from_id: nil,
+              instance: false)
+          end
+
+          let(:args) do
+            {
+              'integrationName' => 'BEYOND_IDENTITY',
+              'projectIds' => project_ids,
+              'groupIds' => [project2.root_namespace.to_global_id.to_s]
+            }
+          end
+
+          it 'enables the integration for the specified project' do
+            resolve_mutation
+
+            existing_exclusion.reload
+            expect(existing_exclusion).to be_activated
+            expect(existing_exclusion.inherit_from_id).to eq(instance_integration.id)
+            expect(project2.beyond_identity_integration).to be_activated
+            expect(project2.beyond_identity_integration.inherit_from_id).to eq(instance_integration.id)
+            exclusion_response = graphql_data['integrationExclusionDelete']['exclusions']
+            expect(exclusion_response).to include(a_hash_including({ 'group' => nil,
+'project' => a_hash_including({ 'id' => project.to_global_id.to_s }) }))
+            expect(exclusion_response).to include(a_hash_including({ 'project' => nil,
+'group' => a_hash_including({ 'id' => project2.root_namespace.to_global_id.to_s }) }))
+          end
+        end
 
         it 'enables the integration for the specified project' do
           resolve_mutation

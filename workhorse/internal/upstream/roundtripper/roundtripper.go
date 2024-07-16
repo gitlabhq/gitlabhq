@@ -50,11 +50,11 @@ func newBackendRoundTripper(backend *url.URL, socket string, proxyHeadersTimeout
 	switch {
 	case backend != nil && socket == "":
 		address := mustParseAddress(backend.Host, backend.Scheme)
-		transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
+		transport.DialContext = func(ctx context.Context, _, _ string) (net.Conn, error) {
 			return dial(ctx, "tcp", address)
 		}
 	case socket != "":
-		transport.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
+		transport.DialContext = func(ctx context.Context, _, _ string) (net.Conn, error) {
 			return dial(ctx, "unix", socket)
 		}
 	default:

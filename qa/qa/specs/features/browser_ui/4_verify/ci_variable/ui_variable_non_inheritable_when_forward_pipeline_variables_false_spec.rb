@@ -15,7 +15,7 @@ module QA
       end
 
       it(
-        'is not inheritable when forward:pipeline_variables is false',
+        'is not inheritable when forward:pipeline_variables is false', :blocking,
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358199'
       ) do
@@ -29,7 +29,7 @@ module QA
       end
 
       it(
-        'is not inheritable by default',
+        'is not inheritable by default', :blocking,
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358200'
       ) do

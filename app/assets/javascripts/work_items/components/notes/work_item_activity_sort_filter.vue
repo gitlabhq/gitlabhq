@@ -97,7 +97,7 @@ export default {
       :disabled="loading"
       :items="items"
       :selected="sortFilterProp"
-      placement="right"
+      placement="bottom-end"
       size="small"
       @select="fetchFilteredDiscussions"
     />

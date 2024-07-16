@@ -27,9 +27,8 @@ export default class CustomMetrics extends PrometheusMetrics {
     this.$monitoredCustomMetricsEmpty = this.$monitoredCustomMetricsPanel.find(
       '.js-empty-custom-metrics',
     );
-    this.$monitoredCustomMetricsList = this.$monitoredCustomMetricsPanel.find(
-      '.js-custom-metrics-list',
-    );
+    this.$monitoredCustomMetricsList =
+      this.$monitoredCustomMetricsPanel.find('.js-custom-metrics-list');
     this.$monitoredCustomMetricsNoIntegrationText = this.$monitoredCustomMetricsPanel.find(
       '.js-no-active-integration-text',
     );
@@ -46,9 +45,8 @@ export default class CustomMetrics extends PrometheusMetrics {
       this.$monitoredCustomMetricsEmpty,
     ];
 
-    this.activeCustomMetricsEndpoint = this.$monitoredCustomMetricsPanel.data(
-      'active-custom-metrics',
-    );
+    this.activeCustomMetricsEndpoint =
+      this.$monitoredCustomMetricsPanel.data('active-custom-metrics');
     this.environmentsDataEndpoint = this.$monitoredCustomMetricsPanel.data(
       'environments-data-endpoint',
     );

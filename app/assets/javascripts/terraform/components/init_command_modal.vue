@@ -75,7 +75,7 @@ terraform init \\
     </p>
 
     <div class="gl-display-flex">
-      <pre class="gl-bg-gray gl-white-space-pre-wrap" data-testid="terraform-init-command">{{
+      <pre class="gl-bg-gray gl-whitespace-pre-wrap" data-testid="terraform-init-command">{{
         getModalInfoCopyStr()
       }}</pre>
       <modal-copy-button

@@ -21,10 +21,13 @@ For an overview, see [Jira development panel integration](https://www.youtube.co
 
 ## Feature availability
 
+> - Ability to delete branches [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `jira_connect_remove_branches`. Disabled by default.
+> - Ability to delete branches made [generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158224) in GitLab 17.2. Feature flag `jira_connect_remove_branches` removed.
+
 This table shows the features available with the Jira DVCS connector and the GitLab for Jira Cloud app:
 
 | Feature                              | Jira DVCS connector    | GitLab for Jira Cloud app |
-|--------------------------------------|------------------------|---------------------------|
+|:-------------------------------------|:-----------------------|:--------------------------|
 | Smart Commits                        | **{check-circle}** Yes | **{check-circle}** Yes    |
 | Sync merge requests                  | **{check-circle}** Yes | **{check-circle}** Yes    |
 | Sync branches                        | **{check-circle}** Yes | **{check-circle}** Yes    |
@@ -35,7 +38,7 @@ This table shows the features available with the Jira DVCS connector and the Git
 | Sync feature flags                   | **{dotted-circle}** No | **{check-circle}** Yes    |
 | Sync interval                        | Up to 60 minutes       | Real time                 |
 | Create branches                      | **{dotted-circle}** No | **{check-circle}** Yes (GitLab.com only) |
-| Delete branches                      | **{dotted-circle}** No | **{check-circle}** Yes ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148712) in GitLab 17.1)  |
+| Delete branches                      | **{dotted-circle}** No | **{check-circle}** Yes    |
 | Create a merge request from a branch | **{check-circle}** Yes | **{check-circle}** Yes    |
 | Create a branch from a Jira issue    | **{dotted-circle}** No | **{check-circle}** Yes    |
 

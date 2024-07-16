@@ -115,3 +115,21 @@ pipeline-tier-3:
   extends:
     - .pipeline-tier-base
     - .preflight:rules:pipeline-tier-3
+
+bundle-size-review:
+  extends:
+    - .default-retry
+    - .default-utils-before_script
+    - .assets-compile-cache
+    - .repo-from-artifacts
+    - .frontend:rules:bundle-size-review
+  stage: preflight
+  script:
+    - yarn_install_script
+    - scripts/bundle_size_review
+  artifacts:
+    when: always
+    name: bundle-size-review
+    expire_in: 31d
+    paths:
+      - bundle-size-review/

@@ -1,5 +1,6 @@
 <script>
-import { GlLoadingIcon, GlEmptyState, GlKeysetPagination } from '@gitlab/ui';
+import { GlLoadingIcon, GlKeysetPagination } from '@gitlab/ui';
+import projectsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-projects-md.svg?url';
 import { s__, __ } from '~/locale';
 import ProjectsList from '~/vue_shared/components/projects_list/projects_list.vue';
 import { ACTION_DELETE } from '~/vue_shared/components/list_actions/constants';
@@ -15,8 +16,10 @@ import {
 import { SORT_ITEM_NAME, SORT_DIRECTION_ASC } from '../constants';
 import projectsQuery from '../graphql/queries/projects.query.graphql';
 import NewProjectButton from './new_project_button.vue';
+import GroupsAndProjectsEmptyState from './groups_and_projects_empty_state.vue';
 
 export default {
+  projectsEmptyStateSvgPath,
   i18n: {
     errorMessage: s__(
       'Organization|An error occurred loading the projects. Please refresh the page to try again.',
@@ -35,13 +38,12 @@ export default {
   components: {
     ProjectsList,
     GlLoadingIcon,
-    GlEmptyState,
     GlKeysetPagination,
     NewProjectButton,
+    GroupsAndProjectsEmptyState,
   },
   inject: {
     organizationGid: {},
-    projectsEmptyStateSvgPath: {},
   },
   props: {
     shouldShowEmptyStateButtons: {
@@ -146,16 +148,6 @@ export default {
     isLoading() {
       return this.$apollo.queries.projects.loading;
     },
-    emptyStateProps() {
-      const baseProps = {
-        svgHeight: 144,
-        svgPath: this.projectsEmptyStateSvgPath,
-        title: this.$options.i18n.emptyState.title,
-        description: this.$options.i18n.emptyState.description,
-      };
-
-      return baseProps;
-    },
     timestampType() {
       return timestampType(this.sortName);
     },
@@ -208,9 +200,15 @@ export default {
       <gl-keyset-pagination v-bind="pageInfo" @prev="onPrev" @next="onNext" />
     </div>
   </div>
-  <gl-empty-state v-else v-bind="emptyStateProps">
+  <groups-and-projects-empty-state
+    v-else
+    :svg-path="$options.projectsEmptyStateSvgPath"
+    :title="$options.i18n.emptyState.title"
+    :description="$options.i18n.emptyState.description"
+    :search="search"
+  >
     <template v-if="shouldShowEmptyStateButtons" #actions>
       <new-project-button />
     </template>
-  </gl-empty-state>
+  </groups-and-projects-empty-state>
 </template>

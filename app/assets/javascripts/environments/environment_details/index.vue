@@ -117,9 +117,7 @@ export default {
     <gl-tab :query-param-value="$options.params.deployments" :title-link-class="linkClass(1)">
       <template #title>
         {{ $options.i18n.deploymentHistory }}
-        <gl-badge size="sm" class="gl-tab-counter-badge">{{
-          environment.deploymentsDisplayCount
-        }}</gl-badge>
+        <gl-badge class="gl-tab-counter-badge">{{ environment.deploymentsDisplayCount }}</gl-badge>
       </template>
 
       <deployment-history

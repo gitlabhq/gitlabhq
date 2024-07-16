@@ -448,3 +448,7 @@ end
 
 These tests do not run within a database transaction, as we use a deletion database
 cleanup strategy. Do not depend on a transaction being present.
+
+When testing migrations that alter seeded data in `deletion_except_tables`, you may add the
+`:migration_with_transaction` metadata so the test runs within a transaction and the data
+is rolled back to their original values.

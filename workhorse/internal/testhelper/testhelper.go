@@ -15,12 +15,15 @@ import (
 	"syscall"
 	"testing"
 
+	"github.com/dlclark/regexp2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/labkit/log"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/secret"
+
+	"go.uber.org/goleak"
 )
 
 const (
@@ -141,6 +144,27 @@ func ReadAll(t *testing.T, r io.Reader) []byte {
 	b, err := io.ReadAll(r)
 	require.NoError(t, err)
 	return b
+}
+
+// VerifyNoGoroutines stops any known global Goroutine handlers and verifies that no
+// lingering Goroutines are present.
+func VerifyNoGoroutines(m *testing.M) {
+	code := m.Run()
+
+	regexp2.StopTimeoutClock() // https://github.com/dlclark/regexp2/issues/63
+
+	err := goleak.Find(
+		// Workaround for https://github.com/census-instrumentation/opencensus-go/issues/1191#issuecomment-610440163
+		goleak.IgnoreTopFunction("go.opencensus.io/stats/view.(*worker).start"),
+		// Workaround for https://github.com/getsentry/raven-go/issues/90
+		goleak.IgnoreTopFunction("github.com/getsentry/raven-go.(*Client).worker"),
+	)
+
+	if err != nil {
+		panic(err)
+	}
+
+	os.Exit(code)
 }
 
 // ParseJWT parses the given JWT token and returns the parsed claims.

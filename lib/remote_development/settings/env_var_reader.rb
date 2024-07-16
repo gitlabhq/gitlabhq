@@ -10,7 +10,7 @@ module RemoteDevelopment
       REQUIRED_ENV_VAR_PREFIX = "GITLAB_REMOTE_DEVELOPMENT"
 
       # @param [Hash] context
-      # @return [Result]
+      # @return [Gitlab::Fp::Result]
       def self.read(context)
         err_result = nil
         context[:settings].each_key do |setting_name|
@@ -27,8 +27,8 @@ module RemoteDevelopment
               setting_type: context[:setting_types][setting_name]
             )
           rescue RuntimeError => e
-            # err_result will be set to a non-nil Result.err if casting fails
-            err_result = Result.err(SettingsEnvironmentVariableReadFailed.new(details: e.message))
+            # err_result will be set to a non-nil Gitlab::Fp::Result.err if casting fails
+            err_result = Gitlab::Fp::Result.err(SettingsEnvironmentVariableReadFailed.new(details: e.message))
           end
 
           # ENV var matches an existing setting and is of the correct type, use its value to override the default value
@@ -37,7 +37,7 @@ module RemoteDevelopment
 
         return err_result if err_result
 
-        Result.ok(context)
+        Gitlab::Fp::Result.ok(context)
       end
 
       # @param [String] env_var_name

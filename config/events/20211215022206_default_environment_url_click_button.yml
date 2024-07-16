@@ -1,9 +1,6 @@
 description: "Click environment URL button"
 category: default
 action: click_button
-label_description: "`environment_url`"
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: environments
@@ -16,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`environment_url`"

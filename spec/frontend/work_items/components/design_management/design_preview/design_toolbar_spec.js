@@ -1,5 +1,5 @@
 import { nextTick } from 'vue';
-import { GlSkeletonLoader } from '@gitlab/ui';
+import { GlSkeletonLoader, GlButton } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import DesignToolbar from '~/work_items/components/design_management/design_preview/design_toolbar.vue';
 import CloseButton from '~/work_items/components/design_management/design_preview/close_button.vue';
@@ -39,6 +39,12 @@ describe('DesignToolbar', () => {
 
     expect(wrapper.find('h2').text()).toContain(workItemTitle);
     expect(wrapper.find('h2').text()).toContain(mockDesign.filename);
+  });
+
+  it('renders download button with correct link', () => {
+    createComponent();
+
+    expect(wrapper.findComponent(GlButton).attributes('href')).toBe(mockDesign.image);
   });
 
   it('renders close button', () => {

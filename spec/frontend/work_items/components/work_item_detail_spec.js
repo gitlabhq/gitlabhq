@@ -28,6 +28,7 @@ import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
+import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 
 import {
   groupWorkItemByIidResponseFactory,
@@ -37,6 +38,7 @@ import {
   epicType,
   mockWorkItemCommentNote,
   mockBlockingLinkedItem,
+  allowedChildrenTypesResponse,
 } from '../mock_data';
 
 jest.mock('~/lib/utils/common_utils');
@@ -70,6 +72,8 @@ describe('WorkItemDetail component', () => {
   const workItemUpdatedSubscriptionHandler = jest
     .fn()
     .mockResolvedValue({ data: { workItemUpdated: null } });
+
+  const allowedChildrenTypesHandler = jest.fn().mockResolvedValue(allowedChildrenTypesResponse);
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -106,6 +110,8 @@ describe('WorkItemDetail component', () => {
     error = undefined,
     workItemsAlphaEnabled = false,
     workItemsBeta = false,
+    namespaceLevelWorkItems = true,
+    hasSubepicsFeature = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -113,6 +119,7 @@ describe('WorkItemDetail component', () => {
         [groupWorkItemByIidQuery, groupSuccessHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
+        [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
       ]),
       isLoggedIn: isLoggedIn(),
       propsData: {
@@ -130,10 +137,12 @@ describe('WorkItemDetail component', () => {
         glFeatures: {
           workItemsAlpha: workItemsAlphaEnabled,
           workItemsBeta,
+          namespaceLevelWorkItems,
         },
         hasIssueWeightsFeature: true,
         hasIterationsFeature: true,
         hasOkrsFeature: true,
+        hasSubepicsFeature,
         hasIssuableHealthStatusFeature: true,
         projectNamespace: 'namespace',
         fullPath: 'group/project',
@@ -176,6 +185,10 @@ describe('WorkItemDetail component', () => {
     it('skips the work item updated subscription', () => {
       expect(workItemUpdatedSubscriptionHandler).not.toHaveBeenCalled();
     });
+
+    it('does not fetch allowed children types for current work item', () => {
+      expect(allowedChildrenTypesHandler).not.toHaveBeenCalled();
+    });
   });
 
   describe('when loading', () => {
@@ -210,6 +223,13 @@ describe('WorkItemDetail component', () => {
 
     it('calls the work item updated subscription', () => {
       expect(workItemUpdatedSubscriptionHandler).toHaveBeenCalledWith({ id });
+    });
+
+    it('fetches allowed children types for current work item', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(allowedChildrenTypesHandler).toHaveBeenCalled();
     });
   });
 
@@ -315,7 +335,7 @@ describe('WorkItemDetail component', () => {
       expect(findAncestors().exists()).toBe(false);
     });
 
-    it('does not show ancestors widget if there is not a parent', async () => {
+    it('does not show ancestors widget if there is no parent', async () => {
       createComponent({ handler: jest.fn().mockResolvedValue(workItemQueryResponseWithoutParent) });
 
       await waitForPromises();
@@ -328,6 +348,33 @@ describe('WorkItemDetail component', () => {
 
       await waitForPromises();
       expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+    });
+
+    describe('`namespace_level_work_items` is disabled', () => {
+      it('does not show ancestors widget and shows title in the header', async () => {
+        createComponent({ namespaceLevelWorkItems: false });
+
+        await waitForPromises();
+
+        expect(findAncestors().exists()).toBe(false);
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+      });
+    });
+
+    describe('`subepics` is unavailable', () => {
+      it('does not show ancestors widget and shows title in the header', async () => {
+        const epicWorkItem = workItemByIidResponseFactory({
+          workItemType: epicType,
+        });
+        const epicHandler = jest.fn().mockResolvedValue(epicWorkItem);
+
+        createComponent({ hasSubepicsFeature: false, handler: epicHandler });
+
+        await waitForPromises();
+
+        expect(findAncestors().exists()).toBe(false);
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-block', 'gl-w-full']);
+      });
     });
 
     describe('with parent', () => {
@@ -463,8 +510,13 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('hierarchy widget', () => {
-    it('does not render children tree by default', async () => {
-      createComponent();
+    it('does not render children tree by when widget is not present', async () => {
+      const workItemWithoutHierarchy = workItemByIidResponseFactory({
+        hierarchyWidgetPresent: false,
+      });
+      const handler = jest.fn().mockResolvedValue(workItemWithoutHierarchy);
+      createComponent({ handler });
+
       await waitForPromises();
 
       expect(findHierarchyTree().exists()).toBe(false);
@@ -696,11 +748,11 @@ describe('WorkItemDetail component', () => {
       expect(findWorkItemDesigns().exists()).toBe(true);
     });
 
-    it('does not render if within a drawer', async () => {
+    it('renders if within a drawer', async () => {
       createComponent({ isDrawer: true });
       await waitForPromises();
 
-      expect(findWorkItemDesigns().exists()).toBe(false);
+      expect(findWorkItemDesigns().exists()).toBe(true);
     });
   });
 
@@ -754,6 +806,17 @@ describe('WorkItemDetail component', () => {
       await nextTick();
 
       expect(findWorkItemDescription().props('editMode')).toBe(true);
+    });
+
+    it('sticky header is visible by default', () => {
+      expect(findStickyHeader().exists()).toBe(true);
+    });
+
+    it('sticky header is not visible if is drawer view', async () => {
+      createComponent({ isDrawer: true });
+      await waitForPromises();
+
+      expect(findStickyHeader().exists()).toBe(false);
     });
   });
 

@@ -10,7 +10,7 @@ RSpec.describe Packages::PackageFile, type: :model, feature_category: :package_r
   let_it_be(:package_file3) { create(:package_file, :xml, file_name: 'formatted.zip') }
   let_it_be(:package_file4) { create(:package_file, :nuget, file_name: 'package-1.0.0.nupkg') }
   let_it_be(:package_file5) { create(:package_file, :xml, file_name: 'my_dir%2Fformatted') }
-  let_it_be(:debian_package) { create(:debian_package, project: project, with_changes_file: true) }
+  let_it_be_with_reload(:debian_package) { create(:debian_package, project: project, with_changes_file: true) }
 
   it_behaves_like 'having unique enum values'
   it_behaves_like 'destructible', factory: :package_file

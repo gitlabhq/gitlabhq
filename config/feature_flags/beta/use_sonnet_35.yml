@@ -1,0 +1,9 @@
+---
+name: use_sonnet_35
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/468334
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157696
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/469499
+milestone: '17.2'
+group: group::ai framework
+type: beta
+default_enabled: true

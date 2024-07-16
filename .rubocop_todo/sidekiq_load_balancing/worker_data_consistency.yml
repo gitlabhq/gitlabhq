@@ -337,7 +337,6 @@ SidekiqLoadBalancing/WorkerDataConsistency:
     - 'ee/app/workers/geo/container_repository_sync_worker.rb'
     - 'ee/app/workers/geo/create_repository_updated_event_worker.rb'
     - 'ee/app/workers/geo/destroy_worker.rb'
-    - 'ee/app/workers/geo/event_worker.rb'
     - 'ee/app/workers/geo/file_removal_worker.rb'
     - 'ee/app/workers/geo/hashed_storage_attachments_migration_worker.rb'
     - 'ee/app/workers/geo/metrics_update_worker.rb'

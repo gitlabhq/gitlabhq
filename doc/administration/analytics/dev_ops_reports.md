@@ -60,7 +60,7 @@ You can use DevOps Adoption to:
 
 To view DevOps Reports:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Analytics > DevOps Reports**.
 
 The **Overview tab** displays the number of features adopted in each category by the groups that use DevOps Reports.
@@ -71,6 +71,6 @@ The **Adoption by group** table lists the features used by each group.
 
 To add a group to or remove a group from DevOps Reports:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Analytics > DevOps Reports**.
 1. From the **Add or remove groups** dropdown list, select the group you want to add or remove.

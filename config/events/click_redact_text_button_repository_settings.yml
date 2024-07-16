@@ -1,0 +1,18 @@
+---
+description: Tracks when the redact text feature is used.
+internal_events: true
+action: click_redact_text_button_repository_settings
+identifiers:
+- project
+- namespace
+- user
+product_group: source_code
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158034
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

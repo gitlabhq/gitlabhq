@@ -20,7 +20,7 @@ DETAILS:
 Configure the following call timeouts to make sure that long-running Gitaly calls don't needlessly take up resources. To
 configure the call timeouts:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Preferences**.
 1. Expand the **Gitaly timeouts** section.
 1. Set each timeout as required.

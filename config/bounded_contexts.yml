@@ -31,6 +31,7 @@ domains:
       - ai_abstraction_layer
       - code_suggestions # Also in CodeSuggestions
       - cloud_connector  # Also in CloudConnector
+      - duo_workflow
 
   Analytics:
     description:
@@ -80,7 +81,9 @@ domains:
       - pipeline_composition
       - secrets_management
       - fleet_visibility
-      - build_artifacts
+      - job_artifacts
+      - pipeline_reports
+      - secure_artifacts
       - code_testing
 
   CloudConnector:
@@ -98,7 +101,7 @@ domains:
     feature_categories:
       - code_suggestions
 
-  Compliance:
+  ComplianceManagement:
     description:
     feature_categories:
       - compliance_management
@@ -115,7 +118,7 @@ domains:
       - dependency_management
 
   DependencyProxy:
-    description:
+    description: Dependency Proxy for container images.
     feature_categories:
       - virtual_registry
       - package_registry
@@ -224,7 +227,7 @@ domains:
       - cell
 
   Packages:
-    description:
+    description: Package registry implementation for each supported format (such as Maven, NPM, NuGet, ...).
     feature_categories:
       - package_registry
       - mlops
@@ -307,6 +310,11 @@ domains:
     feature_categories:
       - consumables_cost_management
 
+  VirtualRegistries:
+    description: Virtual registries implementation that manage artifacts (packages or container images) from external upstreams.
+    feature_categories:
+      - virtual_registry
+
   Vulnerabilities:
     description: Vulnerability management
     feature_categories:
@@ -317,7 +325,7 @@ domains:
     feature_categories:
       - webhooks
 
-  WebIDE:
+  WebIde:
     description:
     feature_categories:
       - web_ide

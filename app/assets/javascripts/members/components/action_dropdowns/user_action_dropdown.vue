@@ -112,7 +112,7 @@ export default {
     icon="ellipsis_v"
     category="tertiary"
     no-caret
-    placement="right"
+    placement="bottom-end"
     data-testid="user-action-dropdown"
   >
     <disable-two-factor-dropdown-item

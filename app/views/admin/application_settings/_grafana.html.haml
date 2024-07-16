@@ -5,7 +5,7 @@
     .form-group
       = f.gitlab_ui_checkbox_component :grafana_enabled,
       s_('ApplicationSettings|Add a link to Grafana'),
-      help_text: s_('ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin Area.')
+      help_text: s_('ApplicationSettings|A Metrics Dashboard menu item appears in the Monitoring section of the Admin area.')
     .form-group
       = f.label :grafana_url, _('Grafana URL'), class: 'label-bold'
       = f.text_field :grafana_url, class: 'form-control gl-form-input', placeholder: '/-/grafana'

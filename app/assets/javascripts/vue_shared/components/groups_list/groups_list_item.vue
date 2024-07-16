@@ -167,7 +167,6 @@ export default {
                 <div class="gl-px-2">
                   <gl-badge
                     v-if="shouldShowAccessLevel"
-                    size="sm"
                     class="gl-block"
                     data-testid="access-level-badge"
                     >{{ accessLevelLabel }}</gl-badge

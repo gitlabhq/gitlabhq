@@ -4,7 +4,7 @@ group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Geo sites Admin Area
+# Geo sites Admin area
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -15,7 +15,7 @@ You can configure various settings for GitLab Geo sites. For more information, s
 
 On either the primary or secondary site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
 
 ## Common settings
@@ -37,7 +37,7 @@ the **primary** node is listed first as `Primary site`.
 
 | Setting                   | Description |
 |---------------------------|-------------|
-| Selective synchronization | Enable Geo [selective sync](../administration/geo/replication/configuration.md#selective-synchronization) for this **secondary** site. |
+| Selective synchronization | Enable Geo [selective sync](../administration/geo/replication/selective_synchronization.md) for this **secondary** site. |
 | Repository sync capacity  | Number of concurrent requests this **secondary** site makes to the **primary** site when backfilling repositories. |
 | File sync capacity        | Number of concurrent requests this **secondary** site makes to the **primary** site when backfilling files. |
 
@@ -73,13 +73,13 @@ the primary uses the secondary's internal URL to contact it directly.
 
 The internal URL defaults to external URL. To change it:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
 1. Select **Edit** on the site you want to customize.
 1. Edit the internal URL.
 1. Select **Save changes**.
 
-When enabled, the Admin Area for Geo shows replication details for each site directly
+When enabled, the Admin area for Geo shows replication details for each site directly
 from the primary site's UI, and through the Geo secondary proxy, if enabled.
 
 WARNING:

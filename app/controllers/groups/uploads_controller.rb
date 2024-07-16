@@ -8,11 +8,17 @@ class Groups::UploadsController < Groups::ApplicationController
 
   before_action :authorize_upload_file!, only: [:create, :authorize]
   before_action :verify_workhorse_api!, only: [:authorize]
+  before_action :disallow_new_uploads!, only: :show
 
   feature_category :portfolio_management
   urgency :low, [:show]
 
   private
+
+  # Starting with this version, #show is handled by Banzai::UploadsController#show
+  def disallow_new_uploads!
+    render_404 if upload_version_at_least?(ID_BASED_UPLOAD_PATH_VERSION)
+  end
 
   def upload_model_class
     Group

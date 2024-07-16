@@ -88,7 +88,7 @@ export default {
   <gl-tab>
     <template #title>
       {{ $options.i18n.servicesTitle }}
-      <gl-badge size="sm" class="gl-tab-counter-badge">{{ servicesItems.length }}</gl-badge>
+      <gl-badge class="gl-tab-counter-badge">{{ servicesItems.length }}</gl-badge>
     </template>
 
     <gl-loading-icon v-if="servicesLoading" />

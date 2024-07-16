@@ -103,6 +103,7 @@ describe('List Page', () => {
         RegistryHeader,
         TitleArea,
         DeleteImage,
+        MetadataContainerScanning: true,
       },
       mocks: {
         $toast,

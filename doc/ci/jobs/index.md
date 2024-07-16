@@ -104,7 +104,6 @@ You can't use these keywords as job names:
 - `image`
 - `services`
 - `stages`
-- `types`
 - `before_script`
 - `after_script`
 - `variables`

@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def self.wrapper
-        lambda do |_, inner|
+        ->(_, inner) do
           ::Gitlab::SafeRequestStore.ensure_request_store do
             inner.call
           end

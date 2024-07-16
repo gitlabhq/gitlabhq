@@ -1,29 +1,11 @@
 ---
-owning-stage: "~devops::data stores" # because Tenant Scale is under this
-description: 'Cells ADR 003: One GKE Cluster per Cell'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/003_num_gke_clusters_per_cell/'
+remove_date: '2025-07-08'
 ---
 
-# Cells ADR 003: One GKE Cluster per Cell
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/decisions/003_num_gke_clusters_per_cell/).
 
-## Context
-
-In [this issue](https://gitlab.com/gitlab-com/gl-infra/production-engineering/-/issues/25068) we discussed:
-
-- Whether we should have multiple Cells in one GKE cluster, or just a single one
-- Whether a Cell should run on one GKE cluster or multiple clusters
-
-## Decision
-
-It was decided that we should have a single GKE cluster per Cell. The motivating factor behind this decision is simplicity: the Cells tooling will harness the existing Dedicated tooling, which in turn uses the [GitLab Environment Toolkit (GET)](https://gitlab.com/gitlab-org/gitlab-environment-toolkit) to deploy the [Reference Architectures](../../../../administration/reference_architectures/index.md). None of the Reference Architectures support running a single GitLab instance across multiple GKE clusters.
-
-The decision made in [ADR 002](002_gcp_project_boundary.md) to have one Cell per GCP project, along with the choice made above, precludes the possibility of having multiple GKE clusters serve a single Cell.
-
-## Consequences
-
-Having a single GKE cluster per Cell will make provisioning and management of a Cell easier as there will be no need to build in complex routing logic between GKE clusters.
-
-Should we ever hit the limit on nodes per cluster ([currently 15000](https://cloud.google.com/kubernetes-engine/quotas)), we will be limited to vertically scaling nodes rather than being able to spread the workload over multiple clusters. However, since our current production setup for GitLab.com only uses around 300 nodes, this is unlikely to occur for quite some time, if ever.
-
-## Alternatives
-
-Alternatives discussed above would necessitate significant structural changes to GET, such that it would arguably be more efficient (and less disruptive) to simply not use any existing tooling. However, this goes against the overall Cells infrastructure [philosophy](../infrastructure/index.md).
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

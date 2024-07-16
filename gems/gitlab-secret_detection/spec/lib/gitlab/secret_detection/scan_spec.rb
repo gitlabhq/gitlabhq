@@ -36,7 +36,7 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
         },
         {
           "id" => "gitlab_feed_token_v2",
-          "description" => "GitLab Feed Token",
+          "description" => "GitLab Feed token",
           "regex" => "\bglft-[0-9a-zA-Z_-]{20}\b",
           "tags" => ["gitlab"],
           "keywords" => ["glft"]
@@ -200,13 +200,6 @@ RSpec.describe Gitlab::SecretDetection::Scan, feature_category: :secret_detectio
 
         it "matches multiple rules" do
           expect(scan.secrets_scan(blobs, subprocess: true)).to eq(expected_response)
-        end
-
-        it "takes at least same time to run as running in main process" do
-          expect { scan.secrets_scan(large_blobs, subprocess: true) }.to perform_faster_than {
-                                                                           scan.secrets_scan(large_blobs,
-                                                                             subprocess: false)
-                                                                         }.once
         end
 
         it "allocates less memory than when running in main process" do

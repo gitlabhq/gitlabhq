@@ -156,14 +156,14 @@ version of the product:
 1. Enable **Allow use of licensed EE features** to make licensed EE features available to projects
    only if the project namespace's plan includes the feature.
 
-   1. On the left sidebar, at the bottom, select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
    1. On the left sidebar, select **Settings > General**.
    1. Expand **Account and limit**.
    1. Select the **Allow use of licensed EE features** checkbox.
    1. Select **Save changes**.
 
 1. Ensure the group you want to test the EE feature for is actually using an EE plan:
-   1. On the left sidebar, at the bottom, select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
    1. On the left sidebar, select **Overview > Groups**.
    1. Identify the group you want to modify, and select **Edit**.
    1. Scroll to **Permissions and group features**. For **Plan**, select `Ultimate`.
@@ -1290,24 +1290,25 @@ Verify your feature appears in `gon.licensed_features` in the browser console.
 EE licensed features that enhance existing functionality in the UI add new
 elements or interactions to your Vue application as components.
 
-To separate template differences, use a child EE component to separate Vue template differences.
-You must import the EE component [asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components).
+You can import EE components inside CE components to add EE features.
 
-This allows GitLab to load the correct component in EE, while in CE GitLab loads an empty component
-that renders nothing. This code **must** exist in the CE repository, in addition to the EE repository.
+Use an `ee_component` alias to import an EE component. In EE the `ee_component` import alias points
+to the `ee/app/assets/javascripts` directory. While in CE this alias will be resolved to an empty
+component that renders nothing.
 
-A CE component acts as the entry point to your EE feature. To add a EE component,
-locate it the `ee/` directory and add it with `import('ee_component/...')`:
+Here is an example of an EE component imported to a CE component:
 
-```html
+```vue
 <script>
 // app/assets/javascripts/feature/components/form.vue
 
+// In EE this will be resolved as `ee/app/assets/javascripts/feature/components/my_ee_component.vue`
+// In CE as `app/assets/javascripts/vue_shared/components/empty_component.js`
+import MyEeComponent from 'ee_component/feature/components/my_ee_component.vue';
+
 export default {
-  mixins: [glFeatureFlagMixin()],
   components: {
-    // Import an EE component from CE
-    MyEeComponent: () => import('ee_component/components/my_ee_component.vue'),
+    MyEeComponent,
   },
 };
 </script>
@@ -1321,10 +1322,15 @@ export default {
 </template>
 ```
 
+NOTE:
+An EE component can be imported
+[asynchronously](https://v2.vuejs.org/v2/guide/components-dynamic-async.html#Async-Components) if
+its rendering within CE codebase relies on some check (e.g. a feature flag check).
+
 Check `glFeatures` to ensure that the Vue components are guarded. The components render only when
 the license is present.
 
-```html
+```vue
 <script>
 // ee/app/assets/javascripts/feature/components/special_component.vue
 
@@ -1421,11 +1427,8 @@ export default {
 
 **For EE components that need different results for the same computed values, we can pass in props to the CE wrapper as seen in the example.**
 
-- **EE Child components**
-  - Since we are using the asynchronous loading to check which component to load, we'd still use the component's name, check [this example](#extend-vue-applications-with-ee-vue-components).
-
 - **EE extra HTML**
-  - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` dynamic import
+  - For the templates that have extra HTML in EE we should move it into a new component and use the `ee_else_ce` import alias
 
 #### Extend other JS code
 

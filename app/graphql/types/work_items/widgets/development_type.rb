@@ -16,6 +16,10 @@ module Types
           Types::WorkItems::ClosingMergeRequestType.connection_type,
           null: true,
           description: 'Merge requests that will close the work item when merged.'
+        field :will_auto_close_by_merge_request,
+          GraphQL::Types::Boolean,
+          null: false,
+          description: 'Whether the work item will automatically be closed when a closing merge request is merged.'
 
         def closing_merge_requests
           if object.closing_merge_requests.loaded?

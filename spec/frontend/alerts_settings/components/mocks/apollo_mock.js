@@ -43,8 +43,7 @@ export const getIntegrationsQueryResponse = {
             type: 'HTTP',
             active: true,
             name: 'Test 5',
-            url:
-              'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-5/d4875758e67334f3.json',
+            url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-5/d4875758e67334f3.json',
             token: '89eb01df471d990ff5162a1c640408cf',
             apiUrl: null,
           },
@@ -54,8 +53,7 @@ export const getIntegrationsQueryResponse = {
             type: 'HTTP',
             active: true,
             name: 'Test 9999',
-            url:
-              'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-9999/b78a566e1776cfc2.json',
+            url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-9999/b78a566e1776cfc2.json',
             token: 'f7579aa03844e07af3b1f0fca3f79f81',
             apiUrl: null,
           },
@@ -65,8 +63,7 @@ export const getIntegrationsQueryResponse = {
             type: 'HTTP',
             active: true,
             name: 'Test 6',
-            url:
-              'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-6/3e828ae28a240222.json',
+            url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-6/3e828ae28a240222.json',
             token: '6536102a607a5dd74fcdde921f2349ee',
             apiUrl: null,
           },
@@ -107,8 +104,7 @@ export const destroyIntegrationResponse = {
         type: 'HTTP',
         active: true,
         name: 'Test 5',
-        url:
-          'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-5/d4875758e67334f3.json',
+        url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-5/d4875758e67334f3.json',
         token: '89eb01df471d990ff5162a1c640408cf',
         apiUrl: null,
         payloadExample: '{"field": "value"}',
@@ -128,8 +124,7 @@ export const destroyIntegrationResponseWithErrors = {
         type: 'HTTP',
         active: true,
         name: 'Test 5',
-        url:
-          'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-5/d4875758e67334f3.json',
+        url: 'http://127.0.0.1:3000/h5bp/html5-boilerplate/alerts/notify/test-5/d4875758e67334f3.json',
         token: '89eb01df471d990ff5162a1c640408cf',
         apiUrl: null,
         payloadExample: '{"field": "value"}',
@@ -152,8 +147,7 @@ export const prometheusIntegrationsList = {
             type: 'HTTP',
             active: true,
             name: 'test',
-            url:
-              'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/eddd36969b2d3d6a.json',
+            url: 'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/eddd36969b2d3d6a.json',
             token: '7eb24af194116411ec8d66b58c6b0d2e',
             apiUrl: null,
           },
@@ -173,8 +167,7 @@ export const prometheusIntegrationsList = {
             type: 'HTTP',
             active: false,
             name: 'test',
-            url:
-              'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/bcd64c85f918a2e2.json',
+            url: 'http://192.168.1.152:3000/root/autodevops/alerts/notify/test/bcd64c85f918a2e2.json',
             token: '5c8101533d970a55d5c105f8abff2192',
             apiUrl: null,
           },

@@ -151,7 +151,7 @@ ensure these processes are close to 100% as possible during active use.
 
 On the **secondary** site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
@@ -179,7 +179,7 @@ This [content was moved to another location](background_verification.md).
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Messages**.
 1. Add a message notifying users on the maintenance window.
    You can check under **Geo > Sites** to estimate how long it
@@ -204,8 +204,8 @@ To ensure that all data is replicated to a secondary site, updates (write reques
 be disabled on the **primary** site:
 
 1. Enable [maintenance mode](../../maintenance_mode/index.md) on the **primary** site.
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Background Jobs**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Background jobs**.
 1. On the Sidekiq dashboard, select **Cron**.
 1. Select `Disable All` to disable non-Geo periodic background jobs.
 1. Select `Enable` for the following cronjobs:
@@ -223,8 +223,8 @@ be disabled on the **primary** site:
 1. If you are manually replicating any data not managed by Geo, trigger the
    final replication process now.
 1. On the **primary** site:
-   1. On the left sidebar, at the bottom, select **Admin Area**.
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, select **Monitoring > Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
       those with `geo` in the name to drop to 0.
       These queues contain work that has been submitted by your users; failing over
@@ -238,8 +238,8 @@ be disabled on the **primary** site:
       - The Geo log cursor is up to date (0 events behind).
 
 1. On the **secondary** site:
-   1. On the left sidebar, at the bottom, select **Admin Area**.
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, select **Monitoring > Background jobs**.
    1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
       queues to drop to 0 queued and 0 running jobs.
    1. [Run an integrity check](../../raketasks/check.md) to verify the integrity

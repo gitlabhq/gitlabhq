@@ -19,13 +19,6 @@ export default {
     listItemNearCompletion: s__('BetaBadge|Have a near complete user experience.'),
     listItemTestAgreement: s__('BetaBadge|Are subject to the GitLab Testing Agreement.'),
   },
-  props: {
-    size: {
-      type: String,
-      required: false,
-      default: 'md',
-    },
-  },
   methods: {
     target() {
       /**
@@ -43,7 +36,7 @@ export default {
 </script>
 
 <template>
-  <hover-badge :label="$options.i18n.badgeLabel" :size="size" :title="$options.i18n.popoverTitle">
+  <hover-badge :label="$options.i18n.badgeLabel" :title="$options.i18n.popoverTitle">
     <p>{{ $options.i18n.descriptionParagraph }}</p>
 
     <p class="gl-mb-0">{{ $options.i18n.listIntroduction }}</p>

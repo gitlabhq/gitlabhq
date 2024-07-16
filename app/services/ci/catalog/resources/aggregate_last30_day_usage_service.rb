@@ -38,6 +38,8 @@ module Ci
 
         private
 
+        # NOTE: New catalog resources added today are considered already processed
+        # because their `last_30_day_usage_count_updated_at` is defaulted to NOW().
         def done_processing?
           min_updated_at = TARGET_MODEL.minimum(:last_30_day_usage_count_updated_at)
           return true unless min_updated_at

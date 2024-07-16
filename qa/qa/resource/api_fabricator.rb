@@ -114,7 +114,7 @@ module QA
           payload = post_body.is_a?(String) ? { query: post_body } : post_body
           graphql_response = post(Runtime::API::Request.new(api_client, post_path).url, payload, args)
 
-          body = flatten_hash(parse_body(graphql_response))
+          body = extract_graphql_body(graphql_response)
 
           unless graphql_response.code == HTTP_STATUS_OK && (body[:errors].nil? || body[:errors].empty?)
             action = post_body =~ /mutation {\s+destroy/ ? 'Deletion' : 'Fabrication'
@@ -124,7 +124,7 @@ module QA
             MSG
           end
 
-          body[:id] = body.fetch(:id).split('/').last if body.key?(:id)
+          body[:id] = extract_graphql_id(body) if body.key?(:id)
 
           body.deep_transform_keys { |key| key.to_s.underscore.to_sym }
         else
@@ -220,10 +220,10 @@ module QA
         end.join('&').prepend('?').chomp('?') # prepend `?` unless the string is blank
       end
 
-      def flatten_hash(param)
-        param.each_pair.reduce({}) do |a, (k, v)|
-          v.is_a?(Hash) ? a.merge(flatten_hash(v)) : a.merge(k.to_sym => v)
-        end
+      def extract_graphql_body(graphql_response)
+        parsed_body = parse_body(graphql_response)
+        data = Hash[parsed_body.values[0]]
+        Hash[data.values[0]]
       end
 
       # Given a URL, wait for the given URL to return 200
@@ -240,6 +240,16 @@ module QA
           Runtime::Logger.debug("Resource availability check for #{resource_web_url} ... #{response_check.code}")
           response_check.code == HTTP_STATUS_OK
         end
+      end
+
+      def extract_graphql_id(item)
+        item.fetch(:id).split('/').last
+      end
+
+      def extract_graphql_resource(response, key)
+        resource = response[key.to_sym]
+        resource[:id] = extract_graphql_id(resource) if resource.key?(:id)
+        resource
       end
     end
   end

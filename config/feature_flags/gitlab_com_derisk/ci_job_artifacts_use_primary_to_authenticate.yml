@@ -1,9 +1,0 @@
----
-name: ci_job_artifacts_use_primary_to_authenticate
-feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/466138
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155684
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/466145
-milestone: '17.1'
-group: group::pipeline execution
-type: gitlab_com_derisk
-default_enabled: false

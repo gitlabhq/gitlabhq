@@ -44,12 +44,12 @@ export const member = {
   groupManagedAccount: false,
   enterpriseUserOfThisGroup: false,
   validRoles: {
+    'Minimal Access': 5,
     Guest: 10,
     Reporter: 20,
     Developer: 30,
     Maintainer: 40,
     Owner: 50,
-    'Minimal access': 5,
   },
   customRoles: [],
 };
@@ -115,7 +115,12 @@ export const members = [member];
 
 export const directMember = { ...member, isDirectMember: true };
 export const inheritedMember = { ...member, isDirectMember: false };
-export const updateableMember = { ...directMember, canUpdate: true };
+export const updateableMember = {
+  ...directMember,
+  canUpdate: true,
+  memberPath: 'user/path/238',
+  namespace: 'user',
+};
 
 export const member2faEnabled = { ...member, user: { ...member.user, twoFactorEnabled: true } };
 

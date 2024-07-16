@@ -1,54 +1,11 @@
 ---
-owning-stage: "~devops::verify"
-description: 'GitLab CI Events Proposal 1: Using the .gitlab-ci.yml file'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-1-using-the-gitlab-ci-file/'
+remove_date: '2025-07-08'
 ---
 
-# GitLab CI Events Proposal 1: Using the `.gitlab-ci.yml` file
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_ci_events/proposal-1-using-the-gitlab-ci-file/).
 
-Currently, we have two proof-of-concept (POC) implementations:
-
-- [GitLab CI Workflows PoC](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/91244)
-- [PoC NPM CI events](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/111693)
-
-They both have similar ideas;
-
-1. Find a new CI Config syntax to define pipeline events.
-
-    Example 1:
-
-    ```yaml
-    workflow:
-      events:
-        - events/package/published
-
-    # or
-
-    workflow:
-      on:
-        - events/package/published
-    ```
-
-    Example 2:
-
-    ```yaml
-    spec:
-      on:
-        - events/package/published
-        - events/package/removed
-      # on:
-      #   package: [published, removed]
-    ---
-    do_something:
-      script: echo "Hello World"
-    ```
-
-1. Upsert a workflow definition to the database when new configuration gets
-   pushed.
-1. Match subscriptions and publishers whenever something happens at GitLab.
-
-## Discussion
-
-1. How to efficiently detect changes to the subscriptions?
-1. How do we handle differences between workflows / events / subscriptions on
-   different branches?
-1. Do we need to upsert subscriptions on every push?
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

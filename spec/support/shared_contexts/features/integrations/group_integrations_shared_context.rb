@@ -18,7 +18,7 @@ RSpec.shared_context 'group integration activation' do
     visit_group_integrations
 
     within('#content-body') do
-      click_link(name, match: :first)
+      click_link(name, match: :prefer_exact)
     end
   end
 end

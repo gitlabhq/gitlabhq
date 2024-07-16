@@ -527,7 +527,6 @@ Updates to example must be made at:
    gitlab_workhorse['enable'] = false
    prometheus['enable'] = false
    alertmanager['enable'] = false
-   grafana['enable'] = false
    gitlab_exporter['enable'] = false
    gitlab_kas['enable'] = false
 
@@ -1073,7 +1072,6 @@ For more information on Gitaly server configuration, see our
    postgresql['enable'] = false
    redis['enable'] = false
    nginx['enable'] = false
-   grafana['enable'] = false
    puma['enable'] = false
    sidekiq['enable'] = false
    gitlab_workhorse['enable'] = false
@@ -1354,7 +1352,7 @@ Particular attention should be shown to:
 
 1. Check that the Praefect storage is configured to store new repositories:
 
-   1. On the left sidebar, at the bottom, select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
    1. On the left sidebar, select **Settings > Repository**.
    1. Expand the **Repository storage** section.
 

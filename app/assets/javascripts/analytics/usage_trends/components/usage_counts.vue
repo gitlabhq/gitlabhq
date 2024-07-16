@@ -4,6 +4,7 @@ import { GlSingleStat } from '@gitlab/ui/dist/charts';
 import { createAlert } from '~/alert';
 import { number } from '~/lib/utils/unit_format';
 import { __, s__ } from '~/locale';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import usageTrendsCountQuery from '../graphql/queries/usage_trends_count.query.graphql';
 
 const defaultPrecision = 0;
@@ -13,6 +14,7 @@ export default {
   components: {
     GlSkeletonLoader,
     GlSingleStat,
+    PageHeading,
   },
   data() {
     return {
@@ -53,15 +55,14 @@ export default {
       pipelines: s__('UsageTrends|Pipelines'),
     },
     loadCountsError: __('Could not load usage counts. Please refresh the page to try again.'),
+    pageTitle: __('Usage trends'),
   },
 };
 </script>
 
 <template>
   <div>
-    <h2>
-      {{ __('Usage Trends') }}
-    </h2>
+    <page-heading :heading="$options.i18n.pageTitle" />
     <div
       class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-my-6 gl-align-items-flex-start"
     >

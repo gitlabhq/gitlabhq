@@ -30,6 +30,13 @@ Service account users with a personal access token have the same abilities as a 
 This includes interacting with [registries](../packages/index.md) and using the personal access
 token for [Git operations](personal_access_tokens.md#clone-repository-using-personal-access-token).
 
+[Rate limits](../../security/rate_limits.md) apply to service accounts:
+
+- On GitLab.com, there are [GitLab.com-specific rate limits](../gitlab_com/index.md#gitlabcom-specific-rate-limits).
+- On self-managed GitLab and GitLab Dedicated, there are both:
+  - [Configurable rate limits](../../security/rate_limits.md#configurable-limits).
+  - [Non-configurable rate limits](../../security/rate_limits.md#non-configurable-limits).
+
 ## Create a service account
 
 The number of service accounts you can create is restricted by the number of service

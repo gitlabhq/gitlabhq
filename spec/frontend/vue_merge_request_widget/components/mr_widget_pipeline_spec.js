@@ -1,10 +1,12 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
 import { GlLoadingIcon } from '@gitlab/ui';
 import { shallowMount, mount } from '@vue/test-utils';
+import VueApollo from 'vue-apollo';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { trimText } from 'helpers/text_helper';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import Api from '~/api';
 import { createAlert } from '~/alert';
@@ -13,13 +15,17 @@ import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
+import mergeRequestEventTypeQuery from '~/vue_merge_request_widget/queries/merge_request_event_type.query.graphql';
 import mockData from '../mock_data';
 
 jest.mock('~/alert');
 jest.mock('~/api');
 
+Vue.use(VueApollo);
+
 describe('MRWidgetPipeline', () => {
   let wrapper;
+  let mergeRequestEventTypeQueryMock;
 
   const defaultProps = {
     pipeline: mockData.pipeline,
@@ -29,6 +35,7 @@ describe('MRWidgetPipeline', () => {
     ciTroubleshootingDocsPath: 'ci-help',
     targetProjectId: 1,
     iid: 1,
+    targetProjectFullPath: 'gitlab-org/gitlab',
   };
 
   const ciErrorMessage =
@@ -56,15 +63,24 @@ describe('MRWidgetPipeline', () => {
   const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK, []);
 
   const createWrapper = (props = {}, mountFn = shallowMount) => {
+    const apolloProvider = createMockApollo([
+      [mergeRequestEventTypeQuery, mergeRequestEventTypeQueryMock],
+    ]);
+
     wrapper = extendedWrapper(
       mountFn(MRWidgetPipelineComponent, {
         propsData: {
           ...defaultProps,
           ...props,
         },
+        apolloProvider,
       }),
     );
   };
+
+  afterEach(() => {
+    mergeRequestEventTypeQueryMock = null;
+  });
 
   it('should render CI error if there is a pipeline, but no status', () => {
     createWrapper({ ciStatus: null }, mount);
@@ -327,11 +343,24 @@ describe('MRWidgetPipeline', () => {
 
   describe('when merge request is retargeted', () => {
     describe('when last pipeline is detatched', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        mergeRequestEventTypeQueryMock = jest.fn().mockResolvedValue({
+          data: {
+            project: {
+              id: 1,
+              mergeRequest: {
+                id: 1,
+                pipelines: { nodes: [{ id: 1, mergeRequestEventType: 'DETACHED' }] },
+              },
+            },
+          },
+        });
+
         createWrapper({
-          detatchedPipeline: 'DETACHED',
           retargeted: true,
         });
+
+        await waitForPromises();
       });
 
       it('renders branch changed message', () => {
@@ -410,11 +439,24 @@ describe('MRWidgetPipeline', () => {
     });
 
     describe('when last pipeline is a branch pipeline', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
+        mergeRequestEventTypeQueryMock = jest.fn().mockResolvedValue({
+          data: {
+            project: {
+              id: 1,
+              mergeRequest: {
+                id: 1,
+                pipelines: { nodes: [{ id: 1, mergeRequestEventType: null }] },
+              },
+            },
+          },
+        });
+
         createWrapper({
-          detatchedPipeline: null,
           retargeted: true,
         });
+
+        await waitForPromises();
       });
 
       it('renders branch changed message', () => {

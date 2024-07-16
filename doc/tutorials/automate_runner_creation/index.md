@@ -6,10 +6,6 @@ info: For assistance with this tutorial, see https://handbook.gitlab.com/handboo
 
 # Tutorial: Automate runner creation and registration
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 This tutorial describes how to automate runner creation and registration.
 
 To automate runner creation and registration:
@@ -216,7 +212,7 @@ runners to Google Compute Engine:
 Now that you've automated your runner creation and automation, you can view
 the runners that use the same configuration in the GitLab UI.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **CI/CD > Runners**.
 1. In the search box, enter the runner description or search the list of runners.
 1. To view the runners that use the same configuration, in the **Details** tab,

@@ -140,7 +140,7 @@
 - ee/spec/lib/gitlab/geo_spec.rb
 - ee/spec/lib/gitlab/graphql/aggregations/security_orchestration_policies/lazy_dast_profile_aggregate_spec.rb
 - ee/spec/lib/gitlab/llm/stage_check_spec.rb
-- ee/spec/lib/gitlab/llm/tanuki_bot_spec.rb
+- ee/spec/lib/gitlab/llm/chain/tools/embeddings_completion_spec.rb
 - ee/spec/lib/gitlab/search/zoekt/client_spec.rb
 - ee/spec/lib/gitlab/subscription_portal/clients/graphql_spec.rb
 - ee/spec/lib/sidebars/groups/menus/analytics_menu_spec.rb

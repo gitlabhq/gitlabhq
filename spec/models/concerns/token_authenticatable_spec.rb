@@ -2,6 +2,64 @@
 
 require 'spec_helper'
 
+RSpec.describe TokenAuthenticatable, feature_category: :shared do
+  describe '.token_authenticatable_sensitive_fields' do
+    let(:base_class) do
+      Class.new do
+        include TokenAuthenticatable
+
+        attr_accessor :name, :super_secret
+      end
+    end
+
+    let(:test_class) do
+      Class.new(base_class) do
+        add_authentication_token_field :super_secret
+      end
+    end
+
+    subject(:token_authenticatable_fields) { test_class.token_authenticatable_sensitive_fields }
+
+    it { is_expected.to contain_exactly(:super_secret) }
+
+    context 'with encrypted: true' do
+      let(:test_class) do
+        Class.new(base_class) do
+          attr_accessor :name, :super_secret
+
+          add_authentication_token_field :super_secret, encrypted: true
+        end
+      end
+
+      it { is_expected.to contain_exactly(:super_secret, :super_secret_encrypted) }
+    end
+
+    context 'with digest: true' do
+      let(:test_class) do
+        Class.new(base_class) do
+          attr_accessor :name, :super_secret
+
+          add_authentication_token_field :super_secret, digest: true
+        end
+      end
+
+      it { is_expected.to contain_exactly(:super_secret, :super_secret_digest) }
+    end
+
+    context 'with expires_at option' do
+      let(:test_class) do
+        Class.new(base_class) do
+          attr_accessor :name, :super_secret
+
+          add_authentication_token_field :super_secret, expires_at: -> { Time.current }
+        end
+      end
+
+      it { is_expected.to contain_exactly(:super_secret) }
+    end
+  end
+end
+
 RSpec.shared_examples 'TokenAuthenticatable' do
   describe 'dynamically defined methods' do
     it { expect(described_class).to respond_to("find_by_#{token_field}") }
@@ -10,9 +68,9 @@ RSpec.shared_examples 'TokenAuthenticatable' do
     it { is_expected.to respond_to("reset_#{token_field}!") }
   end
 
-  describe 'SensitiveSerializableHash' do
-    it 'includes the token field in list of sensitive attributes prevented from serialization' do
-      expect(described_class.attributes_exempt_from_serializable_hash).to include(token_field)
+  describe '.token_authenticatable_fields' do
+    it 'includes the token field' do
+      expect(described_class.token_authenticatable_fields).to include(token_field)
     end
   end
 end

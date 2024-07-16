@@ -1770,6 +1770,11 @@ NOTE:
 If you find that the environment's Sidekiq job processing is slow with long queues
 you can scale it accordingly. Refer to the [scaling documentation](index.md#scaling-an-environment) for more information.
 
+NOTE:
+When configuring additional GitLab functionality such as Container Registry, SAML, or LDAP,
+update the Sidekiq configuration in addition to the Rails configuration.
+Refer to the [external Sidekiq documentation](../sidekiq/index.md) for more information.
+
 - `10.6.0.101`: Sidekiq 1
 - `10.6.0.102`: Sidekiq 2
 - `10.6.0.103`: Sidekiq 3
@@ -1778,16 +1783,18 @@ you can scale it accordingly. Refer to the [scaling documentation](index.md#scal
 To configure the Sidekiq nodes, on each one:
 
 1. SSH in to the Sidekiq server.
+1. Confirm that you can access the PostgreSQL, Gitaly, and Redis ports:
+
+   ```shell
+   telnet <GitLab host> 5432 # PostgreSQL
+   telnet <GitLab host> 8075 # Gitaly
+   telnet <GitLab host> 6379 # Redis
+   ```
+
 1. [Download and install](https://about.gitlab.com/install/) the Linux
    package of your choice. Be sure to follow _only_ installation steps 1 and 2
    on the page.
 1. Create or edit `/etc/gitlab/gitlab.rb` and use the following configuration:
-
-   <!--
-   Updates to example must be made at:
-   - https://gitlab.com/gitlab-org/gitlab/blob/master/doc/administration/sidekiq.md
-   - all reference architecture pages
-   -->
 
    ```ruby
    # https://docs.gitlab.com/omnibus/roles/#sidekiq-roles

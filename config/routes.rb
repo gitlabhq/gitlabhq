@@ -38,6 +38,11 @@ InitializerConnections.raise_if_new_database_connection do
       controllers discovery: 'jwks'
     end
 
+    use_doorkeeper_device_authorization_grant do
+      controller device_authorizations: 'oauth/device_authorizations',
+        device_codes: 'oauth/device_codes'
+    end
+
     # Add OPTIONS method for CORS preflight requests
     match '/oauth/userinfo' => 'doorkeeper/openid_connect/userinfo#show', via: :options
     match '/oauth/discovery/keys' => 'jwks#keys', via: :options
@@ -115,7 +120,7 @@ InitializerConnections.raise_if_new_database_connection do
       get '/whats_new' => 'whats_new#index'
 
       get 'offline' => "pwa#offline"
-      get 'manifest' => "pwa#manifest", constraints: lambda { |req| req.format == :json }
+      get 'manifest' => "pwa#manifest", constraints: ->(req) { req.format == :json }
 
       scope module: 'clusters' do
         scope module: 'agents' do
@@ -173,6 +178,7 @@ InitializerConnections.raise_if_new_database_connection do
         draw :country
         draw :country_state
         draw :subscription
+        draw :gitlab_subscriptions
         draw :phone_verification
 
         scope '/push_from_secondary/:geo_node_id' do
@@ -285,6 +291,7 @@ InitializerConnections.raise_if_new_database_connection do
     draw :api
     draw :activity_pub
     draw :customers_dot
+    draw :device_auth
     draw :sidekiq
     draw :help
     draw :google_api

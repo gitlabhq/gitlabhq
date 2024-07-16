@@ -128,7 +128,7 @@ export default {
           v-text="calculateLineNumber(index)"
         ></span>
       </div>
-      <div v-once class="gl-white-space-pre-wrap!" data-testid="content">{{ content }}</div>
+      <div v-once class="gl-whitespace-pre-wrap!" data-testid="content">{{ content }}</div>
     </div>
   </gl-intersection-observer>
 </template>

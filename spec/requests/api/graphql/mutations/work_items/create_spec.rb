@@ -112,7 +112,7 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
             post_graphql_mutation(mutation, current_user: current_user)
 
             expect(mutation_response['errors'])
-              .to contain_exactly(/cannot be added: is not allowed to add this type of parent/)
+              .to contain_exactly(/cannot be added: it's not allowed to add this type of parent item/)
             expect(mutation_response['workItem']).to be_nil
           end
         end
@@ -374,9 +374,9 @@ RSpec.describe 'Create a work item', feature_category: :team_planning do
 
       it_behaves_like 'creates work item'
 
-      context 'when the namespace_level_work_items feature flag is disabled' do
+      context 'when the create_group_level_work_items feature flag is disabled' do
         before do
-          stub_feature_flags(namespace_level_work_items: false)
+          stub_feature_flags(create_group_level_work_items: false)
         end
 
         it_behaves_like 'a mutation that returns top-level errors', errors: [

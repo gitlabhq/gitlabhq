@@ -2,6 +2,7 @@
 # Warning: gitlab.LatinTerms
 #
 # Checks for use of Latin terms.
+# Uses https://github.com/errata-ai/Google/blob/master/Google/Latin.yml for ideas.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
@@ -11,8 +12,6 @@ level: warning
 nonword: true
 ignorecase: true
 swap:
-  e\.g\.: for example
-  e\. g\.: for example
-  i\.e\.: that is
-  i\. e\.: that is
-  via: "with', 'through', or 'by using"
+  '\b(?:e\.?g[\s.,;:])': for example
+  '\b(?:i\.?e[\s.,;:])': that is
+  '\bvia\b': "with', 'through', or 'by using"

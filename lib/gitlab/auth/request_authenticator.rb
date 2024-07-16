@@ -70,7 +70,9 @@ module Gitlab
       end
 
       def valid_access_token?(scopes: [])
-        validate_and_save_access_token!(scopes: scopes)
+        # We may just be checking whether the user has :admin_mode access, so
+        # don't construe an auth failure as a real failure.
+        validate_and_save_access_token!(scopes: scopes, save_auth_context: false)
 
         true
       rescue Gitlab::Auth::AuthenticationError

@@ -1,0 +1,21 @@
+---
+description: Tracks that "full report" was clicked on a merge request widget
+internal_events: true
+action: click_full_report_on_merge_request_widget
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: The type of the widget. Can be `accessibility`, `code_quality`, etc.
+product_group: code_review
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158454
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

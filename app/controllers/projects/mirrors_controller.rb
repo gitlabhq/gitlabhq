@@ -77,8 +77,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def push_mirror_destroy?
-    mirror_params.dig(:remote_mirrors_attributes, '_destroy') == '1' &&
-      Feature.enabled?(:use_remote_mirror_destroy_service, project)
+    mirror_params.dig(:remote_mirrors_attributes, '_destroy') == '1'
   end
 
   def push_mirror_attributes

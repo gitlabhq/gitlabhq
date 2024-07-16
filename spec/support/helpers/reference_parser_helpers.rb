@@ -15,7 +15,7 @@ module ReferenceParserHelpers
     it 'avoids N+1 queries in #nodes_visible_to_user', :use_sql_query_cache do
       context = Banzai::RenderContext.new(project, user)
 
-      request = lambda do |links|
+      request = ->(links) do
         described_class.new(context).nodes_visible_to_user(user, links)
       end
 
@@ -35,7 +35,7 @@ module ReferenceParserHelpers
     it 'avoids N+1 queries in #records_for_nodes', :request_store do
       context = Banzai::RenderContext.new(project, user)
 
-      record_queries = lambda do |links|
+      record_queries = ->(links) do
         ActiveRecord::QueryRecorder.new do
           described_class.new(context).records_for_nodes(links)
         end

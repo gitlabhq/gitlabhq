@@ -1,7 +1,0 @@
-= render 'header'
-
-= render Pajamas::AlertComponent.new(dismissible: false,
-  variant: :warning,
-  show_icon: false) do |c|
-  - c.with_body do
-    = html_escape_once(s_('GitLabPages|GitLab Pages are disabled for this project. You can enable them on your project\'s %{strong_start}Settings &gt; General &gt; Visibility%{strong_end} page.')).html_safe % { strong_start: '<strong>'.html_safe, strong_end: '</strong>'.html_safe }

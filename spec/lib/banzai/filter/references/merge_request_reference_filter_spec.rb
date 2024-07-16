@@ -318,4 +318,18 @@ RSpec.describe Banzai::Filter::References::MergeRequestReferenceFilter, feature_
       expect(result.css('a').first.attr('href')).to eq(urls.project_merge_request_url(project, merge))
     end
   end
+
+  context 'checking N+1' do
+    let(:merge_request1) { create(:merge_request, source_project: project, source_branch: 'branch1') }
+    let(:merge_request2) { create(:merge_request, source_project: project, source_branch: 'branch2') }
+
+    it 'does not have a N+1 query problem' do
+      single_reference = "Merge request #{merge_request1.to_reference}"
+      multiple_references = "Merge requests #{merge_request1.to_reference} and #{merge_request2.to_reference}"
+
+      control = ActiveRecord::QueryRecorder.new { reference_filter(single_reference).to_html }
+
+      expect { reference_filter(multiple_references).to_html }.not_to exceed_query_limit(control)
+    end
+  end
 end

@@ -27,7 +27,7 @@ export default {
 </script>
 <template>
   <span
-    class="gl-display-inline-flex gl-align-items-flex-start gl-justify-content-center gl-min-w-8 gl-pr-2 gl-pt-1"
+    class="gl-inline-flex gl-align-items-flex-start gl-justify-content-center gl-min-w-8 gl-pr-2 gl-pt-1"
   >
     <gl-icon :name="iconName(name)" :size="16" class="gl-mt-1" />
   </span>

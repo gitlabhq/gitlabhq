@@ -13,13 +13,13 @@ DETAILS:
 View and resolve abuse reports from GitLab users.
 
 GitLab administrators can view and [resolve](#resolving-abuse-reports) abuse
-reports in the Admin Area.
+reports in the Admin area.
 
 ## Receive notification of abuse reports by email
 
 To receive notifications of new abuse reports by email:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Reporting**.
 1. Expand the **Abuse reports** section.
 1. Provide an email address and select **Save changes**.
@@ -38,8 +38,8 @@ To find out more about reporting abuse, see
 
 To access abuse reports:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Abuse Reports**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Abuse reports**.
 
 There are four ways to resolve an abuse report, with a button for each method:
 
@@ -55,7 +55,7 @@ There are four ways to resolve an abuse report, with a button for each method:
   - Allows the user to create issues, notes, snippets, and merge requests without being blocked for spam.
   - Prevents abuse reports from being created for this user.
 
-The following is an example of the **Abuse Reports** page:
+The following is an example of the **Abuse reports** page:
 
 ![abuse-reports-page-image](img/abuse_reports_page_v13_11.png)
 
@@ -80,7 +80,7 @@ After blocking, you can still either:
 - Remove the user and report if necessary.
 - Remove the report.
 
-The following is an example of a blocked user listed on the **Abuse Reports**
+The following is an example of a blocked user listed on the **Abuse reports**
 page:
 
 ![abuse-report-blocked-user-image](img/abuse_report_blocked_user.png)

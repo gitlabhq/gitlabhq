@@ -138,7 +138,7 @@ export default {
           icon="ellipsis_v"
           size="small"
           category="tertiary"
-          placement="right"
+          placement="bottom-end"
           no-caret
           :title="__('Thread options')"
           :aria-label="__('Thread options')"
@@ -179,7 +179,7 @@ export default {
             icon="ellipsis_v"
             size="small"
             category="tertiary"
-            placement="right"
+            placement="bottom-end"
             no-caret
             :title="__('Thread options')"
             :aria-label="__('Thread options')"

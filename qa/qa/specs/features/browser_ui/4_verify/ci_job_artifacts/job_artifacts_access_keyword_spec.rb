@@ -72,17 +72,17 @@ module QA
         end
       end
 
-      context 'when access is set to none' do
+      context 'when access is set to none', :blocking do
         it_behaves_like 'artifact access', 'none', false, false,
           'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465991', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465697'
       end
 
-      context 'when access is set to developer' do
+      context 'when access is set to developer', :blocking do
         it_behaves_like 'artifact access', 'developer', true, false,
           'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465994', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465995'
       end
 
-      context 'when access is set to all' do
+      context 'when access is set to all', :blocking do
         it_behaves_like 'artifact access', 'all', true, true,
           'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465992', 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/465993'
       end

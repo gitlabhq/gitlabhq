@@ -109,7 +109,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed
 
-Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch).
+Follow the [install instruction](../integration/advanced_search/elasticsearch.md#install-elasticsearch-or-aws-opensearch-cluster).
 
 ### 9. Start application
 

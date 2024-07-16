@@ -15,6 +15,7 @@ module Projects
 
       before_action do
         push_frontend_feature_flag(:ci_variables_pages, current_user)
+        push_frontend_feature_flag(:allow_push_repository_for_job_token, @project)
       end
 
       helper_method :highlight_badge

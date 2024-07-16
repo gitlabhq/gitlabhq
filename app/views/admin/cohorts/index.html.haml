@@ -1,4 +1,13 @@
-- page_title _("Users")
+- add_to_breadcrumbs _("Users"), admin_users_path
+- breadcrumb_title _("Cohorts")
+- page_title _("Cohorts"), _("Users")
+
+= render ::Layouts::PageHeadingComponent.new(_('Cohorts')) do |c|
+  - c.with_actions do
+    = render_if_exists 'admin/users/admin_email_users'
+    = render_if_exists 'admin/users/admin_export_user_permissions'
+    = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_admin_user_path) do
+      = s_('AdminUsers|New user')
 
 = render 'admin/users/tabs'
 

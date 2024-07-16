@@ -11,19 +11,19 @@ RSpec.describe GitHelper do
 
   describe '#strip_signature' do
     context 'strips PGP SIGNATURE' do
-      let(:strip_signature) { helper.strip_signature( pgp_signature_tag ) }
+      let(:strip_signature) { helper.strip_signature(pgp_signature_tag) }
 
       it { expect(strip_signature).to eq("Version 1.69.0\n\n") }
     end
 
     context 'strips PGP MESSAGE' do
-      let(:strip_signature) { helper.strip_signature( pgp_message_tag ) }
+      let(:strip_signature) { helper.strip_signature(pgp_message_tag) }
 
       it { expect(strip_signature).to eq("Version 1.69.0\n\n") }
     end
 
     context 'strips SIGNED MESSAGE' do
-      let(:strip_signature) { helper.strip_signature( x509_message_tag ) }
+      let(:strip_signature) { helper.strip_signature(x509_message_tag) }
 
       it { expect(strip_signature).to eq("this is Roger's signed tag\n\n") }
     end

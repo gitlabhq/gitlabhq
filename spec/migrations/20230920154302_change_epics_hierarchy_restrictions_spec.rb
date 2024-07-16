@@ -4,8 +4,6 @@ require 'spec_helper'
 require_migration!
 
 RSpec.describe ChangeEpicsHierarchyRestrictions, :migration, feature_category: :portfolio_management do
-  include MigrationHelpers::WorkItemTypesHelper
-
   let(:work_item_types) { table(:work_item_types) }
   let(:work_item_hierarchy_restrictions) { table(:work_item_hierarchy_restrictions) }
   let(:base_types) { { issue: 0, epic: 7 } }

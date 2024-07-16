@@ -27,6 +27,8 @@ module Banzai
         end
 
         def exceeded_pipeline_max?
+          return false if Gitlab::RenderTimeout.banzai_timeout_disabled?
+
           result[:pipeline_timing] && result[:pipeline_timing] > MAX_PIPELINE_SECONDS
         end
       end

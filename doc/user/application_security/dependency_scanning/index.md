@@ -474,76 +474,77 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <tbody>
     <tr>
       <td>sbt</td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/build/gemnasium-maven/debian/config/.tool-versions#L4">1.6.2</a></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L4">1.6.2</a></td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L732-736">1.1.6</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L738-742">1.2.8</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L662-666">1.3.12</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L668-672">1.4.6</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L674-678">1.5.8</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L680-694">1.6.2</a>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L696-700">1.7.3</a>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L702-706">1.8.3</a>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L708-713">1.9.6</a>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/.gitlab/ci/gemnasium-maven.gitlab-ci.yml#L109-119">1.9.7</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L794-798">1.1.6</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L800-805">1.2.8</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L722-725">1.3.12</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L722-725">1.4.6</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L742-746">1.5.8</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L748-762">1.6.2</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L764-768">1.7.3</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L770-774">1.8.3</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L776-781">1.9.6</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/.gitlab/ci/gemnasium-maven.gitlab-ci.yml#L111-121">1.9.7</a>
       </td>
     </tr>
     <tr>
       <td>maven</td>
-      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/build/gemnasium-maven/debian/config/.tool-versions#L3">3.6.3</a></td>
+      <td><a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L3">3.8.8</a></td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L83-85">3.6.3</a><sup><b><a href="#exported-dependency-information-notes-1">1</a></b></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L92-94">3.8.8</a><sup><b><a href="#exported-dependency-information-notes-1">1</a></b></sup>
       </td>
     </tr>
     <tr>
       <td>Gradle</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/build/gemnasium-maven/debian/config/.tool-versions#L5">6.7.1</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/build/gemnasium-maven/debian/config/.tool-versions#L5">7.3.3</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">6.7.1</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">7.6.4</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L5">8.8</a><sup><b><a href="#exported-dependency-information-notes-2">2</a></b></sup>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L285-290">5.6.4</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L292-297">6.7</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L299-304">6.9</a>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L306-310">7.3</a>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/spec/gemnasium-maven_image_spec.rb#L312-316">8.4</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L316-321">5.6</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L323-328">6.7</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L330-335">6.9</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L337-341">7.6</a>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-maven_image_spec.rb#L343-347">8.8</a>
       </td>
     </tr>
     <tr>
       <td>setuptools</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.10.6/build/gemnasium-python/debian/Dockerfile#L17">58.1.0</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-python/requirements.txt#L41">69.0.3</a>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.10.6/spec/gemnasium-python_image_spec.rb#L249-271">&gt;= 65.6.3</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L294-316">&gt;= 69.0.3</a>
       </td>
     </tr>
     <tr>
       <td>pip</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.10.6/build/gemnasium-python/debian/Dockerfile#L17">22.0.4</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-python/debian/Dockerfile#L21">24</a>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.0.2/spec/gemnasium-python_image_spec.rb#L88-102">20.x</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L77-90">24</a>
       </td>
     </tr>
     <tr>
       <td>Pipenv</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.10.6/build/gemnasium-python/requirements.txt#L13">2022.1.8</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-python/requirements.txt#L23">2023.11.15</a>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.0.2/spec/gemnasium-python_image_spec.rb#L186-210">2022.1.8</a><sup><b><a href="#exported-dependency-information-notes-3">3</a></b></sup>,
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.0.2/spec/gemnasium-python_image_spec.rb#L161-183">2022.1.8</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L243-256">2023.11.15</a><sup><b><a href="#exported-dependency-information-notes-3">3</a></b></sup>,
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/spec/gemnasium-python_image_spec.rb#L219-241">2023.11.15</a>
       </td>
     </tr>
     <tr>
       <td>Go</td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.10.6/build/gemnasium/alpine/Dockerfile#L88-91">1.18</a>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium/alpine/Dockerfile#L91-93">1.21</a>
       </td>
       <td>
-        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v3.10.6/build/gemnasium/alpine/Dockerfile#L88-91">1.18</a><sup><strong><a href="#exported-dependency-information-notes-4">4</a></strong></sup>
+        <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium/alpine/Dockerfile#L91-93">1.21</a><sup><strong><a href="#exported-dependency-information-notes-4">4</a></strong></sup>
       </td>
     </tr>
   </tbody>
@@ -553,7 +554,7 @@ To support the following package managers, the GitLab analyzers proceed in two s
   <li>
     <a id="exported-dependency-information-notes-1"></a>
     <p>
-      This test uses the default version of <code>maven</code> specified by the <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v4.9.0/build/gemnasium-maven/debian/config/.tool-versions#L3"><code>.tool-versions</code></a> file.
+      This test uses the default version of <code>maven</code> specified by the <a href="https://gitlab.com/gitlab-org/security-products/analyzers/gemnasium/-/blob/v5.2.14/build/gemnasium-maven/debian/config/.tool-versions#L3"><code>.tool-versions</code></a> file.
     </p>
   </li>
   <li>
@@ -568,11 +569,10 @@ To support the following package managers, the GitLab analyzers proceed in two s
         <p>
           If your project <i>does not use</i> a <code>gradlew</code> file, then the analyzer automatically switches to one of the
           pre-installed Gradle versions, based on the version of Java specified by the
-          <a href="#analyzer-specific-settings"><code>DS_JAVA_VERSION</code></a> variable.
-          By default, the analyzer uses Java 17 and Gradle 7.3.3.
+          <a href="#analyzer-specific-settings"><code>DS_JAVA_VERSION</code></a> variable (default version is <code>17</code>).
         </p>
         <p>
-          For Java versions <code>8</code> and <code>11</code>, Gradle <code>6.7.1</code> is automatically selected, and for Java version <code>17</code>, Gradle <code>7.3.3</code> is automatically selected.
+          For Java versions <code>8</code> and <code>11</code>, Gradle <code>6.7.1</code> is automatically selected, Java <code>17</code> uses Gradle <code>7.6.4</code>, and Java <code>21</code> uses Gradle <code>8.8</code>.
         </p>
       </li>
       <li>
@@ -1009,28 +1009,10 @@ include:
 merge cyclonedx sboms:
   stage: merge-cyclonedx-sboms
   image:
-    name: cyclonedx/cyclonedx-cli:0.24.2
+    name: cyclonedx/cyclonedx-cli:0.25.1
     entrypoint: [""]
   script:
-    - apt-get update && apt-get install -y jq
     - find . -name "gl-sbom-*.cdx.json" -exec cyclonedx merge --output-file gl-sbom-all.cdx.json --input-files "{}" +
-    # remove duplicates from merged file. See https://github.com/CycloneDX/cyclonedx-cli/issues/188 for details.
-    - |
-      jq '. |
-      {
-        "bomFormat": .bomFormat,
-        "specVersion": .specVersion,
-        "serialNumber": .serialNumber,
-        "version": .version,
-        "metadata": {
-          "tools": [
-            (.metadata.tools | unique[])
-          ]
-        },
-        "components": [
-          (.components | unique[])
-        ]
-      }' "gl-sbom-all.cdx.json" > gl-sbom-all.cdx.json.tmp && mv gl-sbom-all.cdx.json.tmp gl-sbom-all.cdx.json
     # optional: validate the merged sbom
     - cyclonedx validate --input-version v1_4 --input-file gl-sbom-all.cdx.json
   artifacts:

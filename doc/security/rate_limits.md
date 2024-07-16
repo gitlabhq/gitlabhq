@@ -35,7 +35,7 @@ The rate limits for API requests do not affect requests made by the frontend, be
 
 ## Configurable limits
 
-You can set these rate limits in the Admin Area of your instance:
+You can set these rate limits in the Admin area of your instance:
 
 - [Import/Export rate limits](../administration/settings/import_export_rate_limits.md)
 - [Issue rate limits](../administration/settings/rate_limit_on_issues_creation.md)
@@ -199,11 +199,7 @@ The **rate limit** is 60 deletions per minute.
 ### Notification emails
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.1 [with a flag](../administration/feature_flags.md) named `rate_limit_notification_emails`. Disabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/439101) in GitLab 17.2. Feature flag `rate_limit_notification_emails` removed.
 
 There is a rate limit for notification emails related to a project or group.
 

@@ -1,0 +1,5 @@
+fragment DesignNotePermissions on NotePermissions {
+  adminNote
+  repositionNote
+  awardEmoji
+}

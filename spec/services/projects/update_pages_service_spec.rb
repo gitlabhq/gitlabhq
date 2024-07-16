@@ -160,6 +160,14 @@ RSpec.describe Projects::UpdatePagesService, feature_category: :pages do
           .by(1)
       end
 
+      it_behaves_like 'internal event tracking' do
+        let(:event) { 'create_pages_deployment' }
+        let(:category) { 'Projects::UpdatePagesService' }
+        let(:namespace) { project.namespace }
+
+        subject(:track_event) { service.execute }
+      end
+
       context 'when archive does not have pages directory' do
         let(:file) { empty_file }
         let(:metadata_filename) { empty_metadata_filename }

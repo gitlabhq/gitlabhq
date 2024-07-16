@@ -38,7 +38,8 @@ export default {
         i18n: {
           title: s__('AdminUsers|Delete User %{username}?'),
           primaryButtonLabel: s__('AdminUsers|Delete user'),
-          messageBody: s__(`AdminUsers|You are about to permanently delete the user %{username}. Issues, merge requests,
+          messageBody:
+            s__(`AdminUsers|You are about to permanently delete the user %{username}. Issues, merge requests,
                             and groups linked to them will be transferred to a system-wide "Ghost-user". To avoid data loss,
                             consider using the %{strongStart}block user%{strongEnd} feature instead. Once you %{strongStart}Delete user%{strongEnd},
                             it cannot be undone or recovered.`),

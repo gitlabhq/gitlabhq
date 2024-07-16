@@ -60,7 +60,12 @@ export default {
       required: false,
       default: () => ({}),
     },
-    isProjectOnlyNamespace: {
+    disableNamespaceDropdown: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isProjectScoped: {
       type: Boolean,
       required: false,
       default: false,
@@ -69,7 +74,7 @@ export default {
   data() {
     return {
       searchValue: '',
-      isProjectNamespace: 'true',
+      isProjectNamespace: this.isProjectScoped ? 'true' : 'false',
       selected: [],
       items: [],
       isLoading: false,
@@ -80,7 +85,7 @@ export default {
       return CONFIG[this.type];
     },
     showNamespaceDropdown() {
-      return this.config.showNamespaceDropdown && !this.isProjectOnlyNamespace;
+      return this.config.showNamespaceDropdown && !this.disableNamespaceDropdown;
     },
     namespaceDropdownText() {
       return parseBoolean(this.isProjectNamespace)
@@ -175,6 +180,7 @@ export default {
             value: group.name,
             ...group,
             id: getIdFromGraphQLId(group.id),
+            type: 'group',
           })),
         );
     },

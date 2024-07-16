@@ -376,6 +376,93 @@ test_job:
   - build2
 ```
 
+### Allow `needs` to be expanded when included
+
+You can have [`needs`](index.md#needs) in an included job, but also add additional jobs
+to the `needs` array with `spec:inputs`.
+
+For example:
+
+```yaml
+spec:
+  inputs:
+    test_job_needs:
+      type: array
+      default: []
+---
+
+build-job:
+  script:
+    - echo "My build job"
+
+test-job:
+  script:
+    - echo "My test job"
+  needs:
+    - build-job
+    - $[[ inputs.test_job_needs ]]
+```
+
+In this example:
+
+- `test-job` job always needs `build-job`.
+- By default the test job doesn't need any other jobs, as the `test_job_needs:` array input
+  is empty by default.
+
+To set `test-job` to need another job in your configuration, add it to the `test_needs` input
+when you include the file. For example:
+
+```yaml
+include:
+  - component: $CI_SERVER_FQDN/project/path/component@1.0.0
+    inputs:
+      test_job_needs: [ my-other-job ]
+
+my-other-job:
+  script:
+    - echo "I want build-job` in the component to need this job too"
+```
+
+### Add `needs` to an included job that doesn't have `needs`
+
+You can add [`needs`](index.md#needs) to an included job that does not have `needs`
+already defined. For example, in a CI/CD component's configuration:
+
+```yaml
+spec:
+  inputs:
+    test_job:
+      default: test-job
+---
+
+build-job:
+  script:
+    - echo "My build job"
+
+"$[[ inputs.test_job ]]":
+  script:
+    - echo "My test job"
+```
+
+In this example, the `spec:inputs` section allows the job name to be customized.
+
+Then, after you include the component, you can extend the job with the additional
+`needs` configuration. For example:
+
+```yaml
+include:
+  - component: $CI_SERVER_FQDN/project/path/component@1.0.0
+    inputs:
+      test_job: my-test-job
+
+my-test-job:
+  needs: [my-other-job]
+
+my-other-job:
+  script:
+    - echo "I want `my-test-job` to need this job"
+```
+
 ## Specify functions to manipulate input values
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/409462) in GitLab 16.3.

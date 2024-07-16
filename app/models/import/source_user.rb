@@ -13,8 +13,8 @@ module Import
 
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
 
-    state_machine :status, initial: :pending_assignment do
-      state :pending_assignment, value: 0
+    state_machine :status, initial: :pending_reassignment do
+      state :pending_reassignment, value: 0
       state :awaiting_approval, value: 1
       state :reassignment_in_progress, value: 2
       state :rejected, value: 3
@@ -22,12 +22,16 @@ module Import
       state :completed, value: 5
       state :keep_as_placeholder, value: 6
 
-      event :cancel_assignment do
-        transition [:awaiting_approval, :rejected] => :pending_assignment
+      event :reassign do
+        transition [:pending_reassignment, :rejected] => :awaiting_approval
+      end
+
+      event :cancel_reassignment do
+        transition [:awaiting_approval, :rejected] => :pending_reassignment
       end
 
       event :keep_as_placeholder do
-        transition [:pending_assignment, :awaiting_approval, :rejected] => :keep_as_placeholder
+        transition [:pending_reassignment, :rejected] => :keep_as_placeholder
       end
 
       event :accept do
@@ -46,7 +50,7 @@ module Import
         transition reassignment_in_progress: :failed
       end
 
-      after_transition any => [:pending_assignment, :rejected, :keep_as_placeholder] do |status|
+      after_transition any => [:pending_reassignment, :rejected, :keep_as_placeholder] do |status|
         status.update!(reassign_to_user: nil)
       end
     end
@@ -60,6 +64,14 @@ module Import
         source_hostname: source_hostname,
         import_type: import_type
       )
+    end
+
+    def reassignable_status?
+      pending_reassignment? || rejected?
+    end
+
+    def cancelable_status?
+      awaiting_approval? || rejected?
     end
   end
 end

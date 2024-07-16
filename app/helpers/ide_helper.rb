@@ -22,15 +22,15 @@ module IdeHelper
   end
 
   def show_web_ide_oauth_callback_mismatch_callout?
-    return false unless ::Gitlab::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
+    return false unless ::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
 
-    callback_urls = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_callback_urls
+    callback_urls = ::WebIde::DefaultOauthApplication.oauth_application_callback_urls
     callback_url_domains = callback_urls.map { |url| URI.parse(url).origin }
     callback_url_domains.any? && callback_url_domains.exclude?(request.base_url)
   end
 
   def web_ide_oauth_application_id
-    ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_id
+    ::WebIde::DefaultOauthApplication.oauth_application_id
   end
 
   def use_new_web_ide?
@@ -66,11 +66,11 @@ module IdeHelper
   end
 
   def new_ide_oauth_data
-    return {} unless ::Gitlab::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
-    return {} unless ::Gitlab::WebIde::DefaultOauthApplication.oauth_application
+    return {} unless ::WebIde::DefaultOauthApplication.feature_enabled?(current_user)
+    return {} unless ::WebIde::DefaultOauthApplication.oauth_application
 
-    client_id = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application.uid
-    callback_urls = ::Gitlab::WebIde::DefaultOauthApplication.oauth_application_callback_urls
+    client_id = ::WebIde::DefaultOauthApplication.oauth_application.uid
+    callback_urls = ::WebIde::DefaultOauthApplication.oauth_application_callback_urls
 
     {
       'client-id' => client_id,
@@ -121,6 +121,6 @@ module IdeHelper
   end
 
   def extensions_gallery_settings
-    Gitlab::WebIde::ExtensionsMarketplace.webide_extensions_gallery_settings(user: current_user).to_json
+    WebIde::ExtensionsMarketplace.webide_extensions_gallery_settings(user: current_user).to_json
   end
 end

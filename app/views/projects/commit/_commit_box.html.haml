@@ -2,7 +2,8 @@
 
 .page-content-header
   .header-main-content
-    = render partial: 'signature', object: @commit.signature
+    - if @commit.has_signature?
+      = render partial: 'signature', object: @commit.signature
     %strong
       #{ s_('CommitBoxTitle|Commit') }
       %span.commit-sha{ data: { testid: 'commit-sha-content' } }= @commit.short_id

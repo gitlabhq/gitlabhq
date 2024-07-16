@@ -2,8 +2,6 @@ import dateFormat, { masks } from '~/lib/dateformat';
 import {
   nDaysBefore,
   getStartOfDay,
-  dayAfter,
-  getDateInPast,
   getCurrentUtcDate,
   nWeeksBefore,
   nYearsBefore,
@@ -12,7 +10,6 @@ import { s__, __, sprintf, n__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
 export const DATE_RANGE_LIMIT = 180;
-export const DEFAULT_DATE_RANGE = 29; // 30 including current date
 export const PROJECTS_PER_PAGE = 50;
 
 const { isoDate } = masks;
@@ -24,21 +21,23 @@ export const dateFormats = {
 };
 
 const TODAY = getCurrentUtcDate();
-const TOMORROW = dayAfter(TODAY, { utc: true });
-export const LAST_30_DAYS = getDateInPast(TOMORROW, 30, { utc: true });
+const SAME_DAY_OFFSET = 1;
 
 const startOfToday = getStartOfDay(new Date(), { utc: true });
+
+export const LAST_30_DAYS = nDaysBefore(TODAY, 30 - SAME_DAY_OFFSET, { utc: true });
+
 const lastXDays = __('Last %{days} days');
-const lastWeek = nWeeksBefore(TOMORROW, 1, { utc: true });
-const last90Days = getDateInPast(TOMORROW, 90, { utc: true });
-const last180Days = getDateInPast(TOMORROW, DATE_RANGE_LIMIT, { utc: true });
+const lastWeek = nWeeksBefore(TODAY, 1, { utc: true });
+const last90Days = nDaysBefore(TODAY, 90 - SAME_DAY_OFFSET, { utc: true });
+const last180Days = nDaysBefore(TODAY, 180 - SAME_DAY_OFFSET, { utc: true });
 const mrThroughputStartDate = nDaysBefore(startOfToday, DATE_RANGE_LIMIT, { utc: true });
 const formatDateParam = (d) => dateFormat(d, dateFormats.isoDate, true);
 
 export const DATE_RANGE_CUSTOM_VALUE = 'custom';
 export const DATE_RANGE_LAST_30_DAYS_VALUE = 'last_30_days';
 
-export const DEFAULT_DATE_RANGE_OPTIONS = [
+export const DEFAULT_DROPDOWN_DATE_RANGES = [
   {
     text: __('Last week'),
     value: 'last_week',
@@ -212,7 +211,9 @@ export const METRIC_TOOLTIPS = {
     }),
   },
   [VULNERABILITY_METRICS.CRITICAL]: {
-    description: s__('ValueStreamAnalytics|Critical vulnerabilities over time.'),
+    description: s__(
+      'ValueStreamAnalytics|Number of critical vulnerabilities identified per month.',
+    ),
     groupLink: '-/security/vulnerabilities?severity=CRITICAL',
     projectLink: '-/security/vulnerability_report?severity=CRITICAL',
     docsLink: helpPagePath('user/application_security/vulnerabilities/severities.html'),
@@ -224,7 +225,7 @@ export const METRIC_TOOLTIPS = {
     docsLink: helpPagePath('user/application_security/vulnerabilities/severities.html'),
   },
   [MERGE_REQUEST_METRICS.THROUGHPUT]: {
-    description: s__('ValueStreamAnalytics|The number of merge requests merged by month.'),
+    description: s__('ValueStreamAnalytics|Number of merge requests merged by month.'),
     groupLink: '-/analytics/productivity_analytics',
     projectLink: `-/analytics/merge_request_analytics?start_date=${formatDateParam(
       mrThroughputStartDate,

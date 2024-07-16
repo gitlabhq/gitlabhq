@@ -1,9 +1,4 @@
 ---
-ci_stages:
-  index_ci_stages_on_pipeline_id_and_position:
-  - index_ci_stages_on_pipeline_id
-  index_ci_stages_on_pipeline_id_name_partition_id_unique:
-  - index_ci_stages_on_pipeline_id
 dast_site_tokens:
   index_dast_site_token_on_project_id_and_url:
   - index_dast_site_tokens_on_project_id
@@ -58,13 +53,6 @@ ml_model_versions:
 ml_models:
   index_ml_models_on_project_id_and_name:
   - index_ml_models_on_project_id
-p_ci_stages:
-  p_ci_stages_pipeline_id_name_partition_id_idx:
-  - p_ci_stages_pipeline_id_idx
-  p_ci_stages_pipeline_id_idx:
-  - p_ci_stages_pipeline_id_idx
-  p_ci_stages_pipeline_id_position_idx:
-  - p_ci_stages_pipeline_id_idx
 pages_domains:
   index_pages_domains_on_project_id_and_enabled_until:
   - index_pages_domains_on_project_id
@@ -129,6 +117,9 @@ vulnerability_finding_signatures:
 vulnerability_flags:
   index_vulnerability_flags_on_unique_columns:
   - index_vulnerability_flags_on_vulnerability_occurrence_id
+vulnerability_occurrences:
+  index_vulnerability_occurrences_prim_iden_id_and_vuln_id:
+  - index_vulnerability_occurrences_on_primary_identifier_id
 work_item_hierarchy_restrictions:
   index_work_item_hierarchy_restrictions_on_parent_and_child:
   - index_work_item_hierarchy_restrictions_on_parent_type_id

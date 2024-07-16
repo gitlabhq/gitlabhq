@@ -1,0 +1,39 @@
+diff --git a/node_modules/jest-mock/build/index.js b/node_modules/jest-mock/build/index.js
+index e070a50..f5556b3 100644
+--- a/node_modules/jest-mock/build/index.js
++++ b/node_modules/jest-mock/build/index.js
+@@ -450,22 +450,30 @@ class ModuleMocker {
+         f.mockImplementationOnce(() => value);
+       f.mockResolvedValueOnce = value =>
+         f.mockImplementationOnce(() =>
+-          this._environmentGlobal.Promise.resolve(value)
++          // why: Referencing _environmentGlobal.Promise causes extra ticks when resolving promises which fails a lot of tests
++          // see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151046#note_1986256970
++          Promise.resolve(value)
+         );
+       f.mockRejectedValueOnce = value =>
+         f.mockImplementationOnce(() =>
+-          this._environmentGlobal.Promise.reject(value)
++          // why: Referencing _environmentGlobal.Promise causes extra ticks when resolving promises which fails a lot of tests
++          // see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151046#note_1986256970
++          Promise.reject(value)
+         );
+       f.mockReturnValue = value =>
+         // next function call will return specified return value or this one
+         f.mockImplementation(() => value);
+       f.mockResolvedValue = value =>
+         f.mockImplementation(() =>
+-          this._environmentGlobal.Promise.resolve(value)
++          // why: Referencing _environmentGlobal.Promise causes extra ticks when resolving promises which fails a lot of tests
++          // see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151046#note_1986256970
++          Promise.resolve(value)
+         );
+       f.mockRejectedValue = value =>
+         f.mockImplementation(() =>
+-          this._environmentGlobal.Promise.reject(value)
++          // why: Referencing _environmentGlobal.Promise causes extra ticks when resolving promises which fails a lot of tests
++          // see: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151046#note_1986256970
++          Promise.reject(value)
+         );
+       f.mockImplementationOnce = fn => {
+         // next function call will use this mock implementation return value

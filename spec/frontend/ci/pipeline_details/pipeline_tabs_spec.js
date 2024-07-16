@@ -40,19 +40,17 @@ describe('~/ci/pipeline_details/pipeline_tabs.js', () => {
       createElement();
       const options = createAppOptions(`#${SELECTOR}`, null);
 
-      expect(options).toMatchObject({
-        el,
-        provide: {
-          canGenerateCodequalityReports: true,
-          codequalityReportDownloadPath: 'codequalityReportDownloadPath',
-          downloadablePathForReportType: 'downloadablePathForReportType',
-          exposeSecurityDashboard: true,
-          exposeLicenseScanningData: true,
-          failedJobsCount: '1',
-          graphqlResourceEtag: 'graphqlResourceEtag',
-          pipelineIid: '123',
-          pipelineProjectPath: 'pipelineProjectPath',
-        },
+      expect(options.el).toEqual(el);
+      expect(options.provide).toMatchObject({
+        canGenerateCodequalityReports: true,
+        codequalityReportDownloadPath: 'codequalityReportDownloadPath',
+        downloadablePathForReportType: 'downloadablePathForReportType',
+        exposeSecurityDashboard: true,
+        exposeLicenseScanningData: true,
+        failedJobsCount: '1',
+        graphqlResourceEtag: 'graphqlResourceEtag',
+        pipelineIid: '123',
+        pipelineProjectPath: 'pipelineProjectPath',
       });
     });
 

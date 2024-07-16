@@ -6,7 +6,6 @@ Metrics/CyclomaticComplexity:
     - 'app/helpers/button_helper.rb'
     - 'app/models/concerns/issuable.rb'
     - 'app/services/projects/create_service.rb'
-    - 'ee/app/controllers/ee/groups_controller.rb'
     - 'ee/lib/gitlab/ci/parsers/security/formatters/dependency_list.rb'
     - 'lib/banzai/filter/references/abstract_reference_filter.rb'
     - 'lib/gitlab/conflict/file.rb'

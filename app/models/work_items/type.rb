@@ -116,21 +116,34 @@ module WorkItems
       base_types.keys.excluding('objective', 'key_result', 'epic', 'ticket')
     end
 
+    # method overridden in EE to perform the corresponding checks for the Epic type
+    def self.allowed_group_level_types(resource_parent)
+      if Feature.enabled?(:create_group_level_work_items, resource_parent, type: :wip)
+        base_types.keys.excluding('epic')
+      else
+        []
+      end
+    end
+
     def default?
       namespace.blank?
     end
 
     # resource_parent is used in EE
     def widgets(_resource_parent)
-      enabled_widget_definitions.filter_map(&:widget_class)
+      enabled_widget_definitions.filter(&:widget_class)
+    end
+
+    def widget_classes(resource_parent)
+      widgets(resource_parent).map(&:widget_class)
     end
 
     def supports_assignee?(resource_parent)
-      widgets(resource_parent).include?(::WorkItems::Widgets::Assignees)
+      widget_classes(resource_parent).include?(::WorkItems::Widgets::Assignees)
     end
 
     def supports_time_tracking?(resource_parent)
-      widgets(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
+      widget_classes(resource_parent).include?(::WorkItems::Widgets::TimeTracking)
     end
 
     def default_issue?

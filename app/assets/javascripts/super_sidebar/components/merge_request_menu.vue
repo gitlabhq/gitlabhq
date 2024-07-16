@@ -34,7 +34,7 @@ export default {
     <template #list-item="{ item }">
       <span class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
         {{ item.text }}
-        <gl-badge pill size="sm" variant="neutral">{{ getCount(item) }}</gl-badge>
+        <gl-badge pill variant="neutral">{{ getCount(item) }}</gl-badge>
       </span>
     </template>
   </gl-disclosure-dropdown>

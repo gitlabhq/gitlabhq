@@ -43,6 +43,7 @@ class UserPreference < MainClusterwide::ApplicationRecord
 
   enum visibility_pipeline_id_type: { id: 0, iid: 1 }
   enum extensions_marketplace_opt_in_status: Enums::WebIde::ExtensionsMarketplaceOptInStatus.statuses
+  enum organization_groups_projects_display: { projects: 0, groups: 1 }
 
   class << self
     def notes_filters

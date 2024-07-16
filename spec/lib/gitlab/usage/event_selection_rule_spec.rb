@@ -133,6 +133,16 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
             expect(event_selection_rule.redis_keys_for_time_frame('7d'))
               .to eq(["{event_counters}_an_event-filter:[label:foo]-2024-21"])
           end
+
+          context 'when key is overridden' do
+            it 'uses the legacy key' do
+              stub_file_read(Gitlab::UsageDataCounters::HLLRedisCounter::KEY_OVERRIDES_PATH,
+                content: 'an_event-filter:[label:foo]: a_legacy_key')
+
+              expect(event_selection_rule.redis_keys_for_time_frame('7d'))
+               .to eq(["{event_counters}_a_legacy_key-2024-21"])
+            end
+          end
         end
 
         context 'when time_frame is "28d"' do
@@ -192,6 +202,53 @@ RSpec.describe Gitlab::Usage::EventSelectionRule, feature_category: :service_pin
       let(:unique_identifier_name) { nil }
 
       it { is_expected.to eq true }
+    end
+  end
+
+  describe '.matches?' do
+    subject do
+      described_class
+        .new(name: 'an_event', time_framed: true, filter: filter, unique_identifier_name: :user)
+        .matches?(additional_properties)
+    end
+
+    context 'with no filter' do
+      let(:filter) { {} }
+      let(:additional_properties) { {} }
+
+      context "with no additional_properties" do
+        let(:additional_properties) { {} }
+
+        it { is_expected.to eq true }
+      end
+
+      context "with additional_properties" do
+        let(:additional_properties) { { label: 'label1' } }
+
+        it { is_expected.to eq true }
+      end
+    end
+
+    context 'with filter' do
+      let(:filter) { { label: 'label1' } }
+
+      context "with matching additional_properties" do
+        let(:additional_properties) { { label: 'label1', proeprty: 'prop1' } }
+
+        it { is_expected.to eq true }
+      end
+
+      context "with not matching additional_properties" do
+        let(:additional_properties) { { proeprty: 'prop1' } }
+
+        it { is_expected.to eq false }
+      end
+
+      context "with no additional_properties" do
+        let(:additional_properties) { {} }
+
+        it { is_expected.to eq false }
+      end
     end
   end
 

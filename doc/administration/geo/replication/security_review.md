@@ -171,9 +171,12 @@ from [owasp.org](https://owasp.org/).
 - GitLab is "cloud native" and this applies to Geo as much as to the rest of the
   product. Deployment in clouds is a common and supported scenario.
 
-## If applicable, what approach(es) to cloud computing is taken (Managed Hosting versus "Pure" Cloud, a "full machine" approach such as AWS-EC2 versus a "hosted database" approach such as AWS-RDS and Azure, etc)?
+## If applicable, what approaches to cloud computing are taken?
 
-- To be decided by our customers, according to their operational needs.
+- Whether to use these is to be decided by our customers, according to their operational needs:
+
+  - Managed hosting versus "pure" cloud
+  - A "full machine" approach, such as AWS-ED2, versus a "hosted database" approach such as AWS-RDS and Azure
 
 ## Environment
 
@@ -189,7 +192,7 @@ from [owasp.org](https://owasp.org/).
 
 - PostgreSQL >= 12, Redis, Sidekiq, Puma.
 
-### How can database connection strings, encryption keys, and other sensitive components be stored, accessed, and protected from unauthorized detection?
+### How to protect database connection strings, encryption keys, and other sensitive components?
 
 - There are some Geo-specific values. Some are shared secrets which must be
   securely transmitted from the **primary** site to the **secondary** site at setup time. Our
@@ -247,8 +250,9 @@ from [owasp.org](https://owasp.org/).
 
 - Comprehensive system logs exist, tracking every connection to GitLab and PostgreSQL.
 
-### What encryption requirements have been defined for data in transit - including transmission over WAN, LAN, SecureFTP, or publicly accessible protocols such as http: and https:?
+### What encryption requirements have been defined for data in transit?
 
+- (This includes transmission over WAN, LAN, SecureFTP, or publicly accessible protocols such as `http:` and `https:`.)
 - Data must have the option to be encrypted in transit, and be secure against
   both passive and active attack (for example, MITM attacks should not be possible).
 
@@ -288,7 +292,7 @@ from [owasp.org](https://owasp.org/).
 
 ## Application Monitoring
 
-### What application auditing requirements have been defined? How are audit and debug logs accessed, stored, and secured?
+### How are audit and debug logs accessed, stored, and secured?
 
 - Structured JSON log is written to the file system, and can also be ingested
   into a Kibana installation for further analysis.

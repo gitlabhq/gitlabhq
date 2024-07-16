@@ -91,7 +91,6 @@ module API
 
       def log_user_activity(actor)
         commands = Gitlab::GitAccess::DOWNLOAD_COMMANDS
-        commands += Gitlab::GitAccess::PUSH_COMMANDS if Feature.enabled?(:log_user_git_push_activity)
 
         return unless commands.include?(params[:action])
 

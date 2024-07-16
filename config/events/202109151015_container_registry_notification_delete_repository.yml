@@ -1,12 +1,9 @@
 description: Delete repository container registry notification
 category: container_registry:notification
 action: delete_repository
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
-product_group: group::package
+product_group: container_registry
 milestone: "12.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/27001
 distributions:

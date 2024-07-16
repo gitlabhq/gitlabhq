@@ -12,7 +12,7 @@ import { s__, __, sprintf } from '~/locale';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
 import TimelineEntryItem from '~/vue_shared/components/notes/timeline_entry_item.vue';
 import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
-import { containsSensitiveToken, confirmSensitiveAction } from '~/lib/utils/secret_detection';
+import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import eventHub from '../event_hub';
 import noteable from '../mixins/noteable';
 import resolvable from '../mixins/resolvable';
@@ -243,12 +243,11 @@ export default {
         return;
       }
 
-      if (containsSensitiveToken(noteText)) {
-        const confirmed = await confirmSensitiveAction();
-        if (!confirmed) {
-          callback();
-          return;
-        }
+      const confirmSubmit = await detectAndConfirmSensitiveTokens({ content: noteText });
+
+      if (!confirmSubmit) {
+        callback();
+        return;
       }
 
       const postData = {

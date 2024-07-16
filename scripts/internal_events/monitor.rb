@@ -107,6 +107,17 @@ def generate_snowplow_table
   )
 end
 
+def generate_snowplow_placeholder
+  Terminal::Table.new(
+    title: 'SNOWPLOW EVENTS',
+    rows: [
+      ["Could not connect to Snowplow Micro."],
+      ["Please follow these instruction to set up Snowplow Micro:"],
+      ["https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md"]
+    ]
+  )
+end
+
 def relevant_events_from_args(metric_definition)
   metric_definition.events.keys.intersection(ARGV).sort
 end
@@ -143,9 +154,9 @@ def generate_metrics_table
   )
 end
 
-def render_screen(paused)
+def render_screen(paused, snowplow_available)
   metrics_table = generate_metrics_table
-  events_table = generate_snowplow_table
+  events_table = snowplow_available ? generate_snowplow_table : generate_snowplow_placeholder
 
   print TTY::Cursor.clear_screen
   print TTY::Cursor.move_to(0, 0)
@@ -155,7 +166,6 @@ def render_screen(paused)
   puts
 
   puts metrics_table
-
   puts events_table
 
   puts
@@ -163,13 +173,12 @@ def render_screen(paused)
   puts "Press \"q\" to quit"
 end
 
+snowplow_available = true
+
 begin
   snowplow_data
 rescue Errno::ECONNREFUSED
-  puts "Could not connect to Snowplow Micro."
-  puts "Please follow these instruction to set up Snowplow Micro:"
-  puts "https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md"
-  exit 1
+  snowplow_available = false
 end
 
 reader = TTY::Reader.new
@@ -180,12 +189,12 @@ begin
     case reader.read_keypress(nonblock: true)
     when 'p'
       paused = !paused
-      render_screen(paused)
+      render_screen(paused, snowplow_available)
     when 'q'
       break
     end
 
-    render_screen(paused) unless paused
+    render_screen(paused, snowplow_available) unless paused
 
     sleep 1
   end

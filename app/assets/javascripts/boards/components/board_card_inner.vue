@@ -44,6 +44,7 @@ export default {
     'isEpicBoard',
     'issuableType',
     'isGroupBoard',
+    'disabled',
   ],
   props: {
     item: {
@@ -136,7 +137,7 @@ export default {
       return this.isEpicBoard && this.hasChildren;
     },
     showLabelFooter() {
-      return this.isShowingLabels && this.item.labels.find(this.showLabel);
+      return this.isShowingLabels && this.item.labels.filter(this.isNonListLabel).length > 0;
     },
     itemReferencePath() {
       const { referencePath } = this.item;
@@ -175,6 +176,9 @@ export default {
     showBoardCardNumber() {
       return this.item.referencePath && !this.isLoading;
     },
+    hasActions() {
+      return !this.disabled && this.list.listType !== ListType.closed;
+    },
   },
   methods: {
     setError,
@@ -190,10 +194,6 @@ export default {
     },
     avatarUrl(assignee) {
       return assignee.avatarUrl || assignee.avatar || gon.default_avatar_url;
-    },
-    showLabel(label) {
-      if (!label.id) return false;
-      return true;
     },
     isNonListLabel(label) {
       return (
@@ -228,9 +228,10 @@ export default {
 </script>
 <template>
   <div>
-    <div class="gl-display-flex" dir="auto">
+    <div class="gl-flex" dir="auto">
       <h4
-        class="board-card-title gl-min-w-0 gl-mb-0 gl-mt-0 gl-mr-3 gl-font-base gl-break-words gl-hyphens-auto"
+        class="board-card-title gl-min-w-0 gl-mb-0 gl-mt-0 gl-text-base gl-break-words gl-hyphens-auto"
+        :class="{ 'gl-mr-6': hasActions }"
       >
         <issuable-blocked-icon
           v-if="item.blocked"
@@ -266,7 +267,7 @@ export default {
       </h4>
       <slot></slot>
     </div>
-    <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-display-flex gl-flex-wrap">
+    <div v-if="showLabelFooter" class="board-card-labels gl-mt-2 gl-flex gl-flex-wrap">
       <template v-for="label in orderedLabels">
         <gl-label
           :key="label.id"
@@ -280,18 +281,16 @@ export default {
         />
       </template>
     </div>
-    <div
-      class="board-card-footer gl-display-flex gl-justify-content-space-between gl-align-items-flex-end"
-    >
+    <div class="board-card-footer gl-flex gl-justify-between gl-items-end gl-mt-3">
       <div
-        class="gl-display-flex align-items-start gl-flex-wrap-reverse board-card-number-container gl-overflow-hidden"
+        class="gl-flex align-items-start gl-flex-wrap-reverse board-card-number-container gl-overflow-hidden"
       >
-        <span class="board-info-items gl-mt-3 gl-leading-20 gl-display-inline-block">
+        <span class="board-info-items gl-leading-20 gl-inline-block">
           <gl-loading-icon v-if="isLoading" size="lg" class="gl-mt-5" />
           <span
             v-if="showBoardCardNumber"
-            class="board-card-number gl-overflow-hidden gl-gap-2 gl-mr-3 gl-mt-3 gl-font-sm gl-text-secondary"
-            :class="{ 'gl-font-base': isEpicBoard }"
+            class="board-card-number gl-overflow-hidden gl-gap-2 gl-mr-3 gl-mt-3 gl-text-sm gl-text-secondary"
+            :class="{ 'gl-text-base': isEpicBoard }"
           >
             <work-item-type-icon
               v-if="showWorkItemTypeIcon"
@@ -325,13 +324,13 @@ export default {
               v-if="item.milestone"
               data-testid="issue-milestone"
               :milestone="item.milestone"
-              class="gl-display-inline-flex gl-align-items-center gl-max-w-15 gl-font-sm gl-text-gray-500! gl-cursor-help! gl-align-bottom gl-mr-3"
+              class="gl-inline-flex gl-items-center gl-max-w-15 gl-text-sm gl-text-gray-500 gl-cursor-help gl-align-bottom gl-mr-3"
             />
             <issue-iteration
               v-if="item.iteration"
               data-testid="issue-iteration"
               :iteration="item.iteration"
-              class="gl-align-bottom gl-whitespace-nowrap"
+              class="gl-align-bottom"
             />
             <issue-due-date
               v-if="item.dueDate"
@@ -343,7 +342,7 @@ export default {
           </span>
         </span>
       </div>
-      <div class="board-card-assignee gl-display-flex -gl-mb-2">
+      <div class="board-card-assignee gl-flex">
         <user-avatar-link
           v-for="assignee in cappedAssignees"
           :key="assignee.id"

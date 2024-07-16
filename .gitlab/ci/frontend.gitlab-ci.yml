@@ -1,3 +1,11 @@
+.with-fixtures-needs:
+  needs:
+    - "rspec-all frontend_fixture"
+
+.with-graphql-schema-dump-needs:
+  needs:
+    - "graphql-schema-dump"
+
 .compile-assets-base:
   extends:
     - .default-retry
@@ -56,7 +64,7 @@ compile-production-assets as-if-foss:
   extends:
     - compile-production-assets
     - .as-if-foss
-    - .frontend:rules:compile-production-assets-as-if-foss
+    - .qa:rules:package-and-test-ce:follow-up
 
 follow-up:compile-production-assets:
   extends:
@@ -83,7 +91,6 @@ update-assets-compile-production-cache:
     - .update-cache-base
     - .assets-compile-cache-push
     - .shared:rules:update-cache
-  stage: prepare
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-assets-compile-test-cache:
@@ -92,7 +99,6 @@ update-assets-compile-test-cache:
     - .update-cache-base
     - .assets-compile-cache-push
     - .shared:rules:update-cache
-  stage: prepare
   artifacts: {}  # This job's purpose is only to update the cache.
 
 update-storybook-yarn-cache:
@@ -136,8 +142,14 @@ retrieve-frontend-fixtures:
     - .default-before_script
     - .ruby-cache
     - .use-pg14
+    - .repo-from-artifacts
   stage: fixtures
-  needs: ["setup-test-env", "retrieve-tests-metadata", "retrieve-frontend-fixtures"]
+  needs:
+    - "setup-test-env"
+    - "retrieve-tests-metadata"
+    - "retrieve-frontend-fixtures"
+    # it's ok to wait for the repo artifact as we're waiting for setup-test-env (which takes longer than clone-gitlab-repo) anyway
+    - !reference [.repo-from-artifacts, needs]
   variables:
     # Don't add `CRYSTALBALL: "false"` here as we're enabling Crystalball for scheduled pipelines (in `.gitlab-ci.yml`), so that we get coverage data
     # for the `frontend fixture RSpec files` that will be added to the Crystalball mapping in `update-tests-metadata`.
@@ -159,9 +171,10 @@ retrieve-frontend-fixtures:
     expire_in: 31d
     when: always
     paths:
-      - tmp/tests/frontend/
-      - knapsack/
       - crystalball/
+      - knapsack/
+      - log/*.log
+      - tmp/tests/frontend/
 
 # Builds FOSS, and EE fixtures in the EE project.
 # Builds FOSS fixtures in the FOSS project.
@@ -177,19 +190,24 @@ rspec-all frontend_fixture:
 # Uploads EE fixtures in the EE project.
 # Uploads FOSS fixtures in the FOSS project.
 upload-frontend-fixtures:
+  variables:
+    SETUP_DB: "false"
   extends:
-    - .frontend-fixtures-base
+    - .default-retry
+    - .default-before_script
+    - .repo-from-artifacts
     - .frontend:rules:upload-frontend-fixtures
   stage: fixtures
-  needs: ["rspec-all frontend_fixture"]
+  needs:
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
   script:
-    - source scripts/utils.sh
     - source scripts/gitlab_component_helpers.sh
     - export_fixtures_sha_for_upload
     - 'fixtures_archive_doesnt_exist || { echoinfo "INFO: Exiting early as package exists."; exit 0; }'
     - run_timed_command "create_fixtures_package"
     - run_timed_command "upload_fixtures_package"
-  artifacts: {}
 
 graphql-schema-dump:
   variables:
@@ -223,18 +241,7 @@ graphql-schema-dump:
   before_script:
     - !reference [.default-before_script, before_script]
     - yarn_install_script
-  stage: test
-
-.vue3:
-  variables:
-    VUE_VERSION: 3
-    NODE_OPTIONS: --max-old-space-size=7680
-  allow_failure: true
-
-.jest-base:
-  extends: .frontend-test-base
-  script:
-    - run_timed_command "yarn jest:ci:without-fixtures"
+  stage: test-frontend
 
 jest-build-cache:
   extends:
@@ -258,37 +265,26 @@ jest-build-cache:
     # they exit with 1, so as not to break master and other pipelines.
     exit_codes: 1
 
+.vue3:
+  variables:
+    VUE_VERSION: 3
+    NODE_OPTIONS: --max-old-space-size=7680
+  allow_failure: true
+
+.with-jest-build-cache-vue3-needs:
+  needs:
+    - job: jest-build-cache-vue3
+      optional: true
+
 jest-build-cache-vue3:
   extends:
     - jest-build-cache
     - .frontend:rules:jest-vue3
     - .vue3
 
-jest-with-fixtures:
-  extends:
-    - .jest-base
-    - .frontend:rules:jest
-  needs:
-    - "rspec-all frontend_fixture"
-    - job: jest-build-cache
-      optional: true
-  artifacts:
-    name: coverage-frontend
-    expire_in: 31d
-    when: always
-    paths:
-      - coverage-frontend/
-      - junit_jest.xml
-      - tmp/tests/frontend/
-    reports:
-      junit: junit_jest.xml
-  parallel: 2
-  script:
-    - run_timed_command "yarn jest:ci:with-fixtures"
-
 jest:
   extends:
-    - .jest-base
+    - .frontend-test-base
     - .frontend:rules:jest
   needs:
     - job: jest-build-cache
@@ -304,16 +300,22 @@ jest:
     reports:
       junit: junit_jest.xml
   parallel: 11
+  script:
+    - run_timed_command "yarn jest:ci:without-fixtures"
 
-jest-with-fixtures vue3:
+jest-with-fixtures:
   extends:
-    - jest-with-fixtures
-    - .frontend:rules:jest-vue3
-    - .vue3
+    - jest
+    - .repo-from-artifacts
+    - .frontend:rules:jest
   needs:
-    - "rspec-all frontend_fixture"
-    - job: jest-build-cache-vue3
-      optional: true
+    - !reference [jest, needs]
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
+  parallel: 2
+  script:
+    - run_timed_command "yarn jest:ci:with-fixtures"
 
 jest vue3:
   extends:
@@ -321,8 +323,18 @@ jest vue3:
     - .frontend:rules:jest-vue3
     - .vue3
   needs:
-    - job: jest-build-cache-vue3
-      optional: true
+    - !reference [.with-jest-build-cache-vue3-needs, needs]
+
+jest-with-fixtures vue3:
+  extends:
+    - jest-with-fixtures
+    - .frontend:rules:jest-vue3
+    - .vue3
+  needs:
+    - !reference ["jest vue3", needs]
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
 
 jest predictive:
   extends:
@@ -347,16 +359,25 @@ jest-with-fixtures predictive:
 jest-integration:
   extends:
     - .frontend-test-base
+    - .repo-from-artifacts
     - .frontend:rules:jest-integration
   script:
     - run_timed_command "yarn jest:integration --ci"
-  needs: ["rspec-all frontend_fixture", "graphql-schema-dump"]
+  needs:
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
+    - !reference [.with-graphql-schema-dump-needs, needs]
 
 jest-snapshot-vue3:
   extends:
-    - .jest-base
+    - .frontend-test-base
+    - .repo-from-artifacts
     - .frontend:rules:jest-snapshot-vue3
-  needs: ["rspec-all frontend_fixture"]
+  needs:
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
   variables:
     VUE_VERSION: 3
     JEST_REPORT: jest-test-report.json
@@ -379,7 +400,6 @@ jest-snapshot-vue3:
         echo 'All snapshot tests passed! Exiting 0...'
         exit 0
       fi
-
   artifacts:
     name: snapshot_tests
     expire_in: 31d
@@ -393,8 +413,10 @@ coverage-frontend:
     - .default-retry
     - .default-utils-before_script
     - .yarn-cache
+    - .repo-from-artifacts
     - .frontend:rules:coverage-frontend
   needs:
+    - !reference [.repo-from-artifacts, needs]
     - job: "jest"
       optional: true
     - job: "jest-with-fixtures"
@@ -425,9 +447,9 @@ webpack-dev-server:
     - .default-retry
     - .default-utils-before_script
     - .yarn-cache
+    - .repo-from-artifacts
     - .frontend:rules:default-frontend-jobs
-  stage: test
-  needs: []
+  stage: test-frontend
   variables:
     WEBPACK_MEMORY_TEST: "true"
     WEBPACK_VENDOR_DLL: "true"
@@ -441,44 +463,24 @@ webpack-dev-server:
     paths:
       - webpack-dev-server.json
 
-bundle-size-review:
-  extends:
-    - .default-retry
-    - .default-utils-before_script
-    - .assets-compile-cache
-    - .frontend:rules:bundle-size-review
-  image: ${REGISTRY_HOST}/${REGISTRY_GROUP}/gitlab-build-images:danger
-  stage: test
-  needs: []
-  script:
-    - yarn_install_script
-    - scripts/bundle_size_review
-  artifacts:
-    when: always
-    name: bundle-size-review
-    expire_in: 31d
-    paths:
-      - bundle-size-review/
-
-.compile-storybook-base:
+compile-storybook:
   extends:
     - .frontend-test-base
     - .storybook-yarn-cache
-  script:
-    - yarn_install_script_storybook
-    - run_timed_command "yarn run storybook:build"
-  needs: ["graphql-schema-dump"]
-
-compile-storybook:
-  extends:
-    - .compile-storybook-base
+    - .repo-from-artifacts
     - .frontend:rules:compile-storybook
+  stage: pages
   needs:
-    - !reference [.compile-storybook-base, needs]
-    - job: "rspec-all frontend_fixture"
+    # it's ok to wait for the repo artifact as we're waiting for the fixtures (which wait for the repo artifact) anyway
+    - !reference [.repo-from-artifacts, needs]
+    - !reference [.with-fixtures-needs, needs]
+    - !reference [.with-graphql-schema-dump-needs, needs]
   artifacts:
     name: storybook
     expire_in: 31d
     when: always
     paths:
       - storybook/public
+  script:
+    - yarn_install_script_storybook
+    - run_timed_command "yarn run storybook:build"

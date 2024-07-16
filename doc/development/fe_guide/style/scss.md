@@ -41,7 +41,7 @@ result (such as `ml-1` becoming `gl-ml-2`).
 ### Tailwind CSS
 
 We are in the process of migrating our CSS utility class setup to [Tailwind CSS](https://tailwindcss.com/).
-See the [Tailwind CSS blueprint](../../../architecture/blueprints/tailwindcss/index.md) for motivation, proposal,
+See the [Tailwind CSS design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/tailwindcss/) for motivation, proposal,
 and implementation details.
 
 #### Tailwind CSS basics
@@ -84,7 +84,7 @@ You can use the [important modifier](https://tailwindcss.com/docs/configuration#
 Spacing and sizing CSS utility classes (e.g. `margin`, `padding`, `width`, `height`) use our spacing scale defined in
 Color CSS utility classes (e.g. `color` and `background-color`) use colors defined in
 [src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/24a08b50da6bd3d34fb3f8d24f84436d90d165f6/src/tokens/build/tailwind/tokens.cjs).
-They will use the naming conventions documented in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation)
+They will use the naming conventions documented in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/padding)
 but the color names will not match. When using the [Tailwind CSS autocomplete](#tailwind-css-autocomplete)
 our configured colors will be shown.
 
@@ -94,7 +94,7 @@ our configured colors will be shown.
 
 Color CSS utility classes (e.g. `color` and `background-color`) use colors defined in
 [src/tokens/build/tailwind/tokens.cjs](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/24a08b50da6bd3d34fb3f8d24f84436d90d165f6/src/tokens/build/tailwind/tokens.cjs).
-They will use the naming conventions documented in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation)
+They will use the naming conventions documented in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/text-color)
 but the color names will not match. When using the [Tailwind CSS autocomplete](#tailwind-css-autocomplete)
 our configured colors will be shown.
 
@@ -163,10 +163,10 @@ For full HAML and custom `*-class` prop support these are the recommended update
 
 GitLab defines its own Tailwind CSS config in [tailwind.defaults.js](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js)
 to match the Pajamas design system and to prefix CSS utility classes with `gl-`.
-This means that in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/installation)
+This means that in the [official Tailwind CSS documentation](https://tailwindcss.com/docs/padding)
 the spacing, sizing, and color CSS utility classes may not match. Also, the `gl-`
 prefix will not be shown. Here is our
-[spacing scale](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js#L4) 
+[spacing scale](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/6612eaee37cdb4dd0258468c9f415be28c1053f0/tailwind.defaults.js#L4)
 and [colors](https://gitlab.com/gitlab-org/gitlab-ui/-/blob/24a08b50da6bd3d34fb3f8d24f84436d90d165f6/src/tokens/build/tailwind/tokens.cjs).
 In the future we plan to utilize [Tailwind config viewer](https://github.com/rogden/tailwind-config-viewer)
 to have a Tailwind CSS documentation site specific to GitLab.
@@ -337,6 +337,46 @@ makes things harder to override.
 Do not use any selector prefixed with `js-` for styling purposes. These
 selectors are intended for use only with JavaScript to allow for removal or
 renaming without breaking styling.
+
+## Selectors with Util CSS Classes
+
+Do not use utility CSS classes as selectors in your stylesheets. These classes
+are likely to change, requiring updates to the selectors and making the
+implementation harder to maintain. Instead, use another existing CSS class or
+add a new custom CSS class for styling elements. This approach improves
+maintainability and reduces the risk of bugs.
+
+```scss
+// ❌ Bad
+.gl-mb-5 {
+  /* ... */
+}
+
+// ✅ Good
+.component-header {
+  /* ... */
+}
+```
+
+## Selectors with ARIA attributes
+
+Do not use any attribute selector with ARIA for styling purposes. These
+attributes and roles are intended for supporting assistive technology.
+The structure of the components annotated with ARIA might change
+and so its styling. We need to be able to move these roles and attributes
+to different elements, without breaking styling.
+
+```scss
+// Bad
+&[aria-expanded=false] &-header {
+  border-bottom: 0;
+}
+
+// Good
+&.is-collapsed &-header {
+  border-bottom: 0;
+}
+```
 
 ## Using `extend` at-rule
 

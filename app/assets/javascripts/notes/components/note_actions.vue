@@ -12,7 +12,6 @@ import resolvedStatusMixin from '~/batch_comments/mixins/resolved_status';
 import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
 import { __, sprintf } from '~/locale';
-import eventHub from '~/sidebar/event_hub';
 import UserAccessRoleBadge from '~/vue_shared/components/user_access_role_badge.vue';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { splitCamelCase } from '~/lib/utils/text_utility';
@@ -151,9 +150,6 @@ export default {
     showDeleteAction() {
       return this.canDelete && !this.canReportAsAbuse && !this.noteUrl;
     },
-    isAuthoredByCurrentUser() {
-      return this.authorId === this.currentUserId;
-    },
     currentUserId() {
       return this.getUserDataByProp('id');
     },
@@ -164,9 +160,6 @@ export default {
       return this.isUserAssigned
         ? __('Unassign from commenting user')
         : __('Assign to commenting user');
-    },
-    sidebarAction() {
-      return this.isUserAssigned ? 'sidebar.addAssignee' : 'sidebar.removeAssignee';
     },
     targetType() {
       return this.getNoteableData.targetType;
@@ -228,8 +221,6 @@ export default {
     },
     handleAssigneeUpdate(assignees) {
       this.$emit('updateAssignees', assignees);
-      eventHub.$emit(this.sidebarAction, this.author);
-      eventHub.$emit('sidebar.saveAssignees');
     },
     assignUser() {
       let { assignees } = this;
@@ -355,7 +346,7 @@ export default {
         text-sr-only
         icon="ellipsis_v"
         category="tertiary"
-        placement="right"
+        placement="bottom-end"
         class="note-action-button more-actions-toggle"
         no-caret
       >

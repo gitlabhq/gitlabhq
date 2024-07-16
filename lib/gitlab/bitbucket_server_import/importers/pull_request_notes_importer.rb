@@ -217,7 +217,8 @@ module Gitlab
             note: note,
             author_id: author,
             created_at: comment.created_at,
-            updated_at: comment.updated_at
+            updated_at: comment.updated_at,
+            imported_from: ::Import::SOURCE_BITBUCKET_SERVER
           }
         end
 

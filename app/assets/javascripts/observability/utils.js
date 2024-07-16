@@ -1,4 +1,5 @@
-import { isValidDate } from '~/lib/utils/datetime_utility';
+import { padWithZeros } from '~/lib/utils/datetime/date_format_utility';
+import { isValidDate, differenceInMinutes } from '~/lib/utils/datetime_utility';
 
 import {
   CUSTOM_DATE_RANGE_OPTION,
@@ -51,7 +52,7 @@ export const periodToDate = (timePeriod) => {
  * @returns {{value: string, startDate?: Date, endDate?: Date}} An object containing the validated date range.
  */
 
-function validatedDateRangeQuery(dateRangeValue, dateRangeStart, dateRangeEnd) {
+export function validatedDateRangeQuery(dateRangeValue, dateRangeStart, dateRangeEnd) {
   const DEFAULT_TIME_RANGE = '1h';
   if (dateRangeValue === CUSTOM_DATE_RANGE_OPTION) {
     if (isValidDate(new Date(dateRangeStart)) && isValidDate(new Date(dateRangeEnd))) {
@@ -122,4 +123,54 @@ export function dateFilterObjToQuery(dateFilter = {}) {
         }),
     [TIMESTAMP_QUERY_KEY]: dateFilter.timestamp,
   };
+}
+
+/**
+ * Adds a given time as string to a date object.
+ *
+ * @param {string} timeString - The time string in the format 'HH:mm:ss'.
+ * @param {Date} origDate - The original date object.
+ * @returns {Date} The new date object with the time added.
+ */
+export function addTimeToDate(timeString, origDate) {
+  if (!origDate || !timeString) return origDate;
+
+  const date = new Date(origDate);
+  const [hours, minutes, seconds] = timeString.split(':');
+
+  const isValid = (str) => !Number.isNaN(parseInt(str, 10));
+
+  if (!isValid(hours) || !isValid(minutes)) {
+    return date;
+  }
+
+  date.setHours(parseInt(hours, 10));
+  date.setMinutes(parseInt(minutes, 10));
+
+  if (isValid(seconds)) {
+    date.setSeconds(parseInt(seconds, 10));
+  }
+  return date;
+}
+
+/**
+ * Returns the time formatted as 'HH:mm:ss' from given date.
+ *
+ * @param {Date} date - The date object to format.
+ * @returns {string} The formatted time string.
+ */
+export function formattedTimeFromDate(date) {
+  if (!isValidDate(date)) return '';
+
+  return padWithZeros(date.getHours(), date.getMinutes(), date.getSeconds()).join(':');
+}
+
+export function isTracingDateRangeOutOfBounds({ value, startDate, endDate }) {
+  const HOURS_QUERY_LIMIT = 12;
+  if (value === CUSTOM_DATE_RANGE_OPTION) {
+    if (!isValidDate(startDate) || !isValidDate(endDate)) return true;
+
+    return differenceInMinutes(startDate, endDate) > HOURS_QUERY_LIMIT * 60;
+  }
+  return false;
 }

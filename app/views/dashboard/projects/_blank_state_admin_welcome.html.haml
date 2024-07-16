@@ -1,44 +1,31 @@
-- link_classes = "blank-state blank-state-link gl-text-body gl-display-flex gl-align-items-center gl-border-1 gl-border-solid gl-border-gray-100 gl-rounded-base gl-mb-5"
-
-.gl-display-flex.gl-flex-wrap.gl-justify-content-space-between
+.welcome-grid
   = render_if_exists "dashboard/projects/blank_state_extra_info"
 
   - if has_start_trial?
     = render_if_exists "dashboard/projects/blank_state_ee_trial"
 
-  = link_to new_project_path, class: link_classes, data: { testid: 'new-project-button' } do
-    .blank-state-icon
-      = custom_icon("add_new_project", size: 50)
-    .blank-state-body.gl-sm-pl-6
-      %h3.gl-font-size-h2.gl-mt-0
-        = _('Create a project')
-      %p
-        = _('Projects are where you store your code, access issues, wiki and other features of GitLab.')
+  = render Onboarding::ActionCardComponent.new(title: _('Create a project'),
+    description: _('Projects are where you store your code, access issues, wiki, and other features of GitLab.'),
+    icon: 'project',
+    href: new_project_path,
+    variant: 'default',
+    link_options: { data: { testid: 'new-project-button' }})
 
   - if current_user.can_create_group?
-    = link_to new_group_path, class: link_classes do
-      .blank-state-icon
-        = custom_icon("add_new_group", size: 50)
-      .blank-state-body.gl-sm-pl-6
-        %h3.gl-font-size-h2.gl-mt-0
-          = _('Create a group')
-        %p
-          = _('Groups are a great way to organize projects and people.')
+    = render Onboarding::ActionCardComponent.new(title: _('Create a group'),
+      description: _('Groups are a great way to organize projects and people.'),
+      icon: 'group',
+      href: new_group_path,
+      variant: 'default')
 
-    = link_to new_admin_user_path, class: link_classes do
-      .blank-state-icon
-        = custom_icon("add_new_user", size: 50)
-      .blank-state-body.gl-sm-pl-6
-        %h3.gl-font-size-h2.gl-mt-0
-          = _('Add people')
-        %p
-          = _('Add your team members and others to GitLab.')
+    = render Onboarding::ActionCardComponent.new(title: _('Add people'),
+      description: _('Add your team members and others to GitLab.'),
+      icon: 'user',
+      href: new_admin_user_path,
+      variant: 'default')
 
-  = link_to admin_root_path, class: link_classes do
-    .blank-state-icon
-      = custom_icon("configure_server", size: 50)
-    .blank-state-body.gl-sm-pl-6
-      %h3.gl-font-size-h2.gl-mt-0
-        = _('Configure GitLab')
-      %p
-        = _('Make adjustments to how your GitLab instance is set up.')
+  = render Onboarding::ActionCardComponent.new(title: _('Configure GitLab'),
+    description: _('Make adjustments to how your GitLab instance is set up.'),
+    icon: 'tanuki',
+    href: admin_root_path,
+    variant: 'default')

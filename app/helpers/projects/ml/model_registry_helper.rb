@@ -11,7 +11,8 @@ module Projects
           create_model_path: new_project_ml_model_path(project),
           can_write_model_registry: can_write_model_registry?(user, project),
           mlflow_tracking_url: mlflow_tracking_url(project),
-          max_allowed_file_size: max_allowed_file_size(project)
+          max_allowed_file_size: max_allowed_file_size(project),
+          markdown_preview_path: ::Gitlab::Routing.url_helpers.project_ml_preview_markdown_url(project)
         }
 
         to_json(data)
@@ -27,7 +28,8 @@ module Projects
           mlflow_tracking_url: mlflow_tracking_url(project),
           model_id: model.id,
           model_name: model.name,
-          max_allowed_file_size: max_allowed_file_size(project)
+          max_allowed_file_size: max_allowed_file_size(project),
+          latest_version: model.latest_version&.version
         }
 
         to_json(data)

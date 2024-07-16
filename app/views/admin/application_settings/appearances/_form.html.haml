@@ -3,161 +3,140 @@
 = gitlab_ui_form_for @appearance, url: admin_application_settings_appearances_path, html: { class: 'gl-mt-3' } do |f|
   = form_errors(@appearance)
 
-  .settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0 Favicon
-
-    .form-group
-      = f.label :favicon, _('Favicon'), class: 'col-form-label  gl-pt-0'
-      %p
-        - if @appearance.favicon?
-          = image_tag @appearance.favicon_path, class: 'appearance-light-logo-preview'
-          - if @appearance.persisted?
+  = render ::Layouts::SettingsSectionComponent.new(_('Favicon')) do |c|
+    - c.with_body do
+      .form-group
+        = f.label :favicon, _('Favicon'), class: 'col-form-label  gl-pt-0'
+        %p
+          - if @appearance.favicon?
+            = image_tag @appearance.favicon_path, class: 'appearance-light-logo-preview'
+            - if @appearance.persisted?
+              %br
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: favicon_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Favicon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove favicon') } }) do
+                = _('Remove favicon')
+            %hr
+          = f.hidden_field :favicon_cache
+          = f.file_field :favicon, class: '', accept: 'image/*'
+          .form-text.gl-text-secondary
+            = _("Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_allowlist}.") % { favicon_extension_allowlist: favicon_extension_allowlist }
             %br
-            = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: favicon_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Favicon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove favicon') } }) do
-              = _('Remove favicon')
-          %hr
-        = f.hidden_field :favicon_cache
-        = f.file_field :favicon, class: '', accept: 'image/*'
-        .form-text.text-muted
-          = _("Maximum file size is 1 MB. Image size must be 32 x 32 pixels. Allowed image formats are %{favicon_extension_allowlist}.") % { favicon_extension_allowlist: favicon_extension_allowlist }
-          %br
-          = _("Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.")
+            = _("Images with incorrect dimensions are not resized automatically, and may result in unexpected behavior.")
 
-  .settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0= _('Member guidelines')
-
-    .form-text.text-muted
+  = render ::Layouts::SettingsSectionComponent.new(_('Member guidelines')) do |c|
+    - c.with_description do
       = _('These guidelines are displayed on the group\'s or project\'s members page, and are visible to users who can manage team member permissions.')
+    - c.with_body do
+      .form-group
+        = f.label :member_guidelines, class: 'col-form-label'
+        %p
+          = f.text_area :member_guidelines, class: "form-control gl-form-input", rows: 10
+          .form-text.gl-text-secondary
+            = parsed_with_gfm
 
-    .form-group
-      = f.label :member_guidelines, class: 'col-form-label'
-      %p
-        = f.text_area :member_guidelines, class: "form-control gl-form-input", rows: 10
-        .form-text.text-muted
-          = parsed_with_gfm
+  = render ::Layouts::SettingsSectionComponent.new(_('Navigation bar')) do |c|
+    - c.with_body do
+      .form-group
+        = f.label :header_logo, _('Header logo'), class: 'col-form-label  gl-pt-0'
+        %p
+          - if @appearance.header_logo?
+            = image_tag @appearance.header_logo_path, class: 'appearance-light-logo-preview'
+            - if @appearance.persisted?
+              %br
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: header_logos_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Header logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove header logo') } }) do
+                = _('Remove header logo')
+            %hr
+          = f.hidden_field :header_logo_cache
+          = f.file_field :header_logo, class: "", accept: 'image/*'
+          .form-text.gl-text-secondary
+            = _('Maximum file size is 1MB. Pages are optimized for a 24px tall header logo')
 
-  .settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0= _('Navigation bar')
 
-    .form-group
-      = f.label :header_logo, _('Header logo'), class: 'col-form-label  gl-pt-0'
-      %p
-        - if @appearance.header_logo?
-          = image_tag @appearance.header_logo_path, class: 'appearance-light-logo-preview'
-          - if @appearance.persisted?
-            %br
-            = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: header_logos_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Header logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove header logo') } }) do
-              = _('Remove header logo')
-          %hr
-        = f.hidden_field :header_logo_cache
-        = f.file_field :header_logo, class: "", accept: 'image/*'
-        .form-text.text-muted
-          = _('Maximum file size is 1MB. Pages are optimized for a 24px tall header logo')
+  = render ::Layouts::SettingsSectionComponent.new(_('New project pages')) do |c|
+    - c.with_body do
+      .form-group
+        = f.label :new_project_guidelines, class: 'col-form-label'
+        %p
+          = f.text_area :new_project_guidelines, class: "form-control gl-form-input", rows: 10
+          .form-text.gl-text-secondary
+            = parsed_with_gfm
 
-  .settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0= _('New project pages')
-
-    .form-group
-      = f.label :new_project_guidelines, class: 'col-form-label'
-      %p
-        = f.text_area :new_project_guidelines, class: "form-control gl-form-input", rows: 10
-        .form-text.text-muted
-          = parsed_with_gfm
-
-  .settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0= _('Profile image guidelines')
-
-    %p.gl-text-secondary
+  = render ::Layouts::SettingsSectionComponent.new(_('Profile image guidelines')) do |c|
+    - c.with_description do
       = _('These guidelines for public avatars are displayed on the user settings page.')
+    - c.with_body do
+      .form-group
+        = f.label :profile_image_guidelines, class: 'col-form-label'
+        %p
+          = f.text_area :profile_image_guidelines, class: "form-control gl-form-input", rows: 10
+          .form-text.gl-text-secondary
+            = parsed_with_gfm
 
-    .form-group
-      = f.label :profile_image_guidelines, class: 'col-form-label'
-      %p
-        = f.text_area :profile_image_guidelines, class: "form-control gl-form-input", rows: 10
-        .form-text.text-muted
+  = render ::Layouts::SettingsSectionComponent.new(_('Progressive Web App (PWA)')) do |c|
+    - c.with_body do
+      .form-group
+        = f.label _("Name"), class: 'col-form-label'
+        = f.text_field :pwa_name, class: "form-control gl-form-input"
+      .form-group
+        = f.label _("Short name"), class: 'col-form-label'
+        = f.text_field :pwa_short_name, class: "form-control gl-form-input"
+      .form-group
+        = f.label _("Description"), class: 'col-form-label'
+        = f.text_area :pwa_description, class: "form-control gl-form-input", rows: 10
+        .form-text.gl-text-secondary
           = parsed_with_gfm
+      .form-group
+        = f.label :pwa_icon, class: 'col-form-label  gl-pt-0'
+        %p
+          - if @appearance.pwa_icon?
+            = image_tag @appearance.pwa_icon_path, class: 'appearance-pwa-icon-preview'
+            - if @appearance.persisted?
+              %br
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: pwa_icon_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Icon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove icon') } }) do
+                = _('Remove icon')
+            %hr
+          = f.hidden_field :pwa_icon_cache
+          = f.file_field :pwa_icon, class: "", accept: 'image/*'
+          .form-text.gl-text-secondary
+            = _('Maximum file size is 1MB.')
 
-  .settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0= _('Progressive Web App (PWA)')
-
-    .form-group
-      = f.label _("Name"), class: 'col-form-label'
-      = f.text_field :pwa_name, class: "form-control gl-form-input"
-    .form-group
-      = f.label _("Short name"), class: 'col-form-label'
-      = f.text_field :pwa_short_name, class: "form-control gl-form-input"
-    .form-group
-      = f.label _("Description"), class: 'col-form-label'
-      = f.text_area :pwa_description, class: "form-control gl-form-input", rows: 10
-      .form-text.text-muted
-        = parsed_with_gfm
-    .form-group
-      = f.label :pwa_icon, class: 'col-form-label  gl-pt-0'
-      %p
-        - if @appearance.pwa_icon?
-          = image_tag @appearance.pwa_icon_path, class: 'appearance-pwa-icon-preview'
-          - if @appearance.persisted?
-            %br
-            = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: pwa_icon_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Icon will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove icon') } }) do
-              = _('Remove icon')
-          %hr
-        = f.hidden_field :pwa_icon_cache
-        = f.file_field :pwa_icon, class: "", accept: 'image/*'
-        .form-text.text-muted
-          = _('Maximum file size is 1MB.')
-
-  .settings-section
-    .settings-sticky-header
-      .settings-sticky-header-inner
-        %h4.gl-my-0= _('Sign in/Sign up pages')
-
-    .form-group
-      = f.label :title, class: 'col-form-label'
-      = f.text_field :title, class: "form-control gl-form-input"
-    .form-group
-      = f.label :description, class: 'col-form-label'
-      = f.text_area :description, class: "form-control gl-form-input", rows: 10
-      .form-text.text-muted
-        = parsed_with_gfm
-    .form-group
-      = f.label :logo, class: 'col-form-label  gl-pt-0'
-      %p
-        - if @appearance.logo?
-          = image_tag @appearance.logo_path, class: 'appearance-logo-preview'
-          - if @appearance.persisted?
-            %br
-            = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: logo_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove logo') } }) do
-              = _('Remove logo')
-          %hr
-        = f.hidden_field :logo_cache
-        = f.file_field :logo, class: "", accept: 'image/*'
-        .form-text.text-muted
-          = _('Maximum file size is 1 MB. Pages are optimized for a 128x128 px logo.')
+  = render ::Layouts::SettingsSectionComponent.new(_('Sign in/Sign up pages')) do |c|
+    - c.with_body do
+      .form-group
+        = f.label :title, class: 'col-form-label'
+        = f.text_field :title, class: "form-control gl-form-input"
+      .form-group
+        = f.label :description, class: 'col-form-label'
+        = f.text_area :description, class: "form-control gl-form-input", rows: 10
+        .form-text.gl-text-secondary
+          = parsed_with_gfm
+      .form-group
+        = f.label :logo, class: 'col-form-label  gl-pt-0'
+        %p
+          - if @appearance.logo?
+            = image_tag @appearance.logo_path, class: 'appearance-logo-preview'
+            - if @appearance.persisted?
+              %br
+              = render Pajamas::ButtonComponent.new(variant: :danger, category: :secondary, size: :small, method: :delete, href: logo_admin_application_settings_appearances_path, button_options: { data: { confirm: _("Logo will be removed. Are you sure?"), confirm_btn_variant: "danger" }, aria: { label: _('Remove logo') } }) do
+                = _('Remove logo')
+            %hr
+          = f.hidden_field :logo_cache
+          = f.file_field :logo, class: "", accept: 'image/*'
+          .form-text.gl-text-secondary
+            = _('Maximum file size is 1 MB. Pages are optimized for a 128x128 px logo.')
 
   = render partial: 'admin/application_settings/appearances/system_header_footer_form', locals: { form: f }
 
   - if @appearance.persisted? || @appearance.updated_at
     .settings-section
       - if @appearance.persisted?
-        Preview last save:
+        = s_('AppearanceSettings|Preview last save:')
         = link_to _('Sign-in page'), preview_sign_in_admin_application_settings_appearances_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
         = link_to _('New project page'), new_project_path, class: 'btn', target: '_blank', rel: 'noopener noreferrer'
 
       - if @appearance.updated_at
-        %span.gl-float-right
-          Last edit #{time_ago_with_tooltip(@appearance.updated_at)}
+        %span.gl-float-right.gl-text-secondary
+          = s_('AppearanceSettings|Last edit')
+          #{time_ago_with_tooltip(@appearance.updated_at)}
 
   .settings-sticky-footer
     = f.submit _('Update appearance settings'), pajamas_button: true

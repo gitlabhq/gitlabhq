@@ -1,21 +1,17 @@
 - expanded = integration_expanded?('jira_connect')
 
-%section.settings.no-animate#js-jira_connect-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_('JiraConnect|GitLab for Jira App')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_('JiraConnect|Configure your Jira Connect Application ID.')
-      = link_to sprite_icon('question-o'),
-          help_page_path('administration/settings/jira_cloud_app',
-          aria: { label: _('GitLab for Jira Cloud') },
-          class: 'has-tooltip',
-          anchor: 'install-the-gitlab-for-jira-cloud-app-manually'),
-          title: _('More information')
-
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(s_('JiraConnect|GitLab for Jira App'),
+  id: 'js-jira_connect-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = s_('JiraConnect|Configure your Jira Connect Application ID.')
+    = link_to sprite_icon('question-o'),
+        help_page_path('administration/settings/jira_cloud_app',
+        aria: { label: _('GitLab for Jira Cloud') },
+        class: 'has-tooltip',
+        anchor: 'install-the-gitlab-for-jira-cloud-app-manually'),
+        title: _('More information')
+  - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-jira-connect-application-id-settings'), html: { class: 'fieldset-form', id: 'jira-connect-application-id-settings' } do |f|
       = form_errors(@application_setting)
       .gl-form-group

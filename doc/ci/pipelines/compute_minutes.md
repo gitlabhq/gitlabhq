@@ -51,8 +51,6 @@ The triggered downstream pipeline consumes compute minutes the same as other pip
 
 ## Set the compute quota for all namespaces
 
-> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
-
 By default, GitLab instances do not have a compute quota.
 The default value for the quota is `0`, which is unlimited.
 However, you can change this default value.
@@ -63,7 +61,7 @@ Prerequisites:
 
 To change the default quota that applies to all namespaces:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. In the **Compute quota** box, enter a limit.
@@ -72,8 +70,6 @@ To change the default quota that applies to all namespaces:
 If a quota is already defined for a specific namespace, this value does not change that quota.
 
 ## Set the compute quota for a specific namespace
-
-> - [Moved](https://about.gitlab.com/blog/2021/01/26/new-gitlab-product-subscription-model/) to GitLab Premium in 13.9.
 
 You can override the global value and set a compute quota
 for a specific namespace.
@@ -84,7 +80,7 @@ Prerequisites:
 
 To set a compute quota for a namespace:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Groups**.
 1. For the group you want to update, select **Edit**.
 1. In the **Compute quota** box, enter the maximum number of compute minutes.
@@ -213,6 +209,31 @@ To purchase additional compute minutes for your personal namespace:
 After your payment is processed, the additional compute minutes are added to your personal
 namespace.
 
+### Troubleshooting
+
+#### Error: `Last name can't be blank`
+
+You might get an error "Last name can't be blank" when purchasing compute minutes. This issue occurs when a last name is missing from the **Full name** field of your profile.
+
+To resolve the issue:
+
+1. Ensure that your user profile has a last name filled in:
+   - On the left sidebar, select your avatar.
+   - Select **Edit profile**.
+   - Update the **Full name** field to have both first name and last name, save the changes.
+
+1. Clear your browser cache and cookies, then try the purchase process again.
+
+1. If the error persists, try using a different web browser or an incognito/private browsing window.
+
+#### Error: `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again`
+
+You might get the error `Attempt_Exceed_Limitation - Attempt exceed the limitation, refresh page to try again.` when purchasing compute minutes.
+
+This issue occurs when the credit card form is re-submitted too quickly within a specific time frame (three submissions within one minute or six submissions within one hour).
+
+To resolve this issue, wait a few minutes and try the purchase process again.
+
 ## How compute usage is calculated
 
 GitLab uses this formula to calculate the compute usage of a job:
@@ -304,9 +325,9 @@ calculations start again from `0`.
 
 For example, if you have a monthly quota of `10,000` compute minutes:
 
-- On **April 1**, you have `10,000` compute minutes.
+- On **1st April**, you have `10,000` compute minutes.
 - During April, you use only `6,000` of the `10,000` compute minutes.
-- On **May 1**, the accumulated compute usage resets to `0`, and you have `10,000` compute minutes to use again
+- On **1st May**, the accumulated compute usage resets to `0`, and you have `10,000` compute minutes to use again
   during May.
 
 Usage data for the previous month is kept to show historical view of the consumption over time.
@@ -385,12 +406,12 @@ An administrator can reset the compute usage for a namespace for the current mon
 
 ### Reset usage for a personal namespace
 
-1. Find the [user in the Admin Area](../../administration/admin_area.md#administering-users).
+1. Find the [user in the Admin area](../../administration/admin_area.md#administering-users).
 1. Select **Edit**.
 1. In **Limits**, select **Reset compute usage**.
 
 ### Reset usage for a group namespace
 
-1. Find the [group in the Admin Area](../../administration/admin_area.md#administering-groups).
+1. Find the [group in the Admin area](../../administration/admin_area.md#administering-groups).
 1. Select **Edit**.
 1. In **Permissions and group features**, select **Reset compute usage**.

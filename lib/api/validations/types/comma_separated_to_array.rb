@@ -5,7 +5,7 @@ module API
     module Types
       class CommaSeparatedToArray
         def self.coerce
-          lambda do |value|
+          ->(value) do
             case value
             when String
               value.split(',').map(&:strip)

@@ -1,12 +1,9 @@
 description: "Toggle labels on boards"
 category: default
 action: toggle
-label_description: "`show_labels`"
-property_description: "`[on | off]`"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: ""
+product_group: project_management
 milestone:
 introduced_by_url:
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`show_labels`"
+  property:
+    description: "`[on | off]`"

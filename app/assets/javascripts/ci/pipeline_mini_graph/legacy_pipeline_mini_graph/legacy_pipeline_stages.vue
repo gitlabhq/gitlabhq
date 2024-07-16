@@ -30,7 +30,7 @@ export default {
     <div
       v-for="stage in stages"
       :key="stage.name"
-      class="pipeline-mini-graph-stage-container dropdown gl-display-inline-flex gl-mr-2 gl-my-2 gl-align-middle"
+      class="pipeline-mini-graph-stage-container dropdown gl-inline-flex gl-mr-2 gl-my-2 gl-align-middle"
     >
       <legacy-pipeline-stage
         :stage="stage"

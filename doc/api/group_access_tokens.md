@@ -14,15 +14,21 @@ You can read more about [group access tokens](../user/group/settings/group_acces
 
 ## List group access tokens
 
+> - `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2.
+
 Get a list of [group access tokens](../user/group/settings/group_access_tokens.md).
+
+In GitLab 17.2 and later, you can use the `state` attribute to limit the response to group access tokens with a specified state.
 
 ```plaintext
 GET /groups/:id/access_tokens
+GET /groups/:id/access_tokens?state=inactive
 ```
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+| `state` | string | No | Limit results to tokens with specified state. Valid values are `active` and `inactive`. By default both states are returned. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/<group_id>/access_tokens"
@@ -41,6 +47,21 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
       "active" : true,
       "created_at" : "2021-01-20T22:11:48.151Z",
       "revoked" : false,
+      "last_used_at": null,
+      "access_level": 40
+   },
+   {
+      "user_id" : 141,
+      "scopes" : [
+         "read_api"
+      ],
+      "name" : "token-2",
+      "expires_at" : "2021-01-31",
+      "id" : 43,
+      "active" : false,
+      "created_at" : "2021-01-21T12:12:38.123Z",
+      "revoked" : true,
+      "last_used_at": "2021-02-13T10:34:57.178Z",
       "access_level": 40
    }
 ]

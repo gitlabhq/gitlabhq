@@ -9,7 +9,7 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
   let(:is_super_sidebar) { false }
   let(:context) do
     Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: 'master',
-   is_super_sidebar: is_super_sidebar)
+      is_super_sidebar: is_super_sidebar)
   end
 
   subject { described_class.new(context) }
@@ -48,7 +48,7 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
 
         let(:context) do
           Sidebars::Projects::Context.new(current_user: user, container: project, current_ref: ref,
-                                          ref_type: ref_type)
+            ref_type: ref_type)
         end
 
         where(:ref_type, :link) do
@@ -100,8 +100,8 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
         let_it_be(:item_id) { :files }
 
         it_behaves_like 'repository menu item with different super sidebar title',
-                        _('Files'),
-                        _('Repository')
+          _('Files'),
+          _('Repository')
       end
 
       describe 'Commits' do
@@ -144,8 +144,8 @@ RSpec.describe Sidebars::Projects::Menus::RepositoryMenu, feature_category: :sou
         end
 
         it_behaves_like 'repository menu item with different super sidebar title',
-                        _('Graph'),
-                        _('Repository graph')
+          _('Graph'),
+          _('Repository graph')
       end
     end
   end

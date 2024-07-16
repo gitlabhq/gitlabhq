@@ -1,26 +1,30 @@
-- page_title _('Health Check')
+- page_title _('Health check')
 - no_errors = @errors.blank?
 
-%h1.page-title.gl-font-size-h-display= page_title
-= render Pajamas::AlertComponent.new(variant: :tip, dismissible: false, alert_options: { class: 'gl-mb-5' }) do |c|
-  - c.with_body do
-    #{ s_('HealthCheck|Access token is') }
-    %code#health-check-token= Gitlab::CurrentSettings.health_check_access_token
-  - c.with_actions do
+= render ::Layouts::PageHeadingComponent.new(page_title,
+  description: page_description,
+  options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_health_check_pageload' } } )
+
+.form-group
+  = label_tag :health_check_access_token, s_('HealthCheck|Access token')
+  .gl-flex.gl-gap-3
+    = text_field_tag :health_check_access_token, Gitlab::CurrentSettings.health_check_access_token, class: "form-control gl-w-28", readonly: true, data: { testid: 'health_check_token' }
     = render Pajamas::ButtonComponent.new(href: reset_health_check_token_admin_application_settings_path, method: :put, button_options: { data: { confirm: _('Are you sure you want to reset the health check token?') } }) do
-      = _("Reset health check access token")
-%p.light
-  #{ _('Health information can be retrieved from the following endpoints. More information is available') }
-  = link_to s_('More information is available|here'), help_page_path('administration/monitoring/health_check')
-  %ul
-    %li
-      %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
-    %li
-      %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
-    %li
-      %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
-    = render_if_exists 'admin/health_check/health_check_url'
-%hr
+      = _("Reset token")
+
+
+- help_url = help_page_path('administration/monitoring/health_check')
+- help_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_url }
+%p.gl-mb-1= html_escape(s_('HealthCheck|Health information can be retrieved from the following endpoints. More information is available in the %{linkStart}Health Check documentation%{linkEnd}.')) % { linkStart: help_start, linkEnd: '</a>'.html_safe }
+%ul.gl-mb-6
+  %li.gl-mb-1
+    %code= readiness_url(token: Gitlab::CurrentSettings.health_check_access_token)
+  %li.gl-mb-1
+    %code= liveness_url(token: Gitlab::CurrentSettings.health_check_access_token)
+  %li.gl-mb-1
+    %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
+  = render_if_exists 'admin/health_check/health_check_url'
+
 = render Pajamas::CardComponent.new do |c|
   - c.with_header do
     Current Status:
@@ -32,6 +36,7 @@
       #{ s_('HealthCheck|Unhealthy') }
   - c.with_body do
     - if no_errors
-      #{ s_('HealthCheck|No Health Problems Detected') }
+      %p.gl-new-card-empty
+        = s_('HealthCheck|No health problems detected')
     - else
       = @errors

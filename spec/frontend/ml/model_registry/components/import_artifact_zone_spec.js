@@ -1,4 +1,5 @@
 import { GlAlert, GlFormInputGroup, GlProgressBar } from '@gitlab/ui';
+import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { uploadModel } from '~/ml/model_registry/services/upload_model';
@@ -27,6 +28,7 @@ describe('ImportArtifactZone', () => {
   const emulateFileDrop = () => zone().vm.$emit('change', file);
   const subfolderInput = () => wrapper.findByTestId('subfolderId');
   const subfolderLabel = () => wrapper.findByTestId('subfolderLabel');
+  const subfolderGroup = () => wrapper.findByTestId('subfolderGroup');
   const alert = () => wrapper.findComponent(GlAlert);
 
   describe('Successful upload', () => {
@@ -121,6 +123,42 @@ describe('ImportArtifactZone', () => {
     it('displays the subfolder label', () => {
       expect(subfolderLabel().text()).toBe('Subfolder (optional)');
     });
+
+    it('displays the subfolder description initial state', async () => {
+      await subfolderInput().vm.$emit('input', 'subfolder');
+      await nextTick();
+      expect(subfolderGroup().attributes('description')).toBe(
+        'Enter a subfolder name to organize your artifacts.',
+      );
+      expect(subfolderGroup().attributes('state')).toBe('true');
+    });
+
+    it.each(['sub folder', 'subfolder ', ' subfolder', ' sub folder', '   subfolder '])(
+      'displays the subfolder invalid instead of description',
+      async (subfolder) => {
+        await subfolderInput().vm.$emit('input', subfolder);
+        await nextTick();
+        expect(subfolderInput().attributes('value')).toBe(subfolder);
+        expect(subfolderGroup().attributes('description')).toBe('');
+        expect(subfolderGroup().attributes('invalid-feedback')).toBe(
+          'Subfolder cannot contain spaces',
+        );
+        expect(subfolderGroup().attributes('state')).toBe(undefined);
+      },
+    );
+
+    it.each(['subfolder', 'subfolder/sub2', 'subfolder/', 'sub_folder'])(
+      'displays the subfolder in a valid state',
+      async (subfolder) => {
+        await subfolderInput().vm.$emit('input', subfolder);
+        await nextTick();
+        expect(subfolderInput().attributes('value')).toBe(subfolder);
+        expect(subfolderGroup().attributes('description')).toBe(
+          'Enter a subfolder name to organize your artifacts.',
+        );
+        expect(subfolderGroup().attributes('state')).toBe('true');
+      },
+    );
 
     it('displays the placeholder in the subfolder input', () => {
       expect(subfolderInput().attributes('placeholder')).toBe('folder name');

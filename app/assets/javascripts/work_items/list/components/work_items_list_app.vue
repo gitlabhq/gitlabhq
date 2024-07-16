@@ -55,6 +55,7 @@ export default {
       isInitialAllCountSet: false,
       pageInfo: {},
       pageParams: getInitialPageParams(),
+      pageSize: DEFAULT_PAGE_SIZE,
       sortKey: deriveSortKey({ sort: this.initialSort, sortMap: urlSortParams }),
       state: STATUS_OPEN,
       tabCounts: {},
@@ -108,6 +109,9 @@ export default {
     hasSearch() {
       return Boolean(this.searchQuery);
     },
+    isLoading() {
+      return this.$apollo.queries.workItems.loading;
+    },
     isOpenTab() {
       return this.state === STATUS_OPEN;
     },
@@ -155,7 +159,10 @@ export default {
       ];
     },
     showPaginationControls() {
-      return this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage;
+      return !this.isLoading && (this.pageInfo.hasNextPage || this.pageInfo.hasPreviousPage);
+    },
+    showPageSizeSelector() {
+      return this.workItems.length > 0;
     },
   },
   watch: {
@@ -177,23 +184,28 @@ export default {
       }
 
       this.state = state;
-      this.pageParams = getInitialPageParams();
+      this.pageParams = getInitialPageParams(this.pageSize);
     },
     handleFilter(tokens) {
       this.filterTokens = tokens;
-      this.pageParams = getInitialPageParams();
+      this.pageParams = getInitialPageParams(this.pageSize);
     },
     handleNextPage() {
       this.pageParams = {
         afterCursor: this.pageInfo.endCursor,
-        firstPageSize: DEFAULT_PAGE_SIZE,
+        firstPageSize: this.pageSize,
       };
+      scrollUp();
+    },
+    handlePageSizeChange(pageSize) {
+      this.pageSize = pageSize;
+      this.pageParams = getInitialPageParams(pageSize);
       scrollUp();
     },
     handlePreviousPage() {
       this.pageParams = {
         beforeCursor: this.pageInfo.startCursor,
-        lastPageSize: DEFAULT_PAGE_SIZE,
+        lastPageSize: this.pageSize,
       };
       scrollUp();
     },
@@ -203,7 +215,7 @@ export default {
       }
 
       this.sortKey = sortKey;
-      this.pageParams = getInitialPageParams();
+      this.pageParams = getInitialPageParams(this.pageSize);
 
       if (this.isSignedIn) {
         this.saveSortPreference(sortKey);
@@ -234,15 +246,17 @@ export default {
   <issuable-list
     v-else-if="hasAnyIssues || error"
     :current-tab="state"
+    :default-page-size="pageSize"
     :error="error"
     :has-next-page="pageInfo.hasNextPage"
     :has-previous-page="pageInfo.hasPreviousPage"
     :initial-sort-by="sortKey"
     :issuables="workItems"
-    :issuables-loading="$apollo.queries.workItems.loading"
+    :issuables-loading="isLoading"
     namespace="work-items"
     recent-searches-storage-key="issues"
     :search-tokens="searchTokens"
+    :show-page-size-selector="showPageSizeSelector"
     :show-pagination-controls="showPaginationControls"
     show-work-item-type-icon
     :sort-options="$options.sortOptions"
@@ -253,6 +267,7 @@ export default {
     @dismiss-alert="error = undefined"
     @filter="handleFilter"
     @next-page="handleNextPage"
+    @page-size-change="handlePageSizeChange"
     @previous-page="handlePreviousPage"
     @sort="handleSort"
   >

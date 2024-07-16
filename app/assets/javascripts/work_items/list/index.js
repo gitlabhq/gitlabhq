@@ -23,6 +23,9 @@ export const mountWorkItemsListApp = () => {
     showNewIssueLink,
     workItemType,
     canCreateEpic,
+    issuesListPath,
+    labelsManagePath,
+    canAdminLabel,
   } = el.dataset;
 
   return new Vue({
@@ -40,6 +43,9 @@ export const mountWorkItemsListApp = () => {
       showNewIssueLink: parseBoolean(showNewIssueLink),
       workItemType,
       canCreateEpic: parseBoolean(canCreateEpic),
+      issuesListPath,
+      labelsManagePath,
+      canAdminLabel: parseBoolean(canAdminLabel),
     },
     render: (createComponent) => createComponent(WorkItemsListApp),
   });

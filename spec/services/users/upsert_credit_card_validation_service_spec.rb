@@ -17,6 +17,9 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
   let(:expiration_date) { Date.new(expiration_year, expiration_month, -1) }
   let(:credit_card_validated_at) { Time.utc(2020, 1, 1) }
   let(:zuora_payment_method_xid) { 'abc123' }
+  let(:stripe_setup_intent_xid) { 'seti_abc123' }
+  let(:stripe_payment_method_xid) { 'pm_abc123' }
+  let(:stripe_card_fingerprint) { 'card123' }
 
   let(:params) do
     {
@@ -27,7 +30,10 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
       credit_card_holder_name: holder_name,
       credit_card_type: network,
       credit_card_mask_number: last_digits,
-      zuora_payment_method_xid: zuora_payment_method_xid
+      zuora_payment_method_xid: zuora_payment_method_xid,
+      stripe_setup_intent_xid: stripe_setup_intent_xid,
+      stripe_payment_method_xid: stripe_payment_method_xid,
+      stripe_card_fingerprint: stripe_card_fingerprint
     }
   end
 
@@ -52,7 +58,10 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
             holder_name_hash: sha256(holder_name.downcase),
             last_digits_hash: sha256(last_digits),
             expiration_date_hash: sha256(expiration_date.to_s),
-            zuora_payment_method_xid: 'abc123'
+            zuora_payment_method_xid: 'abc123',
+            stripe_setup_intent_xid: 'seti_abc123',
+            stripe_payment_method_xid: 'pm_abc123',
+            stripe_card_fingerprint: 'card123'
           )
         end
       end
@@ -110,6 +119,28 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
 
         expect(user.credit_card_validated_at).to be_present
         expect(user.credit_card_validation).to have_attributes(zuora_payment_method_xid: nil)
+      end
+    end
+
+    context 'when the stripe identifiers are missing' do
+      let(:stripe_setup_intent_xid) { nil }
+      let(:stripe_payment_method_xid) { nil }
+      let(:stripe_card_fingerprint) { nil }
+
+      it 'successfully validates the credit card' do
+        service_result = service.execute
+
+        expect(service_result).to be_success
+        expect(service_result.message).to eq(_('Credit card validation record saved'))
+
+        user.reload
+
+        expect(user.credit_card_validated_at).to be_present
+        expect(user.credit_card_validation).to have_attributes(
+          stripe_setup_intent_xid: nil,
+          stripe_payment_method_xid: nil,
+          stripe_card_fingerprint: nil
+        )
       end
     end
 

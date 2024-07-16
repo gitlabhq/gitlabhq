@@ -1,22 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 1`] = `
-Object {
-  "actions": Array [
-    Object {
+{
+  "actions": [
+    {
       "name": "deploy-staging",
       "playPath": "https://gdk.test:3000/redeploy/play",
       "playable": true,
       "scheduledAt": "2023-01-17T11:02:41.369Z",
     },
   ],
-  "commit": Object {
-    "author": Object {
+  "commit": {
+    "author": {
       "avatar_url": "/uploads/-/system/user/avatar/1/avatar.png",
       "path": "http://gdk.test:3000/root",
       "username": "Administrator",
     },
-    "commitRef": Object {
+    "commitRef": {
       "name": "main",
     },
     "commitUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
@@ -26,19 +26,19 @@ Object {
   },
   "created": "2022-10-17T07:44:17Z",
   "deployed": "2022-10-17T07:44:43Z",
-  "deploymentApproval": Object {
+  "deploymentApproval": {
     "isApprovalActionAvailable": false,
   },
   "id": "31",
-  "job": Object {
+  "job": {
     "label": "deploy-prod (#860)",
     "webPath": "/gitlab-org/pipelinestest/-/jobs/860",
   },
-  "rollback": Object {
+  "rollback": {
     "id": "gid://gitlab/Deployment/76",
-    "lastDeployment": Object {
-      "commit": Object {
-        "author": Object {
+    "lastDeployment": {
+      "commit": {
+        "author": {
           "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
           "id": "gid://gitlab/User/1",
           "name": "Administrator",
@@ -58,7 +58,7 @@ Object {
     "retryUrl": "/gitlab-org/pipelinestest/-/jobs/860/retry",
   },
   "status": "success",
-  "triggerer": Object {
+  "triggerer": {
     "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
     "id": "gid://gitlab/User/1",
     "name": "Administrator",
@@ -69,15 +69,15 @@ Object {
 `;
 
 exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 2`] = `
-Object {
-  "actions": Array [],
-  "commit": Object {
-    "author": Object {
+{
+  "actions": [],
+  "commit": {
+    "author": {
       "avatar_url": "/uploads/-/system/user/avatar/1/avatar.png",
       "path": "http://gdk.test:3000/root",
       "username": "Administrator",
     },
-    "commitRef": Object {
+    "commitRef": {
       "name": "main",
     },
     "commitUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
@@ -87,14 +87,14 @@ Object {
   },
   "created": "2022-10-17T07:44:17Z",
   "deployed": "2022-10-17T07:44:43Z",
-  "deploymentApproval": Object {
+  "deploymentApproval": {
     "isApprovalActionAvailable": false,
   },
   "id": "31",
   "job": undefined,
   "rollback": null,
   "status": "success",
-  "triggerer": Object {
+  "triggerer": {
     "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
     "id": "gid://gitlab/User/1",
     "name": "Administrator",
@@ -105,15 +105,15 @@ Object {
 `;
 
 exports[`deployment_data_transformation_helper convertToDeploymentTableRow should be converted to proper table row data 3`] = `
-Object {
-  "actions": Array [],
-  "commit": Object {
-    "author": Object {
+{
+  "actions": [],
+  "commit": {
+    "author": {
       "avatar_url": "/uploads/-/system/user/avatar/1/avatar.png",
       "path": "http://gdk.test:3000/root",
       "username": "Administrator",
     },
-    "commitRef": Object {
+    "commitRef": {
       "name": "main",
     },
     "commitUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",
@@ -123,14 +123,14 @@ Object {
   },
   "created": "2022-10-17T07:44:17Z",
   "deployed": "",
-  "deploymentApproval": Object {
+  "deploymentApproval": {
     "isApprovalActionAvailable": false,
   },
   "id": "31",
   "job": null,
   "rollback": null,
   "status": "success",
-  "triggerer": Object {
+  "triggerer": {
     "avatarUrl": "/uploads/-/system/user/avatar/1/avatar.png",
     "id": "gid://gitlab/User/1",
     "name": "Administrator",
@@ -141,7 +141,7 @@ Object {
 `;
 
 exports[`deployment_data_transformation_helper getAuthorFromCommit should be properly converted 1`] = `
-Object {
+{
   "avatar_url": "/uploads/-/system/user/avatar/1/avatar.png",
   "path": "http://gdk.test:3000/root",
   "username": "Administrator",
@@ -149,7 +149,7 @@ Object {
 `;
 
 exports[`deployment_data_transformation_helper getAuthorFromCommit should be properly converted 2`] = `
-Object {
+{
   "avatar_url": "https://www.gravatar.com/avatar/91811aee1dec1b2655fa56f894e9e7c9?s=80&d=identicon",
   "path": "mailto:azubov@gitlab.com",
   "username": "Andrei Zubov",
@@ -157,13 +157,13 @@ Object {
 `;
 
 exports[`deployment_data_transformation_helper getCommitFromDeploymentNode should get correclty formatted commit object 1`] = `
-Object {
-  "author": Object {
+{
+  "author": {
     "avatar_url": "/uploads/-/system/user/avatar/1/avatar.png",
     "path": "http://gdk.test:3000/root",
     "username": "Administrator",
   },
-  "commitRef": Object {
+  "commitRef": {
     "name": "main",
   },
   "commitUrl": "http://gdk.test:3000/gitlab-org/pipelinestest/-/commit/0cb48dd5deddb7632fd7c3defb16075fc6c3ca74",

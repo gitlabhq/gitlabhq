@@ -1,7 +1,6 @@
 <script>
 import { GlSearchBoxByClick, GlSorting } from '@gitlab/ui';
 import { __ } from '~/locale';
-import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   SORT_ASC,
   SORT_DESC,
@@ -16,7 +15,6 @@ export default {
     GlSearchBoxByClick,
     GlSorting,
   },
-  mixins: [glFeatureFlagMixin()],
   props: {
     initialSearchTerm: {
       default: '',
@@ -26,19 +24,12 @@ export default {
   },
   data() {
     return {
-      currentSortOption: SORT_OPTION_RELEASED,
+      currentSortOption: SORT_OPTION_POPULARITY,
       isAscending: false,
       searchTerm: this.initialSearchTerm,
     };
   },
   computed: {
-    sortOptions() {
-      const options = [...this.$options.defaultSortOptions];
-      if (this.glFeatures?.ciCatalogPopularity) {
-        options.push({ value: SORT_OPTION_POPULARITY, text: __('Popularity') });
-      }
-      return options;
-    },
     currentSortDirection() {
       return this.isAscending ? SORT_ASC : SORT_DESC;
     },
@@ -46,7 +37,9 @@ export default {
       return `${this.currentSortOption}_${this.currentSortDirection}`;
     },
     currentSortText() {
-      const currentSort = this.sortOptions.find((sort) => sort.value === this.currentSortOption);
+      const currentSort = this.$options.sortOptions.find(
+        (sort) => sort.value === this.currentSortOption,
+      );
       return currentSort.text;
     },
   },
@@ -69,7 +62,8 @@ export default {
       this.currentSortOption = sortingItem;
     },
   },
-  defaultSortOptions: [
+  sortOptions: [
+    { value: SORT_OPTION_POPULARITY, text: __('Popularity') },
     { value: SORT_OPTION_RELEASED, text: __('Released at') },
     { value: SORT_OPTION_CREATED, text: __('Created at') },
     { value: SORT_OPTION_STAR_COUNT, text: __('Star count') },
@@ -87,7 +81,7 @@ export default {
     <gl-sorting
       :is-ascending="isAscending"
       :text="currentSortText"
-      :sort-options="sortOptions"
+      :sort-options="$options.sortOptions"
       :sort-by="currentSortOption"
       data-testid="catalog-sorting-option-button"
       @sortByChange="setSelectedSortOption"

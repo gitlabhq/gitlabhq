@@ -17,6 +17,7 @@ This API requires an access token with the Maintainer or Owner role.
 ## List all active integrations
 
 > - `vulnerability_events` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131831) in GitLab 16.4.
+> - `inherited` field [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154915) in GitLab 17.2.
 
 Get a list of all active project integrations. The `vulnerability_events` field is only available for GitLab Enterprise Edition.
 
@@ -49,6 +50,7 @@ Example response:
     "wiki_page_events": true,
     "job_events": true,
     "comment_on_event_enabled": true,
+    "inherited": false,
     "vulnerability_events": true
   },
   {
@@ -72,6 +74,7 @@ Example response:
     "wiki_page_events": true,
     "job_events": true,
     "comment_on_event_enabled": true,
+    "inherited": false,
     "vulnerability_events": true
   }
 ]
@@ -91,11 +94,12 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `app_store_issuer_id` | string | true | Apple App Store Connect issuer ID. |
-| `app_store_key_id` | string | true | Apple App Store Connect key ID. |
-| `app_store_private_key_file_name` | string | true | Apple App Store Connect private key filename. |
-| `app_store_private_key` | string | true | Apple App Store Connect private key. |
-| `app_store_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
+| `app_store_issuer_id` | string | yes | Apple App Store Connect issuer ID. |
+| `app_store_key_id` | string | yes | Apple App Store Connect key ID. |
+| `app_store_private_key_file_name` | string | yes | Apple App Store Connect private key filename. |
+| `app_store_private_key` | string | yes | Apple App Store Connect private key. |
+| `app_store_protected_refs` | boolean | no | Set variables on protected branches and tags only. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Apple App Store Connect
 
@@ -127,8 +131,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | User API token. The user must have access to the task. All comments are attributed to this user. |
-| `restrict_to_branch` | string | false | Comma-separated list of branches to be automatically inspected. Leave blank to include all branches. |
+| `api_key` | string | yes | User API token. The user must have access to the task. All comments are attributed to this user. |
+| `restrict_to_branch` | string | no | Comma-separated list of branches to be automatically inspected. Leave blank to include all branches. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Asana
 
@@ -160,8 +165,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | true | The authentication token. |
-| `subdomain` | string | false | The subdomain setting. |
+| `token` | string | yes | The authentication token. |
+| `subdomain` | string | no | The subdomain setting. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Assembla
 
@@ -195,11 +201,12 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `bamboo_url` | string | true | Bamboo root URL (for example, `https://bamboo.example.com`). |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `build_key` | string | true | Bamboo build plan key (for example, `KEY`). |
-| `username` | string | true | User with API access to the Bamboo server. |
-| `password` | string | true | Password of the user. |
+| `bamboo_url` | string | yes | Bamboo root URL (for example, `https://bamboo.example.com`). |
+| `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
+| `build_key` | string | yes | Bamboo build plan key (for example, `KEY`). |
+| `username` | string | yes | User with API access to the Bamboo server. |
+| `password` | string | yes | Password of the user. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Atlassian Bamboo
 
@@ -231,9 +238,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  URL of the new issue. |
-| `issues_url` | string | true | URL of the issue. |
-| `project_url` | string | true | URL of the project. |
+| `new_issue_url` | string | yes |  URL of the new issue. |
+| `issues_url` | string | yes | URL of the issue. |
+| `project_url` | string | yes | URL of the project. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Bugzilla
 
@@ -265,12 +273,13 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | true | Buildkite project GitLab token. |
-| `project_url` | string | true | Pipeline URL (for example, `https://buildkite.com/example/pipeline`). |
-| `enable_ssl_verification` | boolean | false | **Deprecated:** This parameter has no effect because SSL verification is always enabled. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `token` | string | yes | Buildkite project GitLab token. |
+| `project_url` | string | yes | Pipeline URL (for example, `https://buildkite.com/example/pipeline`). |
+| `enable_ssl_verification` | boolean | no | **Deprecated:** This parameter has no effect because SSL verification is always enabled. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Buildkite
 
@@ -290,7 +299,7 @@ GET /projects/:id/integrations/buildkite
 
 ## Campfire Classic
 
-You can integrate with Campfire Classic. Note that Campfire Classic is an old product that is
+You can integrate with Campfire Classic. However, Campfire Classic is an old product that is
 [no longer sold](https://gitlab.com/gitlab-org/gitlab/-/issues/329337) by Basecamp.
 
 ### Set up Campfire Classic
@@ -305,9 +314,10 @@ Parameters:
 
 | Parameter     | Type    | Required | Description                                                                                 |
 |---------------|---------|----------|---------------------------------------------------------------------------------------------|
-| `token`       | string  | true     | API authentication token from Campfire Classic. To get the token, sign in to Campfire Classic and select **My info**. |
-| `subdomain`   | string  | false    | `.campfirenow.com` subdomain when you're signed in. |
-| `room`        | string  | false    | ID portion of the Campfire Classic room URL. |
+| `token`       | string  | yes     | API authentication token from Campfire Classic. To get the token, sign in to Campfire Classic and select **My info**. |
+| `subdomain`   | string  | no    | `.campfirenow.com` subdomain when you're signed in. |
+| `room`        | string  | no    | ID portion of the Campfire Classic room URL. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Campfire Classic
 
@@ -341,8 +351,9 @@ Parameters:
 
 | Parameter     | Type   | Required | Description    |
 | ------------- | ------ | -------- | -------------- |
-| `issues_url`  | string | true     | URL of the issue.     |
-| `project_url` | string | true     | URL of the project.   |
+| `issues_url`  | string | yes     | URL of the issue.     |
+| `project_url` | string | yes     | URL of the project.   |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable ClickUp
 
@@ -374,7 +385,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `confluence_url` | string | true | URL of the Confluence Workspace hosted on `atlassian.net`. |
+| `confluence_url` | string | yes | URL of the Confluence Workspace hosted on `atlassian.net`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Confluence Workspace
 
@@ -406,9 +418,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true |  URL of the new issue. |
-| `issues_url` | string | true | URL of the issue. |
-| `project_url` | string | true | URL of the project. |
+| `new_issue_url` | string | yes |  URL of the new issue. |
+| `issues_url` | string | yes | URL of the issue. |
+| `project_url` | string | yes | URL of the project. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable a custom issue tracker
 
@@ -440,13 +453,14 @@ Parameters:
 
 | Parameter              | Type    | Required | Description                                                                                                                                                                            |
 |------------------------|---------|----------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `api_key`              | string  | true     | API key used for authentication with Datadog.                                                                                                                                          |
-| `api_url`              | string  | false    | (Advanced) The full URL for your Datadog site.                                                                                                                                          |
-| `datadog_env`          | string  | false    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                      |
-| `datadog_service`      | string  | false    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                          |
-| `datadog_site`         | string  | false    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
-| `datadog_tags`         | string  | false    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`                                                                                                 |
-| `archive_trace_events` | boolean | false    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3). |
+| `api_key`              | string  | yes     | API key used for authentication with Datadog.                                                                                                                                          |
+| `api_url`              | string  | no    | (Advanced) The full URL for your Datadog site.                                                                                                                                          |
+| `datadog_env`          | string  | no    | For self-managed deployments, set the `env%` tag for all the data sent to Datadog.                                                                                                      |
+| `datadog_service`      | string  | no    | Tag all data from this GitLab instance in Datadog. Can be used when managing several self-managed deployments.                                                                          |
+| `datadog_site`         | string  | no    | The Datadog site to send data to. To send data to the EU site, use `datadoghq.eu`.                                                                                                      |
+| `datadog_tags`         | string  | no    | Custom tags in Datadog. Specify one tag per line in the format `key:value\nkey2:value2`                                                                                                 |
+| `archive_trace_events` | boolean | no    | When enabled, job logs are collected by Datadog and displayed along with pipeline execution traces ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/346339) in GitLab 15.3). |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Datadog
 
@@ -478,9 +492,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `diffblue_license_key` | string | true | Diffblue Cover license key. |
-| `diffblue_access_token_name` | string | true | Access token name used by Diffblue Cover in pipelines. |
-| `diffblue_access_token_secret` | string  | true | Access token secret used by Diffblue Cover in pipelines. |
+| `diffblue_license_key` | string | yes | Diffblue Cover license key. |
+| `diffblue_access_token_name` | string | yes | Access token name used by Diffblue Cover in pipelines. |
+| `diffblue_access_token_secret` | string  | yes | Access token secret used by Diffblue Cover in pipelines. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Diffblue Cover
 
@@ -514,33 +529,34 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | Discord webhook (for example, `https://discord.com/api/webhooks/...`). |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_issue_channel` | string | false | The webhook override to receive notifications for confidential issue events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `confidential_note_channel` | string | false | The webhook override to receive notifications for confidential note events. |
-| `deployment_events` | boolean | false | Enable notifications for deployment events. |
-| `deployment_channel` | string | false | The webhook override to receive notifications for deployment events. |
-| `group_confidential_mentions_events` | boolean | false | Enable notifications for group confidential mention events. |
-| `group_confidential_mentions_channel` | string | false | The webhook override to receive notifications for group confidential mention events. |
-| `group_mentions_events` | boolean | false | Enable notifications for group mention events. |
-| `group_mentions_channel` | string | false | The webhook override to receive notifications for group mention events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `issue_channel` | string | false | The webhook override to receive notifications for issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `merge_request_channel` | string | false | The webhook override to receive notifications for merge request events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `note_channel` | string | false | The webhook override to receive notifications for note events. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `pipeline_channel` | string | false | The webhook override to receive notifications for pipeline events. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `push_channel` | string | false | The webhook override to receive notifications for push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `tag_push_channel` | string | false | The webhook override to receive notifications for tag push events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-| `wiki_page_channel` | string | false | The webhook override to receive notifications for wiki page events. |
+| `webhook` | string | yes | Discord webhook (for example, `https://discord.com/api/webhooks/...`). |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `confidential_issue_channel` | string | no | The webhook override to receive notifications for confidential issue events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `confidential_note_channel` | string | no | The webhook override to receive notifications for confidential note events. |
+| `deployment_events` | boolean | no | Enable notifications for deployment events. |
+| `deployment_channel` | string | no | The webhook override to receive notifications for deployment events. |
+| `group_confidential_mentions_events` | boolean | no | Enable notifications for group confidential mention events. |
+| `group_confidential_mentions_channel` | string | no | The webhook override to receive notifications for group confidential mention events. |
+| `group_mentions_events` | boolean | no | Enable notifications for group mention events. |
+| `group_mentions_channel` | string | no | The webhook override to receive notifications for group mention events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `issue_channel` | string | no | The webhook override to receive notifications for issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `merge_request_channel` | string | no | The webhook override to receive notifications for merge request events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `note_channel` | string | no | The webhook override to receive notifications for note events. |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `pipeline_channel` | string | no | The webhook override to receive notifications for pipeline events. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `push_channel` | string | no | The webhook override to receive notifications for push events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `tag_push_channel` | string | no | The webhook override to receive notifications for tag push events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `wiki_page_channel` | string | no | The webhook override to receive notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Discord Notifications
 
@@ -572,12 +588,13 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | true | Drone CI project specific token. |
-| `drone_url` | string | true | `http://drone.example.com`. |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `token` | string | yes | Drone CI project specific token. |
+| `drone_url` | string | yes | `http://drone.example.com`. |
+| `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Drone
 
@@ -609,12 +626,13 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `recipients` | string | true | Emails separated by whitespace. |
-| `disable_diffs` | boolean | false | Disable code diffs. |
-| `send_from_committer_email` | boolean | false | Send from committer. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. Notifications are always fired for tag pushes. The default value is `all`. |
+| `recipients` | string | yes | Emails separated by whitespace. |
+| `disable_diffs` | boolean | no | Disable code diffs. |
+| `send_from_committer_email` | boolean | no | Send from committer. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. Notifications are always fired for tag pushes. The default value is `all`. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable emails on push
 
@@ -646,9 +664,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | URL of the new issue. |
-| `project_url`   | string | true | URL of the project. |
-| `issues_url`    | string | true | URL of the issue. |
+| `new_issue_url` | string | yes | URL of the new issue. |
+| `project_url`   | string | yes | URL of the project. |
+| `issues_url`    | string | yes | URL of the issue. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable EWM
 
@@ -680,7 +699,8 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `external_wiki_url` | string | true | URL of the external wiki. |
+| `external_wiki_url` | string | yes | URL of the external wiki. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable an external wiki
 
@@ -739,7 +759,8 @@ Parameters:
 
 | Parameter | Type | Required | Description                                   |
 | --------- | ---- | -------- |-----------------------------------------------|
-| `token` | string | true | GitGuardian API token with `scan` scope. |
+| `token` | string | yes | GitGuardian API token with `scan` scope. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable GitGuardian
 
@@ -775,9 +796,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | true | GitHub API token with `repo:status` OAuth scope. |
-| `repository_url` | string | true | GitHub repository URL. |
-| `static_context` | boolean | false | Append the hostname of your GitLab instance to the [status check name](../user/project/integrations/github.md#static-or-dynamic-status-check-names). |
+| `token` | string | yes | GitHub API token with `repo:status` OAuth scope. |
+| `repository_url` | string | yes | GitHub repository URL. |
+| `static_context` | boolean | no | Append the hostname of your GitLab instance to the [status check name](../user/project/integrations/github.md#static-or-dynamic-status-check-names). |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable GitHub
 
@@ -814,23 +836,24 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `channel` | string | false | Default channel to use if no other channel is configured. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `alert_events` | boolean | false | Enable notifications for alert events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `deployment_events` | boolean | false | Enable notifications for deployment events. |
-| `incidents_events` | boolean | false | Enable notifications for incident events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `vulnerability_events` | boolean | false | Enable notifications for vulnerability events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `channel` | string | no | Default channel to use if no other channel is configured. |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | no | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `alert_events` | boolean | no | Enable notifications for alert events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `deployment_events` | boolean | no | Enable notifications for deployment events. |
+| `incidents_events` | boolean | no | Enable notifications for incident events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `vulnerability_events` | boolean | no | Enable notifications for vulnerability events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable GitLab for Slack app
 
@@ -862,19 +885,20 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Hangouts Chat webhook (for example, `https://chat.googleapis.com/v1/spaces...`). |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `webhook` | string | yes | The Hangouts Chat webhook (for example, `https://chat.googleapis.com/v1/spaces...`). |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | no | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Chat
 
@@ -916,9 +940,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `artifact_registry_project_id` | string | true | ID of the Google Cloud project. |
-| `artifact_registry_location` | string | true | Location of the Artifact Registry repository. |
-| `artifact_registry_repositories` | string | true | Repository of Artifact Registry. |
+| `artifact_registry_project_id` | string | yes | ID of the Google Cloud project. |
+| `artifact_registry_location` | string | yes | Location of the Artifact Registry repository. |
+| `artifact_registry_repositories` | string | yes | Repository of Artifact Registry. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Artifact Management
 
@@ -960,10 +985,11 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `workload_identity_federation_project_id` | string | true | Google Cloud project ID for the Workload Identity Federation. |
-| `workload_identity_federation_project_number` | integer | true | Google Cloud project number for the Workload Identity Federation. |
-| `workload_identity_pool_id` | string | true | ID of the Workload Identity Pool. |
-| `workload_identity_pool_provider_id` | string | true | ID of the Workload Identity Pool provider. |
+| `workload_identity_federation_project_id` | string | yes | Google Cloud project ID for the Workload Identity Federation. |
+| `workload_identity_federation_project_number` | integer | yes | Google Cloud project number for the Workload Identity Federation. |
+| `workload_identity_pool_id` | string | yes | ID of the Workload Identity Pool. |
+| `workload_identity_pool_provider_id` | string | yes | ID of the Workload Identity Pool provider. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Cloud Identity and Access Management
 
@@ -995,10 +1021,11 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `package_name` | string | true | Package name of the app in Google Play. |
-| `service_account_key` | string | true | Google Play service account key. |
-| `service_account_key_file_name` | string | true | File name of the Google Play service account key. |
-| `google_play_protected_refs` | boolean | false | Set variables on protected branches and tags only. |
+| `package_name` | string | yes | Package name of the app in Google Play. |
+| `service_account_key` | string | yes | Google Play service account key. |
+| `service_account_key_file_name` | string | yes | File name of the Google Play service account key. |
+| `google_play_protected_refs` | boolean | no | Set variables on protected branches and tags only. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Google Play
 
@@ -1030,10 +1057,11 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `url` | string | true | The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`. |
-| `project_name` | string | true | The name of the project in the Harbor instance. For example, `testproject`. |
-| `username` | string | true | The username created in the Harbor interface. |
-| `password` | string | true | The password of the user. |
+| `url` | string | yes | The base URL to the Harbor instance linked to the GitLab project. For example, `https://demo.goharbor.io`. |
+| `project_name` | string | yes | The name of the project in the Harbor instance. For example, `testproject`. |
+| `username` | string | yes | The username created in the Harbor interface. |
+| `password` | string | yes | The password of the user. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Harbor
 
@@ -1065,11 +1093,12 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `recipients` | string | true | Recipients or channels separated by whitespaces. |
-| `default_irc_uri` | string | false | `irc://irc.network.net:6697/`. |
-| `server_host` | string | false | localhost. |
-| `server_port` | integer | false | 6659. |
-| `colorize_messages` | boolean | false | Colorize messages. |
+| `recipients` | string | yes | Recipients or channels separated by whitespaces. |
+| `default_irc_uri` | string | no | `irc://irc.network.net:6697/`. |
+| `server_host` | string | no | localhost. |
+| `server_port` | integer | no | 6659. |
+| `colorize_messages` | boolean | no | Colorize messages. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable irker
 
@@ -1101,14 +1130,15 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `jenkins_url` | string | true | Jenkins URL like `http://jenkins.example.com`. |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `project_name` | string | true | The URL-friendly project name. Example: `my_project_name`. |
-| `username` | string | false | Username for authentication with the Jenkins server, if authentication is required by the server. |
-| `password` | string | false | Password for authentication with the Jenkins server, if authentication is required by the server. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `jenkins_url` | string | yes | Jenkins URL like `http://jenkins.example.com`. |
+| `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
+| `project_name` | string | yes | The URL-friendly project name. Example: `my_project_name`. |
+| `username` | string | no | Username for authentication with the Jenkins server, if authentication is required by the server. |
+| `password` | string | no | Password for authentication with the Jenkins server, if authentication is required by the server. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Jenkins
 
@@ -1143,13 +1173,14 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `teamcity_url` | string | true | TeamCity root URL (for example, `https://teamcity.example.com`). |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
-| `build_type` | string | true | Build configuration ID. |
-| `username` | string | true | A user with permissions to trigger a manual build. |
-| `password` | string | true | The password of the user. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
+| `teamcity_url` | string | yes | TeamCity root URL (for example, `https://teamcity.example.com`). |
+| `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
+| `build_type` | string | yes | Build configuration ID. |
+| `username` | string | yes | A user with permissions to trigger a manual build. |
+| `password` | string | yes | The password of the user. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable JetBrains TeamCity
 
@@ -1191,11 +1222,12 @@ Parameters:
 | `jira_issue_regex` | string | no | Regular expression to match Jira issue keys. |
 | `jira_issue_transition_automatic` | boolean | no | Enable [automatic issue transitions](../integration/jira/issues.md#automatic-issue-transitions). Takes precedence over `jira_issue_transition_id` if enabled. Defaults to `false`. |
 | `jira_issue_transition_id` | string | no | The ID of one or more transitions for [custom issue transitions](../integration/jira/issues.md#custom-issue-transitions). Ignored if `jira_issue_transition_automatic` is enabled. Defaults to a blank string, which disables custom transitions. |
-| `commit_events` | boolean | false | Enable notifications for commit events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `comment_on_event_enabled` | boolean | false | Enable comments in Jira issues on each GitLab event (commit or merge request). |
-| `issues_enabled` | boolean | false | Enable viewing Jira issues in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
-| `project_keys` | array of strings | false | Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
+| `commit_events` | boolean | no | Enable notifications for commit events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `comment_on_event_enabled` | boolean | no | Enable comments in Jira issues on each GitLab event (commit or merge request). |
+| `issues_enabled` | boolean | no | Enable viewing Jira issues in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
+| `project_keys` | array of strings | no | Keys of Jira projects. When `issues_enabled` is `true`, this setting specifies which Jira projects to view issues from in GitLab. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/267015) in GitLab 17.0. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Jira
 
@@ -1227,32 +1259,33 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | Mattermost notifications webhook (for example, `http://mattermost.example.com/hooks/...`). |
-| `username` | string | false | Mattermost notifications username. |
-| `channel` | string | false | Default channel to use if no other channel is configured. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
-| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
-| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
-| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
-| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
-| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
-| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
-| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
-| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
-| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
+| `webhook` | string | yes | Mattermost notifications webhook (for example, `http://mattermost.example.com/hooks/...`). |
+| `username` | string | no | Mattermost notifications username. |
+| `channel` | string | no | Default channel to use if no other channel is configured. |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | no | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `labels_to_be_notified` | string | no | Labels to send notifications for. Leave blank to receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | no | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `push_channel` | string | no | The name of the channel to receive notifications for push events. |
+| `issue_channel` | string | no | The name of the channel to receive notifications for issue events. |
+| `confidential_issue_channel` | string | no | The name of the channel to receive notifications for confidential issue events. |
+| `merge_request_channel` | string | no | The name of the channel to receive notifications for merge request events. |
+| `note_channel` | string | no | The name of the channel to receive notifications for note events. |
+| `confidential_note_channel` | string | no | The name of the channel to receive notifications for confidential note events. |
+| `tag_push_channel` | string | no | The name of the channel to receive notifications for tag push events. |
+| `pipeline_channel` | string | no | The name of the channel to receive notifications for pipeline events. |
+| `wiki_page_channel` | string | no | The name of the channel to receive notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Mattermost notifications
 
@@ -1285,6 +1318,7 @@ Parameters:
 | Parameter | Type   | Required | Description           |
 | --------- | ------ | -------- | --------------------- |
 | `token`   | string | yes      | The Mattermost token. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Mattermost slash commands
 
@@ -1316,19 +1350,20 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`). |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `webhook` | string | yes | The Microsoft Teams webhook (for example, `https://outlook.office.com/webhook/...`). |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | no | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Microsoft Teams notifications
 
@@ -1363,8 +1398,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `mock_service_url` | string | true | URL of the Mock CI integration. |
-| `enable_ssl_verification` | boolean | false | Enable SSL verification. Defaults to `true` (enabled). |
+| `mock_service_url` | string | yes | URL of the Mock CI integration. |
+| `enable_ssl_verification` | boolean | no | Enable SSL verification. Defaults to `true` (enabled). |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Mock CI
 
@@ -1399,9 +1435,10 @@ Parameters:
 | `username` | string | yes | The username of a Packagist account. |
 | `token` | string | yes | API token to the Packagist server. |
 | `server` | boolean | no | URL of the Packagist server. Leave blank for the default `<https://packagist.org>`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Packagist
 
@@ -1435,8 +1472,9 @@ Parameters:
 
 | Parameter       | Type   | Required | Description           |
 |-----------------|--------|----------|-----------------------|
-| `issues_url`    | string | true     | URL of the issue.     |
-| `project_url`   | string | true     | URL of the project.   |
+| `issues_url`    | string | yes     | URL of the issue.     |
+| `project_url`   | string | yes     | URL of the project.   |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Phorge
 
@@ -1470,9 +1508,10 @@ Parameters:
 | --------- | ---- | -------- | ----------- |
 | `recipients` | string | yes | Comma-separated list of recipient email addresses. |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
 | `notify_only_default_branch` | boolean | no | Send notifications for the default branch. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable pipeline status emails
 
@@ -1504,8 +1543,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `token` | string | true | The Pivotal Tracker token. |
-| `restrict_to_branch` | boolean | false | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
+| `token` | string | yes | The Pivotal Tracker token. |
+| `restrict_to_branch` | boolean | no | Comma-separated list of branches to automatically inspect. Leave blank to include all branches. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Pivotal Tracker
 
@@ -1537,18 +1577,19 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Pumble webhook (for example, `https://api.pumble.com/workspaces/x/...`). |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default is `default`. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `webhook` | string | yes | The Pumble webhook (for example, `https://api.pumble.com/workspaces/x/...`). |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default is `default`. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Pumble
 
@@ -1580,11 +1621,12 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `api_key` | string | true | Your application key. |
-| `user_key` | string | true | Your user key. |
-| `priority` | string | true | The priority. |
-| `device` | string | false | Leave blank for all active devices. |
-| `sound` | string | false | The sound of the notification. |
+| `api_key` | string | yes | Your application key. |
+| `user_key` | string | yes | Your user key. |
+| `priority` | string | yes | The priority. |
+| `device` | string | no | Leave blank for all active devices. |
+| `sound` | string | no | The sound of the notification. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Pushover
 
@@ -1616,9 +1658,10 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `new_issue_url` | string | true | URL of the new issue. |
-| `project_url` | string | true | URL of the project. |
-| `issues_url` | string | true | URL of the issue. |
+| `new_issue_url` | string | yes | URL of the new issue. |
+| `project_url` | string | yes | URL of the project. |
+| `issues_url` | string | yes | URL of the issue. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Redmine
 
@@ -1650,40 +1693,41 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | Slack notifications webhook (for example, `https://hooks.slack.com/services/...`). |
-| `username` | string | false | Slack notifications username. |
-| `channel` | string | false | Default channel to use if no other channel is configured. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `notify_only_default_branch` | boolean | false | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `labels_to_be_notified` | string | false | Labels to send notifications for. Leave blank to receive notifications for all events. |
-| `labels_to_be_notified_behavior` | string | false | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
-| `alert_channel` | string | false | The name of the channel to receive notifications for alert events. |
-| `alert_events` | boolean | false | Enable notifications for alert events. |
-| `commit_events` | boolean | false | Enable notifications for commit events. |
-| `confidential_issue_channel` | string | false | The name of the channel to receive notifications for confidential issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `confidential_note_channel` | string | false | The name of the channel to receive notifications for confidential note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `deployment_channel` | string | false | The name of the channel to receive notifications for deployment events. |
-| `deployment_events` | boolean | false | Enable notifications for deployment events. |
-| `incident_channel` | string | false | The name of the channel to receive notifications for incident events. |
-| `incidents_events` | boolean | false | Enable notifications for incident events. |
-| `issue_channel` | string | false | The name of the channel to receive notifications for issue events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `job_events` | boolean | false | Enable notifications for job events. |
-| `merge_request_channel` | string | false | The name of the channel to receive notifications for merge request events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `note_channel` | string | false | The name of the channel to receive notifications for note events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `pipeline_channel` | string | false | The name of the channel to receive notifications for pipeline events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `push_channel` | string | false | The name of the channel to receive notifications for push events. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `tag_push_channel` | string | false | The name of the channel to receive notifications for tag push events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `wiki_page_channel` | string | false | The name of the channel to receive notifications for wiki page events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `webhook` | string | yes | Slack notifications webhook (for example, `https://hooks.slack.com/services/...`). |
+| `username` | string | no | Slack notifications username. |
+| `channel` | string | no | Default channel to use if no other channel is configured. |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `notify_only_default_branch` | boolean | no | **Deprecated:** This parameter has been replaced with `branches_to_be_notified`. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `labels_to_be_notified` | string | no | Labels to send notifications for. Leave blank to receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | no | Labels to be notified for. Valid options are `match_any` and `match_all`. The default value is `match_any`. |
+| `alert_channel` | string | no | The name of the channel to receive notifications for alert events. |
+| `alert_events` | boolean | no | Enable notifications for alert events. |
+| `commit_events` | boolean | no | Enable notifications for commit events. |
+| `confidential_issue_channel` | string | no | The name of the channel to receive notifications for confidential issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `confidential_note_channel` | string | no | The name of the channel to receive notifications for confidential note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `deployment_channel` | string | no | The name of the channel to receive notifications for deployment events. |
+| `deployment_events` | boolean | no | Enable notifications for deployment events. |
+| `incident_channel` | string | no | The name of the channel to receive notifications for incident events. |
+| `incidents_events` | boolean | no | Enable notifications for incident events. |
+| `issue_channel` | string | no | The name of the channel to receive notifications for issue events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `job_events` | boolean | no | Enable notifications for job events. |
+| `merge_request_channel` | string | no | The name of the channel to receive notifications for merge request events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `note_channel` | string | no | The name of the channel to receive notifications for note events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `pipeline_channel` | string | no | The name of the channel to receive notifications for pipeline events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `push_channel` | string | no | The name of the channel to receive notifications for push events. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `tag_push_channel` | string | no | The name of the channel to receive notifications for tag push events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `wiki_page_channel` | string | no | The name of the channel to receive notifications for wiki page events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Slack notifications
 
@@ -1716,6 +1760,7 @@ Parameters:
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Slack token. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Slack slash commands
 
@@ -1752,6 +1797,7 @@ Example response:
   "job_events": true,
   "pipeline_events": true,
   "comment_on_event_enabled": false,
+  "inherited": false,
   "properties": {
     "token": "<your_access_token>"
   }
@@ -1776,6 +1822,7 @@ Parameters:
 |-------------------------|--------|----------|-------------------------------|
 | `url`                   | string | yes      | URL of the Squash TM webhook. |
 | `token`                 | string | no       | Secret token.                 |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Squash TM
 
@@ -1807,21 +1854,22 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `hostname`   | string | false | Custom hostname of the Telegram API ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461313) in GitLab 17.1). The default value is `https://api.telegram.org`. |
-| `token`   | string | true | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
-| `room` | string | true | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
-| `thread` | integer | false | Unique identifier for the target message thread (topic in a forum supergroup). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11. |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134361) in GitLab 16.5). Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | true | Enable notifications for push events. |
-| `issues_events` | boolean | true | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | true | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | true | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | true | Enable notifications for tag push events. |
-| `note_events` | boolean | true | Enable notifications for note events. |
-| `confidential_note_events` | boolean | true | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | true | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | true | Enable notifications for wiki page events. |
+| `hostname`   | string | no | Custom hostname of the Telegram API ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461313) in GitLab 17.1). The default value is `https://api.telegram.org`. |
+| `token`   | string | yes | The Telegram bot token (for example, `123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11`). |
+| `room` | string | yes | Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`). |
+| `thread` | integer | no | Unique identifier for the target message thread (topic in a forum supergroup). [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/441097) in GitLab 16.11. |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134361) in GitLab 16.5). Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | yes | Enable notifications for push events. |
+| `issues_events` | boolean | yes | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | yes | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | yes | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | yes | Enable notifications for tag push events. |
+| `note_events` | boolean | yes | Enable notifications for note events. |
+| `confidential_note_events` | boolean | yes | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | yes | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | yes | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Telegram
 
@@ -1853,18 +1901,19 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`). |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `webhook` | string | yes | The Unify Circuit webhook (for example, `https://circuit.com/rest/v2/webhooks/incoming/...`). |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Unify Circuit
 
@@ -1896,18 +1945,19 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `webhook` | string | true | The Webex Teams webhook (for example, `https://api.ciscospark.com/v1/webhooks/incoming/...`). |
-| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines. |
-| `branches_to_be_notified` | string | false | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | false | Enable notifications for push events. |
-| `issues_events` | boolean | false | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | false | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | false | Enable notifications for tag push events. |
-| `note_events` | boolean | false | Enable notifications for note events. |
-| `confidential_note_events` | boolean | false | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | false | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | false | Enable notifications for wiki page events. |
+| `webhook` | string | yes | The Webex Teams webhook (for example, `https://api.ciscospark.com/v1/webhooks/incoming/...`). |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable Webex Teams
 
@@ -1939,8 +1989,9 @@ Parameters:
 
 | Parameter | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `issues_url` | string | true | URL of the issue. |
-| `project_url` | string | true | URL of the project. |
+| `issues_url` | string | yes | URL of the issue. |
+| `project_url` | string | yes | URL of the project. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467089) in GitLab 17.2. |
 
 ### Disable YouTrack
 

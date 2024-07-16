@@ -8,13 +8,15 @@ import {
   INPUT_RULE_TRACKING_ACTION,
 } from '../constants';
 
-const trackKeyboardShortcut = (contentType, commandFn, shortcut) => (...args) => {
-  Tracking.event(undefined, KEYBOARD_SHORTCUT_TRACKING_ACTION, {
-    label: CONTENT_EDITOR_TRACKING_LABEL,
-    property: `${contentType}.${shortcut}`,
-  });
-  return commandFn(...args);
-};
+const trackKeyboardShortcut =
+  (contentType, commandFn, shortcut) =>
+  (...args) => {
+    Tracking.event(undefined, KEYBOARD_SHORTCUT_TRACKING_ACTION, {
+      label: CONTENT_EDITOR_TRACKING_LABEL,
+      property: `${contentType}.${shortcut}`,
+    });
+    return commandFn(...args);
+  };
 
 const trackInputRule = (contentType, inputRule) => {
   return new InputRule({

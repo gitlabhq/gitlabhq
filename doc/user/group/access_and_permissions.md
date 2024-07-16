@@ -80,7 +80,6 @@ To restrict group access by IP address:
 1. In the **Restrict access by IP address** text box, enter a list of IPv4 or IPv6
    address ranges in CIDR notation. This list:
    - Has no limit on the number of IP address ranges.
-   - Has a size limit of 1 GB.
    - Applies to both SSH or HTTP authorized IP address ranges. You cannot split
      this list by type of authorization.
 1. Select **Save changes**.

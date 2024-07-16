@@ -44,7 +44,7 @@ GET /projects/:id/pipelines
 | `scope`          | string         | No       | The scope of pipelines, one of: `running`, `pending`, `finished`, `branches`, `tags` |
 | `sha`            | string         | No       | The SHA of pipelines |
 | `sort`           | string         | No       | Sort pipelines in `asc` or `desc` order (default: `desc`) |
-| `source`         | string         | No       | Returns how the pipeline was triggered, one of: `api`, `chat`, `external`, `external_pull_request_event`, `merge_request_event`, `ondemand_dast_scan`, `ondemand_dast_validation`, `parent_pipeline`, `pipeline`, `push`, `schedule`, `security_orchestration_policy`, `trigger`, `web`, or `webide`. |
+| `source`         | string         | No       | The [pipeline source](../ci/jobs/job_rules.md#ci_pipeline_source-predefined-variable). |
 | `status`         | string         | No       | The status of pipelines, one of: `created`, `waiting_for_resource`, `preparing`, `pending`, `running`, `success`, `failed`, `canceled`, `skipped`, `manual`, `scheduled` |
 | `updated_after`  | datetime       | No       | Return pipelines updated after the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
 | `updated_before` | datetime       | No       | Return pipelines updated before the specified date. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
@@ -115,33 +115,110 @@ Example of response
 
 ```json
 {
-  "id": 46,
-  "iid": 11,
-  "project_id": 1,
+  "id": 287,
+  "iid": 144,
+  "project_id": 21,
   "name": "Build pipeline",
-  "status": "success",
+  "sha": "50f0acb76a40e34a4ff304f7347dcc6587da8a14",
   "ref": "main",
-  "sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
-  "before_sha": "a91957a858320c0e17f3a0eca7cfacbff50ea29a",
+  "status": "success",
+  "source": "push",
+  "created_at": "2022-09-21T01:05:07.200Z",
+  "updated_at": "2022-09-21T01:05:50.185Z",
+  "web_url": "http://127.0.0.1:3000/test-group/test-project/-/pipelines/287",
+  "before_sha": "8a24fb3c5877a6d0b611ca41fc86edc174593e2b",
   "tag": false,
   "yaml_errors": null,
   "user": {
-    "name": "Administrator",
-    "username": "root",
     "id": 1,
+    "username": "root",
+    "name": "Administrator",
     "state": "active",
-    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-    "web_url": "http://localhost:3000/root"
+    "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+    "web_url": "http://127.0.0.1:3000/root"
   },
-  "created_at": "2016-08-11T11:28:34.085Z",
-  "updated_at": "2016-08-11T11:32:35.169Z",
-  "started_at": null,
-  "finished_at": "2016-08-11T11:32:35.145Z",
+  "started_at": "2022-09-21T01:05:14.197Z",
+  "finished_at": "2022-09-21T01:05:50.175Z",
   "committed_at": null,
-  "duration": 123.65,
-  "queued_duration": 0.010,
-  "coverage": "30.0",
-  "web_url": "https://example.com/foo/bar/pipelines/46"
+  "duration": 34,
+  "queued_duration": 6,
+  "coverage": null,
+  "detailed_status": {
+    "icon": "status_success",
+    "text": "passed",
+    "label": "passed",
+    "group": "success",
+    "tooltip": "passed",
+    "has_details": false,
+    "details_path": "/test-group/test-project/-/pipelines/287",
+    "illustration": null,
+    "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
+  }
+}
+```
+
+### Get the latest pipeline
+
+> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
+> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
+
+Get the latest pipeline for the most recent commit on a specific ref in a project. If no pipeline exists for the commit, a `403` status code is returned.
+
+```plaintext
+GET /projects/:id/pipelines/latest
+```
+
+| Attribute | Type   | Required | Description |
+|-----------|--------|----------|-------------|
+| `ref`     | string | No       | The branch or tag to check for the latest pipeline. Defaults to the default branch when not specified. |
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
+```
+
+Example of response
+
+```json
+{
+    "id": 287,
+    "iid": 144,
+    "project_id": 21,
+    "name": "Build pipeline",
+    "sha": "50f0acb76a40e34a4ff304f7347dcc6587da8a14",
+    "ref": "main",
+    "status": "success",
+    "source": "push",
+    "created_at": "2022-09-21T01:05:07.200Z",
+    "updated_at": "2022-09-21T01:05:50.185Z",
+    "web_url": "http://127.0.0.1:3000/test-group/test-project/-/pipelines/287",
+    "before_sha": "8a24fb3c5877a6d0b611ca41fc86edc174593e2b",
+    "tag": false,
+    "yaml_errors": null,
+    "user": {
+        "id": 1,
+        "username": "root",
+        "name": "Administrator",
+        "state": "active",
+        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
+        "web_url": "http://127.0.0.1:3000/root"
+    },
+    "started_at": "2022-09-21T01:05:14.197Z",
+    "finished_at": "2022-09-21T01:05:50.175Z",
+    "committed_at": null,
+    "duration": 34,
+    "queued_duration": 6,
+    "coverage": null,
+    "detailed_status": {
+        "icon": "status_success",
+        "text": "passed",
+        "label": "passed",
+        "group": "success",
+        "tooltip": "passed",
+        "has_details": false,
+        "details_path": "/test-group/test-project/-/pipelines/287",
+        "illustration": null,
+        "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
+    }
 }
 ```
 
@@ -278,71 +355,6 @@ Sample response:
             "suite_error": null
         }
     ]
-}
-```
-
-## Get the latest pipeline
-
-> - `name` in response [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115310) in GitLab 15.11 [with a flag](../administration/feature_flags.md) named `pipeline_name_in_api`. Disabled by default.
-> - `name` in response [generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/398131) in GitLab 16.3. Feature flag `pipeline_name_in_api` removed.
-
-Get the latest pipeline for the most recent commit on a specific ref in a project. If no pipeline exists for the commit, a `403` status code is returned.
-
-```plaintext
-GET /projects/:id/pipelines/latest
-```
-
-| Attribute | Type   | Required | Description |
-|-----------|--------|----------|-------------|
-| `ref`     | string | No       | The branch or tag to check for the latest pipeline. Defaults to the default branch when not specified. |
-
-```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/1/pipelines/latest"
-```
-
-Example of response
-
-```json
-{
-    "id": 287,
-    "iid": 144,
-    "project_id": 21,
-    "name": "Build pipeline",
-    "sha": "50f0acb76a40e34a4ff304f7347dcc6587da8a14",
-    "ref": "main",
-    "status": "success",
-    "source": "push",
-    "created_at": "2022-09-21T01:05:07.200Z",
-    "updated_at": "2022-09-21T01:05:50.185Z",
-    "web_url": "http://127.0.0.1:3000/test-group/test-project/-/pipelines/287",
-    "before_sha": "8a24fb3c5877a6d0b611ca41fc86edc174593e2b",
-    "tag": false,
-    "yaml_errors": null,
-    "user": {
-        "id": 1,
-        "username": "root",
-        "name": "Administrator",
-        "state": "active",
-        "avatar_url": "https://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon",
-        "web_url": "http://127.0.0.1:3000/root"
-    },
-    "started_at": "2022-09-21T01:05:14.197Z",
-    "finished_at": "2022-09-21T01:05:50.175Z",
-    "committed_at": null,
-    "duration": 34,
-    "queued_duration": 6,
-    "coverage": null,
-    "detailed_status": {
-        "icon": "status_success",
-        "text": "passed",
-        "label": "passed",
-        "group": "success",
-        "tooltip": "passed",
-        "has_details": false,
-        "details_path": "/test-group/test-project/-/pipelines/287",
-        "illustration": null,
-        "favicon": "/assets/ci_favicons/favicon_status_success-8451333011eee8ce9f2ab25dc487fe24a8758c694827a582f17f42b0a90446a2.png"
-    }
 }
 ```
 

@@ -1,6 +1,12 @@
 - icon_name = 'bullhorn'
 - dismissable = message.dismissable?
 - preview = local_assigns.fetch(:preview, false)
+- dismissal_data = current_user ? { dismissal_path: broadcast_message_dismissals_path } : {}
+
+- data = { id: message.id,
+  expire_date: message.ends_at.iso8601,
+  cookie_key: Users::BroadcastMessageDismissal.get_cookie_key(message.id),
+  testid: 'close-button' }.merge(dismissal_data)
 
 - unless message.notification?
   .gl-broadcast-message.broadcast-banner-message.banner{ role: "alert",
@@ -21,10 +27,7 @@
         size: :small,
         button_options: { class: 'gl-close-btn-color-inherit gl-broadcast-message-dismiss js-dismiss-current-broadcast-notification',
           'aria-label': _('Close'),
-          data: { id: message.id,
-                  expire_date: message.ends_at.iso8601,
-                  dismissal_path: broadcast_message_dismissals_path,
-                  cookie_key: Users::BroadcastMessageDismissal.get_cookie_key(message.id) } },
+          data: data },
         icon_classes: 'gl-text-white')
 - else
   - notification_class = "js-broadcast-notification-#{message.id}"
@@ -45,8 +48,4 @@
         size: :small,
         button_options: { class: 'js-dismiss-current-broadcast-notification',
           'aria-label': _('Close'),
-          data: { id: message.id,
-                  expire_date: message.ends_at.iso8601,
-                  dismissal_path: broadcast_message_dismissals_path,
-                  cookie_key: Users::BroadcastMessageDismissal.get_cookie_key(message.id),
-                  testid: 'close-button' } })
+          data: data })

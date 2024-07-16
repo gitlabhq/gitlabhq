@@ -13,7 +13,6 @@ Style/SingleArgumentDig:
     - 'ee/app/graphql/resolvers/ci/code_coverage_activities_resolver.rb'
     - 'ee/app/models/vulnerabilities/finding.rb'
     - 'ee/app/presenters/vulnerability_presenter.rb'
-    - 'ee/app/services/elastic/cluster_reindexing_service.rb'
     - 'ee/app/workers/concerns/elastic/migration_helper.rb'
     - 'ee/lib/gitlab/ci/parsers/security/dependency_list.rb'
     - 'ee/spec/graphql/mutations/vulnerabilities/create_spec.rb'

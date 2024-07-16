@@ -42,7 +42,7 @@ Spamcheck is only available for package-based installations:
 
 ## Configure GitLab to use Spamcheck
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Reporting**.
 1. Expand **Spam and Anti-bot Protection**.
 1. Update the Spam Check settings:
@@ -67,4 +67,4 @@ Spamcheck service on its own cannot communicate directly over TLS with GitLab.
 However, Spamcheck can be deployed behind a reverse proxy which performs TLS
 termination. In such a scenario, GitLab can be made to communicate with
 Spamcheck over TLS by specifying `tls://` scheme for the external Spamcheck URL
-instead of `grpc://` in the Admin Area settings.
+instead of `grpc://` in the Admin area settings.

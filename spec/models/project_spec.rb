@@ -89,6 +89,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_one(:bamboo_integration) }
     it { is_expected.to have_one(:teamcity_integration) }
     it { is_expected.to have_one(:jira_integration) }
+    it { is_expected.to have_one(:jira_cloud_app_integration) }
     it { is_expected.to have_one(:harbor_integration) }
     it { is_expected.to have_one(:redmine_integration) }
     it { is_expected.to have_one(:youtrack_integration) }
@@ -196,6 +197,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:incident_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:relation_import_trackers).class_name('Projects::ImportExport::RelationImportTracker') }
+    it { is_expected.to have_many(:all_protected_branches).class_name('ProtectedBranch') }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -7057,6 +7059,15 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.with_public_package_registry' do
+    let_it_be(:project) { create(:project, package_registry_access_level: ::ProjectFeature::PUBLIC) }
+    let_it_be(:other_project) { create(:project, package_registry_access_level: ::ProjectFeature::ENABLED) }
+
+    subject { described_class.with_public_package_registry }
+
+    it { is_expected.to contain_exactly(project) }
+  end
+
   describe '.not_a_fork' do
     let_it_be(:project) { create(:project, :public) }
 
@@ -9495,5 +9506,11 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     let_it_be(:project) { create(:project) }
 
     it { expect(project.supports_saved_replies?).to eq(false) }
+  end
+
+  describe '#merge_trains_enabled?' do
+    let_it_be(:project) { create(:project) }
+
+    it { expect(project.merge_trains_enabled?).to eq(false) }
   end
 end

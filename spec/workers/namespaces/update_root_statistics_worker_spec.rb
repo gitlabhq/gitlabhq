@@ -6,7 +6,7 @@ RSpec.describe Namespaces::UpdateRootStatisticsWorker, feature_category: :source
   let(:namespace_id) { 123 }
 
   let(:event) do
-    Projects::ProjectDeletedEvent.new(data: { project_id: 1, namespace_id: namespace_id })
+    Projects::ProjectDeletedEvent.new(data: { project_id: 1, namespace_id: namespace_id, root_namespace_id: 1 })
   end
 
   subject { consume_event(subscriber: described_class, event: event) }

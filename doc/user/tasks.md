@@ -151,7 +151,22 @@ Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To promote a task to an issue, use the `/promote_to issue` [quick action](../user/project/quick_actions.md).
+To promote a task to an issue:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Plan > Issues**, then select your issue to view it.
+1. In the issue description, in the **Tasks** section, select the task you want to edit.
+   The task window opens.
+1. Unlink the parent issue and promote the task: In the task window, use these two
+   [quick actions](../user/project/quick_actions.md) in a comment, on separate lines:
+
+   ```plaintext
+   /remove_parent
+   /promote_to issue
+   ```
+
+The task is converted to an issue and gets a new URL with `/issues/`.
+The previous URL with `/work_items/` still works.
 
 ## Remove a task from an issue
 

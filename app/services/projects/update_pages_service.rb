@@ -2,6 +2,7 @@
 
 module Projects
   class UpdatePagesService < BaseService
+    include Gitlab::InternalEventsTracking
     include Gitlab::Utils::StrongMemoize
 
     # old deployment can be cached by pages daemon
@@ -32,6 +33,22 @@ module Projects
 
         break error('The uploaded artifact size does not match the expected value') unless deployment
         break error(deployment_validations.errors.first.full_message) unless deployment_validations.valid?
+
+        track_internal_event(
+          'create_pages_deployment',
+          project: project,
+          namespace: project.namespace,
+          user: build.user
+        )
+
+        if deployment.path_prefix.present?
+          track_internal_event(
+            'create_pages_extra_deployment',
+            project: project,
+            namespace: project.namespace,
+            user: build.user
+          )
+        end
 
         deactive_old_deployments(deployment)
         success

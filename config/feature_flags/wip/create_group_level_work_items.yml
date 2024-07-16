@@ -1,0 +1,9 @@
+---
+name: create_group_level_work_items
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/11777
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157443
+rollout_issue_url:
+milestone: '17.2'
+group: group::product planning
+type: wip
+default_enabled: false

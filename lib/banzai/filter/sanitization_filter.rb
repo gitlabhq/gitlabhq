@@ -46,7 +46,7 @@ module Banzai
 
       class << self
         def remove_unsafe_table_style
-          lambda do |env|
+          ->(env) do
             node = env[:node]
 
             return unless node.name == 'th' || node.name == 'td'
@@ -61,7 +61,7 @@ module Banzai
         end
 
         def remove_unsafe_link_class
-          lambda do |env|
+          ->(env) do
             node = env[:node]
 
             return unless node.name == 'a'
@@ -78,7 +78,7 @@ module Banzai
         end
 
         def remove_id_attributes
-          lambda do |env|
+          ->(env) do
             node = env[:node]
 
             return unless node.name == 'a' || node.name == 'li'

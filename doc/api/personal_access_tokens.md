@@ -1,6 +1,6 @@
 ---
 stage: Govern
-group: Compliance
+group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -392,3 +392,7 @@ DETAILS:
 
 See the [Users API documentation](users.md#create-a-personal-access-token-with-limited-scopes-for-the-currently-authenticated-user)
 for information on creating a personal access token for the currently authenticated user.
+
+## Troubleshooting access tokens
+
+To troubleshoot access token issues, see the [token troubleshooting guide](../security/token_overview.md#troubleshooting).

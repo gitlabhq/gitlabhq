@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import Audio from '~/content_editor/extensions/audio';
 import Bold from '~/content_editor/extensions/bold';
 import Blockquote from '~/content_editor/extensions/blockquote';
@@ -17,7 +18,6 @@ import Italic from '~/content_editor/extensions/italic';
 import Link from '~/content_editor/extensions/link';
 import ListItem from '~/content_editor/extensions/list_item';
 import OrderedList from '~/content_editor/extensions/ordered_list';
-import Paragraph from '~/content_editor/extensions/paragraph';
 import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
 import Strike from '~/content_editor/extensions/strike';
@@ -32,8 +32,7 @@ import Video from '~/content_editor/extensions/video';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import { SAFE_VIDEO_EXT, SAFE_AUDIO_EXT, DIAGRAM_LANGUAGES } from '~/content_editor/constants';
-
-import { createTestEditor, createDocBuilder } from './test_utils';
+import { createTestEditor } from './test_utils';
 
 const tiptapEditor = createTestEditor({
   extensions: [
@@ -71,81 +70,39 @@ const tiptapEditor = createTestEditor({
 });
 
 const {
-  builders: {
-    doc,
-    paragraph,
-    audio,
-    bold,
-    blockquote,
-    bulletList,
-    code,
-    codeBlock,
-    div,
-    diagram,
-    footnoteDefinition,
-    footnoteReference,
-    frontmatter,
-    hardBreak,
-    heading,
-    horizontalRule,
-    image,
-    italic,
-    link,
-    listItem,
-    orderedList,
-    pre,
-    referenceDefinition,
-    strike,
-    table,
-    tableRow,
-    tableHeader,
-    tableCell,
-    tableOfContents,
-    taskItem,
-    taskList,
-    video,
-  },
-} = createDocBuilder({
-  tiptapEditor,
-  names: {
-    audio: { nodeType: Audio.name },
-    blockquote: { nodeType: Blockquote.name },
-    bold: { markType: Bold.name },
-    bulletList: { nodeType: BulletList.name },
-    code: { markType: Code.name },
-    codeBlock: { nodeType: CodeBlockHighlight.name },
-    diagram: { nodeType: Diagram.name },
-    footnoteDefinition: { nodeType: FootnoteDefinition.name },
-    footnoteReference: { nodeType: FootnoteReference.name },
-    frontmatter: { nodeType: Frontmatter.name },
-    hardBreak: { nodeType: HardBreak.name },
-    heading: { nodeType: Heading.name },
-    horizontalRule: { nodeType: HorizontalRule.name },
-    image: { nodeType: Image.name },
-    italic: { nodeType: Italic.name },
-    link: { markType: Link.name },
-    listItem: { nodeType: ListItem.name },
-    orderedList: { nodeType: OrderedList.name },
-    paragraph: { nodeType: Paragraph.name },
-    referenceDefinition: { nodeType: ReferenceDefinition.name },
-    strike: { nodeType: Strike.name },
-    table: { nodeType: Table.name },
-    tableCell: { nodeType: TableCell.name },
-    tableHeader: { nodeType: TableHeader.name },
-    tableRow: { nodeType: TableRow.name },
-    tableOfContents: { nodeType: TableOfContents.name },
-    taskItem: { nodeType: TaskItem.name },
-    taskList: { nodeType: TaskList.name },
-    video: { nodeType: Video.name },
-    ...HTMLNodes.reduce(
-      (builders, htmlNode) => ({
-        ...builders,
-        [htmlNode.name]: { nodeType: htmlNode.name },
-      }),
-      {},
-    ),
-  },
-});
+  doc,
+  paragraph,
+  audio,
+  bold,
+  blockquote,
+  bulletList,
+  code,
+  codeBlock,
+  div,
+  diagram,
+  footnoteDefinition,
+  footnoteReference,
+  frontmatter,
+  hardBreak,
+  heading,
+  horizontalRule,
+  image,
+  italic,
+  link,
+  listItem,
+  orderedList,
+  pre,
+  referenceDefinition,
+  strike,
+  table,
+  tableRow,
+  tableHeader,
+  tableCell,
+  tableOfContents,
+  taskItem,
+  taskList,
+  video,
+} = builders(tiptapEditor.schema);
 
 describe('Client side Markdown processing', () => {
   const deserialize = async (markdown) => {

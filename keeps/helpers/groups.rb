@@ -62,7 +62,7 @@ module Keeps
               "Failed to get group information with response code: #{response.code} and body:\n#{response.body}"
           end
 
-          JSON.parse(response.body) # rubocop:disable Gitlab:Json -- We don't rely on GitLab internal classes
+          JSON.parse(response.body) # rubocop:disable Gitlab/Json -- We don't rely on GitLab internal classes
         end
       end
     end

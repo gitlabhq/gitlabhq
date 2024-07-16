@@ -103,7 +103,7 @@ export default {
         <template #cell(usage)="{ item }">
           <div data-testid="usageCol">
             <span>{{ item.usage }}</span>
-            <gl-badge :variant="item.scoreLevel.variant" size="sm" class="gl-ml-1">{{
+            <gl-badge :variant="item.scoreLevel.variant" class="gl-ml-1">{{
               item.scoreLevel.label
             }}</gl-badge>
           </div>

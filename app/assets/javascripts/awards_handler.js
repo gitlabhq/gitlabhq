@@ -4,10 +4,11 @@ import { GlBreakpointInstance as bp } from '@gitlab/ui/dist/utils';
 import $ from 'jquery';
 import { uniq, escape } from 'lodash';
 import { getEmojiScoreWithIntent } from '~/emoji/utils';
-import { getCookie, setCookie, scrollToElement } from '~/lib/utils/common_utils';
+import { scrollToElement } from '~/lib/utils/common_utils';
 import * as Emoji from '~/emoji';
 import { dispose, fixTitle } from '~/tooltips';
 import { createAlert } from '~/alert';
+import { FREQUENTLY_USED_EMOJIS_STORAGE_KEY } from '~/emoji/constants';
 import axios from './lib/utils/axios_utils';
 import { isInVueNoteablePage } from './lib/utils/dom_utils';
 import { __ } from './locale';
@@ -508,7 +509,7 @@ export class AwardsHandler {
   addEmojiToFrequentlyUsedList(emoji) {
     if (this.emoji.isEmojiNameValid(emoji)) {
       this.frequentlyUsedEmojis = uniq(this.getFrequentlyUsedEmojis().concat(emoji));
-      setCookie('frequently_used_emojis', this.frequentlyUsedEmojis.join(','));
+      localStorage.setItem(FREQUENTLY_USED_EMOJIS_STORAGE_KEY, this.frequentlyUsedEmojis.join(','));
     }
   }
 
@@ -516,7 +517,9 @@ export class AwardsHandler {
     return (
       this.frequentlyUsedEmojis ||
       (() => {
-        const frequentlyUsedEmojis = uniq((getCookie('frequently_used_emojis') || '').split(','));
+        const frequentlyUsedEmojis = uniq(
+          (localStorage.getItem(FREQUENTLY_USED_EMOJIS_STORAGE_KEY) || '').split(','),
+        );
         this.frequentlyUsedEmojis = frequentlyUsedEmojis.filter((inputName) =>
           this.emoji.isEmojiNameValid(inputName),
         );

@@ -10,6 +10,7 @@ import {
   GlModal,
 } from '@gitlab/ui';
 import { toSafeInteger } from 'lodash';
+import SeatControlsSection from 'ee_component/pages/admin/application_settings/general/components/seat_controls_section.vue';
 import csrf from '~/lib/utils/csrf';
 import { __, n__, s__, sprintf } from '~/locale';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -32,6 +33,7 @@ export default {
     GlLink,
     SignupCheckbox,
     GlModal,
+    SeatControlsSection,
     PasswordComplexityCheckboxGroup: () =>
       import(
         'ee_component/pages/admin/application_settings/general/components/password_complexity_checkbox_group.vue'
@@ -184,8 +186,11 @@ export default {
 
       this.submitForm();
     },
-    setPasswordComplexity({ name, value }) {
-      this.$set(this.form, name, value);
+    setFormValue({ name, value }) {
+      this.form = {
+        ...this.form,
+        [name]: value,
+      };
     },
     submitForm() {
       this.$refs.form.submit();
@@ -305,6 +310,8 @@ export default {
         </gl-form-radio-group>
       </gl-form-group>
 
+      <seat-controls-section @form-value-change="setFormValue" />
+
       <gl-form-group
         :label="$options.i18n.userCapLabel"
         :description="$options.i18n.userCapDescription"
@@ -343,7 +350,7 @@ export default {
 
       <password-complexity-checkbox-group
         v-if="glFeatures.passwordComplexity"
-        @set-password-complexity="setPasswordComplexity"
+        @set-password-complexity="setFormValue"
       />
       <gl-form-group
         :description="$options.i18n.domainAllowListDescription"

@@ -155,7 +155,7 @@ function renderMermaids(els) {
         const alertContainer = document.createElement('div');
         alertContainer.classList.add(ALERT_CONTAINER_CLASS);
         alertContainer.classList.add('gl-mb-5');
-        parent.after(alertContainer);
+        parent.before(alertContainer);
         createAlert({
           message: __(
             'Warning: Displaying this diagram might cause performance issues on this page.',

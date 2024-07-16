@@ -61,7 +61,7 @@ to monitor itself.
 This section describes how to add new metrics for self-monitoring
 ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15440)).
 
-1. Select the [type of metric](https://gitlab.com/gitlab-org/prometheus-client-mmap#metrics):
+1. Select the [type of metric](https://gitlab.com/gitlab-org/ruby/gems/prometheus-client-mmap#metrics):
 
    - `Gitlab::Metrics.counter`
    - `Gitlab::Metrics.gauge`

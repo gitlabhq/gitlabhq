@@ -22,6 +22,7 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
   let(:title) { 'my title' }
   let(:draft_title) { 'Draft: my title' }
   let(:draft) { true }
+  let(:squash) { true }
   let(:description) { 'my description' }
   let(:multiline_description) do
     <<~MD.chomp
@@ -105,6 +106,16 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
     end
   end
 
+  shared_examples_for 'a service that can set a merge request to be squashed' do
+    subject(:last_mr) { MergeRequest.last }
+
+    it 'sets the squash property' do
+      service.execute
+
+      expect(last_mr.squash).to eq(squash)
+    end
+  end
+
   shared_examples_for 'a service that can set the milestone of a merge request' do
     subject(:last_mr) { MergeRequest.last }
 
@@ -124,9 +135,24 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
       service.execute
 
       expect(last_mr.auto_merge_enabled).to eq(true)
-      expect(last_mr.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+      expect(last_mr.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS)
       expect(last_mr.merge_user).to eq(user1)
       expect(last_mr.merge_params['sha']).to eq(change[:newrev])
+    end
+
+    context 'when merge_when_checks_pass is false' do
+      before do
+        stub_feature_flags(merge_when_checks_pass: false)
+      end
+
+      it 'sets auto_merge_enabled' do
+        service.execute
+
+        expect(last_mr.auto_merge_enabled).to eq(true)
+        expect(last_mr.auto_merge_strategy).to eq(AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+        expect(last_mr.merge_user).to eq(user1)
+        expect(last_mr.merge_params['sha']).to eq(change[:newrev])
+      end
     end
   end
 
@@ -551,6 +577,71 @@ RSpec.describe MergeRequests::PushOptionsHandlerService, feature_category: :sour
 
       it_behaves_like 'a service that can create a merge request'
       it_behaves_like 'a service that can set the draft of a merge request'
+    end
+
+    it_behaves_like 'with a deleted branch'
+    it_behaves_like 'with the project default branch'
+  end
+
+  describe '`squash` push option' do
+    let(:push_options) { { squash: squash } }
+
+    context 'with a new branch' do
+      let(:changes) { new_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        service.execute
+
+        expect(service.errors).to include(error_mr_required)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, squash: squash } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set a merge request to be squashed'
+
+        context 'when squash is false' do
+          let(:squash) { false }
+
+          it_behaves_like 'a service that can set a merge request to be squashed'
+        end
+      end
+    end
+
+    context 'with an existing branch but no open MR' do
+      let(:changes) { existing_branch_changes }
+
+      it_behaves_like 'a service that does not create a merge request'
+
+      it 'adds an error to the service' do
+        service.execute
+
+        expect(service.errors).to include(error_mr_required)
+      end
+
+      context 'when coupled with the `create` push option' do
+        let(:push_options) { { create: true, squash: squash } }
+
+        it_behaves_like 'a service that can create a merge request'
+        it_behaves_like 'a service that can set a merge request to be squashed'
+
+        context 'when squash is false' do
+          let(:squash) { false }
+
+          it_behaves_like 'a service that can set a merge request to be squashed'
+        end
+      end
+    end
+
+    context 'with an existing branch that has a merge request open' do
+      let(:changes) { existing_branch_changes }
+      let!(:merge_request) { create(:merge_request, source_project: project, source_branch: source_branch) }
+
+      it_behaves_like 'a service that does not create a merge request'
+      it_behaves_like 'a service that can set a merge request to be squashed'
     end
 
     it_behaves_like 'with a deleted branch'

@@ -15,26 +15,18 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
     shared_examples 'revokes access token' do
       it { expect(subject.success?).to be true }
 
-      it { expect(subject.message).to eq("Access token #{access_token.name} has been revoked and the bot user has been scheduled for deletion.") }
+      it { expect(subject.message).to eq("Access token #{access_token.name} has been revoked.") }
 
-      it 'calls delete user worker' do
-        expect(DeleteUserWorker).to receive(:perform_async).with(user.id, resource_bot.id, skip_authorization: true)
+      it 'does not call the delete user worker' do
+        expect(DeleteUserWorker).not_to receive(:perform_async)
 
         subject
       end
 
-      it 'removes membership of bot user' do
+      it 'bot user retains membership' do
         subject
 
-        expect(resource.reload).not_to have_user(resource_bot)
-      end
-
-      it 'initiates user removal' do
-        subject
-
-        expect(
-          Users::GhostUserMigration.where(user: resource_bot, initiator_user: user)
-        ).to be_exists
+        expect(resource.reload).to have_user(resource_bot)
       end
 
       it 'logs the event' do
@@ -43,6 +35,34 @@ RSpec.describe ResourceAccessTokens::RevokeService, feature_category: :system_ac
         subject
 
         expect(Gitlab::AppLogger).to have_received(:info).with("PROJECT ACCESS TOKEN REVOCATION: revoked_by: #{user.username}, project_id: #{resource.id}, token_user: #{resource_bot.name}, token_id: #{access_token.id}")
+      end
+
+      context 'with retain user feature flag disabled' do
+        before do
+          stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+        end
+
+        it { expect(subject.message).to eq("Access token #{access_token.name} has been revoked and the bot user has been scheduled for deletion.") }
+
+        it 'calls delete user worker' do
+          expect(DeleteUserWorker).to receive(:perform_async).with(user.id, resource_bot.id, skip_authorization: true)
+
+          subject
+        end
+
+        it 'removes membership of bot user' do
+          subject
+
+          expect(resource.reload).not_to have_user(resource_bot)
+        end
+
+        it 'initiates user removal' do
+          subject
+
+          expect(
+            Users::GhostUserMigration.where(user: resource_bot, initiator_user: user)
+          ).to be_exists
+        end
       end
     end
 

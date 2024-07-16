@@ -11,13 +11,8 @@ const sidebarInitState = () => {
   const el = document.getElementById('js-search-sidebar');
   if (!el) return {};
 
-  const {
-    navigationJson,
-    searchType,
-    searchLevel,
-    groupInitialJson,
-    projectInitialJson,
-  } = el.dataset;
+  const { navigationJson, searchType, searchLevel, groupInitialJson, projectInitialJson } =
+    el.dataset;
 
   const navigationJsonParsed = JSON.parse(navigationJson);
   const groupInitialJsonParsed = JSON.parse(groupInitialJson);

@@ -3,7 +3,7 @@ table_name: project_build_artifacts_size_refreshes
 classes:
 - Projects::BuildArtifactsSizeRefresh
 feature_categories:
-- build_artifacts
+- job_artifacts
 description: Temporary table to accurately recompute artifacts size.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81306
 milestone: '14.9'

@@ -167,7 +167,7 @@ In order of highest priority first, the component version can be:
 
 - A commit SHA, for example `e3262fdd0914fa823210cdb79a8c421e2cef79d8`.
 - A tag, for example: `1.0.0`. If a tag and commit SHA exist with the same name,
-  the commit SHA takes precedence over the tag. Components released to the CI/CD
+  the commit SHA takes precedence over the tag. Components released to the CI/CD Catalog
   should be tagged with a [semantic version](#semantic-versioning).
 - A branch name, for example `main`. If a branch and tag exist with the same name,
   the tag takes precedence over the branch.
@@ -344,6 +344,15 @@ These [predefined variables](../variables/predefined_variables.md)
 ensure that your component also works when used on another instance, for example when using
 [a GitLab.com component in a self-managed instance](#use-a-gitlabcom-component-in-a-self-managed-instance).
 
+### Do not assume API resources are always public
+
+Ensure that the component and its testing pipeline work also [in a self-managed instance](#use-a-gitlabcom-component-in-a-self-managed-instance).
+While some API resources of public projects on GitLab.com could be accessed via unauthenticated requests
+on self-managed a component project could be mirrored as private or internal project.
+
+It's important that an access token can optionally be provided via inputs or variables to
+authenticate requests on self-managed instances.
+
 ### Avoid using global keywords
 
 Avoid using [global keywords](../yaml/index.md#global-keywords) in a component.
@@ -446,6 +455,38 @@ For example, to create a component with `stage` configuration that can be define
       inputs:
         stage: verify
   ```
+
+#### Define job names with inputs
+
+Similar to the values for the `stage` keyword, you should avoid hard-coding job names
+in CI/CD components. When your component's users can customize job names, they can prevent conflicts
+with the existing names in their pipelines. Users could also include a component
+multiple times with different input options by using different names.
+
+Use `inputs` to allow your component's users to define a specific job name, or a prefix for the
+job name. For example:
+
+```yaml
+spec:
+  inputs:
+    job-prefix:
+      description: "Define a prefix for the job name"
+    job-name:
+      description: "Alternatively, define the job's name"
+    job-stage:
+      default: test
+---
+
+"$[[ inputs.job-prefix ]]-scan-website":
+  stage: $[[ inputs.job-stage ]]
+  script:
+    - scan-website-1
+
+"$[[ inputs.job-name ]]":
+  stage: $[[ inputs.job-stage ]]
+  script:
+    - scan-website-2
+```
 
 ### Replace custom CI/CD variables with inputs
 
@@ -623,6 +664,12 @@ and is maintained by users verified by GitLab:
 - GitLab-maintained (**{tanuki-verified}**): Components that are created and maintained by GitLab.
 - GitLab Partner (**{partner-verified}**): Components that are independently created
   and maintained by a GitLab-verified partner.
+
+  GitLab partners can contact a member of the GitLab Partner Alliance to have their
+  namespace flagged as GitLab-verified. Then any CI/CD components located in the
+  namespace are badged as GitLab Parner components. The Partner Alliance member
+  creates an internal request issue on behalf of the verified partner:
+  `https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request`.
 
   DISCLAIMER:
   GitLab Partner-created components are provided **as-is**, without warranty of any kind.

@@ -12,10 +12,11 @@ module JSONWebToken
     end
 
     def encoded
-      headers = {
-        kid: kid,
-        typ: 'JWT'
-      }
+      self.class.encode(payload, key, kid)
+    end
+
+    def self.encode(payload, key, kid)
+      headers = { kid: kid, typ: 'JWT' }
       JWT.encode(payload, key, ALGORITHM, headers)
     end
 

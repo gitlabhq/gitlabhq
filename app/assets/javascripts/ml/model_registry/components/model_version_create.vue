@@ -9,9 +9,10 @@ import {
   GlModal,
   GlModalDirective,
 } from '@gitlab/ui';
-import { __, s__ } from '~/locale';
+import { __, s__, sprintf } from '~/locale';
 import { visitUrl } from '~/lib/utils/url_utility';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
+import { semverRegex } from '~/lib/utils/regexp';
 import { uploadModel } from '../services/upload_model';
 import createModelVersionMutation from '../graphql/mutations/create_model_version.mutation.graphql';
 import { emptyArtifactFile, MODEL_VERSION_CREATION_MODAL_ID } from '../constants';
@@ -31,7 +32,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['projectPath', 'maxAllowedFileSize'],
+  inject: ['projectPath', 'maxAllowedFileSize', 'latestVersion'],
   props: {
     modelGid: {
       type: String,
@@ -45,9 +46,51 @@ export default {
       errorMessage: null,
       selectedFile: emptyArtifactFile,
       versionData: null,
+      submitButtonDisabled: true,
     };
   },
+  computed: {
+    versionDescription() {
+      if (this.latestVersion) {
+        return sprintf(
+          s__('MlModelRegistry|Enter a semantic version. Latest version is %{latestVersion}'),
+          {
+            latestVersion: this.latestVersion,
+          },
+        );
+      }
+      return s__('MlModelRegistry|Enter a semantic version.');
+    },
+    actionPrimary() {
+      return {
+        text: s__('MlModelRegistry|Create & import'),
+        attributes: { variant: 'confirm', disabled: this.submitButtonDisabled },
+      };
+    },
+
+    isSemver() {
+      return semverRegex.test(this.version);
+    },
+    invalidFeedback() {
+      if (this.version === null) {
+        this.submitDisabled();
+        return this.versionDescription;
+      }
+      if (!this.isSemver) {
+        this.submitDisabled();
+        return this.$options.modal.versionInvalid;
+      }
+      this.submitAvailable();
+      return null;
+    },
+  },
   methods: {
+    submitDisabled() {
+      this.submitButtonDisabled = true;
+    },
+    submitAvailable() {
+      this.submitButtonDisabled = false;
+    },
     async createModelVersion() {
       const { data } = await this.$apollo.mutate({
         mutation: createModelVersionMutation,
@@ -107,14 +150,13 @@ export default {
   i18n: {},
   modal: {
     id: MODEL_VERSION_CREATION_MODAL_ID,
-    actionPrimary: {
-      text: s__('MlModelRegistry|Create & import'),
-      attributes: { variant: 'confirm' },
-    },
     actionSecondary: {
       text: __('Cancel'),
+      attributes: { variant: 'default' },
     },
-    versionDescription: s__('MlModelRegistry|Enter a semver version.'),
+    versionDescription: s__('MlModelRegistry|Enter a semantic version.'),
+    versionValid: s__('MlModelRegistry|Version is valid semantic version.'),
+    versionInvalid: s__('MlModelRegistry|Version is not a valid semantic version.'),
     versionPlaceholder: s__('MlModelRegistry|For example 1.0.0'),
     descriptionPlaceholder: s__('MlModelRegistry|Enter some description'),
     buttonTitle: s__('MlModelRegistry|Create model version'),
@@ -129,7 +171,7 @@ export default {
     <gl-modal
       :modal-id="$options.modal.id"
       :title="$options.modal.title"
-      :action-primary="$options.modal.actionPrimary"
+      :action-primary="actionPrimary"
       :action-secondary="$options.modal.actionSecondary"
       size="sm"
       @primary="create"
@@ -137,9 +179,13 @@ export default {
     >
       <gl-form>
         <gl-form-group
+          data-testid="versionDescriptionId"
           label="Version:"
           label-for="versionId"
-          :description="$options.modal.versionDescription"
+          :state="isSemver"
+          :invalid-feedback="!version ? '' : invalidFeedback"
+          :valid-feedback="isSemver ? $options.modal.versionValid : ''"
+          :description="versionDescription"
         >
           <gl-form-input
             id="versionId"

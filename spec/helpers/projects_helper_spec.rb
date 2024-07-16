@@ -1187,13 +1187,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   describe '#home_panel_data_attributes' do
     using RSpec::Parameterized::TableSyntax
 
-    before do
-      allow(helper).to receive(:groups_projects_more_actions_dropdown_data).and_return(nil)
-      allow(helper).to receive(:fork_button_data_attributes).and_return(nil)
-      allow(helper).to receive(:notification_data_attributes).and_return(nil)
-      allow(helper).to receive(:star_count_data_attributes).and_return({})
-    end
-
     where(:can_read_project, :is_empty_repo, :is_admin, :has_admin_path) do
       true  | true  | true  | true
       false | false | true  | true
@@ -1202,26 +1195,55 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
 
     with_them do
-      context "returns default user project details" do
-        before do
-          allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
-          allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
-          allow(user).to receive(:can_admin_all_resources?).and_return(is_admin)
-        end
-
-        let(:expected) do
-          {
-            admin_path: (admin_project_path(project) if has_admin_path),
-            can_read_project: can_read_project.to_s,
-            is_project_empty: is_empty_repo.to_s,
-            project_id: project.id
-          }
-        end
-
-        subject { helper.home_panel_data_attributes }
-
-        it { is_expected.to eq(expected) }
+      before do
+        allow(helper).to receive(:groups_projects_more_actions_dropdown_data).and_return(nil)
+        allow(helper).to receive(:fork_button_data_attributes).and_return(nil)
+        allow(helper).to receive(:notification_data_attributes).and_return(nil)
+        allow(helper).to receive(:star_count_data_attributes).and_return({})
+        allow(helper).to receive(:can?).with(user, :read_project, project).and_return(can_read_project)
+        allow(project).to receive(:empty_repo?).and_return(is_empty_repo)
+        allow(user).to receive(:can_admin_all_resources?).and_return(is_admin)
       end
+
+      let(:expected) do
+        {
+          admin_path: (admin_project_path(project) if has_admin_path),
+          can_read_project: can_read_project.to_s,
+          cicd_catalog_path: nil,
+          is_project_archived: "false",
+          project_avatar: nil,
+          is_project_empty: is_empty_repo.to_s,
+          project_id: project.id,
+          project_name: project.name,
+          project_visibility_level: "private"
+        }
+      end
+
+      subject { helper.home_panel_data_attributes }
+
+      it { is_expected.to include(expected) }
+    end
+  end
+
+  describe '#visibility_level_name' do
+    using RSpec::Parameterized::TableSyntax
+
+    where(:banned_user, :feature_flag_enabled, :expected) do
+      true  | true  | 'banned'
+      false | false | 'private'
+      true  | false | 'private'
+      false | true  | 'private'
+    end
+
+    with_them do
+      before do
+        stub_feature_flags(hide_projects_of_banned_users: feature_flag_enabled)
+        allow(project).to receive(:created_and_owned_by_banned_user?).and_return(banned_user)
+      end
+
+      subject { visibility_level_name(project) }
+
+      it { is_expected.to eq(expected) }
     end
   end
 

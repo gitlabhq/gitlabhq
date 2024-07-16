@@ -29,7 +29,7 @@ module Issues
       target.update!(
         service_desk_reply_to: email,
         author: Users::Internal.support_bot,
-        confidential: true
+        confidential: target_confidentiality
       )
 
       # Migrate to IssueEmailParticipants::CreateService
@@ -41,9 +41,9 @@ module Issues
     def add_note
       message = s_(
         "ServiceDesk|This issue has been converted to a Service Desk ticket. " \
-        "The email address `%{email}` is the new author of this issue. " \
-        "GitLab didn't send a `thank_you` Service Desk email. " \
-        "The original author of this issue was `%{original_author}`."
+          "The email address `%{email}` is the new author of this issue. " \
+          "GitLab didn't send a `thank_you` Service Desk email. " \
+          "The original author of this issue was `%{original_author}`."
       )
 
       ::Notes::CreateService.new(
@@ -61,6 +61,15 @@ module Issues
 
     def valid_email?
       email.present? && IssueEmailParticipant.new(issue: target, email: email).valid?
+    end
+
+    def target_confidentiality
+      return true if project.service_desk_setting.nil?
+      # This quick action runs on existing issues so
+      # don't change the confidentiality of an already confidential issue.
+      return true if target.confidential?
+
+      project.service_desk_setting.tickets_confidential_by_default?
     end
 
     def error(message)

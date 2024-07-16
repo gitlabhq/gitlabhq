@@ -2,9 +2,6 @@
 description: Upload a Project-level Secure Files in the CI/CD settings page
 category: projects:settings:ci_cd:show
 action: upload
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
   - project

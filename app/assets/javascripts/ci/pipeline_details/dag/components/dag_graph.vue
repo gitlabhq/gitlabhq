@@ -28,11 +28,7 @@ export default {
     containerClasses: ['dag-graph-container', 'gl-display-flex', 'gl-flex-direction-column'].join(
       ' ',
     ),
-    hoverFadeClasses: [
-      'gl-cursor-pointer',
-      'gl-transition-duration-slow',
-      'gl-transition-timing-function-ease',
-    ].join(' '),
+    hoverFadeClasses: ['gl-cursor-pointer', 'gl-duration-slow', 'gl-ease-ease'].join(' '),
   },
   gitLabColorRotation: [
     '#e17223',
@@ -216,14 +212,8 @@ export default {
     },
 
     drawGraph({ maxNodesPerLayer, linksAndNodes }) {
-      const {
-        baseWidth,
-        baseHeight,
-        minNodeHeight,
-        nodeWidth,
-        nodePadding,
-        paddingForLabels,
-      } = this.$options.viewOptions;
+      const { baseWidth, baseHeight, minNodeHeight, nodeWidth, nodePadding, paddingForLabels } =
+        this.$options.viewOptions;
 
       this.width = baseWidth;
       this.height = baseHeight + maxNodesPerLayer * minNodeHeight;

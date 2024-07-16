@@ -120,6 +120,7 @@ class Notify < ApplicationMailer
 
     subject << @project.name if @project
     subject << @group.name if @group
+    subject << @namespace.name if @namespace && !@project
     subject.concat(extra) if extra.present?
 
     subject_with_suffix(subject)
@@ -157,8 +158,9 @@ class Notify < ApplicationMailer
     mail_with_locale(headers)
   end
 
-  # `model` is used on EE code
-  def reply_display_name(_model)
+  def reply_display_name(model)
+    return model.namespace.full_name if model.is_a?(Issue)
+
     @project.full_name
   end
 
@@ -237,6 +239,10 @@ class Notify < ApplicationMailer
     end
 
     headers['List-Unsubscribe'] = list_unsubscribe_methods.map { |e| "<#{e}>" }.join(',')
+    # Based on RFC 8058 one-click unsubscribe functionality should
+    # be signalled with using the List-Unsubscribe-Post header
+    # See https://datatracker.ietf.org/doc/html/rfc8058
+    headers['List-Unsubscribe-Post'] = 'List-Unsubscribe=One-Click'
     @unsubscribe_url = unsubscribe_sent_notification_url(@sent_notification)
   end
 
@@ -250,12 +256,11 @@ class Notify < ApplicationMailer
   def check_rate_limit
     return if rate_limit_scope.nil? || @recipient.nil?
 
-    enforce_rate_limit = Feature.enabled?(:rate_limit_notification_emails, rate_limit_scope)
     already_notified = throttled?(peek: true)
 
     return unless throttled?
 
-    message.perform_deliveries = false if enforce_rate_limit
+    message.perform_deliveries = false
 
     return if already_notified
 
@@ -265,8 +270,6 @@ class Notify < ApplicationMailer
       project_id: @project&.id,
       group_id: @group&.id
     )
-
-    return unless enforce_rate_limit
 
     Namespaces::RateLimiterMailer.project_or_group_emails(
       rate_limit_scope,

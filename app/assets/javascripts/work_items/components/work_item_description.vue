@@ -70,6 +70,11 @@ export default {
       required: false,
       default: false,
     },
+    workItemTypeName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   markdownDocsPath: helpPagePath('user/markdown'),
   data() {
@@ -99,7 +104,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.createFlow ? newWorkItemFullPath(this.fullPath) : this.fullPath,
+          fullPath: this.workItemFullPath,
           iid: this.workItemIid,
         };
       },
@@ -117,6 +122,11 @@ export default {
     },
   },
   computed: {
+    workItemFullPath() {
+      return this.createFlow
+        ? newWorkItemFullPath(this.fullPath, this.workItemTypeName)
+        : this.fullPath;
+    },
     autosaveKey() {
       return this.workItemId || `new-${this.workItemType}-description-draft`;
     },
@@ -145,6 +155,9 @@ export default {
     workItemType() {
       return this.workItem?.workItemType?.name;
     },
+    taskCompletionStatus() {
+      return this.workItemDescription?.taskCompletionStatus;
+    },
     lastEditedAt() {
       return this.workItemDescription?.lastEditedAt;
     },
@@ -166,7 +179,8 @@ export default {
       return autocompleteDataSources({
         fullPath: this.fullPath,
         isGroup: this.isGroup,
-        iid: this.workItem?.iid,
+        iid: this.workItemIid,
+        workItemTypeId: this.workItem?.workItemType?.id,
       });
     },
     saveButtonText() {
@@ -176,6 +190,9 @@ export default {
       return {
         'gl-mb-5 common-note-form': true,
       };
+    },
+    showEditedAt() {
+      return (this.taskCompletionStatus || this.lastEditedAt) && !this.editMode;
     },
   },
   watch: {
@@ -336,13 +353,17 @@ export default {
     <work-item-description-rendered
       v-else
       :work-item-description="workItemDescription"
+      :work-item-id="workItemId"
+      :work-item-type="workItemType"
       :can-edit="canEdit"
       :disable-truncation="disableTruncation"
+      :is-updating="isSubmitting"
       @startEditing="startEditing"
       @descriptionUpdated="handleDescriptionTextUpdated"
     />
     <edited-at
-      v-if="lastEditedAt && !editMode"
+      v-if="showEditedAt"
+      :task-completion-status="taskCompletionStatus"
       :updated-at="lastEditedAt"
       :updated-by-name="lastEditedByName"
       :updated-by-path="lastEditedByPath"

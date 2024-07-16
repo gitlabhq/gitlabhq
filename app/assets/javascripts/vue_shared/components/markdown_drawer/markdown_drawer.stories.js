@@ -21,25 +21,27 @@ export default {
   },
 };
 
-const createStory = ({ ...options }) => (_, { argTypes }) => ({
-  components: { MarkdownDrawer, GlButton },
-  props: Object.keys(argTypes),
-  data() {
-    return {
-      render: false,
-    };
-  },
-  methods: {
-    toggleDrawer() {
-      this.$refs.drawer.toggleDrawer();
+const createStory =
+  ({ ...options }) =>
+  (_, { argTypes }) => ({
+    components: { MarkdownDrawer, GlButton },
+    props: Object.keys(argTypes),
+    data() {
+      return {
+        render: false,
+      };
     },
-  },
-  mounted() {
-    window.requestAnimationFrame(() => {
-      this.render = true;
-    });
-  },
-  template: `
+    methods: {
+      toggleDrawer() {
+        this.$refs.drawer.toggleDrawer();
+      },
+    },
+    mounted() {
+      window.requestAnimationFrame(() => {
+        this.render = true;
+      });
+    },
+    template: `
        <div v-if="render">
         <gl-button @click="toggleDrawer">Open Drawer</gl-button>
         <markdown-drawer
@@ -48,7 +50,7 @@ const createStory = ({ ...options }) => (_, { argTypes }) => ({
         />
         </div>
       `,
-  ...options,
-});
+    ...options,
+  });
 
 export const Default = createStory({});

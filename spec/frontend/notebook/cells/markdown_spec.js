@@ -69,6 +69,17 @@ describe('Markdown component', () => {
     expect(wrapper.vm.$el.querySelector('.markdown h1')).not.toBeNull();
   });
 
+  it('renders the markdown HTML when source is not an array', () => {
+    cell = {
+      cell_type: 'markdown',
+      source: '# test',
+    };
+
+    wrapper = buildCellComponent(cell);
+
+    expect(wrapper.vm.$el.querySelector('.markdown h1')).not.toBeNull();
+  });
+
   it('sanitizes Markdown output', async () => {
     Object.assign(cell, {
       source: [

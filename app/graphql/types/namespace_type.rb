@@ -44,7 +44,8 @@ module Types
       description: 'Aggregated storage statistics of the namespace. Only available for root namespaces.'
 
     field :projects, Types::ProjectType.connection_type, null: false,
-      description: 'Projects within this namespace.',
+      description: 'Projects within this namespace. ' \
+                   'Returns projects from the parent group if namespace is project.',
       resolver: ::Resolvers::NamespaceProjectsResolver
 
     field :package_settings,
@@ -85,15 +86,29 @@ module Types
       description: 'Find a work item by IID directly associated with the namespace(project or group).  Returns ' \
                    '`null` for group level work items if the `namespace_level_work_items` feature flag is disabled.'
 
+    field :work_item_types, Types::WorkItems::TypeType.connection_type,
+      resolver: Resolvers::WorkItems::TypesResolver,
+      alpha: { milestone: '17.2' },
+      description: 'Work item types available to the namespace.'
+
     field :pages_deployments, Types::PagesDeploymentType.connection_type, null: true,
       resolver: Resolvers::PagesDeploymentsResolver,
       connection: true,
       description: "List of the namespaces's Pages Deployments."
 
+    field :import_source_users, Import::SourceUserType.connection_type,
+      null: true,
+      alpha: { milestone: '17.2' },
+      resolver: Resolvers::Import::SourceUsersResolver,
+      description: 'Import source users of the namespace. This field can only be resolved for one namespace in any ' \
+                   'single request.' do
+      extension(::Gitlab::Graphql::Limit::FieldCallCount, limit: 1)
+    end
+
     markdown_field :description_html, null: true
 
     def achievements_path
-      return unless Feature.enabled?(:achievements)
+      return unless Feature.enabled?(:achievements, object)
 
       ::Gitlab::Routing.url_helpers.group_achievements_path(object) if object.is_a?(Group)
     end

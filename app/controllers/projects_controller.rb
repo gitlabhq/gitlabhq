@@ -40,7 +40,6 @@ class ProjectsController < Projects::ApplicationController
     push_frontend_feature_flag(:remove_monitor_metrics, @project)
     push_frontend_feature_flag(:explain_code_chat, current_user)
     push_frontend_feature_flag(:issue_email_participants, @project)
-    push_frontend_feature_flag(:service_desk_tickets_confidentiality, @project)
     push_frontend_feature_flag(:edit_branch_rules, @project)
     # TODO: We need to remove the FF eventually when we rollout page_specific_styles
     push_frontend_feature_flag(:page_specific_styles, current_user)
@@ -53,6 +52,7 @@ class ProjectsController < Projects::ApplicationController
     push_force_frontend_feature_flag(:work_items, @project&.work_items_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_beta, @project&.work_items_beta_feature_flag_enabled?)
     push_force_frontend_feature_flag(:work_items_alpha, @project&.work_items_alpha_feature_flag_enabled?)
+    push_frontend_feature_flag(:namespace_level_work_items, @project&.group)
   end
 
   layout :determine_layout

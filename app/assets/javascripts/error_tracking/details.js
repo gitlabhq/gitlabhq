@@ -12,13 +12,8 @@ export default () => {
   const selector = '#js-error_details';
 
   const domEl = document.querySelector(selector);
-  const {
-    issueId,
-    projectPath,
-    issueUpdatePath,
-    issueStackTracePath,
-    projectIssuesPath,
-  } = domEl.dataset;
+  const { issueId, projectPath, issueUpdatePath, issueStackTracePath, projectIssuesPath } =
+    domEl.dataset;
 
   let { integratedErrorTrackingEnabled } = domEl.dataset;
   integratedErrorTrackingEnabled = parseBoolean(integratedErrorTrackingEnabled);

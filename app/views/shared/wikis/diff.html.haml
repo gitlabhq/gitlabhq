@@ -32,7 +32,7 @@
         %strong
           = commit_author_link(commit, avatar: true, size: 24)
         - if commit.description.present?
-          %pre.commit-description.gl-white-space-pre-wrap.gl-line-height-normal
+          %pre.commit-description.gl-whitespace-pre-wrap.gl-line-height-normal
             = preserve(markdown_field(commit, :description))
 
 = render 'projects/diffs/diffs', diffs: @diffs, diff_page_context: "is-wiki"

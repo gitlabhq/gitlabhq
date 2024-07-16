@@ -32,16 +32,6 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
         expect(page).to have_content('Access pages')
       end
 
-      context 'when pages are disabled in the project settings' do
-        it 'renders disabled warning' do
-          project.project_feature.update!(pages_access_level: ProjectFeature::DISABLED)
-
-          visit project_pages_path(project)
-
-          expect(page).to have_content('GitLab Pages are disabled for this project')
-        end
-      end
-
       shared_examples 'does not render access control warning' do
         it 'does not render access control warning' do
           visit project_pages_path(project)
@@ -211,16 +201,6 @@ RSpec.describe 'Pages edits pages settings', :js, feature_category: :pages do
         expect(page).to have_content('Pages were scheduled for removal')
         expect(project.reload.pages_deployed?).to be_falsey
       end
-    end
-  end
-
-  context 'when pages are disabled for project' do
-    let_it_be_with_reload(:project) { create(:project, :pages_disabled) }
-
-    it 'renders warning message' do
-      visit project_pages_path(project)
-
-      expect(page).to have_content('GitLab Pages are disabled for this project')
     end
   end
 end

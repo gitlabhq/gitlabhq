@@ -49,7 +49,7 @@ describe('Confirm Danger Modal', () => {
     });
 
     it('renders the correct confirmation phrase', () => {
-      expect(findConfirmationPhrase().text()).toBe(`To proceed with the transfer, type ${phrase}:`);
+      expect(findConfirmationPhrase().text()).toBe(`Enter the following to confirm:`);
     });
 
     it('renders any additional messages', () => {

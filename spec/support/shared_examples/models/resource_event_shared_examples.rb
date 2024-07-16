@@ -53,6 +53,13 @@ RSpec.shared_examples 'a resource event' do
       expect(events).to be_empty
     end
   end
+
+  describe '#synthetic_note_class' do
+    it 'must implement #synthetic_note_class method' do
+      expect { described_class.new.synthetic_note_class }
+        .not_to raise_error
+    end
+  end
 end
 
 RSpec.shared_examples 'a resource event that responds to imported' do

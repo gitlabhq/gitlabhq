@@ -18,14 +18,16 @@ import * as types from './mutation_types';
 
 class GraphQLError extends Error {}
 
-const updateDraft = (action) => (store, ...args) => {
-  action(store, ...args);
+const updateDraft =
+  (action) =>
+  (store, ...args) => {
+    action(store, ...args);
 
-  if (!store.state.isExistingRelease) {
-    store.dispatch('saveDraftRelease');
-    store.dispatch('saveDraftCreateFrom');
-  }
-};
+    if (!store.state.isExistingRelease) {
+      store.dispatch('saveDraftRelease');
+      store.dispatch('saveDraftCreateFrom');
+    }
+  };
 
 export const initializeRelease = ({ dispatch, state }) => {
   if (state.isExistingRelease) {

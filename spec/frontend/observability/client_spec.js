@@ -23,6 +23,7 @@ describe('buildClient', () => {
   const metricsSearchMetadataUrl = 'https://example.com/metrics/searchmetadata';
   const logsSearchUrl = 'https://example.com/metrics/logs/search';
   const logsSearchMetadataUrl = 'https://example.com/metrics/logs/search';
+  const analyticsUrl = 'https://example.com/analytics';
   const FETCHING_TRACES_ERROR = 'traces are missing/invalid in the response';
 
   const apiConfig = {
@@ -36,6 +37,7 @@ describe('buildClient', () => {
     metricsSearchMetadataUrl,
     logsSearchUrl,
     logsSearchMetadataUrl,
+    analyticsUrl,
   };
 
   const getQueryParam = () => decodeURIComponent(axios.get.mock.calls[0][1].params.toString());
@@ -280,15 +282,29 @@ describe('buildClient', () => {
           await client.fetchTraces({
             filters: {
               dateRange: {
-                endDate: new Date('2020-07-06'),
-                startDate: new Date('2020-07-05'),
+                endDate: new Date('2023-04-01T12:00:00'),
+                startDate: new Date('2023-04-01T00:00:00'),
                 value: 'custom',
               },
             },
           });
           expect(getQueryParam()).toContain(
-            'start_time=2020-07-05T00:00:00.000Z&end_time=2020-07-06T00:00:00.000Z',
+            'start_time=2023-04-01T00:00:00.000Z&end_time=2023-04-01T12:00:00.000Z',
           );
+        });
+
+        it('fails if the date range is larger than 12h', async () => {
+          await expect(
+            client.fetchTraces({
+              filters: {
+                dateRange: {
+                  endDate: new Date('2023-04-01T12:00:01'),
+                  startDate: new Date('2023-04-01T00:00:00'),
+                  value: 'custom',
+                },
+              },
+            }),
+          ).rejects.toThrow();
         });
       });
 
@@ -1427,6 +1443,77 @@ describe('buildClient', () => {
         });
         expect(getQueryParam()).toBe('');
       });
+    });
+  });
+
+  describe('fetchUsageData', () => {
+    const mockResponse = {
+      events: {
+        6: {
+          start_ts: 1717200000000000000,
+          end_ts: 1719705600000000000,
+          aggregated_total: 132,
+          aggregated_per_feature: {
+            metrics: 50,
+            logs: 32,
+            tracing: 50,
+          },
+          data: {
+            metrics: [[1719446400000000000, 100]],
+          },
+          data_breakdown: 'daily',
+          data_unit: '',
+        },
+      },
+      storage: {
+        6: {
+          start_ts: 1717200000000000000,
+          end_ts: 1719705600000000000,
+          aggregated_total: 58476,
+          aggregated_per_feature: {
+            metrics: 15000,
+            logs: 15000,
+            tracing: 28476,
+          },
+          data: {
+            metrics: [[1719446400000000000, 58476]],
+          },
+          data_breakdown: 'daily',
+          data_unit: 'bytes',
+        },
+      },
+    };
+    beforeEach(() => {
+      axiosMock.onGet(analyticsUrl).reply(200, mockResponse);
+    });
+
+    it('fetches analytics data from URL', async () => {
+      const result = await client.fetchUsageData();
+
+      expect(axios.get).toHaveBeenCalledTimes(1);
+      expect(axios.get).toHaveBeenCalledWith(analyticsUrl, {
+        withCredentials: true,
+        params: expect.any(URLSearchParams),
+      });
+      expect(result).toEqual(mockResponse);
+    });
+
+    it('adds a month query param if specified', async () => {
+      await client.fetchUsageData({ period: { month: '06' } });
+
+      expect(getQueryParam()).toBe('month=06');
+    });
+
+    it('adds a year query param if specified', async () => {
+      await client.fetchUsageData({ period: { year: '2024' } });
+
+      expect(getQueryParam()).toBe('year=2024');
+    });
+
+    it('ignores empty period param', async () => {
+      await client.fetchUsageData({ period: {} });
+
+      expect(getQueryParam()).toBe('');
     });
   });
 });

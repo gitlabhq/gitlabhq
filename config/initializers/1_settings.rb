@@ -710,6 +710,10 @@ Settings.cron_jobs['performance_bar_stats']['job_class'] = 'GitlabPerformanceBar
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker'] ||= {}
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['cron'] ||= '*/4 * * * *'
 Settings.cron_jobs['ci_catalog_resources_aggregate_last30_day_usage_worker']['job_class'] = 'Ci::Catalog::Resources::AggregateLast30DayUsageWorker'
+Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker'] ||= {}
+Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['cron'] ||= '*/4 * * * *'
+Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['args'] ||= [1]
+Settings.cron_jobs['ci_click_house_finished_pipelines_sync_worker']['job_class'] = 'Ci::ClickHouse::FinishedPipelinesSyncCronWorker'
 
 Gitlab.ee do
   Settings.cron_jobs['analytics_devops_adoption_create_all_snapshots_worker'] ||= {}
@@ -794,7 +798,7 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['elastic_index_initial_bulk_cron_worker']['job_class'] ||= 'ElasticIndexInitialBulkCronWorker'
   Settings.cron_jobs['elastic_cluster_reindexing_cron_worker'] ||= {}
-  Settings.cron_jobs['elastic_cluster_reindexing_cron_worker']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['elastic_cluster_reindexing_cron_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['elastic_cluster_reindexing_cron_worker']['job_class'] ||= 'ElasticClusterReindexingCronWorker'
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker'] ||= {}
   Settings.cron_jobs['elastic_remove_expired_namespace_subscriptions_from_index_cron_worker']['cron'] ||= '10 3 * * *'
@@ -820,12 +824,6 @@ Gitlab.ee do
   Settings.cron_jobs['sync_service_token_worker'] ||= {}
   Settings.cron_jobs['sync_service_token_worker']['cron'] ||= "#{rand(60)} #{rand(5..6)} * * * UTC"
   Settings.cron_jobs['sync_service_token_worker']['job_class'] = '::CloudConnector::SyncServiceTokenWorker'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker'] ||= {}
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['cron'] ||= '0 5 * * 1,2,3,4,5'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_create_embeddings_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CreateEmbeddingsRecordsWorker'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker'] ||= {}
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['cron'] ||= '0 0 * * *'
-  Settings.cron_jobs['llm_embedding_gitlab_documentation_cleanup_previous_versions_records_worker']['job_class'] ||= 'Llm::Embedding::GitlabDocumentation::CleanupPreviousVersionsRecordsWorker'
   Settings.cron_jobs['users_create_statistics_worker'] ||= {}
   Settings.cron_jobs['users_create_statistics_worker']['cron'] ||= '2 15 * * *'
   Settings.cron_jobs['users_create_statistics_worker']['job_class'] = 'Users::CreateStatisticsWorker'

@@ -1,0 +1,119 @@
+- name: CI/CD Catalog with components and inputs now generally available
+  description: |
+     The CI/CD Catalog is now generally available. As part of this release, we're also making [CI/CD components](https://docs.gitlab.com/ee/ci/components/) and [inputs](https://docs.gitlab.com/ee/ci/yaml/inputs.html) generally available.
+
+     With the CI/CD Catalog, you gain access to a vast array of components created by the community and industry experts.
+     Whether you're seeking solutions for continuous integration, deployment pipelines, or automation tasks, you'll find a diverse selection of components tailored to suit your requirements.
+     You can read more about the Catalog and its features in the following [blog post](https://about.gitlab.com/blog/2024/05/08/ci-cd-catalog-goes-ga-no-more-building-pipelines-from-scratch/).
+
+     You're invited to contribute CI/CD components to the Catalog and help expand this new and growing part of GitLab.com!
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/components/#cicd-catalog
+  image_url: https://img.youtube.com/vi/QDn77nwIb-o/hqdefault.jpg
+  published_at: 2024-05-16
+  release: 17.0
+
+- name: AI Impact analytics in the Value Streams Dashboard
+  description: |
+      AI Impact is a dashboard available in the Value Streams Dashboard that helps organizations understand the [impact of GitLab Duo on their productivity](https://about.gitlab.com/blog/2024/02/20/measuring-ai-effectiveness-beyond-developer-productivity-metrics/).
+      This new month-over-month metric view compares the AI Usage trends with SDLC metrics like lead time, cycle time, DORA, and vulnerabilities. Software leaders can use the AI Impact dashboard to measure how much time is saved in their end-to-end workstream, while staying focused on business outcomes rather than developer activity.
+
+      In this first release, the AI usage is measured as the monthly [Code Suggestions](https://docs.gitlab.com/ee/user/project/repository/code_suggestions/) usage rate, and is calculated as the number of monthly unique Code Suggestions users divided by total monthly unique [contributors](https://docs.gitlab.com/ee/user/group/contribution_analytics/).
+
+      The AI Impact dashboard is available to users on the Ultimate tier for a limited time. Afterwards, a GitLab Duo Enterprise license will be required to use the dashboard.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#ai-impact-analytics
+  image_url: https://about.gitlab.com/images/17_0/17.0_vsd_ai2.png
+  published_at: 2024-05-16
+  release: 17.0
+
+- name: Introducing hosted runners on Linux Arm
+  description: |
+      We are excited to introduce hosted runners on Linux Arm for GitLab.com.
+      The now available `medium` and `large` Arm machine types, equipped with 4 and 8 vCPUs respectively, and fully integrated with GitLab CI/CD, will allow you to build and test your application faster and more cost-efficient than ever before.
+
+      We are determined to provide the industry's fastest CI/CD build speed and look forward to seeing teams achieve even shorter feedback cycles and ultimately deliver software faster.
+  stage: verify
+  self-managed: false
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/runners/hosted_runners/linux.html
+  image_url: https://about.gitlab.com/images/17_0/larger-runners.png
+  published_at: 2024-05-16
+  release: 17.0
+
+- name: Introducing deployment detail pages
+  description: |
+      You can now link directly to a deployment in GitLab. Previously, if you were collaborating on a deployment, you had to look up the deployment from the deployment list. Because of the number of deployments listed, finding the correct deployment was difficult and prone to error.
+
+      From 17.0, GitLab offers a deployment details view that you can link to directly. In this first version, the deployment details page offers an overview of the deployment job and the possibility to approve, reject, or comment on a deployment in a continuous delivery setting. We are looking into further avenues to enhance the deployment details page, including by linking to it from the related pipeline job. We would love to hear your feedback in [issue 450700](https://gitlab.com/gitlab-org/gitlab/-/issues/450700).
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html#approve-or-reject-a-deployment
+  image_url: https://about.gitlab.com/images/17_0/deployment-detail-page.png
+  published_at: 2024-05-16
+  release: 17.0
+
+- name: GitLab Duo Chat now uses Anthropic Claude 3 Sonnet
+  description: |
+      GitLab Duo Chat just got a lot better. It now uses Anthropic Claude 3 Sonnet as the base model, replacing Claude 2.1 for answering most questions.
+
+      At GitLab, we apply a test-driven approach when choosing the best model for a set of tasks and authoring well-performing prompts. With recent adjustments to the chat prompts, we have achieved significant improvements in the correctness, comprehensiveness, and readability of chat answers based on Claude 3 Sonnet compared to the previous chat version built on Claude 2.1. Hence, we have now switched to this new model version.
+  stage: ai-powered
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/ai_features.html#gitlab-duo-chat
+  image_url: https://about.gitlab.com/images/17_0/gitlabduo.png
+  published_at: 2024-05-16
+  release: 17.0
+
+- name: Enhanced context control with the `rules:exists` CI/CD keyword
+  description: |
+      The `rules:exists` CI/CD keyword has default behaviors that vary based on where the keyword is defined, which can make it harder to use with more complex pipelines. When defined in a job, `rules:exists` searches for specified files in the project running the pipeline. However, when defined in an `include` section, `rules:exists` searches for specified files in the project hosting the configuration file containing the `include` section. If configuration is split over multiple files and projects, it can be hard to know which exact project will be searched for defined files.
+
+      In this release, we have introduced `project` and `ref` subkeys to `rules:exists`, providing you a way to explicitly control the search context for this keyword. These new subkeys help you ensure accurate rule evaluation by precisely specifying the search context, mitigating inconsistencies, and enhancing clarity in your pipeline rule definitions.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/yaml/#rulesexistsproject
+  image_url: https://about.gitlab.com/images/17_0/exists.png
+  published_at: 2024-05-16
+  release: 17.0
+
+- name: Add a group to the CI/CD job token allowlist
+  description: |
+      Introduced in GitLab 15.9, the CI/CD job token allowlist prevents unauthorized access from other projects to your project. Previously, you could allow access at the project level from other specific projects only, with a maximum limit of 200 total projects.
+
+      In GitLab 17.0, you can now add groups to a project's CI/CD job token allowlist. The maximum limit of 200 now applies to both projects and groups, meaning a project allowlist can now have up to 200 projects and groups authorized for access. This improvement makes it easier to add large numbers of projects associated with a group.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/jobs/ci_job_token.html#control-job-token-access-to-your-project
+  image_url: https://about.gitlab.com/images/17_0/verify-add-a-group-to-the-job-token-allowlist.png
+  published_at: 2024-05-16
+  release: 17.0
+
+- name: New usage overview panel in the Value Streams Dashboard
+  description: |
+      We enhanced the Value Streams Dashboard with an Overview panel. This new visualization addresses the need for executive-level insights into software delivery performance, and gives a clear picture of GitLab usage in the context of software development life cycle (SDLC).
+
+      The Overview panel displays metrics for the group level, such as number of (sub)groups, projects, users, issues, merge requests, and pipelines.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/analytics/value_streams_dashboard.html#overview-panel
+  image_url: https://about.gitlab.com/images/17_0/vsd_overview_17.png
+  published_at: 2024-05-16
+  release: 17.0

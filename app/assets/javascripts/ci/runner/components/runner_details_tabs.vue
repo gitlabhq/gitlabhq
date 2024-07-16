@@ -76,12 +76,7 @@ export default {
     <gl-tab @click="goTo($options.ROUTE_JOBS)">
       <template #title>
         {{ $options.I18N_JOBS }}
-        <gl-badge
-          v-if="jobCount"
-          data-testid="job-count-badge"
-          class="gl-tab-counter-badge"
-          size="sm"
-        >
+        <gl-badge v-if="jobCount" data-testid="job-count-badge" class="gl-tab-counter-badge">
           {{ jobCount }}
         </gl-badge>
         <help-popover v-if="showAccessHelp" class="gl-ml-3">

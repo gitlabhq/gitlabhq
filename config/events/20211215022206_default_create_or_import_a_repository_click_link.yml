@@ -1,12 +1,9 @@
 description: "Click link to create or import a repository"
 category: default
 action: click_link
-label_description: "`Create or import a repository`"
-property_description: "`[Growth::Conversion::Experiment::LearnGitLab | Growth::Activation::Experiment::InviteForHelpContinuousOnboarding]`"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::conversion
+product_group: acquisition
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58689
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`Create or import a repository`"
+  property:
+    description: "`[Growth::Conversion::Experiment::LearnGitLab | Growth::Activation::Experiment::InviteForHelpContinuousOnboarding]`"

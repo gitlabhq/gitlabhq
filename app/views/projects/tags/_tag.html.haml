@@ -30,9 +30,9 @@
         = render partial: 'projects/commit/signature', object: tag.signature
 
     - if commit_status
-      = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-display-inline-flex gl-align-middle gl-mr-5'
+      = render 'ci/status/icon', status: commit_status, option_css_classes: 'gl-inline-flex gl-align-middle gl-mr-5'
     - elsif @tag_pipeline_statuses && @tag_pipeline_statuses.any?
-      .gl-display-inline-flex.gl-align-middle.gl-mr-5
+      .gl-inline-flex.gl-align-middle.gl-mr-5
         %svg.s24
 
     - if can?(current_user, :admin_tag, @project)

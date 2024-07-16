@@ -28,9 +28,17 @@ describe('registry_header', () => {
       stubs: {
         GlSprintf,
         TitleArea,
+        MetadataContainerScanning: true,
       },
       propsData,
       slots,
+      provide() {
+        return {
+          config: {
+            isGroupPage: false,
+          },
+        };
+      },
     });
     await nextTick();
   };

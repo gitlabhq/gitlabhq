@@ -9,18 +9,19 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
+**Status:** Beta
 
 > - Introduced in GitLab 17.1 as an [experiment](../../../policy/experiment-beta-support.md) for Python.
+> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/461859) to beta in GitLab 17.2.
 
 NOTE:
-This analyzer is an [experiment](../../../policy/experiment-beta-support.md)
+This analyzer is in [beta](../../../policy/experiment-beta-support.md)
 and is subject to the [GitLab Testing Agreement](https://handbook.gitlab.com/handbook/legal/testing-agreement/).
 
 GitLab Advanced SAST is a Static Application Security Testing (SAST) analyzer
 designed to discover vulnerabilities by performing cross-function and cross-file taint analysis.
 
-During the Experiment phase, we advise running it side-by-side with your existing SAST analyzer, if any.
+During the Beta phase, we advise running it side-by-side with your existing SAST analyzer, if any.
 
 By following the paths user inputs take, the analyzer identifies potential points
 where untrusted data can influence the execution of your application in unsafe ways,
@@ -37,7 +38,11 @@ GitLab Advanced SAST includes the following features:
 
 ## Supported languages
 
-GitLab Advanced SAST supports Python with cross-function and cross-file taint analysis.
+GitLab Advanced SAST supports the following languages with cross-function and cross-file taint analysis:
+
+- Python
+- Go
+- Java
 
 ## Configuration
 
@@ -49,7 +54,7 @@ variables.
 
 Prerequisites:
 
-- GitLab version 16.0 or later.
+- GitLab version 17.1 or later, if you are running a self-managed instance. (GitLab.com is ready to use.)
 - The `.gitlab-ci.yml` file must include:
   - The `test` stage.
 
@@ -59,6 +64,9 @@ To enable the Advanced SAST analyzer:
 1. Select **Build > Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
+1. If there is already an include of `Jobs/SAST.latest.gitlab-ci.yml`,
+GitLab Advanced SAST is already configured.
+There is no additional step needed.
 1. If there is already an `include:` line, add `- template: Jobs/SAST.gitlab-ci.yml`
    below that line then paste only the `gitlab-advanced-sast:` block to the bottom of the file,
    otherwise paste the whole block to the bottom of the file.
@@ -80,9 +88,18 @@ To enable the Advanced SAST analyzer:
          when: never
        - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
          when: never
-       - if: $CI_COMMIT_BRANCH
+       - if: $CI_PIPELINE_SOURCE == "merge_request_event"  # Add the job to merge request pipelines if there's an open merge request.
          exists:
            - '**/*.py'
+           - '**/*.go'
+           - '**/*.java'
+       - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
+         when: never
+       - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
+         exists:
+           - '**/*.py'
+           - '**/*.go'
+           - '**/*.java'
    ```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.

@@ -2,9 +2,6 @@
 description: A comment on an issue was removed
 internal_events: true
 action: g_project_management_issue_comment_removed
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

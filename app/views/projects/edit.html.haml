@@ -1,42 +1,39 @@
 - breadcrumb_title _("General Settings")
 - page_title _("General")
 - add_page_specific_style 'page_bundles/projects_edit'
-- expanded = expanded_by_default?
 - reduce_visibility_form_id = 'reduce-visibility-form'
 - @force_desktop_expanded_sidebar = true
 
 - if can?(current_user, :admin_project, @project)
-  %section.settings.general-settings.no-animate.expanded#js-general-settings
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Naming, topics, avatar')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = _('Collapse')
-      %p.gl-text-secondary= _('Update your project name, topics, description, and avatar.')
-    .settings-content= render 'projects/settings/general'
+  = render ::Layouts::SettingsBlockComponent.new(_('Naming, topics, avatar'),
+    id: 'js-general-settings',
+    testid: 'general-settings-content',
+    expanded: true) do |c|
+    - c.with_description do
+      = _('Update your project name, topics, description, and avatar.')
+    - c.with_body do
+      = render 'projects/settings/general'
 
-  %section.settings.sharing-permissions.no-animate#js-shared-permissions{ class: ('expanded' if expanded), data: { testid: 'visibility-features-permissions-content' } }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Visibility, project features, permissions')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary= _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions.')
-
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Visibility, project features, permissions'),
+    id: 'js-shared-permissions',
+    testid: 'visibility-features-permissions-content',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = _('Choose visibility level, enable/disable project features and their permissions, disable email notifications, and show default emoji reactions.')
+    - c.with_body do
       = form_for @project, html: { multipart: true, class: "sharing-permissions-form", id: reduce_visibility_form_id }, authenticity_token: true do |f|
         %input{ name: 'update_section', type: 'hidden', value: 'js-shared-permissions' }
         %template.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project).to_json.html_safe
         .js-project-permissions-form{ data: visibility_confirm_modal_data(@project, reduce_visibility_form_id) }
 
-  %section.settings.no-animate#js-badges-settings{ class: ('expanded' if expanded), data: { testid: 'badges-settings-content' } }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = s_('ProjectSettings|Badges')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = s_('ProjectSettings|Add badges to display information about this project.')
-        = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(s_('ProjectSettings|Badges'),
+    id: 'js-badges-settings',
+    testid: 'badges-settings-content',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = s_('ProjectSettings|Add badges to display information about this project.')
+      = link_to s_('ProjectSettings|What are badges?'), help_page_path('user/project/badges')
+    - c.with_body do
       = render 'shared/badges/badge_settings'
 
 - if can?(current_user, :admin_project, @project)
@@ -44,14 +41,13 @@
 
   = render 'projects/service_desk_settings'
 
-  %section.settings.advanced-settings.no-animate#js-project-advanced-settings{ class: ('expanded' if expanded), data: { testid: 'advanced-settings-content' } }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= _('Advanced')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary= s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
-
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Advanced'),
+    id: 'js-project-advanced-settings',
+    testid: 'advanced-settings-content',
+    expanded: expanded_by_default?) do |c|
+    - c.with_description do
+      = s_('ProjectSettings|Housekeeping, export, archive, change path, transfer, and delete.')
+    - c.with_body do
       = render_if_exists 'projects/settings/restore', project: @project
 
       = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0' }, header_options: { class: 'gl-new-card-header gl-flex-direction-column' }, body_options: { class: 'gl-new-card-body gl-px-5 gl-py-4' }) do |c|

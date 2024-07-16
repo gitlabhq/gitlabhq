@@ -95,7 +95,7 @@ export default {
     <div v-if="testCase.file" class="gl-display-flex gl-flex-wrap -gl-mx-4 gl-my-3">
       <strong class="col-sm-3">{{ $options.text.file }}</strong>
       <div class="col-sm-9" data-testid="test-case-file">
-        <gl-link v-if="testCase.filePath" :href="testCase.filePath">
+        <gl-link v-if="testCase.filePath" class="gl-break-words" :href="testCase.filePath">
           {{ testCase.file }}
         </gl-link>
         <span v-else>{{ testCase.file }}</span>

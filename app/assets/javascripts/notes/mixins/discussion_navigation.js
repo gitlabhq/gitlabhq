@@ -38,9 +38,8 @@ function getNextDiscussion() {
   if (hasReachedPageEnd()) {
     return firstDiscussion;
   }
-  const [nextClosestDiscussion, index, isActive] = findNextClosestVisibleDiscussion(
-    discussionElements,
-  );
+  const [nextClosestDiscussion, index, isActive] =
+    findNextClosestVisibleDiscussion(discussionElements);
   if (nextClosestDiscussion && !isActive) {
     return nextClosestDiscussion;
   }

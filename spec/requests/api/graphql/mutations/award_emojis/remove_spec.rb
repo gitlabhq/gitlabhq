@@ -5,9 +5,10 @@ require 'spec_helper'
 RSpec.describe 'Removing an AwardEmoji', feature_category: :shared do
   include GraphqlHelpers
 
-  let(:current_user) { create(:user) }
-  let(:awardable) { create(:note) }
-  let(:project) { awardable.project }
+  let_it_be(:awardable) { create(:note) }
+  let_it_be(:project) { awardable.project }
+  let_it_be(:current_user) { create(:user, guest_of: project) }
+
   let(:emoji_name) { 'thumbsup' }
   let(:input) { { awardable_id: GitlabSchema.id_from_object(awardable).to_s, name: emoji_name } }
 
@@ -31,15 +32,16 @@ RSpec.describe 'Removing an AwardEmoji', feature_category: :shared do
     end
   end
 
-  shared_examples 'a mutation that does not authorize the user' do
-    it_behaves_like 'a mutation that does not destroy an AwardEmoji'
-    it_behaves_like 'a mutation that returns a top-level access error'
-  end
-
   context 'when the current_user does not own the award emoji' do
     let!(:award_emoji) { create_award_emoji(create(:user)) }
 
-    it_behaves_like 'a mutation that does not authorize the user'
+    it_behaves_like 'a mutation that does not destroy an AwardEmoji'
+
+    it 'returns an error' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(mutation_response['errors']).to include('User has not awarded emoji of type thumbsup on the awardable')
+    end
   end
 
   context 'when the current_user owns the award emoji' do

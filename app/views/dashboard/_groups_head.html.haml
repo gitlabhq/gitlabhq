@@ -4,8 +4,3 @@
     - if current_user.can_create_group?
       = render Pajamas::ButtonComponent.new(href: new_group_path, variant: :confirm, button_options: { data: { testid: "new-group-button" } }) do
         = _("New group")
-
-.gl-flex.gl-py-3.gl-gap-3
-  .gl-w-full
-    = render 'shared/groups/search_form'
-  = render 'shared/groups/dropdown'

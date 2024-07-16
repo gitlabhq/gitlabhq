@@ -31,10 +31,35 @@ module Tooling
 
             next if lines_to_check.any? { |line| line.include?(FEATURE_CATEGORY_KEYWORD) }
 
-            suggested_line = file_lines[line_number]
+            suggested_line = add_feature_category(file_lines[line_number])
 
             markdown(comment(SUGGESTION, suggested_line), file: filename, line: line_number.succ)
           end
+        end
+
+        private
+
+        def add_feature_category(line)
+          return line unless line
+
+          line = line.dup
+
+          feature_category = 'feature_category: <see config/feature_categories.yml>'
+
+          # RSpec.describe Epics do
+          index = line.index(/ do\b/)
+
+          if index
+            # RSpec.describe Epics, feature_category: ... do
+            line[index] = ", #{feature_category} "
+          else
+            # RSpec.describe Epics, :aggregate_failures,
+            index = line.index(/,$/)
+            # RSpec.describe Epics, :aggregate_failures, feature_category: ...,
+            line[index] = ", #{feature_category}," if index
+          end
+
+          line
         end
       end
     end

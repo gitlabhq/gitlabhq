@@ -151,7 +151,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-inline-flex">
+  <div class="gl-inline-flex">
     <deployment-action-button
       v-if="canBeManuallyDeployed"
       :action-in-progress="actionInProgress"

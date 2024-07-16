@@ -1,0 +1,9 @@
+---
+name: claude_3_5_code_generation_sonnet
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/468929
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157336
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/468931
+milestone: '17.2'
+group: group::code creation
+type: experiment
+default_enabled: false

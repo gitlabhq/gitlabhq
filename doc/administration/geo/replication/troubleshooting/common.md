@@ -21,7 +21,7 @@ Before attempting more advanced troubleshooting:
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
 
 We perform the following health checks on each **secondary** site
@@ -40,7 +40,11 @@ A site shows as "Unhealthy" if the site's status is more than 10 minutes old. In
 Geo::MetricsUpdateWorker.new.perform
 ```
 
-If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 10 minutes, then there may be a performance issue, and the UI may always show "Unhealthy" even if the status eventually does get updated.
+If it raises an error, then the error is probably also preventing the jobs from completing. If it takes longer than 10 minutes, then the status might flap or persist as "Unhealthy", even if the status does occasionally get updated. This might be due to growth in usage, growth in data over time, or performance bugs such as a missing database index.
+
+You can monitor system CPU load with a utility like `top` or `htop`. If PostgreSQL is using a significant amount of CPU, it might indicate that there's a problem, or that the system is underprovisioned. System memory should also be monitored.
+
+If you increase memory, you should also check the PostgreSQL memory-related settings in your `/etc/gitlab/gitlab.rb` configuration.
 
 If it successfully updates the status, then something may be wrong with Sidekiq. Is it running? Do the logs show errors? This job is supposed to be enqueued every minute and might not run if a [job deduplication idempotency](../../../sidekiq/sidekiq_troubleshooting.md#clearing-a-sidekiq-job-deduplication-idempotency-key) key was not cleared properly. It takes an exclusive lease in Redis to ensure that only one of these jobs can run at a time. The primary site updates its status directly in the PostgreSQL database. Secondary sites send an HTTP Post request to the primary site with their status data.
 
@@ -278,9 +282,9 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary site in the Admin Area under **Geo > Sites** on the web interface for the **primary** site.
+  Ensure you have added the secondary site in the Admin area under **Geo > Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
-  when adding the secondary site in the Admin Area of the **primary** site.
+  when adding the secondary site in the Admin area of the **primary** site.
 
 - Check returns `Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist`.
 
@@ -453,7 +457,7 @@ This machine's Geo node name matches a database record ... no
 ```
 
 For more information about recommended site names in the description of the Name field, see
-[Geo Admin Area Common Settings](../../../../administration/geo_sites.md#common-settings).
+[Geo Admin area Common Settings](../../../../administration/geo_sites.md#common-settings).
 
 ### Check OS locale data compatibility
 
@@ -468,7 +472,7 @@ See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Loca
 
 ## Fixing common errors
 
-This section documents common error messages reported in the Admin Area on the web interface, and how to fix them.
+This section documents common error messages reported in the Admin area on the web interface, and how to fix them.
 
 ### Geo database configuration file is missing
 
@@ -567,7 +571,7 @@ If you are using the Linux package installation, something might have failed dur
 This can be caused by orphaned records in the project registry. They are being cleaned
 periodically using a registry worker, so give it some time to fix it itself.
 
-### Secondary site shows "Unhealthy" in UI after changing the value of `external_url` for the primary site
+### Secondary site shows "Unhealthy" in UI
 
 If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for the primary site or changed the protocol from `http` to `https`, you may see that secondary sites are shown as `Unhealthy`. You may also find the following error in `geo.log`:
 
@@ -580,7 +584,7 @@ If you have updated the value of `external_url` in `/etc/gitlab/gitlab.rb` for t
 
 In this case, make sure to update the changed URL on all your sites:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
 1. Change the URL and save the change.
 

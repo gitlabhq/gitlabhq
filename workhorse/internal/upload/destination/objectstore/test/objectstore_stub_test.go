@@ -1,6 +1,7 @@
 package test
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -51,7 +52,10 @@ func TestObjectStoreStubDelete404(t *testing.T) {
 
 	objectURL := ts.URL + ObjectPath
 
-	req, err := http.NewRequest(http.MethodDelete, objectURL, nil)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	req, err := http.NewRequestWithContext(ctx, http.MethodDelete, objectURL, nil)
 	require.NoError(t, err)
 
 	resp, err := http.DefaultClient.Do(req)

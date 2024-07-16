@@ -57,7 +57,7 @@ To do this:
 
 The `SpammableActions::AkismetMarkAsSpamAction` module adds support for a `#mark_as_spam` action
 to a controller. This controller allows administrators to manage spam for the associated
-`Spammable` model in the [Spam Log section](../../integration/akismet.md) of the Admin Area page.
+`Spammable` model in the [**Spam log** section](../../integration/akismet.md) of the Admin area page.
 
 1. Include the `SpammableActions::AkismetMarkAsSpamAction` module in the controller.
 

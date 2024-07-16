@@ -19,7 +19,7 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
   let(:does_not_exist_or_no_permission) { "The resource that you are attempting to access does not exist or you don't have permission to perform this action" }
 
   subject(:set_crm_contacts) do
-    described_class.new(project: project, current_user: user, params: params).execute(issue)
+    described_class.new(container: project, current_user: user, params: params).execute(issue)
   end
 
   describe '#execute' do
@@ -65,7 +65,7 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
         let(:issue_with_crm_disabled) { create(:issue, project: project_with_crm_disabled) }
 
         it 'returns expected error response' do
-          response = described_class.new(project: project_with_crm_disabled, current_user: user, params: params).execute(issue_with_crm_disabled)
+          response = described_class.new(container: project_with_crm_disabled, current_user: user, params: params).execute(issue_with_crm_disabled)
 
           expect(response).to be_error
           expect(response.message).to eq('You have insufficient permissions to set customer relations contacts for this issue')
@@ -261,6 +261,19 @@ RSpec.describe Issues::SetCrmContactsService, feature_category: :team_planning d
           response = set_crm_contacts
 
           expect(response).to be_success
+        end
+      end
+
+      context 'when setting contacts for a group level work item' do
+        let(:params) { { add_ids: [contacts[3].id] } }
+
+        it 'sets the contacts' do
+          work_item = create(:work_item, :epic, namespace: group)
+
+          response = described_class.new(container: work_item.namespace, current_user: user, params: params).execute(work_item)
+
+          expect(response).to be_success
+          expect(work_item.customer_relations_contacts).to contain_exactly(contacts[3])
         end
       end
     end

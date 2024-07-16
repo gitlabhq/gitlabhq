@@ -9,10 +9,7 @@ module Issues
     EpicAssignmentError = Class.new(::ArgumentError)
 
     def hook_data(issue, action, old_associations: {})
-      hook_data = issue.to_hook_data(current_user, old_associations: old_associations)
-      hook_data[:object_attributes][:action] = action
-
-      hook_data
+      issue.to_hook_data(current_user, old_associations: old_associations, action: action)
     end
 
     def reopen_service

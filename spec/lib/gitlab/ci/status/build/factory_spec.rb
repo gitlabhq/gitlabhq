@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
         expect(status.label).to eq 'failed (allowed to fail)'
         expect(status).to have_details
         expect(status).to have_action
-        expect(status.action_title).to include 'Retry'
+        expect(status.action_title).to include 'Run again'
         expect(status.action_path).to include 'retry'
       end
     end
@@ -150,7 +150,7 @@ RSpec.describe Gitlab::Ci::Status::Build::Factory do
         expect(status.label).to eq s_('CiStatusLabel|failed')
         expect(status).to have_details
         expect(status).to have_action
-        expect(status.action_title).to include 'Retry'
+        expect(status.action_title).to include 'Run again'
         expect(status.action_path).to include 'retry'
       end
     end

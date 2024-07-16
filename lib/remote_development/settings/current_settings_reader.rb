@@ -6,7 +6,7 @@ module RemoteDevelopment
       include Messages
 
       # @param [Hash] context
-      # @return [Result]
+      # @return [Gitlab::Fp::Result]
       def self.read(context)
         err_result = nil
         context[:settings].each_key do |setting_name|
@@ -19,8 +19,8 @@ module RemoteDevelopment
           setting_type = context[:setting_types][setting_name]
 
           unless current_setting_value.is_a?(setting_type)
-            # err_result will be set to a non-nil Result.err if type check fails
-            err_result = Result.err(SettingsCurrentSettingsReadFailed.new(
+            # err_result will be set to a non-nil Gitlab::Fp::Result.err if type check fails
+            err_result = Gitlab::Fp::Result.err(SettingsCurrentSettingsReadFailed.new(
               details: "Gitlab::CurrentSettings.#{setting_name} type of '#{current_setting_value.class}' " \
                 "did not match initialized Remote Development Settings type of '#{setting_type}'."
             ))
@@ -32,7 +32,7 @@ module RemoteDevelopment
 
         return err_result if err_result
 
-        Result.ok(context)
+        Gitlab::Fp::Result.ok(context)
       end
     end
   end

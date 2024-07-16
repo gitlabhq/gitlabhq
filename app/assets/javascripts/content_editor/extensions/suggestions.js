@@ -16,6 +16,7 @@ function createSuggestionPlugin({
   insertionMap = {},
   serializer,
   autocompleteHelper,
+  ...options
 }) {
   return Suggestion({
     editor,
@@ -126,6 +127,7 @@ function createSuggestionPlugin({
         },
       };
     },
+    ...options,
   });
 }
 
@@ -167,6 +169,7 @@ export default Node.create({
       createPlugin('/', 'reference', 'command', {
         cache: false,
         limit: 100,
+        startOfLine: true,
         insertionMap: {
           '/label': '~',
           '/unlabel': '~',

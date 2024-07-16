@@ -1,0 +1,18 @@
+---
+description: "Visits to the project level CI/CD Analytics Change failure rate tab"
+internal_events: true
+action: visit_ci_cd_failure_rate_tab
+identifiers:
+  - project
+  - namespace
+  - user
+product_group: optimize
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156593
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

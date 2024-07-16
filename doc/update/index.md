@@ -220,7 +220,7 @@ To determine your upgrade path:
      - [`16.3.7`](versions/gitlab_16_changes.md#1630).
      - [`16.7.z`](versions/gitlab_16_changes.md#1670). The latest GitLab 16.7 release.
      - [`16.11.z`](https://gitlab.com/gitlab-org/gitlab/-/releases). The latest GitLab 16.11 release.
-   - GitLab 17: [`17.y.z`](versions/gitlab_17_changes.md#1700). The latest GitLab 17 release.
+   - GitLab 17: [`17.y.z`](versions/gitlab_17_changes.md). The latest GitLab 17 release.
 
 1. Consult the [version-specific upgrade instructions](#version-specific-upgrading-instructions).
 

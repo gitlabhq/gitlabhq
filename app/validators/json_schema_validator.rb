@@ -25,7 +25,7 @@ class JsonSchemaValidator < ActiveModel::EachValidator
   end
 
   def validate_each(record, attribute, value)
-    value = value.to_h.deep_stringify_keys if options[:hash_conversion] == true
+    value = Gitlab::Json.parse(Gitlab::Json.dump(value)) if options[:hash_conversion] == true
     value = Gitlab::Json.parse(value.to_s) if options[:parse_json] == true && !value.nil?
 
     if options[:detail_errors]

@@ -184,8 +184,9 @@ describe('Packages Protection Rule Form', () => {
         await submitForm();
 
         expect(wrapper.emitted('submit')).toBeDefined();
-        const expectedEventSubmitPayload = createPackagesProtectionRuleMutationPayload().data
-          .createPackagesProtectionRule.packageProtectionRule;
+        const expectedEventSubmitPayload =
+          createPackagesProtectionRuleMutationPayload().data.createPackagesProtectionRule
+            .packageProtectionRule;
         expect(wrapper.emitted('submit')[0]).toEqual([expectedEventSubmitPayload]);
 
         expect(wrapper.emitted()).not.toHaveProperty('cancel');

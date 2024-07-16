@@ -13412,6 +13412,7 @@ paths:
         - irker
         - jenkins
         - jira
+        - jira-cloud-app
         - mattermost-slash-commands
         - slack-slash-commands
         - packagist
@@ -13491,6 +13492,7 @@ paths:
         - irker
         - jenkins
         - jira
+        - jira-cloud-app
         - mattermost-slash-commands
         - slack-slash-commands
         - packagist
@@ -15305,6 +15307,7 @@ paths:
         - irker
         - jenkins
         - jira
+        - jira-cloud-app
         - mattermost-slash-commands
         - slack-slash-commands
         - packagist
@@ -15384,6 +15387,7 @@ paths:
         - irker
         - jenkins
         - jira
+        - jira-cloud-app
         - mattermost-slash-commands
         - slack-slash-commands
         - packagist
@@ -59740,7 +59744,7 @@ definitions:
       ci_needs_size_limit:
         type: integer
         format: int32
-        description: Maximum number of DAG dependencies that a job can have
+        description: Maximum number of needs dependencies that a job can have
       ci_registered_group_runners:
         type: integer
         format: int32

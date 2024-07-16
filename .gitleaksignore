@@ -11,3 +11,4 @@ spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:41
 spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:55
 spec/frontend/lib/utils/secret_detection_spec.js:generic-api-key:57
 spec/frontend/lib/utils/secret_detection_spec.js:gitlab-pat:28
+d39da82ae304b8813a8fb2c79c3d7cd6f173590e:doc/api/groups.md:gitlab-pat:2342

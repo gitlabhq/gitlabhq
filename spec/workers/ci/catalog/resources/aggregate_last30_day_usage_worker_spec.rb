@@ -39,6 +39,8 @@ RSpec.describe Ci::Catalog::Resources::AggregateLast30DayUsageWorker, feature_ca
             component: component, used_date: usage_start_date, used_by_project_id: k)
         end
       end
+
+      Ci::Catalog::Resource.update_all(last_30_day_usage_count_updated_at: usage_end_date.to_time)
     end
 
     it 'aggregates and updates usage counts for all catalog resources' do

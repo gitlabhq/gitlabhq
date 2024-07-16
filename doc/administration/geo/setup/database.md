@@ -660,6 +660,13 @@ and other database best practices.
 
 ##### Step 1. Configure Patroni permanent replication slot on the primary site
 
+Set up a persistent replication slot on the primary database to ensure continuous data replication from the primary
+database to the Patroni cluster on the secondary node.
+
+::Tabs
+
+:::TabTitle Primary with Patroni cluster
+
 To set up database replication with Patroni on a secondary site, you must
 configure a _permanent replication slot_ on the primary site's Patroni cluster,
 and ensure password authentication is used.
@@ -722,6 +729,51 @@ Leader instance**:
    ```shell
    gitlab-ctl reconfigure
    ```
+
+:::TabTitle Primary with single PostgreSQL instance
+
+1. SSH into your single node instance and log in as root:
+
+   ```shell
+   sudo -i
+   ```
+
+1. Start a Database console
+
+   ```shell
+   gitlab-psql
+   ```
+
+1. Configure permanent replication slot on the primary site
+
+   ```sql
+   select pg_create_physical_replication_slot('geo_secondary')
+   ```
+
+1. Optional: If primary does not have PgBouncer, but secondary does:
+
+   Configure the `pgbouncer` user on the primary site and add the necessary `pg_shadow_lookup` function for PgBouncer included with the Linux package. PgBouncer on the secondary server should still be able to connect to PostgreSQL nodes on the secondary site.
+
+   ```sql
+   --- Create a new user 'pgbouncer'
+   CREATE USER pgbouncer;
+
+   --- Set/change a password and grants replication privilege
+   ALTER USER pgbouncer WITH REPLICATION ENCRYPTED PASSWORD '<pgbouncer_password_from_secondary>';
+
+   CREATE OR REPLACE FUNCTION public.pg_shadow_lookup(in i_username text, out username text, out password text) RETURNS record AS $$
+   BEGIN
+       SELECT usename, passwd FROM pg_catalog.pg_shadow
+       WHERE usename = i_username INTO username, password;
+       RETURN;
+   END;
+   $$ LANGUAGE plpgsql SECURITY DEFINER;
+
+   REVOKE ALL ON FUNCTION public.pg_shadow_lookup(text) FROM public, pgbouncer;
+   GRANT EXECUTE ON FUNCTION public.pg_shadow_lookup(text) TO pgbouncer;
+   ```
+
+::EndTabs
 
 ##### Step 2. Configure the internal load balancer on the primary site
 

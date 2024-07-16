@@ -82,6 +82,8 @@ class NoteEntity < API::Entities::Note
   end
 
   expose :resolve_path, if: ->(note, _) { note.part_of_discussion? && note.resolvable? } do |note|
+    next unless discussion.project
+
     resolve_project_discussion_path(discussion.project, discussion.noteable_collection_name, discussion.noteable, discussion.id)
   end
 

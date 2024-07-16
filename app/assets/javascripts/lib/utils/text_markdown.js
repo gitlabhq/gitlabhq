@@ -12,7 +12,8 @@ const INDENT_LENGTH = 2;
 // a bullet point character (*+-) and an optional checkbox ([ ] [x])
 // OR a number with a . after it and an optional checkbox ([ ] [x])
 // followed by one or more whitespace characters
-const LIST_LINE_HEAD_PATTERN = /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([xX~\s])\])?\s)(?<content>.)?/;
+const LIST_LINE_HEAD_PATTERN =
+  /^(?<indent>\s*)(?<leader>((?<isUl>[*+-])|(?<isOl>\d+\.))( \[([xX~\s])\])?\s)(?<content>.)?/;
 
 // detect a horizontal rule that might be mistaken for a list item (not full pattern for an <hr>)
 const HR_PATTERN = /^((\s{0,3}-+\s*-+\s*-+\s*[\s-]*)|(\s{0,3}\*+\s*\*+\s*\*+\s*[\s*]*))$/;

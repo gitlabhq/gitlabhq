@@ -11,11 +11,18 @@ export const FILE_SYMLINK_MODE = '120000';
 
 export const SHORT_DATE_FORMAT = 'mmm dd, yyyy';
 
+export const SHORT_DATE_FORMAT_WITH_TIME = 'mmm dd, yyyy HH:MM';
+
 export const ISO_SHORT_FORMAT = 'yyyy-mm-dd';
 
 export const LONG_DATE_FORMAT_WITH_TZ = 'yyyy-mm-dd HH:MM:ss Z';
 
-export const DATE_FORMATS = [SHORT_DATE_FORMAT, ISO_SHORT_FORMAT, LONG_DATE_FORMAT_WITH_TZ];
+export const DATE_FORMATS = [
+  SHORT_DATE_FORMAT,
+  SHORT_DATE_FORMAT_WITH_TIME,
+  ISO_SHORT_FORMAT,
+  LONG_DATE_FORMAT_WITH_TZ,
+];
 
 const getTimeLabel = (days) => n__('1 day', '%d days', days);
 

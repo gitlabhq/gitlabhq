@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::ArtifactsController, feature_category: :build_artifacts do
+RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts do
   include RepoHelpers
 
   let(:user) { project.first_owner }

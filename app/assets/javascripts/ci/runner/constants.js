@@ -36,7 +36,7 @@ export const I18N_STATUS_OFFLINE = s__('Runners|Offline');
 export const I18N_STATUS_STALE = s__('Runners|Stale');
 
 // Executor Status
-export const I18N_JOB_STATUS_RUNNING = s__('Runners|Running');
+export const I18N_JOB_STATUS_ACTIVE = s__('Runners|Active');
 export const I18N_JOB_STATUS_IDLE = s__('Runners|Idle');
 
 // Status tooltips
@@ -163,7 +163,7 @@ export const STATUS_STALE = 'STALE';
 
 // CiRunnerJobExecutionStatus
 
-export const JOB_STATUS_RUNNING = 'RUNNING';
+export const JOB_STATUS_ACTIVE = 'ACTIVE';
 export const JOB_STATUS_IDLE = 'IDLE';
 
 // CiRunnerAccessLevel

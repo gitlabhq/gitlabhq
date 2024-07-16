@@ -97,7 +97,7 @@ export default {
     <div class="gl-block js-pipeline-info" data-testid="pipeline-info">
       <gl-sprintf :message="pipelineInfo">
         <template #bold="{ content }">
-          <span class="gl-display-inline-flex gl-font-bold">{{ content }}</span>
+          <span class="gl-inline-flex gl-font-bold">{{ content }}</span>
         </template>
         <template #id>
           <gl-link

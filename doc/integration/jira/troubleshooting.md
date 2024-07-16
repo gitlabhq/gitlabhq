@@ -68,6 +68,31 @@ curl --verbose --user "$USER:$API_TOKEN" "https://$ATLASSIAN_SUBDOMAIN.atlassian
 
 If the user can access the issue, Jira responds with a `200 OK` and the returned JSON includes the Jira issue details.
 
+### Verify GitLab can post a comment to a Jira issue
+
+WARNING:
+Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
+
+To help troubleshoot your Jira integration, you can check whether
+GitLab can post a comment to a Jira issue using the project's Jira
+integration settings.
+
+To do so:
+
+- From a [Rails console](../../administration/operations/rails_console.md#starting-a-rails-console-session),
+  run the following:
+
+  ```ruby
+  jira_issue_id = "ALPHA-1" # Change to your Jira issue ID
+  project = Project.find_by_full_path("group/project") # Change to your project's path
+
+  integration = project.integrations.find_by(type: "Integrations::Jira")
+  jira_issue = integration.client.Issue.find(jira_issue_id)
+  jira_issue.comments.build.save!(body: 'This is a test comment from GitLab via the Rails console')
+  ```
+
+If the command is successful, a comment is added to the Jira issue.
+
 ## GitLab cannot create a Jira issue
 
 When you try to create a Jira issue from a vulnerability, you might see a "field is required" error. For example, `Components is required` because a field called
@@ -264,9 +289,17 @@ Your Jira project key must not have [restricted words and characters](https://co
 
 When you try to view the Jira issue list in GitLab, you might see one of the following errors.
 
-#### `An error occurred while requesting data from Jira: The value '<project>' does not exist for the field 'project'. Check your Jira integration configuration and try again.`
+#### Error: `The value '<project>' does not exist for the field 'project'.`
 
-This error occurs when you use the wrong authentication credentials for your Jira installation:
+If you use the wrong authentication credentials for your Jira installation, you might see this error:
+
+```plaintext
+An error occurred while requesting data from Jira:
+The value '<project>' does not exist for the field 'project'.
+Check your Jira integration configuration and try again.
+```
+
+Authentication credentials depend on your type of Jira installation:
 
 - **For Jira Cloud**, you must have a Jira Cloud API token
   and the email address you used to create the token.
@@ -277,10 +310,15 @@ For more information, see [Jira issue integration](configure.md).
 
 To resolve this issue, update the authentication credentials to match your Jira installation.
 
-#### `The credentials for accessing Jira are not allowed to access the data. Check your Jira integration credentials and try again.`
+#### Error: `The credentials for accessing Jira are not allowed to access the data.`
 
-This error occurs when the Jira credentials cannot access the Jira project key you specified in the
-[Jira issue integration](configure.md#configure-the-integration).
+If your Jira credentials cannot access the Jira project key you specified in the
+[Jira issue integration](configure.md#configure-the-integration), you might see this error:
+
+```plaintext
+The credentials for accessing Jira are not allowed to access the data.
+Check your Jira integration credentials and try again.
+```
 
 To resolve this issue, ensure the Jira user you configured in the Jira issue integration has permission to view issues
 associated with the specified Jira project key.

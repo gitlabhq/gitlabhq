@@ -83,6 +83,14 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::RestrictAllowedSchemas,
             gitlab_main: :ddl_not_allowed,
             gitlab_ci: :ddl_not_allowed
           }
+        },
+        "for CREATE VIEW" => {
+          sql: "CREATE VIEW my_view AS SELECT * FROM issues",
+          expected_allowed_gitlab_schemas: {
+            no_schema: :success,
+            gitlab_main: :ddl_not_allowed,
+            gitlab_ci: :ddl_not_allowed
+          }
         }
       }
 

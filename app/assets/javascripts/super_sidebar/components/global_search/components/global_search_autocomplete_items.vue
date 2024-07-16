@@ -79,8 +79,7 @@ export default {
             return {
               ...item,
               extraAttrs: {
-                class:
-                  'show-hover-layover gl-display-flex gl-align-items-center gl-justify-content-space-between',
+                class: 'show-hover-layover gl-flex gl-items-center gl-justify-between',
               },
             };
           }),
@@ -163,18 +162,18 @@ export default {
   <div>
     <gl-alert
       v-if="autocompleteError"
-      class="gl-text-body gl-mt-2"
+      class="gl-mt-2 gl-text-primary"
       :dismissible="false"
       variant="danger"
     >
       {{ $options.i18n.AUTOCOMPLETE_ERROR_MESSAGE }}
     </gl-alert>
 
-    <ul v-if="!loading && hasResults" class="gl-m-0 gl-p-0 gl-list-none">
+    <ul v-if="!loading && hasResults" class="gl-m-0 gl-list-none gl-p-0">
       <gl-disclosure-dropdown-group
         v-for="(group, index) in groups"
         :key="group.name"
-        :class="{ 'gl-mt-0!': index === 0 }"
+        :class="{ '!gl-mt-0': index === 0 }"
         :group="group"
         bordered
         @action="trackingTypes"
@@ -190,16 +189,16 @@ export default {
               :shape="$options.AVATAR_SHAPE_OPTION_RECT"
               aria-hidden="true"
             />
-            <span class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-min-w-0">
+            <span class="gl-flex gl-min-w-0 gl-grow gl-flex-col">
               <span
                 v-safe-html="highlightedName(item.text)"
-                class="gl-text-gray-900 gl-text-truncate"
+                class="gl-truncate gl-text-gray-900"
                 data-testid="autocomplete-item-name"
               ></span>
               <span
                 v-if="item.value"
                 v-safe-html="item.namespace"
-                class="gl-font-sm gl-text-gray-500 gl-text-truncate"
+                class="gl-truncate gl-text-sm gl-text-gray-500"
                 data-testid="autocomplete-item-namespace"
               ></span>
             </span>

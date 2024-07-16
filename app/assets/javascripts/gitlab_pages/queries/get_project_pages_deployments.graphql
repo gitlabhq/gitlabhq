@@ -1,0 +1,44 @@
+query GetProjectPagesDeployments(
+  $fullPath: ID!
+  $first: Int
+  $last: Int
+  $after: String
+  $before: String
+  $active: Boolean
+  $versioned: Boolean
+  $sort: Sort
+) {
+  project(fullPath: $fullPath) {
+    id
+    pagesDeployments(
+      first: $first
+      last: $last
+      after: $after
+      before: $before
+      active: $active
+      versioned: $versioned
+      sort: $sort
+    ) {
+      count
+      pageInfo {
+        startCursor
+        endCursor
+        hasNextPage
+        hasPreviousPage
+      }
+      nodes {
+        id
+        active
+        rootDirectory
+        ciBuildId
+        createdAt
+        deletedAt
+        fileCount
+        pathPrefix
+        size
+        updatedAt
+        url
+      }
+    }
+  }
+}

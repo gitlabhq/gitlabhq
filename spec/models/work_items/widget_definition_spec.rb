@@ -48,6 +48,50 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_uniqueness_of(:name).case_insensitive.scoped_to([:namespace_id, :work_item_type_id]) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
+
+    describe 'widget_options' do
+      subject(:widget_definition) do
+        build(:widget_definition, :default, widget_type: widget_type, widget_options: widget_options)
+      end
+
+      context 'when widget type is weight' do
+        let(:widget_type) { 'weight' }
+
+        context 'when widget_options has valid attributes' do
+          let(:widget_options) { { editable: true, rollup: false } }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when widget_options is nil' do
+          let(:widget_options) { nil }
+
+          it { is_expected.to be_invalid }
+        end
+
+        context 'when widget_options has invalid attributes' do
+          let(:widget_options) { { other_key: :other_value } }
+
+          it { is_expected.to be_invalid }
+        end
+      end
+
+      context 'when widget type is something else' do
+        let(:widget_type) { 'labels' }
+
+        context 'when widget_options is nil' do
+          let(:widget_options) { nil }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'when widget_options is not empty' do
+          let(:widget_options) { { editable: true, rollup: false } }
+
+          it { is_expected.to be_invalid }
+        end
+      end
+    end
   end
 
   context 'with some widgets disabled' do

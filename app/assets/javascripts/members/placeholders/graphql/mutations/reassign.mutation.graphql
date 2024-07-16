@@ -1,0 +1,10 @@
+#import "../fragments/import_source_user.fragment.graphql"
+
+mutation reassignPlaceholder($id: ImportSourceUserID!, $userId: UserID!) {
+  importSourceUserReassign(input: { id: $id, assigneeUserId: $userId }) {
+    errors
+    importSourceUser {
+      ...ImportSourceUser
+    }
+  }
+}

@@ -5,7 +5,7 @@
       "category": "dependency_scanning",
       "name": "Vulnerability for remediation testing 1",
       "message": "This vulnerability should have ONE remediation",
-      "description": "",
+      "description": "This string does not contain a Unicode null character \\\\u0000",
       "severity": "High",
       "solution": "Upgrade to latest version.\u0000",
       "scanner": {

@@ -3,7 +3,7 @@ table_name: external_status_checks
 classes:
 - MergeRequests::ExternalStatusCheck
 feature_categories:
-- compliance_management
+- security_policy_management
 description: Stores project's external status checks
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/62186
 milestone: '14.0'

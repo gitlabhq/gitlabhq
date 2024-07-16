@@ -15,10 +15,6 @@ class Packages::Npm::Metadatum < ApplicationRecord
 
   scope :package_id_in, ->(package_ids) { where(package_id: package_ids) }
 
-  def package_json_scripts
-    package_json.try(:[], 'scripts')
-  end
-
   private
 
   def ensure_npm_package_type

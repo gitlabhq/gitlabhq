@@ -255,3 +255,13 @@ For the full list of options, see its
   button that is still implemented with plain Haml, consider migrating it to use a ViewComponent.
 - If you decide to create a new component, consider creating [previews](https://viewcomponent.org/guide/previews.html) for it, too.
   This will help others to discover your component with Lookbook, also it makes it much easier to test its different states.
+
+### Preview layouts
+
+If you need to have a custom layout for your ViewComponent preview consider using these paths for the layout code:
+
+- `app/views/layouts/lookbook` — for your layout HAML file
+- `app/assets/javascripts/entrypoints/lookbook` — for your custom JavaScript code
+- `app/assets/stylesheets/lookbook` — for your custom SASS code
+
+Please note that JavaScript and SASS code has to be manually included in the layout.

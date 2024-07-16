@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe "User downloads artifacts", feature_category: :build_artifacts do
+RSpec.describe "User downloads artifacts", feature_category: :job_artifacts do
   let_it_be(:project) { create(:project, :repository, :public) }
   let_it_be(:pipeline) { create(:ci_empty_pipeline, status: :success, sha: project.commit.id, project: project) }
   let_it_be(:job) { create(:ci_build, :artifacts, :success, pipeline: pipeline) }

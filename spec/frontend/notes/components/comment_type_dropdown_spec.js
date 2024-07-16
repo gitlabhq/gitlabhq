@@ -28,6 +28,12 @@ describe('CommentTypeDropdown component', () => {
     );
   };
 
+  it('has correct button type for quick submit', () => {
+    mountComponent();
+
+    expect(findCommentButton().attributes('type')).toBe('submit');
+  });
+
   it.each`
     isInternalNote | isReviewDropdown | buttonText
     ${false}       | ${false}         | ${COMMENT_FORM.comment}

@@ -116,11 +116,11 @@ module Gitlab
           stats = diff_stats_collection&.find_by_path(diff.new_path)
 
           diff_file = Gitlab::Diff::File.new(diff,
-                                 repository: project.repository,
-                                 diff_refs: diff_refs,
-                                 fallback_diff_refs: fallback_diff_refs,
-                                 stats: stats,
-                                 max_blob_size: self.class.max_blob_size(project))
+            repository: project.repository,
+            diff_refs: diff_refs,
+            fallback_diff_refs: fallback_diff_refs,
+            stats: stats,
+            max_blob_size: self.class.max_blob_size(project))
 
           if @use_extra_viewer_as_main && diff_file.has_renderable?
             diff_file.rendered

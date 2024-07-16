@@ -999,7 +999,7 @@
   padding-right: $right-sidebar-collapsed-width;
   background: var(--white, $white);
   border-top: 1px solid var(--border-color, $border-color);
-  transition: padding $gl-transition-duration-medium;
+  @apply gl-transition-padding;
 
   @media (max-width: map-get($grid-breakpoints, sm)-1) {
     padding-left: 0;

@@ -1,13 +1,12 @@
 - expanded = integration_expanded?('mailgun_')
-%section.settings.as-mailgun.no-animate#js-mailgun-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Mailgun')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Configure the %{link} integration.').html_safe % { link: link_to(_('Mailgun events'), 'https://documentation.mailgun.com/en/latest/user_manual.html#webhooks', target: '_blank', rel: 'noopener noreferrer') }
-  .settings-content
+
+= render ::Layouts::SettingsBlockComponent.new(_('Mailgun'),
+  id: 'js-mailgun-settings',
+  testid: 'mailgun-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Configure the %{link} integration.').html_safe % { link: link_to(_('Mailgun events'), 'https://documentation.mailgun.com/en/latest/user_manual.html#webhooks', target: '_blank', rel: 'noopener noreferrer') }
+  - c.with_body do
     = gitlab_ui_form_for @application_setting, url: general_admin_application_settings_path(anchor: 'js-mailgun-settings'), html: { class: 'fieldset-form', id: 'mailgun-settings' } do |f|
       = form_errors(@application_setting) if expanded
 

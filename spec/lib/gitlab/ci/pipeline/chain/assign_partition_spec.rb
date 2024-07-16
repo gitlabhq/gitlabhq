@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition do
+RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition, feature_category: :pipeline_composition do
   let_it_be(:project) { create(:project) }
   let_it_be(:user) { create(:user) }
 
@@ -25,6 +25,19 @@ RSpec.describe Gitlab::Ci::Pipeline::Chain::AssignPartition do
 
     it 'assigns partition_id to pipeline' do
       expect { subject }.to change(pipeline, :partition_id).to(current_partition_id)
+    end
+
+    context 'with partition_id on the Command' do
+      let(:command) do
+        Gitlab::Ci::Pipeline::Chain::Command.new(
+          project: project,
+          current_user: user,
+          partition_id: 125)
+      end
+
+      it 'assigns partition_id to pipeline' do
+        expect { subject }.to change(pipeline, :partition_id).to(125)
+      end
     end
 
     context 'with parent-child pipelines' do

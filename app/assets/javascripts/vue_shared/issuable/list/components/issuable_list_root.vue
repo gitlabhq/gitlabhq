@@ -191,7 +191,7 @@ export default {
       required: false,
       default: false,
     },
-    showPageSizeChangeControls: {
+    showPageSizeSelector: {
       type: Boolean,
       required: false,
       default: false,
@@ -330,7 +330,7 @@ export default {
       :checkbox-checked="allIssuablesChecked"
       :show-friendly-text="showFilteredSearchFriendlyText"
       terms-as-tokens
-      class="gl-flex-grow-1 gl-border-t-none row-content-block"
+      class="gl-grow gl-border-t-0 row-content-block max-md:-gl-ml-5 max-md:gl-w-screen max-md:gl-border-t max-md:-gl-mt-1 sm:gl-flex"
       data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
@@ -438,7 +438,7 @@ export default {
       />
 
       <local-storage-sync
-        v-if="showPageSizeChangeControls"
+        v-if="showPageSizeSelector"
         :value="defaultPageSize"
         :storage-key="$options.PAGE_SIZE_STORAGE_KEY"
         @input="handlePageSizeChange"

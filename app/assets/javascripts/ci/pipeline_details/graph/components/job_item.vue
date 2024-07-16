@@ -339,7 +339,7 @@ export default {
       :title="tooltipText"
       :class="jobClasses"
       :href="detailsPath"
-      class="menu-item gl-text-gray-900 gl-active-text-decoration-none gl-focus-text-decoration-none gl-hover-text-decoration-none gl-hover-bg-gray-50 gl-focus-bg-gray-50 gl-w-full"
+      class="menu-item gl-text-gray-900 active:gl-no-underline focus:gl-no-underline hover:gl-no-underline hover:gl-bg-strong focus:gl-bg-strong gl-w-full gl-rounded"
       data-testid="ci-job-item-content"
       @click="jobItemClick"
       @mouseout="hideTooltips"
@@ -366,7 +366,6 @@ export default {
         v-if="isBridge"
         class="gl-mt-3 gl-ml-7"
         variant="info"
-        size="sm"
         data-testid="job-bridge-badge"
       >
         {{ $options.i18n.bridgeBadgeText }}

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-load_license = lambda do |dir:, license_name:|
+load_license = ->(dir:, license_name:) do
   begin
     public_key_file = File.read(Rails.root.join(dir, ".license_encryption_key.pub"))
     public_key = OpenSSL::PKey::RSA.new(public_key_file)

@@ -140,10 +140,8 @@ const getAverageCharWidth = memoize(function getAverageCharWidth(options = {}) {
  * @return {String} either the original string or a truncated version
  */
 export const truncateWidth = (string, options = {}) => {
-  const {
-    maxWidth = TRUNCATE_WIDTH_DEFAULT_WIDTH,
-    fontSize = TRUNCATE_WIDTH_DEFAULT_FONT_SIZE,
-  } = options;
+  const { maxWidth = TRUNCATE_WIDTH_DEFAULT_WIDTH, fontSize = TRUNCATE_WIDTH_DEFAULT_FONT_SIZE } =
+    options;
   const { truncateIndex } = string.split('').reduce(
     (memo, char, index) => {
       let newIndex = index;
@@ -541,3 +539,23 @@ export const humanizeBranchValidationErrors = (invalidChars = []) => {
  * @returns {String} String without any enclosure
  */
 export const stripQuotes = (value) => value.replace(/^('|")(.*)('|")$/, '$2');
+
+/**
+ * Converts a sentence to title case inspite of it being in any case
+ * e.g. Hello world => Hello World
+ * e.g HELLO WORLD => Hello World
+ * e.g. hello World => Hello World
+ * e.g. Hello world => Hello World
+ * e.g. Hello World => Hello World
+ *
+ * @param {String} string
+ * @returns {String}
+ */
+
+export const convertEachWordToTitleCase = (str) => {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(' ');
+};

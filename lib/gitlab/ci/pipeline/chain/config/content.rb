@@ -34,7 +34,7 @@ module Gitlab
                   pipeline_source: @command.source, pipeline_source_bridge: @command.bridge,
                   triggered_for_branch: @pipeline.branch?,
                   ref: @pipeline.ref,
-                  has_execution_policy_pipelines: @command.execution_policy_pipelines.present?
+                  has_pipeline_execution_policies: @command.pipeline_execution_policies.present?
                 )
               end
             end

@@ -1,7 +1,10 @@
 import { EVENT_TIMEOUT, EVENT_PLAIN_TEXT, EVENT_ERROR } from '@gitlab/cluster-client';
+import throttle from 'lodash/throttle';
 import k8sLogsQuery from '~/environments/graphql/queries/k8s_logs.query.graphql';
 import { buildWatchPath, k8sLogs } from '~/environments/graphql/resolvers/kubernetes/k8s_logs';
 import { bootstrapWatcherMock } from '../watcher_mock_helper';
+
+jest.mock('lodash/throttle', () => jest.fn());
 
 describe('buildWatchPath', () => {
   it('should return the correct path with namespace', () => {
@@ -33,9 +36,10 @@ describe('k8sLogs', () => {
   it('should request pods logs if no container is specified', async () => {
     await k8sLogs(null, { configuration, namespace, podName }, { client });
 
-    expect(
-      watchStream.subscribeToStreamMock,
-    ).toHaveBeenCalledWith('/api/v1/namespaces/default/pods/test-pod/log', { follow: true });
+    expect(watchStream.subscribeToStreamMock).toHaveBeenCalledWith(
+      '/api/v1/namespaces/default/pods/test-pod/log',
+      { follow: true },
+    );
   });
 
   it('should request specific container logs if container is specified', async () => {
@@ -51,6 +55,7 @@ describe('k8sLogs', () => {
     );
   });
 
+  throttle.mockImplementation(jest.requireActual('lodash/throttle'));
   const errorMessage = 'event error message';
   const logContent = 'Plain text log data';
   it.each([
@@ -63,6 +68,13 @@ describe('k8sLogs', () => {
       await k8sLogs(null, { configuration, namespace, podName }, { client });
 
       watchStream.triggerEvent(eventName, eventData);
+
+      if (eventName === EVENT_PLAIN_TEXT) {
+        expect(throttle).toHaveBeenCalledTimes(1);
+        expect(throttle).toHaveBeenCalledWith(expect.any(Function), 100);
+      }
+
+      jest.runOnlyPendingTimers();
 
       expect(client.writeQuery).toHaveBeenCalledWith({
         query: k8sLogsQuery,

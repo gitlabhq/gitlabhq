@@ -163,22 +163,22 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'Testing doc refs'
 
           field :foo,
-                type: GraphQL::Types::String,
-                null: false,
-                description: 'The foo.',
-                see: { 'A list of foos' => 'https://example.com/foos' }
+            type: GraphQL::Types::String,
+            null: false,
+            description: 'The foo.',
+            see: { 'A list of foos' => 'https://example.com/foos' }
           field :bar,
-                type: GraphQL::Types::String,
-                null: false,
-                description: 'The bar.',
-                see: { 'A list of bars' => 'https://example.com/bars' } do
-                  argument :barity, ::GraphQL::Types::Int, required: false, description: '?'
-                end
+            type: GraphQL::Types::String,
+            null: false,
+            description: 'The bar.',
+            see: { 'A list of bars' => 'https://example.com/bars' } do
+            argument :barity, ::GraphQL::Types::Int, required: false, description: '?'
+          end
           field :wibbles,
-                type: wibble.connection_type,
-                null: true,
-                description: 'The wibbles',
-                see: { 'wibblance' => 'https://example.com/wibbles' }
+            type: wibble.connection_type,
+            null: true,
+            description: 'The wibbles',
+            see: { 'wibblance' => 'https://example.com/wibbles' }
         end
       end
 
@@ -221,14 +221,14 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'A thing we used to use, but no longer support'
 
           field :foo,
-                type: GraphQL::Types::String,
-                null: false,
-                description: 'A description.' do
-                  argument :foo_arg, GraphQL::Types::String,
-                           required: false,
-                           description: 'The argument.',
-                           deprecated: { reason: 'Bad argument', milestone: '101.2' }
-                end
+            type: GraphQL::Types::String,
+            null: false,
+            description: 'A description.' do
+            argument :foo_arg, GraphQL::Types::String,
+              required: false,
+              description: 'The argument.',
+              deprecated: { reason: 'Bad argument', milestone: '101.2' }
+          end
         end
       end
 
@@ -258,26 +258,26 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'A thing we used to use, but no longer support'
 
           field :foo,
-                type: GraphQL::Types::String,
-                null: false,
-                deprecated: { reason: 'This is deprecated', milestone: '1.10' },
-                description: 'A description.'
+            type: GraphQL::Types::String,
+            null: false,
+            deprecated: { reason: 'This is deprecated', milestone: '1.10' },
+            description: 'A description.'
           field :foo_with_args,
-                type: GraphQL::Types::String,
-                null: false,
-                deprecated: { reason: 'Do not use', milestone: '1.10', replacement: 'X.y' },
-                description: 'A description.' do
-                  argument :arg, GraphQL::Types::Int, required: false, description: 'Argity'
-                end
+            type: GraphQL::Types::String,
+            null: false,
+            deprecated: { reason: 'Do not use', milestone: '1.10', replacement: 'X.y' },
+            description: 'A description.' do
+            argument :arg, GraphQL::Types::Int, required: false, description: 'Argity'
+          end
           field :bar,
-                type: GraphQL::Types::String,
-                null: false,
-                description: 'A description.',
-                deprecated: {
-                  reason: :renamed,
-                  milestone: '1.10',
-                  replacement: 'Query.boom'
-                }
+            type: GraphQL::Types::String,
+            null: false,
+            description: 'A description.',
+            deprecated: {
+              reason: :renamed,
+              milestone: '1.10',
+              replacement: 'Query.boom'
+            }
         end
       end
 
@@ -355,14 +355,14 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'A thing with arguments in alpha'
 
           field :foo,
-                type: GraphQL::Types::String,
-                null: false,
-                description: 'A description.' do
-                  argument :foo_arg, GraphQL::Types::String,
-                           required: false,
-                           description: 'Argument description.',
-                           alpha: { milestone: '101.2' }
-                end
+            type: GraphQL::Types::String,
+            null: false,
+            description: 'A description.' do
+            argument :foo_arg, GraphQL::Types::String,
+              required: false,
+              description: 'Argument description.',
+              alpha: { milestone: '101.2' }
+          end
         end
       end
 
@@ -392,17 +392,17 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'A thing with fields in alpha'
 
           field :foo,
-                type: GraphQL::Types::String,
-                null: false,
-                alpha: { milestone: '1.10' },
-                description: 'A description.'
+            type: GraphQL::Types::String,
+            null: false,
+            alpha: { milestone: '1.10' },
+            description: 'A description.'
           field :foo_with_args,
-                type: GraphQL::Types::String,
-                null: false,
-                alpha: { milestone: '1.10' },
-                description: 'A description.' do
-                  argument :arg, GraphQL::Types::Int, required: false, description: 'Argity'
-                end
+            type: GraphQL::Types::String,
+            null: false,
+            alpha: { milestone: '1.10' },
+            description: 'A description.' do
+            argument :arg, GraphQL::Types::Int, required: false, description: 'Argity'
+          end
         end
       end
 
@@ -477,13 +477,13 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           description 'A test of an enum.'
 
           value 'BAZ',
-                description: 'A description of BAZ.'
+            description: 'A description of BAZ.'
           value 'BAR',
-                description: 'A description of BAR.',
-                deprecated: { reason: 'This is deprecated', milestone: '1.10' }
+            description: 'A description of BAR.',
+            deprecated: { reason: 'This is deprecated', milestone: '1.10' }
           value 'BOOP',
-                description: 'A description of BOOP.',
-                deprecated: { reason: :renamed, replacement: 'MyEnum.BAR', milestone: '1.10' }
+            description: 'A description of BOOP.',
+            deprecated: { reason: :renamed, replacement: 'MyEnum.BAR', milestone: '1.10' }
         end
 
         Class.new(Types::BaseObject) do
@@ -561,34 +561,34 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
         mutation.description 'Make everything very pretty.'
 
         mutation.argument :prettiness_factor,
-                          type: GraphQL::Types::Float,
-                          required: true,
-                          description: 'How much prettier?'
+          type: GraphQL::Types::Float,
+          required: true,
+          description: 'How much prettier?'
 
         mutation.argument :pulchritude,
-                          type: GraphQL::Types::Float,
-                          required: false,
-                          description: 'How much prettier?',
-                          deprecated: {
-                            reason: :renamed,
-                            replacement: 'prettinessFactor',
-                            milestone: '72.34'
-                          }
+          type: GraphQL::Types::Float,
+          required: false,
+          description: 'How much prettier?',
+          deprecated: {
+            reason: :renamed,
+            replacement: 'prettinessFactor',
+            milestone: '72.34'
+          }
 
         mutation.field :everything,
-                       type: GraphQL::Types::String,
-                       null: true,
-                       description: 'What we made prettier.'
+          type: GraphQL::Types::String,
+          null: true,
+          description: 'What we made prettier.'
 
         mutation.field :omnis,
-                       type: GraphQL::Types::String,
-                       null: true,
-                       description: 'What we made prettier.',
-                       deprecated: {
-                         reason: :renamed,
-                         replacement: 'everything',
-                         milestone: '72.34'
-                       }
+          type: GraphQL::Types::String,
+          null: true,
+          description: 'What we made prettier.',
+          deprecated: {
+            reason: :renamed,
+            replacement: 'everything',
+            milestone: '72.34'
+          }
 
         mutation
       end
@@ -641,9 +641,9 @@ RSpec.describe Tooling::Graphql::Docs::Renderer do
           graphql_name 'Foo'
           field :wibble, type: ::GraphQL::Types::Int, null: true do
             argument :date_range,
-                     type: ::Types::TimeframeInputType,
-                     required: true,
-                     description: 'When the foo happened.'
+              type: ::Types::TimeframeInputType,
+              required: true,
+              description: 'When the foo happened.'
           end
         end
       end

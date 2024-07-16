@@ -36,8 +36,10 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
         loose_fk_definition.options[:on_delete] = :invalid
       end
 
-      it 'raises KeyError' do
-        expect { cleaner_service.execute }.to raise_error(StandardError, /Invalid on_delete argument/)
+      it 'logs argument error' do
+        expect(Sidekiq.logger).to receive(:error).with("Invalid on_delete argument: invalid")
+
+        cleaner_service.execute
       end
     end
   end
@@ -118,12 +120,14 @@ RSpec.describe LooseForeignKeys::CleanerService, feature_category: :database do
       end
 
       context 'when the query generation is incorrect (paranoid check)' do
-        it 'raises error if the foreign key condition is missing' do
+        it 'logs error if the foreign key condition is missing' do
           expect_next_instance_of(LooseForeignKeys::CleanerService) do |instance|
             expect(instance).to receive(:delete_query).and_return('wrong query')
           end
 
-          expect { cleaner_service.execute }.to raise_error(/FATAL: foreign key condition is missing from the generated query/)
+          expect(Sidekiq.logger).to receive(:error).with("FATAL: foreign key condition is missing from the generated query: wrong query")
+
+          cleaner_service.execute
         end
       end
     end

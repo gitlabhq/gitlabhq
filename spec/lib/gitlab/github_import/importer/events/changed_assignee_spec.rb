@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee do
+RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee, feature_category: :importers do
   subject(:importer) { described_class.new(project, client) }
 
   let_it_be(:project) { create(:project, :repository) }
@@ -32,7 +32,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::ChangedAssignee do
       author_id: author.id,
       system: true,
       created_at: issue_event.created_at,
-      updated_at: issue_event.created_at
+      updated_at: issue_event.created_at,
+      imported_from: 'github'
     }.stringify_keys
   end
 

@@ -9,7 +9,7 @@ module Banzai
     # This also provides one place to transform the language specification format, whether it
     # sits on the `pre` or `code`, or in a `class` or `lang` attribute
     class CodeLanguageFilter < HTML::Pipeline::Filter
-      include OutputSafety
+      include Concerns::OutputSafety
       prepend Concerns::PipelineTimingCheck
 
       LANG_PARAMS_DELIMITER = ':'

@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitlab_redis_buffered_counter, feature_category: :build_artifacts do
+RSpec.describe Projects::RefreshBuildArtifactsSizeStatisticsService, :clean_gitlab_redis_buffered_counter, feature_category: :job_artifacts do
   let(:service) { described_class.new }
 
   describe '#execute' do

@@ -80,7 +80,6 @@ export default {
       data-testid="tagBadge"
       :class="tagBadgeClass(index)"
       variant="info"
-      size="sm"
       >{{ tag.name }}</gl-badge
     >
 
@@ -90,7 +89,6 @@ export default {
       data-testid="moreBadge"
       variant="muted"
       :title="moreTagsTooltip"
-      size="sm"
       class="gl-hidden md:gl-flex gl-ml-2"
       ><gl-sprintf :message="__('+%{tags} more')">
         <template #tags>

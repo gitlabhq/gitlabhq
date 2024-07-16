@@ -72,7 +72,7 @@ func TestRegisterHandlerMissingData(t *testing.T) {
 func expectWatcherToBeExecuted(t *testing.T, watchKeyStatus redis.WatchKeyStatus, watchKeyError error,
 	httpStatus int, msgAndArgs ...interface{}) {
 	executed := false
-	watchKeyHandler := func(ctx context.Context, key, value string, timeout time.Duration) (redis.WatchKeyStatus, error) {
+	watchKeyHandler := func(_ context.Context, _, _ string, _ time.Duration) (redis.WatchKeyStatus, error) {
 		executed = true
 		return watchKeyStatus, watchKeyError
 	}

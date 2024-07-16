@@ -26,7 +26,7 @@ RSpec.describe Abuse::TrustScoreWorker, :clean_gitlab_redis_shared_state, featur
     end
 
     it 'does not attempt to create the trust score' do
-      expect(Abuse::TrustScore).not_to receive(:create!)
+      expect(AntiAbuse::TrustScore).not_to receive(:create!)
 
       perform
     end
@@ -34,8 +34,8 @@ RSpec.describe Abuse::TrustScoreWorker, :clean_gitlab_redis_shared_state, featur
 
   context "when the user exists" do
     it 'creates an abuse trust score with the correct data' do
-      expect { perform }.to change { Abuse::TrustScore.count }.from(0).to(1)
-      expect(Abuse::TrustScore.last.attributes).to include({
+      expect { perform }.to change { AntiAbuse::TrustScore.count }.from(0).to(1)
+      expect(AntiAbuse::TrustScore.last.attributes).to include({
         user_id: user.id,
         source: "telesign",
         score: 0.85,

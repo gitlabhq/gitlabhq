@@ -650,27 +650,31 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
     end
   end
 
-  describe '.with_running_builds' do
-    subject { described_class.with_running_builds }
+  describe '.with_executing_builds' do
+    subject(:scope) { described_class.with_executing_builds }
 
-    let_it_be(:runner1) { create(:ci_runner) }
+    let_it_be(:runners_by_status) do
+      Ci::HasStatus::AVAILABLE_STATUSES.index_with { |_status| create(:ci_runner) }
+    end
+
+    let_it_be(:busy_runners) do
+      Ci::HasStatus::EXECUTING_STATUSES.map { |status| runners_by_status[status] }
+    end
 
     context 'with no builds running' do
       it { is_expected.to be_empty }
     end
 
-    context 'with single build running on runner2' do
-      let(:runner2) { create(:ci_runner) }
-      let(:runner3) { create(:ci_runner) }
+    context 'with builds' do
+      before_all do
+        pipeline = create(:ci_pipeline, :running)
 
-      before do
-        project = create(:project, :repository)
-        pipeline = create(:ci_pipeline, project: project)
-        create(:ci_build, :running, runner: runner2, pipeline: pipeline)
-        create(:ci_build, :running, runner: runner3, pipeline: pipeline)
+        Ci::HasStatus::AVAILABLE_STATUSES.each do |status|
+          create(:ci_build, status, runner: runners_by_status[status], pipeline: pipeline)
+        end
       end
 
-      it { is_expected.to contain_exactly(runner2, runner3) }
+      it { is_expected.to match_array(busy_runners) }
     end
   end
 

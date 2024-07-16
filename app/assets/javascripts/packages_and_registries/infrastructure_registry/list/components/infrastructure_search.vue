@@ -8,9 +8,13 @@ import UrlSync from '~/vue_shared/components/url_sync.vue';
 
 export default {
   components: { RegistrySearch, UrlSync },
+  inject: {
+    isGroupPage: {
+      default: false,
+    },
+  },
   computed: {
     ...mapState({
-      isGroupPage: (state) => state.config.isGroupPage,
       sorting: (state) => state.sorting,
       filter: (state) => state.filter,
     }),

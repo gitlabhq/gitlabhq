@@ -81,6 +81,8 @@ module ApiHelpers
   end
 
   def stub_last_activity_update
-    allow_any_instance_of(Users::ActivityService).to receive(:execute)
+    allow_next_instance_of(Users::ActivityService) do |service|
+      allow(service).to receive(:execute)
+    end
   end
 end

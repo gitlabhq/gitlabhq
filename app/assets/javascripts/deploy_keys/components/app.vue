@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -95,7 +95,6 @@ export default {
     nextPage: __('Go to next page'),
     next: __('Next'),
     prev: __('Prev'),
-    goto: (page) => sprintf(__('Go to page %{page}'), { page }),
   },
   computed: {
     tabs() {
@@ -221,7 +220,6 @@ export default {
         :prev="$options.i18n.prev"
         :label-previous-page="$options.i18n.prevPage"
         :label-next-page="$options.i18n.nextPage"
-        :label-page="$options.i18n.goto"
         @next="moveNext()"
         @previous="movePrevious()"
         @input="moveToPage"

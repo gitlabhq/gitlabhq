@@ -61,12 +61,4 @@ RSpec.describe Packages::Npm::Metadatum, type: :model, feature_category: :packag
       end
     end
   end
-
-  describe '#package_json_scripts' do
-    let(:metadatum) { build_stubbed(:npm_metadatum) }
-
-    subject { metadatum.package_json_scripts }
-
-    it { is_expected.to eq({ 'test' => 'echo "Test"' }) }
-  end
 end

@@ -2,11 +2,12 @@
 - sslBadgeText = _('SSL Verification:') + ' ' + sslStatus
 
 %li.gl-border-b.gl-last-of-type-border-b-0
-  .row.gl-mx-0
-    .col-md-8.col-lg-5.gl-px-5
-      .light-header.gl-mb-1
-        = hook.name
-      .gl-font-sm
+  .gl-flex.gl-flex-wrap.sm:gl-flex-nowrap.gl-justify-between.gl-gap-x-5.gl-gap-y-3
+    .gl-basis-full.gl-flex.gl-flex-col
+      - if hook.name?
+        %p.gl-font-semibold.gl-mb-0
+          = hook.name
+      %p.gl-mb-2{ class: hook.name ? 'gl-text-secondary' : 'gl-font-semibold' }
         = hook.url
 
         - if hook.rate_limited?
@@ -19,13 +20,13 @@
       %div
         - hook.class.triggers.each_value do |trigger|
           - if hook.public_send(trigger)
-            = gl_badge_tag(integration_webhook_event_human_name(trigger), size: :sm)
-        = gl_badge_tag(sslBadgeText, size: :sm)
+            = gl_badge_tag(integration_webhook_event_human_name(trigger), variant: :neutral, size: :sm)
+        = gl_badge_tag(sslBadgeText, variant: :neutral, size: :sm)
 
-    .col-md-2.col-lg-4.gl-px-5.gl-font-sm
+    .gl-font-sm
       = truncate(hook.description, length: 200)
 
-    .col-md-4.col-lg-3.gl-mt-2.gl-px-5.gl-gap-3.gl-display-flex.gl-md-justify-content-end.gl-align-items-baseline
+    .gl-flex.gl-items-baseline.gl-gap-3
       = render 'shared/web_hooks/test_button', hook: hook, size: 'small'
       = render Pajamas::ButtonComponent.new(href: edit_hook_path(hook), size: :small) do
         = _('Edit')

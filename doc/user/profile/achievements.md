@@ -42,6 +42,14 @@ Practically, you can differentiate between achievements that are awarded:
 - Once and revocable. For example, a "Core team member" achievement.
 - Multiple times. For example, a "Contributor of the month" achievement.
 
+## View group achievements
+
+To view all available and awarded achievements for a group:
+
+- Go to `https://gitlab.com/groups/<group-path>/-/achievements`.
+
+The page displays a list of achievements and the members who were awarded the achievement.
+
 ## View a user's achievements
 
 You can view a user's achievements on their profile page.
@@ -92,44 +100,52 @@ Prerequisites:
 
 - You must have the Maintainer or Owner role for the namespace.
 
-To create an achievement, call the [`achievementsCreate` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementscreate).
+To create an achievement:
 
-```graphql
-mutation achievementsCreate($file: Upload!) {
-  achievementsCreate(
-    input: {
-      namespaceId: "gid://gitlab/Namespace/<namespace id>",
-      name: "<name>",
-      description: "<description>",
-      avatar: $file}
-  ) {
-    errors
-    achievement {
-      id
-      name
-      description
-      avatarUrl
+- In the UI:
+  1. On the [Achievements page](#view-group-achievements), select **New achievement**.
+  1. Enter a name for the achievement.
+  1. Optional. Enter a description and upload an avatar for the achievement.
+  1. Select **Save changes**.
+
+- With the GraphQL API, call the [`achievementsCreate` GraphQL mutation](../../api/graphql/reference/index.md#mutationachievementscreate):
+
+  ```graphql
+  mutation achievementsCreate($file: Upload!) {
+    achievementsCreate(
+      input: {
+        namespaceId: "gid://gitlab/Namespace/<namespace id>",
+        name: "<name>",
+        description: "<description>",
+        avatar: $file}
+    ) {
+      errors
+      achievement {
+        id
+        name
+        description
+        avatarUrl
+      }
     }
   }
-}
-```
+  ```
 
-To supply the avatar file, call the mutation using `curl`:
+  To supply the avatar file, call the mutation using `curl`:
 
-```shell
-curl "https://gitlab.com/api/graphql" \
-  -H "Authorization: Bearer <your-pat-token>" \
-  -H "Content-Type: multipart/form-data" \
-  -F operations='{ "query": "mutation ($file: Upload!) { achievementsCreate(input: { namespaceId: \"gid://gitlab/Namespace/<namespace-id>\", name: \"<name>\", description: \"<description>\", avatar: $file }) { achievement { id name description avatarUrl } } }", "variables": { "file": null } }' \
-  -F map='{ "0": ["variables.file"] }' \
-  -F 0='@/path/to/your/file.jpg'
-```
+  ```shell
+  curl "https://gitlab.com/api/graphql" \
+    -H "Authorization: Bearer <your-pat-token>" \
+    -H "Content-Type: multipart/form-data" \
+    -F operations='{ "query": "mutation ($file: Upload!) { achievementsCreate(input: { namespaceId: \"gid://gitlab/Namespace/<namespace-id>\", name: \"<name>\", description: \"<description>\", avatar: $file }) { achievement { id name description avatarUrl } } }", "variables": { "file": null } }' \
+    -F map='{ "0": ["variables.file"] }' \
+    -F 0='@/path/to/your/file.jpg'
+  ```
 
-When successful, the response returns the achievement ID:
+  When successful, the response returns the achievement ID:
 
-```shell
-{"data":{"achievementsCreate":{"achievement":{"id":"gid://gitlab/Achievements::Achievement/1","name":"<name>","description":"<description>","avatarUrl":"https://gitlab.com/uploads/-/system/achievements/achievement/avatar/1/file.jpg"}}}}
-```
+  ```shell
+  {"data":{"achievementsCreate":{"achievement":{"id":"gid://gitlab/Achievements::Achievement/1","name":"<name>","description":"<description>","avatarUrl":"https://gitlab.com/uploads/-/system/achievements/achievement/avatar/1/file.jpg"}}}}
+  ```
 
 ## Update an achievement
 

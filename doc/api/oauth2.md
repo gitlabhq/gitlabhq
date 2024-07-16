@@ -48,8 +48,7 @@ GitLab supports the following authorization flows:
   server-side apps.
 - **Resource owner password credentials:** To be used **only** for securely
   hosted, first-party services. GitLab recommends against use of this flow.
-
-Device Authorization Grant is not supported. [Issue 332682](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) proposes to add support.
+- **Device Authorization Grant** (GitLab 17.1 and later) Secure flow oriented toward devices without browser access. Requires a secondary device to complete the authorization flow.
 
 The draft specification for [OAuth 2.1](https://oauth.net/2.1/) specifically omits both the
 Implicit grant and Resource Owner Password Credentials flows.
@@ -106,7 +105,7 @@ Before starting the flow, generate the `STATE`, the `CODE_VERIFIER` and the `COD
 - The `CODE_VERIFIER` is a random string, between 43 and 128 characters in length,
   which use the characters `A-Z`, `a-z`, `0-9`, `-`, `.`, `_`, and `~`.
 - The `CODE_CHALLENGE` is an URL-safe base64-encoded string of the SHA256 hash of the
-  `CODE_VERIFIER`.
+  `CODE_VERIFIER`:
   - The SHA256 hash must be in binary format before encoding.
   - In Ruby, you can set that up with `Base64.urlsafe_encode64(Digest::SHA256.digest(CODE_VERIFIER), padding: false)`.
   - For reference, a `CODE_VERIFIER` string of `ks02i3jdikdo2k0dkfodf3m39rjfjsdk0wk349rj3jrhf` when hashed
@@ -260,6 +259,129 @@ authorization request.
 
 You can now make requests to the API with the access token returned.
 
+### Device authorization grant flow
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/332682) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `oauth2_device_grant_flow`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+NOTE:
+Check the [RFC spec](https://datatracker.ietf.org/doc/html/rfc8628#section-3.1) for a detailed
+description of the device authorization grant flow, from device authorization request to token response from the browser login.
+
+The device authorization grant flow makes it possible to securely authenticate your GitLab identity from input constrained devices where browser interactions are not an option.
+
+This makes the device authorization grant flow ideal for users attempting to use GitLab services from headless servers or other devices with no, or limited, UI.
+
+1. To request device authorization, a request is sent from the input-limited
+   device client to `https://gitlab.example.com/oauth/authorize_device`. For example:
+
+   ```ruby
+     parameters = 'client_id=UID&scope=read'
+     RestClient.post 'https://gitlab.example.com/oauth/authorize_device', parameters
+   ```
+
+   After a successful request, a response containing a `verification_uri` is returned to the user. For example:
+
+   ```json
+   {
+       "device_code": "GmRhmhcxhwAzkoEqiMEg_DnyEysNkuNhszIySk9eS",
+       "user_code": "0A44L90H",
+       "verification_uri": "https://gitlab.example.com/oauth/device",
+       "verification_uri_complete": "https://gitlab.example.com/oauth/device?user_code=0A44L90H",
+       "expires_in": 300,
+       "interval": 5
+   }
+   ```
+
+1. The device client displays the `user_code` and `verification_uri` from the response to the
+   requesting user. That user then, on a secondary device with browser access:
+   1. Goes to the provided URI.
+   1. Enters the user code.
+   1. Completes an authentication as prompted.
+
+1. Immediately after displaying the `verification_uri` and `user_code`, the device client
+   begins polling the token endpoint with the associated `device_code` returned in the initial response:
+
+   ```ruby
+   parameters = 'grant_type=urn:ietf:params:oauth:grant-type:device_code
+   &device_code=GmRhmhcxhwAzkoEqiMEg_DnyEysNkuNhszIySk9eS
+   &client_id=1406020730'
+   RestClient.post 'https://gitlab.example.com/oauth/token', parameters
+   ```
+
+1. The device client receives a response from the token endpoint. If the authorization was successful,
+   a success response is returned, otherwise, an error response is returned.
+   Potential error responses are categorized by either of the following:
+   - Those defined by the OAuth Authorization Framework access token error responses.
+   - Those specific to the device authorization grant flow described here.
+   Those error responses specific to the device flow are described in the following content.
+   For more information on each potential response, see the relevant [RFC spec for device authorization grant](https://datatracker.ietf.org/doc/html/rfc8628#section-3.5) and the
+   [RFC spec for authorization tokens](https://datatracker.ietf.org/doc/html/rfc6749#section-5.2).
+
+   Example response:
+
+   ```json
+   {
+     "error": "authorization_pending",
+     "error_description": "..."
+   }
+   ```
+
+   On receipt of this response, the device client continues polling.
+
+   If the polling interval is too short, a slow down error response is returned. For example:
+
+    ```json
+    {
+      "error": "slow_down",
+      "error_description": "..."
+    }
+    ```
+
+   On receipt of this response, the device client reduces its polling rate and continues polling at the new rate.
+
+   If the device code expires before authentication is complete, an expired token error
+   response is returned. For example:
+
+   ```json
+   {
+     "error": "expired_token",
+     "error_description": "..."
+   }
+   ```
+
+   At that point, the device-client should stop and initiate a new device authorization request.
+
+   If the authorization request was denied, an access denied error response is returned. For example:
+
+   ```json
+   {
+     "error": "access_denied",
+     "error_description": "..."
+   }
+   ```
+
+   The authentication request has been rejected. The user should verify their credentials or contact their system administrator
+
+1. After the user successfully authenticates, a success response is returned:
+
+   ```json
+   {
+       "access_token": "TOKEN",
+       "token_type": "Bearer",
+       "expires_in": 7200,
+       "scope": "read",
+       "created_at": 1593096829
+   }
+   ```
+
+At this point, the device authentication flow is complete. The returned `access_token` can be provided to GitLab to authenticate the user identity when accessing GitLab resources, such as when cloning over HTTPS or accessing the API.
+
+A sample application that implements the client side device flow can be found at: <https://gitlab.com/johnwparent/git-auth-over-https>.
+
 ### Resource owner password credentials flow
 
 NOTE:
@@ -364,10 +486,10 @@ curl --header "Authorization: Bearer OAUTH-TOKEN" "https://gitlab.example.com/ap
 
 A token with [scope](../integration/oauth_provider.md#view-all-authorized-applications)
 `read_repository` or `write_repository` can access Git over HTTPS. Use the token as the password.
-The username should be your GitLab username or `oauth2`:
+The username must be `oauth2`. The username must not be your username:
 
 ```plaintext
-https://<your_gitlab_username>:<your_access_token>@gitlab.example.com/project_path/project_name.git
+https://oauth2:<your_access_token>@gitlab.example.com/project_path/project_name.git
 ```
 
 Alternatively, you can use a [Git credential helper](../user/profile/account/two_factor_authentication.md#oauth-credential-helpers)

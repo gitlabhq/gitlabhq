@@ -132,23 +132,33 @@ module Boards
     def without_board_labels(items)
       return items unless board_label_ids.any?
 
-      items.where.not('EXISTS (?)', label_links(board_label_ids).limit(1))
+      items.where(label_links(items, board_label_ids.compact).arel.exists.not)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
-    def label_links(label_ids)
-      LabelLink
-        .where(label_links: { target_type: item_model })
-        .where(item_model.arel_table[:id].eq(LabelLink.arel_table[:target_id]).to_sql)
-        .where(label_id: label_ids)
+    def label_links(items, label_ids)
+      labels_filter.label_link_query(items, label_ids: label_ids)
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
     # rubocop: disable CodeReuse/ActiveRecord
     def with_list_label(items)
-      items.where('EXISTS (?)', label_links(list.label_id).limit(1))
+      items.where(label_links(items, [list.label_id]).arel.exists)
     end
     # rubocop: enable CodeReuse/ActiveRecord
+
+    def labels_filter
+      Issuables::LabelFilter.new(params: {}, project: project, group: group)
+    end
+    strong_memoize_attr :labels_filter
+
+    def group
+      parent if parent.is_a?(Group)
+    end
+
+    def project
+      parent if parent.is_a?(Project)
+    end
   end
 end

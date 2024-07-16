@@ -31,13 +31,8 @@ export default class LengthValidator extends InputValidator {
     );
 
     const { value } = this.inputDomElement;
-    const {
-      minLength,
-      minLengthMessage,
-      maxLengthMessage,
-      maxLength,
-      allowEmpty,
-    } = this.inputDomElement.dataset;
+    const { minLength, minLengthMessage, maxLengthMessage, maxLength, allowEmpty } =
+      this.inputDomElement.dataset;
 
     this.invalidInput = false;
 

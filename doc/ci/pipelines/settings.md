@@ -87,7 +87,7 @@ running job can be cancelled before it completes. After a job with
 
 ## Prevent outdated deployment jobs
 
-> - In GitLab 15.5, the behavior was [changed](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) to prevent outdated job runs.
+> - Also preventing outdated manual or retried deployment jobs from running [added](https://gitlab.com/gitlab-org/gitlab/-/issues/363328) in GitLab 15.5.
 
 Your project may have multiple concurrent deployment jobs that are
 scheduled to run in the same time frame.
@@ -209,8 +209,7 @@ a repository.
    The maximum value is `1000`. To disable shallow clone and make GitLab CI/CD
    fetch all branches and tags each time, keep the value empty or set to `0`.
 
-In GitLab versions 14.7 and later, newly created projects have a default `git depth`
-value of `20`. GitLab versions 14.6 and earlier have a default `git depth` value of `50`.
+Newly created projects have a default `git depth` value of `20`.
 
 This value can be overridden by the [`GIT_DEPTH` variable](../../user/project/repository/monorepos/index.md#shallow-cloning)
 in the `.gitlab-ci.yml` file.

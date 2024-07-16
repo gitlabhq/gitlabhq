@@ -21,8 +21,6 @@ module Ci
       def execute
         in_lock(EXCLUSIVE_LOCK_KEY, ttl: LOCK_TIMEOUT, retries: 1) do
           destroy_unlocked_pipeline_artifacts
-
-          legacy_destroy_pipeline_artifacts
         end
 
         @removed_artifacts_count
@@ -38,19 +36,6 @@ module Ci
 
           destroy_batch(artifacts)
         end
-      end
-
-      def legacy_destroy_pipeline_artifacts
-        loop_until(timeout: LOOP_TIMEOUT, limit: LOOP_LIMIT) do
-          destroy_artifacts_batch
-        end
-      end
-
-      def destroy_artifacts_batch
-        artifacts = ::Ci::PipelineArtifact.unlocked.expired.limit(BATCH_SIZE).to_a
-        return false if artifacts.empty?
-
-        destroy_batch(artifacts)
       end
 
       def destroy_batch(artifacts)

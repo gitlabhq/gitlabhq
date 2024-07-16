@@ -1,11 +1,14 @@
 <script>
 import { GlButton, GlDrawer, GlFormTextarea, GlModal, GlFormInput, GlSprintf } from '@gitlab/ui';
+import { InternalEvents } from '~/tracking';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__ } from '~/locale';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import replaceTextMutation from './graphql/mutations/replace_text.mutation.graphql';
+
+const trackingMixin = InternalEvents.mixin();
 
 const i18n = {
   redactText: s__('ProjectMaintenance|Redact text'),
@@ -37,6 +40,7 @@ export default {
   DRAWER_Z_INDEX,
   modalCancel: { text: i18n.modalCancelText },
   components: { GlButton, GlDrawer, GlFormTextarea, GlModal, GlFormInput, GlSprintf },
+  mixins: [trackingMixin],
   inject: { projectPath: { default: '' }, housekeepingPath: { default: '' } },
   data() {
     return {
@@ -83,6 +87,7 @@ export default {
     },
     redactTextConfirm() {
       this.isLoading = true;
+      this.trackEvent('click_redact_text_button_repository_settings');
       this.$apollo
         .mutate({
           mutation: replaceTextMutation,

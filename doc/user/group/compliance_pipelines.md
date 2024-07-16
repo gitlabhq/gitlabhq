@@ -148,7 +148,11 @@ You can leave it out if your compliance pipeline only ever runs in labeled proje
 #### Compliance pipelines and custom pipeline configuration hosted externally
 
 The example above assumes that all projects host their pipeline configuration in the same project.
-If any projects use [configuration hosted externally to the project](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file):
+If any projects use [configuration hosted externally](../../ci/pipelines/settings.md#specify-a-custom-cicd-configuration-file),
+the example configuration does not work. See [issue 393960](https://gitlab.com/gitlab-org/gitlab/-/issues/393960)
+for more details.
+
+With projects that use externally hosted configuration, you can try the this workaround:
 
 - The `include` section in the example compliance pipeline configuration must be adjusted.
   For example, using [`include:rules`](../../ci/yaml/includes.md#use-rules-with-include):
@@ -231,8 +235,7 @@ include:  # Execute individual project's configuration
 In this example, a configuration file is only included if it exists for the given `ref`
 in the project in `exists:project: $CI_PROJECT_PATH'`.
 
-You cannot use [`rules:exists` with `include`](../../ci/yaml/includes.md#include-with-rulesexists)
-to solve this problem because `include:rules:exists` searches for files in the project
+If `exists:project` is not specified in the compliance pipeline configuration, it searches for files in the project
 in which the `include` is defined. In compliance pipelines, the `include` from the example above
 is defined in the project hosting the compliance pipeline configuration file, not the project
 running the pipeline.

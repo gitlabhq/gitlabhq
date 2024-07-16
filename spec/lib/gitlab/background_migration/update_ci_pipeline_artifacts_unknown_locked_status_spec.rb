@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::UpdateCiPipelineArtifactsUnknownLockedStatus, feature_category: :build_artifacts do
+RSpec.describe Gitlab::BackgroundMigration::UpdateCiPipelineArtifactsUnknownLockedStatus, feature_category: :job_artifacts do
   describe '#perform' do
     let(:batch_table) { :ci_pipeline_artifacts }
     let(:batch_column) { :id }

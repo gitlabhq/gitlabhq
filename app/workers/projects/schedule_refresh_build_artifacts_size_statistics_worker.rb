@@ -7,7 +7,7 @@ module Projects
 
     data_consistency :always
 
-    feature_category :build_artifacts
+    feature_category :job_artifacts
 
     idempotent!
 

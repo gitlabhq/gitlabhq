@@ -2,9 +2,6 @@
 description: An issue was unrelated to another issue
 internal_events: true
 action: g_project_management_issue_unrelated
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

@@ -27,7 +27,7 @@ module RenderAccessTokens
   end
 
   def page
-    (params[:page] || 1).to_i
+    (pagination_params[:page] || 1).to_i
   end
 
   def expiry_ics(tokens)

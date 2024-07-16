@@ -145,6 +145,8 @@ To view the last time a token was used:
 > - Personal access tokens no longer being able to access container or package registries [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387721) in GitLab 16.0.
 > - `k8s_proxy` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/422408) in GitLab 16.4 [with a flag](../../administration/feature_flags.md) named `k8s_proxy_pat`. Enabled by default.
 > - Feature flag `k8s_proxy_pat` [removed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131518) in GitLab 16.5.
+> - `read_service_ping` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/42692#note_1222832412) in GitLab 17.1.
+> - `manage_runner` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460721) in GitLab 17.1.
 
 A personal access token can perform actions based on the assigned scopes.
 
@@ -160,10 +162,10 @@ A personal access token can perform actions based on the assigned scopes.
 | `sudo`             | Grants permission to perform API actions as any user in the system, when authenticated as an administrator.                                                                                                                                                                                                        |
 | `admin_mode`       | Grants permission to perform API actions as an administrator, when Admin Mode is enabled. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 15.8.)                                                                                                                             |
 | `create_runner`    | Grants permission to create runners.                                                                                                                                                                                                                                                                               |
-| `manage_runner`    | Grants permission to manage runners.                                                                                                                                                                                                                                                                               |
+| `manage_runner`    | Grants permission to manage runners.                                                                    |
 | `ai_features`      | Grants permission to perform API actions for GitLab Duo. This scope is designed to work with the GitLab Duo Plugin for JetBrains. For all other extensions, see scope requirements.                                                                                                                                |
 | `k8s_proxy`        | Grants permission to perform Kubernetes API calls using the agent for Kubernetes.                                                                                                                                                                                                                                  |
-| `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. ([Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/107875) in GitLab 16.8. |
+| `read_service_ping`| Grant access to download Service Ping payload through the API when authenticated as an admin use. |
 
 WARNING:
 If you enabled [external authorization](../../administration/settings/external_authorization.md), personal access tokens cannot access container or package registries. If you use personal access tokens to access these registries, this measure breaks this use of these tokens. Disable external authorization to use personal access tokens with container or package registries.
@@ -210,7 +212,7 @@ Prerequisites:
 
 - You must be an administrator for your self-managed instance.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.

@@ -59,8 +59,8 @@ Once you have a project identified to use:
 - [Metrics](../../operations/metrics.md)
 - [Logs](../../operations/logs.md)
 
-## Related blueprints
+## Related design documents
 
-- [GitLab Observability in GitLab.com and Self-Managed GitLab Instances](../../architecture/blueprints/observability_for_self_managed/index.md)
-- [GitLab Observability - Metrics](../../architecture/blueprints/observability_metrics/index.md)
-- [GitLab Observability - Logging](../../architecture/blueprints/observability_logging/index.md)
+- [GitLab Observability in GitLab.com and Self-Managed GitLab Instances](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_for_self_managed/)
+- [GitLab Observability - Metrics](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_metrics/)
+- [GitLab Observability - Logging](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/observability_logging/)

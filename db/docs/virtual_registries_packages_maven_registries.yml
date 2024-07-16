@@ -1,0 +1,12 @@
+---
+table_name: virtual_registries_packages_maven_registries
+classes:
+- VirtualRegistries::Packages::Maven::Registry
+feature_categories:
+- virtual_registry
+description: A virtual registry object for a packages of kind Maven.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156930
+milestone: '17.2'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  group_id: namespaces

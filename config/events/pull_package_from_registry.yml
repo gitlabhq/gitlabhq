@@ -1,0 +1,23 @@
+---
+description: Package pulled from the registry
+internal_events: true
+action: pull_package_from_registry
+identifiers:
+  - project
+  - namespace
+  - user
+additional_properties:
+  label:
+    description: The name of the package type
+  property:
+    description: The auth type. Either 'guest', 'user' or 'deploy_token'
+product_group: package_registry
+milestone: '17.1'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151919
+distributions:
+  - ce
+  - ee
+tiers:
+  - free
+  - premium
+  - ultimate

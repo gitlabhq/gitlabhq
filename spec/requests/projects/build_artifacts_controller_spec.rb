@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::BuildArtifactsController, feature_category: :build_artifacts do
+RSpec.describe Projects::BuildArtifactsController, feature_category: :job_artifacts do
   let_it_be(:project) { create(:project, :public) }
   let_it_be(:ci_build) { create(:ci_build, :artifacts, project: project) }
 

@@ -50,7 +50,7 @@ Style/RedundantReturn:
     - 'lib/feature/gitaly.rb'
     - 'lib/gitlab/auth/database/authentication.rb'
     - 'lib/gitlab/checks/diff_check.rb'
-    - 'lib/gitlab/ci/parsers/coverage/sax_document.rb'
+    - 'lib/gitlab/ci/parsers/coverage/documents/cobertura_document.rb'
     - 'lib/gitlab/database/health_status/indicators/prometheus_alert_indicator.rb'
     - 'lib/gitlab/graphql/queries.rb'
     - 'lib/gitlab/hotlinking_detector.rb'

@@ -7,7 +7,7 @@ module UserSettings
     def authentication_log
       @events = AuthenticationEvent.for_user(current_user)
           .order_by_created_at_desc
-          .page(params[:page])
+          .page(pagination_params[:page])
 
       Gitlab::Tracking.event(self.class.name, 'search_audit_event', user: current_user)
     end

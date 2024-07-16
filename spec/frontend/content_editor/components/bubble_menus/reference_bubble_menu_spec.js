@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import { GlLoadingIcon, GlListboxItem, GlCollapsibleListbox } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -6,8 +7,15 @@ import ReferenceBubbleMenu from '~/content_editor/components/bubble_menus/refere
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import { stubComponent } from 'helpers/stub_component';
 import Reference from '~/content_editor/extensions/reference';
-import { createTestEditor, emitEditorEvent, createDocBuilder } from '../../test_utils';
+import { createTestEditor, emitEditorEvent } from '../../test_utils';
 
+const mockWorkItem = {
+  href: 'https://gitlab.com/gitlab-org/gitlab/-/work_items/12',
+  text: '#12',
+  expandedText: 'Et fuga quos omnis enim dolores amet impedit. (#12)',
+  fullyExpandedText:
+    'Et fuga quos omnis enim dolores amet impedit. (#12) • Fernanda Adams • Sprint - Eligendi quas non inventore eum quaerat sit.',
+};
 const mockIssue = {
   href: 'https://gitlab.com/gitlab-org/gitlab-test/-/issues/24',
   text: '#24',
@@ -27,16 +35,6 @@ const mockEpic = {
   expandedText: 'Temporibus delectus distinctio quas sed non per... (&5)',
 };
 
-const supportedIssueDisplayFormats = ['Issue ID', 'Issue title', 'Issue summary'];
-
-const supportedMergeRequestDisplayFormats = [
-  'Merge request ID',
-  'Merge request title',
-  'Merge request summary',
-];
-
-const supportedEpicDisplayFormats = ['Epic ID', 'Epic title'];
-
 describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
   let wrapper;
   let tiptapEditor;
@@ -54,14 +52,7 @@ describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
     contentEditor = { resolveReference: jest.fn().mockImplementation(() => new Promise(() => {})) };
     eventHub = eventHubFactory();
 
-    ({
-      builders: { doc, p, reference },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        reference: { nodeType: Reference.name },
-      },
-    }));
+    ({ doc, paragraph: p, reference } = builders(tiptapEditor.schema));
   };
 
   const expectedDocs = {
@@ -86,6 +77,29 @@ describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
           '#24+s',
           'issue',
           'Et fuga quos omnis enim dolores amet impedit. (#24) • Fernanda Adams • Sprint - Eligendi quas non inventore eum quaerat sit.',
+        ),
+    ],
+    work_item: [
+      () =>
+        buildExpectedDoc(
+          'https://gitlab.com/gitlab-org/gitlab/-/work_items/12',
+          '#12',
+          'work_item',
+          '#12',
+        ),
+      () =>
+        buildExpectedDoc(
+          'https://gitlab.com/gitlab-org/gitlab/-/work_items/12',
+          '#12+',
+          'work_item',
+          'Et fuga quos omnis enim dolores amet impedit. (#12)',
+        ),
+      () =>
+        buildExpectedDoc(
+          'https://gitlab.com/gitlab-org/gitlab/-/work_items/12',
+          '#12+s',
+          'work_item',
+          'Et fuga quos omnis enim dolores amet impedit. (#12) • Fernanda Adams • Sprint - Eligendi quas non inventore eum quaerat sit.',
         ),
     ],
     merge_request: [
@@ -168,9 +182,10 @@ describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
 
   describe.each`
     referenceType      | mockReference       | supportedDisplayFormats
-    ${'issue'}         | ${mockIssue}        | ${supportedIssueDisplayFormats}
-    ${'merge_request'} | ${mockMergeRequest} | ${supportedMergeRequestDisplayFormats}
-    ${'epic'}          | ${mockEpic}         | ${supportedEpicDisplayFormats}
+    ${'work_item'}     | ${mockWorkItem}     | ${['ID', 'Title', 'Summary']}
+    ${'issue'}         | ${mockIssue}        | ${['ID', 'Title', 'Summary']}
+    ${'merge_request'} | ${mockMergeRequest} | ${['ID', 'Title', 'Summary']}
+    ${'epic'}          | ${mockEpic}         | ${['ID', 'Title']}
   `(
     'for reference type $referenceType',
     ({ referenceType, mockReference, supportedDisplayFormats }) => {

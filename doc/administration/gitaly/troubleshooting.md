@@ -23,7 +23,7 @@ and our advice on [parsing the `gitaly/current` file](../logs/log_parsing.md#par
 When using standalone Gitaly servers, you must make sure they are the same version
 as GitLab to ensure full compatibility:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Gitaly Servers**.
 1. Confirm all Gitaly servers indicate that they are up to date.
 
@@ -331,9 +331,9 @@ This information in the logs is a gRPC call
 If this error occurs, even though
 [the Gitaly auth tokens are set up correctly](troubleshooting_gitaly_cluster.md#praefect-errors-in-logs),
 it's likely that the Gitaly servers are experiencing
-[clock drift](https://en.wikipedia.org/wiki/Clock_drift).
+[clock drift](https://en.wikipedia.org/wiki/Clock_drift). The auth tokens sent to Gitaly include a timestamp. To be considered valid, Gitaly requires that timestamp to be within 60 seconds of the Gitaly server time.
 
-Ensure the Gitaly clients and servers are synchronized, and use an NTP time
+Ensure the Gitaly clients and servers are synchronized, and use a Network Time Protocol (NTP) time
 server to keep them synchronized.
 
 ## Gitaly not listening on new address after reconfiguring

@@ -25,6 +25,7 @@ module ClickHouseWorker
   included do
     click_house_migration_lock(ClickHouse::MigrationSupport::ExclusiveLock::DEFAULT_CLICKHOUSE_WORKER_TTL)
 
+    worker_has_external_dependencies! # the worker interacts with a ClickHouse database
     pause_control :click_house_migration
   end
 end

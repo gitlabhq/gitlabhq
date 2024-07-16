@@ -1,9 +1,0 @@
----
-table_name: dast_site_profiles_pipelines
-classes: []
-feature_categories:
-- dynamic_application_security_testing
-description: Join table between DAST Site Profiles and CI Pipelines
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/60090
-milestone: '13.12'
-gitlab_schema: gitlab_main

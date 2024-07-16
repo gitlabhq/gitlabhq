@@ -48,7 +48,7 @@ RSpec.shared_context 'with work item types request context' do
   end
 
   def widgets_for(work_item_type, resource_parent)
-    work_item_type.widgets(resource_parent).map do |widget|
+    work_item_type.widget_classes(resource_parent).map do |widget|
       base_attributes = { 'type' => widget.type.to_s.upcase }
       next hierarchy_widget_attributes(work_item_type, base_attributes) if widget == WorkItems::Widgets::Hierarchy
       next base_attributes unless widget_attributes[widget.type]

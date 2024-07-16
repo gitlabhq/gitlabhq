@@ -37,6 +37,13 @@ All deprecations and changes between versions are in the documentation.
 
 Only API version v4 is available.
 
+### Breaking change exemptions
+
+Elements labeled as [experimental or beta](../../policy/experiment-beta-support.md) in the [REST API resources](../api_resources.md) are exempt from the deprecation process.
+These parts can be removed or changed at any time without notice.
+
+Fields behind a feature flag and disabled by default do not follow the deprecation and removal process. These fields can be removed at any time without notice.
+
 ## How to use the API
 
 API requests must include both `api` and the API version. The API
@@ -321,18 +328,18 @@ insight into what went wrong.
 
 The following table gives an overview of how the API functions generally behave.
 
-| Request type  | Description                                                                                                                     |
-|:--------------|:--------------------------------------------------------------------------------------------------------------------------------|
-| `GET`         | Access one or more resources and return the result as JSON.                                                                     |
-| `POST`        | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON.                     |
-| `GET` / `PUT` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON.                |
-| `DELETE`      | Returns `204 No Content` if the resource was deleted successfully or `202 Accepted` if the resource is scheduled to be deleted. |
+| Request type            | Description                                                                                                                     |
+|:------------------------|:--------------------------------------------------------------------------------------------------------------------------------|
+| `GET`                   | Access one or more resources and return the result as JSON.                                                                     |
+| `POST`                  | Return `201 Created` if the resource is successfully created and return the newly created resource as JSON.                     |
+| `GET` / `PUT` / `PATCH` | Return `200 OK` if the resource is accessed or modified successfully. The (modified) result is returned as JSON.                |
+| `DELETE`                | Returns `204 No Content` if the resource was deleted successfully or `202 Accepted` if the resource is scheduled to be deleted. |
 
 The following table shows the possible return codes for API requests.
 
 | Return values             | Description                                                                                                                                              |
 |:--------------------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `200 OK`                  | The `GET`, `PUT` or `DELETE` request was successful, and the resource itself is returned as JSON.                                                        |
+| `200 OK`                  | The `GET`, `PUT`, `PATCH` or `DELETE` request was successful, and the resource itself is returned as JSON.                                                        |
 | `201 Created`             | The `POST` request was successful, and the resource is returned as JSON.                                                                                 |
 | `202 Accepted`            | The `GET`, `PUT` or `DELETE` request was successful, and the resource is scheduled for processing.                                                       |
 | `204 No Content`          | The server has successfully fulfilled the request, and there is no additional content to send in the response payload body.                              |

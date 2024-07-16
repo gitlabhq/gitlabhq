@@ -25,22 +25,24 @@ const { i18n } = DeleteBlobModal;
 describe('DeleteBlobModal', () => {
   let wrapper;
 
-  const createComponentFactory = (mountFn) => (props = {}) => {
-    wrapper = mountFn(DeleteBlobModal, {
-      propsData: {
-        ...initialProps,
-        ...props,
-      },
-      attrs: {
-        static: true,
-        visible: true,
-      },
-      stubs: {
-        GlSprintf,
-        GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
-      },
-    });
-  };
+  const createComponentFactory =
+    (mountFn) =>
+    (props = {}) => {
+      wrapper = mountFn(DeleteBlobModal, {
+        propsData: {
+          ...initialProps,
+          ...props,
+        },
+        attrs: {
+          static: true,
+          visible: true,
+        },
+        stubs: {
+          GlSprintf,
+          GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+        },
+      });
+    };
 
   const createComponent = createComponentFactory(shallowMountExtended);
   const createFullComponent = createComponentFactory(mount);

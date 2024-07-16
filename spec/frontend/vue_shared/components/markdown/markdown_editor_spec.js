@@ -17,7 +17,6 @@ import ContentEditor from '~/content_editor/components/content_editor.vue';
 import BubbleMenu from '~/content_editor/components/bubble_menus/bubble_menu.vue';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import MarkdownField from '~/vue_shared/components/markdown/field.vue';
-import { assertProps } from 'helpers/assert_props';
 import { stubComponent } from 'helpers/stub_component';
 import { useLocalStorageSpy } from 'helpers/local_storage_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -343,12 +342,6 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     );
 
     expect(findTextarea().element.value).toBe(value);
-  });
-
-  it('fails to render if textarea id and name is not passed', () => {
-    expect(() => assertProps(MarkdownEditor, { ...defaultProps, formFieldProps: {} })).toThrow(
-      'Invalid prop: custom validator check failed for prop "formFieldProps"',
-    );
   });
 
   it(`emits ${EDITING_MODE_CONTENT_EDITOR} event when enableContentEditor emitted from markdown editor`, async () => {

@@ -54,6 +54,7 @@ prepare-as-if-jh-branch:
   stage: prepare
   needs:
     - add-jh-files
+  timeout: 10m
   variables:
     # We can't apply --filter=tree:0 for runner to set up the repository,
     # so instead we tell runner to not clone anything, and we set up the

@@ -18,9 +18,6 @@ import {
 } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export default {
-  i18n: {
-    searchInputPlaceholder: __('Search or filter results…'),
-  },
   components: {
     FilteredSearchBar,
     GlSorting,
@@ -77,6 +74,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    searchInputPlaceholder: {
+      type: String,
+      required: false,
+      default: __('Search or filter results…'),
+    },
   },
   computed: {
     filteredSearchValue() {
@@ -120,7 +122,7 @@ export default {
           :initial-filter-value="filteredSearchValue"
           sync-filter-and-sort
           :recent-searches-storage-key="filteredSearchRecentSearchesStorageKey"
-          :search-input-placeholder="$options.i18n.searchInputPlaceholder"
+          :search-input-placeholder="searchInputPlaceholder"
           terms-as-tokens
           @onFilter="onFilter"
         />

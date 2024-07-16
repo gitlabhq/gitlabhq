@@ -2,9 +2,6 @@
 description: Feature flag not enabled on the GitLab instance
 category: Projects::GoogleCloud::GcpRegionsController
 action: error_feature_flag_not_enabled
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

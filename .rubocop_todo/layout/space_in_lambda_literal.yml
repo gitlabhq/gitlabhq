@@ -2,17 +2,6 @@
 # Cop supports --autocorrect.
 Layout/SpaceInLambdaLiteral:
   Exclude:
-    - 'ee/app/serializers/blocking_merge_request_entity.rb'
-    - 'ee/app/serializers/clusters/environment_entity.rb'
-    - 'ee/app/serializers/dashboard_operations_project_entity.rb'
-    - 'ee/app/serializers/ee/blob_entity.rb'
-    - 'ee/app/serializers/ee/environment_entity.rb'
-    - 'ee/app/serializers/ee/evidences/release_entity.rb'
-    - 'ee/app/serializers/ee/issue_entity.rb'
-    - 'ee/app/serializers/ee/issue_sidebar_basic_entity.rb'
-    - 'ee/app/serializers/ee/issue_sidebar_extras_entity.rb'
-    - 'ee/app/serializers/ee/merge_request_poll_cached_widget_entity.rb'
-    - 'ee/app/serializers/ee/merge_request_widget_entity.rb'
     - 'ee/app/serializers/ee/note_entity.rb'
     - 'ee/app/serializers/epic_base_entity.rb'
     - 'ee/app/serializers/epic_entity.rb'

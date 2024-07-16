@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker, feature_category: :build_artifacts do
+RSpec.describe Ci::JobArtifacts::ExpireProjectBuildArtifactsWorker, feature_category: :job_artifacts do
   let(:worker) { described_class.new }
   let(:current_time) { Time.current }
 

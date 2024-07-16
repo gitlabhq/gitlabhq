@@ -24,6 +24,24 @@ RSpec.describe TokenAuthenticatableStrategies::Base, feature_category: :system_a
     end
   end
 
+  describe '#sensitive_fields' do
+    let(:strategy) { described_class.new(instance, field, options) }
+    let(:field) { 'some_token' }
+    let(:options) { {} }
+
+    it 'includes the token field' do
+      expect(strategy.sensitive_fields).to contain_exactly(field)
+    end
+
+    context 'with expires_at option' do
+      let(:options) { { expires_at: true } }
+
+      it 'includes the token_expires_at field' do
+        expect(strategy.sensitive_fields).to contain_exactly(field)
+      end
+    end
+  end
+
   describe '#format_token' do
     let(:strategy) { described_class.new(instance, field, options) }
 

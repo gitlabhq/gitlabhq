@@ -8,7 +8,7 @@ module Ci
 
     include LimitedCapacity::Worker
 
-    feature_category :build_artifacts
+    feature_category :job_artifacts
     idempotent!
 
     MAX_RUNNING_EXTRA_LOW = 10

@@ -20,23 +20,36 @@ export default TableHeader.extend({
   addCommands() {
     return {
       ...this.parent?.(),
-      alignColumn: (pos, align) => ({ commands }) => {
-        commands.selectColumn(pos);
-        commands.updateAttributes('tableHeader', { align });
-        commands.updateAttributes('tableCell', { align });
-      },
-      alignColumnLeft: (pos) => ({ commands }) => commands.alignColumn(pos, 'left'),
-      alignColumnCenter: (pos) => ({ commands }) => commands.alignColumn(pos, 'center'),
-      alignColumnRight: (pos) => ({ commands }) => commands.alignColumn(pos, 'right'),
-      selectColumn: (pos) => ({ tr, dispatch }) => {
-        if (dispatch) {
-          const position = tr.doc.resolve(pos);
-          const colSelection = CellSelection.colSelection(position);
-          tr.setSelection(colSelection);
-        }
+      alignColumn:
+        (pos, align) =>
+        ({ commands }) => {
+          commands.selectColumn(pos);
+          commands.updateAttributes('tableHeader', { align });
+          commands.updateAttributes('tableCell', { align });
+        },
+      alignColumnLeft:
+        (pos) =>
+        ({ commands }) =>
+          commands.alignColumn(pos, 'left'),
+      alignColumnCenter:
+        (pos) =>
+        ({ commands }) =>
+          commands.alignColumn(pos, 'center'),
+      alignColumnRight:
+        (pos) =>
+        ({ commands }) =>
+          commands.alignColumn(pos, 'right'),
+      selectColumn:
+        (pos) =>
+        ({ tr, dispatch }) => {
+          if (dispatch) {
+            const position = tr.doc.resolve(pos);
+            const colSelection = CellSelection.colSelection(position);
+            tr.setSelection(colSelection);
+          }
 
-        return true;
-      },
+          return true;
+        },
     };
   },
 

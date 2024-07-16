@@ -1,0 +1,9 @@
+---
+name: store_first_reviewer_assignment_timestamp_in_metrics
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/466383
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158422
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470926
+milestone: '17.2'
+group: group::optimize
+type: beta
+default_enabled: true

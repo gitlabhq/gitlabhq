@@ -2,10 +2,6 @@
 # Cop supports --autocorrect.
 Layout/ExtraSpacing:
   Exclude:
-    - 'app/finders/admin/plans_finder.rb'
-    - 'app/finders/autocomplete/users_finder.rb'
-    - 'app/graphql/mutations/commits/create.rb'
-    - 'app/graphql/types/ci/job_artifact_file_type_enum.rb'
     - 'ee/app/graphql/mutations/geo/registries/update.rb'
     - 'ee/app/models/epic_issue.rb'
     - 'ee/app/models/merge_request/predictions.rb'
@@ -16,7 +12,6 @@ Layout/ExtraSpacing:
     - 'ee/lib/ee/gitlab/ci/pipeline/quota/size.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/license_metric.rb'
     - 'ee/spec/controllers/projects/settings/merge_requests_controller_spec.rb'
-    - 'ee/spec/elastic/migrate/20230821123542_backfill_archived_field_in_blob_spec.rb'
     - 'ee/spec/requests/api/internal/base_spec.rb'
     - 'ee/spec/services/app_sec/fuzzing/api/ci_configuration_create_service_spec.rb'
     - 'ee/spec/services/ci/create_pipeline_service/dast_configuration_spec.rb'

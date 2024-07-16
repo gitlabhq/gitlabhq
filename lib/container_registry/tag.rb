@@ -6,6 +6,7 @@ module ContainerRegistry
 
     attr_reader :repository, :name, :updated_at, :referrers, :published_at
     attr_writer :created_at, :manifest_digest, :revision, :total_size
+    attr_accessor :media_type
 
     delegate :registry, :client, to: :repository
 

@@ -11,15 +11,27 @@ RSpec.describe 'Database schema', feature_category: :database do
 
   IGNORED_INDEXES_ON_FKS = {
     application_settings: %w[instance_administration_project_id instance_administrators_group_id],
+    ci_pipeline_chat_data: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     # `search_index_id index_type` is the composite foreign key configured for `search_namespace_index_assignments`,
     # but in Search::NamespaceIndexAssignment model, only `search_index_id` is used as foreign key and indexed
     search_namespace_index_assignments: [%w[search_index_id index_type]],
     slack_integrations_scopes: [%w[slack_api_scope_id]],
     notes: %w[namespace_id], # this index is added in an async manner, hence it needs to be ignored in the first phase.
     users: [%w[accepted_term_id]],
-    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_pipeline_artifacts: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_sources_projects: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_daily_build_group_report_results: [%w[partition_id last_pipeline_id]], # index on last_pipeline_id is sufficient
+    ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[partition_id upstream_pipeline_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
+    ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     p_ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
-    ai_testing_terms_acceptances: %w[user_id] # testing terms only have 1 entry, and if the user is deleted the record should remain
+    ci_stages: [%w[partition_id pipeline_id]], # the index on pipeline_id is sufficient
+    ai_testing_terms_acceptances: %w[user_id], # testing terms only have 1 entry, and if the user is deleted the record should remain
+    p_ci_builds_execution_configs: [%w[partition_id pipeline_id]], # the index on pipeline_id is enough
+    ci_sources_pipelines: [%w[source_partition_id source_pipeline_id], %w[partition_id pipeline_id]],
+    snippets: %w[organization_id] # this index is added in an async manner, hence it needs to be ignored in the first phase.
   }.with_indifferent_access.freeze
 
   TABLE_PARTITIONS = %w[ci_builds_metadata].freeze
@@ -35,6 +47,7 @@ RSpec.describe 'Database schema', feature_category: :database do
   # See: https://docs.gitlab.com/ee/development/database/foreign_keys.html#naming-foreign-keys
   IGNORED_FK_COLUMNS = {
     abuse_reports: %w[reporter_id user_id],
+    abuse_report_notes: %w[discussion_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
     approvals: %w[user_id],
     approver_groups: %w[target_id],
@@ -42,6 +55,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id last_incremental_issues_id last_full_run_issues_id last_full_run_merge_requests_id last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id last_consistency_check_issues_issuable_id last_consistency_check_merge_requests_stage_event_hash_id last_consistency_check_merge_requests_issuable_id],
     analytics_cycle_analytics_merge_request_stage_events: %w[author_id group_id merge_request_id milestone_id project_id stage_event_hash_id state_id],
     analytics_cycle_analytics_issue_stage_events: %w[author_id group_id issue_id milestone_id project_id stage_event_hash_id state_id sprint_id],
+    analytics_cycle_analytics_stage_event_hashes: %w[organization_id],
     audit_events: %w[author_id entity_id target_id],
     user_audit_events: %w[author_id user_id target_id],
     group_audit_events: %w[author_id group_id target_id],
@@ -63,7 +77,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_pipeline_messages: %w[partition_id],
     ci_pipeline_metadata: %w[partition_id],
     ci_pipeline_variables: %w[partition_id],
-    ci_pipelines: %w[partition_id],
+    ci_pipelines: %w[partition_id auto_canceled_by_partition_id],
     ci_runner_projects: %w[runner_id],
     ci_sources_pipelines: %w[partition_id source_partition_id source_job_id],
     ci_sources_projects: %w[partition_id],
@@ -74,6 +88,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     cluster_providers_gcp: %w[gcp_project_id operation_id],
     compliance_management_frameworks: %w[group_id],
     commit_user_mentions: %w[commit_id],
+    dependency_list_export_parts: %w[start_id end_id],
     dep_ci_build_trace_sections: %w[build_id],
     deploy_keys_projects: %w[deploy_key_id],
     deployments: %w[deployable_id user_id],
@@ -81,7 +96,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     epics: %w[updated_by_id last_edited_by_id state_id],
     events: %w[target_id],
     forked_project_links: %w[forked_from_project_id],
-    geo_event_log: %w[hashed_storage_attachments_event_id],
+    geo_event_log: %w[hashed_storage_attachments_event_id repositories_changed_event_id],
     geo_node_statuses: %w[last_event_id cursor_last_event_id],
     geo_nodes: %w[oauth_application_id],
     geo_repository_deleted_events: %w[project_id],
@@ -113,11 +128,13 @@ RSpec.describe 'Database schema', feature_category: :database do
     oauth_access_grants: %w[resource_owner_id application_id],
     oauth_access_tokens: %w[resource_owner_id application_id],
     oauth_applications: %w[owner_id],
+    oauth_device_grants: %w[resource_owner_id application_id],
     p_ci_builds: %w[erased_by_id trigger_request_id partition_id auto_canceled_by_partition_id execution_config_id],
     p_batched_git_ref_updates_deletions: %w[project_id partition_id],
     p_catalog_resource_sync_events: %w[catalog_resource_id project_id partition_id],
     p_catalog_resource_component_usages: %w[used_by_project_id], # No FK constraint because we want to preserve historical usage data
     p_ci_finished_build_ch_sync_events: %w[build_id],
+    p_ci_finished_pipeline_ch_sync_events: %w[pipeline_id project_namespace_id],
     p_ci_job_artifacts: %w[partition_id project_id job_id],
     p_ci_pipeline_variables: %w[partition_id],
     p_ci_builds_execution_configs: %w[partition_id],
@@ -332,7 +349,8 @@ RSpec.describe 'Database schema', feature_category: :database do
     "Packages::Composer::Metadatum" => %w[composer_json],
     "RawUsageData" => %w[payload], # Usage data payload changes often, we cannot use one schema
     "Releases::Evidence" => %w[summary],
-    "Vulnerabilities::Finding::Evidence" => %w[data] # Validation work in progress
+    "Vulnerabilities::Finding::Evidence" => %w[data], # Validation work in progress
+    "Ai::DuoWorkflows::Checkpoint" => %w[checkpoint metadata] # https://gitlab.com/gitlab-org/gitlab/-/issues/468632
   }.freeze
 
   # We are skipping GEO models for now as it adds up complexity

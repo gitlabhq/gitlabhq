@@ -50,7 +50,7 @@ function findFiles() {
         // # These ones aren't working for some reason or another,
         'app/assets/javascripts/blob/stl_viewer.js',
         'app/assets/javascripts/blob/3d_viewer/index.js',
-        'app/assets/javascripts/filtered_search/dropdown_ajax_filter.js',
+        'app/assets/javascripts/filtered_search/**/*',
       ],
     })
     .sort();

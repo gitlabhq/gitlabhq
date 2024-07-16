@@ -22,7 +22,7 @@ on the `dev.gitlab.com` mirror if they do not exist on that instance.
 
 ## Pipeline tiers
 
-**under active development:** This section is likely to change in the next weeks.
+**under active development:** For more information, see [epic 58](https://gitlab.com/groups/gitlab-org/quality/engineering-productivity/-/epics/58).
 
 A merge request will typically run several CI/CD pipelines. Depending on where the merge request is at in the approval process, we will trigger different kinds of pipelines. We call those kinds of pipelines **pipeline tiers**.
 
@@ -268,7 +268,7 @@ We don't have a specific number, but we need to have better numbers for flaky te
 
 ## Faster feedback for some merge requests
 
-### Broken Master Fixes
+### Broken `master` Fixes
 
 When you need to [fix a broken `master`](https://handbook.gitlab.com/handbook/engineering/workflow/#resolution-of-broken-master), you can add the `pipeline::expedited` label to expedite the pipelines that run on the merge request.
 
@@ -309,7 +309,7 @@ If you want to force `e2e:package-and-test` to run regardless of your changes, y
 `pipeline:run-all-e2e` label to the merge request.
 
 The [`e2e:test-on-gdk`](../testing_guide/end_to_end/index.md#using-the-test-on-gdk-job) child pipeline runs `:blocking`
-E2E specs automatically for all `code patterns changes`. See `.qa:rules:e2e-blocking` [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for specific set of rules.
+E2E specs automatically for all `code patterns changes`. See `.qa:rules:e2e-blocking-gdk` [`rules.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/.gitlab/ci/rules.gitlab-ci.yml) for specific set of rules.
 
 Consult the [End-to-end Testing](../testing_guide/end_to_end/index.md) dedicated page for more information.
 
@@ -660,10 +660,10 @@ After that, the next pipeline uses the up-to-date `knapsack/report-master.json` 
 
 ### Automatic skipping of flaky tests
 
-We used to skip tests that are [known to be flaky](../testing_guide/flaky_tests.md#automatic-retries-and-flaky-tests-detection),
+We used to skip tests that are [known to be flaky](../testing_guide/unhealthy_tests.md#automatic-retries-and-flaky-tests-detection),
 but we stopped doing so since that could actually lead to actual broken `master`.
 Instead, we introduced
-[a fast-quarantining process](../testing_guide/flaky_tests.md#fast-quarantine)
+[a fast-quarantining process](../testing_guide/unhealthy_tests.md#fast-quarantine)
 to proactively quarantine any flaky test reported in `#master-broken` incidents.
 
 This fast-quarantining process can be disabled by setting the `$FAST_QUARANTINE`

@@ -17,7 +17,7 @@ You can configure the rate limit per group (or project) per user to the
 
 To change the rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Network**.
 1. Expand **Members API rate limit**.
 1. In the **Maximum requests per minute per group / project** text box, enter the new value.

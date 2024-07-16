@@ -2,9 +2,6 @@
 description: Cloud SQL instance created
 category: Projects::GoogleCloud::DatabasesController
 action: create_cloudsql_instance
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

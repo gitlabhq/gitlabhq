@@ -3,7 +3,7 @@ table_name: ci_job_artifacts
 classes:
 - Ci::JobArtifact
 feature_categories:
-- build_artifacts
+- job_artifacts
 description: Stores artifacts produced by a build.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/61864a5a5bb523953589c9398a431c4369fbfc76
 milestone: '10.3'

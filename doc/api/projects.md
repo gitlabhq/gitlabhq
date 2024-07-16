@@ -249,6 +249,8 @@ When the user is authenticated and `simple` is not set this returns something li
     "ci_job_token_scope_enabled": false,
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
+    "ci_pipeline_variables_minimum_override_role": "maintainer",
+    "ci_push_repository_for_job_token_allowed": false,
     "public_jobs": true,
     "build_timeout": 3600,
     "auto_cancel_pending_pipelines": "enabled",
@@ -425,6 +427,8 @@ GET /users/:user_id/projects
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
+    "ci_pipeline_variables_minimum_override_role": "maintainer",
+    "ci_push_repository_for_job_token_allowed": false,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -546,6 +550,8 @@ GET /users/:user_id/projects
     "ci_allow_fork_pipelines_to_run_in_parent_project": true,
     "ci_separated_caches": true,
     "ci_restrict_pipeline_cancellation_role": "developer",
+    "ci_pipeline_variables_minimum_override_role": "maintainer",
+    "ci_push_repository_for_job_token_allowed": false,
     "public_jobs": true,
     "shared_with_groups": [],
     "only_allow_merge_if_pipeline_succeeds": false,
@@ -1218,6 +1224,8 @@ GET /projects/:id
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
+  "ci_pipeline_variables_minimum_override_role": "maintainer",
+  "ci_push_repository_for_job_token_allowed": false,
   "public_jobs": true,
   "shared_with_groups": [
     {
@@ -1760,6 +1768,8 @@ General project attributes:
 | `ci_allow_fork_pipelines_to_run_in_parent_project` | boolean           | No       | Enable or disable [running pipelines in the parent project for merge requests from forks](../ci/pipelines/merge_request_pipelines.md#run-pipelines-in-the-parent-project). _([Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/325189) in GitLab 15.3.)_ |
 | `ci_separated_caches`                              | boolean           | No       | Set whether or not caches should be [separated](../ci/caching/index.md#cache-key-names) by branch protection status. |
 | `ci_restrict_pipeline_cancellation_role`           | string            | No       | Set the [role required to cancel a pipeline or job](../ci/pipelines/settings.md#restrict-roles-that-can-cancel-pipelines-or-jobs). One of `developer`, `maintainer`, or `no_one`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429921) in GitLab 16.8. Premium and Ultimate only. |
+| `ci_pipeline_variables_minimum_override_role`           | string            | No       | When `restrict_user_defined_variables` is enabled, you can specify which role can override variables. One of `owner`, `maintainer`, `developer` or `no_one_allowed`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440338) in GitLab 17.1. |
+| `ci_push_repository_for_job_token_allowed` | boolean           | No       | Enable or disable the ability to push to the project repository using job token. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. |
 | `container_expiration_policy_attributes`           | hash              | No       | Update the image cleanup policy for this project. Accepts: `cadence` (string), `keep_n` (integer), `older_than` (string), `name_regex` (string), `name_regex_delete` (string), `name_regex_keep` (string), `enabled` (boolean). |
 | `container_registry_enabled`                       | boolean           | No       | _(Deprecated)_ Enable container registry for this project. Use `container_registry_access_level` instead. |
 | `default_branch`                                   | string            | No       | The [default branch](../user/project/repository/branches/default.md) name. |
@@ -2379,6 +2389,8 @@ Example response:
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
+  "ci_pipeline_variables_minimum_override_role": "maintainer",
+  "ci_push_repository_for_job_token_allowed": false,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2511,6 +2523,8 @@ Example response:
   "ci_allow_fork_pipelines_to_run_in_parent_project": true,
   "ci_separated_caches": true,
   "ci_restrict_pipeline_cancellation_role": "developer",
+  "ci_pipeline_variables_minimum_override_role": "maintainer",
+  "ci_push_repository_for_job_token_allowed": false,
   "public_jobs": true,
   "shared_with_groups": [],
   "only_allow_merge_if_pipeline_succeeds": false,
@@ -2557,7 +2571,7 @@ This endpoint:
   [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 WARNING:
-The option to delete projects immediately from deletion protection settings in the Admin Area was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
+The option to delete projects immediately from deletion protection settings in the Admin area was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
 
 ```plaintext
 DELETE /projects/:id
@@ -2585,7 +2599,11 @@ POST /projects/:id/restore
 |-----------|-------------------|----------|-------------|
 | `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
 
-## Upload a file
+## Markdown uploads
+
+Markdown uploads are files uploaded to a project that can be referenced in Markdown text in an issue, merge request, snippet, or wiki page.
+
+### Upload a file
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112450) in GitLab 15.10. Feature flag `enforce_max_attachment_size_upload_api` removed.
 
@@ -2625,6 +2643,95 @@ Returned object:
 The returned `url` is relative to the project path. The returned `full_path` is
 the absolute path to the file. In Markdown contexts, the link is expanded when
 the format in `markdown` is used.
+
+### List uploads
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+Get all uploads of the project sorted by `created_at` in descending order.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /projects/:id/uploads
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads"
+```
+
+Returned object:
+
+```json
+[
+  {
+    "id": 1,
+    "size": 1024,
+    "filename": "image.png",
+    "created_at":"2024-06-20T15:53:03.067Z",
+    "uploaded_by": {
+      "id": 18,
+      "name" : "Alexandra Bashirian",
+      "username" : "eileen.lowe"
+    }
+  },
+  {
+    "id": 2,
+    "size": 512,
+    "filename": "other-image.png",
+    "created_at":"2024-06-19T15:53:03.067Z",
+    "uploaded_by": null
+  }
+]
+```
+
+### Download an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /projects/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
+```
+
+### Delete an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+DELETE /projects/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/uploads/1"
+```
 
 ## Upload a project avatar
 
@@ -2782,7 +2889,7 @@ When there is a system error (`404` and `422` HTTP status codes):
 
 ## Hooks
 
-Also called Project Hooks and Webhooks. These are different for [System Hooks](system_hooks.md)
+Also called project hooks and webhooks. These are different for [system hooks](system_hooks.md)
 that are system-wide.
 
 ### List project hooks
@@ -2870,6 +2977,7 @@ POST /projects/:id/hooks
 | `note_events`                | boolean           | No       | Trigger hook on note events. |
 | `pipeline_events`            | boolean           | No       | Trigger hook on pipeline events. |
 | `push_events_branch_filter`  | string            | No       | Trigger hook on push events for matching branches only. |
+| `branch_filter_strategy`     | string         | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                | boolean           | No       | Trigger hook on push events. |
 | `releases_events`            | boolean           | No       | Trigger hook on release events. |
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |
@@ -2904,6 +3012,7 @@ PUT /projects/:id/hooks/:hook_id
 | `note_events`                | boolean           | No       | Trigger hook on note events. |
 | `pipeline_events`            | boolean           | No       | Trigger hook on pipeline events. |
 | `push_events_branch_filter`  | string            | No       | Trigger hook on push events for matching branches only. |
+| `branch_filter_strategy`     | string         | No       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `push_events`                | boolean           | No       | Trigger hook on push events. |
 | `releases_events`            | boolean           | No       | Trigger hook on release events. |
 | `tag_push_events`            | boolean           | No       | Trigger hook on tag push events. |

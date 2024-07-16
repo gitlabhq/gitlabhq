@@ -9,18 +9,12 @@ import WikiSidebarEntry from '~/pages/shared/wikis/components/wiki_sidebar_entry
 
 const MOCK_SIDEBAR_PAGES_API = 'sidebar/pages/api';
 const MOCK_VIEW_ALL_PAGES_PATH = 'view/all/pages';
-const MOCK_ENTRIES_LESS_THAN_LIMIT = [
-  { title: '_sidebar', slug: '_sidebar', path: 'path/to/_sidebar' },
-  { title: 'Page 1', slug: 'page-1', path: 'path/to/page-1' },
-  { title: 'Page 2', slug: 'page-2', path: 'path/to/page-2' },
-  { title: 'Page 2.1', slug: 'page-2/page-1', path: 'path/to/page-2/page-1' },
-  { title: 'Page 3', slug: 'page-3', path: 'path/to/page-3' },
-];
 
-const MOCK_ENTRIES_MORE_THAN_LIMIT = [
+const MOCK_ENTRIES = [
   { title: '_sidebar', slug: '_sidebar', path: 'path/to/_sidebar' },
   { title: 'Page 1', slug: 'page-1', path: 'path/to/page-1' },
   { title: 'Page 2', slug: 'page-2', path: 'path/to/page-2' },
+  { title: 'Page 2/3', slug: 'page-2/3', path: 'path/to/page-2/3' },
   { title: 'Page 3', slug: 'page-3', path: 'path/to/page-3' },
   { title: 'Page 4', slug: 'page-4', path: 'path/to/page-4' },
   { title: 'Page 5', slug: 'page-5', path: 'path/to/page-5' },
@@ -74,7 +68,7 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
 
   describe('loading state', () => {
     beforeEach(() => {
-      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES_LESS_THAN_LIMIT);
+      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES);
       buildWrapper();
     });
 
@@ -114,9 +108,9 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
     });
   });
 
-  describe('when the page count is less than the limit', () => {
+  describe('displaying a list of all pages', () => {
     beforeEach(() => {
-      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES_LESS_THAN_LIMIT);
+      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES);
       buildWrapper();
 
       return waitForPromises();
@@ -130,15 +124,24 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
           path: 'path/to/page-2',
           title: 'Page 2',
           children: [
-            {
-              slug: 'page-2/page-1',
-              path: 'path/to/page-2/page-1',
-              title: 'Page 2.1',
-              children: [],
-            },
+            { slug: 'page-2/3', path: 'path/to/page-2/3', title: 'Page 2/3', children: [] },
           ],
         },
         { slug: 'page-3', path: 'path/to/page-3', title: 'Page 3', children: [] },
+        { slug: 'page-4', path: 'path/to/page-4', title: 'Page 4', children: [] },
+        { slug: 'page-5', path: 'path/to/page-5', title: 'Page 5', children: [] },
+        { slug: 'page-6', path: 'path/to/page-6', title: 'Page 6', children: [] },
+        { slug: 'page-7', path: 'path/to/page-7', title: 'Page 7', children: [] },
+        { slug: 'page-8', path: 'path/to/page-8', title: 'Page 8', children: [] },
+        { slug: 'page-9', path: 'path/to/page-9', title: 'Page 9', children: [] },
+        { slug: 'page-10', path: 'path/to/page-10', title: 'Page 10', children: [] },
+        { slug: 'page-11', path: 'path/to/page-11', title: 'Page 11', children: [] },
+        { slug: 'page-12', path: 'path/to/page-12', title: 'Page 12', children: [] },
+        { slug: 'page-13', path: 'path/to/page-13', title: 'Page 13', children: [] },
+        { slug: 'page-14', path: 'path/to/page-14', title: 'Page 14', children: [] },
+        { slug: 'page-15', path: 'path/to/page-15', title: 'Page 15', children: [] },
+        { slug: 'page-16', path: 'path/to/page-16', title: 'Page 16', children: [] },
+        { slug: 'page-17', path: 'path/to/page-17', title: 'Page 17', children: [] },
       ]);
     });
 
@@ -152,32 +155,9 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
     });
   });
 
-  describe('when the page count is more than limit', () => {
-    beforeEach(() => {
-      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES_MORE_THAN_LIMIT);
-      buildWrapper();
-
-      return waitForPromises();
-    });
-
-    it('lists the first 15 entries except _sidebar', () => {
-      expect(findAndMapEntriesToPages()).toMatchObject(MOCK_ENTRIES_MORE_THAN_LIMIT.slice(1, 16));
-    });
-
-    it('displays + X more text', () => {
-      // 17 - 15 = 2
-      expect(wrapper.text()).toContain('+ 2 more');
-    });
-
-    it('has a "View all pages" button', () => {
-      expect(findViewAllPagesButton().exists()).toBe(true);
-      expect(findViewAllPagesButton().attributes('href')).toBe(MOCK_VIEW_ALL_PAGES_PATH);
-    });
-  });
-
   describe('when searching for pages', () => {
     beforeEach(async () => {
-      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES_MORE_THAN_LIMIT);
+      mock.onGet(MOCK_SIDEBAR_PAGES_API).reply(HTTP_STATUS_OK, MOCK_ENTRIES);
       buildWrapper();
 
       await waitForPromises();
@@ -197,10 +177,6 @@ describe('pages/shared/wikis/components/wiki_sidebar_entry', () => {
         { slug: 'page-16', path: 'path/to/page-16', title: 'Page 16', children: [] },
         { slug: 'page-17', path: 'path/to/page-17', title: 'Page 17', children: [] },
       ]);
-    });
-
-    it('does not display + X more text', () => {
-      expect(wrapper.text()).not.toMatch(/\+ \d+ more/);
     });
 
     it('has a "View all pages" button', () => {

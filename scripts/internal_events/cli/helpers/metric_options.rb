@@ -12,16 +12,16 @@ module InternalEventsCli
       }.freeze
 
       def get_metric_options(events)
-        options = get_all_metric_options
+        actions = events.map(&:action)
+        options = get_all_metric_options(actions)
         identifiers = get_identifiers_for_events(events)
-        existing_metrics = get_existing_metrics_for_events(events)
         metric_name = format_metric_name_for_events(events)
 
         options = options.group_by do |metric|
           [
-            metric.identifier,
-            metric_already_exists?(existing_metrics, metric),
-            metric.time_frame == 'all'
+            metric.identifier.value,
+            conflicting_metric_exists?(metric),
+            metric.time_frame.value == 'all'
           ]
         end
 
@@ -36,47 +36,20 @@ module InternalEventsCli
         end
       end
 
-      def get_existing_metrics_for_events(events)
-        actions = events.map(&:action).sort
-
-        load_metric_paths.filter_map do |path|
-          details = YAML.safe_load(File.read(path))
-          fields = InternalEventsCli::NEW_METRIC_FIELDS.map(&:to_s)
-
-          metric = Metric.new(**details.slice(*fields))
-
-          metric_actions = metric.events&.map { |event| event['name'] }
-          next unless metric_actions
-
-          metric if (metric_actions & actions).any?
-        end
-      end
-
       private
 
-      def get_all_metric_options
+      def get_all_metric_options(actions)
         [
-          Metric.new(time_frame: '28d', identifier: 'user'),
-          Metric.new(time_frame: '7d', identifier: 'user'),
-          Metric.new(time_frame: '28d', identifier: 'project'),
-          Metric.new(time_frame: '7d', identifier: 'project'),
-          Metric.new(time_frame: '28d', identifier: 'namespace'),
-          Metric.new(time_frame: '7d', identifier: 'namespace'),
-          Metric.new(time_frame: '28d'),
-          Metric.new(time_frame: '7d'),
-          Metric.new(time_frame: 'all')
+          Metric.new(actions: actions, time_frame: '28d', identifier: 'user'),
+          Metric.new(actions: actions, time_frame: '7d', identifier: 'user'),
+          Metric.new(actions: actions, time_frame: '28d', identifier: 'project'),
+          Metric.new(actions: actions, time_frame: '7d', identifier: 'project'),
+          Metric.new(actions: actions, time_frame: '28d', identifier: 'namespace'),
+          Metric.new(actions: actions, time_frame: '7d', identifier: 'namespace'),
+          Metric.new(actions: actions, time_frame: '28d'),
+          Metric.new(actions: actions, time_frame: '7d'),
+          Metric.new(actions: actions, time_frame: 'all')
         ]
-      end
-
-      def load_metric_paths
-        [
-          Dir["config/metrics/counts_all/*.yml"],
-          Dir["config/metrics/counts_7d/*.yml"],
-          Dir["config/metrics/counts_28d/*.yml"],
-          Dir["ee/config/metrics/counts_all/*.yml"],
-          Dir["ee/config/metrics/counts_7d/*.yml"],
-          Dir["ee/config/metrics/counts_28d/*.yml"]
-        ].flatten
       end
 
       def format_metric_name_for_events(events)
@@ -90,17 +63,16 @@ module InternalEventsCli
         events.map(&:identifiers).reduce(&:&) || []
       end
 
-      def metric_already_exists?(existing_metrics, metric)
-        existing_metrics.any? do |existing_metric|
-          time_frame = existing_metric.time_frame || 'all'
-          identifier = existing_metric.events&.dig(0, 'unique')&.chomp('.id')
-
-          metric.time_frame == time_frame && metric.identifier == identifier
+      def conflicting_metric_exists?(new_metric)
+        cli.global.metrics.any? do |existing_metric|
+          existing_metric.actions == new_metric.actions &&
+            existing_metric.time_frame == new_metric.time_frame.value &&
+            existing_metric.identifier == new_metric.identifier.value
         end
       end
 
       def format_metric_option(identifier, event_name, metrics, defined:, supported:)
-        time_frame = metrics.map(&:time_frame_prefix).join('/')
+        time_frame = metrics.map { |metric| metric.time_frame.description }.join('/')
         unique_by = "unique #{identifier}s " if identifier
         event_phrase = EVENT_PHRASES[identifier] % event_name
 

@@ -3,6 +3,7 @@ import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import axios from '~/lib/utils/axios_utils';
 import { logError } from '~/lib/logger';
 import { DEFAULT_SORTING_OPTION, SORTING_OPTIONS, CUSTOM_DATE_RANGE_OPTION } from './constants';
+import { isTracingDateRangeOutOfBounds } from './utils';
 
 function reportErrorAndThrow(e) {
   logError(e);
@@ -250,6 +251,9 @@ async function fetchTraces(
     addTracingAttributesFiltersToQueryParams(attributes, params);
   }
   if (dateRange) {
+    if (isTracingDateRangeOutOfBounds(dateRange)) {
+      throw new Error('Selected date range is out of allowed limits.'); // eslint-disable-line @gitlab/require-i18n-strings
+    }
     addDateRangeFilterToQueryParams(dateRange, params);
   }
 
@@ -639,6 +643,27 @@ export async function fetchLogsSearchMetadata(
   }
 }
 
+export async function fetchUsageData(analyticsUrl, { period } = {}) {
+  try {
+    const params = new URLSearchParams();
+
+    if (period?.month) {
+      params.append('month', period?.month);
+    }
+    if (period?.year) {
+      params.append('year', period?.year);
+    }
+
+    const { data } = await axios.get(analyticsUrl, {
+      withCredentials: true,
+      params,
+    });
+    return data;
+  } catch (e) {
+    return reportErrorAndThrow(e);
+  }
+}
+
 /** ****
  *
  * ObservabilityClient
@@ -661,6 +686,7 @@ export function buildClient(config) {
     metricsSearchMetadataUrl,
     logsSearchUrl,
     logsSearchMetadataUrl,
+    analyticsUrl,
   } = config;
 
   if (typeof provisioningUrl !== 'string') {
@@ -703,6 +729,10 @@ export function buildClient(config) {
     throw new Error('logsSearchMetadataUrl param must be a string');
   }
 
+  if (typeof analyticsUrl !== 'string') {
+    throw new Error('analyticsUrl param must be a string');
+  }
+
   return {
     enableObservability: () => enableObservability(provisioningUrl),
     isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
@@ -718,5 +748,6 @@ export function buildClient(config) {
       fetchMetricSearchMetadata(metricsSearchMetadataUrl, metricName, metricType),
     fetchLogs: (options) => fetchLogs(logsSearchUrl, options),
     fetchLogsSearchMetadata: (options) => fetchLogsSearchMetadata(logsSearchMetadataUrl, options),
+    fetchUsageData: (options) => fetchUsageData(analyticsUrl, options),
   };
 }

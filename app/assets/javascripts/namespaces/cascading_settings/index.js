@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import LockPopovers from './components/lock_popovers.vue';
+import HamlLockPopovers from './components/haml_lock_popovers.vue';
 
 export const initCascadingSettingsLockPopovers = () => {
   const el = document.querySelector('.js-cascading-settings-lock-popovers');
@@ -9,7 +9,7 @@ export const initCascadingSettingsLockPopovers = () => {
   return new Vue({
     el,
     render(createElement) {
-      return createElement(LockPopovers);
+      return createElement(HamlLockPopovers);
     },
   });
 };

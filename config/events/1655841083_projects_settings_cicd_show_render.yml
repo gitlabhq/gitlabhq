@@ -2,9 +2,6 @@
 description: Load Project-level Secure Files list in CI/CD settings
 category: projects:settings:ci_cd:show
 action: render
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
   - project

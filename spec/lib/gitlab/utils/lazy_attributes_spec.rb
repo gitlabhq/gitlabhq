@@ -31,8 +31,8 @@ RSpec.describe Gitlab::Utils::LazyAttributes do
 
     it do
       is_expected.to respond_to(:number, :reader_1, :reader_2, :incorrect_type,
-                                :incorrect_type=, :accessor_2, :accessor_2=,
-                                :string_attribute, :string_attribute=)
+        :incorrect_type=, :accessor_2, :accessor_2=,
+        :string_attribute, :string_attribute=)
     end
 
     context 'reading attributes' do

@@ -83,7 +83,7 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       end
     end
 
-    it 'deletes an authorized application' do
+    it 'deletes an authorized application', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444512' do
       token
       visit oauth_applications_path
 
@@ -101,7 +101,8 @@ RSpec.describe 'Profile > Applications', feature_category: :user_profile do
       end
     end
 
-    it 'deletes an anonymous authorized application' do
+    it 'deletes an anonymous authorized application',
+      quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444513' do
       anonymous_token
       visit oauth_applications_path
 

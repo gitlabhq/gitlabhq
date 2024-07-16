@@ -871,7 +871,7 @@ RSpec.describe ApplicationHelper do
 
   describe 'stylesheet_link_tag_defer' do
     it 'uses media="all" in stylesheet' do
-      expect(helper.stylesheet_link_tag_defer('test')).to eq( '<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
+      expect(helper.stylesheet_link_tag_defer('test')).to eq('<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
     end
   end
 

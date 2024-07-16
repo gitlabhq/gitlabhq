@@ -29,13 +29,13 @@ module Gitlab
 
       def self.init_from_hash(hash)
         new(hash[:text],
-            hash[:type],
-            hash[:index],
-            hash[:old_pos],
-            hash[:new_pos],
-            parent_file: hash[:parent_file],
-            line_code: hash[:line_code],
-            rich_text: hash[:rich_text])
+          hash[:type],
+          hash[:index],
+          hash[:old_pos],
+          hash[:new_pos],
+          parent_file: hash[:parent_file],
+          line_code: hash[:line_code],
+          rich_text: hash[:rich_text])
       end
 
       def self.safe_init_from_hash(hash)

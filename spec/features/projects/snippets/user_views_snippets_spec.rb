@@ -60,7 +60,7 @@ RSpec.describe 'Projects > Snippets > User views snippets', feature_category: :s
       it 'hides New Snippet button' do
         visit_project_snippets
 
-        page.within(find('.empty-state')) do
+        page.within(find('.gl-empty-state')) do
           expect(page).not_to have_link('New snippet')
         end
       end
@@ -89,7 +89,7 @@ RSpec.describe 'Projects > Snippets > User views snippets', feature_category: :s
       it 'shows New Snippet button' do
         visit_project_snippets
 
-        page.within(find('.empty-state')) do
+        page.within(find('.gl-empty-state')) do
           expect(page).to have_link('New snippet')
         end
       end

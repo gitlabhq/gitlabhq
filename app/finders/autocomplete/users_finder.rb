@@ -108,7 +108,7 @@ module Autocomplete
     # rubocop: enable CodeReuse/ActiveRecord
 
     def use_minimum_char_limit
-      return if project.blank? && group.blank?  # We return nil so that we use the default defined in the User model
+      return if project.blank? && group.blank? # We return nil so that we use the default defined in the User model
 
       false
     end

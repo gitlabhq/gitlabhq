@@ -102,14 +102,14 @@ export default {
           <div v-for="(line, index) in allLines" :key="index">
             <span
               data-testid="highlights-text"
-              class="gl-white-space-pre-wrap gl-break-anywhere"
+              class="gl-whitespace-pre-wrap gl-break-anywhere"
               v-text="line.text"
             >
             </span
             ><mark
               v-show="line.highlightedText"
               data-testid="highlights-mark"
-              class="gl-px-1 gl-py-0 gl-bg-orange-100 gl-text-transparent gl-white-space-pre-wrap gl-break-anywhere"
+              class="gl-px-1 gl-py-0 gl-bg-orange-100 gl-text-transparent gl-whitespace-pre-wrap gl-break-anywhere"
               v-text="line.highlightedText"
             >
             </mark>

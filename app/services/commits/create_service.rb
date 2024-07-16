@@ -34,10 +34,10 @@ module Commits
       Gitlab::ErrorTracking.log_exception(ex)
       error(ex.message, pass_back: { error_code: ex.error_code })
     rescue ValidationError,
-           Gitlab::Git::Index::IndexError,
-           Gitlab::Git::CommitError,
-           Gitlab::Git::PreReceiveError,
-           Gitlab::Git::CommandError => ex
+      Gitlab::Git::Index::IndexError,
+      Gitlab::Git::CommitError,
+      Gitlab::Git::PreReceiveError,
+      Gitlab::Git::CommandError => ex
       Gitlab::ErrorTracking.log_exception(ex)
 
       error(Gitlab::EncodingHelper.encode_utf8_no_detect(ex.message))

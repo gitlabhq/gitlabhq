@@ -8,5 +8,5 @@ Premailer::Rails.config.merge!(
   remove_ids: false,
   remove_scripts: false,
   output_encoding: 'US-ASCII',
-  strategies: [:asset_pipeline]
+  strategies: ::Rails.env.production? ? [:asset_pipeline] : [:asset_pipeline, :network]
 )

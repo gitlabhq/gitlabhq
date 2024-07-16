@@ -2,9 +2,6 @@
 description: An issue was referenced from somewhere else
 internal_events: true
 action: g_project_management_issue_cross_referenced
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

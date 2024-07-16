@@ -12,7 +12,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
   end
 
   def change_path(project, path)
-    within('.advanced-settings') do
+    within_testid('advanced-settings-content') do
       fill_in('Path', with: path)
       click_button('Change path')
     end
@@ -21,7 +21,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
   end
 
   def change_name(project, name)
-    within('.general-settings') do
+    within_testid('general-settings-content') do
       fill_in('Project name', with: name)
       click_button('Save changes')
     end
@@ -30,7 +30,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
   end
 
   def wait_for_edit_project_page_reload
-    expect(find('.advanced-settings')).to have_content('Change path')
+    expect(find_by_testid('advanced-settings-content')).to have_content('Change path')
   end
 
   context 'with invalid characters' do
@@ -44,7 +44,7 @@ RSpec.describe 'Projects > Settings > User renames a project', feature_category:
 
   it 'shows a successful notice when the project is updated' do
     fill_in 'project_name_edit', with: 'hello world'
-    page.within('.general-settings') do
+    within_testid('general-settings-content') do
       click_button 'Save changes'
     end
 

@@ -129,5 +129,17 @@ describe('safe html directive', () => {
 
       expect(wrapper.element.textContent).toEqual('');
     });
+
+    // Fixes https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2455
+    it('should remove the old value from binding', () => {
+      const el = wrapper.element;
+      const binding = {
+        oldValue: 'Old Value',
+      };
+
+      safeHtml.unbind(el, binding);
+
+      expect(binding.oldValue).toBeUndefined();
+    });
   });
 });

@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # AI Architecture
 
-This document describes architecture shared by the GitLab Duo AI features. For historical motivation and goals of this architecture, see the [AI Gateway Architecture blueprint](../architecture/blueprints/ai_gateway/index.md).
+This document describes architecture shared by the GitLab Duo AI features. For historical motivation and goals of this architecture, see the [AI Gateway Architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/).
 
 ## Introduction
 
@@ -34,6 +34,7 @@ package Models {
 
 Clients -down-> GLCOM : REST/Websockets
 Clients -down-> SMI : REST/Websockets
+Clients -down-> AIGW : code completion direct connection
 SMI -right-> CD : License + JWT Sync
 GLCOM -down-> AIGW : Prompts + Telemetry + JWT (REST)
 
@@ -68,7 +69,7 @@ AIGW -down-> Models : prompts
 
 ## SaaS-based AI abstraction layer
 
-GitLab currently operates a cloud-hosted AI architecture. We will allow access to it for licensed self managed instances using the AI-gateway. See [the blueprint](../architecture/blueprints/ai_gateway/index.md) for details.
+GitLab currently operates a cloud-hosted AI architecture. We will allow access to it for licensed self managed instances using the AI-gateway. See [the design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ai_gateway/) for details.
 
 There are two primary reasons for this: the best AI models are cloud-based as they often depend on specialized hardware designed for this purpose, and operating self-managed infrastructure capable of AI at-scale and with appropriate performance is a significant undertaking. We are actively [tracking self-managed customers interested in AI](https://gitlab.com/gitlab-org/gitlab/-/issues/409183).
 
@@ -111,7 +112,7 @@ The following models have been approved for use:
 ### Vector stores
 
 NOTE:
-There is a proposal to change vector stores for improving the quality of search results. See [RAG for GitLab Duo](../architecture/blueprints/gitlab_duo_rag/index.md) for more information.
+There is a proposal to change vector stores for improving the quality of search results. See [RAG for GitLab Duo](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_duo_rag/) for more information.
 
 The following vector stores have been approved for use:
 
@@ -120,7 +121,7 @@ The following vector stores have been approved for use:
 ### Indexing Update
 
 NOTE:
-There is a proposal to change indexing update for improving the quality of search results. See [RAG for GitLab Duo](../architecture/blueprints/gitlab_duo_rag/index.md) for more information.
+There is a proposal to change indexing update for improving the quality of search results. See [RAG for GitLab Duo](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/gitlab_duo_rag/) for more information.
 
 We are currently using sequential scan, which provides perfect recall. We are considering adding an index if we can ensure that it still produces accurate results, as noted in the `pgvector` indexing [documentation](https://github.com/pgvector/pgvector#indexing).
 

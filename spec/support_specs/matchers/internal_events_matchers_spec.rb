@@ -96,6 +96,35 @@ RSpec.describe 'Internal Events matchers', :clean_gitlab_redis_shared_state, fea
           .with(user: user_2, namespace: group_2)
           .once
     end
+
+    context 'with additional properties' do
+      let(:additional_properties) { { label: 'label1', value: 123, property: 'property1' } }
+      let(:tracked_params) { { user: user_1, namespace: group_1, additional_properties: additional_properties } }
+      let(:expected_params) { tracked_params }
+
+      subject(:assertion) do
+        expect do
+          Gitlab::InternalEvents.track_event('g_edit_by_sfe', **tracked_params)
+        end.to trigger_internal_events('g_edit_by_sfe')
+            .with(expected_params)
+            .once
+      end
+
+      it 'accepts correct additional properties' do
+        assertion
+      end
+
+      context "with wrong label value" do
+        let(:expected_params) { tracked_params.deep_merge(additional_properties: { label: 'wrong_label' }) }
+
+        it "doesn't accept incorrect additional_properties" do
+          expect do
+            assertion
+          end.to raise_error RSpec::Expectations::ExpectationNotMetError,
+            /received :event with unexpected arguments/
+        end
+      end
+    end
   end
 
   describe ':increment_usage_metrics' do

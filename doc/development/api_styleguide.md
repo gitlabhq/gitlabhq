@@ -81,6 +81,7 @@ The exception is only when:
 - A feature must be removed in a major GitLab release.
 - Backward compatibility cannot be maintained
   [in any form](#accommodating-backward-compatibility-instead-of-breaking-changes).
+- The feature was previously [marked as experimental or beta](#experimental-beta-and-generally-available-features).
 
 This exception should be rare.
 
@@ -110,6 +111,36 @@ Some examples of non-breaking changes:
 - Changes to error messages.
 - Changes from a `500` status code to [any supported status code](../api/rest/index.md#status-codes) (this is a bugfix).
 - Changes to the order of fields returned in a response.
+
+## Experimental, beta, and generally available features
+
+You can add API elements as [experimental and beta features](../policy/experiment-beta-support.md). They must be additive changes, otherwise they are categorized as
+[a breaking change](#what-is-not-a-breaking-change).
+
+API elements marked as experiment or beta are exempt from the [ensuring backward compatibility](#accommodating-backward-compatibility-instead-of-breaking-changes) policy,
+and can be changed or removed at any time without prior notice.
+
+While in the [experiment status](../policy/experiment-beta-support.md#experiment):
+
+- Use a feature flag that is [off by default](feature_flags/index.md#beta-type).
+- When the flag is off:
+  - Any added endpoints must return `404 Not Found`.
+  - Any added arguments must be ignored.
+  - Any added fields must not be exposed.
+- The [API documentation](../api/api_resources.md) must [document the experimental status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
+- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) should not describe the changes.
+
+While in the [beta status](../policy/experiment-beta-support.md#beta):
+
+- Use a feature flag that is [on by default](feature_flags/index.md#beta-type).
+- The [API documentation](../api/api_resources.md) must [document the beta status](documentation/experiment_beta.md) and the feature flag [must be documented](documentation/feature_flags.md).
+- The [OpenAPI documentation](../api/openapi/openapi_interactive.md) should not describe the changes.
+
+When the feature becomes [generally available](../policy/experiment-beta-support.md#generally-available-ga):
+
+- [Remove](feature_flags/controls.md#cleaning-up) the feature flag.
+- Remove the [experiment or beta status](documentation/experiment_beta.md) from the [API documentation](../api/api_resources.md).
+- Add the [OpenAPI documentation](../api/openapi/openapi_interactive.md) to make the changes programatically discoverable.
 
 ## Declared parameters
 

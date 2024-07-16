@@ -23,7 +23,7 @@ module Gitlab
 
       def initialize(
         project:, sha:, custom_content: nil, pipeline_source: nil, pipeline_source_bridge: nil,
-        triggered_for_branch: nil, ref: nil, has_execution_policy_pipelines: nil)
+        triggered_for_branch: nil, ref: nil, has_pipeline_execution_policies: nil)
         @config = nil
 
         sources.each do |source|
@@ -34,7 +34,7 @@ module Gitlab
             pipeline_source_bridge: pipeline_source_bridge,
             triggered_for_branch: triggered_for_branch,
             ref: ref,
-            has_execution_policy_pipelines: has_execution_policy_pipelines)
+            has_pipeline_execution_policies: has_pipeline_execution_policies)
 
           if source_config.exists?
             @config = source_config

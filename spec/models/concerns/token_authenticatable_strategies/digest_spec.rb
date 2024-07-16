@@ -15,4 +15,10 @@ RSpec.describe TokenAuthenticatableStrategies::Digest do
       expect(strategy.token_fields).to contain_exactly('some_field', 'some_field_digest')
     end
   end
+
+  describe '#sensitive_fields' do
+    it 'includes the digest field' do
+      expect(strategy.sensitive_fields).to contain_exactly('some_field', 'some_field_digest')
+    end
+  end
 end

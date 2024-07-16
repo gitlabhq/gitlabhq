@@ -49,7 +49,11 @@ events:
   unique: user.id
 - name: p_analytics_ci_cd_lead_time
   unique: user.id
+- name: visit_ci_cd_time_to_restore_service_tab
+  unique: user.id
 - name: p_analytics_ci_cd_time_to_restore_service
+  unique: user.id
+- name: visit_ci_cd_failure_rate_tab
   unique: user.id
 - name: p_analytics_ci_cd_change_failure_rate
   unique: user.id

@@ -135,7 +135,7 @@ export default {
     :aria-label="$options.i18n.downloadArtifacts"
     :items="items"
     icon="download"
-    placement="right"
+    placement="bottom-end"
     text-sr-only
     data-testid="pipeline-multi-actions-dropdown"
     @shown="onDisclosureDropdownShown"

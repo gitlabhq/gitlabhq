@@ -32,7 +32,7 @@ export default {
     <gl-link
       :href="group.webUrl"
       target="_blank"
-      class="gl-display-inline-flex gl-align-items-center gl-h-7"
+      class="gl-inline-flex gl-align-items-center gl-h-7"
     >
       {{ group.fullPath }} <gl-icon name="external-link" />
     </gl-link>

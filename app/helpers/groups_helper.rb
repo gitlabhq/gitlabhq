@@ -253,9 +253,9 @@ module GroupsHelper
     new_group_custom_emoji_path(group)
   end
 
-  def access_level_roles_user_can_assign(group)
+  def access_level_roles_user_can_assign(group, roles)
     max_access_level = group.max_member_access_for_user(current_user)
-    group.access_level_roles.select do |_name, access_level|
+    roles.select do |_name, access_level|
       access_level <= max_access_level
     end
   end
@@ -293,11 +293,9 @@ module GroupsHelper
     dropdown_data
   end
 
-  def groups_explore_app_data
+  def groups_list_with_filtered_search_app_data(endpoint)
     {
-      endpoint: explore_groups_path(format: :json),
-      empty_search_illustration: image_path('illustrations/empty-state/empty-search-md.svg'),
-      groups_empty_state_illustration: image_path('illustrations/empty-state/empty-groups-md.svg'),
+      endpoint: endpoint,
       initial_sort: project_list_sort_by
     }.to_json
   end

@@ -13,8 +13,8 @@ module Integrations::Actions
     before_action :integration, only: [:edit, :update, :overrides, :test]
     # rubocop:enable Rails/LexicallyScopedActionFilter
 
-    before_action :render_404, only: :edit, if: -> do
-      integration.to_param == 'prometheus' && Feature.enabled?(:remove_monitor_metrics)
+    before_action :render_404, only: [:edit, :update, :overrides, :test], if: -> do
+      integration.is_a?(::Integrations::Prometheus) && Feature.enabled?(:remove_monitor_metrics)
     end
 
     urgency :low, [:test]

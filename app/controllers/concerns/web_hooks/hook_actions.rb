@@ -86,7 +86,7 @@ module WebHooks
     end
 
     def hook_logs
-      @hook_logs ||= hook.web_hook_logs.recent.page(params[:page]).without_count
+      @hook_logs ||= hook.web_hook_logs.recent.page(pagination_params[:page]).without_count
     end
 
     def hook_value_from_param_or_db(key, value)

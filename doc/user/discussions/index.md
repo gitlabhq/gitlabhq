@@ -310,3 +310,6 @@ To resolve a thread:
    - In the upper-right corner of the original comment, select **Resolve thread** (**{check-circle}**).
    - Below the last reply, in the **Reply** field, select **Resolve thread**.
    - Below the last reply, in the **Reply** field, enter text, select the **Resolve thread** checkbox, and select **Add comment now**.
+
+Additionally, in merge requests, you can [do more with threads](../project/merge_requests/index.md#resolve-a-thread),
+such as move unresolved threads to an issue or prevent merging until all threads are resolved.

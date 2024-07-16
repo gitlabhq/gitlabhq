@@ -23,7 +23,7 @@ DETAILS:
 
 In [GitLab Premium and Ultimate](https://about.gitlab.com/pricing/) tiers, GitLab instance
 administrators can override templates in the
-[Admin Area](../../administration/settings/instance_template_repository.md).
+[Admin area](../../administration/settings/instance_template_repository.md).
 
 ## List Dockerfile templates
 

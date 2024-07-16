@@ -8,7 +8,7 @@ class JwtController < ApplicationController
   # Add this before other actions, since we want to have the user or project
   prepend_before_action :auth_user, :authenticate_project_or_user
 
-  feature_category :system_access
+  feature_category :container_registry
   # https://gitlab.com/gitlab-org/gitlab/-/issues/357037
   urgency :low
 

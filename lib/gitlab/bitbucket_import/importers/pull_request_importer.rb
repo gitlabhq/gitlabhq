@@ -33,7 +33,10 @@ module Gitlab
             state_id: MergeRequest.available_states[object[:state]],
             author_id: author_id,
             created_at: object[:created_at],
-            updated_at: object[:updated_at]
+            updated_at: object[:updated_at],
+            # MergeRequestHelpers#create_merge_request_without_hooks requires
+            # that we pass the enum integer value rather than the key.
+            imported_from: ::Import::HasImportSource::IMPORT_SOURCES[:bitbucket]
           }
 
           creator = Gitlab::Import::MergeRequestCreator.new(project)
@@ -44,6 +47,8 @@ module Gitlab
             merge_request.assignee_ids = [author_id]
             merge_request.reviewer_ids = reviewers
             merge_request.save!
+
+            create_merge_request_metrics(merge_request)
 
             metrics.merge_requests_counter.increment
           end
@@ -85,7 +90,26 @@ module Gitlab
         end
 
         def author_id
-          user_finder.gitlab_user_id(project, object[:author])
+          @author_id ||= user_finder.gitlab_user_id(project, object[:author])
+        end
+
+        def create_merge_request_metrics(merge_request)
+          return if object[:closed_by].nil?
+
+          case object[:state]
+          when 'merged'
+            merge_request.metrics.merged_by_id = closed_by_id
+          when 'closed'
+            merge_request.metrics.latest_closed_by_id = closed_by_id
+          else
+            return
+          end
+
+          merge_request.metrics.save!
+        end
+
+        def closed_by_id
+          user_finder.gitlab_user_id(project, object[:closed_by])
         end
 
         def reviewers

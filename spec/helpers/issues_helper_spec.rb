@@ -47,8 +47,12 @@ RSpec.describe IssuesHelper, feature_category: :team_planning do
   end
 
   describe '#award_state_class' do
-    let!(:upvote) { create(:award_emoji) }
+    let_it_be(:upvote) { create(:award_emoji) }
     let(:awardable) { upvote.awardable }
+
+    before_all do
+      upvote.awardable.project.add_guest(upvote.user)
+    end
 
     before do
       allow(helper).to receive(:can?) do |*args|

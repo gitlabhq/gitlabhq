@@ -1,0 +1,21 @@
+---
+key_path: counts.count_total_click_remove_blob_button_repository_settings
+description: Total count of users who remove blobs to reduce repository size.
+product_group: source_code
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158031
+time_frame: all
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: click_remove_blob_button_repository_settings

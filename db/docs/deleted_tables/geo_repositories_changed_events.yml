@@ -1,0 +1,12 @@
+---
+table_name: geo_repositories_changed_events
+classes: []
+feature_categories:
+- geo_replication
+description: Geo event for when the repositories for selective sync of a specific
+  Geo secondary change, belongs to geo_event_log.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/commit/312bc703a4619b87ba2ac4e59623e7747a24502c
+milestone: '9.5'
+gitlab_schema: gitlab_main_cell
+removed_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158660
+removed_in_milestone: '17.2'

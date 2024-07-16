@@ -31,7 +31,7 @@ module ResultMatchers
     def matches?(actual, &block)
       @actual = actual
 
-      raise "#{actual} must be a #{::Result}, but it was a #{actual.class}" unless actual.is_a?(::Result)
+      raise "#{actual} must be a Result, but it was a #{actual.class}" unless actual.is_a?(Gitlab::Fp::Result)
 
       @failure_message_suffix = "be an '#{ok_or_err}' type"
       return false unless actual.ok? == ok?

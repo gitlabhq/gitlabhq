@@ -110,8 +110,33 @@ RSpec.describe 'Admin Groups', feature_category: :groups_and_projects do
 
       visit admin_group_path(group)
 
-      expect(page).to have_content("Group: #{group.name}")
+      expect(page).to have_content group.name
       expect(page).to have_content("ID: #{group.id}")
+    end
+
+    it 'shows an info text' do
+      group = create(:group, :private)
+
+      visit admin_group_path(group)
+
+      expect(page).to have_content("The number of direct members in the current group. Members in subgroups are " \
+        "not included. What is a direct member?")
+      expect(page).to have_content("Calculations are made based on projects in the current group. " \
+        "Projects in subgroups are not included.")
+    end
+
+    context 'with a subgroup' do
+      it 'does not show an info text' do
+        group = create(:group)
+        subgroup = create(:group, parent: group)
+
+        visit admin_group_path(subgroup)
+
+        expect(page).not_to have_content("The number of direct members in the current group. Members in subgroups " \
+          "are not included. What is a direct member?")
+        expect(page).not_to have_content("Calculations are made based on projects in the current group. " \
+          "Projects in subgroups are not included.")
+      end
     end
 
     it 'has a link to the group' do

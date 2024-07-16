@@ -7,8 +7,6 @@ require 'gitlab/utils/all'
 require_relative '../lib/gitlab_edition'
 require_relative '../config/initializers/0_inject_enterprise_edition_module'
 
-require_relative 'lib/gitlab'
-
 require_relative '../config/bundler_setup'
 Bundler.require(:default)
 
@@ -19,6 +17,7 @@ require 'active_support/core_ext/hash'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/module/delegation'
 require 'active_support/parameter_filter'
+require 'chemlab_gitlab'
 
 module QA
   root = "#{__dir__}/qa"
@@ -102,6 +101,10 @@ Warning.process do |warning|
 end
 
 Warning.ignore(/already initialized constant Chemlab::Vendor|previous definition of Vendor was here/)
+# ignore faraday-multipart warning produced by octokit as it is only required for functionality we don't use
+# see: https://github.com/octokit/octokit.rb/issues/1701
+Warning.ignore(/To use multipart middleware with Faraday v2\.0/)
+require "octokit"
 
 # TODO: Temporary monkeypatch for broadcast logging
 # Remove once activesupport is upgraded to 7.1

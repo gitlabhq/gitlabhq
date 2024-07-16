@@ -510,6 +510,211 @@ RSpec.describe 'getting a work item list for a project', feature_category: :team
     end
   end
 
+  describe 'filters' do
+    before_all do
+      project.add_developer(current_user)
+    end
+
+    let(:fields) do
+      <<~QUERY
+        nodes {
+          id
+        }
+      QUERY
+    end
+
+    context 'when filtering by confidential' do
+      let(:item_filter_params) { { confidential: true } }
+
+      it 'returns only confidential items' do
+        post_graphql(query, current_user: current_user)
+
+        expect(item_ids).to contain_exactly(confidential_item.to_global_id.to_s)
+      end
+    end
+
+    context 'when filtering by assignees' do
+      before_all do
+        IssueAssignee.create!(issue: item1, assignee: current_user)
+        IssueAssignee.create!(issue: item2, assignee: reporter)
+      end
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      let(:item_filter_params) { { assignee_usernames: [current_user.username] } }
+
+      it 'returns items assigned to the user' do
+        expect(item_ids).to contain_exactly(item1.to_global_id.to_s)
+      end
+
+      context 'when using NOT' do
+        let(:item_filter_params) { { not: { assignee_usernames: [current_user.username] } } }
+
+        it 'returns items not assigned to the user' do
+          expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when using OR' do
+        let(:item_filter_params) { { or: { assignee_usernames: [current_user.username, reporter.username] } } }
+
+        it 'returns items assigned to either user' do
+          expect(item_ids).to contain_exactly(item1.to_global_id.to_s, item2.to_global_id.to_s)
+        end
+      end
+
+      context 'when using a wildcard' do
+        let(:item_filter_params) { { assignee_wildcard_id: :NONE } }
+
+        it 'returns items without an assignee' do
+          expect(item_ids).to contain_exactly(confidential_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when both assigneeUsernames and assigneeWildcardId are provided' do
+        let(:item_filter_params) { { assignee_usernames: [current_user.username], assignee_wildcard_id: :NONE } }
+
+        it 'returns an error' do
+          expect_graphql_errors_to_include(
+            'Only one of [assigneeUsernames, assigneeWildcardId] arguments is allowed at the same time.'
+          )
+        end
+      end
+    end
+
+    context 'when filtering by author' do
+      before_all do
+        item1.update_columns(author_id: current_user.id)
+        item2.update_columns(author_id: reporter.id)
+        confidential_item.update_columns(author_id: create(:user).id)
+      end
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      let(:item_filter_params) { { author_username: current_user.username } }
+
+      it 'returns items authored by the user' do
+        expect(item_ids).to contain_exactly(item1.to_global_id.to_s)
+      end
+
+      context 'when using NOT' do
+        let(:item_filter_params) { { not: { author_username: current_user.username } } }
+
+        it 'returns items not authored by the user' do
+          expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when using OR' do
+        let(:item_filter_params) { { or: { author_usernames: [current_user.username, reporter.username] } } }
+
+        it 'returns items authored by either user' do
+          expect(item_ids).to contain_exactly(item1.to_global_id.to_s, item2.to_global_id.to_s)
+        end
+      end
+    end
+
+    context 'when filtering by label' do
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      let(:item_filter_params) { { label_name: label1.name } }
+
+      it 'returns items with the label' do
+        expect(item_ids).to contain_exactly(item1.to_global_id.to_s)
+      end
+
+      context 'when using NOT' do
+        let(:item_filter_params) { { not: { label_name: label1.name } } }
+
+        it 'returns items without the label' do
+          expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when using OR' do
+        let(:item_filter_params) { { or: { label_names: [label1.name, label2.name] } } }
+
+        it 'returns items authored by either user' do
+          expect(item_ids).to contain_exactly(item1.to_global_id.to_s, item2.to_global_id.to_s)
+        end
+      end
+    end
+
+    context 'when filtering by milestone' do
+      before_all do
+        item1.update_columns(milestone_id: milestone1.id)
+        item2.update_columns(milestone_id: milestone2.id)
+      end
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      let(:item_filter_params) { { milestone_title: milestone1.title } }
+
+      it 'returns items with the milestone' do
+        expect(item_ids).to contain_exactly(item1.to_global_id.to_s)
+      end
+
+      context 'when using NOT' do
+        let(:item_filter_params) { { not: { milestone_title: milestone1.title } } }
+
+        it 'returns items without the milestone' do
+          expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when using a wildcard' do
+        let(:item_filter_params) { { milestone_wildcard_id: :NONE } }
+
+        it 'returns items without a milestone' do
+          expect(item_ids).to contain_exactly(confidential_item.to_global_id.to_s)
+        end
+      end
+
+      context 'when both milestoneTitle and milestoneWildcardId are provided' do
+        let(:item_filter_params) { { milestone_title: [milestone1.title], milestone_wildcard_id: :NONE } }
+
+        it 'returns an error' do
+          expect_graphql_errors_to_include(
+            'Only one of [milestoneTitle, milestoneWildcardId] arguments is allowed at the same time.'
+          )
+        end
+      end
+    end
+
+    context 'when filtering by reaction emoji' do
+      before_all do
+        create(:award_emoji, :upvote, user: current_user, awardable: item1)
+        create(:award_emoji, :downvote, user: current_user, awardable: item2)
+      end
+
+      before do
+        post_graphql(query, current_user: current_user)
+      end
+
+      let(:item_filter_params) { { my_reaction_emoji: 'thumbsup' } }
+
+      it 'returns items with the reaction emoji' do
+        expect(item_ids).to contain_exactly(item1.to_global_id.to_s)
+      end
+
+      context 'when using NOT' do
+        let(:item_filter_params) { { not: { my_reaction_emoji: 'thumbsup' } } }
+
+        it 'returns items without the reaction emoji' do
+          expect(item_ids).to contain_exactly(item2.to_global_id.to_s, confidential_item.to_global_id.to_s)
+        end
+      end
+    end
+  end
+
   def item_ids
     graphql_dig_at(items_data, :id)
   end

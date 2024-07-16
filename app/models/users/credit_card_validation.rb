@@ -24,6 +24,10 @@ module Users
 
     validates :zuora_payment_method_xid, length: { maximum: 50 }, uniqueness: true, allow_nil: true
 
+    validates :stripe_setup_intent_xid, length: { maximum: 255 }, allow_nil: true
+    validates :stripe_payment_method_xid, length: { maximum: 255 }, allow_nil: true
+    validates :stripe_card_fingerprint, length: { maximum: 255 }, allow_nil: true
+
     validates :last_digits_hash, length: { maximum: 44 }
     validates :holder_name_hash, length: { maximum: 44 }
     validates :expiration_date_hash, length: { maximum: 44 }

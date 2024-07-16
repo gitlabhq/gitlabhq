@@ -5,8 +5,6 @@ require 'spec_helper'
 RSpec.describe Resolvers::Ci::ProjectPipelineCountsResolver, feature_category: :continuous_integration do
   include GraphqlHelpers
 
-  let(:current_user) { create(:user) }
-
   let_it_be(:project) { create(:project, :private) }
   let_it_be(:pipeline) { create(:ci_pipeline, project: project) }
   let_it_be(:failed_pipeline) { create(:ci_pipeline, :failed, project: project) }
@@ -15,9 +13,7 @@ RSpec.describe Resolvers::Ci::ProjectPipelineCountsResolver, feature_category: :
   let_it_be(:sha_pipeline) { create(:ci_pipeline, :running, project: project, sha: 'deadbeef') }
   let_it_be(:on_demand_dast_scan) { create(:ci_pipeline, :success, project: project, source: 'ondemand_dast_scan') }
 
-  before do
-    project.add_developer(current_user)
-  end
+  let(:current_user) { create(:user, developer_of: project) }
 
   describe '#resolve' do
     it 'counts pipelines' do

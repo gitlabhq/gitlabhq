@@ -5,6 +5,8 @@ class PersonalSnippet < Snippet
 
   include WithUploads
 
+  validates :organization_id, presence: true
+
   def parent_user
     author
   end

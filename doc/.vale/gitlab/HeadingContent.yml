@@ -7,7 +7,7 @@
 extends: existence
 message: "Rename the heading '%s', or re-purpose the content elsewhere."
 level: warning
-link: https://docs.gitlab.com/ee/development/documentation/topic_types/concept.html#concept-headings
+link: https://docs.gitlab.com/ee/development/documentation/topic_types/concept.html#concept-topic-titles
 ignorecase: true
 nonword: true
 scope: raw

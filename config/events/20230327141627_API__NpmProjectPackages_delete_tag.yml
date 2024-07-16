@@ -2,9 +2,6 @@
 description: Delete NPM project packages tag
 category: API::NpmProjectPackages
 action: delete_tag
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

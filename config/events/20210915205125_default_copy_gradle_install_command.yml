@@ -1,12 +1,9 @@
 description: "Copy Gradle install command"
 category: default
 action: copy_gradle_install_command
-label_description: "`code_instruction`"
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::package
+product_group: package_registry
 milestone: "13.10"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/55738
 distributions:
@@ -16,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`code_instruction`"

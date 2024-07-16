@@ -156,7 +156,7 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
         let(:widget_params) { { hierarchy_widget: { parent: parent } } }
 
         context 'when user can admin parent link' do
-          let(:current_user) { reporter }
+          let(:current_user) { guest }
 
           context 'when parent is valid work item' do
             let(:opts) do
@@ -180,13 +180,14 @@ RSpec.describe WorkItems::CreateService, feature_category: :team_planning do
             let_it_be(:parent) { create(:work_item, :task, **container_args) }
 
             it_behaves_like 'fails creating work item and returns errors' do
-              let(:error_message) { 'is not allowed to add this type of parent' }
+              let(:error_message) { "it's not allowed to add this type of parent item" }
             end
           end
         end
 
         context 'when user cannot admin parent link' do
           let(:current_user) { guest }
+          let_it_be(:parent) { create(:work_item, :confidential, **container_args) }
 
           let(:opts) do
             {

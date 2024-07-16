@@ -12,6 +12,7 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
 > - Ability to import projects with a `.` in their path [added](https://gitlab.com/gitlab-org/gitlab/-/issues/434175) in GitLab 16.11.
+> - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
 
 Import your projects from Gitea to GitLab.
 
@@ -24,8 +25,10 @@ The Gitea importer can import:
 - Milestones
 - Labels
 
-When importing, repository public access is retained. If a repository is private in Gitea, it's
-created as private in GitLab as well.
+When importing:
+
+- Repository public access is retained. If a repository is private in Gitea, it's created as private in GitLab as well.
+- Imported issues, merge requests, and comments have an **Imported** badge in GitLab.
 
 ## Known issues
 

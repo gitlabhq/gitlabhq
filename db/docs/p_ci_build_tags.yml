@@ -1,0 +1,12 @@
+---
+table_name: p_ci_build_tags
+classes:
+- Ci::BuildTag
+feature_categories:
+- continuous_integration
+description: Routing table that holds information for build tags
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158327
+milestone: '17.2'
+gitlab_schema: gitlab_ci
+sharding_key:
+  project_id: projects

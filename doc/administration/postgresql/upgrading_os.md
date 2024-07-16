@@ -73,6 +73,7 @@ The following table shows the `glibc` versions shipped for different operating s
 |Ubuntu 18.04        | 2.27 |
 |Ubuntu 20.04        | 2.31 |
 |Ubuntu 22.04        | 2.35 |
+|Ubuntu 24.04        | 2.39 |
 
 For example, suppose you are upgrading from CentOS 7 to RedHat
 Enterprise 8. In this case, using PostgreSQL on this upgraded operating

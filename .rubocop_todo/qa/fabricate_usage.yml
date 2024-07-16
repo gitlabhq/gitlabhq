@@ -1,9 +1,0 @@
----
-QA/FabricateUsage:
-  Include:
-    - 'qa/qa/specs/**/*_spec.rb'
-  Exclude:
-    - 'qa/qa/resource/fork.rb'
-    - 'qa/qa/resource/group_runner.rb'
-    - 'qa/qa/runtime/search.rb'
-    - 'qa/qa/support/helpers/mask_token.rb'

@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe CloudSeed::GoogleCloud::FetchGoogleIpListService, :use_clean_rails_memory_store_caching,
-  :clean_gitlab_redis_rate_limiting, feature_category: :build_artifacts do
+  :clean_gitlab_redis_rate_limiting, feature_category: :job_artifacts do
   include StubRequests
 
   let(:google_cloud_ips) { File.read(Rails.root.join('spec/fixtures/cdn/google_cloud.json')) }

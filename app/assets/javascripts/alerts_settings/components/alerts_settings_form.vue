@@ -186,8 +186,13 @@ export default {
       );
     },
     isFormDirty() {
-      const { type, active, name, payloadAlertFields = [], payloadAttributeMappings = [] } =
-        this.currentIntegration || {};
+      const {
+        type,
+        active,
+        name,
+        payloadAlertFields = [],
+        payloadAttributeMappings = [],
+      } = this.currentIntegration || {};
       const { name: formName, active: formActive, type: formType } = this.integrationForm;
 
       const isDirty =

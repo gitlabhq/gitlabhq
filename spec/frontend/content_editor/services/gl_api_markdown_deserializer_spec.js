@@ -1,27 +1,23 @@
+import { builders } from 'prosemirror-test-builder';
 import createMarkdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
 import Bold from '~/content_editor/extensions/bold';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import HTMLComment from '~/content_editor/extensions/html_comment';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/services/gl_api_markdown_deserializer', () => {
   let renderMarkdown;
   let doc;
   let p;
   let bold;
+  let htmlComment;
   let tiptapEditor;
 
   beforeEach(() => {
     tiptapEditor = createTestEditor({
-      extensions: [Bold],
+      extensions: [Bold, HTMLComment],
     });
 
-    ({
-      builders: { doc, p, bold },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        bold: { markType: Bold.name },
-      },
-    }));
+    ({ doc, paragraph: p, bold, htmlComment } = builders(tiptapEditor.schema));
     renderMarkdown = jest.fn();
   });
 
@@ -32,16 +28,18 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
     beforeEach(async () => {
       const deserializer = createMarkdownDeserializer({ render: renderMarkdown });
 
-      renderMarkdown.mockResolvedValueOnce(`<p><strong>${text}</strong></p>`);
+      renderMarkdown.mockResolvedValueOnce({
+        body: `<p><strong>${text}</strong></p><!-- some comment -->`,
+      });
 
       result = await deserializer.deserialize({
-        markdown: '**Bold text**',
+        markdown: '**Bold text**\n<!-- some comment -->',
         schema: tiptapEditor.schema,
       });
     });
 
     it('transforms HTML returned by render function to a ProseMirror document', () => {
-      const document = doc(p(bold(text)));
+      const document = doc(p(bold(text)), htmlComment({ description: 'some comment' }));
 
       expect(result.document.toJSON()).toEqual(document.toJSON());
     });
@@ -54,7 +52,7 @@ describe('content_editor/services/gl_api_markdown_deserializer', () => {
         schema: tiptapEditor.schema,
       });
 
-      renderMarkdown.mockResolvedValueOnce(null);
+      renderMarkdown.mockResolvedValueOnce({ body: null });
 
       const result = await deserializer.deserialize({
         markdown: '',

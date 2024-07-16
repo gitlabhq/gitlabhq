@@ -1,7 +1,7 @@
 ---
 stage: AI-Powered
 group: Custom Models
-description: Setup your Self-Hosted Model Deployment infrastructure
+description: Setup your self-hosted model deployment infrastructure
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -42,11 +42,17 @@ To set up your self-hosted model deployment infrastructure:
 
 Install one of the following GitLab-approved LLM models:
 
-- [Mistral-7B-v0.1](https://huggingface.co/mistralai/Mistral-7B-v0.1).
-- [Mixtral-8x7B-instruct](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1).
-- [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1).
-- [CodeGemma 7B IT](https://huggingface.co/google/codegemma-7b-it).
-- [CodeGemma 2B](https://huggingface.co/google/codegemma-2b).
+| Model                                                                                                                       | Code Completion | Code Generation | Duo Chat |
+|-----------------------------------------------------------------------------------------------------------------------------|-----------------|-----------------|----------|
+| [CodeGemma 2b](https://huggingface.co/google/codegemma-2b)                                                                  | ✅               | -               | -        |
+| [CodeGemma 7b-it](https://huggingface.co/google/codegemma-7b-it)                                                            | -               | ✅               | -        |
+| [CodeGemma 7b](https://huggingface.co/google/codegemma-7b)                                                                  | ✅               | -               | -        |
+| [Code-Llama 13b-code](https://huggingface.co/meta-llama/CodeLlama-13b-hf)                                                   | ✅               | -               | -        |
+| [Code-Llama 13b](https://huggingface.co/meta-llama/CodeLlama-13b-Instruct-hf)                                               | -               | ✅               | -        |
+| [Codestral 22B](https://huggingface.co/mistralai/Codestral-22B-v0.1) (see [setup instructions](litellm_proxy_setup.md#example-setup-for-codestral-with-ollama)) | ✅               | ✅               | -        |
+| [Mistral 7B](https://huggingface.co/mistralai/Mistral-7B-v0.1)                                                              | -               | ✅               | ✅       |
+| [Mixtral 8x22B](https://huggingface.co/mistral-community/Mixtral-8x22B-v0.1)                                                | -               | ✅               | ✅       |
+| [Mixtral 8x7B](https://huggingface.co/mistralai/Mixtral-8x7B-Instruct-v0.1)                                                 | -               | ✅               | ✅       |
 
 ### Recommended serving architectures
 
@@ -54,6 +60,7 @@ For Mistral, you should use one of the following architectures:
 
 - [vLLM](https://docs.vllm.ai/en/stable/)
 - [TensorRT-LLM](https://docs.mistral.ai/deployment/self-deployment/overview/)
+- [Ollama and litellm](litellm_proxy_setup.md)
 
 ## Step 2: Install the GitLab AI Gateway
 
@@ -89,23 +96,46 @@ sudo mkdir -p /srv/gitlab-agw
 If you're running Docker with a user other than `root`, ensure appropriate
 permissions have been granted to that directory.
 
+#### Optional: Download documentation index
+
+To improve results when asking GitLab Duo Chat questions about GitLab, you can
+index GitLab documentation and provide it as a file to the AI Gateway.
+
+To index the documentation in your local installation,run:
+
+```shell
+pip install requests langchain langchain_text_splitters
+python3 scripts/custom_models/create_index.py -o <path_to_created_index/docs.db>
+```
+
+This creates a file `docs.db` at the specified path.
+
+You can also create an index for a specific GitLab version:
+
+```shell
+python3 scripts/custom_models/create_index.py --version_tag="{gitlab-version}"
+```
+
 #### Find the AI Gateway release
 
 In a production environment, you should set your deployment to a specific
 GitLab AI Gateway release. Find the release to use in [GitLab AI Gateway releases](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/releases), for example:
 
 ```shell
-docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.4.0`
+docker run -e AIGW_CUSTOM_MODELS__ENABLED=true \
+   -v path/to/created/index/docs.db:/app/tmp/docs.db \
+   -e AIGW_FASTAPI__OPENAPI_URL="/openapi.json" \
+   -e AIGW_AUTH__BYPASS_EXTERNAL=true \
+   -e AIGW_FASTAPI__DOCS_URL="/docs"\
+   -e AIGW_FASTAPI__API_PORT=5052 \
+   registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.11.0`
 ```
 
-To set your deployment to the latest stable release, use the `latest` tag to run the latest stable release:
+To set your deployment to the latest stable release, use the `latest` tag to run the latest stable release.
 
-```shell
-docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest`
-```
-
-NOTE:
-We do not yet support multi-arch image, only `linux/amd64`. If you try to run this on Apple chip, adding `--platform linux/amd64` to the `docker run` command will help.
+The arguments `AIGW_FASTAPI__OPENAPI_URL` and `AIGW_FASTAPI__DOCS_URL` are not
+mandatory, but are useful for debugging. From the host, accessing `http://localhost:5052/docs`
+should open the AI Gateway API documentation.
 
 ### Install by using Docker Engine
 
@@ -124,6 +154,7 @@ We do not yet support multi-arch image, only `linux/amd64`. If you try to run th
 
    ```shell
    AI_GATEWAY_URL=https://<your_ai_gitlab_domain>
+   CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1
    ```
 
 1. After you've set up the environment variables, run the image. For example:
@@ -164,7 +195,13 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 1. Pull the new image:
 
    ```shell
-   docker run -p 5000:500 -e AIGW_CUSTOM_MODELS__ENABLED=true registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:latest
+   docker run -e AIGW_CUSTOM_MODELS__ENABLED=true \
+      -v path/to/created/index/docs.db:/app/tmp/docs.db \
+      -e AIGW_FASTAPI__OPENAPI_URL="/openapi.json" \
+      -e AIGW_AUTH__BYPASS_EXTERNAL=true \
+      -e AIGW_FASTAPI__DOCS_URL="/docs"\
+      -e AIGW_FASTAPI__API_PORT=5052 \
+      registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.11.0`
    ```
 
 1. Ensure that the environment variables are all set correctly
@@ -172,3 +209,21 @@ To upgrade the AI Gateway, download the newest Docker image tag.
 ## Alternative installation methods
 
 For information on alternative ways to install the AI Gateway, see [issue 463773](https://gitlab.com/gitlab-org/gitlab/-/issues/463773).
+
+## Troubleshooting
+
+### The image's platform does not match the host
+
+When [finding the AI Gateway release](#find-the-ai-gateway-release), you might get an error that states `The requested image’s platform (linux/amd64) does not match the detected host`.
+
+To work around this error, add `--platform linux/amd64` to the `docker run` command:
+
+```shell
+docker run -e AIGW_CUSTOM_MODELS__ENABLED=true --platform linux/amd64 \
+   -v path/to/created/index/docs.db:/app/tmp/docs.db \
+   -e AIGW_FASTAPI__OPENAPI_URL="/openapi.json" \
+   -e AIGW_AUTH__BYPASS_EXTERNAL=true \
+   -e AIGW_FASTAPI__DOCS_URL="/docs"\
+   -e AIGW_FASTAPI__API_PORT=5052 \
+   registry.gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/model-gateway:v1.11.0`
+```

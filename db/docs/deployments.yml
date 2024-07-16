@@ -14,3 +14,13 @@ allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:
   project_id: projects
+schema_inconsistencies:
+- type: missing_indexes
+  object_name: index_deployments_on_created_at
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157136
+- type: missing_indexes
+  object_name: index_deployments_on_id_and_status_and_created_at
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157136
+- type: missing_indexes
+  object_name: index_deployments_on_user_id_and_status_and_created_at
+  introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157136

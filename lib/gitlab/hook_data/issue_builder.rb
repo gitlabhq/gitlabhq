@@ -2,6 +2,8 @@
 
 module Gitlab
   module HookData
+    # Used for legacy issues, Service Desk issues and all work item types
+    # See https://gitlab.com/groups/gitlab-org/-/epics/10150
     class IssueBuilder < BaseBuilder
       def self.safe_hook_relations
         %i[
@@ -46,19 +48,20 @@ module Gitlab
 
       def build
         attrs = {
-            description: absolute_image_urls(issue.description),
-            url: Gitlab::UrlBuilder.build(issue),
-            total_time_spent: issue.total_time_spent,
-            time_change: issue.time_change,
-            human_total_time_spent: issue.human_total_time_spent,
-            human_time_change: issue.human_time_change,
-            human_time_estimate: issue.human_time_estimate,
-            assignee_ids: issue.assignee_ids,
-            assignee_id: issue.assignee_ids.first, # This key is deprecated
-            labels: issue.labels_hook_attrs,
-            state: issue.state,
-            severity: issue.severity,
-            customer_relations_contacts: issue.customer_relations_contacts.map(&:hook_attrs)
+          type: issue.work_item_type.name,
+          description: absolute_image_urls(issue.description),
+          url: Gitlab::UrlBuilder.build(issue),
+          total_time_spent: issue.total_time_spent,
+          time_change: issue.time_change,
+          human_total_time_spent: issue.human_total_time_spent,
+          human_time_change: issue.human_time_change,
+          human_time_estimate: issue.human_time_estimate,
+          assignee_ids: issue.assignee_ids,
+          assignee_id: issue.assignee_ids.first, # This key is deprecated
+          labels: issue.labels_hook_attrs,
+          state: issue.state,
+          severity: issue.severity,
+          customer_relations_contacts: issue.customer_relations_contacts.map(&:hook_attrs)
         }
 
         if issue.supports_escalation? && issue.escalation_status

@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe GitlabSchema.types['ContainerRepositoryTag'], feature_category: :container_registry do
   fields = %i[name path location digest revision short_revision
-    total_size created_at user_permissions referrers published_at]
+    total_size created_at user_permissions referrers published_at media_type]
 
   it { expect(described_class.graphql_name).to eq('ContainerRepositoryTag') }
 

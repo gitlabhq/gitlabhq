@@ -39,7 +39,7 @@ module Gitlab
           def no_pipeline_to_create?
             # If there are security policy pipelines,
             # they will be merged onto the pipeline in PipelineExecutionPolicies::MergeJobs
-            stage_names.empty? && @command.execution_policy_pipelines.blank?
+            stage_names.empty? && @command.pipeline_execution_policies.blank?
           end
 
           def stage_names

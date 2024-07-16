@@ -10,6 +10,7 @@ describe('DeleteButton', () => {
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findModal = () => wrapper.findComponent(DeleteModal);
+  const findDeleteButton = () => wrapper.findComponent(GlButton);
 
   const defaultPropsData = {
     confirmPhrase: 'foo',
@@ -32,6 +33,18 @@ describe('DeleteButton', () => {
       },
     });
   };
+
+  it('renders the correct default title', () => {
+    createComponent();
+
+    expect(findDeleteButton().text()).toBe('Delete project');
+  });
+
+  it('renders a title passed via `buttonText` prop', () => {
+    createComponent({ buttonText: 'Delete project immediately' });
+
+    expect(findDeleteButton().text()).toBe('Delete project immediately');
+  });
 
   it('renders modal and passes correct props', () => {
     createComponent();

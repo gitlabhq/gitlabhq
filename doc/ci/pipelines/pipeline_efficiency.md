@@ -34,7 +34,7 @@ heavily influenced by the:
 - [Size of the repository](../../user/project/repository/monorepos/index.md)
 - Total number of stages and jobs.
 - Dependencies between jobs.
-- The ["critical path"](#directed-acyclic-graphs-dag-visualization), which represents
+- The ["critical path"](#needs-dependency-visualization), which represents
   the minimum and maximum pipeline duration.
 
 Additional points to pay attention relate to [GitLab Runners](../runners/index.md):
@@ -89,12 +89,10 @@ running simultaneously to support the parallel jobs.
 The [testing levels for GitLab](../../development/testing_guide/testing_levels.md)
 provide an example of a complex testing strategy with many components involved.
 
-### Directed Acyclic Graphs (DAG) visualization
+### `needs` dependency visualization
 
-The [Directed Acyclic Graph](../directed_acyclic_graph/index.md) (DAG) visualization can help analyze the critical path in
-the pipeline and understand possible blockers.
-
-![CI Pipeline Critical Path with DAG](img/ci_efficiency_pipeline_dag_critical_path.png)
+Viewing the `needs` dependencies in the [full pipeline graph](../pipelines/index.md#group-jobs-by-stage-or-needs-configuration)
+can help analyze the critical path in the pipeline and understand possible blockers.
 
 ### Pipeline Monitoring
 
@@ -185,11 +183,11 @@ Decide if it's important for long jobs to run early, before fast feedback from
 faster jobs. The initial failures may make it clear that the rest of the pipeline
 shouldn't run, saving pipeline resources.
 
-### Directed Acyclic Graphs (DAG)
+### `needs` keyword
 
 In a basic configuration, jobs always wait for all other jobs in earlier stages to complete
 before running. This is the simplest configuration, but it's also the slowest in most
-cases. [Directed Acyclic Graphs](../directed_acyclic_graph/index.md) and
+cases. [Pipelines with the `needs` keyword](../directed_acyclic_graph/index.md) and
 [parent/child pipelines](downstream_pipelines.md#parent-child-pipelines) are more flexible and can
 be more efficient, but can also make pipelines harder to understand and analyze.
 

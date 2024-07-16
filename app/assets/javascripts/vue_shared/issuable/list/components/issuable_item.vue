@@ -379,7 +379,7 @@ export default {
       <ul v-if="showIssuableMeta" class="controls gl-gap-3">
         <!-- eslint-disable-next-line @gitlab/vue-prefer-dollar-scopedslots -->
         <li v-if="$slots.status" data-testid="issuable-status" class="gl-mr-0!">
-          <gl-badge v-if="isNotOpen" size="sm" :variant="statusBadgeVariant">
+          <gl-badge v-if="isNotOpen" :variant="statusBadgeVariant">
             <slot name="status"></slot>
           </gl-badge>
           <slot v-else name="status"></slot>

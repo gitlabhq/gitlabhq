@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
+import Translate from '~/vue_shared/translate';
 import createDefaultClient from '~/lib/graphql';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import csrf from '~/lib/utils/csrf';
@@ -8,6 +9,7 @@ import AdminUsersFilterApp from './components/admin_users_filter_app.vue';
 import DeleteUserModal from './components/modals/delete_user_modal.vue';
 import UserActions from './components/user_actions.vue';
 
+Vue.use(Translate);
 Vue.use(VueApollo);
 
 const apolloProvider = new VueApollo({

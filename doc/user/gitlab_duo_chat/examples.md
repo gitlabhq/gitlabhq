@@ -17,7 +17,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, and JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai), [Vertex AI Search](https://cloud.google.com/enterprise-search)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet), [Vertex AI Search](https://cloud.google.com/enterprise-search)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/117695) for GitLab.com in GitLab 16.0.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/451215) ability to ask doc-related questions on self-managed in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ai_gateway_docs_search`. Enabled by default.
@@ -34,7 +34,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for GitLab.com in GitLab 16.1.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/122235) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -60,10 +60,12 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** GitLab UI, Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-2.1`](https://docs.anthropic.com/en/docs/legacy-model-guide#anthropics-legacy-models)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423524) for self-managed and GitLab Dedicated in GitLab 16.8.
+> - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149619) from `claude-2.1` to `claude-3-sonnet` in GitLab 17.2.
+> - [Updated LLM](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157696) from `claude-3-sonnet` to `claude-3-5-sonnet` in GitLab 17.2.
 
 You can ask GitLab Duo Chat to create a CI/CD configuration:
 
@@ -80,13 +82,25 @@ You can also ask to explain specific job errors by copy-pasting the error messag
 
 Alternatively, you can use [root cause analysis in CI/CD](../gitlab_duo/experiments.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
+## Explain a vulnerability
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** GitLab UI
+**LLMs:** Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
+
+`/vulnerability_explain` is a special command you can use when you are viewing a SAST vulnerability report.
+
+[Learn more](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
+
 ## Explain code in the IDE
 
 DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -114,7 +128,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -135,7 +149,7 @@ DETAILS:
 **Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Editors:** Web IDE, VS Code, JetBrains IDEs
-**LLMs:** Anthropic: [`claude-3-sonnet-20240229`](https://docs.anthropic.com/en/docs/models-overview#claude-3-a-new-generation-of-ai)
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com in GitLab 16.7.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for self-managed and GitLab Dedicated in GitLab 16.8.
@@ -216,3 +230,30 @@ You can ask about a specific GitLab epic. For example:
 
 NOTE:
 If the epic contains a large amount of text (more than 40,000 words), GitLab Duo Chat might not be able to consider every word. The AI model has a limit to the amount of input it can process at one time.
+
+## Delete or reset the conversation
+
+To delete all conversations permanently and clear the chat window:
+
+- In the text box, type `/clear` and select **Send**.
+
+To start a new conversation, but keep the previous conversations visible in the chat window:
+
+- In the text box, type `/reset` and select **Send**.
+
+In both cases, the conversation history will not be considered when you ask new questions.
+Deleting or resetting might help improve the answers when you switch contexts, because Duo Chat will not get confused by the unrelated conversations.
+
+## Supported slash commands
+
+Duo Chat has a list of supported commands, each of which is preceded by a slash (`/`).
+Use the following commands to quickly accomplish specific tasks.
+
+| Command                | Purpose                                                                             |
+|------------------------|-------------------------------------------------------------------------------------|
+| /clear                 | [Delete all conversations permanently and clear the chat window](#delete-or-reset-the-conversation)  |
+| /reset                 | [Start a new conversation, but keep the previous conversations visible in the chat window](#delete-or-reset-the-conversation)  |
+| /tests                 | [Write tests](#write-tests-in-the-ide)                                              |
+| /explain               | [Explain code](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)              |
+| /vulnerability_explain | [Explain current vulnerability](../gitlab_duo/index.md#vulnerability-explanation)   |
+| /refactor              | [Refactor the code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)        |

@@ -86,7 +86,6 @@ export default {
       :key="ref"
       :href="getRefUrl(ref)"
       class="gl-mt-2 gl-mr-2"
-      size="sm"
       >{{ ref }}</gl-badge
     >
     <gl-button
@@ -107,7 +106,6 @@ export default {
           :key="ref"
           :href="getRefUrl(ref)"
           class="gl-mt-3 gl-mr-2"
-          size="sm"
           >{{ ref }}</gl-badge
         >
       </template>

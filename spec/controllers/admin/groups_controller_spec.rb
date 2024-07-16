@@ -83,7 +83,7 @@ RSpec.describe Admin::GroupsController, feature_category: :groups_and_projects d
         allow(Kaminari.config).to receive(:default_per_page).and_return(1)
       end
 
-      it 'redirects to the page' do
+      it 'redirects to the page', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/464681' do
         get :index, params: { page: 1 }
 
         expect(response).to have_gitlab_http_status(:ok)

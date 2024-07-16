@@ -35,10 +35,11 @@ RSpec.describe FinderWithGroupHierarchy do
     end
   end
 
-  let_it_be(:parent_group) { create(:group) }
-  let_it_be(:group) { create(:group, parent: parent_group) }
-  let_it_be(:private_group) { create(:group, :private) }
-  let_it_be(:private_subgroup) { create(:group, :private, parent: private_group) }
+  let_it_be(:organization) { create(:organization) }
+  let_it_be(:parent_group) { create(:group, organization: organization) }
+  let_it_be(:group) { create(:group, parent: parent_group, organization: organization) }
+  let_it_be(:private_group) { create(:group, :private, organization: organization) }
+  let_it_be(:private_subgroup) { create(:group, :private, parent: private_group, organization: organization) }
 
   let!(:user) { create(:user) }
 

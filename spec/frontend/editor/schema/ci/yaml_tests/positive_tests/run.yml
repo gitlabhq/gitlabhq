@@ -1,0 +1,63 @@
+hello_steps:
+  run:
+    - name: hello_steps
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step
+      inputs:
+        echo: hello steps!
+
+hello_script:
+  run:
+    - name: hello_script1
+      script: echo 'Hello script'
+      env:
+        MY_VAR: 'some value'
+
+multiple_steps:
+  run:
+    - name: step1
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/echo-step
+      inputs:
+        echo: Step 1 executed
+    - name: step2
+      script: echo 'Step 2 executed'
+    - name: step3
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/another-step
+      env:
+        DEBUG: 'true'
+
+complex_script:
+  run:
+    - name: complex_script_example
+      script: |
+        echo 'Multi-line script'
+        ls -la
+        mkdir test_dir
+        cd test_dir
+        touch test_file.txt
+      env:
+        WORKSPACE: '/tmp/workspace'
+        LOG_LEVEL: 'info'
+
+step_with_multiple_inputs:
+  run:
+    - name: multi_input_step
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/complex-step
+      inputs:
+        param1: value1
+        param2: 42
+        param3:
+          nested: data
+          array:
+            - item1
+            - item2
+
+mixed_steps_and_scripts:
+  run:
+    - name: first_step
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/setup-step
+    - name: script_step
+      script: echo 'Intermediate script'
+    - name: final_step
+      step: gitlab.com/gitlab-org/ci-cd/runner-tools/cleanup-step
+      env:
+        CLEANUP_MODE: 'full'

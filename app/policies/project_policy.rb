@@ -247,7 +247,11 @@ class ProjectPolicy < BasePolicy
   end
 
   condition(:push_repository_for_job_token_allowed) do
-    @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
+    if ::Feature.enabled?(:allow_push_repository_for_job_token, @subject)
+      @user&.from_ci_job_token? && project.ci_push_repository_for_job_token_allowed? && @user.ci_job_token_scope.self_referential?(project)
+    else
+      false
+    end
   end
 
   condition(:packages_disabled, scope: :subject) { !@subject.packages_enabled }
@@ -609,6 +613,7 @@ class ProjectPolicy < BasePolicy
     enable :admin_project_aws
     enable :admin_secure_files
     enable :read_upload
+    enable :admin_upload
     enable :destroy_upload
     enable :admin_incident_management_timeline_event_tag
     enable :stop_environment
@@ -622,6 +627,7 @@ class ProjectPolicy < BasePolicy
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger
+  rule { can?(:admin_runner) }.enable :read_runner
 
   rule { public_project & metrics_dashboard_allowed }.policy do
     enable :metrics_dashboard
@@ -660,7 +666,10 @@ class ProjectPolicy < BasePolicy
     prevent(*create_read_update_admin_destroy(:merge_request))
   end
 
-  rule { pages_disabled }.prevent :read_pages_content
+  rule { pages_disabled }.policy do
+    prevent :read_pages_content
+    prevent(*create_read_update_admin_destroy(:pages))
+  end
 
   rule { issues_disabled & merge_requests_disabled }.policy do
     prevent(*create_read_update_admin_destroy(:label))

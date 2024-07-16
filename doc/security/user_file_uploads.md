@@ -65,6 +65,7 @@ You cannot select this option for public projects.
 ## Delete uploaded files
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/92791) in GitLab 15.3.
+> - REST API [added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) support in GitLab 17.2.
 
 You should delete an uploaded file when that file contains sensitive or confidential information. When you have deleted that file, users cannot access the file and the direct URL returns a 404 error.
 
@@ -86,6 +87,8 @@ mutation{
 ```
 
 Project members that do not have the Owner or Maintainer role cannot access this GraphQL endpoint.
+
+You can also use the REST API for [projects](../api/projects.md#delete-an-uploaded-file) or [groups](../api/groups.md#delete-an-uploaded-file) to delete an uploaded file.
 
 <!-- ## Troubleshooting
 

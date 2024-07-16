@@ -4,9 +4,10 @@ class AutoMergeService < BaseService
   include Gitlab::Utils::StrongMemoize
 
   STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS = 'merge_when_pipeline_succeeds'
-  # Currently only EE but will be moved to CE in (https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146730)
   STRATEGY_MERGE_WHEN_CHECKS_PASS = 'merge_when_checks_pass'
-  STRATEGIES = [STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS].freeze
+  # Only used in EE
+  STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS = 'add_to_merge_train_when_checks_pass'
+  STRATEGIES = [STRATEGY_MERGE_WHEN_CHECKS_PASS, STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS].freeze
 
   class << self
     def all_strategies_ordered_by_preference

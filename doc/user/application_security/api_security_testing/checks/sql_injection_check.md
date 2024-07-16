@@ -19,7 +19,7 @@ injection attack, in which SQL commands are injected into data-plane input in
 order to effect the execution of predefined SQL commands. This check modifies
 parameters in the request (path, query string, headers, JSON, XML, etc.) to try
 and create a syntax error in the SQL or NoSQL query. Logs and responses are then
-analyzed to try and detect if an error occured. If an error is detected there is
+analyzed to try and detect if an error occurred. If an error is detected there is
 a high likelihood that a vulnerability exists.
 
 ## Remediation

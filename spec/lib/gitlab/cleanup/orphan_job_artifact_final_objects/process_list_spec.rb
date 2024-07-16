@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :build_artifacts do
+RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   describe '#run!' do
     let(:processor) do
       described_class.new(
@@ -176,7 +176,7 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orp
             orphan_final_object_2
           ])
 
-          saved_cursor_position = fetch_saved_cursor_position
+          saved_cursor_position = fetch_saved_cursor_position(orphan_list_filename)
 
           new_processor = described_class.new(
             force_restart: false,
@@ -185,7 +185,7 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orp
 
           new_processor.run!
 
-          expect_resuming_from_cursor_position_log_message(saved_cursor_position)
+          expect_resuming_from_cursor_position_log_message(orphan_list_filename, saved_cursor_position)
           expect_deleted_object_log_message(orphan_final_object_3)
           expect_deleted_object_log_message(orphan_final_object_4)
           expect_skipping_object_with_job_artifact_record_log_message(non_orphan_final_object)
@@ -231,6 +231,127 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::ProcessList, :orp
               orphan_final_object_2,
               orphan_final_object_3,
               orphan_final_object_4
+            ])
+          end
+        end
+
+        context 'and there are multiple processes with different orphan list files interrupted at the same time' do
+          let(:orphan_list_filename_2) { 'orphan_objects_2.csv' }
+          let(:deleted_list_filename_2) { "#{described_class::DELETED_LIST_FILENAME_PREFIX}#{orphan_list_filename_2}" }
+
+          let(:processor_2) do
+            described_class.new(
+              force_restart: false,
+              filename: orphan_list_filename_2
+            )
+          end
+
+          let(:orphan_final_object_5) { create_fog_file }
+          let(:orphan_final_object_6) { create_fog_file }
+          let(:orphan_final_object_7) { create_fog_file }
+          let(:orphan_final_object_8) { create_fog_file }
+
+          before do
+            File.open(orphan_list_filename_2, 'a') do |file|
+              file.puts([orphan_final_object_5.key, orphan_final_object_5.content_length].join(','))
+              file.puts([orphan_final_object_6.key, orphan_final_object_6.content_length].join(','))
+              file.puts([orphan_final_object_7.key, orphan_final_object_7.content_length].join(','))
+              file.puts([orphan_final_object_8.key, orphan_final_object_8.content_length].join(','))
+            end
+
+            loop_counter = 0
+
+            allow(processor_2).to receive(:orphans_from_batch).and_wrap_original do |m, *args|
+              raise dummy_error if loop_counter == 1
+
+              loop_counter += 1
+              m.call(*args)
+            end
+          end
+
+          after do
+            File.delete(orphan_list_filename_2) if File.file?(orphan_list_filename_2)
+            File.delete(deleted_list_filename_2) if File.file?(deleted_list_filename_2)
+          end
+
+          it 'resumes from last known cursor position on the next run for each file', :aggregate_failures do
+            expect { processor.run! }.to raise_error(dummy_error)
+
+            # we have a batch size of 2 here, so we expect only the first 2 lines
+            # from the CSV has been processed before it got interrupted
+            expect_deleted_object_log_message(orphan_final_object_1)
+            expect_object_to_be_deleted(orphan_final_object_1)
+            expect_deleted_object_log_message(orphan_final_object_2)
+            expect_object_to_be_deleted(orphan_final_object_2)
+            expect_object_to_exist(orphan_final_object_3)
+            expect_object_to_exist(orphan_final_object_4)
+
+            expect_deleted_list_to_contain_exactly(deleted_list_filename, [
+              orphan_final_object_1,
+              orphan_final_object_2
+            ])
+
+            expect { processor_2.run! }.to raise_error(dummy_error)
+
+            # we have a batch size of 2 here, so we expect only the first 2 lines
+            # from the CSV has been processed before it got interrupted
+            expect_deleted_object_log_message(orphan_final_object_5)
+            expect_object_to_be_deleted(orphan_final_object_5)
+            expect_deleted_object_log_message(orphan_final_object_6)
+            expect_object_to_be_deleted(orphan_final_object_6)
+            expect_object_to_exist(orphan_final_object_7)
+            expect_object_to_exist(orphan_final_object_8)
+
+            expect_deleted_list_to_contain_exactly(deleted_list_filename_2, [
+              orphan_final_object_5,
+              orphan_final_object_6
+            ])
+
+            saved_cursor_position = fetch_saved_cursor_position(orphan_list_filename)
+
+            new_processor = described_class.new(
+              force_restart: false,
+              filename: orphan_list_filename
+            )
+
+            new_processor.run!
+
+            expect_resuming_from_cursor_position_log_message(orphan_list_filename, saved_cursor_position)
+            expect_deleted_object_log_message(orphan_final_object_3)
+            expect_deleted_object_log_message(orphan_final_object_4)
+            expect_skipping_object_with_job_artifact_record_log_message(non_orphan_final_object)
+
+            expect_object_to_be_deleted(orphan_final_object_3)
+            expect_object_to_be_deleted(orphan_final_object_4)
+            expect_object_to_exist(non_orphan_final_object)
+
+            expect_deleted_list_to_contain_exactly(deleted_list_filename, [
+              orphan_final_object_1,
+              orphan_final_object_2,
+              orphan_final_object_3,
+              orphan_final_object_4
+            ])
+
+            saved_cursor_position_2 = fetch_saved_cursor_position(orphan_list_filename_2)
+
+            new_processor_2 = described_class.new(
+              force_restart: false,
+              filename: orphan_list_filename_2
+            )
+
+            new_processor_2.run!
+
+            expect_resuming_from_cursor_position_log_message(orphan_list_filename_2, saved_cursor_position_2)
+            expect_deleted_object_log_message(orphan_final_object_7)
+            expect_deleted_object_log_message(orphan_final_object_8)
+            expect_object_to_be_deleted(orphan_final_object_7)
+            expect_object_to_be_deleted(orphan_final_object_8)
+
+            expect_deleted_list_to_contain_exactly(deleted_list_filename_2, [
+              orphan_final_object_5,
+              orphan_final_object_6,
+              orphan_final_object_7,
+              orphan_final_object_8
             ])
           end
         end

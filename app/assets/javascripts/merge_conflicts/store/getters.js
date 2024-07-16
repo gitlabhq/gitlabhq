@@ -112,6 +112,8 @@ export const fileTextTypePresent = (state) => {
   return state.conflictsData?.files.some((f) => f.type === CONFLICT_TYPES.TEXT);
 };
 
-export const getFileIndex = (state) => ({ blobPath }) => {
-  return state.conflictsData.files.findIndex((f) => f.blobPath === blobPath);
-};
+export const getFileIndex =
+  (state) =>
+  ({ blobPath }) => {
+    return state.conflictsData.files.findIndex((f) => f.blobPath === blobPath);
+  };

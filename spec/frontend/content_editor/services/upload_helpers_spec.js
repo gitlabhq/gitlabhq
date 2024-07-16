@@ -27,7 +27,7 @@ describe('content_editor/services/upload_helpers', () => {
 
     mock = new MockAdapter(axios);
     mock.onPost(uploadsPath, formData).reply(HTTP_STATUS_OK, successResponse);
-    renderMarkdown = jest.fn().mockResolvedValue(renderedAttachmentLinkFixture);
+    renderMarkdown = jest.fn().mockResolvedValue({ body: renderedAttachmentLinkFixture });
   });
 
   afterEach(() => {

@@ -1,0 +1,13 @@
+%div{ **html_options }><
+  - if link?
+    %a.gl-link.action-card-title{ href: @href, **@link_options }
+      = sprite_icon(card_icon)
+      = @title
+      = sprite_icon('arrow-right', css_class: 'action-card-arrow')
+  - else
+    .action-card-title
+      = sprite_icon(card_icon)
+      = @title
+  %p.action-card-text= @description
+  - if content.present?
+    .action-card-controls= content

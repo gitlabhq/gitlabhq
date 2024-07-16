@@ -249,7 +249,7 @@ export default {
             data-testid="user-popover-pronouns"
             >({{ user.pronouns }})</span
           >
-          <gl-badge v-if="isBusy" size="sm" variant="warning" class="gl-ml-1">
+          <gl-badge v-if="isBusy" variant="warning" class="gl-ml-1">
             {{ $options.I18N_USER_BUSY }}
           </gl-badge>
         </template>

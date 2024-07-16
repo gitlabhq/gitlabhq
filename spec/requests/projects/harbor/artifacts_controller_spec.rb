@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Projects::Harbor::ArtifactsController, feature_category: :build_artifacts do
+RSpec.describe Projects::Harbor::ArtifactsController, feature_category: :container_registry do
   it_behaves_like 'a harbor artifacts controller', anonymous_status_code: '302' do
     let_it_be(:container) { create(:project) }
     let_it_be(:harbor_integration) { create(:harbor_integration, project: container) }

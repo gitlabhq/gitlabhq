@@ -1,17 +1,13 @@
-- page_title s_('BackgroundMigrations|Background Migrations')
+- page_title s_('BackgroundMigrations|Background migrations')
 - @breadcrumb_link = admin_background_migrations_path(database: params[:database])
+- learnmore_link = help_page_path('update/background_migrations')
+- learnmore_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learnmore_link }
+- page_description = html_escape(s_('BackgroundMigrations|Background migrations are used to perform data migrations when a migration exceeds the time limits set by GitLab. %{linkStart}Learn more%{linkEnd}')) % { linkStart: learnmore_link_start, linkEnd: '</a>'.html_safe }
 
-.gl-display-flex.gl-flex-direction-column.gl-md-flex-direction-row.gl-sm-align-items-flex-end.gl-pb-5.gl-border-b-1.gl-border-b-solid.gl-border-b-gray-100
-  .gl-flex-grow-1
-    %h3= s_('BackgroundMigrations|Background Migrations')
-    %p.light.gl-mb-0
-      - learnmore_link = help_page_path('update/background_migrations')
-      - learnmore_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: learnmore_link }
-      = html_escape(s_('BackgroundMigrations|Background migrations are used to perform data migrations whenever a migration exceeds the time limits in our guidelines. %{linkStart}Learn more%{linkEnd}')) % { linkStart: learnmore_link_start, linkEnd: '</a>'.html_safe }
 
-  - if @databases.size > 1
-    .gl-display-flex.gl-align-items-center.gl-flex-grow-0.gl-flex-basis-0.gl-sm-mt-0.gl-mt-5.gl-sm-ml-7.gl-ml-0
-      #js-database-listbox{ data: { databases: @databases, selected_database: @selected_database } }
+= render ::Layouts::PageHeadingComponent.new(s_('BackgroundMigrations|Background migrations'),
+  description: page_description,
+  options: { data: { event_tracking_load: 'true', event_tracking: 'view_admin_background_migrations_pageload' } })
 
 = gl_tabs_nav do
   = gl_tab_link_to admin_background_migrations_path({ tab: nil, database: params[:database] }), item_active: @current_tab == 'queued' do
@@ -26,17 +22,22 @@
   = gl_tab_link_to admin_background_migrations_path({ tab: 'finished', database: params[:database] }), item_active: @current_tab == 'finished' do
     = _('Finished')
     = gl_tab_counter_badge limited_counter_with_delimiter(@relations_by_tab['finished'])
+  - if @databases.size > 1
+    #js-database-listbox{ data: { databases: @databases, selected_database: @selected_database } }
 
-.tab-content.gl-tab-content
-  .tab-pane.active{ role: 'tabpanel' }
-    %table.table.b-table.gl-table.b-table-stacked-md{ role: 'table' }
-      %thead{ role: 'rowgroup' }
-        %tr{ role: 'row' }
-          %th.border-bottom{ role: 'cell' }= _('Migration')
-          %th.border-bottom{ role: 'cell' }= _('Progress')
-          %th.border-bottom{ role: 'cell' }= _('Status')
-          %th.border-bottom{ role: 'cell' }
-      %tbody{ role: 'rowgroup' }
-        = render partial: 'migration', collection: @migrations
-
+.tab-content.gl-tab-content.gl-pt-0
+  - if @migrations.any?
+    .tab-pane.active{ role: 'tabpanel' }
+      %table.table.b-table.gl-table.b-table-stacked-md.gl-table-no-top-border.gl-mb-7
+        %thead
+          %tr{ role: 'row' }
+            %th.border-bottom{ role: 'cell' }= _('Migration')
+            %th.border-bottom{ role: 'cell' }= _('Progress')
+            %th.border-bottom{ role: 'cell' }= _('Status')
+            %th.border-bottom{ role: 'cell' }
+        %tbody
+          = render partial: 'migration', collection: @migrations
     = paginate_collection @migrations
+  - else
+    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-milestone-md.svg',
+      title: s_('BackgroundMigrations|No background migrations'))

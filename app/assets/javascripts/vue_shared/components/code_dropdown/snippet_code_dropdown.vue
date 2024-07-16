@@ -67,7 +67,7 @@ export default {
   <gl-disclosure-dropdown
     category="primary"
     variant="confirm"
-    placement="right"
+    placement="bottom-end"
     block
     :toggle-text="$options.labels.defaultLabel"
   >

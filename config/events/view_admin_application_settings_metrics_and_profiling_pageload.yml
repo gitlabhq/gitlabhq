@@ -1,0 +1,16 @@
+---
+description: Tracks pageviews for the admin application settings metrics and profiling page
+internal_events: true
+action: view_admin_application_settings_metrics_and_profiling_pageload
+identifiers:
+- user
+product_group: personal_productivity
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158234
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

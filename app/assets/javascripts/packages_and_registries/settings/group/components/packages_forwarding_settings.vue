@@ -152,7 +152,10 @@ export default {
       }
     },
     updateWorkingCopy(type, value) {
-      this.$set(this.workingCopy, type, value);
+      this.workingCopy = {
+        ...this.workingCopy,
+        [type]: value,
+      };
     },
   },
   links: {

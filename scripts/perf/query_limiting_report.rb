@@ -11,9 +11,12 @@
 # - See https://gitlab.com/gitlab-org/gitlab/-/issues/325640
 # - See https://gitlab.com/groups/gitlab-org/-/epics/5670
 
-require 'rubygems'
+# We need to take some precautions when using the `gitlab` gem in this project.
+#
+# See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
 require 'gitlab'
 require 'optparse'
+require 'rubygems'
 
 class QueryLimitingReport
   GITLAB_PROJECT_ID = 278964 # gitlab-org/gitlab project

@@ -29,6 +29,7 @@ module Gitlab
           group_download_export: { threshold: -> { application_settings.group_download_export_limit }, interval: 1.minute },
           group_import: { threshold: -> { application_settings.group_import_limit }, interval: 1.minute },
           group_api: { threshold: -> { application_settings.group_api_limit }, interval: 1.minute },
+          group_shared_groups_api: { threshold: -> { application_settings.group_shared_groups_api_limit }, interval: 1.minute },
           group_projects_api: { threshold: -> { application_settings.group_projects_api_limit }, interval: 1.minute },
           groups_api: { threshold: -> { application_settings.groups_api_limit }, interval: 1.minute },
           project_api: { threshold: -> { application_settings.project_api_limit }, interval: 1.minute },
@@ -73,10 +74,12 @@ module Gitlab
           update_namespace_name: { threshold: -> { application_settings.update_namespace_name_rate_limit }, interval: 1.hour },
           fetch_google_ip_list: { threshold: 10, interval: 1.minute },
           project_fork_sync: { threshold: 10, interval: 30.minutes },
-          ai_action: { threshold: 160, interval: 8.hours },
+          ai_action: { threshold: -> { application_settings.ai_action_api_rate_limit }, interval: 8.hours },
+          code_suggestions_api_endpoint: { threshold: -> { application_settings.code_suggestions_api_rate_limit }, interval: 1.minute },
           vertex_embeddings_api: { threshold: 450, interval: 1.minute },
           jobs_index: { threshold: -> { application_settings.project_jobs_api_rate_limit }, interval: 1.minute },
           bulk_import: { threshold: 6, interval: 1.minute },
+          import_source_user_notification: { threshold: 1, interval: 8.hours },
           projects_api_rate_limit_unauthenticated: {
             threshold: -> { application_settings.projects_api_rate_limit_unauthenticated }, interval: 10.minutes
           },

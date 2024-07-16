@@ -51,7 +51,7 @@ export default {
   <div data-testid="dropdown-header">
     <div
       v-if="!isStandalone"
-      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3! gl-mb-0"
+      class="dropdown-title gl-display-flex gl-align-items-center gl-pt-2 gl-pb-4 gl-mb-0"
       data-testid="dropdown-header-title"
     >
       <gl-button
@@ -59,7 +59,7 @@ export default {
         :aria-label="__('Go back')"
         variant="link"
         size="small"
-        class="js-btn-back dropdown-header-button gl-p-0"
+        class="js-btn-back dropdown-header-button !gl-p-0"
         icon="arrow-left"
         data-testid="go-back-button"
         @click.stop="$emit('toggleDropdownContentsCreateView')"

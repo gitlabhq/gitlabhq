@@ -1,12 +1,9 @@
 description: "Submit Docker form"
 category: default
 action: submit_form
-label_description: "`docker_container_retention_and_expiration_policies`"
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::package
+product_group: container_registry
 milestone: "12.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/23844
 distributions:
@@ -16,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`docker_container_retention_and_expiration_policies`"

@@ -30,7 +30,7 @@ module API
       include ::Gitlab::Utils::StrongMemoize
 
       def project_or_group
-        find_authorized_group!
+        find_authorized_group!(action: required_permission)
       end
 
       def project_or_group_without_auth
@@ -55,7 +55,16 @@ module API
       end
 
       def required_permission
-        :read_group
+        if allow_anyone_to_pull_public_packages?
+          :read_package_within_public_registries
+        else
+          :read_group
+        end
+      end
+
+      def allow_anyone_to_pull_public_packages?
+        options[:path].first.in?(%w[index *package_version]) &&
+          ::Feature.enabled?(:allow_anyone_to_pull_public_nuget_packages_on_group_level, project_or_group_without_auth)
       end
     end
 
@@ -77,7 +86,7 @@ module API
         namespace '/nuget' do
           after_validation do
             # This API can't be accessed anonymously
-            require_authenticated!
+            require_authenticated! unless allow_anyone_to_pull_public_packages?
           end
 
           include ::API::Concerns::Packages::Nuget::PrivateEndpoints

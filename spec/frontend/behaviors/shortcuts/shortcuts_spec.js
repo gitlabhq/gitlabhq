@@ -186,6 +186,15 @@ describe('Shortcuts', () => {
 
       expect(trackEventSpy).toHaveBeenCalledWith('click_go_to_file_shortcut');
     });
+
+    it('prefils current path from breadcrumbs', async () => {
+      setHTMLFixture('<div class="js-repo-breadcrumbs" data-current-path="files/test"></div>');
+
+      event = new KeyboardEvent('keydown', { cancelable: true });
+      await Shortcuts.focusSearchFile(event);
+
+      expect(mockSearchInput.value).toBe('~files/test/');
+    });
   });
 
   describe('adding shortcuts', () => {

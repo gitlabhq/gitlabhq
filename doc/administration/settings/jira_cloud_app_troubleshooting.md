@@ -50,7 +50,7 @@ To resolve this issue, disable the **Jira Connect Proxy URL** setting.
 
 - In GitLab 15.8 and later:
 
-  1. On the left sidebar, at the bottom, select **Admin Area**.
+  1. On the left sidebar, at the bottom, select **Admin area**.
   1. On the left sidebar, select **Settings > General**.
   1. Expand **GitLab for Jira App**.
   1. Clear the **Jira Connect Proxy URL** text box.
@@ -221,6 +221,11 @@ For the second log, you might have one of the following scenarios:
   - `json.jira_status_code` and `json.jira_body` might contain the response received from the self-managed instance or a proxy in front of the instance.
   - If `json.jira_status_code` is `401 Unauthorized` and `json.jira_body` is `(empty)`:
     - [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) might not be set to `https://gitlab.com`.
+    - The self-managed instance might be blocking outgoing connections. Ensure that your
+      self-managed instance can connect to both `connect-install-keys.atlassian.com`
+      and `gitlab.com`.
+    - The self-managed instance is unable to decrypt the JWT token from Jira. [From GitLab 16.11](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147234),
+      the [`exceptions_json.log`](../logs/index.md#exceptions_jsonlog) contains more information about the error.
     - If a [reverse proxy](jira_cloud_app.md#using-a-reverse-proxy) is in front of your self-managed instance,
       the `Host` header sent to the self-managed instance might not match the reverse proxy FQDN.
       Check the [Workhorse logs](../logs/index.md#workhorse-logs) on the self-managed instance:

@@ -799,7 +799,7 @@ The exclude parameters uses `body-json` when the request uses a content type `ap
 
 ##### Excluding multiple JSON nodes using JSON Path
 
-To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].paswword" ]`.
+To exclude the property `password` on each entry of an array of `users` at the root level, set the `body-json` property's value to an array with the JSON Path expression `[ "$.users[*].password" ]`.
 
 The JSON Path expression starts with `$` to refer to the root node and uses `.` to refer to the current node. Then, it uses `users` to refer to a property and the characters `[` and `]` to enclose the index in the array you want to use, instead of providing a number as an index you use `*` to specify any index. After the index reference, we find `.` which now refers to any given selected index in the array, preceded by a property name `password`.
 
@@ -807,7 +807,7 @@ For instance, the JSON document looks like this:
 
 ```json
 {
-  "body-json": [ "$.users[*].paswword" ]
+  "body-json": [ "$.users[*].password" ]
 }
 ```
 

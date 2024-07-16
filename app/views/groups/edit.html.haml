@@ -29,6 +29,8 @@
     .settings-content
       = render 'groups/settings/permissions'
 
+  = render_if_exists 'groups/settings/ai/ai_settings'
+
 - if can?(current_user, :manage_merge_request_settings, @group)
   = render_if_exists 'groups/settings/merge_requests/merge_requests', expanded: expanded, group: @group
   = render_if_exists 'groups/settings/merge_requests/merge_request_approval_settings', expanded: expanded, group: @group, user: current_user

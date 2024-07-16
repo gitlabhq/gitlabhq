@@ -24,3 +24,21 @@ export const Default = Template.bind({});
 Default.args = {
   heading: 'Page heading',
 };
+
+export const WithHeadingSlot = (args, { argTypes }) => ({
+  components: { PageHeading },
+  props: Object.keys(argTypes),
+  template: `
+    <page-heading v-bind="$props">
+      <template #heading>
+        Heading with <i>custom items</i>
+      </template>
+      <template #actions>
+        Actions go here
+      </template>
+      <template #description>
+        Description goes here
+      </template>
+    </page-heading>
+  `,
+});

@@ -65,8 +65,14 @@ export default {
         };
       },
       update(data) {
-        const { id, iid, commit = {}, detailedStatus = {}, stages, status } =
-          data.project?.pipeline || {};
+        const {
+          id,
+          iid,
+          commit = {},
+          detailedStatus = {},
+          stages,
+          status,
+        } = data.project?.pipeline || {};
 
         return {
           id,

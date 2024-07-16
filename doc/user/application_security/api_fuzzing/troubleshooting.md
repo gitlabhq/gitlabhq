@@ -76,9 +76,16 @@ Once you have confirmed the issue was produced because the port was already take
 1. Ensure your `.gitlab-ci.yml` file defines the configuration variable `FUZZAPI_API_PORT`.
 1. Update the value of `FUZZAPI_API_PORT` to any available port number greater than 1024. We recommend checking that the new value is not in used by GitLab. See the full list of ports used by GitLab in [Package defaults](../../../administration/package_information/defaults.md#ports)
 
-## `Error, the OpenAPI document is not valid. Errors were found during validation of the document using the published OpenAPI schema`
+## Error: `Errors were found during validation of the document using the published OpenAPI schema`
 
-At the start of an API Fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors. Errors can be introduced when creating an OpenAPI Specification manually, and also when the schema is generated.
+At the start of an API Fuzzing job the OpenAPI Specification is validated against the [published schema](https://github.com/OAI/OpenAPI-Specification/tree/master/schemas). This error is shown when the provided OpenAPI Specification has validation errors:
+
+```plaintext
+Error, the OpenAPI document is not valid.
+Errors were found during validation of the document using the published OpenAPI schema
+```
+
+Errors can be introduced when creating an OpenAPI Specification manually, and also when the schema is generated.
 
 For OpenAPI Specifications that are generated automatically validation errors are often the result of missing code annotations.
 
@@ -222,10 +229,18 @@ API Fuzzing uses the specified media types in the OpenAPI document to generate r
 1. Review the supported media types in the [OpenAPI Specification](configuration/enabling_the_analyzer.md#openapi-specification) section.
 1. Edit your OpenAPI document, allowing at least a given operation to accept any of the supported media types. Alternatively, a supported media type could be set in the OpenAPI document level and get applied to all operations. This step may require changes in your application to ensure the supported media type is accepted by the application.
 
-## ``Error, error occurred trying to download `<URL>`: There was an error when retrieving content from Uri:' <URL>'. Error:The SSL connection could not be established, see inner exception.``
+## Error: `The SSL connection could not be established, see inner exception.`
 
 API fuzzing is compatible with a broad range of TLS configurations, including outdated protocols and ciphers.
-Despite broad support, you might encounter connection errors. This error occurs because API fuzzing could not establish a secure connection with the server at the given URL.
+Despite broad support, you might encounter connection errors, like this:
+
+```plaintext
+Error, error occurred trying to download `<URL>`:
+There was an error when retrieving content from Uri:' <URL>'.
+Error:The SSL connection could not be established, see inner exception.
+```
+
+This error occurs because API fuzzing could not establish a secure connection with the server at the given URL.
 
 To resolve the issue:
 
@@ -349,17 +364,72 @@ sudo: If sudo is running in a container, you may need to adjust the container co
 
 This issue can be worked around in the following ways:
 
-1. Run the container as the `root` user. This can be done by modifying the CICD configuration:
+- Run the container as the `root` user. It's recommended to test this configuration as it may not work in all cases. This can be done by modifying the CICD configuration and checking the job output to make sure that `whoami` returns `root` and not `gitlab`. If `gitlab` is displayed, use another workaround. Once tested the `before_script` can be removed.
 
    ```yaml
-   api_security:
+   apifuzzer_fuzz:
      image:
        name: $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION$FUZZAPI_IMAGE_SUFFIX
        docker:
          user: root
+    before_script:
+      - whoami
    ```
 
-1. Change the GitLab Runner configuration, disabling the no-new-privileges flag.
+   _Example job console output:_
+
+   ```log
+   Executing "step_script" stage of the job script
+   Using docker image sha256:8b95f188b37d6b342dc740f68557771bb214fe520a5dc78a88c7a9cc6a0f9901 for registry.gitlab.com/security-products/api-security:5 with digest registry.gitlab.com/security-products/api-security@sha256:092909baa2b41db8a7e3584f91b982174772abdfe8ceafc97cf567c3de3179d1 ...
+   $ whoami
+   root
+   $ /peach/analyzer-api-fuzzing
+   17:17:14 [INF] API Security: Gitlab API Security
+   17:17:14 [INF] API Security: -------------------
+   17:17:14 [INF] API Security:
+   17:17:14 [INF] API Security: version: 5.7.0
+   ```
+
+- Wrap the container and add any dependencies at build time. This option has the benefit of running with lower privileges than root which may be a requirement for some customers.
+   1. Create a new `Dockerfile` that wraps the existing image.
+
+      ```yaml
+      ARG SECURE_ANALYZERS_PREFIX
+      ARG FUZZAPI_IMAGE
+      ARG FUZZAPI_VERSION
+      ARG FUZZAPI_IMAGE_SUFFIX
+      FROM $SECURE_ANALYZERS_PREFIX/$FUZZAPI_IMAGE:$FUZZAPI_VERSION$FUZZAPI_IMAGE_SUFFIX
+      USER root
+
+      RUN pip install ...
+      RUN apk add ...
+
+      USER gitlab
+      ```
+
+   1. Build the new image and push it to your local container registry before the API Fuzzing job starts. The image should be removed after the `` job has been completed.
+
+      ```shell
+      TARGET_NAME=apifuzz-$CI_COMMIT_SHA
+      docker build -t $TARGET_IMAGE \
+        --build-arg "SECURE_ANALYZERS_PREFIX=$SECURE_ANALYZERS_PREFIX" \
+        --build-arg "FUZZAPI_IMAGE=$APISEC_IMAGE" \
+        --build-arg "FUZZAPI_VERSION=$APISEC_VERSION" \
+        --build-arg "FUZZAPI_IMAGE_SUFFIX=$APISEC_IMAGE_SUFFIX" \
+        .
+      docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+      docker push $TARGET_IMAGE
+      ```
+
+   1. Extend the `apifuzzer_fuzz` job and use the new image name.
+
+      ```yaml
+      apifuzzer_fuzz:
+        image: apifuzz-$CI_COMMIT_SHA
+      ```
+
+   1. Remove the temporary container from the registry. See [this documentation page for information on removing container images.](../../packages/container_registry/delete_container_registry_images.md)
+- Change the GitLab Runner configuration, disabling the no-new-privileges flag. This could have security implications and should be discussed with your operations and security teams.
 
 ## `Index was outside the bounds of the array.    at Peach.Web.Runner.Services.RunnerOptions.GetHeaders()`
 

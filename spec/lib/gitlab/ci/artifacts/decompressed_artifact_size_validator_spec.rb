@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator, feature_category: :build_artifacts do
+RSpec.describe Gitlab::Ci::Artifacts::DecompressedArtifactSizeValidator, feature_category: :job_artifacts do
   include WorkhorseHelpers
 
   let_it_be(:file_path) { File.join(Dir.tmpdir, 'decompressed_archive_size_validator_spec.gz') }

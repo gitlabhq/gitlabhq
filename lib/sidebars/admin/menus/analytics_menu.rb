@@ -41,7 +41,7 @@ module Sidebars
 
         def usage_trends_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Usage Trends'),
+            title: _('Usage trends'),
             link: admin_usage_trends_path,
             active_routes: { controller: 'usage_trends' },
             item_id: :usage_trends

@@ -35,8 +35,22 @@ RSpec.describe MergeRequests::Mergeability::CheckConflictStatusService, feature_
   end
 
   describe '#skip?' do
-    it 'returns false' do
-      expect(check_conflict_status.skip?).to eq false
+    using RSpec::Parameterized::TableSyntax
+
+    where(:skip_conflict_check, :expected) do
+      nil   | false
+      false | false
+      true  | true
+    end
+
+    with_them do
+      subject do
+        described_class
+          .new(merge_request: merge_request, params: { skip_conflict_check: skip_conflict_check })
+          .skip?
+      end
+
+      it { is_expected.to equal expected }
     end
   end
 

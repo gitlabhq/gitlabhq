@@ -16,19 +16,17 @@ export default {
 </script>
 
 <template>
-  <span
-    class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-gap-3 gl-min-w-0"
-  >
-    <span class="gl-display-flex gl-gap-3 gl-flex-grow-1 gl-min-w-0">
+  <span class="gl-flex gl-min-w-0 gl-items-center gl-justify-between gl-gap-3">
+    <span class="gl-flex gl-min-w-0 gl-grow gl-gap-3">
       <slot></slot>
     </span>
     <span
-      class="show-hover-layover-hint gl-opacity-0 gl-justify-content-end gl-align-items-center gl-hidden sm:gl-flex"
+      class="show-hover-layover-hint gl-hidden gl-items-center gl-justify-end gl-opacity-0 sm:gl-flex"
     >
-      <span class="gl-text-gray-700 gl-whitespace-nowrap" data-testid="overlay-message">
+      <span class="gl-whitespace-nowrap gl-text-gray-700" data-testid="overlay-message">
         <gl-sprintf :message="textMessage">
           <template #kbd="{ content }">
-            <kbd class="gl-font-base gl-pb-3 vertical-align-normalization gl-align-middle">
+            <kbd class="vertical-align-normalization gl-pb-3 gl-align-middle gl-text-base">
               {{ content }}
             </kbd>
           </template>

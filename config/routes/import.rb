@@ -91,6 +91,7 @@ namespace :import do
 
   resources :source_users, only: [] do
     member do
+      get :show
       post :accept
       post :decline
     end

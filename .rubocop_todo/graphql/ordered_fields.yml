@@ -1,5 +1,0 @@
----
-# Cop supports --autocorrect.
-GraphQL/OrderedFields:
-  Exclude:
-    - 'app/graphql/types/merge_request_type.rb'

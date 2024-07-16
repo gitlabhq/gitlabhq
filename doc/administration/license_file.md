@@ -16,7 +16,7 @@ link to the **Add license** page should be displayed.
 Otherwise, to add your license:
 
 1. Sign in to GitLab as an administrator.
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. In the **Add License** area, add a license by either uploading the file or entering the key.
 1. Select the **Terms of Service** checkbox.
@@ -53,9 +53,11 @@ If you have a license, you can also import it when you install GitLab.
     gitlab_rails['initial_license_file'] = "/path/to/license/file"
     ```
 
+- For Helm Charts installations, use [the `global.gitlab.license` configuration keys](https://docs.gitlab.com/charts/installation/command-line-options.html#basic-configuration).
+
 WARNING:
 These methods only add a license at the time of installation. To renew or upgrade
-a license, add the license in the **Admin Area** in the web user interface.
+a license, add the license in the **Admin area** in the web user interface.
 
 ## Submit license usage data
 
@@ -68,7 +70,7 @@ timestamps could be converted to another format) and cause failures when the fil
 
 If you don't submit your data each month after your subscription start date, an email is sent to the address
 associated with your subscription and a banner displays to remind you to submit your data. The banner displays
-in the **Admin Area** on the **Dashboard** and on the **Subscription** pages. You can only dismiss it until the
+in the **Admin area** on the **Dashboard** and on the **Subscription** pages. You can only dismiss it until the
 following month after you submit your license usage data.
 
 ## What happens when your license expires
@@ -98,7 +100,7 @@ To go back to Free features, [delete all expired licenses](#remove-a-license).
 
 To remove a license from a self-managed instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
 1. Select **Remove license**.
 
@@ -108,7 +110,7 @@ Repeat these steps to remove all licenses, including those applied in the past.
 
 To view your license details:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Subscription**.
 
 You can add and view more than one license, but only the latest license in
@@ -227,7 +229,7 @@ License.select(&TYPE).each(&:destroy!)
 
 ## Troubleshooting
 
-### No Subscription area in the Admin Area
+### No Subscription area in the Admin area
 
 You cannot add your license because there is no **Subscription** area.
 This issue might occur if:

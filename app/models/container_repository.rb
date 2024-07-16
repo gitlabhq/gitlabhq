@@ -23,13 +23,6 @@ class ContainerRepository < ApplicationRecord
   belongs_to :project
 
   ignore_columns %i[
-    migration_retries_count
-    migration_aborted_in_state
-    migration_skipped_reason
-    migration_state
-  ], remove_with: '17.2', remove_after: '2024-06-24'
-
-  ignore_columns %i[
     migration_aborted_at
     migration_import_done_at
     migration_import_started_at
@@ -268,7 +261,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def last_published_at
-    return unless migrated_and_can_access_the_gitlab_api?
+    return unless gitlab_api_client.supports_gitlab_api?
 
     timestamp_string = gitlab_api_client_repository_details['last_published_at']
     DateTime.iso8601(timestamp_string)
@@ -337,6 +330,7 @@ class ContainerRepository < ApplicationRecord
       tag.revision = raw_tag['config_digest'].to_s.split(':')[1] || ''
       tag.referrers = raw_tag['referrers']
       tag.published_at = raw_tag['published_at']
+      tag.media_type = raw_tag['media_type']
       tag
     end
   end

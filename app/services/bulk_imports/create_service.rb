@@ -66,10 +66,13 @@ module BulkImports
 
     private
 
+    attr_accessor :source_entity_identifier
+
     def validate!
       client.validate_instance_version!
-      validate_setting_enabled!
       client.validate_import_scopes!
+      validate_source_full_path!
+      validate_setting_enabled!
     end
 
     def create_bulk_import
@@ -102,22 +105,35 @@ module BulkImports
       end
     end
 
+    def validate_source_full_path!
+      gql_query = query_type(entity_type)
+
+      response = graphql_client.execute(
+        graphql_client.parse(gql_query.to_s),
+        { full_path: source_full_path }
+      ).original_hash
+
+      self.source_entity_identifier = ::GlobalID.parse(response.dig(*gql_query.data_path, 'id'))&.model_id
+
+      raise BulkImports::Error.source_full_path_validation_failure(source_full_path) if source_entity_identifier.nil?
+    end
+
     def validate_setting_enabled!
-      source_full_path, source_type = Array.wrap(params)[0].values_at(:source_full_path, :source_type)
-      entity_type = ENTITY_TYPES_MAPPING.fetch(source_type)
-      if /^[0-9]+$/.match?(source_full_path)
-        query = query_type(entity_type)
-        response = graphql_client.execute(
-          graphql_client.parse(query.to_s),
-          { full_path: source_full_path }
-        ).original_hash
-
-        source_entity_identifier = ::GlobalID.parse(response.dig(*query.data_path, 'id')).model_id
-      else
-        source_entity_identifier = ERB::Util.url_encode(source_full_path)
-      end
-
       client.get("/#{entity_type}/#{source_entity_identifier}/export_relations/status")
+    rescue BulkImports::NetworkError => e
+      raise BulkImports::Error.not_authorized(source_full_path) if e.message.include?("URL is blocked")
+      raise BulkImports::Error.setting_not_enabled if e.response.code == 404
+      raise BulkImports::Error.not_authorized(source_full_path) if e.response.code == 403
+
+      raise e
+    end
+
+    def entity_type
+      @entity_type ||= ENTITY_TYPES_MAPPING.fetch(Array.wrap(params)[0][:source_type])
+    end
+
+    def source_full_path
+      @source_full_path ||= Array.wrap(params)[0][:source_full_path]
     end
 
     def track_access_level(entity_params)

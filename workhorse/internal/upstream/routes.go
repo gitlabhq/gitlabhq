@@ -103,7 +103,7 @@ func (u *upstream) observabilityMiddlewares(handler http.Handler, method string,
 	handler = log.AccessLogger(
 		handler,
 		log.WithAccessLogger(u.accessLogger),
-		log.WithExtraFields(func(r *http.Request) log.Fields {
+		log.WithExtraFields(func(_ *http.Request) log.Fields {
 			return log.Fields{
 				"route": regexpStr, // This field matches the `route` label in Prometheus metrics
 			}
@@ -253,6 +253,7 @@ func configureRoutes(u *upstream) {
 		u.route("POST", gitProjectPattern+`git-receive-pack\z`, contentEncodingHandler(git.ReceivePack(api)), withMatcher(isContentType("application/x-git-receive-pack-request"))),
 		u.route("PUT", gitProjectPattern+`gitlab-lfs/objects/([0-9a-f]{64})/([0-9]+)\z`, requestBodyUploader, withMatcher(isContentType("application/octet-stream"))),
 		u.route("POST", gitProjectPattern+`ssh-upload-pack\z`, git.SSHUploadPack(api)),
+		u.route("POST", gitProjectPattern+`ssh-receive-pack\z`, git.SSHReceivePack(api)),
 
 		// CI Artifacts
 		u.route("POST", apiPattern+`v4/jobs/[0-9]+/artifacts\z`, contentEncodingHandler(upload.Artifacts(api, signingProxy, preparer, &u.Config))),

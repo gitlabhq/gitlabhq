@@ -108,16 +108,6 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
           end
 
           it_behaves_like 'a new issue request'
-
-          context 'when feature flag service_desk_tickets_confidentiality is disabled' do
-            let(:confidential_ticket) { true }
-
-            before do
-              stub_feature_flags(service_desk_tickets_confidentiality: false)
-            end
-
-            it_behaves_like 'a new issue request'
-          end
         end
       end
 

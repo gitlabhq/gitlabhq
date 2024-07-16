@@ -36,11 +36,26 @@ RSpec.describe Import::GithubGroupsController, feature_category: :importers do
       end
 
       it 'fetches organizations' do
-        expect_next_instance_of(Octokit::Client) do |client|
-          expect(client).to receive(:organizations).and_return([].to_enum)
-        end
+        organizations = [
+          {
+            id: 1,
+            login: "gitHub-organization",
+            description: 'GitHub Organization'
+          }
+        ]
+        stub_request(:get, "https://api.github.com/user/orgs?page=1&per_page=25")
+         .to_return(status: 200, body: organizations.to_json, headers: { 'Content-Type' => 'application/json' })
 
         status
+
+        expect(json_response).to eq({
+          "provider_groups" => [
+            {
+              "name" => "gitHub-organization",
+              "description" => "GitHub Organization"
+            }
+          ]
+        })
       end
 
       context 'with pagination' do

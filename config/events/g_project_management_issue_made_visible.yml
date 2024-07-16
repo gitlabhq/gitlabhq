@@ -2,9 +2,6 @@
 description: An issue was made visible
 internal_events: true
 action: g_project_management_issue_made_visible
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

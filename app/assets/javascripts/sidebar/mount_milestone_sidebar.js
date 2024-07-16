@@ -8,14 +8,8 @@ export default class SidebarMilestone {
 
     if (!el) return;
 
-    const {
-      timeEstimate,
-      timeSpent,
-      humanTimeEstimate,
-      humanTimeSpent,
-      limitToHours,
-      iid,
-    } = el.dataset;
+    const { timeEstimate, timeSpent, humanTimeEstimate, humanTimeSpent, limitToHours, iid } =
+      el.dataset;
 
     // eslint-disable-next-line no-new
     new Vue({

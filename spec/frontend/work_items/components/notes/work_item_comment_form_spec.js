@@ -55,6 +55,7 @@ describe('Work item comment form component', () => {
       },
       propsData: {
         fullPath: 'test-project-path',
+        workItemIid: '1',
         workItemState,
         workItemId,
         workItemType,

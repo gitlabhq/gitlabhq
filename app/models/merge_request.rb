@@ -392,29 +392,14 @@ class MergeRequest < ApplicationRecord
   end
   scope :by_target_branch, ->(branch_name) { where(target_branch: branch_name) }
   scope :order_by_metric, ->(metric, direction) do
-    column_expression = MergeRequest::Metrics.arel_table[metric]
-    column_expression_with_direction = direction == 'ASC' ? column_expression.asc : column_expression.desc
-
-    order = Gitlab::Pagination::Keyset::Order.build(
-      [
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: "merge_request_metrics_#{metric}",
-          column_expression: column_expression,
-          order_expression: column_expression_with_direction.nulls_last,
-          reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
-          order_direction: direction,
-          nullable: :nulls_last,
-          add_to_projections: true
-        ),
-        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
-          attribute_name: 'merge_request_metrics_id',
-          order_expression: MergeRequest::Metrics.arel_table[:id].desc,
-          add_to_projections: true
-        )
-      ])
-
+    order = order_by_metric_column(metric, direction)
     order.apply_cursor_conditions(join_metrics).order(order)
   end
+  scope :reorder_by_metric, ->(metric, direction) do
+    order = order_by_metric_column(metric, direction)
+    order.apply_cursor_conditions(join_metrics).reorder(order)
+  end
+
   scope :order_merged_at_asc, -> { order_by_metric(:merged_at, 'ASC') }
   scope :order_merged_at_desc, -> { order_by_metric(:merged_at, 'DESC') }
   scope :order_closed_at_asc, -> { order_by_metric(:latest_closed_at, 'ASC') }
@@ -523,6 +508,29 @@ class MergeRequest < ApplicationRecord
 
   def self.reference_prefix
     '!'
+  end
+
+  def self.order_by_metric_column(metric, direction)
+    column_expression = MergeRequest::Metrics.arel_table[metric]
+    column_expression_with_direction = direction == 'ASC' ? column_expression.asc : column_expression.desc
+
+    Gitlab::Pagination::Keyset::Order.build(
+      [
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: "merge_request_metrics_#{metric}",
+          column_expression: column_expression,
+          order_expression: column_expression_with_direction.nulls_last,
+          reversed_order_expression: column_expression_with_direction.reverse.nulls_first,
+          order_direction: direction,
+          nullable: :nulls_last,
+          add_to_projections: true
+        ),
+        Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
+          attribute_name: 'merge_request_metrics_id',
+          order_expression: MergeRequest::Metrics.arel_table[:id].desc,
+          add_to_projections: true
+        )
+      ])
   end
 
   # Returns the top 100 target branches
@@ -1243,7 +1251,7 @@ class MergeRequest < ApplicationRecord
   alias_method :wip_title, :draft_title
 
   def skipped_mergeable_checks(options = {})
-    merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
+    merge_when_checks_pass_strat = options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS || options[:auto_merge_strategy] == ::AutoMergeService::STRATEGY_ADD_TO_MERGE_TRAIN_WHEN_CHECKS_PASS
 
     {
       skip_ci_check: options.fetch(:auto_merge_requested, false),
@@ -1361,7 +1369,15 @@ class MergeRequest < ApplicationRecord
   def auto_merge_strategy
     return unless auto_merge_enabled?
 
-    merge_params['auto_merge_strategy'] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
+    merge_params['auto_merge_strategy'] || default_auto_merge_strategy
+  end
+
+  def default_auto_merge_strategy
+    if Feature.enabled?(:merge_when_checks_pass, project)
+      AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS
+    else
+      AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
+    end
   end
 
   def auto_merge_strategy=(strategy)

@@ -8,7 +8,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 With the [automated migration testing pipeline](https://gitlab.com/gitlab-org/database-team/gitlab-com-database-testing)
 we can automatically test migrations in a production-like environment (using [Database Lab](database_lab.md)).
-It is based on an [architecture blueprint](../../architecture/blueprints/database_testing/index.md).
+It is based on an [architecture design document](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/database_testing/).
 
 Migration testing is enabled in the [GitLab project](https://gitlab.com/gitlab-org/gitlab)
 for changes that add a new database migration. Trigger this job manually by running the

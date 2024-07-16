@@ -535,13 +535,7 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
             head_pipeline_of: merge_request
           )
 
-          expected_class = if Gitlab.ee?
-                             AutoMerge::MergeWhenChecksPassService
-                           else
-                             AutoMerge::MergeWhenPipelineSucceedsService
-                           end
-
-          expect(expected_class).to receive(:new).with(project, user, { sha: merge_request.diff_head_sha })
+          expect(AutoMerge::MergeWhenChecksPassService).to receive(:new).with(project, user, { sha: merge_request.diff_head_sha })
             .and_return(service_mock)
           allow(service_mock).to receive(:available_for?) { true }
           expect(service_mock).to receive(:execute).with(merge_request)
@@ -701,6 +695,39 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
 
         it_behaves_like 'triggers GraphQL subscription mergeRequestReviewersUpdated' do
           let(:action) { update_merge_request({ reviewer_ids: [user2.id] }) }
+        end
+
+        describe 'recording the first reviewer assigned at timestamp' do
+          subject(:metrics) { merge_request.reload.metrics }
+
+          context 'when store_first_reviewer_assignment_timestamp_in_metrics feature flag is off' do
+            it 'does not record anything' do
+              stub_feature_flags(store_first_reviewer_assignment_timestamp_in_metrics: false)
+              update_merge_request(reviewer_ids: [user2.id])
+
+              expect(metrics.reviewer_first_assigned_at).to eq(nil)
+            end
+          end
+
+          it 'sets the current timestamp' do
+            freeze_time do
+              update_merge_request(reviewer_ids: [user2.id])
+
+              current_time = Time.current
+              expect(metrics.reviewer_first_assigned_at).to eq(current_time)
+            end
+          end
+
+          it 'updates the value if the current time is earlier than the stored time' do
+            freeze_time do
+              merge_request.metrics.update!(reviewer_first_assigned_at: 5.days.from_now)
+
+              update_merge_request(reviewer_ids: [user2.id])
+
+              current_time = Time.current
+              expect(metrics.reviewer_first_assigned_at).to eq(current_time)
+            end
+          end
         end
       end
 

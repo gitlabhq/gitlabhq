@@ -10,6 +10,11 @@ import { s__, __, sprintf } from '~/locale';
 import { isUserBusy } from '~/set_status_modal/utils';
 import SidebarMediator from '~/sidebar/sidebar_mediator';
 import { state } from '~/sidebar/components/reviewers/sidebar_reviewers.vue';
+import {
+  ISSUABLE_EPIC,
+  WORK_ITEMS_TYPE_MAP,
+  WORK_ITEM_TYPE_ENUM_EPIC,
+} from '~/work_items/constants';
 import AjaxCache from './lib/utils/ajax_cache';
 import { spriteIcon } from './lib/utils/common_utils';
 import { parsePikadayDate } from './lib/utils/datetime_utility';
@@ -1157,7 +1162,9 @@ GfmAutoComplete.Issues = {
     return value.reference || '${atwho-at}${id}';
   },
   templateFunction({ id, title, reference, iconName }) {
-    const icon = iconName ? spriteIcon(iconName, 'gl-text-secondary s16 gl-mr-2') : '';
+    const mappedIconName =
+      iconName === ISSUABLE_EPIC ? WORK_ITEMS_TYPE_MAP[WORK_ITEM_TYPE_ENUM_EPIC].icon : iconName;
+    const icon = mappedIconName ? spriteIcon(mappedIconName, 'gl-text-secondary s16 gl-mr-2') : '';
     return `<li>${icon}<small>${escape(reference || id)}</small> ${escape(title)}</li>`;
   },
 };

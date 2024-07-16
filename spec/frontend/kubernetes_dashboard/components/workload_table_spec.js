@@ -3,7 +3,12 @@ import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { stubComponent } from 'helpers/stub_component';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
-import { PAGE_SIZE } from '~/kubernetes_dashboard/constants';
+import {
+  PAGE_SIZE,
+  DEFAULT_WORKLOAD_TABLE_FIELDS,
+  PODS_TABLE_FIELDS,
+} from '~/kubernetes_dashboard/constants';
+import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
 import { mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
@@ -28,37 +33,13 @@ const findRow = (at) => findAllRows().at(at);
 const findAllBadges = () => wrapper.findAllComponents(GlBadge);
 const findBadge = (at) => findAllBadges().at(at);
 const findPagination = () => wrapper.findComponent(GlPagination);
+const findAllPodLogsButtons = () => wrapper.findAllComponents(PodLogsButton);
 
 describe('Workload table component', () => {
   it('renders GlTable component with the default fields if no fields specified in props', () => {
     createWrapper({ items: mockPodsTableItems });
-    const defaultFields = [
-      {
-        key: 'name',
-        label: 'Name',
-        sortable: true,
-        tdClass: 'gl-md-w-half gl-lg-w-40p gl-break-anywhere',
-      },
-      {
-        key: 'status',
-        label: 'Status',
-        sortable: true,
-        tdClass: 'gl-md-w-15',
-      },
-      {
-        key: 'namespace',
-        label: 'Namespace',
-        sortable: true,
-        tdClass: 'gl-md-w-30p gl-lg-w-40p gl-break-anywhere',
-      },
-      {
-        key: 'age',
-        label: 'Age',
-        sortable: true,
-      },
-    ];
 
-    expect(findTable().props('fields')).toEqual(defaultFields);
+    expect(findTable().props('fields')).toMatchObject(DEFAULT_WORKLOAD_TABLE_FIELDS);
   });
 
   it('renders GlTable component fields specified in props', () => {
@@ -80,42 +61,67 @@ describe('Workload table component', () => {
   });
 
   describe('table rows', () => {
-    beforeEach(() => {
-      createWrapper({ items: mockPodsTableItems });
+    describe('with default fields', () => {
+      beforeEach(() => {
+        createWrapper({ items: mockPodsTableItems });
+      });
+
+      it('displays the correct number of rows', () => {
+        expect(findAllRows()).toHaveLength(mockPodsTableItems.length);
+      });
+
+      it('renders correct data for each row', () => {
+        mockPodsTableItems.forEach((data, index) => {
+          expect(findRow(index).text()).toContain(data.name);
+          expect(findRow(index).text()).toContain(data.namespace);
+          expect(findRow(index).text()).toContain(data.status);
+          expect(findRow(index).text()).toContain(data.age);
+        });
+      });
+
+      it('renders a badge for the status', () => {
+        expect(findAllBadges()).toHaveLength(mockPodsTableItems.length);
+      });
+
+      it.each`
+        status         | variant      | index
+        ${'Running'}   | ${'info'}    | ${0}
+        ${'Running'}   | ${'info'}    | ${1}
+        ${'Pending'}   | ${'warning'} | ${2}
+        ${'Succeeded'} | ${'success'} | ${3}
+        ${'Failed'}    | ${'danger'}  | ${4}
+        ${'Failed'}    | ${'danger'}  | ${5}
+      `(
+        'renders "$variant" badge for status "$status" at index "$index"',
+        ({ status, variant, index }) => {
+          expect(findBadge(index).text()).toBe(status);
+          expect(findBadge(index).props('variant')).toBe(variant);
+        },
+      );
     });
 
-    it('displays the correct number of rows', () => {
-      expect(findAllRows()).toHaveLength(mockPodsTableItems.length);
-    });
+    describe('with containers field specified', () => {
+      const containers = [{ name: 'my-container-1' }, { name: 'my-container-2' }];
+      const itemsWithContainers = mockPodsTableItems;
+      itemsWithContainers[0].containers = containers;
 
-    it('renders correct data for each row', () => {
-      mockPodsTableItems.forEach((data, index) => {
-        expect(findRow(index).text()).toContain(data.name);
-        expect(findRow(index).text()).toContain(data.namespace);
-        expect(findRow(index).text()).toContain(data.status);
-        expect(findRow(index).text()).toContain(data.age);
+      beforeEach(() => {
+        createWrapper({ items: itemsWithContainers, fields: PODS_TABLE_FIELDS });
+      });
+
+      it('renders pod-logs-button for each pod with containers', () => {
+        expect(findAllPodLogsButtons()).toHaveLength(1);
+      });
+
+      it('renders correct data for each button', () => {
+        const pod = itemsWithContainers[0];
+        expect(findAllPodLogsButtons().at(0).props()).toEqual({
+          podName: pod.name,
+          namespace: pod.namespace,
+          containers,
+        });
       });
     });
-
-    it('renders a badge for the status', () => {
-      expect(findAllBadges()).toHaveLength(mockPodsTableItems.length);
-    });
-
-    it.each`
-      status         | variant      | index
-      ${'Running'}   | ${'info'}    | ${0}
-      ${'Running'}   | ${'info'}    | ${1}
-      ${'Pending'}   | ${'warning'} | ${2}
-      ${'Succeeded'} | ${'success'} | ${3}
-      ${'Failed'}    | ${'danger'}  | ${4}
-      ${'Failed'}    | ${'danger'}  | ${5}
-    `(
-      'renders "$variant" badge for status "$status" at index "$index"',
-      ({ status, variant, index }) => {
-        expect(findBadge(index).text()).toBe(status);
-        expect(findBadge(index).props('variant')).toBe(variant);
-      },
-    );
   });
 
   describe('pagination', () => {

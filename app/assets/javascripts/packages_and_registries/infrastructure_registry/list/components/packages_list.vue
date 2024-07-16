@@ -17,6 +17,11 @@ export default {
     PackagesListRow,
   },
   mixins: [Tracking.mixin()],
+  inject: {
+    isGroupPage: {
+      default: false,
+    },
+  },
   data() {
     return {
       itemToBeDeleted: null,
@@ -27,7 +32,6 @@ export default {
       perPage: (state) => state.pagination.perPage,
       totalItems: (state) => state.pagination.total,
       page: (state) => state.pagination.page,
-      isGroupPage: (state) => state.config.isGroupPage,
       isLoading: 'isLoading',
     }),
     ...mapGetters({ list: 'getList' }),

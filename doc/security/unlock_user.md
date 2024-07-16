@@ -17,7 +17,7 @@ DETAILS:
 By default, users are locked after 10 failed sign-in attempts. These users remain locked:
 
 - For 10 minutes, after which time they are automatically unlocked.
-- Until an administrator unlocks them from the [Admin Area](../administration/admin_area.md) or the command line in under 10 minutes.
+- Until an administrator unlocks them from the [Admin area](../administration/admin_area.md) or the command line in under 10 minutes.
 
 In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) to configure:
 
@@ -39,9 +39,9 @@ If 2FA is not enabled users are locked after three failed sign-in attempts withi
 
 If 2FA is enabled, users are locked after three failed sign-in attempts. Accounts are unlocked automatically after 30 minutes.
 
-## Unlock a user from the Admin Area
+## Unlock a user from the Admin area
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Overview > Users**.
 1. Use the search bar to find the locked user.
 1. From the **User administration** dropdown list, select **Unlock**.

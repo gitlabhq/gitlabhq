@@ -56,8 +56,8 @@ Prerequisites:
 
 To add a streaming destination for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **HTTP endpoint** to show the section for adding destinations.
 1. In the **Name** and **Destination URL** fields, add a destination name and URL.
@@ -75,8 +75,8 @@ Prerequisites:
 
 To list the streaming destinations for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand it and see all the custom HTTP headers.
 
@@ -88,8 +88,8 @@ Prerequisites:
 
 To update a instance streaming destination's name:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. In the **Name** fields, add a destination name to update.
@@ -97,8 +97,8 @@ To update a instance streaming destination's name:
 
 To update a instance streaming destination's custom HTTP headers:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Locate the **Custom HTTP headers** table.
@@ -119,8 +119,8 @@ Prerequisites:
 
 To delete the streaming destinations for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Select **Delete destination**.
@@ -128,8 +128,8 @@ To delete the streaming destinations for an instance:
 
 To delete only the custom HTTP headers for a streaming destination:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. To the right of the item, select **Edit** (**{pencil}**).
 1. Locate the **Custom HTTP headers** table.
@@ -155,8 +155,8 @@ Prerequisites:
 
 To list streaming destinations for an instance and see the verification tokens:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. View the verification token on the right side of each item.
 
@@ -171,8 +171,8 @@ A streaming destination that has an event type filter set has a **filtered** (**
 
 To update a streaming destination's event filters:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the stream to expand.
 1. Locate the **Filter by audit event type** dropdown list.
@@ -213,8 +213,8 @@ Prerequisites:
 
 To add Google Cloud Logging streaming destinations to an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **Google Cloud Logging** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
@@ -230,8 +230,8 @@ Prerequisites:
 
 To list Google Cloud Logging streaming destinations for an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand and see all the fields.
 
@@ -243,8 +243,8 @@ Prerequisites:
 
 To update Google Cloud Logging streaming destinations to an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
 1. Enter a random string to use as a name for the destination.
@@ -261,8 +261,8 @@ Prerequisites:
 
 To delete Google Cloud Logging streaming destinations to an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the Google Cloud Logging stream to expand.
 1. Select **Delete destination**.
@@ -291,8 +291,8 @@ Prerequisites:
 
 To add AWS S3 streaming destinations to an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select **Add streaming destination** and select **AWS S3** to show the section for adding destinations.
 1. Enter a random string to use as a name for the new destination.
@@ -307,8 +307,8 @@ Prerequisites:
 
 To list AWS S3 streaming destinations for an instance.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the AWS S3 stream to expand and see all the fields.
 
@@ -320,8 +320,8 @@ Prerequisites:
 
 To update AWS S3 streaming destinations to an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the AWS S3 stream to expand.
 1. Enter a random string to use as a name for the destination.
@@ -337,8 +337,8 @@ Prerequisites:
 
 To delete AWS S3 streaming destinations on an instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Monitoring > Audit Events**.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Monitoring > Audit events**.
 1. On the main area, select the **Streams** tab.
 1. Select the AWS S3 stream to expand.
 1. Select **Delete destination**.

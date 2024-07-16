@@ -8,10 +8,10 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 To allow GitLab to scale further we
 [decomposed the GitLab application database into multiple databases](https://gitlab.com/groups/gitlab-org/-/epics/6168).
-The two databases are `main` and `ci`. GitLab supports being run with either one database or two databases.
-On GitLab.com we are using two separate databases.
+The main databases are `main`, `ci`, and (optionally) `sec`. GitLab supports being run with one, two, or three databases.
+On GitLab.com we are using separate `main` and `ci` databases.
 
-For the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture, we are decomposing
+For the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture, we are decomposing
 the databases further, to introduce another database `gitlab_main_clusterwide`.
 
 ## GitLab Schema
@@ -28,13 +28,14 @@ Each table of GitLab needs to have a `gitlab_schema` assigned:
 
 | Database | Description | Notes |
 | -------- | ----------- | ------- |
-| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](../../architecture/blueprints/cells/index.md) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
-| `gitlab_main_clusterwide` | All tables where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](../../architecture/blueprints/cells/index.md) architecture. For example, `users` and `application_settings`.| For the [Cells 1.0 architecture](../../architecture/blueprints/cells/iterations/cells-1.0.md), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
+| `gitlab_main`| All tables that are being stored in the `main:` database. | Currently, this is being replaced with `gitlab_main_cell`, for the purpose of building the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. `gitlab_main_cell` schema describes all tables that are local to a cell in a GitLab installation. For example, `projects` and `groups` |
+| `gitlab_main_clusterwide` | All tables where all rows, or a subset of rows needs to be present across the cluster, in the [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/) architecture. For example, `users` and `application_settings`.| For the [Cells 1.0 architecture](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/iterations/cells-1.0/), there are no real clusterwide tables as each cell will have its own database. In effect, these tables will still be stored locally in each cell. |
 | `gitlab_ci` | All CI tables that are being stored in the `ci:` database (for example, `ci_pipelines`, `ci_builds`) | |
 | `gitlab_geo` | All Geo tables that are being stored in the `geo:` database (for example, like `project_registry`, `secondary_usage_data`) | |
 | `gitlab_shared` | All application tables that contain data across all decomposed databases (for example, `loose_foreign_keys_deleted_records`) for models that inherit from `Gitlab::Database::SharedModel`. | |
 | `gitlab_internal` | All internal tables of Rails and PostgreSQL (for example, `ar_internal_metadata`, `schema_migrations`, `pg_*`) | |
-| `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`|
+| `gitlab_pm` | All tables that store `package_metadata`| It is an alias for `gitlab_main`, to be replaced with `gitlab_sec` |
+| `gitlab_sec` | All Security and Vulnerability feature tables to be stored in the `sec:` database | [Decomposition in progress](https://gitlab.com/groups/gitlab-org/-/epics/13043) |
 
 More schemas to be introduced with additional decomposed databases
 
@@ -46,196 +47,17 @@ The usage of schema enforces the base class to be used:
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`
 - `PackageMetadata::ApplicationRecord` for `gitlab_pm`
+- `Gitlab::Database::SecApplicationRecord` for `gitlab_sec`
 
 ### Choose either the `gitlab_main_cell` or `gitlab_main_clusterwide` schema
 
-Depending on the use case, your feature may be [cell-local or clusterwide](../../architecture/blueprints/cells/index.md#how-do-i-decide-whether-to-move-my-feature-to-the-cluster-cell-or-organization-level) and hence the tables used for the feature should also use the appropriate schema.
-
-When you choose the appropriate schema for tables, consider the following guidelines as part of the [Cells](../../architecture/blueprints/cells/index.md) architecture:
-
-- Default to `gitlab_main_cell`: We expect most tables to be assigned to the `gitlab_main_cell` schema by default. Choose this schema if the data in the table is related to `projects` or `namespaces`.
-- Consult with the Tenant Scale group: If you believe that the `gitlab_main_clusterwide` schema is more suitable for a table, seek approval from the Tenant Scale group. This is crucial because it has scaling implications and may require reconsideration of the schema choice.
-
-To understand how existing tables are classified, you can use [this dashboard](https://manojmj.gitlab.io/tenant-scale-schema-progress/).
-
-After a schema has been assigned, the merge request pipeline might fail due to one or more of the following reasons, which can be rectified by following the linked guidelines:
-
-- [Cross-database joins](#suggestions-for-removing-cross-database-joins)
-- [Cross-database transactions](#fixing-cross-database-transactions)
-- [Cross-database foreign keys](#foreign-keys-that-cross-databases)
+This content has been moved to a
+[new location](../cells/index.md#choose-either-the-gitlab_main_cell-or-gitlab_main_clusterwide-schema)
 
 ### Defining a sharding key for all cell-local tables
 
-All tables with the following `gitlab_schema` are considered "cell-local":
-
-- `gitlab_main_cell`
-- `gitlab_ci`
-
-All newly created cell-local tables are required to have a `sharding_key`
-defined in the corresponding `db/docs/` file for that table.
-
-The purpose of the sharding key is documented in the
-[Organization isolation blueprint](../../architecture/blueprints/organization/isolation.md),
-but in short this column is used to provide a standard way of determining which
-Organization owns a particular row in the database. The column will be used in
-the future to enforce constraints on data not cross Organization boundaries. It
-will also be used in the future to provide a uniform way to migrate data
-between Cells.
-
-The actual name of the foreign key can be anything but it must reference a row
-in `projects` or `groups`. The chosen `sharding_key` column must be non-nullable.
-
-Setting multiple `sharding_key`, with nullable columns are also allowed, provided that
-the table has a check constraint that correctly ensures at least one of the keys must be non-nullable for a row in the table.
-See [`NOT NULL` constraints for multiple columns](not_null_constraints.md#not-null-constraints-for-multiple-columns)
-for instructions on creating these constraints.
-
-The following are examples of valid sharding keys:
-
-- The table entries belong to a project only:
-
-   ```yaml
-   sharding_key:
-     project_id: projects
-   ```
-
-- The table entries belong to a project and the foreign key is `target_project_id`:
-
-   ```yaml
-   sharding_key:
-     target_project_id: projects
-   ```
-
-- The table entries belong to a namespace/group only:
-
-   ```yaml
-   sharding_key:
-     namespace_id: namespaces
-   ```
-
-- The table entries belong to a namespace/group only and the foreign key is `group_id`:
-
-   ```yaml
-   sharding_key:
-     group_id: namespaces
-   ```
-
-- The table entries belong to a namespace or a project:
-
-   ```yaml
-   sharding_key:
-     project_id: projects
-     namespace_id: namespaces
-   ```
-
-#### The sharding key must be immutable
-
-The choice of a `sharding_key` should always be immutable. Therefore, if your feature
-requires a user experience which allows data to be moved between projects or
-groups/namespaces, then you may need to redesign the move feature to create new rows. An
-example of this can be seen in the
-[move an issue feature](../../user/project/issues/managing_issues.md#move-an-issue).
-This feature does not actually change the `project_id` column for an existing
-`issues` row but instead creates a new `issues` row and creates a link in the
-database from the original `issues` row. If there is a particularly challenging
-existing feature that needs to allow moving data you will need to reach out to
-the Tenant Scale team early on to discuss options for how to manage the
-sharding key.
-
-#### Using the same sharding key for projects and namespaces
-
-Developers may also choose to use `namespace_id` only for tables that can
-belong to a project where the feature used by the table is being developed
-following the
-[Consolidating Groups and Projects blueprint](../../architecture/blueprints/consolidating_groups_and_projects/index.md).
-In that case the `namespace_id` would need to be the ID of the
-`ProjectNamespace` and not the group that the namespace belongs to.
-
-#### Define a `desired_sharding_key` to automatically backfill a `sharding_key`
-
-We need to backfill a `sharding_key` to hundreds of tables that do not have one.
-This process will involve creating a merge request like
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800> to add the new
-column, backfill the data from a related table in the database, and then create
-subsequent merge requests to add indexes, foreign keys and not-null
-constraints.
-
-In order to minimize the amount of repetitive effort for developers we've
-introduced a concise declarative way to describe how to backfill the
-`sharding_key` for this specific table. This content will later be used in
-automation to create all the necessary merge requests.
-
-An example of the `desired_sharding_key` was added in
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/139336> and it looks like:
-
-```yaml
---- # db/docs/security_findings.yml
-table_name: security_findings
-classes:
-- Security::Finding
-
-...
-
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: scanner_id
-        table: vulnerability_scanners
-        sharding_key: project_id
-        belongs_to: scanner
-```
-
-To understand best how this YAML data will be used you can map it onto
-the merge request we created manually in GraphQL
-<https://gitlab.com/gitlab-org/gitlab/-/merge_requests/136800>. The idea
-will be to automatically create this. The content of the YAML specifies
-the parent table and its `sharding_key` to backfill from in the batched
-background migration. It also specifies a `belongs_to` relation which
-will be added to the model to automatically populate the `sharding_key` in
-the `before_save`.
-
-##### Define a `desired_sharding_key` when the parent table also has one
-
-By default, a `desired_sharding_key` configuration will validate that the chosen `sharding_key`
-exists on the parent table. However, if the parent table also has a `desired_sharding_key` configuration
-and is itself waiting to be backfilled, you need to include the `awaiting_backfill_on_parent` field.
-For example:
-
-```yaml
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: package_file_id
-        table: packages_package_files
-        sharding_key: project_id
-        belongs_to: package_file
-    awaiting_backfill_on_parent: true
-```
-
-There are likely edge cases where this `desired_sharding_key` structure is not
-suitable for backfilling a `sharding_key`. In such cases the team owning the
-table will need to create the necessary merge requests to add the
-`sharding_key` manually.
-
-##### Exempting certain tables from having sharding keys
-
-Certain tables can be exempted from having sharding keys by adding
-
-```yaml
-exempt_from_sharding: true
-```
-
-to the table's database dictionary file. This can be used for:
-
-- JiHu specific tables, since they do not have any data on the .com database. [!145905](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/145905)
-- tables that are marked to be dropped soon, like `operations_feature_flag_scopes`. [!147541](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147541)
-- tables that mandatorily need to be present per cell to support a cell's operations, have unique data per cell, but cannot have a sharding key defined. For example, `zoekt_nodes`.
-
-When tables are exempted from sharding key requirements, they also do not show up in our [progress dashboard](https://cells-progress-tracker-gitlab-org-tenant-scale-g-f4ad96bf01d25f.gitlab.io/sharding_keys).
+This content has been moved to a
+[new location](../cells/index.md#defining-a-sharding-key-for-all-cell-local-tables)
 
 ### The impact of `gitlab_schema`
 
@@ -927,7 +749,7 @@ to limit the modes where tests can run, and skip them on any other modes.
 By default, we do not setup the `main_clusterwide` connection in CI pipelines. However, if you add the label `~"pipeline:run-clusterwide-db"`, the pipelines will run with 3 connections, `main`, `ci` and `main_clusterwide`.
 
 NOTE:
-This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by  **group::tenant scale**  to test out changes while building [Cells](../../architecture/blueprints/cells/index.md).
+This setup is not completely ready yet, and running pipelines in the setup may fail some jobs. As of July 2023, this is only used by  **group::tenant scale**  to test out changes while building [Cells](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/).
 
 ## Locking writes on the tables that don't belong to the database schemas
 

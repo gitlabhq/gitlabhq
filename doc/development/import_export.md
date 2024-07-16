@@ -290,7 +290,7 @@ There are two versions of each of these fixtures:
 - A human readable single JSON file with all objects, called either `project.json` or `group.json`.
 - A folder named `tree`, containing a tree of files in `ndjson` format. **Do not edit files under this folder manually unless strictly necessary.**
 
-The tools to generate the NDJSON tree from the human-readable JSON files live in the [`gitlab-org/memory-team/team-tools`](https://gitlab.com/gitlab-org/memory-team/team-tools/-/blob/master/import-export/) project.
+The tools to generate the NDJSON tree from the human-readable JSON files live in the [`gitlab-org/cloud-connector-team/team-tools`](https://gitlab.com/gitlab-org/cloud-connector-team/team-tools/-/tree/master/import-export) project.
 
 ### Project
 

@@ -73,6 +73,9 @@ export default {
     loading() {
       return this.progressLoaded !== null;
     },
+    subfolderValid() {
+      return !(this.subfolder && !/^\S+$/.test(this.subfolder));
+    },
   },
   methods: {
     resetFile() {
@@ -139,13 +142,21 @@ export default {
     subfolderTooltip: s__(
       "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder",
     ),
+    subfolderInvalid: s__('MlModelRegistry|Subfolder cannot contain spaces'),
+    subfolderDescription: s__('MlModelRegistry|Enter a subfolder name to organize your artifacts.'),
   },
   validFileMimetypes: [],
 };
 </script>
 <template>
   <div class="gl-p-5">
-    <gl-form-group label-for="subfolderId">
+    <gl-form-group
+      label-for="subfolderId"
+      data-testid="subfolderGroup"
+      :state="subfolderValid"
+      :invalid-feedback="$options.i18n.subfolderInvalid"
+      :description="subfolderValid ? $options.i18n.subfolderDescription : ''"
+    >
       <div>
         <label for="subfolderId" class="gl-font-weight-bold" data-testid="subfolderLabel">{{
           $options.i18n.subfolderLabel

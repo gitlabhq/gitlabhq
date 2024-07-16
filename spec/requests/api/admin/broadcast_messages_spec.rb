@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_category: :onboarding do
+RSpec.describe API::Admin::BroadcastMessages, :aggregate_failures, feature_category: :notifications do
   let_it_be(:admin) { create(:admin) }
   let_it_be(:message) { create(:broadcast_message) }
   let_it_be(:path) { '/broadcast_messages' }

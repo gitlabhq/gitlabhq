@@ -9,9 +9,9 @@ exports[`TerraformInstallation renders all the messages 1`] = `
   </h3>
   <code-instruction-stub
     copytext="Copy Terraform Command"
-    instruction="module \\"my_module_name\\" {
-  source = \\"bar.dev/foo/Test/system-22\\"
-  version = \\"0.1\\"
+    instruction="module "my_module_name" {
+  source = "bar.dev/foo/Test/system-22"
+  version = "0.1"
 }"
     label="Copy and paste into your Terraform configuration, insert the variables, and run Terraform init:"
     multiline="true"
@@ -25,16 +25,20 @@ exports[`TerraformInstallation renders all the messages 1`] = `
   </h3>
   <code-instruction-stub
     copytext="Copy Terraform Setup Command"
-    instruction="credentials \\"bar.dev\\" {
-  token = \\"<TOKEN>\\"
+    instruction="credentials "bar.dev" {
+  token = "<TOKEN>"
 }"
     label="To authorize access to the Terraform registry:"
     multiline="true"
     trackingaction=""
     trackinglabel=""
   />
-  <gl-sprintf-stub
-    message="For more information on the Terraform registry, %{linkStart}see our documentation%{linkEnd}."
-  />
+  For more information on the Terraform registry,
+  <gl-link-stub
+    href="/help/user/packages/terraform_module_registry/index#reference-a-terraform-module"
+  >
+    see our documentation
+  </gl-link-stub>
+  .
 </div>
 `;

@@ -65,7 +65,7 @@ export default {
         @click="toggleOpen"
       />
       <strong>{{ title }}</strong>
-      <gl-badge class="gl-ml-3" variant="neutral" size="sm">{{ count }}</gl-badge>
+      <gl-badge class="gl-ml-3" variant="neutral">{{ count }}</gl-badge>
     </header>
     <div v-if="open" class="gl-mt-3" data-testid="section-content">
       <slot></slot>

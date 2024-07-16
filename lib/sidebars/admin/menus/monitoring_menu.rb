@@ -33,7 +33,7 @@ module Sidebars
 
         def system_info_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('System Info'),
+            title: _('System information'),
             link: admin_system_info_path,
             active_routes: { controller: 'system_info' },
             item_id: :system_info
@@ -42,7 +42,7 @@ module Sidebars
 
         def background_migrations_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Background Migrations'),
+            title: _('Background migrations'),
             link: admin_background_migrations_path,
             active_routes: { controller: 'background_migrations' },
             item_id: :background_migrations
@@ -51,7 +51,7 @@ module Sidebars
 
         def background_jobs_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Background Jobs'),
+            title: _('Background jobs'),
             link: admin_background_jobs_path,
             active_routes: { controller: 'background_jobs' },
             item_id: :background_jobs
@@ -60,7 +60,7 @@ module Sidebars
 
         def health_check_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Health Check'),
+            title: _('Health check'),
             link: admin_health_check_path,
             active_routes: { controller: 'health_check' },
             item_id: :health_check

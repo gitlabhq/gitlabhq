@@ -32,6 +32,11 @@ module Mutations
         description: 'Indicates CI/CD job tokens generated in other projects ' \
           'have restricted access to this project.'
 
+      argument :push_repository_for_job_token_allowed, GraphQL::Types::Boolean,
+        required: false,
+        description: 'Indicates the ability to push to the original project ' \
+          'repository using a job token'
+
       field :ci_cd_settings,
         Types::Ci::CiCdSettingType,
         null: false,

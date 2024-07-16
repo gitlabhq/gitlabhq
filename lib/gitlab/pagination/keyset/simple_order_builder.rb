@@ -31,7 +31,7 @@ module Gitlab
                           end
         end
 
-        def build
+        def build_order
           order = if order_values.empty?
                     primary_key_descending_order
                   elsif Gitlab::Pagination::Keyset::Order.keyset_aware?(scope)
@@ -56,7 +56,12 @@ module Gitlab
                     columns_with_tie_breaker_order(order_values[0...-1], tie_breaker_column_order)
                   end
 
-          order ? [scope.reorder!(order), true] : [scope, false] # [scope, success]
+          order ? [order, true] : [nil, false]
+        end
+
+        def build
+          keyset_order, success = build_order
+          success ? [scope.reorder!(keyset_order), success] : [scope, false]
         end
 
         private

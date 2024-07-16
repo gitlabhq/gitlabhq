@@ -1,8 +1,0 @@
----
-name: runners_dashboard_for_groups
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151640
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/459052
-milestone: '17.0'
-type: wip
-group: group::runner
-default_enabled: false

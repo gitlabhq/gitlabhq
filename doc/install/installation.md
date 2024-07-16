@@ -51,9 +51,10 @@ If the highest number stable branch is unclear, check the [GitLab blog](https://
 |:------------------------|:----------------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [Ruby](#2-ruby)         | `3.1.x`         | From GitLab 16.7, Ruby 3.1 is required. You must use the standard MRI implementation of Ruby. We love [JRuby](https://www.jruby.org/) and [Rubinius](https://github.com/rubinius/rubinius#the-rubinius-language-platform), but GitLab needs several Gems that have native extensions. |
 | [RubyGems](#3-rubygems) | `3.5.x`         | A specific RubyGems version is not required, but you should update to benefit from some known performance improvements. |
-| [Go](#4-go)             | `1.20.x`        | From GitLab 16.4, Go 1.20 or later is required.                                                                                                                                                                                                                                        |
-| [Git](#git)             | `2.42.x`        | From GitLab 16.5, Git 2.42.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
+| [Go](#4-go)             | `1.22.x`        | From GitLab 17.1, Go 1.22 or later is required.                                                                                                                                                                                                                                        |
+| [Git](#git)             | `2.44.x`        | From GitLab 17.1, Git 2.44.x and later is required. You should use the [Git version provided by Gitaly](#git).                                                                                                                                                   |
 | [Node.js](#5-node)      | `20.13.x`       | From GitLab 17.0, Node.js 20.13 or later is required.                                                                                                                                                                                                                                  |
+| [PostgreSQL](#7-database) | `14.x`          | From GitLab 17.0, PostgreSQL 14 or later is required.                                                                                                                                                                                                                                  |
 
 ## GitLab directory structure
 
@@ -247,17 +248,17 @@ gem update --system
 GitLab has several daemons written in Go. To install
 GitLab we need a Go compiler. The instructions below assume you use 64-bit
 Linux. You can find downloads for other platforms at the
-[Go download page](https://go.dev/dl).
+[Go download page](https://go.dev/dl/).
 
 ```shell
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.20.8.linux-amd64.tar.gz"
-echo 'cc97c28d9c252fbf28f91950d830201aa403836cbed702a05932e63f7f0c7bc4  go1.20.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.20.8.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.22.5.linux-amd64.tar.gz"
+echo '904b924d435eaea086515bc63235b192ea441bd8c9b198c507e85009e6e4c7f0  go1.22.5.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.22.5.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.20.8.linux-amd64.tar.gz
+rm go1.22.5.linux-amd64.tar.gz
 ```
 
 ## 5. Node
@@ -296,7 +297,7 @@ sudo adduser --disabled-login --gecos 'GitLab' git
 
 NOTE:
 Only PostgreSQL is supported.
-In GitLab 16.0 and later, we [require PostgreSQL 13+](requirements.md#postgresql-requirements).
+In GitLab 17.0 and later, we [require PostgreSQL 14+](requirements.md#postgresql-requirements).
 
 1. Install the database packages.
 

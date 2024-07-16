@@ -36,15 +36,10 @@ describe('packages_list_app', () => {
   const findInfrastructureSearch = () => wrapper.findComponent(InfrastructureSearch);
   const findInfrastructureTitle = () => wrapper.findComponent(InfrastructureTitle);
 
-  const createStore = ({ isGroupPage = false, filter = [], packageCount = 0 } = {}) => {
+  const createStore = ({ filter = [], packageCount = 0 } = {}) => {
     store = new Vuex.Store({
       state: {
         isLoading: false,
-        config: {
-          resourceId: 'project_id',
-          emptyListIllustration: 'helpSvg',
-          isGroupPage,
-        },
         filter,
         pagination: {
           total: packageCount,
@@ -54,9 +49,14 @@ describe('packages_list_app', () => {
     store.dispatch = jest.fn();
   };
 
-  const mountComponent = () => {
+  const mountComponent = ({ isGroupPage = false } = {}) => {
     wrapper = shallowMount(PackageListApp, {
       store,
+      provide: {
+        isGroupPage,
+        emptyListIllustration: 'helpSvg',
+        resourceId: 'project_id',
+      },
       stubs: {
         GlEmptyState,
         GlLoadingIcon,
@@ -83,21 +83,37 @@ describe('packages_list_app', () => {
   it('calls requestPackagesList on page:changed', () => {
     const list = findListComponent();
     list.vm.$emit('page:changed', 1);
-    expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList', { page: 1 });
+    expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList', {
+      page: 1,
+      isGroupPage: false,
+      resourceId: 'project_id',
+    });
   });
 
   it('calls requestDeletePackage on package:delete', () => {
+    const payload = {
+      _links: {
+        delete_api_path: 'foo',
+      },
+    };
     const list = findListComponent();
-    list.vm.$emit('package:delete', 'foo');
+    list.vm.$emit('package:delete', payload);
 
-    expect(store.dispatch).toHaveBeenCalledWith('requestDeletePackage', 'foo');
+    expect(store.dispatch).toHaveBeenCalledWith('requestDeletePackage', {
+      ...payload,
+      isGroupPage: false,
+      resourceId: 'project_id',
+    });
   });
 
   it('calls requestPackagesList only once on render', () => {
     expect(store.dispatch).toHaveBeenCalledTimes(3);
     expect(store.dispatch).toHaveBeenNthCalledWith(1, 'setSorting', expect.any(Object));
     expect(store.dispatch).toHaveBeenNthCalledWith(2, 'setFilter', expect.any(Array));
-    expect(store.dispatch).toHaveBeenNthCalledWith(3, 'requestPackagesList');
+    expect(store.dispatch).toHaveBeenNthCalledWith(3, 'requestPackagesList', {
+      isGroupPage: false,
+      resourceId: 'project_id',
+    });
   });
 
   describe('url query string handling', () => {
@@ -166,8 +182,8 @@ describe('packages_list_app', () => {
 
     describe('when group page', () => {
       beforeEach(() => {
-        createStore({ isGroupPage: true });
-        mountComponent();
+        createStore();
+        mountComponent({ isGroupPage: true });
       });
 
       it('includes the right content', () => {
@@ -216,7 +232,10 @@ describe('packages_list_app', () => {
 
         findInfrastructureSearch().vm.$emit('update');
 
-        expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList');
+        expect(store.dispatch).toHaveBeenCalledWith('requestPackagesList', {
+          isGroupPage: false,
+          resourceId: 'project_id',
+        });
       });
     });
   });

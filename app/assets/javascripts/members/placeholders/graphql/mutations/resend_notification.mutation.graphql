@@ -1,0 +1,10 @@
+#import "../fragments/import_source_user.fragment.graphql"
+
+mutation resendNotification($id: ImportSourceUserID!) {
+  importSourceUserResendNotification(input: { id: $id }) {
+    errors
+    importSourceUser {
+      ...ImportSourceUser
+    }
+  }
+}

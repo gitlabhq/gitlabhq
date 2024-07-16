@@ -18,6 +18,10 @@ RSpec.describe QA::Tools::Ci::ExportCodePathsMapping do
     }
   end
 
+  let(:commit_ref) { 'master' }
+  let(:run_type) { 'e2e-test-on-gdk' }
+  let(:file_path) { "#{commit_ref}/#{run_type}/test-code-paths-mapping-merged-pipeline-1.json" }
+
   let(:pretty_generated_mapping_json) do
     JSON.pretty_generate(code_path_mappings_data)
   end
@@ -31,14 +35,15 @@ RSpec.describe QA::Tools::Ci::ExportCodePathsMapping do
     allow(Dir).to receive(:glob).with(glob) { file_paths }
     allow(::File).to receive(:read).with(anything).and_return(code_path_mappings_data.to_json)
     stub_env('QA_CODE_PATH_MAPPINGS_GCS_CREDENTIALS', gcs_credentials)
+    stub_env('QA_RUN_TYPE', run_type)
+    stub_env('CI_COMMIT_REF_SLUG', commit_ref)
+    stub_env('CI_PIPELINE_ID', 1)
   end
 
   context "with mapping files present" do
     it "exports mapping json to GCS and writes it as job artifact", :aggregate_failures do
       expect(logger).to receive(:info).with("Number of mapping files found: #{file_paths.size}")
-      expect(::File).to receive(:write).with(String, mapping_json).once
-      expect(gcs_client).to receive(:put_object).with(gcs_bucket_name,
-        String, pretty_generated_mapping_json)
+      expect(gcs_client).to receive(:put_object).with(gcs_bucket_name, file_path, pretty_generated_mapping_json)
       described_class.export(glob)
     end
   end

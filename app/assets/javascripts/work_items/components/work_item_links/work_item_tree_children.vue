@@ -28,6 +28,16 @@ export default {
       default: true,
     },
   },
+  methods: {
+    onClick(event, child) {
+      // To avoid incorrect work item to be bubbled up
+      // Assign the correct child item
+      if (!event.childItem) {
+        Object.assign(event, { childItem: child });
+      }
+      this.$emit('click', event);
+    },
+  },
 };
 </script>
 
@@ -42,7 +52,7 @@ export default {
       :work-item-type="workItemType"
       :show-labels="showLabels"
       @removeChild="$emit('removeChild', $event)"
-      @click="$emit('click', Object.assign($event, { childItem: child }))"
+      @click="onClick($event, child)"
     />
   </div>
 </template>

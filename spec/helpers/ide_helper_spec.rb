@@ -84,7 +84,7 @@ RSpec.describe IdeHelper, feature_category: :web_ide do
       end
 
       it 'includes extensions gallery settings' do
-        expect(Gitlab::WebIde::ExtensionsMarketplace).to receive(:webide_extensions_gallery_settings)
+        expect(WebIde::ExtensionsMarketplace).to receive(:webide_extensions_gallery_settings)
           .with(user: user).and_return({ enabled: false })
 
         actual = helper.ide_data(project: nil, fork_info: fork_info, params: params)

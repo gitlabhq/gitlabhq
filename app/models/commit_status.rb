@@ -8,7 +8,6 @@ class CommitStatus < Ci::ApplicationRecord
   include Presentable
   include BulkInsertableAssociations
   include TaggableQueries
-  include SafelyChangeColumnDefault
   include IgnorableColumns
 
   ignore_columns %i[
@@ -21,8 +20,6 @@ class CommitStatus < Ci::ApplicationRecord
     upstream_pipeline_id_convert_to_bigint
     user_id_convert_to_bigint
   ], remove_with: '17.0', remove_after: '2024-04-22'
-
-  columns_changing_default :auto_canceled_by_partition_id
 
   self.table_name = :p_ci_builds
   self.sequence_name = :ci_builds_id_seq
@@ -51,8 +48,9 @@ class CommitStatus < Ci::ApplicationRecord
 
   validates :pipeline, presence: true, unless: :importing?
   validates :name, presence: true, unless: :importing?
-  validates :ci_stage, presence: true, on: :create, unless: :importing?, if: -> { Feature.enabled?(:ci_remove_ensure_stage_service, project) }
+  validates :ci_stage, presence: true, on: :create, unless: :importing?
   validates :ref, :target_url, :description, length: { maximum: 255 }
+  validates :project, presence: true, on: :create
 
   alias_attribute :author, :user
   alias_attribute :pipeline_id, :commit_id
@@ -118,21 +116,6 @@ class CommitStatus < Ci::ApplicationRecord
     end
 
     merge(or_conditions)
-  end
-
-  ##
-  # We still create some CommitStatuses outside of CreatePipelineService.
-  #
-  # These are pages deployments and external statuses.
-  #
-  before_create unless: :importing? do
-    next if Feature.enabled?(:ci_remove_ensure_stage_service, project)
-
-    # rubocop: disable CodeReuse/ServiceClass
-    Ci::EnsureStageService.new(project, user).execute(self) do |stage|
-      self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
-    end
-    # rubocop: enable CodeReuse/ServiceClass
   end
 
   before_save if: :status_changed?, unless: :importing? do

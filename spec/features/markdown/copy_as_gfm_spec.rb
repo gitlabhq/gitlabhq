@@ -453,7 +453,7 @@ RSpec.describe 'Copy as GFM', :js, feature_category: :team_planning do
               <div class="js-suggestion-diff-header font-weight-bold">
                 Suggested change
                 <a href="/gitlab/help/user/discussions/index.md#suggest-changes" aria-label="Help" class="js-help-btn">
-                  <svg aria-hidden="true" class="s16 ic-question-o link-highlight">
+                  <svg aria-hidden="true" class="s16 ic-question-o">
                     <use xlink:href="/gitlab/assets/icons.svg#question-o"></use>
                   </svg>
                 </a>

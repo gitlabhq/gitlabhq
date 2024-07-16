@@ -40,6 +40,8 @@ module Gitlab
       store.subscribe ::MergeRequests::UpdateHeadPipelineWorker, to: ::Ci::PipelineCreatedEvent
       store.subscribe ::Namespaces::UpdateRootStatisticsWorker, to: ::Projects::ProjectDeletedEvent
 
+      store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::DraftStateChangeEvent
+      store.subscribe ::MergeRequests::ProcessAutoMergeFromEventWorker, to: ::MergeRequests::DiscussionsResolvedEvent
       store.subscribe ::MergeRequests::CreateApprovalEventWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::MergeRequests::CreateApprovalNoteWorker, to: ::MergeRequests::ApprovedEvent
       store.subscribe ::MergeRequests::ResolveTodosAfterApprovalWorker, to: ::MergeRequests::ApprovedEvent
@@ -48,6 +50,12 @@ module Gitlab
         to: ::Packages::PackageCreatedEvent,
         if: ->(event) { ::Ml::ExperimentTracking::AssociateMlCandidateToPackageWorker.handles_event?(event) }
       store.subscribe ::Ci::InitializePipelinesIidSequenceWorker, to: ::Projects::ProjectCreatedEvent
+      store.subscribe ::Users::RecordLastActivityWorker,
+        to: ::Users::ActivityEvent,
+        if: ->(event) do
+          actor = ::Group.actor_from_id(event.data[:namespace_id])
+          Feature.enabled?(:track_member_activity, actor)
+        end
     end
     private_class_method :configure!
   end

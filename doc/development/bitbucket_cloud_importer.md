@@ -38,29 +38,33 @@ called `Gitlab::BitbucketImport::AdvanceStageWorker`.
 This worker imports the repository, wiki and labels, scheduling the next stage when
 done.
 
-### 2. Stage::ImportPullRequestsWorker
+### 2. Stage::ImportUsersWorker
+
+This worker imports members of the source Bitbucket Cloud workspace.
+
+### 3. Stage::ImportPullRequestsWorker
 
 This worker imports all pull requests. For every pull request, a job for the
 `Gitlab::BitbucketImport::ImportPullRequestWorker` worker is scheduled.
 
-### 3. Stage::ImportPullRequestsNotesWorker
+### 4. Stage::ImportPullRequestsNotesWorker
 
 This worker imports notes (comments) for all merge requests.
 
 For every merge request, a job for the `Gitlab::BitbucketImport::ImportPullRequestNotesWorker` worker is scheduled which imports all notes for the merge request.
 
-### 4. Stage::ImportIssuesWorker
+### 5. Stage::ImportIssuesWorker
 
 This worker imports all issues. For every issue, a job for the
 `Gitlab::BitbucketImport::ImportIssueWorker` worker is scheduled.
 
-### 5. Stage::ImportIssuesNotesWorker
+### 6. Stage::ImportIssuesNotesWorker
 
 This worker imports notes (comments) for all issues.
 
 For every issue, a job for the `Gitlab::BitbucketImport::ImportIssueNotesWorker` worker is scheduled which imports all notes for the issue.
 
-### 5. Stage::FinishImportWorker
+### 7. Stage::FinishImportWorker
 
 This worker completes the import process by performing some housekeeping
 such as marking the import as completed.

@@ -1,9 +1,0 @@
----
-table_name: dast_scanner_profiles_tags
-classes: []
-feature_categories:
-- dynamic_application_security_testing
-description: Join Table for Runner tags and DAST Scanner Profiles
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/104909
-milestone: '15.7'
-gitlab_schema: gitlab_main

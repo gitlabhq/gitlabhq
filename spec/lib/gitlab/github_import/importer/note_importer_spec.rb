@@ -9,6 +9,7 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
   let(:created_at) { Time.new(2017, 1, 1, 12, 00) }
   let(:updated_at) { Time.new(2017, 1, 1, 12, 15) }
   let(:note_body) { 'This is my note' }
+  let_it_be(:imported_from) { ::Import::HasImportSource::IMPORT_SOURCES[:github] }
 
   let(:github_note) do
     Gitlab::GithubImport::Representation::Note.new(
@@ -56,7 +57,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
                   discussion_id: match(/\A[0-9a-f]{40}\z/),
                   system: false,
                   created_at: created_at,
-                  updated_at: updated_at
+                  updated_at: updated_at,
+                  imported_from: imported_from
                 }
               ]
             )
@@ -88,7 +90,8 @@ RSpec.describe Gitlab::GithubImport::Importer::NoteImporter, feature_category: :
                   discussion_id: match(/\A[0-9a-f]{40}\z/),
                   system: false,
                   created_at: created_at,
-                  updated_at: updated_at
+                  updated_at: updated_at,
+                  imported_from: imported_from
                 }
               ]
             )

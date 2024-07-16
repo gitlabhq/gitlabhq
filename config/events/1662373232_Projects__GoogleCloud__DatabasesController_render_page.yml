@@ -2,9 +2,6 @@
 description: Databases page rendered
 category: Projects::GoogleCloud::DatabasesController
 action: render_page
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

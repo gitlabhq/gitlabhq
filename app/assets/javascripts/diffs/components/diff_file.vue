@@ -160,7 +160,7 @@ export default {
       if (this.showBody) {
         domParts.header = 'gl-rounded-bottom-left-none gl-rounded-bottom-right-none';
         domParts.contentByHash =
-          'gl-rounded-none gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-border-1 gl-border-t-0! gl-border-solid gl-border-gray-100';
+          'gl-rounded-none gl-rounded-bottom-left-base gl-rounded-bottom-right-base gl-border-0';
         domParts.content = 'gl-rounded-bottom-left-base gl-rounded-bottom-right-base';
       }
 
@@ -400,14 +400,63 @@ export default {
   <div
     :id="file.file_hash"
     :class="{
+      'gl-border-red-500': file.conflict_type,
       'comments-disabled': Boolean(file.brokenSymlink),
       'has-body': showBody,
       'is-virtual-scrolling': isVirtualScrollingEnabled,
       'pinned-file': isPinnedFile,
     }"
     :data-path="file.new_path"
-    class="diff-file file-holder gl-border-none gl-mb-0! gl-pb-5"
+    class="diff-file file-holder gl-mb-5"
   >
+    <gl-alert
+      v-if="!showLoadingIcon && file.conflict_type"
+      variant="danger"
+      :dismissible="false"
+      data-testid="conflictsAlert"
+      class="gl-rounded-top-base"
+    >
+      {{ $options.CONFLICT_TEXT[file.conflict_type] }}
+      <template v-if="!canMerge">
+        {{ __('Ask someone with write access to resolve it.') }}
+      </template>
+      <gl-sprintf
+        v-else-if="conflictResolutionPath"
+        :message="
+          __(
+            'You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.',
+          )
+        "
+      >
+        <template #gitlabLink="{ content }">
+          <gl-button
+            :href="conflictResolutionPath"
+            variant="link"
+            class="gl-vertical-align-text-bottom"
+            >{{ content }}</gl-button
+          >
+        </template>
+        <template #resolveLocally="{ content }">
+          <gl-button
+            variant="link"
+            class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
+            >{{ content }}</gl-button
+          >
+        </template>
+      </gl-sprintf>
+      <gl-sprintf
+        v-else
+        :message="__('You can %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.')"
+      >
+        <template #resolveLocally="{ content }">
+          <gl-button
+            variant="link"
+            class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
+            >{{ content }}</gl-button
+          >
+        </template>
+      </gl-sprintf>
+    </gl-alert>
     <diff-file-header
       ref="header"
       :can-current-user-fork="canCurrentUserFork"
@@ -419,13 +468,13 @@ export default {
       :view-diffs-file-by-file="viewDiffsFileByFile"
       :show-local-file-reviews="showLocalFileReviews"
       :pinned="isPinnedFile"
-      class="js-file-title file-title gl-border-1 gl-border-solid gl-border-gray-100"
+      class="js-file-title file-title"
       :class="[
         hasBodyClasses.header,
         {
-          'gl-border-red-500! gl-bg-red-200!': file.conflict_type,
-          'gl-rounded-bottom-left-none! gl-rounded-bottom-right-none!':
-            file.conflict_type && isCollapsed,
+          'gl-bg-red-200! gl-rounded-0!': file.conflict_type,
+          'gl-rounded-top-left-none! gl-rounded-top-right-none!': file.conflict_type && isCollapsed,
+          'gl-border-0!': file.conflict_type || isCollapsed,
         },
       ]"
       @toggleFile="handleToggle({ viaUserInteraction: true })"
@@ -455,57 +504,15 @@ export default {
     <template v-else>
       <div
         :id="fileId"
-        :class="[hasBodyClasses.contentByHash, { 'gl-border-red-500': file.conflict_type }]"
         class="diff-content"
         data-testid="content-area"
+        :class="[
+          hasBodyClasses.contentByHash,
+          {
+            'gl-border-0!': file.conflict_type,
+          },
+        ]"
       >
-        <gl-alert
-          v-if="!showLoadingIcon && file.conflict_type"
-          variant="danger"
-          :dismissible="false"
-          data-testid="conflictsAlert"
-        >
-          {{ $options.CONFLICT_TEXT[file.conflict_type] }}
-          <template v-if="!canMerge">
-            {{ __('Ask someone with write access to resolve it.') }}
-          </template>
-          <gl-sprintf
-            v-else-if="conflictResolutionPath"
-            :message="
-              __(
-                'You can %{gitlabLinkStart}resolve conflicts on GitLab%{gitlabLinkEnd} or %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.',
-              )
-            "
-          >
-            <template #gitlabLink="{ content }">
-              <gl-button
-                :href="conflictResolutionPath"
-                variant="link"
-                class="gl-vertical-align-text-bottom"
-                >{{ content }}</gl-button
-              >
-            </template>
-            <template #resolveLocally="{ content }">
-              <gl-button
-                variant="link"
-                class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
-                >{{ content }}</gl-button
-              >
-            </template>
-          </gl-sprintf>
-          <gl-sprintf
-            v-else
-            :message="__('You can %{resolveLocallyStart}resolve them locally%{resolveLocallyEnd}.')"
-          >
-            <template #resolveLocally="{ content }">
-              <gl-button
-                variant="link"
-                class="gl-vertical-align-text-bottom js-check-out-modal-trigger"
-                >{{ content }}</gl-button
-              >
-            </template>
-          </gl-sprintf>
-        </gl-alert>
         <div v-if="showFileDiscussions" data-testid="file-discussions">
           <div class="diff-file-discussions-wrapper">
             <diff-discussions

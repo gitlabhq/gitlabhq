@@ -42,6 +42,7 @@ export default {
     PackageHistory,
     TerraformInstallation,
     PackageFiles,
+    Markdown: () => import('~/vue_shared/components/markdown/markdown_content.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -49,26 +50,19 @@ export default {
   },
   mixins: [Tracking.mixin()],
   trackingActions: { ...TRACKING_ACTIONS },
+  inject: ['projectName', 'canDelete', 'svgPath', 'projectListUrl'],
   data() {
     return {
       fileToDelete: null,
     };
   },
   computed: {
-    ...mapState([
-      'projectName',
-      'packageEntity',
-      'packageFiles',
-      'isLoading',
-      'canDelete',
-      'svgPath',
-      'npmPath',
-      'npmHelpPath',
-      'projectListUrl',
-      'groupListUrl',
-    ]),
+    ...mapState(['packageEntity', 'packageFiles', 'isLoading']),
     isValidPackage() {
       return Boolean(this.packageEntity.name);
+    },
+    readme() {
+      return this.packageEntity.terraform_module_metadatum?.fields?.root?.readme;
     },
     tracking() {
       return {
@@ -89,13 +83,16 @@ export default {
         this.fetchPackageVersions();
       }
     },
+    packageEntityWithName(version) {
+      return {
+        name: this.packageEntity.name,
+        ...version,
+      };
+    },
     async confirmPackageDeletion() {
       this.track(TRACKING_ACTIONS.DELETE_PACKAGE);
       await this.deletePackage();
-      const returnTo =
-        !this.groupListUrl || document.referrer.includes(this.projectName)
-          ? this.projectListUrl
-          : this.groupListUrl; // to avoid security issue url are supplied from backend
+      const returnTo = this.projectListUrl;
       const modalQuery = objectToQuery({ [SHOW_DELETE_SUCCESS_ALERT]: true });
       window.location.replace(`${returnTo}?${modalQuery}`);
     },
@@ -167,7 +164,10 @@ export default {
       <gl-tab :title="__('Detail')">
         <div>
           <package-history :package-entity="packageEntity" :project-name="projectName" />
-          <terraform-installation />
+          <terraform-installation
+            :package-name="packageEntity.name"
+            :package-version="packageEntity.version"
+          />
         </div>
 
         <package-files
@@ -191,10 +191,7 @@ export default {
           <ul class="gl-pl-0">
             <li v-for="v in packageEntity.versions" :key="v.id" class="gl-list-style-none">
               <package-list-row
-                :package-entity="/* eslint-disable @gitlab/vue-no-new-non-primitive-in-template */ {
-                  name: packageEntity.name,
-                  ...v,
-                } /* eslint-enable @gitlab/vue-no-new-non-primitive-in-template */"
+                :package-entity="packageEntityWithName(v)"
                 :package-link="v.id.toString()"
                 :disable-delete="true"
                 :show-package-type="false"
@@ -206,6 +203,10 @@ export default {
         <p v-else class="gl-mt-3" data-testid="no-versions-message">
           {{ s__('PackageRegistry|There are no other versions of this package.') }}
         </p>
+      </gl-tab>
+
+      <gl-tab v-if="readme" :title="s__('PackageRegistry|Readme')" lazy>
+        <markdown :value="readme" />
       </gl-tab>
     </gl-tabs>
 

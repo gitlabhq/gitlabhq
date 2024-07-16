@@ -16,7 +16,7 @@ RSpec.describe API::Entities::Hook, feature_category: :webhooks do
     expect(json.keys).to contain_exactly(
       :id, :name, :description, :alert_status, :created_at, :disabled_until, :enable_ssl_verification, :tag_push_events,
       :merge_requests_events, :push_events, :repository_update_events, :url, :url_variables, :custom_webhook_template,
-      :custom_headers
+      :custom_headers, :branch_filter_strategy, :push_events_branch_filter
     )
   end
 

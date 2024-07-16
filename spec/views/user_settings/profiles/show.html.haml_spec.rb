@@ -21,9 +21,11 @@ RSpec.describe 'user_settings/profiles/show', feature_category: :user_profile do
       expect(rendered).to have_field('user_name', with: user.name)
       expect(rendered).to have_field('user_id', with: user.id)
 
-      expected_link = help_page_path('user/profile/index', anchor: 'change-the-email-displayed-on-your-commits')
+      expected_link = help_page_path('user/profile/index',
+        anchor: 'use-an-automatically-generated-private-commit-email')
       expected_link_html = "<a href=\"#{expected_link}\" target=\"_blank\" " \
-                           "rel=\"noopener noreferrer\">#{_('Learn more')}</a>."
+                           "rel=\"noopener noreferrer\">#{s_('Profiles|What is a private commit email?')}</a>"
+
       expect(rendered.include?(expected_link_html)).to eq(true)
     end
 
@@ -61,7 +63,7 @@ RSpec.describe 'user_settings/profiles/show', feature_category: :user_profile do
         render
 
         expect(rendered).to render_template('user_settings/profiles/_private_profile')
-        expect(rendered).to have_link 'Learn more',
+        expect(rendered).to have_link 'What information is hidden?',
           href: help_page_path('user/profile/index', anchor: 'make-your-user-profile-page-private')
       end
     end

@@ -125,8 +125,16 @@ FactoryBot.define do
       user_type { :llm_bot }
     end
 
+    trait :duo_code_review_bot do
+      user_type { :duo_code_review_bot }
+    end
+
     trait :placeholder do
       user_type { :placeholder }
+    end
+
+    trait :import_user do
+      user_type { :import_user }
     end
 
     trait :external do

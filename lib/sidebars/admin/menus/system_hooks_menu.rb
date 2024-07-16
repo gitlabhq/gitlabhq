@@ -11,7 +11,7 @@ module Sidebars
 
         override :title
         def title
-          s_('Admin|System Hooks')
+          s_('Webhooks|System hooks')
         end
 
         override :sprite_icon

@@ -42,7 +42,7 @@ module PackagesHelper
   end
 
   def track_package_event(event_name, scope, **args)
-    ::Packages::CreateEventService.new(nil, current_user, event_name: event_name, scope: scope).execute
+    ::Packages::CreateEventService.new(args[:project], current_user, event_name: event_name, scope: scope).execute
     category = args.delete(:category) || self.class.name
     ::Gitlab::Tracking.event(category, event_name.to_s, **args)
   end
@@ -80,6 +80,28 @@ module PackagesHelper
       Ability.allowed?(current_user, :destroy_package, group)
   end
 
+  def group_packages_template_data(group)
+    packages_template_data.merge({
+      can_delete_packages: can_delete_group_packages?(group).to_s,
+      endpoint: group_packages_path(group),
+      full_path: group.full_path,
+      group_list_url: group_packages_path(group),
+      page_type: 'groups',
+      settings_path: show_group_package_registry_settings(group) ? group_settings_packages_and_registries_path(group) : ''
+    })
+  end
+
+  def project_packages_template_data(project)
+    packages_template_data.merge({
+      can_delete_packages: can_delete_packages?(project).to_s,
+      endpoint: project_packages_path(project),
+      full_path: project.full_path,
+      page_type: 'projects',
+      project_list_url: project_packages_path(project),
+      settings_path: show_package_registry_settings(project) ? project_settings_packages_and_registries_path(project) : ''
+    })
+  end
+
   def cleanup_settings_data(project)
     {
       project_id: project.id,
@@ -104,5 +126,16 @@ module PackagesHelper
       is_container_registry_metadata_database_enabled: (show_container_registry_settings(project) && ContainerRegistry::GitlabApiClient.supports_gitlab_api?).to_s,
       cleanup_settings_path: cleanup_image_tags_project_settings_packages_and_registries_path(project)
     )
+  end
+
+  private
+
+  def packages_template_data
+    {
+      empty_list_illustration: image_path('illustrations/empty-state/empty-package-md.svg'),
+      group_list_url: '',
+      npm_instance_url: package_registry_instance_url(:npm),
+      project_list_url: ''
+    }
   end
 end

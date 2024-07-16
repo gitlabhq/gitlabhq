@@ -50,8 +50,12 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
 
       context 'with build info' do
-        let_it_be(:job) { create(:ci_build, user: user) }
+        let_it_be_with_reload(:job) { create(:ci_build, user: nil) }
         let(:params) { super().merge(build: job) }
+
+        before do
+          job.update!(user: user)
+        end
 
         it_behaves_like 'assigns build to package' do
           subject { super().payload.fetch(:package) }
@@ -382,7 +386,7 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
       end
     end
 
-    context 'with package protection rule for different roles and package_name_patterns' do
+    context 'with package protection rule for different roles and package_name_patterns', :enable_admin_mode do
       using RSpec::Parameterized::TableSyntax
 
       let_it_be_with_reload(:package_protection_rule) do
@@ -391,11 +395,10 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
 
       let_it_be(:project_developer) { create(:user, developer_of: project) }
       let_it_be(:project_maintainer) { create(:user, maintainer_of: project) }
+      let_it_be(:project_owner) { project.owner }
+      let_it_be(:project_admin) { create(:admin) }
 
-      let(:project_owner) { project.owner }
       let(:package_name_pattern_no_match) { "#{package_name}_no_match" }
-
-      let(:service) { described_class.new(project, current_user, params) }
 
       shared_examples 'protected package' do
         it_behaves_like 'returning an error service response', message: 'Package protected.' do
@@ -411,12 +414,16 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         end
       end
 
-      where(:package_name_pattern, :minimum_access_level_for_push, :current_user, :shared_examples_name) do
+      where(:package_name_pattern, :minimum_access_level_for_push, :user, :shared_examples_name) do
         ref(:package_name)                  | :maintainer | ref(:project_developer)  | 'protected package'
         ref(:package_name)                  | :maintainer | ref(:project_owner)      | 'valid package'
+        ref(:package_name)                  | :maintainer | ref(:project_admin)      | 'valid package'
         ref(:package_name)                  | :owner      | ref(:project_maintainer) | 'protected package'
         ref(:package_name)                  | :owner      | ref(:project_owner)      | 'valid package'
+        ref(:package_name)                  | :owner      | ref(:project_admin)      | 'valid package'
         ref(:package_name)                  | :admin      | ref(:project_owner)      | 'protected package'
+        ref(:package_name)                  | :admin      | ref(:project_admin)      | 'valid package'
+
         ref(:package_name_pattern_no_match) | :owner      | ref(:project_owner)      | 'valid package'
         ref(:package_name_pattern_no_match) | :admin      | ref(:project_owner)      | 'valid package'
       end
@@ -428,6 +435,29 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         end
 
         it_behaves_like params[:shared_examples_name]
+      end
+
+      context 'with deploy token' do
+        let_it_be(:deploy_token) { create(:deploy_token, projects: [project]) }
+        let_it_be(:user) { nil }
+
+        let(:service) { described_class.new(project, deploy_token, params) }
+
+        where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
+          ref(:package_name)                  | :maintainer | 'valid package'
+          ref(:package_name)                  | :owner      | 'valid package'
+          ref(:package_name)                  | :admin      | 'valid package'
+          ref(:package_name_pattern_no_match) | :owner      | 'valid package'
+        end
+
+        with_them do
+          before do
+            package_protection_rule.update!(package_name_pattern: package_name_pattern,
+              minimum_access_level_for_push: minimum_access_level_for_push)
+          end
+
+          it_behaves_like params[:shared_examples_name]
+        end
       end
     end
 

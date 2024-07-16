@@ -1,6 +1,6 @@
 query getBlobInfo(
   $projectPath: ID!
-  $filePath: String!
+  $filePath: [String!]!
   $ref: String!
   $refType: RefType
   $shouldFetchRawText: Boolean!
@@ -11,7 +11,7 @@ query getBlobInfo(
     repository {
       __typename
       empty
-      blobs(paths: [$filePath], ref: $ref, refType: $refType) {
+      blobs(paths: $filePath, ref: $ref, refType: $refType) {
         __typename
         nodes {
           __typename

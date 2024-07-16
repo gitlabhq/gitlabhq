@@ -1,5 +1,6 @@
+import { builders } from 'prosemirror-test-builder';
 import TableOfContents from '~/content_editor/extensions/table_of_contents';
-import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
+import { createTestEditor, triggerNodeInputRule } from '../test_utils';
 
 describe('content_editor/extensions/table_of_contents', () => {
   let tiptapEditor;
@@ -9,12 +10,7 @@ describe('content_editor/extensions/table_of_contents', () => {
 
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [TableOfContents] });
-    ({
-      builders: { doc, p, tableOfContents },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: { tableOfContents: { nodeType: TableOfContents.name } },
-    }));
+    ({ doc, paragraph: p, tableOfContents } = builders(tiptapEditor.schema));
   });
 
   it.each`

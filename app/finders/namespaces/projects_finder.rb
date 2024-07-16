@@ -27,10 +27,16 @@ module Namespaces
     def execute
       return Project.none if namespace.nil?
 
+      container = if params[:include_sibling_projects] && namespace.is_a?(ProjectNamespace)
+                    namespace.group
+                  else
+                    namespace
+                  end
+
       collection = if params[:include_subgroups].present?
-                     namespace.all_projects.with_route
+                     container.all_projects.with_route
                    else
-                     namespace.projects.with_route
+                     container.projects.with_route
                    end
 
       collection = collection.not_aimed_for_deletion if params[:not_aimed_for_deletion].present?

@@ -8,7 +8,8 @@ module ProtectedRefDeployKeyAccess
 
     protected_ref_fk = "#{module_parent.model_name.singular}_id"
     validates :deploy_key_id, uniqueness: { scope: protected_ref_fk, allow_nil: true }
-    validate :validate_deploy_key_membership
+    validates :deploy_key, presence: true, if: :deploy_key_id
+    validate :validate_deploy_key_membership, if: :deploy_key
   end
 
   class_methods do
@@ -18,13 +19,13 @@ module ProtectedRefDeployKeyAccess
   end
 
   def type
-    return :deploy_key if deploy_key.present?
+    return :deploy_key if deploy_key_id.present? || deploy_key.present?
 
     super
   end
 
   def humanize
-    return deploy_key.title if deploy_key?
+    return humanize_deploy_key if deploy_key?
 
     super
   end
@@ -39,12 +40,18 @@ module ProtectedRefDeployKeyAccess
 
   private
 
+  def humanize_deploy_key
+    return deploy_key.title if deploy_key.present?
+
+    'Deploy key'
+  end
+
   def deploy_key?
     type == :deploy_key
   end
 
   def validate_deploy_key_membership
-    return if deploy_key.nil? || deploy_key_has_write_access_to_project?
+    return if deploy_key_has_write_access_to_project?
 
     errors.add(:deploy_key, 'is not enabled for this project')
   end
@@ -52,10 +59,17 @@ module ProtectedRefDeployKeyAccess
   def enabled_deploy_key_for_user?(current_user)
     current_user.can?(:read_project, project) &&
       deploy_key.user_id == current_user.id &&
+      active_project_member?(current_user) &&
       deploy_key_has_write_access_to_project?
   end
 
   def deploy_key_has_write_access_to_project?
     DeployKey.with_write_access_for_project(project, deploy_key: deploy_key).exists?
+  end
+
+  def active_project_member?(current_user)
+    return true if Feature.disabled?(:check_membership_in_protected_ref_access) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- This flag already exists, I don't want to add an actor and break it.
+
+    project.member?(current_user)
   end
 end

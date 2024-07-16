@@ -257,7 +257,7 @@ module Gitlab
         end
 
         def after_read_callback(record)
-          if Feature.enabled?(:bulk_import_user_mapping, exportable)
+          if Feature.enabled?(:bulk_import_user_mapping, current_user)
             user_contributions_export_mapper.cache_user_contributions_on_record(record)
           end
 

@@ -12,4 +12,4 @@ level: warning
 ignorecase: true
 tokens:
   - \d+(?:B|kB|KiB|MB|MiB|GB|GiB|TB|TiB)
-  - \d+(?:ns|ms|μs|s|min|h|d)
+  - \d+(?:ns|ms|μs|s|min|h|d)\b

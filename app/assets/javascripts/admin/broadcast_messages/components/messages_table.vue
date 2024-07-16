@@ -2,9 +2,9 @@
 import { GlBroadcastMessage, GlButton, GlTableLite, GlModal, GlModalDirective } from '@gitlab/ui';
 import SafeHtml from '~/vue_shared/directives/safe_html';
 import { __, s__ } from '~/locale';
-import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 
-const DEFAULT_TD_CLASSES = '!gl-align-middle';
+const DEFAULT_TD_CLASSES = '!gl-align-baseline';
 
 export default {
   name: 'MessagesTable',
@@ -89,7 +89,7 @@ export default {
   ],
   methods: {
     formatDate(dateString) {
-      return formatDate(new Date(dateString));
+      return localeDateFormat.asDateTimeFull.format(new Date(dateString));
     },
   },
 };
@@ -117,21 +117,24 @@ export default {
     </template>
 
     <template #cell(buttons)="{ item: { id, edit_path, disable_delete } }">
-      <gl-button
-        icon="pencil"
-        :aria-label="$options.i18n.edit"
-        :href="edit_path"
-        data-testid="edit-message"
-      />
-      <gl-button
-        v-gl-modal="`delete-message-${id}`"
-        class="gl-ml-3"
-        icon="remove"
-        :aria-label="$options.i18n.delete"
-        rel="nofollow"
-        :disabled="disable_delete"
-        :data-testid="`delete-message-${id}`"
-      />
+      <div class="gl-flex gl-gap-2">
+        <gl-button
+          category="tertiary"
+          icon="pencil"
+          :aria-label="$options.i18n.edit"
+          :href="edit_path"
+          data-testid="edit-message"
+        />
+        <gl-button
+          v-gl-modal="`delete-message-${id}`"
+          category="tertiary"
+          icon="remove"
+          :aria-label="$options.i18n.delete"
+          rel="nofollow"
+          :disabled="disable_delete"
+          :data-testid="`delete-message-${id}`"
+        />
+      </div>
       <gl-modal
         :title="$options.i18n.title"
         :action-primary="$options.modal.actionPrimary"

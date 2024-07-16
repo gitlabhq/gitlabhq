@@ -14,7 +14,7 @@ module PlanLimitsHelper
     when :ci_pipeline_schedules
       s_('AdminSettings|Maximum number of pipeline schedules')
     when :ci_needs_size_limit
-      s_('AdminSettings|Maximum number of DAG dependencies that a job can have')
+      s_('AdminSettings|Maximum number of needs dependencies that a job can have')
     when :ci_registered_group_runners
       s_('AdminSettings|Maximum number of runners registered per group')
     when :ci_registered_project_runners

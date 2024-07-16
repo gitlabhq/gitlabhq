@@ -5,7 +5,7 @@ module API
     module Types
       class HashOfIntegerValues
         def self.coerce
-          lambda do |value|
+          ->(value) do
             case value
             when Hash
               value.transform_values(&:to_i)

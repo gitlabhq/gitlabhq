@@ -74,6 +74,45 @@ RSpec.describe Ci::PipelineCreation::CancelRedundantPipelinesService, feature_ca
         )
       end
 
+      context 'when the previous pipeline is running on the same SHA' do
+        # This setup specifies the SHA for clarity, but every
+        # FactoryBot Pipeline record has the same hardcoded SHA
+        let(:pipeline) do
+          create(:ci_pipeline, project: project, ref: prev_pipeline.ref, sha: prev_pipeline.sha)
+        end
+
+        it 'does not cancel the prior Pipeline' do
+          expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+
+          execute
+
+          expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+        end
+      end
+
+      context 'when the previous pipeline is running on the current ref head sha' do
+        # Note: This is an atypical situation. Because this process happens in a
+        # background worker, this is a safety check to prevent cancellation of Pipelines
+        # on the most recent SHA on the ref, in the event that redundant cancellations
+        # are processed out-of-order from multiple sequential pushes.
+        let(:ref_head_sha) { 'most-recent-commit-on-ref' }
+        let(:commit_double) { instance_double(Commit, id: ref_head_sha) }
+        let(:prev_pipeline) { create(:ci_pipeline, project: project, sha: ref_head_sha) }
+
+        before do
+          allow(service).to receive(:project).and_return(project)
+          allow(project).to receive(:commit).and_return(commit_double)
+        end
+
+        it 'does not cancel the prior Pipeline' do
+          expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+
+          execute
+
+          expect(build_statuses(prev_pipeline)).to contain_exactly('running', 'success', 'created')
+        end
+      end
+
       context 'when the previous pipeline has a child pipeline' do
         let(:child_pipeline) { create(:ci_pipeline, child_of: prev_pipeline) }
 

@@ -105,7 +105,7 @@ Before you can migrate projects on a self-managed GitLab instance using file exp
 
 To enable file exports as an import source for the destination instance:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
@@ -273,7 +273,7 @@ DETAILS:
 Administrators can set the maximum import file size one of two ways:
 
 - With the `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
-- In the [Admin Area UI](../../../administration/settings/import_and_export_settings.md#max-import-size).
+- In the [Admin area UI](../../../administration/settings/import_and_export_settings.md#max-import-size).
 
 The default is `0` (unlimited).
 
@@ -329,7 +329,7 @@ The maximum import file size depends on whether you import to a GitLab self-mana
 - If importing to a GitLab self-managed instance, you can import a import file of any size. Administrators can change
   this behavior using either:
   - The `max_import_size` option in the [Application settings API](../../../api/settings.md#change-application-settings).
-  - The [Admin Area](../../../administration/settings/account_and_limit_settings.md).
+  - The [Admin area](../../../administration/settings/account_and_limit_settings.md).
 - On GitLab.com, you can import groups using import files of no more than
   [5 GB](../../gitlab_com/index.md#account-and-limit-settings) in size.
 

@@ -17,19 +17,19 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   let(:project_snippet)  { build(:project_snippet) }
 
   describe '#visibility_icon_description' do
-    context 'used with a Project' do
+    context 'with Project' do
       it 'delegates projects to #project_visibility_icon_description' do
         expect(visibility_icon_description(project)).to match(/project/i)
       end
     end
 
-    context 'used with a ProjectPresenter' do
+    context 'with ProjectPresenter' do
       it 'delegates projects to #project_visibility_icon_description' do
         expect(visibility_icon_description(project.present)).to match(/project/i)
       end
     end
 
-    context 'used with a Group' do
+    context 'with Group' do
       it 'delegates groups to #group_visibility_icon_description' do
         expect(visibility_icon_description(group)).to match(/group/i)
       end
@@ -51,7 +51,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   describe '#visibility_level_description' do
-    context 'used with a Project' do
+    context 'with Project' do
       let(:descriptions) do
         [
           visibility_level_description(private_vis, project),
@@ -66,7 +66,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       end
     end
 
-    context 'used with a Group' do
+    context 'with Group' do
       let(:descriptions) do
         [
           visibility_level_description(private_vis, group),
@@ -85,15 +85,19 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
       end
 
       context 'when application setting `should_check_namespace_plan` is true', if: Gitlab.ee? do
-        let(:group) { create(:group) }
+        let(:group) { build_stubbed(:group) }
         let(:public_option_description) { visibility_level_description(public_vis, group) }
 
         before do
-          allow(Gitlab::CurrentSettings.current_application_settings).to receive(:should_check_namespace_plan?) { true }
+          allow(Gitlab::CurrentSettings.current_application_settings).to receive(:should_check_namespace_plan?)
+                                                                     .and_return(true)
         end
 
         it 'returns updated description for public visibility option in group general settings' do
-          expect(public_option_description).to match(/^The group, any public projects, and any of their members, issues, and merge requests can be viewed without authentication./)
+          expect(public_option_description).to match(
+            'The group, any public projects, and any of their members, issues, and merge requests can be viewed ' \
+              'without authentication.'
+          )
         end
       end
     end
@@ -101,7 +105,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
 
   describe '#disallowed_visibility_level?' do
     describe "forks" do
-      let(:project) { create(:project, :internal) }
+      let(:project) { create(:project, :internal) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required for fork_project
       let(:forked_project) { fork_project(project) }
 
       it "disallows levels" do
@@ -112,7 +116,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
 
     describe "non-forked project" do
-      let(:project) { create(:project, :internal) }
+      let(:project) { build_stubbed(:project, :internal) }
 
       it "disallows levels" do
         expect(disallowed_visibility_level?(project, public_vis)).to be_falsey
@@ -122,7 +126,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
 
     describe "group" do
-      let(:group) { create(:group, :internal) }
+      let(:group) { build_stubbed(:group, :internal) }
 
       it "disallows levels" do
         expect(disallowed_visibility_level?(group, public_vis)).to be_falsey
@@ -132,8 +136,8 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
 
     describe "sub-group" do
-      let(:group) { create(:group, :private) }
-      let(:subgroup) { create(:group, :private, parent: group) }
+      let(:group) { build_stubbed(:group, :private) }
+      let(:subgroup) { build_stubbed(:group, :private, parent: group) }
 
       it "disallows levels" do
         expect(disallowed_visibility_level?(subgroup, public_vis)).to be_truthy
@@ -143,7 +147,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
     end
 
     describe "snippet" do
-      let(:snippet) { create(:snippet, :internal) }
+      let(:snippet) { build_stubbed(:snippet, :internal) }
 
       it "disallows levels" do
         expect(disallowed_visibility_level?(snippet, public_vis)).to be_falsey
@@ -154,7 +158,7 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   describe '#disallowed_visibility_level_by_parent?' do
-    let(:parent_group) { create(:group, parent_group_visibility_level) }
+    let(:parent_group) { build_stubbed(:group, parent_group_visibility_level) }
     let(:group) { build(:group, :private, parent: parent_group) }
 
     subject { helper.disallowed_visibility_level_by_parent?(group, visibility_level) }
@@ -199,8 +203,8 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   describe '#disallowed_visibility_level_by_projects?' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be_with_reload(:child) { create(:project, group: group) }
+    let_it_be(:group) { create(:group, :public) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required because child is updated in before hook
+    let_it_be_with_reload(:child) { create(:project, group: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required because child is updated in before hook
 
     subject { helper.disallowed_visibility_level_by_projects?(group, visibility_level) }
 
@@ -208,8 +212,8 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   describe '#disallowed_visibility_level_by_sub_groups?' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be_with_reload(:child) { create(:group, parent: group) }
+    let_it_be(:group) { create(:group, :public) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required because child is updated in before hook
+    let_it_be_with_reload(:child) { create(:group, parent: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required because child is updated in before hook
 
     subject { helper.disallowed_visibility_level_by_sub_groups?(group, visibility_level) }
 
@@ -217,8 +221,8 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   describe '#selected_visibility_level' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be_with_reload(:project) { create(:project, :internal, group: group) }
+    let_it_be(:group) { create(:group, :public) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required because child is updated in before hook
+    let_it_be_with_reload(:project) { create(:project, :internal, group: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required for fork_project
 
     let!(:forked_project) { fork_project(project) }
 
@@ -291,9 +295,9 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
 
     it 'excludes disallowed visibility levels' do
       stub_application_setting(restricted_visibility_levels: [])
-      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, private_vis) { true }
-      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, internal_vis) { false }
-      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, public_vis) { false }
+      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, private_vis).and_return(true)
+      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, internal_vis).and_return(false)
+      allow(helper).to receive(:disallowed_visibility_level?).with(form_model, public_vis).and_return(false)
 
       expect(subject).to eq([internal_vis, public_vis])
     end
@@ -380,8 +384,8 @@ RSpec.describe VisibilityLevelHelper, feature_category: :system_access do
   end
 
   describe '#disabled_visibility_level?' do
-    let_it_be(:group) { create(:group, :public) }
-    let_it_be_with_reload(:child) { create(:project, group: group) }
+    let_it_be(:group) { create(:group, :public) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required because child is updated in before hook
+    let_it_be_with_reload(:child) { create(:project, group: group) } # rubocop:disable RSpec/FactoryBot/AvoidCreate -- create is required because child is updated in before hook
 
     let(:user) { build(:user) }
 

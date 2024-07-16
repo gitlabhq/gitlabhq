@@ -19,19 +19,21 @@ import {
   WIDGET_TYPE_AWARD_EMOJI,
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
-  WORK_ITEM_TYPE_VALUE_EPIC,
   WIDGET_TYPE_NOTES,
   WIDGET_TYPE_LINKED_ITEMS,
   WIDGET_TYPE_DESIGNS,
   LINKED_ITEMS_ANCHOR,
   WORK_ITEM_REFERENCE_CHAR,
+  WORK_ITEM_TYPE_VALUE_TASK,
+  WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
-import { findHierarchyWidgetChildren } from '../utils';
+import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
+import { findHierarchyWidgetChildren, findHierarchyWidgetDefinition } from '../utils';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
@@ -79,7 +81,7 @@ export default {
     WorkItemLoading,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'isGroup', 'reportAbusePath', 'groupPath'],
+  inject: ['fullPath', 'isGroup', 'reportAbusePath', 'groupPath', 'hasSubepicsFeature'],
   props: {
     isModal: {
       type: Boolean,
@@ -168,6 +170,23 @@ export default {
         },
       },
     },
+    allowedChildTypes: {
+      query: getAllowedWorkItemChildTypes,
+      variables() {
+        return {
+          id: this.workItem.id,
+        };
+      },
+      skip() {
+        return !this.workItem?.id;
+      },
+      update(data) {
+        return (
+          findHierarchyWidgetDefinition(data.workItem.workItemType.widgetDefinitions)
+            ?.allowedChildTypes?.nodes || []
+        );
+      },
+    },
   },
   computed: {
     workItemFullPath() {
@@ -184,6 +203,9 @@ export default {
     },
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
+    },
+    canUpdateChildren() {
+      return this.workItem.userPermissions?.adminParentLink;
     },
     canDelete() {
       return this.workItem.userPermissions?.deleteWorkItem;
@@ -205,6 +227,21 @@ export default {
     },
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
+    },
+    showAncestors() {
+      // TODO: This is a temporary check till the issue work item migration is completed
+      // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
+      const { workItemType, glFeatures, parentWorkItem, hasSubepicsFeature } = this;
+
+      if (workItemType === WORK_ITEM_TYPE_VALUE_TASK) {
+        return glFeatures.namespaceLevelWorkItems && parentWorkItem;
+      }
+
+      if (workItemType === WORK_ITEM_TYPE_VALUE_EPIC) {
+        return hasSubepicsFeature && parentWorkItem;
+      }
+
+      return parentWorkItem;
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
@@ -257,28 +294,26 @@ export default {
       };
     },
     showIntersectionObserver() {
-      return !this.isModal && !this.editMode;
+      return !this.isModal && !this.editMode && !this.isDrawer;
     },
     workItemLinkedItems() {
       return this.isWidgetPresent(WIDGET_TYPE_LINKED_ITEMS);
     },
     showWorkItemTree() {
-      return [WORK_ITEM_TYPE_VALUE_OBJECTIVE, WORK_ITEM_TYPE_VALUE_EPIC].includes(
-        this.workItemType,
-      );
+      return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY) && this.allowedChildTypes?.length > 0;
     },
     titleClassHeader() {
       return {
-        'sm:!gl-hidden gl-mt-3': this.parentWorkItem,
-        'sm:!gl-block': !this.parentWorkItem,
-        'gl-w-full': !this.parentWorkItem && !this.editMode,
-        'editable-wi-title': this.editMode && !this.parentWorkItem,
+        'sm:!gl-hidden gl-mt-3': this.showAncestors,
+        'sm:!gl-block': !this.showAncestors,
+        'gl-w-full': !this.showAncestors && !this.editMode,
+        'editable-wi-title': this.editMode && !this.showAncestors,
       };
     },
     titleClassComponent() {
       return {
-        'sm:!gl-block': !this.parentWorkItem,
-        'gl-hidden sm:!gl-block gl-mt-3': this.parentWorkItem,
+        'sm:!gl-block': !this.showAncestors,
+        'gl-hidden sm:!gl-block gl-mt-3': this.showAncestors,
         'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
@@ -290,6 +325,9 @@ export default {
         'sm:gl-hidden': !this.error,
         'gl-flex': true,
       };
+    },
+    workItemPresent() {
+      return !isEmpty(this.workItem);
     },
   },
   mounted() {
@@ -395,10 +433,7 @@ export default {
       this.isStickyHeaderShowing = false;
     },
     showStickyHeader() {
-      // only if scrolled under the work item's title
-      if (this.$refs?.title?.$el.offsetTop < window.pageYOffset) {
-        this.isStickyHeaderShowing = true;
-      }
+      this.isStickyHeaderShowing = true;
     },
     updateDraft(type, value) {
       this.draftData[type] = value;
@@ -494,7 +529,7 @@ export default {
         />
         <div v-else data-testid="detail-wrapper">
           <div class="gl-block sm:!gl-flex gl-items-start gl-flex-row gl-gap-3">
-            <work-item-ancestors v-if="parentWorkItem" :work-item="workItem" class="gl-mb-1" />
+            <work-item-ancestors v-if="showAncestors" :work-item="workItem" class="gl-mb-1" />
             <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
               <work-item-title
                 v-if="workItem.title"
@@ -533,6 +568,7 @@ export default {
                 @error="updateError = $event"
               />
               <work-item-actions
+                v-if="workItemPresent"
                 :full-path="workItemFullPath"
                 :work-item-id="workItem.id"
                 :hide-subscribe="newTodoAndNotificationsEnabled"
@@ -568,7 +604,7 @@ export default {
           </div>
           <div :class="{ 'gl-mt-3': !editMode }">
             <work-item-title
-              v-if="workItem.title && parentWorkItem"
+              v-if="workItem.title && showAncestors"
               ref="title"
               :is-editing="editMode"
               :class="titleClassComponent"
@@ -607,7 +643,6 @@ export default {
                 @error="updateError = $event"
                 @emoji-updated="$emit('work-item-emoji-updated', $event)"
               />
-              <design-widget v-if="!isDrawer && hasDesignWidget" :work-item-id="workItem.id" />
             </section>
             <aside
               data-testid="work-item-overview-right-sidebar"
@@ -615,12 +650,20 @@ export default {
               :class="{ 'is-modal': isModal }"
             >
               <work-item-attributes-wrapper
+                :class="{ 'gl-top-3': isDrawer }"
                 :full-path="workItemFullPath"
                 :work-item="workItem"
                 :group-path="groupPath"
                 @error="updateError = $event"
               />
             </aside>
+
+            <design-widget
+              v-if="hasDesignWidget"
+              :class="{ 'gl-mt-0': isDrawer }"
+              :work-item-id="workItem.id"
+              :work-item-iid="workItemIid"
+            />
 
             <work-item-tree
               v-if="showWorkItemTree"
@@ -631,7 +674,9 @@ export default {
               :work-item-iid="workItemIid"
               :children="children"
               :can-update="canUpdate"
+              :can-update-children="canUpdateChildren"
               :confidential="workItem.confidential"
+              :allowed-child-types="allowedChildTypes"
               @show-modal="openInModal"
               @addChild="$emit('addChild')"
             />

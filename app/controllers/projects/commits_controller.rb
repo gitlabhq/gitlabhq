@@ -48,8 +48,6 @@ class Projects::CommitsController < Projects::ApplicationController
   # rubocop: enable CodeReuse/ActiveRecord
 
   def signatures
-    Gitlab::QueryLimiting.disable!('https://gitlab.com/gitlab-org/gitlab/-/issues/424527')
-
     respond_to do |format|
       format.json do
         render json: {

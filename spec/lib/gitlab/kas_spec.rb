@@ -15,7 +15,7 @@ RSpec.describe Gitlab::Kas, feature_category: :deployment_management do
     context 'returns nil if fails to validate the JWT' do
       it 'when secret is wrong' do
         encoded_token = JWT.encode(payload, 'wrong secret', 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { described_class::INTERNAL_API_KAS_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers)).to be_nil
       end
@@ -23,7 +23,7 @@ RSpec.describe Gitlab::Kas, feature_category: :deployment_management do
       it 'when issuer is wrong' do
         payload['iss'] = 'wrong issuer'
         encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { described_class::INTERNAL_API_KAS_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers)).to be_nil
       end
@@ -31,7 +31,7 @@ RSpec.describe Gitlab::Kas, feature_category: :deployment_management do
       it 'when audience is wrong' do
         payload['aud'] = 'wrong audience'
         encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
-        headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+        headers = { described_class::INTERNAL_API_KAS_REQUEST_HEADER => encoded_token }
 
         expect(described_class.verify_api_request(headers)).to be_nil
       end
@@ -39,7 +39,7 @@ RSpec.describe Gitlab::Kas, feature_category: :deployment_management do
 
     it 'returns the decoded JWT' do
       encoded_token = JWT.encode(payload, described_class.secret, 'HS256')
-      headers = { described_class::INTERNAL_API_REQUEST_HEADER => encoded_token }
+      headers = { described_class::INTERNAL_API_KAS_REQUEST_HEADER => encoded_token }
 
       expect(described_class.verify_api_request(headers)).to eq([
         { 'iss' => described_class::JWT_ISSUER, 'aud' => described_class::JWT_AUDIENCE },

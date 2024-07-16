@@ -32,7 +32,7 @@ To view the roadmap in a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Plan > Roadmap**.
 
-The Roadmap page shows the epics and milestones in a
+The roadmap shows the epics and milestones in a
 group, one of its subgroups, or a project in one of the groups.
 
 On the epic bars, you can see each epic's title, progress, and completed weight percentage.
@@ -50,7 +50,7 @@ heading to toggle the list of the milestone bars.
 
 ![roadmap view](img/roadmap_view_v14_3.png)
 
-## Sort and filter the Roadmap
+## Sort and filter the roadmap
 
 > - Filtering by group was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/385191) in GitLab 15.9.
 > - Sorting by title, created date, and last updated date [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460492) in GitLab 17.0.
@@ -61,7 +61,7 @@ Filtering roadmaps by milestone might not be available to you. Be sure to review
 When you want to explore a roadmap, there are several ways to make it easier by sorting epics or
 filtering them by what's important for you.
 
-You can sort epics in the Roadmap view by:
+In the Roadmap view, you can sort epics by:
 
 - Start date
 - Due date
@@ -73,7 +73,7 @@ Each option contains a button that toggles the sort order between **ascending**
 and **descending**. The sort option and order persist when browsing Epics, including
 the [epics list view](../epics/index.md).
 
-You can also filter epics in the Roadmap view by the epics':
+In the Roadmap view, you can also filter by the epics':
 
 - Author
 - Label
@@ -121,7 +121,7 @@ Roadmap provides these date range options, each with a predetermined timeline du
 
 ### Layout presets
 
-Depending on selected [date range preset](#date-range-presets), Roadmap supports
+Depending on selected [date range preset](#date-range-presets), the roadmap supports
 these layout presets:
 
 - **Quarters**: Available only when the **Within 3 years** date range is selected.

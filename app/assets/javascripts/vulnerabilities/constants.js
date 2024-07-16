@@ -13,3 +13,5 @@ export const UNKNOWN = 'unknown';
  * All vulnerability severities in decreasing order.
  */
 export const SEVERITIES = [CRITICAL, HIGH, MEDIUM, LOW, INFO, UNKNOWN];
+
+export const SEVERITY_COUNT_LIMIT = 1000;

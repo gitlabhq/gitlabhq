@@ -59,7 +59,8 @@ export default {
         i18n: {
           title: s__('AdminUsers|Delete User %{username} and contributions?'),
           primaryButtonLabel: s__('AdminUsers|Delete user and contributions'),
-          messageBody: s__(`AdminUsers|You are about to permanently delete the user %{username}. This will delete all issues,
+          messageBody:
+            s__(`AdminUsers|You are about to permanently delete the user %{username}. This will delete all issues,
                             merge requests, groups, and projects linked to them. To avoid data loss,
                             consider using the %{strongStart}Block user%{strongEnd} feature instead. After you %{strongStart}Delete user%{strongEnd},
                             you cannot undo this action or recover the data.`),

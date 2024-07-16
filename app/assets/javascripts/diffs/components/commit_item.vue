@@ -90,12 +90,8 @@ export default {
 
 <template>
   <li :class="{ 'js-toggle-container': collapsible }" class="commit">
-    <div
-      class="gl-block sm:gl-flex flex-row-reverse justify-content-between align-items-start flex-lg-row-reverse"
-    >
-      <div
-        class="commit-actions flex-row gl-hidden sm:gl-flex gl-align-items-center gl-flex-wrap justify-content-end"
-      >
+    <div class="gl-block sm:gl-flex gl-flex-row-reverse gl-justify-between gl-items-start">
+      <div class="commit-actions gl-flex-row gl-hidden sm:gl-flex gl-items-center gl-justify-end">
         <div
           v-if="commit.signature_html"
           v-html="commit.signature_html /* eslint-disable-line vue/no-v-html */"
@@ -175,7 +171,7 @@ export default {
         v-if="commit.description_html"
         v-safe-html:[$options.safeHtmlConfig]="commitDescription"
         :class="{ 'js-toggle-content': collapsible, '!gl-block': !collapsible }"
-        class="commit-row-description gl-mb-3 gl-text-body gl-white-space-pre-wrap"
+        class="commit-row-description gl-mb-3 gl-text-body gl-whitespace-pre-wrap"
       ></pre>
     </div>
   </li>

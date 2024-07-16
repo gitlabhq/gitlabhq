@@ -1,13 +1,9 @@
 <script>
 import { GlCollapsibleListbox } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import { setUrlParams, visitUrl } from '~/lib/utils/url_utility';
 
 export default {
   name: 'BackgroundMigrationsDatabaseListbox',
-  i18n: {
-    database: s__('BackgroundMigrations|Database'),
-  },
   components: {
     GlCollapsibleListbox,
   },
@@ -35,12 +31,11 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
-    <label id="label" class="gl-font-bold gl-mr-4 gl-mb-0">{{ $options.i18n.database }}</label>
+  <div class="gl-flex gl-align-items-center gl-grow gl-justify-end">
     <gl-collapsible-listbox
       v-model="selected"
       :items="databases"
-      placement="right"
+      placement="bottom-end"
       :toggle-text="selectedDatabase"
       toggle-aria-labelled-by="label"
       @select="selectDatabase"

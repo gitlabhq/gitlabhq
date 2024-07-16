@@ -268,35 +268,6 @@ RSpec.describe API::RemoteMirrors, feature_category: :source_code_management do
 
         expect(response).to have_gitlab_http_status(:no_content)
       end
-
-      context 'when feature flag "use_remote_mirror_destroy_service" is disabled' do
-        before do
-          stub_feature_flags(use_remote_mirror_destroy_service: false)
-        end
-
-        it 'returns 404 for non existing id' do
-          delete api(route[non_existing_record_id], user)
-
-          expect(response).to have_gitlab_http_status(:not_found)
-        end
-
-        it 'returns bad request if the destroy service fails' do
-          expect_next_instance_of(Projects::UpdateService) do |service|
-            expect(service).to receive(:execute).and_return(status: :error, message: 'message')
-          end
-
-          expect { delete api(route[mirror.id], user) }.not_to change { project.remote_mirrors.count }
-
-          expect(response).to have_gitlab_http_status(:bad_request)
-          expect(json_response).to eq({ 'message' => 'message' })
-        end
-
-        it 'deletes a remote mirror' do
-          expect { delete api(route[mirror.id], user) }.to change { project.remote_mirrors.count }.from(1).to(0)
-
-          expect(response).to have_gitlab_http_status(:no_content)
-        end
-      end
     end
   end
 end

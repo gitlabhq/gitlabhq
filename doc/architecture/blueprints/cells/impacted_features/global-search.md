@@ -1,35 +1,11 @@
 ---
-stage: enablement
-group: Tenant Scale
-description: 'Cells: Global search'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/impacted_features/global-search/'
+remove_date: '2025-07-08'
 ---
 
-<!-- vale gitlab.FutureTense = NO -->
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/impacted_features/global-search/).
 
-This document is a work-in-progress and represents a very early state of the
-Cells design. Significant aspects are not documented, though we expect to add
-them in the future. This is one possible architecture for Cells, and we intend to
-contrast this with alternatives before deciding which approach to implement.
-This documentation will be kept even if we decide not to implement this so that
-we can document the reasons for not choosing this approach.
-
-# Cells: Global search
-
-When we introduce multiple Cells we intend to isolate all services related to those Cells.
-This will include Elasticsearch which means our current global search functionality will not work.
-It may be possible to implement aggregated search across all Cells, but it is unlikely to be performant to do fan-out searches across all Cells especially once you start to do pagination which requires setting the correct offset and page number for each search.
-
-## 1. Definition
-
-## 2. Data flow
-
-## 3. Proposal
-
-Likely the first versions of Cells will not support global searches.
-Later, we may consider if building global searches to support popular use cases is worthwhile.
-
-## 4. Evaluation
-
-## 4.1. Pros
-
-## 4.2. Cons
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

@@ -24,7 +24,7 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
   end
 
   let_it_be(:project) { create(:project, :public) }
-  let_it_be(:user) { create(:user) }
+  let_it_be_with_reload(:user) { create(:user) }
   let_it_be(:author) { create(:user) }
 
   before do
@@ -253,9 +253,6 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
         end
 
         context 'spam verdict service advises to block the user' do
-          # create a fresh user to ensure it is in the unbanned state
-          let(:user) { create(:user) }
-
           before do
             allow(fake_verdict_service).to receive(:execute).and_return(BLOCK_USER)
           end
@@ -275,6 +272,10 @@ RSpec.describe Spam::SpamActionService, feature_category: :instance_resiliency d
           end
 
           it 'bans the user' do
+            expect_next_instance_of(Users::AutoBanService, user: user, reason: 'spam') do |instance|
+              expect(instance).to receive(:execute).and_call_original
+            end
+
             subject
 
             custom_attribute = user.custom_attributes.by_key(UserCustomAttribute::AUTO_BANNED_BY_SPAM_LOG_ID).first

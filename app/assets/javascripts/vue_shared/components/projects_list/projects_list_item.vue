@@ -280,7 +280,6 @@ export default {
                 <div class="gl-px-2">
                   <gl-badge
                     v-if="shouldShowAccessLevel"
-                    size="sm"
                     class="gl-block"
                     data-testid="access-level-badge"
                     >{{ accessLevelLabel }}</gl-badge
@@ -306,15 +305,11 @@ export default {
           </gl-truncate-text>
           <div v-if="hasTopics" class="gl-mt-3" data-testid="project-topics">
             <div
-              class="gl-w-full gl-display-inline-flex gl-flex-wrap gl-font-base gl-font-normal gl-align-items-center -gl-mx-2 -gl-my-2"
+              class="gl-w-full gl-inline-flex gl-flex-wrap gl-font-base gl-font-normal gl-align-items-center -gl-mx-2 -gl-my-2"
             >
               <span class="gl-p-2 gl-font-sm gl-text-secondary">{{ $options.i18n.topics }}:</span>
               <div v-for="topic in visibleTopics" :key="topic" class="gl-p-2">
-                <gl-badge
-                  v-gl-tooltip="topicTooltipTitle(topic)"
-                  size="sm"
-                  :href="topicPath(topic)"
-                >
+                <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
                   {{ topicTitle(topic) }}
                 </gl-badge>
               </div>
@@ -336,11 +331,7 @@ export default {
                       :key="topic"
                       class="gl-p-2 gl-display-inline-block"
                     >
-                      <gl-badge
-                        v-gl-tooltip="topicTooltipTitle(topic)"
-                        size="sm"
-                        :href="topicPath(topic)"
-                      >
+                      <gl-badge v-gl-tooltip="topicTooltipTitle(topic)" :href="topicPath(topic)">
                         {{ topicTitle(topic) }}
                       </gl-badge>
                     </div>

@@ -139,6 +139,60 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
     end
   end
 
+  describe '.limited_values_from_set' do
+    it 'returns empty array when the set does not exist' do
+      expect(described_class.limited_values_from_set('foo')).to eq([])
+    end
+
+    it 'returns a single random member from the set' do
+      described_class.set_add('foo', 10)
+      described_class.set_add('foo', 20)
+
+      result = described_class.limited_values_from_set('foo')
+
+      expect(result.size).to eq(1)
+      expect(result.first).to be_in(%w[10 20])
+    end
+
+    it 'returns multiple random members from the set with `limit:`' do
+      described_class.set_add('foo', 10)
+      described_class.set_add('foo', 20)
+      described_class.set_add('foo', 30)
+
+      result = described_class.limited_values_from_set('foo', limit: 2)
+
+      expect(result.size).to eq(2)
+      expect(result).to all(be_in(%w[10 20 30]))
+    end
+  end
+
+  describe '.set_remove' do
+    it 'returns 0 when the set does not exist' do
+      expect(described_class.set_remove('foo', 1)).to eq(0)
+    end
+
+    it 'removes a single value from the set' do
+      described_class.set_add('foo', 10)
+      described_class.set_add('foo', 20)
+
+      result = described_class.set_remove('foo', 20)
+
+      expect(result).to eq(1)
+      expect(described_class.values_from_set('foo')).to contain_exactly('10')
+    end
+
+    it 'removes a collection of values from the set' do
+      described_class.set_add('foo', 10)
+      described_class.set_add('foo', 20)
+      described_class.set_add('foo', 30)
+
+      result = described_class.set_remove('foo', [10, 30])
+
+      expect(result).to eq(2)
+      expect(described_class.values_from_set('foo')).to contain_exactly('20')
+    end
+  end
+
   describe '.hash_add' do
     it 'adds a value to a hash' do
       described_class.hash_add('foo', 1, 1)
@@ -286,7 +340,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
   end
 
   describe '.values_from_list' do
-    it 'returns empty hash when the list is empty' do
+    it 'returns empty array when the list is empty' do
       expect(described_class.values_from_list('foo')).to eq([])
     end
 

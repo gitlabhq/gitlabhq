@@ -89,8 +89,8 @@ RSpec.describe Projects::PagesController, feature_category: :pages do
     context 'when pages is disabled' do
       let(:project) { create(:project, :pages_disabled) }
 
-      it 'renders the disabled view' do
-        expect(subject).to render_template :disabled
+      it 'returns 404 status' do
+        expect(subject).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -41,8 +41,10 @@ describe('New project push tip popover', () => {
   });
 
   it('renders popover that targets the specified target', () => {
+    // jest29 bug with recursive objects in toMatchObject https://github.com/jestjs/jest/issues/14734
+    expect(findPopover().props('target')).toEqual(findTarget());
+
     expect(findPopover().props()).toMatchObject({
-      target: findTarget(),
       triggers: 'click blur',
       placement: 'top',
       title: 'Push to create a project',

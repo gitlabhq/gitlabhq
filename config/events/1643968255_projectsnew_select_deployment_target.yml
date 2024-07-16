@@ -2,8 +2,6 @@
 description: Deployment target option selected from new project creation form
 category: projects:new
 action: select_deployment_target
-label_description: new_project_deployment_target
-property_description: selected option (string)
 product_group: environments
 milestone: "14.8"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/79873
@@ -14,4 +12,9 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: new_project_deployment_target
+  property:
+    description: selected option (string)
 

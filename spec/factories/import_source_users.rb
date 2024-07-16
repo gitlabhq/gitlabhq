@@ -5,6 +5,8 @@ FactoryBot.define do
     namespace
     source_user_identifier { SecureRandom.uuid }
     source_hostname { 'github.com' }
+    source_name { generate(:name) }
+    source_username { generate(:username) }
     import_type { 'github' }
 
     trait :with_placeholder_user do
@@ -21,6 +23,10 @@ FactoryBot.define do
 
     trait :awaiting_approval do
       status { 1 }
+    end
+
+    trait :completed do
+      status { 5 }
     end
   end
 end

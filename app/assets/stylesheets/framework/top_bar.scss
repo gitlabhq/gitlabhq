@@ -17,8 +17,6 @@
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    transition: left $gl-transition-duration-medium,
-                right $gl-transition-duration-medium,
-                width $gl-transition-duration-medium;
+    @apply gl-transition-[width,left,right];
   }
 }

@@ -75,7 +75,9 @@ async function createJsConfig() {
   };
 
   // Stringify, format and update the config file
-  const jsConfigString = prettier.format(JSON.stringify(jsConfig, null, 2), { parser: 'json' });
+  const jsConfigString = await prettier.format(JSON.stringify(jsConfig, null, 2), {
+    parser: 'json',
+  });
   await fs.writeFile(PATH_JS_CONFIG, jsConfigString);
 }
 

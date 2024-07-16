@@ -175,6 +175,30 @@ RSpec.describe Ci::JobToken::Scope, feature_category: :continuous_integration, f
         it { is_expected.to eq(result) }
       end
     end
+
+    describe 'metrics' do
+      include_context 'with accessible and inaccessible projects'
+
+      context 'when the access project has ci_inbound_job_token_scope_enabled' do
+        it 'increments the counter metric with legacy: false' do
+          expect(Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter)
+            .to receive(:increment)
+            .with(legacy: false)
+
+          scope.accessible?(fully_accessible_project)
+        end
+      end
+
+      context 'when the access project does not have ci_inbound_job_token_scope_enabled' do
+        it 'increments the counter metric with legacy: true' do
+          expect(Gitlab::Ci::Pipeline::Metrics.job_token_inbound_access_counter)
+            .to receive(:increment)
+            .with(legacy: false)
+
+          scope.accessible?(unscoped_public_project)
+        end
+      end
+    end
   end
 
   describe '#self_referential?' do

@@ -210,12 +210,49 @@ and all updates should first be made there.
 On a regular basis, the changes made in `gitlab` project to the Vale and markdownlint configuration should be
 synchronized to the other projects. In each of the [supported projects](#supported-projects):
 
-1. Create a new branch.
-1. Copy the configuration files from the `gitlab` project into this branch, overwriting
-   the project's old configuration. Make sure no project-specific changes from the `gitlab`
-   project are included. For example, [`RelativeLinks.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/RelativeLinks.yml)
-   is hard coded for specific projects.
-1. Create a merge request and submit it to a technical writer for review and merge.
+1. Create a new branch. Add `docs-` to the beginning or `-docs` to the end of the branch name. Some projects use this
+   convention to limit the jobs that run.
+1. Copy the configuration files from the `gitlab` project. For example, in the root directory of the project, run:
+
+   ```shell
+   # Copy markdownlint configuration file
+   cp ../gitlab/.markdownlint-cli2.yaml .
+   # Copy Vale configuration files for a project with documentation stored in 'docs' directory
+   cp -r ../gitlab/doc/.vale docs
+   ```
+
+1. Review the diff created for `.markdownlint-cli2.yaml`. For example, run:
+
+   ```shell
+   git diff .markdownlint-cli2.yaml
+   ```
+
+1. Remove any changes that aren't required. For example, `customRules` is only used in the `gitlab` project.
+1. Review the diffs created for the Vale configuration. For example, run:
+
+   ```shell
+   git diff docs
+   ```
+
+1. Remove unneeded changes to `RelativeLinks.yml`. This rule is specific to each project.
+1. Remove any `.tmpl` files. These files are only used in the `gitlab` project.
+1. Run `markdownlint-cli2` to check for any violations of the new rules. For example:
+
+   ```shell
+   markdownlint-cli2 docs/**/*.md
+   ```
+
+1. Run Vale to check for any violations of the new rules. For example:
+
+   ```shell
+   vale --minAlertLevel error docs
+   ```
+
+1. Commit the changes to the new branch. Some projects require
+   [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/) so check the contributing information for the
+   project before committing.
+
+1. Submit a merge request for review.
 
 ## Update linting images
 
@@ -230,10 +267,13 @@ To update the linting images:
 
 1. In `gitlab-docs`, open a merge request to update `.gitlab-ci.yml` to use the new tooling
    version. ([Example MR](https://gitlab.com/gitlab-org/gitlab-docs/-/merge_requests/2571))
-1. When merged, start a `Build docs.gitlab.com every hour` [scheduled pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules).
-1. Go the pipeline you started, and manually run the relevant build-images job,
-   for example, `image:docs-lint-markdown`.
-1. In the job output, get the name of the new image.
+1. When merged, start a `Build docker images manually` [scheduled pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules).
+1. Go the pipeline you started, and wait for the relevant `test:image` job to complete,
+   for example `test:image:docs-lint-markdown`. If the job:
+   - Passes, start the relevant `image:` job, for example, `image:docs-lint-markdown`.
+   - Fails, review the test job log and start troubleshooting the issue. The image configuration
+     likely needs some manual tweaks to work with the updated dependency.
+1. After the `image:` job passes, check the job's log for the name of the new image.
    ([Example job output](https://gitlab.com/gitlab-org/gitlab-docs/-/jobs/2335033884#L334))
 1. Verify that the new image was added to the container registry.
 1. Open merge requests to update each of these configuration files to point to the new image.

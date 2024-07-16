@@ -115,7 +115,7 @@ RSpec.describe 'Gcp Cluster', :js, feature_category: :deployment_management do
     end
 
     it 'user does not see the offer' do
-      page.within('.as-third-party-offers') do
+      within_testid('third-party-offers-settings') do
         click_button 'Expand'
         check 'Do not display content for customer experience improvement and offers from third parties'
         click_button 'Save changes'

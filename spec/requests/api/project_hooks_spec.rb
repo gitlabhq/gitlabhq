@@ -67,6 +67,7 @@ RSpec.describe API::ProjectHooks, 'ProjectHooks', feature_category: :webhooks do
     end
 
     it_behaves_like 'test web-hook endpoint'
-    it_behaves_like 'web-hook API endpoints with branch-filter', '/projects/:id'
+    it_behaves_like 'POST webhook API endpoints with a branch filter', '/projects/:id'
+    it_behaves_like 'PUT webhook API endpoints with a branch filter', '/projects/:id'
   end
 end

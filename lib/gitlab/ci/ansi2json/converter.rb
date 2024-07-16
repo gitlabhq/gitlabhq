@@ -35,11 +35,7 @@ module Gitlab
 
           @state.new_line!(style: Style.new(**@state.inherited_style))
 
-          if Feature.disabled?(:parse_ci_job_timestamps, Feature.current_request)
-            process_stream(stream)
-          else
-            process_stream_with_lookahead(stream)
-          end
+          process_stream_with_lookahead(stream)
 
           # This must be assigned before flushing the current line
           # or the @state.offset will advance to the very end

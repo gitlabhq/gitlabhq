@@ -8,38 +8,38 @@ module Ci
     LOG_MAX_PIPELINE_SIZE = 2_000
     LOG_MAX_CREATION_THRESHOLD = 20.seconds
     SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
-                Gitlab::Ci::Pipeline::Chain::Build::Associations,
-                Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
-                Gitlab::Ci::Pipeline::Chain::Validate::Repository,
-                Gitlab::Ci::Pipeline::Chain::Limit::RateLimit,
-                Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy,
-                Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs,
-                Gitlab::Ci::Pipeline::Chain::Skip,
-                Gitlab::Ci::Pipeline::Chain::Config::Content,
-                Gitlab::Ci::Pipeline::Chain::Config::Process,
-                Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig,
-                Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
-                Gitlab::Ci::Pipeline::Chain::SeedBlock,
-                Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules,
-                Gitlab::Ci::Pipeline::Chain::AssignPartition,
-                Gitlab::Ci::Pipeline::Chain::Seed,
-                Gitlab::Ci::Pipeline::Chain::Limit::Size,
-                Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs,
-                Gitlab::Ci::Pipeline::Chain::Limit::Deployments,
-                Gitlab::Ci::Pipeline::Chain::Validate::External,
-                Gitlab::Ci::Pipeline::Chain::Populate,
-                Gitlab::Ci::Pipeline::Chain::PopulateMetadata,
-                Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::MergeJobs,
-                Gitlab::Ci::Pipeline::Chain::StopDryRun,
-                Gitlab::Ci::Pipeline::Chain::EnsureEnvironments,
-                Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups,
-                Gitlab::Ci::Pipeline::Chain::Create,
-                Gitlab::Ci::Pipeline::Chain::CreateCrossDatabaseAssociations,
-                Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines,
-                Gitlab::Ci::Pipeline::Chain::Metrics,
-                Gitlab::Ci::Pipeline::Chain::TemplateUsage,
-                Gitlab::Ci::Pipeline::Chain::ComponentUsage,
-                Gitlab::Ci::Pipeline::Chain::Pipeline::Process].freeze
+      Gitlab::Ci::Pipeline::Chain::Build::Associations,
+      Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
+      Gitlab::Ci::Pipeline::Chain::Validate::Repository,
+      Gitlab::Ci::Pipeline::Chain::Limit::RateLimit,
+      Gitlab::Ci::Pipeline::Chain::Validate::SecurityOrchestrationPolicy,
+      Gitlab::Ci::Pipeline::Chain::AssignPartition,
+      Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::FindConfigs,
+      Gitlab::Ci::Pipeline::Chain::Skip,
+      Gitlab::Ci::Pipeline::Chain::Config::Content,
+      Gitlab::Ci::Pipeline::Chain::Config::Process,
+      Gitlab::Ci::Pipeline::Chain::Validate::AfterConfig,
+      Gitlab::Ci::Pipeline::Chain::RemoveUnwantedChatJobs,
+      Gitlab::Ci::Pipeline::Chain::SeedBlock,
+      Gitlab::Ci::Pipeline::Chain::EvaluateWorkflowRules,
+      Gitlab::Ci::Pipeline::Chain::Seed,
+      Gitlab::Ci::Pipeline::Chain::Limit::Size,
+      Gitlab::Ci::Pipeline::Chain::Limit::ActiveJobs,
+      Gitlab::Ci::Pipeline::Chain::Limit::Deployments,
+      Gitlab::Ci::Pipeline::Chain::Validate::External,
+      Gitlab::Ci::Pipeline::Chain::Populate,
+      Gitlab::Ci::Pipeline::Chain::PopulateMetadata,
+      Gitlab::Ci::Pipeline::Chain::PipelineExecutionPolicies::MergeJobs,
+      Gitlab::Ci::Pipeline::Chain::StopDryRun,
+      Gitlab::Ci::Pipeline::Chain::EnsureEnvironments,
+      Gitlab::Ci::Pipeline::Chain::EnsureResourceGroups,
+      Gitlab::Ci::Pipeline::Chain::Create,
+      Gitlab::Ci::Pipeline::Chain::CreateCrossDatabaseAssociations,
+      Gitlab::Ci::Pipeline::Chain::CancelPendingPipelines,
+      Gitlab::Ci::Pipeline::Chain::Metrics,
+      Gitlab::Ci::Pipeline::Chain::TemplateUsage,
+      Gitlab::Ci::Pipeline::Chain::ComponentUsage,
+      Gitlab::Ci::Pipeline::Chain::Pipeline::Process].freeze
 
     # Create a new pipeline in the specified project.
     #
@@ -59,10 +59,12 @@ module Ci
     #                                                         generating a dangling pipeline.
     #
     # @return [Ci::Pipeline]                                  The created Ci::Pipeline object.
-    # rubocop: disable Metrics/ParameterLists
+    # rubocop: disable Metrics/ParameterLists, Metrics/AbcSize
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, merge_request: nil, external_pull_request: nil, bridge: nil, **options, &block)
       @logger = build_logger
       @pipeline = Ci::Pipeline.new
+
+      validate_options!(options)
 
       command = Gitlab::Ci::Pipeline::Chain::Command.new(
         source: source,
@@ -86,6 +88,7 @@ module Ci
         chat_data: params[:chat_data],
         bridge: bridge,
         logger: @logger,
+        partition_id: params[:partition_id],
         **extra_options(**options))
 
       # Ensure we never persist the pipeline when dry_run: true
@@ -115,9 +118,17 @@ module Ci
     ensure
       @logger.commit(pipeline: pipeline, caller: self.class.name)
     end
-    # rubocop: enable Metrics/ParameterLists
+    # rubocop: enable Metrics/ParameterLists, Metrics/AbcSize
 
     private
+
+    # rubocop:disable Gitlab/NoCodeCoverageComment
+    # :nocov: Tested in FOSS and fully overridden and tested in EE
+    def validate_options!(_)
+      raise ArgumentError, "Param `partition_id` is not allowed" if params[:partition_id]
+    end
+    # :nocov:
+    # rubocop:enable Gitlab/NoCodeCoverageComment
 
     def create_namespace_onboarding_action
       Onboarding::PipelineCreatedWorker.perform_async(project.namespace_id)

@@ -6,10 +6,8 @@ import {
 import { mockGetProjectStorageStatisticsGraphQLResponse } from 'jest/usage_quotas/storage/mock_data';
 
 describe('getStorageTypesFromProjectStatistics', () => {
-  const {
-    statistics: projectStatistics,
-    statisticsDetailsPaths,
-  } = mockGetProjectStorageStatisticsGraphQLResponse.data.project;
+  const { statistics: projectStatistics, statisticsDetailsPaths } =
+    mockGetProjectStorageStatisticsGraphQLResponse.data.project;
 
   describe('matches project statistics value with matching storage type', () => {
     const typesWithStats = getStorageTypesFromProjectStatistics(

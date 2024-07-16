@@ -1,7 +1,7 @@
 import VueApollo from 'vue-apollo';
 import Vue from 'vue';
 import { GlForm } from '@gitlab/ui';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { mountExtended, extendedWrapper } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
@@ -58,12 +58,15 @@ describe('container Protection Rule Form', () => {
           .findAll('option')
           .wrappers.map((option) => option.element.value);
 
-      it.each(['MAINTAINER', 'OWNER', 'ADMIN'])('includes the %s access level', (accessLevel) => {
-        mountComponent();
+      it.each(['', 'MAINTAINER', 'OWNER', 'ADMIN'])(
+        'includes the access level "%s" as an option',
+        (accessLevel) => {
+          mountComponent();
 
-        expect(findMinimumAccessLevelForPushSelect().exists()).toBe(true);
-        expect(minimumAccessLevelForPushOptions()).toContain(accessLevel);
-      });
+          expect(findMinimumAccessLevelForPushSelect().exists()).toBe(true);
+          expect(minimumAccessLevelForPushOptions()).toContain(accessLevel);
+        },
+      );
     });
 
     describe('when graphql mutation is in progress', () => {
@@ -137,7 +140,7 @@ describe('container Protection Rule Form', () => {
     });
 
     describe('submit', () => {
-      const findAlert = () => wrapper.findByRole('alert');
+      const findAlert = () => extendedWrapper(wrapper.findByRole('alert'));
 
       const submitForm = () => {
         findForm().trigger('submit');
@@ -162,6 +165,29 @@ describe('container Protection Rule Form', () => {
         });
       });
 
+      it('dispatches correct apollo mutation when no minimumAccessLevelForPush is selected', async () => {
+        const mutationResolver = jest
+          .fn()
+          .mockResolvedValue(createContainerProtectionRuleMutationPayload());
+
+        mountComponentWithApollo({ mutationResolver });
+
+        await findRepositoryPathPatternInput().setValue(
+          createContainerProtectionRuleMutationInput.repositoryPathPattern,
+        );
+        await findMinimumAccessLevelForPushSelect().setValue('');
+
+        await submitForm();
+
+        expect(mutationResolver).toHaveBeenCalledWith({
+          input: {
+            projectPath: 'path',
+            ...createContainerProtectionRuleMutationInput,
+            minimumAccessLevelForPush: null,
+          },
+        });
+      });
+
       it('emits event "submit" when apollo mutation successful', async () => {
         const mutationResolver = jest
           .fn()
@@ -172,8 +198,9 @@ describe('container Protection Rule Form', () => {
         await submitForm();
 
         expect(wrapper.emitted('submit')).toBeDefined();
-        const expectedEventSubmitPayload = createContainerProtectionRuleMutationPayload().data
-          .createContainerRegistryProtectionRule.containerRegistryProtectionRule;
+        const expectedEventSubmitPayload =
+          createContainerProtectionRuleMutationPayload().data.createContainerRegistryProtectionRule
+            .containerRegistryProtectionRule;
         expect(wrapper.emitted('submit')[0]).toEqual([expectedEventSubmitPayload]);
 
         expect(wrapper.emitted()).not.toHaveProperty('cancel');
@@ -191,7 +218,13 @@ describe('container Protection Rule Form', () => {
         await submitForm();
 
         expect(findAlert().isVisible()).toBe(true);
-        expect(findAlert().text()).toBe(createContainerProtectionRuleMutationPayloadErrors[0]);
+
+        expect(
+          findAlert().findByText(createContainerProtectionRuleMutationPayloadErrors[0]).exists(),
+        ).toBe(true);
+        expect(
+          findAlert().findByText(createContainerProtectionRuleMutationPayloadErrors[1]).exists(),
+        ).toBe(true);
       });
 
       it('shows error alert with general message when apollo mutation request fails', async () => {

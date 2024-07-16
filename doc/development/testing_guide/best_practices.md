@@ -131,7 +131,11 @@ If the specs pass the check the script removes them from
 
 If the specs fail the check they must be fixed before than can run in random order.
 
-### Test speed
+### Test flakiness
+
+[Consult the Unhealthy tests page for more information about processes that are in place to avoid flaky tests](unhealthy_tests.md#flaky-tests).
+
+### Test slowness
 
 GitLab has a massive test suite that, without [parallelization](../pipelines/index.md#test-suite-parallelization), can take hours
 to run. It's important that we make an effort to write tests that are accurate
@@ -141,6 +145,8 @@ Test performance is important to maintaining quality and velocity, and has a
 direct impact on CI build times and thus fixed costs. We want thorough, correct,
 and fast tests. Here you can find some information about tools and techniques
 available to you to achieve that.
+
+[Consult the Unhealthy tests page for more information about processes that are in place to avoid slow tests](unhealthy_tests.md#slow-tests).
 
 #### Don't request capabilities you don't need
 
@@ -477,22 +483,6 @@ From this result, we can see the most expensive examples in our spec, giving us
 a place to start. The most expensive examples here are in
 shared examples; any reductions generally have a larger impact as
 they are called in multiple places.
-
-#### Top slow tests
-
-We collect information about tests duration in [`rspec_profiling_stats`](https://gitlab.com/gitlab-org/rspec_profiling_stats) project. The data is showed using GitLab Pages in this
-[UI](https://gitlab-org.gitlab.io/rspec_profiling_stats/)
-
-With [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/375983) we defined thresholds for tests duration that can act a guide.
-
-For tests that are not meeting the thresholds, we create [issues](https://gitlab.com/gitlab-org/gitlab/-/issues/?sort=created_date&state=opened&label_name%5B%5D=rspec%3Aslow%20test&first_page_size=100) automatically in order to improve them.
-
-For tests that are slow for a legitimate reason and to skip issue creation, add `allowed_to_be_slow: true`.
-
-| Date | Feature tests | Controllers and Requests tests | Unit | Other | Method |
-| :-: | :-: | :-: | :-: | :-: | :-: |
-| 2023-02-15 | 67.42 seconds | 44.66 seconds | - | 76.86 seconds | Top slow test eliminating the maximum |
-| 2023-06-15 | 50.13 seconds | 19.20 seconds | 27.12 | 45.40 seconds | Avg for top 100 slow tests|
 
 #### Avoid repeating expensive actions
 
@@ -1095,7 +1085,7 @@ following tests. This should be avoided at all costs! Fortunately, the existing
 test framework handles most cases already.
 
 When the test environment does get polluted, a common outcome is
-[flaky tests](flaky_tests.md). Pollution often manifests as an order
+[flaky tests](unhealthy_tests.md#flaky-tests). Pollution often manifests as an order
 dependency: running spec A followed by spec B reliably fails, but running
 spec B followed by spec A reliably succeeds. In these cases, you can use
 `rspec --bisect` (or a manual pairwise bisect of spec files) to determine which

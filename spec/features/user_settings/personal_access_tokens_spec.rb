@@ -89,7 +89,7 @@ RSpec.describe 'User Settings > Personal Access Tokens', :js, feature_category: 
   describe "inactive tokens" do
     let!(:personal_access_token) { create(:personal_access_token, user: user) }
 
-    it "allows revocation of an active token", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/435388' do
+    it "allows revocation of an active token" do
       visit user_settings_personal_access_tokens_path
       accept_gl_confirm(button_text: 'Revoke') { click_on "Revoke" }
 
@@ -104,7 +104,7 @@ RSpec.describe 'User Settings > Personal Access Tokens', :js, feature_category: 
     end
 
     context "when revocation fails" do
-      it "displays an error message", quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/451668' do
+      it "displays an error message" do
         allow_next_instance_of(PersonalAccessTokens::RevokeService) do |instance|
           allow(instance).to receive(:revocation_permitted?).and_return(false)
         end

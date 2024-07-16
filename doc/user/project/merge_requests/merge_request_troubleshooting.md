@@ -176,6 +176,14 @@ for local checkout from the merge request `head` ref anymore. The merge request
 can still be re-opened. If the merge request's branch
 exists, you can still check out the branch, as it isn't affected.
 
+### Check out locally using `glab`
+
+```plaintext
+glab mr checkout <merge_request_iid>
+```
+
+More information on the [GitLab terminal client](../../../editor_extensions/gitlab_cli/index.md).
+
 ### Check out locally by adding a Git alias
 
 Add the following alias to your `~/.gitconfig`:

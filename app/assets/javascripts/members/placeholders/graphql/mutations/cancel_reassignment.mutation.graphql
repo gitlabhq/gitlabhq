@@ -1,0 +1,10 @@
+#import "../fragments/import_source_user.fragment.graphql"
+
+mutation cancelReassignment($id: ImportSourceUserID!) {
+  importSourceUserCancelReassignment(input: { id: $id }) {
+    errors
+    importSourceUser {
+      ...ImportSourceUser
+    }
+  }
+}

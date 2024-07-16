@@ -24,7 +24,7 @@ module Import
     end
 
     def importable_orgs
-      client_orgs.to_a
+      client_orgs.map(&:to_h)
     end
 
     def client_orgs
@@ -37,7 +37,7 @@ module Import
 
     def pagination_options
       {
-        page: [1, params[:page].to_i].max,
+        page: [1, pagination_params[:page].to_i].max,
         per_page: PAGE_LENGTH
       }
     end

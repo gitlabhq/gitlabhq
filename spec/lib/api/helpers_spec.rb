@@ -1194,6 +1194,28 @@ RSpec.describe API::Helpers, feature_category: :shared do
           subject
         end
       end
+
+      context 'with content_disposition' do
+        let(:filename) { artifact.file.filename }
+        let(:redirect_params) do
+          {
+            query: {
+              'response-content-disposition' => "attachment; filename=\"#{filename}\"; filename*=UTF-8''#{filename}",
+              'response-content-type' => 'application/zip'
+            }
+          }
+        end
+
+        subject { helper.present_artifacts_file!(artifact.file, content_disposition: :attachment) }
+
+        it 'redirects as an attachment' do
+          expect(helper).to receive(:redirect)
+          expect(ObjectStorage::CDN::FileUrl).to receive(:new)
+            .with(file: anything, ip_address: anything, redirect_params: redirect_params).and_call_original
+
+          subject
+        end
+      end
     end
   end
 

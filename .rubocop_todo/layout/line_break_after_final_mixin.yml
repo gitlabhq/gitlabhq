@@ -1,15 +1,8 @@
 ---
 # Cop supports --autocorrect.
 Layout/LineBreakAfterFinalMixin:
-  Details: grace period
   Exclude:
-    - 'app/controllers/admin/clusters_controller.rb'
-    - 'app/controllers/admin/dashboard_controller.rb'
-    - 'app/controllers/projects/deploy_keys_controller.rb'
-    - 'app/controllers/snippets/blobs_controller.rb'
-    - 'app/graphql/mutations/integrations/exclusions/create.rb'
     - 'app/graphql/resolvers/integrations/exclusions_resolver.rb'
-    - 'app/graphql/resolvers/project_pipeline_statistics_resolver.rb'
     - 'app/graphql/resolvers/projects/deploy_key_resolver.rb'
     - 'app/models/alert_management/metric_image.rb'
     - 'app/models/ci/pipeline.rb'
@@ -72,7 +65,6 @@ Layout/LineBreakAfterFinalMixin:
     - 'ee/app/models/approval_project_rules_protected_branch.rb'
     - 'ee/app/models/approval_rules/approval_group_rule.rb'
     - 'ee/app/models/approval_rules/approval_group_rules_protected_branch.rb'
-    - 'ee/app/models/ldap_group_link.rb'
     - 'ee/app/models/namespace_limit.rb'
     - 'ee/app/models/vulnerabilities/scanner.rb'
     - 'ee/app/models/vulnerabilities/statistic.rb'

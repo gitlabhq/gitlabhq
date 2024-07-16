@@ -48,7 +48,7 @@ export default {
   i18n: {
     skipToMainContent: __('Skip to main content'),
     primaryNavigation: s__('Navigation|Primary navigation'),
-    adminArea: s__('Navigation|Admin Area'),
+    adminArea: s__('Navigation|Admin area'),
   },
   inject: ['showTrialStatusWidget', 'showDuoProTrialStatusWidget'],
   props: {

@@ -99,7 +99,7 @@ export default {
     >
       <template #title>
         <span>{{ tab.title }}</span>
-        <gl-badge size="sm" class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
+        <gl-badge class="gl-tab-counter-badge">{{ getTabCount(tab) }}</gl-badge>
       </template>
       <component
         :is="tab.component"

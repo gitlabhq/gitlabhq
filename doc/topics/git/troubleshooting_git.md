@@ -92,7 +92,7 @@ If neither approach fixes the error, you may need a different internet service p
 **If pushing over SSH**, first check your SSH configuration as 'Broken pipe'
 errors can sometimes be caused by underlying issues with SSH (such as
 authentication). Make sure that SSH is correctly configured by following the
-instructions in the [SSH troubleshooting](../../user/ssh.md#password-prompt-with-git-clone) documentation.
+instructions in the [SSH troubleshooting](../../user/ssh_troubleshooting.md#password-prompt-with-git-clone) documentation.
 
 If you're a GitLab administrator with server access, you can also prevent
 session timeouts by configuring SSH `keep-alive` on the client or the server.
@@ -168,7 +168,21 @@ This error usually indicates that SSH daemon's `MaxStartups` value is throttling
 SSH connections. This setting specifies the maximum number of concurrent, unauthenticated
 connections to the SSH daemon. This affects users with proper authentication
 credentials (SSH keys) because every connection is 'unauthenticated' in the
-beginning. The default value is `10`.
+beginning. The [default value](https://man.openbsd.org/sshd_config#MaxStartups) is `10`.
+
+This can be verified by examining the host's [`sshd`](https://en.wikibooks.org/wiki/OpenSSH/Logging_and_Troubleshooting#Server_Logs)
+logs. For systems in the Debian family, refer to `/var/log/auth.log`, and for RHEL derivatives,
+check `/var/log/secure` for the following errors:
+
+```plaintext
+sshd[17242]: error: beginning MaxStartups throttling
+sshd[17242]: drop connection #1 from [CLIENT_IP]:52114 on [CLIENT_IP]:22 past MaxStartups
+```
+
+The absence of this error suggests that the SSH daemon is not limiting connections,
+indicating that the underlying issue may be network-related.
+
+### Increase the number of unauthenticated concurrent SSH connections
 
 Increase `MaxStartups` on the GitLab server
 by adding or modifying the value in `/etc/ssh/sshd_config`:
@@ -211,6 +225,23 @@ remote: Calculating new repository size... (cancelled after 729ms)
 
 This could be used to further investigate what operation is performing poorly
 and provide GitLab with more information on how to improve the service.
+
+### Error: Operation timed out
+
+If you encounter an error like this when using Git, it usually indicates a network issue:
+
+```shell
+ssh: connect to host gitlab.com port 22: Operation timed out
+fatal: Could not read from remote repository
+```
+
+To help identify the underlying issue:
+
+- Connect through a different network (for example, switch from Wi-Fi to cellular data) to rule out
+  local network or firewall issues.
+- Run this bash command to gather `traceroute` and `ping` information: `mtr -T -P 22 <gitlab_server>.com`.
+  To learn about MTR and how to read its output, see the Cloudflare article
+  [What is My Traceroute (MTR)?](https://www.cloudflare.com/en-gb/learning/network-layer/what-is-mtr/).
 
 ## `git clone` over HTTP fails with `transfer closed with outstanding read data remaining` error
 

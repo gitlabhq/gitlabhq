@@ -12,16 +12,13 @@ export const SCOPE_EPICS = 'epics';
 export const SCOPE_USERS = 'users';
 
 export const LABEL_DEFAULT_CLASSES = [
-  'gl-display-flex',
-  'gl-flex-direction-row',
+  'gl-flex',
+  'gl-flex-row',
   'gl-flex-nowrap',
   'gl-text-gray-900',
 ];
-export const NAV_LINK_DEFAULT_CLASSES = [
-  ...LABEL_DEFAULT_CLASSES,
-  'gl-justify-content-space-between',
-];
-export const NAV_LINK_COUNT_DEFAULT_CLASSES = ['gl-font-sm', 'gl-font-normal'];
+export const NAV_LINK_DEFAULT_CLASSES = [...LABEL_DEFAULT_CLASSES, 'gl-justify-between'];
+export const NAV_LINK_COUNT_DEFAULT_CLASSES = ['gl-text-sm', 'gl-font-normal'];
 
 export const TRACKING_ACTION_CLICK = 'search:filters:click';
 export const TRACKING_LABEL_APPLY = 'Apply Filters';
@@ -50,3 +47,6 @@ export const PROJECT_DATA = {
   name: 'name',
   fullName: 'name_with_namespace',
 };
+
+export const EVENT_CLICK_ZOEKT_INCLUDE_FORKS_ON_SEARCH_RESULTS_PAGE =
+  'click_zoekt_include_forks_on_search_results_page';

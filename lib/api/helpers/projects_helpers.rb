@@ -117,6 +117,7 @@ module API
         optional :ci_separated_caches, type: Boolean, desc: 'Enable or disable separated caches based on branch protection.'
         optional :restrict_user_defined_variables, type: Boolean, desc: 'Restrict use of user-defined variables when triggering a pipeline'
         optional :ci_pipeline_variables_minimum_override_role, values: %w[no_one_allowed developer maintainer owner], type: String, desc: 'Limit ability to override CI/CD variables when triggering a pipeline to only users with at least the set minimum role'
+        optional :ci_push_repository_for_job_token_allowed, type: Boolean, desc: "Allow pushing to this project's repository by authenticating with a CI/CD job token generated in this project."
       end
 
       params :optional_update_params_ee do
@@ -210,6 +211,7 @@ module API
           :model_registry_access_level,
           :warn_about_potentially_unwanted_characters,
           :ci_pipeline_variables_minimum_override_role,
+          :ci_push_repository_for_job_token_allowed,
 
           # TODO: remove in API v5, replaced by *_access_level
           :issues_enabled,

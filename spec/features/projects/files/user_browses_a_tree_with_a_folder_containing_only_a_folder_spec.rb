@@ -4,7 +4,7 @@ require 'spec_helper'
 
 # This is a regression test for https://gitlab.com/gitlab-org/gitlab-foss/issues/37569
 RSpec.describe 'Projects > Files > User browses a tree with a folder containing only a folder', :js,
-  feature_category: :groups_and_projects do
+  feature_category: :source_code_management do
   let(:project) { create(:project, :empty_repo) }
   let(:user) { project.first_owner }
 

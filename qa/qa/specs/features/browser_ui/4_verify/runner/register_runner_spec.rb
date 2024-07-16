@@ -10,7 +10,7 @@ module QA
         runner.remove_via_api!
       end
 
-      it 'user registers a new project runner', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348025' do
+      it 'user registers a new project runner', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/348025' do
         Flow::Login.sign_in
 
         runner.project.visit!

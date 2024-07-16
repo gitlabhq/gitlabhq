@@ -246,9 +246,9 @@ class User < MainClusterwide::ApplicationRecord
   has_many :assigned_abuse_reports, class_name: "AbuseReport", through: :admin_abuse_report_assignees, source: :abuse_report
   has_many :reported_abuse_reports,   dependent: :nullify, foreign_key: :reporter_id, class_name: "AbuseReport", inverse_of: :reporter # rubocop:disable Cop/ActiveRecordDependent
   has_many :resolved_abuse_reports,   foreign_key: :resolved_by_id, class_name: "AbuseReport", inverse_of: :resolved_by
-  has_many :abuse_events,             foreign_key: :user_id, class_name: 'Abuse::Event', inverse_of: :user
+  has_many :abuse_events,             foreign_key: :user_id, class_name: 'AntiAbuse::Event', inverse_of: :user
   has_many :spam_logs,                dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-  has_many :abuse_trust_scores,       class_name: 'Abuse::TrustScore', foreign_key: :user_id
+  has_many :abuse_trust_scores,       class_name: 'AntiAbuse::TrustScore', foreign_key: :user_id
   has_many :builds,                   class_name: 'Ci::Build'
   has_many :pipelines,                class_name: 'Ci::Pipeline'
   has_many :todos,                    dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
@@ -257,6 +257,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :award_emoji,              dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :triggers,                 class_name: 'Ci::Trigger', foreign_key: :owner_id
   has_many :audit_events, foreign_key: :author_id, inverse_of: :user
+  has_many :uploaded_uploads, class_name: 'Upload', foreign_key: :uploaded_by_user_id
 
   has_many :alert_assignees, class_name: '::AlertManagement::AlertAssignee', inverse_of: :assignee
   has_many :issue_assignees, inverse_of: :assignee
@@ -267,6 +268,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :created_custom_emoji, class_name: 'CustomEmoji', inverse_of: :creator
 
   has_many :bulk_imports
+  has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', inverse_of: :import_user
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
   has_one  :trusted_with_spam_attribute, -> { UserCustomAttribute.trusted_with_spam }, class_name: 'UserCustomAttribute'
@@ -275,6 +277,7 @@ class User < MainClusterwide::ApplicationRecord
   has_many :project_callouts, class_name: 'Users::ProjectCallout'
   has_many :term_agreements
   belongs_to :accepted_term, class_name: 'ApplicationSetting::Term'
+  belongs_to :created_by, class_name: 'User', optional: true
 
   has_many :organization_users, class_name: 'Organizations::OrganizationUser', inverse_of: :user
   has_many :organizations, through: :organization_users, class_name: 'Organizations::Organization', inverse_of: :users,
@@ -415,6 +418,8 @@ class User < MainClusterwide::ApplicationRecord
     :gitpod_enabled, :gitpod_enabled=,
     :use_web_ide_extension_marketplace, :use_web_ide_extension_marketplace=,
     :extensions_marketplace_opt_in_status, :extensions_marketplace_opt_in_status=,
+    :organization_groups_projects_sort, :organization_groups_projects_sort=,
+    :organization_groups_projects_display, :organization_groups_projects_display=,
     :extensions_marketplace_enabled, :extensions_marketplace_enabled=,
     :setup_for_company, :setup_for_company=,
     :project_shortcut_buttons, :project_shortcut_buttons=,
@@ -1273,16 +1278,10 @@ class User < MainClusterwide::ApplicationRecord
       direct_groups_cte = Gitlab::SQL::CTE.new(:direct_groups, groups)
       direct_groups_cte_alias = direct_groups_cte.table.alias(Group.table_name)
 
-      groups_from_membership = if Feature.enabled?(:include_subgroups_in_authorized_groups, self)
-                                 Group.from(direct_groups_cte_alias).self_and_descendants
-                               else
-                                 Group.from(direct_groups_cte_alias)
-                               end
-
       Group
         .with(direct_groups_cte.to_arel)
         .from_union([
-          groups_from_membership,
+          Group.from(direct_groups_cte_alias).self_and_descendants,
           Group.id_in(authorized_projects.select(:namespace_id)),
           Group.joins(:shared_with_group_links)
             .where(group_group_links: { shared_with_group_id: Group.from(direct_groups_cte_alias) })
@@ -1570,10 +1569,6 @@ class User < MainClusterwide::ApplicationRecord
         DeployKey.where(id: project_deploy_keys.select(:deploy_key_id)),
         DeployKey.are_public
       ])
-  end
-
-  def created_by
-    User.find_by(id: created_by_id) if created_by_id
   end
 
   def sanitize_attrs
@@ -2269,7 +2264,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def terms_accepted?
-    return true if project_bot? || service_account? || security_policy_bot?
+    return true if project_bot? || service_account? || security_policy_bot? || import_user?
 
     if Feature.enabled?(:enforce_acceptance_of_changed_terms)
       !!ApplicationSetting::Term.latest&.accepted_by_user?(self)
@@ -2499,7 +2494,7 @@ class User < MainClusterwide::ApplicationRecord
   end
 
   def block_or_ban
-    user_scores = Abuse::UserTrustScore.new(self)
+    user_scores = AntiAbuse::UserTrustScore.new(self)
     if user_scores.spammer? && account_age_in_days < 7
       ban_and_report
     else

@@ -1,8 +1,0 @@
----
-name: self_managed_code_suggestions
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/138490
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/432983
-milestone: '16.7'
-type: development
-group: group::subscription management
-default_enabled: true

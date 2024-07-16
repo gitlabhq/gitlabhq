@@ -17,7 +17,7 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
         new_token = response.payload[:personal_access_token]
 
         expect(new_token.token).not_to eq(token.token)
-        expect(new_token.expires_at).to eq(Date.today + 1.week)
+        expect(new_token.expires_at).to eq(1.week.from_now.to_date)
         expect(new_token.user).to eq(token.user)
       end
     end
@@ -137,11 +137,22 @@ RSpec.describe ProjectAccessTokens::RotateService, feature_category: :system_acc
 
             let_it_be(:token, reload: true) { create(:personal_access_token, user: bot_user) }
 
-            it 'updates membership expires at' do
+            it 'does not update membership expires at' do
               response
+              expect(bot_user_membership.reload.expires_at).to be_nil
+            end
 
-              new_token = response.payload[:personal_access_token]
-              expect(bot_user_membership.reload.expires_at).to eq(new_token.expires_at)
+            context 'when retain_resource_access_token_user_after_revoke FF is disabled' do
+              before do
+                stub_feature_flags(retain_resource_access_token_user_after_revoke: false)
+              end
+
+              it 'updates membership expires at' do
+                response
+
+                new_token = response.payload[:personal_access_token]
+                expect(bot_user_membership.reload.expires_at).to eq(new_token.expires_at)
+              end
             end
           end
         end

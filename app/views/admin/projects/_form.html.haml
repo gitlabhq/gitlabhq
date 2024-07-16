@@ -30,7 +30,7 @@
           = f.gitlab_ui_checkbox_component :runner_registration_enabled,
             s_('Runners|New project runners can be registered'),
             checkbox_options: { checked: @project.runner_registration_enabled, disabled: all_disabled },
-            help_text: html_escape_once(s_('Runners|Existing runners are not affected. To permit runner registration for all projects, enable this setting in the Admin Area in Settings &gt; CI/CD.')).html_safe
+            help_text: html_escape_once(s_('Runners|Existing runners are not affected. To permit runner registration for all projects, enable this setting in the Admin area in Settings &gt; CI/CD.')).html_safe
 
   .gl-mt-5
     = f.submit _('Save changes'), pajamas_button: true

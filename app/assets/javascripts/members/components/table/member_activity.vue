@@ -20,6 +20,9 @@ export default {
     lastActivity() {
       return this.member.user?.lastActivityOn;
     },
+    accessGranted() {
+      return this.member.requestAcceptedAt || this.member.createdAt;
+    },
   },
 };
 </script>
@@ -36,7 +39,7 @@ export default {
       />
       <user-date :date="userCreated" />
     </div>
-    <div v-if="member.createdAt" class="gl-display-flex gl-gap-3">
+    <div v-if="accessGranted" class="gl-display-flex gl-gap-3">
       <gl-icon
         ref="memberCreatedAt"
         v-gl-tooltip.${memberCreatedAt}
@@ -44,7 +47,7 @@ export default {
         name="check"
         :title="s__('Members|Access granted')"
       />
-      <user-date :date="member.createdAt" />
+      <user-date :date="accessGranted" />
     </div>
     <div v-if="lastActivity" class="gl-display-flex gl-gap-3">
       <gl-icon

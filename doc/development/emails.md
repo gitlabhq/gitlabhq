@@ -148,7 +148,7 @@ In GitLab, the handler for the Service Desk feature is `path/to/project`.
 
 ### MailRoom Gem updates
 
-We use [`gitlab-mail_room`](https://gitlab.com/gitlab-org/gitlab-mail_room), a
+We use [`gitlab-mail_room`](https://gitlab.com/gitlab-org/ruby/gems/gitlab-mail_room), a
 fork of [`MailRoom`](https://github.com/tpitale/mail_room/), to ensure
 that we can make updates quickly to the gem if necessary. We try to upstream
 changes as soon as possible and keep the two projects in sync.

@@ -46,7 +46,7 @@ When you use self-hosted models, you:
 
 You can connect supported models to LLM features. Model-specific prompts
 and GitLab Duo feature support is provided by the self-hosted models feature. For
-more information about this offering, see [subscriptions](../../subscriptions/self_managed/index.md).
+more information about this offering, see [subscriptions](../../subscriptions/self_managed/index.md) and the [Blueprint](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/custom_models/).
 
 ## Prerequisites
 

@@ -18,3 +18,9 @@ Browserslist: caniuse-lite is outdated\. Please run next command `yarn upgrade`
 # "Rightward assignment pattern matching and destructuring with types" in
 # ee/lib/remote_development/README.md for more information and context.
 warning: One-line pattern matching is experimental, and the behavior may change in future versions of Ruby!
+
+# The `io-event` gem is using an experimental feature of Ruby called `IO::Buffer`.
+# The maintainer of the gem is also the maintainer of Ruby language and `IO::Buffer` implementation, therefore,
+# it's really unlikelly that we will not be able to find a compatible version of the `io-event` gem if the
+# experimental `IO::Buffer` feature changes in Ruby.
+warning: IO::Buffer is experimental and both the Ruby and C interface may change in the future!

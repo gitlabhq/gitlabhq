@@ -127,7 +127,8 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
             note: end_with(pr_note.note),
             author: note_author,
             created_at: pr_note.created_at,
-            updated_at: pr_note.created_at
+            updated_at: pr_note.created_at,
+            imported_from: 'bitbucket_server'
           )
         end
 
@@ -263,6 +264,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           expect(start_note.position.old_line).to be_nil
           expect(start_note.position.new_line).to eq(pr_inline_note.new_pos)
           expect(start_note.author).to eq(inline_note_author)
+          expect(start_note.imported_from).to eq('bitbucket_server')
 
           reply_note = notes.last
           expect(reply_note.note).to eq(reply.note)
@@ -271,6 +273,7 @@ RSpec.describe Gitlab::BitbucketServerImport::Importers::PullRequestNotesImporte
           expect(reply_note.updated_at).to eq(reply.created_at)
           expect(reply_note.position.old_line).to be_nil
           expect(reply_note.position.new_line).to eq(pr_inline_note.new_pos)
+          expect(reply_note.imported_from).to eq('bitbucket_server')
         end
 
         context 'when the `bitbucket_server_convert_mentions_to_users` flag is disabled' do

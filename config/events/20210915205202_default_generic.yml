@@ -1,12 +1,9 @@
 description: "Show Pipeline suggestion on new MRs"
 category: default
 action: generic
-label_description: "`no_pipeline_noticed`"
-property_description: "`[admin | maintainer | developer | owner]`"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::expansion
+product_group: activation
 milestone: "13.12"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/35069
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`no_pipeline_noticed`"
+  property:
+    description: "`[admin | maintainer | developer | owner]`"

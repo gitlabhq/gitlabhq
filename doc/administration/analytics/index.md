@@ -20,8 +20,8 @@ Prerequisites:
 
 To view instance-level analytics:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Analytics**, then one of the available analytics:
 
    - [DevOps Reports](dev_ops_reports.md): Provides an overview of your entire instance's feature usage.
-   - [Usage Trends](usage_trends.md): Shows how much data your instance contains, and how the data is changing.
+   - [Usage trends](usage_trends.md): Shows how much data your instance contains, and how the data is changing.

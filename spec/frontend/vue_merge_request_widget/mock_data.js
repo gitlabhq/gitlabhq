@@ -453,7 +453,6 @@ export const mockStore = {
   targetProjectId: 1,
   iid: 1,
   retargeted: false,
-  detatchedPipeline: 'DETATCHED',
 };
 
 export const mockMergePipeline = {

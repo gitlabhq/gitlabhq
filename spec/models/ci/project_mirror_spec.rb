@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::ProjectMirror do
+RSpec.describe Ci::ProjectMirror, feature_category: :continuous_integration do
   let_it_be(:group1) { create(:group) }
   let_it_be(:group2) { create(:group) }
 
@@ -12,6 +12,7 @@ RSpec.describe Ci::ProjectMirror do
     it { is_expected.to belong_to(:project) }
     it { is_expected.to belong_to(:namespace_mirror) }
     it { is_expected.to have_many(:builds) }
+    it { is_expected.to have_many(:pipelines) }
 
     it 'has a bidirectional relationship with namespace mirror' do
       expect(described_class.reflect_on_association(:namespace_mirror).has_inverse?).to eq(:project_mirrors)
@@ -21,6 +22,11 @@ RSpec.describe Ci::ProjectMirror do
     it 'has a bidirectional relationship with builds' do
       expect(described_class.reflect_on_association(:builds).has_inverse?).to eq(:project_mirror)
       expect(Ci::Build.reflect_on_association(:project_mirror).has_inverse?).to eq(:builds)
+    end
+
+    it 'has a bidirectional relationship with pipelines' do
+      expect(described_class.reflect_on_association(:pipelines).has_inverse?).to eq(:project_mirror)
+      expect(Ci::Pipeline.reflect_on_association(:project_mirror).has_inverse?).to eq(:pipelines)
     end
   end
 

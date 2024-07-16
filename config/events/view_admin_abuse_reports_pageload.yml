@@ -1,0 +1,16 @@
+---
+description: Tracks pageviews for the admin abuse reports page
+internal_events: true
+action: view_admin_abuse_reports_pageload
+identifiers:
+- user
+product_group: personal_productivity
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157477
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

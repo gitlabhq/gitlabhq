@@ -104,7 +104,7 @@ export default {
     ]),
 
     shouldRenderContent() {
-      return !this.isLoading && !this.hasError;
+      return (!this.isLoading && !this.hasError) || this.hasJobLog;
     },
 
     emptyStateTitle() {

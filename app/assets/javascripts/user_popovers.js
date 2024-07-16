@@ -102,7 +102,7 @@ function launchPopover(el, mountPopover) {
     },
     { once: true },
   );
-  const popoverInstance = createPopover(el, emptyUser);
+  const popoverInstance = createPopover(el, Vue.observable(emptyUser));
 
   const { userId } = el.dataset;
 

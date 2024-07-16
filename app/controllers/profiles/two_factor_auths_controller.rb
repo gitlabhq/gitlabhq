@@ -204,14 +204,14 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   def setup_show_page
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
       two_factor_auth_actions = {
-        global: lambda do |_|
+        global: ->(_) do
           flash.now[:alert] =
             _('The global settings require you to enable Two-Factor Authentication for your account.')
         end,
-        admin_2fa: lambda do |_|
+        admin_2fa: ->(_) do
           flash.now[:alert] = _('Administrator users are required to enable Two-Factor Authentication for their account.')
         end,
-        group: lambda do |groups|
+        group: ->(groups) do
           flash.now[:alert] = groups_notification(groups)
         end
       }

@@ -42,7 +42,7 @@
     @include clearfix;
 
     padding: 10px 0;
-    border-bottom: 1px solid $gray-50;
+    border-bottom: 1px solid $gray-100;
     display: block;
     margin: 0;
 
@@ -334,15 +334,6 @@
 
   &:hover,
   &.is-active {
-    .danger-highlight {
-      color: $red-500;
-    }
-
-    .link-highlight {
-      color: $blue-600;
-      fill: $blue-600;
-    }
-
     .award-control-icon-neutral {
       opacity: 0;
     }
@@ -435,7 +426,7 @@
 }
 
 @mixin side-panel-toggle {
-  transition: width $gl-transition-duration-medium;
+  @apply gl-transition-width;
   height: $toggle-sidebar-height;
   padding: 0 $gl-padding;
   background-color: $gray-10;

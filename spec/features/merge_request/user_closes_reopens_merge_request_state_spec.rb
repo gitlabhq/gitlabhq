@@ -3,8 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'User closes/reopens a merge request', :js, feature_category: :code_review_workflow do
-  let_it_be(:project) { create(:project, :repository) }
-  let_it_be(:user) { create(:user) }
+  let(:project) { create(:project, :repository) }
+  let(:user) { create(:user) }
 
   before do
     project.add_developer(user)

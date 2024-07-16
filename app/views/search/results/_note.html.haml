@@ -1,3 +1,6 @@
+- index = local_assigns.fetch(:index, nil)
+- note = local_assigns.fetch(:result, nil)
+- position = index + 1
 - project = note.project
 - note_url = Gitlab::UrlBuilder.build(note)
 - noteable_identifier = note.noteable.try(:iid) || note.noteable.try(:id)
@@ -19,7 +22,7 @@
     - else
       %span #{note.noteable_type.titleize} ##{noteable_identifier}
       &middot;
-      = link_to note.noteable.title, note_url, data: {track_action: 'click_text', track_label: 'noteable_title', track_property: 'search_result'}
+      = link_to note.noteable.title, note_url, data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term }
 
   .note-search-result
     .term

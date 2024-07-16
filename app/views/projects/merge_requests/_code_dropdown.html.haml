@@ -1,6 +1,6 @@
 .gl-sm-ml-3.dropdown.gl-dropdown
   #js-check-out-modal{ data: how_merge_modal_data(@merge_request) }
-  = render Pajamas::ButtonComponent.new(category: :primary, variant: :confirm, button_text_classes: 'gl-display-inline-flex gl-justify-content-space-between gl-w-full', button_options: { class: 'gl-display-flex gl-align-self-start gl-w-full gl-s-w-auto', data: { toggle: 'dropdown', testid: 'mr-code-dropdown' } }) do
+  = render Pajamas::ButtonComponent.new(category: :primary, variant: :confirm, button_text_classes: 'gl-inline-flex gl-justify-content-space-between gl-w-full', button_options: { class: 'gl-display-flex gl-align-self-start gl-w-full gl-s-w-auto', data: { toggle: 'dropdown', testid: 'mr-code-dropdown' } }) do
     = _('Code')
     = sprite_icon "chevron-down", size: 16, css_class: "gl-icon gl-mr-0!"
   .dropdown-menu.dropdown-menu-right

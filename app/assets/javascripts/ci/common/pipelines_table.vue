@@ -139,11 +139,9 @@ export default {
       this.$emit('refresh-pipelines-table');
     },
     onRetryPipeline(pipeline) {
-      // This emit is only used by the `legacy_pipelines_table_wrapper`.
       this.$emit('retry-pipeline', pipeline);
     },
     onCancelPipeline(pipeline) {
-      // This emit is only used by the `legacy_pipelines_table_wrapper`.
       this.$emit('cancel-pipeline', pipeline);
     },
     trackPipelineMiniGraph() {

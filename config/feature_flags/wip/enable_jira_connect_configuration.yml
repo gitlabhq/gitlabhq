@@ -1,0 +1,9 @@
+---
+name: enable_jira_connect_configuration
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/460663
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/154634
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/467117
+milestone: '17.2'
+group: group::import and integrate
+type: wip
+default_enabled: false

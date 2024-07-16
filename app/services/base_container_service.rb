@@ -40,6 +40,10 @@ class BaseContainerService
   end
   strong_memoize_attr :project_group
 
+  def root_ancestor
+    project_group&.root_ancestor || group&.root_ancestor
+  end
+
   private
 
   def handle_container_type(container)

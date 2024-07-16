@@ -2,9 +2,6 @@
 description: Error enabling Cloud SQL services
 category: Projects::GoogleCloud::DatabasesController
 action: error_enable_cloudsql_services
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

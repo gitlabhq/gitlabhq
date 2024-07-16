@@ -11,7 +11,7 @@
             .gl-ml-auto
               = link_to _('Edit file'), edit_blob_path(@user.user_project, @user.user_project.default_branch, @user.user_readme.path)
         = render 'projects/blob/viewer', viewer: @user.user_readme.rich_viewer, load_async: false
-      .js-read-more-trigger.read-more-trigger.gl-h-8.gl-absolute.gl-z-2.gl-bg-white.gl-px-6.gl-rounded-bottom-base.gl-cursor-pointer
+      .js-read-more-trigger.read-more-trigger.gl-h-8.gl-absolute.gl-z-2.gl-bg-default.gl-border-t.gl-border-t-default.gl-px-6.gl-rounded-bottom-base.gl-cursor-pointer
         = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-display-flex gl-align-items-center gl-gap-1', button_options: { class: 'gl-mt-4 -gl-ml-1', 'aria-label': _("Expand Readme") }) do
           = sprite_icon('chevron-down', size: 14)
           = _("Read more")

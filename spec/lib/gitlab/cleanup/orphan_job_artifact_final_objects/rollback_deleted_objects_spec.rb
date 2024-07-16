@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedObjects, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :build_artifacts do
+RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedObjects, :orphan_final_artifacts_cleanup, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   describe '#run!' do
     let!(:fog_connection) do
       stub_object_storage_uploader(
@@ -102,7 +102,7 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedOb
 
           expect_rolled_back_deleted_object_log_message(deleted_object_1)
 
-          saved_cursor_position = fetch_saved_cursor_position
+          saved_cursor_position = fetch_saved_cursor_position(deleted_list_filename)
 
           new_processor = described_class.new(
             force_restart: false,
@@ -121,7 +121,7 @@ RSpec.describe Gitlab::Cleanup::OrphanJobArtifactFinalObjects::RollbackDeletedOb
 
           new_processor.run!
 
-          expect_resuming_from_cursor_position_log_message(saved_cursor_position)
+          expect_resuming_from_cursor_position_log_message(deleted_list_filename, saved_cursor_position)
           expect_rolled_back_deleted_object_log_message(deleted_object_2)
           expect_rolled_back_deleted_object_log_message(deleted_object_3)
           expect_done_rolling_back_deletion_log_message(deleted_list_filename)

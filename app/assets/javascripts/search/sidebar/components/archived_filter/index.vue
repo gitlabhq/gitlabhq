@@ -52,7 +52,7 @@ export default {
       {{ $options.archivedFilterData.headerLabel }}
     </div>
     <gl-form-checkbox
-      class="gl-flex-grow-1 gl-display-inline-flex gl-justify-content-space-between gl-w-full"
+      class="gl-flex-grow-1 gl-inline-flex gl-justify-content-space-between gl-w-full"
       :class="$options.LABEL_DEFAULT_CLASSES"
       :value="true"
     >

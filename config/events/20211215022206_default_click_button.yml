@@ -1,12 +1,9 @@
 description: "Reply comment on design annotations"
 category: default
 action: click_button
-label_description: ""
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
-product_group: ""
+product_group: analytics_instrumentation
 milestone:
 introduced_by_url:
 distributions:

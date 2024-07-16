@@ -172,8 +172,8 @@ export default {
       return {
         'timeline-entry note-form': this.isNewDiscussion,
         // eslint-disable-next-line @gitlab/require-i18n-strings
-        'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix': !this
-          .isNewDiscussion,
+        'note note-wrapper note-comment discussion-reply-holder gl-border-t-0! clearfix':
+          !this.isNewDiscussion,
         'gl-pt-0! is-replying': this.isEditing,
         'internal-note': this.isInternalThread,
       };

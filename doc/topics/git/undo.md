@@ -357,6 +357,42 @@ Experiment locally before you push to the remote repository.
 git rebase -i commit-id
 ```
 
+### Redact text
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Permanently delete sensitive or confidential information that was accidentally committed, ensuring
+it's no longer accessible in your repository's history.
+Replaces a list of strings with `***REMOVED***`.
+
+Alternatively, to completely delete specific files from a repository, see
+[Remove blobs](../../user/project/repository/reducing_the_repo_size_using_git.md#remove-blobs).
+
+Prerequisites:
+
+- You must have the Owner role for the instance.
+
+To redact text from your repository:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > Repository**.
+1. Expand **Repository maintenance**.
+1. Select **Redact text**.
+1. On the drawer, enter the text to redact.
+   You can use regex and glob patterns.
+1. Select **Redact matching strings**.
+1. On the confirmation dialog, enter your project path.
+1. Select **Yes, redact matching strings**.
+1. On the left sidebar, select **Settings > General**.
+1. Expand **Advanced**.
+1. Select **Run housekeeping**.
+
 ### Delete sensitive information from commits
 
 You can use Git to delete sensitive information from your past commits. However,

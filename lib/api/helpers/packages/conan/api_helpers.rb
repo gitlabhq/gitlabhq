@@ -189,10 +189,15 @@ module API
 
           def file_names
             json_payload = Gitlab::Json.parse(request.body.read)
-
-            bad_request!(nil) unless json_payload.is_a?(Hash)
-
             json_payload.keys
+          rescue JSON::ParserError,
+            Encoding::UndefinedConversionError,
+            Encoding::InvalidByteSequenceError,
+            Encoding::CompatibilityError
+            nil
+          rescue StandardError => e
+            Gitlab::ErrorTracking.track_exception(e)
+            bad_request!(nil)
           end
 
           def create_package_file_with_type(file_type, current_package)

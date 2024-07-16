@@ -1,46 +1,29 @@
-- link_classes = "blank-state blank-state-link gl-text-body gl-display-flex gl-align-items-center gl-border-1 gl-border-solid gl-border-gray-100 gl-rounded-base gl-mb-5"
-
-.gl-display-flex.gl-flex-wrap.gl-justify-content-space-between
+.welcome-grid
   = render_if_exists "dashboard/projects/blank_state_extra_info"
 
   - if current_user.can_create_project?
-    = link_to new_project_path, class: link_classes, data: { testid: 'new-project-button' } do
-      .blank-state-icon
-        = custom_icon("add_new_project", size: 50)
-      .blank-state-body.gl-sm-pl-6
-        %h3.gl-font-size-h2.gl-mt-0
-          = _('Create a project')
-        %p
-          = _('Projects are where you store your code, access issues, wiki and other features of GitLab.')
-  - else
-    = render Pajamas::AlertComponent.new(variant: :info, alert_options: { class: 'gl-mb-5 gl-w-full' }) do |c|
-      - c.with_body do
-        = _("You see projects here when you're added to a group or project.").html_safe
+    = render Onboarding::ActionCardComponent.new(title: _('Create a project'),
+      description: _('Projects are where you store your code, access issues, wiki, and other features of GitLab.'),
+      icon: 'project',
+      href: new_project_path,
+      variant: 'default',
+      link_options: { data: { testid: 'new-project-button' }})
+
+  = render Onboarding::ActionCardComponent.new(title: _('Explore public projects'),
+    description: _('Public projects are an easy way to allow everyone to have read-only access.'),
+    icon: 'project',
+    href: trending_explore_projects_path,
+    variant: 'default')
 
   - if current_user.can_create_group?
-    = link_to new_group_path, class: link_classes do
-      .blank-state-icon
-        = custom_icon("add_new_group", size: 50)
-      .blank-state-body.gl-sm-pl-6
-        %h3.gl-font-size-h2.gl-mt-0
-          = _('Create a group')
-        %p
-          = _('Groups are the best way to manage projects and members.')
+    = render Onboarding::ActionCardComponent.new(title: _('Create a group'),
+      description: _('Groups are the best way to manage projects and members.'),
+      icon: 'group',
+      href: new_group_path,
+      variant: 'default')
 
-  = link_to trending_explore_projects_path, class: link_classes do
-    .blank-state-icon
-      = custom_icon("globe", size: 50)
-    .blank-state-body.gl-sm-pl-6
-      %h3.gl-font-size-h2.gl-mt-0
-        = _('Explore public projects')
-      %p
-        = _('Public projects are an easy way to allow everyone to have read-only access.')
-
-  = link_to Gitlab::Saas::doc_url, class: link_classes do
-    .blank-state-icon
-      = custom_icon("lightbulb", size: 50)
-    .blank-state-body.gl-sm-pl-6
-      %h3.gl-font-size-h2.gl-mt-0
-        = _('Learn more about GitLab')
-      %p
-        = _('Take a look at the documentation to discover all of GitLab’s capabilities.')
+  = render Onboarding::ActionCardComponent.new(title: _('Learn more about GitLab'),
+    description: _('Take a look at the documentation to discover all of GitLab’s capabilities.'),
+    icon: 'bulb',
+    href: Gitlab::Saas::doc_url,
+    variant: 'default')

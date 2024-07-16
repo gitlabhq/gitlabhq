@@ -14,7 +14,7 @@ import CommitMessageDropdown from '~/vue_merge_request_widget/components/states/
 import ReadyToMerge from '~/vue_merge_request_widget/components/states/ready_to_merge.vue';
 import SquashBeforeMerge from '~/vue_merge_request_widget/components/states/squash_before_merge.vue';
 import MergeFailedPipelineConfirmationDialog from '~/vue_merge_request_widget/components/states/merge_failed_pipeline_confirmation_dialog.vue';
-import { MWPS_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
+import { MWPS_MERGE_STRATEGY, MWCP_MERGE_STRATEGY } from '~/vue_merge_request_widget/constants';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import readyToMergeSubscription from '~/vue_merge_request_widget/queries/states/ready_to_merge.subscription.graphql';
 
@@ -210,6 +210,13 @@ describe('ReadyToMerge', () => {
 
     it('should return Set to auto-merge in the button and Merge when pipeline succeeds in the helper text', () => {
       createComponent({ mr: { preferredAutoMergeStrategy: MWPS_MERGE_STRATEGY } });
+
+      expect(findMergeButton().text()).toBe('Set to auto-merge');
+      expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');
+    });
+
+    it('should return Set to auto-merge in the button and Merge when checks pass in the helper text', () => {
+      createComponent({ mr: { preferredAutoMergeStrategy: MWCP_MERGE_STRATEGY } });
 
       expect(findMergeButton().text()).toBe('Set to auto-merge');
       expect(findMergeHelperText().text()).toBe('Merge when pipeline succeeds');

@@ -1,0 +1,20 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Work item weight widget options",
+  "type": "object",
+  "properties": {
+    "editable": {
+      "description": "Setting to enable an editable weight value for the work item",
+      "type": "boolean"
+    },
+    "rollup": {
+      "description": "Setting to enable a rolled up weight value from the work item's child items",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "editable",
+    "rollup"
+  ],
+  "additionalProperties": false
+}

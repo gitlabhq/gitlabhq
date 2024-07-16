@@ -11,6 +11,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"google.golang.org/grpc"
 
@@ -29,7 +30,7 @@ type waitReader struct {
 	t time.Duration
 }
 
-func (f *waitReader) Read(b []byte) (int, error) {
+func (f *waitReader) Read(_ []byte) (int, error) {
 	time.Sleep(f.t)
 	return 0, io.EOF
 }
@@ -48,7 +49,7 @@ func TestUploadPackTimesOut(t *testing.T) {
 	defer func() { uploadPackTimeout = originalUploadPackTimeout }()
 
 	addr := startSmartHTTPServer(t, &smartHTTPServiceServer{
-		handler: func(ctx context.Context, req *gitalypb.PostUploadPackWithSidechannelRequest) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
+		handler: func(ctx context.Context, _ *gitalypb.PostUploadPackWithSidechannelRequest) (*gitalypb.PostUploadPackWithSidechannelResponse, error) {
 			conn, err := client.OpenServerSidechannel(ctx)
 			if err != nil {
 				return nil, err
@@ -82,7 +83,7 @@ func startSmartHTTPServer(t testing.TB, s gitalypb.SmartHTTPServiceServer) strin
 	srv := grpc.NewServer(testhelper.WithSidechannel())
 	gitalypb.RegisterSmartHTTPServiceServer(srv, s)
 	go func() {
-		require.NoError(t, srv.Serve(ln))
+		assert.NoError(t, srv.Serve(ln))
 	}()
 
 	t.Cleanup(func() {

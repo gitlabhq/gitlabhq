@@ -138,7 +138,7 @@ export default {
         :show-select-all-button-label="__('Select all')"
         :reset-button-label="__('Deselect all')"
         multiple
-        placement="right"
+        placement="bottom-end"
         @shown="filterListShown"
         @hidden="applyFilters"
         @reset="deselectAll"

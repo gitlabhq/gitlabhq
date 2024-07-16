@@ -1,9 +1,6 @@
 description: "Copy 2FA codes with keyboard shortcut"
 category: default
 action: copy_keyboard_shortcut
-label_description: "Action button name"
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: compliance
@@ -16,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "Action button name"

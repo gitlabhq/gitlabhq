@@ -57,7 +57,9 @@ module PreviewMarkdown
     end.merge(
       requested_path: params[:path],
       ref: params[:ref],
-      allow_comments: false
+      # Disable comments in markdown for IE browsers because comments in IE
+      # could allow script execution.
+      allow_comments: !browser.ie?
     )
   end
 

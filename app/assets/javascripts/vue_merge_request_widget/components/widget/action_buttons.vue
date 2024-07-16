@@ -91,7 +91,7 @@ export default {
       icon="ellipsis_v"
       no-caret
       category="tertiary"
-      placement="right"
+      placement="bottom-end"
       text-sr-only
       size="small"
       toggle-class="gl-p-2!"

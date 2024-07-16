@@ -234,6 +234,19 @@ After the above steps have been completed, the automatic release process execute
 **Never delete a Git tag that has been pushed** as there is a good
 chance that the tag will be used and/or cached by the Go package registry.
 
+### Backporting a critical fix or patch
+
+To backport a critical fix or patch to an earlier version, follow the steps below.
+
+1. Create a new branch from the tag you are backporting the fix to, if it doesn't exist.
+   - For example, if the latest stable tag is `v4` and you are backporting a fix to `v3`, create a new branch called `v3`.
+1. Submit a merge request targeting the branch you just created.
+1. After its approved, merge the merge request into the branch.
+1. Create a new tag for the branch.
+1. If the analyzer has the [automatic release process](#automatic-release-process) enabled, a new version will be released.
+1. If not, you have to follow the [manual release process](#manual-release-process) to release a new version.
+1. NOTE: the release pipeline will override the latest `edge` tag so the most recent release pipeline's `tag edge` job may need to be re-ran to avoid a regression for that tag.
+
 ## Development of new analyzers
 
 We occasionally need to build out new analyzer projects to support new frameworks and tools.

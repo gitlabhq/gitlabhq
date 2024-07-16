@@ -70,12 +70,18 @@ export default {
     onChange(event) {
       this.items.forEach((item) => {
         const id = item[this.idProperty];
-        this.$set(this.selectedReferences, id, event);
+        this.selectedReferences = {
+          ...this.selectedReferences,
+          [id]: event,
+        };
       });
     },
     selectItem(item) {
       const id = item[this.idProperty];
-      this.$set(this.selectedReferences, id, !this.selectedReferences[id]);
+      this.selectedReferences = {
+        ...this.selectedReferences,
+        [id]: !this.selectedReferences[id],
+      };
     },
     isSelected(item) {
       const id = item[this.idProperty];

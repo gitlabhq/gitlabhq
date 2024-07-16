@@ -2,12 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifacts::ExpireArtifactsWorker, feature_category: :build_artifacts do
+RSpec.describe Ci::PipelineArtifacts::ExpireArtifactsWorker, feature_category: :job_artifacts do
   let(:worker) { described_class.new }
 
   describe '#perform' do
     let_it_be(:pipeline_artifact) do
-      create(:ci_pipeline_artifact, :with_coverage_report, :unlocked, expire_at: 1.week.ago)
+      create(:ci_pipeline_artifact, :with_coverage_report, :artifact_unlocked, expire_at: 1.week.ago)
     end
 
     it 'executes a service' do

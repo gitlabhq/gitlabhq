@@ -1,6 +1,7 @@
+import { builders } from 'prosemirror-test-builder';
 import Bold from '~/content_editor/extensions/bold';
 import Code from '~/content_editor/extensions/code';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/extensions/code', () => {
   let tiptapEditor;
@@ -12,15 +13,7 @@ describe('content_editor/extensions/code', () => {
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [Bold, Code] });
 
-    ({
-      builders: { doc, p, bold, code },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        bold: { markType: Bold.name },
-        code: { markType: Code.name },
-      },
-    }));
+    ({ doc, paragraph: p, bold, code } = builders(tiptapEditor.schema));
   });
 
   it.each`

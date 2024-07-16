@@ -46,7 +46,7 @@ npmScopes:
 
 In this configuration:
 
-- Replace `<my-org>` with your organization scope, exclude the `@` symbol.
+- Replace `<my-org>` with your organization scope, excluding the `@` symbol.
 - Replace `<your_domain>` with your domain name.
 - Replace `<your_project_id>` with your project's ID, which you can find on the [project overview page](../../project/working_with_projects.md#access-a-project-by-using-the-project-id).
 - Replace `<your_token>` with a deployment token, group access token, project access token, or personal access token.
@@ -105,11 +105,13 @@ in your package project root directory where `package.json` is found:
 
 ```yaml
 npmScopes:
-  esp-code:
+  <my-org>:
     npmPublishRegistry: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
     npmAlwaysAuth: true
     npmAuthToken: "${NPM_AUTH_TOKEN}"
 ```
+
+In this configuration, replace `<my-org>` with your organization scope, excluding the `@` symbol.
 
 #### Private runners
 
@@ -118,14 +120,16 @@ root directory where `package.json` is found:
 
 ```yaml
 npmScopes:
-  esp-code:
+  <my-org>:
     npmPublishRegistry: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/"
     npmAlwaysAuth: true
     npmAuthToken: "${CI_JOB_TOKEN}"
 ```
 
+In this configuration, replace `<my-org>` with your organization scope, excluding the `@` symbol.
+
 To publish the package using CI/CD pipeline, In the GitLab project that houses
-your `yarnrc.yml`, edit or create a `.gitlab-ci.yml` file. For example to trigger
+your `.yarnrc.yml`, edit or create a `.gitlab-ci.yml` file. For example to trigger
 only on any tag push:
 
 ```yaml
@@ -322,4 +326,25 @@ In this case, the following commands creates a file called `.yarnrc` in the curr
 ```shell
 yarn config set '//gitlab.example.com/api/v4/projects/<your_project_id>/packages/npm/:_authToken' "<your_token>"
 yarn config set '//gitlab.example.com/api/v4/packages/npm/:_authToken' "<your_token>"
+```
+
+### `yarn install` fails to clone repository as a dependency
+
+If you use `yarn install` from a Dockerfile, when you build the Dockerfile you might get an error like this:
+
+```log
+...
+#6 8.621 fatal: unable to access 'https://gitlab.com/path/to/project/': Problem with the SSL CA cert (path? access rights?)
+#6 8.621 info Visit https://yarnpkg.com/en/docs/cli/install for documentation about this command.
+#6 ...
+```
+
+To resolve this issue, [add an exclamation mark (`!`)](https://docs.docker.com/build/building/context/#negating-matches) to every Yarn-related path in your [.dockerignore](https://docs.docker.com/build/building/context/#dockerignore-files) file.
+
+```dockerfile
+**
+
+!./package.json
+!./yarn.lock
+...
 ```

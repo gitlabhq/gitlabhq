@@ -130,10 +130,14 @@ class JiraConnect::AppDescriptorController < JiraConnect::ApplicationController
     full_path.sub(/^#{jira_connect_base_path}/, '')
   end
 
+  def create_branch_params
+    "?issue_key={issue.key}&issue_summary={issue.summary}&jwt={jwt}&addonkey=#{Atlassian::JiraConnect.app_key}"
+  end
+
   def actions
     {
       createBranch: {
-        templateUrl: "#{new_jira_connect_branch_url}?issue_key={issue.key}&issue_summary={issue.summary}"
+        templateUrl: "#{route_jira_connect_branches_url}#{create_branch_params}"
       },
       searchConnectedWorkspaces: {
         templateUrl: search_jira_connect_workspaces_url

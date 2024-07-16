@@ -80,7 +80,7 @@ describe('IssuableHeader component', () => {
       it('renders when statusIcon prop exists', () => {
         createComponent({ statusIcon: 'issues' });
 
-        expect(findStatusBadge().findComponent(GlIcon).props('name')).toBe('issues');
+        expect(findStatusBadge().props('icon')).toBe('issues');
       });
 
       it('does not render when statusIcon prop does not exist', () => {

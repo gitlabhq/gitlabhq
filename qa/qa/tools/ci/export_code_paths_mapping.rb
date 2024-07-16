@@ -24,13 +24,17 @@ module QA
         # @return [void]
         def export
           mapping_files = Dir.glob(mapping_files_glob)
-          return logger.warn("No files matched pattern") if mapping_files.empty?
+          return logger.warn("No files matched pattern, skipping coverage mapping upload") if mapping_files.empty?
+
+          unless ENV["QA_RUN_TYPE"].present?
+            return logger.warn("QA_RUN_TYPE variable is not set, skipping coverage mapping upload")
+          end
 
           logger.info("Number of mapping files found: #{mapping_files.size}")
 
           mapping_data = mapping_files.flat_map { |file| JSON.parse(File.read(file)) }.reduce(:merge!)
-          file = "test-code-paths-mapping-merged-pipeline-#{ENV['CI_PIPELINE_ID'] || 'local'}.json"
-          File.write(file, mapping_data.to_json) && logger.debug("Saved test code paths mapping to #{file}")
+          file = "#{ENV['CI_COMMIT_REF_SLUG']}/#{ENV['QA_RUN_TYPE']}/test-code-paths-mapping-merged-pipeline-#{\
+          ENV['CI_PIPELINE_ID'] || 'local'}.json"
           upload_to_gcs(file, mapping_data)
         end
 
@@ -42,6 +46,7 @@ module QA
           client.put_object(BUCKET, file_name, JSON.pretty_generate(mapping_data))
         rescue StandardError => e
           logger.error("Failed to upload code paths mapping to GCS. Error: #{e}")
+          logger.error("Backtrace: #{e.backtrace}")
         end
 
         # GCS client

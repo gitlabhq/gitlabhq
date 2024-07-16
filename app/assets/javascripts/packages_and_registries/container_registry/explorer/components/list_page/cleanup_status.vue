@@ -78,12 +78,8 @@ export default {
 </script>
 
 <template>
-  <div
-    v-if="showStatus"
-    id="status-popover-container"
-    class="gl-display-inline-flex gl-align-items-center"
-  >
-    <div class="gl-display-inline-flex gl-align-items-center">
+  <div v-if="showStatus" id="status-popover-container" class="gl-inline-flex gl-align-items-center">
+    <div class="gl-inline-flex gl-align-items-center">
       <gl-icon :name="expireIconName" data-testid="main-icon" />
     </div>
     <span class="gl-mx-2">

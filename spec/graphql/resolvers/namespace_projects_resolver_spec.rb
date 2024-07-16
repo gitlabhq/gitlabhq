@@ -92,8 +92,8 @@ RSpec.describe Resolvers::NamespaceProjectsResolver, feature_category: :groups_a
         context 'when `search` parameter is not given' do
           let(:args) { default_args.merge(sort: :similarity, search: nil) }
 
-          it 'returns projects not ordered by similarity' do
-            expect(project_names.first).not_to eq('Test')
+          it 'returns all projects' do
+            is_expected.to match_array(group_namespaced_projects)
           end
         end
 

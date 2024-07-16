@@ -53,7 +53,7 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
     end
 
     context 'with project' do
-      subject { described_class.new(user, params, project: project).execute }
+      let(:finder) { described_class.new(user, params, project: project) }
 
       it { is_expected.to match_array([conan_package2, conan_package]) }
 
@@ -61,6 +61,34 @@ RSpec.describe ::Packages::Conan::PackageFinder, feature_category: :package_regi
         stub_const("#{described_class}::MAX_PACKAGES_COUNT", 1)
 
         expect(subject).to match_array([conan_package2])
+      end
+
+      context 'with version' do
+        let_it_be(:conan_package3) do
+          create(:conan_package, project: project, name: conan_package.name, version: '1.2.3')
+        end
+
+        let(:query) { "#{conan_package.name}/#{conan_package3.version}" }
+
+        it 'matches the correct package' do
+          expect(subject).to match_array([conan_package3])
+        end
+      end
+
+      context 'with nil query' do
+        let(:query) { nil }
+
+        it 'returns an empty array' do
+          expect(subject).to match_array([])
+        end
+      end
+
+      context 'without name' do
+        let(:query) { "/1.0.0" }
+
+        it 'returns an empty array' do
+          expect(subject).to match_array([])
+        end
       end
 
       context 'with a different project' do

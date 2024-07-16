@@ -33,10 +33,16 @@ module JSONWebToken
     end
 
     def payload
-      @custom_payload.merge(default_payload)
+      predefined_claims
+        .merge(@custom_payload)
+        .merge(default_payload)
     end
 
     private
+
+    def predefined_claims
+      {}
+    end
 
     def default_payload
       {

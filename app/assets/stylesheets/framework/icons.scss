@@ -47,6 +47,7 @@
   // - app/assets/javascripts/vue_shared/components/ci_icon/ci_icon.vue
   // - app/helpers/ci/status_helper.rb
   .ci-icon-gl-icon-wrapper {
+    display: inline-block;
     border-radius: $gl-border-radius-full;
     line-height: 0;
   }

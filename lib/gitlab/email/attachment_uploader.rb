@@ -9,7 +9,7 @@ module Gitlab
         @message = message
       end
 
-      def execute(upload_parent:, uploader_class:)
+      def execute(upload_parent:, uploader_class:, author: nil)
         attachments = []
 
         filter_signature_attachments(message).each do |attachment|
@@ -25,7 +25,12 @@ module Gitlab
               content_type: attachment.content_type
             }
 
-            uploader = UploadService.new(upload_parent, file, uploader_class).execute
+            uploader = UploadService.new(
+              upload_parent,
+              file,
+              uploader_class,
+              uploaded_by_user_id: author&.id
+            ).execute
             attachments << uploader.to_h if uploader
           ensure
             tmp.close!

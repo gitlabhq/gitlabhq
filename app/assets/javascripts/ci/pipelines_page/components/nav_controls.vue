@@ -7,11 +7,6 @@ export default {
     GlButton,
   },
   props: {
-    ciLintPath: {
-      type: String,
-      required: false,
-      default: null,
-    },
     isResetCacheButtonLoading: {
       type: Boolean,
       required: false,
@@ -45,10 +40,6 @@ export default {
       @click="onClickResetCache"
     >
       {{ s__('Pipelines|Clear runner caches') }}
-    </gl-button>
-
-    <gl-button v-if="ciLintPath" :href="ciLintPath" class="js-ci-lint" data-testid="ci-lint-button">
-      {{ s__('Pipelines|CI lint') }}
     </gl-button>
 
     <gl-button

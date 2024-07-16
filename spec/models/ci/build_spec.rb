@@ -75,7 +75,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
   describe 'associations' do
-    it { is_expected.to belong_to(:project_mirror) }
+    it { is_expected.to belong_to(:project_mirror).with_foreign_key('project_id') }
 
     it 'has a bidirectional relationship with projects' do
       expect(described_class.reflect_on_association(:project).has_inverse?).to eq(:builds)
@@ -3192,7 +3192,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       let(:build) do
         FactoryBot.build(:ci_build,
           name: 'rspec',
-          stage: 'test',
+          ci_stage: pipeline.stages.first,
           ref: 'feature',
           project: project,
           pipeline: pipeline
@@ -5687,6 +5687,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
   describe '#clone' do
     let_it_be(:user) { create(:user) }
+
+    context 'when build execution config is given' do
+      let(:build_execution_config) { create(:ci_builds_execution_configs, pipeline: pipeline) }
+
+      it 'clones the config id' do
+        build = create(:ci_build, pipeline: pipeline, execution_config: build_execution_config)
+
+        new_build = build.clone(current_user: user)
+        new_build.save!
+
+        expect(new_build.execution_config_id).to eq(build_execution_config.id)
+      end
+    end
 
     context 'when given new job variables' do
       context 'when the cloned build has an action' do

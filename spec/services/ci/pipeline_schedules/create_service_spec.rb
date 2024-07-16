@@ -13,6 +13,8 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
   describe "execute" do
     before_all do
       repository.add_branch(project.creator, 'patch-x', 'master')
+      repository.add_branch(project.creator, 'ambiguous', 'master')
+      repository.add_tag(project.creator, 'ambiguous', 'master')
     end
 
     context 'when user does not have permission' do
@@ -31,10 +33,11 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
     end
 
     context 'when user has permission' do
+      let(:ref) { 'patch-x' }
       let(:params) do
         {
           description: 'desc',
-          ref: 'patch-x',
+          ref: ref,
           active: false,
           cron: '*/1 * * * *',
           cron_timezone: 'UTC'
@@ -60,6 +63,19 @@ RSpec.describe Ci::PipelineSchedules::CreateService, feature_category: :continuo
 
         expect(result).to be_a(ServiceResponse)
         expect(result.success?).to be(true)
+      end
+
+      context 'when the ref is ambiguous' do
+        let(:ref) { 'ambiguous' }
+
+        it 'returns ambiguous ref error' do
+          result = service.execute
+
+          expect(result).to be_a(ServiceResponse)
+          expect(result.error?).to be(true)
+          expect(result.message).to match_array(['Ref is ambiguous'])
+          expect(result.payload.errors.full_messages).to match_array(['Ref is ambiguous'])
+        end
       end
 
       context 'when schedule save fails' do

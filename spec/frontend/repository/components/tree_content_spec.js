@@ -82,9 +82,8 @@ describe('Repository table component', () => {
       await nextTick();
       await waitForPromises();
 
-      const [
-        paginatedTreeNode,
-      ] = paginatedTreeResponseFactory().data.project.repository.paginatedTree.nodes;
+      const [paginatedTreeNode] =
+        paginatedTreeResponseFactory().data.project.repository.paginatedTree.nodes;
 
       const {
         blobs: { nodes: blobs },

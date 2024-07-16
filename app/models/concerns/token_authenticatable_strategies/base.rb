@@ -2,7 +2,7 @@
 
 module TokenAuthenticatableStrategies
   class Base
-    attr_reader :klass, :token_field, :options
+    attr_reader :klass, :token_field, :expires_at_field, :options
 
     def initialize(klass, token_field, options)
       @klass = klass
@@ -29,6 +29,11 @@ module TokenAuthenticatableStrategies
       result << @expires_at_field if expirable?
 
       result
+    end
+
+    # The expires_at field is not considered sensitive
+    def sensitive_fields
+      token_fields - [@expires_at_field]
     end
 
     # If a `format_with_prefix` option is provided, it applies and returns the formatted token.

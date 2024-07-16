@@ -1,12 +1,9 @@
 description: "Show \"What's new\" drawer"
 category: default
 action: click_whats_new_drawer
-label_description: "`namespace_id`"
-property_description: "ID of namespace"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::adoption
+product_group: activation
 milestone: "13.5"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/42653
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`namespace_id`"
+  property:
+    description: "ID of namespace"

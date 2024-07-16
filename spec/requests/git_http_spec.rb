@@ -234,12 +234,6 @@ RSpec.describe 'Git HTTP requests', feature_category: :source_code_management do
           end
 
           it 'creates a new project under the existing namespace' do
-            # current scenario does not matter with the user activity case,
-            # so stub/double it to escape more sql running times limit
-            activity_service = instance_double(::Users::ActivityService)
-            allow(::Users::ActivityService).to receive(:new).and_return(activity_service)
-            allow(activity_service).to receive(:execute)
-
             expect do
               upload(path, user: user.username, password: user.password) do |response|
                 expect(response).to have_gitlab_http_status(:ok)

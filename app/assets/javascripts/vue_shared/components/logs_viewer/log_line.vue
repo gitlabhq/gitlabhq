@@ -50,7 +50,7 @@ export default {
     return h(
       'div',
       {
-        class: ['gl-text-white', 'gl-pl-8', { 'gl-bg-gray-700': isHighlighted }],
+        class: ['gl-text-white', 'gl-pl-9', { 'gl-bg-gray-700': isHighlighted }],
       },
       [
         h(LineNumber, {

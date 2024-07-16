@@ -112,9 +112,7 @@ export default {
         :class="{ 'gl-rotate-90': isAssetsExpanded }"
       />
       {{ __('Assets') }}
-      <gl-badge size="sm" variant="neutral" class="gl-display-inline-block">{{
-        assets.count
-      }}</gl-badge>
+      <gl-badge variant="neutral" class="gl-display-inline-block">{{ assets.count }}</gl-badge>
     </gl-button>
     <gl-collapse v-model="isAssetsExpanded">
       <div class="gl-pl-6 gl-pt-3 js-assets-list">

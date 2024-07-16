@@ -109,7 +109,7 @@ export default {
   <dom-element-listener :selector="$options.FORM_SELECTOR" @[$options.EVENT_SUCCESS]="onSuccess">
     <div>
       <div
-        class="gl-new-card-body gl-px-0 gl-overflow-hidden gl-bg-gray-10 gl-border-l gl-border-r gl-border-b gl-rounded-bottom-base gl-mb-5 gl-md-mb-0"
+        class="gl-new-card-body gl-px-0 gl-overflow-x-auto gl-bg-gray-10 gl-border-l gl-border-r gl-border-b gl-rounded-bottom-base gl-mb-5 gl-md-mb-0"
       >
         <gl-table
           data-testid="active-tokens"

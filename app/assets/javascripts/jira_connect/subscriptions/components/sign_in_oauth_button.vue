@@ -168,10 +168,8 @@ export default {
       this.$emit('error');
     },
     async getOAuthToken(code) {
-      const {
-        oauth_token_payload: oauthTokenPayload,
-        oauth_token_path: oauthTokenPath,
-      } = this.oauthMetadata;
+      const { oauth_token_payload: oauthTokenPayload, oauth_token_path: oauthTokenPath } =
+        this.oauthMetadata;
       const { data } = await fetchOAuthToken(oauthTokenPath, {
         ...oauthTokenPayload,
         code,

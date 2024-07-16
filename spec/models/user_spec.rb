@@ -98,6 +98,12 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:achievements_enabled).to(:user_preference) }
     it { is_expected.to delegate_method(:achievements_enabled=).to(:user_preference).with_arguments(:args) }
 
+    it { is_expected.to delegate_method(:organization_groups_projects_sort).to(:user_preference) }
+    it { is_expected.to delegate_method(:organization_groups_projects_sort=).to(:user_preference).with_arguments(:args) }
+
+    it { is_expected.to delegate_method(:organization_groups_projects_display).to(:user_preference) }
+    it { is_expected.to delegate_method(:organization_groups_projects_display=).to(:user_preference).with_arguments(:args) }
+
     it { is_expected.to delegate_method(:home_organization).to(:user_preference) }
     it { is_expected.to delegate_method(:home_organization_id).to(:user_preference) }
     it { is_expected.to delegate_method(:home_organization_id=).to(:user_preference).with_arguments(:args) }
@@ -149,6 +155,7 @@ RSpec.describe User, feature_category: :user_profile do
   end
 
   describe 'associations' do
+    it { is_expected.to belong_to(:created_by).class_name('User').optional }
     it { is_expected.to have_one(:namespace) }
     it { is_expected.to have_one(:status) }
     it { is_expected.to have_one(:user_detail) }
@@ -184,7 +191,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:abuse_reports).dependent(:nullify).inverse_of(:user) }
     it { is_expected.to have_many(:reported_abuse_reports).dependent(:nullify).class_name('AbuseReport').inverse_of(:reporter) }
     it { is_expected.to have_many(:resolved_abuse_reports).class_name('AbuseReport').inverse_of(:resolved_by) }
-    it { is_expected.to have_many(:abuse_events).class_name('Abuse::Event').inverse_of(:user) }
+    it { is_expected.to have_many(:abuse_events).class_name('AntiAbuse::Event').inverse_of(:user) }
     it { is_expected.to have_many(:custom_attributes).class_name('UserCustomAttribute') }
     it { is_expected.to have_many(:releases).dependent(:nullify) }
     it { is_expected.to have_many(:reviews).inverse_of(:author) }
@@ -204,7 +211,7 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to have_many(:achievements).through(:user_achievements).class_name('Achievements::Achievement').inverse_of(:users) }
     it { is_expected.to have_many(:namespace_commit_emails).class_name('Users::NamespaceCommitEmail') }
     it { is_expected.to have_many(:audit_events).with_foreign_key(:author_id).inverse_of(:user) }
-    it { is_expected.to have_many(:abuse_trust_scores).class_name('Abuse::TrustScore') }
+    it { is_expected.to have_many(:abuse_trust_scores).class_name('AntiAbuse::TrustScore') }
     it { is_expected.to have_many(:issue_assignment_events).class_name('ResourceEvents::IssueAssignmentEvent') }
     it { is_expected.to have_many(:merge_request_assignment_events).class_name('ResourceEvents::MergeRequestAssignmentEvent') }
     it { is_expected.to have_many(:admin_abuse_report_assignees).class_name('Admin::AbuseReportAssignee') }
@@ -4899,16 +4906,6 @@ RSpec.describe User, feature_category: :user_profile do
 
     it { is_expected.to contain_exactly private_group, child_group, project_group }
 
-    context 'when include_subgroups_in_authorized_groups is disabled' do
-      before do
-        stub_feature_flags(include_subgroups_in_authorized_groups: false)
-      end
-
-      it 'omits subgroups with inherited membership' do
-        is_expected.to contain_exactly private_group, project_group
-      end
-    end
-
     context 'with shared memberships' do
       let_it_be(:shared_group) { create(:group) }
       let_it_be(:other_group) { create(:group) }
@@ -6613,8 +6610,8 @@ RSpec.describe User, feature_category: :user_profile do
 
       context 'when the user is a spammer' do
         before do
-          user_scores = Abuse::UserTrustScore.new(user)
-          allow(Abuse::UserTrustScore).to receive(:new).and_return(user_scores)
+          user_scores = AntiAbuse::UserTrustScore.new(user)
+          allow(AntiAbuse::UserTrustScore).to receive(:new).and_return(user_scores)
           allow(user_scores).to receive(:spammer?).and_return(true)
         end
 
@@ -6971,7 +6968,7 @@ RSpec.describe User, feature_category: :user_profile do
       end
 
       context "with bot users" do
-        %i[project_bot service_account security_policy_bot].each do |user_type|
+        %i[project_bot service_account security_policy_bot import_user].each do |user_type|
           context "when user is #{user_type}" do
             let(:user) { build(:user, user_type) }
 
@@ -8131,6 +8128,14 @@ RSpec.describe User, feature_category: :user_profile do
     context 'when user is a security_policy bot user' do
       before do
         user.update!(user_type: 'security_policy_bot')
+      end
+
+      it_behaves_like 'does not require password to be present'
+    end
+
+    context 'when user is an import user' do
+      before do
+        user.update!(user_type: 'import_user')
       end
 
       it_behaves_like 'does not require password to be present'

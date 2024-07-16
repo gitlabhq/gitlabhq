@@ -272,7 +272,11 @@ export default {
 </script>
 
 <template>
-  <nav :aria-label="__('Files breadcrumb')">
+  <nav
+    :aria-label="__('Files breadcrumb')"
+    :data-current-path="currentPath"
+    class="js-repo-breadcrumbs"
+  >
     <ol class="breadcrumb repo-breadcrumb">
       <li v-for="(link, i) in pathLinks" :key="i" class="breadcrumb-item">
         <router-link :to="link.to" :aria-current="isLast(i) ? 'page' : null">

@@ -1,9 +1,6 @@
 description: "Execute input rule"
 category: default
 action: execute_input_rule
-label_description: "`content_editor`"
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ide
@@ -16,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`content_editor`"

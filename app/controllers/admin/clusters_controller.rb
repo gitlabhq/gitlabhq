@@ -2,6 +2,7 @@
 
 class Admin::ClustersController < ::Clusters::ClustersController
   include EnforcesAdminAuthentication
+
   before_action :ensure_feature_enabled!
 
   layout 'admin'

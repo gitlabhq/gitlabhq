@@ -116,7 +116,7 @@ export default {
           <label v-gl-tooltip class="label-bold str-truncated mb-0" :title="item.name">{{
             item.name
           }}</label>
-          <gl-badge size="sm">{{ badgeKindText(item) }}</gl-badge>
+          <gl-badge>{{ badgeKindText(item) }}</gl-badge>
         </template>
 
         <template #cell(badge)="{ item }">

@@ -38,8 +38,8 @@ class Projects::PipelinesController < Projects::ApplicationController
   track_internal_event :charts, name: 'p_analytics_ci_cd_pipelines', conditions: -> { should_track_ci_cd_pipelines? }
   track_internal_event :charts, name: 'p_analytics_ci_cd_deployment_frequency', conditions: -> { should_track_ci_cd_deployment_frequency? }
   track_internal_event :charts, name: 'p_analytics_ci_cd_lead_time', conditions: -> { should_track_ci_cd_lead_time? }
-  track_event :charts, name: 'p_analytics_ci_cd_time_to_restore_service', conditions: -> { should_track_ci_cd_time_to_restore_service? }
-  track_event :charts, name: 'p_analytics_ci_cd_change_failure_rate', conditions: -> { should_track_ci_cd_change_failure_rate? }
+  track_internal_event :charts, name: 'visit_ci_cd_time_to_restore_service_tab', conditions: -> { should_track_visit_ci_cd_time_to_restore_service_tab? }
+  track_internal_event :charts, name: 'visit_ci_cd_failure_rate_tab', conditions: -> { should_track_visit_ci_cd_change_failure_tab? }
 
   wrap_parameters Ci::Pipeline
 
@@ -52,7 +52,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   ]
   feature_category :pipeline_composition, [:create]
   feature_category :code_testing, [:test_report]
-  feature_category :build_artifacts, [:downloadable_artifacts]
+  feature_category :job_artifacts, [:downloadable_artifacts]
 
   def index
     @pipelines = Ci::PipelinesFinder
@@ -357,11 +357,11 @@ class Projects::PipelinesController < Projects::ApplicationController
     params[:chart] == 'lead-time'
   end
 
-  def should_track_ci_cd_time_to_restore_service?
+  def should_track_visit_ci_cd_time_to_restore_service_tab?
     params[:chart] == 'time-to-restore-service'
   end
 
-  def should_track_ci_cd_change_failure_rate?
+  def should_track_visit_ci_cd_change_failure_tab?
     params[:chart] == 'change-failure-rate'
   end
 

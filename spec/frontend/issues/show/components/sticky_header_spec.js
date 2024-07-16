@@ -1,4 +1,4 @@
-import { GlIcon, GlLink } from '@gitlab/ui';
+import { GlBadge, GlLink } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import HiddenBadge from '~/issuable/components/hidden_badge.vue';
 import LockedBadge from '~/issuable/components/locked_badge.vue';
@@ -49,7 +49,7 @@ describe('StickyHeader component', () => {
     ({ issuableType, issuableStatus, statusIcon }) => {
       createComponent({ issuableType, issuableStatus });
 
-      expect(wrapper.findComponent(GlIcon).props('name')).toBe(statusIcon);
+      expect(wrapper.findComponent(GlBadge).props('icon')).toBe(statusIcon);
     },
   );
 

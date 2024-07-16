@@ -12,7 +12,7 @@ module QA
       end
 
       it(
-        'shows group runner online count',
+        'shows group runner online count', :blocking,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/421255'
       ) do
         Flow::Login.sign_in

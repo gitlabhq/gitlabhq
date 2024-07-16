@@ -298,6 +298,17 @@ my_issue = create(:issue, title: 'My Issue', project: my_project, weight: 2)
 my_iteration = create(:iteration, :with_title, :current, title: 'My Iteration', group: my_group)
 ```
 
+#### Relate an issue to another Issue
+
+```ruby
+create(:project, name: 'My project', namespace: @group, creator: @owner) do |project|
+  issue_1 = create(:issue, project:, title: 'Issue 1', description: 'This is issue 1')
+  issue_2 = create(:issue, project:, title: 'Issue 2', description: 'This is issue 2')
+
+  create(:issue_link, source: issue_1, target: issue_2)
+end
+```
+
 ### Frequently encountered issues
 
 #### Username or email has already been taken

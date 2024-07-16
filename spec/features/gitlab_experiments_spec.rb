@@ -29,7 +29,7 @@ RSpec.describe "Gitlab::Experiment", :js, feature_category: :activation do
 
       visit admin_abuse_reports_path
 
-      expect(page).to have_content('Abuse Reports')
+      expect(page).to have_content('Abuse reports')
 
       published_experiments = page.evaluate_script('window.gl.experiments')
       expect(published_experiments).to include({

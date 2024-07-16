@@ -90,6 +90,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
         mlflowTrackingUrl: 'path/to/tracking',
         canWriteModelRegistry,
         maxAllowedFileSize: 99999,
+        latestVersion: '',
       },
       stubs: { GlTab, DeleteModel, LoadOrErrorOrShow },
     });
@@ -119,10 +120,6 @@ describe('ml/model_registry/apps/show_ml_model', () => {
 
     it('title is set to model name', () => {
       expect(findTitleArea().props('title')).toBe('MyModel');
-    });
-
-    it('subheader is set to description', () => {
-      expect(findTitleArea().text()).toContain(model.description);
     });
 
     it('sets version metadata item to version count', () => {
@@ -172,7 +169,7 @@ describe('ml/model_registry/apps/show_ml_model', () => {
     beforeEach(() => createWrapper());
 
     it('has a details tab', () => {
-      expect(findDetailTab().attributes('title')).toBe('Details');
+      expect(findDetailTab().attributes('title')).toBe('Model card');
     });
 
     it('shows the number of versions in the tab', () => {

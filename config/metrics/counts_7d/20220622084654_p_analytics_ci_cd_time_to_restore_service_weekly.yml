@@ -7,9 +7,8 @@ status: active
 milestone: "15.2"
 introduced_by_url:
 time_frame: 7d
-data_source: redis_hll
+data_source: internal_events
 data_category: operational
-instrumentation_class: RedisHLLMetric
 performance_indicator_type: []
 distribution:
 - ce
@@ -17,6 +16,6 @@ distribution:
 tier:
 - premium
 - ultimate
-options:
-  events:
-    - p_analytics_ci_cd_time_to_restore_service
+events:
+  - name: visit_ci_cd_time_to_restore_service_tab
+    unique: user.id

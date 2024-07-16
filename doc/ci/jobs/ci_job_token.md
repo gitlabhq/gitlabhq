@@ -88,6 +88,7 @@ with a job token from any project. These resources can also be [limited to only 
 > - [Feature flag removed](https://gitlab.com/gitlab-org/gitlab/-/issues/346298/) in GitLab 15.10.
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
 > - Adding groups to the job token allowlist [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.0.
+> - **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 You can add groups or projects to your job token allowlist to allow access your project's resources
 with a job token for authentication. By default, the allowlist of any project only includes itself.
@@ -112,7 +113,7 @@ To add a group or project to the allowlist:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
+1. Expand **Job token permissions**.
 1. Ensure the **Limit access _to_ this project** toggle is enabled. Enabled by default in new projects.
    It is a security risk to disable this feature, so project maintainers or owners should
    keep this setting enabled at all times.
@@ -151,6 +152,7 @@ To set a feature to be only visible to project members:
 ### Allow any project to access your project
 
 > - **Allow access to this project with a CI_JOB_TOKEN** setting [renamed to **Limit access _to_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 WARNING:
 It is a security risk to disable the token access limit and allowlist. A malicious user could try to compromise
@@ -172,13 +174,15 @@ To disable the job token scope allowlist:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
+1. Expand **Job token permissions**.
 1. Toggle **Limit access _to_ this project** to disabled.
    Enabled by default in new projects.
 
 You can also enable and disable the setting with the [GraphQL](../../api/graphql/reference/index.md#mutationprojectcicdsettingsupdate) (`inboundJobTokenScopeEnabled`) and [REST](../../api/project_job_token_scopes.md#patch-a-projects-cicd-job-token-access-settings) API.
 
-## Use a job token to clone a private project's repository
+## Use a job token
+
+### To `git clone` a private project's repository
 
 You can use the job token to authenticate and clone a repository from a private project
 in a CI/CD job. For example:
@@ -189,6 +193,20 @@ git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.example.com/<namespace>
 
 You can use this job token to clone a repository even if the HTTPS protocol is [disabled by group, project, or instance settings](../../administration/settings/visibility_and_access_controls.md#configure-enabled-git-access-protocols). You cannot use a job token to push to a repository, but [issue 389060](https://gitlab.com/gitlab-org/gitlab/-/issues/389060)
 proposes to change this behavior.
+
+### To authenticate a REST API request
+
+You can use a job token to authenticate requests for allowed REST API endpoints. For example:
+
+```shell
+curl --verbose --request POST --form "token=$CI_JOB_TOKEN" --form ref=master "https://gitlab.com/api/v4/projects/1234/trigger/pipeline"
+```
+
+Additionally, there are multiple valid methods for passing the job token in the request:
+
+- `--form "token=$CI_JOB_TOKEN"`
+- `--header "JOB-TOKEN: $CI_JOB_TOKEN"`
+- `--data "job_token=$CI_JOB_TOKEN"`
 
 ## Limit your project's job token access (deprecated)
 
@@ -214,6 +232,7 @@ to make an API request to project `B`, then `B` must be added to the allowlist f
 ### Configure the job token scope (deprecated)
 
 > - **Limit CI_JOB_TOKEN access** setting [renamed to **Limit access _from_ this project**](https://gitlab.com/gitlab-org/gitlab/-/issues/411406) in GitLab 16.3.
+> - **Token Access** setting [renamed to **Job token permissions**](https://gitlab.com/gitlab-org/gitlab/-/issues/415519) in GitLab 17.2.
 
 Prerequisites:
 
@@ -223,7 +242,7 @@ To configure the job token scope:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
-1. Expand **Token Access**.
+1. Expand **Job token permissions**.
 1. Toggle **Limit access _from_ this project** to enabled.
 1. Optional. Add existing projects to the token's access scope. The user adding a
    project must have the Maintainer role in both projects.
@@ -276,3 +295,31 @@ While troubleshooting CI/CD job token authentication issues, be aware that:
   - To remove project access.
 - The CI job token becomes invalid if the job is no longer running, has been erased,
   or if the project is in the process of being deleted.
+
+### Push to a project repository using a job token
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/389060) in GitLab 17.2. [with a flag](../../administration/feature_flags.md) named `allow_push_repository_for_job_token`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+WARNING:
+Pushing via job token is still in development and is not yet optimized for performance.
+If you enable this feature for testing, you must thoroughly test and implement validation measures
+to prevent infinite loops of "push" pipelines triggering more pipelines.
+
+By default, the ability to Git push to a project repository by authenticating with a job token is disabled.
+
+To grant permission to job tokens generated in your project to push to the project's repository:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > CI/CD**.
+1. Expand **Token Access**.
+1. In the **Permissions** section, select **Allow Git push requests to the repository**.
+
+The job token has the same access permissions as the user that started the job.
+
+You can also control this setting with the [`ci_push_repository_for_job_token_allowed`](../../api/projects.md#edit-project)
+parameter in the `projects` REST API endpoint.

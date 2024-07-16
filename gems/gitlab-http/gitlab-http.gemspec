@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "net-http", "= 0.4.1"
 
   spec.add_development_dependency 'gitlab-styles', '~> 10.1.0'
+  spec.add_development_dependency 'rspec-parameterized', '~> 1.0.2'
   spec.add_development_dependency 'rspec-rails', '~> 6.0.3'
   spec.add_development_dependency "rubocop", "~> 1.50.2"
   spec.add_development_dependency "rubocop-rspec", "~> 2.22"

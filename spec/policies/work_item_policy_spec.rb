@@ -151,31 +151,28 @@ RSpec.describe WorkItemPolicy, feature_category: :team_planning do
   end
 
   describe 'admin_parent_link' do
+    context 'when user is not a member of the project' do
+      let(:current_user) { non_member_user }
+
+      it { is_expected.to be_disallowed(:admin_parent_link) }
+    end
+
+    context 'when user is guest' do
+      let(:current_user) { guest }
+
+      it { is_expected.to be_allowed(:admin_parent_link) }
+    end
+
     context 'when user is reporter' do
       let(:current_user) { reporter }
 
       it { is_expected.to be_allowed(:admin_parent_link) }
     end
 
-    context 'when user is guest' do
-      let(:current_user) { guest }
+    context 'when user is an administrator', :enable_admin_mode do
+      let(:current_user) { admin }
 
-      it { is_expected.to be_disallowed(:admin_parent_link) }
-
-      context 'when guest authored the work item' do
-        let(:work_item_subject) { authored_work_item }
-        let(:current_user) { guest_author }
-
-        it { is_expected.to be_disallowed(:admin_parent_link) }
-      end
-
-      context 'when guest is assigned to the work item' do
-        before do
-          work_item.assignees = [guest]
-        end
-
-        it { is_expected.to be_disallowed(:admin_parent_link) }
-      end
+      it { is_expected.to be_allowed(:admin_parent_link) }
     end
   end
 

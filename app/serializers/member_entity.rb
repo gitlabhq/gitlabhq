@@ -10,6 +10,7 @@ class MemberEntity < Grape::Entity
     member.expires_at&.to_time
   end
   expose :requested_at
+  expose :request_accepted_at
 
   expose :created_by,
     if: ->(member) { member.created_by.present? && member.is_source_accessible_to_current_user } do |member|

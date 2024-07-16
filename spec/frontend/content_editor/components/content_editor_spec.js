@@ -76,7 +76,7 @@ describe('ContentEditor', () => {
 
     createWrapper({ markdown });
 
-    renderMarkdown.mockResolvedValueOnce(markdown);
+    renderMarkdown.mockResolvedValueOnce({ body: markdown });
 
     await nextTick();
 
@@ -137,7 +137,7 @@ describe('ContentEditor', () => {
 
     describe('succeeds', () => {
       beforeEach(async () => {
-        renderMarkdown.mockResolvedValueOnce('');
+        renderMarkdown.mockResolvedValueOnce({ body: '' });
 
         createWrapper({ markddown: '' });
         await nextTick();
@@ -189,7 +189,7 @@ describe('ContentEditor', () => {
 
       describe('when clicking the retry button in the loading error alert and loading succeeds', () => {
         beforeEach(async () => {
-          renderMarkdown.mockResolvedValueOnce('hello markdown');
+          renderMarkdown.mockResolvedValueOnce({ body: 'hello markdown' });
           await wrapper.findComponent(GlAlert).vm.$emit('primaryAction');
         });
 
@@ -238,7 +238,7 @@ describe('ContentEditor', () => {
     beforeEach(async () => {
       markdown = 'Loaded content';
 
-      renderMarkdown.mockResolvedValueOnce(markdown);
+      renderMarkdown.mockResolvedValueOnce({ body: markdown });
 
       createWrapper({ markdown: 'initial content' });
 
@@ -299,7 +299,7 @@ describe('ContentEditor', () => {
 
     createWrapper({ markdown });
 
-    renderMarkdown.mockResolvedValueOnce(markdown);
+    renderMarkdown.mockResolvedValueOnce({ body: markdown });
 
     await waitForPromises();
 

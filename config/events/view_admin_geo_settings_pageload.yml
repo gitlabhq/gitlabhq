@@ -1,0 +1,15 @@
+---
+description: Tracks pageviews for the admin geo settings page
+internal_events: true
+action: view_admin_geo_settings_pageload
+identifiers:
+- user
+product_group: personal_productivity
+milestone: '17.2'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157498
+distributions:
+- ce
+- ee
+tiers:
+- premium
+- ultimate

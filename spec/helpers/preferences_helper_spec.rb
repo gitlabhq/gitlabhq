@@ -280,7 +280,7 @@ RSpec.describe PreferencesHelper do
 
     context 'when WebIdeExtensionsMarketplace is enabled' do
       before do
-        allow(Gitlab::WebIde::ExtensionsMarketplace).to receive(:feature_enabled?).with(user: user).and_return(true)
+        allow(WebIde::ExtensionsMarketplace).to receive(:feature_enabled?).with(user: user).and_return(true)
       end
 
       it 'includes extension marketplace integration' do

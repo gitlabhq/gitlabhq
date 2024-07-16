@@ -86,6 +86,13 @@ Prerequisites:
 
 To connect to a workspace with an SSH client:
 
+1. Get the name of the workspace:
+
+   1. On the left sidebar, select **Search or go to**.
+   1. Select **Your work**.
+   1. Select **Workspaces**.
+   1. Copy the name of the workspace you want to connect to.
+
 1. Run this command:
 
    ```shell
@@ -158,3 +165,16 @@ The following error message might appear in the agent's log:
 This issue occurs when an agent instance cannot renew its leadership lease, which results
 in the shutdown of leader-only modules including the `remote_development` module.
 To resolve this issue, restart the agent instance.
+
+### No cluster agents available when creating workspaces
+
+When creating a workspace in a project, one of the following errors might occur:
+
+- `You can't create a workspace for this project` when you attempt to create the workspace from **Workspaces** on the left sidebar.
+- `To set up this feature, contact your administrator.` when you attempt to create the workspace in a specific project using the `Edit` function.
+- An expected agent is not be present in the list of available agents.
+Possible reasons for this error are:
+
+- The user does not have at least Developer role for the workspace project and/or the agent project. To resolve this issue, ask the respective group or project owner to grant you access.
+- The parent groups of the workspace project may not have any allowed agents. To resolve this issue, verify that the expected agents are allowed under the Workspace settings for any of the parent groups. To verify, you must have the Maintainer or Owner role for the group. If the agents are not allowed, you must [allow a cluster agent for Workspaces in a group](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group).
+- The remote development module in the agent is disabled. To resolve this issue, please enable workspaces for this agent. Please refer to the [remote development module settings](gitlab_agent_configuration.md#enabled) on how this can be done.

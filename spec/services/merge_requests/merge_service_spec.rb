@@ -278,6 +278,47 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         )
       end
 
+      context 'when issue project has auto close disabled', :sidekiq_inline do
+        let_it_be(:group) { create(:group) }
+        let_it_be(:other_project) { create(:project, autoclose_referenced_issues: false, group: group) }
+        let_it_be(:no_close_issue) { create(:issue, project: other_project) }
+        let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
+
+        before_all do
+          other_project.add_developer(user)
+          group.add_developer(user)
+        end
+
+        before do
+          create(
+            :merge_requests_closing_issues,
+            issue: no_close_issue,
+            merge_request: merge_request,
+            from_mr_description: false
+          )
+          create(
+            :merge_requests_closing_issues,
+            issue: group_issue,
+            merge_request: merge_request,
+            from_mr_description: false
+          )
+        end
+
+        it 'only closes issues where the setting is enabled or belong to a group' do
+          merge_request.cache_merge_request_closes_issues!
+
+          expect do
+            service.execute(merge_request)
+          end.to change { issue1.reload.closed? }.from(false).to(true).and(
+            change { issue2.reload.closed? }.from(false).to(true)
+          ).and(
+            not_change { no_close_issue.reload.opened? }.from(true)
+          ).and(
+            change { group_issue.reload.closed? }.from(false).to(true)
+          )
+        end
+      end
+
       context 'with Jira integration' do
         include JiraIntegrationHelpers
 

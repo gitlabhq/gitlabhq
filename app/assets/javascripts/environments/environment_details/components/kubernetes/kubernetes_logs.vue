@@ -6,7 +6,7 @@ import environmentClusterAgentQuery from '~/environments/graphql/queries/environ
 import { createK8sAccessConfiguration } from '~/environments/helpers/k8s_integration_helper';
 import LogsViewer from '~/vue_shared/components/logs_viewer/logs_viewer.vue';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 
 export default {
   components: {
@@ -112,6 +112,11 @@ export default {
     },
     headerData() {
       const data = [
+        {
+          icon: 'kubernetes-agent',
+          label: this.$options.i18n.agent,
+          value: this.gitlabAgentId,
+        },
         { icon: 'namespace', label: this.$options.i18n.namespace, value: this.namespace },
         { icon: 'pod', label: this.$options.i18n.pod, value: this.podName },
       ];
@@ -129,16 +134,20 @@ export default {
     emptyStateTitleForContainer: s__(
       'KubernetesLogs|No logs available for container %{containerName} of pod %{podName}',
     ),
+    agent: s__('KubernetesLogs|Agent ID'),
     pod: s__('KubernetesLogs|Pod'),
     container: s__('KubernetesLogs|Container'),
     namespace: s__('KubernetesLogs|Namespace'),
+    error: __('Error'),
   },
   EmptyStateSvg,
 };
 </script>
 <template>
   <div>
-    <gl-alert v-if="error" variant="danger" :dismissible="false">{{ error }}</gl-alert>
+    <gl-alert v-if="error" variant="danger" :dismissible="false"
+      >{{ $options.i18n.error }}: {{ error }}</gl-alert
+    >
     <gl-loading-icon v-if="isLoading" />
 
     <logs-viewer v-else-if="logLines" :log-lines="logLines" :highlighted-line="highlightedLineHash"

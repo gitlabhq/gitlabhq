@@ -165,7 +165,7 @@ Even when creation is disabled, you can still use and revoke existing group acce
 
 ## Bot users for groups
 
-Bot users for groups are [GitLab-created service accounts](../../../subscriptions/self_managed/index.md#billable-users).
+Bot users for groups are [GitLab-created non-billable users](../../../subscriptions/self_managed/index.md#billable-users).
 Each time you create a group access token, a bot user is created and added to the group.
 These bot users are similar to
 [bot users for projects](../../project/settings/project_access_tokens.md#bot-users-for-projects), except they are added

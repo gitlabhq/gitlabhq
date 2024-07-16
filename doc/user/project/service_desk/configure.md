@@ -1,6 +1,6 @@
 ---
-stage: Monitor
-group: Respond
+stage: Plan
+group: Project Management
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -184,6 +184,29 @@ To edit the custom email display name:
 1. Select **Settings > General**.
 1. Expand **Service Desk**.
 1. Below **Email display name**, enter a new name.
+1. Select **Save changes**.
+
+## Default ticket visibility
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/33091) in GitLab 17.2.
+
+New tickets are confidential by default, so only project members with at least the Reporter role
+can view them.
+
+In private and internal projects, you can configure GitLab so that new tickets are not confidential by default, and any project member can view them.
+
+In public projects, this setting is not available because new tickets are always confidential by default.
+
+Prerequisites:
+
+- You must have at least the Maintainer role for the project.
+
+To disable this setting:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Settings > General**.
+1. Expand **Service Desk**.
+1. Clear the **New tickets are confidential by default** checkbox.
 1. Select **Save changes**.
 
 ## Reopen issues when an external participant comments

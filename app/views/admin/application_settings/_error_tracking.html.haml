@@ -1,17 +1,12 @@
 - expanded = integration_expanded?('error_tracking_')
 
-%section.settings.as-error-tracking.no-animate#js-error-tracking-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('GitLab Error Tracking')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = _('Allows projects to track errors using an Opstrace integration.').html_safe % { link: help_page_path('operations/error_tracking') }
-      = link_to _('Learn more.'), help_page_path('operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
-
-  .settings-content
-
+= render ::Layouts::SettingsBlockComponent.new(_('GitLab Error Tracking'),
+  id: 'js-error-tracking-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = _('Allows projects to track errors using an Opstrace integration.').html_safe % { link: help_page_path('operations/error_tracking') }
+    = link_to _('Learn more.'), help_page_path('operations/error_tracking'), target: '_blank', rel: 'noopener noreferrer'
+  - c.with_body do
     %fieldset
       .sub-section
         %h4= _('Access Token')

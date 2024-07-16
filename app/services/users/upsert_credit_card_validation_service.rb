@@ -17,7 +17,10 @@ module Users
         holder_name: holder_name,
         network: network,
         expiration_date: expiration_date,
-        zuora_payment_method_xid: zuora_payment_method_xid
+        zuora_payment_method_xid: zuora_payment_method_xid,
+        stripe_setup_intent_xid: stripe_setup_intent_xid,
+        stripe_payment_method_xid: stripe_payment_method_xid,
+        stripe_card_fingerprint: stripe_card_fingerprint
       }
 
       credit_card.update!(credit_card_params)
@@ -54,6 +57,18 @@ module Users
 
     def zuora_payment_method_xid
       params[:zuora_payment_method_xid]
+    end
+
+    def stripe_setup_intent_xid
+      params[:stripe_setup_intent_xid]
+    end
+
+    def stripe_payment_method_xid
+      params[:stripe_payment_method_xid]
+    end
+
+    def stripe_card_fingerprint
+      params[:stripe_card_fingerprint]
     end
 
     def expiration_date

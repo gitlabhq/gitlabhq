@@ -14,7 +14,7 @@ unless Gitlab::Runtime.sidekiq?
       config.lograge.formatter = Lograge::Formatters::Json.new
       config.lograge.logger = ActiveSupport::Logger.new(filename,
         level: Gitlab::Utils.to_rails_log_level(ENV["GITLAB_LOG_LEVEL"], :info))
-      config.lograge.before_format = lambda do |data, payload|
+      config.lograge.before_format = ->(data, payload) do
         data.delete(:error)
         data[:db_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:db)) if data[:db]
         data[:view_duration_s] = Gitlab::Utils.ms_to_round_sec(data.delete(:view)) if data[:view]

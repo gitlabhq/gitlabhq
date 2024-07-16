@@ -31,7 +31,7 @@
             %span.no-value= s_('MilestoneSidebar|No start date')
 
     .block.due_date
-      .sidebar-collapsed-icon
+      .sidebar-collapsed-icon{ class: "!gl-h-auto" }
         %span{ 'aria-hidden': 'true' }
           = sprite_icon('calendar')
         %span.collapsed-milestone-date
@@ -75,7 +75,7 @@
       .block.issues
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_issues_tooltip_text(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           %strong
-            = custom_icon('issues')
+            = sprite_icon('issues')
           %span= milestone.issues_visible_to_user(current_user).count
         .title.hide-collapsed
           = s_('MilestoneSidebar|Issues')
@@ -107,7 +107,7 @@
       .block.merge-requests
         .sidebar-collapsed-icon.has-tooltip{ title: milestone_merge_requests_tooltip_text(milestone), data: { container: 'body', html: 'true', placement: 'left', boundary: 'viewport' } }
           %strong
-            = custom_icon('mr_bold')
+            = sprite_icon('merge-request')
           %span= milestone.merge_requests.count
         .title.hide-collapsed
           = s_('MilestoneSidebar|Merge requests')
@@ -139,8 +139,8 @@
 
     - if project
       - recent_releases, total_count, more_count = recent_releases_with_counts(milestone, current_user)
-      .block.releases
-        .sidebar-collapsed-icon.has-tooltip{ title: milestone_releases_tooltip_text(milestone), data: { container: 'body', placement: 'left', boundary: 'viewport' } }
+      .block.releases{ data: { testid: 'milestone-sidebar-releases' } }
+        .sidebar-collapsed-icon.has-tooltip{ title: milestone_releases_tooltip_text(milestone), data: { container: 'body', placement: 'left', boundary: 'viewport', testid: 'milestone-sidebar-releases-collapsed-icon' } }
           %strong
             = sprite_icon("rocket")
           %span= total_count

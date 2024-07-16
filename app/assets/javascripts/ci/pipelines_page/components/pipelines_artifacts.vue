@@ -65,7 +65,7 @@ export default {
     :toggle-text="$options.i18n.artifacts"
     :aria-label="$options.i18n.artifacts"
     icon="download"
-    placement="right"
+    placement="bottom-end"
     text-sr-only
     :items="items"
     data-testid="artifacts-dropdown"

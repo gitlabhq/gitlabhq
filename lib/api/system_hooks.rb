@@ -31,6 +31,9 @@ module API
         optional :merge_requests_events, type: Boolean, desc: 'Trigger hook on merge requests events'
         optional :repository_update_events, type: Boolean, desc: 'Trigger hook on repository update events'
         optional :enable_ssl_verification, type: Boolean, desc: 'Do SSL verification when triggering the hook'
+        optional :push_events_branch_filter, type: String, desc: "Trigger hook on specified branch only"
+        optional :branch_filter_strategy, type: String, values: WebHook.branch_filter_strategies.keys,
+          desc: "Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`"
         use :url_variables
         use :custom_headers
       end

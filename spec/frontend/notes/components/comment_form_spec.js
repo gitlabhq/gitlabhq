@@ -25,11 +25,17 @@ import { COMMENT_FORM } from '~/notes/i18n';
 import notesModule from '~/notes/stores/modules';
 import { sprintf } from '~/locale';
 import { mockTracking } from 'helpers/tracking_helper';
+import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 
 jest.mock('autosize');
 jest.mock('~/super_sidebar/user_counts_fetch');
 jest.mock('~/alert');
+jest.mock('~/lib/utils/secret_detection', () => {
+  return {
+    detectAndConfirmSensitiveTokens: jest.fn(() => Promise.resolve(true)),
+  };
+});
 
 Vue.use(Vuex);
 
@@ -127,10 +133,12 @@ describe('issue_comment_form component', () => {
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
     trackingSpy = mockTracking(undefined, null, jest.spyOn);
+    detectAndConfirmSensitiveTokens.mockReturnValue(true);
   });
 
   afterEach(() => {
     axiosMock.restore();
+    detectAndConfirmSensitiveTokens.mockReset();
   });
 
   describe('user is logged in', () => {
@@ -208,7 +216,7 @@ describe('issue_comment_form component', () => {
       );
 
       describe('if response contains validation errors', () => {
-        beforeEach(() => {
+        beforeEach(async () => {
           const store = createStore({
             actions: {
               saveNote: jest.fn().mockRejectedValue({
@@ -227,6 +235,7 @@ describe('issue_comment_form component', () => {
           });
 
           findCommentButton().trigger('click');
+          await waitForPromises();
         });
 
         it('renders an error message', () => {
@@ -424,13 +433,15 @@ describe('issue_comment_form component', () => {
               store.state.batchComments.drafts = [{ note: 'A' }];
             });
 
-            it('sends the event to indicate that a new draft comment has been added', () => {
+            it('sends the event to indicate that a new draft comment has been added', async () => {
               const note = 'some note text which enables actually adding a draft note';
 
               jest.spyOn(eventHub, '$emit');
               mountComponent({ mountFunction: mountExtended, initialData: { note }, store });
 
               findAddToReviewButton().trigger('click');
+
+              await waitForPromises();
 
               expect(eventHub.$emit).toHaveBeenCalledWith('noteFormAddToReview', {
                 name: 'noteFormAddToReview',
@@ -755,6 +766,7 @@ describe('issue_comment_form component', () => {
 
           // submit comment
           findCommentButton().trigger('click');
+          await waitForPromises();
 
           expect(store.dispatch).toHaveBeenCalledWith('saveNote', {
             data: {
@@ -790,7 +802,8 @@ describe('issue_comment_form component', () => {
     const nonSensitiveMessage = 'text';
     const store = createStore();
 
-    it('should not save note when it contains sensitive token', () => {
+    it('should not save note when it contains sensitive token', async () => {
+      detectAndConfirmSensitiveTokens.mockReturnValue(false);
       mountComponent({
         mountFunction: mountExtended,
         initialData: { note: sensitiveMessage },
@@ -798,6 +811,7 @@ describe('issue_comment_form component', () => {
       });
       jest.spyOn(store, 'dispatch');
       findCommentButton().trigger('click');
+      await waitForPromises();
       expect(store.dispatch).not.toHaveBeenCalled();
     });
 
@@ -809,6 +823,7 @@ describe('issue_comment_form component', () => {
       });
       jest.spyOn(store, 'dispatch');
       await findCommentButton().trigger('click');
+      await waitForPromises();
       expect(store.dispatch).toHaveBeenCalledWith('saveNote', expect.objectContaining({}));
     });
   });

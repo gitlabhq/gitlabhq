@@ -1,4 +1,5 @@
 import { memoize } from 'lodash';
+import { n__ } from '~/locale';
 
 const parser = new DOMParser();
 
@@ -8,7 +9,7 @@ export default class AssetResolver {
   }
 
   resolveUrl = memoize(async (canonicalSrc) => {
-    const html = await this.renderMarkdown(`[link](${canonicalSrc})`);
+    const { body: html } = (await this.renderMarkdown(`[link](${canonicalSrc})`)) || {};
     if (!html) return canonicalSrc;
 
     const { body } = parser.parseFromString(html, 'text/html');
@@ -18,7 +19,7 @@ export default class AssetResolver {
   resolveReference = memoize(async (originalText) => {
     const text = originalText.replace(/(\+|\+s)$/, '');
     const toRender = `${text} ${text}+ ${text}+s`;
-    const html = await this.renderMarkdown(toRender);
+    const { body: html } = (await this.renderMarkdown(toRender)) || {};
 
     if (!html) return {};
 
@@ -35,9 +36,36 @@ export default class AssetResolver {
     };
   });
 
+  explainQuickAction = memoize(async (text) => {
+    const {
+      references: { commands: html },
+    } = (await this.renderMarkdown(text)) || { references: {} };
+    if (!html) return '';
+
+    const { body } = parser.parseFromString(html, 'text/html') || {};
+    const p = body.querySelectorAll('p');
+
+    const labelsLength = p[0]?.querySelectorAll('.gl-label').length;
+    if (labelsLength >= 1) {
+      if (text.startsWith('/label')) return n__('Adds a label.', 'Adds %d labels.', labelsLength);
+      if (text.startsWith('/unlabel'))
+        return n__('Removes a label.', 'Removes %d labels.', labelsLength);
+      if (text.startsWith('/relabel'))
+        return n__(
+          'Replaces all labels with %d label.',
+          'Replaces all labels with %d labels.',
+          labelsLength,
+        );
+    }
+
+    return p[0]?.textContent;
+  });
+
   renderDiagram = memoize(async (code, language) => {
     const backticks = '`'.repeat(4);
-    const html = await this.renderMarkdown(`${backticks}${language}\n${code}\n${backticks}`);
+    const { body: html } = await this.renderMarkdown(
+      `${backticks}${language}\n${code}\n${backticks}`,
+    );
 
     const { body } = parser.parseFromString(html, 'text/html');
     const img = body.querySelector('img');

@@ -8,6 +8,7 @@ module WikiActions
   include ProductAnalyticsTracking
   include SafeFormatHelper
   extend ActiveSupport::Concern
+  include StrongPaginationParams
 
   RESCUE_GIT_TIMEOUTS_IN = %w[show raw edit history diff pages templates].freeze
 
@@ -83,7 +84,7 @@ module WikiActions
         wiki
           .list_pages(direction: params[:direction])
           .reject { |page| page.slug.start_with?('templates/') }
-      ).page(params[:page])
+      ).page(pagination_params[:page])
     end
   end
 
@@ -94,7 +95,7 @@ module WikiActions
         wiki
           .list_pages(direction: params[:direction])
           .select { |page| page.slug.start_with?('templates/') }
-      ).page(params[:page])
+      ).page(pagination_params[:page])
     end
   end
 
@@ -235,8 +236,8 @@ module WikiActions
   def history
     if page
       @commits_count = page.count_versions
-      @commits = Kaminari.paginate_array(page.versions(page: params[:page].to_i), total_count: page.count_versions)
-        .page(params[:page])
+      @commits = Kaminari.paginate_array(page.versions(page: pagination_params[:page].to_i), total_count: page.count_versions)
+        .page(pagination_params[:page])
 
       render 'shared/wikis/history'
     else

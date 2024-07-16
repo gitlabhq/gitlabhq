@@ -62,7 +62,8 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
           # .review:rules:review-stop don't set variables
           base.delete('variables')
           base_with_manual_and_allowed_to_fail =
-            if base['when'] == 'never'
+            # base can be an array when we're using !reference
+            if base.is_a?(Array) || base['when'] == 'never'
               base
             else
               base.merge('when' => 'manual', 'allow_failure' => true)
@@ -251,6 +252,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       Dir.glob('node_modules/**/*', File::FNM_DOTMATCH) +
       Dir.glob('patches/*') +
       Dir.glob('public/assets/**/.*') +
+      Dir.glob('qa/{,**/}.*') +
       Dir.glob('qa/.{,**/}*') +
       Dir.glob('qa/**/.gitlab-ci.yml') +
       Dir.glob('shared/**/*') +

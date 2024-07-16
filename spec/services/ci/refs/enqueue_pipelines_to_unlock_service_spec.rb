@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :clean_gitlab_redis_shared_state, feature_category: :build_artifacts do
+RSpec.describe Ci::Refs::EnqueuePipelinesToUnlockService, :unlock_pipelines, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   describe '#execute' do
     let_it_be(:ref) { 'master' }
     let_it_be(:project) { create(:project) }

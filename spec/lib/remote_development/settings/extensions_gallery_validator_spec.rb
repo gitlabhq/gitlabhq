@@ -31,7 +31,7 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryValidator, :rd_fast
   context "when vscode_extensions_gallery is valid" do
     shared_examples "success result" do
       it "return an ok Result containing the original context which was passed" do
-        expect(result).to eq(Result.ok(context))
+        expect(result).to eq(Gitlab::Fp::Result.ok(context))
       end
     end
 

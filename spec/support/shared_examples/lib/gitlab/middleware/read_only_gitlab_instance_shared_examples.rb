@@ -7,7 +7,7 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
   include_context 'with a mocked GitLab instance'
 
   context 'normal requests to a read-only GitLab instance' do
-    let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
+    let(:fake_app) { ->(env) { [200, { 'Content-Type' => 'text/plain' }, ['OK']] } }
 
     it 'expects PATCH requests to be disallowed' do
       response = request.patch('/test_request')
@@ -208,7 +208,7 @@ RSpec.shared_examples 'write access for a read-only GitLab instance' do
   end
 
   context 'JSON requests to a read-only GitLab instance' do
-    let(:fake_app) { lambda { |env| [200, { 'Content-Type' => 'application/json' }, ['OK']] } }
+    let(:fake_app) { ->(env) { [200, { 'Content-Type' => 'application/json' }, ['OK']] } }
     let(:content_json) { { 'CONTENT_TYPE' => 'application/json' } }
 
     before do

@@ -7,12 +7,14 @@ status: active
 milestone: "15.3"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/93232"
 time_frame: 28d
-data_source: redis_hll
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisHLLMetric
-options:
-  events:
-    - i_code_review_merge_request_widget_accessibility_expand_success
+events:
+  - name: expand_merge_request_widget
+    unique: user.id
+    filter:
+      label: accessibility
+      property: success
 distribution:
 - ce
 - ee

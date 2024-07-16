@@ -5,7 +5,7 @@ module GoogleCloud
     include ApplicationWorker
 
     data_consistency :delayed
-    feature_category :build_artifacts
+    feature_category :job_artifacts
     urgency :low
     deduplicate :until_executing
     idempotent!

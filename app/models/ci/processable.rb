@@ -268,3 +268,5 @@ module Ci
     end
   end
 end
+
+Ci::Processable.prepend_mod

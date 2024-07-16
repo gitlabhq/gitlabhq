@@ -18,7 +18,6 @@ FactoryBot.define do
     factory :note_on_personal_snippet,   traits: [:on_personal_snippet]
     factory :note_on_design,             traits: [:on_design]
     factory :note_on_alert,              traits: [:on_alert]
-    factory :note_on_abuse_report, traits: [:on_abuse_report]
     factory :system_note, traits: [:system]
 
     factory :discussion_note, class: 'DiscussionNote'
@@ -39,8 +38,6 @@ FactoryBot.define do
     factory :discussion_note_on_personal_snippet, traits: [:on_personal_snippet], class: 'DiscussionNote'
 
     factory :discussion_note_on_project_snippet, traits: [:on_project_snippet], class: 'DiscussionNote'
-
-    factory :discussion_note_on_abuse_report, traits: [:on_abuse_report], class: 'DiscussionNote'
 
     factory :legacy_diff_note_on_commit, traits: [:on_commit, :legacy_diff_note], class: 'LegacyDiffNote'
 
@@ -174,11 +171,6 @@ FactoryBot.define do
       noteable { association(:alert_management_alert, project: project) }
     end
 
-    trait :on_abuse_report do
-      noteable { association(:abuse_report) }
-      project { nil }
-    end
-
     trait :resolved do
       resolved_at { Time.now }
       resolved_by { association(:user) }
@@ -236,7 +228,10 @@ FactoryBot.define do
       discussion = discussion.to_discussion if discussion.is_a?(Note)
       next unless discussion
 
-      note.assign_attributes(discussion.reply_attributes.merge(project: discussion.project))
+      parent_attributes = { project: discussion.project, namespace: discussion.namespace }.compact
+      note.assign_attributes(
+        discussion.reply_attributes.merge(parent_attributes)
+      )
     end
   end
 end

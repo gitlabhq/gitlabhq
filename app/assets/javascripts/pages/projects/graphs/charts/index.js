@@ -64,13 +64,8 @@ new Vue({
 });
 
 if (codeCoverageContainer?.dataset) {
-  const {
-    graphEndpoint,
-    graphEndDate,
-    graphStartDate,
-    graphRef,
-    graphCsvPath,
-  } = codeCoverageContainer.dataset;
+  const { graphEndpoint, graphEndDate, graphStartDate, graphRef, graphCsvPath } =
+    codeCoverageContainer.dataset;
   // eslint-disable-next-line no-new
   new Vue({
     el: codeCoverageContainer,

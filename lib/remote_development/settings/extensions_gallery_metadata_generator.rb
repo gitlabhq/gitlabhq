@@ -16,7 +16,7 @@ module RemoteDevelopment
             extensions_marketplace_feature_flag_enabled
         }
 
-        extensions_gallery_metadata = ::Gitlab::WebIde::ExtensionsMarketplace.metadata_for_user(
+        extensions_gallery_metadata = ::WebIde::ExtensionsMarketplace.metadata_for_user(
           user: user,
           flag_enabled: extensions_marketplace_feature_flag_enabled
         )

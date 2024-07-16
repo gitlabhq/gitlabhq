@@ -1,5 +1,6 @@
+import { builders } from 'prosemirror-test-builder';
 import Blockquote from '~/content_editor/extensions/blockquote';
-import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
+import { createTestEditor, triggerNodeInputRule } from '../test_utils';
 
 describe('content_editor/extensions/blockquote', () => {
   let tiptapEditor;
@@ -10,14 +11,7 @@ describe('content_editor/extensions/blockquote', () => {
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [Blockquote] });
 
-    ({
-      builders: { doc, p, blockquote },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        blockquote: { nodeType: Blockquote.name },
-      },
-    }));
+    ({ doc, paragraph: p, blockquote } = builders(tiptapEditor.schema));
   });
 
   it.each`

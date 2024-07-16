@@ -143,13 +143,13 @@ To access the database lab instances, you must:
 Host lb-bastion.db-lab.gitlab.com
   User ${USER}
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/ed25519
+  IdentityFile ~/.ssh/id_ed25519
 
 Host *.gitlab-db-lab.internal
   User ${USER}
   PreferredAuthentications publickey
   IdentitiesOnly yes
-  IdentityFile ~/.ssh/ed25519
+  IdentityFile ~/.ssh/id_ed25519
   ProxyCommand ssh lb-bastion.db-lab.gitlab.com -W %h:%p
 ```
 

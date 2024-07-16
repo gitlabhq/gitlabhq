@@ -194,7 +194,7 @@ class FileUploader < GitlabUploader
   private
 
   def apply_context!(uploader_context)
-    @secret, @identifier = uploader_context.values_at(:secret, :identifier)
+    @secret, @identifier, @uploaded_by_user_id = uploader_context.values_at(:secret, :identifier, :uploaded_by_user_id)
 
     !!(@secret && @identifier)
   end
@@ -202,6 +202,7 @@ class FileUploader < GitlabUploader
   def build_upload
     super.tap do |upload|
       upload.secret = secret
+      upload.uploaded_by_user_id = @uploaded_by_user_id
     end
   end
 

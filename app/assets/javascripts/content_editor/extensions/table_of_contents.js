@@ -36,7 +36,10 @@ export default Node.create({
 
   addCommands() {
     return {
-      insertTableOfContents: () => ({ commands }) => commands.insertContent({ type: this.name }),
+      insertTableOfContents:
+        () =>
+        ({ commands }) =>
+          commands.insertContent({ type: this.name }),
     };
   },
 

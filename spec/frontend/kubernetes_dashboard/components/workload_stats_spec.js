@@ -49,7 +49,7 @@ describe('Workload stats component', () => {
       findSingleStat(0).vm.$emit('click');
       await nextTick();
 
-      expect(findSingleStat(0).classes()).toContain('gl-inset-border-b-2-blue-500');
+      expect(findSingleStat(0).classes()).toContain('gl-shadow-inner-b-2-blue-500');
     });
 
     it('deselects stat with the second click', async () => {
@@ -58,12 +58,12 @@ describe('Workload stats component', () => {
       findSingleStat(1).vm.$emit('click');
       await nextTick();
 
-      expect(findSingleStat(1).classes()).toContain('gl-inset-border-b-2-blue-500');
+      expect(findSingleStat(1).classes()).toContain('gl-shadow-inner-b-2-blue-500');
 
       findSingleStat(1).vm.$emit('click');
       await nextTick();
 
-      expect(findSingleStat(1).classes()).not.toContain('gl-inset-border-b-2-blue-500');
+      expect(findSingleStat(1).classes()).not.toContain('gl-shadow-inner-b-2-blue-500');
     });
 
     it('emit a select event', async () => {

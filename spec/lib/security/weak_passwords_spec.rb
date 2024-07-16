@@ -8,9 +8,9 @@ RSpec.describe Security::WeakPasswords, feature_category: :system_access do
 
     let(:user) do
       build_stubbed(:user, username: "56d4ab689a_win",
-                           name: "Weakést McWeaky-Pass Jr",
-                           email: "predictāble.ZZZ+seventeen@examplecorp.com",
-                           public_email: "fortunate@acme.com"
+        name: "Weakést McWeaky-Pass Jr",
+        email: "predictāble.ZZZ+seventeen@examplecorp.com",
+        public_email: "fortunate@acme.com"
       )
     end
 

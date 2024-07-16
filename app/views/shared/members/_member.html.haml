@@ -9,17 +9,17 @@
 
 -# Note this is just for individual members. For groups please see shared/members/_group
 
-%li.member.js-member.py-2.px-3.gl-flex.flex-column{ class: [dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
+%li.member.js-member.py-2.px-3.gl-flex-col{ class: ['!gl-flex', dom_class(member), ("flex-md-row" unless force_mobile_view)], id: dom_id(member) }
   %span.list-item-name.mb-2.m-md-0
     - if user
       = render Pajamas::AvatarComponent.new(user, size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
       .user-info
-        %span.mr-1
+        %span
           = link_to user.name, user_path(user), class: 'member js-user-link', data: { user_id: user.id }
           = user_status(user)
-          %span.cgray= user.to_reference
+          %span.gl-text-secondary= user.to_reference
 
-        .mx-n1.gl-inline-flex.gl-flex-wrap
+        .gl-inline-flex.gl-flex-wrap.gl-gap-2
           = render_if_exists 'shared/members/ee/sso_badge', member: member
 
           = render_if_exists 'shared/members/ee/gma_badge', member: member
@@ -36,7 +36,7 @@
           &middot;
           = link_to source.full_name, source, class: "gl-display-inline-block inline-link"
 
-        .cgray
+        .gl-text-secondary.gl-text-sm
           - if member.request?
             = _("Requested %{time_ago}").html_safe % { time_ago: time_ago_with_tooltip(member.requested_at) }
           - else
@@ -52,13 +52,13 @@
       = render Pajamas::AvatarComponent.new(Pajamas::AvatarEmail.new(member.invite_email), size: 32, class: 'gl-mr-3 flex-shrink-0 flex-grow-0')
       .user-info
         .member= member.invite_email
-        .cgray
+        .gl-text-secondary
           Invited
           - if member.created_by
             by
             = link_to member.created_by.name, user_path(member.created_by)
           = time_ago_with_tooltip(member.created_at)
   - if show_roles
-    .controls.member-controls.gl-align-items-center
+    .controls.member-controls.gl-items-center.gl-self-end
       = render_if_exists 'shared/members/ee/ldap_tag', can_override: member.can_override?
       = render Pajamas::BadgeComponent.new(member.human_access, variant: 'neutral', class: 'gl-bg-transparent! !gl-shadow-inner-1-gray-100')

@@ -99,11 +99,11 @@ Download and install Go (for Linux, 64-bit):
 # Remove former Go installation folder
 sudo rm -rf /usr/local/go
 
-curl --remote-name --location --progress-bar "https://go.dev/dl/go1.20.8.linux-amd64.tar.gz"
-echo 'cc97c28d9c252fbf28f91950d830201aa403836cbed702a05932e63f7f0c7bc4  go1.20.8.linux-amd64.tar.gz' | shasum -a256 -c - && \
-  sudo tar -C /usr/local -xzf go1.20.8.linux-amd64.tar.gz
+curl --remote-name --location --progress-bar "https://go.dev/dl/go1.22.5.linux-amd64.tar.gz"
+echo '904b924d435eaea086515bc63235b192ea441bd8c9b198c507e85009e6e4c7f0  go1.22.5.linux-amd64.tar.gz' | shasum -a256 -c - && \
+  sudo tar -C /usr/local -xzf go1.22.5.linux-amd64.tar.gz
 sudo ln -sf /usr/local/go/bin/{go,gofmt} /usr/local/bin/
-rm go1.20.8.linux-amd64.tar.gz
+rm go1.22.5.linux-amd64.tar.gz
 ```
 
 ### 6. Update Git
@@ -136,7 +136,7 @@ Remember to set `git -> bin_path` to `/usr/local/bin/git` in `config/gitlab.yml`
 ### 7. Update PostgreSQL
 
 WARNING:
-GitLab 16.0 requires at least PostgreSQL 13.
+GitLab 17.0 requires at least PostgreSQL 14.
 
 The latest version of GitLab might depend on a more recent PostgreSQL version
 than what you are running. You may also have to enable some

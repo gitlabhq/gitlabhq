@@ -1,0 +1,10 @@
+%section.settings-section{ id: @id, data: (@testid ? { testid: @testid } : {}) }
+  .settings-sticky-header
+    .settings-sticky-header-inner
+      %h2.gl-heading-2{ class: '!gl-mb-2' }
+        = heading || @heading
+      - if description || @description
+        %p.gl-text-secondary.gl-m-0
+          = description || @description
+  %div{ data: { testid: 'settings-section-body' } }
+    = body

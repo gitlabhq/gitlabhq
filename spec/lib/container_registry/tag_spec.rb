@@ -23,6 +23,7 @@ RSpec.describe ContainerRegistry::Tag, feature_category: :container_registry do
   end
 
   it { expect(tag).to respond_to(:repository) }
+  it { expect(tag).to respond_to(:media_type) }
   it { expect(tag).to delegate_method(:registry).to(:repository) }
   it { expect(tag).to delegate_method(:client).to(:repository) }
 

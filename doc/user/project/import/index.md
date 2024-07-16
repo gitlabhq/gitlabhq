@@ -56,9 +56,9 @@ with a malicious `.gitlab-ci.yml` file could allow an attacker to exfiltrate gro
 
 GitLab self-managed administrators can reduce their attack surface by disabling import sources they don't need:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
-1. Expand **Visibility and access controls**.
+1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.
 1. Clear checkboxes for importers that are not required.
 

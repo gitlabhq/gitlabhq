@@ -1,0 +1,13 @@
+#import "~/packages_and_registries/package_registry/graphql/fragments/package_group_settings.fragment.graphql"
+
+query getGroupPackageSettings($fullPath: ID!, $isGroupPage: Boolean = false) {
+  project(fullPath: $fullPath) @skip(if: $isGroupPage) {
+    id
+    group {
+      ...GroupPackageSettings
+    }
+  }
+  group(fullPath: $fullPath) @include(if: $isGroupPage) {
+    ...GroupPackageSettings
+  }
+}

@@ -33,7 +33,7 @@ counted as web traffic.
 
 To enable the unauthenticated API request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable unauthenticated API request rate limit**.
@@ -47,7 +47,7 @@ To enable the unauthenticated API request rate limit:
 
 To enable the unauthenticated request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable unauthenticated web request rate limit**.
@@ -61,7 +61,7 @@ To enable the unauthenticated request rate limit:
 
 To enable the authenticated API request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable authenticated API request rate limit**.
@@ -75,7 +75,7 @@ To enable the authenticated API request rate limit:
 
 To enable the authenticated request rate limit:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
 1. Select **Enable authenticated web request rate limit**.
@@ -92,7 +92,7 @@ plain-text body, which by default is `Retry later`.
 
 To use a custom response:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
 1. In the **Plain-text response to send to clients that hit a rate limit** text box,
@@ -106,7 +106,7 @@ To reduce timeouts, the `project/:id/jobs` endpoint has a default [rate limit](.
 
 To modify the maximum number of requests:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Network**.
 1. Expand **User and IP rate limits**.
 1. Update the **Maximum authenticated requests to `project/:id/jobs` per minute** value.
@@ -120,7 +120,7 @@ attached into the response headers.
 
 | Header                | Example                         | Description                                                                                                                                                                                                      |
 |:----------------------|:--------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `RateLimit-Limit`     | `60`                            | The request quota for the client **each minute**. If the rate limit period set in the Admin Area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
+| `RateLimit-Limit`     | `60`                            | The request quota for the client **each minute**. If the rate limit period set in the Admin area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
 | `RateLimit-Name`      | `throttle_authenticated_web`    | Name of the throttle blocking the requests.                                                                                                                                                                      |
 | `RateLimit-Observed`  | `67`                            | Number of requests associated to the client in the time window.                                                                                                                                                  |
 | `RateLimit-Remaining` | `0`                             | Remaining quota in the time window. The result of `RateLimit-Limit` - `RateLimit-Observed`.                                                                                                                     |
@@ -223,7 +223,7 @@ request continue. The log message contains an `env` field set to `track`. The `m
 field contains the name of throttle that was hit.
 
 It is important to set the environment variable **before** enabling
-the rate limiting in the settings. The settings in the Admin Area
+the rate limiting in the settings. The settings in the Admin area
 take effect immediately, while setting the environment variable
 requires a restart of all the Puma processes.
 

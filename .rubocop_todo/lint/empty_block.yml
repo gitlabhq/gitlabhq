@@ -1,8 +1,6 @@
 ---
 Lint/EmptyBlock:
   Exclude:
-    - 'app/controllers/groups/boards_controller.rb'
-    - 'app/controllers/projects/boards_controller.rb'
     - 'config/application.rb'
     - 'ee/spec/factories/incident_management/escalation_rules.rb'
     - 'ee/spec/finders/snippets_finder_spec.rb'

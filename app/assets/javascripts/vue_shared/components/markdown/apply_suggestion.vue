@@ -62,7 +62,7 @@ export default {
   <gl-disclosure-dropdown
     data-testid="apply-suggestion-dropdown"
     fluid-width
-    placement="right"
+    placement="bottom-end"
     size="small"
     :disabled="disabled"
     :toggle-text="dropdownText"

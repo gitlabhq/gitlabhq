@@ -43,13 +43,9 @@
       margin: 0;
     }
 
-    .sidebar-collapsed-icon {
-      clear: both;
-      padding: 15px 5px 5px;
-
-      .progress {
-        margin: 5px 0;
-      }
+    .sidebar-collapsed-icon .progress {
+      margin: 5px 0;
+      width: calc( 100% - 1.5rem );
     }
   }
 

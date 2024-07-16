@@ -19,3 +19,4 @@ desired_sharding_key:
         table: ml_models
         sharding_key: project_id
         belongs_to: model
+desired_sharding_key_migration_job_name: BackfillMlModelMetadataProjectId

@@ -17,7 +17,7 @@ module Counters
     idempotent!
 
     def perform(model_name, model_id, attribute)
-      Gitlab::ApplicationContext.push(feature_category: :build_artifacts) if attribute.to_s == 'build_artifacts_size'
+      Gitlab::ApplicationContext.push(feature_category: :job_artifacts) if attribute.to_s == 'build_artifacts_size'
 
       return unless self.class.const_defined?(model_name)
 

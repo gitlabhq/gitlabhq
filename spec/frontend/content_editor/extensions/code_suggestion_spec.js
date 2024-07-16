@@ -1,8 +1,8 @@
+import { builders } from 'prosemirror-test-builder';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import CodeSuggestion from '~/content_editor/extensions/code_suggestion';
 import {
   createTestEditor,
-  createDocBuilder,
   triggerNodeInputRule,
   expectDocumentAfterTransaction,
   sleep,
@@ -51,15 +51,7 @@ describe('content_editor/extensions/code_suggestion', () => {
       ],
     });
 
-    ({
-      builders: { doc, codeSuggestion },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        codeBlock: { nodeType: CodeBlockHighlight.name },
-        codeSuggestion: { nodeType: CodeSuggestion.name },
-      },
-    }));
+    ({ doc, codeSuggestion } = builders(tiptapEditor.schema));
   };
 
   describe('insertCodeSuggestion command', () => {

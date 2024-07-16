@@ -71,6 +71,7 @@ module ApplicationSettingImplementation
         diff_max_lines: Commit::DEFAULT_MAX_DIFF_LINES_SETTING,
         disable_admin_oauth_scopes: false,
         disable_feed_token: false,
+        disabled_direct_code_suggestions: false,
         disabled_oauth_sign_in_sources: [],
         dns_rebinding_protection_enabled: true,
         domain_allowlist: Settings.gitlab['domain_allowlist'],
@@ -279,13 +280,16 @@ module ApplicationSettingImplementation
         use_clickhouse_for_analytics: false,
         group_api_limit: 400,
         group_projects_api_limit: 600,
+        group_shared_groups_api_limit: 60,
         groups_api_limit: 200,
         project_api_limit: 400,
         projects_api_limit: 2000,
         user_contributed_projects_api_limit: 100,
         user_projects_api_limit: 300,
         user_starred_projects_api_limit: 100,
-        nuget_skip_metadata_url_validation: false
+        nuget_skip_metadata_url_validation: false,
+        ai_action_api_rate_limit: 160,
+        code_suggestions_api_rate_limit: 60
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

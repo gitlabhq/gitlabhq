@@ -33,6 +33,7 @@ import {
   STATE_MACHINE,
   MT_SKIP_TRAIN,
   MT_RESTART_TRAIN,
+  MWCP_MERGE_STRATEGY,
 } from '../../constants';
 import eventHub from '../../event_hub';
 import mergeRequestQueryVariablesMixin from '../../mixins/merge_request_query_variables';
@@ -242,6 +243,9 @@ export default {
       return MergeRequestStore.getPreferredAutoMergeStrategy(
         this.state.availableAutoMergeStrategies,
       );
+    },
+    isPreferredAutoMergeStrategyMWPC() {
+      return this.preferredAutoMergeStrategy === MWCP_MERGE_STRATEGY;
     },
     squashIsSelected() {
       return this.isSquashReadOnly ? this.state.squashOnMerge : this.state.squash;

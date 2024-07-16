@@ -15,10 +15,13 @@ import { NOTEABLE_TYPE_MAPPING } from '~/notes/constants';
 import { createAlert } from '~/alert';
 import { UPDATE_COMMENT_FORM } from '~/notes/i18n';
 import { sprintf } from '~/locale';
+import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 Vue.use(Vuex);
 jest.mock('~/alert');
+jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
+confirmAction.mockResolvedValueOnce(false);
 
 const singleLineNotePosition = {
   line_range: {
@@ -325,39 +328,6 @@ describe('issue_note', () => {
     });
   });
 
-  describe('cancel edit', () => {
-    beforeEach(() => {
-      createWrapper();
-    });
-
-    it('restores content of updated note', async () => {
-      const updatedText = 'updated note text';
-      store.hotUpdate({
-        modules: {
-          notes: {
-            actions: {
-              updateNote() {},
-            },
-          },
-        },
-      });
-
-      findNoteBody().vm.$emit('handleFormUpdate', {
-        noteText: updatedText,
-        parentElement: null,
-        callback: () => {},
-      });
-
-      await nextTick();
-      expect(findNoteBody().props().note.note_html).toBe(`<p dir="auto">${updatedText}</p>\n`);
-
-      findNoteBody().vm.$emit('cancelForm', {});
-      await nextTick();
-
-      expect(findNoteBody().props().note.note_html).toBe(note.note_html);
-    });
-  });
-
   describe('formUpdateHandler', () => {
     const updateNote = jest.fn();
     const params = {
@@ -387,10 +357,12 @@ describe('issue_note', () => {
 
     afterEach(() => updateNote.mockReset());
 
-    it('emits handleUpdateNote', () => {
+    it('emits handleUpdateNote', async () => {
       const updatedNote = { ...note, note_html: `<p dir="auto">${params.noteText}</p>\n` };
 
       findNoteBody().vm.$emit('handleFormUpdate', params);
+      await nextTick();
+      await waitForPromises();
 
       expect(wrapper.emitted('handleUpdateNote')).toHaveLength(1);
 
@@ -399,7 +371,6 @@ describe('issue_note', () => {
           note: updatedNote,
           noteText: params.noteText,
           resolveDiscussion: params.resolveDiscussion,
-          position: {},
           flashContainer: wrapper.vm.$el,
           callback: expect.any(Function),
           errorCallback: expect.any(Function),
@@ -411,33 +382,31 @@ describe('issue_note', () => {
       findNoteBody().vm.$emit('handleFormUpdate', params);
 
       await nextTick();
+      await waitForPromises();
 
       expect(findNoteBody().props().note.note_html).toBe(`<p dir="auto">${params.noteText}</p>\n`);
       expect(findNoteBody().props('isEditing')).toBe(false);
     });
 
-    it('should not update note with sensitive token', () => {
+    it('should not update note with sensitive token', async () => {
       const sensitiveMessage = 'token: glpat-1234567890abcdefghij';
-      findNoteBody().vm.$emit('handleFormUpdate', { ...params, noteText: sensitiveMessage });
 
-      expect(updateNote).not.toHaveBeenCalled();
-    });
+      // Ensure initial note content is as expected
+      expect(findNoteBody().props().note.note_html).toBe(note.note_html);
 
-    it('does not stringify empty position', () => {
-      findNoteBody().vm.$emit('handleFormUpdate', params);
+      // Attempt to update note with sensitive content
+      const updatedNote = { ...params, noteText: sensitiveMessage };
+      findNoteBody().vm.$emit('handleFormUpdate', updatedNote);
 
-      expect(updateNote.mock.calls[0][1].note.note.position).toBeUndefined();
-    });
+      await nextTick();
+      await waitForPromises();
 
-    it('stringifies populated position', () => {
-      const position = { test: true };
-      const expectation = JSON.stringify(position);
-      createWrapper({ note: { ...note, position } });
-
-      updateActions();
-      findNoteBody().vm.$emit('handleFormUpdate', params);
-
-      expect(updateNote.mock.calls[0][1].note.note.position).toBe(expectation);
+      // Expect note content to remain unchanged
+      expect(findNoteBody().props().note.note_html).toBe(note.note_html);
+      expect(confirmAction).toHaveBeenCalledWith(
+        '',
+        expect.objectContaining({ title: 'Warning: Potential secret detected' }),
+      );
     });
 
     describe('when updateNote returns errors', () => {

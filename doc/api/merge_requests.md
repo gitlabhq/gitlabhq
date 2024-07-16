@@ -52,41 +52,41 @@ GET /merge_requests?search=foo&in=title
 
 Supported attributes:
 
-| Attribute                       | Type           | Required | Description |
-| ------------------------------- | -------------- | -------- | ----------- |
-| `approved_by_ids`               | integer array  | No       | Returns the merge requests approved by all the users with the given `id`, up to 5 users. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only. |
-| `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only. |
-| `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11 with the flag `mr_approved_filter`. Disabled by default. |
-| `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee. |
-| `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`. |
-| `author_username`               | string         | No       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`. |
-| `created_after`                 | datetime       | No       | Returns merge requests created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `created_before`                | datetime       | No       | Returns merge requests created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `deployed_after`                | datetime       | No       | Returns merge requests deployed after the given date/time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `deployed_before`               | datetime       | No       | Returns merge requests deployed before the given date/time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `environment`                   | string         | No       | Returns merge requests deployed to the given environment. |
-| `in`                            | string         | No       | Change the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`. |
-| `labels`                        | string         | No       | Returns merge requests matching a comma-separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. Predefined names are case-insensitive. |
-| `merge_user_id`                 | integer        | No       | Returns the merge requests merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0. |
-| `merge_user_username`           | string         | No       | Returns the merge requests merged by the user with the given `username`. Mutually exclusive with `merge_user_id`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0. |
-| `milestone`                     | string         | No       | Returns merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone. |
-| `my_reaction_emoji`             | string         | No       | Returns merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction. |
-| `not`                           | Hash           | No       | Returns merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `reviewer_id`, `reviewer_username`, `my_reaction_emoji`. |
-| `order_by`                      | string         | No       | Returns requests ordered by `created_at`, `title`, or `updated_at` fields. Default is `created_at`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/331625) in GitLab 14.8.|
-| `reviewer_id`                   | integer        | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`. |
-| `reviewer_username`             | string         | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`. |
-| `scope`                         | string         | No       | Returns merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`. |
-| `search`                        | string         | No       | Search merge requests against their `title` and `description`. |
-| `sort`                          | string         | No       | Returns requests sorted in `asc` or `desc` order. Default is `desc`. |
-| `source_branch`                 | string         | No       | Returns merge requests with the given source branch. |
-| `state`                         | string         | No       | Returns all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`. |
-| `target_branch`                 | string         | No       | Returns merge requests with the given target branch. |
-| `updated_after`                 | datetime       | No       | Returns merge requests updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `updated_before`                | datetime       | No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`). |
-| `view`                          | string         | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request. |
-| `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`. |
+| Attribute                   | Type          | Required | Description |
+|-----------------------------|---------------|----------|-------------|
+| `approved_by_ids`               | integer array  | No       | Returns the merge requests approved by all the users with the given `id`, up to 5 users. `None` returns merge requests with no approvals. `Any` returns merge requests with an approval. Premium and Ultimate only.                                                                                                                                        |
+| `approver_ids`                  | integer array  | No       | Returns merge requests which have specified all the users with the given `id` as individual approvers. `None` returns merge requests without approvers. `Any` returns merge requests with an approver. Premium and Ultimate only.                                                                                                                          |
+| `approved`                      | string         | No       | Filters merge requests by their `approved` status. `yes` returns only approved merge requests. `no` returns only non-approved merge requests. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/3159) in GitLab 15.11 with the flag `mr_approved_filter`. Disabled by default.                                                                    |
+| `assignee_id`                   | integer        | No       | Returns merge requests assigned to the given user `id`. `None` returns unassigned merge requests. `Any` returns merge requests with an assignee.                                                                                                                                                                                                           |
+| `author_id`                     | integer        | No       | Returns merge requests created by the given user `id`. Mutually exclusive with `author_username`. Combine with `scope=all` or `scope=assigned_to_me`.                                                                                                                                                                                                      |
+| `author_username`               | string         | No       | Returns merge requests created by the given `username`. Mutually exclusive with `author_id`.                                                                                                                                                                                                                                                               |
+| `created_after`                 | datetime       | No       | Returns merge requests created on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                           |
+| `created_before`                | datetime       | No       | Returns merge requests created on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                          |
+| `deployed_after`                | datetime       | No       | Returns merge requests deployed after the given date/time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                           |
+| `deployed_before`               | datetime       | No       | Returns merge requests deployed before the given date/time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                          |
+| `environment`                   | string         | No       | Returns merge requests deployed to the given environment.                                                                                                                                                                                                                                                                                                  |
+| `in`                            | string         | No       | Change the scope of the `search` attribute. `title`, `description`, or a string joining them with comma. Default is `title,description`.                                                                                                                                                                                                                   |
+| `labels`                        | string         | No       | Returns merge requests matching a comma-separated list of labels. `None` lists all merge requests with no labels. `Any` lists all merge requests with at least one label. Predefined names are case-insensitive.                                                                                                                                           |
+| `merge_user_id`                 | integer        | No       | Returns the merge requests merged by the user with the given user `id`. Mutually exclusive with `merge_user_username`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0.                                                                                                                                          |
+| `merge_user_username`           | string         | No       | Returns the merge requests merged by the user with the given `username`. Mutually exclusive with `merge_user_id`. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140002) in GitLab 17.0.                                                                                                                                               |
+| `milestone`                     | string         | No       | Returns merge requests for a specific milestone. `None` returns merge requests with no milestone. `Any` returns merge requests that have an assigned milestone.                                                                                                                                                                                            |
+| `my_reaction_emoji`             | string         | No       | Returns merge requests reacted by the authenticated user by the given `emoji`. `None` returns issues not given a reaction. `Any` returns issues given at least one reaction.                                                                                                                                                                               |
+| `not`                           | Hash           | No       | Returns merge requests that do not match the parameters supplied. Accepts: `labels`, `milestone`, `author_id`, `author_username`, `assignee_id`, `assignee_username`, `reviewer_id`, `reviewer_username`, `my_reaction_emoji`.                                                                                                                             |
+| `order_by`                  | string        | No       | Returns requests ordered by `created_at`, `title`, `merged_at` ([introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147052) in GitLab 17.2), or `updated_at` fields. Default is `created_at`. |
+| `reviewer_id`                   | integer        | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given user `id`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_username`.                                                                        |
+| `reviewer_username`             | string         | No       | Returns merge requests which have the user as a [reviewer](../user/project/merge_requests/reviews/index.md) with the given `username`. `None` returns merge requests with no reviewers. `Any` returns merge requests with any reviewer. Mutually exclusive with `reviewer_id`.                                                                             |
+| `scope`                         | string         | No       | Returns merge requests for the given scope: `created_by_me`, `assigned_to_me` or `all`. Defaults to `created_by_me`.                                                                                                                                                                                                                                       |
+| `search`                        | string         | No       | Search merge requests against their `title` and `description`.                                                                                                                                                                                                                                                                                             |
+| `sort`                          | string         | No       | Returns requests sorted in `asc` or `desc` order. Default is `desc`.                                                                                                                                                                                                                                                                                       |
+| `source_branch`                 | string         | No       | Returns merge requests with the given source branch.                                                                                                                                                                                                                                                                                                       |
+| `state`                         | string         | No       | Returns all merge requests or just those that are `opened`, `closed`, `locked`, or `merged`.                                                                                                                                                                                                                                                               |
+| `target_branch`                 | string         | No       | Returns merge requests with the given target branch.                                                                                                                                                                                                                                                                                                       |
+| `updated_after`                 | datetime       | No       | Returns merge requests updated on or after the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                           |
+| `updated_before`                | datetime       | No       | Returns merge requests updated on or before the given time. Expected in ISO 8601 format (`2019-03-15T08:00:00Z`).                                                                                                                                                                                                                                          |
+| `view`                          | string         | No       | If `simple`, returns the `iid`, URL, title, description, and basic state of merge request.                                                                                                                                                                                                                                                                 |
+| `with_labels_details`           | boolean        | No       | If `true`, response returns more details for each label in labels field: `:name`, `:color`, `:description`, `:description_html`, `:text_color`. Default is `false`.                                                                                                                                                                                        |
 | `with_merge_status_recheck`     | boolean        | No       | If `true`, this projection requests (but does not guarantee) an asynchronous recalculation of the `merge_status` field. Default is `false`. In GitLab 15.11 and later, enable the `restrict_merge_status_recheck` feature [flag](../administration/feature_flags.md) to ignore this attribute when requested by users without at least the Developer role. |
-| `wip`                           | string         | No       | Filter merge requests against their `wip` status. Use `yes` to return *only* draft merge requests, `no` to return *non-draft* merge requests. |
+| `wip`                           | string         | No       | Filter merge requests against their `wip` status. Use `yes` to return *only* draft merge requests, `no` to return *non-draft* merge requests.                                                                                                                                                                                                              |
 
 Example response:
 
@@ -1018,8 +1018,37 @@ Supported attributes:
 
 | Attribute           | Type              | Required | Description |
 |---------------------|-------------------|----------|-------------|
-| `id`                | integer or string | Yes      | The ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `merge_request_iid` | integer           | Yes      | The internal ID of the merge request. |
+| `id`                | integer or string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `merge_request_iid` | integer           | Yes      | Internal ID of the merge request. |
+
+If successful, returns [`200 OK`](rest/index.md#status-codes) and the following
+response attributes:
+
+| Attribute                     | Type         | Description |
+|-------------------------------|--------------|-------------|
+| `commits`                     | object array | Commits in the merge request. |
+| `commits[].id`                | string       | ID of the commit. |
+| `commits[].short_id`          | string       | Short ID of the commit. |
+| `commits[].created_at`        | datetime     | Identical to the `committed_date` field. |
+| `commits[].parent_ids`        | array        | IDs of the parent commits. |
+| `commits[].title`             | string       | Commit title. |
+| `commits[].message`           | string       | Commit message. |
+| `commits[].author_name`       | string       | Commit author's name. |
+| `commits[].author_email`      | string       | Commit author's email address. |
+| `commits[].authored_date`     | datetime     | Commit authored date. |
+| `commits[].committer_name`    | string       | Name of the committer. |
+| `commits[].committer_email`   | string       | Email address of the committer. |
+| `commits[].committed_date`    | datetime     | Commit date. |
+| `commits[].trailers`          | object       | Git trailers parsed for the commit. Duplicate keys include the last value only. |
+| `commits[].extended_trailers` | object       | Git trailers parsed for the commit. |
+| `commits[].web_url`           | string       | Web URL of the merge request. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/1/merge_requests/1/commits"
+```
 
 Example response:
 
@@ -1031,8 +1060,15 @@ Example response:
     "title": "Replace sanitize with escape once",
     "author_name": "Example User",
     "author_email": "user@example.com",
+    "authored_date": "2012-09-20T11:50:22+03:00",
+    "committer_name": "Example User",
+    "committer_email": "user@example.com",
+    "committed_date": "2012-09-20T11:50:22+03:00",
     "created_at": "2012-09-20T11:50:22+03:00",
-    "message": "Replace sanitize with escape once"
+    "message": "Replace sanitize with escape once",
+    "trailers": {},
+    "extended_trailers": {},
+    "web_url": "https://gitlab.example.com/project/-/commit/ed899a2f4b50b4370feeea94676502b42383c746"
   },
   {
     "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
@@ -1040,8 +1076,15 @@ Example response:
     "title": "Sanitize for network graph",
     "author_name": "Example User",
     "author_email": "user@example.com",
+    "authored_date": "2012-09-20T09:06:12+03:00",
+    "committer_name": "Example User",
+    "committer_email": "user@example.com",
+    "committed_date": "2012-09-20T09:06:12+03:00",
     "created_at": "2012-09-20T09:06:12+03:00",
-    "message": "Sanitize for network graph"
+    "message": "Sanitize for network graph",
+    "trailers": {},
+    "extended_trailers": {},
+    "web_url": "https://gitlab.example.com/project/-/commit/6104942438c14ec7bd21c6cd5bd995272b3faff6"
   }
 ]
 ```

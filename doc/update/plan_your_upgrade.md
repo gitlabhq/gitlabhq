@@ -122,7 +122,7 @@ to your instance and then upgrade it for any relevant features you're using.
   [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
   upgrade.
 - About PostgreSQL:
-  1. On the left sidebar, at the bottom, select **Admin Area**..
+  1. On the left sidebar, at the bottom, select **Admin area**..
   1. Look for the version of PostgreSQL you are using.
      If [a PostgreSQL upgrade is needed](../administration/package_information/postgresql_versions.md),
      account for the relevant
@@ -181,7 +181,7 @@ If anything doesn't go as planned:
   - [`kubesos`](https://gitlab.com/gitlab-com/support/toolbox/kubesos/) if
     you installed GitLab using the Helm Charts.
 - For support:
-  - [Contact GitLab Support](https://support.gitlab.com) and,
+  - [Contact GitLab Support](https://support.gitlab.com/hc/en-us) and,
     if you have one, your Customer Success Manager.
   - If [the situation qualifies](https://about.gitlab.com/support/#definitions-of-support-impact)
     and [your plan includes emergency support](https://about.gitlab.com/support/#priority-support),

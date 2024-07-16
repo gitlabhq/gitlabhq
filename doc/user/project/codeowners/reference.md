@@ -231,7 +231,7 @@ If a section heading cannot be parsed, the section is:
 1. Added to the previous section.
 1. If no previous section exists, the section is added to the default section.
 
-For example, this file is missing a square closing bracket:
+#### After the default section
 
 ```plaintext
 * @group
@@ -247,21 +247,20 @@ GitLab recognizes the heading `[Section name` as an entry. The default section i
   - `[Section` owned by `name`
   - `docs/` owned by `@docs_group`
 
-This file contains an unescaped space between the words `Section` and `name`.
-GitLab recognizes the intended heading as an entry:
+#### After a named section
 
 ```plaintext
 [Docs]
 docs/**/* @group
 
-[Section name]{2} @group
+[Section name
 docs/ @docs_group
 ```
 
-The `[Docs]` section then includes 3 rules:
+GitLab recognizes the heading `[Section name` as an entry. The `[Docs]` section includes 3 rules:
 
 - `docs/**/*` owned by `@group`
-- `[Section` owned by `name]{2} @group`
+- `[Section` owned by `name`
 - `docs/` owned by `@docs_group`
 
 ### Malformed owners

@@ -108,7 +108,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the Admin Area under **Settings > Search** check that the
+- From the Admin area under **Settings > Search** check that the
   advanced search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:
@@ -142,6 +142,49 @@ There are a couple of ways to achieve that:
   ::Gitlab::CurrentSettings.search_using_elasticsearch?(scope: Namespace.find_by_full_path("/my-namespace"))
   ::Gitlab::CurrentSettings.search_using_elasticsearch?(scope: Project.find_by_full_path("/my-namespace/my-project"))
   ```
+
+## Troubleshooting access
+
+### User: anonymous is not authorized to perform: es:ESHttpGet
+
+When using a domain level access policy with AWS OpenSearch or Elasticsearch, the AWS role is not assigned to the
+correct GitLab nodes. The GitLab Rails and Sidekiq nodes require permission to communicate with the search cluster.
+
+```plaintext
+User: anonymous is not authorized to perform: es:ESHttpGet because no resource-based policy allows the es:ESHttpGet
+action
+```
+
+To fix this, ensure the AWS role is assigned to the correct GitLab nodes.
+
+### Credential should be scoped to a valid region
+
+When using AWS authorization with Advanced search, the region must be valid.
+
+### No permissions for `[indices:data/write/bulk]`
+
+When using fine-grained access control with an IAM role or a role created using AWS OpenSearch Dashboards, you might
+encounter the following error:
+
+```json
+{
+  "error": {
+    "root_cause": [
+      {
+        "type": "security_exception",
+        "reason": "no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"
+      }
+    ],
+    "type": "security_exception",
+    "reason": "no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"
+  },
+  "status": 403
+}
+```
+
+To fix this, you need
+to [map the roles to users](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-mapping)
+in the AWS OpenSearch Dashboards.
 
 ## Troubleshooting indexing
 
@@ -405,7 +448,7 @@ These settings limit indexing to 2000 documents per minute.
 
 To adjust worker settings:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Select the **Requeue indexing workers** checkbox.
@@ -459,7 +502,7 @@ AWS has [network limits](https://docs.aws.amazon.com/opensearch-service/latest/d
 
 Set a custom `gitlab_rails['env']` environment variable, called [`no_proxy`](https://docs.gitlab.com/omnibus/settings/environment-variables.html) with the IP address of your Elasticsearch host.
 
-## My single node Elasticsearch cluster status never goes from `yellow` to `green` even though everything seems to be running properly
+## My single node Elasticsearch cluster status never goes from `yellow` to `green`
 
 **For a single node Elasticsearch cluster the functional cluster health status is yellow** (never green) because the primary shard is allocated but replicas cannot be as there is no other node to which Elasticsearch can assign a replica. This also applies if you are using the [Amazon OpenSearch](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/aes-handling-errors.html#aes-handling-errors-yellow-cluster-status) service.
 
@@ -511,16 +554,6 @@ Advanced search stores all the projects in the same Elasticsearch indices,
 however, searches only surface results that can be viewed by the user.
 Advanced search honors all permission checks in the application by
 filtering out projects that a user does not have access to at search time.
-
-### Role mapping when using fine-grained access control with AWS Elasticsearch or OpenSearch
-
-When using fine-grained access control with an IAM role or a role created using OpenSearch Dashboards, you might encounter the following error:
-
-```plaintext
-{"error":{"root_cause":[{"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"}],"type":"security_exception","reason":"no permissions for [indices:data/write/bulk] and User [name=arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE, backend_roles=[arn:aws:iam::xxx:role/INSERT_ROLE_NAME_HERE], requestedTenant=null]"},"status":403}
-```
-
-To fix this, you need to [map the roles to users](https://docs.aws.amazon.com/opensearch-service/latest/developerguide/fgac.html#fgac-mapping) in Kibana.
 
 ## Elasticsearch workers overload Sidekiq
 

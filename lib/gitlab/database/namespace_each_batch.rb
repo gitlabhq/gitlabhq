@@ -127,8 +127,8 @@ module Gitlab
 
         recursive_cte << base_namespace_class.select(
           Arel.sql(cursor[:current_id].to_s).as('current_id'),
-          Arel.sql("ARRAY[#{cursor[:depth].join(',')}]::int[]").as('depth'),
-          Arel.sql("ARRAY[#{ids}]::int[]").as('ids'),
+          Arel.sql("ARRAY[#{cursor[:depth].join(',')}]::bigint[]").as('depth'),
+          Arel.sql("ARRAY[#{ids}]::bigint[]").as('ids'),
           Arel.sql('1::bigint AS count'),
           Arel.sql('0::bigint AS index')
         ).from('(VALUES (1)) AS initializer_row')
@@ -166,8 +166,8 @@ module Gitlab
 
         base_namespace_class.select(
           base_namespace_class.arel_table[:id].as('current_id'),
-          Arel.sql("cte.depth || #{base_namespace_table}.id").as('depth'),
-          Arel.sql("cte.ids || #{base_namespace_table}.id").as('ids'),
+          Arel.sql("cte.depth || #{base_namespace_table}.id::bigint").as('depth'),
+          Arel.sql("cte.ids || #{base_namespace_table}.id::bigint").as('ids'),
           Arel.sql('cte.count + 1').as('count'),
           Arel.sql('1::bigint AS index')
         ).from("cte, LATERAL (#{lateral_query.to_sql}) #{base_namespace_table}")
@@ -183,8 +183,8 @@ module Gitlab
 
         base_namespace_class.select(
           base_namespace_class.arel_table[:id].as('current_id'),
-          Arel.sql("cte.depth[:array_length(cte.depth, 1) - 1] || #{base_namespace_table}.id").as('depth'),
-          Arel.sql("cte.ids || #{base_namespace_table}.id").as('ids'),
+          Arel.sql("cte.depth[:array_length(cte.depth, 1) - 1] || #{base_namespace_table}.id::bigint").as('depth'),
+          Arel.sql("cte.ids || #{base_namespace_table}.id::bigint").as('ids'),
           Arel.sql('cte.count + 1').as('count'),
           Arel.sql('2::bigint AS index')
         ).from("cte, LATERAL (#{lateral_query.to_sql}) #{base_namespace_table}")
@@ -198,7 +198,7 @@ module Gitlab
           Arel.sql('cte.count + 1').as('count'),
           Arel.sql('3::bigint AS index')
         ).from('cte')
-          .where('cte.depth <> ARRAY[]::int[]')
+          .where("cte.depth <> '{}'")
           .limit(1)
       end
 

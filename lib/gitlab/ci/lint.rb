@@ -81,7 +81,7 @@ module Gitlab
         logger.instrument(:yaml_process, once: true) do
           Gitlab::Ci::YamlProcessor.new(content, project: project,
             user: current_user,
-            ref: project_ref_name,
+            ref: RefFinder.new(project).find_by_sha(sha),
             sha: sha,
             verify_project_sha: verify_project_sha,
             logger: logger).execute
@@ -143,28 +143,6 @@ module Gitlab
             duration >= LOG_MAX_DURATION_THRESHOLD
           end
         end
-      end
-
-      def project_ref_name
-        return unless project
-
-        Rails.cache.fetch(['project', project.id, 'ref/containing/sha', sha], expires_in: 5.minutes) do
-          break unless project_sha_exists?
-
-          project_sha_branch_name || project_sha_tag_name
-        end
-      end
-
-      def project_sha_branch_name
-        project.repository.branch_names_contains(sha, limit: 1).first
-      end
-
-      def project_sha_tag_name
-        project.repository.tag_names_contains(sha, limit: 1).first
-      end
-
-      def project_sha_exists?
-        sha && project.repository_exists? && project.commit(sha)
       end
     end
   end

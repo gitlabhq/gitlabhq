@@ -72,7 +72,7 @@ module InternalEventsCli
 
       event.action = cli.ask("Define the event name: #{input_required_text}", **input_opts) do |q|
         q.required true
-        q.validate ->(input) { input =~ /\A[a-z1-9_]+\z/ && !events_by_filepath.values.map(&:action).include?(input) } # rubocop:disable Rails/NegateInclude -- Not rails
+        q.validate ->(input) { input =~ /\A[a-z1-9_]+\z/ && cli.global.events.map(&:action).none?(input) }
         q.modify :trim
         q.messages[:valid?] = format_warning("Invalid event name. Only lowercase/numbers/underscores allowed. " \
                                              "Ensure %{value} is not an existing event.")
@@ -121,17 +121,17 @@ module InternalEventsCli
           { value: :none, name: 'None! Continue to next section!' },
           disableable_option(
             value: :label,
-            name: 'String 1 (aka label)',
+            name: 'String 1 (attribute will be named `label`)',
             disabled: disabled
           ) { !available_props.include?(:label) },
           disableable_option(
             value: :property,
-            name: 'String 2 (aka property)',
+            name: 'String 2 (attribute will be named `property`)',
             disabled: disabled
           ) { !available_props.include?(:property) },
           disableable_option(
             value: :value,
-            name: 'Number (aka value)',
+            name: 'Number (attribute will be named `value`)',
             disabled: disabled
           ) { !available_props.include?(:value) }
         ]
@@ -209,17 +209,24 @@ module InternalEventsCli
       next_step = cli.select("How would you like to proceed?", **select_opts) do |menu|
         menu.enum "."
 
-        if File.exist?(event.file_path)
-          menu.choice "Create Metric -- define a new metric using #{event.action}.yml", :add_metric
-        else
-          menu.choice "Save & Create Metric -- save #{event.action}.yml and define a matching metric", :save_and_add
-        end
+        menu.choice "New Event -- define another event", :new_event
+
+        choice = if File.exist?(event.file_path)
+                   ["Create Metric -- define a new metric using #{event.action}.yml", :add_metric]
+                 else
+                   ["Save & Create Metric -- save #{event.action}.yml and define a matching metric", :save_and_add]
+                 end
+
+        menu.default choice[0]
+        menu.choice(*choice)
 
         menu.choice "View Usage -- look at code examples for #{event.action}.yml", :view_usage
         menu.choice 'Exit', :exit
       end
 
       case next_step
+      when :new_event
+        InternalEventsCli::EventDefiner.new(cli).run
       when :add_metric
         MetricDefiner.new(cli, event.file_path).run
       when :save_and_add

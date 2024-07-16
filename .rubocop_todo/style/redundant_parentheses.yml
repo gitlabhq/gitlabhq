@@ -4,7 +4,6 @@ Style/RedundantParentheses:
   Exclude:
     - 'app/graphql/resolvers/concerns/caching_array_resolver.rb'
     - 'app/graphql/resolvers/tree_resolver.rb'
-    - 'app/models/abuse/trust_score.rb'
     - 'app/models/ci/build_metadata.rb'
     - 'app/models/concerns/has_wiki_page_meta_attributes.rb'
     - 'app/services/lfs/file_transformer.rb'

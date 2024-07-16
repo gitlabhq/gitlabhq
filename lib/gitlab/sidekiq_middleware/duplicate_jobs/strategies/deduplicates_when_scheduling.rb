@@ -15,18 +15,7 @@ module Gitlab
 
           override :schedule
           def schedule(job)
-            if deduplicatable_job? && check! && duplicate_job.duplicate?
-              job['duplicate-of'] = duplicate_job.existing_jid
-
-              if duplicate_job.idempotent?
-                duplicate_job.update_latest_wal_location!
-                duplicate_job.set_deduplicated_flag!
-
-                Gitlab::SidekiqLogging::DeduplicationLogger.instance.deduplicated_log(
-                  job, strategy_name, duplicate_job.options)
-                return false
-              end
-            end
+            return false if deduplicate?(job)
 
             yield
           end
@@ -37,6 +26,34 @@ module Gitlab
           end
 
           private
+
+          def deduplicate?(job)
+            # no redis operations, hence this can be checked outside of the lease
+            return false unless deduplicatable_job?
+
+            with_dedup_lock do
+              next false unless check! && duplicate_job.duplicate?
+
+              job['duplicate-of'] = duplicate_job.existing_jid
+
+              next false unless duplicate_job.idempotent? # only dedup idempotent jobs
+
+              duplicate_job.update_latest_wal_location!
+              duplicate_job.set_deduplicated_flag!
+
+              Gitlab::SidekiqLogging::DeduplicationLogger.instance.deduplicated_log(
+                job, strategy_name, duplicate_job.options)
+
+              true
+            end
+          rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+            Gitlab::SidekiqLogging::DeduplicationLogger.instance.lock_error_log(job)
+
+            # If lock acquisition fails, we enqueue the jobs:
+            # non-idempotent jobs are not deduplicated while
+            # idempotent jobs can be safely run multiple times with the same args
+            false
+          end
 
           def update_job_wal_location!(job)
             job['dedup_wal_locations'] = duplicate_job.latest_wal_locations if duplicate_job.latest_wal_locations.present?

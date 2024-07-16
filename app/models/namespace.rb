@@ -110,6 +110,10 @@ class Namespace < ApplicationRecord
 
   has_many :jira_connect_subscriptions, class_name: 'JiraConnectSubscription', foreign_key: :namespace_id, inverse_of: :namespace
 
+  has_many :import_source_users, class_name: 'Import::SourceUser', foreign_key: :namespace_id, inverse_of: :namespace
+  has_one :namespace_import_user, class_name: 'Import::NamespaceImportUser', foreign_key: :namespace_id, inverse_of: :namespace
+  has_one :import_user, class_name: 'User', through: :namespace_import_user, foreign_key: :user_id
+
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
   validates :name,
     presence: true,
@@ -176,7 +180,8 @@ class Namespace < ApplicationRecord
   delegate :math_rendering_limits_enabled?,
     :lock_math_rendering_limits_enabled?,
     to: :namespace_settings
-  delegate :add_creator, to: :namespace_details
+  delegate :add_creator, :pending_delete, :pending_delete=,
+    to: :namespace_details
 
   before_create :sync_share_with_group_lock_with_parent
   before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
@@ -194,6 +199,7 @@ class Namespace < ApplicationRecord
       saved_change_to_name?) || saved_change_to_path? || saved_change_to_parent_id?
   }
 
+  scope :without_deleted, -> { joins(:namespace_details).where(namespace_details: { pending_delete: false }) }
   scope :user_namespaces, -> { where(type: Namespaces::UserNamespace.sti_name) }
   scope :group_namespaces, -> { where(type: Group.sti_name) }
   scope :without_project_namespaces, -> { where(Namespace.arel_table[:type].not_eq(Namespaces::ProjectNamespace.sti_name)) }

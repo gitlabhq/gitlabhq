@@ -125,7 +125,6 @@ Performance/StringIdentifierArgument:
     - 'lib/gitlab/utils/lazy_attributes.rb'
     - 'lib/kramdown/parser/atlassian_document_format.rb'
     - 'lib/sidebars/context.rb'
-    - 'qa/qa/flow/purchase.rb'
     - 'qa/qa/page/component/ci_icon.rb'
     - 'qa/qa/page/component/note.rb'
     - 'qa/qa/resource/base.rb'

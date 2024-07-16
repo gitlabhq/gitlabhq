@@ -7,7 +7,6 @@ Rails/TimeZone:
     - 'ee/lib/gitlab/geo/event_gap_tracking.rb'
     - 'ee/lib/gitlab/geo/log_cursor/logger.rb'
     - 'ee/lib/gitlab/geo/oauth/login_state.rb'
-    - 'ee/spec/lib/gitlab/geo/base_request_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/cache_invalidation_event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/events/event_spec.rb'
     - 'ee/spec/lib/gitlab/geo/log_cursor/logger_spec.rb'

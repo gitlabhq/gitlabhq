@@ -2,9 +2,6 @@
 description: Project level CI CD Analytics pipelines tab has been visited
 internal_events: true
 action: p_analytics_ci_cd_pipelines
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

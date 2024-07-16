@@ -1,4 +1,4 @@
-import { DETAILED_MERGE_STATUS } from '../constants';
+import { DETAILED_MERGE_STATUS, MWCP_MERGE_STRATEGY } from '../constants';
 import { stateKey } from './state_maps';
 
 export default function deviseState() {
@@ -22,7 +22,8 @@ export default function deviseState() {
   }
   if (
     this.detailedMergeStatus === DETAILED_MERGE_STATUS.MERGEABLE ||
-    this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_STILL_RUNNING
+    this.detailedMergeStatus === DETAILED_MERGE_STATUS.CI_STILL_RUNNING ||
+    (!this.autoMergeEnabled && this.preferredAutoMergeStrategy === MWCP_MERGE_STRATEGY)
   ) {
     return stateKey.readyToMerge;
   }

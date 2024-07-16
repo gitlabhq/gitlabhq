@@ -54,7 +54,7 @@ is used, like `artifacts:reports:dast`. Afterwards, you can use just the subkey 
 ## Keyword type
 
 The keyword can be either a job or global keyword. If it can be used in a `default`
-section, make not of that as well, for example:
+section, make note of that as well. For example:
 
 - `**Keyword type**: Global keyword.`
 - `**Keyword type**: Job keyword. You can use it only as part of a job.`

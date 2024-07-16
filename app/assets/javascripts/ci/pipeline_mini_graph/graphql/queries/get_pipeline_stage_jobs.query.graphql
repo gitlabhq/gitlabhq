@@ -1,0 +1,28 @@
+query getPipelineStageJobs($id: CiStageID!) {
+  ciPipelineStage(id: $id) {
+    id
+    jobs {
+      nodes {
+        id
+        detailedStatus {
+          id
+          action {
+            id
+            confirmationMessage
+            icon
+            path
+            title
+          }
+          detailsPath
+          group
+          hasDetails
+          icon
+          tooltip
+        }
+        name
+        scheduled
+        scheduledAt
+      }
+    }
+  }
+}

@@ -47,6 +47,56 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
       end
     end
 
+    context 'with job:run attribute' do
+      let(:run_value) do
+        [
+          { name: 'step1', step: 'some_step_reference', env: { VAR1: 'value1', VAR2: 'value2' } },
+          { name: 'step2', script: "echo 'Hello, World!'", inputs: { input1: 'input_value1', input2: 'input_value1223' } }
+        ].map(&:deep_stringify_keys)
+      end
+
+      let(:attributes) do
+        {
+          name: 'rspec',
+          ref: 'master',
+          options: {
+            run: run_value
+          }
+        }
+      end
+
+      it 'includes execution_config attribute with run steps' do
+        expect(subject[:execution_config]).to an_object_having_attributes(
+          project: pipeline.project,
+          pipeline: pipeline,
+          run_steps: run_value
+        )
+      end
+
+      context 'when feature flag is disabled' do
+        before do
+          stub_feature_flags(pipeline_run_keyword: false)
+        end
+
+        it 'does not include execution_config attribute' do
+          expect(subject).not_to include(:execution_config)
+        end
+      end
+
+      context 'when job:run attribute is not specified' do
+        let(:attributes) do
+          {
+            name: 'rspec',
+            ref: 'master'
+          }
+        end
+
+        it 'does not include execution_config attribute' do
+          expect(subject).not_to include(:execution_config)
+        end
+      end
+    end
+
     context 'with job:rules:[when:delayed]' do
       context 'is matched' do
         let(:attributes) { { name: 'rspec', ref: 'master', rules: [{ if: '$VAR == null', when: 'delayed', start_in: '3 hours' }] } }

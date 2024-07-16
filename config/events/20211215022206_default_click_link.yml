@@ -1,9 +1,6 @@
 description: "Go to evironments documentation"
 category: default
 action: click_link
-label_description: ""
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: environments

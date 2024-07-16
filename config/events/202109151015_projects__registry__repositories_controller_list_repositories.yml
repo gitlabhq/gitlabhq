@@ -1,12 +1,9 @@
 description: List project repositories
 category: Projects::Registry::RepositoriesController
 action: list_repositories
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
-product_group: group::package
+product_group: package_registry
 milestone: "13.5"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/41846
 distributions:

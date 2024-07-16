@@ -53,7 +53,7 @@ describe('Download Dropdown', () => {
     it('renders a GlDisclosureDropdown dropdown with correct props', () => {
       expect(findDropdown().props()).toMatchObject({
         toggleText: 'Download',
-        placement: 'right',
+        placement: 'bottom-end',
         icon: 'download',
         autoClose: false,
       });

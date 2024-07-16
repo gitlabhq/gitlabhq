@@ -1,24 +1,48 @@
 <script>
-import { GlAvatarLabeled, GlBadge, GlTableLite, GlTooltipDirective } from '@gitlab/ui';
+import {
+  GlAvatarLabeled,
+  GlBadge,
+  GlKeysetPagination,
+  GlLoadingIcon,
+  GlTable,
+  GlTooltipDirective,
+} from '@gitlab/ui';
 import { s__ } from '~/locale';
 
-import { placeholderUserBadges } from '~/import_entities/import_groups/constants';
+import {
+  PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
+  PLACEHOLDER_STATUS_COMPLETED,
+  placeholderUserBadges,
+} from '~/import_entities/import_groups/constants';
+import PlaceholderActions from './placeholder_actions.vue';
 
 export default {
   name: 'PlaceholdersTable',
   components: {
     GlAvatarLabeled,
     GlBadge,
-    GlTableLite,
+    GlKeysetPagination,
+    GlLoadingIcon,
+    GlTable,
+    PlaceholderActions,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
   },
   props: {
+    isLoading: {
+      type: Boolean,
+      required: true,
+    },
     items: {
       type: Array,
       required: false,
       default: () => [],
+    },
+    pageInfo: {
+      type: Object,
+      required: false,
+      default: () => ({}),
     },
     reassigned: {
       type: Boolean,
@@ -57,33 +81,79 @@ export default {
     statusBadge(item) {
       return placeholderUserBadges[item.status];
     },
+
+    isReassignedItem(item) {
+      return (
+        item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER ||
+        item.status === PLACEHOLDER_STATUS_COMPLETED
+      );
+    },
+    reassginedUser(item) {
+      if (item.status === PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER) {
+        return item.placeholderUser;
+      }
+      if (item.status === PLACEHOLDER_STATUS_COMPLETED) {
+        return item.reassignToUser;
+      }
+
+      return {};
+    },
   },
 };
 </script>
 
 <template>
-  <gl-table-lite :items="items" :fields="fields">
-    <template #cell(user)="{ item }">
-      <gl-avatar-labeled
-        :size="32"
-        :src="item.avatar_url"
-        :label="item.name"
-        :sub-label="item.username"
+  <div>
+    <gl-table :items="items" :fields="fields" :busy="isLoading">
+      <template #table-busy>
+        <gl-loading-icon size="lg" class="gl-my-5" />
+      </template>
+
+      <template #cell(user)="{ item }">
+        <gl-avatar-labeled
+          v-if="item.placeholderUser"
+          :size="32"
+          :src="item.placeholderUser.avatarUrl"
+          :label="item.placeholderUser.name"
+          :sub-label="`@${item.placeholderUser.username}`"
+        />
+      </template>
+
+      <template #cell(source)="{ item }">
+        <div>{{ item.sourceHostname }}</div>
+        <div class="gl-mt-2">{{ item.sourceUsername }}</div>
+      </template>
+
+      <template #cell(status)="{ item }">
+        <gl-badge
+          v-if="statusBadge(item)"
+          v-gl-tooltip="statusBadge(item).tooltip"
+          :variant="statusBadge(item).variant"
+          tabindex="0"
+          >{{ statusBadge(item).text }}</gl-badge
+        >
+      </template>
+
+      <template #cell(actions)="{ item }">
+        <gl-avatar-labeled
+          v-if="isReassignedItem(item)"
+          :size="32"
+          :src="reassginedUser(item).avatarUrl"
+          :label="reassginedUser(item).name"
+          :sub-label="`@${reassginedUser(item).username}`"
+        />
+        <placeholder-actions v-else :source-user="item" />
+      </template>
+    </gl-table>
+
+    <div v-if="pageInfo.hasNextPage || pageInfo.hasPreviousPage" class="gl-text-center gl-mt-5">
+      <gl-keyset-pagination
+        v-bind="pageInfo"
+        :prev-text="__('Prev')"
+        :next-text="__('Next')"
+        @prev="$emit('prev')"
+        @next="$emit('next')"
       />
-    </template>
-
-    <template #cell(source)="{ item }">
-      <div>{{ item.source_hostname }}</div>
-      <div class="gl-mt-2">{{ item.source_username }}</div>
-    </template>
-
-    <template #cell(status)="{ item }">
-      <gl-badge
-        v-gl-tooltip="statusBadge(item).tooltip"
-        :variant="statusBadge(item).variant"
-        tabindex="0"
-        >{{ statusBadge(item).text }}</gl-badge
-      >
-    </template>
-  </gl-table-lite>
+    </div>
+  </div>
 </template>

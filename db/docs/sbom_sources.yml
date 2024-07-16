@@ -7,5 +7,5 @@ feature_categories:
 description: Stores information about where an SBoM component originated from
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90812
 milestone: '15.2'
-gitlab_schema: gitlab_main
+gitlab_schema: gitlab_sec
 sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457096

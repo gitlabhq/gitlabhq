@@ -194,6 +194,7 @@ RSpec.describe Ci::Partitionable, feature_category: :continuous_integration do
         Ci::BuildMetadata
         Ci::BuildExecutionConfig
         Ci::BuildName
+        Ci::BuildTag
         Ci::BuildSource
         Ci::JobAnnotation
         Ci::JobArtifact

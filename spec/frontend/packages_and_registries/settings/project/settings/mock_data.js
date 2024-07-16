@@ -222,7 +222,8 @@ export const createContainerProtectionRuleMutationInput = {
 };
 
 export const createContainerProtectionRuleMutationPayloadErrors = [
-  'Repository path pattern has already been taken',
+  'Repository path pattern should be a valid container repository path with optional wildcard characters.',
+  "Repository path pattern should start with the project's full path",
 ];
 
 export const deleteContainerProtectionRuleMutationPayload = ({

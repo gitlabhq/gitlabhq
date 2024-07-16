@@ -189,7 +189,15 @@ module QA
           element.to_s.underline.bright
         end
 
+        # Log message for has_element? and has_no_element? methods
+        #
+        # @param [String] method the method name
+        # @param [Symbol, String, QA::Page::Element] name the name of the element
+        # @param [Boolean] found the result of the method
+        # @param [Hash] kwargs
         def log_has_element_or_not(method, name, found, **kwargs)
+          name = name.name if name.is_a? QA::Page::Element
+
           msg = ["#{method} :#{name}"]
           msg << %(with text "#{kwargs[:text]}") if kwargs[:text]
           msg << "class: #{kwargs[:class]}" if kwargs[:class]

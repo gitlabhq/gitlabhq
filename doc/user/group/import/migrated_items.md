@@ -156,11 +156,20 @@ Merge request-related project items that are migrated to the destination GitLab 
 |:----------------------------------------|:--------------------------------------------------------------------|
 | Multiple merge request assignees        | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
 | Merge request reviewers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
-| Merge request approvers                 | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
+| Merge request approvers<sup>1</sup>     | [GitLab 15.3](https://gitlab.com/gitlab-org/gitlab/-/issues/339520) |
 | Merge request resource state events     | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
 | Merge request resource milestone events | [GitLab 15.4](https://gitlab.com/gitlab-org/gitlab/-/issues/291983) |
 | Issue URL references                    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) |
 | Time tracking                           | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
+
+**Footnotes:**
+
+1. Includes the list of approvers for specific merge requests and includes systems notes that mention the approvals.
+   Also includes the following items that are related to merge request approvals:
+
+   - [Approvals for protected branches](../../project/merge_requests/approvals/rules.md#approvals-for-protected-branches).
+   - The list of [users that can approve merge requests](../../project/merge_requests/approvals/rules.md#add-an-approval-rule)
+     except in cases where a group was added as an approver.
 
 ### Setting-related items
 
@@ -186,6 +195,7 @@ Some project items are excluded from migration because they either:
   - Webhooks
 - Are not supported:
   - Agents
+  - Approval rules, except for those [mentioned above](#merge-request-related-items).
   - Container Registry
   - Environments
   - Feature flags

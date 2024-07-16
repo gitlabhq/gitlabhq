@@ -1,6 +1,6 @@
 ---
 stage: Verify
-group: Pipeline Security
+group: Pipeline Execution
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
@@ -82,6 +82,10 @@ Download the artifacts zipped archive from the latest **successful** pipeline fo
 the given reference name and job, provided the job finished successfully. This
 is the same as [getting the job's artifacts](#get-job-artifacts), but by
 defining the job's name instead of its ID.
+
+To determine which pipeline is the latest successful pipeline, GitLab checks the creation time
+of the successful pipelines. The start or end time of individual jobs does not affect
+which pipeline is the latest.
 
 If you use cURL to download artifacts from GitLab.com, use the `--location` parameter
 as the request might redirect through a CDN.

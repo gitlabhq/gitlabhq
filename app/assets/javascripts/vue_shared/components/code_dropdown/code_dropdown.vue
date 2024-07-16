@@ -140,7 +140,7 @@ export default {
     :toggle-text="$options.i18n.defaultLabel"
     category="primary"
     variant="confirm"
-    placement="right"
+    placement="bottom-end"
     class="code-dropdown gl-text-left"
     fluid-width
     data-testid="code-dropdown"

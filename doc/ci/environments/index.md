@@ -268,7 +268,9 @@ To achieve the same result as renaming an environment:
 Sometimes, instead of using an [industry standard](https://en.wikipedia.org/wiki/Deployment_environment)
 environment name, like `production`, you might want to use a code name, like `customer-portal`.
 While there is no technical reason not to use a name like `customer-portal`, the name
-no longer indicates that the environment is used for production.
+no longer indicates that the environment is used for production. This can affect how metrics
+like [deployment frequency](../../user/analytics/dora_metrics.md#how-deployment-frequency-is-calculated)
+are calculated.
 
 To indicate that a specific environment is for a specific use,
 you can use tiers:
@@ -282,6 +284,7 @@ you can use tiers:
 | `other`          |                                                    |
 
 By default, GitLab assumes a tier based on [the environment name](../yaml/index.md#environmentname).
+You cannot set an environment tier using the UI.
 Instead, you can use the [`deployment_tier` keyword](../yaml/index.md#environmentdeployment_tier) to specify a tier.
 
 ## Configure manual deployments

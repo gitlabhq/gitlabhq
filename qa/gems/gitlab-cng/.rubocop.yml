@@ -1,0 +1,27 @@
+# We need to ignore exclusions defined in parent RuboCop configuration
+# (AllCops/Exclude: 'gems/**/*') if RuboCop cop is run within `gems/...`.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/417281
+<%
+  relative_path = Dir.pwd.delete_prefix(File.expand_path('../../..'))
+  RuboCop::ConfigLoader.ignore_parent_exclusion = relative_path.start_with?('/qa/gems/')
+%>
+---
+inherit_gem:
+  gitlab-styles:
+    - rubocop-default.yml
+
+AllCops:
+  TargetRubyVersion: 3.0
+  SuggestExtensions: false
+  NewCops: disable
+
+Rails:
+  Enabled: false
+
+CodeReuse/ActiveRecord:
+  Exclude:
+    - "**/*_spec.rb"
+
+RSpec/MultipleMemoizedHelpers:
+  Max: 25
+  AllowSubject: true

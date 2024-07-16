@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::PipelineArtifacts::CoverageReportService, feature_category: :build_artifacts do
+RSpec.describe Ci::PipelineArtifacts::CoverageReportService, feature_category: :pipeline_reports do
   describe '#execute' do
     let_it_be(:project) { create(:project, :repository) }
 

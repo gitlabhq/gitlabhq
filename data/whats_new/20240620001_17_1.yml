@@ -1,0 +1,113 @@
+- name: Model registry available in beta
+  description: |
+    GitLab now officially supports model registry in beta as a first-class concept. You can add and edit models directly via the UI, or use the MLflow integration to use GitLab as a model registry backend.
+
+    A model registry is a hub that helps data science teams manage machine learning models and their related metadata. It serves as a centralized location for organizations to store, version, document, and discover trained machine learning models. It ensures better collaboration, reproducibility, and governance over the entire model lifecycle.
+
+    We think of the model registry as a cornerstone concept that enables teams to collaborate, deploy, monitor, and continuously train models, and are very interested in your feedback. Please feel free to drop us a note in our [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/465405) and we'll get back in touch!
+  stage: modelops
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/ml/model_registry/
+  image_url: https://img.youtube.com/vi/8uyxk0vhifE/hqdefault.jpg
+  published_at: 2024-06-20
+  release: 17.1
+
+- name: See multiple GitLab Duo Code Suggestions in VS Code
+  description: |
+    GitLab Duo Code Suggestions in VS Code will now show you if there are multiple suggestions available. Simply hover over the suggestion and use the arrows or keyboard shortcut to cycle through the suggestions.
+  stage: create
+  self-managed: true
+  gitlab-com: true
+  available_in: [Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/repository/code_suggestions/supported_extensions.html#view-multiple-code-suggestions
+  image_url: https://about.gitlab.com/images/17_1/multiple-code-suggestions-vs-code.png
+  published_at: 2024-06-20
+  release: 17.1
+
+- name: Secret Push Protection available in beta
+  description: |
+    If a secret, like a key or an API token, is accidentally committed to a Git repository, anyone with repository access can impersonate the user of the secret for malicious purposes. To address this risk, most organizations require exposed secrets to be revoked and replaced, but you can save remediation time and reduce risk by preventing secrets from being pushed in the first place.
+
+    Secret push protection checks the content of each commit pushed to GitLab. [If any secrets are detected](https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection/detected_secrets.html), the push is blocked and displays information about the commit, including:
+
+    - The commit ID that contains the secret.
+    - The filename and line number that contains the secret.
+    - The type of secret.
+
+    Need to bypass secret push protection for testing? When you skip secret push detection, GitLab logs an audit event so you can investigate.
+
+    Secret push protection is available on GitLab.com and for Dedicated customers as a [Beta](https://docs.gitlab.com/ee/policy/experiment-beta-support.html#beta) feature and can be enabled on a [per project basis](https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection/index.html#enable-secret-push-protection-in-a-project). You can help us improve secret push protection by providing feedback in [issue 467408](https://gitlab.com/gitlab-org/gitlab/-/issues/467408).
+  stage: secure
+  self-managed: false
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/application_security/secret_detection/secret_push_protection
+  image_url: https://img.youtube.com/vi/2jBC3uBUlyU/hqdefault.jpg
+  published_at: 2024-06-20
+  release: 17.1
+
+- name: GitLab Runner Autoscaler is generally available
+  description: |
+    In earlier versions of GitLab, some customers needed an autoscaling solution for GitLab Runner on virtual machine instances on public cloud platforms. These customers had to rely on the legacy [Docker Machine executor](https://docs.gitlab.com/runner/configuration/autoscale.html) or custom solutions stitched together by using cloud provider technologies.
+
+    Today, we're pleased to announce the general availability of the GitLab Runner Autoscaler. The GitLab Runner Autoscaler is composed of GitLab-developed taskscaler and [fleeting](https://docs.gitlab.com/runner/fleet_scaling/fleeting.html) technologies and the cloud provider plugin for Google Compute Engine.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/runner/runner_autoscale/
+  image_url: https://about.gitlab.com/images/17_1/runner_fleeting_ga.png
+  published_at: 2024-06-20
+  release: 17.1
+
+- name: Improved wiki user experience
+  description: |
+    The wiki feature in GitLab 17.1 provides a more unified and efficient workflow:
+
+    - [Easier and quicker cloning](https://gitlab.com/gitlab-org/gitlab/-/issues/281830) with a new repository clone button. This improves collaboration, and speeds up access to the wiki content for editing or viewing.
+    - [A more obvious delete option](https://gitlab.com/gitlab-org/gitlab/-/issues/335169) in a more discoverable location. This reduces the time spent searching for it, and minimizes potential errors or confusion when managing wiki pages.
+    - [Allowing empty pages to be valid](https://gitlab.com/gitlab-org/gitlab/-/issues/221061), improving flexibility. Create empty placeholders when you need them. Focus on better planning and organization of wiki content, and fill in the empty pages later.
+
+    These enhancements improve ease of use, discoverability, and content management in your wiki's workflow. We want your wiki experience to be efficient and user-friendly. By making cloning repositories more accessible, relocating key options for better visibility, and allowing for the creation of empty placeholders, we're refining our platform to better meet your users' needs.
+  stage: plan
+  self-managed: true
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/project/wiki/
+  image_url: https://img.youtube.com/vi/t2z7sZoJ6oE/hqdefault.jpg
+  published_at: 2024-06-20
+  release: 17.1
+
+- name: Container images linked to signatures
+  description: |
+    The GitLab container registry now associates signed container images with their signatures. With this improvement, users can more easily:
+
+    - Identify which images are signed and which are not.
+    - Find and validate the signatures that are associated with a container image.
+
+    This improvement is generally available only on GitLab.com. Self-managed support is in beta and requires users to enable the
+    [next-generation container registry](https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html), which is also in beta.
+  stage: package
+  self-managed: false
+  gitlab-com: true
+  available_in: [Free, Premium, Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/user/packages/container_registry#container-image-signatures
+  image_url: https://about.gitlab.com/images/17_1/container-registry-signatures.png
+  published_at: 2024-06-20
+  release: 17.1
+
+- name: Runner fleet dashboard for groups
+  description: |
+    Operators of self-managed runner fleets at the group level need observability and the ability to quickly answer critical questions about their runner fleet infrastructure at a glance. With the runner fleet dashboard for groups, you directly have runner fleet observability and actionable insights in the GitLab UI. You can now quickly determine the runner health, and gain insights into runner usage metrics as well as CI/CD job queue service capabilities, in your organization's target service-level objectives.
+
+    Customers on GitLab.com can use all of the fleet dashboard metrics available for groups today. Self-managed customers can use most of the fleet dashboard metrics, but must configure the ClickHouse analytics database to use the **Runner usage** and **Wait time to pick a job** metrics.
+  stage: verify
+  self-managed: true
+  gitlab-com: true
+  available_in: [Ultimate]
+  documentation_link: https://docs.gitlab.com/ee/ci/runners/runner_fleet_dashboard_groups.html
+  image_url: https://about.gitlab.com/images/17_1/runners-fleet-dashboard-groups-beta.png
+  published_at: 2024-06-20
+  release: 17.1

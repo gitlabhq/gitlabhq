@@ -13,6 +13,7 @@ import (
 	"github.com/aws/aws-sdk-go/aws/awserr"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
@@ -102,12 +103,12 @@ func TestConcurrentS3ObjectUpload(t *testing.T) {
 			defer cancel()
 
 			object, err := NewS3Object(objectName, creds, config)
-			require.NoError(t, err)
+			assert.NoError(t, err)
 
 			// copy data
 			n, err := object.Consume(ctx, strings.NewReader(test.ObjectContent), deadline)
-			require.NoError(t, err)
-			require.Equal(t, test.ObjectSize, n, "Uploaded file mismatch")
+			assert.NoError(t, err)
+			assert.Equal(t, test.ObjectSize, n, "Uploaded file mismatch")
 
 			test.S3ObjectExists(t, sess, config, objectName, test.ObjectContent)
 			wg.Done()

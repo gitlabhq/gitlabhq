@@ -15,23 +15,6 @@
       = f.hidden_field :email, value: @invite_email
       = hidden_field_tag :invite_email, @invite_email
 
-  - experiment(:signup_intent_step_one, actor: current_user) do |e|
-    - e.candidate do
-      .form-group
-        = label_tag :signup_intent, s_('SignUp|I want to...')
-        = select_tag :signup_intent,
-          options_for_select([[s_('SignUp|Set up a new team'),
-              :select_signup_intent_dropdown_new_team_registration_step_one],
-            [s_('SignUp|Set up a new personal account'),
-              :select_signup_intent_dropdown_new_personal_account_registration_step_one],
-            [s_('SignUp|Join an existing team'),
-              :select_signup_intent_dropdown_join_existing_team_registration_step_one],
-            [s_('SignUp|Contribute to a public project on GitLab'),
-              :select_signup_intent_dropdown_contribute_public_project_registration_step_one]]),
-          prompt: s_('SignUp|Please select an option...'),
-          class: 'gl-form-select custom-select',
-          required: true
-
   .name.form-row
     .col.form-group
       = f.label :first_name, _('First name'), for: 'new_user_first_name'

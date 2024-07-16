@@ -12,6 +12,7 @@ import HelpPageLink from '~/vue_shared/components/help_page_link/help_page_link.
 import createProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/create_container_protection_rule.mutation.graphql';
 import { s__, __ } from '~/locale';
 
+const GRAPHQL_ACCESS_LEVEL_VALUE_NULL = null;
 const GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER = 'MAINTAINER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_OWNER = 'OWNER';
 const GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN = 'ADMIN';
@@ -44,7 +45,7 @@ export default {
         minimumAccessLevelForDelete: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER,
       },
       updateInProgress: false,
-      alertErrorMessage: '',
+      alertErrorMessages: [],
     };
   },
   computed: {
@@ -70,6 +71,7 @@ export default {
     },
     minimumAccessLevelOptions() {
       return [
+        { value: GRAPHQL_ACCESS_LEVEL_VALUE_NULL, text: __('Developer (default)') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_MAINTAINER, text: __('Maintainer') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_OWNER, text: __('Owner') },
         { value: GRAPHQL_ACCESS_LEVEL_VALUE_ADMIN, text: __('Admin') },
@@ -78,7 +80,7 @@ export default {
   },
   methods: {
     submit() {
-      this.clearAlertErrorMessage();
+      this.clearAlertErrorMessages();
 
       this.updateInProgress = true;
       return this.$apollo
@@ -89,9 +91,11 @@ export default {
           },
         })
         .then(({ data }) => {
-          const [errorMessage] = data?.createContainerRegistryProtectionRule?.errors ?? [];
-          if (errorMessage) {
-            this.alertErrorMessage = errorMessage;
+          const errorMessages = data?.createContainerRegistryProtectionRule?.errors ?? [];
+          if (errorMessages?.length) {
+            this.alertErrorMessages = Array.isArray(errorMessages)
+              ? errorMessages
+              : [errorMessages];
             return;
           }
 
@@ -101,17 +105,17 @@ export default {
           );
         })
         .catch(() => {
-          this.alertErrorMessage = this.$options.i18n.protectionRuleSavedErrorMessage;
+          this.alertErrorMessages = [this.$options.i18n.protectionRuleSavedErrorMessage];
         })
         .finally(() => {
           this.updateInProgress = false;
         });
     },
-    clearAlertErrorMessage() {
-      this.alertErrorMessage = null;
+    clearAlertErrorMessages() {
+      this.alertErrorMessages = [];
     },
     cancelForm() {
-      this.clearAlertErrorMessage();
+      this.clearAlertErrorMessages();
       this.$emit('cancel');
     },
   },
@@ -122,12 +126,12 @@ export default {
   <div class="gl-new-card-add-form gl-m-3">
     <gl-form @submit.prevent="submit" @reset="cancelForm">
       <gl-alert
-        v-if="alertErrorMessage"
+        v-if="alertErrorMessages.length"
         class="gl-mb-5"
         variant="danger"
-        @dismiss="clearAlertErrorMessage"
+        @dismiss="clearAlertErrorMessages"
       >
-        {{ alertErrorMessage }}
+        <div v-for="error in alertErrorMessages" :key="error">{{ error }}</div>
       </gl-alert>
 
       <gl-form-group
@@ -164,7 +168,6 @@ export default {
           v-model="protectionRuleFormData.minimumAccessLevelForPush"
           :options="minimumAccessLevelOptions"
           :disabled="isFieldDisabled"
-          required
         />
       </gl-form-group>
 
@@ -178,7 +181,6 @@ export default {
           v-model="protectionRuleFormData.minimumAccessLevelForDelete"
           :options="minimumAccessLevelOptions"
           :disabled="isFieldDisabled"
-          required
         />
       </gl-form-group>
 

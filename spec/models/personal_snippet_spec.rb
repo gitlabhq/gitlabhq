@@ -3,6 +3,10 @@
 require 'spec_helper'
 
 RSpec.describe PersonalSnippet do
+  describe 'validations' do
+    it { is_expected.to validate_presence_of(:organization_id) }
+  end
+
   describe '#embeddable?' do
     [
       { snippet: :public,   embeddable: true },

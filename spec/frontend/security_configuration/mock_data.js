@@ -202,7 +202,7 @@ export const preReceiveSecretDetectionMock = {
   'If any secrets are detected, the push is blocked.`,
   helpPath: SAST_HELP_PATH,
   configurationHelpPath: helpPagePath(
-    'user/application_security/secret_detection/pre_receive/index',
+    'user/application_security/secret_detection/secret_push_protection/index',
   ),
   type: PRE_RECEIVE_SECRET_DETECTION,
   available: true,

@@ -7,8 +7,9 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
     described_class.new(runner: runner, current_user: user, project_ids: new_projects.map(&:id)).execute
   end
 
-  let_it_be(:owner_project) { create(:project) }
-  let_it_be(:project2) { create(:project) }
+  let_it_be(:organization1) { create(:organization) }
+  let_it_be(:owner_project) { create(:project, organization: organization1) }
+  let_it_be(:project2) { create(:project, organization: organization1) }
 
   let(:original_projects) { [owner_project, project2] }
   let(:runner) { create(:ci_runner, :project, projects: original_projects) }
@@ -21,7 +22,8 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
       expect(runner).not_to receive(:assign_to)
 
       expect(execute).to be_error
-      expect(execute.message).to eq('user not allowed to assign runner')
+      expect(execute.reason).to eq(:not_authorized_to_assign_runner)
+      expect(execute.message).to eq(_('user not allowed to assign runner'))
     end
   end
 
@@ -33,13 +35,14 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
       expect(runner).not_to receive(:assign_to)
 
       expect(execute).to be_error
-      expect(execute.message).to eq('user not allowed to assign runner')
+      expect(execute.reason).to eq(:not_authorized_to_assign_runner)
+      expect(execute.message).to eq(_('user not allowed to assign runner'))
     end
   end
 
   context 'with authorized user' do
-    let_it_be(:project3) { create(:project) }
-    let_it_be(:project4) { create(:project) }
+    let_it_be(:project3) { create(:project, organization: organization1) }
+    let_it_be(:project4) { create(:project, organization: organization1) }
 
     let(:projects_with_maintainer_access) { original_projects }
 
@@ -57,7 +60,7 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
           runner.reload
 
           expect(runner.owner_project).to eq(owner_project)
-          expect(runner.projects.ids).to match_array([owner_project.id] + new_projects.map(&:id))
+          expect(runner.projects.ids).to match_array([owner_project, *new_projects].map(&:id))
         end
       end
 
@@ -70,7 +73,7 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
           runner.reload
 
           expect(runner.owner_project).to eq(owner_project)
-          expect(runner.projects.ids).to match_array([owner_project.id] + new_projects.map(&:id))
+          expect(runner.projects.ids).to eq([owner_project, *new_projects].map(&:id))
         end
       end
 
@@ -97,6 +100,7 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
         end
 
         expect(execute).to be_error
+        expect(execute.reason).to eq(:failed_runner_project_destroy)
         expect(runner.reload.projects.order(:id)).to eq(original_projects)
       end
     end
@@ -116,8 +120,37 @@ RSpec.describe ::Ci::Runners::SetRunnerAssociatedProjectsService, '#execute', fe
 
           it 'returns error response and rolls back transaction' do
             expect(execute).to be_error
-            expect(execute.errors).to contain_exactly('user is not authorized to add runners to project')
+            expect(execute.reason).to eq(:not_authorized_to_add_runner_in_project)
+            expect(execute.errors).to contain_exactly(_('user is not authorized to add runners to project'))
             expect(runner.reload.projects.order(:id)).to eq(original_projects)
+          end
+        end
+
+        context 'when some of the new projects are from a different organization' do
+          let_it_be(:organization2) { create(:organization) }
+          let_it_be(:project4) { create(:project, organization: organization2) }
+
+          it 'returns error response and rolls back transaction' do
+            expect(execute).to be_error
+            expect(execute.reason).to eq(:project_not_in_same_organization)
+            expect(execute.errors).to contain_exactly(
+              _('runner can only be assigned to projects in the same organization')
+            )
+            expect(runner.reload.projects.order(:id)).to eq(original_projects)
+          end
+
+          context 'with multiple failures' do
+            let(:projects_with_maintainer_access) { original_projects + [project4] }
+
+            it 'returns error response and rolls back transaction' do
+              expect(execute).to be_error
+              expect(execute.reason).to eq(:multiple_errors)
+              expect(execute.errors).to contain_exactly(
+                _('runner can only be assigned to projects in the same organization'),
+                _('user is not authorized to add runners to project')
+              )
+              expect(runner.reload.projects.order(:id)).to eq(original_projects)
+            end
           end
         end
       end

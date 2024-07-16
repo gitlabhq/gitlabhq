@@ -32,6 +32,7 @@ To use GitLab Duo on a self-managed instance, you must ensure connectivity exist
   to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://`.
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
+- In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.
 
 ### Allow inbound connections from clients to the GitLab instance
 
@@ -76,11 +77,11 @@ To turn off GitLab Duo for a group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Clear the **Use Duo features** checkbox.
+1. Clear the **Use GitLab Duo features** checkbox.
 1. Optional. Select the **Enforce for all subgroups** checkbox to cascade the setting to
    all subgroups.
 
-   ![Cascading setting](img/disable_duo_features_v17_0.png)
+   ![Cascading setting](img/disable_duo_features_v17_1.png)
 <!-- vale gitlab.Substitutions = YES -->
 
 ### Turn off for a project
@@ -114,7 +115,7 @@ Prerequisites:
 To turn off GitLab Duo for an instance:
 
 <!-- vale gitlab.Substitutions = NO -->
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**
 1. Expand **AI-powered features**.
 1. Clear the **Use Duo features** checkbox.
@@ -151,7 +152,7 @@ To turn on GitLab Duo experiment and beta features for a top-level group:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. Under **Experiment and beta features**, select the **Use experiment and beta features** checkbox.
+1. Under **GitLab Duo experiment and beta features**, select the **Use experiment and beta Duo features** checkbox.
 1. Select **Save changes**.
 
 This setting [cascades to all projects](../../user/project/merge_requests/approvals/settings.md#cascade-settings-from-the-instance-or-top-level-group)

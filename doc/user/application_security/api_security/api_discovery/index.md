@@ -53,7 +53,7 @@ Only applications that are built as Spring Boot [executable JARs](https://docs.s
 The easiest way to run API Discovery is through a pipeline job based on our CI template.
 When running in this method, you provide a container image that has the required dependencies installed (such as an appropriate Java runtime). See [Image Requirements](#image-requirements) for more information.
 
-1. A container image that meets the [image requirements](#image-requirements) is uploaded to a container registry. If the container registry requires authentication see [this help section](/ee/ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry).
+1. A container image that meets the [image requirements](#image-requirements) is uploaded to a container registry. If the container registry requires authentication see [this help section](../../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry).
 1. In a job in the `build` stage, build your application and configure the resulting Spring Boot executable JAR as a job artifact.
 1. Include the API Discovery template in your `.gitlab-ci.yml` file.
 

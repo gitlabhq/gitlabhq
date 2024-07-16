@@ -147,6 +147,7 @@ module MergeRequests
         draft: push_options[:draft],
         target_branch: push_options[:target],
         force_remove_source_branch: push_options[:remove_source_branch],
+        squash: push_options[:squash],
         label: push_options[:label],
         unlabel: push_options[:unlabel],
         assign: push_options[:assign],

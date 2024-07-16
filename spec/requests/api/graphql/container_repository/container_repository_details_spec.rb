@@ -114,7 +114,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
             expect(tags_response.size).to eq(repository_tags.size)
             expect(container_repository_details_response.dig('userPermissions', 'destroyContainerRepository')).to eq(destroy_container_repository)
           else
-            expect(container_repository_details_response).to eq(nil)
+            expect(container_repository_details_response).to be_nil
           end
         end
       end
@@ -304,13 +304,13 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       end
     end
 
-    context 'with not supporting the gitlab api' do
+    context 'when the GitLab API is not supported' do
       it 'returns nil' do
         stub_container_registry_gitlab_api_support(supported: false)
 
         subject
 
-        expect(size_response).to eq(nil)
+        expect(size_response).to be_nil
       end
     end
   end
@@ -331,48 +331,38 @@ RSpec.describe 'container repository details', feature_category: :container_regi
       GQL
     end
 
-    context 'on Gitlab.com', :saas do
-      it 'returns the last_published_at' do
-        stub_container_registry_gitlab_api_support(supported: true) do |client|
-          stub_container_registry_gitlab_api_repository_details(
-            client,
-            path: container_repository.path,
-            sizing: :self,
-            last_published_at: '2024-04-30T06:07:36.225Z'
-          )
-        end
+    it 'returns the last_published_at' do
+      stub_container_registry_gitlab_api_support(supported: true) do |client|
+        stub_container_registry_gitlab_api_repository_details(
+          client,
+          path: container_repository.path,
+          sizing: :self,
+          last_published_at: '2024-04-30T06:07:36.225Z'
+        )
+      end
+
+      subject
+
+      expect(last_published_at_response).to eq('2024-04-30T06:07:36+00:00')
+    end
+
+    context 'when the GitLab API is not supported' do
+      it 'returns nil' do
+        stub_container_registry_gitlab_api_support(supported: false)
 
         subject
 
-        expect(last_published_at_response).to eq('2024-04-30T06:07:36+00:00')
-      end
-
-      context 'with not supporting the gitlab api' do
-        it 'returns nil' do
-          stub_container_registry_gitlab_api_support(supported: false)
-
-          subject
-
-          expect(last_published_at_response).to eq(nil)
-        end
-      end
-
-      context 'with a network error' do
-        it 'returns an error' do
-          stub_container_registry_gitlab_api_network_error
-
-          subject
-
-          expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
-        end
+        expect(last_published_at_response).to be_nil
       end
     end
 
-    context 'when not on Gitlab.com' do
-      it 'returns nil' do
+    context 'with a network error' do
+      it 'returns an error' do
+        stub_container_registry_gitlab_api_network_error
+
         subject
 
-        expect(last_published_at_response).to eq(nil)
+        expect_graphql_errors_to_include("Can't connect to the Container Registry. If this error persists, please review the troubleshooting documentation.")
       end
     end
   end
@@ -388,7 +378,7 @@ RSpec.describe 'container repository details', feature_category: :container_regi
         subject
 
         expect(tags_response.size).to eq(tags.size)
-        expect(graphql_errors).to eq(nil)
+        expect(graphql_errors).to be_nil
       end
     end
   end

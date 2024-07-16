@@ -1,9 +1,15 @@
 <script>
 import { GlButton, GlTooltipDirective } from '@gitlab/ui';
-import SafeHtml from '~/vue_shared/directives/safe_html';
+import Vue from 'vue';
 import { renderGFM } from '~/behaviors/markdown/render_gfm';
+import TaskListItemActions from '~/issues/show/components/task_list_item_actions.vue';
+import eventHub from '~/issues/show/event_hub';
+import { deleteTaskListItem, insertNextToTaskListItemText } from '~/issues/show/utils';
+import { isDragging } from '~/sortable/utils';
+import SafeHtml from '~/vue_shared/directives/safe_html';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
+const FULL_OPACITY = 'gl-opacity-10';
 const isCheckbox = (target) => target?.classList.contains('task-list-item-checkbox');
 
 export default {
@@ -21,9 +27,24 @@ export default {
       required: false,
       default: false,
     },
+    isUpdating: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     workItemDescription: {
       type: Object,
       required: true,
+    },
+    workItemId: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    workItemType: {
+      type: String,
+      required: false,
+      default: '',
     },
     canEdit: {
       type: Boolean,
@@ -32,6 +53,7 @@ export default {
   },
   data() {
     return {
+      hasTaskListItemActions: false,
       truncated: false,
       checkboxes: [],
     };
@@ -58,6 +80,13 @@ export default {
       immediate: true,
     },
   },
+  mounted() {
+    eventHub.$on('delete-task-list-item', this.deleteTaskListItem);
+  },
+  beforeDestroy() {
+    eventHub.$off('delete-task-list-item', this.deleteTaskListItem);
+    this.removeAllPointerEventListeners();
+  },
   methods: {
     async renderGFM() {
       await this.$nextTick();
@@ -66,15 +95,87 @@ export default {
       gl?.lazyLoader?.searchLazyImages();
 
       if (this.canEdit) {
-        this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
-
-        // enable boxes, disabled by default in markdown
-        this.checkboxes.forEach((checkbox) => {
-          // eslint-disable-next-line no-param-reassign
-          checkbox.disabled = false;
-        });
+        this.initCheckboxes();
+        this.removeAllPointerEventListeners();
+        this.renderTaskListItemActions();
       }
+
       this.truncateLongDescription();
+    },
+    initCheckboxes() {
+      this.checkboxes = this.$el.querySelectorAll('.task-list-item-checkbox');
+
+      // enable boxes, disabled by default in markdown
+      this.checkboxes.forEach((checkbox) => {
+        // eslint-disable-next-line no-param-reassign
+        checkbox.disabled = false;
+      });
+    },
+    renderTaskListItemActions() {
+      const taskListItems = this.$el.querySelectorAll?.(
+        '.task-list-item:not(.inapplicable, table .task-list-item)',
+      );
+
+      taskListItems?.forEach((listItem) => {
+        const dropdown = this.createTaskListItemActions();
+        insertNextToTaskListItemText(dropdown, listItem);
+        this.addPointerEventListeners(listItem, '.task-list-item-actions');
+        this.hasTaskListItemActions = true;
+      });
+    },
+    createTaskListItemActions() {
+      const app = new Vue({
+        el: document.createElement('div'),
+        provide: { id: this.workItemId, issuableType: this.workItemType },
+        render: (createElement) => createElement(TaskListItemActions),
+      });
+      return app.$el;
+    },
+    addPointerEventListeners(listItem, elementSelector) {
+      const pointeroverListener = (event) => {
+        const element = event.target.closest('li').querySelector(elementSelector);
+        if (!element || isDragging() || this.isUpdating) {
+          return;
+        }
+        element.classList.add(FULL_OPACITY);
+      };
+      const pointeroutListener = (event) => {
+        const element = event.target.closest('li').querySelector(elementSelector);
+        if (!element) {
+          return;
+        }
+        element.classList.remove(FULL_OPACITY);
+      };
+
+      // We use pointerover/pointerout instead of CSS so that when we hover over a
+      // list item with children, the grip icons of its children do not become visible.
+      listItem.addEventListener('pointerover', pointeroverListener);
+      listItem.addEventListener('pointerout', pointeroutListener);
+
+      this.pointerEventListeners = this.pointerEventListeners || new Map();
+      const events = [
+        { type: 'pointerover', listener: pointeroverListener },
+        { type: 'pointerout', listener: pointeroutListener },
+      ];
+      if (this.pointerEventListeners.has(listItem)) {
+        const concatenatedEvents = this.pointerEventListeners.get(listItem).concat(events);
+        this.pointerEventListeners.set(listItem, concatenatedEvents);
+      } else {
+        this.pointerEventListeners.set(listItem, events);
+      }
+    },
+    removeAllPointerEventListeners() {
+      this.pointerEventListeners?.forEach((events, listItem) => {
+        events.forEach((event) => listItem.removeEventListener(event.type, event.listener));
+        this.pointerEventListeners.delete(listItem);
+      });
+    },
+    deleteTaskListItem({ id, sourcepos }) {
+      if (this.workItemId !== id) {
+        return;
+      }
+      const { newDescription } = deleteTaskListItem(this.descriptionText, sourcepos);
+      this.$emit('descriptionUpdated', newDescription);
     },
     toggleCheckboxes(event) {
       const { target } = event;
@@ -128,12 +229,16 @@ export default {
 <template>
   <div class="gl-my-5">
     <div v-if="isDescriptionEmpty" class="gl-text-secondary">{{ __('No description') }}</div>
-    <div v-else ref="description" class="work-item-description md gl-clearfix gl-relative">
+    <div
+      v-else
+      ref="description"
+      class="work-item-description description md gl-clearfix gl-relative"
+    >
       <div
         ref="gfm-content"
         v-safe-html="descriptionHtml"
         data-testid="work-item-description"
-        :class="{ truncated: isTruncated }"
+        :class="{ truncated: isTruncated, 'has-task-list-item-actions': hasTaskListItemActions }"
         @change="toggleCheckboxes"
       ></div>
       <div

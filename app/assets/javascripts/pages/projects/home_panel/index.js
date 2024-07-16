@@ -25,6 +25,7 @@ const initHomePanel = () => {
     adminPath,
     canReadProject,
     isProjectEmpty,
+    projectAvatar,
     projectId,
 
     // Dropdown component
@@ -58,6 +59,21 @@ const initHomePanel = () => {
     starCount,
     starred,
     starrersPath,
+
+    // Home Panel Heading
+    projectName,
+    projectVisibilityLevel,
+    isProjectArchived,
+    isProjectMarkedForDeletion,
+
+    // Compliance Badge
+    complianceFrameworkBadgeColor,
+    complianceFrameworkBadgeName,
+    complianceFrameworkBadgeTitle,
+    hasComplianceFrameworkFeature,
+
+    // CI/CD Catalogue Badge
+    cicdCatalogPath,
   } = container.dataset;
 
   return new Vue({
@@ -69,7 +85,8 @@ const initHomePanel = () => {
       adminPath,
       canReadProject: parseBoolean(canReadProject),
       isProjectEmpty: parseBoolean(isProjectEmpty),
-      projectId,
+      projectAvatar,
+      projectId: parseInt(projectId, 10),
 
       // Dropdown component
       groupOrProjectId: projectId,
@@ -104,6 +121,21 @@ const initHomePanel = () => {
       starCount: parseInt(starCount, 10) || 0,
       starred: parseBoolean(starred),
       starrersPath,
+
+      // Home Panel Heading
+      projectName,
+      projectVisibilityLevel,
+      isProjectArchived: parseBoolean(isProjectArchived),
+      isProjectMarkedForDeletion: parseBoolean(isProjectMarkedForDeletion),
+
+      // Compliance Badge
+      complianceFrameworkBadgeColor,
+      complianceFrameworkBadgeName,
+      complianceFrameworkBadgeTitle,
+      hasComplianceFrameworkFeature: parseBoolean(hasComplianceFrameworkFeature),
+
+      // CI/CD Catalogue Badge
+      cicdCatalogPath,
     },
     render: (createElement) => createElement(HomePanel),
   });

@@ -6,9 +6,8 @@ import initDeleteMergedBranches from '~/branches/init_delete_merged_branches';
 import initBranchMoreActions from '~/branches/init_branch_more_actions';
 import initSourceCodeDropdowns from '~/vue_shared/components/download_dropdown/init_download_dropdowns';
 
-const { divergingCountsEndpoint, defaultBranch } = document.querySelector(
-  '.js-branch-list',
-).dataset;
+const { divergingCountsEndpoint, defaultBranch } =
+  document.querySelector('.js-branch-list').dataset;
 
 initDiverganceGraph(divergingCountsEndpoint, defaultBranch);
 BranchSortDropdown();

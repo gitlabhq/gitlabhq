@@ -2,9 +2,6 @@
 description: OAuth token revoked
 category: Projects::GoogleCloud::RevokeOauthController
 action: revoke_oauth
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

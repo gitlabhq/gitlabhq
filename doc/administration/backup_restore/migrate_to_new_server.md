@@ -88,15 +88,15 @@ To prepare the new server:
       ```
 
 1. Disable periodic background jobs:
-   1. On the left sidebar, at the bottom, select **Admin Area**.
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, select **Monitoring > Background jobs**.
    1. Under the Sidekiq dashboard, select **Cron** tab and then
       **Disable All**.
 1. Wait for the currently running CI/CD jobs to finish, or accept that jobs that have not completed may be lost.
    To view jobs currently running, on the left sidebar, select **Overviews > Jobs**,
    and then select **Running**.
 1. Wait for Sidekiq jobs to finish:
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the left sidebar, select **Monitoring > Background jobs**.
    1. Under the Sidekiq dashboard, select **Queues** and then **Live Poll**.
       Wait for **Busy** and **Enqueued** to drop to 0.
       These queues contain work that has been submitted by your users;
@@ -161,6 +161,23 @@ To prepare the new server:
    sudo scp /var/opt/gitlab/backups/your-backup.tar <your-linux-username>@new-server:/var/opt/gitlab/backups
    ```
 
+### For instances with a large volume of Git and object data
+
+If your GitLab instance has a large amount of data on local volumes, for example greater than 1 TB,
+backups may take a long time. In that case, you may find it easier to transfer the data to the appropriate volumes on the new instance.
+
+The main volumes that you might need to migrate manually are:
+
+- The `/var/opt/gitlab/git-data` directory which contains all the Git data.
+  Be sure to read [the moving repositories documentation section](../../administration/operations/moving_repositories.md#migrating-to-another-gitlab-instance) to eliminate the chance of Git data corruption.
+- The `/var/opt/gitlab/gitlab-rails/shared` directory which contains object data, like artifacts.
+- If you are using the bundled PostgreSQL included with the Linux package,
+  you also need to migrate the [PostgreSQL data directory](https://docs.gitlab.com/omnibus/settings/database.html#store-postgresql-data-in-a-different-directory)
+  under `/var/opt/gitlab/postgresql/data`.
+
+After all GitLab services have been stopped, you can use tools like `rsync` or mounting volume snapshots to move the data
+to the new environment.
+
 ## Restore data on the new server
 
 1. Restore appropriate file system permissions:
@@ -182,8 +199,8 @@ To prepare the new server:
 
 1. [Restore the GitLab backup](restore_gitlab.md).
 1. Verify that the Redis database restored correctly:
-   1. On the left sidebar, at the bottom, select **Admin Area**.
-   1. On the left sidebar, select **Monitoring > Background Jobs**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, select **Monitoring > Background jobs**.
    1. Under the Sidekiq dashboard, verify that the numbers
       match with what was shown on the old server.
    1. While still under the Sidekiq dashboard, select **Cron** and then **Enable All**

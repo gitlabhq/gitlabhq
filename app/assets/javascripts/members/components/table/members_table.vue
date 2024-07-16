@@ -33,7 +33,7 @@ import MemberSource from './member_source.vue';
 import MemberActivity from './member_activity.vue';
 import MaxRole from './max_role.vue';
 import MembersPagination from './members_pagination.vue';
-import RoleDetailsDrawer from './role_details_drawer.vue';
+import RoleDetailsDrawer from './drawer/role_details_drawer.vue';
 
 export default {
   components: {
@@ -58,6 +58,7 @@ export default {
       import('ee_component/members/components/modals/ldap_override_confirmation_modal.vue'),
     UserLimitReachedAlert: () =>
       import('ee_component/members/components/table/user_limit_reached_alert.vue'),
+    RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
   },
   directives: { GlTooltip: GlTooltipDirective },
   mixins: [glFeatureFlagsMixin()],
@@ -78,7 +79,11 @@ export default {
   computed: {
     ...mapState({
       members(state) {
-        return state[this.namespace].members;
+        return state[this.namespace].members.map((member) => ({
+          ...member,
+          memberPath: state[this.namespace].memberPath.replace(':id', member.id),
+          namespace: this.namespace,
+        }));
       },
       tableFields(state) {
         return state[this.namespace].tableFields;
@@ -88,9 +93,6 @@ export default {
       },
       pagination(state) {
         return state[this.namespace].pagination;
-      },
-      memberPath(state) {
-        return state[this.namespace].memberPath;
       },
     }),
     filteredAndModifiedFields() {
@@ -299,9 +301,7 @@ export default {
             >
               {{ member.accessLevel.stringValue }}
             </gl-button>
-            <gl-badge v-if="member.accessLevel.memberRoleId" class="gl-mt-3" size="sm">
-              {{ s__('MemberRole|Custom role') }}
-            </gl-badge>
+            <role-badges :member="member" :role="member.accessLevel" class="gl-mt-3" />
           </div>
           <max-role v-else :permissions="permissions" :member="member" />
         </members-table-cell>
@@ -341,7 +341,6 @@ export default {
     <role-details-drawer
       v-if="glFeatures.showRoleDetailsInDrawer"
       :member="selectedMember"
-      :member-path="memberPath"
       @busy="isRoleDrawerBusy = $event"
       @close="selectedMember = null"
     />

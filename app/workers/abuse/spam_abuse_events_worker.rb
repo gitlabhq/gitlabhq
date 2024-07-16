@@ -43,7 +43,7 @@ module Abuse
 
     # Associate the abuse report with an abuse event
     def create_abuse_event(abuse_report_id, params)
-      Abuse::Event.create!(
+      AntiAbuse::Event.create!(
         abuse_report_id: abuse_report_id,
         category: :spam,
         metadata: { noteable_type: params[:noteable_type],

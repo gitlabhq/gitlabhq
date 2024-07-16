@@ -28,6 +28,14 @@ RSpec.describe Ci::CreateWebIdeTerminalService, feature_category: :continuous_in
           end
           subject
         end
+
+        it 'increments the metrics' do
+          expect(::Gitlab::Ci::Pipeline::Metrics.pipelines_created_counter)
+            .to receive(:increment)
+            .with({ partition_id: instance_of(Integer), source: :webide })
+
+          subject
+        end
       end
 
       before do

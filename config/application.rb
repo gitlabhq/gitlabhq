@@ -110,17 +110,17 @@ module Gitlab
     # This is a nice reference article on autoloading/eager loading:
     # http://blog.arkency.com/2014/11/dont-forget-about-eager-load-when-extending-autoload
     config.eager_load_paths.push(*%W[#{config.root}/lib
-                                     #{config.root}/app/models/badges
-                                     #{config.root}/app/models/hooks
-                                     #{config.root}/app/models/members
-                                     #{config.root}/app/graphql/resolvers/concerns
-                                     #{config.root}/app/graphql/mutations/concerns
-                                     #{config.root}/app/graphql/types/concerns])
+      #{config.root}/app/models/badges
+      #{config.root}/app/models/hooks
+      #{config.root}/app/models/members
+      #{config.root}/app/graphql/resolvers/concerns
+      #{config.root}/app/graphql/mutations/concerns
+      #{config.root}/app/graphql/types/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
     foss_eager_load_paths = config.eager_load_paths.dup.freeze
-    load_paths = lambda do |dir:|
+    load_paths = ->(dir:) do
       ext_paths = foss_eager_load_paths.each_with_object([]) do |path, memo|
         ext_path = config.root.join(dir, Pathname.new(path).relative_path_from(config.root))
         memo << ext_path.to_s
@@ -272,11 +272,11 @@ module Gitlab
     config.assets.precompile << "tailwind.css"
 
     config.assets.precompile << "print.css"
-    config.assets.precompile << "mailer.css"
-    config.assets.precompile << "mailer_client_specific.css"
-    config.assets.precompile << "notify.css"
-    config.assets.precompile << "notify_enhanced.css"
-    config.assets.precompile << "mailers/*.css"
+    config.assets.precompile << "mailers/highlighted_diff_email.css"
+    config.assets.precompile << "mailers/mailer.css"
+    config.assets.precompile << "mailers/mailer_client_specific.css"
+    config.assets.precompile << "mailers/notify.css"
+    config.assets.precompile << "mailers/notify_enhanced.css"
     config.assets.precompile << "page_bundles/_mixins_and_variables_and_functions.css"
     config.assets.precompile << "page_bundles/admin/application_settings_metrics_and_profiling.css"
     config.assets.precompile << "page_bundles/admin/elasticsearch_form.css"
@@ -379,7 +379,6 @@ module Gitlab
     config.assets.precompile << "emoji_sprites.css"
     config.assets.precompile << "errors.css"
     config.assets.precompile << "jira_connect.js"
-    config.assets.precompile << "xterm.css"
 
     config.assets.precompile << "themes/*.css"
 
@@ -582,7 +581,7 @@ module Gitlab
         asset_roots << config.root.join("ee/app/assets").to_s
       end
 
-      LOOSE_APP_ASSETS = lambda do |logical_path, filename|
+      LOOSE_APP_ASSETS = ->(logical_path, filename) do
         filename.start_with?(*asset_roots) &&
           ['.js', '.css', '.md', '.vue', '.graphql', ''].exclude?(File.extname(logical_path))
       end

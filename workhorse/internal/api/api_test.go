@@ -11,6 +11,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/gitaly/v16/proto/go/gitalypb"
 
@@ -178,7 +179,7 @@ func TestSendGitAuditEvent(t *testing.T) {
 		requestBody    GitAuditEventRequest
 	)
 
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	ts := httptest.NewServer(http.HandlerFunc(func(_ http.ResponseWriter, r *http.Request) {
 		if r.URL.Path != "/api/v4/internal/shellhorse/git_audit_event" {
 			return
 		}
@@ -186,9 +187,9 @@ func TestSendGitAuditEvent(t *testing.T) {
 		requestHeaders = r.Header
 		defer r.Body.Close()
 		b, err := io.ReadAll(r.Body)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 		err = json.Unmarshal(b, &requestBody)
-		require.NoError(t, err)
+		assert.NoError(t, err)
 	}))
 	defer ts.Close()
 

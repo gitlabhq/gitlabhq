@@ -58,7 +58,7 @@ module Search
           href: project_settings_ci_cd_path(project, anchor: 'js-pipeline-triggers') },
         { text: _("Deploy freezes"),
           href: project_settings_ci_cd_path(project, anchor: 'js-deploy-freeze-settings') },
-        { text: _("Token Access"), href: project_settings_ci_cd_path(project, anchor: 'js-token-access') },
+        { text: _("Job token permissions"), href: project_settings_ci_cd_path(project, anchor: 'js-token-access') },
         { text: _("Secure Files"),
           href: project_settings_ci_cd_path(project, anchor: 'js-secure-files') }
       ]

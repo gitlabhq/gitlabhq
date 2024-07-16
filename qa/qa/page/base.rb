@@ -273,11 +273,6 @@ module QA
       end
 
       def fill_element(name, content)
-        # `click_element_coordinates` is used to ensure the element is focused.
-        # Without it, flakiness can occur on pages with GitLab keyboard shortcuts enabled,
-        # where certain keys trigger actions when typed elsewhere on the page.
-        click_element_coordinates(name)
-
         find_element(name).set(content)
       end
 

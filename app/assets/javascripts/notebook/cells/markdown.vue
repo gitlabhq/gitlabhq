@@ -160,7 +160,13 @@ export default {
       renderer.attachments = this.cell.attachments;
       renderer.relativeRawPath = this.relativeRawPath;
 
-      return marked(this.cell.source.join('').replace(/\\/g, '\\\\'));
+      let { source } = this.cell;
+
+      if (Array.isArray(source)) {
+        source = source.join('');
+      }
+
+      return marked(source.replace(/\\/g, '\\\\'));
     },
   },
   markdownConfig,

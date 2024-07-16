@@ -49,7 +49,9 @@ export default {
       this.customHeaders.splice(index, 1);
     },
     onUpdate(index, newValues) {
-      this.$set(this.customHeaders, index, newValues);
+      const copy = [...this.customHeaders];
+      copy[index] = newValues;
+      this.customHeaders = copy;
     },
     handleSubmit(e) {
       this.isValidated = true;

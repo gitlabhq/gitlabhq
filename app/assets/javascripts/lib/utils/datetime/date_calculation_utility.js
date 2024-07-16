@@ -459,6 +459,10 @@ export const differenceInSeconds = (startDate, endDate) => {
   return (endDate.getTime() - startDate.getTime()) / 1000;
 };
 
+export const differenceInMinutes = (startDate, endDate) => {
+  return Math.ceil(differenceInSeconds(startDate, endDate) / 60);
+};
+
 /**
  * A utility function which computes the difference in months
  * between 2 dates.
@@ -575,7 +579,11 @@ export const approximateDuration = (seconds = 0) => {
   const HOURS_LIMIT = 86370; // 23 hours 59 minutes 30s
   const ONE_DAY_LIMIT = 151170; // 41 hours 59 minutes 30s
 
-  const { days = 0, hours = 0, minutes = 0 } = parseSeconds(seconds, {
+  const {
+    days = 0,
+    hours = 0,
+    minutes = 0,
+  } = parseSeconds(seconds, {
     daysPerWeek: 7,
     hoursPerDay: 24,
     limitToDays: true,
@@ -774,3 +782,53 @@ export const getCurrentUtcDate = () => {
 
   return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
 };
+
+/**
+ * Returns an array of months between startDate and endDate.
+ *
+ * @returns {Array<Object>} An array of objects representing months, each containing:
+ *   - month {number} - 0-based index (0-11)
+ *   - year {number} - The year
+ *
+ * @example
+ * getMonthsBetweenDates(new Date('2024-01-01'), new Date('2024-03-05'))
+ *    returns [
+      {
+          "month": 0,
+          "year": 2024,
+      },
+      {
+          "month": 1,
+          "year": 2024,
+      },
+      {
+          "month": 2,
+          "year": 2024,
+      }
+  ]
+ */
+
+export function getMonthsBetweenDates(startDate, endDate) {
+  if (startDate > endDate) {
+    return [];
+  }
+
+  const startMonth = startDate.getMonth();
+  const startYear = startDate.getFullYear();
+  const endMonth = endDate.getMonth();
+  const endYear = endDate.getFullYear();
+
+  const count = (endYear - startYear) * 12 + (1 + endMonth - startMonth);
+
+  return Array(count)
+    .fill(1)
+    .map((_, idx) => {
+      const month = (idx + startMonth) % 12;
+      const yearOffset = Math.floor((idx + startMonth) / 12);
+
+      return {
+        month,
+        year: startYear + yearOffset,
+      };
+    });
+}

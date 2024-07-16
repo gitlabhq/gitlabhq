@@ -248,11 +248,10 @@ export default {
             const sourceData = cache.readQuery(query);
 
             const newData = produce(sourceData, (draftState) => {
-              const {
-                awardEmoji,
-              } = draftState.project.issue.designCollection.designs.nodes[0].discussions.nodes
-                .find((d) => d.id === this.note.discussion.id)
-                .notes.nodes.find((n) => n.id === this.note.id);
+              const { awardEmoji } =
+                draftState.project.issue.designCollection.designs.nodes[0].discussions.nodes
+                  .find((d) => d.id === this.note.discussion.id)
+                  .notes.nodes.find((n) => n.id === this.note.id);
 
               awardEmoji.nodes = this.getAwardEmojiNodes(name, toggledOn);
             });
@@ -306,7 +305,7 @@ export default {
           >
             <time-ago-tooltip :time="note.createdAt" tooltip-placement="bottom" />
           </gl-link>
-          <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" size="sm" />
+          <imported-badge v-if="isImported" :importable-type="$options.TYPE_COMMENT" />
         </span>
       </div>
       <div class="gl-display-flex gl-align-items-flex-start -gl-mt-2 -gl-mr-2">

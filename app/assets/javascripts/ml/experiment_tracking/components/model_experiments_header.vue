@@ -25,7 +25,7 @@ export default {
     <div class="detail-page-header-body">
       <div class="page-title gl-flex-grow-1 gl-display-flex gl-align-items-center">
         <h3 class="gl-font-size-h-display gl-my-0">{{ pageTitle }}</h3>
-        <gl-badge class="gl-mx-4" variant="info" size="lg" :href="$options.experimentDocHref">
+        <gl-badge class="gl-mx-4" variant="info" :href="$options.experimentDocHref">
           {{ $options.i18n.experimentBadgeLabel }}
         </gl-badge>
       </div>

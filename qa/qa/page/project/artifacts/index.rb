@@ -7,6 +7,7 @@ module QA
         class Index < QA::Page::Base
           view 'app/assets/javascripts/ci/artifacts/components/job_artifacts_table.vue' do
             element 'select-all-artifacts-checkbox'
+            element 'job-artifact-table-row'
           end
 
           view 'app/assets/javascripts/ci/artifacts/components/artifacts_bulk_delete.vue' do
@@ -15,11 +16,6 @@ module QA
 
           view 'app/assets/javascripts/ci/artifacts/components/bulk_delete_modal.vue' do
             element 'artifacts-bulk-delete-modal'
-          end
-
-          view 'app/assets/javascripts/ci/artifacts/components/job_artifacts_table.vue' do
-            element 'job-artifacts-count'
-            element 'job-artifacts-size'
           end
 
           def select_all
@@ -34,12 +30,8 @@ module QA
             end
           end
 
-          def job_artifacts_count_by_row(row: 1)
-            all_elements('job-artifacts-count', minimum: row)[row - 1].text.gsub(/[^0-9]/, '').to_i
-          end
-
-          def job_artifacts_size_by_row(row: 1)
-            all_elements('job-artifacts-size', minimum: row)[row - 1].text.gsub(/[^0-9]/, '').to_f
+          def has_no_artifacts?
+            has_no_element?('job-artifact-table-row')
           end
         end
       end

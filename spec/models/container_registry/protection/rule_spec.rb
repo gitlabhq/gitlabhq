@@ -90,12 +90,31 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
       end
     end
 
-    describe '#minimum_access_level_for_delete' do
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_delete) }
-    end
+    describe '#at_least_one_minimum_access_level_must_be_present' do
+      where(:minimum_access_level_for_delete, :minimum_access_level_for_push, :valid) do
+        :maintainer | :maintainer | true
+        :maintainer | nil         | true
+        nil         | :maintainer | true
+        nil         | nil         | false
+      end
 
-    describe '#minimum_access_level_for_push' do
-      it { is_expected.to validate_presence_of(:minimum_access_level_for_push) }
+      with_them do
+        subject(:container_registry_protection_rule) {
+          build(:container_registry_protection_rule, minimum_access_level_for_delete: minimum_access_level_for_delete,
+            minimum_access_level_for_push: minimum_access_level_for_push)
+        }
+
+        if params[:valid]
+          it { is_expected.to be_valid }
+        else
+          it 'is invalid' do
+            expect(container_registry_protection_rule).not_to be_valid
+            expect(container_registry_protection_rule.errors[:base]).to include(
+              'A rule must have at least a minimum access role for push or delete.'
+            )
+          end
+        end
+      end
     end
   end
 
@@ -311,6 +330,48 @@ RSpec.describe ContainerRegistry::Protection::Rule, type: :model, feature_catego
 
       with_them do
         it { is_expected.to eq for_push_exists }
+      end
+    end
+  end
+
+  describe '.for_push_exists_for_multiple_containers' do
+    let_it_be(:project) { create(:project) }
+
+    let_it_be(:ppr_for_maintainer) do
+      create(:container_registry_protection_rule,
+        repository_path_pattern: "#{project.full_path}/my-container-prod*",
+        project: project
+      )
+    end
+
+    let(:repository_paths) {
+      [
+        "#{project.full_path}/my-container-prod-1",
+        "#{project.full_path}/unmatched-container-name"
+      ]
+    }
+
+    subject do
+      described_class
+        .for_push_exists_for_multiple_containers(project_id: project.id, repository_paths: repository_paths)
+        .to_a
+    end
+
+    it do
+      is_expected.to eq([
+        { "repository_path" => repository_paths.first, "protected" => true },
+        { "repository_path" => repository_paths.second, "protected" => false }
+      ])
+    end
+
+    context 'when edge cases' do
+      where(:repository_paths, :expected_result) do
+        nil                             | []
+        []                              | []
+      end
+
+      with_them do
+        it { is_expected.to eq(expected_result) }
       end
     end
   end

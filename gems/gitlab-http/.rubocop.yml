@@ -20,3 +20,7 @@ RSpec/MultipleMemoizedHelpers:
 RSpec/FilePath:
   CustomTransform:
     HTTP_V2: http_v2
+
+Lint/BinaryOperatorWithIdenticalOperands:
+  Exclude:
+    - 'spec/**/*.rb'

@@ -52,7 +52,17 @@ RSpec.describe MergeRequestPollWidgetEntity do
       let(:resource) { create(:merge_request, :merge_when_pipeline_succeeds) }
 
       it 'returns auto merge related information' do
-        expect(subject[:auto_merge_strategy]).to eq('merge_when_pipeline_succeeds')
+        expect(subject[:auto_merge_strategy]).to eq('merge_when_checks_pass')
+      end
+
+      context 'when merge_when_checks_pass is false' do
+        before do
+          stub_feature_flags(merge_when_checks_pass: false)
+        end
+
+        it 'returns auto merge related information' do
+          expect(subject[:auto_merge_strategy]).to eq('merge_when_pipeline_succeeds')
+        end
       end
     end
 
@@ -64,14 +74,24 @@ RSpec.describe MergeRequestPollWidgetEntity do
       end
     end
 
-    context 'when head pipeline is running', unless: Gitlab.ee? do
+    context 'when head pipeline is running' do
       before do
         create(:ci_pipeline, :running, project: project, ref: resource.source_branch, sha: resource.diff_head_sha)
         resource.update_head_pipeline
       end
 
       it 'returns available auto merge strategies' do
-        expect(subject[:available_auto_merge_strategies]).to eq(%w[merge_when_pipeline_succeeds])
+        expect(subject[:available_auto_merge_strategies]).to eq(%w[merge_when_checks_pass])
+      end
+
+      context 'when the merge_when_checks_pass is false' do
+        before do
+          stub_feature_flags(merge_when_checks_pass: false)
+        end
+
+        it 'returns available auto merge strategies' do
+          expect(subject[:available_auto_merge_strategies]).to eq(%w[merge_when_pipeline_succeeds])
+        end
       end
     end
 

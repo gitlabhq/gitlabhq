@@ -51,6 +51,8 @@ module API
             confidential: params[:confidential],
             snippets: snippets?,
             basic_search: params[:basic_search],
+            num_context_lines: params[:num_context_lines],
+            search_type: params[:search_type],
             page: params[:page],
             per_page: params[:per_page],
             order_by: params[:order_by],
@@ -70,12 +72,17 @@ module API
           forbidden!('Global Search is disabled for this scope')
         end
 
+        search_type_errors = search_service.search_type_errors
+        bad_request!(search_type_errors) if search_type_errors
+
         @search_duration_s = Benchmark.realtime do
           @results = search_service.search_objects(preload_method)
         end
 
         search_results = search_service.search_results
-        bad_request!(search_results.error) if search_results.respond_to?(:failed?) && search_results.failed?
+        if search_results.respond_to?(:failed?) && search_results.failed?(search_scope)
+          bad_request!(search_results.error)
+        end
 
         set_global_search_log_information(additional_params)
 
@@ -137,6 +144,14 @@ module API
           search_duration_s: @search_duration_s
         )
       end
+
+      def set_headers(additional = {})
+        header['X-Search-Type'] = search_type
+
+        additional.each do |key, value|
+          header[key] = value
+        end
+      end
     end
 
     resource :search do
@@ -155,6 +170,8 @@ module API
       end
       get do
         verify_search_scope!(resource: nil)
+
+        set_headers('Content-Transfer-Encoding' => 'binary')
 
         present search, with: entity, current_user: current_user
       end
@@ -178,6 +195,8 @@ module API
       get ':id/(-/)search' do
         verify_search_scope!(resource: user_group)
 
+        set_headers
+
         present search(group_id: user_group.id), with: entity, current_user: current_user
       end
     end
@@ -199,6 +218,8 @@ module API
         use :pagination
       end
       get ':id/(-/)search' do
+        set_headers
+
         present search({ project_id: user_project.id, repository_ref: params[:ref] }), with: entity, current_user: current_user
       end
     end

@@ -365,6 +365,7 @@ describe('Pipeline schedules app', () => {
         last: null,
         nextPageCursor: '',
         prevPageCursor: '',
+        sortValue: 'ID_DESC',
       });
     });
   });
@@ -426,6 +427,7 @@ describe('Pipeline schedules app', () => {
         last: null,
         nextPageCursor: '',
         prevPageCursor: '',
+        sortValue: 'ID_DESC',
       });
     });
 
@@ -439,6 +441,7 @@ describe('Pipeline schedules app', () => {
         last: null,
         prevPageCursor: '',
         nextPageCursor: pageInfo.endCursor,
+        sortValue: 'ID_DESC',
       });
       expect(findPagination().props('value')).toEqual(2);
     });
@@ -450,6 +453,50 @@ describe('Pipeline schedules app', () => {
 
       await findInactiveTab().trigger('click');
 
+      await waitForPromises();
+
+      expect(findPagination().props('value')).toEqual(1);
+    });
+  });
+
+  describe('when sorting changes', () => {
+    const newSort = 'DESCRIPTION_ASC';
+
+    beforeEach(async () => {
+      createComponent([[getPipelineSchedulesQuery, successHandler]]);
+
+      await waitForPromises();
+      await findTable().vm.$emit('update-sorting', newSort, 'description', false);
+    });
+
+    it('passes it to the graphql query', () => {
+      expect(successHandler).toHaveBeenCalledTimes(2);
+      expect(successHandler.mock.calls[1][0]).toEqual({
+        projectPath: 'gitlab-org/gitlab',
+        ids: null,
+        first: SCHEDULES_PER_PAGE,
+        last: null,
+        nextPageCursor: '',
+        prevPageCursor: '',
+        sortValue: newSort,
+      });
+    });
+  });
+
+  describe('when update-sorting event is emitted', () => {
+    beforeEach(async () => {
+      createComponent([[getPipelineSchedulesQuery, successHandlerWithPagination]]);
+      await waitForPromises();
+    });
+
+    it('resets the page count', async () => {
+      expect(findPagination().props('value')).toEqual(1);
+
+      await setPage(2);
+
+      expect(findPagination().props('value')).toEqual(2);
+
+      await findTable().vm.$emit('update-sorting', 'DESCRIPTION_DESC', 'description', true);
       await waitForPromises();
 
       expect(findPagination().props('value')).toEqual(1);

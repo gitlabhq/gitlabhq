@@ -224,13 +224,18 @@ Alternatively, the SAML response may be missing the `InResponseTo` attribute in 
 The identity provider administrator should ensure that the login is
 initiated by the service provider and not only the identity provider.
 
-### Message: "There is already a GitLab account associated with this email address. Sign in with your existing credentials to connect your organization's account"
+### Message: `There is already a GitLab account associated with this email address.`
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com
 
-A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account).
+A user can see this message when they are trying to [manually link SAML to their existing GitLab.com account](index.md#link-saml-to-your-existing-gitlabcom-account):
+
+```plaintext
+There is already a GitLab account associated with this email address.
+Sign in with your existing credentials to connect your organization's account
+```
 
 To resolve this problem, the user should check they are using the correct GitLab password to sign in. The user first needs
 to [reset their password](https://gitlab.com/users/password/new) if both:
@@ -304,7 +309,7 @@ As outlined in the [user access section](index.md#link-saml-to-your-existing-git
 If the top-level group has [restricted membership by email domain](../access_and_permissions.md#restrict-group-access-by-domain), and a user with an email domain that is not allowed tries to sign in with SSO, that user might receive a 404. Users might have multiple accounts, and their SAML identity might be linked to their personal account which has an email address that is different than the company domain. To check this, verify the following:
 
 - That the top-level group has restricted membership by email domain.
-- That, in [Audit Events](../../../administration/audit_event_reports.md) for the top-level group:
+- That, in [audit events](../../../administration/audit_event_reports.md) for the top-level group:
   - You can see **Signed in with GROUP_SAML authentication** action for that user.
   - That the user's username is the same as the username you configured for SAML SSO, by selecting the **Author** name.
     - If the username is different to the username you configured for SAML SSO, ask the user to [unlink the SAML identity](index.md#unlink-accounts) from their personal account.
@@ -373,7 +378,7 @@ This message might indicate that you must add or remove a domain from your domai
 
 To implement this workaround:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings** > **General**.
 1. Expand **Sign-up restrictions**.
 1. Add or remove a domain as appropriate to **Allowed domains for sign-ups** and **Denied domains for sign-ups**.
@@ -414,7 +419,15 @@ If you see this message after trying to invite a user to a group:
 
 Additionally, see [troubleshooting users receiving a 404 after sign in](#users-receive-a-404).
 
-## Message: The SAML response did not contain an email address. Either the SAML identity provider is not configured to send the attribute, or the identity provider directory does not have an email address value for your user
+## Message: `The SAML response did not contain an email address.`
+
+If you see this error:
+
+```plaintext
+The SAML response did not contain an email address.
+Either the SAML identity provider is not configured to send the attribute, or the
+identity provider directory does not have an email address value for your user
+```
 
 This error appears when:
 

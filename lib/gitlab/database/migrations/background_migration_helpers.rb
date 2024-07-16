@@ -47,7 +47,7 @@ module Gitlab
               'in the body of your migration class'
           end
 
-          # Background Migrations do not work well for in cases requiring to update `gitlab_shared`
+          # Background migrations do not work well for in cases requiring to update `gitlab_shared`
           # Once the decomposition is done, enqueued jobs for `gitlab_shared` tables (on CI database)
           # will not be executed since the queue (which is stored in Redis) is tied to main database, not to schema.
           # The batched background migrations do not have those limitations since the tracking tables

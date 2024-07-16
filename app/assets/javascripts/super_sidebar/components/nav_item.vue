@@ -274,7 +274,6 @@ export default {
       >
         <gl-badge
           v-if="hasPill"
-          size="sm"
           variant="neutral"
           :class="{
             'hide-on-focus-or-hover--target transition-opacity-on-hover--target': isPinnable,

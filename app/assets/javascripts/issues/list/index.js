@@ -7,6 +7,8 @@ import createDefaultClient, { createApolloClientWithCaching } from '~/lib/graphq
 import { addShortcutsExtension } from '~/behaviors/shortcuts';
 import ShortcutsWorkItems from '~/behaviors/shortcuts/shortcuts_work_items';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import DesignDetail from '~/work_items/components/design_management/design_preview/design_details.vue';
+import { DESIGN_ROUTE_NAME } from '~/work_items/constants';
 import JiraIssuesImportStatusApp from './components/jira_issues_import_status_app.vue';
 import { gqlClient } from './graphql';
 
@@ -82,6 +84,7 @@ export async function mountIssuesListApp() {
     emailsHelpPagePath,
     exportCsvPath,
     fullPath,
+    groupId,
     groupPath,
     hasAnyIssues,
     hasAnyProjects,
@@ -111,10 +114,10 @@ export async function mountIssuesListApp() {
     rssPath,
     showNewIssueLink,
     signInPath,
-    groupId = '',
-    reportAbusePath,
-    registerPath,
-    issuesListPath,
+    wiCanAdminLabel,
+    wiIssuesListPath,
+    wiLabelsManagePath,
+    wiReportAbusePath,
   } = el.dataset;
 
   return new Vue({
@@ -126,7 +129,23 @@ export async function mountIssuesListApp() {
     router: new VueRouter({
       base: window.location.pathname,
       mode: 'history',
-      routes: [{ path: '/' }],
+      routes: [
+        {
+          name: 'root',
+          path: '/',
+        },
+        {
+          name: DESIGN_ROUTE_NAME,
+          path: '/:iid/designs/:id',
+          component: DesignDetail,
+          beforeEnter({ params: { id } }, _, next) {
+            if (typeof id === 'string') {
+              next();
+            }
+          },
+          props: ({ params: { id, iid } }) => ({ id, iid }),
+        },
+      ],
     }),
     provide: {
       autocompleteAwardEmojisPath,
@@ -137,10 +156,8 @@ export async function mountIssuesListApp() {
       canReadCrmContact: parseBoolean(canReadCrmContact),
       canReadCrmOrganization: parseBoolean(canReadCrmOrganization),
       fullPath,
-      projectPath: fullPath,
+      groupId,
       groupPath,
-      reportAbusePath,
-      registerPath,
       hasAnyIssues: parseBoolean(hasAnyIssues),
       hasAnyProjects: parseBoolean(hasAnyProjects),
       hasBlockedIssuesFeature: parseBoolean(hasBlockedIssuesFeature),
@@ -179,8 +196,11 @@ export async function mountIssuesListApp() {
       markdownHelpPath,
       quickActionsHelpPath,
       resetPath,
-      groupId,
-      issuesListPath,
+      // For work item modal
+      canAdminLabel: wiCanAdminLabel,
+      issuesListPath: wiIssuesListPath,
+      labelsManagePath: wiLabelsManagePath,
+      reportAbusePath: wiReportAbusePath,
     },
     render: (createComponent) => createComponent(IssuesListApp),
   });

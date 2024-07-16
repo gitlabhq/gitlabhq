@@ -121,7 +121,7 @@ module Gitlab
       def histogram(relation, column, buckets:, bucket_size: buckets.size)
         with_metadata do
           # Using lambda to avoid exposing histogram specific methods
-          parameters_valid = lambda do
+          parameters_valid = -> do
             error_message =
               if buckets.first == buckets.last
                 'Lower bucket bound cannot equal to upper bucket bound'

@@ -528,7 +528,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         AutoMergeService.new(project, current_user, merge_params)
           .execute(
             merge_request,
-            params[:auto_merge_strategy] || AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS
+            params[:auto_merge_strategy] || merge_request.default_auto_merge_strategy
           )
       end
     else

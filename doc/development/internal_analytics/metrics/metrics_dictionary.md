@@ -102,7 +102,7 @@ A metric's time frame is calculated based on the `time_frame` field and the `dat
 We use the following categories to classify a metric:
 
 - `operational`: Required data for operational purposes.
-- `optional`: Default value for a metric. Data that is optional to collect. This can be [enabled or disabled](../../../administration/settings/usage_statistics.md#enable-or-disable-service-ping) in the Admin Area.
+- `optional`: Default value for a metric. Data that is optional to collect. This can be [enabled or disabled](../../../administration/settings/usage_statistics.md#enable-or-disable-service-ping) in the Admin area.
 - `subscription`: Data related to licensing.
 - `standard`: Standard set of identifiers that are included when collecting data.
 

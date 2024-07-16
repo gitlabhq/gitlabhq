@@ -96,16 +96,20 @@ Provide feedback on this experimental feature in [issue 408991](https://gitlab.c
 
 - Draft comment's text
 
-## Generate a merge or squash commit message
+## Generate a merge commit message
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
+**Tier:** Premium and Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10453) in GitLab 16.2 as an [experiment](../../../policy/experiment-beta-support.md#experiment) [with a flag](../../../administration/feature_flags.md) named `generate_commit_message_flag`. Disabled by default.
+> - Feature flag `generate_commit_message_flag` [enabled by default](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158339) in GitLab 17.2.
 
-When preparing to merge your merge request you might wish to edit the proposed squash or merge commit message.
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+When preparing to merge your merge request you might wish to edit the proposed merge commit message.
 
 To generate a commit message with GitLab Duo:
 

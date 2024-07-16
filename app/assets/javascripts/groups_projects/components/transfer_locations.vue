@@ -144,13 +144,11 @@ export default {
     },
     async getGroupTransferLocations() {
       try {
-        const {
-          data: groupTransferLocations,
-          headers,
-        } = await this.groupTransferLocationsApiMethod(this.resourceId, {
-          page: this.page,
-          search: this.searchTerm,
-        });
+        const { data: groupTransferLocations, headers } =
+          await this.groupTransferLocationsApiMethod(this.resourceId, {
+            page: this.page,
+            search: this.searchTerm,
+          });
 
         const { totalPages } = parseIntPagination(normalizeHeaders(headers));
         this.totalPages = totalPages;

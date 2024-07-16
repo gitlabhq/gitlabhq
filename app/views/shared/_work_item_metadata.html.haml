@@ -1,0 +1,5 @@
+- breadcrumb_title work_item.to_reference
+- page_title "#{work_item.title} (#{work_item.to_reference})",
+              work_item.work_item_type.name.pluralize
+- page_description work_item.description_html
+- page_card_attributes work_item.card_attributes

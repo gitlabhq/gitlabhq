@@ -107,6 +107,9 @@ describe('WorkItemTokenInput', () => {
         parentConfidential,
         areWorkItemsToAddValid,
       },
+      stubs: {
+        GlTokenSelector,
+      },
     });
 
     await waitForPromises();

@@ -6,10 +6,6 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Create, register, and run your own project runner
 
-DETAILS:
-**Tier:** Free, Premium, Ultimate
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
 This tutorial shows you how to configure and run your first runner in GitLab.
 
 A runner is an agent in the GitLab Runner application that runs jobs in a GitLab CI/CD pipeline.

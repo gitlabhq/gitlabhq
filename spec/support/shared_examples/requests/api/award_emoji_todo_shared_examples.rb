@@ -56,5 +56,23 @@ RSpec.shared_examples 'creating award emojis marks Todos as done' do
         expect(todo.reload.done?).to eq(false)
       end
     end
+
+    context 'Discussion Notes' do
+      let!(:issue) { create(:issue, project: project) }
+      let!(:awardable) { create(:discussion_note_on_issue, project: project, noteable: issue) }
+      let!(:todo) { create(:todo, target: awardable, project: project, user: user, note: awardable) }
+
+      let!(:not_awardable) { create(:discussion_note_on_issue, project: project, noteable: issue) }
+      let!(:other_todo) do
+        create(:todo, target: not_awardable.noteable, project: project, user: user, note: not_awardable)
+      end
+
+      it 'marks the Todo as done' do
+        subject
+
+        expect(todo.reload).to be_done
+        expect(other_todo.reload).not_to be_done
+      end
+    end
   end
 end

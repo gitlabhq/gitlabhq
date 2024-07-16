@@ -95,7 +95,7 @@ module Sidebars
 
         def gitaly_servers_menu_item
           ::Sidebars::MenuItem.new(
-            title: _('Gitaly Servers'),
+            title: _('Gitaly servers'),
             link: admin_gitaly_servers_path,
             active_routes: { controller: 'gitaly_servers' },
             item_id: :gitaly_servers

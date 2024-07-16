@@ -5,7 +5,7 @@ module API
     module Types
       class CommaSeparatedToIntegerArray < CommaSeparatedToArray
         def self.coerce
-          lambda do |value|
+          ->(value) do
             super.call(value).map(&:to_i)
           end
         end

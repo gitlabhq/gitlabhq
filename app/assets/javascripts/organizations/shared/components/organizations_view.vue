@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlEmptyState } from '@gitlab/ui';
+import organizationsEmptyStateSvgPath from '@gitlab/svgs/dist/illustrations/empty-state/empty-organizations-md.svg?url';
 import { s__ } from '~/locale';
 import OrganizationsList from './list/organizations_list.vue';
 
@@ -17,7 +18,7 @@ export default {
     OrganizationsList,
     GlEmptyState,
   },
-  inject: ['newOrganizationUrl', 'organizationsEmptyStateSvgPath'],
+  inject: ['newOrganizationUrl'],
   props: {
     organizations: {
       type: Object,
@@ -37,7 +38,7 @@ export default {
     emptyStateProps() {
       const baseProps = {
         svgHeight: 144,
-        svgPath: this.organizationsEmptyStateSvgPath,
+        svgPath: organizationsEmptyStateSvgPath,
         title: this.$options.i18n.emptyStateTitle,
         description: this.$options.i18n.emptyStateDescription,
       };

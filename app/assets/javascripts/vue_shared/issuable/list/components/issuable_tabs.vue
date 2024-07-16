@@ -62,7 +62,6 @@ export default {
           <gl-badge
             v-if="tabCounts && isTabCountNumeric(tab)"
             variant="muted"
-            size="sm"
             class="gl-tab-counter-badge"
           >
             {{ formatNumber(tabCounts[tab.name]) }}

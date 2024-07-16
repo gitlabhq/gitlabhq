@@ -18,9 +18,6 @@ module Ci
     include EachBatch
     include FastDestroyAll::Helpers
 
-    include IgnorableColumns
-    ignore_column :id_convert_to_bigint, remove_with: '17.2', remove_after: '2024-06-15'
-
     MAX_OPEN_MERGE_REQUESTS_REFS = 4
 
     PROJECT_ROUTE_AND_NAMESPACE_ROUTE = {
@@ -52,6 +49,7 @@ module Ci
     alias_method :jobs_git_ref, :git_ref
 
     belongs_to :project, inverse_of: :all_pipelines
+    belongs_to :project_mirror, primary_key: :project_id, foreign_key: :project_id, inverse_of: :pipelines
     belongs_to :user
     belongs_to :auto_canceled_by, class_name: 'Ci::Pipeline', inverse_of: :auto_canceled_pipelines
     belongs_to :pipeline_schedule, class_name: 'Ci::PipelineSchedule'
@@ -283,6 +281,7 @@ module Ci
 
       after_transition any => UNLOCKABLE_STATUSES do |pipeline|
         pipeline.run_after_commit do
+          Ci::PipelineFinishedWorker.perform_async(pipeline.id)
           Ci::Refs::UnlockPreviousPipelinesWorker.perform_async(pipeline.ci_ref_id)
         end
       end

@@ -25,9 +25,11 @@ module InternalEventsCli
       end
 
       def events_by_filepath(event_paths = [])
-        event_paths = load_event_paths if event_paths.none?
+        events = cli.global.events.to_h { |event| [event.file_path, event] } # rubocop:disable Rails/IndexBy -- not rails
 
-        get_existing_events_for_paths(event_paths)
+        return events if event_paths.none?
+
+        events.slice(*event_paths)
       end
 
       private
@@ -53,26 +55,8 @@ module InternalEventsCli
         "2#{category}#{name}"
       end
 
-      def get_existing_events_for_paths(event_paths)
-        event_paths.each_with_object({}) do |filepath, events|
-          details = YAML.safe_load(File.read(filepath))
-          fields = InternalEventsCli::NEW_EVENT_FIELDS.map(&:to_s)
-
-          events[filepath] = Event.new(**details.slice(*fields))
-        rescue StandardError => e
-          cli.say format_error "Encountered an error while loading #{filepath}: #{e.message}"
-        end
-      end
-
       def duplicate_events?(action, events)
         events.count { |event| action == event.action } > 1
-      end
-
-      def load_event_paths
-        [
-          Dir["config/events/*.yml"],
-          Dir["ee/config/events/*.yml"]
-        ].flatten
       end
     end
   end

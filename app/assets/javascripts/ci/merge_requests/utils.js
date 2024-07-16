@@ -22,7 +22,7 @@ export const formatPipelinesGraphQLDataToREST = (project) => {
   return project?.mergeRequest?.pipelines?.nodes?.map((pipeline) => {
     return {
       ...pipeline,
-      id: getIdFromGraphQLId(mergeRequest.id),
+      id: getIdFromGraphQLId(pipeline.id),
       commit: {
         ...pipeline.commit,
         commit_path: pipeline.commit.webPath,

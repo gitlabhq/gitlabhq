@@ -1,5 +1,5 @@
 import applyGitLabUIConfig from '@gitlab/ui/dist/config';
-import { __, s__ } from '~/locale';
+import { __, s__, n__ } from '~/locale';
 import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 
 applyGitLabUIConfig({
@@ -12,5 +12,7 @@ applyGitLabUIConfig({
     'GlKeysetPagination.prevText': PREV,
     'GlKeysetPagination.navigationLabel': s__('Pagination|Pagination'),
     'GlKeysetPagination.nextText': NEXT,
+    'GlPagination.labelPage': s__('Pagination|Go to page %{page}'),
+    'GlCollapsibleListbox.srOnlyResultsLabel': (count) => n__('%d result', '%d results', count),
   },
 });

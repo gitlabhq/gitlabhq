@@ -1,6 +1,7 @@
+import { builders } from 'prosemirror-test-builder';
 import TaskList from '~/content_editor/extensions/task_list';
 import TaskItem from '~/content_editor/extensions/task_item';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 describe('content_editor/extensions/task_item', () => {
   let tiptapEditor;
@@ -12,15 +13,7 @@ describe('content_editor/extensions/task_item', () => {
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [TaskList, TaskItem] });
 
-    ({
-      builders: { doc, p, taskList, taskItem },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        taskItem: { nodeType: TaskItem.name },
-        taskList: { nodeType: TaskList.name },
-      },
-    }));
+    ({ doc, paragraph: p, taskList, taskItem } = builders(tiptapEditor.schema));
   });
 
   it('sets the draggable option to true', () => {

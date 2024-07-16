@@ -33,7 +33,7 @@ RSpec.describe Members::MemberApproval, feature_category: :groups_and_projects d
           it { is_expected.to be_valid }
         end
 
-        context 'with valid expiry' do
+        context 'with date expiry' do
           let(:expiry) { "1970-01-01" }
 
           it { is_expected.to be_valid }
@@ -41,6 +41,12 @@ RSpec.describe Members::MemberApproval, feature_category: :groups_and_projects d
 
         context 'with empty expiry' do
           let(:expiry) { "" }
+
+          it { is_expected.to be_valid }
+        end
+
+        context 'with nil expiry' do
+          let(:expiry) { nil }
 
           it { is_expected.to be_valid }
         end

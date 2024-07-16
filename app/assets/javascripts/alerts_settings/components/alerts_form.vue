@@ -82,7 +82,7 @@ export default {
         label-for="alert-integration-settings-issue-template"
         class="col-8 col-md-9 gl-px-6"
       >
-        <label class="gl-display-inline-flex" for="alert-integration-settings-issue-template">
+        <label class="gl-inline-flex" for="alert-integration-settings-issue-template">
           {{ $options.i18n.incidentTemplate.label }}
           <gl-link :href="$options.ISSUE_TEMPLATES_DOCS_LINK" target="_blank">
             <span class="gl-font-normal gl-pl-2">{{ $options.i18n.introLinkText }}</span>

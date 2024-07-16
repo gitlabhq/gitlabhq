@@ -65,6 +65,13 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
         expect(response).to have_gitlab_http_status(:ok)
       end
 
+      it 'has correct metadata' do
+        get work_items_path
+
+        expect(response.body).to include("#{work_item.title} (#{work_item.to_reference})")
+        expect(response.body).to include(work_item.work_item_type.name.pluralize)
+      end
+
       context 'when the namespace_level_work_items feature flag is disabled' do
         before do
           stub_feature_flags(namespace_level_work_items: false)
@@ -85,6 +92,13 @@ RSpec.describe 'Group Level Work Items', feature_category: :team_planning do
         get work_items_path
 
         expect(response).to have_gitlab_http_status(:not_found)
+      end
+
+      it 'does not include sensitive metadata' do
+        get work_items_path
+
+        expect(response.body).not_to include("#{work_item.title} (#{work_item.to_reference})")
+        expect(response.body).not_to include(work_item.work_item_type.name.pluralize)
       end
     end
   end

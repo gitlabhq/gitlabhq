@@ -14,9 +14,9 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "activesupport", "< 8"
   spec.add_runtime_dependency "addressable", "~> 2.8"
-  spec.add_runtime_dependency 'json', '~> 2.6.3'
+  spec.add_runtime_dependency 'json', '~> 2.7.2'
 
-  spec.add_development_dependency 'gitlab-styles', '~> 10.1.0'
+  spec.add_development_dependency 'gitlab-styles', '~> 12.0.1'
   spec.add_development_dependency "rake", "~> 13.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency 'rubocop'

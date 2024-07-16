@@ -27,6 +27,13 @@ RSpec.shared_examples 'a valid Direct Transfer GraphQL query' do
       :used_deprecated_fields,
       :used_deprecated_arguments
     )
+
+    # Avoid false-positive of an alpha argument with a default
+    message = '`includeSiblingProjects` argument is no longer alpha. Please remove code from here until `#end-remove`'
+    expect(Resolvers::NamespaceProjectsResolver.arguments['includeSiblingProjects']&.deprecation).to be_alpha, message
+    graphql_log[:used_deprecated_arguments].delete('NamespaceProjectsResolver.includeSiblingProjects')
+    # end-remove
+
     expect(graphql_log[:used_deprecated_fields]).to be_empty
     expect(graphql_log[:used_deprecated_arguments]).to be_empty
   end

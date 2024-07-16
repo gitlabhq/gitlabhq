@@ -92,7 +92,7 @@ module Projects
       # rubocop: disable CodeReuse/ActiveRecord
       def define_protected_refs
         @protected_branches = fetch_protected_branches(@project)
-        @protected_tags = @project.protected_tags.order(:name).page(params[:page])
+        @protected_tags = @project.protected_tags.order(:name).page(pagination_params[:page])
         @protected_branch = @project.protected_branches.new
         @protected_tag = @project.protected_tags.new
 
@@ -102,7 +102,7 @@ module Projects
       # rubocop: enable CodeReuse/ActiveRecord
 
       def fetch_protected_branches(project)
-        project.protected_branches.sorted_by_name.page(params[:page])
+        project.protected_branches.sorted_by_name.page(pagination_params[:page])
       end
 
       def remote_mirror

@@ -5,7 +5,6 @@ import UsersSelect from '~/users_select';
 
 export default class IssuableContext {
   constructor(currentUser) {
-    this.userSelect = new UsersSelect(currentUser);
     this.reviewersSelect = new UsersSelect(currentUser, '.js-reviewer-search');
 
     this.reviewersSelect.dropdowns.forEach((glDropdownInstance) => {
@@ -32,9 +31,6 @@ export default class IssuableContext {
     });
 
     $('.issuable-sidebar .inline-update').on('change', 'select', function onClickSelect() {
-      return $(this).submit();
-    });
-    $('.issuable-sidebar .inline-update').on('change', '.js-assignee', function onClickAssignee() {
       return $(this).submit();
     });
     $(document)

@@ -26,58 +26,6 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
     end
   end
 
-  shared_examples 'handles user activity' do
-    it 'updates the user activity' do
-      activity_project = container.is_a?(PersonalSnippet) ? nil : project
-
-      activity_service = instance_double(Users::ActivityService)
-
-      args = { author: user, project: activity_project, namespace: activity_project&.namespace }
-      expect(Users::ActivityService).to receive(:new).with(args).and_return(activity_service)
-
-      expect(activity_service).to receive(:execute)
-
-      get :info_refs, params: params
-    end
-  end
-
-  shared_examples 'handles logging git upload pack operation' do
-    before do
-      password = user.try(:password) || user.try(:token)
-      request.headers.merge! auth_env(user.username, password, nil)
-    end
-
-    context 'with git pull/fetch/clone action' do
-      let(:params) { super().merge(service: 'git-upload-pack') }
-
-      it_behaves_like 'handles user activity'
-    end
-  end
-
-  shared_examples 'handles logging git receive pack operation' do
-    let(:params) { super().merge(service: 'git-receive-pack') }
-
-    before do
-      request.headers.merge! auth_env(user.username, user.password, nil)
-    end
-
-    context 'with git push action when log_user_git_push_activity is enabled' do
-      it_behaves_like 'handles user activity'
-    end
-
-    context 'when log_user_git_push_activity is disabled' do
-      before do
-        stub_feature_flags(log_user_git_push_activity: false)
-      end
-
-      it 'does not log user activity' do
-        expect(controller).not_to receive(:log_user_activity)
-
-        get :info_refs, params: params
-      end
-    end
-  end
-
   context 'when repository container is a project' do
     it_behaves_like described_class do
       let(:container) { project }
@@ -85,14 +33,27 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:access_checker_class) { Gitlab::GitAccess }
 
       it_behaves_like 'handles unavailable Gitaly'
-      it_behaves_like 'handles logging git upload pack operation'
-      it_behaves_like 'handles logging git receive pack operation'
 
       describe 'POST #ssh_upload_pack' do
         it 'returns not found error' do
           allow(controller).to receive(:verify_workhorse_api!).and_return(true)
 
           post :ssh_upload_pack, params: params
+
+          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response.body).to eq 'Not found'
+        end
+      end
+
+      describe 'POST #ssh_receive_pack' do
+        before do
+          request.headers.merge! auth_env(user.username, user.password, nil)
+        end
+
+        it 'returns not found error' do
+          allow(controller).to receive(:verify_workhorse_api!).and_return(true)
+
+          post :ssh_receive_pack, params: params
 
           expect(response).to have_gitlab_http_status(:not_found)
           expect(response.body).to eq 'Not found'
@@ -164,8 +125,6 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
         let(:container) { project }
         let(:user) { create(:deploy_token, :project, projects: [project]) }
         let(:access_checker_class) { Gitlab::GitAccess }
-
-        it_behaves_like 'handles logging git upload pack operation'
       end
     end
   end
@@ -175,9 +134,6 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:container) { create(:project_wiki, :empty_repo, project: project) }
       let(:user) { project.first_owner }
       let(:access_checker_class) { Gitlab::GitAccessWiki }
-
-      it_behaves_like 'handles logging git upload pack operation'
-      it_behaves_like 'handles logging git receive pack operation'
     end
   end
 
@@ -188,8 +144,6 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:access_checker_class) { Gitlab::GitAccessSnippet }
 
       it_behaves_like 'handles unavailable Gitaly'
-      it_behaves_like 'handles logging git upload pack operation'
-      it_behaves_like 'handles logging git receive pack operation'
     end
   end
 
@@ -200,8 +154,6 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
       let(:access_checker_class) { Gitlab::GitAccessSnippet }
 
       it_behaves_like 'handles unavailable Gitaly'
-      it_behaves_like 'handles logging git upload pack operation'
-      it_behaves_like 'handles logging git receive pack operation'
     end
   end
 

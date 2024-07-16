@@ -142,6 +142,12 @@ const defaultSerializerConfig = {
     [extensions.Loading.name]: () => {},
     [extensions.OrderedList.name]: preserveUnchanged(renderOrderedList),
     [extensions.Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
+    [extensions.HTMLComment.name]: (state, node) => {
+      state.write('<!--');
+      state.write(node.attrs.description || '');
+      state.write('-->');
+      state.closeBlock(node);
+    },
     [extensions.Reference.name]: renderReference,
     [extensions.ReferenceLabel.name]: renderReferenceLabel,
     [extensions.ReferenceDefinition.name]: preserveUnchanged({

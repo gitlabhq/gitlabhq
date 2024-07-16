@@ -27,7 +27,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
       end.not_to change { User.count }
     end
 
-    context 'when a regular user exists with the bot usernane' do
+    context 'when a regular user exists with the bot username' do
       it 'creates a user with a non-conflicting username' do
         create(:user, username: username)
 
@@ -40,6 +40,16 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
     context 'when a regular user exists with the bot user email' do
       it 'creates a user with a non-conflicting email' do
         create(:user, email: email)
+
+        expect do
+          described_class.public_send(bot_type)
+        end.to change { User.where(user_type: bot_type).count }.by(1)
+      end
+    end
+
+    context 'when a group namespace exists with path that is equal to the bot username' do
+      it 'creates a user with a non-conflicting username' do
+        create(:group, path: username)
 
         expect do
           described_class.public_send(bot_type)
@@ -76,6 +86,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   it_behaves_like 'bot users', :ghost, 'ghost', 'ghost@example.com'
   it_behaves_like 'bot users', :automation_bot, 'automation-bot', 'automation@example.com'
   it_behaves_like 'bot users', :llm_bot, 'GitLab-Llm-Bot', 'llm-bot@example.com'
+  it_behaves_like 'bot users', :duo_code_review_bot, 'GitLab-Duo-Code-Reviewer', 'duo-code-review-bot@example.com'
   it_behaves_like 'bot users', :admin_bot, 'GitLab-Admin-Bot', 'admin-bot@example.com'
 
   it_behaves_like 'bot user avatars', :alert_bot, 'alert-bot.png'
@@ -83,6 +94,7 @@ RSpec.describe Users::Internal, feature_category: :user_profile do
   it_behaves_like 'bot user avatars', :security_bot, 'security-bot.png'
   it_behaves_like 'bot user avatars', :automation_bot, 'support-bot.png'
   it_behaves_like 'bot user avatars', :llm_bot, 'support-bot.png'
+  it_behaves_like 'bot user avatars', :duo_code_review_bot, 'support-bot.png'
   it_behaves_like 'bot user avatars', :admin_bot, 'admin-bot.png'
 
   context 'when bot is the support_bot' do

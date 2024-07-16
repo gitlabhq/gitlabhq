@@ -60,10 +60,7 @@ class GroupsFinder < UnionFinder
     groups = [
       authorized_groups,
       public_groups
-    ]
-
-    groups << membership_groups if Feature.disabled?(:include_subgroups_in_authorized_groups, current_user)
-    groups = groups.compact
+    ].compact
 
     groups << Group.none if groups.empty?
 
@@ -82,12 +79,6 @@ class GroupsFinder < UnionFinder
       .self_and_descendants
   end
   # rubocop: enable CodeReuse/ActiveRecord
-
-  def membership_groups
-    return unless current_user
-
-    current_user.groups.self_and_descendants
-  end
 
   def authorized_groups
     return unless current_user

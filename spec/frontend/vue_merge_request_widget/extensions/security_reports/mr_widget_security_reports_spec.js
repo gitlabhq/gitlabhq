@@ -46,8 +46,7 @@ describe('vue_merge_request_widget/extensions/security_reports/mr_widget_securit
         content: {
           learnMorePath:
             '/help/user/application_security/index#view-security-scan-information-in-merge-requests',
-          text:
-            'New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
+          text: 'New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
         },
         options: {
           title: 'Security scan results',

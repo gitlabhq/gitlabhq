@@ -537,6 +537,35 @@ RSpec.describe API::MergeRequests, :aggregate_failures, feature_category: :sourc
             expect(response_titles).to eq(response_titles.sort.reverse)
           end
         end
+
+        context 'returns an array of merge_requests ordered by merged_at' do
+          it 'default is asc when requested' do
+            path = endpoint_path + '?order_by=merged_at&state=merged'
+
+            get api(path, user)
+
+            response_merged_timestamps = json_response.map { |merge_request| merge_request['merged_at'] }
+            expect(response_merged_timestamps).to eq(response_merged_timestamps.sort)
+          end
+
+          it 'asc when requested' do
+            path = endpoint_path + '?order_by=merged_at&sort=asc&state=merged'
+
+            get api(path, user)
+
+            response_merged_timestamps = json_response.map { |merge_request| merge_request['merged_at'] }
+            expect(response_merged_timestamps).to eq(response_merged_timestamps.sort)
+          end
+
+          it 'desc when requested' do
+            path = endpoint_path + '?order_by=merged_at&sort=desc&state=merged'
+
+            get api(path, user)
+
+            response_merged_timestamps = json_response.map { |merge_request| merge_request['merged_at'] }
+            expect(response_merged_timestamps).to eq(response_merged_timestamps.sort.reverse)
+          end
+        end
       end
 
       context 'NOT params' do

@@ -1,5 +1,5 @@
 import MockAdapter from 'axios-mock-adapter';
-import { GlDrawer } from '@gitlab/ui';
+import { GlDrawer, GlFormGroup, GlFormSelect } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import axios from '~/lib/utils/axios_utils';
 import {
@@ -7,9 +7,10 @@ import {
   HTTP_STATUS_UNPROCESSABLE_ENTITY,
   HTTP_STATUS_INTERNAL_SERVER_ERROR,
 } from '~/lib/utils/http_status';
-import { mountExtended } from 'helpers/vue_test_utils_helper';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ReportActions from '~/admin/abuse_report/components/report_actions.vue';
+import { stubComponent } from 'helpers/stub_component';
 import {
   ACTIONS_I18N,
   SUCCESS_ALERT,
@@ -38,53 +39,73 @@ describe('ReportActions', () => {
 
   const clickActionsButton = () => wrapper.findByTestId('actions-button').vm.$emit('click');
   const isDrawerOpen = () => wrapper.findComponent(GlDrawer).props('open');
-  const findErrorFor = (id) => wrapper.findByTestId(id).find('.d-block.invalid-feedback');
+  const findErrorFor = (id) => wrapper.findByTestId(id).attributes('invalid-feedback');
   const findUserActionOptions = () => wrapper.findByTestId('action-select');
-  const setCloseReport = (close) => wrapper.findByTestId('close').find('input').setChecked(close);
-  const setSelectOption = (id, value) =>
-    wrapper.findByTestId(`${id}-select`).find(`option[value=${value}]`).setSelected();
+  const setCloseReport = (close) => {
+    wrapper.findByTestId('close').vm.$emit('change', close);
+    wrapper.findByTestId('close').vm.$emit('input', close);
+  };
+  const setSelectOption = (id, value) => {
+    wrapper.findByTestId(`${id}-select`).vm.$emit('change', value);
+    wrapper.findByTestId(`${id}-select`).vm.$emit('input', value);
+  };
   const selectAction = (chosenAction) => setSelectOption('action', chosenAction);
   const selectReason = (reason) => setSelectOption('reason', reason);
-  const setComment = (comment) => wrapper.findByTestId('comment').find('input').setValue(comment);
+  const setComment = (comment) => wrapper.findByTestId('comment').vm.$emit('input', comment);
   const submitForm = () => wrapper.findByTestId('submit-button').vm.$emit('click');
   const findReasonOptions = () => wrapper.findByTestId('reason-select');
 
   const createComponent = (props = {}) => {
-    wrapper = mountExtended(ReportActions, {
+    wrapper = shallowMountExtended(ReportActions, {
       propsData: {
         user,
         report,
         ...props,
+      },
+      stubs: {
+        GlFormSelect: stubComponent(GlFormSelect, {
+          props: ['options'],
+        }),
+        GlFormGroup: stubComponent(GlFormGroup, {
+          props: ['state'],
+        }),
       },
     });
   };
 
   beforeEach(() => {
     axiosMock = new MockAdapter(axios);
-    createComponent();
   });
 
   afterEach(() => {
     axiosMock.restore();
   });
 
-  it('initially hides the drawer', () => {
-    expect(isDrawerOpen()).toBe(false);
+  describe('Initial state', () => {
+    beforeEach(() => {
+      createComponent();
+    });
+
+    it('initially hides the drawer', () => {
+      expect(isDrawerOpen()).toBe(false);
+    });
   });
 
   describe('actions', () => {
     describe('when logged in user is not the user being reported', () => {
       beforeEach(() => {
+        createComponent();
+
         clickActionsButton();
       });
 
       it('shows "No action", "Block user", "Ban user" and "Delete user" options', () => {
-        const options = findUserActionOptions().findAll('option');
+        const options = findUserActionOptions().props('options');
 
         expect(options).toHaveLength(USER_ACTION_OPTIONS.length);
 
         USER_ACTION_OPTIONS.forEach((userAction, index) => {
-          expect(options.at(index).text()).toBe(userAction.text);
+          expect(options[index].text).toBe(userAction.text);
         });
       });
     });
@@ -92,29 +113,33 @@ describe('ReportActions', () => {
     describe('when logged in user is the user being reported', () => {
       beforeEach(() => {
         gon.current_username = user.username;
+
+        createComponent();
         clickActionsButton();
       });
 
       it('only shows "No action" option', () => {
-        const options = findUserActionOptions().findAll('option');
+        const options = findUserActionOptions().props('options');
 
         expect(options).toHaveLength(1);
-        expect(options.at(0).text()).toBe(NO_ACTION.text);
+        expect(options[0].text).toBe(NO_ACTION.text);
       });
     });
   });
 
   describe('reasons', () => {
     beforeEach(() => {
+      createComponent();
+
       clickActionsButton();
     });
 
     it('shows all non-trust reasons by default', () => {
-      const reasons = findReasonOptions().findAll('option');
+      const reasons = findReasonOptions().props('options');
       expect(reasons).toHaveLength(REASON_OPTIONS.length);
 
       REASON_OPTIONS.forEach((reason, index) => {
-        expect(reasons.at(index).text()).toBe(reason.text);
+        expect(reasons[index].text).toBe(reason.text);
       });
     });
 
@@ -127,7 +152,7 @@ describe('ReportActions', () => {
           if (userAction !== TRUST_ACTION && userAction !== NO_ACTION) {
             selectAction(userAction.value);
 
-            reasons = findReasonOptions().findAll('option');
+            reasons = findReasonOptions().props('options');
             expect(reasons).toHaveLength(reasonLength);
           }
         });
@@ -135,22 +160,25 @@ describe('ReportActions', () => {
     });
 
     describe('when user selects "Trust user"', () => {
-      beforeEach(() => {
-        selectAction(TRUST_ACTION.value);
+      beforeEach(async () => {
+        await selectAction(TRUST_ACTION.value);
+        await nextTick();
       });
 
       it('only shows "Confirmed trusted user" reason', () => {
-        const reasons = findReasonOptions().findAll('option');
+        const reasons = findReasonOptions().props('options');
 
         expect(reasons).toHaveLength(1);
 
-        expect(reasons.at(0).text()).toBe(TRUST_REASON.text);
+        expect(reasons[0].text).toBe(TRUST_REASON.text);
       });
     });
   });
 
   describe('when clicking the actions button', () => {
     beforeEach(() => {
+      createComponent();
+
       clickActionsButton();
     });
 
@@ -183,15 +211,21 @@ describe('ReportActions', () => {
 
         it(`${messageShown ? 'shows' : 'hides'} ${errorFor} error message`, () => {
           if (messageShown) {
-            expect(findErrorFor(errorFor).text()).toBe(ACTIONS_I18N.requiredFieldFeedback);
+            expect(findErrorFor(errorFor)).toBe(ACTIONS_I18N.requiredFieldFeedback);
           } else {
-            expect(findErrorFor(errorFor).exists()).toBe(false);
+            expect(wrapper.findByTestId(errorFor).props('state')).toBe(false);
           }
         });
       });
     });
 
     describe('when submitting a valid form', () => {
+      beforeEach(() => {
+        createComponent();
+
+        clickActionsButton();
+      });
+
       describe.each`
         response             | success  | responseStatus                       | responseData               | alertType        | alertMessage
         ${'successful'}      | ${true}  | ${HTTP_STATUS_OK}                    | ${{ message: 'success!' }} | ${SUCCESS_ALERT} | ${'success!'}

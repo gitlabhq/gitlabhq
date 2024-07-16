@@ -35,7 +35,7 @@ You can also [revoke](#revoke-a-users-personal-access-token), [delete](#delete-a
 
 You can revoke a user's personal access token.
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Credentials**.
 1. By the personal access token, select **Revoke**.
 
@@ -53,7 +53,7 @@ When a PAT is revoked from the credentials inventory, the instance notifies the 
 
 ## Revoke a user's project access token
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Credentials**.
 1. Select the **Project Access Tokens** tab.
 1. By the project access token, select **Revoke**.
@@ -64,7 +64,7 @@ The project access token is revoked and a background worker is queued to delete 
 
 ## Delete a user's SSH key
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Credentials**.
 1. Select the **SSH Keys** tab.
 1. By the SSH key, select **Delete**.

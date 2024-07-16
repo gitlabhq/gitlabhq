@@ -43,7 +43,7 @@ You can perform a similar operation with other the Models handled by the [Geo Se
 
 NOTE:
 `GroupWikiRepository` is not in the previous list since verification is not implemented.
-There is an [issue to implement this functionality in the Admin Area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+There is an [issue to implement this functionality in the Admin area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
 ## Message: `Synchronization failed - Error syncing repository`
 
@@ -176,7 +176,7 @@ To solve this:
 
    ```ruby
    failed_project_registries.each do |registry|
-     registry.replicator.sync_repository
+     registry.replicator.sync
      puts "Sync initiated for registry ID: #{registry.id}, Project ID: #{registry.project_id}"
    end
    ```
@@ -256,7 +256,7 @@ Geo::ProjectRegistry.update_all(resync_repository: true, resync_wiki: true)
 ```ruby
 project = Project.find_by_full_path('<group/project>')
 
-project.replicator.sync_repository
+project.replicator.sync
 ```
 
 #### Sync all failed repositories now
@@ -277,7 +277,7 @@ The following script:
 Geo::ProjectRepositoryRegistry.failed.find_each do |registry|
    begin
      puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Last Sync Failure: '#{registry.last_sync_failure}'"
-     registry.replicator.sync_repository
+     registry.replicator.sync
      puts "Sync initiated for registry ID: #{id}"
    rescue => e
      puts "ID: #{registry.id}, Project ID: #{registry.project_id}, Failed: '#{e}'", e.backtrace.join("\n")

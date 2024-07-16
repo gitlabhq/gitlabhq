@@ -94,12 +94,10 @@ const getDeploymentApprovalFromDeploymentNode = (deploymentNode, environment) =>
   const hasRequiredApprovals = protectedEnvironmentInfo.requiredApprovalCount > 0;
 
   const isApprovalActionAvailable = hasRequiredApprovals || hasApprovalRules;
-  const requiredMultipleApprovalRulesApprovals = protectedEnvironmentInfo.approvalRules.nodes.reduce(
-    (requiredApprovals, rule) => {
+  const requiredMultipleApprovalRulesApprovals =
+    protectedEnvironmentInfo.approvalRules.nodes.reduce((requiredApprovals, rule) => {
       return requiredApprovals + rule.requiredApprovals;
-    },
-    0,
-  );
+    }, 0);
 
   const requiredApprovalCount = hasRequiredApprovals
     ? protectedEnvironmentInfo.requiredApprovalCount

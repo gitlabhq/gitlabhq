@@ -1,5 +1,5 @@
 review-cleanup:
-  timeout: 15min
+  timeout: 30min
   extends:
     - .default-retry
     - .review:rules:review-cleanup

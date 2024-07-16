@@ -5,6 +5,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { createAlert, VARIANT_WARNING } from '~/alert';
 import RedactText from '~/projects/settings/repository/maintenance/redact_text.vue';
@@ -25,6 +26,7 @@ jest.mock('~/alert');
 describe('Redact text', () => {
   let wrapper;
   let mutationMock;
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const createMockApolloProvider = (resolverMock) => {
     return createMockApollo([[replaceTextMutation, resolverMock]]);
@@ -129,6 +131,15 @@ describe('Redact text', () => {
               replacements: [TEST_TEXT],
               projectPath: TEST_PROJECT_PATH,
             });
+          });
+
+          it('tracks click_redact_text_button_repository_settings', () => {
+            const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+            expect(trackEventSpy).toHaveBeenCalledWith(
+              'click_redact_text_button_repository_settings',
+              {},
+              undefined,
+            );
           });
 
           it('closes the drawer when removal is confirmed', async () => {

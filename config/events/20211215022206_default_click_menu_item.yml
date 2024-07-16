@@ -1,9 +1,6 @@
 description: "Click navigation menu item"
 category: default
 action: click_menu_item
-label_description: ""
-property_description: ""
-value_description: ""
 extra_properties:
   sidebar_display:
     type: string

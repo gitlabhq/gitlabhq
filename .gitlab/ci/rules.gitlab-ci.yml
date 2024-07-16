@@ -122,6 +122,9 @@
 .if-fork-merge-request: &if-fork-merge-request
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
+.if-merge-request-no-tier: &if-merge-request-no-tier
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-/'
+
 .if-merge-request-tier-1: &if-merge-request-tier-1
   if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-1/'
 
@@ -419,6 +422,7 @@
   - "{,ee/,jh/}fixtures/**/*"
   - "{,ee/,jh/}rubocop/**/*"
   - "{,ee/,jh/}spec/**/*"
+  - "scripts/**/*"
   - "{,spec/}tooling/**/*"
 
 .qa-patterns: &qa-patterns
@@ -669,7 +673,7 @@
 
 .audit-events-patterns: &audit-events-patterns
   - "{,ee/}config/audit_events/types/*.yml"
-  - "doc/administration/audit_event_types.md"
+  - "doc/user/compliance/audit_event_types.md"
   - "tooling/audit_events/docs/templates/audit_event_types.md.erb"
   - "lib/tasks/gitlab/audit_event_types/audit_event_types.rake"
   - "lib/tasks/gitlab/audit_event_types/check_docs_task.rb"
@@ -683,7 +687,7 @@
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
-  - gems/gitlab-cng/**/*.rb
+  - qa/gems/gitlab-cng/**/*.rb
 
 ##################
 # Conditions set #
@@ -913,8 +917,7 @@
       changes: *setup-test-env-patterns
     - <<: *if-merge-request
       changes: *ci-build-images-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *code-qa-patterns
     # Rules to support .qa:rules:package-and-test-ee
@@ -953,18 +956,6 @@
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only-setup-test-env", rules]
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only-setup-test-env", rules]
 
-.build-images:rules:build-qa-image-as-if-foss:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - !reference [".strict-ee-only-rules", rules]
-    - <<: *if-default-branch-schedule-nightly
-      variables:
-        ARCH: amd64,arm64
-    - !reference [".build-images:rules:build-qa-image-merge-requests", rules]
-
 # When new minor release tag is pushed, re-tag gdk image with pattern ignored by registry cleanup
 .build-images:rules:retag-gdk-image:
   rules:
@@ -995,9 +986,8 @@
     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
-    # Otherwise, only run tests after the MR is approved
-    - <<: *if-merge-request-not-approved
-      when: never
+    # Otherwise, only run in pipeline::tier-2 and above
+    - !reference [".prevent-tier-1", rules]
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
@@ -1247,8 +1237,7 @@
       changes: *ci-build-images-patterns
     - <<: *if-default-refs
       changes: *workhorse-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     # Rules to support .qa:rules:package-and-test
     - <<: *if-merge-request
       changes: *dependency-patterns
@@ -1265,13 +1254,6 @@
       when: never
     - if: '$ENABLE_COMPILE_PRODUCTION_ASSETS == "true"'
     - !reference [".frontend:rules:assets-shared", rules]
-
-.frontend:rules:compile-production-assets-as-if-foss:
-  rules:
-    - <<: *if-not-canonical-namespace
-      when: never
-    - !reference [".strict-ee-only-rules", rules]
-    - !reference [.frontend:rules:compile-production-assets, rules]
 
 .frontend:rules:compile-test-assets:
   rules:
@@ -1525,6 +1507,18 @@
       when: never
     - !reference [.qa:rules:update-gem-cache, rules]
 
+.qa:rules:metadata-lint:
+  rules:
+    - <<: *if-default-refs
+      changes: *qa-patterns
+    - <<: *if-default-refs
+      changes: *ci-qa-patterns
+
+.qa:rules:gitlab-cng:
+  rules:
+    - <<: *if-default-refs
+      changes: *cng-orchestrator-patterns
+
 .qa:rules:code-merge-request:
   rules:
     - <<: *if-merge-request
@@ -1607,16 +1601,12 @@
 .qa:rules:package-and-test-common:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
-    - <<: *if-ruby-branch
     - <<: *if-merge-request-labels-run-all-e2e
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
-    # Otherwise, only run tests after the MR is approved
-    - <<: *if-merge-request-not-approved
-      when: never
+    # Otherwise, only run tests in pipeline::tier-3 and above
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *dependency-patterns
       variables:
@@ -1633,36 +1623,30 @@
       changes: *code-patterns
     - <<: *if-merge-request-and-specific-devops-stage
       changes: *code-patterns
-    - <<: *if-force-ci
-      when: manual
-      allow_failure: true
-      # We used to have a rule at the end here that would catch any remaining code MRs and allow the job to be run
-      # manually. That rule is now in ".qa:rules:code-merge-request-manual" so it can be included when needed and we can
-      # still use ".qa:rules:package-and-test-common" in jobs we don't want to be manual.
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
+    - <<: *if-ruby-branch
 
-# Like .qa:rules:package-and-test-common but not allowed to fail.
-# It's named `e2e` instead of `package-and-test` because it's used for e2e tests on GDK (and could be used
-# for other e2e tests)
-.qa:rules:e2e-blocking:
+# .qa:rules:e2e-blocking-base-* are similar to .qa:rules:package-and-test-common, but not allowed to fail.
+# It's named `e2e` instead of `package-and-test` because it's used for e2e tests on GDK/CNG
+.qa:rules:e2e-blocking-base-before:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request-labels-run-all-e2e
-    - <<: *if-force-ci
-      when: manual
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
     # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
-    # Otherwise, only run tests after the MR is approved
-    - <<: *if-merge-request-not-approved
-      when: never
+
+.qa:rules:e2e-blocking-base-after:
+  rules:
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
+    - <<: *if-force-ci
+      when: manual
     - <<: *if-merge-request
       changes: *code-patterns
       variables:
@@ -1686,9 +1670,11 @@
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-fork-merge-request
       when: never
-    - <<: *if-merge-request-labels-run-cs-evaluation
-    - <<: *if-merge-request-not-approved
+    - <<: *if-merge-request-targeting-stable-branch
       when: never
+    - <<: *if-merge-request-labels-run-cs-evaluation
+    # Otherwise, only run in pipeline::tier-2 and above
+    - !reference [".prevent-tier-1", rules]
 
 .qa:rules:code-suggestions-eval:
   rules:
@@ -1709,17 +1695,16 @@
   rules:
     - !reference [".qa:rules:package-and-test-common", rules]
     - !reference [".qa:rules:e2e-schedule-blocking", rules]
-    - !reference [".qa:rules:code-merge-request-manual", rules]
 
-.qa:rules:package-and-test-ce:
+# Note: If any changes are made to this rule, the following should also be updated - .qa:rules:package-and-test-ce:follow-up
+.qa:rules:package-and-test-ce:start:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-security-merge-request
       changes: *qa-patterns
       when: manual
       allow_failure: true
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-security-merge-request
       changes: *code-patterns
       when: manual
@@ -1727,6 +1712,26 @@
     - <<: *if-default-branch-schedule-nightly
       allow_failure: true
       variables:
+        ARCH: amd64,arm64
+        CREATE_TEST_FAILURE_ISSUES: "true"
+        PROCESS_TEST_RESULTS: "true"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false"
+
+.qa:rules:package-and-test-ce:follow-up:
+  rules:
+    - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-security-merge-request
+      changes: *qa-patterns
+      allow_failure: true
+    - !reference [".prevent-tier-2-and-below", rules]
+    - <<: *if-security-merge-request
+      changes: *code-patterns
+      allow_failure: true
+    - <<: *if-default-branch-schedule-nightly
+      allow_failure: true
+      variables:
+        ARCH: amd64,arm64
         CREATE_TEST_FAILURE_ISSUES: "true"
         PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
@@ -1738,7 +1743,9 @@
       when: never
     - <<: *if-default-branch-schedule-nightly  # already executed in the 2-hourly schedule
       when: never
-    - !reference [".qa:rules:e2e-blocking", rules]
+    - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    - !reference [".prevent-tier-1", rules]
+    - !reference [".qa:rules:e2e-blocking-base-after", rules]
     # Certain components trigger a rebuild of the e2e GDK image so we want to test it too
     - <<: *if-merge-request
       changes: *gdk-component-patterns
@@ -1749,19 +1756,33 @@
         KNAPSACK_GENERATE_REPORT: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
-        COVERBAND_ENABLED: "false" #Will open a separate MR to set to true
-
+        COVERBAND_ENABLED: "true"
 
 .qa:rules:e2e:test-on-cng:
   rules:
-    - <<: *if-security-merge-request
-      when: never
-    - <<: *if-security-schedule
-      when: never
-    - !reference [".qa:rules:e2e-blocking", rules]
-    - !reference [".qa:rules:e2e-schedule-blocking", rules]
-    - <<: *if-merge-request
-      changes: *cng-orchestrator-patterns
+    # Until https://gitlab.com/gitlab-org/quality/quality-engineering/CNG-mirror is stable enough,
+    # test-on-cng should not be part of development flow.
+    # Once it's ready, delete the two following rules, and uncomment the commented lines below.
+    - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-dot-com-gitlab-org-schedule
+      variables:
+        KNAPSACK_GENERATE_REPORT: "true"
+        QA_SAVE_TEST_METRICS: "true"
+        QA_EXPORT_TEST_METRICS: "false"
+      allow_failure: true
+    # - <<: *if-merge-request-targeting-stable-branch
+    #   when: never
+    # - <<: *if-security-merge-request
+    #   when: never
+    # - <<: *if-security-schedule
+    #   when: never
+    # - !reference [".qa:rules:e2e-blocking-base-before", rules]
+    # - !reference [".prevent-tier-2-and-below", rules]
+    # - !reference [".qa:rules:e2e-blocking-base-after", rules]
+    # - !reference [".qa:rules:e2e-schedule-blocking", rules]
+    # - <<: *if-merge-request
+    #   changes: *cng-orchestrator-patterns
+
 
 .qa:rules:package-and-test-nightly:
   rules:
@@ -1778,7 +1799,9 @@
 # These provide a manual way to trigger follow-up:e2e:package-and-test-ee
 # It is fine if they're overlapping with the automatic ones.
 # It'll not hurt and it can simplify the rules, decoupling them.
-# If any changes are made to this rule, `.qa:rules:follow-up-e2e` should also be updated.
+# If any changes are made to this rule, the following should also be updated:
+# 1) .qa:rules:follow-up-e2e
+# 2) .qa:rules:post-run-e2e-message
 .qa:rules:manual-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
@@ -1787,7 +1810,8 @@
     - !reference [".qa:rules:code-merge-request-manual", rules]
 
 # These are based on `.qa:rules:manual-e2e` but with manual jobs changed to automatic.
-# If any changes are made to this rule, `.qa:rules:manual-e2e` should also be updated.
+# If any changes are made to this rule, the following should also be updated:
+# 1) .qa:rules:manual-e2e
 .qa:rules:follow-up-e2e:
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
@@ -1810,8 +1834,7 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       when: never
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
       changes: *dependency-patterns
       when: never
@@ -1832,11 +1855,10 @@
       when: never
     - <<: *if-merge-request-and-specific-devops-stage
       when: never
-    - <<: *if-force-ci
-      when: never
     # From .qa:rules:package-and-test-schedule
     - <<: *if-dot-com-gitlab-org-schedule
       when: never
+    # From .qa:rules:manual-e2e
     - !reference [".qa:rules:code-merge-request-allowed-to-fail", rules]
 
 .qa:rules:fulfillment-e2e-quarantine-report:
@@ -1979,6 +2001,12 @@
   rules:
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request-labels-run-without-gitaly-transactions
+
+.rails:rules:ee-only-gitaly-without-transactions:
+  rules:
+    - <<: *if-not-ee
+      when: never
+    - !reference [".rails:rules:gitaly-without-transactions", rules]
 
 .rails:rules:ee-and-foss-migration:
   rules:
@@ -2243,10 +2271,6 @@
       when: never
     - if: '$ANTHROPIC_API_KEY == null'
       when: never
-    - if: '$VERTEX_AI_PROJECT == null'
-      when: never
-    - if: '$VERTEX_AI_CREDENTIALS == null'
-      when: never
     - <<: *if-fork-merge-request
       when: never
 
@@ -2457,13 +2481,6 @@
         RUN_ALL_RUBOCOP: "true"
     - <<: *if-default-refs
       changes: *code-backstage-qa-patterns
-
-.static-analysis:rules:qa:metadata-lint:
-  rules:
-    - <<: *if-default-refs
-      changes: *qa-patterns
-    - <<: *if-default-refs
-      changes: [".gitlab/ci/static-analysis.gitlab-ci.yml"]
 
 .static-analysis:rules:haml-lint:
   rules:
@@ -2706,8 +2723,7 @@
     - <<: *if-merge-request-labels-run-review-app
     - if: '$CI_REVIEW_APPS_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
     - <<: *if-dot-com-gitlab-org-merge-request
@@ -2765,8 +2781,7 @@
       allow_failure: true
     - if: '$CI_REVIEW_APPS_ENABLED != "true"'
       when: never
-    - <<: *if-merge-request-not-approved
-      when: never
+    - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-dot-com-gitlab-org-merge-request
       changes: *ci-review-patterns
       when: manual
@@ -3054,8 +3069,6 @@
       changes: *code-backstage-qa-patterns
     - <<: *if-security-merge-request
       changes: *db-patterns
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
     - <<: *if-merge-request
       changes: *code-backstage-qa-patterns
@@ -3134,8 +3147,6 @@
       changes: *db-patterns
       allow_failure: true
       when: manual
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       allow_failure: true
       when: manual
@@ -3218,8 +3229,6 @@
     - <<: *if-security-merge-request
       changes: *db-patterns
       allow_failure: true
-    - <<: *if-merge-request-not-approved
-      when: never
     - <<: *if-merge-request-labels-frontend-and-feature-flag
       allow_failure: true
     - <<: *if-merge-request
@@ -3361,6 +3370,8 @@
 ########################
 .prevent-tier-1:
   rules:
+    - <<: *if-merge-request-no-tier  # Assuming tier-1
+      when: never
     - <<: *if-merge-request-tier-1
       when: never
 

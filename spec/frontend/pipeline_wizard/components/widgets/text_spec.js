@@ -33,6 +33,12 @@ describe('Pipeline Wizard - Text Widget', () => {
     expect(wrapper.findByLabelText(defaultProps.label).exists()).toBe(true);
   });
 
+  it('uses monospace font for input', () => {
+    createComponent({ monospace: true }, shallowMount);
+
+    expect(findGlFormInput().attributes('class')).toBe('!gl-font-monospace');
+  });
+
   it('passes the description', () => {
     createComponent({}, shallowMount);
 

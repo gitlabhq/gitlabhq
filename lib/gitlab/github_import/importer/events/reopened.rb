@@ -20,7 +20,8 @@ module Gitlab
               target_type: issuable_type(issue_event),
               target_id: issuable_db_id(issue_event),
               created_at: issue_event.created_at,
-              updated_at: issue_event.created_at
+              updated_at: issue_event.created_at,
+              imported_from: imported_from
             )
           end
 
@@ -28,7 +29,8 @@ module Gitlab
             attrs = {
               user_id: author_id(issue_event),
               state: 'reopened',
-              created_at: issue_event.created_at
+              created_at: issue_event.created_at,
+              imported_from: imported_from
             }.merge(resource_event_belongs_to(issue_event))
 
             ResourceStateEvent.create!(attrs)

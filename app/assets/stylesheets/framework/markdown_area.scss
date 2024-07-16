@@ -105,7 +105,7 @@
   box-shadow: none;
   width: 100%;
   resize: none !important;
-  transition: box-shadow $gl-transition-duration-medium ease;
+  @apply gl-transition-box-shadow;
 }
 
 .md-suggestion-diff {

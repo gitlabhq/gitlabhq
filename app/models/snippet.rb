@@ -47,6 +47,7 @@ class Snippet < ApplicationRecord
 
   belongs_to :author, class_name: 'User'
   belongs_to :project
+  belongs_to :organization, class_name: 'Organizations::Organization'
   alias_method :resource_parent, :project
 
   has_many :notes, as: :noteable, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent

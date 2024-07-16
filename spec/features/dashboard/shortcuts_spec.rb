@@ -60,8 +60,7 @@ RSpec.describe 'Dashboard shortcuts', :js, feature_category: :shared do
 
       find('body').send_keys([:shift, 'S'])
 
-      find('.nothing-here-block')
-      expect(page).to have_content('No snippets found')
+      expect(page).to have_content('There are no snippets found')
 
       find('body').send_keys([:shift, 'P'])
 

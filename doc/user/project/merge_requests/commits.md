@@ -56,6 +56,9 @@ To add previously merged commits to a merge request for more context:
 1. Select the commits that you want to add.
 1. Select **Save changes**.
 
+Previously merged commits are referred to as **Context Commits** in
+the [API](../../../api/merge_request_context_commits.md).
+
 ## Add a comment to a commit
 
 WARNING:

@@ -1,7 +1,7 @@
 <script>
 import { GlBadge, GlPagination, GlSearchBoxByType, GlTab, GlTabs } from '@gitlab/ui';
 import { debounce } from 'lodash';
-import { s__, __, sprintf } from '~/locale';
+import { s__, __ } from '~/locale';
 import { updateHistory, setUrlParams, queryToObject } from '~/lib/utils/url_utility';
 import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
@@ -89,7 +89,6 @@ export default {
     nextPage: __('Go to next page'),
     next: __('Next'),
     prev: __('Prev'),
-    goto: (page) => sprintf(__('Go to page %{page}'), { page }),
     searchPlaceholder: s__('Environments|Search by environment name'),
   },
   modalId: 'enable-review-app-info',
@@ -290,7 +289,7 @@ export default {
         >
           <template #title>
             <span>{{ $options.i18n.active }}</span>
-            <gl-badge size="sm" class="gl-tab-counter-badge">
+            <gl-badge class="gl-tab-counter-badge">
               {{ activeCount }}
             </gl-badge>
           </template>
@@ -301,7 +300,7 @@ export default {
         >
           <template #title>
             <span>{{ $options.i18n.stopped }}</span>
-            <gl-badge size="sm" class="gl-tab-counter-badge">
+            <gl-badge class="gl-tab-counter-badge">
               {{ stoppedCount }}
             </gl-badge>
           </template>
@@ -344,7 +343,6 @@ export default {
       :prev="$options.i18n.prev"
       :label-previous-page="$options.prevPage"
       :label-next-page="$options.nextPage"
-      :label-page="$options.goto"
       @next="movePage('next')"
       @previous="movePage('previous')"
       @input="moveToPage"

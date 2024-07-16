@@ -1,9 +1,6 @@
 description: "Wiki content editor loaded"
 category: default
 action: content_editor_loaded
-label_description: "`wiki_content_editor`"
-property_description: ""
-value_description: ""
 extra_properties:
 identifiers:
 product_group: ide
@@ -16,3 +13,6 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`wiki_content_editor`"

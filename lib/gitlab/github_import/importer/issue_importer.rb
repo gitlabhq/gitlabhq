@@ -54,7 +54,8 @@ module Gitlab
             state_id: ::Issue.available_states[issue.state],
             created_at: issue.created_at,
             updated_at: issue.updated_at,
-            work_item_type_id: issue.work_item_type_id
+            work_item_type_id: issue.work_item_type_id,
+            imported_from: ::Import::SOURCE_GITHUB
           }
 
           project.issues.create!(attributes.merge(importing: true))

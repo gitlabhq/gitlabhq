@@ -45,9 +45,6 @@ describe('ContainerScanningForRegistry', () => {
         },
       },
       provide: {
-        glFeatures: {
-          containerScanningForRegistryFlag: true,
-        },
         ...defaultProvide,
       },
       apolloProvider,
@@ -123,22 +120,5 @@ describe('ContainerScanningForRegistry', () => {
 
     expect(wrapper.emitted().overrideStatus).toHaveLength(1);
     expect(wrapper.emitted().overrideStatus[0][0]).toBe(true);
-  });
-
-  describe('when feature flag is disabled', () => {
-    beforeEach(() => {
-      createComponent({
-        provide: {
-          glFeatures: {
-            containerScanningForRegistryFlag: false,
-          },
-          ...defaultProvide,
-        },
-      });
-    });
-
-    it('should not render toggle', () => {
-      expect(findToggle().exists()).toBe(false);
-    });
   });
 });

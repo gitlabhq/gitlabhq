@@ -6,7 +6,6 @@ import { SUCCESS_STATUS } from '../../../constants';
 
 export default {
   iconSize: 12,
-  badgeSize: 'sm',
   i18n: {
     stuckText: s__('Jobs|Job is stuck. Check runners.'),
   },
@@ -111,7 +110,7 @@ export default {
         >
       </div>
       <span v-else>{{ __('none') }}</span>
-      <div class="gl-ml-2 gl-p-2 gl-rounded-base gl-bg-gray-50">
+      <div class="gl-flex gl-items-center gl-ml-2 gl-p-2 gl-rounded-base gl-bg-gray-50">
         <gl-icon class="gl-mx-2" name="commit" :size="$options.iconSize" />
         <gl-link
           class="gl-font-sm gl-font-monospace gl-text-gray-700 gl-hover-text-gray-900"
@@ -123,42 +122,19 @@ export default {
     </div>
 
     <div class="gl-mt-2">
-      <gl-badge
-        v-for="tag in jobTags"
-        :key="tag"
-        variant="info"
-        :size="$options.badgeSize"
-        data-testid="job-tag-badge"
-      >
+      <gl-badge v-for="tag in jobTags" :key="tag" variant="info" data-testid="job-tag-badge">
         {{ tag }}
       </gl-badge>
-      <gl-badge
-        v-if="triggered"
-        variant="info"
-        :size="$options.badgeSize"
-        data-testid="trigger-token-job-badge"
+      <gl-badge v-if="triggered" variant="info" data-testid="trigger-token-job-badge"
         >{{ s__('Job|trigger token') }}
       </gl-badge>
-      <gl-badge
-        v-if="showAllowedToFailBadge"
-        variant="warning"
-        :size="$options.badgeSize"
-        data-testid="fail-job-badge"
+      <gl-badge v-if="showAllowedToFailBadge" variant="warning" data-testid="fail-job-badge"
         >{{ s__('Job|allowed to fail') }}
       </gl-badge>
-      <gl-badge
-        v-if="isScheduledJob"
-        variant="info"
-        :size="$options.badgeSize"
-        data-testid="delayed-job-badge"
+      <gl-badge v-if="isScheduledJob" variant="info" data-testid="delayed-job-badge"
         >{{ s__('Job|delayed') }}
       </gl-badge>
-      <gl-badge
-        v-if="isManualJob"
-        variant="info"
-        :size="$options.badgeSize"
-        data-testid="manual-job-badge"
-      >
+      <gl-badge v-if="isManualJob" variant="info" data-testid="manual-job-badge">
         {{ s__('Job|manual') }}
       </gl-badge>
     </div>

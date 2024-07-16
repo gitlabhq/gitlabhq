@@ -9,6 +9,7 @@ module Ci
       # is ambiguous because both a branch and a tag with the name exist, or it is
       # ambiguous because neither exists.
       INVALID_REF_MESSAGE = 'Ref is ambiguous'
+      INVALID_REF_MODEL_MESSAGE = 'is ambiguous'
 
       def execute
         schedule.assign_attributes(params)
@@ -16,9 +17,13 @@ module Ci
         return forbidden_to_save unless allowed_to_save?
         return forbidden_to_save_variables unless allowed_to_save_variables?
 
+        # This validation cannot be added to the model yet due to operation hooks
+        # causing incidents
         unless valid_ref_format?
           schedule.expand_short_ref
-          return ServiceResponse.error(payload: schedule, message: INVALID_REF_MESSAGE) unless valid_ref_format?
+
+          # Only return an error if the ref fails to expand
+          return invalid_ref_format unless valid_ref_format?
         end
 
         if schedule.save
@@ -66,6 +71,12 @@ module Ci
         schedule.errors.add(:base, message)
 
         ServiceResponse.error(payload: schedule, message: [message], reason: :forbidden)
+      end
+
+      def invalid_ref_format
+        schedule.errors.add(:ref, INVALID_REF_MODEL_MESSAGE)
+
+        ServiceResponse.error(payload: schedule, message: [INVALID_REF_MESSAGE])
       end
     end
   end

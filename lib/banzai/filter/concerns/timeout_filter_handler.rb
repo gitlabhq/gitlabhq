@@ -24,6 +24,8 @@ module Banzai
           HTML
 
         def call
+          return call_with_timeout if Gitlab::RenderTimeout.banzai_timeout_disabled?
+
           Gitlab::RenderTimeout.timeout(foreground: render_timeout, background: render_timeout) { call_with_timeout }
         rescue Timeout::Error => e
           class_name = self.class.name.demodulize

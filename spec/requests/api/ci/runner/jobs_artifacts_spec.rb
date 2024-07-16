@@ -943,32 +943,14 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_shared_state, feature_catego
                 allow(Gitlab::ApplicationContext).to receive(:push).and_call_original
               end
 
-              context 'when ci_job_artifacts_use_primary_to_authenticate feature flag is on' do
-                it 'downloads artifacts' do
-                  expect_use_primary
-                  expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).once.and_call_original
+              it 'authenticates with primary and downloads artifacts' do
+                expect_use_primary
+                expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).once.and_call_original
 
-                  download_artifact
+                download_artifact
 
-                  expect(response).to have_gitlab_http_status(:ok)
-                  expect(response.headers.to_h).to include download_headers
-                end
-              end
-
-              context 'when ci_job_artifacts_use_primary_to_authenticate feature flag is off' do
-                before do
-                  stub_feature_flags(ci_job_artifacts_use_primary_to_authenticate: false)
-                end
-
-                it 'downloads artifacts' do
-                  expect_no_use_primary
-                  expect(Gitlab::ApplicationContext).to receive(:push).with(artifact: an_instance_of(Ci::JobArtifact)).once.and_call_original
-
-                  download_artifact
-
-                  expect(response).to have_gitlab_http_status(:ok)
-                  expect(response.headers.to_h).to include download_headers
-                end
+                expect(response).to have_gitlab_http_status(:ok)
+                expect(response.headers.to_h).to include download_headers
               end
             end
 

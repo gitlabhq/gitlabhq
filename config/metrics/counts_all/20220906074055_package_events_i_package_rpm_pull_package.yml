@@ -8,11 +8,11 @@ status: active
 milestone: '15.6'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/97133
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: package_events
-  event: i_package_rpm_pull_package
+data_source: internal_events
+events:
+  - name: pull_package_from_registry
+    filter:
+      label: rpm
 distribution:
 - ce
 - ee

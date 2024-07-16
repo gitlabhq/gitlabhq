@@ -134,7 +134,9 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
           let(:params) { { children: [child_issue] } }
 
           it_behaves_like 'raises a WidgetError with message' do
-            let(:message) { "#{child_issue.to_reference} cannot be added: is not allowed to add this type of parent" }
+            let(:message) do
+              "#{child_issue.to_reference} cannot be added: it's not allowed to add this type of parent item"
+            end
           end
         end
       end
@@ -187,7 +189,9 @@ RSpec.describe WorkItems::Widgets::HierarchyService::UpdateService, feature_cate
           let(:params) { { parent: parent_task } }
 
           it_behaves_like 'raises a WidgetError with message' do
-            let(:message) { "#{work_item.to_reference} cannot be added: is not allowed to add this type of parent" }
+            let(:message) do
+              "#{parent_task.to_reference} cannot be added: it's not allowed to add this type of parent item"
+            end
           end
         end
 

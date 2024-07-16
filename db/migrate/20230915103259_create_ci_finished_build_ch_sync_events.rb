@@ -8,7 +8,7 @@ class CreateCiFinishedBuildChSyncEvents < Gitlab::Database::Migration[2.1]
     }
 
     create_table(:p_ci_finished_build_ch_sync_events, **options) do |t|
-      # Do not bother with foreign key as it provides not benefit and has a performance cost. These get cleaned up over
+      # Do not bother with foreign key as it provides no benefit and has a performance cost. These get cleaned up over
       # time anyway.
       t.bigint :build_id, null: false
       t.bigint :partition, null: false, default: 1

@@ -52,11 +52,11 @@ module API
       optional :default_branch_protection, type: Integer, values: ::Gitlab::Access.protection_values, desc: 'Determine if developers can push to default branch'
       optional :default_branch_protection_defaults, type: Hash, desc: 'Determine if developers can push to default branch' do
         optional :allowed_to_push, type: Array, desc: 'An array of access levels allowed to push' do
-          requires :access_level, type: Integer, values: [::Gitlab::Access::DEVELOPER, ::Gitlab::Access::MAINTAINER], desc: 'A valid access level'
+          requires :access_level, type: Integer, values: ProtectedBranch::PushAccessLevel.allowed_access_levels, desc: 'A valid access level'
         end
         optional :allow_force_push, type: Boolean, desc: 'Allow force push for all users with push access.'
         optional :allowed_to_merge, type: Array, desc: 'An array of access levels allowed to merge' do
-          requires :access_level, type: Integer, values: [::Gitlab::Access::DEVELOPER, ::Gitlab::Access::MAINTAINER], desc: 'A valid access level'
+          requires :access_level, type: Integer, values: ProtectedBranch::MergeAccessLevel.allowed_access_levels, desc: 'A valid access level'
         end
         optional :code_owner_approval_required, type: Boolean, desc: "Require approval from code owners"
         optional :developer_can_initial_push, type: Boolean, desc: 'Allow developers to initial push'
@@ -233,6 +233,8 @@ module API
       optional :project_jobs_api_rate_limit, type: Integer, desc: 'Maximum authenticated requests to /project/:id/jobs per minute'
       optional :security_txt_content, type: String, desc: 'Public security contact information made available at https://gitlab.example.com/.well-known/security.txt'
       optional :downstream_pipeline_trigger_limit_per_project_user_sha, type: Integer, desc: 'Maximum number of downstream pipelines that can be triggered per minute (for a given project, user, and commit).'
+      optional :ai_action_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to aiAction endpoint'
+      optional :code_suggestions_api_rate_limit, type: Integer, desc: 'Maximum requests a user can make per minute to code suggestions endpoint'
 
       Gitlab::SSHPublicKey.supported_types.each do |type|
         optional :"#{type}_key_restriction",

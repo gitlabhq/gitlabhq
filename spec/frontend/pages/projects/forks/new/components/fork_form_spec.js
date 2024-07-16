@@ -54,60 +54,62 @@ describe('ForkForm component', () => {
 
   Vue.use(VueApollo);
 
-  const createComponentFactory = (mountFn) => (provide = {}, data = {}) => {
-    const queryResponse = {
-      project: {
-        id: 'gid://gitlab/Project/1',
-        forkTargets: {
-          nodes: [
-            {
-              id: 'gid://gitlab/Group/21',
-              fullPath: 'flightjs',
-              name: 'Flight JS',
-              visibility: 'public',
-            },
-            {
-              id: 'gid://gitlab/Namespace/4',
-              fullPath: 'root',
-              name: 'Administrator',
-              visibility: 'public',
-            },
-          ],
+  const createComponentFactory =
+    (mountFn) =>
+    (provide = {}, data = {}) => {
+      const queryResponse = {
+        project: {
+          id: 'gid://gitlab/Project/1',
+          forkTargets: {
+            nodes: [
+              {
+                id: 'gid://gitlab/Group/21',
+                fullPath: 'flightjs',
+                name: 'Flight JS',
+                visibility: 'public',
+              },
+              {
+                id: 'gid://gitlab/Namespace/4',
+                fullPath: 'root',
+                name: 'Administrator',
+                visibility: 'public',
+              },
+            ],
+          },
         },
-      },
+      };
+
+      mockQueryResponse = jest.fn().mockResolvedValue({ data: queryResponse });
+      const requestHandlers = [[searchQuery, mockQueryResponse]];
+      const apolloProvider = createMockApollo(requestHandlers);
+
+      apolloProvider.clients.defaultClient.cache.writeQuery({
+        query: searchQuery,
+        data: {
+          ...queryResponse,
+        },
+      });
+
+      wrapper = mountFn(ForkForm, {
+        apolloProvider,
+        provide: {
+          ...DEFAULT_PROVIDE,
+          ...provide,
+        },
+        data() {
+          return {
+            ...data,
+          };
+        },
+        stubs: {
+          GlFormInputGroup,
+          GlFormInput,
+          GlFormRadioGroup,
+          GlFormRadio,
+          GlSprintf,
+        },
+      });
     };
-
-    mockQueryResponse = jest.fn().mockResolvedValue({ data: queryResponse });
-    const requestHandlers = [[searchQuery, mockQueryResponse]];
-    const apolloProvider = createMockApollo(requestHandlers);
-
-    apolloProvider.clients.defaultClient.cache.writeQuery({
-      query: searchQuery,
-      data: {
-        ...queryResponse,
-      },
-    });
-
-    wrapper = mountFn(ForkForm, {
-      apolloProvider,
-      provide: {
-        ...DEFAULT_PROVIDE,
-        ...provide,
-      },
-      data() {
-        return {
-          ...data,
-        };
-      },
-      stubs: {
-        GlFormInputGroup,
-        GlFormInput,
-        GlFormRadioGroup,
-        GlFormRadio,
-        GlSprintf,
-      },
-    });
-  };
 
   const createComponent = createComponentFactory(shallowMount);
   const createFullComponent = createComponentFactory(mount);
@@ -546,13 +548,8 @@ describe('ForkForm component', () => {
         setupComponent();
         await submitForm();
 
-        const {
-          projectId,
-          projectDescription,
-          projectName,
-          projectPath,
-          projectVisibility,
-        } = DEFAULT_PROVIDE;
+        const { projectId, projectDescription, projectName, projectPath, projectVisibility } =
+          DEFAULT_PROVIDE;
 
         const url = `/api/${GON_API_VERSION}/projects/${projectId}/fork`;
         const project = {

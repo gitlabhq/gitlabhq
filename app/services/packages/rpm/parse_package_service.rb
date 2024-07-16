@@ -7,7 +7,7 @@ module Packages
 
       BUILD_ATTRIBUTES_METHOD_NAMES = %i[changelogs requirements provides].freeze
       STATIC_ATTRIBUTES = %i[name version release summary description arch
-                             license sourcerpm group buildhost packager vendor].freeze
+        license sourcerpm group buildhost packager vendor].freeze
 
       CHANGELOGS_RPM_KEYS = %i[changelogtext changelogtime].freeze
       REQUIREMENTS_RPM_KEYS = %i[requirename requireversion requireflags].freeze

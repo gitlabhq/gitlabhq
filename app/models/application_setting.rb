@@ -7,6 +7,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   include ChronicDurationAttribute
   include IgnorableColumns
   include Sanitizable
+  include SafelyChangeColumnDefault
 
   ignore_columns %i[elasticsearch_shards elasticsearch_replicas], remove_with: '14.4', remove_after: '2021-09-22'
   ignore_columns %i[static_objects_external_storage_auth_token], remove_with: '14.9', remove_after: '2022-03-22'
@@ -14,26 +15,18 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[instance_administration_project_id instance_administrators_group_id], remove_with: '16.2', remove_after: '2023-06-22'
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
-  ignore_columns %i[
-    container_registry_import_max_tags_count
-    container_registry_import_max_retries
-    container_registry_import_start_max_retries
-    container_registry_import_max_step_duration
-    container_registry_pre_import_tags_rate
-    container_registry_pre_import_timeout
-    container_registry_import_timeout
-    container_registry_import_target_plan
-    container_registry_import_created_before
-  ], remove_with: '17.2', remove_after: '2024-06-24'
   ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
   ignore_columns %i[toggle_security_policies_policy_scope lock_toggle_security_policies_policy_scope], remove_with: '17.2', remove_after: '2024-07-12'
+  ignore_columns %i[arkose_labs_verify_api_url], remove_with: '17.4', remove_after: '2024-08-09'
+
+  columns_changing_default :security_policy_scheduled_scans_max_concurrency
 
   INSTANCE_REVIEW_MIN_USERS = 50
   GRAFANA_URL_ERROR_MESSAGE = 'Please check your Grafana URL setting in ' \
-    'Admin Area > Settings > Metrics and profiling > Metrics - Grafana'
+    'Admin area > Settings > Metrics and profiling > Metrics - Grafana'
 
   KROKI_URL_ERROR_MESSAGE = 'Please check your Kroki URL setting in ' \
-    'Admin Area > Settings > General > Kroki'
+    'Admin area > Settings > General > Kroki'
 
   # Validate URIs in this model according to the current value of the `deny_all_requests_except_allowed` property,
   # rather than the persisted value.
@@ -530,7 +523,9 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   end
 
   with_options(numericality: { only_integer: true, greater_than: 0 }) do
-    validates :bulk_import_concurrent_pipeline_batch_limit,
+    validates :ai_action_api_rate_limit,
+      :bulk_import_concurrent_pipeline_batch_limit,
+      :code_suggestions_api_rate_limit,
       :concurrent_github_import_jobs_limit,
       :concurrent_bitbucket_import_jobs_limit,
       :concurrent_bitbucket_server_import_jobs_limit,
@@ -586,6 +581,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
       :gitlab_shell_operation_limit,
       :group_api_limit,
       :group_projects_api_limit,
+      :group_shared_groups_api_limit,
       :groups_api_limit,
       :inactive_projects_min_size_mb,
       :issues_create_limit,
@@ -624,6 +620,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     downstream_pipeline_trigger_limit_per_project_user_sha: [:integer, { default: 0 }],
     group_api_limit: [:integer, { default: 400 }],
     group_projects_api_limit: [:integer, { default: 600 }],
+    group_shared_groups_api_limit: [:integer, { default: 60 }],
     groups_api_limit: [:integer, { default: 200 }],
     members_delete_limit: [:integer, { default: 60 }],
     project_api_limit: [:integer, { default: 400 }],
@@ -826,7 +823,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     reset_memoized_terms
   end
   after_commit :expire_performance_bar_allowed_user_ids_cache, if: -> { previous_changes.key?('performance_bar_allowed_group_id') }
-  after_commit :reset_deletion_warning_redis_key, if: :saved_change_to_inactive_projects_delete_after_months?
+  after_commit :reset_deletion_warning_redis_key, if: :should_reset_inactive_project_deletion_warning?
 
   def validate_grafana_url
     validate_url(parsed_grafana_url, :grafana_url, GRAFANA_URL_ERROR_MESSAGE)
@@ -990,6 +987,10 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
     default_project_visibility_changed? ||
       default_group_visibility_changed? ||
       restricted_visibility_levels_changed?
+  end
+
+  def should_reset_inactive_project_deletion_warning?
+    saved_change_to_inactive_projects_delete_after_months? || saved_change_to_delete_inactive_projects?(from: true, to: false)
   end
 end
 

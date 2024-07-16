@@ -114,7 +114,7 @@ export default {
       icon="ellipsis_v"
       category="tertiary"
       no-caret
-      placement="right"
+      placement="bottom-end"
       class="gl-hidden md:!gl-block"
       :items="dropdownItems"
     />

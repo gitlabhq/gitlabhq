@@ -1,0 +1,199 @@
+@import '../framework/variables';
+
+// Do not use 3-letter hex codes, bgcolor vs css background-color is problematic in emails
+//
+$mailer-font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+$mailer-text-color: #333333;
+$mailer-bg-color: #fafafa;
+$mailer-link-color: #3777b0;
+$mailer-link-muted-color: #333333;
+$mailer-line-cell-bg-color: #6b4fbb;
+$mailer-wrapper-cell-bg-color: #ffffff;
+$mailer-wrapper-cell-border-color: #ededed;
+$mailer-header-footer-text-color: #5c5c5c;
+$full-width: 640px;
+$half-width: 320px;
+
+body {
+  margin: 0 !important;
+  background-color: $mailer-bg-color;
+  padding: 0;
+  text-align: center;
+  min-width: $full-width;
+  width: 100%;
+  height: 100%;
+  font-family: $mailer-font;
+}
+
+table#body {
+  background-color: $mailer-bg-color;
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  min-width: $full-width;
+  width: 100%;
+}
+
+a {
+  color: $mailer-link-color;
+  text-decoration: none;
+
+  &.muted {
+    color: $mailer-link-muted-color;
+  }
+}
+
+.mail-avatar {
+  border-radius: 50%;
+  display: block;
+}
+
+.highlight {
+  font-weight: 500;
+}
+
+.invite-header {
+  margin-top: 0;
+}
+
+.invite-body {
+  width: 360px;
+}
+
+.invite-actions {
+  margin-top: 24px;
+}
+
+.invite-btn-join {
+  border-radius: $gl-border-radius-base;
+  padding: $gl-btn-vert-padding $gl-btn-horz-padding;
+  cursor: pointer;
+  background-color: $purple;
+  color: $white;
+}
+
+.invite-btn-decline {
+  border-radius: $gl-border-radius-base;
+  border: 1px solid $purple;
+  padding: $gl-btn-vert-padding $gl-btn-horz-padding;
+  cursor: pointer;
+  color: $purple;
+  margin-left: 4px;
+}
+
+.half-width {
+  min-width: $half-width;
+}
+
+tr td {
+  font-family: $mailer-font;
+}
+
+tr.border-top td {
+  border-top: 2px solid $gray-100;
+}
+
+tr.line td {
+  font-family: $mailer-font;
+  background-color: $mailer-line-cell-bg-color;
+  height: 4px;
+  font-size: 4px;
+  line-height: 4px;
+}
+
+tr.header td,
+tr.footer td,
+td.footer-message {
+  font-family: $mailer-font;
+  padding: 25px 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: $mailer-header-footer-text-color;
+}
+
+table.wrapper {
+  width: $full-width;
+  margin: 0 auto;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  td.wrapper-cell {
+    font-family: $mailer-font;
+    background-color: $mailer-wrapper-cell-bg-color;
+    text-align: left;
+    padding: 18px 25px;
+    border: 1px solid $mailer-wrapper-cell-border-color;
+    border-radius: 3px;
+    overflow: hidden;
+  }
+}
+
+table.content {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  td.text-content {
+    font-family: $mailer-font;
+    color: $mailer-text-color;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.4;
+    padding: 15px 5px;
+    text-align: center;
+
+    ul.list-style-position-inside {
+      list-style-position: inside;
+    }
+  }
+
+  td.mailer-align-left {
+    vertical-align: top;
+    padding: 16px 32px;
+    text-align: left;
+
+    h4 {
+      margin: 0;
+    }
+
+    ul {
+      list-style: none;
+      line-height: 1.6;
+      padding-left: 0;
+      margin: 8px 0 16px;
+    }
+
+    .mailer-icon {
+      margin-bottom: -1px;
+    }
+  }
+}
+
+tr.footer td {
+  img {
+    display: block;
+    margin: 0 auto 1em;
+  }
+
+  .mng-notif-link,
+  .help-link {
+    color: $mailer-link-color;
+    text-decoration: none;
+  }
+
+  .gitlab-info {
+    padding: $gl-padding-24 0;
+  }
+
+  .gitlab-info-text {
+    max-width: $full-width;
+    margin: 0 auto;
+    text-align: center;
+    color: $gray-400;
+    font-size: $gl-font-size-small;
+  }
+
+  .footer-logo {
+    width: 90px;
+  }
+}

@@ -83,7 +83,7 @@ RSpec.describe 'GPG signed commits', :js, feature_category: :source_code_managem
       end
     end
 
-    it 'unverified signature: gpg key email does not match the committer_email but is the same user when the committer_email belongs to the user as a confirmed secondary email' do
+    it 'unverified signature: gpg key email does not match the committer_email but is the same user when the committer_email belongs to the user as a confirmed secondary email', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/444984' do
       user_2_key
       user_2.emails.find_by(email: 'mail@koffeinfrei.org').confirm
 

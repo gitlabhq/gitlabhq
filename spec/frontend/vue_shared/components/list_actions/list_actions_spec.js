@@ -128,7 +128,7 @@ describe('ListActions', () => {
       noCaret: true,
       toggleText: 'Actions',
       textSrOnly: true,
-      placement: 'right',
+      placement: 'bottom-end',
       category: 'tertiary',
     });
   });

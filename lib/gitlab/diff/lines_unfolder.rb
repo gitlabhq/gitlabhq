@@ -101,7 +101,7 @@ module Gitlab
 
         blob_lines.each do |line|
           new_blob_lines << Gitlab::Diff::Line.new(line.text, line.type, nil, old_pos, new_pos,
-                                                   parent_file: @diff_file)
+            parent_file: @diff_file)
 
           old_pos += 1
           new_pos += 1

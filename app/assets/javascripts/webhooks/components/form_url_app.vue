@@ -141,7 +141,9 @@ export default {
       return url.split(value).join(`{${key}}`);
     },
     onItemInput({ index, key, value }) {
-      this.$set(this.items, index, { key, value });
+      const copy = [...this.items];
+      copy[index] = { key, value };
+      this.items = copy;
     },
     addItem() {
       this.items.push({});

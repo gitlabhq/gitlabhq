@@ -303,7 +303,7 @@ export default {
 
         <gl-disclosure-dropdown
           data-testid="snippets-more-actions-dropdown"
-          placement="right"
+          placement="bottom-end"
           block
           @shown="onShowDropdown"
           @hidden="onHideDropdown"

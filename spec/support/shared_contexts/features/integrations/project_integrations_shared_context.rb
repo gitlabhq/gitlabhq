@@ -19,7 +19,7 @@ RSpec.shared_context 'project integration activation' do
     visit_project_integrations
 
     within('#content-body') do
-      click_link(name, match: :first)
+      click_link(name, match: :prefer_exact)
     end
   end
 

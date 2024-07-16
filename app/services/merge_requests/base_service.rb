@@ -17,8 +17,8 @@ module MergeRequests
     end
 
     def hook_data(merge_request, action, old_rev: nil, old_associations: {})
-      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations)
-      hook_data[:object_attributes][:action] = action
+      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations, action: action)
+
       if old_rev && !Gitlab::Git.blank_ref?(old_rev)
         hook_data[:object_attributes][:oldrev] = old_rev
       end
@@ -88,6 +88,7 @@ module MergeRequests
       trigger_merge_request_reviewers_updated(merge_request)
 
       capture_suggested_reviewers_accepted(merge_request)
+      set_first_reviewer_assigned_at_metrics(merge_request, current_user) if new_reviewers.any?
     end
 
     def cleanup_environments(merge_request)
@@ -276,6 +277,19 @@ module MergeRequests
 
     def capture_suggested_reviewers_accepted(merge_request)
       # Implemented in EE
+    end
+
+    def set_first_reviewer_assigned_at_metrics(merge_request, user)
+      return unless Feature.enabled?(:store_first_reviewer_assignment_timestamp_in_metrics, user, type: :beta)
+
+      metrics = merge_request.metrics
+      return unless metrics
+
+      current_time = Time.current
+
+      return if metrics.reviewer_first_assigned_at && metrics.reviewer_first_assigned_at <= current_time
+
+      metrics.update(reviewer_first_assigned_at: current_time)
     end
 
     def remove_approval(merge_request, user)

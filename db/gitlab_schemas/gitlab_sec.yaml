@@ -1,0 +1,8 @@
+name: gitlab_sec
+description: Schema for all Cell-local Security features.
+allow_cross_joins:
+  - gitlab_shared
+allow_cross_transactions:
+  - gitlab_internal
+  - gitlab_shared
+cell_local: true

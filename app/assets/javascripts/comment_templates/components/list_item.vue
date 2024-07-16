@@ -84,7 +84,7 @@ export default {
           icon="ellipsis_v"
           no-caret
           text-sr-only
-          placement="right"
+          placement="bottom-end"
           :toggle-text="__('Comment template actions')"
           :loading="isDeleting"
           category="tertiary"
@@ -94,7 +94,7 @@ export default {
         </gl-tooltip>
       </div>
     </div>
-    <div class="gl-font-monospace gl-white-space-pre-line gl-font-sm -gl-mt-5">
+    <div class="gl-font-monospace gl-whitespace-pre-line gl-font-sm -gl-mt-5">
       {{ template.content }}
     </div>
     <gl-modal

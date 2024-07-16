@@ -36,13 +36,15 @@ const mockNotesWidgetResponse = mockWorkItemNotesResponse.data.workItem.widgets.
   (widget) => widget.type === WIDGET_TYPE_NOTES,
 );
 
-const mockMoreNotesWidgetResponse = mockMoreWorkItemNotesResponse.data.workspace.workItem.widgets.find(
-  (widget) => widget.type === WIDGET_TYPE_NOTES,
-);
+const mockMoreNotesWidgetResponse =
+  mockMoreWorkItemNotesResponse.data.workspace.workItem.widgets.find(
+    (widget) => widget.type === WIDGET_TYPE_NOTES,
+  );
 
-const mockWorkItemNotesWidgetResponseWithComments = mockWorkItemNotesResponseWithComments.data.workspace.workItem.widgets.find(
-  (widget) => widget.type === WIDGET_TYPE_NOTES,
-);
+const mockWorkItemNotesWidgetResponseWithComments =
+  mockWorkItemNotesResponseWithComments.data.workspace.workItem.widgets.find(
+    (widget) => widget.type === WIDGET_TYPE_NOTES,
+  );
 
 const firstSystemNodeId = mockNotesWidgetResponse.discussions.nodes[0].notes.nodes[0].id;
 

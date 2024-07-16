@@ -355,7 +355,7 @@ the container registry by themselves, follow the steps below.
 In GitLab, tokens for the container registry expire every five minutes.
 To increase the token duration:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > CI/CD**.
 1. Expand **Container Registry**.
 1. For the **Authorization token duration (minutes)**, update the value.
@@ -1669,6 +1669,26 @@ curl "localhost:5001/debug/health"
 curl "localhost:5001/debug/vars"
 ```
 
+#### Enable Registry Prometheus Metrics
+
+If the debug server is enabled, you can also enable Prometheus metrics. This endpoint exposes highly detailed telemetry
+related to almost all registry operations.
+
+```ruby
+registry['debug'] = {
+  'prometheus' => {
+    'enabled' => true,
+    'path' => '/metrics'
+  }
+}
+```
+
+Use curl to request debug output from Prometheus:
+
+```shell
+curl "localhost:5001/debug/metrics"
+```
+
 ### Tags with an empty name
 
 If using [AWS DataSync](https://aws.amazon.com/datasync/)
@@ -1703,7 +1723,7 @@ by running the below script from the [Rails console](../../administration/operat
 This can help diagnose problems with the policy.
 
 ```ruby
-repo = ContainerRepository.find(<project_id>)
+repo = ContainerRepository.find(<repository_id>)
 policy = repo.project.container_expiration_policy
 
 tags = repo.tags

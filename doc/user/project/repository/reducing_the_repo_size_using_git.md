@@ -67,6 +67,10 @@ To purge files from a GitLab repository:
    This project export contains a backup copy of your repository *and* refs
    we can use to purge files from your repository.
 
+   If the full project export fails to complete reliably due to the project size, you can use the
+   [Project relations export API](../../../api/project_relations_export.md) to obtain a copy of
+   the repository independently of the other export components.
+
 1. Decompress the backup using `tar`:
 
    ```shell
@@ -200,10 +204,12 @@ To clean up a repository:
 1. Upload a list of objects. For example, a `commit-map` file created by `git filter-repo` which is located in the
    `filter-repo` directory.
 
-   If your `commit-map` file is larger than about 250 KB or 3000 lines, the file can be split and uploaded piece by piece:
+   If your `commit-map` file is too large, the background cleanup process might time out and fail.
+   As a result, the repository size isn't reduced as expected.
+   To address this, split the file and upload it in parts, for example:
 
    ```shell
-   split -l 3000 filter-repo/commit-map filter-repo/commit-map-
+   split -l 20000 filter-repo/commit-map filter-repo/commit-map-
    ```
 
 1. Select **Start cleanup**.
@@ -239,6 +245,7 @@ When using repository cleanup, note:
 ## Remove blobs
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/450701) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `rewrite_history_ui`. Disabled by default.
+> - [Enabled on GitLab.com](https://gitlab.com/gitlab-org/gitlab/-/issues/462999) in GitLab 17.2.
 
 FLAG:
 The availability of this feature is controlled by a feature flag.
@@ -247,6 +254,9 @@ This feature is available for testing, but not ready for production use.
 
 Permanently delete sensitive or confidential information that was accidentally committed, ensuring
 it's no longer accessible in your repository's history.
+
+Alternatively, to replace strings with `***REMOVED***`, see
+[Redact text](../../../topics/git/undo.md#redact-text).
 
 Prerequisites:
 

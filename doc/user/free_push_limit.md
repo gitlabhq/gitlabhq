@@ -45,7 +45,3 @@ Git LFS is designed to work with Git to track large files.
 
 If you have any feedback to share about this limit, do so in
 [issue 428188](https://gitlab.com/gitlab-org/gitlab/-/issues/428188).
-
-## Related topics
-
-- [GitLab SaaS Free tier frequently asked questions](https://about.gitlab.com/pricing/faq-efficient-free-tier/).

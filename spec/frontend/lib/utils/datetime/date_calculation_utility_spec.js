@@ -6,6 +6,8 @@ import {
   nSecondsBefore,
   isToday,
   isInTimePeriod,
+  differenceInMinutes,
+  getMonthsBetweenDates,
 } from '~/lib/utils/datetime/date_calculation_utility';
 import { useFakeDate } from 'helpers/fake_date';
 
@@ -110,5 +112,61 @@ describe('isInTimePeriod', () => {
     ${'2022-03-22T02:23:45.000Z'} | ${'2022-03-22T03:25:45.000Z'} | ${false}
   `('returns $expected for range: $start -> $end', ({ start, end, expected }) => {
     expect(isInTimePeriod(new Date(date), new Date(start), new Date(end))).toBe(expected);
+  });
+});
+
+describe('differenceInMinutes', () => {
+  it.each`
+    start           | end                           | expected
+    ${'2024-06-07'} | ${'2024-06-07'}               | ${0}
+    ${'2024-06-07'} | ${'2024-06-07T01:00:00.000Z'} | ${60}
+    ${'2024-06-07'} | ${'2024-06-07T00:10:00.000Z'} | ${10}
+    ${'2024-06-07'} | ${'2024-06-07T00:00:10.000Z'} | ${1}
+  `('returns difference in minuts for range: $start -> $end', ({ start, end, expected }) => {
+    expect(differenceInMinutes(new Date(start), new Date(end))).toBe(expected);
+  });
+});
+
+describe('getMonthsBetweenDates', () => {
+  it.each`
+    startDate       | endDate         | expected
+    ${'2024-03-01'} | ${'2024-01-01'} | ${[]}
+    ${'2024-03-01'} | ${'2024-03-15'} | ${[{ month: 2, year: 2024 }]}
+    ${'2024-01-01'} | ${'2024-03-31'} | ${[{ month: 0, year: 2024 }, { month: 1, year: 2024 }, { month: 2, year: 2024 }]}
+    ${'2023-12-01'} | ${'2024-02-28'} | ${[{ month: 11, year: 2023 }, { month: 0, year: 2024 }, { month: 1, year: 2024 }]}
+  `('with $startDate and $endDate, returns $expected', ({ startDate, endDate, expected }) => {
+    const actual = getMonthsBetweenDates(new Date(startDate), new Date(endDate));
+
+    expect(actual).toEqual(expected);
+  });
+
+  it('with large date range starting in middle of year, works as expected', () => {
+    const actual = getMonthsBetweenDates(new Date('2024-05-01'), new Date('2026-03-01'));
+
+    expect(actual).toEqual([
+      { month: 4, year: 2024 },
+      { month: 5, year: 2024 },
+      { month: 6, year: 2024 },
+      { month: 7, year: 2024 },
+      { month: 8, year: 2024 },
+      { month: 9, year: 2024 },
+      { month: 10, year: 2024 },
+      { month: 11, year: 2024 },
+      { month: 0, year: 2025 },
+      { month: 1, year: 2025 },
+      { month: 2, year: 2025 },
+      { month: 3, year: 2025 },
+      { month: 4, year: 2025 },
+      { month: 5, year: 2025 },
+      { month: 6, year: 2025 },
+      { month: 7, year: 2025 },
+      { month: 8, year: 2025 },
+      { month: 9, year: 2025 },
+      { month: 10, year: 2025 },
+      { month: 11, year: 2025 },
+      { month: 0, year: 2026 },
+      { month: 1, year: 2026 },
+      { month: 2, year: 2026 },
+    ]);
   });
 });

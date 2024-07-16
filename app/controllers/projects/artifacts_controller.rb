@@ -21,7 +21,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
 
   MAX_PER_PAGE = 20
 
-  feature_category :build_artifacts
+  feature_category :job_artifacts
 
   def index; end
 

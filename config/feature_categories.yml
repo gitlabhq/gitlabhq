@@ -23,7 +23,6 @@
 - auto_devops
 - backup_restore
 - build
-- build_artifacts
 - capacity_planning
 - cell
 - ci_scaling
@@ -55,6 +54,7 @@
 - disaster_recovery
 - dora_metrics
 - duo_chat
+- duo_workflow
 - dynamic_application_security_testing
 - editor_extensions
 - environment_management
@@ -81,6 +81,7 @@
 - instance_resiliency
 - integrations
 - internationalization
+- job_artifacts
 - logging
 - merge_trains
 - metrics
@@ -97,6 +98,7 @@
 - pages
 - permissions
 - pipeline_composition
+- pipeline_reports
 - plan_provisioning
 - portfolio_management
 - product_analytics_data_management
@@ -111,17 +113,18 @@
 - requirements_management
 - review_apps
 - runner
-- sbom
 - scalability
 - seat_cost_management
 - secret_detection
 - secrets_management
+- secure_artifacts
 - security_policy_management
 - service_desk
 - service_ping
 - settings
 - software_composition_analysis
 - source_code_management
+- sscs
 - static_application_security_testing
 - subscription_management
 - switchboard

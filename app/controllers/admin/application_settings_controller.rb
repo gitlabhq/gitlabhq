@@ -97,7 +97,8 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def reset_error_tracking_access_token
     @application_setting.reset_error_tracking_access_token!
 
-    redirect_to general_admin_application_settings_path, notice: _('New error tracking access token has been generated!')
+    redirect_to general_admin_application_settings_path,
+      notice: _('New error tracking access token has been generated!')
   end
 
   def clear_repository_check_states

@@ -129,6 +129,18 @@ RSpec.describe Gitlab::Pagination::GitalyKeysetPager, feature_category: :source_
             pager.paginate(finder)
           end
         end
+
+        context 'when the current page includes all requested elements and cursor is empty' do
+          let(:base_query) { { per_page: 2 } }
+          let(:branches) { [branch1, branch2] }
+          let(:next_cursor) { '' }
+
+          it 'uses keyset pagination without link headers' do
+            expect(request_context).not_to receive(:header).with('Link', anything)
+
+            pager.paginate(finder)
+          end
+        end
       end
     end
 

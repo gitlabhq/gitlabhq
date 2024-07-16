@@ -8,7 +8,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineArtifac
   let(:ci_pipeline_artifacts_table) { table(:ci_pipeline_artifacts, database: :ci) }
   let!(:pipeline_100) { ci_pipelines_table.create!(id: 1, partition_id: 100) }
   let!(:pipeline_101) { ci_pipelines_table.create!(id: 2, partition_id: 101) }
-  let!(:pipeline_102) { ci_pipelines_table.create!(id: 3, partition_id: 101) }
+  let!(:pipeline_102) { ci_pipelines_table.create!(id: 3, partition_id: 100) }
   let!(:ci_pipeline_artifact_100) do
     ci_pipeline_artifacts_table.create!(
       id: 1,
@@ -50,7 +50,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineArtifac
       file: fixture_file_upload(
         Rails.root.join('spec/fixtures/pipeline_artifacts/code_coverage.json'), 'application/json'
       ),
-      partition_id: pipeline_100.partition_id
+      partition_id: pipeline_102.partition_id
     )
   end
 
@@ -62,11 +62,26 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineArtifac
       batch_column: :id,
       sub_batch_size: 1,
       pause_ms: 0,
-      connection: Ci::ApplicationRecord.connection
+      connection: connection
     }
   end
 
   let!(:migration) { described_class.new(**migration_attrs) }
+  let(:connection) { Ci::ApplicationRecord.connection }
+
+  around do |example|
+    connection.transaction do
+      connection.execute(<<~SQL)
+        ALTER TABLE ci_pipelines DISABLE TRIGGER ALL;
+      SQL
+
+      example.run
+
+      connection.execute(<<~SQL)
+        ALTER TABLE ci_pipelines ENABLE TRIGGER ALL;
+      SQL
+    end
+  end
 
   describe '#perform' do
     context 'when second partition does not exist' do
@@ -79,6 +94,7 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineArtifac
     context 'when second partition exists' do
       before do
         allow(migration).to receive(:uses_multiple_partitions?).and_return(true)
+        pipeline_102.update!(partition_id: 101)
       end
 
       it 'fixes invalid records in the wrong the partition' do

@@ -13,7 +13,7 @@ module Banzai
       #   :only_path          - Generate path-only links.
       class ReferenceFilter < HTML::Pipeline::Filter
         include RequestStoreReferenceCache
-        include OutputSafety
+        include Concerns::OutputSafety
         prepend Concerns::PipelineTimingCheck
 
         REFERENCE_TYPE_DATA_ATTRIBUTE = 'data-reference-type='

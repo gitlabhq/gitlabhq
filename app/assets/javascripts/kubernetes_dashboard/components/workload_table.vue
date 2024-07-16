@@ -1,6 +1,7 @@
 <script>
 import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
 import { __ } from '~/locale';
+import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
 import {
   WORKLOAD_STATUS_BADGE_VARIANTS,
   PAGE_SIZE,
@@ -12,6 +13,7 @@ export default {
     GlTable,
     GlBadge,
     GlPagination,
+    PodLogsButton,
   },
   props: {
     items: {
@@ -39,7 +41,7 @@ export default {
       return this.fields.map((field) => {
         return {
           ...field,
-          sortable: true,
+          sortable: field.sortable !== false,
         };
       });
     },
@@ -84,12 +86,18 @@ export default {
       @row-selected="selectItem"
     >
       <template #cell(status)="{ item: { status } }">
-        <gl-badge
-          :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[status]"
-          size="sm"
-          class="gl-ml-2"
-          >{{ status }}</gl-badge
-        >
+        <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[status]" class="gl-ml-2">{{
+          status
+        }}</gl-badge>
+      </template>
+
+      <template #cell(logs)="{ item: { name, namespace, containers } }">
+        <pod-logs-button
+          v-if="containers"
+          :namespace="namespace"
+          :pod-name="name"
+          :containers="containers"
+        />
       </template>
     </gl-table>
 

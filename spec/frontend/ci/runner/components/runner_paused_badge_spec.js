@@ -33,10 +33,4 @@ describe('RunnerTypeBadge', () => {
   it('renders tooltip', () => {
     expect(getTooltip().value).toBeDefined();
   });
-
-  it('passes arbitrary attributes to the badge', () => {
-    createComponent({ props: { size: 'sm' } });
-
-    expect(findBadge().props('size')).toBe('sm');
-  });
 });

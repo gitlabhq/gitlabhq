@@ -3,6 +3,7 @@ import { GlButton, GlModal, GlDisclosureDropdownItem } from '@gitlab/ui';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { setNewWorkItemCache } from '~/work_items/graphql/cache_utils';
+import { isWorkItemItemValidEnum } from '~/work_items/utils';
 import {
   I18N_NEW_WORK_ITEM_BUTTON_LABEL,
   I18N_WORK_ITEM_CREATED,
@@ -57,11 +58,17 @@ export default {
         if (!this.workItemTypes || this.workItemTypes.length === 0) {
           return;
         }
+
+        // We need a valid enum of fetching workItemTypes which otherwise causes issues in cache
+        if (!isWorkItemItemValidEnum(this.workItemTypeName)) {
+          return;
+        }
         await setNewWorkItemCache(
           this.isGroup,
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
+          this.workItemTypes[0]?.id,
         );
       },
       error() {
@@ -92,6 +99,7 @@ export default {
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
+          this.workItemTypes[0]?.id,
         );
       }
     },

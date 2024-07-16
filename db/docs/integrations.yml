@@ -38,6 +38,7 @@ classes:
 - Integrations::Irker
 - Integrations::Jenkins
 - Integrations::Jira
+- Integrations::JiraCloudApp
 - Integrations::Mattermost
 - Integrations::MattermostSlashCommands
 - Integrations::MicrosoftTeams

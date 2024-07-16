@@ -2,9 +2,6 @@
 description: Failed to configure GCP region
 category: Projects::GoogleCloud::GcpRegionsController
 action: error_create
-label_description:
-property_description:
-value_description:
 extra_properties:
 identifiers:
 - project

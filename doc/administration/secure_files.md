@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) in GitLab 15.7. Feature flag `ci_secure_files` removed.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/350748) and feature flag `ci_secure_files` removed in GitLab 15.7.
 
 You can securely store up to 100 files for use in CI/CD pipelines as secure files.
 These files are stored securely outside of your project's repository and are not version controlled.

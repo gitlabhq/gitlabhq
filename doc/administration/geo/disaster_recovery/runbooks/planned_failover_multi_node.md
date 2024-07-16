@@ -2,6 +2,7 @@
 stage: Systems
 group: Geo
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
+ignore_in_report: true
 ---
 
 WARNING:
@@ -68,7 +69,7 @@ promote a Geo replica and perform a failover.
 
 On the **secondary** site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites** to see its status.
    Replicated objects (shown in green) should be close to 100%,
    and there should be no failures (shown in red). If a large proportion of
@@ -107,8 +108,8 @@ follow these steps to avoid unnecessary data loss:
       [data not managed by Geo](../../replication/datatypes.md#limitations-on-replicationverification),
       trigger the final replication process now.
    1. On the **primary** site:
-      1. On the left sidebar, at the bottom, select **Admin Area**.
-      1. On the left sidebar, select **Monitoring > Background Jobs**.
+      1. On the left sidebar, at the bottom, select **Admin area**.
+      1. On the left sidebar, select **Monitoring > Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all queues except
          those with `geo` in the name to drop to 0.
          These queues contain work that has been submitted by your users; failing over
@@ -122,8 +123,8 @@ follow these steps to avoid unnecessary data loss:
          - The Geo log cursor is up to date (0 events behind).
 
    1. On the **secondary** site:
-      1. On the left sidebar, at the bottom, select **Admin Area**.
-      1. On the left sidebar, select **Monitoring > Background Jobs**.
+      1. On the left sidebar, at the bottom, select **Admin area**.
+      1. On the left sidebar, select **Monitoring > Background jobs**.
       1. On the Sidekiq dashboard, select **Queues**, and wait for all the `geo`
          queues to drop to 0 queued and 0 running jobs.
       1. [Run an integrity check](../../../raketasks/check.md) to verify the integrity

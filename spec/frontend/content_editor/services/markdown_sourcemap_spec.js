@@ -1,3 +1,4 @@
+import { builders } from 'prosemirror-test-builder';
 import { Extension } from '@tiptap/core';
 import BulletList from '~/content_editor/extensions/bullet_list';
 import ListItem from '~/content_editor/extensions/list_item';
@@ -6,7 +7,7 @@ import TaskItem from '~/content_editor/extensions/task_item';
 import Paragraph from '~/content_editor/extensions/paragraph';
 import markdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
 import { getMarkdownSource, getFullSource } from '~/content_editor/services/markdown_sourcemap';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 
 const BULLET_LIST_MARKDOWN = `+ list item 1
 + list item 2
@@ -68,17 +69,7 @@ const tiptapEditor = createTestEditor({
   extensions: [BulletList, ListItem, TaskList, TaskItem, SourcemapExtension],
 });
 
-const {
-  builders: { doc, bulletList, listItem, taskList, taskItem, paragraph },
-} = createDocBuilder({
-  tiptapEditor,
-  names: {
-    bulletList: { nodeType: BulletList.name },
-    listItem: { nodeType: ListItem.name },
-    taskList: { nodeType: TaskList.name },
-    taskItem: { nodeType: TaskItem.name },
-  },
-});
+const { doc, bulletList, listItem, taskList, taskItem, paragraph } = builders(tiptapEditor.schema);
 
 const bulletListDoc = () =>
   doc(
@@ -172,7 +163,9 @@ describe('content_editor/services/markdown_sourcemap', () => {
     'gets markdown source for a rendered $description',
     async ({ sourceMarkdown, sourceHTML, expectedDoc }) => {
       const { document } = await markdownDeserializer({
-        render: () => sourceHTML,
+        render: () => ({
+          body: sourceHTML,
+        }),
       }).deserialize({
         schema: tiptapEditor.schema,
         markdown: sourceMarkdown,

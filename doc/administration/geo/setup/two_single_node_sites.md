@@ -393,11 +393,17 @@ The replication process is complete.
 
 ## Configure a new secondary site
 
-After the replication process is complete, you need to [configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md).
+After the initial replication process is complete, proceed with the configuration of the following items on the secondary site.
+
+### Fast lookup of authorized SSH keys
+
+Follow the documentation to [configure fast lookup of authorized SSH keys](../../operations/fast_ssh_key_lookup.md).
+
+Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-lookup-is-required-for-geo).
 
 NOTE:
 Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
-Any change that requires access to the Admin Area should be made in the primary site, because the
+Any change that requires access to the Admin area should be made in the primary site, because the
 secondary site is a read-only copy.
 
 ### Manually replicate secret GitLab values
@@ -561,7 +567,7 @@ You must manually replicate the secret file across all of your secondary sites, 
    ```
 
 1. Go to the primary node GitLab instance:
-   1. On the left sidebar, at the bottom, select **Admin Area**.
+   1. On the left sidebar, at the bottom, select **Admin area**.
    1. Select **Geo > Sites**.
    1. Select **Add site**.
 
@@ -574,7 +580,7 @@ You must manually replicate the secret file across all of your secondary sites, 
       match exactly.
    1. Optional. In **Internal URL (optional)**, enter an internal URL for the primary site.
    1. Optional. Select which groups or storage shards should be replicated by the
-      secondary site. To replicate all, leave the field blank. See [selective synchronization](../replication/configuration.md#selective-synchronization).
+      secondary site. To replicate all, leave the field blank. See [selective synchronization](../replication/selective_synchronization.md).
    1. Select **Save changes**.
 1. SSH into each Rails and Sidekiq node on your secondary site and restart the services:
 
@@ -616,7 +622,7 @@ If you convert an existing site to Geo, you should check that the clone method i
 
 On the primary site:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. If you use Git over SSH:
@@ -631,7 +637,7 @@ the primary site.
 
 After you sign in:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Geo > Sites**.
 1. Verify that the site is correctly identified as a secondary Geo site, and that
    Geo is enabled.

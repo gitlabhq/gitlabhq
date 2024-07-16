@@ -63,9 +63,9 @@ export default {
     return {
       updatedGroups: this.groups,
       updatedUsers: this.users,
-      isAdminSelected: this.roles.includes(ACCESS_LEVEL_ADMIN_INTEGER),
-      isMaintainersSelected: this.roles.includes(ACCESS_LEVEL_MAINTAINER_INTEGER),
-      isDevelopersAndMaintainersSelected: this.roles.includes(ACCESS_LEVEL_DEVELOPER_INTEGER),
+      isAdminSelected: null,
+      isMaintainersSelected: null,
+      isDevelopersAndMaintainersSelected: null,
       isRuleUpdated: false,
     };
   },
@@ -79,6 +79,16 @@ export default {
         !this.isMaintainersSelected &&
         !this.isDevelopersAndMaintainersSelected
       );
+    },
+  },
+  watch: {
+    isOpen() {
+      this.isAdminSelected = this.roles.includes(ACCESS_LEVEL_ADMIN_INTEGER);
+      this.isMaintainersSelected = this.roles.includes(ACCESS_LEVEL_MAINTAINER_INTEGER);
+      this.isDevelopersAndMaintainersSelected = this.roles.includes(ACCESS_LEVEL_DEVELOPER_INTEGER);
+
+      this.updatedGroups = this.groups;
+      this.updatedUsers = this.users;
     },
   },
   methods: {
@@ -166,17 +176,16 @@ export default {
         <items-selector
           type="users"
           :items="formatItemsIds(users)"
-          is-project-only-namespace
           :users-options="$options.projectUsersOptions"
           data-testid="users-selector"
           @change="handleRuleDataUpdate('updatedUsers', $event)"
         />
         <items-selector
           type="groups"
+          disable-namespace-dropdown
+          is-project-scoped
           :items="formatItemsIds(groups)"
-          :group-id="groupId"
           data-testid="groups-selector"
-          is-project-only-namespace
           @change="handleRuleDataUpdate('updatedGroups', $event)"
         />
       </gl-form-group>

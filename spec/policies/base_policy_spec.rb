@@ -110,4 +110,16 @@ RSpec.describe BasePolicy do
     it { expect_disallowed(:receive_notifications) }
     it { expect_disallowed(:use_slash_commands) }
   end
+
+  describe 'import_user' do
+    let(:current_user) { build_stubbed(:user, user_type: :import_user) }
+
+    subject { described_class.new(current_user, nil) }
+
+    it { expect_disallowed(:access_git) }
+    it { expect_disallowed(:log_in) }
+    it { expect_disallowed(:access_api) }
+    it { expect_disallowed(:receive_notifications) }
+    it { expect_disallowed(:use_slash_commands) }
+  end
 end

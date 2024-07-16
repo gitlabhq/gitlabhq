@@ -29,7 +29,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge v-gl-tooltip :title="title" variant="warning">
+  <gl-badge v-gl-tooltip :title="title" variant="warning" class="gl-shrink-0">
     <gl-icon name="spam" />
     <span class="gl-sr-only">{{ __('Hidden') }}</span>
   </gl-badge>

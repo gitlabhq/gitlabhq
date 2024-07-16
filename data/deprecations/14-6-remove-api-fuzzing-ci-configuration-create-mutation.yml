@@ -1,4 +1,4 @@
-- title: "apiFuzzingCiConfigurationCreate GraphQL mutation"
+- title: "`apiFuzzingCiConfigurationCreate` GraphQL mutation"
   announcement_milestone: "14.6"
   removal_milestone: "15.0"
   breaking_change: true

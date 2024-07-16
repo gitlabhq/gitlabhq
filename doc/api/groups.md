@@ -452,6 +452,82 @@ Example response:
 NOTE:
 To distinguish between a project in the group and a project shared to the group, the `namespace` attribute can be used. When a project has been shared to the group, its `namespace` differs from the group the request is being made for.
 
+## List a group's shared groups
+
+Get a list of groups shared to this group. When accessed without authentication, only public shared groups are returned.
+
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
+| `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
+| `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
+| `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
+| `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+
+```plaintext
+GET /groups/:id/groups/shared
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 101,
+    "web_url": "http://gitlab.example.com/groups/some_path",
+    "name": "group1",
+    "path": "some_path",
+    "description": "",
+    "visibility": "public",
+    "share_with_group_lock": "false",
+    "require_two_factor_authentication": "false",
+    "two_factor_grace_period": 48,
+    "project_creation_level": "maintainer",
+    "auto_devops_enabled": "nil",
+    "subgroup_creation_level": "maintainer",
+    "emails_disabled": "false",
+    "emails_enabled": "true",
+    "mentions_disabled": "nil",
+    "lfs_enabled": "true",
+    "math_rendering_limits_enabled": "true",
+    "lock_math_rendering_limits_enabled": "false",
+    "default_branch": "nil",
+    "default_branch_protection": 2,
+    "default_branch_protection_defaults": {
+        "allowed_to_push": [
+          {
+              "access_level": 30
+          }
+        ],
+        "allow_force_push": "true",
+        "allowed_to_merge": [
+          {
+              "access_level": 30
+          }
+        ],
+        "developer_can_initial_push": "false",
+        "code_owner_approval_required": "false"
+    },
+    "avatar_url": "http://gitlab.example.com/uploads/-/system/group/avatar/101/banana_sample.gif",
+    "request_access_enabled": "true",
+    "full_name": "group1",
+    "full_path": "some_path",
+    "created_at": "2024-06-06T09:39:30.056Z",
+    "parent_id": "nil",
+    "organization_id": 1,
+    "shared_runners_setting": "enabled",
+    "ldap_cn": "nil",
+    "ldap_access": "nil",
+    "wiki_access_level": "enabled"
+  }
+]
+```
+
 ## List a group's shared projects
 
 Get a list of projects shared to this group. When accessed without authentication, only public shared projects are returned.
@@ -1625,14 +1701,107 @@ Example response:
 }
 ```
 
+## Markdown uploads
+
+Markdown uploads are files uploaded to a group that can be referenced in Markdown text in an epic or wiki page.
+
+### List uploads
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+Get all uploads of the group sorted by `created_at` in descending order.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /groups/:id/uploads
+```
+
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads"
+```
+
+Returned object:
+
+```json
+[
+  {
+    "id": 1,
+    "size": 1024,
+    "filename": "image.png",
+    "created_at":"2024-06-20T15:53:03.067Z",
+    "uploaded_by": {
+      "id": 18,
+      "name" : "Alexandra Bashirian",
+      "username" : "eileen.lowe"
+    }
+  },
+  {
+    "id": 2,
+    "size": 512,
+    "filename": "other-image.png",
+    "created_at":"2024-06-19T15:53:03.067Z",
+    "uploaded_by": null
+  }
+]
+```
+
+### Download an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+GET /groups/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
+```
+
+### Delete an uploaded file
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/157066) in GitLab 17.2.
+
+You must have at least the Maintainer role to use this endpoint.
+
+```plaintext
+DELETE /groups/:id/uploads/:upload_id
+```
+
+| Attribute   | Type              | Required | Description |
+|-------------|-------------------|----------|-------------|
+| `id`        | integer or string | Yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `upload_id` | integer           | Yes      | The ID of the upload. |
+
+Example request:
+
+```shell
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/groups/5/uploads/1"
+```
+
 ## Hooks
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Also called Group Hooks and Webhooks.
-These are different from [System Hooks](system_hooks.md) that are system wide and [Project Hooks](projects.md#hooks) that are limited to one project.
+Also called Group hooks and Webhooks.
+These are different from [system hooks](system_hooks.md) that are system wide and [project hooks](projects.md#hooks) that are limited to one project.
 
 ### List group hooks
 
@@ -1668,6 +1837,7 @@ GET /groups/:id/hooks/:hook_id
   "group_id": 3,
   "push_events": true,
   "push_events_branch_filter": "",
+  "branch_filter_strategy": "wildcard",
   "issues_events": true,
   "confidential_issues_events": true,
   "merge_requests_events": true,
@@ -1713,6 +1883,7 @@ POST /groups/:id/hooks
 | `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1) |
 | `push_events`                | boolean        | no       | Trigger hook on push events |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only |
+| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches` |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events |
@@ -1749,6 +1920,7 @@ PUT /groups/:id/hooks/:hook_id
 | `description`                | string         | no       | Description of the hook ([introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/460887) in GitLab 17.1). |
 | `push_events`                | boolean        | no       | Trigger hook on push events. |
 | `push_events_branch_filter`  | string         | no       | Trigger hook on push events for matching branches only. |
+| `branch_filter_strategy`     | string         | no       | Filter push events by branch. Possible values are `wildcard` (default), `regex`, and `all_branches`. |
 | `issues_events`              | boolean        | no       | Trigger hook on issues events. |
 | `confidential_issues_events` | boolean        | no       | Trigger hook on confidential issues events. |
 | `merge_requests_events`      | boolean        | no       | Trigger hook on merge requests events. |
@@ -2348,3 +2520,69 @@ DELETE /groups/:id/push_rule
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
+
+## Revoke Token
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/371117) in GitLab 17.2 [with a flag](../administration/feature_flags.md) named `group_agnostic_token_revocation`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+Revoke a token, if it has access to the group or any of its subgroups
+and projects. If the token is revoked, or was already revoked, its
+details are returned in the response.
+
+The following criteria must be met:
+
+- The group must be a top-level group.
+- You must have the Owner role in the group.
+- The token type is one of:
+  - Personal Access Token
+  - Group Access Token
+  - Project Access Token
+  - Group Deploy Token
+
+Additional token types may be supported at a later date.
+
+```plaintext
+POST /groups/:id/tokens/revoke
+```
+
+| Attribute   | Type           | Required               | Description |
+|-------------|----------------|------------------------|-------------|
+| `id`        | integer or string | Yes | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding). |
+| `token` | string | Yes  | The plaintext token. |
+
+If successful, returns [`200 OK`](rest/index.md#status-codes) and
+a JSON representation of the token. The attributes returned will vary by
+token type.
+
+Example request:
+
+```shell
+curl --request POST \
+  --header "PRIVATE-TOKEN: <your_access_token>" \
+  --header "Content-Type: application/json" \
+  --data '{"token":"glpat-1234567890abcdefghij"}' \
+  --url "https://gitlab.example.com/api/v4/groups/63/tokens/revoke"
+```
+
+Example response:
+
+```json
+{
+    "id": 9,
+    "name": "my-subgroup-deploytoken",
+    "username": "gitlab+deploy-token-9",
+    "expires_at": null,
+    "scopes":
+    [
+        "read_repository",
+        "read_package_registry",
+        "write_package_registry"
+    ],
+    "revoked": true,
+    "expired": false
+}
+```

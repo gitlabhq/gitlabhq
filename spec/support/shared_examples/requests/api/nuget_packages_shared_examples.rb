@@ -472,7 +472,7 @@ end
 
 RSpec.shared_examples 'rejects nuget access with unknown target id' do |not_found_response: :unauthorized|
   context 'with an unknown target' do
-    let(:target) { double(id: 1234567890) }
+    let(:target) { double(id: non_existing_record_id) }
 
     context 'as anonymous' do
       it_behaves_like 'rejects nuget packages access', :anonymous, not_found_response
@@ -483,6 +483,33 @@ RSpec.shared_examples 'rejects nuget access with unknown target id' do |not_foun
 
       it_behaves_like 'rejects nuget packages access', :anonymous, :not_found
     end
+  end
+end
+
+RSpec.shared_examples 'allows anyone to pull public nuget packages on group level' do
+  let_it_be(:package_name) { 'dummy.package' }
+  let_it_be(:package) { create(:nuget_package, project: project, name: package_name) }
+  let_it_be(:external_user) { create(:user, external: true) }
+  let_it_be(:personal_access_token) { create(:personal_access_token, user: external_user) }
+
+  subject { get api(url), headers: basic_auth_header(external_user.username, personal_access_token.token) }
+
+  before do
+    [subgroup, group, project].each do |entity|
+      entity.update!(visibility_level: Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
+    end
+    project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
+    stub_application_setting(package_registry_allow_anyone_to_pull_option: true)
+  end
+
+  it_behaves_like 'returning response status', :ok
+
+  context 'when allow_anyone_to_pull_public_nuget_packages_on_group_level FF is disabled' do
+    before do
+      stub_feature_flags(allow_anyone_to_pull_public_nuget_packages_on_group_level: false)
+    end
+
+    it_behaves_like 'returning response status', :not_found
   end
 end
 
@@ -776,7 +803,7 @@ RSpec.shared_examples 'nuget symbol file endpoint' do
     end
 
     context 'when target does not exist' do
-      let(:target) { double(id: 1234567890) }
+      let(:target) { double(id: non_existing_record_id) }
 
       it_behaves_like 'returning response status', :not_found
     end

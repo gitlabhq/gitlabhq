@@ -6,7 +6,7 @@ module RemoteDevelopment
       include Messages
 
       # @param [Hash] context
-      # @return [Result]
+      # @return [Gitlab::Fp::Result]
       def self.validate(context)
         context => { settings: Hash => settings }
         settings => { vscode_extensions_gallery_metadata: Hash => extensions_gallery_metadata }
@@ -15,9 +15,11 @@ module RemoteDevelopment
         errors = validate_against_schema(validatable_hash)
 
         if errors.none?
-          Result.ok(context)
+          Gitlab::Fp::Result.ok(context)
         else
-          Result.err(SettingsVscodeExtensionsGalleryMetadataValidationFailed.new(details: errors.join(". ")))
+          Gitlab::Fp::Result.err(
+            SettingsVscodeExtensionsGalleryMetadataValidationFailed.new(details: errors.join(". "))
+          )
         end
       end
 

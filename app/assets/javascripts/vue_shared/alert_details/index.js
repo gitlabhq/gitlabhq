@@ -73,9 +73,8 @@ export default (selector) => {
 
   const opsProperties = {};
 
-  const { TRACK_ALERTS_DETAILS_VIEWS_OPTIONS, TRACK_ALERT_STATUS_UPDATE_OPTIONS } = PAGE_CONFIG[
-    page
-  ];
+  const { TRACK_ALERTS_DETAILS_VIEWS_OPTIONS, TRACK_ALERT_STATUS_UPDATE_OPTIONS } =
+    PAGE_CONFIG[page];
   provide.trackAlertsDetailsViewsOptions = TRACK_ALERTS_DETAILS_VIEWS_OPTIONS;
   provide.trackAlertStatusUpdateOptions = TRACK_ALERT_STATUS_UPDATE_OPTIONS;
   opsProperties.store = createStore({}, service);

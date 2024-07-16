@@ -18,7 +18,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'createModelPath' => "/#{project.full_path}/-/ml/models/new",
         'canWriteModelRegistry' => true,
         'maxAllowedFileSize' => 10737418240,
-        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/"
+        'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/",
+        'markdownPreviewPath' => "http://localhost/#{project.full_path}/-/ml/preview_markdown"
       })
     end
 
@@ -38,7 +39,7 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
 
   describe '#show_ml_model_data' do
     let_it_be(:model) do
-      build_stubbed(:ml_models, project: project, name: 'cool_model')
+      build_stubbed(:ml_models, :with_latest_version_and_package, project: project, name: 'cool_model')
     end
 
     subject(:parsed) { Gitlab::Json.parse(helper.show_ml_model_data(model, user)) }
@@ -51,7 +52,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
         'maxAllowedFileSize' => 10737418240,
         'mlflowTrackingUrl' => "http://localhost/api/v4/projects/#{project.id}/ml/mlflow/",
         'modelId' => model.id,
-        'modelName' => 'cool_model'
+        'modelName' => 'cool_model',
+        'latestVersion' => model.latest_version.version
       })
     end
 

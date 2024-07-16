@@ -20,23 +20,25 @@ const createUnallowedNote = () =>
 
 describe('DiscussionActions', () => {
   let wrapper;
-  const createComponentFactory = (shallow = true) => (props, options) => {
-    const store = createStore();
-    const mountFn = shallow ? shallowMount : mount;
+  const createComponentFactory =
+    (shallow = true) =>
+    (props, options) => {
+      const store = createStore();
+      const mountFn = shallow ? shallowMount : mount;
 
-    wrapper = mountFn(DiscussionActions, {
-      store,
-      propsData: {
-        discussion: discussionMock,
-        isResolving: false,
-        resolveButtonTitle: 'Resolve discussion',
-        resolveWithIssuePath: '/some/issue/path',
-        shouldShowJumpToNextDiscussion: true,
-        ...props,
-      },
-      ...options,
-    });
-  };
+      wrapper = mountFn(DiscussionActions, {
+        store,
+        propsData: {
+          discussion: discussionMock,
+          isResolving: false,
+          resolveButtonTitle: 'Resolve discussion',
+          resolveWithIssuePath: '/some/issue/path',
+          shouldShowJumpToNextDiscussion: true,
+          ...props,
+        },
+        ...options,
+      });
+    };
 
   describe('rendering', () => {
     const createComponent = createComponentFactory();

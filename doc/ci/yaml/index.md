@@ -144,8 +144,6 @@ In this example:
 
 ### `include`
 
-> - [Moved](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/42861) to GitLab Free in 11.4.
-
 Use `include` to include external YAML files in your CI/CD configuration.
 You can split one long `.gitlab-ci.yml` file into multiple files to increase readability,
 or reduce duplication of the same configuration in multiple places.
@@ -173,7 +171,7 @@ The time limit to resolve all files is 30 seconds.
 And optionally:
 
 - [`include:inputs`](#includeinputs)
-- [`include:rules`](includes.md#use-rules-with-include)
+- [`include:rules`](#includerules)
 
 **Additional details**:
 
@@ -197,11 +195,6 @@ And optionally:
     count towards the limit.
   - From [GitLab 14.9 to GitLab 15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/28987), you can have up to 100 includes.
     The same file can be included multiple times in nested includes, but duplicates are ignored.
-
-**Related topics**:
-
-- [Use variables with `include`](includes.md#use-variables-with-include).
-- [Use `rules` with `include`](includes.md#use-rules-with-include).
 
 #### `include:component`
 
@@ -256,8 +249,10 @@ include: '.gitlab-ci-production.yml'
 
 - The `.gitlab-ci.yml` file and the local file must be on the same branch.
 - You can't include local files through Git submodules paths.
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the `include` keyword, not the project running the pipeline.
-  You can use local, project, remote, or template includes.
+- `include` configuration is always evaluated based on the location of the file
+  containing the `include` keyword, not the project running the pipeline. If a
+  [nested `include`](includes.md#use-nested-includes) is in a configuration file
+  in a different project, `include: local` checks that other project for the file.
 
 #### `include:project`
 
@@ -304,8 +299,10 @@ include:
 
 **Additional details**:
 
-- All [nested includes](includes.md#use-nested-includes) are executed in the scope of the project containing the configuration file with the nested `include` keyword.
-  You can use `local` (relative to the project containing the configuration file with the `include` keyword), `project`, `remote`, or `template` includes.
+- `include` configuration is always evaluated based on the location of the file
+  containing the `include` keyword, not the project running the pipeline. If a
+  [nested `include`](includes.md#use-nested-includes) is in a configuration file
+  in a different project, `include: local` checks that other project for the file.
 - When the pipeline starts, the `.gitlab-ci.yml` file configuration included by all methods is evaluated.
   The configuration is a snapshot in time and persists in the database. GitLab does not reflect any changes to
   the referenced `.gitlab-ci.yml` file configuration until the next pipeline starts.
@@ -390,6 +387,7 @@ include:
 #### `include:inputs`
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/391331) in GitLab 15.11 as a beta feature.
+> - [Made generally available](https://gitlab.com/gitlab-com/www-gitlab-com/-/merge_requests/134062) in GitLab 17.0.
 
 Use `include:inputs` to set the values for input parameters when the included configuration
 uses [`spec:inputs`](#specinputs) and is added to the pipeline.
@@ -422,6 +420,45 @@ In this example:
 **Related topics**:
 
 - [Set input values when using `include`](inputs.md#set-input-values-when-using-include).
+
+#### `include:rules`
+
+You can use [`rules`](#rules) with `include` to conditionally include other configuration files.
+
+**Keyword type**: Global keyword.
+
+**Possible inputs**: These `rules` subkeys:
+
+- [`rules:if`](#rulesif).
+- [`rules:exists`](#rulesexists).
+- [`rules:changes`](#ruleschanges).
+
+Some [CI/CD variables are supported](includes.md#use-variables-with-include).
+
+**Example of `include:rules`**:
+
+```yaml
+include:
+  - local: build_jobs.yml
+    rules:
+      - if: $INCLUDE_BUILDS == "true"
+
+test-job:
+  stage: test
+  script: echo "This is a test job"
+```
+
+In this example, if the `INCLUDE_BUILDS` variable is:
+
+- `true`, the `build_jobs.yml` configuration is included in the pipeline.
+- Not `true` or does not exist, the `build_jobs.yml` configuration is not included in the pipeline.
+
+**Related topics**:
+
+- Examples of using `include` with:
+  - [`rules:if`](includes.md#include-with-rulesif).
+  - [`rules:changes`](includes.md#include-with-ruleschanges).
+  - [`rules:exists`](includes.md#include-with-rulesexists).
 
 ### `stages`
 
@@ -811,7 +848,7 @@ to a pipeline with `include`. Use `include:inputs` to define the values to use w
 
 Use the inputs to customize the behavior of the configuration when included in CI/CD configuration.
 
-Use the interpolation format `$[[ input.input-id ]]` to reference the values outside of the header section.
+Use the interpolation format `$[[ inputs.input-id ]]` to reference the values outside of the header section.
 Inputs are evaluated and interpolated when the configuration is fetched during pipeline creation, but before the
 configuration is merged with the contents of the `.gitlab-ci.yml` file.
 
@@ -1408,12 +1445,11 @@ job:
 
 #### `artifacts:public`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/223273) in GitLab 13.8 [with a flag](../../user/feature_flags.md) named `non_public_artifacts`, disabled by default.
 > - [Updated](https://gitlab.com/gitlab-org/gitlab/-/issues/322454) in GitLab 15.10. Artifacts created with `artifacts:public` before 15.10 are not guaranteed to remain private after this update.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/294503) in GitLab 16.7. Feature flag `non_public_artifacts` removed.
 
 NOTE:
-`artifacts:public` is now superceded by [`artifacts:access`](#artifactsaccess) which
+`artifacts:public` is now superseded by [`artifacts:access`](#artifactsaccess) which
 has more options.
 
 Use `artifacts:public` to determine whether the job artifacts should be
@@ -3189,7 +3225,9 @@ can use that variable in `needs:pipeline` to download artifacts from the parent 
 
 - The `pipeline` attribute does not accept the current pipeline ID (`$CI_PIPELINE_ID`).
   To download artifacts from a job in the current pipeline, use [`needs:artifacts`](#needsartifacts).
-- You cannot use `needs:pipeline:job` in a [trigger job](#trigger).
+- You cannot use `needs:pipeline:job` in a [trigger job](#trigger), or to fetch artifacts
+  from a [multi-project pipeline](../pipelines/downstream_pipelines.md#multi-project-pipelines).
+  To fetch artifacts from a multi-project pipeline use [`needs:project`](#needsproject).
 
 #### `needs:optional`
 
@@ -3997,9 +4035,9 @@ using variables.
 
 Use `rules` to include or exclude jobs in pipelines.
 
-Rules are evaluated when the pipeline is created, and evaluated *in order*
-until the first match. When a match is found, the job is either included or excluded from the pipeline,
-depending on the configuration.
+Rules are evaluated when the pipeline is created, and evaluated *in order*. When a match is found,
+no more rules are checked and the job is either included or excluded from the pipeline
+depending on the configuration. If no rules match, the job is not added to the pipeline.
 
 `rules` accepts an array of rules. Each rules must have at least one of:
 
@@ -4036,11 +4074,13 @@ Use `rules:if` clauses to specify when to add a job to a pipeline:
 
 - If an `if` statement is true, add the job to the pipeline.
 - If an `if` statement is true, but it's combined with `when: never`, do not add the job to the pipeline.
-- If no `if` statements are true, do not add the job to the pipeline.
+- If an `if` statement is false, check the next `rules` item (if any more exist).
 
-`if` clauses are evaluated based on the values of [CI/CD variables](../variables/index.md)
-or [predefined CI/CD variables](../variables/predefined_variables.md), with
-[some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+`if` clauses are evaluated:
+
+- Based on the values of [CI/CD variables](../variables/index.md) or [predefined CI/CD variables](../variables/predefined_variables.md),
+  with [some exceptions](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- In order, following [`rules` execution flow](#rules).
 
 **Keyword type**: Job-specific and pipeline-specific. You can use it as part of a job
 to configure the job behavior, or with [`workflow`](#workflow) to configure the pipeline behavior.
@@ -4104,8 +4144,7 @@ or [merge request pipelines](../pipelines/merge_request_pipelines.md), though
 
 An array including any number of:
 
-- Paths to files. The [file paths can include variables](../jobs/job_rules.md#use-variables-in-ruleschanges).
-  A file path array can also be in [`rules:changes:paths`](#ruleschangespaths).
+- Paths to files. The file paths can include [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 - Wildcard paths for:
   - Single directories, for example `path/to/directory/*`.
   - A directory and all its subdirectories, for example `path/to/directory/**/*`.
@@ -4125,23 +4164,37 @@ docker build:
         - Dockerfile
       when: manual
       allow_failure: true
+
+docker build alternative:
+  variables:
+    DOCKERFILES_DIR: 'path/to/dockerfiles'
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      changes:
+        - $DOCKERFILES_DIR/**/*
 ```
 
-- If the pipeline is a merge request pipeline, check `Dockerfile` for changes.
+In this example:
+
+- If the pipeline is a merge request pipeline, check `Dockerfile` and the files in
+  `$DOCKERFILES_DIR/**/*` for changes.
 - If `Dockerfile` has changed, add the job to the pipeline as a manual job, and the pipeline
   continues running even if the job is not triggered (`allow_failure: true`).
-- A maximum of 50 patterns or file paths can be defined per `rules:changes` section.
-- If `Dockerfile` has not changed, do not add job to any pipeline (same as `when: never`).
-- [`rules:changes:paths`](#ruleschangespaths) is the same as `rules:changes` without
-  any subkeys.
+- If a file in `$DOCKERFILES_DIR/**/*` has changed, add the job to the pipeline.
+- If no listed files have changed, do not add either job to any pipeline (same as `when: never`).
 
 **Additional details**:
 
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
+- A maximum of 50 patterns or file paths can be defined per `rules:changes` section.
 - `changes` resolves to `true` if any of the matching files are changed (an `OR` operation).
 - For additional examples, see [Specify when jobs run with `rules`](../jobs/job_rules.md).
+- You can use the `$` character for both variables and paths. For example, if the
+  `$VAR` variable exists, its value is used. If it does not exist, the `$` is interpreted
+  as being part of a path.
 
 **Related topics**:
 
@@ -4161,7 +4214,7 @@ any subkeys. All additional details and related topics are the same.
 
 **Possible inputs**:
 
-- An array of file paths. [File paths can include variables](../jobs/job_rules.md#use-variables-in-ruleschanges).
+- An array of file paths. File paths can include [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `rules:changes:paths`**:
 
@@ -4188,6 +4241,7 @@ In this example, both jobs have the same behavior.
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/293645) in GitLab 15.3 [with a flag](../../administration/feature_flags.md) named `ci_rules_changes_compare`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/366412) in GitLab 15.5. Feature flag `ci_rules_changes_compare` removed.
+> - Support for CI/CD variables [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369916) in GitLab 17.2.
 
 Use `rules:changes:compare_to` to specify which ref to compare against for changes to the files
 listed under [`rules:changes:paths`](#ruleschangespaths).
@@ -4199,6 +4253,8 @@ listed under [`rules:changes:paths`](#ruleschangespaths).
 - A branch name, like `main`, `branch1`, or `refs/heads/branch1`.
 - A tag name, like `tag1` or `refs/tags/tag1`.
 - A commit SHA, like `2fg31ga14b`.
+
+CI/CD variables [are supported](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `rules:changes:compare_to`**:
 
@@ -4234,7 +4290,9 @@ Use `exists` to run a job when certain files exist in the repository.
 
 **Possible inputs**:
 
-- An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`) and can't directly link outside it. File paths can use glob patterns and [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
+- An array of file paths. Paths are relative to the project directory (`$CI_PROJECT_DIR`)
+  and can't directly link outside it. File paths can use glob patterns and
+  [CI/CD variables](../variables/where_variables_can_be_used.md#gitlab-ciyml-file).
 
 **Example of `rules:exists`**:
 
@@ -4244,12 +4302,25 @@ job:
   rules:
     - exists:
         - Dockerfile
+
+job2:
+  variables:
+    DOCKERPATH: "**/Dockerfile"
+  script: docker build -t my-image:$CI_COMMIT_REF_SLUG .
+  rules:
+    - exists:
+        - $DOCKERPATH
 ```
 
-`job` runs if a `Dockerfile` exists anywhere in the repository.
+In this example:
+
+- `job1` runs if a `Dockerfile` exists in the root directory of the repository.
+- `job2` runs if a `Dockerfile` exists anywhere in the repository.
 
 **Additional details**:
 
+- In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
+  See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
 - Glob patterns are interpreted with Ruby's [`File.fnmatch`](https://docs.ruby-lang.org/en/master/File.html#method-c-fnmatch)
   with the [flags](https://docs.ruby-lang.org/en/master/File/Constants.html#module-File::Constants-label-Filename+Globbing+Constants+-28File-3A-3AFNM_-2A-29)
   `File::FNM_PATHNAME | File::FNM_DOTMATCH | File::FNM_EXTGLOB`.
@@ -4305,6 +4376,11 @@ docker-build-2:
 ```
 
 In this example, both jobs have the same behavior.
+
+**Additional details**:
+
+- In some cases you cannot use `/` or `./` in a CI/CD variable with `exists`.
+  See [issue 386595](https://gitlab.com/gitlab-org/gitlab/-/issues/386595) for more details.
 
 ##### `rules:exists:project`
 
@@ -5229,8 +5305,6 @@ successfully complete before starting.
 
 #### `trigger:forward`
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/213729) in GitLab 14.9 [with a flag](../../administration/feature_flags.md) named `ci_trigger_forward_variables`. Disabled by default.
-> - [Enabled on GitLab.com and self-managed](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 14.10.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) in GitLab 15.1. [Feature flag `ci_trigger_forward_variables`](https://gitlab.com/gitlab-org/gitlab/-/issues/355572) removed.
 
 Use `trigger:forward` to specify what to forward to the downstream pipeline. You can control

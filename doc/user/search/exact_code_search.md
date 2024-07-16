@@ -30,6 +30,7 @@ and is used by default in groups where the feature is enabled.
 - For [GitLab.com](../../subscriptions/gitlab_com/index.md),
   exact code search is enabled in paid subscriptions.
 - For [GitLab self-managed](../../subscriptions/self_managed/index.md), an administrator must
+  [install Zoekt](../../integration/exact_code_search/zoekt.md#install-zoekt) and
   [enable exact code search](../../integration/exact_code_search/zoekt.md#enable-exact-code-search).
 
 ## Zoekt search API
@@ -75,24 +76,27 @@ When `zoekt_exact_search` is enabled, you can switch between two search modes:
 - **Regular expression mode:** supports regular and boolean expressions.
 - **Exact match mode:** returns results that exactly match the query.
 
+To switch between the two modes, to the right of the search box,
+select **Use regular expression** (**{regular-expression}**).
 When `zoekt_exact_search` is disabled, the regular expression mode is used by default.
 
 ### Syntax
 
 This table shows some example queries for regular expression and exact match modes.
 
-| Query                | Regular expression mode                               | Exact match mode               |
-| -------------------- | ----------------------------------------------------- | ------------------------------ |
-| `"foo"`              | `foo`                                                 | `"foo"`                        |
-| `foo file:^doc/`     | `foo` in directories that start with `/doc`           | `foo` in directories that start with `/doc` |
-| `"class foo"`        | `class foo`                                           | `"class foo"`                  |
-| `class foo`          | `class` and `foo`                                     | `class foo`                    |
-| `foo or bar`         | `foo` or `bar`                                        | `foo or bar`                   |
-| `class Foo`          | `class` (case insensitive) and `Foo` (case sensitive) | `class Foo` (case insensitive) |
-| `class Foo case:yes` | `class` and `Foo` (both case sensitive)               | `class Foo` (case sensitive)   |
-| `foo -bar`           | `foo` but not `bar`                                   | `foo -bar`                     |
-| `foo file:js`        | `foo` in files with names that contain `js`           | `foo` in files with names that contain `js` |
-| `foo -file:test`     | `foo` in files with names that do not contain `test`  | `foo` in files with names that do not contain `test` |
-| `foo lang:ruby`      | `foo` in Ruby source code                             | `foo` in Ruby source code      |
-| `foo file:\.js$`     | `foo` in files with names that end with `.js`         | `foo` in files with names that end with `.js` |
-| `foo.*bar`           | `foo.*bar` (regular expression)                       | None                           |
+| Query                | Regular expression mode                                 | Exact match mode               |
+| -------------------- | ------------------------------------------------------- | ------------------------------ |
+| `"foo"`              | `foo`                                                   | `"foo"`                        |
+| `foo file:^doc/`     | `foo` in directories that start with `/doc`             | `foo` in directories that start with `/doc` |
+| `"class foo"`        | `class foo`                                             | `"class foo"`                  |
+| `class foo`          | `class` and `foo`                                       | `class foo`                    |
+| `foo or bar`         | `foo` or `bar`                                          | `foo or bar`                   |
+| `class Foo`          | `class` (case insensitive) and `Foo` (case sensitive)   | `class Foo` (case insensitive) |
+| `class Foo case:yes` | `class` and `Foo` (both case sensitive)                 | `class Foo` (case sensitive)   |
+| `foo -bar`           | `foo` but not `bar`                                     | `foo -bar`                     |
+| `foo file:js`        | `foo` in files with names that contain `js`             | `foo` in files with names that contain `js` |
+| `foo -file:test`     | `foo` in files with names that do not contain `test`    | `foo` in files with names that do not contain `test` |
+| `foo lang:ruby`      | `foo` in Ruby source code                               | `foo` in Ruby source code      |
+| `foo file:\.js$`     | `foo` in files with names that end with `.js`           | `foo` in files with names that end with `.js` |
+| `foo.*bar`           | `foo.*bar` (regular expression)                         | None                           |
+| `sym:foo`            | `foo` in symbols like class, method, and variable names | `foo` in symbols like class, method, and variable names |

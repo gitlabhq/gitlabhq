@@ -51,7 +51,7 @@ export default {
 };
 </script>
 <template>
-  <span class="gl-display-inline-flex">
+  <span class="gl-inline-flex">
     <gl-button-group v-if="shouldRenderDropdown" size="small">
       <review-app-link
         :display="appButtonText"
@@ -62,7 +62,7 @@ export default {
       <gl-collapsible-listbox
         :items="filteredChanges"
         size="small"
-        placement="right"
+        placement="bottom-end"
         searchable
         @search="search"
       >

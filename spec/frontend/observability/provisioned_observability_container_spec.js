@@ -1,7 +1,7 @@
 import { GlLoadingIcon } from '@gitlab/ui';
 import ProvisionedObservabilityContainer from '~/observability/components/provisioned_observability_container.vue';
 import ObservabilityContainer from '~/observability/components/observability_container.vue';
-import ObservabilityEmptyState from '~/observability/components/observability_empty_state.vue';
+import ObservabilityNotEnabledEmptyState from '~/observability/components/observability_not_enabled_empty_state.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 
 import { createAlert } from '~/alert';
@@ -27,7 +27,7 @@ describe('ProvisionedObservabilityContainer', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findEmptyState = () => wrapper.findComponent(ObservabilityEmptyState);
+  const findEmptyState = () => wrapper.findComponent(ObservabilityNotEnabledEmptyState);
   const findSlotComponent = () => wrapper.findComponent({ name: 'MockComponent' });
 
   const props = {

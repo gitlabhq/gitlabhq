@@ -1,5 +1,5 @@
 import { GlSprintf, GlToggle, GlFormCheckbox } from '@gitlab/ui';
-import { shallowMount, mount } from '@vue/test-utils';
+import { shallowMountExtended, mountExtended } from 'helpers/vue_test_utils_helper';
 import ProjectFeatureSetting from '~/pages/projects/shared/permissions/components/project_feature_setting.vue';
 import CiCatalogSettings from '~/pages/projects/shared/permissions/components/ci_catalog_settings.vue';
 import settingsPanel from '~/pages/projects/shared/permissions/components/settings_panel.vue';
@@ -56,6 +56,7 @@ const defaultProps = {
   confirmationPhrase: 'my-fake-project',
   showVisibilityConfirmModal: false,
   membersPagePath: '/my-fake-project/-/project_members',
+  licensedAiFeaturesAvailable: true,
 };
 
 const FEATURE_ACCESS_LEVEL_ANONYMOUS = 30;
@@ -65,7 +66,7 @@ describe('Settings Panel', () => {
 
   const mountComponent = (
     { currentSettings = {}, glFeatures = {}, stubs = {}, ...customProps } = {},
-    mountFn = shallowMount,
+    mountFn = shallowMountExtended,
   ) => {
     const propsData = {
       ...defaultProps,
@@ -140,6 +141,7 @@ describe('Settings Panel', () => {
   const findModelExperimentsSettings = () =>
     wrapper.findComponent({ ref: 'model-experiments-settings' });
   const findModelRegistrySettings = () => wrapper.findComponent({ ref: 'model-registry-settings' });
+  const findDuoSettings = () => wrapper.findByTestId('duo-settings');
 
   describe('Project Visibility', () => {
     it('should set the project visibility help path', () => {
@@ -450,7 +452,7 @@ describe('Settings Panel', () => {
 
     it('should not change lfsEnabled when disabling the repository', async () => {
       // mount over shallowMount, because we are aiming to test rendered state of toggle
-      wrapper = mountComponent({ currentSettings: { lfsEnabled: true } }, mount);
+      wrapper = mountComponent({ currentSettings: { lfsEnabled: true } }, mountExtended);
 
       const repositoryFeatureToggleButton = findRepositoryFeatureSetting().find('button');
       const lfsFeatureToggleButton = findLFSFeatureToggle().find('button');
@@ -477,7 +479,10 @@ describe('Settings Panel', () => {
       'with (lfsObjectsExist = $lfsObjectsExist, lfsEnabled = $lfsEnabled)',
       ({ lfsObjectsExist, lfsEnabled, isShown }) => {
         beforeEach(() => {
-          wrapper = mountComponent({ lfsObjectsExist, currentSettings: { lfsEnabled } }, mount);
+          wrapper = mountComponent(
+            { lfsObjectsExist, currentSettings: { lfsEnabled } },
+            mountExtended,
+          );
         });
 
         if (isShown) {
@@ -556,7 +561,8 @@ describe('Settings Panel', () => {
 
         await findPackageRegistryEnabledInput().vm.$emit('change', packageRegistryEnabled);
 
-        const packageRegistryApiForEveryoneEnabledInput = findPackageRegistryApiForEveryoneEnabledInput();
+        const packageRegistryApiForEveryoneEnabledInput =
+          findPackageRegistryApiForEveryoneEnabledInput();
 
         if (packageRegistryApiForEveryoneEnabled === 'hidden') {
           expect(packageRegistryApiForEveryoneEnabledInput.exists()).toBe(false);
@@ -712,7 +718,7 @@ describe('Settings Panel', () => {
           canDisableEmails: true,
           canSetDiffPreviewInEmail: true,
         },
-        mount,
+        mountExtended,
       );
 
       // It seems like we need the "interactivity" to ensure that the disabled
@@ -733,7 +739,7 @@ describe('Settings Panel', () => {
           canSetDiffPreviewInEmail: true,
           emailsEnabled: true,
         },
-        mount,
+        mountExtended,
       );
       const originalHiddenInputValue = findShowDiffPreviewSetting()
         .find('input[type="hidden"]')
@@ -826,6 +832,22 @@ describe('Settings Panel', () => {
       wrapper = mountComponent({});
 
       expect(findModelRegistrySettings().exists()).toBe(true);
+    });
+  });
+  describe('Duo', () => {
+    describe('when the FF is on', () => {
+      it('shows duo toggle', () => {
+        wrapper = mountComponent({ glFeatures: { aiSettingsVueProject: true } });
+
+        expect(findDuoSettings().exists()).toBe(true);
+      });
+    });
+    describe('when the FF is off', () => {
+      it('does not show duo toggle', () => {
+        wrapper = mountComponent();
+
+        expect(findDuoSettings().exists()).toBe(false);
+      });
     });
   });
 });

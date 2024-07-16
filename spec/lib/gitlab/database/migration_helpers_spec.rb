@@ -2990,18 +2990,30 @@ RSpec.describe Gitlab::Database::MigrationHelpers, feature_category: :database d
   end
 
   describe '#lock_tables' do
-    let(:lock_statement) do
-      /LOCK TABLE ci_builds, ci_pipelines IN ACCESS EXCLUSIVE MODE/
+    subject(:recorder) do
+      ActiveRecord::QueryRecorder.new { statement }
     end
 
-    subject(:recorder) do
-      ActiveRecord::QueryRecorder.new do
-        model.lock_tables(:ci_builds, :ci_pipelines)
+    let(:statement) { model.lock_tables(:ci_builds, :ci_pipelines) }
+
+    it 'locks the tables' do
+      expect(recorder.log).to include(/LOCK TABLE "ci_builds", "ci_pipelines" IN ACCESS EXCLUSIVE MODE/)
+    end
+
+    context 'when only is provided' do
+      let(:statement) { model.lock_tables(:p_ci_builds, only: true) }
+
+      it 'locks the tables' do
+        expect(recorder.log).to include(/LOCK TABLE ONLY "p_ci_builds" IN ACCESS EXCLUSIVE MODE/)
       end
     end
 
-    it 'locks the tables' do
-      expect(recorder.log).to include(lock_statement)
+    context 'when nowait is provided' do
+      let(:statement) { model.lock_tables(:p_ci_builds, nowait: true) }
+
+      it 'locks the tables' do
+        expect(recorder.log).to include(/LOCK TABLE "p_ci_builds" IN ACCESS EXCLUSIVE MODE NOWAIT/)
+      end
     end
   end
 end

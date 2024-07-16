@@ -104,7 +104,7 @@ Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values, cached: true)
 
 Use the following method in the [rails console](../../../administration/operations/rails_console.md#starting-a-rails-console-session).
 
-This also refreshes the cached Service Ping displayed in the Admin Area.
+This also refreshes the cached Service Ping displayed in the Admin area.
 
 ```ruby
 Gitlab::Usage::ServicePingReport.for(output: :all_metrics_values)

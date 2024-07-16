@@ -49,7 +49,6 @@ include:
     GITLAB_VERSION: "${GITLAB_VERSION}"
     GITLAB_TAG: "${GITLAB_TAG}"
     GITLAB_ASSETS_TAG: "${GITLAB_ASSETS_TAG}"
-    FORCE_RAILS_IMAGE_BUILDS: "${FORCE_RAILS_IMAGE_BUILDS}"
     CE_PIPELINE: "${CE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$CE_PIPELINE'` will evaluate to `false` when this variable is empty
     EE_PIPELINE: "${EE_PIPELINE}"  # Based on https://docs.gitlab.com/ee/ci/jobs/job_control.html#check-if-a-variable-exists, `if: '$EE_PIPELINE'` will evaluate to `false` when this variable is empty
     GITLAB_ELASTICSEARCH_INDEXER_VERSION: "${GITLAB_ELASTICSEARCH_INDEXER_VERSION}"
@@ -59,6 +58,17 @@ include:
     GITLAB_WORKHORSE_VERSION: "${GITLAB_WORKHORSE_VERSION}"
     GITALY_SERVER_VERSION: "${GITALY_SERVER_VERSION}"
     RUBY_VERSION: "${FULL_RUBY_VERSION}"
+    # Source variables, see scripts/trigger-build.rb
+    TOP_UPSTREAM_SOURCE_PROJECT: "${TOP_UPSTREAM_SOURCE_PROJECT}"
+    TOP_UPSTREAM_SOURCE_JOB: "${TOP_UPSTREAM_SOURCE_JOB}"
+    TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID: "${TOP_UPSTREAM_MERGE_REQUEST_PROJECT_ID}"
+    TOP_UPSTREAM_MERGE_REQUEST_IID: "${TOP_UPSTREAM_MERGE_REQUEST_IID}"
+    TOP_UPSTREAM_SOURCE_SHA: "${TOP_UPSTREAM_SOURCE_SHA}"
+    TOP_UPSTREAM_SOURCE_REF_SLUG: "${TOP_UPSTREAM_SOURCE_REF_SLUG}"
+    # prevent cache invalidation between pipeline runs
+    CACHE_BUSTER: "false"
+    # link component version shas to current project instead of default CI_PIPELINE_CREATED_AT which forces rebuilds on each pipeline run
+    CONTAINER_VERSION_SUFFIX: "${CI_PROJECT_NAME}"
   trigger:
     project: '${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]'
     branch: $TRIGGER_BRANCH

@@ -22,6 +22,7 @@ module Gitlab
               system: true,
               created_at: issue_event.created_at,
               updated_at: issue_event.created_at,
+              imported_from: imported_from,
               system_note_metadata: SystemNoteMetadata.new(
                 {
                   action: "title",

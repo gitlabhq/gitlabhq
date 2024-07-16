@@ -41,7 +41,7 @@ export default {
   >
     <p
       v-if="duration"
-      class="gl-display-inline-flex gl-align-items-center gl-text-secondary gl-m-0 gl-whitespace-nowrap"
+      class="gl-inline-flex gl-align-items-center gl-text-secondary gl-m-0 gl-whitespace-nowrap"
       data-testid="duration"
     >
       <gl-icon name="timer" class="gl-mr-2" :size="12" />
@@ -50,7 +50,7 @@ export default {
 
     <p
       v-if="finishedTime"
-      class="gl-display-inline-flex gl-align-items-center gl-text-secondary gl-m-0 gl-whitespace-nowrap"
+      class="gl-inline-flex gl-align-items-center gl-text-secondary gl-m-0 gl-whitespace-nowrap"
       data-testid="finished-at"
     >
       <gl-icon name="calendar" class="gl-mr-2" :size="12" data-testid="calendar-icon" />

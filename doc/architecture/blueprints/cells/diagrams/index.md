@@ -1,37 +1,11 @@
 ---
-stage: enablement
-group: Tenant Scale
-description: 'Cells: Diagrams'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/diagrams/'
+remove_date: '2025-07-08'
 ---
 
-# Diagrams
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/diagrams/).
 
-Diagrams used in Cells are created with [draw.io](https://app.diagrams.net/).
-
-## Edit existing diagrams
-
-Load the `.drawio.png` or `.drawio.svg` file directly into **draw.io**, which you can use in several ways:
-
-- Best: Use the [draw.io integration in VS Code](https://marketplace.visualstudio.com/items?itemName=hediet.vscode-drawio).
-- Good: Install on MacOS with `brew install drawio` or download the [draw.io desktop](https://github.com/jgraph/drawio-desktop/releases).
-- Good: Install on Linux by downloading the [draw.io desktop](https://github.com/jgraph/drawio-desktop/releases).
-- Discouraged: Use the [draw.io website](https://app.diagrams.net/) to load and save files.
-
-## Create a diagram
-
-To create a diagram from a file:
-
-1. Copy existing file and rename it. Ensure that the extension is `.drawio.png` or `.drawio.svg`.
-1. Edit the diagram.
-1. Save the file.
-1. Optimize images with `pngquant -f --ext .png *.drawio.png` to reduce their size by 2-3x.
-
-To create a diagram from scratch using [draw.io desktop](https://github.com/jgraph/drawio-desktop/releases):
-
-1. In **File > New > Create new diagram**, select **Blank diagram**.
-1. In **File > Save As**, select **Editable Bitmap .png**, and save with `.drawio.png` extension.
-1. To improve image quality, in **File > Properties**, set **Zoom** to **200%**.
-1. To save the file with the new zoom setting, select **File > Save**.
-1. Optimize images with `pngquant -f --ext .png *.drawio.png` to reduce their size by 2-3x.
-
-DO NOT use the **File > Export** function. The diagram should be embedded into `.png` for easy editing.
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

@@ -29,7 +29,9 @@ module API
       requires :repo_id, type: Integer, desc: 'GitHub repository ID'
       optional :new_name, type: String, desc: 'New repo name'
       requires :target_namespace, type: String, allow_blank: false, desc: 'Namespace or group to import repository into'
-      optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname'
+      optional :github_hostname, type: String, desc: 'Custom GitHub enterprise hostname. ' \
+                                                 'For example: https://github.example.com. From GitLab 16.5 to ' \
+                                                 'GitLab 17.1, you must include the path `/api/v3`.'
       optional :optional_stages, type: Hash, desc: 'Optional stages of import to be performed'
       optional :timeout_strategy, type: String, values: ::ProjectImportData::TIMEOUT_STRATEGIES,
         desc: 'Strategy for behavior on timeouts'

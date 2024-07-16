@@ -1,14 +1,14 @@
 <script>
-import { GlDaterangePicker } from '@gitlab/ui';
 import { periodToDate } from '~/observability/utils';
 import DateRangesDropdown from '~/analytics/shared/components/date_ranges_dropdown.vue';
 import { TIME_RANGE_OPTIONS, CUSTOM_DATE_RANGE_OPTION } from '~/observability/constants';
 import { dayAfter, getCurrentUtcDate } from '~/lib/utils/datetime_utility';
+import DateTimeRangePicker from './datetime_range_picker.vue';
 
 export default {
   components: {
     DateRangesDropdown,
-    GlDaterangePicker,
+    DateTimeRangePicker,
   },
   props: {
     selected: {
@@ -25,6 +25,16 @@ export default {
       type: Array,
       required: false,
       default: () => TIME_RANGE_OPTIONS,
+    },
+    defaultMinDate: {
+      type: Date,
+      required: false,
+      default: null,
+    },
+    dateTimeRangePickerState: {
+      type: Boolean,
+      required: false,
+      default: null,
     },
   },
   data() {
@@ -96,19 +106,19 @@ export default {
     <date-ranges-dropdown
       :selected="dateRange.value"
       :date-range-options="dateRangeOptions"
-      disable-selected-day-count
-      tooltip=""
-      include-end-date-in-days-selected
+      disable-date-range-string
       @selected="onSelectPredefinedDateRange"
       @customDateRangeSelected="onSelectCustomDateRange"
     />
-    <gl-daterange-picker
+    <date-time-range-picker
       v-if="shouldShowDateRangePicker"
       :start-opened="shouldStartOpened"
       :default-start-date="dateRange.startDate"
       :default-end-date="dateRange.endDate"
-      :default-max-date="defaultMaxDate"
       :max-date-range="maxDateRange"
+      :default-max-date="defaultMaxDate"
+      :default-min-date="defaultMinDate"
+      :state="dateTimeRangePickerState"
       @input="onCustomRangeSelected"
     />
   </div>

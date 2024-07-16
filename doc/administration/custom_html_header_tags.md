@@ -41,7 +41,28 @@ To add a custom HTML header tag:
 
 ::Tabs
 
-:::TabTitle Self-compiled
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb` and add your configuration. For example:
+
+   ```ruby
+   gitlab_rails['custom_html_header_tags'] = <<-'EOS'
+   <script src="https://example.com/cookie-consent.js" integrity="sha384-Li9vy3DqF8tnTXuiaAJuML3ky+er10rcgNR/VqsVpcw+ThHmYcwiB1pbOxEbzJr7" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://example.com/cookie-consent.css" integrity="sha384-+/M6kredJcxdsqkczBUjMLvqyHb1K/JThDXWsBVxMEeZHEaMKEOEct339VItX1zB" crossorigin="anonymous">
+   EOS
+
+   gitlab_rails['content_security_policy'] = {
+   # extend the following directives
+     'directives' => {
+       'script_src' => "'self' 'unsafe-eval' https://example.com https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com",
+       'style_src' => "'self' 'unsafe-inline' https://example.com",
+     }
+    }
+   ```
+
+1. Save the file, and then [reconfigure](restart_gitlab.md#reconfigure-a-linux-package-installation) and [restart](restart_gitlab.md#restart-a-linux-package-installation) GitLab.
+
+:::TabTitle Self-compiled (Source)
 
 1. Edit `/home/git/gitlab/config/gitlab.yml`:
 

@@ -16,8 +16,6 @@ do this with the Docker and Shell executors of GitLab Runner.
 
 ## Use PostgreSQL with the Docker executor
 
-NOTE:
-
 To pass variables set in the GitLab UI to service containers, you must [define the variables](../variables/index.md#define-a-cicd-variable-in-the-ui).
 You must define your variables as either Group or Project, then call the variables in your job as shown in the following workaround.
 

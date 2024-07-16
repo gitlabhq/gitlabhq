@@ -187,9 +187,8 @@ describe('ErrorDetails', () => {
       });
       await findExternalUrlLink().trigger('click');
 
-      const { category, action, label, property } = trackClickErrorLinkToSentryOptions(
-        'external-url',
-      );
+      const { category, action, label, property } =
+        trackClickErrorLinkToSentryOptions('external-url');
       expect(Tracking.event).toHaveBeenCalledWith(category, action, { label, property });
     });
   });

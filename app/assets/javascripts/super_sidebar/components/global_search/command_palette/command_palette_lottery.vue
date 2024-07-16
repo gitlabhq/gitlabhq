@@ -31,7 +31,7 @@ export default {
   <span>
     <gl-sprintf :message="$options.i18n[getTipNum]">
       <template #link="{ content }">
-        <kbd v-safe-html="content" class="gl-font-base gl-py-2 vertical-align-normalization">{{
+        <kbd v-safe-html="content" class="vertical-align-normalization gl-py-2 gl-text-base">{{
           content
         }}</kbd>
       </template>

@@ -1,11 +1,9 @@
 <script>
 import { GlToggle, GlAlert, GlLoadingIcon } from '@gitlab/ui';
 import SetContainerScanningForRegistry from '~/security_configuration/graphql/set_container_scanning_for_registry.graphql';
-import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 export default {
   components: { GlToggle, GlAlert, GlLoadingIcon },
-  mixins: [glFeatureFlagsMixin()],
   inject: ['containerScanningForRegistryEnabled', 'projectFullPath'],
   props: {
     feature: {
@@ -72,7 +70,7 @@ export default {
 </script>
 
 <template>
-  <div v-if="glFeatures.containerScanningForRegistryFlag">
+  <div>
     <gl-alert
       v-if="errorMessage"
       class="gl-mb-5 gl-mt-2"

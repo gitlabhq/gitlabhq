@@ -1,0 +1,29 @@
+include:
+  - local: .gitlab/ci/rails/shared.gitlab-ci.yml
+
+.if-merge-request: &if-merge-request
+  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+
+mailroom-config-validate:
+  extends:
+    - .rspec-base
+    - .mailroom:rules:mailroom-config-validate
+  stage: test
+  script:
+    - |
+      sed -i '/incoming_email:/,/enabled:/{s/enabled: false/enabled: true/}' config/gitlab.yml
+    - cp config/secrets.yml.example config/secrets.yml
+    - bundle exec ruby -r "mail_room" -e "MailRoom::CLI.new(%w[-c config/mail_room.yml])"
+  variables:
+    SETUP_DB: "false"
+
+.mailroom:rules:mailroom-config-validate:
+  rules:
+    - <<: *if-merge-request
+      changes:
+        - config/gitlab.yml.example
+        - config/mail_room.yml
+        - Gemfile.lock
+        - lib/gitlab/mail_room.rb
+        - lib/gitlab/mail_room/**/*
+        - lib/gitlab/redis/**/*

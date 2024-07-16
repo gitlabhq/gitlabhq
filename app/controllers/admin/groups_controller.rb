@@ -38,11 +38,13 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def create
-    response = ::Groups::CreateService.new(current_user, group_params.with_defaults(organization_id: Current.organization_id)).execute
+    response = ::Groups::CreateService.new(current_user,
+      group_params.with_defaults(organization_id: Current.organization_id)).execute
     @group = response[:group]
 
     if response.success?
-      redirect_to [:admin, @group], notice: format(_('Group %{group_name} was successfully created.'), group_name: @group.name)
+      redirect_to [:admin, @group],
+        notice: format(_('Group %{group_name} was successfully created.'), group_name: @group.name)
     else
       render "new"
     end

@@ -1,39 +1,11 @@
 ---
-status: ongoing
-creation-date: "2024-05-27"
-authors: [ "@fabiopitino", "@mbobin" ]
-coach: [ "@fabiopitino", "@grzesiek" ]
-approvers: [ "@jreporter", "@cheryl.li" ]
-owning-stage: "~devops::verify"
-description: 'Reduce the growth rate of pipeline data'
+redirect_to: 'https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ci_data_decay/reduce_data_growth_rate/'
+remove_date: '2025-07-08'
 ---
 
-<!-- vale gitlab.FutureTense = NO -->
+This document was moved to [another location](https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/ci_data_decay/reduce_data_growth_rate/).
 
-# Reduce the growth rate of pipeline data
-
-## Problem to solve
-
-TODO 
-
-## Strategies
-
-### Delete pipeline processing data
-
-Once a build gets archived, it is no longer possible to resume
-pipeline processing in such pipeline. It means that all the metadata, we store
-in PostgreSQL, that is needed to efficiently and reliably process builds can be
-safely moved to a different data store.
-
-Storing pipeline processing data is expensive as this kind of CI/CD
-data represents a significant portion of data stored in CI/CD tables. Once we
-restrict access to processing archived pipelines, we can move this metadata to
-a different place - preferably object storage - and make it accessible on
-demand, when it is really needed again (for example for compliance or auditing purposes).
-
-We need to evaluate whether moving data is the most optimal solution. We might
-be able to use de-duplication of metadata entries and other normalization
-strategies to consume less storage while retaining ability to query this
-dataset. Technical evaluation will be required to find the best solution here.
-
-Epic: [Reduce the rate of builds metadata table growth](https://gitlab.com/groups/gitlab-org/-/epics/7434).
+<!-- This redirect file can be deleted after <2025-07-08>. -->
+<!-- Redirects that point to other docs in the same project expire in three months. -->
+<!-- Redirects that point to docs in a different project or site (for example, link is not relative and starts with `https:`) expire in one year. -->
+<!-- Before deletion, see: https://docs.gitlab.com/ee/development/documentation/redirects.html -->

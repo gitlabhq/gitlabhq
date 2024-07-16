@@ -169,6 +169,8 @@
   - 1
 - - ci_cancel_redundant_pipelines
   - 1
+- - ci_click_house_finished_pipelines_sync
+  - 1
 - - ci_delete_objects
   - 1
 - - ci_initialize_pipelines_iid_sequence
@@ -208,6 +210,10 @@
 - - compliance_management_merge_requests_compliance_violations
   - 1
 - - compliance_management_pending_status_check
+  - 1
+- - compliance_management_pipl_update_user_country_access_logs
+  - 1
+- - compliance_management_pipl_user_paid_status_check
   - 1
 - - compliance_management_project_framework_export_mailer
   - 1
@@ -399,6 +405,8 @@
   - 1
 - - import_issues_csv
   - 2
+- - import_load_placeholder_references
+  - 1
 - - import_refresh_import_jid
   - 1
 - - incident_management
@@ -456,10 +464,6 @@
 - - ldap_group_sync
   - 2
 - - llm_completion
-  - 1
-- - llm_embedding_gitlab_documentation_create_db_embeddings_per_doc_file
-  - 1
-- - llm_embedding_gitlab_documentation_set_embeddings_on_the_record
   - 1
 - - llm_namespace_access_cache_reset
   - 1
@@ -715,6 +719,8 @@
   - 1
 - - search_zoekt_delete_project
   - 1
+- - search_zoekt_delete_project_event
+  - 1
 - - search_zoekt_indexing_task
   - 1
 - - search_zoekt_namespace_indexer
@@ -806,6 +812,8 @@
 - - update_project_statistics
   - 1
 - - upload_checksum
+  - 1
+- - users_record_last_activity
   - 1
 - - users_track_namespace_visits
   - 1

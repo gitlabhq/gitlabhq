@@ -152,6 +152,18 @@ describe('Markdown field component', () => {
       expect(referencedCommands.text()).toContain('test command');
     });
 
+    it('clears referenced commands if there are no referenced commands on markdown preview', async () => {
+      axiosMock.onPost(markdownPreviewPath).reply(HTTP_STATUS_OK, { references: { users: [] } });
+
+      previewToggle = getPreviewToggle();
+      previewToggle.vm.$emit('click', true);
+
+      await axios.waitFor(markdownPreviewPath);
+      const referencedCommands = subject.find('[data-testid="referenced-commands"]');
+
+      expect(referencedCommands.exists()).toBe(false);
+    });
+
     describe('markdown preview', () => {
       beforeEach(() => {
         axiosMock.onPost(markdownPreviewPath).reply(HTTP_STATUS_OK, { body: previewHTML });

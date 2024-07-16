@@ -33,7 +33,7 @@ RSpec.describe BadgesHelper do
     end
 
     it 'adds custom classes' do
-      expect(helper.gl_badge_tag(label, nil, class: "test-class" )).to match(%r{class=".*test-class.*"})
+      expect(helper.gl_badge_tag(label, nil, class: "test-class")).to match(%r{class=".*test-class.*"})
     end
 
     describe 'variants' do

@@ -1,5 +1,6 @@
 import { isEmpty } from 'lodash';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
+import { checkJobHasLog } from './utils';
 
 export const headerTime = (state) => state.job.started_at || state.job.created_at;
 
@@ -21,13 +22,11 @@ export const shouldRenderTriggeredLabel = (state) => Boolean(state.job.started_a
 export const hasEnvironment = (state) => !isEmpty(state.job.deployment_status);
 
 /**
- * Checks if it the job has a log.
  * Used to check if it should render the job log or the empty state
+ *
  * @returns {Boolean}
  */
-export const hasJobLog = (state) =>
-  // update has_trace once BE compeletes trace re-naming in #340626
-  state.job.has_trace || (!isEmpty(state.job.status) && state.job.status.group === 'running');
+export const hasJobLog = (state) => checkJobHasLog(state);
 
 export const emptyStateIllustration = (state) => state?.job?.status?.illustration || {};
 

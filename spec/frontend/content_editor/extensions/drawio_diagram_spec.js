@@ -1,8 +1,9 @@
+import { builders } from 'prosemirror-test-builder';
 import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
 import Image from '~/content_editor/extensions/image';
 import { create } from '~/drawio/content_editor_facade';
 import { launchDrawioEditor } from '~/drawio/drawio_editor';
-import { createTestEditor, createDocBuilder } from '../test_utils';
+import { createTestEditor } from '../test_utils';
 import {
   PROJECT_WIKI_ATTACHMENT_IMAGE_HTML,
   PROJECT_WIKI_ATTACHMENT_DRAWIO_DIAGRAM_HTML,
@@ -15,7 +16,7 @@ jest.mock('~/drawio/drawio_editor');
 describe('content_editor/extensions/drawio_diagram', () => {
   let tiptapEditor;
   let doc;
-  let paragraph;
+  let p;
   let image;
   let drawioDiagram;
   let assetResolver;
@@ -28,24 +29,14 @@ describe('content_editor/extensions/drawio_diagram', () => {
     tiptapEditor = createTestEditor({
       extensions: [Image, DrawioDiagram.configure({ uploadsPath, assetResolver })],
     });
-    const { builders } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        image: { nodeType: Image.name },
-        drawioDiagram: { nodeType: DrawioDiagram.name },
-      },
-    });
 
-    doc = builders.doc;
-    paragraph = builders.paragraph;
-    image = builders.image;
-    drawioDiagram = builders.drawioDiagram;
+    ({ doc, paragraph: p, image, drawioDiagram } = builders(tiptapEditor.schema));
   });
 
   describe('parsing', () => {
     it('distinguishes a drawio diagram from an image', () => {
       const expectedDocWithDiagram = doc(
-        paragraph(
+        p(
           drawioDiagram({
             alt: 'test-file',
             canonicalSrc: 'test-file.drawio.svg',
@@ -54,7 +45,7 @@ describe('content_editor/extensions/drawio_diagram', () => {
         ),
       );
       const expectedDocWithImage = doc(
-        paragraph(
+        p(
           image({
             alt: 'test-file',
             canonicalSrc: 'test-file.png',

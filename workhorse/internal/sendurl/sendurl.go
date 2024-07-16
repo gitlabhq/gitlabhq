@@ -66,7 +66,7 @@ var preserveHeaderKeys = map[string]bool{
 	"Pragma":        true, // Support for HTTP 1.0 proxies
 }
 
-var httpClientNoRedirect = func(req *http.Request, via []*http.Request) error {
+var httpClientNoRedirect = func(_ *http.Request, _ []*http.Request) error {
 	return http.ErrUseLastResponse
 }
 

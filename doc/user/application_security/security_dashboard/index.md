@@ -34,7 +34,7 @@ You can view vulnerability metrics also in the [Value Streams Dashboard](../../.
 
 To view the Security Dashboards, the following is required:
 
-- [Maintainer Role](../../permissions.md#roles) for the project or group.
+- You must have the Developer role for the group or project.
 - At least one [security scanner](../index.md#application-coverage) configured within your project.
 - A successful security scan performed on the [default branch](../../project/repository/branches/default.md) of your project.
 - At least 1 detected vulnerability in the project.

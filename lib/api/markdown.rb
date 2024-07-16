@@ -40,7 +40,10 @@ module API
           context[:skip_project_check] = true
         end
 
-        context[:allow_comments] = false
+        # Disable comments in markdown for IE browsers because comments in IE
+        # could allow script execution.
+        browser = Browser.new(headers['User-Agent'])
+        context[:allow_comments] = !browser.ie?
 
         present({ html: Banzai.render_and_post_process(params[:text], context) }, with: Entities::Markdown)
       end

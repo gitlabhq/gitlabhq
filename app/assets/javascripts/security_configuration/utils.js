@@ -11,7 +11,7 @@ import { REPORT_TYPE_DAST } from '~/vue_shared/security_reports/constants';
  * It then filters out any scanner features that lack a security config for rednering in the UI
  * @param [{}] features
  * @param {Object} securityFeatures Object containing client side UI options
- * @returns {Object} Object with enriched features from constants divided into Security and Compliance Features
+ * @returns {Object} Object with enriched features from constants divided into Security and compliance Features
  */
 
 export const augmentFeatures = (securityFeatures, features = []) => {

@@ -75,6 +75,7 @@ describe('Pipeline Editor Validate Tab', () => {
   const findCancelBtn = () => wrapper.findByTestId('cancel-simulation');
   const findContentChangeStatus = () => wrapper.findByTestId('content-status');
   const findCta = () => wrapper.findByTestId('simulate-pipeline-button');
+  const findLintButton = () => wrapper.findByTestId('lint-button');
   const findDisabledCtaTooltip = () => wrapper.findByTestId('cta-tooltip');
   const findHelpIcon = () => wrapper.findComponent(GlIcon);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
@@ -129,6 +130,11 @@ describe('Pipeline Editor Validate Tab', () => {
     it('popover is set to render when hovering over help icon', () => {
       expect(findPopover().props('target')).toBe(findHelpIcon().attributes('id'));
       expect(findPopover().props('triggers')).toBe('hover focus');
+    });
+
+    it('renders lint button with correct path', () => {
+      expect(findLintButton().exists()).toBe(true);
+      expect(findLintButton().attributes('href')).toBe(mockCiLintPath);
     });
   });
 

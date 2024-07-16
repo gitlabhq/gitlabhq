@@ -11,15 +11,16 @@ RSpec.describe 'Admin browse spam logs', feature_category: :shared do
     enable_admin_mode!(admin)
   end
 
-  it 'browse spam logs' do
+  it 'browse spam logs', :js do
     visit admin_spam_logs_path
 
-    expect(page).to have_content('Spam Logs')
+    expect(page).to have_content('Spam logs')
     expect(page).to have_content(spam_log.source_ip)
     expect(page).to have_content(spam_log.noteable_type)
-    expect(page).to have_content('N')
+    expect(page).not_to have_content('Recaptcha verified')
     expect(page).to have_content(spam_log.title)
-    expect(page).to have_content("#{spam_log.description[0...97]}...")
+    expect(page).to have_content(spam_log.description[0...97].to_s)
+    click_button 'More actions'
     expect(page).to have_link('Remove user')
     expect(page).to have_link('Block user')
     expect(page).to have_link('Trust user')

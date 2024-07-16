@@ -142,7 +142,7 @@ export default {
     data-track-action="click_button"
     data-testid="comment-button"
   >
-    <gl-button variant="confirm" :disabled="disabled" @click="handleClick">
+    <gl-button type="submit" variant="confirm" :disabled="disabled" @click="handleClick">
       {{ commentButtonTitle }}
     </gl-button>
     <gl-collapsible-listbox

@@ -60,6 +60,9 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDuration,
       percentageComplete,
       widgetUrl,
+      groupId,
+      featureId,
+      dismissEndpoint,
     } = convertObjectPropsToCamelCase(sidebarData.duo_pro_trial_status_widget_data_attrs);
 
     const { daysRemaining, trialEndDate, purchaseNowUrl } = convertObjectPropsToCamelCase(
@@ -74,6 +77,9 @@ const getTrialStatusWidgetData = (sidebarData) => {
       trialDuration: Number(trialDuration),
       percentageComplete: Number(percentageComplete),
       widgetUrl,
+      groupId,
+      featureId,
+      dismissEndpoint,
       daysRemaining,
       targetId: containerId,
       trialEndDate: new Date(trialEndDate),
@@ -108,14 +114,8 @@ export const initSuperSidebar = () => {
   const commandPaletteLinks = convertObjectPropsToCamelCase(sidebarData.current_menu_items || []);
   const contextSwitcherLinks = sidebarData.context_switcher_links;
 
-  const {
-    searchPath,
-    issuesPath,
-    mrPath,
-    autocompletePath,
-    settingsPath,
-    searchContext,
-  } = searchData;
+  const { searchPath, issuesPath, mrPath, autocompletePath, settingsPath, searchContext } =
+    searchData;
   const isImpersonating = parseBoolean(sidebarData.is_impersonating);
 
   const isGroup = Boolean(sidebarData.current_context?.namespace === CONTEXT_NAMESPACE_GROUPS);
@@ -140,6 +140,9 @@ export const initSuperSidebar = () => {
       groupsPath,
       fullPath: sidebarData.work_items?.full_path,
       hasIssuableHealthStatusFeature: sidebarData.work_items?.has_issuable_health_status_feature,
+      issuesListPath: sidebarData.work_items?.issues_list_path,
+      canAdminLabel: parseBoolean(sidebarData.work_items?.can_admin_label),
+      labelsManagePath: sidebarData.work_items?.labels_manage_path,
       isGroup,
     },
     store: createStore({

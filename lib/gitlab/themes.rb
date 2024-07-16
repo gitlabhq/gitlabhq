@@ -26,7 +26,7 @@ module Gitlab
         Theme.new(8, s_('NavigationTheme|Light Green'), 'ui-light-green', '#1b653f'),
         Theme.new(9, s_('NavigationTheme|Red'), 'ui-red', '#580d02'),
         Theme.new(10, s_('NavigationTheme|Light Red'), 'ui-light-red', '#a02e1c'),
-        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', '#333238'),
+        Theme.new(2, s_('NavigationTheme|Gray'), 'ui-gray', '#28272d'),
         Theme.new(3, s_('NavigationTheme|Neutral'), 'ui-neutral', '#ececef')
       ]
     end

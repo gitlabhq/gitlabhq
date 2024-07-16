@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Admin System Info', feature_category: :shared do
+RSpec.describe 'Admin System information', feature_category: :shared do
   before do
     admin = create(:admin)
     sign_in(admin)
@@ -22,8 +22,8 @@ RSpec.describe 'Admin System Info', feature_category: :shared do
 
       it 'shows system info page' do
         expect(page).to have_content 'CPU 2 cores'
-        expect(page).to have_content 'Memory Usage 4 GiB / 16 GiB'
-        expect(page).to have_content 'Disk Usage'
+        expect(page).to have_content 'Memory usage 4 GiB / 16 GiB'
+        expect(page).to have_content 'Disk usage'
         expect(page).to have_content 'System started'
       end
     end
@@ -36,9 +36,9 @@ RSpec.describe 'Admin System Info', feature_category: :shared do
       end
 
       it 'shows system info page with no CPU info' do
-        expect(page).to have_content 'CPU Unable to collect CPU info'
-        expect(page).to have_content 'Memory Usage 4 GiB / 16 GiB'
-        expect(page).to have_content 'Disk Usage'
+        expect(page).to have_content 'Unable to collect CPU information'
+        expect(page).to have_content 'Memory usage 4 GiB / 16 GiB'
+        expect(page).to have_content 'Disk usage'
         expect(page).to have_content 'System started'
       end
     end
@@ -52,8 +52,8 @@ RSpec.describe 'Admin System Info', feature_category: :shared do
 
       it 'shows system info page with no CPU info' do
         expect(page).to have_content 'CPU 2 cores'
-        expect(page).to have_content 'Memory Usage Unable to collect memory info'
-        expect(page).to have_content 'Disk Usage'
+        expect(page).to have_content 'Unable to collect memory information'
+        expect(page).to have_content 'Disk usage'
         expect(page).to have_content 'System started'
       end
     end

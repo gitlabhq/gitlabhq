@@ -54,7 +54,7 @@ module WorkItems
     def new_type_excludes_widget?(widget, resource_parent)
       return false unless params[:work_item_type]
 
-      params[:work_item_type].widgets(resource_parent).exclude?(widget.class)
+      params[:work_item_type].widget_classes(resource_parent).exclude?(widget.class)
     end
 
     def interpret_quick_actions!(work_item, widget_params, attributes = {})

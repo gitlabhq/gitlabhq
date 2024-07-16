@@ -28,8 +28,7 @@ export const parsedReportIssues = {
         'Method `long_if` has a Cognitive Complexity of 10 (exceeds 5 allowed). Consider refactoring.',
       file_path: 'codequality.rb',
       line: 5,
-      name:
-        'Method `long_if` has a Cognitive Complexity of 10 (exceeds 5 allowed). Consider refactoring.',
+      name: 'Method `long_if` has a Cognitive Complexity of 10 (exceeds 5 allowed). Consider refactoring.',
       path: 'codequality.rb',
       severity: 'minor',
       urlPath: 'null/codequality.rb#L5',

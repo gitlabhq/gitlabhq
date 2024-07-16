@@ -53,7 +53,7 @@ RSpec.describe 'Export work items', feature_category: :team_planning do
         state: 'opened',
         issue_types: ['task'],
         search: 'any',
-        in: ['title']
+        in: 'title'
       }
 
       expect(IssuableExportCsvWorker)

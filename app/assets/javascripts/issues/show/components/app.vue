@@ -6,7 +6,7 @@ import updateDescription from '~/issues/show/utils/update_description';
 import { sanitize } from '~/lib/dompurify';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import Poll from '~/lib/utils/poll';
-import { containsSensitiveToken, confirmSensitiveAction, i18n } from '~/lib/utils/secret_detection';
+import { detectAndConfirmSensitiveTokens, CONTENT_TYPE } from '~/lib/utils/secret_detection';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { __, sprintf } from '~/locale';
 import { ISSUE_TYPE_PATH, INCIDENT_TYPE_PATH, POLLING_DELAY } from '../constants';
@@ -427,12 +427,14 @@ export default {
 
       this.alert?.dismiss();
 
-      if (containsSensitiveToken(issuablePayload.description)) {
-        const confirmed = await confirmSensitiveAction(i18n.descriptionPrompt);
-        if (!confirmed) {
-          this.setFormState({ updateLoading: false });
-          return false;
-        }
+      const confirmSubmit = await detectAndConfirmSensitiveTokens({
+        content: issuablePayload.description,
+        contentType: CONTENT_TYPE.DESCRIPTION,
+      });
+
+      if (!confirmSubmit) {
+        this.setFormState({ updateLoading: false });
+        return false;
       }
 
       return this.service

@@ -28,7 +28,7 @@ Before you can test OIDC/OAuth on GitLab, you must:
 
 First, you must create OIDC/OAuth application on your GitLab instance. To do this:
 
-1. On the left sidebar, at the bottom, select **Admin Area**.
+1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Applications**.
 1. Select **Add new application**.
 1. Fill in the details for your client application, including the name, redirect URI, and allowed scopes.

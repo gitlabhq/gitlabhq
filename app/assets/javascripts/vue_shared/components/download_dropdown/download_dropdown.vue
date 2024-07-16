@@ -85,7 +85,7 @@ export default {
     :toggle-text="$options.i18n.defaultLabel"
     :title="$options.i18n.defaultLabel"
     category="secondary"
-    placement="right"
+    placement="bottom-end"
     icon="download"
     text-sr-only
     fluid-width

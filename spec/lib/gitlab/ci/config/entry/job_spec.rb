@@ -58,6 +58,28 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
       it { is_expected.to be_truthy }
     end
 
+    context 'when config is a regular job with run keyword' do
+      let(:name) { :rspec }
+      let(:config) do
+        { run: [{ name: 'step1', step: 'some reference' }] }
+      end
+
+      it { is_expected.to be_truthy }
+
+      context 'when pipeline_run_keyword feature flag is disabled' do
+        before do
+          stub_feature_flags(pipeline_run_keyword: false)
+        end
+
+        context 'when config has run key' do
+          let(:name) { :rspec }
+          let(:config) { { run: [{ name: 'step1', step: 'some reference' }] } }
+
+          it { is_expected.to be_falsey }
+        end
+      end
+    end
+
     context 'when config is a bridge job' do
       let(:name) { :rspec }
       let(:config) do
@@ -235,12 +257,81 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         end
       end
 
+      context 'when script and run are used together' do
+        let(:config) { { script: 'rspec', run: [{ name: 'step1', step: 'some reference' }] } }
+
+        it 'returns error about using script and run' do
+          expect(entry).not_to be_valid
+          expect(entry.errors).to include 'job config these keys cannot be used together: script, run'
+        end
+      end
+
+      context 'when run value is invalid' do
+        using RSpec::Parameterized::TableSyntax
+
+        where(:case_name, :config, :error) do
+          'when only step is used without name'   | { stage: 'build',
+run: [{ step: 'some reference' }] } | 'job run \'/0\' must be a valid \'required\''
+          'when only script is used without name' | { stage: 'build',
+run: [{ script: 'echo' }] } | 'job run \'/0\' must be a valid \'required\''
+          'when step and script are used together' | { stage: 'build',
+run: [{ name: 'step1', step: 'some reference', script: 'echo' }] } | 'job run \'/0\' must be a valid \'oneof\''
+          'when a subkey does not exist' | { stage: 'build',
+run: [{ name: 'step1', invalid_key: 'some value' }] } | 'job run \'/0\' must be a valid \'required\''
+        end
+
+        with_them do
+          it 'returns error about invalid run' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include(error)
+          end
+        end
+
+        context 'when run value is not an array' do
+          let(:config) { { stage: 'build', run: 'invalid' } }
+
+          it 'returns error about invalid run' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job run \'\' must be a valid \'array\''
+          end
+        end
+
+        context 'with invalid env value type' do
+          let(:config) do
+            {
+              stage: 'build',
+              run: [
+                {
+                  name: 'step1',
+                  script: 'echo $MY_VAR',
+                  env: { MY_VAR: 123 }
+                }
+              ]
+            }
+          end
+
+          it 'returns error about invalid env' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job run \'/0/env/my_var\' must be a valid \'string\''
+          end
+        end
+
+        context 'when run value does not match steps schema' do
+          let(:config) { { stage: 'build', run: [{ name: 'step1' }] } }
+
+          it 'returns error about invalid run' do
+            expect(entry).not_to be_valid
+            expect(entry.errors).to include 'job run \'/0\' must be a valid \'required\''
+          end
+        end
+      end
+
       context 'when script is not provided' do
         let(:config) { { stage: 'test' } }
 
         it 'returns error about missing script entry' do
           expect(entry).not_to be_valid
-          expect(entry.errors).to include "job script can't be blank"
+          expect(entry.errors).to include 'job script can\'t be blank'
         end
       end
 
@@ -249,7 +340,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
 
         it 'returns error about wrong value type' do
           expect(entry).not_to be_valid
-          expect(entry.errors).to include "job extends should be an array of strings or a string"
+          expect(entry.errors).to include 'job extends should be an array of strings or a string'
         end
       end
 
@@ -804,6 +895,69 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
             scheduling_type: :stage,
             id_tokens: { TEST_ID_TOKEN: { aud: 'https://gitlab.com' } }
           )
+        end
+      end
+
+      context 'when run keyword is used' do
+        let(:run_value) do
+          [
+            { name: 'step1', step: 'some reference' },
+            { name: 'step2', script: 'echo' }
+          ]
+        end
+
+        let(:config) { { run: run_value } }
+
+        it 'returns the run value' do
+          expect(entry.value).to include({ run: run_value })
+        end
+
+        context 'with valid inputs' do
+          let(:config) do
+            {
+              stage: 'build',
+              run: [
+                {
+                  name: 'step1',
+                  script: 'echo $MY_INPUT',
+                  inputs: { MY_INPUT: 'some value' }
+                }
+              ]
+            }
+          end
+
+          it 'is valid' do
+            expect(entry).to be_valid
+          end
+
+          context 'with valid env key' do
+            let(:config) do
+              {
+                stage: 'build',
+                run: [
+                  {
+                    name: 'step1',
+                    script: 'echo $MY_VAR',
+                    env: { MY_VAR: 'some value' }
+                  }
+                ]
+              }
+            end
+
+            it 'is valid' do
+              expect(entry).to be_valid
+            end
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(pipeline_run_keyword: false)
+          end
+
+          it 'return nil for run value' do
+            expect(entry.value[:run]).to be_nil
+          end
         end
       end
 

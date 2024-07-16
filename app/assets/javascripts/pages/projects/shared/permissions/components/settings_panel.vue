@@ -1,6 +1,7 @@
 <script>
 import { GlButton, GlIcon, GlSprintf, GlLink, GlFormCheckbox, GlToggle } from '@gitlab/ui';
 import ConfirmDanger from '~/vue_shared/components/confirm_danger/confirm_danger.vue';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import settingsMixin from 'ee_else_ce/pages/projects/shared/permissions/mixins/settings_pannel_mixin';
 import { __, s__ } from '~/locale';
 import {
@@ -17,6 +18,7 @@ import {
   featureAccessLevelDescriptions,
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
+  duoHelpPath,
 } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';
 import ProjectFeatureSetting from './project_feature_setting.vue';
@@ -73,7 +75,9 @@ export default {
     releasesHelpText: s__(
       'ProjectSettings|Combine git tags with release notes, release evidence, and assets to create a release.',
     ),
-    securityAndComplianceLabel: s__('ProjectSettings|Security and Compliance'),
+    duoLabel: s__('ProjectSettings|GitLab Duo'),
+    duoHelpText: s__('ProjectSettings|Use AI-powered features in this project.'),
+    securityAndComplianceLabel: s__('ProjectSettings|Security and compliance'),
     snippetsLabel: s__('ProjectSettings|Snippets'),
     wikiLabel: s__('ProjectSettings|Wiki'),
     pucWarningLabel: s__('ProjectSettings|Warn about Potentially Unwanted Characters'),
@@ -92,6 +96,7 @@ export default {
   VISIBILITY_LEVEL_PUBLIC_INTEGER,
   modelExperimentsHelpPath,
   modelRegistryHelpPath,
+  duoHelpPath,
   components: {
     CiCatalogSettings,
     ProjectFeatureSetting,
@@ -108,7 +113,7 @@ export default {
         'jh_component/pages/projects/shared/permissions/components/other_project_settings.vue'
       ),
   },
-  mixins: [settingsMixin],
+  mixins: [settingsMixin, glFeatureFlagMixin()],
 
   props: {
     requestCveAvailable: {
@@ -165,6 +170,16 @@ export default {
       default: false,
     },
     requirementsAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    licensedAiFeaturesAvailable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    duoFeaturesLocked: {
       type: Boolean,
       required: false,
       default: false,
@@ -293,6 +308,7 @@ export default {
       emailsEnabled: true,
       showDiffPreviewInEmail: true,
       cveIdRequestEnabled: true,
+      duoFeaturesEnabled: false,
       featureAccessLevelEveryone,
       featureAccessLevelMembers,
       featureAccessLevel,
@@ -399,6 +415,9 @@ export default {
       set(newValue) {
         this.showDiffPreviewInEmail = newValue;
       },
+    },
+    showDuoSettings() {
+      return this.licensedAiFeaturesAvailable && this.glFeatures.aiSettingsVueProject;
     },
   },
 
@@ -582,7 +601,7 @@ export default {
           s__('ProjectSettings|Manage who can see the project in the public access directory.')
         "
       >
-        <div class="project-feature-controls gl-display-flex gl-align-items-center gl-my-3 gl-mx-0">
+        <div class="project-feature-controls gl-flex gl-items-center gl-my-3 gl-mx-0">
           <div class="select-wrapper gl-flex-grow-1">
             <select
               v-model="visibilityLevel"
@@ -1029,6 +1048,23 @@ export default {
           :label="$options.i18n.releasesLabel"
           :options="featureAccessLevelOptions"
           name="project[project_feature_attributes][releases_access_level]"
+        />
+      </project-setting-row>
+      <project-setting-row
+        v-if="showDuoSettings"
+        data-testid="duo-settings"
+        :label="$options.i18n.duoLabel"
+        :help-text="$options.i18n.duoHelpText"
+        :help-path="$options.duoHelpPath"
+      >
+        <gl-toggle
+          v-model="duoFeaturesEnabled"
+          class="gl-mt-2 gl-mb-4"
+          :disabled="duoFeaturesLocked"
+          :label="$options.i18n.duoLabel"
+          label-position="hidden"
+          name="project[project_setting_attributes][duo_features_enabled]"
+          data-testid="duo_features_enabled_toggle"
         />
       </project-setting-row>
     </div>

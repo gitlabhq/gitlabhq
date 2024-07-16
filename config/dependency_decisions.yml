@@ -243,7 +243,7 @@
     :versions: []
     :when: 2019-09-11 13:08:28.431132000 Z
 - - :permit
-  - "(MIT OR CC0-1.0)"
+  - '(MIT OR CC0-1.0)'
   - :who:
     :why:
     :versions: []
@@ -364,7 +364,7 @@
     :versions: []
     :when: 2022-10-18 16:24:56.611523399 Z
 - - :approve
-  - "@gitlab/fonts"
+  - '@gitlab/fonts'
   - :who: Lukas Eipert
     :why: https://gitlab.com/gitlab-com/legal-and-compliance/-/issues/1265
     :versions: []
@@ -389,3 +389,9 @@
     :why: Used by nio4r gem. MIT license.
     :versions: []
     :when: 2024-01-08 09:05:34.528980000 Z
+- - :permit
+  - MIT-0
+  - :who: Lukas Eipert
+    :why: https://blueoakcouncil.org/list#bronze
+    :versions: []
+    :when: 2024-07-10 09:44:40.477216000 Z

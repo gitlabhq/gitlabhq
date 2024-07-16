@@ -4,8 +4,68 @@ module Bitbucket
   class Client
     attr_reader :connection
 
+    PULL_REQUEST_VALUES = %w[
+      pagelen
+      size
+      page
+      next
+      previous
+      values.comment_count
+      values.task_count
+      values.type
+      values.id
+      values.title
+      values.description
+      values.state
+      values.merge_commit
+      values.close_source_branch
+      values.closed_by
+      values.author
+      values.reason
+      values.created_on
+      values.updated_on
+      values.destination
+      values.source
+      values.links
+      values.summary
+      values.reviewers
+      next
+    ].freeze
+
     def initialize(options = {})
       @connection = Connection.new(options)
+    end
+
+    # Fetches data from the Bitbucket API and yields a Page object for every page
+    # of data, without loading all of them into memory.
+    #
+    # method - The method name used for getting the data.
+    # representation_type - The representation type name used to wrap the result
+    # args - Arguments to pass to the method.
+    def each_page(method, representation_type, *args)
+      options =
+        if args.last.is_a?(Hash)
+          args.last
+        else
+          {}
+        end
+
+      loop do
+        parsed_response = fetch_data(method, *args)
+        object = Page.new(parsed_response, representation_type)
+
+        yield object
+
+        break unless object.next?
+
+        options[:next_url] = object.next
+
+        if args.last.is_a?(Hash)
+          args[-1] = options
+        else
+          args.push(options)
+        end
+      end
     end
 
     def last_issue(repo)
@@ -23,9 +83,15 @@ module Bitbucket
       get_collection(path, :comment)
     end
 
-    def pull_requests(repo)
-      path = "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on"
-      get_collection(path, :pull_request)
+    def pull_requests(repo, options = {})
+      path = "/repositories/#{repo}/pullrequests?state=ALL&sort=created_on&fields=#{pull_request_values}"
+
+      if options[:raw]
+        path = options[:next_url] if options[:next_url]
+        connection.get(path)
+      else
+        get_collection(path, :pull_request)
+      end
     end
 
     def pull_request_comments(repo, pull_request)
@@ -64,9 +130,21 @@ module Bitbucket
 
     private
 
+    def fetch_data(method, *args)
+      case method
+      when :pull_requests then pull_requests(*args)
+      else
+        raise ArgumentError, "Unknown data method #{method}"
+      end
+    end
+
     def get_collection(path, type, page_number: nil, limit: nil)
       paginator = Paginator.new(connection, path, type, page_number: page_number, limit: limit)
       Collection.new(paginator)
+    end
+
+    def pull_request_values
+      PULL_REQUEST_VALUES.join(',')
     end
   end
 end

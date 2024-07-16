@@ -26,6 +26,12 @@ module Types
     field :name, GraphQL::Types::String, null: false, description: 'Name of the container repository.'
     field :path, GraphQL::Types::String, null: false, description: 'Path of the container repository.'
     field :project, Types::ProjectType, null: false, description: 'Project of the container registry.'
+    field :protection_rule_exists, GraphQL::Types::Boolean,
+      null: false,
+      alpha: { milestone: '17.2' },
+      description:
+        'Whether any matching container protection rule exists for this container. ' \
+        'Available only when feature flag `container_registry_protected_containers` is enabled.'
     field :status, Types::ContainerRepositoryStatusEnum, null: true, description: 'Status of the container repository.'
     field :tags_count, GraphQL::Types::Int, null: false, description: 'Number of tags associated with this image.'
     field :updated_at, Types::TimeType, null: false, description: 'Timestamp when the container repository was updated.'
@@ -45,6 +51,16 @@ module Types
     # This field will be removed in 18.0.
     def migration_state
       ''
+    end
+
+    def protection_rule_exists
+      return false if Feature.disabled?(:container_registry_protected_containers, object.project)
+
+      BatchLoader::GraphQL.for(object.path).batch do |repository_paths, loader|
+        ::ContainerRegistry::Protection::Rule
+          .for_push_exists_for_multiple_containers(repository_paths: repository_paths, project_id: object.project_id)
+          .each { |row| loader.call(row['repository_path'], row['protected']) }
+      end
     end
   end
 end

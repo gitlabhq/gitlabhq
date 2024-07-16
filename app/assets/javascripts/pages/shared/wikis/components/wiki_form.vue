@@ -1,4 +1,6 @@
 <script>
+import jsYaml from 'js-yaml';
+import { isEmpty } from 'lodash';
 import {
   GlForm,
   GlIcon,
@@ -6,6 +8,7 @@ import {
   GlButton,
   GlSprintf,
   GlFormGroup,
+  GlFormCheckbox,
   GlFormInput,
   GlFormSelect,
 } from '@gitlab/ui';
@@ -16,6 +19,7 @@ import { __, s__, sprintf } from '~/locale';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import { trackSavedUsingEditor } from '~/vue_shared/components/markdown/tracking';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import {
   WIKI_CONTENT_EDITOR_TRACKING_LABEL,
   WIKI_FORMAT_LABEL,
@@ -52,7 +56,14 @@ const formatAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'format');
 const contentAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'content');
 const commitAutosaveKey = (pageInfo) => autosaveKey(pageInfo, 'commit');
 
-const getTitle = (pageInfo) => getDraft(titleAutosaveKey(pageInfo)) || pageInfo.title?.trim() || '';
+const getTitle = (pageInfo, frontMatter) => {
+  const autosavedTitle = getDraft(titleAutosaveKey(pageInfo));
+  const frontMatterTitle = frontMatter?.title?.trim();
+  const pageInfoTitle = pageInfo.title?.trim();
+
+  return autosavedTitle || frontMatterTitle || pageInfoTitle || '';
+};
+
 const getFormat = (pageInfo) =>
   getDraft(formatAutosaveKey(pageInfo)) || pageInfo.format || 'markdown';
 const getContent = (pageInfo) => getDraft(contentAutosaveKey(pageInfo)) || pageInfo.content || '';
@@ -75,6 +86,10 @@ export default {
         ),
         learnMore: s__('WikiPage|Learn more.'),
       },
+    },
+    path: {
+      label: s__('WikiPage|Path'),
+      placeholder: s__('WikiPage|Page path'),
     },
     format: {
       label: s__('WikiPage|Format'),
@@ -110,6 +125,7 @@ export default {
     GlIcon,
     GlForm,
     GlFormGroup,
+    GlFormCheckbox,
     GlFormInput,
     GlFormSelect,
     GlSprintf,
@@ -119,7 +135,7 @@ export default {
     WikiTemplate,
     DeleteWikiModal,
   },
-  mixins: [trackingMixin],
+  mixins: [trackingMixin, glFeatureFlagsMixin()],
   inject: [
     'isEditingPath',
     'formatOptions',
@@ -130,12 +146,20 @@ export default {
     'wikiUrl',
   ],
   data() {
-    const title = window.location.href.includes('random_title=true') ? '' : getTitle(this.pageInfo);
+    const title = window.location.href.includes('random_title=true')
+      ? ''
+      : getTitle(
+          this.pageInfo,
+          this.glFeatures.wikiFrontMatterTitle ? this.pageInfo.frontMatter : {},
+        );
+    const path = window.location.href.includes('random_title=true') ? '' : this.pageInfo.slug;
     return {
       editingMode: 'source',
       title,
       pageTitle: title.replace('templates/', ''),
       format: getFormat(this.pageInfo),
+      path,
+      frontMatter: this.pageInfo.frontMatter || {},
       content: getContent(this.pageInfo),
       commitMessage: getCommitMessage(this.pageInfo),
       contentEditorEmpty: false,
@@ -146,9 +170,9 @@ export default {
         placeholder: this.$options.i18n.content.placeholder,
         'aria-label': this.$options.i18n.content.label,
         id: 'wiki_content',
-        name: 'wiki[content]',
         class: 'note-textarea',
       },
+      generatePathFromTitle: !this.pageInfo.persisted,
     };
   },
   computed: {
@@ -233,13 +257,27 @@ export default {
     isCustomSidebar() {
       return this.wikiUrl.endsWith('_sidebar');
     },
+    rawContent() {
+      const serializedFrontMatter = isEmpty(this.frontMatter)
+        ? ''
+        : `---\n${jsYaml.safeDump(this.frontMatter, { skipInvalid: true })}---\n`;
+
+      return `${serializedFrontMatter}${this.content}`;
+    },
   },
   watch: {
     title() {
       this.updateCommitMessage();
     },
     pageTitle() {
-      this.title = this.isTemplate ? `templates/${this.pageTitle}` : this.pageTitle;
+      this.title =
+        this.isTemplate && !this.pageInfo.persisted
+          ? `templates/${this.pageTitle}`
+          : this.pageTitle;
+      this.updateFrontMatterTitle();
+    },
+    generatePathFromTitle() {
+      this.updateFrontMatterTitle();
     },
   },
   mounted() {
@@ -263,6 +301,22 @@ export default {
       await this.$nextTick();
 
       e.target.submit();
+    },
+
+    updateFrontMatterTitle() {
+      if (!this.glFeatures.wikiFrontMatterTitle) return;
+
+      if (this.generatePathFromTitle) {
+        delete this.frontMatter.title;
+        this.path = this.title.replace(/ +/g, '-');
+      } else {
+        this.frontMatter.title = this.pageTitle;
+        if (this.pageInfo.persisted) {
+          this.path = this.pageInfo.slug;
+        }
+      }
+
+      this.frontMatter = { ...this.frontMatter };
     },
 
     updateDrafts() {
@@ -378,10 +432,9 @@ export default {
         <gl-form-group
           :label="$options.i18n.title.label"
           label-for="wiki_title"
-          label-class="gl-sr-only"
           :class="{ 'gl-hidden': isCustomSidebar }"
         >
-          <template v-if="!isTemplate" #description>
+          <template v-if="!isTemplate && !glFeatures.wikiFrontMatterTitle" #description>
             <div class="gl-mt-3">
               <gl-icon name="bulb" />
               {{ titleHelpText }}
@@ -400,7 +453,33 @@ export default {
             :autofocus="!pageInfo.persisted"
             :placeholder="titlePlaceholder"
           />
-          <input v-model="title" type="hidden" name="wiki[title]" />
+          <input
+            v-if="!glFeatures.wikiFrontMatterTitle"
+            v-model="title"
+            type="hidden"
+            name="wiki[title]"
+          />
+        </gl-form-group>
+      </div>
+
+      <div v-if="glFeatures.wikiFrontMatterTitle" class="col-12">
+        <gl-form-group :label="$options.i18n.path.label" label-for="wiki_path">
+          <template #description>
+            <gl-form-checkbox v-model="generatePathFromTitle" class="gl-pt-2">{{
+              __('Generate page path from title')
+            }}</gl-form-checkbox>
+          </template>
+          <gl-form-input
+            id="wiki_path"
+            v-model="path"
+            name="wiki[title]"
+            data-testid="wiki-path-textbox"
+            type="text"
+            class="form-control !gl-font-monospace"
+            :required="true"
+            :readonly="generatePathFromTitle"
+            :placeholder="$options.i18n.path.placeholder"
+          />
         </gl-form-group>
       </div>
     </div>
@@ -450,6 +529,7 @@ export default {
             @keydown.ctrl.enter="submitFormWithShortcut"
             @keydown.meta.enter="submitFormWithShortcut"
           />
+          <input name="wiki[content]" type="hidden" :value="rawContent" />
           <template #description>
             <div class="gl-mt-3">
               <gl-sprintf

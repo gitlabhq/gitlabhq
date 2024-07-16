@@ -12,9 +12,12 @@ DETAILS:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/381902) in GitLab 15.8, GitLab no longer automatically creates namespaces or groups that don't exist. GitLab also no longer falls back to using the user's personal namespace if the namespace or group name is taken.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388716) in GitLab 15.10, you no longer need to add any users to the parent group in GitLab to successfully import the **Require a pull request before merging - Allow specified actors to bypass required pull requests** branch protection rule.
+> - An **Imported** badge on some imported items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461208) in GitLab 17.2.
 
 You can import your GitHub projects from either GitHub.com or GitHub Enterprise. Importing projects does not
 migrate or import any types of groups or organizations from GitHub to GitLab.
+
+Imported issues, merge requests, comments, and events have an **Imported** badge in GitLab.
 
 The namespace is a user or group in GitLab, such as `gitlab.com/sidney-jones` or
 `gitlab.com/customer-success`.
@@ -531,6 +534,14 @@ repository to be imported manually. Administrators can manually import the repos
    # Trigger import from second step
    Gitlab::GithubImport::Stage::ImportRepositoryWorker.perform_async(project.id)
    ```
+
+### Import fails due to missing prefix
+
+In GitLab 16.5 and later, you might get an error that states `Import failed due to a GitHub error: (HTTP 406)`.
+
+This issue occurs because, in GitLab 16.5, the path prefix `api/v3` was removed from the GitHub importer. This happened because the importer stopped using the `Gitlab::LegacyGithubImport::Client`. This client automatically added the `api/v3` prefix on imports from a GitHub Enterprise URL.
+
+To work around this error, [add the `api/v3` prefix](https://gitlab.com/gitlab-org/gitlab/-/issues/438358#note_1978902725) when importing from a GitHub Enterprise URL.
 
 ### Errors when importing large projects
 

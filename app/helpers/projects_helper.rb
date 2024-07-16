@@ -5,13 +5,15 @@ module ProjectsHelper
   include CompareHelper
   include Gitlab::Allowable
 
+  BANNED = 'banned'
+
   def project_incident_management_setting
     @project_incident_management_setting ||= @project.incident_management_setting ||
       @project.build_incident_management_setting
   end
 
   def link_to_project(project)
-    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name), class: 'gl-link gl-text-truncate' do
+    link_to namespace_project_path(namespace_id: project.namespace, id: project), title: h(project.name), class: 'gl-link gl-truncate' do
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
@@ -54,7 +56,7 @@ module ProjectsHelper
     content_tag(:span, username, name_tag_options)
   end
 
-  def link_to_member(project, author, opts = {}, &block)
+  def link_to_member(_project, author, opts = {}, &block)
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
@@ -392,7 +394,8 @@ module ProjectsHelper
   end
 
   def show_terraform_banner?(project)
-    Feature.enabled?(:show_terraform_banner, type: :ops) && project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
+    Feature.enabled?(:show_terraform_banner, type: :ops) &&
+      project.repository_languages.with_programming_language('HCL').exists? && project.terraform_states.empty?
   end
 
   def project_permissions_panel_data(project)
@@ -506,12 +509,18 @@ module ProjectsHelper
     notification_attributes = notification_data_attributes(project) || {}
     star_count_attributes = star_count_data_attributes(project)
     admin_path = admin_project_path(project) if current_user&.can_admin_all_resources?
+    cicd_catalog_path = explore_catalog_path(project.catalog_resource) if project.catalog_resource
 
     {
       admin_path: admin_path,
       can_read_project: can?(current_user, :read_project, project).to_s,
+      cicd_catalog_path: cicd_catalog_path,
+      is_project_archived: project.archived.to_s,
       is_project_empty: project.empty_repo?.to_s,
-      project_id: project.id
+      project_avatar: project.avatar_url,
+      project_name: project.name,
+      project_id: project.id,
+      project_visibility_level: visibility_level_name(project)
     }.merge(
       dropdown_attributes,
       fork_button_attributes,
@@ -642,6 +651,14 @@ module ProjectsHelper
   end
 
   private
+
+  def visibility_level_name(project)
+    if project.created_and_owned_by_banned_user? && Feature.enabled?(:hide_projects_of_banned_users)
+      BANNED
+    else
+      Gitlab::VisibilityLevel.string_level(project.visibility_level)
+    end
+  end
 
   def can_admin_project_clusters?(project)
     project.clusters.any? && can?(current_user, :admin_cluster, project)
@@ -904,7 +921,7 @@ module ProjectsHelper
 
     push_to_schema_breadcrumb(project_name, project_path(project), project.try(:avatar_url))
 
-    link_to project_path(project), class: 'gl-display-inline-flex!' do
+    link_to project_path(project), class: '!gl-inline-flex' do
       icon = render Pajamas::AvatarComponent.new(project, alt: project.name, size: 16, class: 'avatar-tile') if project.avatar_url && !Rails.env.test?
       [icon, content_tag("span", project_name, class: "js-breadcrumb-item-text")].join.html_safe
     end

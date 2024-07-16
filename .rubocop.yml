@@ -32,6 +32,7 @@ AllCops:
   TargetRailsVersion: 7.0
   Exclude:
     - 'gems/**/*'
+    - 'qa/gems/**/*'
     - 'vendor/**/*'
     - 'node_modules/**/*'
     - 'db/fixtures/**/*'
@@ -445,6 +446,7 @@ Gitlab/DocUrl:
     - danger/**/*
     - ee/spec/**/*
     - haml_lint/**/*
+    - keeps/**/*
     - qa/**/*
     - rubocop/**/*
     - scripts/**/*
@@ -535,6 +537,7 @@ Gitlab/RSpec/AvoidSetup:
   Include:
     - 'ee/spec/features/registrations/saas/**/*'
     - 'ee/spec/features/trials/saas/**/*'
+    - 'ee/spec/features/gitlab_subscriptions/trials/duo_pro/**/*'
 
 RSpec/DuplicateSpecLocation:
   Enabled: true
@@ -1118,6 +1121,8 @@ Search/NamespacedClass:
     - 'spec/migrations/**/*.rb'
     - 'app/experiments/**/*_experiment.rb'
     - 'ee/app/experiments/**/*_experiment.rb'
+    - 'lib/gitlab/background_migration/**/*.rb'
+    - 'ee/lib/ee/gitlab/background_migration/**/*.rb'
     - 'lib/gitlab/instrumentation/**/*.rb'
     - 'lib/gitlab/usage/metrics/instrumentations/**/*.rb'
     - 'ee/lib/gitlab/usage/metrics/instrumentations/**/*.rb'
@@ -1205,3 +1210,7 @@ Rails/StrongParams:
   Include:
     - 'app/controllers/**/*'
     - 'ee/app/controllers/**/*'
+
+QA/FabricateUsage:
+  Include:
+    - 'qa/qa/specs/**/*_spec.rb'

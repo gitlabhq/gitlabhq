@@ -1,6 +1,7 @@
+import { builders } from 'prosemirror-test-builder';
 import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
 import languageLoader from '~/content_editor/services/code_block_language_loader';
-import { createTestEditor, createDocBuilder, triggerNodeInputRule } from '../test_utils';
+import { createTestEditor, triggerNodeInputRule } from '../test_utils';
 
 const CODE_BLOCK_HTML = `<div class="gl-relative markdown-code-block js-markdown-code">&#x000A;<pre data-sourcepos="1:1-3:3" data-canonical-lang="javascript" class="code highlight js-syntax-highlight language-javascript" v-pre="true"><code><span id="LC1" class="line" lang="javascript"><span class="nx">console</span><span class="p">.</span><span class="nf">log</span><span class="p">(</span><span class="dl">'</span><span class="s1">hello world</span><span class="dl">'</span><span class="p">)</span></span></code></pre>&#x000A;<copy-code></copy-code>&#x000A;</div>`;
 
@@ -16,14 +17,7 @@ describe('content_editor/extensions/code_block_highlight', () => {
       extensions: [CodeBlockHighlight],
     });
 
-    ({
-      builders: { doc, codeBlock },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        codeBlock: { nodeType: CodeBlockHighlight.name },
-      },
-    }));
+    ({ doc, codeBlock } = builders(tiptapEditor.schema));
   });
 
   describe('when parsing HTML', () => {

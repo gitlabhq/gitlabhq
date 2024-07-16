@@ -1,5 +1,5 @@
 - path = local_assigns.fetch(:path, nil)
 
 .gl-float-right
-  = link_button_to path, size: :small, icon: 'pencil' do
+  = render Pajamas::ButtonComponent.new(href: path, size: :small) do
     = _('Manage access')

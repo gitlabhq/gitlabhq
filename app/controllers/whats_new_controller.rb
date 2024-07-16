@@ -30,7 +30,7 @@ class WhatsNewController < ApplicationController
   end
 
   def current_page
-    params[:page]&.to_i || 1
+    pagination_params[:page]&.to_i || 1
   end
 
   def highlights

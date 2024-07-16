@@ -15,6 +15,10 @@ module WorkItems
         work_item.ancestors
       end
 
+      def has_parent?
+        parent.present?
+      end
+
       def self.quick_action_commands
         [:set_parent, :add_child, :remove_parent, :remove_child]
       end

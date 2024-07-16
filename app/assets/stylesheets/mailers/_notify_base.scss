@@ -1,0 +1,26 @@
+@import '../framework/variables';
+@import '../framework/variables_overrides';
+@import '../framework/mixins';
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+p.details {
+  font-style: italic;
+  color: $gray-500;
+}
+
+.footer > p {
+  font-size: small;
+  color: $gray-500;
+}
+
+pre.commit-message {
+  white-space: pre-wrap;
+}
+
+.content {
+  @include email-code-block;
+}

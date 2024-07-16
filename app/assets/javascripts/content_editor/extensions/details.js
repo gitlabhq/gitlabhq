@@ -28,8 +28,14 @@ export default Node.create({
 
   addCommands() {
     return {
-      setDetails: () => ({ commands }) => commands.wrapInList('details'),
-      toggleDetails: () => ({ commands }) => commands.toggleList('details', 'detailsContent'),
+      setDetails:
+        () =>
+        ({ commands }) =>
+          commands.wrapInList('details'),
+      toggleDetails:
+        () =>
+        ({ commands }) =>
+          commands.toggleList('details', 'detailsContent'),
     };
   },
 });

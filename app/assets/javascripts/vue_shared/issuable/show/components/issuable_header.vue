@@ -164,11 +164,8 @@ export default {
 <template>
   <div class="detail-page-header gl-flex-direction-column gl-md-flex-direction-row">
     <div class="detail-page-header-body gl-flex-wrap gl-gap-x-2">
-      <gl-badge :variant="badgeVariant" data-testid="issue-state-badge">
-        <gl-icon v-if="statusIcon" :name="statusIcon" :class="statusIconClass" />
-        <span class="gl-block" :class="{ 'gl-ml-2': statusIcon }">
-          <slot name="status-badge">{{ badgeText }}</slot>
-        </span>
+      <gl-badge :variant="badgeVariant" :icon="statusIcon" data-testid="issue-state-badge">
+        <slot name="status-badge">{{ badgeText }}</slot>
       </gl-badge>
       <confidentiality-badge
         v-if="confidential"

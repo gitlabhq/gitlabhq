@@ -21,7 +21,7 @@ class ResourceEvent < ApplicationRecord
   end
 
   def issuable
-    raise NoMethodError, 'must implement `issuable` method'
+    raise NoMethodError, "`#{self.class.name}#issuable` method must be implemented"
   end
 
   private

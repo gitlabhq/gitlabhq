@@ -1,44 +1,8 @@
-import Blockquote from '~/content_editor/extensions/blockquote';
-import Bold from '~/content_editor/extensions/bold';
-import BulletList from '~/content_editor/extensions/bullet_list';
-import Code from '~/content_editor/extensions/code';
-import CodeBlockHighlight from '~/content_editor/extensions/code_block_highlight';
-import DescriptionItem from '~/content_editor/extensions/description_item';
-import DescriptionList from '~/content_editor/extensions/description_list';
-import Details from '~/content_editor/extensions/details';
-import DetailsContent from '~/content_editor/extensions/details_content';
-import DrawioDiagram from '~/content_editor/extensions/drawio_diagram';
-import Emoji from '~/content_editor/extensions/emoji';
-import Figure from '~/content_editor/extensions/figure';
-import FigureCaption from '~/content_editor/extensions/figure_caption';
-import FootnoteDefinition from '~/content_editor/extensions/footnote_definition';
-import FootnoteReference from '~/content_editor/extensions/footnote_reference';
-import HardBreak from '~/content_editor/extensions/hard_break';
-import Heading from '~/content_editor/extensions/heading';
-import HorizontalRule from '~/content_editor/extensions/horizontal_rule';
-import Highlight from '~/content_editor/extensions/highlight';
-import HTMLNodes from '~/content_editor/extensions/html_nodes';
-import Image from '~/content_editor/extensions/image';
-import InlineDiff from '~/content_editor/extensions/inline_diff';
-import Italic from '~/content_editor/extensions/italic';
-import Link from '~/content_editor/extensions/link';
-import ListItem from '~/content_editor/extensions/list_item';
-import OrderedList from '~/content_editor/extensions/ordered_list';
-import Paragraph from '~/content_editor/extensions/paragraph';
-import Reference from '~/content_editor/extensions/reference';
-import ReferenceLabel from '~/content_editor/extensions/reference_label';
-import ReferenceDefinition from '~/content_editor/extensions/reference_definition';
+import { builders } from 'prosemirror-test-builder';
 import Sourcemap from '~/content_editor/extensions/sourcemap';
-import Strike from '~/content_editor/extensions/strike';
-import Table from '~/content_editor/extensions/table';
-import TableCell from '~/content_editor/extensions/table_cell';
-import TableHeader from '~/content_editor/extensions/table_header';
-import TableRow from '~/content_editor/extensions/table_row';
-import TaskItem from '~/content_editor/extensions/task_item';
-import TaskList from '~/content_editor/extensions/task_list';
 import MarkdownSerializer from '~/content_editor/services/markdown_serializer';
 import remarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
-import { createTiptapEditor, createDocBuilder } from '../test_utils';
+import { createTiptapEditor } from '../test_utils';
 
 jest.mock('~/emoji');
 
@@ -47,96 +11,48 @@ const tiptapEditor = createTiptapEditor([Sourcemap]);
 const text = (val) => tiptapEditor.state.schema.text(val);
 
 const {
-  builders: {
-    audio,
-    doc,
-    blockquote,
-    bold,
-    bulletList,
-    code,
-    codeBlock,
-    details,
-    detailsContent,
-    div,
-    descriptionItem,
-    descriptionList,
-    drawioDiagram,
-    emoji,
-    footnoteDefinition,
-    footnoteReference,
-    figure,
-    figureCaption,
-    heading,
-    hardBreak,
-    highlight,
-    horizontalRule,
-    image,
-    inlineDiff,
-    italic,
-    link,
-    listItem,
-    orderedList,
-    paragraph,
-    referenceDefinition,
-    reference,
-    referenceLabel,
-    strike,
-    table,
-    tableCell,
-    tableHeader,
-    tableRow,
-    taskItem,
-    taskList,
-    video,
-  },
-} = createDocBuilder({
-  tiptapEditor,
-  names: {
-    blockquote: { nodeType: Blockquote.name },
-    bold: { markType: Bold.name },
-    bulletList: { nodeType: BulletList.name },
-    code: { markType: Code.name },
-    codeBlock: { nodeType: CodeBlockHighlight.name },
-    details: { nodeType: Details.name },
-    detailsContent: { nodeType: DetailsContent.name },
-    descriptionItem: { nodeType: DescriptionItem.name },
-    descriptionList: { nodeType: DescriptionList.name },
-    drawioDiagram: { nodeType: DrawioDiagram.name },
-    emoji: { markType: Emoji.name },
-    figure: { nodeType: Figure.name },
-    figureCaption: { nodeType: FigureCaption.name },
-    footnoteDefinition: { nodeType: FootnoteDefinition.name },
-    footnoteReference: { nodeType: FootnoteReference.name },
-    hardBreak: { nodeType: HardBreak.name },
-    heading: { nodeType: Heading.name },
-    horizontalRule: { nodeType: HorizontalRule.name },
-    highlight: { markType: Highlight.name },
-    image: { nodeType: Image.name },
-    inlineDiff: { markType: InlineDiff.name },
-    italic: { nodeType: Italic.name },
-    link: { markType: Link.name },
-    listItem: { nodeType: ListItem.name },
-    orderedList: { nodeType: OrderedList.name },
-    paragraph: { nodeType: Paragraph.name },
-    referenceDefinition: { nodeType: ReferenceDefinition.name },
-    reference: { nodeType: Reference.name },
-    referenceLabel: { nodeType: ReferenceLabel.name },
-    strike: { markType: Strike.name },
-    table: { nodeType: Table.name },
-    tableCell: { nodeType: TableCell.name },
-    tableHeader: { nodeType: TableHeader.name },
-    tableRow: { nodeType: TableRow.name },
-    taskItem: { nodeType: TaskItem.name },
-    taskList: { nodeType: TaskList.name },
-    ...HTMLNodes.reduce(
-      (builders, htmlNode) => ({
-        ...builders,
-        [htmlNode.name]: { nodeType: htmlNode.name },
-      }),
-      {},
-    ),
-  },
-});
+  audio,
+  doc,
+  blockquote,
+  bold,
+  bulletList,
+  code,
+  codeBlock,
+  details,
+  detailsContent,
+  div,
+  descriptionItem,
+  descriptionList,
+  drawioDiagram,
+  emoji,
+  footnoteDefinition,
+  footnoteReference,
+  figure,
+  figureCaption,
+  heading,
+  hardBreak,
+  highlight,
+  horizontalRule,
+  htmlComment,
+  image,
+  inlineDiff,
+  italic,
+  link,
+  listItem,
+  orderedList,
+  paragraph,
+  referenceDefinition,
+  reference,
+  referenceLabel,
+  strike,
+  table,
+  tableCell,
+  tableHeader,
+  tableRow,
+  taskItem,
+  taskList,
+  video,
+} = builders(tiptapEditor.schema);
 
 const serializeWithOptions = (options, ...content) =>
   new MarkdownSerializer().serialize({ doc: doc(...content) }, options);
@@ -195,6 +111,32 @@ describe('markdownSerializer', () => {
     expect(
       serialize(paragraph(text("some prose: <this> and </this> looks like code, but isn't"))),
     ).toBe("some prose: \\<this\\> and \\</this\\> looks like code, but isn't");
+  });
+
+  it('correctly serializes a comment node', () => {
+    expect(serialize(paragraph('hi'), htmlComment({ description: ' this is a\ncomment ' }))).toBe(
+      `
+hi
+
+<!-- this is a
+comment -->
+    `.trim(),
+    );
+  });
+
+  it('correctly renders a comment with markdown in it without adding any slashes', () => {
+    expect(
+      serialize(paragraph('hi'), htmlComment({ description: 'this is a list\n- a\n- b\n- c' })),
+    ).toBe(
+      `
+hi
+
+<!--this is a list
+- a
+- b
+- c-->
+      `.trim(),
+    );
   });
 
   it('correctly serializes a line break', () => {

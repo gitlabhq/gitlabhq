@@ -12,6 +12,7 @@ query getPipelineMiniGraph($fullPath: ID!, $iid: ID!) {
             id
             icon
             label
+            tooltip
           }
         }
       }

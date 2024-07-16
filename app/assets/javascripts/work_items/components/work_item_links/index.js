@@ -15,13 +15,17 @@ export default function initWorkItemLinks() {
 
   const {
     fullPath,
+    isGroup,
+    registerPath,
+    signInPath,
+    wiCanAdminLabel,
+    wiGroupPath,
     wiHasIssueWeightsFeature,
     wiHasIterationsFeature,
     wiHasIssuableHealthStatusFeature,
-    registerPath,
-    signInPath,
+    wiIssuesListPath,
+    wiLabelsManagePath,
     wiReportAbusePath,
-    isGroup,
   } = workItemLinksRoot.dataset;
 
   return new Vue({
@@ -30,13 +34,18 @@ export default function initWorkItemLinks() {
     apolloProvider,
     provide: {
       fullPath,
+      isGroup: parseBoolean(isGroup),
+      registerPath,
+      signInPath,
+      // for work item modal
+      canAdminLabel: wiCanAdminLabel,
+      groupPath: wiGroupPath,
       hasIssueWeightsFeature: wiHasIssueWeightsFeature,
       hasIterationsFeature: wiHasIterationsFeature,
       hasIssuableHealthStatusFeature: wiHasIssuableHealthStatusFeature,
-      registerPath,
-      signInPath,
+      issuesListPath: wiIssuesListPath,
+      labelsManagePath: wiLabelsManagePath,
       reportAbusePath: wiReportAbusePath,
-      isGroup: parseBoolean(isGroup),
     },
     render: (createElement) =>
       createElement(WorkItemLinks, {

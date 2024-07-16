@@ -1,5 +1,6 @@
+import { builders } from 'prosemirror-test-builder';
 import Link from '~/content_editor/extensions/link';
-import { createTestEditor, createDocBuilder, triggerMarkInputRule } from '../test_utils';
+import { createTestEditor, triggerMarkInputRule } from '../test_utils';
 
 describe('content_editor/extensions/link', () => {
   let tiptapEditor;
@@ -9,14 +10,7 @@ describe('content_editor/extensions/link', () => {
 
   beforeEach(() => {
     tiptapEditor = createTestEditor({ extensions: [Link] });
-    ({
-      builders: { doc, p, link },
-    } = createDocBuilder({
-      tiptapEditor,
-      names: {
-        link: { markType: Link.name },
-      },
-    }));
+    ({ doc, paragraph: p, link } = builders(tiptapEditor.schema));
   });
 
   afterEach(() => {

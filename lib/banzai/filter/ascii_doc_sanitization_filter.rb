@@ -71,7 +71,7 @@ module Banzai
 
       class << self
         def remove_disallowed_ids
-          lambda do |env|
+          ->(env) do
             node = env[:node]
 
             return unless node.name == 'a' || node.name == 'div' || SECTION_HEADINGS.any?(node.name)
@@ -88,7 +88,7 @@ module Banzai
         end
 
         def remove_element_classes
-          lambda do |env|
+          ->(env) do
             node = env[:node]
 
             return unless (classes_allowlist = ELEMENT_CLASSES_ALLOWLIST[node.name.to_sym])

@@ -1,7 +1,5 @@
-.row.empty-state
-  .col-12
-    .svg-content.svg-150
-      = image_tag 'illustrations/empty-state/empty-labels-md.svg'
-    .text-content.gl-text-center.gl-pt-0!
-      %h4= _('There are no topics to show.')
-      %p= _('Add topics to projects to help users find them.')
+= render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-labels-md.svg',
+  title: _('There are no topics to show'))  do |c|
+
+  - c.with_description do
+    = _('Add topics to projects to help users find them.')

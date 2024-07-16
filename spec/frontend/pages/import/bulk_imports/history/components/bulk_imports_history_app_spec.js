@@ -147,7 +147,7 @@ describe('BulkImportsHistoryApp', () => {
   });
 
   describe('when id prop is present', () => {
-    const mockId = 2;
+    const mockId = '2';
 
     beforeEach(async () => {
       createComponent({

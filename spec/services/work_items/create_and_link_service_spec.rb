@@ -85,7 +85,7 @@ RSpec.describe WorkItems::CreateAndLinkService, feature_category: :portfolio_man
         end
 
         it 'returns a link creation error message' do
-          expect(service_result.errors).to contain_exactly(/is not allowed to add this type of parent/)
+          expect(service_result.errors).to contain_exactly(/it's not allowed to add this type of parent item/)
         end
       end
     end

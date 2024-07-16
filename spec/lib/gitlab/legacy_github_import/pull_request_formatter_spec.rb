@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, feature_category: :importers do
-  let_it_be(:project) { create(:project, :repository) }
+  let_it_be(:project) { create(:project, :repository, import_type: 'gitea') }
   let(:client) { double }
   let(:source_sha) { create(:commit, project: project).id }
   let(:target_commit) { create(:commit, project: project, git_commit: RepoHelpers.another_sample_commit) }
@@ -21,6 +21,7 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, feature_categor
   let(:octocat) { { id: 123456, login: 'octocat', email: 'octocat@example.com' } }
   let(:created_at) { DateTime.strptime('2011-01-26T19:01:12Z') }
   let(:updated_at) { DateTime.strptime('2011-01-27T19:01:12Z') }
+  let(:imported_from) { ::Import::SOURCE_GITEA }
   let(:base_data) do
     {
       number: 1347,
@@ -36,7 +37,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, feature_categor
       updated_at: updated_at,
       closed_at: nil,
       merged_at: nil,
-      url: 'https://api.github.com/repos/octocat/Hello-World/pulls/1347'
+      url: 'https://api.github.com/repos/octocat/Hello-World/pulls/1347',
+      imported_from: imported_from
     }
   end
 
@@ -66,7 +68,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, feature_categor
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported_from: imported_from
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -92,7 +95,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, feature_categor
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported_from: imported_from
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -119,7 +123,8 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, feature_categor
           author_id: project.creator_id,
           assignee_id: nil,
           created_at: created_at,
-          updated_at: updated_at
+          updated_at: updated_at,
+          imported_from: imported_from
         }
 
         expect(pull_request.attributes).to eq(expected)
@@ -236,16 +241,18 @@ RSpec.describe Gitlab::LegacyGithubImport::PullRequestFormatter, feature_categor
     end
   end
 
-  context 'when importing a GitHub project' do
+  context 'when importing a Gitea project' do
     it_behaves_like 'Gitlab::LegacyGithubImport::PullRequestFormatter#attributes'
     it_behaves_like 'Gitlab::LegacyGithubImport::PullRequestFormatter#number'
     it_behaves_like 'Gitlab::LegacyGithubImport::PullRequestFormatter#source_branch_name'
     it_behaves_like 'Gitlab::LegacyGithubImport::PullRequestFormatter#target_branch_name'
   end
 
-  context 'when importing a Gitea project' do
+  context 'when importing a GitHub project' do
+    let(:imported_from) { ::Import::SOURCE_GITHUB }
+
     before do
-      project.update!(import_type: 'gitea')
+      project.import_type = 'github'
     end
 
     it_behaves_like 'Gitlab::LegacyGithubImport::PullRequestFormatter#attributes'

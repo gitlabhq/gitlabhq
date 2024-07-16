@@ -141,7 +141,7 @@ You can create a merge request by running Git commands on your local machine.
    ```
 
    To reduce the number of fields to edit later in the merge request, use
-   [push options](../push_options.md) to set the value of fields.
+   [push options](../../../gitlab-basics/add-file.md#push-options-for-merge-requests) to set the value of fields.
 
 1. In the response to the `git push`, GitLab provides a direct link to create the merge request:
 

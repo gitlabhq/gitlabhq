@@ -30,14 +30,15 @@ Parameters:
 
 | Attribute | Type           | Required | Description |
 |:----------|:---------------|:---------|:------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.|
-| `search`  | string         | no       | Return list of branches containing the search string. You can use `^term` to find branches that begin with `term`, and `term$` to find branches that end with `term`. |
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user.|
+| `search`  | string         | no       | Return list of branches containing the search string. Use `^term` to find branches that begin with `term`, and `term$` to find branches that end with `term`. |
 | `regex`   | string         | no       | Return list of branches with names matching a [re2](https://github.com/google/re2/wiki/Syntax) regular expression. |
 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/branches"
 ```
 
 Example response:
@@ -89,15 +90,16 @@ GET /projects/:id/repository/branches/:branch
 
 Parameters:
 
-| Attribute | Type           | Required | Description                                                                                                  |
-|:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
-| `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `branch`  | string         | yes      | [URL-encoded name](rest/index.md#namespaced-path-encoding) of the branch.                                                                                          |
+| Attribute | Type              | Required | Description |
+|-----------|-------------------|----------|-------------|
+| `id`      | integer or string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
+| `branch`  | string            | yes      | [URL-encoded name](rest/index.md#namespaced-path-encoding) of the branch. |
 
 Example request:
 
 ```shell
-curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches/main"
+curl --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/main"
 ```
 
 Example response:
@@ -153,16 +155,17 @@ POST /projects/:id/repository/branches
 
 Parameters:
 
-| Attribute | Type    | Required | Description                                                                                                  |
-|:----------|:--------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| Attribute | Type    | Required | Description |
+|-----------|---------|----------|-------------|
 | `id`      | integer | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `branch`  | string  | yes      | Name of the branch.                                                                                          |
-| `ref`     | string  | yes      | Branch name or commit SHA to create branch from.                                                             |
+| `branch`  | string  | yes      | Name of the branch. |
+| `ref`     | string  | yes      | Branch name or commit SHA to create branch from. |
 
 Example request:
 
 ```shell
-curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches?branch=newbranch&ref=main"
+curl --request POST --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/branches?branch=newbranch&ref=main"
 ```
 
 Example response:
@@ -211,15 +214,16 @@ DELETE /projects/:id/repository/branches/:branch
 
 Parameters:
 
-| Attribute | Type           | Required | Description                                                                                                  |
-|:----------|:---------------|:---------|:-------------------------------------------------------------------------------------------------------------|
+| Attribute | Type           | Required | Description |
+|-----------|----------------|----------|-------------|
 | `id`      | integer/string | yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
-| `branch`  | string         | yes      | Name of the branch.                                                                                          |
+| `branch`  | string         | yes      | Name of the branch. |
 
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/branches/newbranch"
 ```
 
 ## Delete merged branches
@@ -242,7 +246,8 @@ Parameters:
 Example request:
 
 ```shell
-curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/5/repository/merged_branches"
+curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" \
+  --url "https://gitlab.example.com/api/v4/projects/5/repository/merged_branches"
 ```
 
 ## Related topics

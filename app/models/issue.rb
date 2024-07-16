@@ -288,6 +288,12 @@ class Issue < ApplicationRecord
   class << self
     extend ::Gitlab::Utils::Override
 
+    def in_namespaces_with_cte(namespaces)
+      cte = Gitlab::SQL::CTE.new(:namespace_ids, namespaces.select(:id))
+
+      where('issues.namespace_id IN (SELECT id FROM namespace_ids)').with(cte.to_arel)
+    end
+
     override :order_upvotes_desc
     def order_upvotes_desc
       reorder(upvotes_count: :desc)
@@ -756,7 +762,11 @@ class Issue < ApplicationRecord
   def has_widget?(widget)
     widget_class = WorkItems::Widgets.const_get(widget.to_s.camelize, false)
 
-    work_item_type.widgets(resource_parent).include?(widget_class)
+    work_item_type.widget_classes(resource_parent).include?(widget_class)
+  end
+
+  def group_level?
+    project_id.blank?
   end
 
   private
@@ -871,10 +881,10 @@ class Issue < ApplicationRecord
 
   def linked_issues_select
     self.class.select(['issues.*', 'issue_links.id AS issue_link_id',
-                       'issue_links.link_type as issue_link_type_value',
-                       'issue_links.target_id as issue_link_source_id',
-                       'issue_links.created_at as issue_link_created_at',
-                       'issue_links.updated_at as issue_link_updated_at'])
+      'issue_links.link_type as issue_link_type_value',
+      'issue_links.target_id as issue_link_source_id',
+      'issue_links.created_at as issue_link_created_at',
+      'issue_links.updated_at as issue_link_updated_at'])
   end
 end
 

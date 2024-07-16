@@ -505,6 +505,7 @@ module ApplicationSettingsHelper
       :deactivation_email_additional_text,
       :projects_api_rate_limit_unauthenticated,
       :group_api_limit,
+      :group_shared_groups_api_limit,
       :group_projects_api_limit,
       :groups_api_limit,
       :project_api_limit,
@@ -523,7 +524,9 @@ module ApplicationSettingsHelper
       :security_txt_content,
       :allow_project_creation_for_guest_and_below,
       :downstream_pipeline_trigger_limit_per_project_user_sha,
-      :asciidoc_max_includes
+      :asciidoc_max_includes,
+      :ai_action_api_rate_limit,
+      :code_suggestions_api_rate_limit
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

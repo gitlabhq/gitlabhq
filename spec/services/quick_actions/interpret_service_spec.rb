@@ -572,11 +572,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
         expect(updates).to eq(merge: merge_request.diff_head_sha)
 
-        if Gitlab.ee?
-          expect(message).to eq(_('Scheduled to merge this merge request (Merge when checks pass).'))
-        else
-          expect(message).to eq(_('Scheduled to merge this merge request (Merge when pipeline succeeds).'))
-        end
+        expect(message).to eq(_('Scheduled to merge this merge request (Merge when checks pass).'))
       end
     end
 
@@ -2308,12 +2304,24 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
             expect_next_instance_of(
               MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
             ) do |service|
-              expect(service).to receive(:execute).with(merge_request)
+              expect(service).to receive(:execute).with(merge_request).and_return(true)
             end
 
             _, _, message = service.execute('/submit_review approve', merge_request)
 
-            expect(message).to eq(_('Submitted the current review.'))
+            expect(message).to eq(_('Submitted the current review. Approved the current merge request.'))
+          end
+
+          it 'adds error message when approval service fails' do
+            expect_next_instance_of(
+              MergeRequests::ApprovalService, project: merge_request.project, current_user: current_user
+            ) do |service|
+              expect(service).to receive(:execute).with(merge_request).and_return(false)
+            end
+
+            _, _, message = service.execute('/submit_review approve', merge_request)
+
+            expect(message).to eq(_('Submitted the current review. Failed to approve the current merge request.'))
           end
         end
 
@@ -2666,6 +2674,19 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         end
       end
 
+      shared_examples 'a successful command execution' do
+        it 'converts issue to Service Desk issue' do
+          _, _, message = convert_to_ticket
+
+          expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
+          expect(issuable).to have_attributes(
+            confidential: expected_confidentiality,
+            author_id: Users::Internal.support_bot.id,
+            service_desk_reply_to: 'user@example.com'
+          )
+        end
+      end
+
       let_it_be_with_reload(:issuable) { issue }
       let_it_be(:original_author) { issue.author }
 
@@ -2690,16 +2711,46 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
       context 'when parameter is an email' do
         let(:content) { '/convert_to_ticket user@example.com' }
+        let(:expected_confidentiality) { true }
 
-        it 'converts issue to Service Desk issue' do
-          _, _, message = convert_to_ticket
+        it_behaves_like 'a successful command execution'
 
-          expect(message).to eq(s_('ServiceDesk|Converted issue to Service Desk ticket.'))
-          expect(issuable).to have_attributes(
-            confidential: true,
-            author_id: Users::Internal.support_bot.id,
-            service_desk_reply_to: 'user@example.com'
-          )
+        context 'when tickets should not be confidential by default' do
+          let_it_be(:service_desk_settings) do
+            create(:service_desk_setting, project: project, tickets_confidential_by_default: false)
+          end
+
+          context 'when issuable is in a public project' do
+            it_behaves_like 'a successful command execution'
+
+            context 'when issuable is already confidential' do
+              before do
+                issuable.update!(confidential: true)
+              end
+
+              it_behaves_like 'a successful command execution'
+            end
+          end
+
+          context 'when issuable is in a private project' do
+            let(:expected_confidentiality) { false }
+
+            before do
+              project.update!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+            end
+
+            it_behaves_like 'a successful command execution'
+          end
+
+          context 'when issuable is already confidential' do
+            let(:expected_confidentiality) { true }
+
+            before do
+              issuable.update!(confidential: true)
+            end
+
+            it_behaves_like 'a successful command execution'
+          end
         end
       end
 
@@ -2873,6 +2924,7 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
 
     context 'crm_contact commands' do
       let_it_be(:new_contact) { create(:contact, group: group) }
+      let_it_be(:another_contact) { create(:contact, group: group) }
       let_it_be(:existing_contact) { create(:contact, group: group) }
 
       let(:add_command) { service.execute("/add_contacts #{new_contact.email}", issue) }
@@ -2883,18 +2935,62 @@ RSpec.describe QuickActions::InterpretService, feature_category: :team_planning 
         create(:issue_customer_relations_contact, issue: issue, contact: existing_contact)
       end
 
-      it 'add_contacts command adds the contact' do
-        _, updates, message = add_command
+      describe 'add_contacts command' do
+        it 'adds a contact' do
+          _, updates, message = add_command
 
-        expect(updates).to eq(add_contacts: [new_contact.email])
-        expect(message).to eq(_('One or more contacts were successfully added.'))
+          expect(updates).to eq(add_contacts: [new_contact.email])
+          expect(message).to eq(_('One or more contacts were successfully added.'))
+        end
+
+        context 'with multiple contacts in the same command' do
+          it 'adds both contacts' do
+            _, updates, message = service.execute("/add_contacts #{new_contact.email} #{another_contact.email}", issue)
+
+            expect(updates).to eq(add_contacts: [new_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully added.'))
+          end
+        end
+
+        context 'with multiple commands' do
+          it 'adds both contacts' do
+            _, updates, message = service.execute("/add_contacts #{new_contact.email}\n/add_contacts #{another_contact.email}", issue)
+
+            expect(updates).to eq(add_contacts: [new_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully added. One or more contacts were successfully added.'))
+          end
+        end
       end
 
-      it 'remove_contacts command removes the contact' do
-        _, updates, message = remove_command
+      describe 'remove_contacts command' do
+        before do
+          create(:issue_customer_relations_contact, issue: issue, contact: another_contact)
+        end
 
-        expect(updates).to eq(remove_contacts: [existing_contact.email])
-        expect(message).to eq(_('One or more contacts were successfully removed.'))
+        it 'removes the contact' do
+          _, updates, message = remove_command
+
+          expect(updates).to eq(remove_contacts: [existing_contact.email])
+          expect(message).to eq(_('One or more contacts were successfully removed.'))
+        end
+
+        context 'with multiple contacts in the same command' do
+          it 'removes the contact' do
+            _, updates, message = service.execute("/remove_contacts #{existing_contact.email} #{another_contact.email}", issue)
+
+            expect(updates).to eq(remove_contacts: [existing_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully removed.'))
+          end
+        end
+
+        context 'with multiple commands' do
+          it 'removes the contact' do
+            _, updates, message = service.execute("/remove_contacts #{existing_contact.email}\n/remove_contacts #{another_contact.email}", issue)
+
+            expect(updates).to eq(remove_contacts: [existing_contact.email, another_contact.email])
+            expect(message).to eq(_('One or more contacts were successfully removed. One or more contacts were successfully removed.'))
+          end
+        end
       end
     end
 

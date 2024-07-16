@@ -1,12 +1,9 @@
 description: "Show GitLab CI suggestion popover"
 category: default
 action: generic
-label_description: "`suggest_commit_first_project_gitlab_ci_yml`"
-property_description: "`[admin | maintainer | developer | owner]`"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: group::expansion
+product_group: activation
 milestone: "12.9"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/26605
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`suggest_commit_first_project_gitlab_ci_yml`"
+  property:
+    description: "`[admin | maintainer | developer | owner]`"

@@ -7,7 +7,7 @@ require_relative '../../../scripts/internal_events/cli'
 RSpec.describe Cli, feature_category: :service_ping do
   include WaitHelpers
 
-  let(:prompt) { TTY::Prompt::Test.new }
+  let(:prompt) { GitlabPrompt.new(TTY::Prompt::Test.new) }
   let(:files_to_cleanup) { [] }
 
   let(:event1_filepath) { 'config/events/internal_events_cli_used.yml' }
@@ -30,7 +30,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   # Shared examples used for examples defined in new_events.yml & new_metrics.yml fixtures.
   # Note: Expects CLI to be exited using the 'Exit' option or completing definition flow
-  shared_examples 'creates the right defintion files' do |description, test_case = {}|
+  shared_examples 'creates the right definition files' do |description, test_case = {}|
     # For expected keystroke mapping, see https://github.com/piotrmurach/tty-reader/blob/master/lib/tty/reader/keys.rb
     let(:keystrokes) { test_case.dig('inputs', 'keystrokes') || [] }
     let(:input_files) { test_case.dig('inputs', 'files') || [] }
@@ -115,7 +115,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   context 'when creating new events' do
     YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_events.yml')).each do |test_case|
-      it_behaves_like 'creates the right defintion files', test_case['description'], test_case
+      it_behaves_like 'creates the right definition files', test_case['description'], test_case
     end
 
     context 'with invalid event name' do
@@ -135,7 +135,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
   context 'when creating new metrics' do
     YAML.safe_load(File.read('spec/fixtures/scripts/internal_events/new_metrics.yml')).each do |test_case|
-      it_behaves_like 'creates the right defintion files', test_case['description'], test_case
+      it_behaves_like 'creates the right definition files', test_case['description'], test_case
     end
 
     context 'when creating a metric from multiple events' do
@@ -328,6 +328,55 @@ RSpec.describe Cli, feature_category: :service_ping do
           'internal_events_cli_used', # Filters to this event
           "\n" # Select: config/events/internal_events_cli_used.yml
         ])
+      end
+    end
+
+    context 'when creating a metric for multiple events which have metrics' do
+      before do
+        File.write(event1_filepath, File.read(event1_content))
+        File.write(event3_filepath, File.read(event3_content))
+
+        # existing metrics which use both events
+        File.write(
+          'config/metrics/counts_7d/' \
+            'count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_weekly.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/project_id_7d_multiple_events.yml')
+        )
+        File.write(
+          'config/metrics/counts_28d/' \
+            'count_distinct_project_id_from_internal_events_cli_closed_and_internal_events_cli_used_monthly.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/project_id_28d_multiple_events.yml')
+        )
+
+        # Non-conflicting metric which uses only one of the events
+        File.write(
+          'config/metrics/counts_all/count_total_internal_events_cli_used.yml',
+          File.read('spec/fixtures/scripts/internal_events/metrics/total_single_event.yml')
+        )
+      end
+
+      it 'partially filters metric options' do
+        queue_cli_inputs([
+          "2\n", # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+          "2\n", # Enum-select:  Multiple events -- count occurrences of several separate events or interactions
+          'internal_events_cli', # Filters to the relevant events
+          ' ', # Multi-select: internal_events_cli_closed
+          "\e[B", # Arrow down to: internal_events_cli_used
+          ' ', # Multi-select: internal_events_cli_used
+          "\n" # Complete selections
+        ])
+
+        expected_output = <<~TEXT.chomp
+        ‣ Monthly/Weekly count of unique users [who triggered any of 2 events]
+        ✘ Monthly/Weekly count of unique projects [where any of 2 events occurred] (already defined)
+          Monthly/Weekly count of unique namespaces [where any of 2 events occurred]
+          Monthly/Weekly count of [any of 2 events occurrences]
+          Total count of [any of 2 events occurrences]
+        TEXT
+
+        with_cli_thread do
+          expect { plain_last_lines(5) }.to eventually_equal_cli_text(expected_output)
+        end
       end
     end
 
@@ -631,14 +680,16 @@ RSpec.describe Cli, feature_category: :service_ping do
       let(:expected_gdk_example) do
         <<~TEXT.chomp
         --------------------------------------------------
-        # TERMINAL -- monitor events sent to snowplow & changes to service ping metrics as they occur
+        # TERMINAL -- monitor events & changes to service ping metrics as they occur
 
-        1. Configure gdk with snowplow micro https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
-        2. From `gitlab/` directory, run the monitor script:
+        1. From `gitlab/` directory, run the monitor script:
 
         bin/rails runner scripts/internal_events/monitor.rb internal_events_cli_opened
 
-        3. View all snowplow events in the browser at http://localhost:9091/micro/all (or whichever hostname & port you configured)
+        2. View metric updates within the terminal
+
+        3. [Optional] Configure gdk with snowplow micro to see individual events: https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/snowplow_micro.md
+
         --------------------------------------------------
         # RAILS CONSOLE -- generate service ping payload, including most recent usage data
 
@@ -973,7 +1024,7 @@ RSpec.describe Cli, feature_category: :service_ping do
       stub_product_groups(nil)
     end
 
-    it_behaves_like 'creates the right defintion files',
+    it_behaves_like 'creates the right definition files',
       'Creates a new event with product stage/section/group input manually' do
       let(:keystrokes) do
         [
@@ -986,14 +1037,14 @@ RSpec.describe Cli, feature_category: :service_ping do
           "analytics_instrumentation\n", # Input group
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
-          "3\n" # Exit
+          "4\n" # Exit
         ]
       end
 
       let(:output_files) { [{ 'path' => event2_filepath, 'content' => event2_content }] }
     end
 
-    it_behaves_like 'creates the right defintion files',
+    it_behaves_like 'creates the right definition files',
       'Creates a new metric with product stage/section/group input manually' do
       let(:keystrokes) do
         [
@@ -1014,7 +1065,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "1\n", # Select: [free, premium, ultimate]
           "y\n", # Create file
           "y\n", # Create file
-          "2\n" # Exit
+          "5\n" # Exit
         ]
       end
 
@@ -1046,7 +1097,7 @@ RSpec.describe Cli, feature_category: :service_ping do
       stub_helper(:fetch_window_height, '')
     end
 
-    it_behaves_like 'creates the right defintion files',
+    it_behaves_like 'creates the right definition files',
       'Terminal size does not prevent file creation' do
       let(:keystrokes) do
         [
@@ -1059,7 +1110,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "instrumentation\n", # Filter & select group
           "2\n", # Select [premium, ultimate]
           "y\n", # Create file
-          "3\n" # Exit
+          "4\n" # Exit
         ]
       end
 

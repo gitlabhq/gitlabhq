@@ -6,15 +6,24 @@ module Groups
 
     # rubocop: disable CodeReuse/ActiveRecord
     def issues(confidential_only: false, issue_types: nil)
-      finder_params = { group_id: group.id, include_subgroups: true, state: 'opened' }
+      finder_params = { group_id: group.id, state: 'opened' }
       finder_params[:confidential] = true if confidential_only.present?
       finder_params[:issue_types] = issue_types if issue_types.present?
 
-      IssuesFinder.new(current_user, finder_params)
-        .execute
-        .preload(project: :namespace)
-        .with_work_item_type
-        .select(:iid, :title, :project_id, :namespace_id, 'work_item_types.icon_name')
+      finder_class =
+        if show_namespace_level_work_items?
+          finder_params[:include_descendants] = true
+          WorkItems::WorkItemsFinder
+        else
+          finder_params[:include_subgroups] = true
+          IssuesFinder
+        end
+
+      finder_class.new(current_user, finder_params)
+                  .execute
+                  .preload(project: :namespace)
+                  .with_work_item_type
+                  .select(:iid, :title, :project_id, :namespace_id, 'work_item_types.icon_name')
     end
     # rubocop: enable CodeReuse/ActiveRecord
 
@@ -43,6 +52,11 @@ module Groups
       return [] unless noteable
 
       QuickActions::InterpretService.new(container: group, current_user: current_user).available_commands(noteable)
+    end
+
+    def show_namespace_level_work_items?
+      ::Feature.enabled?(:namespace_level_work_items, group) &&
+        ::Feature.enabled?(:cache_autocomplete_sources_issues, group, type: :wip)
     end
   end
 end

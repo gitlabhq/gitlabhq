@@ -76,23 +76,44 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
   });
 
   describe('active tab tracking', () => {
-    const summaryTab = 'summary';
-    it.each([
-      [k8sResourceType.k8sPods, 1, 2, k8sResourceType.k8sServices],
-      [k8sResourceType.k8sServices, 2, 1, k8sResourceType.k8sPods],
-      [summaryTab, 0, 2, k8sResourceType.k8sServices],
-    ])(
-      'when activeTab is %s, it activates the right tab and emit the correct tab name when switching',
-      async (activeTab, tabIndex, newTabIndex, newActiveTab) => {
-        createWrapper({ activeTab });
-        const tabsComponent = findTabs();
-        expect(tabsComponent.props('value')).toBe(tabIndex);
+    describe('when `k8sTreeView feature flag is enabled', () => {
+      const summaryTab = 'summary';
+      it.each([
+        [k8sResourceType.k8sPods, 1, 2, k8sResourceType.k8sServices],
+        [k8sResourceType.k8sServices, 2, 1, k8sResourceType.k8sPods],
+        [summaryTab, 0, 2, k8sResourceType.k8sServices],
+      ])(
+        'when activeTab is %s, it activates the right tab and emit the correct tab name when switching',
+        async (activeTab, tabIndex, newTabIndex, newActiveTab) => {
+          createWrapper({ k8sTreeViewEnabled: true, activeTab });
+          const tabsComponent = findTabs();
+          expect(tabsComponent.props('value')).toBe(tabIndex);
 
-        tabsComponent.vm.$emit('input', newTabIndex);
-        await nextTick();
-        expect(wrapper.emitted('input')).toEqual([[newActiveTab]]);
-      },
-    );
+          tabsComponent.vm.$emit('input', newTabIndex);
+          await nextTick();
+          expect(wrapper.emitted('input')).toEqual([[newActiveTab]]);
+        },
+      );
+    });
+    describe('when `k8sTreeView feature flag is disabled', () => {
+      it.each([
+        [k8sResourceType.k8sPods, 0, 1, k8sResourceType.k8sServices],
+        [k8sResourceType.k8sServices, 1, 0, k8sResourceType.k8sPods],
+      ])(
+        'when activeTab is %s, it activates the right tab and emit the correct tab name when switching',
+        async (activeTab, tabIndex, newTabIndex, newActiveTab) => {
+          createWrapper({ activeTab });
+          await nextTick();
+          const tabsComponent = findTabs();
+          await nextTick();
+          expect(tabsComponent.props('value')).toBe(tabIndex);
+
+          tabsComponent.vm.$emit('input', newTabIndex);
+          await nextTick();
+          expect(wrapper.emitted('input')).toEqual([[newActiveTab]]);
+        },
+      );
+    });
   });
 
   describe('services tab', () => {

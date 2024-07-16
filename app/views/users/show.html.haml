@@ -38,7 +38,7 @@
           = @user.to_reference
         - if !@user.blocked? && @user.confirmed? && @user.status&.customized?
           .gl-my-2.cover-status.gl-font-sm.gl-pt-2.gl-display-flex.gl-flex-direction-column
-            .gl-display-inline-flex.gl-gap-3.gl-align-items-baseline
+            .gl-inline-flex.gl-gap-3.gl-align-items-baseline
               = emoji_icon(@user.status.emoji)
               = markdown_field(@user.status, :message)
   .user-profile{ class: @user.blocked? ? '' : 'user-profile-with-sidebar' }

@@ -1,12 +1,9 @@
 description: "Click button to jump to next unresolved thread"
 category: default
 action: click_button
-label_description: "`mr_next_unresolved_thread`"
-property_description: "`click_next_unresolved_thread_top`"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: ""
+product_group: analytics_instrumentation
 milestone:
 introduced_by_url:
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`mr_next_unresolved_thread`"
+  property:
+    description: "`click_next_unresolved_thread_top`"

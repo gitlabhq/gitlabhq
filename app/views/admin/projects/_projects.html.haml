@@ -30,6 +30,7 @@
 
     = paginate @projects, theme: 'gitlab'
   - else
-    .nothing-here-block= _('No projects found')
+    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-projects-md.svg',
+      title: _('No projects found'))
 
   #delete-project-modal

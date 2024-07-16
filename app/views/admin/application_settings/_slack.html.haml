@@ -1,17 +1,14 @@
 - gitlab_com = Gitlab.com?
 - expanded = integration_expanded?('slack_app_')
 
-%section.settings.as-slack.no-animate#js-slack-settings{ class: ('expanded' if expanded) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = s_('Integrations|GitLab for Slack app')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_('SlackIntegration|Configure your GitLab for Slack app.')
-      = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app'), target: '_blank', rel: 'noopener noreferrer')
-
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(s_('Integrations|GitLab for Slack app'),
+  id: 'js-slack-settings',
+  testid: 'slack-settings',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = s_('SlackIntegration|Configure your GitLab for Slack app.')
+    = link_to(_('Learn more.'), help_page_path('administration/settings/slack_app'), target: '_blank', rel: 'noopener noreferrer')
+  - c.with_body do
     - unless gitlab_com
       %h5
         = s_('SlackIntegration|Step 1: Create your GitLab for Slack app')

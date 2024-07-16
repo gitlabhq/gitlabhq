@@ -53,45 +53,35 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#last_published_at' do
     subject { repository.last_published_at }
 
-    context 'on GitLab.com', :saas do
-      context 'supports gitlab api' do
-        before do
-          stub_container_registry_gitlab_api_support(supported: true)
-          expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
-        end
-
-        context 'with a size_bytes field' do
-          let(:timestamp_string) { '2024-04-30T06:07:36.225Z' }
-          let(:response) { { 'last_published_at' => timestamp_string } }
-
-          it { is_expected.to eq(DateTime.iso8601(timestamp_string)) }
-        end
-
-        context 'without a last_published_at field' do
-          let(:response) { { 'foo' => 'bar' } }
-
-          it { is_expected.to eq(nil) }
-        end
-
-        context 'with an invalid value for the last_published_at field' do
-          let(:response) { { 'last_published_at' => 'foobar' } }
-
-          it { is_expected.to eq(nil) }
-        end
+    context 'when the GitLab API is supported' do
+      before do
+        stub_container_registry_gitlab_api_support(supported: true)
+        expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
       end
 
-      context 'does not support gitlab api' do
-        before do
-          stub_container_registry_gitlab_api_support(supported: false)
-          expect(repository.gitlab_api_client).not_to receive(:repository_details)
-        end
+      context 'with a size_bytes field' do
+        let(:timestamp_string) { '2024-04-30T06:07:36.225Z' }
+        let(:response) { { 'last_published_at' => timestamp_string } }
+
+        it { is_expected.to eq(DateTime.iso8601(timestamp_string)) }
+      end
+
+      context 'without a last_published_at field' do
+        let(:response) { { 'foo' => 'bar' } }
+
+        it { is_expected.to eq(nil) }
+      end
+
+      context 'with an invalid value for the last_published_at field' do
+        let(:response) { { 'last_published_at' => 'foobar' } }
 
         it { is_expected.to eq(nil) }
       end
     end
 
-    context 'not on GitLab.com' do
+    context 'when the GitLab API is not supported' do
       before do
+        stub_container_registry_gitlab_api_support(supported: false)
         expect(repository.gitlab_api_client).not_to receive(:repository_details)
       end
 
@@ -578,7 +568,8 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
             short_revision: expected_revision[0..8],
             created_at: DateTime.rfc3339(tags_response[index][:created_at].rfc3339),
             updated_at: DateTime.rfc3339(tags_response[index][:updated_at].rfc3339),
-            published_at: DateTime.rfc3339(tags_response[index][:published_at].rfc3339)
+            published_at: DateTime.rfc3339(tags_response[index][:published_at].rfc3339),
+            media_type: tags_response[index][:media_type]
           )
 
           Array(tag.referrers).each_with_index do |ref, ref_index|

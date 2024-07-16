@@ -8,20 +8,21 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/11439) in GitLab 16.7 as an [experiment](../../../../policy/experiment-beta-support.md) for GitLab Dedicated customers.
-> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta in GitLab 17.1.
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/12729) to Beta and made available on GitLab.com in GitLab 17.1.
+> - [Enabled on self-managed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156907) in GitLab 17.2.
+
+FLAG:
+On self-managed GitLab, by default this feature is available. To hide the feature, ask an administrator to [disable the feature flags](../../../../administration/feature_flags.md) named `pre_receive_secret_detection_beta_release` and `pre_receive_secret_detection_push_check`.
 
 Secret push protection blocks secrets such as keys and API tokens from being pushed to GitLab.
 The content of each commit is checked for secrets when pushed to GitLab. If any secrets are
 detected, the push is blocked.
 
-Secret push protection is available on GitLab.com and GitLab Dedicated. To scan for secrets
-in your GitLab self-managed instance, use [pipeline secret detection](../index.md)
-instead. Pipeline secret detection can be used together with secret push protection to
-further secure your GitLab.com or Dedicated instance.
+Use [pipeline secret detection](../index.md) together with secret push protection to further strengthen your security.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview, see the playlist [Get Started with Secret Push Protection](https://www.youtube.com/playlist?list=PL05JrBw4t0KoADm-g2vxfyR0m6QLphTv-).
@@ -50,10 +51,11 @@ If secret push protection does not detect any secrets in your commits, no messag
 
 ## Enable secret push protection
 
-On GitLab Dedicated, you must allow the use of secret push protection in your instance and then enable it per project.
-On GitLab.com, you only need to enable it per project.
+On GitLab Dedicated and Self-managed instances, secret push protection must be enabled at the instance level and then you must enable it per project.
 
-### Allow the use of secret push protection in your GitLab Dedicated instance
+On GitLab.com, this setting has been enabled at the instance level. You must enable it per project.
+
+### Allow the use of secret push protection in your GitLab instance
 
 NOTE:
 Setting this option gives permission for projects in your GitLab instance to turn on secret push protection.
@@ -62,13 +64,12 @@ see [enable secret push protection in a project](#enable-secret-push-protection-
 
 Prerequisites:
 
-- You must be an administrator for your GitLab Dedicated instance.
+- You must be an administrator for your GitLab instance.
 
-1. Sign in to your GitLab Dedicated instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin Area**.
-1. Select **Settings > Security and Compliance**.
-1. Expand **Secret Detection**.
-1. Select the **Allow secret push protection** checkbox.
+1. Sign in to your GitLab instance as an administrator.
+1. On the left sidebar, at the bottom, select **Admin area**.
+1. Select **Settings > Security and compliance**.
+1. Under **Secret Detection**, select or clear **Allow secret push protection**.
 
 ### Enable secret push protection in a project
 
@@ -105,7 +106,8 @@ When secret push protection blocks a push, you can either:
 ### Remove the secret
 
 Remove a blocked secret to allow the commit to be pushed to GitLab. The method of removing the
-secret depends on how recently it was committed.
+secret depends on how recently it was committed. The instructions below use the Git CLI client,
+but you can achieve the same result by using another Git client.
 
 If the blocked secret was added with the most recent commit on your branch:
 
@@ -145,28 +147,45 @@ scanned after they are pushed to the repository.
 To skip secret push protection for all commits in a push, either:
 
 - If you're using the Git CLI client, [instruct Git to skip secret push protection](#skip-when-using-the-git-cli-client).
-- If you're using any other client, [add `[skip secret detection]` to one of the commit messages](#skip-when-using-the-git-cli-client).
+- If you're using any other client, [add `[skip secret push protection]` to one of the commit messages](#skip-when-using-the-git-cli-client).
 
 #### Skip when using the Git CLI client
 
 To skip secret push protection when using the Git CLI client:
 
-- Use the [push option](../../../project/push_options.md#push-options-for-secret-push-protection).
+- Use the [push option](../../../../gitlab-basics/add-file.md#push-options-for-secret-push-protection).
 
   For example, you have several commits that are blocked from being pushed because one of them
   contains a secret. To skip secret push protection, you append the push option to the Git command.
 
   ```shell
-  git push -o secret_detection.skip_all
+  git push -o secret_push_protection.skip_all
   ```
 
 #### Skip when using any Git client
 
 To skip secret push protection when using any Git client:
 
-- Add `[skip secret detection]` to one of the commit messages, on either an existing line or a new
+- Add `[skip secret push protection]` to one of the commit messages, on either an existing line or a new
   line, then push the commits.
 
   For example, you are using the GitLab Web IDE and have several commits that are blocked from being
   pushed because one of them contains a secret. To skip secret push protection, edit the latest
-  commit message and add `[skip secret detection]`, then push the commits.
+  commit message and add `[skip secret push protection]`, then push the commits.
+
+## Troubleshooting
+
+When working with secret push protection, you may encounter the following situations.
+
+### Push blocked unexpectedly
+
+Secret Push Protection scans all contents of modified files. This can cause a push to be
+unexpectedly blocked if a modified file contains a secret, even if the secret is not part of the diff.
+
+To push a change to a file that contains a secret, you need to [skip secret push protection](#skip-secret-push-protection).
+
+[Issue 469161](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) proposes to change the scanning logic to scan only diffs.
+
+### File was not scanned
+
+Some files are excluded from scanning. For a list of exclusions, see [coverage](#coverage).

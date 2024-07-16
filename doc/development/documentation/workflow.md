@@ -19,6 +19,20 @@ Ensure your documentation includes:
 
 Ensure you've followed the [style guide](styleguide/index.md) and [word list](styleguide/word_list.md).
 
+### Branch naming
+
+The [CI/CD pipeline for the main GitLab project](../pipelines/index.md) is configured to
+run shorter, faster pipelines on merge requests that contain only documentation changes.
+
+If you submit documentation-only changes to Omnibus, Charts, or Operator,
+to make the shorter pipeline run, you must follow these guidelines when naming your branch:
+
+| Branch name           | Valid example                |
+|:----------------------|:-----------------------------|
+| Starting with `docs/` | `docs/update-api-issues`     |
+| Starting with `docs-` | `docs-update-api-issues`     |
+| Ending in `-docs`     | `123-update-api-issues-docs` |
+
 ## Documentation labels
 
 When you author an issue or merge request, choose the

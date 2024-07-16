@@ -68,7 +68,6 @@ export default {
     formFieldProps: {
       type: Object,
       required: true,
-      validator: (prop) => prop.id && prop.name,
     },
     autofocus: {
       type: Boolean,
@@ -217,7 +216,12 @@ export default {
         { render_quick_actions: this.supportsQuickActions },
         joinPaths(window.location.origin, this.renderMarkdownPath),
       );
-      return axios.post(url, { text: markdown }).then(({ data }) => data.body || data.html);
+      return axios
+        .post(url, { text: markdown })
+        .then(({ data: { html, body, ...otherData } = {} } = {}) => ({
+          body: body || html,
+          ...otherData,
+        }));
     },
     onEditingModeChange(editingMode) {
       this.editingMode = editingMode;

@@ -258,12 +258,9 @@ module Gitlab
         strong_memoize_attr :service_desk_addresses
 
         def ticket_confidential?
-          return true unless Feature.enabled?(:service_desk_tickets_confidentiality, project)
           return true if service_desk_setting.nil?
-          # Only allow to make tickets public if the project itself is not public
-          return false if !service_desk_setting.tickets_confidential_by_default? && !project.public?
 
-          true
+          service_desk_setting.tickets_confidential_by_default?
         end
       end
     end

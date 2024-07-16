@@ -7,7 +7,7 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner do
 
   let_it_be(:user) { create(:user) }
   let_it_be(:project1) { create(:project) }
-  let_it_be(:project2) { create(:project) }
+  let_it_be(:project2) { create(:project, organization: project1.organization) }
 
   let(:runner) do
     create(:ci_runner, :project, projects: [project1, project2], active: true, locked: false, run_untagged: true)
@@ -88,8 +88,8 @@ RSpec.describe Mutations::Ci::Runner::Update, feature_category: :runner do
       end
 
       context 'with associatedProjects argument' do
-        let_it_be(:project3) { create(:project) }
-        let_it_be(:project4) { create(:project) }
+        let_it_be(:project3) { create(:project, organization: project1.organization) }
+        let_it_be(:project4) { create(:project, organization: project1.organization) }
 
         let(:new_projects) { [project3, project4] }
         let(:mutation_params) do

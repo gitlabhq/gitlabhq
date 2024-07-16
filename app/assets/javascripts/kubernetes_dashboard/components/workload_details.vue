@@ -2,6 +2,7 @@
 import { GlBadge, GlTruncate } from '@gitlab/ui';
 import { stringify } from 'yaml';
 import { s__ } from '~/locale';
+import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
 import { WORKLOAD_STATUS_BADGE_VARIANTS } from '../constants';
 import WorkloadDetailsItem from './workload_details_item.vue';
 
@@ -10,6 +11,7 @@ export default {
     GlBadge,
     GlTruncate,
     WorkloadDetailsItem,
+    PodLogsButton,
   },
   props: {
     item: {
@@ -39,6 +41,9 @@ export default {
     hasFullStatus() {
       return Boolean(this.item.fullStatus);
     },
+    hasContainers() {
+      return Boolean(this.item.containers);
+    },
   },
   methods: {
     getLabelBadgeText([key, value]) {
@@ -54,6 +59,9 @@ export default {
       }
       return stringify(json);
     },
+    getContainersProp(container) {
+      return [container];
+    },
   },
   i18n: {
     name: s__('KubernetesDashboard|Name'),
@@ -62,6 +70,7 @@ export default {
     status: s__('KubernetesDashboard|Status'),
     annotations: s__('KubernetesDashboard|Annotations'),
     spec: s__('KubernetesDashboard|Spec'),
+    containers: s__('KubernetesDashboard|Containers'),
   },
   WORKLOAD_STATUS_BADGE_VARIANTS,
 };
@@ -83,14 +92,14 @@ export default {
       </div>
     </workload-details-item>
     <workload-details-item v-if="item.status && !item.fullStatus" :label="$options.i18n.status">
-      <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]" size="sm">{{
+      <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
         item.status
       }}</gl-badge>
     </workload-details-item>
     <workload-details-item v-if="item.fullStatus" :label="$options.i18n.status" collapsible>
       <template v-if="item.status" #label>
         <span class="gl-mr-2 gl-font-bold">{{ $options.i18n.status }}</span>
-        <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]" size="sm">{{
+        <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
           item.status
         }}</gl-badge>
       </template>
@@ -105,6 +114,23 @@ export default {
     </workload-details-item>
     <workload-details-item v-if="item.spec" :label="$options.i18n.spec" collapsible>
       <pre>{{ specYaml }}</pre>
+    </workload-details-item>
+    <workload-details-item v-if="hasContainers" :label="$options.i18n.containers">
+      <div
+        v-for="(container, index) of item.containers"
+        :key="index"
+        class="gl-flex gl-justify-between gl-items-center gl-py-3 gl-px-5"
+        :class="{
+          'gl-border-t-solid gl-border-t-1 gl-border-t-gray-100': index > 0,
+        }"
+      >
+        {{ container.name }}
+        <pod-logs-button
+          :pod-name="item.name"
+          :namespace="item.namespace"
+          :containers="getContainersProp(container)"
+        />
+      </div>
     </workload-details-item>
   </ul>
 </template>

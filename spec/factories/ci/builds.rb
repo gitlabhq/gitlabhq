@@ -32,6 +32,8 @@ FactoryBot.define do
 
     runner_manager { nil }
 
+    execution_config { nil }
+
     after(:build) do |build, evaluator|
       if evaluator.runner_manager
         build.runner = evaluator.runner_manager.runner

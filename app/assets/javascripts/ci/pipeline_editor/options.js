@@ -3,6 +3,7 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import { parseBoolean } from '~/lib/utils/common_utils';
+import PipelineEditorApp from 'jh_else_ce/ci/pipeline_editor/pipeline_editor_app.vue';
 import { EDITOR_APP_STATUS_LOADING } from './constants';
 import { CODE_SNIPPET_SOURCE_SETTINGS } from './components/code_snippet_alert/constants';
 import getCurrentBranch from './graphql/queries/client/current_branch.query.graphql';
@@ -11,7 +12,6 @@ import getLastCommitBranch from './graphql/queries/client/last_commit_branch.que
 import getPipelineEtag from './graphql/queries/client/pipeline_etag.query.graphql';
 import { resolvers } from './graphql/resolvers';
 import typeDefs from './graphql/typedefs.graphql';
-import PipelineEditorApp from './pipeline_editor_app.vue';
 
 export const createAppOptions = (el) => {
   const {

@@ -210,4 +210,89 @@ RSpec.describe 'getting container repositories in a project', feature_category: 
       end
     end
   end
+
+  describe 'protectionRuleExists' do
+    let_it_be(:container_registry_protection_rule) do
+      create(:container_registry_protection_rule, project: project, repository_path_pattern: container_repository.path)
+    end
+
+    it 'returns true for the field "protectionRuleExists" for the protected container respository' do
+      subject
+
+      expect(container_repositories_response).to include 'node' => hash_including('path' => container_repository.path, 'protectionRuleExists' => true)
+
+      container_repositories_response
+        .reject { |cr| cr.dig('node', 'path') == container_repository.path }
+        .each do |repository_response|
+          expect(repository_response.dig('node', 'protectionRuleExists')).to eq false
+        end
+    end
+
+    context "when feature flag ':container_registry_protected_containers' disabled" do
+      before do
+        stub_feature_flags(container_registry_protected_containers: false)
+      end
+
+      it 'returns false for the field "protectionRuleExists" for each container repository' do
+        subject
+
+        expect(container_repositories_response).to all include 'node' => include('protectionRuleExists' => false)
+      end
+    end
+
+    # In order to trigger the N+1 query, we need to create project with different container repository counts.
+    # In this case, project1 has 4 container repositories and project2 has 10 container repositories.
+    describe "efficient database queries" do
+      let_it_be(:project1) { create(:project, :private) }
+      let_it_be(:user1) { create(:user, developer_of: project1) }
+      let_it_be(:project1_container_repositories) { create_list(:container_repository, 4, project: project1) }
+      let_it_be(:project1_container_repository_protected) { project1_container_repositories.first }
+      let_it_be(:project1_npm_container_protection_rule) do
+        create(:container_registry_protection_rule,
+          project: project1,
+          repository_path_pattern: project1_container_repository_protected.path
+        )
+      end
+
+      let_it_be(:project2) { create(:project, :private) }
+      let_it_be(:user2) { create(:user, developer_of: project2) }
+      let_it_be(:project2_container_repositories) { create_list(:container_repository, 8, project: project2) }
+      let_it_be(:project2_container_repository_protected) { project2_container_repositories.first }
+      let_it_be(:project2_npm_container_protection_rule) do
+        create(:container_registry_protection_rule,
+          project: project2,
+          repository_path_pattern: project2_container_repository_protected.path
+        )
+      end
+
+      let(:fields) do
+        <<~GQL
+          containerRepositories {
+            nodes {
+              path
+              protectionRuleExists
+            }
+          }
+        GQL
+      end
+
+      before do
+        project1_container_repositories.each do |repository|
+          stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+        end
+
+        project2_container_repositories.each do |repository|
+          stub_container_registry_tags(repository: repository.path, tags: %w[tag1 tag2 tag3], with_manifest: false)
+        end
+      end
+
+      it 'avoids N+1 database queries' do
+        query1 = graphql_query_for('project', { 'fullPath' => project1.full_path }, fields)
+        control_count1 = ActiveRecord::QueryRecorder.new { post_graphql(query1, current_user: user1) }
+
+        query2 = graphql_query_for('project', { 'fullPath' => project2.full_path }, fields)
+        expect { post_graphql(query2, current_user: user2) }.not_to exceed_query_limit(control_count1)
+      end
+    end
+  end
 end

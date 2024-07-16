@@ -152,8 +152,7 @@ export const paginatedTreeResponseFactory = ({
                 __typename: 'TreeEntryConnection',
                 nodes: new Array(numberOfTrees).fill({
                   __typename: 'TreeEntry',
-                  id:
-                    'gid://gitlab/Gitlab::Graphql::Representation::TreeEntry/dc36320ac91aca2f890a31458c9e9920159e68a3',
+                  id: 'gid://gitlab/Gitlab::Graphql::Representation::TreeEntry/dc36320ac91aca2f890a31458c9e9920159e68a3',
                   sha: 'dc36320ac91aca2f890a31458c9e9920159e68ae',
                   name: 'gitlab-resize-image',
                   flatPath: 'workhorse/cmd/gitlab-resize-image',
@@ -169,8 +168,7 @@ export const paginatedTreeResponseFactory = ({
                 __typename: 'BlobConnection',
                 nodes: new Array(numberOfBlobs).fill({
                   __typename: 'Blob',
-                  id:
-                    'gid://gitlab/Gitlab::Graphql::Representation::TreeEntry/99712dbc6b26ff92c15bf93449ea09df38adfb10',
+                  id: 'gid://gitlab/Gitlab::Graphql::Representation::TreeEntry/99712dbc6b26ff92c15bf93449ea09df38adfb10',
                   sha: '99712dbc6b26ff92c15bf93449ea09df38adfb1b',
                   name: blobHasReadme ? 'README.md' : 'fakeBlob',
                   flatPath: blobHasReadme ? 'README.md' : 'fakeBlob',

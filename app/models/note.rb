@@ -93,7 +93,7 @@ class Note < ApplicationRecord
   accepts_nested_attributes_for :note_metadata
 
   validates :project, presence: true, if: :for_project_noteable?
-  validates :namespace, presence: true, unless: :for_abuse_report?
+  validates :namespace, presence: true
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -133,8 +133,11 @@ class Note < ApplicationRecord
   scope :inc_note_diff_file, -> { includes(:note_diff_file) }
   scope :with_api_entity_associations, -> { preload(:note_diff_file, :author) }
   scope :inc_relations_for_view, ->(noteable = nil) do
-    relations = [{ project: :group }, { author: :status }, :updated_by, :resolved_by,
-      :award_emoji, :note_metadata, { system_note_metadata: :description_version }, :suggestions]
+    relations = [
+      { project: :group }, { author: :status }, :updated_by, :resolved_by,
+      :award_emoji, :note_metadata, :suggestions,
+      { system_note_metadata: { description_version: [:issue, :merge_request] } }
+    ]
 
     if noteable.nil? || DiffNote.noteable_types.include?(noteable.class.name)
       relations += [:note_diff_file, :diff_note_positions]

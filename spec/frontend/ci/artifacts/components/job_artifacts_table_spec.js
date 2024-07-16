@@ -118,6 +118,24 @@ describe('JobArtifactsTable component', () => {
   };
 
   const job = getJobArtifactsResponse.data.project.jobs.nodes[0];
+  const emptyJob = {
+    ...job,
+    artifacts: { nodes: [] },
+  };
+
+  const getJobArtifactsResponseWithEmptyJob = {
+    data: {
+      ...getJobArtifactsResponse.data,
+      project: {
+        ...getJobArtifactsResponse.data.project,
+        jobs: {
+          nodes: [emptyJob],
+          pageInfo: { ...getJobArtifactsResponse.data.project.jobs.pageInfo },
+        },
+      },
+    },
+  };
+
   const archiveArtifact = job.artifacts.nodes.find(
     (artifact) => artifact.fileType === ARCHIVE_FILE_TYPE,
   );
@@ -807,6 +825,47 @@ describe('JobArtifactsTable component', () => {
       await waitForPromises();
 
       expect(findAnyCheckbox().exists()).toBe(false);
+    });
+  });
+
+  describe('refetch behavior', () => {
+    describe('without no empty jobs', () => {
+      const query = jest.fn().mockResolvedValue(getJobArtifactsResponse);
+
+      beforeEach(async () => {
+        createComponent({
+          handlers: {
+            getJobArtifactsQuery: query,
+          },
+        });
+
+        await waitForPromises();
+      });
+
+      it('only fetches artifacts once', () => {
+        expect(query).toHaveBeenCalledTimes(1);
+      });
+    });
+
+    describe('with an empty job', () => {
+      const query = jest
+        .fn()
+        .mockResolvedValueOnce(getJobArtifactsResponseWithEmptyJob)
+        .mockResolvedValue(getJobArtifactsResponse);
+
+      beforeEach(async () => {
+        createComponent({
+          handlers: {
+            getJobArtifactsQuery: query,
+          },
+        });
+
+        await waitForPromises();
+      });
+
+      it('refetches to clear empty jobs', () => {
+        expect(query).toHaveBeenCalledTimes(2);
+      });
     });
   });
 

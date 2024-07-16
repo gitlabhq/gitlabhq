@@ -74,7 +74,7 @@ namespace :dev do
   databases = ActiveRecord::Tasks::DatabaseTasks.setup_initial_database_yaml
 
   namespace :copy_db do
-    ALLOWED_DATABASES = %w[ci].freeze
+    ALLOWED_DATABASES = %w[ci sec].freeze
 
     ActiveRecord::Tasks::DatabaseTasks.for_each(databases) do |name|
       next unless ALLOWED_DATABASES.include?(name)

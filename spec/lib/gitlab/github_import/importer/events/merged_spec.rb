@@ -45,7 +45,8 @@ RSpec.describe Gitlab::GithubImport::Importer::Events::Merged, feature_category:
       target_type: merge_request.class.name,
       action: 'merged',
       created_at: issue_event.created_at,
-      updated_at: issue_event.created_at
+      updated_at: issue_event.created_at,
+      imported_from: 'github'
     )
 
     expect(merge_request.resource_state_events.count).to eq 1

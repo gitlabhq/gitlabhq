@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, :unlock_pipelines, :clean_gitlab_redis_shared_state, feature_category: :build_artifacts do
+RSpec.describe Ci::RefDeleteUnlockArtifactsWorker, :unlock_pipelines, :clean_gitlab_redis_shared_state, feature_category: :job_artifacts do
   describe '#perform' do
     subject(:perform) { worker.perform(project_id, user_id, ref) }
 

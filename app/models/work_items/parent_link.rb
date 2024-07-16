@@ -74,7 +74,7 @@ module WorkItems
         .find_by_parent_type_id_and_child_type_id(work_item_parent.work_item_type_id, work_item.work_item_type_id)
 
       if restriction.nil?
-        errors.add :work_item, _('is not allowed to add this type of parent')
+        errors.add :work_item, _("it's not allowed to add this type of parent item")
         return
       end
 

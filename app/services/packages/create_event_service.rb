@@ -2,13 +2,32 @@
 
 module Packages
   class CreateEventService < BaseService
+    INTERNAL_EVENTS_NAMES = {
+      'pull_package' => 'pull_package_from_registry'
+    }.freeze
+
     def execute
       ::Packages::Event.unique_counters_for(event_scope, event_name, originator_type).each do |event_name|
         ::Gitlab::UsageDataCounters::HLLRedisCounter.track_event(event_name, values: current_user.id)
       end
 
-      ::Packages::Event.counters_for(event_scope, event_name, originator_type).each do |event_name|
-        ::Gitlab::UsageDataCounters::PackageEventCounter.count(event_name)
+      if INTERNAL_EVENTS_NAMES.key?(event_name)
+        user = current_user if current_user.is_a?(User)
+
+        Gitlab::InternalEvents.track_event(
+          INTERNAL_EVENTS_NAMES[event_name],
+          user: user,
+          project: project,
+          namespace: params[:namespace],
+          additional_properties: {
+            label: event_scope.to_s,
+            property: originator_type.to_s
+          }
+        )
+      else
+        ::Packages::Event.counters_for(event_scope, event_name, originator_type).each do |event_name|
+          ::Gitlab::UsageDataCounters::PackageEventCounter.count(event_name)
+        end
       end
     end
 

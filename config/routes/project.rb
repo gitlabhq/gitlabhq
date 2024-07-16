@@ -483,6 +483,7 @@ constraints(::Constraints::ProjectUrlConstrainer.new) do
           resources :models, only: [:index, :show, :destroy, :new], controller: 'models', param: :model_id do
             resources :versions, only: [:show], controller: 'model_versions', param: :model_version_id
           end
+          post :preview_markdown
         end
 
         namespace :service_desk do

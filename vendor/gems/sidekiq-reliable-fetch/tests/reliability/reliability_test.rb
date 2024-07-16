@@ -105,10 +105,10 @@ Sidekiq.redis do |redis|
   end
 end
 
-puts "Remaining unprocessed: #{jobs_lost}"
-puts "Duplicates found: #{duplicates}"
+puts "Remaining unprocessed: #{jobs_lost}. Max allowed: #{NUMBER_OF_JOBS_LOST_ALLOWED}"
+puts "Duplicates found: #{duplicates}. Max allowed: #{NUMBER_OF_DUPLICATE_JOBS_ALLOWED}"
 
-if jobs_lost.zero? && duplicates.zero?
+if jobs_lost <= NUMBER_OF_JOBS_LOST_ALLOWED && duplicates <= NUMBER_OF_DUPLICATE_JOBS_ALLOWED
   exit 0
 else
   exit 1

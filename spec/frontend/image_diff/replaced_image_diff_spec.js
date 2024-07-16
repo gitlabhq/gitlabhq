@@ -43,12 +43,10 @@ describe('ReplacedImageDiff', () => {
 
   function setupImageFrameEls() {
     replacedImageDiff.imageFrameEls = [];
-    replacedImageDiff.imageFrameEls[viewTypes.TWO_UP] = element.querySelector(
-      '.two-up .js-image-frame',
-    );
-    replacedImageDiff.imageFrameEls[viewTypes.SWIPE] = element.querySelector(
-      '.swipe .js-image-frame',
-    );
+    replacedImageDiff.imageFrameEls[viewTypes.TWO_UP] =
+      element.querySelector('.two-up .js-image-frame');
+    replacedImageDiff.imageFrameEls[viewTypes.SWIPE] =
+      element.querySelector('.swipe .js-image-frame');
     replacedImageDiff.imageFrameEls[viewTypes.ONION_SKIN] = element.querySelector(
       '.onion-skin .js-image-frame',
     );
@@ -59,9 +57,8 @@ describe('ReplacedImageDiff', () => {
     replacedImageDiff.viewModesEls[viewTypes.TWO_UP] = element.querySelector(
       '.view-modes-menu .two-up',
     );
-    replacedImageDiff.viewModesEls[viewTypes.SWIPE] = element.querySelector(
-      '.view-modes-menu .swipe',
-    );
+    replacedImageDiff.viewModesEls[viewTypes.SWIPE] =
+      element.querySelector('.view-modes-menu .swipe');
     replacedImageDiff.viewModesEls[viewTypes.ONION_SKIN] = element.querySelector(
       '.view-modes-menu .onion-skin',
     );

@@ -28,7 +28,7 @@ The following sections will cover the following use cases:
 The **Ai Gateway** is currently the only backend service that is connected with the CloudConnector.
 To add new feature to the existing backend service (**Ai Gateway**):
 
-1. [Register new feature in the Service token issuer](#register-the-new-feature-in-the-service-token-issuer).
+1. [Register new feature in the JWT issuer](#register-the-new-feature-in-the-jwt-issuer).
 1. [Implement permission checks in GitLab Rails](#implement-permission-checks-in-gitlab-rails).
 1. [Implement authorization checks in backend service](#implement-authorization-checks-in-backend-service).
 
@@ -36,14 +36,14 @@ To add new feature to the existing backend service (**Ai Gateway**):
 service access token, contact [#g_cloud_connector](https://gitlab.enterprise.slack.com/archives/CGN8BUCKC) (Slack, internal only)
 because we do not currently have interfaces in place to self-service this.
 
-#### Register the new feature in the Service token issuer
+#### Register the new feature in the JWT issuer
 
-- For GitLab Dedicated and self-managed GitLab instances, the CustomersDot is the **Service token issuer**.
-- For GitLab.com deployment, GitLab.com is the **Service token issuer**, because it's able to [self-sign and create service tokens](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
+- For GitLab Dedicated and self-managed GitLab instances, the CustomersDot is the **JWT issuer**.
+- For GitLab.com deployment, GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom) for every request to a Cloud Connector feature.
 
 ##### Register new feature for Self Managed and Dedicated customers
 
-Because the CustomersDot is the **Service token issuer** for GitLab Dedicated and self-managed GitLab instances,
+Because the CustomersDot is the **JWT issuer** for GitLab Dedicated and self-managed GitLab instances,
 to register new feature, we need to update [CustomersDot configuration](configuration.md#customersdot-configuration).
 
 The new feature needs to be added as a new **unit primitive**, so you can include it in the **JWT** (Service Access token).
@@ -190,7 +190,7 @@ See [configuration](configuration.md) for more information about configuration s
 
 #### Register new feature for GitLab.com
 
-Since the GitLab.com is the **Service token issuer**, because it's able to [self-sign and create service tokens](architecture.md#gitlabcom),
+Since the GitLab.com is the **JWT issuer**, because it's able to [self-sign and create JWTs](architecture.md#gitlabcom),
 to register new feature, we need to update [GitLab.com configuration](configuration.md#gitlabcom-configuration) as well.
 
 The new feature needs to be added as a new **unit primitive**, so it could be included in the **JWT** service access token.
@@ -364,10 +364,10 @@ The introduced policy can be used to control if the front-end is visible. Add a 
 ###### Access Token
 
 If the feature is delivered as part of the existing service, like `Duo Chat`,
-calling `CloudConnector::AvailableServices.find_by_name(:duo_chat).access_token(user_or_namespace)` would return **JWT** service token with
+calling `CloudConnector::AvailableServices.find_by_name(:duo_chat).access_token(user_or_namespace)` would return an **IJWT** with
 access scopes including all authorized features (**unit primitives**).
 
-The **backend service** (AI Gateway) would prevent access to the specific feature (**unit primitive**) if the token scope is not included in the **JWT** service token.
+The **backend service** (AI Gateway) would prevent access to the specific feature (**unit primitive**) if the token scope is not included in the **JWT**.
 
 ###### Permission checks
 
@@ -375,7 +375,7 @@ If the feature is delivered as part of the existing service, like `Duo Chat`, no
 
 We can rely on existing global policy rule `user.can?(:access_duo_chat)`.
 If end-user has access to at least one feature (**unit primitive**), end-user can access the service.
-Access to the individual feature (**unit primitive**), is governed by the **JWT** service token scopes, that will be validated by the **backend service** (Ai Gateway).
+Access to the individual feature (**unit primitive**), is governed by the **IJWT** scopes, that will be validated by the **backend service** (Ai Gateway).
 See [access token](#access-token-1)
 
 #### Implement authorization checks in backend service

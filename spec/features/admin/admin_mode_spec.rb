@@ -48,7 +48,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
         fill_in 'user_password', with: admin.password
 
         click_button 'Enter admin mode'
-        click_link 'Admin Area'
+        click_link 'Admin area'
 
         expect(page).to have_current_path(admin_root_path)
       end
@@ -94,7 +94,7 @@ RSpec.describe 'Admin mode', :js, feature_category: :shared do
           visit root_dashboard_path
 
           within '#super-sidebar' do
-            expect(page).to have_link('Admin Area')
+            expect(page).to have_link('Admin area')
           end
         end
       end

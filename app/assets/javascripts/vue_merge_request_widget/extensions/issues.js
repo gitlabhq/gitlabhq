@@ -76,8 +76,7 @@ export default {
           return data.project.issues.nodes.map((issue, i) => ({
             id: issue.id, // Required: The ID of the object
             header: ['New', 'This is an %{strong_start}issue%{strong_end} row'],
-            text:
-              '%{critical_start}1 Critical%{critical_end}, %{danger_start}1 High%{danger_end}, and %{strong_start}1 Other%{strong_end}. %{small_start}Some smaller text%{small_end}', // Required: The text to get used on each row
+            text: '%{critical_start}1 Critical%{critical_end}, %{danger_start}1 High%{danger_end}, and %{strong_start}1 Other%{strong_end}. %{small_start}Some smaller text%{small_end}', // Required: The text to get used on each row
             subtext:
               'Reported resource changes: %{strong_start}2%{strong_end} to add, 0 to change, 0 to delete', // Optional: The sub-text to get displayed below each rows main content
             // Icon to get rendered on the side of each row

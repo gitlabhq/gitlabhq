@@ -57,7 +57,7 @@ To view a group's audit events:
 1. Select **Secure > Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
-Group audit events can also be accessed using the [Group Audit Events API](../../api/audit_events.md#group-audit-events). Group audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
+Group audit events can also be accessed using the [group audit events API](../../api/audit_events.md#group-audit-events). Group audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
 
 ### Project audit events
 
@@ -69,7 +69,7 @@ DETAILS:
 1. Select **Secure > Audit events**.
 1. Filter the audit events by the member of the project (user) who performed the action and date range.
 
-Project audit events can also be accessed using the [Project Audit Events API](../../api/audit_events.md#project-audit-events). Project audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
+Project audit events can also be accessed using the [project audit events API](../../api/audit_events.md#project-audit-events). Project audit event queries `created_after` and `created_before` parameters are limited to a maximum 30 day difference between the dates.
 
 ### Sign-in audit events
 
@@ -91,7 +91,7 @@ After upgrading to a paid tier, you can also see successful sign-in events on au
 The time zone used for audit events depends on where you view them:
 
 - In GitLab UI, your local time zone (GitLab 15.7 and later) or UTC (GitLab 15.6 and earlier) is used.
-- The [Audit Events API](../../api/audit_events.md) returns dates and times in UTC by default, or the
+- The [audit events API](../../api/audit_events.md) returns dates and times in UTC by default, or the
   [configured time zone](../../administration/timezone.md) on a self-managed GitLab instance.
 - In CSV exports, UTC is used.
 
@@ -105,4 +105,4 @@ If you don't see the event you want in any of the epics, you can either:
 
 ## Administer topics
 
-Instance administrators can [administer audit events](../../administration/audit_event_reports.md) from the Admin Area.
+Instance administrators can [administer audit events](../../administration/audit_event_reports.md) from the Admin area.

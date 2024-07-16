@@ -2,7 +2,11 @@
 
 module QA
   RSpec.describe 'Data Stores' do
-    describe 'Project owner permissions', :smoke, product_group: :tenant_scale do
+    describe 'Project owner permissions', :smoke, product_group: :tenant_scale,
+      quarantine: {
+        issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/469562',
+        type: :investigating
+      } do
       let!(:owner) do
         Resource::User.fabricate_or_use(Runtime::Env.gitlab_qa_username_1, Runtime::Env.gitlab_qa_password_1)
       end

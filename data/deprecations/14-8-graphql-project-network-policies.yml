@@ -1,4 +1,4 @@
-- title: "GraphQL networkPolicies resource deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+- title: "GraphQL `networkPolicies` resource deprecated"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
   removal_milestone: "17.0"  # (required) The milestone when this feature is planned to be removed
   announcement_milestone: "14.8"  # (required) The milestone when this feature was first announced as deprecated.
   breaking_change: true  # (required) Change to false if this is not a breaking change.

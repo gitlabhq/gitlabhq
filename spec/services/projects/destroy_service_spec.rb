@@ -703,7 +703,7 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
     end
   end
 
-  context 'associations destoyed in batches' do
+  context 'associations destroyed in batches' do
     let!(:merge_request) { create(:merge_request, source_project: project) }
     let!(:issue) { create(:issue, project: project) }
     let!(:label) { create(:label, project: project) }
@@ -724,6 +724,26 @@ RSpec.describe Projects::DestroyService, :aggregate_failures, :event_store_publi
       ].flatten
 
       expect(query_recorder.log).to include(*expected_queries)
+    end
+
+    context 'fails to destroy an association' do
+      let!(:pipeline) { create(:ci_pipeline, project: project) }
+      let!(:pipeline_artifact) { create(:ci_pipeline_artifact, pipeline: pipeline) }
+
+      before do
+        destroy_pipeline_double = instance_double('::Ci::DestroyPipelineService')
+
+        allow(::Ci::DestroyPipelineService)
+          .to receive(:new)
+          .and_return(destroy_pipeline_double)
+
+        allow(destroy_pipeline_double).to receive(:execute)
+      end
+
+      it 'raises a clear error message about the failed deletion' do
+        expect(destroy_project(project, user)).to be_falsey
+        expect(project.delete_error).to eq 'Cannot delete record because dependent pipeline artifacts exist'
+      end
     end
   end
 

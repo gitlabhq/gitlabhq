@@ -26,6 +26,9 @@ module API
       expose :wiki_page_events, documentation: { type: 'boolean' }
       expose :job_events, documentation: { type: 'boolean' }
       expose :comment_on_event_enabled, documentation: { type: 'boolean' }
+      expose :inherited, documentation: { type: 'boolean' } do |integration|
+        integration.inherit_from_id.present?
+      end
     end
   end
 end

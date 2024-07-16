@@ -1,12 +1,9 @@
 description: "Click edit reviewer button on right sidebar"
 category: default
 action: click_edit_button
-label_description: "`right_sidebar`"
-property_description: "`reviewer`"
-value_description: ""
 extra_properties:
 identifiers:
-product_group: ""
+product_group: code_review
 milestone:
 introduced_by_url:
 distributions:
@@ -16,3 +13,8 @@ tiers:
 - free
 - premium
 - ultimate
+additional_properties:
+  label:
+    description: "`right_sidebar`"
+  property:
+    description: "`reviewer`"

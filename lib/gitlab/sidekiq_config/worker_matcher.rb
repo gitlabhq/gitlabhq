@@ -12,7 +12,7 @@ module Gitlab
       QUERY_PREDICATES = {
         worker_name: :to_s,
         feature_category: :to_sym,
-        has_external_dependencies: lambda { |value| value == 'true' },
+        has_external_dependencies: ->(value) { value == 'true' },
         name: :to_s,
         resource_boundary: :to_sym,
         tags: :to_sym,
@@ -35,17 +35,17 @@ module Gitlab
       private
 
       def query_string_to_lambda(query_string)
-        return lambda { |_worker| true } if query_string.strip == WILDCARD_MATCH
+        return ->(_worker) { true } if query_string.strip == WILDCARD_MATCH
 
         or_clauses = query_string.split(QUERY_OR_OPERATOR).map do |and_clauses_string|
           and_clauses_predicates = and_clauses_string.split(QUERY_AND_OPERATOR).map do |term|
             predicate_for_term(term)
           end
 
-          lambda { |worker| and_clauses_predicates.all? { |predicate| predicate.call(worker) } }
+          ->(worker) { and_clauses_predicates.all? { |predicate| predicate.call(worker) } }
         end
 
-        lambda { |worker| or_clauses.any? { |predicate| predicate.call(worker) } }
+        ->(worker) { or_clauses.any? { |predicate| predicate.call(worker) } }
       end
 
       def predicate_for_term(term)
@@ -63,7 +63,7 @@ module Gitlab
         when '='
           predicate
         when '!='
-          lambda { |worker| !predicate.call(worker) }
+          ->(worker) { !predicate.call(worker) }
         else
           # This is unreachable because InvalidTerm will be raised instead, but
           # keeping it allows to guard against that changing in future.
@@ -76,7 +76,7 @@ module Gitlab
 
         raise UnknownPredicate, "Unknown predicate: #{lhs}" unless values_block
 
-        lambda do |queue|
+        ->(queue) do
           comparator = Array(queue[lhs.to_sym]).to_set
 
           values.map(&values_block).to_set.intersect?(comparator)

@@ -169,7 +169,7 @@ export default {
           v-model="sortOrder"
           :toggle-text="$options.sortOrderOptions[sortOrder].text"
           :items="Object.values($options.sortOrderOptions)"
-          placement="right"
+          placement="bottom-end"
           data-testid="performance-bar-sort-order"
         />
       </div>

@@ -841,7 +841,7 @@ When configured correctly, a CI/CD pipeline contains a `fuzz` stage and an `apif
 typical operation, the job always succeeds even if faults are identified during fuzz testing.
 
 Faults are displayed on the **Security** pipeline tab with the suite name. When testing against the
-repositories default branch, the fuzzing faults are also shown on the Security and Compliance's
+repositories default branch, the fuzzing faults are also shown on the Security and compliance's
 Vulnerability Report page.
 
 To prevent an excessive number of reported faults, the API fuzzing scanner limits the number of

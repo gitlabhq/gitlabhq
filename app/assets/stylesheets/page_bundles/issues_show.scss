@@ -19,13 +19,13 @@
       inset-inline-end: -2rem;
     }
 
-    .task-list-item-actions-wrapper.show .task-list-item-actions,
+    .task-list-item-actions[aria-expanded="true"],
     .task-list-item-actions:is(:focus, :hover) {
       opacity: 1;
     }
   }
 
-  .md.has-task-list-item-actions > :is(ul, ol) > li {
+  .has-task-list-item-actions > :is(ul, ol) > li {
     margin-inline-end: 1.5rem;
   }
 
@@ -35,10 +35,6 @@
     > .drag-icon {
       inset-inline-start: -0.6rem;
     }
-  }
-
-  .dropdown-item.text-danger p {
-    color: var(--red-500, $red-500); /* Override typography.scss making text black */
   }
 }
 

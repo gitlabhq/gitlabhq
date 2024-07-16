@@ -1,73 +1,73 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`~/ci/pipeline_editor/graphql/resolvers Mutation lintCI lint data is as expected 1`] = `
-Object {
+{
   "__typename": "CiLintContent",
-  "errors": Array [],
-  "jobs": Array [
-    Object {
+  "errors": [],
+  "jobs": [
+    {
       "__typename": "CiLintJob",
-      "afterScript": Array [
+      "afterScript": [
         "echo 'after script 1",
       ],
       "allowFailure": false,
-      "beforeScript": Array [
+      "beforeScript": [
         "echo 'before script 1'",
       ],
       "environment": "prd",
-      "except": Object {
-        "refs": Array [
+      "except": {
+        "refs": [
           "main@gitlab-org/gitlab",
           "/^release/.*$/@gitlab-org/gitlab",
         ],
       },
       "name": "job_1",
       "only": null,
-      "script": Array [
+      "script": [
         "echo 'script 1'",
       ],
       "stage": "test",
-      "tags": Array [
+      "tags": [
         "tag 1",
       ],
       "when": "on_success",
     },
-    Object {
+    {
       "__typename": "CiLintJob",
-      "afterScript": Array [
+      "afterScript": [
         "echo 'after script 2",
       ],
       "allowFailure": true,
-      "beforeScript": Array [
+      "beforeScript": [
         "echo 'before script 2'",
       ],
       "environment": "stg",
-      "except": Object {
-        "refs": Array [
+      "except": {
+        "refs": [
           "main@gitlab-org/gitlab",
           "/^release/.*$/@gitlab-org/gitlab",
         ],
       },
       "name": "job_2",
-      "only": Object {
+      "only": {
         "__typename": "CiLintJobOnlyPolicy",
-        "refs": Array [
+        "refs": [
           "web",
           "chat",
           "pushes",
         ],
       },
-      "script": Array [
+      "script": [
         "echo 'script 2'",
       ],
       "stage": "test",
-      "tags": Array [
+      "tags": [
         "tag 2",
       ],
       "when": "on_success",
     },
   ],
   "valid": true,
-  "warnings": Array [],
+  "warnings": [],
 }
 `;

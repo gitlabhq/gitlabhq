@@ -90,19 +90,16 @@ export default {
           class="issue-sticky-header gl-fixed gl-z-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
           data-testid="header"
         >
-          <div class="issue-sticky-header-text gl-display-flex gl-align-items-baseline gl-mx-auto">
-            <gl-badge
-              class="gl-whitespace-nowrap gl-mr-3 gl-align-self-center"
-              :variant="badgeVariant"
-            >
+          <div class="issue-sticky-header-text gl-flex gl-items-baseline gl-mx-auto gl-gap-3">
+            <gl-badge class="gl-whitespace-nowrap gl-self-center" :variant="badgeVariant">
               <gl-icon v-if="statusIcon" class="sm:gl-hidden" :name="statusIcon" />
-              <span class="gl-hidden sm:gl-block">
+              <span class="gl-sr-only sm:gl-not-sr-only">
                 <slot name="status-badge"></slot>
               </span>
             </gl-badge>
             <confidentiality-badge
               v-if="issuable.confidential"
-              class="gl-whitespace-nowrap gl-mr-3 gl-align-self-center"
+              class="gl-self-center"
               :issuable-type="issuable.type"
               :workspace-type="workspaceType"
             />

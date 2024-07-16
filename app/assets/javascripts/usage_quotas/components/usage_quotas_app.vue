@@ -1,10 +1,14 @@
 <script>
 import { GlAlert, GlSprintf, GlTab, GlTabs } from '@gitlab/ui';
 import { updateHistory } from '~/lib/utils/url_utility';
+import { InternalEvents } from '~/tracking';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'UsageQuotasApp',
   components: { GlAlert, GlSprintf, GlTab, GlTabs },
+  mixins: [trackingMixin],
   inject: ['tabs'],
   methods: {
     glTabLinkAttributes(tab) {
@@ -15,16 +19,20 @@ export default {
 
       return activeTabHash === hash;
     },
-    updateActiveTab(hash) {
+    updateActiveTab(tab) {
       const url = new URL(window.location.href);
 
-      url.hash = hash;
+      url.hash = tab.hash;
 
       updateHistory({
         url,
         title: document.title,
         replace: true,
       });
+
+      if (tab.tracking?.action) {
+        this.trackEvent(tab.tracking.action);
+      }
     },
   },
 };
@@ -43,7 +51,7 @@ export default {
         :active="isActive(tab.hash)"
         :data-testid="`${tab.testid}-tab-content`"
         :title-link-attributes="glTabLinkAttributes(tab)"
-        @click="updateActiveTab(tab.hash)"
+        @click="updateActiveTab(tab)"
       >
         <component :is="tab.component" :data-testid="`${tab.testid}-app`" />
       </gl-tab>

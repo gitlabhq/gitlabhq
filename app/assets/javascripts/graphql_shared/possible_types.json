@@ -7,6 +7,10 @@
     "AmazonS3ConfigurationType",
     "InstanceAmazonS3ConfigurationType"
   ],
+  "AuditEventStreamingDestinationInterface": [
+    "GroupAuditEventStreamingDestination",
+    "InstanceAuditEventStreamingDestination"
+  ],
   "BaseHeaderInterface": [
     "AuditEventStreamingHeader",
     "AuditEventsStreamingInstanceHeader"
@@ -54,10 +58,6 @@
   "ExternalAuditEventDestinationInterface": [
     "ExternalAuditEventDestination",
     "InstanceExternalAuditEventDestination"
-  ],
-  "AuditEventStreamingDestinationInterface": [
-    "GroupAuditEventStreamingDestination",
-    "InstanceAuditEventStreamingDestination"
   ],
   "GoogleCloudArtifactRegistryArtifact": [
     "GoogleCloudArtifactRegistryDockerImage"
@@ -229,6 +229,7 @@
     "WorkItemWidgetDefinitionAssignees",
     "WorkItemWidgetDefinitionGeneric",
     "WorkItemWidgetDefinitionHierarchy",
-    "WorkItemWidgetDefinitionLabels"
+    "WorkItemWidgetDefinitionLabels",
+    "WorkItemWidgetDefinitionWeight"
   ]
 }

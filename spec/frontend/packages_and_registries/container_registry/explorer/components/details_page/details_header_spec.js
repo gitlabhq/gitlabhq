@@ -175,7 +175,7 @@ describe('Details Header', () => {
       expect(findMenu().props()).toMatchObject({
         category: 'tertiary',
         icon: 'ellipsis_v',
-        placement: 'right',
+        placement: 'bottom-end',
         textSrOnly: true,
         noCaret: true,
         toggleText: 'More actions',

@@ -78,7 +78,7 @@ export default {
         </template>
       </gl-sprintf>
       <template v-if="stuckData.showTags">
-        <gl-badge v-for="tag in tags" :key="tag" size="sm" variant="info">
+        <gl-badge v-for="tag in tags" :key="tag" variant="info">
           {{ tag }}
         </gl-badge>
       </template>

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_context '"Security and Compliance" permissions' do
+RSpec.shared_context '"Security and compliance" permissions' do
   let(:project_instance) { an_instance_of(Project) }
   let(:user_instance) { an_instance_of(User) }
   let(:before_request_defined) { false }
@@ -18,7 +18,7 @@ RSpec.shared_context '"Security and Compliance" permissions' do
     allow(Ability).to receive(:allowed?).with(user_instance, :access_security_and_compliance, project_instance).and_return(true)
   end
 
-  context 'when the "Security and Compliance" feature is disabled' do
+  context 'when the "Security and compliance" feature is disabled' do
     subject { response }
 
     before do

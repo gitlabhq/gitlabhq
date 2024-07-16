@@ -35,7 +35,7 @@ When possible, use the full phrase: **the `.gitlab-ci.yml` file**
 Although users can specify another name for their CI/CD configuration file,
 in most cases, use **the `.gitlab-ci.yml` file** instead.
 
-## `&`
+## `&` (ampersand)
 
 Do not use Latin abbreviations. Use **and** instead, unless you are documenting a UI element that uses an `&`.
 
@@ -91,9 +91,9 @@ Do not confuse **add** with [**create**](#create).
 
 Do not use **Add new**.
 
-## Admin Area
+## Admin area
 
-Use title case for **Admin Area**. The UI uses title case.
+Use sentence case for **Admin area**. The UI uses title case.
 
 Do not use **administrator area**, **administration area**, or other variants.
 
@@ -206,7 +206,7 @@ Do not use **and so on**. Instead, be more specific. For more information, see t
 
 ## area
 
-Use [**section**](#section) instead of **area**. The only exception is [the Admin Area](#admin-area).
+Use [**section**](#section) instead of **area**. The only exception is [the Admin area](#admin-area).
 
 ## as
 
@@ -879,13 +879,6 @@ do not say:
 
 You can use **GA** to indicate general availability if you spell it out on first use.
 
-## Git suggestions
-
-Use sentence case for **Git suggestions**.
-
-On first mention on a page, use **GitLab Duo Git suggestions**.
-Thereafter, use **Git suggestions** by itself.
-
 ## GitLab
 
 Do not make **GitLab** possessive (GitLab's). This guidance follows [GitLab Trademark Guidelines](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/brand/brand-activation/trademark-guidelines/).
@@ -916,7 +909,7 @@ the following are the names of GitLab Duo features:
 - GitLab Duo Vulnerability explanation
 - GitLab Duo Vulnerability resolution
 - GitLab Duo Test generation
-- GitLab Duo Git suggestions
+- GitLab Duo for the CLI
 - GitLab Duo Root cause analysis
 - GitLab Duo Issue description generation
 
@@ -1154,6 +1147,22 @@ Instead of:
 - In GitLab 14.1 and above...
 - In GitLab 14.1 and newer...
 
+## level
+
+If you can, avoid using `level` in the context of an instance, project, or group.
+
+Use:
+
+- This setting is turned on for the instance.
+- This setting is turned on for the group and its subgroups.
+- This setting is turned on for projects.
+
+Instead of:
+
+- This setting is turned on at the instance level.
+- This setting is turned on at the group level.
+- This is a project-level setting.
+
 ## list
 
 Do not use **list** when referring to a [**dropdown list**](#dropdown-list).
@@ -1161,12 +1170,20 @@ Use the full phrase **dropdown list** instead.
 
 ## license
 
-When writing about licenses:
+Licenses are different than subscriptions.
 
-- Do not use variations such as [**cloud license**](#cloud-licensing), **offline license**, or **legacy license**.
-- Do not use interchangeably with **subscription**:
-  - A license grants users access to the subscription they purchased, and contains information such as the number of seats they purchased and subscription dates.
-  - A subscription is the subscription tier that the user purchases.
+- A license grants users access to the subscription they purchased. The license includes information like the number of seats and subscription dates.
+- A subscription is the subscription tier that the user purchases.
+
+Do not use the term [**cloud license**](#cloud-licensing).
+
+The following terms are displayed in the UI and in emails. You can use them when necessary:
+
+- **Online license** - a license synchronized with GitLab
+- **Offline license** - a license not synchronized with GitLab
+- **Legacy license** - a license created before synchronization was possible
+
+However, if you can, rather than using the term, use the more specific description instead.
 
 Use:
 
@@ -1815,6 +1832,12 @@ while **click** is more specific to a mouse.
 
 However, you can make an exception for **right-click** and **click-through demo**.
 
+## self-hosted model
+
+Use **self-hosted model** (lowercase) to refer to a language model that's hosted by a customer, rather than GitLab.
+
+The language model might be an LLM (large language model), but it might not be.
+
 ## self-managed
 
 Use **self-managed** to refer to a customer's installation of GitLab. Do not use **self-hosted**.
@@ -2211,6 +2234,15 @@ Do not use **whilst**. Use [while](#while) instead. **While** is more succinct a
 ## whitelist
 
 Do not use **whitelist**. Another option is **allowlist**. ([Vale](../testing/vale.md) rule: [`InclusionCultural.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/InclusionCultural.yml))
+
+## within
+
+When possible, do not use **within**. Use **in** instead, unless you are referring to a time frame, limit, or boundary. For example:
+
+- The upgrade occurs within the four-hour maintenance window.
+- The Wi-Fi signal is accessible within a 30-foot radius.
+
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
 
 ## yet
 

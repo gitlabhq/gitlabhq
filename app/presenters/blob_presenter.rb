@@ -96,8 +96,6 @@ class BlobPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def base64_encoded_blob
-    return unless Feature.enabled?(:unicode_escaped_blob)
-
     Base64.encode64(blob.raw)
   end
 

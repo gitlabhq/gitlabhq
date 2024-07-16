@@ -7,6 +7,7 @@ module Mutations
 
       NON_NULLABLE_ARGS = [
         :extensions_marketplace_opt_in_status,
+        :organization_groups_projects_display,
         :use_web_ide_extension_marketplace,
         :visibility_pipeline_id_type
       ].freeze
@@ -23,6 +24,16 @@ module Mutations
       argument :visibility_pipeline_id_type, Types::VisibilityPipelineIdTypeEnum,
         required: false,
         description: 'Determines whether the pipeline list shows ID or IID.'
+
+      argument :organization_groups_projects_sort, Types::Organizations::GroupsProjectsSortEnum,
+        required: false,
+        description: 'Sort order for organization groups and projects.',
+        alpha: { milestone: '17.2' }
+
+      argument :organization_groups_projects_display, Types::Organizations::GroupsProjectsDisplayEnum,
+        required: false,
+        description: 'Default list view for organization groups and projects.',
+        alpha: { milestone: '17.2' }
 
       field :user_preferences,
         Types::UserPreferencesType,

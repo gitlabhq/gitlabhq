@@ -91,7 +91,7 @@ RSpec.describe 'Work item linked items', :js, feature_category: :team_planning d
 
     it 'links a new item with work item url', :aggregate_failures,
       quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/438014' do
-      verify_linked_item_added("#{task.project.web_url}/-/work_items/#{task.iid}")
+      verify_linked_item_added("#{Gitlab.config.gitlab.url}/#{task.project.full_path}/-/work_items/#{task.iid}")
     end
 
     it 'removes a linked item', :aggregate_failures do

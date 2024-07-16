@@ -10,6 +10,7 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"gitlab.com/gitlab-org/labkit/log"
 
@@ -36,7 +37,7 @@ func allowedXSendfileDownload(t *testing.T, contentFilename string, filePath str
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
 
-		require.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
+		assert.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
 
 		w.Header().Set("X-Sendfile", contentPath)
 		w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, contentFilename))
@@ -66,7 +67,7 @@ func deniedXSendfileDownload(t *testing.T, contentFilename string, filePath stri
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		log.WithFields(log.Fields{"method": r.Method, "url": r.URL}).Info("UPSTREAM")
 
-		require.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
+		assert.Equal(t, "X-Sendfile", r.Header.Get("X-Sendfile-Type"))
 
 		w.Header().Set("Content-Disposition", fmt.Sprintf(`attachment; filename="%s"`, contentFilename))
 		w.WriteHeader(200)

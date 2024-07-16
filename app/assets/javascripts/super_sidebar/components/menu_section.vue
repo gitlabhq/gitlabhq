@@ -156,7 +156,7 @@ export default {
     <gl-collapse
       :id="itemId"
       v-model="isExpanded"
-      class="gl-list-none gl-p-0 gl-m-0 gl-transition-duration-medium gl-transition-timing-function-ease"
+      class="gl-list-none gl-p-0 gl-m-0 gl-duration-medium gl-ease-ease"
       data-testid="menu-section"
       :data-qa-section-name="item.title"
     >

@@ -106,7 +106,7 @@ export default {
         v-if="actionItems.length"
         category="primary"
         variant="confirm"
-        placement="right"
+        placement="bottom-end"
         :toggle-text="defaultActionText"
         :items="actionItems"
         :disabled="!canAddCluster"

@@ -31,6 +31,7 @@ The following policy types are available:
   pipeline or on a specified schedule.
 - [Merge request approval policy](scan-result-policies.md). Enforce project-level settings and
   approval rules based on scan results.
+- [Pipeline execution policy](pipeline_execution_policies.md). Enforce CI/CD jobs as part of project pipelines.
 
 ## Security policy project
 
@@ -70,7 +71,7 @@ GitLab SaaS users may enforce policies against their top-level group or across s
 The following example illustrates two groups and their structure:
 
 - Alpha group contains two subgroups, each of which contains multiple projects.
-- Security and Compliance group contains two policies.
+- Security and compliance group contains two policies.
 
 **Alpha** group (contains code projects)
 
@@ -84,7 +85,7 @@ The following example illustrates two groups and their structure:
   - Project L
   - Project M
 
-**Security and Compliance** group (contains security policy projects)
+**Security and compliance** group (contains security policy projects)
 
 - Security Policy Management
 - Security Policy Management - security policy project

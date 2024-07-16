@@ -132,7 +132,7 @@ QA_GITLAB_URL="http://{GDK IP ADDRESS}:{GDK PORT}" \
 bundle exec rspec <path/to/spec.rb>
 ```
 
-For an explanation of the variables see the [additional examples below](#overriding-gitlab-address) and the [list of supported environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-environment-variables).
+For an explanation of the variables see the [additional examples below](#overriding-gitlab-address) and the [list of supported environment variables](https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/what_tests_can_be_run.md#supported-gitlab-environment-variables).
 
 #### Run the end-to-end tests on GitLab in Docker
 

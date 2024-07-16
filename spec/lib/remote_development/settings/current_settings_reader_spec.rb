@@ -32,7 +32,7 @@ RSpec.describe ::RemoteDevelopment::Settings::CurrentSettingsReader, feature_cat
 
   context "when there are no errors" do
     it "returns ::Gitlab::CurrentSettings overridden settings and non-overridden settings" do
-      expect(result).to eq(Result.ok(
+      expect(result).to eq(Gitlab::Fp::Result.ok(
         {
           settings: {
             non_overridden_setting: "not_overridden",

@@ -170,7 +170,7 @@ The process for adding a new throttle is loosely:
 1. Update the JSON schema validator for the [rate_limits column](https://gitlab.com/gitlab-org/gitlab/-/blob/63b37287ae028842fcdcf56d311e6bb0c7e09e79/app/validators/json_schemas/application_setting_rate_limits.json).
 1. Extend `Gitlab::RackAttack` and `Gitlab::RackAttack::Request` to configure the new rate limit,
    and apply it to the desired requests.
-1. Add the new settings to the Admin Area form in `app/views/admin/application_settings/_ip_limits.html.haml`.
+1. Add the new settings to the Admin area form in `app/views/admin/application_settings/_ip_limits.html.haml`.
 1. Document the new settings in [User and IP rate limits](../administration/settings/user_and_ip_rate_limits.md) and [Application settings API](../api/settings.md).
 1. Configure the rate limit for GitLab.com and document it in [GitLab.com-specific rate limits](../user/gitlab_com/index.md#gitlabcom-specific-rate-limits).
 

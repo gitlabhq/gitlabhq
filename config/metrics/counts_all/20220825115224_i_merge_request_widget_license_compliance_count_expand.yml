@@ -9,12 +9,12 @@ milestone_removed: '17.1'
 milestone: "15.4"
 introduced_by_url: "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/96538"
 time_frame: all
-data_source: redis
+data_source: internal_events
 data_category: optional
-instrumentation_class: MergeRequestWidgetExtensionMetric
-options:
-  event: expand
-  widget: license_compliance
+events:
+- name: expand_merge_request_widget
+  filter:
+    label: license_compliance
 distribution:
 - ce
 - ee

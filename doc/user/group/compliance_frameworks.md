@@ -11,8 +11,10 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 You can create a compliance framework that is a label to identify that your project has certain compliance
-requirements or needs additional oversight. The label can optionally enforce
-[compliance pipeline configuration](compliance_pipelines.md) to the projects on which it is applied.
+requirements or needs additional oversight.
+
+In the Ultimate tier, the compliance framework can optionally enforce
+[compliance pipeline configuration](compliance_pipelines.md) and [security policies](../application_security/policies/scan-execution-policies.md#security-policy-scopes) to the projects on which it is applied.
 
 Compliance frameworks are created on top-level groups. If a project is moved outside of its existing top-level group,
 its framework is removed.

@@ -8,7 +8,7 @@ RSpec.describe IssuableCollections do
   let(:user) { create(:user) }
 
   let(:controller) do
-    klass = Class.new do
+    klass = Class.new(ApplicationController) do
       def self.helper_method(name); end
 
       include IssuableCollections

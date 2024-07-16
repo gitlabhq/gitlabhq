@@ -1,3 +1,3 @@
 Issue was <%= @issue_status %> by <%= sanitize_name(@updated_by.name) %>
 
-Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
+Issue <%= @issue.iid %>: <%= url_for(@target_url) %>

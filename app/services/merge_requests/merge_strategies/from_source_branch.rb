@@ -18,21 +18,17 @@ module MergeRequests
       end
 
       def validate!
-        error_message =
-          if source_sha.blank?
-            'No source for merge'
-          elsif merge_request.should_be_rebased?
-            'Only fast-forward merge is allowed for your project. Please update your source branch'
-          elsif !merge_request.mergeable?(
-            skip_discussions_check: @options[:skip_discussions_check],
-            check_mergeability_retry_lease: @options[:check_mergeability_retry_lease]
-          )
-            'Merge request is not mergeable'
-          elsif merge_request.missing_required_squash?
-            'This project requires squashing commits when merge requests are accepted.'
-          end
+        raise_error('No source for merge') if source_sha.blank?
 
-        raise_error(error_message) if error_message
+        if merge_request.should_be_rebased?
+          raise_error('Only fast-forward merge is allowed for your project. Please update your source branch')
+        end
+
+        raise_error('Merge request is not mergeable') unless mergeable?
+
+        return unless merge_request.missing_required_squash?
+
+        raise_error('This project requires squashing commits when merge requests are accepted.')
       end
 
       def execute_git_merge!
@@ -102,6 +98,13 @@ module MergeRequests
       def merge_commit_message
         merge_params[:commit_message] ||
           merge_request.default_merge_commit_message(user: current_user)
+      end
+
+      def mergeable?
+        merge_request.mergeable?(
+          skip_discussions_check: options[:skip_discussions_check],
+          check_mergeability_retry_lease: options[:check_mergeability_retry_lease]
+        )
       end
 
       def raise_error(message)

@@ -76,7 +76,7 @@ module API
         args[:scope] = args[:scope].underscore if args[:scope]
 
         merge_requests = MergeRequestsFinder.new(current_user, args).execute
-                           .reorder(order_options_with_tie_breaker(override_created_at: false))
+        merge_requests = order_merge_requests(merge_requests)
         merge_requests = paginate(merge_requests)
                            .preload(:source_project, :target_project)
 
@@ -134,6 +134,21 @@ module API
       def batch_process_mergeability_checks(merge_requests)
         ::MergeRequests::MergeabilityCheckBatchService.new(merge_requests, current_user).execute
       end
+
+      # rubocop: disable CodeReuse/ActiveRecord
+      def order_merge_requests(merge_requests)
+        if params[:order_by] == 'merged_at'
+          case params[:sort]
+          when 'desc'
+            return merge_requests.reorder_by_metric('merged_at', 'DESC')
+          else
+            return merge_requests.reorder_by_metric('merged_at', 'ASC')
+          end
+        end
+
+        merge_requests.reorder(order_options_with_tie_breaker(override_created_at: false))
+      end
+      # rubocop: enable CodeReuse/ActiveRecord
 
       params :merge_requests_params do
         use :merge_requests_base_params
@@ -691,7 +706,7 @@ module API
             .execute(merge_request)
         elsif automatically_mergeable
           AutoMergeService.new(merge_request.target_project, current_user, merge_params)
-            .execute(merge_request, AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS)
+            .execute(merge_request, merge_request.default_auto_merge_strategy)
         end
 
         if immediately_mergeable && !merge_request.merged?

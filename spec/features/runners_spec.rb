@@ -190,12 +190,8 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
     end
 
     context 'when a project runner exists in another project' do
-      let(:another_project) { create(:project) }
-      let!(:project_runner) { create(:ci_runner, :project, projects: [another_project]) }
-
-      before do
-        another_project.add_maintainer(user)
-      end
+      let_it_be(:another_project) { create(:project, maintainers: user, organization: project.organization) }
+      let_it_be(:project_runner) { create(:ci_runner, :project, projects: [another_project]) }
 
       it 'user enables and disables a project runner' do
         visit project_runners_path(project)

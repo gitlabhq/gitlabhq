@@ -1,5 +1,4 @@
 @import './themes/dark';
-@import '@gitlab/ui/src/tokens/build/css/tokens.dark';
 @import 'page_bundles/mixins_and_variables_and_functions';
 
 :root {
@@ -76,50 +75,9 @@
   }
 }
 
-// Some hacks and overrides for things that don't properly support dark mode
+// Decrease brightness and increase contrast for GlLabel in dark mode
 .gl-label {
   filter: brightness(0.9) contrast(1.1);
-
-  // This applies to the gl-label markups
-  // rendered and cached in the backend (labels_helper.rb)
-  &.gl-label-scoped {
-    .gl-label-text-scoped,
-    .gl-label-close.gl-button .gl-icon {
-      color: $gray-900;
-    }
-  }
-}
-
-// white-ish text for light labels
-.gl-label-text-light.gl-label-text-light {
-  &,
-  .gl-label-close .gl-icon {
-    color: $gray-900;
-  }
-}
-
-.gl-label-text-light .gl-label-close.gl-button:hover {
-  background-color: $gray-900;
-}
-
-.gl-label-text-dark.gl-label-text-dark {
-  &,
-  .gl-label-close .gl-icon {
-    color: $gray-10;
-  }
-}
-
-// This applies to "gl-labels" from "gitlab-ui"
-.gl-label.gl-label-scoped.gl-label-text-dark,
-.gl-label.gl-label-scoped.gl-label-text-light {
-  .gl-label-text-scoped,
-  .gl-label-close.gl-button .gl-icon {
-    color: $gray-900;
-  }
-}
-
-.gl-label-text-dark .gl-label-close.gl-button:hover {
-  background-color: $gray-10;
 }
 
 // duplicated class as the original .atwho-view style is added later

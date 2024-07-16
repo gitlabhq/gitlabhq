@@ -2,6 +2,7 @@ import { getAllByRole } from '@testing-library/dom';
 import { nextTick } from 'vue';
 import { mount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
+import { useFakeRequestAnimationFrame } from 'helpers/fake_request_animation_frame';
 import { OPEN_REVERT_MODAL, OPEN_CHERRY_PICK_MODAL } from '~/projects/commit/constants';
 import modalEventHub from '~/projects/commit/event_hub';
 import MergedComponent from '~/vue_merge_request_widget/components/states/mr_widget_merged.vue';
@@ -40,6 +41,9 @@ describe('MRWidgetMerged', () => {
     sourceBranch: 'bar',
     targetBranch,
   };
+
+  // Stubbing requestAnimationFrame because GlDisclosureDropdown uses it to delay its `action` event.
+  useFakeRequestAnimationFrame();
 
   const service = {
     removeSourceBranch: () => nextTick(),

@@ -153,9 +153,7 @@ To enable the Dangerfile on another existing GitLab project, complete the follow
 
    ```yaml
    include:
-     - project: 'gitlab-org/quality/pipeline-common'
-       file:
-         - '/ci/danger-review.yml'
+     - component: ${CI_SERVER_FQDN}/gitlab-org/components/danger-review/danger-review@1.2.0
        rules:
          - if: $CI_SERVER_HOST == "gitlab.com"
    ```

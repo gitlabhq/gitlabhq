@@ -12,8 +12,6 @@ instrumentation_class: RedisMetric
 options:
   prefix: package_events
   event: i_package_push_package_by_deploy_token
-events:
-  - name: package_pushed_using_deploy_token
 distribution:
 - ee
 - ce

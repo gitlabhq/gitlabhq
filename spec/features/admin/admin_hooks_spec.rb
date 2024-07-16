@@ -17,7 +17,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
       visit admin_root_path
 
       within_testid('super-sidebar') do
-        click_on 'System Hooks', match: :first
+        click_on 'System hooks', match: :first
       end
 
       expect(page).to have_current_path(admin_hooks_path, ignore_query: true)
@@ -35,7 +35,7 @@ RSpec.describe 'Admin::Hooks', feature_category: :webhooks do
 
       visit admin_hooks_path
 
-      expect(page).to have_content('File Hooks')
+      expect(page).to have_content('File hooks')
       expect(page).to have_content('foo.rb')
       expect(page).to have_content('bar.clj')
     end

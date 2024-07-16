@@ -355,6 +355,14 @@ sudo gitlab-ctl registry-database import --step-three
 
 After that command exists successfully, the registry is now fully migrated to the database!
 
+#### Post Migration
+
+It may take approximately 48 hours post migration to see your registry storage
+decrease. This is a normal and expected part of online garbage collection, as this
+delay ensures that online garbage collection does not interfere with image pushes.
+Check out the [monitor online garbage collection](#online-garbage-collection-monitoring) section
+to see how to monitor the progress and health of the online garbage collector.
+
 ## Manage schema migrations
 
 Use the following commands to run the schema migrations for the Container registry metadata database.
@@ -409,6 +417,8 @@ pay special attention to logs filtered by `component=registry.gc.*`.
 Use monitoring tools like Prometheus and Grafana to visualize and track garbage collection metrics,
 focusing on metrics with a prefix of `registry_gc_*`. These include the number of objects
 marked for deletion, objects successfully deleted, run intervals, and durations.
+See [enable the registry debug server](container_registry.md#enable-the-registry-debug-server)
+for how to enable Prometheus.
 
 ### Queue monitoring
 
@@ -505,3 +515,97 @@ You must either:
 - Stop using offline garbage collection.
 - If you no longer use the metadata database, delete the indicated lock file at the `lock_path` shown in the error message.
   For example, remove the `/docker/registry/lockfiles/database-in-use` file.
+
+### Error: `cannot execute <STATEMENT> in a read-only transaction`
+
+The registry could fail to [apply schema migrations](#apply-schema-migrations)
+with the following error message:
+
+```shell
+err="ERROR: cannot execute CREATE TABLE in a read-only transaction (SQLSTATE 25006)"
+```
+
+Also, the registry could fail with the following error message if you try to run
+[online garbage collection](container_registry.md#performing-garbage-collection-without-downtime):
+
+```shell
+error="processing task: fetching next GC blob task: scanning GC blob task: ERROR: cannot execute SELECT FOR UPDATE in a read-only transaction (SQLSTATE 25006)"
+```
+
+You must verify that read-only transactions are disabled by checking the values of
+`default_transaction_read_only` and `transaction_read_only` in the PostgreSQL console.
+For example:
+
+```sql
+# SHOW default_transaction_read_only;
+ default_transaction_read_only
+ -------------------------------
+ on
+(1 row)
+
+# SHOW transaction_read_only;
+ transaction_read_only
+ -----------------------
+ on
+(1 row)
+```
+
+If either of these values is set to `on`, you must disable it:
+
+1. Edit your `postgresql.conf` and set the following value:
+
+   ```shell
+   default_transaction_read_only=off
+   ```
+
+1. Restart your Postgres server to apply these settings.
+1. Try to [apply schema migrations](#apply-schema-migrations) again, if applicable.
+1. Restart the registry `sudo gitlab-ctl restart registry`.
+
+### Error: `cannot import all repositories while the tags table has entries`
+
+If you try to [migrate existing registries](#existing-registries) and encounter the following error:
+
+```shell
+ERRO[0000] cannot import all repositories while the tags table has entries, you must truncate the table manually before retrying,
+see https://docs.gitlab.com/ee/administration/packages/container_registry_metadata_database.html#troubleshooting
+common_blobs=true dry_run=false error="tags table is not empty"
+```
+
+This error happens when there are existing entries in the `tags` table of the registry database,
+which can happen if you:
+
+- Attempted the [one step migration](#one-step-migration) and encountered errors.
+- Attempted the [three-step migration](#three-step-migration) process and encountered errors.
+- Stopped the migration process on purpose.
+- Tried to run the migration again after any of the above.
+- Ran the migration against the wrong configuration file.
+
+To resolve this issue, you must delete the existing entries in the tags table.
+You must truncate the table manually on your PostgreSQL instance:
+
+1. Edit `/etc/gitlab/gitlab.rb` and ensure the metadata database is **disabled**:
+
+   ```ruby
+   registry['database'] = {
+     'enabled' => false,
+     'host' => 'localhost',
+     'port' => 5432,
+     'user' => 'registry-database-user',
+     'password' => 'registry-database-password',
+     'dbname' => 'registry-database-name',
+     'sslmode' => 'require', # See the PostgreSQL documentation for additional information https://www.postgresql.org/docs/current/libpq-ssl.html.
+     'sslcert' => '/path/to/cert.pem',
+     'sslkey' => '/path/to/private.key',
+     'sslrootcert' => '/path/to/ca.pem'
+   }
+   ```
+
+1. Connect to your registry database using a PostgreSQL client.
+1. Truncate the `tags` table to remove all existing entries:
+
+   ```sql
+   TRUNCATE TABLE tags RESTART IDENTITY CASCADE;
+   ```
+
+1. After truncating the `tags` table, try running the migration process again.

@@ -199,21 +199,33 @@ RSpec.describe Ci::RunnerManager, feature_category: :fleet_visibility, type: :mo
     end
   end
 
-  describe '.with_running_builds' do
-    subject(:scope) { described_class.with_running_builds }
+  describe '.with_executing_builds' do
+    subject(:scope) { described_class.with_executing_builds }
 
     let_it_be(:runner) { create(:ci_runner) }
-    let_it_be(:runner_manager1) { create(:ci_runner_machine, runner: runner) }
-    let_it_be(:runner_manager2) { create(:ci_runner_machine, runner: runner) }
-
-    before_all do
-      create(:ci_runner_machine_build, runner_manager: runner_manager1,
-        build: create(:ci_build, :success, runner: runner))
-      create(:ci_runner_machine_build, runner_manager: runner_manager2,
-        build: create(:ci_build, :running, runner: runner))
+    let_it_be(:runner_managers_by_status) do
+      Ci::HasStatus::AVAILABLE_STATUSES.index_with { |_status| create(:ci_runner_machine, runner: runner) }
     end
 
-    it { is_expected.to contain_exactly runner_manager2 }
+    let_it_be(:busy_runner_managers) do
+      Ci::HasStatus::EXECUTING_STATUSES.map { |status| runner_managers_by_status[status] }
+    end
+
+    context 'with no builds running' do
+      it { is_expected.to be_empty }
+    end
+
+    context 'with builds' do
+      before_all do
+        Ci::HasStatus::AVAILABLE_STATUSES.each do |status|
+          runner_manager = runner_managers_by_status[status]
+          build = create(:ci_build, status, runner: runner)
+          create(:ci_runner_machine_build, runner_manager: runner_manager, build: build)
+        end
+      end
+
+      it { is_expected.to match_array(busy_runner_managers) }
+    end
   end
 
   describe '.order_id_desc' do

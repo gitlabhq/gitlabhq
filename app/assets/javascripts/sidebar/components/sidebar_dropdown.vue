@@ -104,6 +104,12 @@ export default {
   apollo: {
     attributesList: {
       query() {
+        if (this.isEpic && this.showWorkItemEpics) {
+          return this.issuableAttributesQueries[IssuableAttributeType.Parent].list[
+            this.issuableType
+          ].query;
+        }
+
         const { list } = this.issuableAttributeQuery;
         const { query } = list[this.issuableType];
         return query[this.workspaceType] || query;
@@ -121,7 +127,6 @@ export default {
           fullPath: this.attrWorkspacePath,
           state: this.issuableAttributesState[this.issuableAttribute],
           sort: defaultEpicSort,
-          includeWorkItems: this.showWorkItemEpics,
         };
 
         if (this.showWorkItemEpics) {
@@ -138,12 +143,7 @@ export default {
 
         return variables;
       },
-      update(data) {
-        return [
-          ...(data?.workspace?.attributes?.nodes ?? []),
-          ...(data?.workspace?.workItems?.nodes ?? []),
-        ];
-      },
+      update: (data) => data?.workspace?.attributes?.nodes ?? [],
       error(error) {
         createAlert({ message: this.i18n.listFetchError, captureError: true, error });
       },

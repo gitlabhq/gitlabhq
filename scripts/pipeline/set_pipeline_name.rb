@@ -4,7 +4,16 @@
 # We need to take some precautions when using the `gitlab` gem in this project.
 #
 # See https://docs.gitlab.com/ee/development/pipelines/internals.html#using-the-gitlab-ruby-gem-in-the-canonical-project.
-require 'gitlab' unless Object.const_defined?(:Gitlab)
+if Object.const_defined?(:RSpec)
+  # Ok, we're testing, we know we're going to stub `Gitlab`, so we just ignore
+else
+  require 'gitlab'
+
+  if Gitlab.singleton_class.method_defined?(:com?)
+    abort 'lib/gitlab.rb is loaded, and this means we can no longer load the client and we cannot proceed'
+  end
+end
+
 require 'net/http'
 
 class SetPipelineName
@@ -13,14 +22,16 @@ class SetPipelineName
   CODE                   = ['retrieve-tests-metadata'].freeze
   QA_GDK                 = ['e2e:test-on-gdk'].freeze
   REVIEW_APP             = ['start-review-app-pipeline'].freeze
-  #  TODO: Please remove `trigger-omnibus-and-follow-up-e2e` and `follow-up-e2e:package-and-test-ee`
-  #        after 2025-04-08 in this project
+  # rubocop:disable Layout/LineLength -- Easier to read if longer
+  #  TODO:
+  #    * Please remove `trigger-omnibus-and-follow-up-e2e` and `follow-up-e2e:package-and-test-ee` after 2025-04-08 in this project
+  #    * Please remove `follow-up:trigger-omnibus` after 2025-06-13 in this project
   #
-  #   `trigger-omnibus-and-follow-up-e2e` was renamed to `follow-up:trigger-omnibus` on 2024-04-08 via
-  #    https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_105_104
-  #
-  #   `follow-up-e2e:package-and-test-ee` was renamed to `follow-up:e2e:package-and-test-ee` on 2024-04-08 via
-  #    https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_136_137
+  #  Timeline:
+  #     * `trigger-omnibus-and-follow-up-e2e` was renamed to `follow-up:trigger-omnibus` on 2024-04-08 via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_105_104
+  #     * `follow-up-e2e:package-and-test-ee` was renamed to `follow-up:e2e:package-and-test-ee` on 2024-04-08 via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/147908/diffs?pin=c11467759d7eae77ed84e02a5445e21704c8d8e5#c11467759d7eae77ed84e02a5445e21704c8d8e5_136_137
+  #     * `follow-up:trigger-omnibus` was moved in `follow-up:e2e:package-and-test-ee` on 2024-06-13 via https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155701
+  # rubocop:enable Layout/LineLength
   QA                     = [
     'e2e:package-and-test-ce',
     'e2e:package-and-test-ee',
@@ -51,6 +62,7 @@ class SetPipelineName
     pipeline_suffixes         = {}
     pipeline_suffixes[:tier]  = pipeline_tier || 'N/A'
     pipeline_suffixes[:types] = pipeline_types.join(',')
+    pipeline_suffixes[:opts]  = pipeline_opts.join(',')
 
     pipeline_suffix = pipeline_suffixes.map { |key, value| "#{key}:#{value}" }.join(', ')
     pipeline_name += " [#{pipeline_suffix}]"
@@ -116,6 +128,15 @@ class SetPipelineName
     end
 
     types.sort_by { |type| PIPELINE_TYPES_ORDERED.index(type) }
+  end
+
+  def pipeline_opts
+    return [] unless ENV['CI_MERGE_REQUEST_LABELS']
+
+    opts_label = merge_request_labels.select { |label| label.start_with?(/pipeline:\w/) }
+    return if opts_label.nil?
+
+    opts_label.map { |opt_label| opt_label.delete_prefix('pipeline:') }
   end
 
   def pipeline_types_for(job)

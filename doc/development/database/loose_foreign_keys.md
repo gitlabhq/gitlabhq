@@ -16,8 +16,7 @@ Most of our database tables have foreign keys.
 With the ongoing database [decomposition work](https://gitlab.com/groups/gitlab-org/-/epics/6168),
 linked records might be present on two different database servers. Ensuring data consistency
 between two databases is not possible with standard PostgreSQL foreign keys. PostgreSQL
-does not support foreign keys operating within a single database server, defining
-a link between two database tables in two different database servers over the network.
+does not support foreign keys operating across multiple database servers.
 
 Example:
 

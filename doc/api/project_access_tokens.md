@@ -14,15 +14,21 @@ You can read more about [project access tokens](../user/project/settings/project
 
 ## List project access tokens
 
+> - `state` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.2.
+
 Get a list of [project access tokens](../user/project/settings/project_access_tokens.md).
+
+In GitLab 17.2 and later, you can use the `state` attribute to limit the response to project access tokens with a specified state.
 
 ```plaintext
 GET projects/:id/access_tokens
+GET projects/:id/access_tokens?state=inactive
 ```
 
 | Attribute | Type    | required | Description         |
 |-----------|---------|----------|---------------------|
 | `id` | integer or string | yes | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) |
+| `state` | string | No | Limit results to tokens with specified state. Valid values are `active` and `inactive`. By default both states are returned. |
 
 ```shell
 curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/<project_id>/access_tokens"
@@ -40,8 +46,23 @@ curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/a
       "id" : 42,
       "active" : true,
       "created_at" : "2021-01-20T22:11:48.151Z",
+      "last_used_at" : null,
       "revoked" : false,
-      "access_level": 40
+      "access_level" : 40
+   },
+   {
+      "user_id" : 141,
+      "scopes" : [
+         "read_api"
+      ],
+      "name" : "token-2",
+      "expires_at" : "2021-01-31",
+      "id" : 43,
+      "active" : false,
+      "created_at" : "2021-01-21T12:12:38.123Z",
+      "revoked" : true,
+      "last_used_at" : "2021-02-13T10:34:57.178Z",
+      "access_level" : 40
    }
 ]
 ```

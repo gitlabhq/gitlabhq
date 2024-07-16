@@ -11,7 +11,7 @@ module Types
         def import_source_description(import_source)
           return "Not imported" if import_source == :none
 
-          "Imported from #{import_source.to_s.titleize}."
+          import_source.to_s.titleize
         end
       end
 

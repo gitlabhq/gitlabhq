@@ -426,9 +426,8 @@ const expandPreserveUnchangedConfig = (configOrRender) =>
 
 export function preserveUnchanged(configOrRender) {
   return (state, node, parent, index) => {
-    const { render, overwriteSourcePreservationStrategy, inline } = expandPreserveUnchangedConfig(
-      configOrRender,
-    );
+    const { render, overwriteSourcePreservationStrategy, inline } =
+      expandPreserveUnchangedConfig(configOrRender);
 
     const { sourceMarkdown } = node.attrs;
     const same = state.options.changeTracker.get(node);

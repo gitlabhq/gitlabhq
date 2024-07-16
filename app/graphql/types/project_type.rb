@@ -364,13 +364,13 @@ module Types
       null: true,
       description: 'Build pipelines of the project.',
       extras: [:lookahead],
-      resolver: Resolvers::ProjectPipelinesResolver
+      resolver: Resolvers::Ci::ProjectPipelinesResolver
 
     field :pipeline_schedules,
       type: Types::Ci::PipelineScheduleType.connection_type,
       null: true,
       description: 'Pipeline schedules of the project. This field can only be resolved for one project per request.',
-      resolver: Resolvers::ProjectPipelineSchedulesResolver
+      resolver: Resolvers::Ci::ProjectPipelineSchedulesResolver
 
     field :pipeline_triggers,
       Types::Ci::PipelineTriggerType.connection_type,
@@ -383,7 +383,7 @@ module Types
       null: true,
       description: 'Build pipeline of the project.',
       extras: [:lookahead],
-      resolver: Resolvers::ProjectPipelineResolver
+      resolver: Resolvers::Ci::ProjectPipelineResolver
 
     field :pipeline_counts, Types::Ci::PipelineCountsType,
       null: true,
@@ -544,7 +544,7 @@ module Types
     field :pipeline_analytics, Types::Ci::AnalyticsType,
       null: true,
       description: 'Pipeline analytics.',
-      resolver: Resolvers::ProjectPipelineStatisticsResolver
+      resolver: Resolvers::Ci::ProjectPipelineAnalyticsResolver
 
     field :ci_template, Types::Ci::TemplateType,
       null: true,

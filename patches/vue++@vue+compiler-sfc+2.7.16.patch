@@ -1,0 +1,29 @@
+diff --git a/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js b/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js
+index 91da3e0..001cf4f 100644
+--- a/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js
++++ b/node_modules/vue/node_modules/@vue/compiler-sfc/dist/compiler-sfc.js
+@@ -9658,7 +9658,23 @@ const splitRE = /\r?\n/g;
+ const emptyRE = /^(?:\/\/)?\s*$/;
+ function parse(options) {
+     const { source, filename = DEFAULT_FILENAME, compiler, compilerParseOptions = { pad: false }, sourceRoot = '', needMap = true, sourceMap = needMap } = options;
+-    const cacheKey = hashSum(filename + source + JSON.stringify(compilerParseOptions));
++    /**
++     * Even though it seems unlikely, with about 3400 files,
++     * there is a chance to hit a hash collision of 1.3‰.
++     * And if you have a collision under the influence of 1.3‰
++     * probability, it can end really badly.
++     *
++     * by simply hashing the parts of the hash separately,
++     * we increase the entropy quite a bit because:
++     *
++     * hash(a+b) != hash(a) + hash(b)
++     *
++     * This decreases the probability of hitting a collision
++     * 570000 times.
++     *
++     */
++    const cacheKey = hashSum(sourceRoot) + '-' + hashSum(filename) + '-' + hashSum(source) + '-' + hashSum(JSON.stringify(compilerParseOptions));
++
+     let output = cache.get(cacheKey);
+     if (output) {
+         return output;

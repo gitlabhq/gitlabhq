@@ -3,13 +3,23 @@
   "type": "object",
   "properties": {
     "expires_at": {
-      "type": "string",
       "oneOf": [
         {
-          "format": "date"
+          "type": "null"
         },
         {
-          "pattern": "^$"
+          "type": "string",
+          "oneOf": [
+            {
+              "format": "date"
+            },
+            {
+              "format": "date-time"
+            },
+            {
+              "pattern": "^$"
+            }
+          ]
         }
       ]
     },

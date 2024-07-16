@@ -9,6 +9,7 @@ export default (selector = '#js-project-delete-button') => {
 
   const {
     confirmPhrase,
+    buttonText,
     formPath,
     isFork,
     issuesCount,
@@ -24,6 +25,7 @@ export default (selector = '#js-project-delete-button') => {
       return createElement(ProjectDeleteButton, {
         props: {
           confirmPhrase,
+          buttonText,
           formPath,
           isFork: parseBoolean(isFork),
           issuesCount: parseInt(issuesCount, 10),

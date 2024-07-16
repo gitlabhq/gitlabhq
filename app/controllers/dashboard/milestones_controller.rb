@@ -11,7 +11,7 @@ class Dashboard::MilestonesController < Dashboard::ApplicationController
     respond_to do |format|
       format.html do
         @milestone_states = Milestone.states_count(@projects.select(:id), groups.select(:id))
-        @milestones = milestones.page(params[:page])
+        @milestones = milestones.page(pagination_params[:page])
       end
       format.json do
         render json: milestones.to_json(only: [:id, :title, :due_date], methods: :name)

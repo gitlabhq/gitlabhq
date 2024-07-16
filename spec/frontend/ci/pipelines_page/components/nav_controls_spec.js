@@ -13,13 +13,11 @@ describe('Pipelines Nav Controls', () => {
   };
 
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
-  const findCiLintButton = () => wrapper.findByTestId('ci-lint-button');
   const findClearCacheButton = () => wrapper.findByTestId('clear-cache-button');
 
   it('should render link to create a new pipeline', () => {
     const mockData = {
       newPipelinePath: 'foo',
-      ciLintPath: 'foo',
       resetCachePath: 'foo',
     };
 
@@ -33,7 +31,6 @@ describe('Pipelines Nav Controls', () => {
   it('should not render link to create pipeline if no path is provided', () => {
     const mockData = {
       helpPagePath: 'foo',
-      ciLintPath: 'foo',
       resetCachePath: 'foo',
     };
 
@@ -42,26 +39,10 @@ describe('Pipelines Nav Controls', () => {
     expect(findRunPipelineButton().exists()).toBe(false);
   });
 
-  it('should render link for CI lint', () => {
-    const mockData = {
-      newPipelinePath: 'foo',
-      helpPagePath: 'foo',
-      ciLintPath: 'foo',
-      resetCachePath: 'foo',
-    };
-
-    createComponent(mockData);
-    const ciLintButton = findCiLintButton();
-
-    expect(ciLintButton.text()).toContain('CI lint');
-    expect(ciLintButton.attributes('href')).toBe(mockData.ciLintPath);
-  });
-
   describe('Reset Runners Cache', () => {
     beforeEach(() => {
       const mockData = {
         newPipelinePath: 'foo',
-        ciLintPath: 'foo',
         resetCachePath: 'foo',
       };
       createComponent(mockData);

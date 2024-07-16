@@ -46,6 +46,7 @@ export const VARIANT_TIP = 'tip';
  * @param {string} [options.title] - Alert title
  * @param {VARIANT_SUCCESS|VARIANT_WARNING|VARIANT_DANGER|VARIANT_INFO|VARIANT_TIP} [options.variant] - Which GlAlert variant to use; it defaults to VARIANT_DANGER.
  * @param {object} [options.parent] - Reference to parent element under which alert needs to appear. Defaults to `document`.
+ * @param {boolean} [options.dismissible] - Set to `false` to make an alert non-dismissible. Defaults to `true`.
  * @param {Function} [options.onDismiss] - Handler to call when this alert is dismissed.
  * @param {string} [options.containerSelector] - Selector for the container of the alert
  * @param {boolean} [options.preservePrevious] - Set to `true` to preserve previous alerts. Defaults to `false`.
@@ -74,6 +75,7 @@ export const createAlert = ({
   captureError = false,
   error = null,
   messageLinks = null,
+  dismissible = true,
 }) => {
   if (captureError && error) Sentry.captureException(error);
 
@@ -167,7 +169,7 @@ export const createAlert = ({
         {
           props: {
             title,
-            dismissible: true,
+            dismissible,
             dismissLabel: __('Dismiss'),
             variant,
             primaryButtonLink: primaryButton?.link,

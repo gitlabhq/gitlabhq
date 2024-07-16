@@ -8,11 +8,8 @@ export const initOrganizationsActivity = () => {
   const {
     dataset: { appData },
   } = el;
-  const {
-    organizationActivityPath,
-    organizationActivityEventTypes,
-    organizationActivityAllEvent,
-  } = convertObjectPropsToCamelCase(JSON.parse(appData));
+  const { organizationActivityPath, organizationActivityEventTypes, organizationActivityAllEvent } =
+    convertObjectPropsToCamelCase(JSON.parse(appData));
 
   return new Vue({
     el,

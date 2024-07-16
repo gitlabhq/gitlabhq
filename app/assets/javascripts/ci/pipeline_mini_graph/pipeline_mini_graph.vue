@@ -127,6 +127,7 @@ export default {
       />
       <pipeline-stages
         :is-merge-train="isMergeTrain"
+        :pipeline-etag="pipelineEtag"
         :stages="pipelineStages"
         @miniGraphStageClick="$emit('miniGraphStageClick')"
       />

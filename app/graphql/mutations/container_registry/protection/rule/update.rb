@@ -22,28 +22,28 @@ module Mutations
             required: false,
             validates: { allow_blank: false },
             alpha: { milestone: '16.7' },
-            description:
-            'Container\'s repository path pattern of the protection rule. ' \
-            'For example, `my-scope/my-project/container-dev-*`. ' \
-            'Wildcard character `*` allowed.'
+            description: copy_field_description(
+              Types::ContainerRegistry::Protection::RuleType,
+              :repository_path_pattern
+            )
 
           argument :minimum_access_level_for_delete,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
-            validates: { allow_blank: false },
             alpha: { milestone: '16.7' },
-            description:
-            'Minimum GitLab access level allowed to delete container images to the container registry. ' \
-            'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
+            description: copy_field_description(
+              Types::ContainerRegistry::Protection::RuleType,
+              :minimum_access_level_for_delete
+            )
 
           argument :minimum_access_level_for_push,
             Types::ContainerRegistry::Protection::RuleAccessLevelEnum,
             required: false,
-            validates: { allow_blank: false },
             alpha: { milestone: '16.7' },
-            description:
-              'Minimum GitLab access level allowed to push container images to the container registry. ' \
-              'For example, `MAINTAINER`, `OWNER`, or `ADMIN`.'
+            description: copy_field_description(
+              Types::ContainerRegistry::Protection::RuleType,
+              :minimum_access_level_for_push
+            )
 
           field :container_registry_protection_rule,
             Types::ContainerRegistry::Protection::RuleType,

@@ -385,6 +385,16 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
           expect(json_response['message']).to have_key('cron')
         end
       end
+
+      context 'when ref has validation error' do
+        it 'does not create pipeline_schedule' do
+          post api("/projects/#{project.id}/pipeline_schedules", developer),
+            params: params.merge('ref' => 'invalid-ref')
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to have_key('ref')
+        end
+      end
     end
 
     context 'authenticated user with invalid permissions' do
@@ -426,6 +436,16 @@ RSpec.describe API::Ci::PipelineSchedules, feature_category: :continuous_integra
 
           expect(response).to have_gitlab_http_status(:bad_request)
           expect(json_response['message']).to have_key('cron')
+        end
+      end
+
+      context 'when ref has validation error' do
+        it 'does not update pipeline_schedule' do
+          put api("/projects/#{project.id}/pipeline_schedules/#{pipeline_schedule.id}", developer),
+            params: { ref: 'invalid-ref' }
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to have_key('ref')
         end
       end
     end

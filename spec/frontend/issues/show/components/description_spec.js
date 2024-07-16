@@ -269,7 +269,7 @@ describe('Description component', () => {
           });
           await waitForPromises();
 
-          eventHub.$emit('convert-task-list-item', '4:4-8:19');
+          eventHub.$emit('convert-task-list-item', { id: '1', sourcepos: '4:4-8:19' });
           await waitForPromises();
         });
 
@@ -284,9 +284,10 @@ describe('Description component', () => {
         });
 
         it('calls a mutation to create a task', () => {
-          const workItemTypeIdForTask = projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
-            (node) => node.name === 'Task',
-          ).id;
+          const workItemTypeIdForTask =
+            projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+              (node) => node.name === 'Task',
+            ).id;
           const { confidential, iteration, milestone } = issueDetailsResponse.data.issue;
           expect(createWorkItemMutationHandler).toHaveBeenCalledWith({
             input: {
@@ -323,7 +324,7 @@ describe('Description component', () => {
           });
           await waitForPromises();
 
-          eventHub.$emit('convert-task-list-item', '1:1-1:11');
+          eventHub.$emit('convert-task-list-item', { id: '1', sourcepos: '1:1-1:11' });
           await waitForPromises();
         });
 
@@ -354,7 +355,7 @@ describe('Description component', () => {
           props: { descriptionText },
         });
 
-        eventHub.$emit('delete-task-list-item', '4:4-5:19');
+        eventHub.$emit('delete-task-list-item', { id: '1', sourcepos: '4:4-5:19' });
 
         expect(wrapper.emitted('saveDescription')).toEqual([[newDescriptionText]]);
       });

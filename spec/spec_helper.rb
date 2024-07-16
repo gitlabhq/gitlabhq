@@ -158,7 +158,6 @@ RSpec.configure do |config|
   config.include StubGitlabCalls
   config.include NextFoundInstanceOf
   config.include NextInstanceOf
-  config.include TestEnv
   config.include FileReadHelpers
   config.include Database::MultipleDatabasesHelpers
   config.include Database::WithoutCheckConstraint
@@ -339,6 +338,13 @@ RSpec.configure do |config|
 
       # Experimental merge request dashboard
       stub_feature_flags(merge_request_dashboard: false)
+
+      # We want this this FF disabled by default
+      stub_feature_flags(synced_epic_work_item_editable: false)
+
+      # Since we are very early in the Vue migration, there isn't much value in testing when the feature flag is enabled
+      # Please see https://gitlab.com/gitlab-org/gitlab/-/issues/466081 for tracking revisiting this.
+      stub_feature_flags(your_work_projects_vue: false)
     else
       unstub_all_feature_flags
     end
@@ -437,7 +443,6 @@ RSpec.configure do |config|
         skip_jobs: false # We're not skipping jobs for inline tests
       ).call(chain)
 
-      chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, ::Gitlab::QueryLimiting::SidekiqMiddleware
       chain.insert_after ::Gitlab::SidekiqMiddleware::RequestStoreMiddleware, IsolatedRequestStore
 
       example.run
@@ -503,6 +508,8 @@ RSpec.configure do |config|
     STRING
 
     config.around(:each, spec_type) do |example|
+      next example.run if example.metadata[:migration_with_transaction]
+
       self.class.use_transactional_tests = false
 
       if DbCleaner.all_connection_classes.any? { |klass| klass.connection.transaction_open? }

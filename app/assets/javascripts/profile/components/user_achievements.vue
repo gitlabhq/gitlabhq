@@ -100,13 +100,13 @@ export default {
         class="gl-p-1 gl-border-none"
       />
       <br />
-      <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{
+      <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info">{{
         getCountBadge(userAchievement.count)
       }}</gl-badge>
       <gl-popover :target="userAchievement.id">
         <div>
           <span class="gl-font-bold">{{ userAchievement.name }}</span>
-          <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info" size="sm">{{
+          <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info">{{
             getCountBadge(userAchievement.count)
           }}</gl-badge>
         </div>

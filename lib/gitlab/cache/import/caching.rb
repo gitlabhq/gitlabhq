@@ -154,6 +154,30 @@ module Gitlab
           end
         end
 
+        # Returns a limited number of random values from the set.
+        #
+        # raw_key - The key of the set to check.
+        # limit - Number of values to return (default: 1).
+        def self.limited_values_from_set(raw_key, limit: 1)
+          key = cache_key_for(raw_key)
+
+          with_redis do |redis|
+            redis.srandmember(key, limit)
+          end
+        end
+
+        # Removes the given values from the set.
+        #
+        # raw_key - The key of the set to check.
+        # values - Array of values to remove from set.
+        def self.set_remove(raw_key, values = [])
+          key = cache_key_for(raw_key)
+
+          with_redis do |redis|
+            redis.srem(key, values)
+          end
+        end
+
         # Sets multiple keys to given values.
         #
         # mapping - A Hash mapping the cache keys to their values.
@@ -263,7 +287,7 @@ module Gitlab
         # raw_key - The key of the list to add to.
         # value - The field value to add to the list.
         # timeout - The new timeout of the key.
-        # limit - The maximum number of members in the set. Older members will be trimmed to this limit.
+        # limit - The maximum number of members in the list. Older members will be trimmed to this limit.
         def self.list_add(raw_key, value, timeout: TIMEOUT, limit: nil)
           validate_redis_value!(value)
 

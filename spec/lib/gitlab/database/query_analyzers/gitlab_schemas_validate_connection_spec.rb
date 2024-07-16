@@ -59,6 +59,12 @@ RSpec.describe Gitlab::Database::QueryAnalyzers::GitlabSchemasValidateConnection
           expect_error:
             /Could not find gitlab schema for table new_table/,
           setup: ->(_) { skip_if_shared_database(:ci) }
+        },
+        "for DDL operation that adds a view that changes MAIN and CI and contains DML statements" => {
+          model: ApplicationRecord,
+          sql: "CREATE OR REPLACE VIEW my_view AS SELECT * FROM p_ci_builds WHERE id = 1",
+          expect_error: nil,
+          setup: nil
         }
       }
     end
