@@ -118,6 +118,74 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '.search' do
+    let!(:source_user) do
+      create(:import_source_user, source_name: 'Source Name', source_username: 'Username')
+    end
+
+    it 'searches by source_name or source_username' do
+      expect(described_class.search('name')).to eq([source_user])
+      expect(described_class.search('username')).to eq([source_user])
+      expect(described_class.search('source')).to eq([source_user])
+      expect(described_class.search('inexistent')).to eq([])
+    end
+  end
+
+  describe '.sort_by_attribute' do
+    let_it_be(:namespace) { create(:namespace) }
+    let_it_be(:source_user_1) { create(:import_source_user, namespace: namespace, status: 4, source_name: 'd') }
+    let_it_be(:source_user_2) { create(:import_source_user, namespace: namespace, status: 2, source_name: 'b') }
+    let_it_be(:source_user_3) { create(:import_source_user, namespace: namespace, status: 1, source_name: 'a') }
+    let_it_be(:source_user_4) { create(:import_source_user, namespace: namespace, status: 3, source_name: 'c') }
+
+    let(:sort_by_attribute) { described_class.sort_by_attribute(method).pluck(attribute) }
+
+    context 'with method status_asc' do
+      let(:method) { 'status_asc' }
+      let(:attribute) { :status }
+
+      it 'order by status_desc ascending' do
+        expect(sort_by_attribute).to eq([1, 2, 3, 4])
+      end
+    end
+
+    context 'with method status_desc' do
+      let(:method) { 'status_desc' }
+      let(:attribute) { :status }
+
+      it 'order by status_desc descending' do
+        expect(sort_by_attribute).to eq([4, 3, 2, 1])
+      end
+    end
+
+    context 'with method source_name_asc' do
+      let(:method) { 'source_name_asc' }
+      let(:attribute) { :source_name }
+
+      it 'order by source_name_asc ascending' do
+        expect(sort_by_attribute).to eq(%w[a b c d])
+      end
+    end
+
+    context 'with method source_name_desc' do
+      let(:method) { 'source_name_desc' }
+      let(:attribute) { :source_name }
+
+      it 'order by source_name_desc descending' do
+        expect(sort_by_attribute).to eq(%w[d c b a])
+      end
+    end
+
+    context 'with an unexpected method' do
+      let(:method) { 'id_asc' }
+      let(:attribute) { :source_name }
+
+      it 'order by source_name_asc ascending' do
+        expect(sort_by_attribute).to eq(%w[a b c d])
+      end
+    end
+  end
+
   describe '#reassignable_status?' do
     reassignable_statuses = [:pending_reassignment, :rejected]
     all_states = described_class.state_machines[:status].states

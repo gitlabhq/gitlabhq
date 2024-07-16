@@ -41,6 +41,8 @@ RSpec.describe 'Resend notification to the reassigned user of an import source u
 
   context 'when user is authorized' do
     it 'resends notification and does not change status', :aggregate_failures do
+      expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+
       post_graphql_mutation(mutation, current_user: current_user)
 
       import_source_user = mutation_response['importSourceUser']
@@ -69,9 +71,9 @@ RSpec.describe 'Resend notification to the reassigned user of an import source u
     end
   end
 
-  context 'when feature flag `bulk_import_user_mapping`` disabled' do
+  context 'when feature flag `importer_user_mapping`` disabled' do
     before do
-      stub_feature_flags(bulk_import_user_mapping: false)
+      stub_feature_flags(importer_user_mapping: false)
     end
 
     it 'returns a resource not available error' do
@@ -79,7 +81,7 @@ RSpec.describe 'Resend notification to the reassigned user of an import source u
 
       expect(graphql_errors).to contain_exactly(
         hash_including(
-          'message' => '`bulk_import_user_mapping` feature flag is disabled.'
+          'message' => '`importer_user_mapping` feature flag is disabled.'
         )
       )
     end

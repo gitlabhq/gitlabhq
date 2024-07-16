@@ -49,6 +49,26 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
       expect_message_dismissed
     end
+
+    it 'broadcast message is still hidden after logout and log back in', :js do
+      gitlab_sign_in(user)
+
+      visit path
+
+      expect_to_be_on_explore_projects_page
+
+      find('body.page-initialised .js-dismiss-current-broadcast-notification').click
+
+      expect_message_dismissed
+
+      gitlab_sign_out
+
+      gitlab_sign_in(user)
+
+      visit path
+
+      expect_message_dismissed
+    end
   end
 
   describe 'banner type' do

@@ -22044,7 +22044,6 @@ GPG signature for a signed commit.
 | <a id="groupgooglecloudloggingconfigurations"></a>`googleCloudLoggingConfigurations` | [`GoogleCloudLoggingConfigurationTypeConnection`](#googlecloudloggingconfigurationtypeconnection) | Google Cloud logging configurations that receive audit events belonging to the group. (see [Connections](#connections)) |
 | <a id="groupgroupmemberscount"></a>`groupMembersCount` | [`Int!`](#int) | Count of direct members of this group. |
 | <a id="groupid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="groupimportsourceusers"></a>`importSourceUsers` **{warning-solid}** | [`ImportSourceUserConnection`](#importsourceuserconnection) | **Introduced** in GitLab 17.2. **Status**: Experiment. Import source users of the namespace. This field can only be resolved for one namespace in any single request. |
 | <a id="groupisadjourneddeletionenabled"></a>`isAdjournedDeletionEnabled` **{warning-solid}** | [`Boolean!`](#boolean) | **Introduced** in GitLab 16.11. **Status**: Experiment. Indicates if delayed group deletion is enabled. |
 | <a id="grouplfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="grouplockduofeaturesenabled"></a>`lockDuoFeaturesEnabled` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 16.10. **Status**: Experiment. Indicates if the GitLab Duo features enabled setting is enforced for all subgroups. |
@@ -22606,6 +22605,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupgroupmembersrelations"></a>`relations` | [`[GroupMemberRelation!]`](#groupmemberrelation) | Filter members by the given member relations. |
 | <a id="groupgroupmemberssearch"></a>`search` | [`String`](#string) | Search query. |
 | <a id="groupgroupmemberssort"></a>`sort` | [`MemberSort`](#membersort) | sort query. |
+
+##### `Group.importSourceUsers`
+
+Import source users of the namespace. This field can only be resolved for one namespace in any single request.
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Returns [`ImportSourceUserConnection`](#importsourceuserconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="groupimportsourceuserssearch"></a>`search` | [`String`](#string) | Query to search mappings by name or username of users on source instance. |
+| <a id="groupimportsourceuserssort"></a>`sort` | [`SourceUserSort`](#sourceusersort) | Sort mapping of users on source instance to users on destination instance by the criteria. |
+| <a id="groupimportsourceusersstatuses"></a>`statuses` | [`[ImportSourceUserStatus!]`](#importsourceuserstatus) | Filter mapping of users on source instance to users on destination instance by status. |
 
 ##### `Group.issues`
 
@@ -26500,7 +26521,6 @@ Product analytics events for a specific month and year.
 | <a id="namespacefullname"></a>`fullName` | [`String!`](#string) | Full name of the namespace. |
 | <a id="namespacefullpath"></a>`fullPath` | [`ID!`](#id) | Full path of the namespace. |
 | <a id="namespaceid"></a>`id` | [`ID!`](#id) | ID of the namespace. |
-| <a id="namespaceimportsourceusers"></a>`importSourceUsers` **{warning-solid}** | [`ImportSourceUserConnection`](#importsourceuserconnection) | **Introduced** in GitLab 17.2. **Status**: Experiment. Import source users of the namespace. This field can only be resolved for one namespace in any single request. |
 | <a id="namespacelfsenabled"></a>`lfsEnabled` | [`Boolean`](#boolean) | Indicates if Large File Storage (LFS) is enabled for namespace. |
 | <a id="namespacename"></a>`name` | [`String!`](#string) | Name of the namespace. |
 | <a id="namespacepackagesettings"></a>`packageSettings` | [`PackageSettings`](#packagesettings) | Package settings for the namespace. |
@@ -26605,6 +26625,28 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="namespacecomplianceframeworksid"></a>`id` | [`ComplianceManagementFrameworkID`](#compliancemanagementframeworkid) | Global ID of a specific compliance framework to return. |
 | <a id="namespacecomplianceframeworksids"></a>`ids` | [`[ComplianceManagementFrameworkID!]`](#compliancemanagementframeworkid) | List of Global IDs of compliance frameworks to return. |
 | <a id="namespacecomplianceframeworkssearch"></a>`search` | [`String`](#string) | Search framework with most similar names. |
+
+##### `Namespace.importSourceUsers`
+
+Import source users of the namespace. This field can only be resolved for one namespace in any single request.
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Returns [`ImportSourceUserConnection`](#importsourceuserconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
+###### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="namespaceimportsourceuserssearch"></a>`search` | [`String`](#string) | Query to search mappings by name or username of users on source instance. |
+| <a id="namespaceimportsourceuserssort"></a>`sort` | [`SourceUserSort`](#sourceusersort) | Sort mapping of users on source instance to users on destination instance by the criteria. |
+| <a id="namespaceimportsourceusersstatuses"></a>`statuses` | [`[ImportSourceUserStatus!]`](#importsourceuserstatus) | Filter mapping of users on source instance to users on destination instance by status. |
 
 ##### `Namespace.pagesDeployments`
 
@@ -36255,6 +36297,17 @@ Values for sort direction.
 | ----- | ----------- |
 | <a id="sortdirectionenumasc"></a>`ASC` | Ascending order. |
 | <a id="sortdirectionenumdesc"></a>`DESC` | Descending order. |
+
+### `SourceUserSort`
+
+Values for sorting the mapping of users on source instance to users on destination instance.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="sourceusersortsource_name_asc"></a>`SOURCE_NAME_ASC` | Instance source name by ascending order. |
+| <a id="sourceusersortsource_name_desc"></a>`SOURCE_NAME_DESC` | Instance source name by descending order. |
+| <a id="sourceusersortstatus_asc"></a>`STATUS_ASC` | Status of the mapping by ascending order. |
+| <a id="sourceusersortstatus_desc"></a>`STATUS_DESC` | Status of the mapping by descending order. |
 
 ### `TestCaseStatus`
 

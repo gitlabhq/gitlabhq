@@ -18,8 +18,8 @@ module Mutations
         authorize :admin_import_source_user
 
         def resolve(args)
-          if Feature.disabled?(:bulk_import_user_mapping, current_user)
-            raise_resource_not_available_error! '`bulk_import_user_mapping` feature flag is disabled.'
+          if Feature.disabled?(:importer_user_mapping, current_user)
+            raise_resource_not_available_error! '`importer_user_mapping` feature flag is disabled.'
           end
 
           import_source_user = authorized_find!(id: args[:id])

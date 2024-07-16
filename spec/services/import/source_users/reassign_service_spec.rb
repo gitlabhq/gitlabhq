@@ -12,6 +12,8 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
   describe '#execute' do
     context 'when reassignment is successful' do
       it 'returns success' do
+        expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+
         result = service.execute
 
         expect(result).to be_success
@@ -22,15 +24,22 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
       end
     end
 
-    context 'when current user does not have permission' do
-      let(:current_user) { create(:user) }
+    shared_examples 'an error response' do |desc, error:|
+      it "returns #{desc} error" do
+        expect(Notify).not_to receive(:import_source_user_reassign)
 
-      it 'returns error no permissions' do
         result = service.execute
 
         expect(result).to be_error
-        expect(result.message).to eq('You have insufficient permissions to update the import source user')
+        expect(result.message).to eq(error)
       end
+    end
+
+    context 'when current user does not have permission' do
+      let(:current_user) { create(:user) }
+
+      it_behaves_like 'an error response', 'no permissions',
+        error: 'You have insufficient permissions to update the import source user'
     end
 
     context 'when import source user does not have an reassignable status' do
@@ -39,41 +48,29 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
         allow(import_source_user).to receive(:reassignable_status?).and_return(false)
       end
 
-      it 'returns error invalid status' do
-        result = service.execute
-        expect(result).to be_error
-        expect(result.message).to eq('Import source user has an invalid status for this operation')
-      end
+      it_behaves_like 'an error response', 'invalid status',
+        error: 'Import source user has an invalid status for this operation'
     end
 
     context 'when assignee user does not exist' do
       let(:assignee_user) { nil }
 
-      it 'returns invalid assignee error' do
-        result = service.execute
-        expect(result).to be_error
-        expect(result.message).to eq('Only active regular, auditor, or administrator users can be assigned')
-      end
+      it_behaves_like 'an error response', 'invalid assignee',
+        error: 'Only active regular, auditor, or administrator users can be assigned'
     end
 
     context 'when assignee user is not a human' do
       let(:assignee_user) { create(:user, :bot) }
 
-      it 'returns invalid assignee error' do
-        result = service.execute
-        expect(result).to be_error
-        expect(result.message).to eq('Only active regular, auditor, or administrator users can be assigned')
-      end
+      it_behaves_like 'an error response', 'invalid assignee',
+        error: 'Only active regular, auditor, or administrator users can be assigned'
     end
 
     context 'when assignee user is not active' do
       let(:assignee_user) { create(:user, :deactivated) }
 
-      it 'returns invalid assignee error' do
-        result = service.execute
-        expect(result).to be_error
-        expect(result.message).to eq('Only active regular, auditor, or administrator users can be assigned')
-      end
+      it_behaves_like 'an error response', 'invalid assignee',
+        error: 'Only active regular, auditor, or administrator users can be assigned'
     end
 
     context 'when an error occurs' do
@@ -83,12 +80,7 @@ RSpec.describe Import::SourceUsers::ReassignService, feature_category: :importer
           full_messages: ['Error']))
       end
 
-      it 'returns an error' do
-        result = service.execute
-
-        expect(result).to be_error
-        expect(result.message).to eq(['Error'])
-      end
+      it_behaves_like 'an error response', 'active record', error: ['Error']
     end
   end
 end

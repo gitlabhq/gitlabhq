@@ -23,9 +23,9 @@ RSpec.describe Import::LoadPlaceholderReferencesWorker, feature_category: :impor
       let(:job_args) { [import_source, uid, params] }
     end
 
-    context 'when bulk_import_user_mapping feature is disabled' do
+    context 'when importer_user_mapping feature is disabled' do
       before do
-        stub_feature_flags(bulk_import_user_mapping: false)
+        stub_feature_flags(importer_user_mapping: false)
       end
 
       it 'does not execute LoadService' do
@@ -34,9 +34,9 @@ RSpec.describe Import::LoadPlaceholderReferencesWorker, feature_category: :impor
         perform
       end
 
-      context 'when bulk_import_user_mapping feature is enabled for the user' do
+      context 'when importer_user_mapping feature is enabled for the user' do
         before do
-          stub_feature_flags(bulk_import_user_mapping: user)
+          stub_feature_flags(importer_user_mapping: user)
         end
 
         it 'executes LoadService' do

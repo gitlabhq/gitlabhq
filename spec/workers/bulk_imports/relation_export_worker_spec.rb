@@ -65,7 +65,7 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
       context 'when export is user_contributions' do
         let(:relation) { 'user_contributions' }
 
-        context 'and :bulk_import_user_mapping feature flag is enabled' do
+        context 'and :importer_user_mapping feature flag is enabled' do
           it 'enqueues the UserContributionsExportWorker' do
             expect(BulkImports::UserContributionsExportWorker).to receive(:perform_async).with(
               group.id, group.class.name, user.id
@@ -75,9 +75,9 @@ RSpec.describe BulkImports::RelationExportWorker, feature_category: :importers d
           end
         end
 
-        context 'and :bulk_import_user_mapping feature flag is disabled' do
+        context 'and :importer_user_mapping feature flag is disabled' do
           before do
-            stub_feature_flags(bulk_import_user_mapping: false)
+            stub_feature_flags(importer_user_mapping: false)
           end
 
           it 'does not enqueue the UserContributionsExportWorker' do

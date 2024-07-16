@@ -18,7 +18,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
     it 'pushes feature flag to frontend' do
       request
 
-      expect(response.body).to have_pushed_frontend_feature_flags(bulkImportUserMapping: true)
+      expect(response.body).to have_pushed_frontend_feature_flags(importerUserMapping: true)
       expect(response.body).to have_pushed_frontend_feature_flags(serviceAccountsCrud: true)
       expect(response.body).to have_pushed_frontend_feature_flags(webuiMembersInheritedUsers: true)
     end

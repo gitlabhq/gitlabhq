@@ -7,7 +7,11 @@ exports[`Experiment badge component renders the badge 1`] = `
     href="#"
     target="_self"
   >
-    Experiment
+    <span
+      class="gl-badge-content"
+    >
+      Experiment
+    </span>
   </a>
   <div
     class="gl-popover"

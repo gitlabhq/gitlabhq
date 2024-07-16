@@ -154,7 +154,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           end.new
         end
 
-        context 'when :bulk_import_user_mapping feature flag is enabled' do
+        context 'when :importer_user_mapping feature flag is enabled' do
           it 'caches existing referenced user_ids' do
             expected_user_ref_ids = Issue.all.pluck(
               :author_id, :updated_by_id, :last_edited_by_id, :closed_by_id
@@ -168,9 +168,9 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           end
         end
 
-        context 'when :bulk_import_user_mapping feature flag is disabled' do
+        context 'when :importer_user_mapping feature flag is disabled' do
           it 'does not cache any contributing user ids' do
-            stub_feature_flags(bulk_import_user_mapping: false)
+            stub_feature_flags(importer_user_mapping: false)
 
             expect(BulkImports::UserContributionsExportMapper).not_to receive(:new)
             subject.execute
@@ -216,7 +216,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           allow(json_writer).to receive(:write_relation)
         end
 
-        context 'when :bulk_import_user_mapping feature flag is enabled' do
+        context 'when :importer_user_mapping feature flag is enabled' do
           it 'caches existing referenced user_ids' do
             expect_next_instance_of(BulkImports::UserContributionsExportMapper) do |contribution_mapper|
               expect(contribution_mapper).to receive(:cache_user_contributions_on_record).with(group).once
@@ -226,9 +226,9 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           end
         end
 
-        context 'when :bulk_import_user_mapping feature flag is disabled' do
+        context 'when :importer_user_mapping feature flag is disabled' do
           it 'does not cache any contributing user ids' do
-            stub_feature_flags(bulk_import_user_mapping: false)
+            stub_feature_flags(importer_user_mapping: false)
 
             expect(BulkImports::UserContributionsExportMapper).not_to receive(:new)
             subject.execute
@@ -281,7 +281,7 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           project_member.update!(created_by: create(:user))
         end
 
-        context 'when :bulk_import_user_mapping feature flag is enabled' do
+        context 'when :importer_user_mapping feature flag is enabled' do
           it 'caches existing referenced user_ids' do
             expected_user_ref_ids = [project_member.user_id, project_member.created_by_id].map(&:to_s)
 
@@ -293,9 +293,9 @@ RSpec.describe Gitlab::ImportExport::Json::StreamingSerializer, :clean_gitlab_re
           end
         end
 
-        context 'when :bulk_import_user_mapping feature flag is disabled' do
+        context 'when :importer_user_mapping feature flag is disabled' do
           it 'does not cache any contributing user ids' do
-            stub_feature_flags(bulk_import_user_mapping: false)
+            stub_feature_flags(importer_user_mapping: false)
 
             expect(BulkImports::UserContributionsExportMapper).not_to receive(:new)
             subject.execute

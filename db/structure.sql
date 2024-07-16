@@ -27536,7 +27536,7 @@ CREATE INDEX index_import_source_user_placeholder_references_on_namespace_id ON 
 
 CREATE INDEX index_import_source_user_placeholder_references_on_source_user_ ON import_source_user_placeholder_references USING btree (source_user_id);
 
-CREATE INDEX index_import_source_users_on_namespace_id ON import_source_users USING btree (namespace_id);
+CREATE INDEX index_import_source_users_on_namespace_id_and_status ON import_source_users USING btree (namespace_id, status);
 
 CREATE INDEX index_import_source_users_on_placeholder_user_id ON import_source_users USING btree (placeholder_user_id);
 

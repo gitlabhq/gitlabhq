@@ -17,7 +17,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   before_action :authorize_read_group_member!, only: :index
 
   before_action only: [:index] do
-    push_frontend_feature_flag(:bulk_import_user_mapping, current_user)
+    push_frontend_feature_flag(:importer_user_mapping, current_user)
     push_frontend_feature_flag(:service_accounts_crud, @group)
     push_frontend_feature_flag(:webui_members_inherited_users, current_user)
   end

@@ -21,8 +21,6 @@ module Import
 
       private
 
-      attr_reader :import_source_user, :current_user, :params
-
       def cancel_reassignment
         import_source_user.reassign_to_user = nil
         import_source_user.reassigned_by_user = nil

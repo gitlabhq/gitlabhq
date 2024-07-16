@@ -2,7 +2,16 @@
 
 module Import
   class SourceUser < ApplicationRecord
+    include Gitlab::SQL::Pattern
+
     self.table_name = 'import_source_users'
+
+    SORT_ORDERS = {
+      source_name_asc: { order_by: 'source_name', sort: 'asc' },
+      source_name_desc: { order_by: 'source_name', sort: 'desc' },
+      status_asc: { order_by: 'status', sort: 'asc' },
+      status_desc: { order_by: 'status', sort: 'desc' }
+    }.freeze
 
     belongs_to :placeholder_user, class_name: 'User', optional: true
     belongs_to :reassign_to_user, class_name: 'User', optional: true
@@ -12,6 +21,7 @@ module Import
     validates :namespace_id, :import_type, :source_hostname, :source_user_identifier, :status, presence: true
 
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
+    scope :by_statuses, ->(statuses) { where(status: statuses) }
 
     state_machine :status, initial: :pending_reassignment do
       state :pending_reassignment, value: 0
@@ -55,15 +65,29 @@ module Import
       end
     end
 
-    def self.find_source_user(source_user_identifier:, namespace:, source_hostname:, import_type:)
-      return unless namespace
+    class << self
+      def find_source_user(source_user_identifier:, namespace:, source_hostname:, import_type:)
+        return unless namespace
 
-      find_by(
-        source_user_identifier: source_user_identifier,
-        namespace_id: namespace.id,
-        source_hostname: source_hostname,
-        import_type: import_type
-      )
+        find_by(
+          source_user_identifier: source_user_identifier,
+          namespace_id: namespace.id,
+          source_hostname: source_hostname,
+          import_type: import_type
+        )
+      end
+
+      def search(query)
+        return none unless query.is_a?(String)
+
+        fuzzy_search(query, [:source_name, :source_username])
+      end
+
+      def sort_by_attribute(method)
+        sort_order = SORT_ORDERS[method&.to_sym] || SORT_ORDERS[:source_name_asc]
+
+        reorder(sort_order[:order_by] => sort_order[:sort])
+      end
     end
 
     def reassignable_status?

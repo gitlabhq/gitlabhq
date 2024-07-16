@@ -11,6 +11,8 @@ RSpec.describe Import::SourceUsers::ResendNotificationService, feature_category:
   describe '#execute' do
     context 'when notification is successfully sent' do
       it 'returns success' do
+        expect(Notify).to receive_message_chain(:import_source_user_reassign, :deliver_now)
+
         result = service.execute
 
         expect(result).to be_success
@@ -22,6 +24,8 @@ RSpec.describe Import::SourceUsers::ResendNotificationService, feature_category:
       let(:current_user) { create(:user) }
 
       it 'returns error no permissions' do
+        expect(Notify).not_to receive(:import_source_user_reassign)
+
         result = service.execute
 
         expect(result).to be_error
@@ -35,6 +39,8 @@ RSpec.describe Import::SourceUsers::ResendNotificationService, feature_category:
       end
 
       it 'returns error invalid status' do
+        expect(Notify).not_to receive(:import_source_user_reassign)
+
         result = service.execute
         expect(result).to be_error
         expect(result.message).to eq('Import source user has an invalid status for this operation')

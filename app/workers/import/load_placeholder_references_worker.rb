@@ -11,7 +11,7 @@ module Import
     loggable_arguments 0, 1
 
     def perform(import_source, import_uid, params = {})
-      return unless Feature.enabled?(:bulk_import_user_mapping, User.actor_from_id(params['current_user_id']))
+      return unless Feature.enabled?(:importer_user_mapping, User.actor_from_id(params['current_user_id']))
 
       ::Import::PlaceholderReferences::LoadService.new(
         import_source: import_source,

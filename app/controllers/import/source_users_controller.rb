@@ -56,7 +56,7 @@ module Import
     end
 
     def check_feature_flag!
-      not_found unless Feature.enabled?(:bulk_import_user_mapping, current_user)
+      not_found unless Feature.enabled?(:importer_user_mapping, current_user)
     end
 
     # TODO: This is a placeholder for the proper UI to be provided

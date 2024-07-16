@@ -6,7 +6,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
   shared_examples 'it requires feature flag' do
     context 'when :improved_user_mapping is disabled' do
       it 'returns 404' do
-        stub_feature_flags(bulk_import_user_mapping: false)
+        stub_feature_flags(importer_user_mapping: false)
 
         subject
 
