@@ -242,11 +242,11 @@ class SearchController < ApplicationController
       metadata['meta.search.project_id'] = params[:project_id]
       metadata['meta.search.scope'] = params[:scope] || @scope
       metadata['meta.search.page'] = params[:page] || '1'
-      metadata['meta.search.filters.confidential'] = params[:confidential]
-      metadata['meta.search.filters.state'] = params[:state]
+      metadata['meta.search.filters.confidential'] = filter_params[:confidential]
+      metadata['meta.search.filters.state'] = filter_params[:state]
       metadata['meta.search.force_search_results'] = params[:force_search_results]
       metadata['meta.search.project_ids'] = params[:project_ids]
-      metadata['meta.search.filters.language'] = params[:language]
+      metadata['meta.search.filters.language'] = filter_params[:language]
       metadata['meta.search.type'] = @search_type if @search_type.present?
       metadata['meta.search.level'] = @search_level if @search_level.present?
       metadata[:global_search_duration_s] = @global_search_duration_s if @global_search_duration_s.present?
@@ -306,6 +306,10 @@ class SearchController < ApplicationController
 
   def search_type
     search_service.search_type
+  end
+
+  def filter_params
+    params.permit(:confidential, :state, language: [])
   end
 end
 

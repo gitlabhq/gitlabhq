@@ -226,7 +226,7 @@ We should treat this similar to adding a new worker. That means we only start sc
    To ensure backward and forward compatibility between consecutive versions
 of the application, follow these steps over three minor releases:
 
-1. Create the newly named worker, and have the old worker call the new worker's `#perform` method. Inroduce a feature flag to control when we start scheduling the new worker. (Release M)
+1. Create the newly named worker, and have the old worker call the new worker's `#perform` method. Introduce a feature flag to control when we start scheduling the new worker. (Release M)
 
     Any old worker jobs that are still in the queue will delegate to the new worker. When this version is deployed, it is no longer relevant which version of the job is scheduled or which Sidekiq handles it, an old-Sidekiq will use the old worker's full implementation, a new-Sidekiq will delegate to the new worker.
 

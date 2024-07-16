@@ -173,6 +173,7 @@ When creating a workspace in a project, one of the following errors might occur:
 - `You can't create a workspace for this project` when you attempt to create the workspace from **Workspaces** on the left sidebar.
 - `To set up this feature, contact your administrator.` when you attempt to create the workspace in a specific project using the `Edit` function.
 - An expected agent is not be present in the list of available agents.
+
 Possible reasons for this error are:
 
 - The user does not have at least Developer role for the workspace project and/or the agent project. To resolve this issue, ask the respective group or project owner to grant you access.

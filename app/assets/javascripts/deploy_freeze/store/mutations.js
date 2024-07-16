@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { formatTimezone } from '~/lib/utils/datetime_utility';
 import * as types from './mutation_types';
@@ -21,7 +20,7 @@ const setFreezePeriodIsDeleting = (state, id, isDeleting) => {
     return;
   }
 
-  Vue.set(freezePeriod, 'isDeleting', isDeleting);
+  freezePeriod.isDeleting = isDeleting;
 };
 
 export default {

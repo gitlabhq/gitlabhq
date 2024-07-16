@@ -61,7 +61,7 @@ RSpec.describe 'Projects > Settings > Repository settings', feature_category: :s
       end
     end
 
-    context 'Deploy Keys', :js do
+    context 'Deploy keys', :js do
       let_it_be(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
       let_it_be(:public_deploy_key) { create(:another_deploy_key, title: 'public_deploy_key', public: true) }
 

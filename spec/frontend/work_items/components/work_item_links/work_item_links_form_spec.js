@@ -1,9 +1,10 @@
 import Vue, { nextTick } from 'vue';
-import { GlForm, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
+import { GlForm, GlFormGroup, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
 import groupWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/group_work_item_types.query.graphql.json';
 import { sprintf, s__ } from '~/locale';
+import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -60,6 +61,7 @@ describe('WorkItemLinksForm', () => {
   const updateMutationResolver = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   const updateMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
+  const createMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
   const availableWorkItemsResolver = jest.fn().mockResolvedValue(availableWorkItemsResponse);
   const projectWorkItemTypesResolver = jest
     .fn()
@@ -78,6 +80,7 @@ describe('WorkItemLinksForm', () => {
     parentWorkItemType = WORK_ITEM_TYPE_VALUE_ISSUE,
     childrenType = WORK_ITEM_TYPE_ENUM_TASK,
     updateMutation = updateMutationResolver,
+    createMutation = createMutationResolver,
     isGroup = false,
     createGroupLevelWorkItems = true,
   } = {}) => {
@@ -89,7 +92,7 @@ describe('WorkItemLinksForm', () => {
         [groupProjectsForLinksWidgetQuery, groupProjectsFormLinksWidgetResolver],
         [relatedProjectsForLinksWidgetQuery, relatedProjectsForLinksWidgetResolver],
         [updateWorkItemHierarchyMutation, updateMutation],
-        [createWorkItemMutation, createMutationResolver],
+        [createWorkItemMutation, createMutation],
       ]),
       propsData: {
         fullPath: 'group-a',
@@ -107,6 +110,15 @@ describe('WorkItemLinksForm', () => {
         hasIterationsFeature,
         isGroup,
       },
+      stubs: {
+        GlFormGroup: stubComponent(GlFormGroup, {
+          props: ['state', 'invalidFeedback'],
+        }),
+        GlFormInput: stubComponent(GlFormInput, {
+          props: ['state', 'disabled', 'value'],
+          template: `<input />`,
+        }),
+      },
     });
 
     jest.advanceTimersByTime(SEARCH_DEBOUNCE);
@@ -114,6 +126,7 @@ describe('WorkItemLinksForm', () => {
   };
 
   const findForm = () => wrapper.findComponent(GlForm);
+  const findFormGroup = () => wrapper.findByTestId('work-items-create-form-group');
   const findWorkItemTokenInput = () => wrapper.findComponent(WorkItemTokenInput);
   const findInput = () => wrapper.findComponent(GlFormInput);
   const findConfidentialCheckbox = () => wrapper.findComponent(GlFormCheckbox);
@@ -151,6 +164,27 @@ describe('WorkItemLinksForm', () => {
         expect(findInput().exists()).toBe(true);
         expect(findAddChildButton().text()).toBe('Create task');
         expect(findWorkItemTokenInput().exists()).toBe(false);
+      });
+
+      it('passes field validation details to form when create mutation fails', async () => {
+        await createComponent({ createMutation: createMutationRejection });
+
+        expect(findFormGroup().props('state')).toBe(true);
+        expect(findFormGroup().props('invalidFeedback')).toBe(null);
+        expect(findInput().props('state')).toBe(true);
+
+        findInput().vm.$emit('input', 'Create task test');
+        // Trigger form submission
+        findForm().vm.$emit('submit', {
+          preventDefault: jest.fn(),
+        });
+        await waitForPromises();
+
+        expect(findFormGroup().props('state')).toBe(false);
+        expect(findFormGroup().props('invalidFeedback')).toBe(
+          'Something went wrong when trying to create a child. Please try again.',
+        );
+        expect(findInput().props('state')).toBe(false);
       });
 
       it('creates child task in non confidential parent', async () => {

@@ -2705,7 +2705,7 @@ msgstr ""
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
-msgid "AccessDropdown|Deploy Keys"
+msgid "AccessDropdown|Deploy keys"
 msgstr ""
 
 msgid "AccessDropdown|Groups"
@@ -4699,7 +4699,7 @@ msgstr ""
 msgid "Admin|Credentials"
 msgstr ""
 
-msgid "Admin|Deploy Keys"
+msgid "Admin|Deploy keys"
 msgstr ""
 
 msgid "Admin|Features"
@@ -17901,9 +17901,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Deploy Key"
-msgstr ""
-
-msgid "Deploy Keys"
 msgstr ""
 
 msgid "Deploy Token"
@@ -34558,9 +34555,6 @@ msgstr ""
 msgid "New Branch"
 msgstr ""
 
-msgid "New Deploy Key"
-msgstr ""
-
 msgid "New Epic"
 msgstr ""
 
@@ -34819,6 +34813,9 @@ msgid "No access"
 msgstr ""
 
 msgid "No activities found"
+msgstr ""
+
+msgid "No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr ""
 
 msgid "No approvers"
@@ -55353,9 +55350,6 @@ msgstr ""
 msgid "To set up SAML authentication for your group through an identity provider like Azure, Okta, Onelogin, Ping Identity, or your custom SAML 2.0 provider:"
 msgstr ""
 
-msgid "To set up this feature, contact your administrator."
-msgstr ""
-
 msgid "To set up this integration:"
 msgstr ""
 
@@ -60766,6 +60760,9 @@ msgstr ""
 msgid "Workspaces|No active workspaces. Create a workspace to get started."
 msgstr ""
 
+msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
+msgstr ""
+
 msgid "Workspaces|No terminated workspaces to show."
 msgstr ""
 
@@ -60848,9 +60845,6 @@ msgid "Workspaces|Workspaces Settings"
 msgstr ""
 
 msgid "Workspaces|You can't create a workspace for this project"
-msgstr ""
-
-msgid "Workspaces|You must have access to a cluster agent. An administrator can configure an agent for the project or group."
 msgstr ""
 
 msgid "Workspaces|Your workspaces"

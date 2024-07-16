@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'Deploy keys with protected tags' do
-  let(:dropdown_sections_minus_deploy_keys) { all_dropdown_sections - ['Deploy Keys'] }
+  let(:dropdown_sections_minus_deploy_keys) { all_dropdown_sections - ['Deploy keys'] }
 
   context 'when deploy keys are enabled to this project' do
     let!(:deploy_key_1) { create(:deploy_key, title: 'title 1', projects: [project]) }

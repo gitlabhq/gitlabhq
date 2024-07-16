@@ -105,6 +105,7 @@ export default {
       workItemTypes: [],
       workItemsToAdd: [],
       error: null,
+      isInputValid: true,
       search: '',
       selectedProject: null,
       childToCreateTitle: null,
@@ -266,6 +267,7 @@ export default {
     },
     unsetError() {
       this.error = null;
+      this.isInputValid = true;
     },
     addChild() {
       this.submitInProgress = true;
@@ -291,6 +293,7 @@ export default {
         })
         .catch(() => {
           this.error = this.$options.i18n.addChildErrorMessage;
+          this.isInputValid = false;
         })
         .finally(() => {
           this.search = '';
@@ -325,6 +328,7 @@ export default {
         })
         .catch(() => {
           this.error = this.$options.i18n.createChildErrorMessage;
+          this.isInputValid = false;
         })
         .finally(() => {
           this.search = '';
@@ -361,11 +365,15 @@ export default {
           class="gl-w-full"
           :label="$options.i18n.titleInputLabel"
           :description="$options.i18n.titleInputValidationMessage"
+          :invalid-feedback="error"
+          :state="isInputValid"
+          data-testid="work-items-create-form-group"
         >
           <gl-form-input
             ref="wiTitleInput"
             v-model="search"
             :placeholder="$options.i18n.titleInputPlaceholder"
+            :state="isInputValid"
             maxlength="255"
             class="gl-mb-3"
             autofocus
@@ -389,7 +397,7 @@ export default {
         ref="confidentialityCheckbox"
         v-model="confidential"
         name="isConfidential"
-        class="gl-md-mt-5 gl-mb-5 gl-md-mb-3!"
+        class="gl-mb-5 gl-md-mb-3!"
         :disabled="parentConfidential"
         >{{ confidentialityCheckboxLabel }}</gl-form-checkbox
       >
@@ -417,7 +425,7 @@ export default {
       >
         {{ workItemsToAddInvalidMessage }}
       </div>
-      <div v-if="error" class="gl-text-red-500" data-testid="work-items-error">
+      <div v-if="error" class="gl-text-red-500 gl-mt-3" data-testid="work-items-error">
         {{ error }}
       </div>
     </div>

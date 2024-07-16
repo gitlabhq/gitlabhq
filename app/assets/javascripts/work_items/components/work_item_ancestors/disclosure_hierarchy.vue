@@ -95,7 +95,7 @@ export default {
         <disclosure-hierarchy-item v-if="!isMobile" :item="firstItem" :item-id="itemId(0)">
           <slot :item="firstItem" :item-id="itemId(0)"></slot>
         </disclosure-hierarchy-item>
-        <li class="disclosure-hierarchy-item">
+        <li v-if="middleItems.length > 0" class="disclosure-hierarchy-item">
           <gl-disclosure-dropdown :items="middleItems">
             <template #toggle>
               <button

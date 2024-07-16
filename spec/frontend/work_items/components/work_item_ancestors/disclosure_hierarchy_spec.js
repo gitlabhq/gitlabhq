@@ -130,6 +130,30 @@ describe('DisclosurePath', () => {
         expect(findDropdown().exists()).toBe(true);
         expect(findDropdown().props('items').length).toBe(mockDisclosureHierarchyItems.length - 1);
       });
+
+      describe('when there is one item', () => {
+        beforeEach(async () => {
+          wrapper = createComponent({
+            withEllipsis: false,
+            items: [mockDisclosureHierarchyItems[0]],
+          });
+
+          jest.spyOn(GlBreakpointInstance, 'getBreakpointSize').mockReturnValue('sm');
+
+          window.dispatchEvent(new Event('resize'));
+          await nextTick();
+          const { value } = getBinding(wrapper.element, 'gl-resize-observer');
+          value();
+        });
+
+        it('renders 1 item', () => {
+          expect(listItems().length).toBe(1);
+        });
+
+        it('does not render dropdown', () => {
+          expect(findDropdown().exists()).toBe(false);
+        });
+      });
     });
   });
 });

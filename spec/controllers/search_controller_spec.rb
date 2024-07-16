@@ -27,7 +27,7 @@ RSpec.describe SearchController, feature_category: :global_search do
     end
 
     shared_examples_for 'metadata is set' do |action|
-      it 'renders a 408 when a timeout occurs' do
+      it 'sets the metadata' do
         expect(controller).to receive(:append_info_to_payload).and_wrap_original do |method, payload|
           method.call(payload)
 
@@ -41,12 +41,12 @@ RSpec.describe SearchController, feature_category: :global_search do
           expect(payload[:metadata]['meta.search.project_ids']).to eq(%w[456 789])
           expect(payload[:metadata]['meta.search.type']).to eq('basic')
           expect(payload[:metadata]['meta.search.level']).to eq('global')
-          expect(payload[:metadata]['meta.search.filters.language']).to eq('ruby')
+          expect(payload[:metadata]['meta.search.filters.language']).to eq(['ruby'])
           expect(payload[:metadata]['meta.search.page']).to eq('2')
           expect(payload[:metadata][:global_search_duration_s]).to be_a_kind_of(Numeric)
         end
         params = {
-          scope: 'issues', search: 'hello world', group_id: '123', page: '2', project_id: '456', language: 'ruby',
+          scope: 'issues', search: 'hello world', group_id: '123', page: '2', project_id: '456', language: ['ruby'],
           project_ids: %w[456 789], confidential: true, include_archived: true, state: true, force_search_results: true
         }
         get action, params: params
@@ -691,7 +691,7 @@ RSpec.describe SearchController, feature_category: :global_search do
           expect(payload[:metadata]['meta.search.project_ids']).to eq(%w[456 789])
           expect(payload[:metadata]['meta.search.type']).to eq('basic')
           expect(payload[:metadata]['meta.search.level']).to eq('global')
-          expect(payload[:metadata]['meta.search.filters.language']).to eq('ruby')
+          expect(payload[:metadata]['meta.search.filters.language']).to eq(['ruby'])
           expect(payload[:metadata]['meta.search.page']).to eq('2')
         end
 
@@ -706,7 +706,7 @@ RSpec.describe SearchController, feature_category: :global_search do
           include_archived: true,
           state: true,
           force_search_results: true,
-          language: 'ruby'
+          language: ['ruby']
         }
       end
 

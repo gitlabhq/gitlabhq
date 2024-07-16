@@ -37,7 +37,7 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
     it 'shows breadcrumbs' do
       expect(page_breadcrumbs).to eq([
         { text: 'Admin area', href: admin_root_path },
-        { text: 'Deploy Keys', href: admin_deploy_keys_path }
+        { text: 'Deploy keys', href: admin_deploy_keys_path }
       ])
     end
   end
@@ -75,8 +75,8 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
     it 'shows breadcrumbs' do
       expect(page_breadcrumbs).to eq([
         { text: 'Admin area', href: admin_root_path },
-        { text: 'Deploy Keys', href: admin_deploy_keys_path },
-        { text: 'New Deploy Key', href: new_admin_deploy_key_path }
+        { text: 'Deploy keys', href: admin_deploy_keys_path },
+        { text: 'New deploy key', href: new_admin_deploy_key_path }
       ])
     end
   end
@@ -103,8 +103,8 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
     it 'shows breadcrumbs' do
       expect(page_breadcrumbs).to eq([
         { text: 'Admin area', href: admin_root_path },
-        { text: 'Deploy Keys', href: admin_deploy_keys_path },
-        { text: 'Edit Deploy Key', href: edit_admin_deploy_key_path(deploy_key) }
+        { text: 'Deploy keys', href: admin_deploy_keys_path },
+        { text: 'Edit deploy key', href: edit_admin_deploy_key_path(deploy_key) }
       ])
     end
   end

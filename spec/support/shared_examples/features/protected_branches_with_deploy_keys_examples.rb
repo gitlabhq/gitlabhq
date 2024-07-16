@@ -6,7 +6,7 @@ RSpec.shared_examples 'Deploy keys with protected branches' do
     sign_in(user)
   end
 
-  let(:dropdown_sections_minus_deploy_keys) { all_dropdown_sections - ['Deploy Keys'] }
+  let(:dropdown_sections_minus_deploy_keys) { all_dropdown_sections - ['Deploy keys'] }
 
   context 'when deploy keys are enabled to this project' do
     let!(:deploy_key_1) { create(:deploy_key, title: 'title 1', projects: [project]) }

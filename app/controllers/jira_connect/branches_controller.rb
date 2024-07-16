@@ -1,20 +1,17 @@
 # frozen_string_literal: true
 
 class JiraConnect::BranchesController < JiraConnect::ApplicationController
-  # before_action :authenticate_user!, only: :new
+  before_action :authenticate_user!, only: :new
   skip_before_action :verify_atlassian_jwt!, only: :new
 
   def new
-    # move authenticate_user! to a before_action when we remove the jira_connect_proxy_create_branch feature flag
-    authenticate_user! if Feature.enabled?(:jira_connect_proxy_create_branch, current_user)
-
     @new_branch_data = new_branch_data
   end
 
   # If the GitLab for Jira Cloud app was installed from the Jira marketplace and points to a self-managed instance,
   # we route the user to the self-managed instance, otherwise we redirect to :new
   def route
-    if Feature.enabled?(:jira_connect_proxy_create_branch, current_user) && current_jira_installation.proxy?
+    if current_jira_installation.proxy?
       redirect_to "#{current_jira_installation.create_branch_url}?#{request.query_string}"
 
       return

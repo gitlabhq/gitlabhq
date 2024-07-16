@@ -89,4 +89,17 @@ describe('Deploy freeze mutations', () => {
       expect(stateCopy.selectedId).toBe(5);
     });
   });
+
+  describe('REQUEST_DELETE_FREEZE_PERIOD', () => {
+    beforeEach(() => {
+      stateCopy = state({
+        freezePeriods: [{ id: 1 }],
+      });
+    });
+
+    it('should set freeze period', () => {
+      mutations[types.REQUEST_DELETE_FREEZE_PERIOD](stateCopy, 1);
+      expect(stateCopy.freezePeriods[0].isDeleting).toBe(true);
+    });
+  });
 });
