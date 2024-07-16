@@ -62,18 +62,18 @@ TODO: Fill out or delete (optional)
 [Provide a user story to illustrate the use case for this feature/enhancement. Include examples to help communicate the intended functionality.]
 
 
-/label ~"Category:Remote Development"
+/label ~"Category:Workspaces"
 /label  ~"section::dev"
 /label  ~"devops::create"
-/label  ~"group::ide"
+/label  ~"group::remote development"
 
 <!-- Replace with other type, e.g. bug or maintenance, if appropriate -->
 /label ~"type::feature"
 <!-- Replace with other subtype if appropriate -->
 /label ~"feature::addition"
 
-<!-- By default, all issues start in the unprioritized status. See https://about.gitlab.com/handbook/engineering/development/dev/create/ide/#-remote-development-planning-process -->
-/label  ~"rd-workflow::unprioritized"
+<!-- By default, all issues start in the unprioritized status. See https://handbook.gitlab.com/handbook/engineering/development/dev/create/remote-development/#-planning-process -->
+/label  ~"workspaces-workflow::unprioritized"
 
 <!-- For simplicity and to avoid triage bot warnings about missing workflow labels, we will default to issues starting at the refinement phase --> 
 /label ~"workflow::refinement"

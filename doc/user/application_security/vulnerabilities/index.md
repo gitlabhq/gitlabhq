@@ -19,6 +19,7 @@ including:
 - Available actions
 - Linked issues
 - Actions log
+- Filename and line number of the vulnerability (if available)
 
 If the scanner determined the vulnerability to be a false positive, an alert message is included at
 the top of the vulnerability's page.

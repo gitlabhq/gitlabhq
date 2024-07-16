@@ -114,6 +114,13 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
       it { is_expected.to eq(Gitlab::UrlBuilder.build(work_item, only_path: true)) }
     end
 
+    context 'when target is a group level work item' do
+      let(:work_item) { create(:work_item, namespace: create(:group)) }
+      let(:event) { create(:event, target: work_item, target_type: 'WorkItem') }
+
+      it { is_expected.to eq(Gitlab::UrlBuilder.build(work_item, only_path: true)) }
+    end
+
     context 'when target is not a work item' do
       let(:issue) { create(:issue) }
       let(:event) { create(:event, target: issue) }
@@ -391,6 +398,16 @@ RSpec.describe EventsHelper, factory_default: :keep, feature_category: :user_pro
       event.target = create(:note_on_issue, note: 'nice work')
 
       expect(subject).to eq("#{project_base_url}/-/issues/#{event.note_target.iid}#note_#{event.target.id}")
+    end
+
+    context 'when group level work item' do
+      let(:work_item) { create(:work_item, :group_level, namespace: create(:group)) }
+      let(:note) { create(:note_on_work_item, namespace: work_item.namespace, noteable: work_item) }
+      let(:event) { create(:event, :closed, group: work_item.namespace, project: nil, target: note) }
+
+      it 'returns url to group level work item' do
+        expect(subject).to eq(group_work_item_url(event.group, event.target.noteable, anchor: dom_id(event.target)))
+      end
     end
 
     it 'returns a merge request url' do

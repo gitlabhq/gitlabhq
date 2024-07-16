@@ -41,13 +41,12 @@ In the past, we added interactivity to the page piece-by-piece, adding multiple 
 
 Because of these reasons, we want to be cautious about adding new Vue applications to the pages where another Vue application is already present (this does not include old or new navigation). Before adding a new app, make sure that it is absolutely impossible to extend an existing application to achieve a desired functionality. When in doubt, feel free to ask for the architectural advise on `#frontend` or `#frontend-maintainers` Slack channel.
 
-If you still need to add a new application, make sure it shares local state with existing applications.
-Learn: [How do I know which state manager to use?](state_management.md)
+If you still need to add a new application, make sure it shares local state with existing applications (preferably via Apollo Client, or Vuex if we use REST API)
 
 ## Vue architecture
 
 The main goal we are trying to achieve with Vue architecture is to have only one data flow, and only one data entry.
-To achieve this goal we use [Pinia](pinia.md) or [Apollo Client](graphql.md#libraries)
+To achieve this goal we use [Vuex](#vuex) or [Apollo Client](graphql.md#libraries)
 
 You can also read about this architecture in Vue documentation about
 [state management](https://v2.vuejs.org/v2/guide/state-management.html#Simple-State-Management-from-Scratch)
@@ -461,13 +460,11 @@ in one table would not be a good use of this pattern.
 
 You can read more about components in Vue.js site, [Component System](https://v2.vuejs.org/v2/guide/#Composing-with-Components).
 
-### Pinia
+### A folder for the Store
 
-[Learn more about Pinia in GitLab](pinia.md).
+#### Vuex
 
-### Vuex
-
-[Vuex is deprecated](vuex.md#deprecated), consider [migrating](migrating_from_vuex.md).
+Check this [page](vuex.md) for more details.
 
 ### Vue Router
 
@@ -570,7 +567,8 @@ Based on the Vue guidance:
 
 - **Do not** use or create a JavaScript class in your [data function](https://v2.vuejs.org/v2/api/#data).
 - **Do not** add new JavaScript class implementations.
-- **Do** use [a state manager](state_management.md) or a set of components if cannot use primitives or objects.
+- **Do** use [GraphQL](../api_graphql_styleguide.md), [Vuex](vuex.md) or a set of components if
+  cannot use primitives or objects.
 - **Do** maintain existing implementations using such approaches.
 - **Do** Migrate components to a pure object model when there are substantial changes to it.
 - **Do** add business logic to helpers or utilities, so you can test them separately from your component.
@@ -726,6 +724,29 @@ const useSomeLogic = (done) => {
   doSomeLogic();
   done(); // good, composable doesn't try to be too smart
 }
+```
+
+#### Composables and Vuex
+
+We should always prefer to avoid using Vuex state in composables. In case it's not possible, we should use props to receive that state, and emit events from the `setup` to update the Vuex state. A parent component should be responsible to get that state from Vuex, and mutate it on events emitted from a child. You should **never mutate a state that's coming down from a prop**. If a composable must mutate a Vuex state, it should use a callback to emit an event.
+
+```javascript
+const useAsyncComposable = ({ state, update }) => {
+  const start = async () => {
+    const newState = await doSomething(state);
+    update(newState);
+  };
+  return { start };
+};
+
+const ComponentWithComposable = {
+  setup(props, { emit }) {
+    const update = (data) => emit('update', data);
+    const state = computed(() => props.state); // state from Vuex
+    const { start } = useAsyncComposable({ state, update });
+    start();
+  },
+};
 ```
 
 #### Testing composables
@@ -914,10 +935,11 @@ Using `trigger` on the component means we treat it as a white box: we assume tha
 
 You should only apply to be a Vue.js expert when your own merge requests and your reviews show:
 
-- Deep understanding of Vue reactivity
-- Vue and [Pinia](pinia.md) code are structured according to both official and our guidelines
-- Full understanding of testing Vue components and Pinia stores
-- Knowledge about the existing Vue and Pinia applications and existing reusable components
+- Deep understanding of Vue and Vuex reactivity
+- Vue and Vuex code are structured according to both official and our guidelines
+- Full understanding of testing a Vue and Vuex application
+- Vuex code follows the [documented pattern](vuex.md#naming-pattern-request-and-receive-namespaces)
+- Knowledge about the existing Vue and Vuex applications and existing reusable components
 
 ## Vue 2 -> Vue 3 Migration
 

@@ -413,16 +413,13 @@ For each attempt to fetch a version, our client fetches `id` and `sha` from the 
 
 Read more about local state management with Apollo in the [Vue Apollo documentation](https://vue-apollo.netlify.app/guide/local-state.html#local-state).
 
-### Using with Pinia
-
-Combining Pinia and Apollo is generally not recommended.
-[Learn when it's appropriate to combine these](state_management.md#combining-pinia-and-apollo).
-
 ### Using with Vuex
 
-We do not recommend combining Vuex and Apollo Client. [Vuex is deprecated in GitLab](vuex.md#deprecated).
-If you have an existing Vuex store that's used alongside Apollo we strongly recommend [migrating away from Vuex entirely](migrating_from_vuex.md).
-[Learn more about state management in GitLab](state_management.md).
+We do not recommend creating new applications with Vuex and Apollo Client combined. There are a few reasons:
+
+- VueX and Apollo are both **global stores**, which means sharing responsibilities and having two sources of truth.
+- Keeping VueX and Apollo in sync can be high maintenance.
+- Bugs that would come from the communication between Apollo and VueX would be subtle and hard to debug.
 
 ### Working on GraphQL-based features when frontend and backend are not in sync
 

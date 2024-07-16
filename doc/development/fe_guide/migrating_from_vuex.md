@@ -6,36 +6,30 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Migrating from Vuex
 
-[Vuex is deprecated in GitLab](vuex.md#deprecated), if you have an existing Vuex store you should strongly consider migrating.
-
 ## Why?
 
 We have defined the [GraphQL API](../../api/graphql/index.md) as [the primary API](../api_graphql_styleguide.md#vision) for all user-facing features,
 so we can safely assume that whenever GraphQL is present, so will the Apollo Client.
-We [do not want to use Vuex with Apollo](graphql.md#using-with-vuex), so the Vuex stores count
+We [do not want to use Vuex with Apollo](graphql.md#using-with-vuex), so the VueX stores count
 will naturally decline over time as we move from the REST API to GraphQL.
 
-This page gives guidelines and methods to translate an existing Vuex store to pure Vue and Apollo, or how to rely less on Vuex.
+This section gives guidelines and methods to translate an existing VueX store to
+pure Vue and Apollo, or how to rely less on VueX.
 
 ## How?
 
-[Pick your preferred state manager solution](state_management.md) before proceeding with the migration.
-If you plan to use Pinia [follow this guide](pinia.md#migrating-from-vuex) instead.
-
 ### Overview
 
-As a whole, we want to understand how complex our change will be.
-Sometimes, we only have a few properties that are truly worth being stored in a global state and sometimes they can safely all be extracted to pure Vue.
-Vuex properties generally fall into one of these categories:
+As a whole, we want to understand how complex our change will be. Sometimes, we only have a few properties that are truly worth being stored in a global state and sometimes they can safely all be extracted to pure `Vue`. `VueX` properties generally fall into one of these categories:
 
 - Static properties
 - Reactive mutable properties
 - Getters
 - API data
 
-Therefore, the first step is to read the current Vuex state and determine the category of each property.
+Therefore, the first step is to read the current VueX state and determine the category of each property.
 
-At a high level, we could map each category with an equivalent non-Vuex code pattern:
+At a high level, we could map each category with an equivalent non-VueX code pattern:
 
 - Static properties: Provide/Inject from Vue API.
 - Reactive mutable properties: Vue events and props, Apollo Client.
@@ -70,15 +64,15 @@ The easiest type of values to migrate are static values, either:
   in the store for easy access by other state properties or methods. However, it is generally
   a better practice to add such values to a `constants.js` file and import it when needed.
 - Rails-injected dataset: These are values that we may need to provide to our Vue apps.
-  They are static, so adding them to the Vuex store is not necessary and it could instead
-  be done easily through the `provide/inject` Vue API, which would be equivalent but without the Vuex overhead. This should **only** be injected inside the top-most JS file that mounts our component.
+  They are static, so adding them to the VueX store is not necessary and it could instead
+  be done easily through the `provide/inject` Vue API, which would be equivalent but without the VueX overhead. This should **only** be injected inside the top-most JS file that mounts our component.
 
 If we take a look at our example above, we can already see that two properties contain `Endpoint` in their name, which probably means that these come from our Rails dataset. To confirm this, we would search the codebase for these properties and see where they are defined, which is the case in our example. Additionally, `blobPath` is also a static property, and a little less obvious here is that `pageInfo` is actually a constant! It is never modified and is only used as a default value that we use inside our getter:
 
 ```javascript
 // state.js AKA our store
 export default ({ blobPath = '', summaryEndpoint = '', suiteEndpoint = '' }) => ({
-  limit,
+  limit
   blobPath, // Static - Dataset
   summaryEndpoint, // Static - Dataset
   suiteEndpoint, // Static - Dataset
@@ -99,7 +93,7 @@ These values are especially useful when used by a lot of different components, s
 
 #### Simple read/write values
 
-If we go back to our example, `selectedSuiteIndex` is only used by **one component** and also **once inside a getter**. Additionally, this getter is only used once itself! It would be quite easy to translate this logic to Vue because this could become a `data` property on the component instance. For the getter, we can use a computed property instead, or a method on the component that returns the right item because we will have access to the index there as well. This is a perfect example of how the Vuex store here complicates the application by adding a lot of abstractions when really everything could live inside the same component.
+If we go back to our example, `selectedSuiteIndex` is only used by **one component** and also **once inside a getter**. Additionally, this getter is only used once itself! It would be quite easy to translate this logic to Vue because this could become a `data` property on the component instance. For the getter, we can use a computed property instead, or a method on the component that returns the right item because we will have access to the index there as well. This is a perfect example of how the VueX store here complicates the application by adding a lot of abstractions when really everything could live inside the same component.
 
 Luckily, in our example all properties could live inside the same component. However, there are cases where it will not be possible. When this happens, we can use Vue events and props to communicate between sibling components. Store the data in question inside a parent component that should know about the state, and when a child component wants to write to the component, it can `$emit` an event with the new value and let the parent update. Then, by cascading props down to all of its children, all instances of the sibling components will share the same data.
 
@@ -292,13 +286,13 @@ export const resolvers = {
 }
 ```
 
-Any time we make a call to the `testReportSummary @client` field, this resolver is executed and returns the result of the operation, which is essentially doing the same job as the Vuex action did.
+Any time we make a call to the `testReportSummary @client` field, this resolver is executed and returns the result of the operation, which is essentially doing the same job as the `VueX` action did.
 
 If we assume that our GraphQL call is stored inside a data property called `testReportSummary`, we can replace `isLoading` with `this.$apollo.queries.testReportSummary.lodaing` in any component that fires this query. Errors can be handled inside the `error` hook of the Query.
 
 ### Migration strategy
 
-Now that we have gone through each type of data, let's review how to plan for the transition between a Vuex-based store and one without. We are trying to avoid Vuex and Apollo coexisting, so the less time where both stores are available in the same context the better. To minimize this overlap, we should start our migration by removing from the store all that does not involve adding an Apollo store. Each of the following point could be its own MR:
+Now that we have gone through each type of data, let's review how to plan for the transition between a VueX-based store and one without. We are trying to avoid VueX and Apollo coexisting, so the less time where both stores are available in the same context the better. To minimize this overlap, we should start our migration by removing from the store all that does not involve adding an Apollo store. Each of the following point could be its own MR:
 
 1. Migrate away from Static values, both `Rails` dataset and client-side constants and use `provide/inject` and `constants.js` files instead.
 1. Replace simple read/write operations with either:
@@ -307,7 +301,7 @@ Now that we have gone through each type of data, let's review how to plan for th
 1. Replace shared read/write operations with Apollo Client `@client` directives.
 1. Replace network data with Apollo Client, either with actual GraphQL calls when available or by using client-side resolvers to make REST calls.
 
-If it is impossible to quickly replace shared read/write operations or network data (for example in one or two milestones), consider making a different Vue component behind a feature flag that is exclusively functional with Apollo Client, and rename the current component that uses Vuex with a `legacy-` prefix. The newer component might not be able to implement all functionality right away, but we can progressively add them as we make MRs. This way, our legacy component is exclusively using Vuex as a store and the new one is only Apollo. After the new component has re-implemented all the logic, we can turn the Feature Flag on and ensure that it behaves as expected.
+If it is impossible to quickly replace shared read/write operations or network data (for example in one or two milestones), consider making a different Vue component behind a feature flag that is exclusively functional with Apollo Client, and rename the current component that uses VueX with a `legacy-` prefix. The newer component might not be able to implement all functionality right away, but we can progressively add them as we make MRs. This way, our legacy component is exclusively using VueX as a store and the new one is only Apollo. After the new component has re-implemented all the logic, we can turn the Feature Flag on and ensure that it behaves as expected.
 
 ## FAQ
 
@@ -315,6 +309,10 @@ If it is impossible to quickly replace shared read/write operations or network d
 
 This is a rare occurrence and should suggest the following question: "Do I **really** need a global store then?" (the answer is probably no!) If the answer is yes, then you can use the [shared read/write technique with Apollo](#how-to-migrate-reactive-mutable-values) described above. It is perfectly acceptable to use Apollo Client for client-side exclusive stores.
 
-### Apollo client is really verbose for client directives. Can I mix and match with Vuex?
+### Are we going to use Pinia?
 
-Mixing and matching is not recommended. There are a lot of reasons why, but think of how codebases grow organically with what is available. Even if you were really good at separating your network state and your client-side state, other developers might not share the same dedication or simply not understand how to choose what lives in which store. Over time, you will also nearly inevitably need to communicate between your Vuex store and Apollo Client, which can only result in problems.
+The short answer is: we don't know, but it is unlikely. It would still mean having two global store libraries, which has the same downsides as VueX and Apollo Client coexisting. Reducing the size of our global stores is positive regardless of whether we end up using Pinia though!
+
+### Apollo client is really verbose for client directives. Can I mix and match with VueX?
+
+Mixing and matching is not recommended. There are a lot of reasons why, but think of how codebases grow organically with what is available. Even if you were really good at separating your network state and your client-side state, other developers might not share the same dedication or simply not understand how to choose what lives in which store. Over time, you will also nearly inevitably need to communicate between your VueX store and Apollo Client, which can only result in problems.

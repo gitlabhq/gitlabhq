@@ -118,6 +118,7 @@ class Event < ApplicationRecord
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }
   scope :for_wiki_meta, ->(meta) { where(target_type: 'WikiPage::Meta', target_id: meta.id) }
   scope :created_at, ->(time) { where(created_at: time) }
+  scope :with_target, -> { preload(:target) }
 
   # Authors are required as they're used to display who pushed data.
   #

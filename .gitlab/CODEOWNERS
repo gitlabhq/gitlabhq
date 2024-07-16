@@ -122,7 +122,7 @@ Dangerfile
 /scripts/**/glfm/**/* @gl-quality/eng-prod @gitlab-org/plan-stage/backend-engineers
 /scripts/**/*.js @gl-quality/eng-prod @gitlab-org/maintainers/frontend
 /scripts/frontend/ @gl-quality/eng-prod @gitlab-org/maintainers/frontend
-/scripts/remote_development/ @gitlab-org/maintainers/remote-development/backend
+/scripts/remote_development/ @gitlab-org/maintainers/workspaces/backend
 /scripts/review_apps/seed-dast-test-data.sh @gl-quality/eng-prod @dappelt @ngeorge1
 /.codeclimate.yml
 /.dockerignore
@@ -1042,9 +1042,9 @@ lib/gitlab/checks/**
 /config/initializers/declarative_policy_cached_attributes.rb
 /app/policies/
 /ee/app/policies/
-/ee/app/policies/remote_development/ @gitlab-org/maintainers/remote-development/backend
-/ee/app/policies/clusters/ @gitlab-org/maintainers/remote-development/backend
-/ee/spec/policies/remote_development/ @gitlab-org/maintainers/remote-development/backend
+/ee/app/policies/remote_development/ @gitlab-org/maintainers/workspaces/backend
+/ee/app/policies/clusters/ @gitlab-org/maintainers/workspaces/backend
+/ee/spec/policies/remote_development/ @gitlab-org/maintainers/workspaces/backend
 /ee/app/models/members/member_role.rb
 /ee/app/models/auth/member_role_ability_loader.rb
 /ee/app/models/preloaders/user_member_roles_in_groups_preloader.rb
@@ -1504,7 +1504,7 @@ ee/lib/ee/api/entities/project.rb
 ^[Global Search] @gitlab-org/search-team/migration-maintainers
 /ee/spec/elastic/migrate/
 
-^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/remote-development/backend
+^[Create::IDE - Remote Development Backend] @gitlab-org/maintainers/workspaces/backend
 /ee/app/models/remote_development/
 /ee/app/policies/remote_development/
 /ee/app/finders/remote_development/
@@ -1519,7 +1519,7 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/policies/remote_development/
 /ee/spec/requests/api/graphql/mutations/remote_development/
 /ee/spec/requests/api/graphql/remote_development/
-/ee/spec/features/remote_development/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
+/ee/spec/features/remote_development/ @gitlab-org/maintainers/workspaces/backend @gitlab-org/maintainers/workspaces/frontend
 /ee/spec/finders/remote_development/
 /ee/spec/support/shared_contexts/remote_development/
 /ee/spec/graphql/types/remote_development/
@@ -1528,9 +1528,9 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/fixtures/remote_development/
 /ee/spec/controllers/remote_development/
 /ee/spec/services/remote_development/
-/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/remote-development/backend @gl-quality/qe-maintainers
+/qa/qa/specs/features/**/remote_development/ @gitlab-org/maintainers/workspaces/backend @gl-quality/qe-maintainers
 
-^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/remote-development/frontend
+^[Create::IDE - Remote Development Frontend] @gitlab-org/maintainers/workspaces/frontend
 /ee/app/assets/remote_development/
 /ee/app/assets/**/remote_development/
 /ee/app/views/remote_development/

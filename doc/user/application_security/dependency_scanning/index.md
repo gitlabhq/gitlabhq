@@ -81,7 +81,7 @@ Dependency Scanning does not support runtime installation of compilers and inter
 
 ## Supported languages and package managers
 
-The following languages and dependency managers are supported when using the Dependency Scanning [CI Template](#enabling-the-analyzer-by-using-the-cicd-template):
+The following languages and dependency managers are supported by Dependency Scanning:
 
 <!-- markdownlint-disable MD044 -->
 <table class="ds-table">
@@ -678,7 +678,7 @@ Support for additional languages, dependency managers, and dependency files are 
 Enable the dependency scanning analyzer to ensure it scans your application's dependencies for known
 vulnerabilities. You can then adjust its behavior by using CI/CD variables.
 
-### Enabling the analyzer by using the CI/CD template
+### Enabling the analyzer
 
 Prerequisites:
 
@@ -691,17 +691,38 @@ Prerequisites:
 To enable the analyzer, either:
 
 - Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes dependency scanning.
-- Edit the `.gitlab-ci.yml` file manually. Use this method if your `.gitlab-ci.yml` file is complex.
 - Use a preconfigured merge request.
 - Create a [scan execution policy](../policies/scan-execution-policies.md) that enforces dependency
   scanning.
+- Edit the `.gitlab-ci.yml` file manually.
+- [Use CI/CD components](#use-cicd-components) (Android projects only)
+
+#### Use a preconfigured merge request
+
+This method automatically prepares a merge request that includes the Dependency Scanning template
+in the `.gitlab-ci.yml` file. You then merge the merge request to enable Dependency Scanning.
+
+NOTE:
+This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration file.
+If you have a complex GitLab configuration file it might not be parsed successfully, and an error
+might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
+
+To enable Dependency Scanning:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Secure > Security configuration**.
+1. In the **Dependency Scanning** row, select **Configure with a merge request**.
+1. Select **Create merge request**.
+1. Review the merge request, then select **Merge**.
+
+Pipelines now include a Dependency Scanning job.
 
 #### Edit the `.gitlab-ci.yml` file manually
 
 This method requires you to manually edit the existing `.gitlab-ci.yml` file. Use this method if
 your GitLab CI/CD configuration file is complex.
 
-To enable dependency scanning:
+To enable Dependency Scanning:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipeline editor**.
@@ -726,36 +747,17 @@ To enable dependency scanning:
    merge request**.
 1. Review and edit the merge request according to your standard workflow, then select **Merge**.
 
-Pipelines now include a dependency scanning job.
+Pipelines now include a Dependency Scanning job.
 
-#### Use a preconfigured merge request
-
-This method automatically prepares a merge request that includes the dependency scanning template
-in the `.gitlab-ci.yml` file. You then merge the merge request to enable dependency scanning.
-
-NOTE:
-This method works best with no existing `.gitlab-ci.yml` file, or with a minimal configuration
-file. If you have a complex GitLab configuration file it might not be parsed successfully, and an
-error might occur. In that case, use the [manual](#edit-the-gitlab-ciyml-file-manually) method instead.
-
-To enable dependency scanning:
-
-1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Secure > Security configuration**.
-1. In the **Dependency Scanning** row, select **Configure with a merge request**.
-1. Select **Create merge request**.
-1. Review the merge request, then select **Merge**.
-
-Pipelines now include a dependency scanning job.
-
-### Enabling dependency scanning by using CI/CD components
+#### Use CI/CD components
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/454143) in GitLab 17.0. This feature is an [experiment](../../../policy/experiment-beta-support.md).
 > - The dependency scanning CI/CD component only supports Android projects.
 
-Use [CI/CD components](../../../ci/components/index.md) to perform dependency scanning of your application. For instructions, see the respective component's README file.
+Use [CI/CD components](../../../ci/components/index.md) to perform Dependency Scanning of your
+application. For instructions, see the respective component's README file.
 
-#### Available CI/CD components per language and package manager
+##### Available CI/CD components per language and package manager
 
 - [Android applications](https://gitlab.com/explore/catalog/components/android-dependency-scanning)
 
@@ -765,12 +767,12 @@ See [Use security scanning tools with merge request pipelines](../index.md#use-s
 
 ### Customizing analyzer behavior
 
-You can use CI/CD variables to customize dependency scanning behavior.
+To customize Dependency Scanning, use [CI/CD variables](#available-cicd-variables).
 
 WARNING:
-You should test all customization of GitLab security scanning tools in a merge request before
-merging these changes to the default branch. Failure to do so can give unexpected results,
-including a large number of false positives.
+Test all customization of GitLab analyzers in a merge request before merging these changes to the
+default branch. Failure to do so can give unexpected results, including a large number of false
+positives.
 
 ### Overriding dependency scanning jobs
 

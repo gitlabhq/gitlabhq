@@ -27,6 +27,7 @@ issues:
 - own_resource_state_events
 - own_resource_label_events
 - own_description_versions
+- own_events
 - sync_object
 - last_edited_by
 - todos
@@ -1035,6 +1036,7 @@ epic:
 - own_resource_state_events
 - own_resource_label_events
 - own_description_versions
+- own_events
 - sync_object
 - todos
 - metrics
