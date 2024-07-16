@@ -7,7 +7,7 @@ import { DEFAULT_DEBOUNCE_AND_THROTTLE_MS } from '~/lib/utils/constants';
 import { s__ } from '~/locale';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 
-import { removeHierarchyChild } from '../graphql/cache_utils';
+import { updateParent } from '../graphql/cache_utils';
 import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
 import {
@@ -174,7 +174,7 @@ export default {
             },
           },
           update: (cache) =>
-            removeHierarchyChild({
+            updateParent({
               cache,
               fullPath: this.fullPath,
               iid: this.oldParent?.iid,

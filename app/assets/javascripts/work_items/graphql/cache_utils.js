@@ -31,6 +31,7 @@ import {
 } from '../constants';
 import groupWorkItemByIidQuery from './group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
 const getNotesWidgetFromSourceData = (draftData) =>
   draftData?.workspace?.workItem?.widgets.find(isNotesWidget);
@@ -154,10 +155,10 @@ export const updateCacheAfterRemovingAwardEmojiFromNote = (currentNotes, note) =
   });
 };
 
-export const addHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) => {
+export const addHierarchyChild = ({ cache, id, workItem }) => {
   const queryArgs = {
-    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
-    variables: { fullPath, iid },
+    query: getWorkItemTreeQuery,
+    variables: { id },
   };
   const sourceData = cache.readQuery(queryArgs);
 
@@ -168,19 +169,40 @@ export const addHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) =
   cache.writeQuery({
     ...queryArgs,
     data: produce(sourceData, (draftState) => {
-      const existingChild = findHierarchyWidgetChildren(draftState.workspace?.workItem).find(
+      const existingChild = findHierarchyWidgetChildren(draftState?.workItem).find(
         (child) => child.id === workItem?.id,
       );
       if (!existingChild) {
-        findHierarchyWidgetChildren(draftState.workspace?.workItem).push(workItem);
+        findHierarchyWidgetChildren(draftState?.workItem).push(workItem);
       }
     }),
   });
 };
 
-export const removeHierarchyChild = ({ cache, fullPath, iid, isGroup, workItem }) => {
+export const removeHierarchyChild = ({ cache, id, workItem }) => {
   const queryArgs = {
-    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+    query: getWorkItemTreeQuery,
+    variables: { id },
+  };
+  const sourceData = cache.readQuery(queryArgs);
+
+  if (!sourceData) {
+    return;
+  }
+
+  cache.writeQuery({
+    ...queryArgs,
+    data: produce(sourceData, (draftState) => {
+      const children = findHierarchyWidgetChildren(draftState?.workItem);
+      const index = children.findIndex((child) => child.id === workItem.id);
+      if (index >= 0) children.splice(index, 1);
+    }),
+  });
+};
+
+export const updateParent = ({ cache, query, fullPath, iid, workItem }) => {
+  const queryArgs = {
+    query,
     variables: { fullPath, iid },
   };
   const sourceData = cache.readQuery(queryArgs);

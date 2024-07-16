@@ -1,29 +1,26 @@
 import { WIDGET_TYPE_HIERARCHY } from '~/work_items/constants';
 import { addHierarchyChild, removeHierarchyChild } from '~/work_items/graphql/cache_utils';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
 
 describe('work items graphql cache utils', () => {
-  const fullPath = 'full/path';
-  const iid = '10';
+  const id = 'gid://gitlab/WorkItem/10';
   const mockCacheData = {
-    workspace: {
-      workItem: {
-        id: 'gid://gitlab/WorkItem/10',
-        title: 'Work item',
-        widgets: [
-          {
-            type: WIDGET_TYPE_HIERARCHY,
-            children: {
-              nodes: [
-                {
-                  id: 'gid://gitlab/WorkItem/20',
-                  title: 'Child',
-                },
-              ],
-            },
+    workItem: {
+      id: 'gid://gitlab/WorkItem/10',
+      title: 'Work item',
+      widgets: [
+        {
+          type: WIDGET_TYPE_HIERARCHY,
+          children: {
+            nodes: [
+              {
+                id: 'gid://gitlab/WorkItem/20',
+                title: 'Child',
+              },
+            ],
           },
-        ],
-      },
+        },
+      ],
     },
   };
 
@@ -39,31 +36,29 @@ describe('work items graphql cache utils', () => {
         title: 'New child',
       };
 
-      addHierarchyChild({ cache: mockCache, fullPath, iid, workItem: child });
+      addHierarchyChild({ cache: mockCache, id, workItem: child });
 
       expect(mockCache.writeQuery).toHaveBeenCalledWith({
-        query: workItemByIidQuery,
-        variables: { fullPath, iid },
+        query: getWorkItemTreeQuery,
+        variables: { id },
         data: {
-          workspace: {
-            workItem: {
-              id: 'gid://gitlab/WorkItem/10',
-              title: 'Work item',
-              widgets: [
-                {
-                  type: WIDGET_TYPE_HIERARCHY,
-                  children: {
-                    nodes: [
-                      {
-                        id: 'gid://gitlab/WorkItem/20',
-                        title: 'Child',
-                      },
-                      child,
-                    ],
-                  },
+          workItem: {
+            id: 'gid://gitlab/WorkItem/10',
+            title: 'Work item',
+            widgets: [
+              {
+                type: WIDGET_TYPE_HIERARCHY,
+                children: {
+                  nodes: [
+                    {
+                      id: 'gid://gitlab/WorkItem/20',
+                      title: 'Child',
+                    },
+                    child,
+                  ],
                 },
-              ],
-            },
+              },
+            ],
           },
         },
       });
@@ -80,7 +75,7 @@ describe('work items graphql cache utils', () => {
         title: 'New child',
       };
 
-      addHierarchyChild({ cache: mockCache, fullPath, iid, workItem: child });
+      addHierarchyChild({ cache: mockCache, id, workItem: child });
 
       expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });
@@ -98,25 +93,23 @@ describe('work items graphql cache utils', () => {
         title: 'Child',
       };
 
-      removeHierarchyChild({ cache: mockCache, fullPath, iid, workItem: childToRemove });
+      removeHierarchyChild({ cache: mockCache, id, workItem: childToRemove });
 
       expect(mockCache.writeQuery).toHaveBeenCalledWith({
-        query: workItemByIidQuery,
-        variables: { fullPath, iid },
+        query: getWorkItemTreeQuery,
+        variables: { id },
         data: {
-          workspace: {
-            workItem: {
-              id: 'gid://gitlab/WorkItem/10',
-              title: 'Work item',
-              widgets: [
-                {
-                  type: WIDGET_TYPE_HIERARCHY,
-                  children: {
-                    nodes: [],
-                  },
+          workItem: {
+            id: 'gid://gitlab/WorkItem/10',
+            title: 'Work item',
+            widgets: [
+              {
+                type: WIDGET_TYPE_HIERARCHY,
+                children: {
+                  nodes: [],
                 },
-              ],
-            },
+              },
+            ],
           },
         },
       });
@@ -133,7 +126,7 @@ describe('work items graphql cache utils', () => {
         title: 'Child',
       };
 
-      removeHierarchyChild({ cache: mockCache, fullPath, iid, workItem: childToRemove });
+      removeHierarchyChild({ cache: mockCache, id, workItem: childToRemove });
 
       expect(mockCache.writeQuery).not.toHaveBeenCalled();
     });

@@ -6,7 +6,7 @@ import WorkItemTokenInput from '../shared/work_item_token_input.vue';
 import { addHierarchyChild } from '../../graphql/cache_utils';
 import groupWorkItemTypesQuery from '../../graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '../../graphql/project_work_item_types.query.graphql';
-import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
+import updateWorkItemHierarchyMutation from '../../graphql/update_work_item_hierarchy.mutation.graphql';
 import createWorkItemMutation from '../../graphql/create_work_item.mutation.graphql';
 import {
   FORM_TYPES,
@@ -271,7 +271,7 @@ export default {
       this.submitInProgress = true;
       this.$apollo
         .mutate({
-          mutation: updateWorkItemMutation,
+          mutation: updateWorkItemHierarchyMutation,
           variables: {
             input: {
               id: this.issuableGid,
@@ -311,9 +311,7 @@ export default {
           update: (cache, { data }) =>
             addHierarchyChild({
               cache,
-              fullPath: this.fullPath,
-              iid: this.workItemIid,
-              isGroup: this.isGroup,
+              id: this.issuableGid,
               workItem: data.workItemCreate.workItem,
             }),
         })

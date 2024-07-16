@@ -336,8 +336,7 @@ export default {
           update: (cache, { data: { workItemCreate } }) =>
             addHierarchyChild({
               cache,
-              fullPath: this.fullPath,
-              iid: this.issueIid,
+              id: convertToGraphQLId(TYPENAME_WORK_ITEM, this.issueId),
               workItem: workItemCreate.workItem,
             }),
         });
@@ -371,8 +370,7 @@ export default {
           update: (cache) =>
             removeHierarchyChild({
               cache,
-              fullPath: this.fullPath,
-              iid: this.issueIid,
+              id: convertToGraphQLId(TYPENAME_WORK_ITEM, this.issueId),
               workItem: { id },
             }),
         });

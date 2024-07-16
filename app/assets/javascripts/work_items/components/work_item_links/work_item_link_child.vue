@@ -11,6 +11,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
+  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
@@ -138,6 +139,7 @@ export default {
           query: getWorkItemTreeQuery,
           variables: {
             id: this.childItem.id,
+            pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
           },
         });
         this.children = this.getWidgetByType(data?.workItem, WIDGET_TYPE_HIERARCHY).children.nodes;

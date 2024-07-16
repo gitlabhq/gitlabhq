@@ -359,9 +359,36 @@ reproduction.
 
 #### Hanging specs
 
-If a spec hangs, it might be caused by a [bug in Rails](https://github.com/rails/rails/issues/45994):
+If a spec hangs, or times out in CI, it might be caused by a
+[LoadInterlockAwareMonitor deadlock bug in Rails](https://github.com/rails/rails/issues/45994).
+
+To diagnose, you can use
+[sigdump](https://github.com/fluent/sigdump/blob/master/README.md#usage)
+to print the Ruby thread dump :
+
+1. Run the hanging spec locally.
+1. Trigger the Ruby thread dump by running this command:
+
+    ```shell
+    kill -CONT <pid>
+    ```
+
+1. The thread dump will be saved to the `/tmp/sigdump-<pid>.log` file.
+
+If you see lines with `load_interlock_aware_monitor.rb`, this is likely related:
+
+```shell
+/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:17:in `mon_enter'
+/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:22:in `block in synchronize'
+/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `handle_interrupt'
+/builds/gitlab-org/gitlab/vendor/ruby/3.2.0/gems/activesupport-7.0.8.4/lib/active_support/concurrency/load_interlock_aware_monitor.rb:21:in `synchronize'
+```
+
+See examples where we worked around by creating the factories before making
+requests:
 
 - <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/81112>
+- <https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158890>
 - <https://gitlab.com/gitlab-org/gitlab/-/issues/337039>
 
 ### Suggestions

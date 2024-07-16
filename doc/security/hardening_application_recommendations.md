@@ -32,7 +32,7 @@ encouraged for communications through system hooks.
 ## Push rules
 
 1. On the left sidebar, at the bottom, select **Admin area**.
-1. Select **Push Rules**.
+1. Select **Push rules**.
 
 Ensure that the following items are selected:
 

@@ -33,7 +33,7 @@ import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql
 import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
-import { findHierarchyWidgetChildren, findHierarchyWidgetDefinition } from '../utils';
+import { findHierarchyWidgetDefinition } from '../utils';
 
 import WorkItemTree from './work_item_links/work_item_tree.vue';
 import WorkItemActions from './work_item_actions.vue';
@@ -119,6 +119,7 @@ export default {
       isStickyHeaderShowing: false,
       editMode: false,
       draftData: {},
+      hasChildren: false,
     };
   },
   apollo: {
@@ -281,12 +282,6 @@ export default {
     },
     workItemNotes() {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
-    },
-    children() {
-      return this.workItem ? findHierarchyWidgetChildren(this.workItem) : [];
-    },
-    hasChildren() {
-      return !isEmpty(this.children);
     },
     workItemBodyClass() {
       return {
@@ -672,13 +667,13 @@ export default {
               :parent-work-item-type="workItem.workItemType.name"
               :work-item-id="workItem.id"
               :work-item-iid="workItemIid"
-              :children="children"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
               @show-modal="openInModal"
               @addChild="$emit('addChild')"
+              @childrenLoaded="hasChildren = $event"
             />
             <work-item-relationships
               v-if="workItemLinkedItems"

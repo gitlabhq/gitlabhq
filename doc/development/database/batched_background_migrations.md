@@ -73,7 +73,7 @@ batch size may be increased or decreased, based on the performance of the last 2
 hide empty description
 skinparam ConditionEndStyle hline
 left to right direction
-rectangle "Batched Background Migration Queue" as migrations {
+rectangle "Batched background migration queue" as migrations {
   rectangle "Migration N (active)" as migrationn
   rectangle "Migration 1 (completed)" as migration1
   rectangle "Migration 2 (active)" as migration2
@@ -410,7 +410,7 @@ In the example above we need an index on `(type, id)` to support the filters. Se
 
 ### Access data for multiple databases
 
-Background Migration contrary to regular migrations does have access to multiple databases
+Background migration contrary to regular migrations does have access to multiple databases
 and can be used to efficiently access and update data across them. To properly indicate
 a database to be used it is desired to create ActiveRecord model inline the migration code.
 Such model should use a correct [`ApplicationRecord`](multiple_databases.md#gitlab-schema)

@@ -22,11 +22,11 @@ import {
   WORK_ITEM_STATUS_TEXT,
   I18N_WORK_ITEM_SHOW_LABELS,
   TASKS_ANCHOR,
+  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
 import { findHierarchyWidgetChildren } from '../../utils';
 import { removeHierarchyChild } from '../../graphql/cache_utils';
-import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
-import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -62,19 +62,19 @@ export default {
   apollo: {
     workItem: {
       query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+        return getWorkItemTreeQuery;
       },
       variables() {
         return {
-          fullPath: this.fullPath,
-          iid: this.iid,
+          id: this.issuableGid,
+          pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
         };
       },
       update(data) {
-        return data.workspace.workItem ?? {};
+        return data.workItem ?? {};
       },
       skip() {
-        return !this.iid;
+        return !this.issuableId;
       },
       error(e) {
         this.error = e.message || this.$options.i18n.fetchError;

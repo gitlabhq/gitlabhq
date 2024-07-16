@@ -1,12 +1,14 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToggle } from '@gitlab/ui';
+
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import issueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
+
 import { resolvers } from '~/graphql_shared/issuable_client';
 import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 import WorkItemLinks from '~/work_items/components/work_item_links/work_item_links.vue';
@@ -14,13 +16,13 @@ import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/wor
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { FORM_TYPES } from '~/work_items/constants';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
-import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
+import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.graphql';
+
 import {
   getIssueDetailsResponse,
   groupWorkItemByIidResponseFactory,
-  workItemHierarchyResponse,
-  workItemHierarchyEmptyResponse,
+  workItemHierarchyTreeResponse,
+  workItemHierarchyTreeEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   workItemByIidResponseFactory,
   mockWorkItemCommentNote,
@@ -34,7 +36,7 @@ describe('WorkItemLinks', () => {
   let wrapper;
   let mockApollo;
 
-  const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyResponse);
+  const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
   const groupResponseWithAddChildPermission = jest
     .fn()
     .mockResolvedValue(groupWorkItemByIidResponseFactory());
@@ -50,8 +52,7 @@ describe('WorkItemLinks', () => {
   } = {}) => {
     mockApollo = createMockApollo(
       [
-        [workItemByIidQuery, fetchHandler],
-        [groupWorkItemByIidQuery, groupResponseWithAddChildPermission],
+        [getWorkItemTreeQuery, fetchHandler],
         [issueDetailsQuery, issueDetailsQueryHandler],
       ],
       resolvers,
@@ -149,7 +150,7 @@ describe('WorkItemLinks', () => {
   describe('when no child links', () => {
     beforeEach(async () => {
       await createComponent({
-        fetchHandler: jest.fn().mockResolvedValue(workItemHierarchyEmptyResponse),
+        fetchHandler: jest.fn().mockResolvedValue(workItemHierarchyTreeEmptyResponse),
       });
     });
 
@@ -162,7 +163,7 @@ describe('WorkItemLinks', () => {
     await createComponent();
 
     expect(findWorkItemLinkChildrenWrapper().exists()).toBe(true);
-    expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(4);
+    expect(findWorkItemLinkChildrenWrapper().props().children).toHaveLength(1);
   });
 
   it('shows an alert when list loading fails', async () => {
@@ -178,7 +179,7 @@ describe('WorkItemLinks', () => {
     await createComponent();
 
     expect(findChildrenCount().exists()).toBe(true);
-    expect(findChildrenCount().text()).toContain('4');
+    expect(findChildrenCount().text()).toContain('1');
   });
 
   describe('when no permission to update', () => {
@@ -264,20 +265,6 @@ describe('WorkItemLinks', () => {
       createComponent();
 
       expect(groupResponseWithAddChildPermission).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('when group context', () => {
-    it('skips calling the project work item query', () => {
-      createComponent({ isGroup: true });
-
-      expect(responseWithAddChildPermission).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query', () => {
-      createComponent({ isGroup: true });
-
-      expect(groupResponseWithAddChildPermission).toHaveBeenCalled();
     });
   });
 

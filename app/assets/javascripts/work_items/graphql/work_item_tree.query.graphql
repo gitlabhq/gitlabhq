@@ -1,55 +1,7 @@
-#import "~/graphql_shared/fragments/label.fragment.graphql"
-#import "~/graphql_shared/fragments/user.fragment.graphql"
-#import "ee_else_ce/work_items/graphql/work_item_metadata_widgets.fragment.graphql"
+#import "./work_item_hierarchy.fragment.graphql"
 
-query workItemTreeQuery($id: WorkItemID!) {
+query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 1000) {
   workItem(id: $id) {
-    id
-    workItemType {
-      id
-      name
-      iconName
-    }
-    title
-    userPermissions {
-      deleteWorkItem
-      updateWorkItem
-    }
-    confidential
-    widgets {
-      type
-      ... on WorkItemWidgetHierarchy {
-        type
-        parent {
-          id
-        }
-        children {
-          nodes {
-            id
-            iid
-            confidential
-            workItemType {
-              id
-              name
-              iconName
-            }
-            title
-            state
-            createdAt
-            closedAt
-            webUrl
-            reference(full: true)
-            widgets {
-              ... on WorkItemWidgetHierarchy {
-                type
-                hasChildren
-              }
-              ...WorkItemMetadataWidgets
-            }
-          }
-        }
-      }
-      ...WorkItemMetadataWidgets
-    }
+    ...WorkItemHierarchy
   }
 }

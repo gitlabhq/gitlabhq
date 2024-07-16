@@ -1417,6 +1417,14 @@ export const workItemHierarchyEmptyResponse = {
             parent: null,
             hasChildren: false,
             children: {
+              pageInfo: {
+                hasNextPage: false,
+                hasPreviousPage: false,
+                startCursor: null,
+                endCursor: null,
+                __typename: 'PageInfo',
+              },
+              count: 1,
               nodes: [],
               __typename: 'WorkItemConnection',
             },
@@ -1471,6 +1479,14 @@ export const workItemHierarchyNoUpdatePermissionResponse = {
           parent: null,
           hasChildren: true,
           children: {
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            count: 1,
             nodes: [
               {
                 id: 'gid://gitlab/WorkItem/2',
@@ -1767,6 +1783,65 @@ export const workItemObjectiveNoMetadata = {
   ],
 };
 
+export const workItemHierarchyTreeEmptyResponse = {
+  data: {
+    workItem: {
+      id: 'gid://gitlab/WorkItem/2',
+      iid: '2',
+      archived: false,
+      workItemType: {
+        id: 'gid://gitlab/WorkItems::Type/2411',
+        name: 'Objective',
+        iconName: 'issue-type-objective',
+        __typename: 'WorkItemType',
+      },
+      title: 'New title',
+      userPermissions: {
+        deleteWorkItem: true,
+        updateWorkItem: true,
+        setWorkItemMetadata: true,
+        adminParentLink: true,
+        createNote: true,
+        adminWorkItemLink: true,
+        __typename: 'WorkItemPermissions',
+      },
+      confidential: false,
+      reference: 'test-project-path#2',
+      namespace: {
+        __typename: 'Project',
+        id: '1',
+        fullPath: 'test-project-path',
+        name: 'Project name',
+      },
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          type: 'HIERARCHY',
+          parent: null,
+          hasChildren: true,
+          children: {
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            count: 0,
+            nodes: [],
+            __typename: 'WorkItemConnection',
+          },
+          __typename: 'WorkItemWidgetHierarchy',
+        },
+      ],
+      __typename: 'WorkItem',
+    },
+  },
+};
+
 export const workItemHierarchyTreeResponse = {
   data: {
     workItem: {
@@ -1807,10 +1882,18 @@ export const workItemHierarchyTreeResponse = {
           parent: null,
           hasChildren: true,
           children: {
+            pageInfo: {
+              hasNextPage: false,
+              hasPreviousPage: false,
+              startCursor: null,
+              endCursor: null,
+              __typename: 'PageInfo',
+            },
+            count: 1,
             nodes: [
               {
-                id: 'gid://gitlab/WorkItem/13',
-                iid: '13',
+                id: 'gid://gitlab/WorkItem/2',
+                iid: '2',
                 workItemType: {
                   id: 'gid://gitlab/WorkItems::Type/2411',
                   name: 'Objective',

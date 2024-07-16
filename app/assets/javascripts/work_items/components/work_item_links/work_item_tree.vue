@@ -1,5 +1,5 @@
 <script>
-import { GlToggle } from '@gitlab/ui';
+import { GlToggle, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import {
   FORM_TYPES,
@@ -12,7 +12,10 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
   I18N_WORK_ITEM_SHOW_LABELS,
   CHILD_ITEMS_ANCHOR,
+  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
+import { findHierarchyWidgets } from '../../utils';
+import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -31,6 +34,7 @@ export default {
     WorkItemChildrenWrapper,
     WorkItemTreeActions,
     GlToggle,
+    GlLoadingIcon,
   },
   inject: ['hasSubepicsFeature'],
   props: {
@@ -61,11 +65,6 @@ export default {
       required: false,
       default: false,
     },
-    children: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     canUpdate: {
       type: Boolean,
       required: false,
@@ -91,6 +90,28 @@ export default {
       widgetName: CHILD_ITEMS_ANCHOR,
       showLabels: true,
     };
+  },
+  apollo: {
+    hierarchyWidget: {
+      query: getWorkItemTreeQuery,
+      variables() {
+        return {
+          id: this.workItemId,
+          pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+        };
+      },
+      skip() {
+        return !this.workItemId;
+      },
+      update({ workItem = {} }) {
+        const { children } = findHierarchyWidgets(workItem.widgets);
+        this.$emit('childrenLoaded', Boolean(children?.count));
+        return children || {};
+      },
+      error() {
+        this.error = s__('WorkItems|An error occurred while fetching children');
+      },
+    },
   },
   computed: {
     childrenIds() {
@@ -134,6 +155,15 @@ export default {
      */
     canShowActionsMenu() {
       return this.workItemType.toUpperCase() === WORK_ITEM_TYPE_ENUM_EPIC && this.workItemIid;
+    },
+    children() {
+      return this.hierarchyWidget?.nodes || [];
+    },
+    isLoadingChildren() {
+      return this.$apollo.queries.hierarchyWidget.loading;
+    },
+    showEmptyMessage() {
+      return !this.isShownAddForm && this.children.length === 0 && !this.isLoadingChildren;
     },
   },
   methods: {
@@ -206,7 +236,7 @@ export default {
     </template>
     <template #body>
       <div class="gl-new-card-content gl-px-0">
-        <div v-if="!isShownAddForm && children.length === 0" data-testid="tree-empty">
+        <div v-if="showEmptyMessage" data-testid="tree-empty">
           <p class="gl-new-card-empty">
             {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
           </p>
@@ -227,6 +257,7 @@ export default {
           @addChild="$emit('addChild')"
         />
         <work-item-children-wrapper
+          v-if="!isLoadingChildren"
           :children="children"
           :can-update="canUpdateChildren"
           :full-path="fullPath"
@@ -237,6 +268,7 @@ export default {
           @error="error = $event"
           @show-modal="showModal"
         />
+        <gl-loading-icon v-else size="md" />
       </div>
     </template>
   </widget-wrapper>

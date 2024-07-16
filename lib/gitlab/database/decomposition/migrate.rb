@@ -125,7 +125,7 @@ module Gitlab
           unfinished_count = Gitlab::Database::BackgroundMigration::BatchedMigration.unfinished.count
           if unfinished_count > 0
             raise MigrateError,
-              "Found #{unfinished_count} unfinished Background Migration(s). Please wait until they are finished."
+              "Found #{unfinished_count} unfinished background migration(s). Please wait until they are finished."
           end
 
           true

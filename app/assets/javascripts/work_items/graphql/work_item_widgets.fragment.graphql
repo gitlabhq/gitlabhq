@@ -69,34 +69,6 @@ fragment WorkItemWidgets on WorkItemWidget {
         iconName
       }
     }
-    children {
-      nodes {
-        id
-        iid
-        confidential
-        workItemType {
-          id
-          name
-          iconName
-        }
-        title
-        state
-        createdAt
-        closedAt
-        webUrl
-        reference(full: true)
-        namespace {
-          fullPath
-        }
-        widgets {
-          ... on WorkItemWidgetHierarchy {
-            type
-            hasChildren
-          }
-          ...WorkItemMetadataWidgets
-        }
-      }
-    }
   }
   ... on WorkItemWidgetMilestone {
     milestone {

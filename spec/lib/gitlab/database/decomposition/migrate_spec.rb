@@ -172,7 +172,7 @@ RSpec.describe Gitlab::Database::Decomposition::Migrate, :delete, query_analyzer
       it 'raises error' do
         expect { process }.to raise_error(
           Gitlab::Database::Decomposition::MigrateError,
-          "Found 1 unfinished Background Migration(s). Please wait until they are finished."
+          "Found 1 unfinished background migration(s). Please wait until they are finished."
         )
       end
     end

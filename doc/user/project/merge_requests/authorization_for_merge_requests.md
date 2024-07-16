@@ -54,7 +54,7 @@ To set up a protected branch flow:
    You can specify the format and security measures such as requiring SSH key signing for changes
    coming into your code base with push rules:
 
-   - [Push Rules](../repository/push_rules.md)
+   - [Push rules](../repository/push_rules.md)
 
 1. To ensure that the code is reviewed and checked by the right people in your team, use:
 

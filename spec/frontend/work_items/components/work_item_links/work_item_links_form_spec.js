@@ -25,7 +25,7 @@ import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query
 import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
 import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import updateWorkItemHierarchyMutation from '~/work_items/graphql/update_work_item_hierarchy.mutation.graphql';
 import groupProjectsForLinksWidgetQuery from '~/work_items/graphql/group_projects_for_links_widget.query.graphql';
 import relatedProjectsForLinksWidgetQuery from '~/work_items/graphql/related_projects_for_links_widget.query.graphql';
 import {
@@ -88,7 +88,7 @@ describe('WorkItemLinksForm', () => {
         [groupWorkItemTypesQuery, groupWorkItemTypesResolver],
         [groupProjectsForLinksWidgetQuery, groupProjectsFormLinksWidgetResolver],
         [relatedProjectsForLinksWidgetQuery, relatedProjectsForLinksWidgetResolver],
-        [updateWorkItemMutation, updateMutation],
+        [updateWorkItemHierarchyMutation, updateMutation],
         [createWorkItemMutation, createMutationResolver],
       ]),
       propsData: {

@@ -52,12 +52,14 @@ in the catalog.
    or ask one of the group owners to create an empty project for you.
 1. Follow the [standard guide for creating components](../../ci/components/index.md).
 1. Add a concise project description that clearly describes the capabilities offered by the component project.
-1. Ensure to follow the general guidance to [write a component](../../ci/components/index.md#write-a-component) as well as
-   [those for the official components](#best-practices-for-official-components).
-1. Add a `LICENSE.md` file with the MIT license.
+1. Make sure to follow the general guidance given to [write a component](../../ci/components/index.md#write-a-component) as well as
+   the guidance [for official components](#best-practices-for-official-components).
+1. Add a `LICENSE.md` file with the MIT license ([example](https://gitlab.com/components/ruby/-/blob/d8db5288b01947e8a931d8d1a410befed69325a7/LICENSE.md)).
 1. The project must have a `.gitlab-ci.yml` file that:
-   - Validates all the components in the project correctly.
-   - Contains a `release` job to publish newly released tags to the catalog.
+   - Validates all the components in the project correctly
+     ([example](https://gitlab.com/components/secret-detection/-/blob/646d0fcbbf3c2a3e4b576f1884543c874041c633/.gitlab-ci.yml#L11-23)).
+   - Contains a `release` job to publish newly released tags to the catalog
+     ([example](https://gitlab.com/components/secret-detection/-/blob/646d0fcbbf3c2a3e4b576f1884543c874041c633/.gitlab-ci.yml#L50-58)).
 1. For official component projects, upload the [official avatar image](img/avatar_component_project.png) to the component project.
 
 ### Best practices for official components

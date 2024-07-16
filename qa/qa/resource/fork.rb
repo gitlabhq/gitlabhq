@@ -14,12 +14,14 @@ module QA
           resource.add_name_uuid = false
           resource.name = name
           resource.path_with_namespace = "#{user.username}/#{name}"
-          resource.api_client = @api_client
+          resource.api_client = api_client
         end
       end
 
       attribute :upstream do
-        Repository::ProjectPush.fabricate!.project
+        Resource::Project.fabricate_via_api! do |resource|
+          resource.initialize_with_readme = true
+        end
       end
 
       attribute :user do
@@ -41,8 +43,6 @@ module QA
         # Sign out as admin and sign is as the fork user
         Flow::Login.sign_in(as: user)
 
-        @api_client = Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
-
         upstream.visit!
 
         Page::Project::Show.perform(&:fork_project)
@@ -61,8 +61,6 @@ module QA
       def fabricate_via_api!
         populate(:upstream, :user)
 
-        @api_client = Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
-
         Runtime::Logger.debug("Forking project #{upstream.name} to namespace #{user.username}...")
         super
         wait_until_forked
@@ -74,6 +72,15 @@ module QA
         project.remove_via_api!
         upstream.remove_via_api!
         user.remove_via_api! unless Specs::Helpers::ContextSelector.dot_com?
+      end
+
+      # Public api client method
+      # By default resources have api_client private. Fork requires operating with 2 users, so it needs to be public
+      # to correctly fabricate mr from fork
+      #
+      # @return [Runtime::API::Client]
+      def api_client
+        @api_client ||= Runtime::API::Client.new(:gitlab, is_new_session: false, user: user)
       end
 
       def api_get_path

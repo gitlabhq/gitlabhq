@@ -7,7 +7,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
-import { removeHierarchyChild } from '~/work_items/graphql/cache_utils';
+import { updateParent } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
@@ -23,7 +23,7 @@ import {
 
 jest.mock('~/sentry/sentry_browser_wrapper');
 jest.mock('~/work_items/graphql/cache_utils', () => ({
-  removeHierarchyChild: jest.fn(),
+  updateParent: jest.fn(),
 }));
 
 describe('WorkItemParent component', () => {
@@ -337,7 +337,7 @@ describe('WorkItemParent component', () => {
         },
       });
 
-      expect(removeHierarchyChild).toHaveBeenCalledWith({
+      expect(updateParent).toHaveBeenCalledWith({
         cache: expect.anything(Object),
         fullPath: mockFullPath,
         iid: undefined,
@@ -373,7 +373,7 @@ describe('WorkItemParent component', () => {
           },
         },
       });
-      expect(removeHierarchyChild).toHaveBeenCalledWith({
+      expect(updateParent).toHaveBeenCalledWith({
         cache: expect.anything(Object),
         fullPath: mockFullPath,
         iid: '1',

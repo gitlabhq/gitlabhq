@@ -1,0 +1,10 @@
+#import "./work_item_hierarchy.fragment.graphql"
+
+mutation workItemHierarchyUpdate($input: WorkItemUpdateInput!, $pageSize: Int = 1000) {
+  workItemUpdate(input: $input) {
+    workItem {
+      ...WorkItemHierarchy
+    }
+    errors
+  }
+}

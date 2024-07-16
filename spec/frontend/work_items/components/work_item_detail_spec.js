@@ -545,6 +545,18 @@ describe('WorkItemDetail component', () => {
         expect(findHierarchyTree().exists()).toBe(true);
       });
 
+      it.each([true, false])(
+        'passes hasChildren %s to WorkItemActions when `WorkItemTree` emits `childrenLoaded` %s',
+        async (hasChildren) => {
+          createComponent({ handler: objectiveHandler });
+          await waitForPromises();
+
+          await findHierarchyTree().vm.$emit('childrenLoaded', hasChildren);
+
+          expect(findWorkItemActions().props('hasChildren')).toBe(hasChildren);
+        },
+      );
+
       it('renders a modal', async () => {
         createComponent({ handler: objectiveHandler });
         await waitForPromises();

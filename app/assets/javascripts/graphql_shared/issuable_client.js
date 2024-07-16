@@ -80,6 +80,15 @@ export const config = {
           },
         },
       },
+      WorkItemWidgetHierarchy: {
+        fields: {
+          // If we add any key args, the children field becomes children({"first":10}) and
+          // kills any possibility to handle it on the widget level without hardcoding a string.
+          children: {
+            keyArgs: false,
+          },
+        },
+      },
       WorkItem: {
         fields: {
           // widgets policy because otherwise the subscriptions invalidate the cache

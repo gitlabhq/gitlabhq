@@ -24,13 +24,13 @@ In GitLab 15.4 and later, to configure push rules for a group:
 1. On the left sidebar, select **Settings > Repository**.
 1. Expand the **Pre-defined push rules** section.
 1. Select the settings you want.
-1. Select **Save Push Rules**.
+1. Select **Save push rules**.
 
 In GitLab 15.3 and earlier, to configure push rules for a group:
 
 1. On the left sidebar, select **Push rules**.
 1. Select the settings you want.
-1. Select **Save Push Rules**.
+1. Select **Save push rules**.
 
 The group's new subgroups have push rules set for them based on either:
 

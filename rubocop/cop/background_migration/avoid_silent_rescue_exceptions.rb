@@ -3,7 +3,7 @@
 module RuboCop
   module Cop
     module BackgroundMigration
-      # Checks for rescuing errors inside Batched Background Migration Job Classes.
+      # Checks for rescuing errors inside batched background Migration Job Classes.
       #
       # @example
       #

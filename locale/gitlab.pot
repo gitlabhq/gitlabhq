@@ -4732,7 +4732,7 @@ msgstr ""
 msgid "Admin|Overview"
 msgstr ""
 
-msgid "Admin|Push Rules"
+msgid "Admin|Push rules"
 msgstr ""
 
 msgid "Admin|Quarterly reconciliation will occur on %{qrtlyDate}"
@@ -6932,6 +6932,9 @@ msgid "Archived in this version"
 msgstr ""
 
 msgid "Archiving the project makes it entirely read-only. It is hidden from the dashboard and doesn't display in searches. %{strong_start}The repository cannot be committed to, and no issues, comments, or other entities can be created.%{strong_end} %{link_start}Learn more.%{link_end}"
+msgstr ""
+
+msgid "Are you ABSOLUTELY SURE you wish to delete this group?"
 msgstr ""
 
 msgid "Are you absolutely sure?"
@@ -17462,9 +17465,6 @@ msgstr ""
 msgid "Delete group"
 msgstr ""
 
-msgid "Delete group immediately"
-msgstr ""
-
 msgid "Delete group immediately?"
 msgstr ""
 
@@ -17487,9 +17487,6 @@ msgid "Delete pipeline"
 msgstr ""
 
 msgid "Delete project"
-msgstr ""
-
-msgid "Delete project immediately"
 msgstr ""
 
 msgid "Delete release"
@@ -17534,6 +17531,9 @@ msgid "Delete this attachment"
 msgstr ""
 
 msgid "Delete this epic and release all child items?"
+msgstr ""
+
+msgid "Delete this project"
 msgstr ""
 
 msgid "Delete user list"
@@ -17596,6 +17596,9 @@ msgstr ""
 msgid "Deleted commits:"
 msgstr ""
 
+msgid "Deleted group can not be restored!"
+msgstr ""
+
 msgid "Deleted projects cannot be restored!"
 msgstr ""
 
@@ -17615,6 +17618,9 @@ msgid "Deleting protected branches is blocked by security policies"
 msgstr ""
 
 msgid "Deleting the project will delete its repository and all related resources, including issues and merge requests."
+msgstr ""
+
+msgid "Deleting this group also deletes all child projects, including archived projects, and their resources."
 msgstr ""
 
 msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
@@ -19495,6 +19501,15 @@ msgid "DuoChat|Use AI to answer questions about things like:"
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
+msgstr ""
+
+msgid "DuoCodeReview|Hey :wave: I'm starting to review your merge request and I will let you know when I'm finished."
+msgstr ""
+
+msgid "DuoCodeReview|I finished my review and found nothing to comment on. Nice work! :tada:"
+msgstr ""
+
+msgid "DuoCodeReview|I have encountered some issues while I was reviewing. Please try again later."
 msgstr ""
 
 msgid "DuoProDiscover|Ship software faster and more securely with AI integrated into your entire DevSecOps lifecycle."
@@ -38313,6 +38328,9 @@ msgstr ""
 msgid "Permalink"
 msgstr ""
 
+msgid "Permanently delete group"
+msgstr ""
+
 msgid "Permissions"
 msgstr ""
 
@@ -42632,10 +42650,10 @@ msgstr ""
 msgid "Promotions|Not now, thanks!"
 msgstr ""
 
-msgid "Promotions|Push Rules"
+msgid "Promotions|Push rules"
 msgstr ""
 
-msgid "Promotions|Push Rules are defined per project so you can have different rules applied to different projects depends on your needs."
+msgid "Promotions|Push rules are defined per project so you can have different rules applied to different projects depends on your needs."
 msgstr ""
 
 msgid "Promotions|Repository Mirroring"
@@ -43248,12 +43266,6 @@ msgstr ""
 msgid "Push Rule updated successfully."
 msgstr ""
 
-msgid "Push Rules"
-msgstr ""
-
-msgid "Push Rules updated successfully."
-msgstr ""
-
 msgid "Push an existing Git repository"
 msgstr ""
 
@@ -43276,6 +43288,12 @@ msgid "Push mirrors will only sync LFS objects if LFS is %{docs_link_start}enabl
 msgstr ""
 
 msgid "Push project from command line"
+msgstr ""
+
+msgid "Push rules"
+msgstr ""
+
+msgid "Push rules updated successfully."
 msgstr ""
 
 msgid "Push the source branch up to GitLab."
@@ -54064,16 +54082,16 @@ msgstr ""
 msgid "This action cannot be undone, and will permanently delete the %{key} SSH key. All commits signed using this SSH key will be marked as unverified."
 msgstr ""
 
-msgid "This action will permanently delete this group, including its subgroups and projects."
+msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} and everything this project contains. %{strongOpen}There is no going back.%{strongClose}"
 msgstr ""
 
-msgid "This action will permanently delete this project, including all its resources."
+msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} on %{date} and everything this project contains."
 msgstr ""
 
-msgid "This action will place this group, including its subgroups and projects, in a pending deletion state for %{deletion_delayed_period} days, and delete it permanently on %{date}."
+msgid "This action deletes %{codeOpen}%{project_path_with_namespace}%{codeClose} on %{date} and everything this project contains. %{strongOpen}There is no going back.%{strongClose}"
 msgstr ""
 
-msgid "This action will place this project, including all its resources, in a pending deletion state for %{deletion_adjourned_period} days, and delete it permanently on %{strongOpen}%{date}%{strongClose}."
+msgid "This action will %{strongOpen}permanently remove%{strongClose} %{codeOpen}%{group}%{codeClose} %{strongOpen}immediately%{strongClose}."
 msgstr ""
 
 msgid "This also resolves all related threads"
@@ -54268,6 +54286,9 @@ msgstr ""
 msgid "This group"
 msgstr ""
 
+msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_delayed_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
+msgstr ""
+
 msgid "This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
@@ -54296,9 +54317,6 @@ msgid "This group is linked to a subscription"
 msgstr ""
 
 msgid "This group is not permitted to create compliance violations"
-msgstr ""
-
-msgid "This group is scheduled for deletion on %{date}. This action will permanently delete this group, including its subgroups and projects, %{strong_open}immediately%{strong_close}. This action cannot be undone."
 msgstr ""
 
 msgid "This group is scheduled to be deleted on %{date}. You are about to delete this group, including its subgroups and projects, immediately. This action cannot be undone."
@@ -54610,9 +54628,6 @@ msgid "This project is not subscribed to any project pipelines."
 msgstr ""
 
 msgid "This project is public. Non-members can guess the Service Desk email address, because it contains the group and project name. %{linkStart}How do I create a custom email address?%{linkEnd}"
-msgstr ""
-
-msgid "This project is scheduled for deletion on %{strongOpen}%{date}%{strongClose}. This action will permanently delete this project, including all its resources, %{strongOpen}immediately%{strongClose}. This action cannot be undone."
 msgstr ""
 
 msgid "This project manages its dependencies using %{strong_start}%{manager_name}%{strong_end}"
@@ -60152,6 +60167,9 @@ msgid "Work in progress limit"
 msgstr ""
 
 msgid "Work in progress limit: %{wipLimit}"
+msgstr ""
+
+msgid "WorkItems|An error occurred while fetching children"
 msgstr ""
 
 msgid "WorkItem|%{count} more assignees"

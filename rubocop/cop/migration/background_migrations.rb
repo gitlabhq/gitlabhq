@@ -8,7 +8,7 @@ module RuboCop
       class BackgroundMigrations < RuboCop::Cop::Base
         include MigrationHelpers
 
-        MSG = 'Background migrations are deprecated. Please use a Batched Background Migration instead. '\
+        MSG = 'Background migrations are deprecated. Please use a batched background migration instead. '\
               'More info: https://docs.gitlab.com/ee/development/database/batched_background_migrations.html'
 
         def on_send(node)
