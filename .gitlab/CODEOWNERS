@@ -656,6 +656,7 @@ lib/gitlab/checks/**
 /doc/api/boards.md @msedlakjakubowski
 /doc/api/branches.md @msedlakjakubowski
 /doc/api/bulk_imports.md @eread
+/doc/api/chat.md @sselhorn @jglassman1 @fneill
 /doc/api/cluster_agents.md @phillipwells
 /doc/api/code_suggestions.md @jglassman1
 /doc/api/commits.md @msedlakjakubowski
@@ -799,11 +800,6 @@ lib/gitlab/checks/**
 /doc/api/vulnerabilities.md @rdickenson
 /doc/api/vulnerability_exports.md @rdickenson
 /doc/api/vulnerability_findings.md @rdickenson
-/doc/architecture/blueprints/autoflow/ @phillipwells
-/doc/architecture/blueprints/cells/ @lciutacu
-/doc/architecture/blueprints/ci_builds_runner_fleet_metrics/ @ashrafkhamis
-/doc/architecture/blueprints/google_artifact_registry_integration/ @marcel.amirault
-/doc/architecture/blueprints/organization/ @lciutacu
 /doc/ci/ @marcel.amirault @lyspin
 /doc/ci/chatops/ @phillipwells
 /doc/ci/cloud_deployment/ @phillipwells
@@ -846,7 +842,6 @@ lib/gitlab/checks/**
 /doc/development/fe_guide/ @gitlab-org/analytics-section/product-analytics/engineers/frontend
 /doc/development/git_object_deduplication.md @proglottis @toon
 /doc/development/gitaly.md @proglottis @toon
-/doc/development/gitlab_flavored_markdown/ @gitlab-org/maintainers/remote-development/backend @gitlab-org/maintainers/remote-development/frontend
 /doc/development/gitpod_internals.md @gl-quality/eng-prod
 /doc/development/image_scaling.md @abdwdd @alexpooley @manojmj
 /doc/development/internal_analytics/ @gitlab-org/analytics-section/product-analytics/engineers/frontend @gitlab-org/analytics-section/analytics-instrumentation/engineers
@@ -907,6 +902,7 @@ lib/gitlab/checks/**
 /doc/tutorials/idea_management/ @msedlakjakubowski
 /doc/tutorials/install_gitlab_single_node/ @axil
 /doc/tutorials/issue_triage/ @msedlakjakubowski
+/doc/tutorials/kanban/ @msedlakjakubowski
 /doc/tutorials/move_personal_project_to_group/ @lciutacu
 /doc/tutorials/product_analytics_onboarding_website_project/ @lciutacu
 /doc/tutorials/protected_workflow/ @aqualls
@@ -918,7 +914,6 @@ lib/gitlab/checks/**
 /doc/tutorials/update_commit_messages/ @msedlakjakubowski
 /doc/tutorials/website_project_with_analytics/ @lciutacu
 /doc/update/ @axil
-/doc/user/ @msedlakjakubowski
 /doc/user/analytics/ @lciutacu
 /doc/user/analytics/ci_cd_analytics.md @phillipwells
 /doc/user/application_security/ @rdickenson @phillipwells
@@ -928,12 +923,13 @@ lib/gitlab/checks/**
 /doc/user/application_security/security_dashboard/ @rdickenson
 /doc/user/application_security/vulnerabilities/ @rdickenson
 /doc/user/application_security/vulnerability_report/ @rdickenson
+/doc/user/asciidoc.md @msedlakjakubowski
 /doc/user/clusters/ @phillipwells
 /doc/user/compliance/ @eread
 /doc/user/compliance/license_approval_policies.md @rdickenson
-/doc/user/compliance/license_list.md @rdickenson
 /doc/user/compliance/license_scanning_of_cyclonedx_files/ @rdickenson @phillipwells
 /doc/user/discussions/ @aqualls
+/doc/user/emoji_reactions.md @msedlakjakubowski
 /doc/user/enterprise_user/ @jglassman1
 /doc/user/get_started/get_started_managing_code.md @msedlakjakubowski
 /doc/user/get_started/get_started_managing_infrastructure.md @phillipwells
@@ -966,7 +962,9 @@ lib/gitlab/checks/**
 /doc/user/infrastructure/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/ @phillipwells
 /doc/user/infrastructure/clusters/manage/management_project_applications/runner.md @ashrafkhamis
+/doc/user/markdown.md @msedlakjakubowski
 /doc/user/namespace/ @lciutacu
+/doc/user/okrs.md @msedlakjakubowski
 /doc/user/operations_dashboard/ @phillipwells
 /doc/user/organization/ @lciutacu
 /doc/user/packages/ @phillipwells
@@ -978,6 +976,7 @@ lib/gitlab/checks/**
 /doc/user/profile/achievements.md @lciutacu
 /doc/user/profile/comment_templates.md @aqualls
 /doc/user/profile/contributions_calendar.md @lciutacu
+/doc/user/project/ @msedlakjakubowski
 /doc/user/project/badges.md @lciutacu
 /doc/user/project/clusters/ @phillipwells
 /doc/user/project/code_intelligence.md @aqualls
@@ -1029,8 +1028,11 @@ lib/gitlab/checks/**
 /doc/user/public_access.md @lciutacu
 /doc/user/reserved_names.md @lciutacu
 /doc/user/search/ @ashrafkhamis
+/doc/user/snippets.md @msedlakjakubowski
 /doc/user/ssh.md @jglassman1
+/doc/user/ssh_troubleshooting.md @jglassman1
 /doc/user/storage_management_automation.md @fneill
+/doc/user/tasks.md @msedlakjakubowski
 /doc/user/usage_quotas.md @fneill
 /doc/user/workspace/ @ashrafkhamis
 # End rake-managed-docs-block

@@ -16,7 +16,11 @@ module Gitlab
           end
 
           def variables
-            stub_build.scoped_variables
+            if Feature.enabled?(:ci_variables_optimization_for_yaml_and_node, project)
+              stub_build.scoped_variables(job_attributes: build_attributes)
+            else
+              stub_build.scoped_variables
+            end
           end
           strong_memoize_attr :variables
 

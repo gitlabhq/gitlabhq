@@ -28,8 +28,10 @@ Secret Detection scans your repository to help prevent your secrets
 from being exposed. Secret Detection scanning works on all text files,
 regardless of the language or framework used.
 
-GitLab has two methods for detecting secrets which can be used simultaneously:
+GitLab has three methods for detecting secrets, which can be used simultaneously:
 
 - The [pipeline](pipeline/index.md) method detects secrets during the project's CI/CD pipeline. This method cannot reject pushes.
 - The [secret push protection](secret_push_protection/index.md) method detects secrets when users push changes to the
   remote Git branch. This method can reject pushes if a secret is detected.
+- The [client-side](client/index.md) method runs in your browser, and warns you if the content of text you're about
+  to post contains a potential secret.

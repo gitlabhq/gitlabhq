@@ -141,7 +141,6 @@ Different features are available in different [GitLab tiers](https://about.gitla
 | [Configure Pipeline Secret Detection scanner](#enabling-the-analyzer)                                       | **{check-circle}** Yes | **{check-circle}** Yes |
 | [Customize Pipeline Secret Detection settings](#customizing-analyzer-settings)                                      | **{check-circle}** Yes | **{check-circle}** Yes |
 | Download [SAST output](../../sast/index.md#output)                                                      | **{check-circle}** Yes | **{check-circle}** Yes |
-| [Check text for potential secrets](#warnings-for-potential-leaks-in-text-content) before it's posted | **{check-circle}** Yes | **{check-circle}** Yes |
 | See new findings in the merge request widget                                                         | **{dotted-circle}** No | **{check-circle}** Yes |
 | View identified secrets in the pipelines' **Security** tab                                           | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Manage vulnerabilities](../../vulnerability_report/index.md)                                           | **{dotted-circle}** No | **{check-circle}** Yes |
@@ -704,27 +703,5 @@ automatically revoked, you must do so manually.
 [Purging a secret from the repository's history](../../../project/repository/reducing_the_repo_size_using_git.md#purge-files-from-repository-history)
 does not fully address the leak. The original secret remains in any existing forks or
 clones of the repository.
-
-### Warnings for potential leaks in text content
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/368434) in GitLab 15.11.
-> - Detection of personal access tokens with a custom prefix was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/411146) in GitLab 16.1. GitLab self-managed only.
-
-When you create an issue, propose a merge request, or write a comment, you might accidentally post a sensitive value.
-For example, you might paste in the details of an API request or an environment variable that contains an authentication token.
-
-GitLab checks if the text of your issue description, merge request description, comment, or reply contains a sensitive token.
-If a token is found, a warning message is displayed. You can then edit your message before posting it.
-This check happens in your browser before the message is sent to the server.
-The check is always on; you don't have to set it up.
-
-Your text is checked for the following secret types:
-
-- GitLab [personal access tokens](../../../../security/token_overview.md#personal-access-tokens)
-  - If a [personal access token prefix](../../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
-- GitLab [feed tokens](../../../../security/token_overview.md#feed-token)
-
-This feature is separate from Pipeline Secret Detection scanning, which checks your Git repository for leaked secrets.
-[Issue 405147](https://gitlab.com/gitlab-org/gitlab/-/issues/405147) tracks efforts to align these two types of protection.
 
 <!-- markdownlint-enable MD025 -->

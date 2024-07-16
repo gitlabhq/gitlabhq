@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { STATUSES } from '../../constants';
 import * as types from './mutation_types';
 
@@ -133,7 +132,10 @@ export default {
       delete importsCopy[repoId];
       state.customImportTargets = importsCopy;
     } else {
-      Vue.set(state.customImportTargets, repoId, importTarget);
+      state.customImportTargets = {
+        ...state.customImportTargets,
+        [repoId]: importTarget,
+      };
     }
   },
 

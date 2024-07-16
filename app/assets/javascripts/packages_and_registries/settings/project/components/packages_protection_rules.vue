@@ -2,7 +2,6 @@
 import {
   GlAlert,
   GlButton,
-  GlCard,
   GlTable,
   GlLoadingIcon,
   GlKeysetPagination,
@@ -12,6 +11,7 @@ import {
   GlFormSelect,
   GlSprintf,
 } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import packagesProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_protection_rules.query.graphql';
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
@@ -26,9 +26,9 @@ const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('PackageRegistry|Minimum access l
 
 export default {
   components: {
+    CrudComponent,
     SettingsBlock,
     GlButton,
-    GlCard,
     GlAlert,
     GlTable,
     GlLoadingIcon,
@@ -267,24 +267,15 @@ export default {
     </template>
 
     <template #default>
-      <gl-card
-        class="gl-new-card"
-        header-class="gl-new-card-header"
-        body-class="gl-new-card-body gl-px-0"
-      >
-        <template #header>
-          <div class="gl-new-card-title-wrapper gl-justify-content-space-between">
-            <h3 class="gl-new-card-title">{{ $options.i18n.settingBlockTitle }}</h3>
-            <div class="gl-new-card-actions">
-              <gl-button
-                size="small"
-                :disabled="isAddProtectionRuleButtonDisabled"
-                @click="showProtectionRuleForm"
-              >
-                {{ s__('PackageRegistry|Add protection rule') }}
-              </gl-button>
-            </div>
-          </div>
+      <crud-component :title="$options.i18n.settingBlockTitle">
+        <template #actions>
+          <gl-button
+            size="small"
+            :disabled="isAddProtectionRuleButtonDisabled"
+            @click="showProtectionRuleForm"
+          >
+            {{ s__('PackageRegistry|Add protection rule') }}
+          </gl-button>
         </template>
 
         <template #default>
@@ -350,7 +341,7 @@ export default {
             />
           </div>
         </template>
-      </gl-card>
+      </crud-component>
 
       <gl-modal
         v-if="protectionRuleMutationItem"

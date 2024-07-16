@@ -44,7 +44,6 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_read_code!, only: [:related_branches]
 
   before_action do
-    push_frontend_feature_flag(:preserve_unchanged_markdown, project)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:issues_list_drawer, project)

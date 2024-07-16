@@ -15,14 +15,21 @@ module Gitlab
           @release_variables_builder = Builder::Release.new(release)
         end
 
-        def scoped_variables(job, environment:, dependencies:)
+        # Our goal is that job_attributes will eventually replace all job-related variables.
+        def scoped_variables(job, environment:, dependencies:, job_attributes: {})
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
-            variables.concat(predefined_variables(job, environment))
+            variables.concat(predefined_variables(job, environment, job_attributes: job_attributes))
             variables.concat(project.predefined_variables)
             variables.concat(pipeline_variables_builder.predefined_variables)
             variables.concat(job.runner.predefined_variables) if job.runnable? && job.runner
             variables.concat(kubernetes_variables(environment: environment, job: job))
-            variables.concat(job.yaml_variables)
+
+            if job_attributes.present?
+              variables.concat(job_attributes[:yaml_variables])
+            else
+              variables.concat(job.yaml_variables)
+            end
+
             variables.concat(user_variables(job.user))
             variables.concat(job.dependency_variables) if dependencies
             variables.concat(secret_instance_variables)
@@ -145,7 +152,7 @@ module Gitlab
 
         delegate :project, to: :pipeline
 
-        def predefined_variables(job, environment)
+        def predefined_variables(job, environment, job_attributes: {})
           Gitlab::Ci::Variables::Collection.new.tap do |variables|
             variables.append(key: 'CI_JOB_NAME', value: job.name)
             variables.append(key: 'CI_JOB_NAME_SLUG', value: job_name_slug(job))
@@ -154,8 +161,13 @@ module Gitlab
             variables.append(key: 'CI_PIPELINE_TRIGGERED', value: 'true') if job.trigger_request
             variables.append(key: 'CI_TRIGGER_SHORT_TOKEN', value: job.trigger_short_token) if job.trigger_request
 
-            variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
-            variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job).to_s)
+            if job_attributes.present?
+              variables.append(key: 'CI_NODE_INDEX', value: job_attributes[:options][:instance].to_s) if job_attributes[:options]&.include?(:instance)
+              variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job_attributes[:options]).to_s)
+            else
+              variables.append(key: 'CI_NODE_INDEX', value: job.options[:instance].to_s) if job.options&.include?(:instance)
+              variables.append(key: 'CI_NODE_TOTAL', value: ci_node_total_value(job.options).to_s)
+            end
 
             if environment.present?
               variables.append(key: 'CI_ENVIRONMENT_NAME', value: environment)
@@ -182,8 +194,8 @@ module Gitlab
           job.name && Gitlab::Utils.slugify(job.name)
         end
 
-        def ci_node_total_value(job)
-          parallel = job.options&.dig(:parallel)
+        def ci_node_total_value(job_options)
+          parallel = job_options&.dig(:parallel)
           parallel = parallel.dig(:total) if parallel.is_a?(Hash)
           parallel || 1
         end

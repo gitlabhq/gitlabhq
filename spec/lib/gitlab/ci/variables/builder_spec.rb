@@ -29,7 +29,11 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
 
   let(:builder) { described_class.new(pipeline) }
 
-  describe '#scoped_variables' do
+  #
+  # When removing ci_variables_optimization_for_yaml_and_node, move this to a normal `describe` block and
+  # handle the next two describe blocks.
+  #
+  shared_context '#scoped_variables' do
     let(:environment_name) { job.expanded_environment_name }
     let(:dependencies) { true }
     let(:predefined_variables) do
@@ -167,8 +171,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
       ].map { |var| var.merge(public: true, masked: false) }
     end
 
-    subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
-
     it { is_expected.to be_instance_of(Gitlab::Ci::Variables::Collection) }
 
     it { expect(subject.to_runner_variables).to eq(predefined_variables) }
@@ -267,6 +269,20 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
         end
       end
     end
+  end
+
+  describe '#scoped_variables without job_attributes' do
+    subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies) }
+
+    it_behaves_like '#scoped_variables'
+  end
+
+  describe '#scoped_variables with job_attributes' do
+    let(:job_attributes) { { yaml_variables: job.yaml_variables, options: job.options } }
+
+    subject { builder.scoped_variables(job, environment: environment_name, dependencies: dependencies, job_attributes: job_attributes) }
+
+    it_behaves_like '#scoped_variables'
   end
 
   describe '#user_variables' do

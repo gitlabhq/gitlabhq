@@ -82,44 +82,6 @@ describe('content_editor', () => {
     });
   });
 
-  describe('when preserveUnchangedMarkdown feature flag is enabled', () => {
-    beforeEach(() => {
-      gon.features = { preserveUnchangedMarkdown: true };
-    });
-    afterEach(() => {
-      gon.features = { preserveUnchangedMarkdown: false };
-    });
-
-    it('processes and renders footnote ids alongside the footnote definition', async () => {
-      buildWrapper({
-        markdown: `
-This reference tag is a mix of letters and numbers [^footnote].
-
-[^footnote]: This is another footnote.
-        `,
-      });
-
-      await waitUntilContentIsLoaded();
-
-      expect(wrapper.text()).toContain('footnote:');
-      expect(wrapper.text()).toContain('This is another footnote.');
-    });
-
-    it('processes and displays reference definitions', async () => {
-      buildWrapper({
-        markdown: `
-[GitLab][gitlab]
-
-[gitlab]: https://gitlab.com
-        `,
-      });
-
-      await waitUntilContentIsLoaded();
-
-      expect(wrapper.find('pre').text()).toContain('[gitlab]: https://gitlab.com');
-    });
-  });
-
   it('renders table of contents', async () => {
     renderMarkdown.mockResolvedValueOnce({
       body: `

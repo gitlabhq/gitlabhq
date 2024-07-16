@@ -304,6 +304,15 @@ Guest users and members with the Reporter role cannot do any of these actions.
 | Pull container images from private projects  |     ✓     |     ✓      | Only if the triggering user is a member of the project. See also [Usage of private Docker images with `if-not-present` pull policy](https://docs.gitlab.com/runner/security/index.html#usage-of-private-docker-images-with-if-not-present-pull-policy). |
 | Push container images to current project     |     ✓     |     ✓      | You cannot push container images to other projects. |
 
+### GitLab Duo
+
+Project permissions for [GitLab Duo](gitlab_duo/index.md):
+
+| Action                                                                                                      | Non-member | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|-------------------------------------------------------------------------------------------------------------|------------|-------|----------|-----------|------------|-------|-------|
+| <br>Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-project)                        |            |       |          |           | ✓           | ✓     |      |
+| <br>Use Duo features                                                                                        |            | ✓     | ✓        | ✓         | ✓          | ✓     | Code Suggestions requires a [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).     |
+
 ## Group members permissions
 
 Any user can remove themselves from a group, unless they are the last Owner of
@@ -419,6 +428,18 @@ nested groups if you have membership in one of its parents.
 
 For more information, see
 [subgroup memberships](group/subgroups/index.md#subgroup-membership).
+
+### GitLab Duo
+
+Group permissions for [GitLab Duo](../user/gitlab_duo/index.md):
+
+| Action                                                                                                      | Non-member | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|-------------------------------------------------------------------------------------------------------------|------------|-------|----------|-----------|------------|-------|-------|
+| <br>Purchase [Duo seats](../subscriptions/subscription-add-ons.md#purchase-additional-gitlab-duo-pro-seats) |            |       |          |           |            | ✓     |       |
+| <br>Configure [Duo feature availability](gitlab_duo/turn_on_off.md#turn-off-for-a-group)                          |            |       |          |           | ✓         | ✓     |       |
+| <br>Configure [self-hosted models](../administration/self_hosted_models/configure_duo_features.md)          |            |       |          |           |            | ✓     |       |
+| <br>Enable [beta and experimental features](gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features)   |            |       |          |           |            | ✓     |       |
+| <br>Use Duo features                                                                                        |            |       | ✓        | ✓         | ✓          | ✓     | Requires [user being assigned a seat to gain access to a Duo add-on](../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats).     |
 
 ## Users with Minimal Access
 

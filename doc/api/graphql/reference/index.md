@@ -1551,7 +1551,6 @@ Input type: `AiActionInput`
 | <a id="mutationaiactionclientsubscriptionid"></a>`clientSubscriptionId` | [`String`](#string) | Client generated ID that can be subscribed to, to receive a response for the mutation. |
 | <a id="mutationaiactionexplaincode"></a>`explainCode` | [`AiExplainCodeInput`](#aiexplaincodeinput) | Input for explain_code AI action. |
 | <a id="mutationaiactionexplainvulnerability"></a>`explainVulnerability` | [`AiExplainVulnerabilityInput`](#aiexplainvulnerabilityinput) | Input for explain_vulnerability AI action. |
-| <a id="mutationaiactionfillinmergerequesttemplate"></a>`fillInMergeRequestTemplate` | [`AiFillInMergeRequestTemplateInput`](#aifillinmergerequesttemplateinput) | Input for fill_in_merge_request_template AI action. |
 | <a id="mutationaiactiongeneratecommitmessage"></a>`generateCommitMessage` | [`AiGenerateCommitMessageInput`](#aigeneratecommitmessageinput) | Input for generate_commit_message AI action. |
 | <a id="mutationaiactiongeneratecubequery"></a>`generateCubeQuery` | [`AiGenerateCubeQueryInput`](#aigeneratecubequeryinput) | Input for generate_cube_query AI action. |
 | <a id="mutationaiactiongeneratedescription"></a>`generateDescription` | [`AiGenerateDescriptionInput`](#aigeneratedescriptioninput) | Input for generate_description AI action. |
@@ -38876,19 +38875,6 @@ see the associated mutation type above.
 | ---- | ---- | ----------- |
 | <a id="aiexplainvulnerabilityinputincludesourcecode"></a>`includeSourceCode` | [`Boolean`](#boolean) | Include vulnerablility source code in the AI prompt. |
 | <a id="aiexplainvulnerabilityinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
-
-### `AiFillInMergeRequestTemplateInput`
-
-#### Arguments
-
-| Name | Type | Description |
-| ---- | ---- | ----------- |
-| <a id="aifillinmergerequesttemplateinputcontent"></a>`content` | [`String!`](#string) | Template content to fill in. |
-| <a id="aifillinmergerequesttemplateinputresourceid"></a>`resourceId` | [`AiModelID!`](#aimodelid) | Global ID of the resource to mutate. |
-| <a id="aifillinmergerequesttemplateinputsourcebranch"></a>`sourceBranch` | [`String!`](#string) | Source branch of the changes. |
-| <a id="aifillinmergerequesttemplateinputsourceprojectid"></a>`sourceProjectId` | [`ID`](#id) | ID of the project where the changes are from. |
-| <a id="aifillinmergerequesttemplateinputtargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of where the changes will be merged into. |
-| <a id="aifillinmergerequesttemplateinputtitle"></a>`title` | [`String!`](#string) | Title of the merge request to be created. |
 
 ### `AiGenerateCommitMessageInput`
 

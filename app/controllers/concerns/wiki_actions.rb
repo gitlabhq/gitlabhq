@@ -32,10 +32,6 @@ module WikiActions
     before_action :page, only: [:show, :edit, :update, :history, :destroy, :diff]
     before_action :load_sidebar, except: [:pages]
 
-    before_action do
-      push_frontend_feature_flag(:preserve_unchanged_markdown, @group)
-    end
-
     before_action only: [:show, :edit, :update] do
       @valid_encoding = valid_encoding?
     end

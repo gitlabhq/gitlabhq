@@ -63,8 +63,8 @@ straightforward changes. When you begin managing multiple branches or need more 
 change management, you're ready for these features:
 
 - To stop tracking changes to a file, because you don't want to commit them,
-  [unstage the changes](unstage.md).
-- [Stash your changes](stash.md) when your current work isn't ready to create a commit locally,
+  [unstage the changes](undo.md).
+- [Stash your changes](../../gitlab-basics/add-file.md) when your current work isn't ready to create a commit locally,
   but you need to switch branches to work on something else.
 - If you create many small commits locally, you can use
   [squash and merge](../../user/project/merge_requests/squash_and_merge.md)

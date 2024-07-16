@@ -1,12 +1,9 @@
 import { PROVIDE_SERIALIZER_OR_RENDERER_ERROR } from '~/content_editor/constants';
 import { createContentEditor } from '~/content_editor/services/create_content_editor';
-import createGlApiMarkdownDeserializer from '~/content_editor/services/gl_api_markdown_deserializer';
-import createRemarkMarkdownDeserializer from '~/content_editor/services/remark_markdown_deserializer';
 import AssetResolver from '~/content_editor/services/asset_resolver';
 import { createTestContentEditorExtension } from '../test_utils';
 
 jest.mock('~/emoji');
-jest.mock('~/content_editor/services/remark_markdown_deserializer');
 jest.mock('~/content_editor/services/gl_api_markdown_deserializer');
 
 describe('content_editor/services/create_content_editor', () => {
@@ -16,34 +13,7 @@ describe('content_editor/services/create_content_editor', () => {
 
   beforeEach(() => {
     renderMarkdown = jest.fn();
-    window.gon = {
-      features: {
-        preserveUnchangedMarkdown: false,
-      },
-    };
     editor = createContentEditor({ renderMarkdown, uploadsPath, drawioEnabled: true });
-  });
-
-  describe('when preserveUnchangedMarkdown feature is on', () => {
-    beforeEach(() => {
-      window.gon.features.preserveUnchangedMarkdown = true;
-    });
-
-    it('provides a remark markdown deserializer to the content editor class', () => {
-      createContentEditor({ renderMarkdown, uploadsPath });
-      expect(createRemarkMarkdownDeserializer).toHaveBeenCalled();
-    });
-  });
-
-  describe('when preserveUnchangedMarkdown feature is off', () => {
-    beforeEach(() => {
-      window.gon.features.preserveUnchangedMarkdown = false;
-    });
-
-    it('provides a gl api markdown deserializer to the content editor class', () => {
-      createContentEditor({ renderMarkdown, uploadsPath });
-      expect(createGlApiMarkdownDeserializer).toHaveBeenCalledWith({ render: renderMarkdown });
-    });
   });
 
   it('allows providing external content editor extensions', () => {
