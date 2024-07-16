@@ -4,49 +4,52 @@ import { parseBoolean } from './lib/utils/common_utils';
 import ConfirmDanger from './vue_shared/components/confirm_danger/confirm_danger.vue';
 
 export default () => {
-  const el = document.querySelector('.js-confirm-danger');
-  if (!el) return null;
+  const elements = document.querySelectorAll('.js-confirm-danger');
 
-  const {
-    removeFormId = null,
-    phrase,
-    buttonText,
-    buttonClass = '',
-    buttonTestid,
-    buttonVariant,
-    confirmDangerMessage,
-    confirmButtonText = null,
-    disabled,
-    additionalInformation,
-    htmlConfirmationMessage,
-  } = el.dataset;
+  if (!elements.length) return;
 
-  return new Vue({
-    el,
-    provide: pickBy(
-      {
-        htmlConfirmationMessage,
-        confirmDangerMessage,
-        additionalInformation,
-        confirmButtonText,
-      },
-      (v) => Boolean(v),
-    ),
-    render: (createElement) =>
-      createElement(ConfirmDanger, {
-        props: {
-          phrase,
-          buttonText,
-          buttonClass,
-          buttonVariant,
-          buttonTestid,
-          disabled: parseBoolean(disabled),
+  elements.forEach((element) => {
+    const {
+      removeFormId = null,
+      phrase,
+      buttonText,
+      buttonClass = '',
+      buttonTestid,
+      buttonVariant,
+      confirmDangerMessage,
+      confirmButtonText = null,
+      disabled,
+      additionalInformation,
+      htmlConfirmationMessage,
+    } = element.dataset;
+
+    return new Vue({
+      el: element,
+      provide: pickBy(
+        {
+          htmlConfirmationMessage,
+          confirmDangerMessage,
+          additionalInformation,
+          confirmButtonText,
         },
-        on: {
-          confirm: () => {
-            if (removeFormId) document.getElementById(removeFormId)?.submit();
+        (v) => Boolean(v),
+      ),
+      render: (createElement) =>
+        createElement(ConfirmDanger, {
+          props: {
+            phrase,
+            buttonText,
+            buttonClass,
+            buttonVariant,
+            buttonTestid,
+            disabled: parseBoolean(disabled),
           },
-        },
-      }),
+          on: {
+            confirm: () => {
+              if (removeFormId) document.getElementById(removeFormId)?.submit();
+            },
+          },
+        }),
+    });
   });
 };

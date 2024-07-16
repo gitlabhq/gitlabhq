@@ -38,6 +38,10 @@ module Banzai
 
       private
 
+      def render_timeout
+        SANITIZATION_RENDER_TIMEOUT
+      end
+
       # Since this filter does a level of sanitization, we can not return
       # partial un-sanitized results.
       # It's ok to allow any following filters to run since this is safe HTML.

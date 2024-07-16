@@ -72,6 +72,10 @@ module Banzai
 
       private
 
+      def render_timeout
+        SANITIZATION_RENDER_TIMEOUT
+      end
+
       # If sanitization times out, we can not return partial un-sanitized results.
       # It's ok to allow any following filters to run since this is safe HTML.
       def returned_timeout_value

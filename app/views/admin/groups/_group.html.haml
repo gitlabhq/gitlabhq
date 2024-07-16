@@ -1,4 +1,5 @@
 - group = local_assigns.fetch(:group)
+- remove_form_id = "js-remove-group-#{group.id}-form"
 
 %li.group-row.gl-py-3.gl-align-items-center{ class: 'gl-display-flex!', data: { testid: 'group-row-content' } }
   = render Pajamas::AvatarComponent.new(group, size: 32, alt: '')
@@ -29,8 +30,9 @@
     %span.gl-ml-5.visibility-icon.has-tooltip{ data: { container: 'body', placement: 'left' }, title: visibility_icon_description(group) }
       = visibility_level_icon(group.visibility_level)
 
-  .controls.gl-flex-shrink-0.gl-ml-5
+  .controls.gl-flex.gl-flex-shrink-0.gl-ml-5
     = render Pajamas::ButtonComponent.new(href: admin_group_edit_path(group), button_options: { id: "edit_#{dom_id(group)}" }) do
       = _('Edit')
-    = render Pajamas::ButtonComponent.new(href: [:admin, group], variant: :danger, button_options: { data: { confirm: _("Are you sure you want to delete %{group_name}?") % { group_name: group.name }, confirm_btn_variant: 'danger', method: :delete } }) do
-      = _('Delete')
+
+    = form_tag([:admin, group], method: :delete, id: remove_form_id) do
+      .js-confirm-danger{ data: group_confirm_modal_data(group: group, remove_form_id: remove_form_id, permanently_remove: true, button_text: _('Delete')) }

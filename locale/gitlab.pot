@@ -6964,9 +6964,6 @@ msgstr ""
 msgid "Are you sure you want to continue?"
 msgstr ""
 
-msgid "Are you sure you want to delete %{group_name}?"
-msgstr ""
-
 msgid "Are you sure you want to delete %{name}?"
 msgstr ""
 
@@ -46835,7 +46832,7 @@ msgstr ""
 msgid "ScanResultPolicy|Remove all approvals with new commit"
 msgstr ""
 
-msgid "ScanResultPolicy|Require the user's password to approve"
+msgid "ScanResultPolicy|Require user re-authentication (password or SAML) to approve"
 msgstr ""
 
 msgid "ScanResultPolicy|Required number of approvals became higher than available, valid approvers."

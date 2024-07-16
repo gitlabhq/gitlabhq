@@ -6,4 +6,4 @@
     - c.with_body do
       = html_escape(_("This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group.")) % { linkStart: "<a href=\"#{help_page_path('subscriptions/gitlab_com/index', anchor: 'change-the-linked-namespace')}\">".html_safe, linkEnd: '</a>'.html_safe }
 
-.js-confirm-danger{ data: group_settings_confirm_modal_data(group, remove_form_id, button_text) }
+.js-confirm-danger{ data: group_confirm_modal_data(group: group, remove_form_id: remove_form_id, button_text: button_text) }

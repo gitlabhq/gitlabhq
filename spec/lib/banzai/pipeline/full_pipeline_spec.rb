@@ -229,7 +229,7 @@ RSpec.describe Banzai::Pipeline::FullPipeline, feature_category: :team_planning 
   end
 
   context 'when input is malicious' do
-    let_it_be(:duration) { (Banzai::Filter::Concerns::PipelineTimingCheck::MAX_PIPELINE_SECONDS + 3).seconds }
+    let_it_be(:duration) { (Banzai::Filter::Concerns::PipelineTimingCheck::MAX_PIPELINE_SECONDS + 10).seconds }
     let_it_be(:markdown1) { '![a ' * 3 }
     let_it_be(:markdown2) { "$1$\n" * 190000 }
     let_it_be(:markdown3) { "[^1]\n[^1]:\n" * 100000 }

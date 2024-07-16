@@ -265,7 +265,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/helpers/gitlab_routing_helper_spec.rb'
     - 'spec/helpers/graph_helper_spec.rb'
     - 'spec/helpers/groups/group_members_helper_spec.rb'
-    - 'spec/helpers/groups/settings_helper_spec.rb'
     - 'spec/helpers/groups_helper_spec.rb'
     - 'spec/helpers/ide_helper_spec.rb'
     - 'spec/helpers/import_helper_spec.rb'

@@ -17,6 +17,14 @@ module Banzai
         extend ActiveSupport::Concern
 
         RENDER_TIMEOUT = 2.seconds
+
+        # [TODO] Seeing several complaints about rendering being too complex.
+        # https://gitlab.com/gitlab-org/gitlab/-/issues/469683
+        # The default 2 seconds seems to be too aggressive at the moment.
+        # It can also depend in the hardware that we're running on.
+        # So let's make it 5. Currently the overall pipeline timeout
+        # (pipeline_timing_check.rb) is set to 5.
+        SANITIZATION_RENDER_TIMEOUT = 5.seconds
         COMPLEX_MARKDOWN_MESSAGE =
           <<~HTML
             <p>Rendering aborted due to complexity issues. If this is valid markdown, please feel free to open an issue

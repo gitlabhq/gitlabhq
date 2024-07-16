@@ -254,7 +254,6 @@ Lint/UnusedMethodArgument:
     - 'ee/lib/ee/gitlab/geo_git_access.rb'
     - 'ee/lib/elastic/as_json.rb'
     - 'ee/lib/elastic/latest/issue_instance_proxy.rb'
-    - 'ee/lib/elastic/latest/merge_request_instance_proxy.rb'
     - 'ee/lib/elastic/latest/milestone_instance_proxy.rb'
     - 'ee/lib/elastic/latest/note_class_proxy.rb'
     - 'ee/lib/elastic/latest/note_instance_proxy.rb'
