@@ -205,6 +205,8 @@ semgrep-sast:
         - '**/*.m'
         - '**/*.rb'
         - '**/*.kt'
+        - '**/*.cjs'
+        - '**/*.mjs'
     - if: $CI_OPEN_MERGE_REQUESTS  # Don't add it to a *branch* pipeline if it's already in a merge request pipeline.
       when: never
     - if: $CI_COMMIT_BRANCH        # If there's no open merge request, add it to a *branch* pipeline instead.
@@ -233,6 +235,8 @@ semgrep-sast:
         - '**/*.m'
         - '**/*.rb'
         - '**/*.kt'
+        - '**/*.cjs'
+        - '**/*.mjs'
 
 sobelow-sast:
   extends: .sast-analyzer

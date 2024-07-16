@@ -751,7 +751,7 @@
 {"name":"validates_hostname","version":"1.0.13","platform":"ruby","checksum":"eac40178cc0b4f727df9cc6a5cb5bc2550718ad8d9bb3728df9aba6354bdda19"},
 {"name":"version_gem","version":"1.1.0","platform":"ruby","checksum":"6b009518020db57f51ec7b410213fae2bf692baea9f1b51770db97fbc93d9a80"},
 {"name":"version_sorter","version":"2.3.0","platform":"ruby","checksum":"2147f2a1a3804fbb8f60d268b7d7c1ec717e6dd727ffe2c165b4e05e82efe1da"},
-{"name":"view_component","version":"3.12.1","platform":"ruby","checksum":"f2ce2ad2945389f4bbd4ff77465605e9019041e5c804d16d093791be2542b18b"},
+{"name":"view_component","version":"3.13.0","platform":"ruby","checksum":"316e6479f51387160e7eb372d33cbb97d586ac2ed9d9fe80495cec48b346187b"},
 {"name":"virtus","version":"2.0.0","platform":"ruby","checksum":"8841dae4eb7fcc097320ba5ea516bf1839e5d056c61ee27138aa4bddd6e3d1c2"},
 {"name":"vite_rails","version":"3.0.17","platform":"ruby","checksum":"b90e85a3e55802981cbdb43a4101d944b1e7055bfe85599d9cb7de0f1ea58bcc"},
 {"name":"vite_ruby","version":"3.5.0","platform":"ruby","checksum":"a3e5da3fdd816f831cb1530c4001a790aac862c89f74c09f48d5a3cfed3dea73"},

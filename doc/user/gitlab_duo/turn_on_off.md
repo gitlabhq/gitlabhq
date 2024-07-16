@@ -30,6 +30,8 @@ To use GitLab Duo on a self-managed instance, you must ensure connectivity exist
 
 - Your firewalls and HTTP/S proxy servers must allow outbound connections
   to `cloud.gitlab.com` and `customers.gitlab.com` on port `443` both with `https://`.
+  These hosts are protected by Cloudflare. Update your firewall settings to allow traffic to
+  all IP addresses in the [list of IP ranges Cloudflare publishes](https://www.cloudflare.com/ips/).
 - To use an HTTP/S proxy, both `gitLab_workhorse` and `gitLab_rails` must have the necessary
   [web proxy environment variables](https://docs.gitlab.com/omnibus/settings/environment-variables.html) set.
 - In multi-node GitLab installations, configure the HTTP/S proxy on all **Rails** and **Sidekiq** nodes.

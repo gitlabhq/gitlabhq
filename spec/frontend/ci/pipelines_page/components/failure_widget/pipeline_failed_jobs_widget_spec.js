@@ -74,7 +74,7 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   });
 
-  const CSS_BORDER_CLASSES = 'gl-border-white gl-hover-border-gray-100';
+  const CSS_BORDER_CLASSES = 'gl-border-white gl-hover-border-gray-100 is-collapsed';
 
   describe('when the job button is clicked', () => {
     beforeEach(async () => {
@@ -89,6 +89,10 @@ describe('PipelineFailedJobsWidget component', () => {
     it('removes the CSS border classes', () => {
       expect(findFailedJobsCard().attributes('class')).not.toContain(CSS_BORDER_CLASSES);
     });
+
+    it('the failed jobs button has the correct "aria-expanded" attribute value', () => {
+      expect(findFailedJobsButton().attributes('aria-expanded')).toBe('true');
+    });
   });
 
   describe('when the job details are not expanded', () => {
@@ -98,6 +102,10 @@ describe('PipelineFailedJobsWidget component', () => {
 
     it('has the CSS border classes', () => {
       expect(findFailedJobsCard().attributes('class')).toContain(CSS_BORDER_CLASSES);
+    });
+
+    it('the failed jobs button has the correct "aria-expanded" attribute value', () => {
+      expect(findFailedJobsButton().attributes('aria-expanded')).toBe('false');
     });
   });
 
@@ -132,6 +140,17 @@ describe('PipelineFailedJobsWidget component', () => {
 
         expect(findFailedJobsButton().text()).toContain(String(newJobCount));
       });
+    });
+  });
+
+  describe('"aria-controls" attribute', () => {
+    it('is set and identifies the correct element', () => {
+      createComponent();
+
+      expect(findFailedJobsButton().attributes('aria-controls')).toBe(
+        'pipeline-failed-jobs-widget',
+      );
+      expect(wrapper.findComponent(GlCard).attributes('id')).toBe('pipeline-failed-jobs-widget');
     });
   });
 });

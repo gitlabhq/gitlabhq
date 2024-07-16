@@ -6,18 +6,23 @@ import WidgetWrapper from '~/work_items/components/widget_wrapper.vue';
 describe('WidgetWrapper component', () => {
   let wrapper;
 
-  const createComponent = ({ error } = {}) => {
-    wrapper = shallowMountExtended(WidgetWrapper, { propsData: { error } });
+  const createComponent = ({ error, widgetName } = {}) => {
+    wrapper = shallowMountExtended(WidgetWrapper, { propsData: { error, widgetName } });
   };
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findToggleButton = () => wrapper.findComponent(GlButton);
   const findWidgetBody = () => wrapper.findByTestId('widget-body');
+  const findWidgetWrapper = () => wrapper.findByTestId('widget-wrapper');
 
   it('is expanded by default', () => {
     createComponent();
 
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
+    const toggleButton = findToggleButton();
+
+    expect(toggleButton.props('icon')).toBe('chevron-lg-up');
+    expect(toggleButton.attributes('aria-expanded')).toBe('true');
+    expect(findWidgetWrapper().classes()).not.toContain('is-collapsed');
     expect(findWidgetBody().exists()).toBe(true);
   });
 
@@ -26,7 +31,11 @@ describe('WidgetWrapper component', () => {
     findToggleButton().vm.$emit('click');
     await nextTick();
 
-    expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
+    const toggleButton = findToggleButton();
+
+    expect(toggleButton.props('icon')).toBe('chevron-lg-down');
+    expect(toggleButton.attributes('aria-expanded')).toBe('false');
+    expect(findWidgetWrapper().classes()).toContain('is-collapsed');
     expect(findWidgetBody().exists()).toBe(false);
   });
 
@@ -42,5 +51,14 @@ describe('WidgetWrapper component', () => {
     findAlert().vm.$emit('dismiss');
 
     expect(wrapper.emitted('dismissAlert')).toEqual([[]]);
+  });
+
+  describe('"aria-controls" attribute', () => {
+    it('is set and identifies the correct element', () => {
+      createComponent({ widgetName: 'test-widget-name' });
+
+      expect(findWidgetWrapper().attributes('id')).toBe('test-widget-name');
+      expect(findToggleButton().attributes('aria-controls')).toBe('test-widget-name');
+    });
   });
 });

@@ -95,7 +95,7 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     end
 
     context 'with observability feature flags' do
-      feature_flags = [:observability_tracing, :observability_metrics, :observability_logs]
+      feature_flags = [:observability_tracing, :observability_features]
 
       context 'when all disabled' do
         before do

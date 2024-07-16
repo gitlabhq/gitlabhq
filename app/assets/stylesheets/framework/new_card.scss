@@ -21,7 +21,7 @@
     border-top-right-radius: $gl-border-radius-base;
   }
 
-  &[aria-expanded=false] &-header {
+  &.is-collapsed &-header {
     border-bottom: 0;
     border-radius: $gl-border-radius-base;
   }

@@ -18,13 +18,6 @@ module Gitlab
         Sidekiq.logger.info payload
       end
 
-      def lock_error_log(job)
-        payload = parse_job(job)
-        payload['message'] = "#{base_message(payload)}: failed to obtain lease for deduplication checks"
-
-        Sidekiq.logger.info payload
-      end
-
       def rescheduled_log(job)
         payload = parse_job(job)
         payload['job_status'] = 'rescheduled'

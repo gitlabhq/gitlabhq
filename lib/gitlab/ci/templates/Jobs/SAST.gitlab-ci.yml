@@ -168,6 +168,8 @@ semgrep-sast:
         - '**/*.m'
         - '**/*.rb'
         - '**/*.kt'
+        - '**/*.cjs'
+        - '**/*.mjs'
 
 sobelow-sast:
   extends: .sast-analyzer

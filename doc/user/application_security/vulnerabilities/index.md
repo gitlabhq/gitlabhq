@@ -90,11 +90,11 @@ The following data is shared with third-party AI APIs:
 ## Vulnerability resolution
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Generally available](https://gitlab.com/groups/gitlab-org/-/epics/10783) in GitLab 17.2.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability. By default, it is powered by Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai)
@@ -105,7 +105,7 @@ explanation with caution.
 
 Prerequisites:
 
-- You must have the GitLab Ultimate subscription tier.
+- You must have the GitLab Ultimate subscription tier and GitLab Duo Enterprise..
 - You must be a member of the project.
 - The vulnerability must be a SAST finding.
 

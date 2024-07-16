@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Allowable do
+RSpec.describe Gitlab::Allowable, feature_category: :permissions do
   subject do
     Class.new.include(described_class).new
   end
@@ -41,6 +41,33 @@ RSpec.describe Gitlab::Allowable do
       let_it_be(:project) { create(:project, :private) }
 
       it { expect(subject.can_any?(user, permissions, project)).to be(false) }
+    end
+  end
+
+  describe '#can_all?' do
+    let_it_be(:user) { create(:user) }
+    let_it_be(:permissions) { [:admin_project, :read_project] }
+
+    context 'when the user is allowed all of the abilities' do
+      let_it_be(:project) { create(:project, :private) }
+
+      before_all do
+        project.add_owner(user)
+      end
+
+      it { expect(subject.can_all?(user, permissions, project)).to be(true) }
+    end
+
+    context 'when the user is allowed one of the abilities' do
+      let_it_be(:project) { create(:project, :public) }
+
+      it { expect(subject.can_all?(user, permissions, project)).to be(false) }
+    end
+
+    context 'when the user is allowed none of the abilities' do
+      let_it_be(:project) { create(:project, :private) }
+
+      it { expect(subject.can_all?(user, permissions, project)).to be(false) }
     end
   end
 end

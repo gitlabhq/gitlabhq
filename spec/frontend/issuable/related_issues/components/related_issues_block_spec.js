@@ -224,8 +224,12 @@ describe('RelatedIssuesBlock', () => {
     });
 
     it('is expanded by default', () => {
-      expect(findToggleButton().props('icon')).toBe('chevron-lg-up');
-      expect(findToggleButton().props('disabled')).toBe(false);
+      const toggleButton = findToggleButton();
+
+      expect(toggleButton.props('icon')).toBe('chevron-lg-up');
+      expect(toggleButton.props('disabled')).toBe(false);
+      expect(toggleButton.attributes('aria-expanded')).toBe('true');
+      expect(wrapper.findComponent(GlCard).classes()).not.toContain('is-collapsed');
       expect(findRelatedIssuesBody().exists()).toBe(true);
     });
 
@@ -233,8 +237,21 @@ describe('RelatedIssuesBlock', () => {
       findToggleButton().vm.$emit('click');
       await nextTick();
 
-      expect(findToggleButton().props('icon')).toBe('chevron-lg-down');
+      const toggleButton = findToggleButton();
+
+      expect(toggleButton.props('icon')).toBe('chevron-lg-down');
+      expect(toggleButton.attributes('aria-expanded')).toBe('false');
+      expect(wrapper.findComponent(GlCard).classes()).toContain('is-collapsed');
       expect(findRelatedIssuesBody().exists()).toBe(false);
+    });
+  });
+
+  describe('"aria-controls" attribute', () => {
+    it('is set and identifies the correct element', () => {
+      createComponent();
+
+      expect(findToggleButton().attributes('aria-controls')).toBe('related-issues-card');
+      expect(wrapper.findComponent(GlCard).attributes('id')).toBe('related-issues-card');
     });
   });
 

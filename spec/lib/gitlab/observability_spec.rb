@@ -56,7 +56,7 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
       end
     end
 
-    feature_flags = [:observability_tracing, :observability_metrics, :observability_logs]
+    feature_flags = [:observability_tracing, :observability_features]
     flag_states = [true, false].repeated_permutation(feature_flags.length)
     flag_tests = flag_states.map { |flags| Hash[feature_flags.zip(flags)] }
 

@@ -41,7 +41,7 @@ RSpec.describe FinderWithGroupHierarchy do
   let_it_be(:private_group) { create(:group, :private, organization: organization) }
   let_it_be(:private_subgroup) { create(:group, :private, parent: private_group, organization: organization) }
 
-  let!(:user) { create(:user) }
+  let_it_be(:user) { create(:user) }
 
   context 'when specifying group' do
     it 'returns only the group by default' do

@@ -13,6 +13,7 @@ ignorecase: true
 swap:
   active user: "billable user"
   active users: "billable users"
+  agnostic: "platform-independent' or 'vendor-neutral"
   air(?:-| )?gapped: "offline environment"
   bullet: "list item"
   (?<!right-)click(?!-through): "select"

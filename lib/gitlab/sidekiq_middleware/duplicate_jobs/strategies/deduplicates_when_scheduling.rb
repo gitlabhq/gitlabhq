@@ -17,6 +17,10 @@ module Gitlab
           def schedule(job)
             return false if deduplicate?(job)
 
+            # Delete signaling key as the job will be enqueued and no
+            # rescheduling is needed on the server-middleware.
+            duplicate_job.clear_signaling_key
+
             yield
           end
 
@@ -31,28 +35,19 @@ module Gitlab
             # no redis operations, hence this can be checked outside of the lease
             return false unless deduplicatable_job?
 
-            with_dedup_lock do
-              next false unless check! && duplicate_job.duplicate?
+            return false unless check! && duplicate_job.duplicate?
 
-              job['duplicate-of'] = duplicate_job.existing_jid
+            job['duplicate-of'] = duplicate_job.existing_jid
 
-              next false unless duplicate_job.idempotent? # only dedup idempotent jobs
+            return false unless duplicate_job.idempotent? # only dedup idempotent jobs
 
-              duplicate_job.update_latest_wal_location!
-              duplicate_job.set_deduplicated_flag!
+            duplicate_job.update_latest_wal_location!
+            duplicate_job.set_deduplicated_flag!
 
-              Gitlab::SidekiqLogging::DeduplicationLogger.instance.deduplicated_log(
-                job, strategy_name, duplicate_job.options)
+            Gitlab::SidekiqLogging::DeduplicationLogger.instance.deduplicated_log(
+              job, strategy_name, duplicate_job.options)
 
-              true
-            end
-          rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
-            Gitlab::SidekiqLogging::DeduplicationLogger.instance.lock_error_log(job)
-
-            # If lock acquisition fails, we enqueue the jobs:
-            # non-idempotent jobs are not deduplicated while
-            # idempotent jobs can be safely run multiple times with the same args
-            false
+            true
           end
 
           def update_job_wal_location!(job)

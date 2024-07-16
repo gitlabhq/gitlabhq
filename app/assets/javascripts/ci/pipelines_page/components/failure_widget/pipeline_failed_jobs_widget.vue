@@ -80,19 +80,28 @@ export default {
     additionalInfoTitle: __('Limitation on this view'),
     failedJobsLabel: __('Failed jobs (%{count})'),
   },
+  ariaControlsId: 'pipeline-failed-jobs-widget',
 };
 </script>
 <template>
   <gl-card
+    :id="$options.ariaControlsId"
     class="gl-new-card"
-    :class="{ 'gl-border-white gl-hover-border-gray-100': !isExpanded }"
+    :class="{
+      'gl-border-white gl-hover-border-gray-100 is-collapsed': !isExpanded,
+    }"
     header-class="gl-new-card-header gl-px-3 gl-py-3"
     body-class="gl-new-card-body"
     data-testid="failed-jobs-card"
-    :aria-expanded="isExpanded.toString()"
   >
     <template #header>
-      <gl-button variant="link" class="gl-text-gray-500! gl-font-semibold" @click="toggleWidget">
+      <gl-button
+        variant="link"
+        class="gl-text-gray-500! gl-font-semibold"
+        :aria-expanded="isExpanded.toString()"
+        :aria-controls="$options.ariaControlsId"
+        @click="toggleWidget"
+      >
         <gl-icon :name="iconName" />{{ failedJobsCountText
         }}<gl-icon v-if="maximumJobs" :id="popoverId" name="information-o" class="gl-ml-2" />
         <gl-popover :target="popoverId" placement="top">
