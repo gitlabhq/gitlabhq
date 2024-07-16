@@ -26,8 +26,8 @@ RSpec.describe Gitlab::BackgroundMigration::UpdateCiPipelineArtifactsUnknownLock
     let(:locked) { 1 }
     let(:unknown) { 2 }
 
-    let(:unlocked_pipeline) { pipelines.create!(locked: unlocked, partition_id: 100) }
-    let(:locked_pipeline) { pipelines.create!(locked: locked, partition_id: 100) }
+    let(:unlocked_pipeline) { pipelines.create!(locked: unlocked, partition_id: 100, project_id: project.id) }
+    let(:locked_pipeline) { pipelines.create!(locked: locked, partition_id: 100, project_id: project.id) }
 
     # rubocop:disable Layout/LineLength
     let!(:locked_artifact) { pipeline_artifacts.create!(project_id: project.id, pipeline_id: locked_pipeline.id, size: 1024, file_type: 0, file_format: 'gzip', file: 'a.gz', locked: unknown, partition_id: 100) }

@@ -46,16 +46,6 @@ RSpec.describe Ci::PipelineFinishedWorker, '#perform', feature_category: :contin
       end
     end
 
-    context 'when pipeline does not have project' do
-      before do
-        pipeline.update_attribute(:project_id, nil)
-      end
-
-      it 'does not save pipeline on Ci::FinishedPipelineChSyncEvent' do
-        expect { perform }.not_to change { Ci::FinishedPipelineChSyncEvent.count }
-      end
-    end
-
     context 'when pipeline does not have finished_at value' do
       before do
         pipeline.update!(finished_at: nil)

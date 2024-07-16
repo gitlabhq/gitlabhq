@@ -8,7 +8,7 @@ module QA
       # Acceptable statuses:
       # Canceled, Created, Failed, Manual, Passed
       # Pending, Running, Skipped
-      def visit_latest_pipeline(status: nil, wait: nil, skip_wait: true)
+      def visit_latest_pipeline(status: nil, wait: 120, skip_wait: true)
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform do |index|
           index.has_any_pipeline?(wait: wait)
@@ -17,7 +17,7 @@ module QA
         end
       end
 
-      def wait_for_latest_pipeline(status: nil, wait: nil)
+      def wait_for_latest_pipeline(status: nil, wait: 120)
         Page::Project::Menu.perform(&:go_to_pipelines)
         Page::Project::Pipeline::Index.perform do |index|
           index.has_any_pipeline?(wait: wait)

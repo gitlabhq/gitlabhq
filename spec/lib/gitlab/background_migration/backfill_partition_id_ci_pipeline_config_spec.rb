@@ -2,13 +2,12 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineConfig,
-  feature_category: :continuous_integration do
+RSpec.describe Gitlab::BackgroundMigration::BackfillPartitionIdCiPipelineConfig, feature_category: :continuous_integration do
   let(:ci_pipelines_table) { table(:ci_pipelines, database: :ci) }
   let(:ci_pipeline_config_table) { table(:ci_pipelines_config, database: :ci) }
-  let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100) }
-  let!(:pipeline_2) { ci_pipelines_table.create!(id: 2, partition_id: 101) }
-  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 100) }
+  let!(:pipeline_1) { ci_pipelines_table.create!(id: 1, partition_id: 100, project_id: 1) }
+  let!(:pipeline_2) { ci_pipelines_table.create!(id: 2, partition_id: 101, project_id: 1) }
+  let!(:pipeline_3) { ci_pipelines_table.create!(id: 3, partition_id: 100, project_id: 1) }
   let!(:ci_pipeline_config_100) do
     ci_pipeline_config_table.create!(
       pipeline_id: pipeline_1.id,

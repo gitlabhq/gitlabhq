@@ -22550,6 +22550,9 @@ ALTER TABLE ONLY chat_teams
 ALTER TABLE workspaces
     ADD CONSTRAINT check_2a89035b04 CHECK ((personal_access_token_id IS NOT NULL)) NOT VALID;
 
+ALTER TABLE ci_pipelines
+    ADD CONSTRAINT check_2ba2a044b9 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE vulnerability_scanners
     ADD CONSTRAINT check_37608c9db5 CHECK ((char_length(vendor) <= 255)) NOT VALID;
 

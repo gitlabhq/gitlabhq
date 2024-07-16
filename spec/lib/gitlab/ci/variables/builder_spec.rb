@@ -576,14 +576,6 @@ RSpec.describe Gitlab::Ci::Variables::Builder, :clean_gitlab_redis_cache, featur
   describe '#config_variables' do
     subject(:config_variables) { builder.config_variables }
 
-    context 'without project' do
-      before do
-        pipeline.update!(project_id: nil)
-      end
-
-      it { expect(config_variables.size).to eq(0) }
-    end
-
     context 'without repository' do
       let(:project) { create(:project) }
       let(:pipeline) { build(:ci_pipeline, ref: nil, sha: nil, project: project) }
