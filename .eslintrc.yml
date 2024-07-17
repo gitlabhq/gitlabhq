@@ -244,3 +244,11 @@ overrides:
       - 'ee/app/assets/javascripts/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql'
     rules:
       '@graphql-eslint/require-id-when-available': off
+  - files:
+      - '{,spec/}tooling/**/*'
+    rules:
+      'no-undef': off
+      'import/no-commonjs': off
+      'import/no-extraneous-dependencies': off
+      'no-restricted-syntax': off
+      '@gitlab/require-i18n-strings': off

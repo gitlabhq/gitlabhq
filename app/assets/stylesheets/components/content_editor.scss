@@ -283,9 +283,11 @@
     }
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-new-dropdown-inner li {
     margin-left: 0 !important;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-new-dropdown-item {
       padding-left: $gl-spacing-scale-2;
       padding-right: $gl-spacing-scale-2;
@@ -358,15 +360,18 @@
   }
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .content-editor-table-dropdown .gl-new-dropdown-panel {
   min-width: auto;
 }
 
 .content-editor-suggestions-dropdown {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-new-dropdown-panel {
     width: max-content;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   li.focused div.gl-new-dropdown-item-content {
     @include gl-focus($inset: true);
     background-color: $gray-50;

@@ -158,6 +158,7 @@ If multiple topics are provided, all topics must match for the project to be inc
 ### AI Impact analytics
 
 DETAILS:
+**Tier:** For a limited time, Ultimate. In the future, GitLab Duo Enterprise.
 **Offering:** GitLab.com, Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/443696) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `ai_impact_analytics_dashboard`. Disabled by default.

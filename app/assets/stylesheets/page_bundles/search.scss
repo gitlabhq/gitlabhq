@@ -273,6 +273,7 @@ $language-filter-max-height: 20rem;
     display: flex;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .btn-search,
   .btn-success,
   .dropdown-menu-toggle,
@@ -301,6 +302,7 @@ $language-filter-max-height: 20rem;
     width: 100%;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .dropdown-menu-toggle,
   .gl-dropdown {
     @include media-breakpoint-up(lg) {

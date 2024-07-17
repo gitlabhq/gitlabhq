@@ -138,6 +138,7 @@
   }
 
   .instance-runners-info {
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-alert-body {
       p:last-child {
         margin-bottom: 0;
@@ -166,12 +167,14 @@
 }
 
 .prometheus-metrics-monitoring {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-card {
     .badge.badge-pill {
       font-size: 12px;
       line-height: 12px;
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-card-header .label-count {
       color: var(--white, $white);
       background: var(--gray-800, $gray-800);

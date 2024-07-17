@@ -36,6 +36,7 @@
     color: initial;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-link,
   .gl-button {
     color: $white;

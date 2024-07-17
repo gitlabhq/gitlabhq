@@ -1,5 +1,6 @@
 @import 'notify_base';
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-scoped {
   border: 2px solid currentColor;
   box-sizing: border-box;
@@ -8,18 +9,22 @@
   line-height: 14px;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-text {
   padding: 0 5px;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-text-light {
   color: $white;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-text-dark {
   color: $gl-text-color;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-label-text-scoped {
   padding: 0 5px;
   color: $gl-text-color;

@@ -50,7 +50,6 @@ Because this is an experimental feature,
 | Flag                                          | Description                                                                                              | Actor | Status | Milestone |
 | --------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ----- | ------ | ------ |
 | `work_item_epics`                             | Consolidated flag that contains all the changes needed to get epic work items to work for a given group. | Group | **Required** | 17.2 |
-| `synced_epic_work_item_editable`              | Allows editing epic work items when they have a legacy epic.                                             | Group | **Required** | 17.2 |
 | `work_items_rolledup_dates`                   | Calculates the start and due dates in a hierarchy for work items.                                        | Group | **Required** | 17.2 |
 | `epic_and_work_item_associations_unification` | Delegates other epic and work item associations.                                                         | Group | **Required** | 17.2 |
 | `work_item_epics_rollout`                     | Feature flag per user to enable or disable the new work item view as the default experience.             | User  | **Required** | 17.3 |

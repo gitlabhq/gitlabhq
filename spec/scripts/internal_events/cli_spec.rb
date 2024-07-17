@@ -1153,7 +1153,7 @@ RSpec.describe Cli, feature_category: :service_ping do
 
       with_cli_thread do
         expect { plain_last_lines(30) }
-          .to eventually_include_cli_text("Okay! The next step is adding a new event! (~5 min)")
+          .to eventually_include_cli_text("Okay! The next step is adding a new event! (~5-10 min)")
       end
     end
 

@@ -385,6 +385,20 @@ four standard [pagination arguments](#pagination-arguments):
 | ---- | ---- | ----------- |
 | <a id="queryduoworkfloweventsworkflowid"></a>`workflowId` | [`AiDuoWorkflowsWorkflowID!`](#aiduoworkflowsworkflowid) | Array of request IDs to fetch. |
 
+### `Query.duoWorkflowWorkflows`
+
+List the workflows owned by the current user.
+
+DETAILS:
+**Introduced** in GitLab 17.2.
+**Status**: Experiment.
+
+Returns [`DuoWorkflowConnection!`](#duoworkflowconnection).
+
+This field returns a [connection](#connections). It accepts the
+four standard [pagination arguments](#pagination-arguments):
+`before: String`, `after: String`, `first: Int`, and `last: Int`.
+
 ### `Query.echo`
 
 Testing endpoint to validate the API with.
@@ -12554,6 +12568,29 @@ The edge type for [`DoraPerformanceScoreCount`](#doraperformancescorecount).
 | <a id="doraperformancescorecountedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="doraperformancescorecountedgenode"></a>`node` | [`DoraPerformanceScoreCount`](#doraperformancescorecount) | The item at the end of the edge. |
 
+#### `DuoWorkflowConnection`
+
+The connection type for [`DuoWorkflow`](#duoworkflow).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowconnectionedges"></a>`edges` | [`[DuoWorkflowEdge]`](#duoworkflowedge) | A list of edges. |
+| <a id="duoworkflowconnectionnodes"></a>`nodes` | [`[DuoWorkflow]`](#duoworkflow) | A list of nodes. |
+| <a id="duoworkflowconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `DuoWorkflowEdge`
+
+The edge type for [`DuoWorkflow`](#duoworkflow).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="duoworkflowedgenode"></a>`node` | [`DuoWorkflow`](#duoworkflow) | The item at the end of the edge. |
+
 #### `DuoWorkflowEventConnection`
 
 The connection type for [`DuoWorkflowEvent`](#duoworkflowevent).
@@ -20765,6 +20802,21 @@ Aggregated DORA score counts for projects for the last complete month.
 | <a id="doraperformancescorecountmediumprojectscount"></a>`mediumProjectsCount` | [`Int`](#int) | Number of projects that score "medium" on the metric. |
 | <a id="doraperformancescorecountmetricname"></a>`metricName` | [`String!`](#string) | Name of the DORA metric. |
 | <a id="doraperformancescorecountnodataprojectscount"></a>`noDataProjectsCount` | [`Int`](#int) | Number of projects with no data for the metric. |
+
+### `DuoWorkflow`
+
+A Duo Workflow.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="duoworkflowcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the workflow was created. |
+| <a id="duoworkflowhumanstatus"></a>`humanStatus` | [`String!`](#string) | Human-readable status of the workflow. |
+| <a id="duoworkflowid"></a>`id` | [`ID!`](#id) | ID of the workflow. |
+| <a id="duoworkflowprojectid"></a>`projectId` | [`ProjectID!`](#projectid) | ID of the project. |
+| <a id="duoworkflowupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the workflow was last updated. |
+| <a id="duoworkflowuserid"></a>`userId` | [`UserID!`](#userid) | ID of the user. |
 
 ### `DuoWorkflowEvent`
 

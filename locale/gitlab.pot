@@ -17903,9 +17903,6 @@ msgid_plural "Deploys"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Deploy Key"
-msgstr ""
-
 msgid "Deploy Token"
 msgstr ""
 
@@ -17913,6 +17910,9 @@ msgid "Deploy container based web apps on Google managed clusters"
 msgstr ""
 
 msgid "Deploy freezes"
+msgstr ""
+
+msgid "Deploy key"
 msgstr ""
 
 msgid "Deploy key was successfully updated."
@@ -19677,9 +19677,6 @@ msgid "Edit %{ruleName}"
 msgstr ""
 
 msgid "Edit Comment"
-msgstr ""
-
-msgid "Edit Deploy Key"
 msgstr ""
 
 msgid "Edit Geo Site"
@@ -34878,7 +34875,7 @@ msgstr ""
 msgid "No confirmation email received? Check your spam folder or %{request_link_start}request new confirmation email%{request_link_end}."
 msgstr ""
 
-msgid "No connection could be made to a Gitaly Server, please check your logs!"
+msgid "No connection could be made to a Gitaly server, please check your logs!"
 msgstr ""
 
 msgid "No contributions"

@@ -86,7 +86,8 @@ export default {
     },
     workItemState: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     workItemId: {
       type: String,
@@ -403,6 +404,7 @@ export default {
         :full-path="fullPath"
         show-as-dropdown-item
         @error="emitStateToggleError"
+        @workItemStateUpdated="$emit('workItemStateUpdated')"
       />
 
       <gl-disclosure-dropdown-item

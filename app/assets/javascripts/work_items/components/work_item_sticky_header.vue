@@ -159,6 +159,7 @@ export default {
             "
             @error="$emit('error')"
             @promotedToObjective="$emit('promotedToObjective')"
+            @workItemStateUpdated="$emit('workItemStateUpdated')"
           />
         </div>
       </div>

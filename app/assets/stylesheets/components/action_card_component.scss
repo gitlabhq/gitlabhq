@@ -3,17 +3,17 @@
     display: block;
     padding: $gl-spacing-scale-5;
     border-radius: $gl-border-radius-base;
-    
+
     &-default {
         border: 1px solid $gray-100;
         background-color: $white;
     }
-    
+
     &-success {
         border: 1px solid $green-100;
         background-color: $green-50;
     }
-    
+
     &-promo {
         border: 1px solid $purple-100;
         background-color: $purple-50;
@@ -25,11 +25,13 @@
         gap: $gl-spacing-scale-2;
         font-weight: $gl-font-weight-bold;
         text-wrap: balance;
-        
+
+      // stylelint-disable-next-line gitlab/no-gl-class
         &:is(.gl-link):not(:hover) {
             color: $gl-text-color;
         }
 
+      // stylelint-disable-next-line gitlab/no-gl-class
         &:is(.gl-link) {
             transition: color .2s cubic-bezier(0.22, 0.61, 0.36, 1);
 

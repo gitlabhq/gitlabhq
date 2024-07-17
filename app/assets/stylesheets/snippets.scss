@@ -13,6 +13,7 @@
   margin: 20px;
   font-weight: $gl-font-weight-normal;
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-snippet-icon {
     display: inline-block;
     background: url('ext_snippet_icons/ext_snippet_icons.png') no-repeat;
@@ -22,9 +23,13 @@
     height: 16px;
     background-size: cover;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-snippet-icon-doc-code { background-position: 0 0;  }
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-snippet-icon-doc-text {  background-position: 0 -16px; }
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-snippet-icon-download {  background-position: 0 -32px; }
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-snippet-icon-copy-to-clipboard {  background-position: 0 -48px; }
   }
 
@@ -136,6 +141,7 @@
       }
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     img,
     .gl-snippet-icon {
       display: inline-block;

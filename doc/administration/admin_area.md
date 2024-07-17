@@ -323,13 +323,13 @@ To merge topics:
 
 ## Administering Gitaly servers
 
-You can list all Gitaly servers in the GitLab instance from the Admin area's **Gitaly Servers**
+You can list all Gitaly servers in the GitLab instance from the Admin area's **Gitaly servers**
 page. For more details, see [Gitaly](gitaly/index.md).
 
-To access the **Gitaly Servers** page:
+To access the **Gitaly servers** page:
 
 1. On the left sidebar, at the bottom, select **Admin area**.
-1. Select **Overview > Gitaly Servers**.
+1. Select **Overview > Gitaly servers**.
 
 For each Gitaly server, the following details are listed:
 
@@ -431,7 +431,7 @@ For each job, the following details are listed:
 
 The following topics document the **Monitoring** section of the Admin area.
 
-### System Information
+### System information
 
 > - Support for relative time [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/341248) in GitLab 15.2. "Uptime" statistic was renamed to "System started".
 

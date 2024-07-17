@@ -53,6 +53,7 @@ import WorkItemLoading from './work_item_loading.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 
 export default {
+  name: 'WorkItemDetail',
   i18n,
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -257,7 +258,7 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
     },
     hasDesignWidget() {
-      return this.isWidgetPresent(WIDGET_TYPE_DESIGNS);
+      return this.isWidgetPresent(WIDGET_TYPE_DESIGNS) && this.$router;
     },
     workItemNotificationsSubscribed() {
       return Boolean(this.isWidgetPresent(WIDGET_TYPE_NOTIFICATIONS)?.subscribed);
@@ -495,6 +496,7 @@ export default {
       @error="updateError = $event"
       @promotedToObjective="$emit('promotedToObjective', workItemIid)"
       @toggleEditMode="enableEditMode"
+      @workItemStateUpdated="$emit('workItemStateUpdated')"
     />
     <section class="work-item-view">
       <section v-if="updateError" class="flash-container flash-container-page sticky">
@@ -585,6 +587,7 @@ export default {
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
                 @promotedToObjective="$emit('promotedToObjective', workItemIid)"
+                @workItemStateUpdated="$emit('workItemStateUpdated')"
               />
             </div>
             <gl-button
@@ -650,6 +653,7 @@ export default {
                 :work-item="workItem"
                 :group-path="groupPath"
                 @error="updateError = $event"
+                @attributesUpdated="$emit('attributesUpdated', $event)"
               />
             </aside>
 

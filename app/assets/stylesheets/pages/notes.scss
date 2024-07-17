@@ -81,6 +81,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
       height: 2rem;
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-avatar {
       border-color: var(--gray-50, $gray-50);
     }
@@ -378,6 +379,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
         text-transform: lowercase;
       }
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       a:not(.gl-link) {
         color: $blue-600;
       }
@@ -823,10 +825,12 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     text-decoration: underline;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-label-link:hover {
     text-decoration: none;
     color: inherit;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-label-text:last-of-type {
       text-decoration: underline;
     }
@@ -1005,6 +1009,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
     padding: 0 8px !important;
     box-shadow: none !important;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-button-loading-indicator {
       margin-right: 0 !important;
     }

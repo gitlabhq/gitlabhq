@@ -6,17 +6,37 @@ query getWorkItems(
   $search: String
   $sort: WorkItemSort
   $state: IssuableState
+  $assigneeWildcardId: AssigneeWildcardId
+  $assigneeUsernames: [String!]
   $authorUsername: String
+  $labelName: [String!]
+  $milestoneTitle: [String!]
+  $milestoneWildcardId: MilestoneWildcardId
+  $types: [IssueType!]
   $in: [IssuableSearchableField!]
+  $not: NegatedWorkItemFilterInput
+  $or: UnionedWorkItemFilterInput
   $afterCursor: String
   $beforeCursor: String
   $firstPageSize: Int
   $lastPageSize: Int
-  $types: [IssueType!] = null
 ) {
   group(fullPath: $fullPath) {
     id
-    workItemStateCounts(includeDescendants: true, sort: $sort, state: $state, types: $types) {
+    workItemStateCounts(
+      includeDescendants: true
+      sort: $sort
+      state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
+      authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
+      not: $not
+      or: $or
+    ) {
       all
       closed
       opened
@@ -26,13 +46,20 @@ query getWorkItems(
       search: $search
       sort: $sort
       state: $state
+      assigneeUsernames: $assigneeUsernames
+      assigneeWildcardId: $assigneeWildcardId
       authorUsername: $authorUsername
+      labelName: $labelName
+      milestoneTitle: $milestoneTitle
+      milestoneWildcardId: $milestoneWildcardId
+      types: $types
       in: $in
+      not: $not
+      or: $or
       after: $afterCursor
       before: $beforeCursor
       first: $firstPageSize
       last: $lastPageSize
-      types: $types
     ) {
       pageInfo {
         ...PageInfo

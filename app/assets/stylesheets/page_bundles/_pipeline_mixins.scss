@@ -39,6 +39,7 @@
         background-color: var(--gray-50, $gray-50);
       }
 
+      // stylelint-disable-next-line gitlab/no-gl-class
       .gl-spinner,
       svg {
         width: $ci-action-dropdown-svg-size;

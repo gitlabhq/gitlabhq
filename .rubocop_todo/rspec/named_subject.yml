@@ -2648,7 +2648,6 @@ RSpec/NamedSubject:
     - 'spec/models/packages/package_file_spec.rb'
     - 'spec/models/packages/package_spec.rb'
     - 'spec/models/packages/rpm/repository_file_spec.rb'
-    - 'spec/models/pages_domain_spec.rb'
     - 'spec/models/personal_access_token_spec.rb'
     - 'spec/models/plan_limits_spec.rb'
     - 'spec/models/project_authorization_spec.rb'

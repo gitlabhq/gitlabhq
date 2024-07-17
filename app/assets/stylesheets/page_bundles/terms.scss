@@ -19,7 +19,9 @@
     padding-top: $gl-padding;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-card {
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-card-header {
       display: flex;
       align-items: center;

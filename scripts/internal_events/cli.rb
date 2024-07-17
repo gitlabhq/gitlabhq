@@ -113,7 +113,7 @@ class Cli
   def proceed_to_event_definition
     new_page!
 
-    cli.say format_info("Okay! The next step is adding a new event! (~5 min)\n")
+    cli.say format_info("Okay! The next step is adding a new event! (~5-10 min)\n")
 
     return not_ready_error('New Event') unless cli.yes?(format_prompt('Ready to start?'))
 

@@ -96,7 +96,7 @@ Streaming audit events can be sent when authenticated users push, pull, or clone
 
 Audit events are not captured for users that are not signed in. For example, when downloading a public project.
 
-### Example: audit event payloads for Git over SSH events with Deploy Key
+### Example: audit event payloads for Git over SSH events with deploy key
 
 Fetch:
 

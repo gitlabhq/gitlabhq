@@ -36,10 +36,12 @@
 }
 
 .work-item-labels {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-token {
     padding-left: $gl-spacing-scale-1;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-token-close {
     display: none;
   }

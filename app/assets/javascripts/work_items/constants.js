@@ -297,9 +297,11 @@ export const WORK_ITEM_TO_ISSUE_MAP = {
   [WIDGET_TYPE_LABELS]: 'labels',
   [WIDGET_TYPE_MILESTONE]: 'milestone',
   [WIDGET_TYPE_WEIGHT]: 'weight',
+  [WIDGET_TYPE_ITERATION]: 'iteration',
   [WIDGET_TYPE_START_AND_DUE_DATE]: 'dueDate',
   [WIDGET_TYPE_HEALTH_STATUS]: 'healthStatus',
   [WIDGET_TYPE_AWARD_EMOJI]: 'awardEmoji',
+  [WIDGET_TYPE_TIME_TRACKING]: 'timeEstimate',
 };
 
 export const LINKED_CATEGORIES_MAP = {

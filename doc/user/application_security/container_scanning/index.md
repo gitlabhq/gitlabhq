@@ -709,7 +709,7 @@ Unlike regular container scanning, the scan results do not include a security re
 When security findings are identified, GitLab populates the [Vulnerability Report](../vulnerability_report/index.md) with these findings. Vulnerabilities can be viewed under the **Container registry vulnerabilities** tab of the Vulnerability Report page.
 
 NOTE:
-Container Scanning for Registry only populates the Vulnerability Report when a new advisory is published to the [GitLab Advisory Database](../gitlab_advisory_database/index.md). Future iterations will populate the Vulnerability Report with all present advisory data (instead of only newely detected data). For more details, see [epic 8026](https://gitlab.com/groups/gitlab-org/-/epics/8026).
+Container Scanning for Registry populates the Vulnerability Report only when a new advisory is published to the [GitLab Advisory Database](../gitlab_advisory_database/index.md). Support for populating the Vulnerability Report with all present advisory data, instead of only newly-detected data, is proposed in [epic 8026](https://gitlab.com/groups/gitlab-org/-/epics/8026).
 
 ### Prerequisites
 

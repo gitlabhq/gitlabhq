@@ -232,6 +232,8 @@ configuration option in `gitlab.yml`. These metrics are served from the
 | `sidekiq_running_jobs`                         | Gauge     | 12.2 | Number of Sidekiq jobs running                                                                      | `queue`, `boundary`, `external_dependencies`, `feature_category`, `urgency` |
 | `sidekiq_concurrency`                          | Gauge     | 12.5 | Maximum number of Sidekiq jobs                                                                      |                                                                   |
 | `sidekiq_mem_total_bytes`                      | Gauge     | 15.3 | Number of bytes allocated for both objects consuming an object slot and objects that required a malloc'|                                                                   |
+| `sidekiq_concurrency_limit_queue_jobs`         | Gauge     | 17.3 | Number of Sidekiq jobs waiting in the concurrency limit queue|  `worker`                                                             |
+| `sidekiq_concurrency_limit_max_concurrent_jobs` | Gauge     | 17.3 | Max number of concurrent running Sidekiq jobs |   `worker`                                                           |
 | `geo_db_replication_lag_seconds`               | Gauge   | 10.2  | Database replication lag (seconds) | `url` |
 | `geo_repositories`                             | Gauge   | 10.2  | Total number of repositories available on primary | `url` |
 | `geo_lfs_objects`                              | Gauge   | 10.2  | Number of LFS objects on primary | `url` |

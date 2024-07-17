@@ -80,6 +80,7 @@
       color: $gl-text-color;
     }
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     &.gl-inline-flex {
       gap: 0.5ch;
     }
@@ -119,6 +120,7 @@
 .commit-sha-group {
   display: inline-flex;
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .label,
   .btn:not(.gl-button) {
     padding: $gl-vert-padding $gl-btn-padding;

@@ -89,6 +89,7 @@
     color: var(--gl-text-color, $gl-text-color);
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-label-scoped {
     --label-inset-border: inset 0 0 0 1px currentColor;
   }

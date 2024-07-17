@@ -108,7 +108,7 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div data-testid="work-item-time-tracking">
     <div class="gl-display-flex gl-align-items-center gl-justify-content-space-between">
       <h3 class="gl-heading-5 gl-mb-2!">
         {{ __('Time tracking') }}

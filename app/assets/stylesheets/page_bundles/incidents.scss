@@ -24,6 +24,7 @@
 .create-timeline-event,
 .edit-timeline-event {
   .md-area {
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-form-textarea {
       @include gl-shadow-none;
     }

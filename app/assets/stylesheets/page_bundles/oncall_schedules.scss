@@ -9,6 +9,7 @@
 }
 
 .invalid-dropdown {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-button.gl-dropdown-toggle {
     @include inset-border-1-red-500;
 
@@ -19,10 +20,12 @@
 }
 
 .rotations-modal {
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-card {
     min-width: 75%;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   &.gl-modal .modal-md {
     max-width: 640px;
   }

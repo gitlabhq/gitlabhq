@@ -124,10 +124,12 @@
 // These are single-value classes to use with utility-class style CSS.
 // They are here to still access a variable or because they use magic values.
 // scoped to the graph. Do not add other styles.
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-pipeline-min-h {
   min-height: calc(#{$dropdown-max-height-lg} + #{$gl-spacing-scale-6});
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-pipeline-job-width {
   width: 100%;
   max-width: 400px;
@@ -137,6 +139,7 @@
   }
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-downstream-pipeline-job-width {
   width: 8rem;
 
@@ -149,10 +152,12 @@
   }
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-linked-pipeline-padding {
   padding-right: 120px;
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .gl-ci-action-icon-container {
   position: absolute;
   right: 5px;
@@ -170,6 +175,7 @@
   }
 }
 
+// stylelint-disable-next-line gitlab/no-gl-class
 .stage-column-title .gl-ci-action-icon-container {
   right: 11px;
 }
@@ -315,10 +321,12 @@
 }
 
 .stage-column .ci-job-group-dropdown {
+  // stylelint-disable-next-line gitlab/no-gl-class
   &,
   .gl-new-dropdown-custom-toggle {
     width: 100%;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-badge.badge-muted {
       .gl-dark & {
         @apply gl-bg-gray-100;
@@ -328,6 +336,7 @@
 
   // Reset padding, as inner element will
   // define padding
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-new-dropdown-item-content,
   .gl-new-dropdown-item-text-wrapper {
     padding: 0;
@@ -335,6 +344,7 @@
 
   // Set artificial focus on the menu-item to keep
   // it consistent with the original dropdown items
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-new-dropdown-item:focus,
   .gl-new-dropdown-item-content:focus {
     outline: none;

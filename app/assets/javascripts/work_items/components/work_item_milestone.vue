@@ -163,6 +163,7 @@ export default {
           if (data.workItemUpdate.errors.length) {
             throw new Error(data.workItemUpdate.errors.join('\n'));
           }
+          this.$emit('milestoneUpdated', selectedMilestoneId);
         })
         .catch((error) => {
           this.localMilestone = this.workItemMilestone;

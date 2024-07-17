@@ -124,13 +124,14 @@
   flex-flow: row wrap;
   width: 100%;
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-float-right {
     // Flexbox quirk to make sure right-aligned items stay right-aligned.
     margin-left: auto;
   }
 }
 
-
+// stylelint-disable-next-line gitlab/no-gl-class
 .md-header .gl-tabs-nav {
   border-bottom: 0;
 }

@@ -1,6 +1,7 @@
 <script>
 import Participants from '~/sidebar/components/participants/participants.vue';
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import { ListType } from '~/boards/constants';
 import {
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_HEALTH_STATUS,
@@ -27,6 +28,7 @@ import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
 
 export default {
+  ListType,
   components: {
     Participants,
     WorkItemLabels,
@@ -159,6 +161,9 @@ export default {
         :work-item-type="workItemType"
         :can-invite-members="workItemAssignees.canInviteMembers"
         @error="$emit('error', $event)"
+        @assigneesUpdated="
+          $emit('attributesUpdated', { type: $options.ListType.assignee, ids: $event })
+        "
       />
     </template>
     <template v-if="workItemLabels">
@@ -170,6 +175,7 @@ export default {
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
         @error="$emit('error', $event)"
+        @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
       />
     </template>
     <template v-if="workItemWeight">
@@ -207,6 +213,9 @@ export default {
         :work-item-type="workItemType"
         :can-update="canUpdate"
         @error="$emit('error', $event)"
+        @milestoneUpdated="
+          $emit('attributesUpdated', { type: $options.ListType.milestone, ids: [$event] })
+        "
       />
     </template>
     <template v-if="workItemIteration">
@@ -219,6 +228,9 @@ export default {
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"
         @error="$emit('error', $event)"
+        @iterationUpdated="
+          $emit('attributesUpdated', { type: $options.ListType.iteration, ids: [$event] })
+        "
       />
     </template>
     <template v-if="workItemDueDate && !showRolledupDates">

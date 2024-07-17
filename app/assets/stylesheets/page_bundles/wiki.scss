@@ -162,6 +162,7 @@ ul.wiki-pages-list.content-list {
     max-width: 100%;
   }
 
+  // stylelint-disable-next-line gitlab/no-gl-class
   .gl-disclosure-dropdown {
     display: none !important;
   }

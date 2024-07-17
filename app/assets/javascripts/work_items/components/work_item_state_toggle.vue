@@ -193,6 +193,7 @@ export default {
       if (this.hasComment) {
         this.$emit('submit-comment');
       }
+      this.$emit('workItemStateUpdated');
 
       this.updateInProgress = false;
     },

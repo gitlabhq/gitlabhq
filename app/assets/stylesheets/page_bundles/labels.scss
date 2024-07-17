@@ -94,6 +94,7 @@
   .label-name {
     width: 200px;
 
+    // stylelint-disable-next-line gitlab/no-gl-class
     .gl-label {
       line-height: $gl-line-height;
     }

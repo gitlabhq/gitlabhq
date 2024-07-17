@@ -112,6 +112,7 @@ describe('WorkItemDetail component', () => {
     workItemsBeta = false,
     namespaceLevelWorkItems = true,
     hasSubepicsFeature = true,
+    router = true,
   } = {}) => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
@@ -160,6 +161,9 @@ describe('WorkItemDetail component', () => {
             show: showModalHandler,
           },
         }),
+      },
+      mocks: {
+        $router: router,
       },
     });
   };
@@ -753,6 +757,13 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('design widget', () => {
+    it('does not render if application has no router', async () => {
+      createComponent({ router: false });
+      await waitForPromises();
+
+      expect(findWorkItemDesigns().exists()).toBe(false);
+    });
+
     it('renders if work item has design widget', async () => {
       createComponent();
       await waitForPromises();
