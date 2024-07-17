@@ -101,23 +101,6 @@ automatically from GitLab 16.0 onwards.
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
-### Atlassian Crowd OmniAuth provider
-
-<div class="deprecation-notes">
-- Announced in GitLab <span class="milestone">15.3</span>
-- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369117).
-</div>
-
-The `omniauth_crowd` gem that provides GitLab with the Atlassian Crowd OmniAuth provider will be removed in our
-next major release, GitLab 18.0. This gem sees very little use and its
-[lack of compatibility](https://github.com/robdimarco/omniauth_crowd/issues/37) with OmniAuth 2.0 is
-[blocking our upgrade](https://gitlab.com/gitlab-org/gitlab/-/issues/30073).
-
-</div>
-
-<div class="deprecation breaking-change" data-milestone="18.0">
-
 ### Behavior change for protected variables and multi-project pipelines
 
 <div class="deprecation-notes">

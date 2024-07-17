@@ -339,33 +339,51 @@ include:
 # rspec job parallel configs
 # Adjusting these parallel job counts has an impact on the
 # rspec:artifact-collector jobs in .gitlab/ci/rails.gitlab-ci.yml
-# Please double-check and adjust accordingly
+# Please double-check and adjust accordingly. At the moment,
+# each job can only have needs from up to 50 jobs.
+#
+# To calculate the number of jobs we need for each RSpec, follow this formula:
+#
+#     parallel_job_count = ceil(current_job_count * (average_duration / target_duration))
+#
+# At the moment, we set the target to 30 minutes
+#
+# https://app.snowflake.com/ys68254/gitlab/w2woEkSvsfYa/chart
 .rspec-migration-parallel:
-  parallel: 15
+  parallel: 26
 
+# https://app.snowflake.com/ys68254/gitlab/wpUmrAF0RJL/chart
 .rspec-background-migration-parallel:
-  parallel: 5
+  parallel: 10
 
+# https://app.snowflake.com/ys68254/gitlab/w4cxPH8ySQlP/chart
 .rspec-ee-migration-parallel:
   parallel: 2
 
+# https://app.snowflake.com/ys68254/gitlab/w20QT8KSVZAi/chart
 .rspec-ee-background-migration-parallel:
-  parallel: 2
+  parallel: 3
 
+# https://app.snowflake.com/ys68254/gitlab/w1tkkoZAXSsZ/chart
 .rspec-unit-parallel:
-  parallel: 32
+  parallel: 44
 
+# https://app.snowflake.com/ys68254/gitlab/w2GlD4YqHSbO/chart
 .rspec-ee-unit-parallel:
-  parallel: 28
+  parallel: 39
 
+# https://app.snowflake.com/ys68254/gitlab/w56UXaCA4xkG/chart
 .rspec-integration-parallel:
-  parallel: 16
+  parallel: 20
 
+# https://app.snowflake.com/ys68254/gitlab/w4tXhUkSsFj/chart
 .rspec-ee-integration-parallel:
-  parallel: 7
+  parallel: 9
 
+# https://app.snowflake.com/ys68254/gitlab/w3Y3rkdbS25v/chart
 .rspec-system-parallel:
   parallel: 32
 
+# https://app.snowflake.com/ys68254/gitlab/w4zGboX1YRrY/chart
 .rspec-ee-system-parallel:
-  parallel: 14
+  parallel: 16

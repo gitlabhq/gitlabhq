@@ -2197,6 +2197,7 @@ CREATE TABLE p_ci_builds (
     upstream_pipeline_id bigint,
     user_id bigint,
     execution_config_id bigint,
+    upstream_pipeline_partition_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 )
 PARTITION BY LIST (partition_id);
@@ -7514,6 +7515,7 @@ CREATE TABLE ci_builds (
     upstream_pipeline_id bigint,
     user_id bigint,
     execution_config_id bigint,
+    upstream_pipeline_partition_id bigint,
     CONSTRAINT check_1e2fbd1b39 CHECK ((lock_version IS NOT NULL))
 );
 

@@ -30,7 +30,7 @@ module QA
           end.not_to raise_error
         end
 
-        it 'can be used to commit via the API',
+        it 'can be used to commit via the API', :blocking,
           testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347859' do
           expect do
             create(:commit,

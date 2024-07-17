@@ -1767,6 +1767,7 @@
     - <<: *if-dot-com-gitlab-org-schedule
       variables:
         KNAPSACK_GENERATE_REPORT: "true"
+        PROCESS_TEST_RESULTS: "true"
         QA_SAVE_TEST_METRICS: "true"
         QA_EXPORT_TEST_METRICS: "false"
       allow_failure: true
@@ -2323,17 +2324,17 @@
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference [".rails:rules:ee-and-foss-unit", rules]
 
-.rails:rules:artifact-collector-system:
+.rails:rules:artifact-collector-part-a:
   rules:
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference [".rails:rules:ee-and-foss-system", rules]
+    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
 
-.rails:rules:artifact-collector-remainder:
+.rails:rules:artifact-collector-part-b:
   rules:
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
     - !reference ['.rails:rules:ee-and-foss-migration', rules]
-    - !reference ['.rails:rules:ee-and-foss-background-migration', rules]
 
 .rails:rules:detect-tests:
   rules:

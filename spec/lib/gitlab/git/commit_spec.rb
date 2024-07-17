@@ -51,6 +51,30 @@ RSpec.describe Gitlab::Git::Commit, feature_category: :source_code_management do
       )
     end
 
+    context 'non-ASCII content' do
+      let(:body) do
+        body = +<<~BODY
+          Äpfel
+
+          Changelog: Äpfel
+        BODY
+
+        [subject, "\n", body.force_encoding("ASCII-8BIT")].join
+      end
+
+      it "parses non-ASCII commit trailers" do
+        expect(commit.trailers).to eq(
+          { 'Changelog' => 'Äpfel' }
+        )
+      end
+
+      it "parses non-ASCII extended commit trailers" do
+        expect(commit.extended_trailers).to eq(
+          { 'Changelog' => ['Äpfel'] }
+        )
+      end
+    end
+
     context 'non-UTC dates' do
       let(:seconds) { Time.now.to_i }
 

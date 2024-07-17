@@ -16,9 +16,9 @@ rspec:artifact-collector as-if-foss:
       # optional: true
     - project: "${CI_PROJECT_NAMESPACE}/gitlab-foss"
       ref: as-if-foss/${CI_COMMIT_REF_NAME}
-      job: rspec:artifact-collector system
+      job: rspec:artifact-collector part-a
       # optional: true
     - project: "${CI_PROJECT_NAMESPACE}/gitlab-foss"
       ref: as-if-foss/${CI_COMMIT_REF_NAME}
-      job: rspec:artifact-collector remainder
+      job: rspec:artifact-collector part-b
       # optional: true

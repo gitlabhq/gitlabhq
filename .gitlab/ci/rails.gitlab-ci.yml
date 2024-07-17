@@ -436,29 +436,29 @@ rspec:artifact-collector unit:
     - .artifact-collector
     - .rails:rules:artifact-collector-unit
   needs:
-    - job: rspec unit pg14  # 32 jobs
+    - job: rspec unit pg14  # 44 jobs
       optional: true
     - job: rspec unit clickhouse  # 1 job
       optional: true
 
-rspec:artifact-collector system:
+rspec:artifact-collector part-a:
   extends:
     - .artifact-collector
-    - .rails:rules:artifact-collector-system
+    - .rails:rules:artifact-collector-part-a
   needs:
     - job: rspec system pg14  # 32 jobs
       optional: true
+    - job: rspec background_migration pg14  # 10 jobs
+      optional: true
 
-rspec:artifact-collector remainder:
+rspec:artifact-collector part-b:
   extends:
     - .artifact-collector
-    - .rails:rules:artifact-collector-remainder
+    - .rails:rules:artifact-collector-part-b
   needs:
-    - job: rspec integration pg14  # 16 jobs
+    - job: rspec integration pg14  # 20 jobs
       optional: true
-    - job: rspec migration pg14  # 15 jobs
-      optional: true
-    - job: rspec background_migration pg14  # 5 jobs
+    - job: rspec migration pg14  # 26 jobs
       optional: true
 
 rspec:artifact-collector unit single-redis:
@@ -466,7 +466,7 @@ rspec:artifact-collector unit single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec unit pg14 single-redis  # 32 jobs
+    - job: rspec unit pg14 single-redis  # 44 jobs
       optional: true
 
 rspec:artifact-collector system single-redis:
@@ -482,26 +482,32 @@ rspec:artifact-collector remainder single-redis:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec integration pg14 single-redis  # 16 jobs
+    - job: rspec integration pg14 single-redis  # 20 jobs
       optional: true
 
-rspec:artifact-collector ee single-redis:
+rspec:artifact-collector ee unit single-redis:
   extends:
     - .artifact-collector
     - .rails:rules:single-redis
   needs:
-    - job: rspec-ee unit pg14 single-redis  # 28 jobs
+    - job: rspec-ee unit pg14 single-redis  # 39 jobs
       optional: true
-    - job: rspec-ee integration pg14 single-redis  # 7 jobs
+
+rspec:artifact-collector ee remainder single-redis:
+  extends:
+    - .artifact-collector
+    - .rails:rules:single-redis
+  needs:
+    - job: rspec-ee integration pg14 single-redis  # 9 jobs
       optional: true
-    - job: rspec-ee system pg14 single-redis  # 14 jobs
+    - job: rspec-ee system pg14 single-redis  # 16 jobs
       optional: true
 
 rspec:artifact-collector ee unit:
   extends:
     - .artifact-collector
   needs:
-    - job: rspec-ee unit pg14  # 28 jobs
+    - job: rspec-ee unit pg14  # 39 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-only-unit', rules]
@@ -512,13 +518,13 @@ rspec:artifact-collector ee remainder:
   needs:
     - job: rspec-ee migration pg14  # 2 jobs
       optional: true
-    - job: rspec-ee background_migration pg14  # 2 jobs
+    - job: rspec-ee background_migration pg14  # 3 jobs
       optional: true
     - job: rspec-ee unit clickhouse  # 1 job
       optional: true
-    - job: rspec-ee integration pg14  # 7 jobs
+    - job: rspec-ee integration pg14  # 9 jobs
       optional: true
-    - job: rspec-ee system pg14  # 14 jobs
+    - job: rspec-ee system pg14  # 16 jobs
       optional: true
   rules:
     - !reference ['.rails:rules:ee-only-migration', rules]
@@ -538,9 +544,9 @@ rspec:coverage:
     # FOSS/EE jobs
     - job: rspec:artifact-collector unit
       optional: true
-    - job: rspec:artifact-collector system
+    - job: rspec:artifact-collector part-a
       optional: true
-    - job: rspec:artifact-collector remainder
+    - job: rspec:artifact-collector part-b
       optional: true
     - job: rspec:artifact-collector unit single-redis
       optional: true
@@ -552,7 +558,9 @@ rspec:coverage:
     - job: rspec:artifact-collector as-if-foss
       optional: true
     # EE jobs
-    - job: rspec:artifact-collector ee single-redis
+    - job: rspec:artifact-collector ee unit single-redis
+      optional: true
+    - job: rspec:artifact-collector ee remainder single-redis
       optional: true
     - job: rspec:artifact-collector ee unit
       optional: true
