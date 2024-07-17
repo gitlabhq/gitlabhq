@@ -187,12 +187,14 @@ export const METRIC_TOOLTIPS = {
     description: s__('ValueStreamAnalytics|Number of new issues created.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
+    // eslint-disable-next-line local-rules/require-valid-help-page-path
     docsLink: helpPagePath('user/analytics/issue_analytics'),
   },
   [FLOW_METRICS.ISSUES_COMPLETED]: {
     description: s__('ValueStreamAnalytics|Number of issues closed by month.'),
     groupLink: '-/issues_analytics',
     projectLink: '-/analytics/issues_analytics',
+    // eslint-disable-next-line local-rules/require-valid-help-page-path
     docsLink: helpPagePath('user/analytics/issue_analytics'),
   },
   [FLOW_METRICS.DEPLOYS]: {

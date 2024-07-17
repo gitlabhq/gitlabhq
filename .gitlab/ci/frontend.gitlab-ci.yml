@@ -216,7 +216,7 @@ graphql-schema-dump:
     - .default-retry
     - .ruby-cache
     - .default-before_script
-    - .frontend:rules:default-frontend-jobs
+    - .frontend:rules:default-frontend-jobs-with-docs-changes
   stage: fixtures
   needs: []
   script:
@@ -407,6 +407,14 @@ jest-snapshot-vue3:
     paths:
       - jest-snapshot-test-match.json
       - jest-snapshot-test-report.json
+
+jest-linters:
+  extends:
+    - .frontend-test-base
+    - .frontend:rules:jest-linters
+  needs: []
+  script:
+    - run_timed_command "yarn jest:eslint --ci"
 
 coverage-frontend:
   extends:

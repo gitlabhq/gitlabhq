@@ -35,6 +35,7 @@ export default {
     emptyStateValues() {
       return {
         ...emptyStateTranslations[this.entityType],
+        // eslint-disable-next-line local-rules/require-valid-help-page-path
         helpPath: helpPagePath('user/project/ml/model_registry/index', {
           anchor: 'creating-machine-learning-models-and-model-versions',
         }),

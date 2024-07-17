@@ -44,6 +44,7 @@ export default {
     },
   },
   i18n,
+  // eslint-disable-next-line local-rules/require-valid-help-page-path
   learnMoreLink: helpPagePath('user/project/integrations/gitlab_slack_application', {
     anchor: 'configuration',
   }),

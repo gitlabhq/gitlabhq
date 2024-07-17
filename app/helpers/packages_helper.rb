@@ -48,11 +48,10 @@ module PackagesHelper
   end
 
   def show_cleanup_policy_link(project)
-    Gitlab.com? &&
-      Gitlab.config.registry.enabled &&
+    show_container_registry_settings(project) &&
       project.feature_available?(:container_registry, current_user) &&
-      project.container_expiration_policy.nil? &&
-      project.container_repositories.exists?
+      project.container_repositories.exists? &&
+      !project.container_expiration_policy&.enabled
   end
 
   def show_container_registry_settings(project)

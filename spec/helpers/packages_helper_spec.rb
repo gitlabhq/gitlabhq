@@ -115,53 +115,69 @@ RSpec.describe PackagesHelper, feature_category: :package_registry do
 
     subject { helper.show_cleanup_policy_link(project.reload) }
 
-    where(:com, :config_registry, :project_registry, :nil_policy, :container_repositories_exist, :expected_result) do
-      false | false | false | false | false | false
-      false | false | false | false | true  | false
-      false | false | false | true  | false | false
-      false | false | false | true  | true  | false
-      false | false | true  | false | false | false
-      false | false | true  | false | true  | false
-      false | false | true  | true  | false | false
-      false | false | true  | true  | true  | false
-      false | true  | false | false | false | false
-      false | true  | false | false | true  | false
-      false | true  | false | true  | false | false
-      false | true  | false | true  | true  | false
-      false | true  | true  | false | false | false
-      false | true  | true  | false | true  | false
-      false | true  | true  | true  | false | false
-      false | true  | true  | true  | true  | false
-      true  | false | false | false | false | false
-      true  | false | false | false | true  | false
-      true  | false | false | true  | false | false
-      true  | false | false | true  | true  | false
-      true  | false | true  | false | false | false
-      true  | false | true  | false | true  | false
-      true  | false | true  | true  | false | false
-      true  | false | true  | true  | true  | false
-      true  | true  | false | false | false | false
-      true  | true  | false | false | true  | false
-      true  | true  | false | true  | false | false
-      true  | true  | false | true  | true  | false
-      true  | true  | true  | false | false | false
-      true  | true  | true  | false | true  | false
-      true  | true  | true  | true  | false | false
-      true  | true  | true  | true  | true  | true
-    end
-
-    with_them do
-      before do
-        allow(helper).to receive(:current_user).and_return(user)
-        allow(Gitlab).to receive(:com?).and_return(com)
-        stub_config(registry: { enabled: config_registry })
-        allow(project).to receive(:feature_available?).with(:container_registry, user).and_return(project_registry)
-
-        project.container_expiration_policy.destroy! if nil_policy
-        container_repository.update!(project_id: project.id) if container_repositories_exist
+    context 'when user has permission' do
+      where(:config_registry, :project_registry, :nil_policy, :container_repositories_exist, :expected_result) do
+        false | false | false | false | false
+        false | false | false | true  | false
+        false | false | true  | false | false
+        false | false | true  | true  | false
+        false | true  | false | false | false
+        false | true  | false | true  | false
+        false | true  | true  | false | false
+        false | true  | true  | true  | false
+        true  | false | false | false | false
+        true  | false | false | true  | false
+        true  | false | true  | false | false
+        true  | false | true  | true  | false
+        true  | true  | false | false | false
+        true  | true  | false | true  | false
+        true  | true  | true  | false | false
+        true  | true  | true  | true  | true
       end
 
-      it { is_expected.to eq(expected_result) }
+      with_them do
+        before do
+          project.add_owner(user)
+          allow(helper).to receive(:current_user).and_return(user)
+          stub_config(registry: { enabled: config_registry })
+          allow(project).to receive(:feature_available?).with(:container_registry, user).and_return(project_registry)
+
+          project.container_expiration_policy.update!(enabled: true)
+
+          project.container_expiration_policy.destroy! if nil_policy
+          container_repository.update!(project_id: project.id) if container_repositories_exist
+        end
+
+        it { is_expected.to eq(expected_result) }
+      end
+    end
+
+    context 'when user does not have permission' do
+      before do
+        project.add_developer(user)
+        allow(helper).to receive(:current_user).and_return(user)
+        stub_config(registry: { enabled: true })
+        allow(project).to receive(:feature_available?).with(:container_registry, user).and_return(true)
+
+        project.container_expiration_policy.update!(enabled: true)
+        container_repository.update!(project_id: project.id)
+      end
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when container expiration policy is disabled' do
+      before do
+        project.add_owner(user)
+        allow(helper).to receive(:current_user).and_return(user)
+        stub_config(registry: { enabled: true })
+        allow(project).to receive(:feature_available?).with(:container_registry, user).and_return(true)
+        container_repository.update!(project_id: project.id)
+
+        project.container_expiration_policy.update!(enabled: false)
+      end
+
+      it { is_expected.to eq(true) }
     end
   end
 

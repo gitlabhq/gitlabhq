@@ -2000,7 +2000,7 @@ If you applied customizations to the removed analyzers, or if you currently disa
 
 <div class="deprecation breaking-change" data-milestone="17.0">
 
-### Scan execution policies enforcing scans with an `_EXCLUDED_ANALYZERS` variable will override project variables
+### Scan execution policies using `_EXCLUDED_ANALYZERS` variable override project variables
 
 <div class="deprecation-notes">
 - Announced in GitLab <span class="milestone">16.9</span>

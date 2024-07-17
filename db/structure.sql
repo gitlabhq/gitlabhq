@@ -857,6 +857,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_158ac875f254() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."group_id" IS NULL THEN
+  SELECT "group_id"
+  INTO NEW."group_id"
+  FROM "approval_group_rules"
+  WHERE "approval_group_rules"."id" = NEW."approval_group_rule_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_174b23fa3dfb() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -5925,7 +5941,8 @@ ALTER SEQUENCE approval_group_rules_protected_branches_id_seq OWNED BY approval_
 CREATE TABLE approval_group_rules_users (
     id bigint NOT NULL,
     approval_group_rule_id bigint NOT NULL,
-    user_id bigint NOT NULL
+    user_id bigint NOT NULL,
+    group_id bigint
 );
 
 CREATE SEQUENCE approval_group_rules_users_id_seq
@@ -17189,7 +17206,7 @@ ALTER SEQUENCE scan_result_policies_id_seq OWNED BY scan_result_policies.id;
 
 CREATE TABLE scan_result_policy_violations (
     id bigint NOT NULL,
-    scan_result_policy_id bigint NOT NULL,
+    scan_result_policy_id bigint,
     merge_request_id bigint NOT NULL,
     project_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
@@ -17197,6 +17214,7 @@ CREATE TABLE scan_result_policy_violations (
     violation_data jsonb,
     approval_policy_rule_id bigint,
     status smallint DEFAULT 1 NOT NULL
+    CONSTRAINT chk_policy_violations_rule_id_or_policy_id_not_null CHECK (((approval_policy_rule_id IS NOT NULL) OR (scan_result_policy_id IS NOT NULL)))
 );
 
 CREATE SEQUENCE scan_result_policy_violations_id_seq
@@ -26155,6 +26173,8 @@ CREATE INDEX index_approval_group_rules_on_approval_policy_rule_id ON approval_g
 
 CREATE INDEX index_approval_group_rules_on_scan_result_policy_id ON approval_group_rules USING btree (scan_result_policy_id);
 
+CREATE INDEX index_approval_group_rules_users_on_group_id ON approval_group_rules_users USING btree (group_id);
+
 CREATE INDEX index_approval_group_rules_users_on_user_id ON approval_group_rules_users USING btree (user_id);
 
 CREATE UNIQUE INDEX index_approval_merge_request_rule_sources_1 ON approval_merge_request_rule_sources USING btree (approval_merge_request_rule_id);
@@ -31749,6 +31769,8 @@ CREATE TRIGGER trigger_0e13f214e504 BEFORE INSERT OR UPDATE ON merge_request_ass
 
 CREATE TRIGGER trigger_13d4aa8fe3dd BEFORE INSERT OR UPDATE ON draft_notes FOR EACH ROW EXECUTE FUNCTION trigger_13d4aa8fe3dd();
 
+CREATE TRIGGER trigger_158ac875f254 BEFORE INSERT OR UPDATE ON approval_group_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_158ac875f254();
+
 CREATE TRIGGER trigger_174b23fa3dfb BEFORE INSERT OR UPDATE ON approval_project_rules_users FOR EACH ROW EXECUTE FUNCTION trigger_174b23fa3dfb();
 
 CREATE TRIGGER trigger_18bc439a6741 BEFORE INSERT OR UPDATE ON packages_conan_metadata FOR EACH ROW EXECUTE FUNCTION trigger_18bc439a6741();
@@ -32271,6 +32293,9 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_38a74279df FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY approval_group_rules_users
+    ADD CONSTRAINT fk_3995d73930 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_39c726d3b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -47,17 +47,21 @@ export default {
     ...mapState(['searchType', 'defaultBranchName', 'query', 'searchLevel', 'query']),
     ...mapGetters(['currentScope']),
     zoektHelpUrl() {
+      // eslint-disable-next-line local-rules/require-valid-help-page-path
       return helpPagePath(ZOEKT_HELP_PAGE);
     },
     zoektSyntaxHelpUrl() {
+      // eslint-disable-next-line local-rules/require-valid-help-page-path
       return helpPagePath(ZOEKT_HELP_PAGE, {
         anchor: ZOEKT_HELP_PAGE_SYNTAX_ANCHOR,
       });
     },
     advancedSearchHelpUrl() {
+      // eslint-disable-next-line local-rules/require-valid-help-page-path
       return helpPagePath(ADVANCED_SEARCH_HELP_PAGE);
     },
     advancedSearchSyntaxHelpUrl() {
+      // eslint-disable-next-line local-rules/require-valid-help-page-path
       return helpPagePath(ADVANCED_SEARCH_HELP_PAGE, {
         anchor: ADVANCED_SEARCH_SYNTAX_HELP_ANCHOR,
       });

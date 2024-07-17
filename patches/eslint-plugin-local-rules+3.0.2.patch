@@ -1,0 +1,41 @@
+diff --git a/node_modules/eslint-plugin-local-rules/index.js b/node_modules/eslint-plugin-local-rules/index.js
+index b58ad76..8d92826 100644
+--- a/node_modules/eslint-plugin-local-rules/index.js
++++ b/node_modules/eslint-plugin-local-rules/index.js
+@@ -3,9 +3,14 @@
+ 
+ var { requireUp } = require('./requireUp');
+ var { DEFAULT_EXTENSIONS } = require('./constants');
++var path = require('path');
+ 
+ // First check for local rules in the current working directory and its ancestors (enables npm/yarn/pnpm workspaces support)
+-var rules = requireUp('eslint-local-rules', DEFAULT_EXTENSIONS, process.cwd());
++var rules = requireUp(
++  'eslint-local-rules',
++  DEFAULT_EXTENSIONS,
++  path.join(process.cwd(), 'tooling/eslint-config/eslint-local-rules/'),
++);
+ 
+ if (!rules) {
+   // Then try the directory containing this plugin and its ancestors
+@@ -22,16 +27,14 @@ if (!rules) {
+       process.cwd() +
+       '" and "' +
+       __dirname +
+-      '").'
++      '").',
+   );
+ }
+ 
+ var getConfig = (type) => ({
+-    rules: Object.fromEntries(
+-      Object
+-        .keys(rules)
+-        .map((rule) => [`local-rules/${rule}`, type])
+-    ),
++  rules: Object.fromEntries(
++    Object.keys(rules).map((rule) => [`local-rules/${rule}`, type]),
++  ),
+ });
+ 
+ module.exports = {

@@ -202,6 +202,8 @@ later versions. When moving through an upgrade path:
 1. Allow the background migrations for the upgrade to finish.
 1. Upgrade to the next required upgrade stop.
 
+From GitLab 17.5, required upgrade stops consistently land on minor versions X.2, X.5, X.8, and X.11. This schedule provides a predictable upgrade schedule for instance administrators.
+
 To determine your upgrade path:
 
 1. Note where in the upgrade path your current version sits, including required upgrade stops:

@@ -32,7 +32,9 @@ The chat aims to be context aware and ultimately have access to all the resource
 
 To scale the context awareness and hence to scale creation, ideation, and learning use cases across the entire DevSecOps domain, the Duo Chat team welcomes contributions to the chat platform from other GitLab teams and the wider community. They are the experts for the use cases and workflows to accelerate.
 
-### Which use cases are better implemented as stand-alone AI features or at least also as stand-alone AI features?
+### Which use cases are better implemented as stand-alone AI features?
+
+Which use cases are better implemented as stand-alone AI features, or at least also as stand-alone AI features?
 
 - Narrowly scoped tasks that be can accelerated by deeply integrating AI into an existing workflow.
 - That can't benefit from conversations with AI.

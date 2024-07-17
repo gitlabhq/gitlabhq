@@ -2354,7 +2354,7 @@ DELETE /groups/:id/share/:group_id
 | `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) |
 | `group_id` | integer | yes | The ID of the group to share with |
 
-## Push Rules
+## Push rules
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -2558,13 +2558,13 @@ If successful, returns [`200 OK`](rest/index.md#status-codes) and
 a JSON representation of the token. The attributes returned will vary by
 token type.
 
-Example request:
+Example request
 
 ```shell
 curl --request POST \
   --header "PRIVATE-TOKEN: <your_access_token>" \
   --header "Content-Type: application/json" \
-  --data '{"token":"glpat-1234567890abcdefghij"}' \
+  --data '{"token":"glpat-EXAMPLE"}' \
   --url "https://gitlab.example.com/api/v4/groups/63/tokens/revoke"
 ```
 

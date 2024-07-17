@@ -62,6 +62,7 @@ export default {
           items: [
             {
               text: this.$options.i18n.help,
+              // eslint-disable-next-line local-rules/require-valid-help-page-path
               href: helpPagePath(),
               extraAttrs: {
                 ...this.trackingAttrs('help'),

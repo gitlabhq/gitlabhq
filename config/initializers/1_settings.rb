@@ -807,7 +807,7 @@ Gitlab.ee do
   Settings.cron_jobs['elastic_migration_worker']['cron'] ||= '*/5 * * * *'
   Settings.cron_jobs['elastic_migration_worker']['job_class'] ||= 'Elastic::MigrationWorker'
   Settings.cron_jobs['search_zoekt_scheduling_worker'] ||= {}
-  Settings.cron_jobs['search_zoekt_scheduling_worker']['cron'] ||= '*/10 * * * *'
+  Settings.cron_jobs['search_zoekt_scheduling_worker']['cron'] ||= '*/1 * * * *'
   Settings.cron_jobs['search_zoekt_scheduling_worker']['job_class'] ||= 'Search::Zoekt::SchedulingWorker'
   Settings.cron_jobs['search_index_curation_worker'] ||= {}
   Settings.cron_jobs['search_index_curation_worker']['cron'] ||= '*/1 * * * *'

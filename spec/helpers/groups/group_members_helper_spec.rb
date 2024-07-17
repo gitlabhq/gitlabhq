@@ -33,7 +33,14 @@ RSpec.describe Groups::GroupMembersHelper do
         banned: [],
         include_relations: [:inherited, :direct],
         search: nil,
-        pending_members: []
+        pending_members: [],
+        placeholder_users: {
+          pagination: {
+            total_items: 3,
+            awaiting_reassignment_items: 2,
+            reassigned_items: 1
+          }
+        }
       )
     end
 
@@ -110,7 +117,8 @@ RSpec.describe Groups::GroupMembersHelper do
             banned: [],
             include_relations: include_relations,
             search: nil,
-            pending_members: []
+            pending_members: [],
+            placeholder_users: {}
           )
         end
 
@@ -157,6 +165,18 @@ RSpec.describe Groups::GroupMembersHelper do
         }.as_json
 
         expect(subject[:user][:pagination].as_json).to include(expected)
+      end
+    end
+
+    context 'when placeholder users data is available' do
+      it 'returns placeholder information' do
+        expect(subject[:placeholder]).to eq(
+          pagination: {
+            total_items: 3,
+            awaiting_reassignment_items: 2,
+            reassigned_items: 1
+          }
+        )
       end
     end
   end

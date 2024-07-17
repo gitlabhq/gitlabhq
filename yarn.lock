@@ -6723,6 +6723,11 @@ eslint-plugin-jest@^27.2.1:
   dependencies:
     "@typescript-eslint/utils" "^5.10.0"
 
+eslint-plugin-local-rules@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-local-rules/-/eslint-plugin-local-rules-3.0.2.tgz#84c02ea1d604ecb00970779ad27f00738ff361ae"
+  integrity sha512-IWME7GIYHXogTkFsToLdBCQVJ0U4kbSuVyDT+nKoR4UgtnVrrVeNWuAZkdEu1nxkvi9nsPccGehEEF6dgA28IQ==
+
 eslint-plugin-no-jquery@2.7.0:
   version "2.7.0"
   resolved "https://registry.yarnpkg.com/eslint-plugin-no-jquery/-/eslint-plugin-no-jquery-2.7.0.tgz#855f5631cf5b8e25b930cf6f06e02dd81f132e72"
@@ -14246,10 +14251,10 @@ vite-plugin-ruby@^5.0.0:
     debug "^4.3.4"
     fast-glob "^3.3.2"
 
-vite@^5.3.3:
-  version "5.3.3"
-  resolved "https://registry.yarnpkg.com/vite/-/vite-5.3.3.tgz#5265b1f0a825b3b6564c2d07524777c83e3c04c2"
-  integrity sha512-NPQdeCU0Dv2z5fu+ULotpuq5yfCS1BzKUIPhNbP3YBfAMGJXbt2nS+sbTFu+qchaqWTD+H3JK++nRwr6XIcp6A==
+vite@^5.3.4:
+  version "5.3.4"
+  resolved "https://registry.yarnpkg.com/vite/-/vite-5.3.4.tgz#b36ebd47c8a5e3a8727046375d5f10bf9fdf8715"
+  integrity sha512-Cw+7zL3ZG9/NZBB8C+8QbQZmR54GwqIz+WMI4b3JgdYJvX+ny9AjJXqkGQlDXSXRP9rP0B4tbciRMOVEKulVOA==
   dependencies:
     esbuild "^0.21.3"
     postcss "^8.4.39"

@@ -21,12 +21,20 @@ FactoryBot.define do
       reassigned_by_user factory: :user
     end
 
+    trait :pending_assignment do
+      status { 0 }
+    end
+
     trait :awaiting_approval do
       status { 1 }
     end
 
     trait :completed do
       status { 5 }
+    end
+
+    trait :keep_as_placeholder do
+      status { 6 }
     end
   end
 end

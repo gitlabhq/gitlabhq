@@ -19,6 +19,7 @@ export default {
     GlLink,
     GlFormCheckbox,
   },
+  // eslint-disable-next-line local-rules/require-valid-help-page-path
   forcePushHelpPath: helpPagePath('topics/git/git_rebase', { anchor: 'force-push' }),
   props: {
     membersAllowedToPush: {

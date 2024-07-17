@@ -139,6 +139,7 @@ export default {
         : this.$options.i18n.runButtonText;
     },
     variableSettings() {
+      // eslint-disable-next-line local-rules/require-valid-help-page-path
       return helpPagePath('ci/variables/index', { anchor: 'add-a-cicd-variable-to-a-project' });
     },
   },

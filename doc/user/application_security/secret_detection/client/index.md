@@ -28,3 +28,7 @@ Your text is checked for the following secret types:
 - GitLab [feed tokens](../../../../security/token_overview.md#feed-token)
 
 To track the development of this feature, see [issue 405147](https://gitlab.com/gitlab-org/gitlab/-/issues/405147).
+
+## Related topics
+
+- [Push rules](../../../project/repository/push_rules.md)

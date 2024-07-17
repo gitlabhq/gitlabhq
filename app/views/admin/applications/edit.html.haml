@@ -2,6 +2,8 @@
 - breadcrumb_title @application.name
 - page_title _("Edit"), @application.name, _("Applications")
 
+= render 'web_ide_oauth_application_callout', application: @application
+
 %h1.page-title.gl-font-size-h-display
   = _('Edit application')
 - @url = admin_application_path(@application)

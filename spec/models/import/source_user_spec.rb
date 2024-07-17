@@ -27,6 +27,28 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
         )
       end
     end
+
+    describe '.awaiting_reassignment' do
+      it 'only returns source users that await reassignment' do
+        namespace = create(:namespace)
+        pending_assignment_user = create(:import_source_user, :pending_assignment, namespace: namespace)
+        awaiting_approval_user = create(:import_source_user, :awaiting_approval, namespace: namespace)
+
+        expect(namespace.import_source_users.awaiting_reassignment)
+          .to match_array([pending_assignment_user, awaiting_approval_user])
+      end
+    end
+
+    describe '.reassigned' do
+      it 'only returns source users with status completed' do
+        namespace = create(:namespace)
+        completed_assignment_user = create(:import_source_user, :completed, namespace: namespace)
+        placeholder_user = create(:import_source_user, :keep_as_placeholder, namespace: namespace)
+
+        expect(described_class.for_namespace(namespace.id).to_a)
+          .to match_array([completed_assignment_user, placeholder_user])
+      end
+    end
   end
 
   describe 'state machine' do

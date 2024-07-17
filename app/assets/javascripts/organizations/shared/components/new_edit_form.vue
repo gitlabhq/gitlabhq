@@ -35,6 +35,7 @@ export default {
     charactersOverLimit: (char) => n__('%d character over limit', '%d characters over limit', char),
   },
   formId: 'organization-form',
+  // eslint-disable-next-line local-rules/require-valid-help-page-path
   markdownDocsPath: helpPagePath('user/organization/index', {
     anchor: 'organization-description-supported-markdown',
   }),

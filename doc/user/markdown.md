@@ -1989,11 +1989,11 @@ For example:
 - The issues designs tab: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs"`, rendered as `#1234 (designs)`.
 - Links to individual designs: `"https://gitlab.com/gitlab-org/gitlab/-/issues/1234/designs/layout.png"`, rendered as `#1234[layout.png]`.
 
-### Show the issue, merge request, or epic title in the reference
+### Show item title
 
-> - Support for work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
-To include the title in the rendered link of an issue, work item, merge request, or epic:
+To include the title in the rendered link of an issue, task, objective, key result, merge request, or epic:
 
 - Add a plus (`+`) at the end of the reference.
 
@@ -2001,12 +2001,12 @@ For example, a reference like `#123+` is rendered as `The issue title (#123)`.
 
 URL references like `https://gitlab.com/gitlab-org/gitlab/-/issues/1234+` are also expanded.
 
-### Show the issue, work item or merge request summary in the reference
+### Show item summary
 
 > - Support for issues and merge requests [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/386937) in GitLab 15.10.
-> - Support for work items [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
+> - Support for work items (tasks, objectives, and key results) [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/390854) in GitLab 16.0.
 
-To include an extended summary in the rendered link of an issue, work item, or merge request:
+To include an extended summary in the rendered link of an issue, task, objective, key result, or merge request:
 
 - Add a `+s` at the end of the reference.
 

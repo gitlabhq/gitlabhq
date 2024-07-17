@@ -179,6 +179,7 @@ export default {
       return this.pagination.next ? this.$options.NEXT_PAGE : null;
     },
     errorTrackingHelpUrl() {
+      // eslint-disable-next-line local-rules/require-valid-help-page-path
       return helpPagePath('operations/error_tracking.html#integrated-error-tracking');
     },
     showIntegratedDisabledAlert() {

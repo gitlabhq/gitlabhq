@@ -122,7 +122,7 @@ There's no exact formula to reliably estimate a migration. However, the average 
 | Auto DevOps                 | 0.1                                          |
 | Pipeline Schedules          | 0.5                                          |
 | References                  | 5                                            |
-| Push Rule                   | 0.1                                          |
+| Push rule                   | 0.1                                          |
 
 Though it's difficult to predict migration duration, we've seen:
 

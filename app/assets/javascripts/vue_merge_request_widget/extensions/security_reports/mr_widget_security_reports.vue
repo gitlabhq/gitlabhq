@@ -96,6 +96,7 @@ export default {
       text: s__(
         'ciReport|New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
       ),
+      // eslint-disable-next-line local-rules/require-valid-help-page-path
       learnMorePath: helpPagePath('user/application_security/index', {
         anchor: 'view-security-scan-information-in-merge-requests',
       }),

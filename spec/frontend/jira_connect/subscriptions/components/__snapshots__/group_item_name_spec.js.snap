@@ -6,7 +6,7 @@ exports[`GroupItemName template matches the snapshot 1`] = `
 >
   <gl-icon-stub
     class="gl-mr-3"
-    name="folder-o"
+    name="folder"
     size="16"
     variant="current"
   />

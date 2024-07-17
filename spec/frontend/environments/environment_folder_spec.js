@@ -89,7 +89,7 @@ describe('~/environments/components/environments_folder.vue', () => {
       it('is collapsed by default', () => {
         expect(collapse.props('visible')).toBe(false);
         const iconNames = icons.wrappers.map((i) => i.props('name')).slice(0, 2);
-        expect(iconNames).toEqual(['chevron-lg-right', 'folder-o']);
+        expect(iconNames).toEqual(['chevron-lg-right', 'folder']);
         expect(folderName.classes('gl-font-bold')).toBe(false);
       });
 

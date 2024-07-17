@@ -152,4 +152,29 @@ RSpec.describe Admin::ApplicationsController do
       end
     end
   end
+
+  describe "#reset_oauth_application_settings" do
+    subject(:reset_oauth_application_settings) { post :reset_web_ide_oauth_application_settings }
+
+    before do
+      stub_feature_flags(web_ide_oauth: true)
+    end
+
+    it 'returns 500 if no oauth application exists' do
+      stub_application_setting(web_ide_oauth_application: nil)
+      reset_oauth_application_settings
+
+      expect(response).to have_gitlab_http_status(:internal_server_error)
+    end
+
+    it 'returns 200 if oauth application exists' do
+      stub_application_setting({
+        web_ide_oauth_application: create(:oauth_application, owner_id: nil, owner_type: nil)
+      })
+
+      reset_oauth_application_settings
+
+      expect(response).to have_gitlab_http_status(:ok)
+    end
+  end
 end

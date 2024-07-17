@@ -126,7 +126,7 @@ module IconsHelper
 
   def file_type_icon_class(type, mode, name)
     if type == 'folder'
-      'folder-o'
+      'folder'
     elsif type == 'archive'
       'archive'
     elsif mode == '120000'

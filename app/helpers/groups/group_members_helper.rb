@@ -5,7 +5,18 @@ module Groups::GroupMembersHelper
 
   AVATAR_SIZE = 40
 
-  def group_members_app_data(group, members:, invited:, access_requests:, banned:, include_relations:, search:, pending_members:)
+  # rubocop:disable Metrics/ParameterLists -- all arguments needed
+  def group_members_app_data(
+    group,
+    members:,
+    invited:,
+    access_requests:,
+    banned:,
+    include_relations:,
+    search:,
+    pending_members:,
+    placeholder_users:
+  )
     {
       user: group_members_list_data(group, members, { param_name: :page, params: { invited_members_page: nil, search_invited: nil } }),
       group: group_group_links_list_data(group, include_relations, search),
@@ -16,9 +27,11 @@ module Groups::GroupMembersHelper
       can_manage_access_requests: can?(current_user, :admin_member_access_request, group),
       group_name: group.name,
       group_path: group.full_path,
-      can_approve_access_requests: true # true for CE, overridden in EE
+      can_approve_access_requests: true, # true for CE, overridden in EE
+      placeholder: placeholder_users
     }
   end
+  # rubocop:enable Metrics/ParameterLists
 
   def group_member_header_subtext(group)
     ERB::Util.html_escape(_("You're viewing members of %{strong_start}%{group_name}%{strong_end}.").html_safe) % {

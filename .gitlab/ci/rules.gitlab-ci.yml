@@ -1282,6 +1282,12 @@
     - <<: *if-default-refs
       changes: *code-backstage-patterns
 
+.frontend:rules:default-frontend-jobs-with-docs-changes:
+  rules:
+    - !reference [.frontend:rules:default-frontend-jobs, rules]
+    - <<: *if-default-refs
+      changes: *docs-patterns
+
 # .frontend:rules:default-frontend-jobs, with a additional rules when MR is not approved
 .frontend:rules:frontend_fixture:
   rules:
@@ -1457,6 +1463,12 @@
 .frontend:rules:jest-vue3:
   rules:
     - <<: *if-default-branch-schedule-nightly
+
+.frontend:rules:jest-linters:
+  rules:
+    - <<: *if-merge-request-labels-run-all-jest
+    - <<: *if-default-refs
+      changes: ["tooling/eslint-config/**/*", "spec/tooling/frontend/eslint-config/**/*"]
 
 ################
 # Memory rules #

@@ -29,7 +29,7 @@ module ContainerRegistry
         is_admin: current_user&.admin.to_s,
         show_cleanup_policy_link: show_cleanup_policy_link(project).to_s,
         show_container_registry_settings: show_container_registry_settings(project).to_s,
-        cleanup_policies_settings_path: project_settings_packages_and_registries_path(project),
+        cleanup_policies_settings_path: cleanup_image_tags_project_settings_packages_and_registries_path(project),
         connection_error: (!!connection_error).to_s,
         invalid_path_error: (!!invalid_path_error).to_s,
         user_callouts_path: callouts_path,

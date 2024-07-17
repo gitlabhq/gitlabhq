@@ -40,8 +40,11 @@ import {
   EDIT_RULE_MODAL_ID,
 } from './constants';
 
+// eslint-disable-next-line local-rules/require-valid-help-page-path
 const protectedBranchesHelpDocLink = helpPagePath(PROTECTED_BRANCHES_HELP_PATH);
+// eslint-disable-next-line local-rules/require-valid-help-page-path
 const codeOwnersHelpDocLink = helpPagePath(CODE_OWNERS_HELP_PATH);
+// eslint-disable-next-line local-rules/require-valid-help-page-path
 const pushRulesHelpDocLink = helpPagePath(PUSH_RULES_HELP_PATH);
 
 export default {

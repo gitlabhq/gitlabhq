@@ -262,11 +262,11 @@ RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team
     <<~YAML
       ---
       06_01_00__api_request_overrides__group_upload_link__001:
-        api_request_override_path: /groups/glfm_group/preview_markdown
+        api_request_override_path: /groups/glfm_group/-/preview_markdown
       06_02_00__api_request_overrides__project_repo_link__001:
-        api_request_override_path: /glfm_group/glfm_project/preview_markdown
+        api_request_override_path: /glfm_group/glfm_project/-/preview_markdown
       06_03_00__api_request_overrides__project_snippet_ref__001:
-        api_request_override_path: /glfm_group/glfm_project/preview_markdown
+        api_request_override_path: /glfm_group/glfm_project/-/preview_markdown
       06_04_00__api_request_overrides__personal_snippet_ref__001:
         api_request_override_path: /-/snippets/preview_markdown
       06_05_00__api_request_overrides__project_wiki_link__001:

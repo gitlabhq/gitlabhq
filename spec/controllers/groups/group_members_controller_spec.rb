@@ -69,6 +69,56 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
           expect(assigns(:members).map(&:user_id)).to match_array([service_account.id])
         end
       end
+
+      context 'when there are import source users available' do
+        it 'returns import source users count' do
+          create(:import_source_user, :pending_assignment, namespace: group)
+          create(:import_source_user, :awaiting_approval, namespace: group)
+          create(:import_source_user, :completed, namespace: group)
+
+          get :index, params: { group_id: group }
+
+          expect(assigns(:placeholder_users_count)).to eq(
+            pagination: {
+              total_items: 3,
+              awaiting_reassignment_items: 2,
+              reassigned_items: 1
+            }
+          )
+        end
+
+        context 'where there are no import source users available' do
+          it 'returns 0 counts' do
+            get :index, params: { group_id: group }
+
+            expect(assigns(:placeholder_users_count)).to eq(
+              pagination: {
+                total_items: 0,
+                awaiting_reassignment_items: 0,
+                reassigned_items: 0
+              }
+            )
+          end
+        end
+
+        context 'when importer_user_mapping feature flag is disabled' do
+          it 'returns 0 counts' do
+            stub_feature_flags(importer_user_mapping: false)
+
+            create(:import_source_user, :pending_assignment, namespace: group)
+
+            get :index, params: { group_id: group }
+
+            expect(assigns(:placeholder_users_count)).to eq(
+              pagination: {
+                total_items: 0,
+                awaiting_reassignment_items: 0,
+                reassigned_items: 0
+              }
+            )
+          end
+        end
+      end
     end
 
     context 'when user cannot manage members' do

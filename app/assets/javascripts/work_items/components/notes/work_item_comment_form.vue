@@ -142,10 +142,12 @@ export default {
     getWorkItemData() {
       return {
         confidential: this.isWorkItemConfidential,
+        // eslint-disable-next-line local-rules/require-valid-help-page-path
         confidential_issues_docs_path: helpPagePath(this.workItemDocPath, {
           anchor: this.workItemDocConfidentialAnchor,
         }),
         discussion_locked: this.isDiscussionLocked,
+        // eslint-disable-next-line local-rules/require-valid-help-page-path
         locked_discussion_docs_path: helpPagePath(this.workItemDocPath, {
           anchor: this.workItemDocLockedAnchor,
         }),

@@ -58,6 +58,14 @@ class Admin::ApplicationsController < Admin::ApplicationController
     redirect_to admin_applications_url, status: :found, notice: _('Application was successfully destroyed.')
   end
 
+  def reset_web_ide_oauth_application_settings
+    success = ::WebIde::DefaultOauthApplication.reset_oauth_application_settings
+
+    return render json: {}, status: :internal_server_error unless success
+
+    render json: {}
+  end
+
   private
 
   def set_application

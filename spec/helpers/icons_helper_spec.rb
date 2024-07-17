@@ -123,8 +123,8 @@ RSpec.describe IconsHelper do
   end
 
   describe 'file_type_icon_class' do
-    it 'returns folder-o class' do
-      expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder-o'
+    it 'returns folder class' do
+      expect(file_type_icon_class('folder', 0, 'folder_name')).to eq 'folder'
     end
 
     it 'returns share class' do

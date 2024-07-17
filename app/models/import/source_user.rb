@@ -22,6 +22,8 @@ module Import
 
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
     scope :by_statuses, ->(statuses) { where(status: statuses) }
+    scope :awaiting_reassignment, -> { where(status: [0, 1, 2, 3, 4]) }
+    scope :reassigned, -> { where(status: [5, 6]) }
 
     state_machine :status, initial: :pending_reassignment do
       state :pending_reassignment, value: 0

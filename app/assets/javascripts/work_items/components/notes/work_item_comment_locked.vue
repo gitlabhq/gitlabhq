@@ -23,6 +23,7 @@ export default {
     },
   },
   constantOptions: {
+    // eslint-disable-next-line local-rules/require-valid-help-page-path
     archivedProjectDocsPath: helpPagePath('user/project/settings/index.md', {
       anchor: 'archive-a-project',
     }),

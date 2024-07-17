@@ -15,6 +15,7 @@ export default {
   },
   emptyStateSvg,
   issuesHelpPagePath: helpPagePath('user/project/issues/index'),
+  // eslint-disable-next-line local-rules/require-valid-help-page-path
   jiraIntegrationPath: helpPagePath('integration/jira/issues', { anchor: 'view-jira-issues' }),
   components: {
     CsvImportExportButtons,

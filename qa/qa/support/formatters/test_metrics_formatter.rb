@@ -74,6 +74,7 @@ module QA
         #
         # @return [void]
         def push_test_metrics_to_gcs
+          init_gcs_client! # init client and exit early if mandatory configuration is missing
           retry_on_exception(sleep_interval: 30, message: 'Failed to push test metrics to GCS') do
             gcs_client.put_object(gcs_bucket, metrics_file_name(prefix: 'test',
               postfix: "-#{env('CI_PIPELINE_ID') || 'local'}"), execution_data.to_json,
@@ -81,6 +82,8 @@ module QA
 
             log(:info, "Pushed #{execution_data.length} test execution entries to GCS")
           end
+        rescue StandardError => e
+          log(:error, "Failed to push test execution metrics to gcs, error: #{e}")
         end
 
         # Push resource fabrication metrics to influxdb
@@ -104,6 +107,7 @@ module QA
         # @param [Hash] data fabrication data hash
         # @return [void]
         def push_fabrication_metrics_gcs(data)
+          init_gcs_client! # init client and exit early if mandatory configuration is missing
           retry_on_exception(sleep_interval: 30, message: 'Failed to push resource fabrication metrics to GCS') do
             gcs_client.put_object(gcs_bucket,
               metrics_file_name(prefix: 'fabrication',
@@ -112,6 +116,8 @@ module QA
 
             log(:info, "Pushed #{data.length} resource fabrication entries to GCS")
           end
+        rescue StandardError => e
+          log(:error, "Failed to push test fabrication metrics to gcs, error: #{e}")
         end
 
         # Push resource fabrication metrics to InfluxDB
@@ -123,6 +129,13 @@ module QA
           log(:info, "Pushed #{data.length} resource fabrication entries to influxdb")
         rescue StandardError => e
           log(:error, "Failed to push fabrication metrics to influxdb, error: #{e}")
+        end
+
+        # Init client raising error if configuration variables are missing
+        #
+        # @return [void]
+        def init_gcs_client!
+          gcs_client || gcs_bucket
         end
 
         # Get GCS Bucket Name or raise error if missing
@@ -220,8 +233,9 @@ module QA
             pipeline_id: env('CI_PIPELINE_ID'),
             job_id: env('CI_JOB_ID'),
             merge_request_iid: merge_request_iid,
-            failure_issue: example.metadata[:quarantine] ? example.metadata[:quarantine][:issue] : nil,
             failure_exception: example.execution_result.exception.to_s.delete("\n"),
+            location: example_location(example),
+            failure_issue: example.metadata.dig(:quarantine, :issue),
             **custom_metrics_fields(example.metadata)
           }.compact
         end
@@ -350,6 +364,23 @@ module QA
         # @return [void]
         def log(level, message)
           QA::Runtime::Logger.public_send(level, "[influxdb exporter]: #{message}")
+        end
+
+        # Example location
+        #
+        # @param [RSpec::Core::Example] example
+        # @return [String]
+        def example_location(example)
+          # ensures that location will be correct even in case of shared examples
+          file = example
+                 .metadata
+                 .fetch(:shared_group_inclusion_backtrace)
+                 .last
+                 &.formatted_inclusion_location
+
+          return example.location unless file
+
+          file
         end
       end
     end
