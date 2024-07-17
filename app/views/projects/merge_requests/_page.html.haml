@@ -29,21 +29,21 @@
           = render "projects/merge_requests/tabs/tab", class: "notes-tab", testid: "notes-tab" do
             = tab_link_for @merge_request, :show, force_link: @commit.present? do
               = _("Overview")
-              = gl_badge_tag @merge_request.related_notes.user.count, { size: :sm }, { class: 'js-discussions-count' }
+              = gl_badge_tag @merge_request.related_notes.user.count, { class: 'js-discussions-count' }
           - if @merge_request.source_project
             = render "projects/merge_requests/tabs/tab", name: "commits", class: "commits-tab", testid: "commits-tab" do
               = tab_link_for @merge_request, :commits do
                 = _("Commits")
-                = gl_badge_tag tab_count_display(@merge_request, @commits_count), { size: :sm }, { class: 'js-commits-count' }
+                = gl_badge_tag tab_count_display(@merge_request, @commits_count), { class: 'js-commits-count' }
           - if @project.builds_enabled?
             = render "projects/merge_requests/tabs/tab", name: "pipelines", class: "pipelines-tab" do
               = tab_link_for @merge_request, :pipelines do
                 = _("Pipelines")
-                = gl_badge_tag @number_of_pipelines, { size: :sm }, { class: 'js-pipelines-mr-count' }
+                = gl_badge_tag @number_of_pipelines, { class: 'js-pipelines-mr-count' }
           = render "projects/merge_requests/tabs/tab", name: "diffs", class: "diffs-tab js-diffs-tab", id: "diffs-tab", testid: "diffs-tab" do
             = tab_link_for @merge_request, :diffs do
               = _("Changes")
-              = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { size: :sm, class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
+              = gl_badge_tag tab_count_display(@merge_request, @diffs_count), { class: 'js-changes-tab-count', data: { gid: @merge_request.to_gid.to_s } }
         .gl-flex.gl-flex-wrap.gl-items-center.justify-content-lg-end
           #js-vue-discussion-counter{ data: { blocks_merge: @project.only_allow_merge_if_all_discussions_are_resolved?.to_s } }
           - if !!@issuable_sidebar.dig(:current_user, :id)

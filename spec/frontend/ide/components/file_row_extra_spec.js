@@ -128,7 +128,7 @@ describe('IDE extra file row component', () => {
   });
 
   describe('merge request icon', () => {
-    const findMergeRequestIcon = () => wrapper.find('[data-testid="git-merge-icon"]');
+    const findMergeRequestIcon = () => wrapper.find('[data-testid="merge-request-icon"]');
 
     it('hides when not a merge request change', () => {
       createComponent();

@@ -29,7 +29,7 @@ RSpec.describe BadgesHelper do
     end
 
     it 'adds style classes' do
-      expect(helper.gl_badge_tag(label)).to match(%r{class="gl-badge badge badge-pill badge-muted md"})
+      expect(helper.gl_badge_tag(label)).to match(%r{class="gl-badge badge badge-pill badge-muted"})
     end
 
     it 'adds custom classes' do
@@ -64,32 +64,12 @@ RSpec.describe BadgesHelper do
       end
     end
 
-    describe 'sizes' do
-      where(:size) do
-        [[:sm], [:md], [:lg]]
-      end
-
-      with_them do
-        it 'sets the size class' do
-          expect(helper.gl_badge_tag(label, size: size)).to match(%r{class=".*#{size}.*"})
-        end
-      end
-
-      it 'defaults to md' do
-        expect(helper.gl_badge_tag(label)).to match(%r{class=".*md.*"})
-      end
-
-      it 'falls back to default given an unknown size' do
-        expect(helper.gl_badge_tag(label, size: :foo)).to match(%r{class=".*md.*"})
-      end
-    end
-
     it 'applies custom html attributes' do
       expect(helper.gl_badge_tag(label, nil, data: { foo: "bar" })).to match(%r{<span .*data-foo="bar".*>})
     end
 
     describe 'icons' do
-      let(:spacing_class_regex) { %r{<svg .*class=".*my-icon-class gl-mr-2".*>.*</svg>} }
+      let(:spacing_class_regex) { %r{<svg .*class=".*my-icon-class".*>.*</svg>} }
 
       describe 'with text' do
         subject { helper.gl_badge_tag(label, icon: "question-o", icon_classes: 'my-icon-class') }

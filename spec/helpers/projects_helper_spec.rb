@@ -119,7 +119,6 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
   end
 
   describe '#can_set_diff_preview_in_email?' do
-    stub_feature_flags(diff_preview_in_email: true)
     let_it_be(:user) { create(:project_member, :maintainer, user: create(:user), project: project).user }
 
     it 'returns true for the project owner' do

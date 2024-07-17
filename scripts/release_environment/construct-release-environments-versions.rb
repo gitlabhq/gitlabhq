@@ -53,12 +53,12 @@ class ReleaseEnvironmentsModel
     @environment_base ||= if release_tag_match
                             "#{release_tag_match[1]}-#{release_tag_match[2]}-stable"
                           else
-                            ENV['CI_COMMIT_REF_SLUG'].delete_suffix('-ee')
+                            ENV['CI_COMMIT_REF_NAME'].delete_suffix('-ee')
                           end
   end
 
   def release_tag_match
-    @release_tag_match ||= ENV['CI_COMMIT_REF_SLUG'].match(/^v?([\d]+)\.([\d]+)\.[\d]+[\d\w-]*-ee$/)
+    @release_tag_match ||= ENV['CI_COMMIT_REF_NAME'].match(/^v?([\d]+)\.([\d]+)\.[\d]+[\d\w-]*-ee$/)
   end
 
   def security_project?

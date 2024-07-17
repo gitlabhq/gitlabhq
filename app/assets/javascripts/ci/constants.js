@@ -15,7 +15,7 @@ export const JOB_GRAPHQL_ERRORS = {
 
 export const ICONS = {
   TAG: 'tag',
-  MR: 'git-merge',
+  MR: 'merge-request',
   BRANCH: 'branch',
   RETRY: 'retry',
   SUCCESS: 'success',

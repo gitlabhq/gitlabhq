@@ -49,10 +49,10 @@
       %ul.controls
         - if issue.closed? && issue.moved?
           %li
-            = render Pajamas::BadgeComponent.new(_('Closed (moved)'), size: 'sm', variant: 'info')
+            = render Pajamas::BadgeComponent.new(_('Closed (moved)'), variant: 'info')
         - elsif issue.closed?
           %li
-            = render Pajamas::BadgeComponent.new(_('Closed'), size: 'sm', variant: 'info')
+            = render Pajamas::BadgeComponent.new(_('Closed'), variant: 'info')
         - if issue.assignees.any?
           %li.gl-display-flex
             = render 'shared/issuable/assignees', project: @project, issuable: issue

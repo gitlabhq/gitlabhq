@@ -39,9 +39,9 @@
     .label-container
       - if generic_commit_status.tags.any?
         - generic_commit_status.tags.each do |tag|
-          = gl_badge_tag tag, variant: :info, size: :sm
+          = gl_badge_tag tag, variant: :info
       - if retried
-        = gl_badge_tag retried, variant: :warning, size: :sm
+        = gl_badge_tag retried, variant: :warning
 
   - if pipeline_link
     %td

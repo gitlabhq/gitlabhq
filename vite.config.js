@@ -20,6 +20,7 @@ import { AutoStopPlugin } from './config/helpers/vite_plugin_auto_stop.mjs';
 import { PageEntrypointsPlugin } from './config/helpers/vite_plugin_page_entrypoints.mjs';
 import { FixedRubyPlugin } from './config/helpers/vite_plugin_ruby_fixed.mjs';
 import { StylePlugin } from './config/helpers/vite_plugin_style.mjs';
+import { IconsPlugin } from './config/helpers/vite_plugin_icons.mjs';
 /* eslint-enable import/extensions */
 
 let viteGDKConfig;
@@ -84,6 +85,7 @@ export default defineConfig({
   },
   plugins: [
     PageEntrypointsPlugin(),
+    IconsPlugin(),
     StylePlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     viteTailwindCompilerPlugin({ shouldWatch: viteGDKConfig.hmr !== null }),
     CopyPlugin({

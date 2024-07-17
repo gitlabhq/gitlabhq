@@ -312,7 +312,6 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     before do
       group.update_attribute(:show_diff_preview_in_email, true)
-      stub_feature_flags(diff_preview_in_email: true)
     end
 
     it 'returns true for an owner of the group' do

@@ -3,7 +3,7 @@
 .search-result-row.row.gl-display-flex.gl-sm-flex-direction-row.gl-flex-direction-column.gl-mt-5{ class: 'gl-pb-5! gl-mb-0!' }
   .col-sm-9
     %span.gl-display-flex.gl-align-items-center
-      = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable), size: :sm
+      = gl_badge_tag issuable_state_text(issuable), variant: issuable_state_to_badge_class(issuable)
       = sprite_icon('eye-slash', css_class: 'gl-text-secondary gl-ml-2') if issuable.respond_to?(:confidential?) && issuable.confidential?
       = link_to issuable_path(issuable), data: { event_tracking: 'click_search_result', event_label: @scope, event_value: position, event_property: @search_term }, class: 'gl-w-full' do
         %span.term.str-truncated.gl-font-bold.gl-ml-2= simple_search_highlight_and_truncate(issuable.title, @search_term)

@@ -38,7 +38,7 @@ export default {
 <template>
   <div class="gl-display-flex gl-align-items-center">
     <template v-if="hasPipeline">
-      <gl-icon name="git-merge" class="gl-mr-2" />
+      <gl-icon name="merge-request" class="gl-mr-2" />
       <span data-testid="pipeline-ref" class="gl-mr-2">{{ packageEntity.pipeline.ref }}</span>
 
       <gl-icon name="commit" class="gl-mr-2" />

@@ -1,4 +1,4 @@
 - badge_variant = hook_log.success? ? :success : :danger
 - badge_text = hook_log.internal_error? ? _('Error') : hook_log.response_status
 
-= gl_badge_tag badge_text, { variant: badge_variant, size: :sm }
+= gl_badge_tag badge_text, { variant: badge_variant }

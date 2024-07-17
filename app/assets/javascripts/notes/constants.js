@@ -118,7 +118,7 @@ export const MR_FILTER_OPTIONS = [
   {
     text: __('Merge request status'),
     value: 'status',
-    systemNoteIcons: ['git-merge', 'issue-close', 'issues', 'merge-request-close'],
+    systemNoteIcons: ['merge-request', 'issue-close', 'issues', 'merge-request-close'],
   },
   {
     text: __('Tracking'),

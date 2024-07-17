@@ -441,7 +441,7 @@ module SearchHelper
       link_to search_path(search_params) do
         concat label
         concat ' '
-        concat gl_badge_tag(count, { size: :sm }, { class: badge_class, data: badge_data })
+        concat gl_badge_tag(count, { class: badge_class, data: badge_data })
       end
     end
   end

@@ -13,7 +13,7 @@
         %td
           = render partial: 'shared/hook_logs/status_label', locals: { hook_log: hook_log }
         %td.gl-hidden.sm:gl-table-cell
-          = gl_badge_tag hook_log.trigger.singularize.titleize, { size: :sm }
+          = gl_badge_tag hook_log.trigger.singularize.titleize
         %td
           #{number_with_precision(hook_log.execution_duration, precision: 2)} sec
         %td

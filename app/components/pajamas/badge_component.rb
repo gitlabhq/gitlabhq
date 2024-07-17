@@ -8,7 +8,6 @@ module Pajamas
       icon_classes: [],
       icon_only: false,
       href: nil,
-      size: :md,
       variant: :muted,
       **html_options
     )
@@ -17,12 +16,10 @@ module Pajamas
       @icon_classes = Array.wrap(icon_classes)
       @icon_only = @icon && icon_only
       @href = href.presence
-      @size = filter_attribute(size.to_sym, SIZE_OPTIONS, default: :md)
       @variant = filter_attribute(variant.to_sym, VARIANT_OPTIONS, default: :muted)
       @html_options = html_options
     end
 
-    SIZE_OPTIONS = [:sm, :md, :lg].freeze
     VARIANT_OPTIONS = [:muted, :neutral, :info, :success, :warning, :danger, :tier].freeze
 
     private
@@ -30,12 +27,14 @@ module Pajamas
     delegate :sprite_icon, to: :helpers
 
     def badge_classes
-      ["gl-badge", "badge", "badge-pill", "badge-#{@variant}", @size.to_s]
+      classes = ["gl-badge", "badge", "badge-pill", "badge-#{@variant}"]
+      classes.push('!gl-px-2') if icon_only?
+      classes.join(" ")
     end
 
     def icon_classes
       classes = %w[gl-icon gl-badge-icon] + @icon_classes
-      classes.push("gl-mr-2") unless icon_only?
+      classes.push("-gl-ml-2") if circular_icon?
       classes.join(" ")
     end
 
@@ -53,14 +52,12 @@ module Pajamas
       content || @text
     end
 
-    def badge_content
-      if icon_only?
-        sprite_icon(@icon, css_class: icon_classes)
-      elsif @icon.present?
-        sprite_icon(@icon, css_class: icon_classes) + text
-      else
-        text
-      end
+    def has_icon?
+      icon_only? || @icon.present?
+    end
+
+    def circular_icon?
+      %w[issue-open-m issue-close].include?(@icon)
     end
 
     def html_options

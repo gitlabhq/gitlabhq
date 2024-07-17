@@ -7,6 +7,7 @@ import cancelJobMutation from './graphql/mutations/job_cancel.mutation.graphql';
 import playJobMutation from './graphql/mutations/job_play.mutation.graphql';
 import retryJobMutation from './graphql/mutations/job_retry.mutation.graphql';
 import unscheduleJobMutation from './graphql/mutations/job_unschedule.mutation.graphql';
+import JobActionModal from './job_action_modal.vue';
 
 export const i18n = {
   errors: {
@@ -46,6 +47,7 @@ export default {
     GlButton,
     GlIcon,
     GlLoadingIcon,
+    JobActionModal,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -74,10 +76,17 @@ export default {
     actionType() {
       return this.jobAction.icon;
     },
+    hasConfirmationModal() {
+      return this.jobAction?.confirmationMessage !== null;
+    },
   },
   methods: {
     onActionButtonClick() {
-      this.executeJobAction();
+      if (this.hasConfirmationModal) {
+        this.showConfirmationModal = true;
+      } else {
+        this.executeJobAction();
+      }
     },
     async executeJobAction() {
       try {
@@ -117,5 +126,12 @@ export default {
       <gl-loading-icon v-if="isLoading" size="sm" class="gl-m-2" />
       <gl-icon v-else :name="jobAction.icon" :size="12" />
     </gl-button>
+    <job-action-modal
+      v-if="hasConfirmationModal"
+      v-model="showConfirmationModal"
+      :job-name="jobName"
+      :custom-message="jobAction.confirmationMessage"
+      @confirm="executeJobAction"
+    />
   </div>
 </template>

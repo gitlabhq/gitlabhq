@@ -2,4 +2,4 @@
 - add_page_specific_style 'page_bundles/merge_request_rapid_diffs'
 
 = render 'page'
-= render RapidDiffs::DiffFileComponent.with_collection(@merge_request.diffs.diff_files)
+= render RapidDiffs::DiffFileComponent.with_collection(@merge_request.diffs.diff_files, parallel_view: diff_view == :parallel)

@@ -197,7 +197,6 @@ module ProjectsHelper
   end
 
   def can_set_diff_preview_in_email?(project, current_user)
-    return false unless Feature.enabled?(:diff_preview_in_email, project.group)
     return false if project.group&.show_diff_preview_in_email?.equal?(false)
 
     can?(current_user, :set_show_diff_preview_in_email, project)

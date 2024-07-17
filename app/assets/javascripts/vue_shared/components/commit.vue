@@ -148,7 +148,7 @@ export default {
     <template v-if="shouldShowRefInfo">
       <div class="icon-container gl-display-inline-block">
         <gl-icon v-if="tag" name="tag" />
-        <gl-icon v-else-if="mergeRequestRef" name="git-merge" />
+        <gl-icon v-else-if="mergeRequestRef" name="merge-request" />
         <gl-icon v-else name="branch" />
       </div>
 

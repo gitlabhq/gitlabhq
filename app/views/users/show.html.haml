@@ -30,7 +30,7 @@
         = link_to avatar_icon_for_user(@user, 400, current_user: current_user), target: '_blank', rel: 'noopener noreferrer', title: s_('UserProfile|View large avatar') do
           = render Pajamas::AvatarComponent.new(@user, alt: s_('UserProfile|User profile picture'), size: 96, avatar_options: { itemprop: "image" })
         - if @user.status&.busy?
-          = render Pajamas::BadgeComponent.new(s_('UserProfile|Busy'), size: 'sm', variant: 'warning', class: 'gl-absolute gl-display-flex gl-justify-content-center gl-align-items-center gl-left-1/2 gl-bg-gray-50 gl-border gl-border-white -gl-translate-x-1/2 gl-top-full -gl-mt-3')
+          = render Pajamas::BadgeComponent.new(s_('UserProfile|Busy'), variant: 'warning', class: 'gl-absolute gl-display-flex gl-justify-content-center gl-align-items-center gl-left-1/2 gl-bg-gray-50 gl-border gl-border-white -gl-translate-x-1/2 gl-top-full -gl-mt-3')
       %div
         %h1.gl-heading-1.gl-leading-1.gl-mr-2{ class: 'gl-my-0!', itemprop: 'name' }
           = user_display_name(@user)
@@ -142,9 +142,9 @@
             %li.js-followers-tab
               = link_to user_followers_path, data: { target: 'div#followers', action: 'followers', toggle: 'tab', endpoint: user_followers_path(format: :json) } do
                 = s_('UserProfile|Followers')
-                = gl_badge_tag @user.followers.count, size: :sm
+                = gl_badge_tag @user.followers.count
           - if profile_tab?(:following)
             %li.js-following-tab
               = link_to user_following_path, data: { target: 'div#following', action: 'following', toggle: 'tab', endpoint: user_following_path(format: :json), testid: 'following_tab' } do
                 = s_('UserProfile|Following')
-                = gl_badge_tag @user.followees.count, size: :sm
+                = gl_badge_tag @user.followees.count

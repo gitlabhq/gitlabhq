@@ -357,6 +357,11 @@ module Gitlab
         @rich_viewer = rich_viewer_class&.new(self)
       end
 
+      # This is going to be updated with viewer components
+      def view_component_viewer
+        has_renderable? ? rendered.viewer : viewer
+      end
+
       def alternate_viewer
         alternate_viewer_class&.new(self)
       end

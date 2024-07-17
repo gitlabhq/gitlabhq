@@ -126,11 +126,11 @@ To view exported traces:
 1. In the `animals` project, on the left sidebar, select **Monitor > Traces**.
    If everything is working correctly, you should see a trace for each controller action.
 
-   ![Metrics UI](img/metrics_ui.png)
+   ![Metrics UI](img/rails_metrics_ui.png)
 
 1. Optional. Select a trace to view its span.
 
-   ![Traces UI](img/single_trace.png)
+   ![Traces UI](img/rails_single_trace.png)
 
 Congratulations! You successfully created an application, configured it to use GitLab Observability features, and examined the traces the application created. You can continue to experiment with this toy application, or try configuring a more complex application to export traces.
 

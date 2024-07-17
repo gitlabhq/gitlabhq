@@ -6,7 +6,7 @@ exports[`publish_method renders 1`] = `
 >
   <gl-icon-stub
     class="gl-mr-2"
-    name="git-merge"
+    name="merge-request"
     size="16"
     variant="current"
   />

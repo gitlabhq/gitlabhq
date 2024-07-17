@@ -144,7 +144,7 @@ module TodosHelper
     end
 
     content_tag(:span, class: 'todo-target-state') do
-      gl_badge_tag(raw_state_to_i18n[state] || state.capitalize, { variant: variant, size: 'sm' })
+      gl_badge_tag(raw_state_to_i18n[state] || state.capitalize, { variant: variant })
     end
   end
 

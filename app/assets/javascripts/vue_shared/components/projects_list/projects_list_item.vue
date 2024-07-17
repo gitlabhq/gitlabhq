@@ -374,7 +374,7 @@ export default {
             :aria-label="$options.i18n.mergeRequests"
             class="gl-text-secondary"
           >
-            <gl-icon name="git-merge" />
+            <gl-icon name="merge-request" />
             <span>{{ openMergeRequestsCount }}</span>
           </gl-link>
           <gl-link

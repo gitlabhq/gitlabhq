@@ -22,7 +22,6 @@ module GroupsHelper
   end
 
   def can_set_group_diff_preview_in_email?(group)
-    return false unless Feature.enabled?(:diff_preview_in_email, group)
     return false if group.parent&.show_diff_preview_in_email?.equal?(false)
 
     can?(current_user, :set_show_diff_preview_in_email, group)

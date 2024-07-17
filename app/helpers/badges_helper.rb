@@ -10,9 +10,6 @@ module BadgesHelper
   #   # Danger variant
   #   gl_badge_tag("foo", variant: :danger)
   #
-  #   # Small size
-  #   gl_badge_tag("foo", size: :sm)
-  #
   #   # With icon
   #   gl_badge_tag("foo", icon: "question-o")
   #

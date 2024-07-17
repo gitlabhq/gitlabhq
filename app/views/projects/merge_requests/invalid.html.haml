@@ -15,8 +15,8 @@
       - if @merge_request.for_fork? && !@merge_request.source_project
         = err_fork_project_removed
       - elsif !@merge_request.source_branch_exists?
-        = err_source_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.source_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
+        = err_source_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.source_branch, variant: :info), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info) }
       - elsif !@merge_request.target_branch_exists?
-        = err_target_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.target_branch, variant: :info, size: :sm), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info, size: :sm) }
+        = err_target_branch.html_safe % { branch_badge: gl_badge_tag(@merge_request.target_branch, variant: :info), path_badge: gl_badge_tag(@merge_request.source_project_path, variant: :info) }
       - else
         = err_internal

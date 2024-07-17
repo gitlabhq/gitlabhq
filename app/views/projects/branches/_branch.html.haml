@@ -11,9 +11,9 @@
         = branch.name
       = clipboard_button(text: branch.name, title: _("Copy branch name"))
       - if is_default_branch
-        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('DefaultBranchLabel|default'), { variant: :info }, { class: 'gl-ml-2' }
       - if protected_branch?(@project, branch)
-        = gl_badge_tag s_('Branches|protected'), { variant: :neutral, size: :sm }, { class: 'gl-ml-2' }
+        = gl_badge_tag s_('Branches|protected'), { variant: :neutral }, { class: 'gl-ml-2' }
 
       = render_if_exists 'projects/branches/diverged_from_upstream', branch: branch
 
@@ -38,7 +38,7 @@
       - if mr_status.present? && can?(current_user, :read_merge_request, related_merge_request)
         .issuable-reference.gl-display-flex.gl-justify-content-end.gl-overflow-hidden
           = gl_badge_tag issuable_reference(related_merge_request),
-            { icon: mr_status[:icon], variant: mr_status[:variant], size: :md, href: merge_request_path(related_merge_request) },
+            { icon: mr_status[:icon], variant: mr_status[:variant], href: merge_request_path(related_merge_request) },
             { class: 'gl-block gl-text-truncate', title: mr_status[:title], data: { toggle: 'tooltip', container: 'body' } }
 
       - elsif mr_status.nil? && create_mr_button?(from: branch.name, source_project: @project)
