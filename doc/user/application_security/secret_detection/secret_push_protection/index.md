@@ -118,14 +118,20 @@ If the blocked secret was added with the most recent commit on your branch:
 
 If the blocked secret appears earlier in your Git history:
 
+1. Optional. Watch a short demo of [removing secrets from your commits](https://www.youtube.com/watch?v=2jBC3uBUlyU).
 1. Identify the commit SHA from the push error message. If there are multiple, find the earliest using `git log`.
+1. Create a copy branch to work from with `git switch --create copy-branch` so you can reset to the original branch if the rebase encounters issues.
 1. Use `git rebase -i <commit-sha>~1` to start an interactive rebase.
 1. Mark the offending commits for editing by changing the `pick` command to `edit` in the editor.
 1. Remove the secrets from the files.
 1. Stage the changes with `git add <file-name>`.
 1. Commit the changed files with `git commit --amend`.
 1. Continue the rebase with `git rebase --continue` until all secrets are removed.
-1. Push your changes with `git push`.
+1. Push your changes from the copy branch to your original remote branch
+   with `git push --force --set-upstream origin copy-branch:<original-branch>`.
+1. When you are satisfied with the changes, consider the following optional cleanup steps.
+   1. Optional. Delete the original branch with `git branch --delete --force <original-branch>`.
+   1. Optional. Replace the original branch by renaming the copy branch with `git branch --move copy-branch <original-branch>`.
 
 ### Skip secret push protection
 

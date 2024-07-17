@@ -18,6 +18,10 @@ module QA
           element 'webide-menu-item', ':data-testid="`${action.key}-menu-item`"' # rubocop:disable QA/ElementWithPattern
         end
 
+        view 'app/assets/javascripts/vue_shared/components/source_viewer/components/chunk.vue' do
+          element 'content'
+        end
+
         def click_edit
           click_element('action-dropdown')
           click_element('edit-menu-item')
@@ -25,6 +29,14 @@ module QA
 
         def click_delete
           click_on 'Delete'
+        end
+
+        def highlight_text
+          find_element('content').double_click
+        end
+
+        def explain_code
+          click_element('question-icon')
         end
 
         def click_delete_file
