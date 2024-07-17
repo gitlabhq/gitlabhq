@@ -300,7 +300,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
           page.within('#ci-badge-test') do
             # TODO Find way to locate this link with title
             build_link = find_by_testid('ci-job-item').find('a')
-            expect(build_link['title']).to eq('failed - (unknown failure)')
+            expect(build_link['title']).to eq('Failed - (unknown failure)')
           end
         end
       end

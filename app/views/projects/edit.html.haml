@@ -4,6 +4,8 @@
 - reduce_visibility_form_id = 'reduce-visibility-form'
 - @force_desktop_expanded_sidebar = true
 
+%h1.gl-sr-only= @breadcrumb_title
+
 - if can?(current_user, :admin_project, @project)
   = render ::Layouts::SettingsBlockComponent.new(_('Naming, topics, avatar'),
     id: 'js-general-settings',

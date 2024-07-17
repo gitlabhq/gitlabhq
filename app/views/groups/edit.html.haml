@@ -5,28 +5,26 @@
 
 = render 'shared/namespaces/cascading_settings/lock_popovers'
 
+%h1.gl-sr-only= @breadcrumb_title
+
 - if can?(current_user, :admin_group, @group)
-  %section.settings.gs-general.no-animate.expanded#js-general-settings
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
-        = _('Naming, visibility')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = _('Collapse')
-      %p.gl-text-secondary
-        = _('Update your group name, description, avatar, and visibility.')
-        = link_to _('Learn more about groups.'), help_page_path('user/group/index')
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Naming, visibility'),
+    id: 'js-general-settings',
+    testid: 'general-settings',
+    expanded: true) do |c|
+    - c.with_description do
+      = _('Update your group name, description, avatar, and visibility.')
+      = link_to _('Learn more about groups.'), help_page_path('user/group/index')
+    - c.with_body do
       = render 'groups/settings/general'
 
-  %section.settings.gs-permissions.no-animate#js-permissions-settings{ class: ('expanded' if expanded), data: { testid: 'permissions-settings' } }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
-        = _('Permissions and group features')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _('Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings.')
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Permissions and group features'),
+    id: 'js-permissions-settings',
+    testid: 'permissions-settings',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = _('Configure advanced permissions, Large File Storage, two-factor authentication, and customer relations settings.')
+    - c.with_body do
       = render 'groups/settings/permissions'
 
   = render_if_exists 'groups/settings/ai/ai_settings'
@@ -36,16 +34,13 @@
   = render_if_exists 'groups/settings/merge_requests/merge_request_approval_settings', expanded: expanded, group: @group, user: current_user
 
 - if can?(current_user, :admin_group, @group)
-  %section.settings.no-animate#js-badge-settings{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
-        = s_('GroupSettings|Badges')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = s_('GroupSettings|Customize this group\'s badges.')
-        = link_to s_('GroupSettings|What are badges?'), help_page_path('user/project/badges')
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(s_('GroupSettings|Badges'),
+    id: 'js-badge-settings',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = s_('GroupSettings|Customize this group\'s badges.')
+      = link_to s_('GroupSettings|What are badges?'), help_page_path('user/project/badges')
+    - c.with_body do
       = render 'shared/badges/badge_settings'
 
 - if can?(current_user, :admin_compliance_framework, @group)
@@ -56,15 +51,13 @@
   = render_if_exists 'groups/templates_setting', expanded: expanded
   = render_if_exists 'shared/groups/max_pages_size_setting'
 
-  %section.settings.gs-advanced.no-animate#js-advanced-settings{ class: ('expanded' if expanded), data: { testid: 'advanced-settings-content' } }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only{ role: 'button' }
-        = _('Advanced')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _('Perform advanced options such as changing path, transferring, exporting, or deleting the group.')
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Advanced'),
+    id: 'js-advanced-settings',
+    testid: 'advanced-settings-content',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = _('Perform advanced options such as changing path, transferring, exporting, or deleting the group.')
+    - c.with_body do
       = render 'groups/settings/advanced'
 
 - elsif can?(current_user, :remove_group, @group)

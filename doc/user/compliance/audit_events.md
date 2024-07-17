@@ -99,7 +99,7 @@ The time zone used for audit events depends on where you view them:
 
 If you don't see the event you want in any of the epics, you can either:
 
-- Use the **Audit Event Proposal** issue template to
+- Use the **Audit event proposal** issue template to
   [create an issue](https://gitlab.com/gitlab-org/gitlab/-/issues/new?issuable_template=Audit%20Event%20Proposal) to request it.
 - [Add it yourself](../../development/audit_event_guide/index.md).
 

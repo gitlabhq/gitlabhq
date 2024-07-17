@@ -2013,13 +2013,13 @@ DELETE /groups/:id/hooks/:hook_id/custom_headers/:key
 
 On success, this endpoint returns the response code `204 No Content`.
 
-## Group Audit Events
+## Group audit events
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Group audit events can be accessed via the [Group Audit Events API](audit_events.md#group-audit-events)
+Group audit events can be accessed via the [Group audit events API](audit_events.md#group-audit-events)
 
 ## Sync group with LDAP
 

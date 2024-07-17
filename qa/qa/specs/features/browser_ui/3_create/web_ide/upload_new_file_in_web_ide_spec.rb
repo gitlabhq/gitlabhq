@@ -10,9 +10,8 @@ module QA
         Flow::Login.sign_in
         project.visit!
         Page::Project::Show.perform(&:open_web_ide!)
-        Page::Project::WebIDE::VSCode.perform do |vscode|
-          vscode.wait_for_ide_to_load
-          vscode.wait_for_file_to_load('README.md')
+        Page::Project::WebIDE::VSCode.perform do |ide|
+          ide.wait_for_ide_to_load('README.md')
         end
       end
 

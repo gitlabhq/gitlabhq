@@ -16,16 +16,16 @@ actions performed across the application.
 
 ## What should not be audit events?
 
-While any events could trigger an Audit Event, not all events should. In general, events that are not good candidates for audit events are:
+While any events could trigger an audit event, not all events should. In general, events that are not good candidates for audit events are:
 
 - Not attributable to one specific user.
 - Not of specific interest to an administrator or owner persona.
 - Are tracking information for product feature adoption.
 - Are covered in the direction page's discussion on [what is not planned](https://about.gitlab.com/direction/govern/compliance/audit-events/#what-is-not-planned-right-now).
 
-If you have any questions, reach out to `@gitlab-org/govern/compliance` to see if an Audit Event, or some other approach, may be best for your event.
+If you have any questions, reach out to `@gitlab-org/govern/compliance` to see if an audit event, or some other approach, may be best for your event.
 
-## Audit Event Schemas
+## Audit event schemas
 
 To instrument an audit event, the following attributes should be provided:
 
@@ -122,7 +122,7 @@ audit events. For new audit events that produce a lot of data in the database, c
 [streaming-only audit event](#event-streaming) instead. If you have questions about this, feel free to ping
 `@gitlab-org/govern/compliance/backend` in an issue or merge request.
 
-## Audit Event instrumentation flows
+## Audit event instrumentation flows
 
 The two ways we can instrument audit events have different flows.
 
@@ -133,7 +133,7 @@ initial audit context (that is, `author`, `scope`, `target`) object that are
 available at the time the operation is initiated.
 
 Extra instrumentation is required in the interacted classes in the chain with
-`Auditable` mixin to add audit events to the Audit Event queue via `Gitlab::Audit::EventQueue`.
+`Auditable` mixin to add audit events to the audit event queue via `Gitlab::Audit::EventQueue`.
 
 The `EventQueue` is stored in a local thread via `SafeRequestStore` and then later
 extracted when we record an audit event in `Gitlab::Audit::Auditor`.
@@ -260,7 +260,7 @@ for an example.
 This feature is under heavy development. Follow the [parent epic](https://gitlab.com/groups/gitlab-org/-/epics/5925) for updates on feature
 development.
 
-### I18N and the Audit Event `:message` attribute
+### I18N and the audit event `:message` attribute
 
 We intentionally do not translate audit event messages because translated messages would be saved in the database and served to users, regardless of their locale settings.
 

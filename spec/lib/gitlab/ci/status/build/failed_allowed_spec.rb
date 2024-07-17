@@ -78,7 +78,7 @@ RSpec.describe Gitlab::Ci::Status::Build::FailedAllowed do
     let(:status) { described_class.new(build_status) }
 
     it 'does override badge_tooltip' do
-      expect(status.badge_tooltip).to eq('failed - (unknown failure)')
+      expect(status.badge_tooltip).to eq('Failed - (unknown failure)')
     end
   end
 
@@ -89,7 +89,7 @@ RSpec.describe Gitlab::Ci::Status::Build::FailedAllowed do
     let(:status) { described_class.new(build_status) }
 
     it 'does override status_tooltip' do
-      expect(status.status_tooltip).to eq 'failed - (unknown failure) (allowed to fail)'
+      expect(status.status_tooltip).to eq 'Failed - (unknown failure) (allowed to fail)'
     end
   end
 

@@ -12,3 +12,27 @@
   border-left: 3px solid var(--border-color, $gray-100);
   color: var(--gl-text-color-subtle);
 }
+
+.commit-box {
+  border-top: 1px solid var(--border-color, $border-color);
+  padding: $gl-padding 0;
+
+  .commit-title {
+    margin: 0;
+    color: var(--gl-text-color);
+  }
+}
+
+.pipeline-info {
+  .status-icon-container {
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 3px;
+
+    svg {
+      display: block;
+      width: 22px;
+      height: 22px;
+    }
+  }
+}

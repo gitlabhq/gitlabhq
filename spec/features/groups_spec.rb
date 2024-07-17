@@ -392,7 +392,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     ]
 
     it 'saves new settings' do
-      page.within('.gs-general') do
+      within_testid('general-settings') do
         # Have to reset it to '' so it overwrites rather than appends
         fill_in('group_name', with: '')
         fill_in 'group_name', with: new_name

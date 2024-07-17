@@ -20,7 +20,9 @@ module QA
 
           project.visit!
           Page::Project::Show.perform(&:open_web_ide!)
-          Page::Project::WebIDE::VSCode.perform(&:wait_for_ide_to_load)
+          Page::Project::WebIDE::VSCode.perform do |ide|
+            ide.wait_for_ide_to_load('README.md')
+          end
         end
 
         it 'throws an error', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/386760' do
