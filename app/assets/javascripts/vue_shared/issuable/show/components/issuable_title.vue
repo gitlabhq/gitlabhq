@@ -87,7 +87,7 @@ export default {
       <transition name="issuable-header-slide">
         <div
           v-if="stickyTitleVisible"
-          class="issue-sticky-header gl-fixed gl-z-3 gl-bg-white gl-border-1 gl-border-b-solid gl-border-b-gray-100 gl-py-3"
+          class="issue-sticky-header gl-fixed gl-z-3 gl-bg-default gl-border-b gl-py-3"
           data-testid="header"
         >
           <div class="issue-sticky-header-text gl-flex gl-items-baseline gl-mx-auto gl-gap-3">

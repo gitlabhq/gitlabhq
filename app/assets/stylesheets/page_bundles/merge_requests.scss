@@ -997,8 +997,8 @@
   height: var(--mr-review-bar-height);
   padding-left: $super-sidebar-width;
   padding-right: $right-sidebar-collapsed-width;
-  background: var(--white, $white);
-  border-top: 1px solid var(--border-color, $border-color);
+  background: var(--gl-background-color-default);
+  border-top: 1px solid var(--gl-border-color-default);
   @apply gl-transition-padding;
 
   @media (max-width: map-get($grid-breakpoints, sm)-1) {

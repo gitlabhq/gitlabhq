@@ -3,6 +3,7 @@
 - type = _('group access token')
 - type_plural = _('group access tokens')
 - @force_desktop_expanded_sidebar = true
+- shared_card_component_classes = "gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none"
 
 .settings-section.js-search-settings-section
   .settings-sticky-header
@@ -25,7 +26,7 @@
 
   #js-new-access-token-app{ data: { access_token_type: type } }
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none js-toggle-container js-token-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
+  = render Pajamas::CardComponent.new(card_options: { class: "#{shared_card_component_classes} js-toggle-container js-token-card" }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
     - c.with_header do
       .gl-new-card-title-wrapper
         %h3.gl-new-card-title
@@ -54,3 +55,15 @@
             help_path: help_page_path('user/group/settings/group_access_tokens', anchor: 'scopes-for-a-group-access-token')
 
   #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This group has no active access tokens.'), show_role: true } }
+
+  - if Feature.enabled?(:retain_resource_access_token_user_after_revoke, @group.root_ancestor)
+    = render Pajamas::CardComponent.new(card_options: { class: shared_card_component_classes }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0 gl-bg-gray-10 gl-border-b gl-rounded-bottom-base' }) do |c|
+      - c.with_header do
+        .gl-new-card-title-wrapper
+          %h3.gl-new-card-title
+            = _('Inactive group access tokens')
+          .gl-new-card-count
+            = sprite_icon('token', css_class: 'gl-mr-2')
+            %span.js-token-count= @inactive_access_tokens.size
+      - c.with_body do
+        #js-inactive-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_inactive_access_tokens: @inactive_access_tokens.to_json, no_inactive_tokens_message: _('This group has no inactive access tokens.')} }

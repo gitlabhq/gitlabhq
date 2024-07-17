@@ -56,7 +56,7 @@ $diff-file-header: 41px;
     }
 
     &:hover {
-      background-color: $gray-50;
+      background-color: var(--gl-background-color-strong);
     }
 
     svg {

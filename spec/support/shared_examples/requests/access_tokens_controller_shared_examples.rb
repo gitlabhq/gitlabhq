@@ -58,7 +58,7 @@ RSpec.shared_examples 'GET access tokens are paginated and ordered' do
     end
   end
 
-  context "when tokens returned are ordered" do
+  context "when active tokens returned are ordered" do
     let(:expires_1_day_from_now) { 1.day.from_now.to_date }
     let(:expires_2_day_from_now) { 2.days.from_now.to_date }
 
@@ -92,6 +92,33 @@ RSpec.shared_examples 'GET access tokens are paginated and ordered' do
 
   def expect_header(header_name, header_val)
     expect(response.headers[header_name]).to eq(header_val)
+  end
+end
+
+RSpec.shared_examples 'GET access tokens includes inactive tokens' do
+  context "when inactive tokens returned are ordered" do
+    let(:one_day_ago) { 1.day.ago.to_date }
+    let(:two_days_ago) { 2.days.ago.to_date }
+
+    before do
+      create(:personal_access_token, :revoked, user: access_token_user, name: "Token1").update!(updated_at: one_day_ago)
+      create(:personal_access_token, :expired, user: access_token_user,
+        name: "Token2").update!(updated_at: two_days_ago)
+    end
+
+    it "orders token list descending on updated_at" do
+      get_access_tokens
+
+      first_token = assigns(:inactive_access_tokens).first.as_json
+      expect(first_token['name']).to eq("Token1")
+    end
+  end
+
+  context "when there are no inactive tokens" do
+    it "returns an empty array" do
+      get_access_tokens
+      expect(assigns(:inactive_access_tokens)).to eq([])
+    end
   end
 end
 

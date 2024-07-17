@@ -85,7 +85,7 @@ describe('Legacy Pipeline Mini Graph', () => {
     it('should render an upstream arrow icon only', () => {
       expect(findDownstreamArrowIcon().exists()).toBe(false);
       expect(findUpstreamArrowIcon().exists()).toBe(true);
-      expect(findUpstreamArrowIcon().props('name')).toBe('long-arrow');
+      expect(findUpstreamArrowIcon().props('name')).toBe('arrow-right');
     });
   });
 
@@ -116,7 +116,7 @@ describe('Legacy Pipeline Mini Graph', () => {
     it('should render a downstream arrow icon only', () => {
       expect(findUpstreamArrowIcon().exists()).toBe(false);
       expect(findDownstreamArrowIcon().exists()).toBe(true);
-      expect(findDownstreamArrowIcon().props('name')).toBe('long-arrow');
+      expect(findDownstreamArrowIcon().props('name')).toBe('arrow-right');
     });
   });
 });

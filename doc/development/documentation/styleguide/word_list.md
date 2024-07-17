@@ -141,6 +141,11 @@ The token generated when you create an agent for Kubernetes. Use **agent access 
 - secret token
 - authentication token
 
+## agnostic
+
+Instead of **agnostic**, use **platform-independent** or **vendor-neutral**.
+([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/SubstitutionWarning.yml))
+
 ## AI, artificial intelligence
 
 Use **AI**. Do not spell out **artificial intelligence**.

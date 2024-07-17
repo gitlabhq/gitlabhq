@@ -10982,7 +10982,8 @@ CREATE TABLE group_group_links (
     shared_group_id bigint NOT NULL,
     shared_with_group_id bigint NOT NULL,
     expires_at date,
-    group_access smallint DEFAULT 30 NOT NULL
+    group_access smallint DEFAULT 30 NOT NULL,
+    member_role_id bigint
 );
 
 CREATE SEQUENCE group_group_links_id_seq
@@ -27440,6 +27441,8 @@ CREATE INDEX index_group_deploy_tokens_on_deploy_token_id ON group_deploy_tokens
 
 CREATE UNIQUE INDEX index_group_deploy_tokens_on_group_and_deploy_token_ids ON group_deploy_tokens USING btree (group_id, deploy_token_id);
 
+CREATE INDEX index_group_group_links_on_member_role_id ON group_group_links USING btree (member_role_id);
+
 CREATE UNIQUE INDEX index_group_group_links_on_shared_group_and_shared_with_group ON group_group_links USING btree (shared_group_id, shared_with_group_id);
 
 CREATE INDEX index_group_group_links_on_shared_with_group_and_group_access ON group_group_links USING btree (shared_with_group_id, group_access);
@@ -32209,6 +32212,9 @@ ALTER TABLE ONLY duo_workflows_workflows
 
 ALTER TABLE ONLY members
     ADD CONSTRAINT fk_2f85abf8f1 FOREIGN KEY (member_namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_group_links
+    ADD CONSTRAINT fk_2fbc7071a3 FOREIGN KEY (member_role_id) REFERENCES member_roles(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY zoekt_replicas
     ADD CONSTRAINT fk_3035f4b498 FOREIGN KEY (zoekt_enabled_namespace_id) REFERENCES zoekt_enabled_namespaces(id) ON DELETE CASCADE;

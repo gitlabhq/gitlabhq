@@ -343,7 +343,8 @@ RSpec.describe ::Gitlab::Housekeeper::GitlabClient do
             target_project_id: 456,
             remove_source_branch: true,
             assignee_ids: [assignee_id],
-            reviewer_ids: [reviewer_id]
+            reviewer_ids: [reviewer_id],
+            squash: true
           },
           headers: {
             'Content-Type' => 'application/json',

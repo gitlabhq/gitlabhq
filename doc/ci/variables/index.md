@@ -254,11 +254,18 @@ malicious-job:
 ```
 
 To help reduce the risk of accidentally leaking secrets through scripts like in `accidental-leak-job`,
-all variables containing sensitive information should be [masked in job logs](#mask-a-cicd-variable).
+all variables containing sensitive information should always be [masked in job logs](#mask-a-cicd-variable).
 You can also [limit a variable to protected branches and tags only](#protect-a-cicd-variable).
 
-Alternatively, use the GitLab [integration with HashiCorp Vault](../secrets/index.md)
-to store and retrieve secrets.
+Alternatively, use one of the native GitLab integrations to connect with third party
+secrets manager providers to store and retrieve secrets:
+
+- [HashiCorp Vault](../secrets/index.md)
+- [Azure Key Vault](../secrets/azure_key_vault.md)
+- [Google Secret Manager](../secrets/gcp_secret_manager.md)
+
+You can also use [OpenID Connect (OIDC) authentication](../secrets/id_token_authentication.md)
+for secrets managers which do not have a native integration.
 
 Malicious scripts like in `malicious-job` must be caught during the review process.
 Reviewers should never trigger a pipeline when they find code like this, because
@@ -272,8 +279,7 @@ valid [secrets file](../../administration/backup_restore/troubleshooting_backup_
 
 WARNING:
 Masking a CI/CD variable is not a guaranteed way to prevent malicious users from
-accessing variable values. The masking feature is "best-effort" and there to
-help when a variable is accidentally revealed. To make variables more secure,
+accessing variable values. To ensure security of sensitive information,
 consider using [external secrets](../secrets/index.md) and [file type variables](#use-file-type-cicd-variables)
 to prevent commands such as `env`/`printenv` from printing secret variables.
 
@@ -295,9 +301,10 @@ To mask a variable:
 The method used to mask variables [limits what can be included in a masked variable](https://gitlab.com/gitlab-org/gitlab-foss/-/issues/13784#note_106756757).
 The value of the variable must:
 
-- Be a single line.
+- Be a single line with no spaces.
 - Be 8 characters or longer.
 - Not match the name of an existing predefined or custom CI/CD variable.
+- Not include non-alpha-numeric characters other than `@`, `_`, `-`, `:`, or `+`.
 
 Additionally, if [variable expansion](#prevent-cicd-variable-expansion) is enabled,
 the value can contain only:
@@ -514,7 +521,7 @@ test-job:
 Variables from `dotenv` reports [take precedence](#cicd-variable-precedence) over
 certain types of new variable definitions such as job defined variables.
 
-You can also [pass `dotenv` variables to downstream pipelines](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job)
+You can also [pass `dotenv` variables to downstream pipelines](../pipelines/downstream_pipelines.md#pass-dotenv-variables-created-in-a-job).
 
 #### Control which jobs receive `dotenv` variables
 
@@ -914,7 +921,7 @@ export CI_PROJECT_TITLE="GitLab"
 
 WARNING:
 Debug logging can be a serious security risk. The output contains the content of
-all variables and other secrets available to the job. The output is uploaded to the
+all variables available to the job. The output is uploaded to the
 GitLab server and visible in job logs.
 
 You can use debug logging to help troubleshoot problems with pipeline configuration
@@ -1022,22 +1029,3 @@ WARNING:
 If you add `CI_DEBUG_TRACE` as a local variable to runners, debug logs generate and are visible
 to all users with access to job logs. The permission levels are not checked by the runner,
 so you should only use the variable in GitLab itself.
-
-## Known issues and workarounds
-
-These are some known issues with CI/CD variables, and where applicable, known workarounds.
-
-### "argument list too long"
-
-This issue occurs when the combined length of all CI/CD variables defined for a job exceeds the limit imposed by the
-shell where the job executes. This includes the names and values of pre-defined and user defined variables. This limit
-is typically referred to as `ARG_MAX`, and is shell and operating system dependent. This issue also occurs when the
-content of a single [File-type](#use-file-type-cicd-variables) variable exceeds `ARG_MAX`.
-
-For more information, see [issue 392406](https://gitlab.com/gitlab-org/gitlab/-/issues/392406#note_1414219596).
-
-As a workaround you can either:
-
-- Use [File-type](#use-file-type-cicd-variables) CI/CD variables for large environment variables where possible.
-- If a single large variable is larger than `ARG_MAX`, try using [Secure Files](../secure_files/index.md), or
-  bring the file to the job through some other mechanism.

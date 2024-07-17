@@ -242,7 +242,7 @@ span.idiff {
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    background-color: $gray-10;
+    background-color: var(--gl-background-color-subtle);
     border-bottom: 1px solid $border-color;
     padding: $gl-padding-8 $gl-padding;
     margin: 0;

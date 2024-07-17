@@ -14,6 +14,15 @@ module RenderAccessTokens
     represent(tokens)
   end
 
+  def inactive_access_tokens
+    tokens = finder(state: 'inactive', sort: 'updated_at_desc').execute.preload_users
+
+    # We don't call `add_pagination_headers` as this overrides the
+    # pagination of active tokens.
+
+    represent(tokens)
+  end
+
   def add_pagination_headers(relation)
     Gitlab::Pagination::OffsetHeaderBuilder.new(
       request_context: self,

@@ -27427,6 +27427,12 @@ msgstr ""
 msgid "Inactive"
 msgstr ""
 
+msgid "Inactive group access tokens"
+msgstr ""
+
+msgid "Inactive project access tokens"
+msgstr ""
+
 msgid "Incident"
 msgstr ""
 
@@ -54310,6 +54316,9 @@ msgstr ""
 msgid "This group has no active access tokens."
 msgstr ""
 
+msgid "This group has no inactive access tokens."
+msgstr ""
+
 msgid "This group has no projects yet"
 msgstr ""
 
@@ -54603,6 +54612,9 @@ msgstr ""
 msgid "This project has no active access tokens."
 msgstr ""
 
+msgid "This project has no inactive access tokens."
+msgstr ""
+
 msgid "This project is %{strongStart}NOT%{strongEnd} a fork, and has the following:"
 msgstr ""
 
@@ -54673,6 +54685,9 @@ msgid "This repository was last checked %{last_check_timestamp}. The check passe
 msgstr ""
 
 msgid "This resource has no comments to summarize"
+msgstr ""
+
+msgid "This resource has no inactive %{accessTokenTypePlural}."
 msgstr ""
 
 msgid "This runner will only run on pipelines triggered on protected branches"
