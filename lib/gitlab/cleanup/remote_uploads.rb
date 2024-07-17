@@ -12,7 +12,7 @@ module Gitlab
 
       def run!(dry_run: false)
         unless configuration.enabled
-          logger.warn "Object storage not enabled. Exit".color(:yellow)
+          logger.warn Rainbow("Object storage not enabled. Exit").yellow
 
           return
         end

@@ -87,9 +87,7 @@ export default {
   <gl-card
     :id="$options.ariaControlsId"
     class="gl-new-card"
-    :class="{
-      'gl-border-white gl-hover-border-gray-100 is-collapsed': !isExpanded,
-    }"
+    :class="{ 'gl-border-white hover:gl-border-gray-100 is-collapsed': !isExpanded }"
     header-class="gl-new-card-header gl-px-3 gl-py-3"
     body-class="gl-new-card-body"
     data-testid="failed-jobs-card"

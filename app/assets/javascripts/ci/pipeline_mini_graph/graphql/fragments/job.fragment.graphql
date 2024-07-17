@@ -1,0 +1,13 @@
+fragment Job on CiJob {
+  id
+  detailedStatus {
+    id
+    action {
+      id
+      confirmationMessage
+      icon
+      path
+      title
+    }
+  }
+}

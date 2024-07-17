@@ -73,6 +73,254 @@ On _each_ Consul server node:
    If the results display any nodes with a status that isn't `alive`, or if any
    of the three nodes are missing, see the [Troubleshooting section](#troubleshooting-consul).
 
+## Securing the Consul nodes
+
+There are two ways you can secure the communication between the Consul nodes, using either TLS or gossip encryption.
+
+### TLS encryption
+
+By default TLS is not enabled for the Consul cluster, the default configuration
+options and their defaults are:
+
+```ruby
+consul['use_tls'] = false
+consul['tls_ca_file'] = nil
+consul['tls_certificate_file'] = nil
+consul['tls_key_file'] = nil
+consul['tls_verify_client'] = nil
+```
+
+These configuration options apply to both client and server nodes.
+
+To enable TLS on a Consul node start with `consul['use_tls'] = true`. Depending
+on the role of the node (server or client) and your TLS preferences you need to
+provide further configuration:
+
+- On a server node you must at least specify `tls_ca_file`,
+  `tls_certificate_file`, and `tls_key_file`.
+- On a client node, when client TLS authentication is disabled on the server
+  (enabled by default) you must at least specify `tls_ca_file`, otherwise you have
+  to pass the client TLS certificate and key using `tls_certificate_file`,
+  `tls_key_file`.
+
+When TLS is enabled, by default the server uses mTLS and listens on both HTTPS
+and HTTP (and TLS and non-TLS RPC). It expects clients to use TLS
+authentication. You can disable client TLS authentication by setting
+`consul['tls_verify_client'] = false`.
+
+On the other hand, clients only use TLS for outgoing connection to server nodes
+and only listen on HTTP (and non-TLS RPC) for incoming requests. You can enforce
+client Consul agents to use TLS for incoming connections by setting
+`consul['https_port']` to a non-negative integer (`8501` is the Consul's default
+HTTPS port). You must also pass `tls_certificate_file` and `tls_key_file` for
+this to work. When server nodes use client TLS authentication, the client TLS
+certificate and key is used for both TLS authentication and incoming HTTPS
+connections.
+
+Consul client nodes do not use TLS client authentication by default (as opposed
+to servers) and you need to explicitly instruct them to do it by setting
+`consul['tls_verify_client'] = true`.
+
+Below are some examples of TLS encryption.
+
+#### Minimal TLS support
+
+In the following example, the server uses TLS for incoming connections (without client TLS authentication).
+
+::Tabs
+
+:::TabTitle Consul server node
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   consul['configuration'] = {
+     'server' => true
+   }
+
+   consul['use_tls'] = true
+   consul['tls_ca_file'] = '/path/to/ca.crt.pem'
+   consul['tls_certificate_file'] = '/path/to/server.crt.pem'
+   consul['tls_key_file'] = '/path/to/server.key.pem'
+   consul['tls_verify_client'] = false
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Consul client node
+
+The following can be configured on a Patroni node for example.
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   consul['use_tls'] = true
+   consul['tls_ca_file'] = '/path/to/ca.crt.pem'
+   patroni['consul']['url'] = 'http://localhost:8500'
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+Patroni talks to the local Consul agent which does not use TLS for incoming
+connections. Hence the HTTP URL for `patroni['consul']['url']`.
+
+::EndTabs
+
+#### Default TLS support
+
+In the following example, the server uses mutual TLS authentication.
+
+::Tabs
+
+:::TabTitle Consul server node
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   consul['configuration'] = {
+     'server' => true
+   }
+
+   consul['use_tls'] = true
+   consul['tls_ca_file'] = '/path/to/ca.crt.pem'
+   consul['tls_certificate_file'] = '/path/to/server.crt.pem'
+   consul['tls_key_file'] = '/path/to/server.key.pem'
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Consul client node
+
+The following can be configured on a Patroni node for example.
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   consul['use_tls'] = true
+   consul['tls_ca_file'] = '/path/to/ca.crt.pem'
+   consul['tls_certificate_file'] = '/path/to/client.crt.pem'
+   consul['tls_key_file'] = '/path/to/client.key.pem'
+   patroni['consul']['url'] = 'http://localhost:8500'
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+Patroni talks to the local Consul agent which does not use TLS for incoming
+connections, even though it uses TLS authentication to Consul server nodes.
+Hence the HTTP URL for `patroni['consul']['url']`.
+
+::EndTabs
+
+#### Full TLS support
+
+In the following example, both client and server use mutual TLS authentication.
+
+The Consul server, client, and Patroni client certificates must be issued by the
+same CA for mutual TLS authentication to work.
+
+::Tabs
+
+:::TabTitle Consul server node
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   consul['configuration'] = {
+     'server' => true
+   }
+
+   consul['use_tls'] = true
+   consul['tls_ca_file'] = '/path/to/ca.crt.pem'
+   consul['tls_certificate_file'] = '/path/to/server.crt.pem'
+   consul['tls_key_file'] = '/path/to/server.key.pem'
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Consul client node
+
+The following can be configured on a Patroni node for example.
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['enable'] = true
+   consul['use_tls'] = true
+   consul['tls_verify_client'] = true
+   consul['tls_ca_file'] = '/path/to/ca.crt.pem'
+   consul['tls_certificate_file'] = '/path/to/client.crt.pem'
+   consul['tls_key_file'] = '/path/to/client.key.pem'
+   consul['https_port'] = 8501
+
+   patroni['consul']['url'] = 'https://localhost:8501'
+   patroni['consul']['cacert'] = '/path/to/ca.crt.pem'
+   patroni['consul']['cert'] = '/opt/tls/patroni.crt.pem'
+   patroni['consul']['key'] = '/opt/tls/patroni.key.pem'
+   patroni['consul']['verify'] = true
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+::EndTabs
+
+### Gossip encryption
+
+The Gossip protocol can be encrypted to secure communication between Consul
+agents. By default encryption is not enabled, to enable encryption a shared
+encryption key is required. For convenience, the key can be generated by using
+the `gitlab-ctl consul keygen` command. The key must be 32 bytes long, Base 64
+encoded and shared on all agents.
+
+The following options work on both client and server nodes.
+
+To enable the gossip protocol:
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   consul['encryption_key'] = <base-64-key>
+   consul['encryption_verify_incoming'] = true
+   consul['encryption_verify_outgoing'] = true
+   ```
+
+1. Reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+To [enable encryption in an existing datacenter](https://learn.hashicorp.com/tutorials/consul/gossip-encryption-secure#enable-on-an-existing-consul-datacenter),
+manually set these options for a rolling update.
+
 ## Upgrade the Consul nodes
 
 To upgrade your Consul nodes, upgrade the GitLab package.

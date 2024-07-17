@@ -13,7 +13,7 @@ describe('StatusBadge component', () => {
 
   describe.each`
     issuableType       | badgeText   | state       | badgeVariant | badgeIcon
-    ${'merge_request'} | ${'Open'}   | ${'opened'} | ${'success'} | ${'merge-request-open'}
+    ${'merge_request'} | ${'Open'}   | ${'opened'} | ${'success'} | ${'merge-request'}
     ${'merge_request'} | ${'Closed'} | ${'closed'} | ${'danger'}  | ${'merge-request-close'}
     ${'merge_request'} | ${'Merged'} | ${'merged'} | ${'info'}    | ${'merge'}
     ${'issue'}         | ${'Open'}   | ${'opened'} | ${'success'} | ${'issue-open-m'}

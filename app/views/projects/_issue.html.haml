@@ -20,9 +20,9 @@
         %span.issuable-authored.gl-hidden.sm:gl-inline-block
           &middot;
           - if issue.service_desk_reply_to
-            #{_('created %{timeAgoString} by %{email} via %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), email: issue.present(current_user: current_user).service_desk_reply_to, user: link_to_member(@project, issue.author, avatar: false) }}
+            #{_('created %{timeAgoString} by %{email} via %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), email: issue.present(current_user: current_user).service_desk_reply_to, user: link_to_member(issue.author, avatar: false) }}
           - else
-            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), user: link_to_member(@project, issue.author, avatar: false) }}
+            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(issue.created_at, placement: 'bottom'), user: link_to_member(issue.author, avatar: false) }}
         - if issue.milestone
           %span.issuable-milestone.gl-hidden.sm:gl-inline-block
             &nbsp;

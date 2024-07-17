@@ -5,8 +5,6 @@ module Packages
     class Rule < ApplicationRecord
       include IgnorableColumns
 
-      ignore_column :push_protected_up_to_access_level, remove_with: '17.3', remove_after: '2024-07-22'
-
       enum package_type: Packages::Package.package_types.slice(:npm)
       enum minimum_access_level_for_push:
           Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),

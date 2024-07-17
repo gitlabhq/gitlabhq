@@ -4,7 +4,7 @@
 - more_reviewers_count = issuable.reviewers.size - render_count
 
 - issuable.reviewers.take(render_count).each do |reviewer| # rubocop: disable CodeReuse/ActiveRecord
-  = link_to_member(@project, reviewer, name: false, title: s_("MrList|Review requested from %{name}") % { name: reviewer.name})
+  = link_to_member(reviewer, name: false, title: s_("MrList|Review requested from %{name}") % { name: reviewer.name})
 
 - if more_reviewers_count > 0
   %span{ class: 'avatar-counter has-tooltip', data: { container: 'body', placement: 'bottom', 'line-type' => 'old' }, title: _("+%{more_reviewers_count} more reviewers") % { more_reviewers_count: more_reviewers_count} }

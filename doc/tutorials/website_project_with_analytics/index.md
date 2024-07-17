@@ -99,6 +99,7 @@ and you can use it to create a value stream with a custom stage.
 Now that you have a project with collaborators, you can start tracking and visualizing the activity.
 [Value Stream Analytics](../../user/group/value_stream_analytics/index.md) helps you measure the time it takes
 to go from an idea to production, and identify inefficiencies in the development process.
+For a click-through demo of analytics features, see [the Value Stream Management product tour](https://gitlab.navattic.com/vsm).
 
 To get started, create a value stream in the `My website` project:
 

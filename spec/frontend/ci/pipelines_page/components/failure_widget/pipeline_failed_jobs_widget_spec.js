@@ -74,7 +74,7 @@ describe('PipelineFailedJobsWidget component', () => {
     });
   });
 
-  const CSS_BORDER_CLASSES = 'gl-border-white gl-hover-border-gray-100 is-collapsed';
+  const CSS_BORDER_CLASSES = 'gl-border-white hover:gl-border-gray-100 is-collapsed';
 
   describe('when the job button is clicked', () => {
     beforeEach(async () => {

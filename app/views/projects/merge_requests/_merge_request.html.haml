@@ -24,7 +24,7 @@
           #{issuable_reference(merge_request)}
         %span.issuable-authored.gl-inline-block.gl-text-gray-500!
           &middot;
-          #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(@project, merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
+          #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
         - if merge_request.milestone
           %span.issuable-milestone.gl-inline-block
             &nbsp;

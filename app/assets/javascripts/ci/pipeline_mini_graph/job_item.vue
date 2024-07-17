@@ -37,12 +37,12 @@ export default {
       return this.job.detailedStatus || {};
     },
     tooltipText() {
-      const { tooltip: statusTooltip } = this.status;
+      const statusTooltip = capitalizeFirstCharacter(this.status?.tooltip);
 
       if (this.isDelayedJob) {
         return sprintf(statusTooltip, { remainingTime: this.remainingTime });
       }
-      return capitalizeFirstCharacter(statusTooltip);
+      return statusTooltip;
     },
   },
 };

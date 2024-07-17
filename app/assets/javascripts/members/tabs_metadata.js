@@ -1,5 +1,5 @@
 import { __, s__ } from '~/locale';
-import PlaceholdersTabApp from './components/placeholders/app.vue';
+import PlaceholdersTabApp from './placeholders/components/app.vue';
 import { MEMBERS_TAB_TYPES, TAB_QUERY_PARAM_VALUES } from './constants';
 
 // Overridden in EE

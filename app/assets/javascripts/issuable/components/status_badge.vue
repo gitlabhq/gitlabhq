@@ -43,7 +43,7 @@ const badgePropertiesMap = {
   },
   [TYPE_MERGE_REQUEST]: {
     [STATUS_OPEN]: {
-      icon: 'merge-request-open',
+      icon: 'merge-request',
       text: __('Open'),
       variant: 'success',
     },
@@ -58,7 +58,7 @@ const badgePropertiesMap = {
       variant: 'info',
     },
     [STATUS_LOCKED]: {
-      icon: 'merge-request-open',
+      icon: 'merge-request',
       text: __('Open'),
       variant: 'success',
     },

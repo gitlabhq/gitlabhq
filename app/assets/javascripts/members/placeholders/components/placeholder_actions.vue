@@ -12,10 +12,10 @@ import {
   PLACEHOLDER_STATUS_AWAITING_APPROVAL,
   PLACEHOLDER_STATUS_REASSIGNING,
 } from '~/import_entities/import_groups/constants';
-import importSourceUserReassignMutation from '../../placeholders/graphql/mutations/reassign.mutation.graphql';
-import importSourceUserKeepAsPlaceholderMutation from '../../placeholders/graphql/mutations/keep_as_placeholder.mutation.graphql';
-import importSourceUseResendNotificationMutation from '../../placeholders/graphql/mutations/resend_notification.mutation.graphql';
-import importSourceUserCancelReassignmentMutation from '../../placeholders/graphql/mutations/cancel_reassignment.mutation.graphql';
+import importSourceUserReassignMutation from '../graphql/mutations/reassign.mutation.graphql';
+import importSourceUserKeepAsPlaceholderMutation from '../graphql/mutations/keep_as_placeholder.mutation.graphql';
+import importSourceUseResendNotificationMutation from '../graphql/mutations/resend_notification.mutation.graphql';
+import importSourceUserCancelReassignmentMutation from '../graphql/mutations/cancel_reassignment.mutation.graphql';
 
 const USERS_PER_PAGE = 20;
 

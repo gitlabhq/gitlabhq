@@ -6,7 +6,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import PlaceholderActions from '~/members/components/placeholders/placeholder_actions.vue';
+import PlaceholderActions from '~/members/placeholders/components/placeholder_actions.vue';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
 import importSourceUserReassignMutation from '~/members/placeholders/graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '~/members/placeholders/graphql/mutations/keep_as_placeholder.mutation.graphql';
@@ -23,7 +23,7 @@ import {
   mockUser2,
   mockUsersQueryResponse,
   mockUsersWithPaginationQueryResponse,
-} from './mock_data';
+} from '../mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');

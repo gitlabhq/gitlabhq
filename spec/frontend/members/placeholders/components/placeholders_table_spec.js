@@ -5,9 +5,9 @@ import { GlAvatarLabeled, GlBadge, GlKeysetPagination, GlLoadingIcon, GlTable } 
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import createMockApollo from 'helpers/mock_apollo_helper';
 
-import PlaceholdersTable from '~/members/components/placeholders/placeholders_table.vue';
-import PlaceholderActions from '~/members/components/placeholders/placeholder_actions.vue';
-import { mockSourceUsers } from './mock_data';
+import PlaceholdersTable from '~/members/placeholders/components/placeholders_table.vue';
+import PlaceholderActions from '~/members/placeholders/components/placeholder_actions.vue';
+import { mockSourceUsers } from '../mock_data';
 
 Vue.use(VueApollo);
 

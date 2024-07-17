@@ -113,12 +113,6 @@
   @include gl-focus($gl-border-size-1, $gray-900, true);
 }
 
-.gl-sm-mr-0\! {
-  @include gl-media-breakpoint-down(md) {
-    margin-right: 0 !important;
-  }
-}
-
 .gl-sm-mb-5 {
   @include gl-media-breakpoint-down(md) {
     margin-bottom: $gl-spacing-scale-5;
@@ -131,10 +125,6 @@
 
 .gl-fill-red-500 {
   fill: $red-500;
-}
-
-.gl-hover-border-gray-100:hover {
-  border-color: $gray-100;
 }
 
 .gl-last-of-type-border-b-0:last-of-type {

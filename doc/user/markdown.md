@@ -88,7 +88,7 @@ The following features are extended from standard Markdown:
 | Standard Markdown                     | Extended Markdown in GitLab                                                           |
 |---------------------------------------|---------------------------------------------------------------------------------------|
 | [Blockquotes](#blockquotes)           | [Multiline blockquotes](#multiline-blockquote)                                       |
-| [Code blocks](#code-spans-and-blocks) | [Colored code and syntax highlighting](#colored-code-and-syntax-highlighting)         |
+| [Code blocks](#code-spans-and-blocks) | [Colored code and syntax highlighting](#syntax-highlighting)         |
 | [Headings](#headings)                 | [Linkable heading IDs](#heading-ids-and-links)                                          |
 | [Images](#images)                     | [Embedded videos](#videos) and [audio](#audio)                                        |
 | [Links](#links)                       | [Automatically linking URLs](#url-auto-linking)                                       |
@@ -846,9 +846,9 @@ is like using
 Tildes are OK too.
 ```
 
-### Colored code and syntax highlighting
+### Syntax highlighting
 
-[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#colored-code-and-syntax-highlighting).
+[View this topic in GitLab](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/user/markdown.md#syntax-highlighting).
 
 GitLab uses the [Rouge Ruby library](https://github.com/rouge-ruby/rouge) for more colorful syntax
 highlighting in code blocks. For a list of supported languages visit the

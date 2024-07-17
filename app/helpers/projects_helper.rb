@@ -56,7 +56,7 @@ module ProjectsHelper
     content_tag(:span, username, name_tag_options)
   end
 
-  def link_to_member(_project, author, opts = {}, &block)
+  def link_to_member(author, opts = {}, &block)
     default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 

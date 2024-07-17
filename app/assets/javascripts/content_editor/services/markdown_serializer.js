@@ -3,14 +3,23 @@ import {
   defaultMarkdownSerializer,
 } from '~/lib/prosemirror_markdown_serializer';
 import * as extensions from '../extensions';
+import code from './serializer/code';
+import bold from './serializer/bold';
+import italic from './serializer/italic';
+import link from './serializer/link';
+import strike from './serializer/strike';
+import subscript from './serializer/subscript';
+import superscript from './serializer/superscript';
+import highlight from './serializer/highlight';
+import inlineDiff from './serializer/inline_diff';
+import mathInline from './serializer/math_inline';
+import htmlMark from './serializer/html_mark';
 import {
   renderCodeBlock,
   renderHardBreak,
   renderTable,
   renderTableCell,
   renderTableRow,
-  openTag,
-  closeTag,
   renderOrderedList,
   renderImage,
   renderHeading,
@@ -22,11 +31,6 @@ import {
   renderReference,
   renderReferenceLabel,
   preserveUnchanged,
-  bold,
-  italic,
-  link,
-  code,
-  strike,
 } from './serialization_helpers';
 
 const defaultSerializerConfig = {
@@ -34,35 +38,17 @@ const defaultSerializerConfig = {
     [extensions.Bold.name]: bold,
     [extensions.Italic.name]: italic,
     [extensions.Code.name]: code,
-    [extensions.Subscript.name]: { open: '<sub>', close: '</sub>', mixable: true },
-    [extensions.Superscript.name]: { open: '<sup>', close: '</sup>', mixable: true },
-    [extensions.Highlight.name]: { open: '<mark>', close: '</mark>', mixable: true },
-    [extensions.InlineDiff.name]: {
-      mixable: true,
-      open(_, mark) {
-        return mark.attrs.type === 'addition' ? '{+' : '{-';
-      },
-      close(_, mark) {
-        return mark.attrs.type === 'addition' ? '+}' : '-}';
-      },
-    },
+    [extensions.Subscript.name]: subscript,
+    [extensions.Superscript.name]: superscript,
+    [extensions.Highlight.name]: highlight,
+    [extensions.InlineDiff.name]: inlineDiff,
     [extensions.Link.name]: link,
-    [extensions.MathInline.name]: {
-      open: (...args) => `$${defaultMarkdownSerializer.marks.code.open(...args)}`,
-      close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
-      escape: false,
-    },
+    [extensions.MathInline.name]: mathInline,
     [extensions.Strike.name]: strike,
     ...extensions.HTMLMarks.reduce(
       (acc, { name }) => ({
         ...acc,
-        [name]: {
-          mixable: true,
-          open(state, node) {
-            return openTag(name, node.attrs);
-          },
-          close: closeTag(name),
-        },
+        [name]: htmlMark(name),
       }),
       {},
     ),

@@ -3,7 +3,7 @@ import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 
-import importSourceUsersQuery from '../../placeholders/graphql/queries/import_source_users.query.graphql';
+import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholdersTable from './placeholders_table.vue';
 
 const DEFAULT_PAGE_SIZE = 20;

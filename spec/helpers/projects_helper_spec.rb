@@ -355,13 +355,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     describe 'using the default options' do
       it 'returns an HTML link to the user' do
-        link = helper.link_to_member(project, user)
+        link = helper.link_to_member(user)
 
         expect(link).to match(%r{/#{user.username}})
       end
 
       it 'HTML escapes the name of the user' do
-        link = helper.link_to_member(project, user)
+        link = helper.link_to_member(user)
 
         expect(link).to include(ERB::Util.html_escape(user.name))
         expect(link).not_to include(user.name)
@@ -370,7 +370,7 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
 
     context 'when user is nil' do
       it 'returns "(deleted)"' do
-        link = helper.link_to_member(project, nil)
+        link = helper.link_to_member(nil)
 
         expect(link).to eq("(deleted)")
       end

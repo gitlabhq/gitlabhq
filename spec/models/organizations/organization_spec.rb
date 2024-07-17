@@ -3,7 +3,7 @@
 require 'spec_helper'
 
 RSpec.describe Organizations::Organization, type: :model, feature_category: :cell do
-  let_it_be(:organization) { create(:organization) }
+  let_it_be_with_refind(:organization) { create(:organization) }
   let_it_be(:default_organization) { create(:organization, :default) }
 
   describe 'associations' do
@@ -11,6 +11,17 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
 
     it { is_expected.to have_many :namespaces }
     it { is_expected.to have_many :groups }
+    it { is_expected.to have_many :root_groups }
+
+    describe '.root_groups' do
+      let_it_be(:group) { create(:group, organization: organization) }
+      let_it_be(:subgroup) { create(:group, parent: group) }
+
+      it 'returns only root groups' do
+        expect(organization.root_groups).to contain_exactly(group)
+      end
+    end
+
     it { is_expected.to have_many(:users).through(:organization_users).inverse_of(:organizations) }
     it { is_expected.to have_many(:organization_users).inverse_of(:organization) }
     it { is_expected.to have_many :projects }
@@ -18,13 +29,76 @@ RSpec.describe Organizations::Organization, type: :model, feature_category: :cel
   end
 
   describe 'validations' do
-    subject { create(:organization) }
+    subject { organization }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
     it { is_expected.to validate_presence_of(:path) }
     it { is_expected.to validate_length_of(:path).is_at_least(2).is_at_most(255) }
     it { is_expected.to validate_uniqueness_of(:path).case_insensitive }
+
+    context 'with visibility level' do
+      shared_examples 'visibility level validation' do
+        it 'performs visibility level validation' do
+          expect(organization).to receive(:check_visibility_level).and_call_original
+
+          organization.valid?
+        end
+      end
+
+      context 'when new record' do
+        let(:organization) { build(:organization) }
+
+        it_behaves_like 'visibility level validation'
+      end
+
+      context 'when visibility level is changed' do
+        before do
+          organization.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+        end
+
+        it_behaves_like 'visibility level validation'
+      end
+
+      context 'when visibility level is not changed' do
+        it 'skips visibility level validation' do
+          expect(organization).not_to receive(:check_visibility_level).and_call_original
+
+          organization.valid?
+        end
+      end
+
+      where(:visibility_level, :max_group_visibility, :valid) do
+        [
+          [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PRIVATE, true],
+          [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::INTERNAL, false],
+          [Gitlab::VisibilityLevel::PRIVATE, Gitlab::VisibilityLevel::PUBLIC, false],
+          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PRIVATE, true],
+          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::INTERNAL, true],
+          [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC, false],
+          [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PRIVATE, true],
+          [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::INTERNAL, true],
+          [Gitlab::VisibilityLevel::PUBLIC, Gitlab::VisibilityLevel::PUBLIC, true]
+        ]
+      end
+
+      with_them do
+        let(:organization) { build(:organization, visibility_level: visibility_level) }
+
+        it 'validates visibility level' do
+          allow(organization.root_groups).to receive(:maximum).with(:visibility_level).and_return(max_group_visibility)
+
+          expect(organization.valid?).to eq(valid)
+
+          error_message = "Visibility level can not be more restrictive than group visibility levels"
+          if valid
+            expect(organization.errors.full_messages).not_to include(error_message)
+          else
+            expect(organization.errors.full_messages).to include(error_message)
+          end
+        end
+      end
+    end
 
     describe 'path validator' do
       using RSpec::Parameterized::TableSyntax

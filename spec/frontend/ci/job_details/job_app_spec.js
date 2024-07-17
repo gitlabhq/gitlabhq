@@ -167,7 +167,7 @@ describe('Job App', () => {
                 confirmation_message: null,
               },
               illustration: {
-                content: 'Retry this job in order to create the necessary resources.',
+                content: 'Run this job again in order to create the necessary resources.',
                 image: 'path',
                 size: 'svg-430',
                 title: 'Failed to create resources',

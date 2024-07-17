@@ -7,6 +7,8 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
 
   subject(:integration) { build(:jira_cloud_app_integration, project: project) }
 
+  it_behaves_like Integrations::HasAvatar
+
   it { is_expected.to allow_value(nil).for(:jira_cloud_app_service_ids) }
   it { is_expected.to allow_value('b:asfasd=,b:asfasd=').for(:jira_cloud_app_service_ids) }
   it { is_expected.to allow_value('b:asfasd=').for(:jira_cloud_app_service_ids) }

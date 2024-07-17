@@ -1054,6 +1054,9 @@ msgid_plural "%{no_of_days} days"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%{numOfSteps} steps across %{numOfFiles} files"
+msgstr ""
+
 msgid "%{numberOfSelectedTags} tags"
 msgstr ""
 
@@ -13417,10 +13420,10 @@ msgstr ""
 msgid "Compliance center"
 msgstr ""
 
-msgid "Compliance framework"
+msgid "Compliance framework settings have moved."
 msgstr ""
 
-msgid "Compliance framework settings have moved."
+msgid "Compliance frameworks"
 msgstr ""
 
 msgid "ComplianceChainOfCustody| Chain of custody export"
@@ -13638,10 +13641,7 @@ msgstr ""
 msgid "ComplianceFramework|No compliance frameworks are set up yet"
 msgstr ""
 
-msgid "ComplianceReport|Add framework"
-msgstr ""
-
-msgid "ComplianceReport|Apply framework to selected projects"
+msgid "ComplianceReport|Apply frameworks to selected projects"
 msgstr ""
 
 msgid "ComplianceReport|Approved by author"
@@ -13654,9 +13654,6 @@ msgid "ComplianceReport|Avoid creating new compliance pipelines and use pipeline
 msgstr ""
 
 msgid "ComplianceReport|Choose one bulk action"
-msgstr ""
-
-msgid "ComplianceReport|Choose one framework"
 msgstr ""
 
 msgid "ComplianceReport|Compliance framework"
@@ -13680,10 +13677,7 @@ msgstr ""
 msgid "ComplianceReport|For more information, see %{linkStart}how to migrate from compliance pipelines to pipeline execution policy actions%{linkEnd}."
 msgstr ""
 
-msgid "ComplianceReport|Framework successfully applied"
-msgstr ""
-
-msgid "ComplianceReport|Framework successfully removed"
+msgid "ComplianceReport|Frameworks have been successfully updated."
 msgstr ""
 
 msgid "ComplianceReport|Full target branch name"
@@ -13693,6 +13687,9 @@ msgid "ComplianceReport|Less than 2 approvers"
 msgstr ""
 
 msgid "ComplianceReport|Migrate pipeline to a policy"
+msgstr ""
+
+msgid "ComplianceReport|No frameworks"
 msgstr ""
 
 msgid "ComplianceReport|No frameworks found"
@@ -13710,13 +13707,16 @@ msgstr ""
 msgid "ComplianceReport|No violations found. Change search options and try again"
 msgstr ""
 
-msgid "ComplianceReport|Remove framework from selected projects"
+msgid "ComplianceReport|Remove frameworks from selected projects"
 msgstr ""
 
 msgid "ComplianceReport|Search target branch"
 msgstr ""
 
 msgid "ComplianceReport|Select at least one project to apply the bulk action"
+msgstr ""
+
+msgid "ComplianceReport|Select frameworks"
 msgstr ""
 
 msgid "ComplianceReport|Unable to load the compliance framework projects report. Refresh the page and try again."
@@ -15472,9 +15472,6 @@ msgid "Create a project"
 msgstr ""
 
 msgid "Create an incident. Incidents are created for each alert triggered."
-msgstr ""
-
-msgid "Create and enforce custom CI jobs and scripts using this new policy action. %{link_start}Learn more%{link_end}."
 msgstr ""
 
 msgid "Create branch"
@@ -25633,9 +25630,6 @@ msgstr ""
 msgid "GroupSettings|Reporting"
 msgstr ""
 
-msgid "GroupSettings|Security policy management"
-msgstr ""
-
 msgid "GroupSettings|Select a project"
 msgstr ""
 
@@ -25712,9 +25706,6 @@ msgid "GroupSettings|What is Insights?"
 msgstr ""
 
 msgid "GroupSettings|When disabled, members cannot use runner registration tokens to register runners. Members can use runner authentication tokens instead as the more secure registration method."
-msgstr ""
-
-msgid "GroupSettings|When you enable any of these features, you accept the %{link_start}GitLab Testing Agreement%{link_end}."
 msgstr ""
 
 msgid "GroupSettings|You must have the Owner role in the target group"
@@ -34773,6 +34764,9 @@ msgstr ""
 msgid "Next scan"
 msgstr ""
 
+msgid "Next step"
+msgstr ""
+
 msgid "Next unresolved thread"
 msgstr ""
 
@@ -39378,6 +39372,18 @@ msgstr ""
 msgid "Pipeline|Test coverage"
 msgstr ""
 
+msgid "Pipeline|There was a problem canceling the job."
+msgstr ""
+
+msgid "Pipeline|There was a problem running the job again."
+msgstr ""
+
+msgid "Pipeline|There was a problem running the job."
+msgstr ""
+
+msgid "Pipeline|There was a problem unscheduling the job."
+msgstr ""
+
 msgid "Pipeline|This change will decrease the overall test coverage if merged."
 msgstr ""
 
@@ -40078,6 +40084,9 @@ msgid "Previous design"
 msgstr ""
 
 msgid "Previous file in diff"
+msgstr ""
+
+msgid "Previous step"
 msgstr ""
 
 msgid "Previous unresolved thread"
@@ -45009,12 +45018,6 @@ msgstr ""
 msgid "Retry migration"
 msgstr ""
 
-msgid "Retry this job"
-msgstr ""
-
-msgid "Retry this job in order to create the necessary resources."
-msgstr ""
-
 msgid "Retry verification"
 msgstr ""
 
@@ -45198,6 +45201,12 @@ msgid "Run pipeline"
 msgstr ""
 
 msgid "Run tests against your code live using the Web Terminal"
+msgstr ""
+
+msgid "Run this job again"
+msgstr ""
+
+msgid "Run this job again in order to create the necessary resources."
 msgstr ""
 
 msgid "Run untagged jobs"
@@ -49952,9 +49961,6 @@ msgid "Settings"
 msgstr ""
 
 msgid "Settings saved successfully."
-msgstr ""
-
-msgid "Settings|Security policy pipeline execution action"
 msgstr ""
 
 msgid "Settings|Unable to load the merge request options settings. Try reloading the page."
@@ -58987,6 +58993,12 @@ msgstr ""
 msgid "Vulnerability|%{scannerName} (version %{scannerVersion})"
 msgstr ""
 
+msgid "Vulnerability|A 'sink' is where untrusted data is used in a potentially risky way, such as in SQL queries or HTML output. Sink points are monitored to prevent security vulnerabilities in the software."
+msgstr ""
+
+msgid "Vulnerability|A 'source' refers to untrusted inputs like user data or external data sources. These inputs can introduce security risks into the software system and are monitored to prevent vulnerabilities."
+msgstr ""
+
 msgid "Vulnerability|A solution is available for this vulnerability"
 msgstr ""
 
@@ -59021,6 +59033,9 @@ msgid "Vulnerability|Code Review"
 msgstr ""
 
 msgid "Vulnerability|Code flow"
+msgstr ""
+
+msgid "Vulnerability|Code flow helps trace and flag risky data ('tainted data') as it moves through your software. Vulnerabilities are detected by pinpointing how untrusted inputs, like user data or network traffic, are utilized. This technique finds and fixes data handling flaws, securing software from injection and cross-site scripting attacks."
 msgstr ""
 
 msgid "Vulnerability|Comments"
@@ -59176,6 +59191,9 @@ msgstr ""
 msgid "Vulnerability|Status:"
 msgstr ""
 
+msgid "Vulnerability|Steps"
+msgstr ""
+
 msgid "Vulnerability|The scanner determined this vulnerability to be a false positive. Verify the evaluation before changing its status. %{linkStart}Learn more about false positive detection.%{linkEnd}"
 msgstr ""
 
@@ -59215,7 +59233,13 @@ msgstr ""
 msgid "Vulnerability|Warning: possible secrets detected"
 msgstr ""
 
+msgid "Vulnerability|What is code flow?"
+msgstr ""
+
 msgid "Vulnerability|You can also %{message}."
+msgstr ""
+
+msgid "Vulnerability|code area"
 msgstr ""
 
 msgid "Vulnerability|code_flow"
@@ -62353,6 +62377,9 @@ msgid "can not be changed to %{new_type}"
 msgstr ""
 
 msgid "can not be changed when assigned to an epic"
+msgstr ""
+
+msgid "can not be more restrictive than group visibility levels"
 msgstr ""
 
 msgid "can not be set for template labels"

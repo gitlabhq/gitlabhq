@@ -2,6 +2,8 @@
 
 module Integrations
   class JiraCloudApp < Integration
+    include HasAvatar
+
     SERVICE_IDS_REGEX = /\A^[A-Za-z0-9=,:]*$\z/
     SERVICE_IDS_LIMIT = 100
 

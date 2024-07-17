@@ -108,7 +108,7 @@ export default {
         if (this.note.noteable_type === 'Issue') {
           icon = 'issue-open-m';
         } else if (this.note.noteable_type === 'MergeRequest') {
-          icon = 'merge-request-open';
+          icon = 'merge-request';
         }
       }
       return icon;

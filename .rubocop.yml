@@ -1214,3 +1214,9 @@ Rails/StrongParams:
 QA/FabricateUsage:
   Include:
     - 'qa/qa/specs/**/*_spec.rb'
+
+Gitlab/NoFindInWorkers:
+  Enabled: true
+  Include:
+    - app/workers/**/*
+    - ee/app/workers/**/*

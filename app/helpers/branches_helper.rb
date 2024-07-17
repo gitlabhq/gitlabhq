@@ -30,7 +30,7 @@ module BranchesHelper
       variant = :success
       variant = :warning if merge_request.draft?
 
-      mr_icon = 'merge-request-open'
+      mr_icon = 'merge-request'
       mr_status = _('Open')
     elsif merge_request.merged?
       variant = :info

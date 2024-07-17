@@ -6,10 +6,10 @@ import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 
-import PlaceholdersTabApp from '~/members/components/placeholders/app.vue';
-import PlaceholdersTable from '~/members/components/placeholders/placeholders_table.vue';
+import PlaceholdersTabApp from '~/members/placeholders/components/app.vue';
+import PlaceholdersTable from '~/members/placeholders/components/placeholders_table.vue';
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
-import { mockSourceUsersQueryResponse } from './mock_data';
+import { mockSourceUsersQueryResponse } from '../mock_data';
 
 Vue.use(VueApollo);
 jest.mock('~/alert');

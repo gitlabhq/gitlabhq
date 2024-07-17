@@ -14,6 +14,7 @@ module Organizations
 
     has_many :namespaces
     has_many :groups
+    has_many :root_groups, -> { roots }, class_name: 'Group', inverse_of: :organization
     has_many :projects
     has_many :snippets
 
@@ -34,6 +35,8 @@ module Organizations
       uniqueness: { case_sensitive: false },
       'organizations/path': true,
       length: { minimum: 2, maximum: 255 }
+
+    validate :check_visibility_level, if: -> { new_record? || visibility_level_changed? }
 
     delegate :description, :description_html, :avatar, :avatar_url, :remove_avatar!, to: :organization_detail
 
@@ -93,6 +96,16 @@ module Organizations
     end
 
     private
+
+    # The visibility must be broader than the visibility of any contained root groups.
+    def check_visibility_level
+      max_group_level = root_groups.maximum(:visibility_level)
+      return unless max_group_level
+
+      return if visibility_level >= max_group_level
+
+      errors.add(:visibility_level, _("can not be more restrictive than group visibility levels"))
+    end
 
     def check_if_default_organization
       return unless default?
