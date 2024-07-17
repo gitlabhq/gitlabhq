@@ -686,7 +686,7 @@ module API
         redirect_params = {}
         if content_disposition
           response_disposition = ActionDispatch::Http::ContentDisposition.format(disposition: content_disposition, filename: file.filename)
-          redirect_params[:query] = { 'response-content-disposition': response_disposition, 'response-content-type': file.content_type }
+          redirect_params[:query] = { 'response-content-disposition' => response_disposition, 'response-content-type' => file.content_type }
         end
 
         file_url = ObjectStorage::CDN::FileUrl.new(file: file, ip_address: ip_address, redirect_params: redirect_params)
