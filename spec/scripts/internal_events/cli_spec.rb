@@ -4,6 +4,11 @@ require 'spec_helper'
 require 'tty/prompt/test'
 require_relative '../../../scripts/internal_events/cli'
 
+# Debugging tips:
+# 1. Include a `binding.pry` at the start of #queue_cli_inputs to pause execution & run the script manually
+#       -> because these tests add/remove fixtures from the actual definition directories,
+#          the CLI can run with the exact same initial state in another window
+# 2. Add `puts prompt.output.string` before `thread.exit` to see the full output from the test run
 RSpec.describe Cli, feature_category: :service_ping do
   include WaitHelpers
 
@@ -1176,6 +1181,8 @@ RSpec.describe Cli, feature_category: :service_ping do
   private
 
   def queue_cli_inputs(keystrokes)
+    # # Debugging tip #1 -- Uncomment me to pause execution after test setup and separately run the CLI manually!
+    # binding.pry
     prompt.input << keystrokes.join('')
     prompt.input.rewind
   end
@@ -1235,6 +1242,8 @@ RSpec.describe Cli, feature_category: :service_ping do
 
     yield thread
   ensure
+    # # Debugging tip #2 -- Uncomment me to see full CLI output from the test run!
+    # puts prompt.output.string
     thread.exit
   end
 end

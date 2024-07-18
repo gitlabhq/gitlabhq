@@ -150,6 +150,23 @@ RSpec.shared_examples 'rich text editor - autocomplete' do |params = {
       expect(page).to have_text('@abc123')
     end
 
+    it 'allows adding text before a username' do
+      type_in_content_editor '@abc'
+
+      expect(find(suggestions_dropdown)).to have_text('abc123')
+
+      send_keys :tab
+      expect(page).to have_text('@abc123')
+
+      send_keys [:arrow_left, :arrow_left]
+      type_in_content_editor 'foo'
+
+      sleep 0.1 # wait for the text to be added
+      switch_to_markdown_editor
+
+      expect(page.find('textarea').value).to include('foo @abc123')
+    end
+
     it 'allows dismissing the suggestion popup and typing more text' do
       type_in_content_editor '@ab'
 

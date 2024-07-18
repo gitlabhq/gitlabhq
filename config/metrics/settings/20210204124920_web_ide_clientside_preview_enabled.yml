@@ -2,7 +2,7 @@
 data_category: optional
 key_path: web_ide_clientside_preview_enabled
 description: Whether Web IDE clientside preview is enabled
-product_group: ide
+product_group: remote_development
 value_type: boolean
 status: removed
 time_frame: none

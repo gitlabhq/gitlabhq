@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.ide_edit.ide_edit_total_unique_counts_monthly
 description: Count of unique users per month who edited a file from the Web IDE
-product_group: ide
+product_group: remote_development
 value_type: number
 status: active
 time_frame: 28d

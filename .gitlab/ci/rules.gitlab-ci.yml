@@ -3005,6 +3005,12 @@
       changes:
         - ".gitlab/ci/test-metadata.gitlab-ci.yml"
         - "scripts/rspec_helpers.sh"
+    - <<: *if-merge-request
+      changes:
+        - ".gitlab/ci/test-metadata.gitlab-ci.yml"
+        - "scripts/rspec_helpers.sh"
+      when: manual
+      allow_failure: true
     - <<: *if-merge-request-not-approved
       when: never
     - <<: *if-merge-request

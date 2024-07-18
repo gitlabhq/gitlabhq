@@ -349,6 +349,14 @@ When unsure what controller and action corresponds to a page,
 inspect `document.body.dataset.page` in your
 browser's developer console from any page in GitLab.
 
+TROUBLESHOOTING:
+If using Vite, keep in mind that support for it is new and you may encounter unexpected effects from time to
+time. If the entrypoint is correctly configured but the JavaScript is not loading,
+try clearing the Vite cache and restarting the service:
+`rm -rf tmp/cache/vite && gdk restart vite`
+
+Alternatively, you can opt to use Webpack instead. Follow these [instructions for disabling Vite and using Webpack](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/configuration.md#vite-settings).
+
 #### Important Considerations
 
 - **Keep Entry Points Lite:**

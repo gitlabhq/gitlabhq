@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.static_site_editor_commits
 description: Count of commits created from the Static Site Editor
-product_group: ide
+product_group: remote_development
 value_type: number
 status: removed
 time_frame: all

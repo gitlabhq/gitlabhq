@@ -3,7 +3,7 @@ category: default
 action: execute_input_rule
 extra_properties:
 identifiers:
-product_group: ide
+product_group: remote_development
 milestone: "14.0"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/61248
 distributions:

@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.ide_edit.g_edit_by_web_ide_monthly
 description: Number of users editing a file from the Web IDE
-product_group: ide
+product_group: remote_development
 value_type: number
 status: active
 time_frame: 28d

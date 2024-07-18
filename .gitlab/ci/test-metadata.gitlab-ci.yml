@@ -29,23 +29,23 @@ update-tests-metadata:
     - .tests-metadata-state
     - .test-metadata:rules:update-tests-metadata
   stage: post-test
-  dependencies:
-    - retrieve-tests-metadata
-    - generate-frontend-fixtures-mapping
-    - setup-test-env
-    - rspec migration pg14
-    - rspec-all frontend_fixture
-    - rspec unit pg14
-    - rspec unit clickhouse
-    - rspec integration pg14
-    - rspec system pg14
-    - rspec background_migration pg14
-    - rspec-ee migration pg14
-    - rspec-ee unit pg14
-    - rspec-ee unit clickhouse
-    - rspec-ee integration pg14
-    - rspec-ee system pg14
-    - rspec-ee background_migration pg14
+  needs:
+    - job: retrieve-tests-metadata
+      optional: true
+    - job: generate-frontend-fixtures-mapping
+      optional: true
+    - job: setup-test-env
+      optional: true
+    - job: rspec:artifact-collector unit
+      optional: true
+    - job: rspec:artifact-collector part-a
+      optional: true
+    - job: rspec:artifact-collector part-b
+      optional: true
+    - job: rspec:artifact-collector ee unit
+      optional: true
+    - job: rspec:artifact-collector ee remainder
+      optional: true
   script:
     - run_timed_command "retry gem install fog-aws mime-types activesupport rspec_profiling postgres-copy --no-document"
     - source ./scripts/rspec_helpers.sh

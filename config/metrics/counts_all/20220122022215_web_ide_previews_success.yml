@@ -2,7 +2,7 @@
 data_category: optional
 key_path: counts.web_ide_previews_success
 description: Count of Live Preview tab successful initializations in the Web IDE
-product_group: ide
+product_group: remote_development
 value_type: number
 status: active
 time_frame: all

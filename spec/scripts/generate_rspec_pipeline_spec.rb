@@ -223,6 +223,85 @@ RSpec.describe GenerateRspecPipeline, :silence_stdout, feature_category: :toolin
       end
     end
 
+    describe 'job_tags option' do
+      let(:pipeline_template_content) do
+        <<~YAML
+        default:
+          image: $DEFAULT_CI_IMAGE
+          <%- if job_tags.any? -%>
+          tags:
+            <%- job_tags.each do |job_tag| -%>
+            - <%= job_tag %>
+            <%- end -%>
+          <%- end -%>
+        YAML
+      end
+
+      before do
+        subject.generate!
+      end
+
+      context 'when job_tags is not given' do
+        subject do
+          described_class.new(
+            rspec_files_path: rspec_files.path,
+            pipeline_template_path: pipeline_template.path
+          )
+        end
+
+        it 'generates the pipeline config with no tags' do
+          expect(File.read("#{pipeline_template.path}.yml"))
+            .to eq(
+              <<~YAML.chomp
+                    default:
+                      image: $DEFAULT_CI_IMAGE
+              YAML
+            )
+        end
+      end
+
+      context 'when job_tags is given' do
+        subject do
+          described_class.new(
+            rspec_files_path: rspec_files.path,
+            pipeline_template_path: pipeline_template.path,
+            job_tags: job_tags
+          )
+        end
+
+        context 'with two tags' do
+          let(:job_tags) { %w[foo bar] }
+
+          it 'generates the pipeline config with the expected tags' do
+            expect(File.read("#{pipeline_template.path}.yml"))
+              .to eq(
+                <<~YAML.chomp
+                      default:
+                        image: $DEFAULT_CI_IMAGE
+                        tags:
+                          - foo
+                          - bar
+                YAML
+              )
+          end
+        end
+
+        context 'with empty tags array' do
+          let(:job_tags) { [] }
+
+          it 'generates the pipeline without any tags defined' do
+            expect(File.read("#{pipeline_template.path}.yml"))
+              .to eq(
+                <<~YAML.chomp
+                      default:
+                        image: $DEFAULT_CI_IMAGE
+                YAML
+              )
+          end
+        end
+      end
+    end
+
     context 'when generated_pipeline_path is given' do
       let(:custom_pipeline_filename) { Tempfile.new(['custom_pipeline_filename', '.yml']) }
 

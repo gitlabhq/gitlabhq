@@ -36208,6 +36208,9 @@ msgstr ""
 msgid "Observability|Monitor your applications with GitLab Observability."
 msgstr ""
 
+msgid "Observability|Sorry, there is no usage data for the selected period"
+msgstr ""
+
 msgid "Observability|Sorry, your filter produced no results"
 msgstr ""
 
@@ -36215,6 +36218,9 @@ msgid "Observability|To widen your search, change or remove filters above"
 msgstr ""
 
 msgid "Observability|Tracing, Metrics & Logs"
+msgstr ""
+
+msgid "Observability|Try selecting a different period."
 msgstr ""
 
 msgid "Observability|Usage by day"

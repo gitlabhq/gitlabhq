@@ -72,19 +72,25 @@ function retrieve_frontend_fixtures_mapping() {
 }
 
 function update_tests_mapping() {
-  if ! crystalball_rspec_data_exists; then
-    echo "No crystalball rspec data found."
+  pack_and_gzip_mapping "${RSPEC_TESTS_MAPPING_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_PATH}" crystalball/described/rspec*.yml
+
+  pack_and_gzip_mapping "${RSPEC_TESTS_MAPPING_ALT_PATH}" "${RSPEC_PACKED_TESTS_MAPPING_ALT_PATH}" crystalball/coverage/rspec*.yml
+}
+
+function pack_and_gzip_mapping() {
+  local mapping_path="${1}"
+  local packed_path="${2}"
+  local crystal_yaml_files=("${@:3}")
+
+  if test -z "${crystal_yaml_files[1]}"; then
+    echo "No crystalball rspec data for ${mapping_path}"
     return 0
   fi
 
-  scripts/generate-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" crystalball/rspec*.yml
-  scripts/pack-test-mapping "${RSPEC_TESTS_MAPPING_PATH:-unknown_file}" "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
-  gzip "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
-  rm -f crystalball/rspec*.yml "${RSPEC_PACKED_TESTS_MAPPING_PATH:-unknown_file}"
-}
-
-function crystalball_rspec_data_exists() {
-  compgen -G "crystalball/rspec*.yml" >/dev/null
+  scripts/generate-test-mapping "${mapping_path}" "${crystal_yaml_files[@]}"
+  scripts/pack-test-mapping "${mapping_path}" "${packed_path}"
+  gzip "${packed_path}"
+  rm -f "${packed_path}" "${mapping_path}" "${crystal_yaml_files[@]}"
 }
 
 function retrieve_failed_tests() {

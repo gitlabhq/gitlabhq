@@ -6,7 +6,7 @@ identifiers:
   - project
   - user
   - namespace
-product_group: ide
+product_group: remote_development
 milestone: '17.1'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149507
 distributions:

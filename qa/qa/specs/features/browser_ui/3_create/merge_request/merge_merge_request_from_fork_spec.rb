@@ -3,7 +3,7 @@
 module QA
   RSpec.describe 'Create' do
     describe 'Merge request creation from fork', product_group: :code_review do
-      let(:merge_request) { Resource::MergeRequestFromFork.fabricate_via_api! }
+      let!(:merge_request) { Resource::MergeRequestFromFork.fabricate_via_api! }
 
       before do
         Flow::Login.sign_in

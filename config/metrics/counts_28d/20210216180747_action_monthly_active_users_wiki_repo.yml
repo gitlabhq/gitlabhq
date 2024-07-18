@@ -2,7 +2,7 @@
 data_category: optional
 key_path: usage_activity_by_stage_monthly.create.action_monthly_active_users_wiki_repo
 description: Unique monthly active users of the Wiki
-product_group: ide
+product_group: remote_development
 value_type: number
 status: removed
 milestone_removed: "15.10"

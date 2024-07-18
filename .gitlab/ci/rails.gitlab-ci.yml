@@ -666,8 +666,21 @@ rspec-predictive:pipeline-generate:
   stage: prepare
   needs: ["detect-tests", "retrieve-tests-metadata"]
   script:
-    - scripts/generate_rspec_pipeline.rb -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" -f "${RSPEC_MATCHING_TESTS_FOSS_PATH}" -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
-    - scripts/generate_rspec_pipeline.rb -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" -f "${RSPEC_MATCHING_TESTS_EE_PATH}" -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml" -p "ee/"
+    - |
+      scripts/generate_rspec_pipeline.rb \
+        -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" \
+        -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" \
+        -f "${RSPEC_MATCHING_TESTS_FOSS_PATH}" \
+        -j "${DEFAULT_RSPEC_PREDICTIVE_JOB_TAGS}" \
+        -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
+    - |
+      scripts/generate_rspec_pipeline.rb \
+        -t "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}" \
+        -k "${KNAPSACK_RSPEC_SUITE_REPORT_PATH}" \
+        -f "${RSPEC_MATCHING_TESTS_EE_PATH}" \
+        -j "${DEFAULT_RSPEC_PREDICTIVE_JOB_TAGS}" \
+        -o "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}-ee.yml" \
+        -p "ee/"
     - echo "Content of ${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml:"
     - cat "${RSPEC_PREDICTIVE_PIPELINE_TEMPLATE_YML}.yml"
     - echo "\n================================================\n"

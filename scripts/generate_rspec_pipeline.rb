@@ -18,30 +18,31 @@ class GenerateRspecPipeline
   SETUP_DURATION_IN_SECONDS = 180.0 # 3 MINUTES
   OPTIMAL_TEST_RUNTIME_DURATION_IN_SECONDS = OPTIMAL_TEST_JOB_DURATION_IN_SECONDS - SETUP_DURATION_IN_SECONDS
 
-  # As of 2022-09-01:
+  # As of 2024-07-16:
   # $ find spec -type f | wc -l
-  #  12825
+  #  16007 (`SPEC_FILES_COUNT`)
   # and
   # $ find ee/spec -type f | wc -l
-  #  5610
-  # which gives a total of 18435 test files (`NUMBER_OF_TESTS_IN_TOTAL_IN_THE_TEST_SUITE`).
+  #  8548 (`EE_SPEC_FILES_COUNT`)
+  # which gives a total of 24555 test files (`ALL_SPEC_FILES_COUNT`).
   #
   # Total time to run all tests (based on https://gitlab-org.gitlab.io/rspec_profiling_stats/)
-  # is 170183 seconds (`DURATION_OF_THE_TEST_SUITE_IN_SECONDS`).
+  # is 251509 seconds (`TEST_SUITE_DURATION_IN_SECONDS`).
   #
-  # This gives an approximate 170183 / 18435 = 9.2 seconds per test file
+  # This gives an approximate 251509 / 24555 = 10.2 seconds per test file
   # (`DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS`).
   #
   # If we want each test job to finish in 10 minutes, given we have 3 minutes of setup (`SETUP_DURATION_IN_SECONDS`),
   # then we need to give 7 minutes of testing to each test node (`OPTIMAL_TEST_RUNTIME_DURATION_IN_SECONDS`).
-  # (7 * 60) / 9.2 = 45.6
+  # (7 * 60) / 10.2 = 41.17
   #
   # So if we'd want to run the full test suites in 10 minutes (`OPTIMAL_TEST_JOB_DURATION_IN_SECONDS`),
-  # we'd need to run at max 45 test file per nodes (`#optimal_test_file_count_per_node_per_test_level`).
-  NUMBER_OF_TESTS_IN_TOTAL_IN_THE_TEST_SUITE = 18_435
-  DURATION_OF_THE_TEST_SUITE_IN_SECONDS = 170_183
-  DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS =
-    DURATION_OF_THE_TEST_SUITE_IN_SECONDS / NUMBER_OF_TESTS_IN_TOTAL_IN_THE_TEST_SUITE
+  # we'd need to run at max 41 test file per nodes (`#optimal_test_file_count_per_node_per_test_level`).
+  SPEC_FILES_COUNT = 16007
+  EE_SPEC_FILES_COUNT = 8548
+  ALL_SPEC_FILES_COUNT = SPEC_FILES_COUNT + EE_SPEC_FILES_COUNT
+  TEST_SUITE_DURATION_IN_SECONDS = 251509
+  DEFAULT_AVERAGE_TEST_FILE_DURATION_IN_SECONDS = TEST_SUITE_DURATION_IN_SECONDS / ALL_SPEC_FILES_COUNT
 
   # pipeline_template_path: A YAML pipeline configuration template to generate the final pipeline config from
   # rspec_files_path: A file containing RSpec files to run, separated by a space
@@ -51,11 +52,12 @@ class GenerateRspecPipeline
   #                          `"#{pipeline_template_path}.yml"`)
   def initialize(
     pipeline_template_path:, rspec_files_path: nil, knapsack_report_path: nil, test_suite_prefix: nil,
-    generated_pipeline_path: nil)
+    job_tags: [], generated_pipeline_path: nil)
     @pipeline_template_path = pipeline_template_path.to_s
     @rspec_files_path = rspec_files_path.to_s
     @knapsack_report_path = knapsack_report_path.to_s
     @test_suite_prefix = test_suite_prefix
+    @job_tags = job_tags
     @generated_pipeline_path = generated_pipeline_path || "#{pipeline_template_path}.yml"
 
     raise ArgumentError unless File.exist?(@pipeline_template_path)
@@ -72,7 +74,7 @@ class GenerateRspecPipeline
     info "generated_pipeline_path: #{generated_pipeline_path}"
 
     File.open(generated_pipeline_path, 'w') do |handle|
-      pipeline_yaml = ERB.new(File.read(pipeline_template_path)).result_with_hash(**erb_binding)
+      pipeline_yaml = ERB.new(File.read(pipeline_template_path), trim_mode: '-').result_with_hash(**erb_binding)
       handle.write(pipeline_yaml.squeeze("\n").strip)
     end
   end
@@ -80,7 +82,7 @@ class GenerateRspecPipeline
   private
 
   attr_reader :pipeline_template_path, :rspec_files_path, :knapsack_report_path, :test_suite_prefix,
-    :generated_pipeline_path
+    :job_tags, :generated_pipeline_path
 
   def info(text)
     $stdout.puts "[#{self.class.name}] #{text}"
@@ -94,7 +96,8 @@ class GenerateRspecPipeline
     {
       rspec_files_per_test_level: rspec_files_per_test_level,
       test_suite_prefix: test_suite_prefix,
-      repo_from_artifacts: ENV['CI_FETCH_REPO_GIT_STRATEGY'] == 'none'
+      repo_from_artifacts: ENV['CI_FETCH_REPO_GIT_STRATEGY'] == 'none',
+      job_tags: job_tags
     }
   end
 
@@ -202,6 +205,11 @@ if $PROGRAM_NAME == __FILE__
 
     opts.on("-p", "--test-suite-prefix test_suite_prefix", String, "Test suite folder prefix") do |value|
       options[:test_suite_prefix] = value
+    end
+
+    opts.on("-j", "--job-tags job_tags", String, "Job tags (default to `[]`) " \
+                                                 "separated by commas") do |value|
+      options[:job_tags] = value.split(',')
     end
 
     opts.on("-o", "--generated-pipeline-path generated_pipeline_path", String, "Path where to write the pipeline " \

@@ -2,7 +2,7 @@
 data_category: optional
 key_path: redis_hll_counters.ide_edit.ide_edit_total_unique_counts_weekly
 description: Weekly number of users editing a file using the Web IDE
-product_group: ide
+product_group: remote_development
 value_type: number
 status: active
 time_frame: 7d

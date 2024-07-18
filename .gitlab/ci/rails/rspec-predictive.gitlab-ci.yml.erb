@@ -5,8 +5,12 @@ include:
 
 default:
   image: $DEFAULT_CI_IMAGE
+  <%- if job_tags.any? -%>
   tags:
-    - gitlab-org
+    <%- job_tags.each do |job_tag| -%>
+    - <%= job_tag %>
+    <%- end -%>
+  <%- end -%>
   # Default job timeout set to 90m https://gitlab.com/gitlab-com/gl-infra/infrastructure/-/issues/10520
   timeout: 90m
   interruptible: true
