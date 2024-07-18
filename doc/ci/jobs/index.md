@@ -109,10 +109,14 @@ You can't use these keywords as job names:
 - `variables`
 - `cache`
 - `include`
-- `true`
-- `false`
-- `nil`
 - `pages:deploy` configured for a `deploy` stage
+
+Additionally, these names are valid when quoted, but are
+not recommended as they can make pipeline configuration unclear:
+
+- `"true":`
+- `"false":`
+- `"nil":`
 
 Job names must be 255 characters or fewer.
 

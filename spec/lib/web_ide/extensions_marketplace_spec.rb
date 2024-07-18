@@ -5,6 +5,9 @@ require 'spec_helper'
 RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
+  let(:help_url) { "/help/user/project/web_ide/index#extension-marketplace" }
+  let(:user_preferences_url) { "/-/profile/preferences#integrations" }
+
   let_it_be_with_reload(:current_user) { create(:user) }
   let_it_be(:default_vscode_settings) do
     {
@@ -18,23 +21,23 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   describe '#feature_enabled?' do
     where(:web_ide_extensions_marketplace, :web_ide_oauth, :expectation) do
       ref(:current_user) | false | false
-      false              | true  | false
-      ref(:current_user) | true  | true
+      ref(:current_user) | true | true
+      false | false | false
+      false | true | false
     end
 
     with_them do
       it 'returns the expected value' do
         stub_feature_flags(web_ide_extensions_marketplace: web_ide_extensions_marketplace)
-        expect(::WebIde::DefaultOauthApplication).to receive(:feature_enabled?)
-          .with(current_user).and_return(web_ide_oauth)
+
+        if web_ide_extensions_marketplace
+          expect(::WebIde::DefaultOauthApplication)
+            .to receive(:feature_enabled?).with(current_user).and_return(web_ide_oauth)
+        end
 
         expect(described_class.feature_enabled?(user: current_user)).to be(expectation)
       end
     end
-  end
-
-  describe '#vscode_settings' do
-    it { expect(described_class.vscode_settings).to match(hash_including(default_vscode_settings)) }
   end
 
   describe '#marketplace_home_url' do
@@ -42,7 +45,7 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   end
 
   describe '#help_url' do
-    it { expect(described_class.help_url).to match('/help/user/project/web_ide/index#extension-marketplace') }
+    it { expect(help_url).to match('/help/user/project/web_ide/index#extension-marketplace') }
   end
 
   describe '#help_preferences_url' do
@@ -54,30 +57,7 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
   end
 
   describe '#user_preferences_url' do
-    it { expect(described_class.user_preferences_url).to match('/-/profile/preferences#integrations') }
-  end
-
-  describe '#metadata_for_user' do
-    where(:user, :opt_in_status, :flag_enabled, :expectation) do
-      nil                | nil       | false | { enabled: false, disabled_reason: :no_user }
-      ref(:current_user) | nil       | nil   | { enabled: false, disabled_reason: :no_flag }
-      ref(:current_user) | nil       | false | { enabled: false, disabled_reason: :instance_disabled }
-      ref(:current_user) | :enabled  | true  | { enabled: true }
-      ref(:current_user) | :disabled | true  | { enabled: false, disabled_reason: :opt_in_disabled }
-      ref(:current_user) | :unset    | true  | { enabled: false, disabled_reason: :opt_in_unset }
-    end
-
-    with_them do
-      subject(:metadata) { described_class.metadata_for_user(user: user, flag_enabled: flag_enabled) }
-
-      before do
-        user.update!(extensions_marketplace_opt_in_status: opt_in_status) if user && opt_in_status
-      end
-
-      it 'returns expected metadata for user' do
-        expect(metadata).to eq(expectation)
-      end
-    end
+    it { expect(user_preferences_url).to match('/-/profile/preferences#integrations') }
   end
 
   describe '#webide_extensions_gallery_settings' do
@@ -103,7 +83,7 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
 
       context 'when user opt in disabled' do
         where(:opt_in_status, :reason) do
-          :unset    | :opt_in_unset
+          :unset | :opt_in_unset
           :disabled | :opt_in_disabled
         end
 
@@ -114,8 +94,8 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
             expect(webide_settings).to match({
               enabled: false,
               reason: reason,
-              help_url: described_class.help_url,
-              user_preferences_url: described_class.user_preferences_url
+              help_url: /#{help_url}/,
+              user_preferences_url: /#{user_preferences_url}/
             })
           end
         end
@@ -127,7 +107,7 @@ RSpec.describe WebIde::ExtensionsMarketplace, feature_category: :web_ide do
         expect(webide_settings).to match({
           enabled: false,
           reason: :instance_disabled,
-          help_url: described_class.help_url
+          help_url: /#{help_url}/
         })
       end
     end

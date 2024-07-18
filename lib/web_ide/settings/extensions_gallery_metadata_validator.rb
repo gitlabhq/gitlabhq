@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RemoteDevelopment
+module WebIde
   module Settings
     class ExtensionsGalleryMetadataValidator
       include Messages
@@ -8,6 +8,10 @@ module RemoteDevelopment
       # @param [Hash] context
       # @return [Gitlab::Fp::Result]
       def self.validate(context)
+        unless context.fetch(:requested_setting_names).include?(:vscode_extensions_gallery_metadata)
+          return Gitlab::Fp::Result.ok(context)
+        end
+
         context => { settings: Hash => settings }
         settings => { vscode_extensions_gallery_metadata: Hash => extensions_gallery_metadata }
 

@@ -8,6 +8,13 @@ module RemoteDevelopment
       # @param [Hash] context
       # @return [Gitlab::Fp::Result]
       def self.validate(context)
+        # NOTE: We only have to check for the existence of full_reconciliation_interval_seconds,
+        #       because if it exists, partial_reconciliation_interval_seconds must also exist,
+        #       because they are validated to be mutually_dependent_settings in SettingsInitializer
+        unless context.fetch(:requested_setting_names).include?(:full_reconciliation_interval_seconds)
+          return Gitlab::Fp::Result.ok(context)
+        end
+
         context => {
           settings: {
             full_reconciliation_interval_seconds: Integer => full_reconciliation_interval_seconds,

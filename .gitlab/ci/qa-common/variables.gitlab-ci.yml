@@ -1,6 +1,7 @@
 # Default variables for package-and-test
 
 variables:
+  FF_TIMESTAMPS: "true"
   REGISTRY_HOST: "registry.gitlab.com"
   REGISTRY_GROUP: "gitlab-org"
   ALLURE_JOB_NAME: $CI_PROJECT_NAME

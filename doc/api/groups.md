@@ -1803,6 +1803,10 @@ DETAILS:
 Also called Group hooks and Webhooks.
 These are different from [system hooks](system_hooks.md) that are system wide and [project hooks](projects.md#hooks) that are limited to one project.
 
+Prerequisites:
+
+- You must be an Administrator or have the Owner role for the group.
+
 ### List group hooks
 
 Get a list of group hooks
@@ -1865,6 +1869,271 @@ GET /groups/:id/hooks/:hook_id
     }
   ]
 }
+```
+
+### Get group hook events
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.2.
+
+Get a list of events for a specific group hook in the past 7 days from start date.
+
+```plaintext
+GET /groups/:id/hooks/:hook_id/events
+```
+
+| Attribute | Type              | Required | Description                                                                                                                                                                                 |
+|-----------|-------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`      | integer/string | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding).                                                                                                          |
+| `hook_id` | integer           | Yes      | The ID of a project hook.                                                                                                                                                                   |
+| `status` | integer or string | No | The response status code of the events, for example: `200` or `500`. You can search by status category: `successful` (200-299), `client_failure` (400-499), and `server_failure` (500-599). |
+| `page`             | integer | No | Page to retrieve. Defaults to `1`.                                                                                                                                                          |
+| `per_page`         | integer | No | Number of records to return per page. Defaults to `20`.                                                                                                                                     |
+
+```json
+[
+  {
+    "id": 1,
+    "url": "https://example.net/",
+    "trigger": "push_hooks",
+    "request_headers": {
+      "Content-Type": "application/json",
+      "User-Agent": "GitLab/17.1.0-pre",
+      "X-Gitlab-Event": "Push Hook",
+      "X-Gitlab-Webhook-UUID": "3c5c0404-c866-44bc-a5f6-452bb1bfc76e",
+      "X-Gitlab-Instance": "https://gitlab.example.com",
+      "X-Gitlab-Event-UUID": "9cebe914-4827-408f-b014-cfa23a47a35f",
+      "X-Gitlab-Token": "[REDACTED]"
+    },
+    "request_data": {
+      "object_kind": "push",
+      "event_name": "push"
+    }
+      "after": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "ref": "refs/heads/master",
+      "ref_protected": true,
+      "checkout_sha": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "message": null,
+      "user_id": 1,
+      "user_name": "Administrator",
+      "user_username": "root",
+      "user_email": null,
+      "user_avatar": "https://www.gravatar.com/avatar/13efe0d4559475ba84ecc802061febbdea6e224fcbffd7ec7da9cd431845299c?s=80&d=identicon",
+      "project_id": 7,
+      "project": {
+        "id": 7,
+        "name": "Flight",
+        "description": "Incidunt ea ab officia a veniam.",
+        "web_url": "https://gitlab.example.com/flightjs/Flight",
+        "avatar_url": null,
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "namespace": "Flightjs",
+        "visibility_level": 10,
+        "path_with_namespace": "flightjs/Flight",
+        "default_branch": "master",
+        "ci_config_path": null,
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "http_url": "https://gitlab.example.com/flightjs/Flight.git"
+      },
+      "commits": [
+        {
+          "id": "f15b32277d2c55c6c595845a87109b09c913c556",
+          "message": "v1.5.2\n",
+          "title": "v1.5.2",
+          "timestamp": "2017-06-19T14:39:53-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/f15b32277d2c55c6c595845a87109b09c913c556",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "message": "Merge pull request #378 from flightjs/alunny/publish_lib\n\npublish lib and index to npm",
+          "title": "Merge pull request #378 from flightjs/alunny/publish_lib",
+          "timestamp": "2017-06-16T10:26:39-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "author": {
+            "name": "angus croll",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "468abc807a2b2572f43e72c743b76cee6db24025",
+          "message": "publish lib and index to npm\n",
+          "title": "publish lib and index to npm",
+          "timestamp": "2017-06-16T10:23:04-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/468abc807a2b2572f43e72c743b76cee6db24025",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        }
+      ],
+      "total_commits_count": 3,
+      "push_options": {},
+      "repository": {
+        "name": "Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "description": "Incidunt ea ab officia a veniam.",
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "visibility_level": 10
+      }
+    },
+    "response_headers": {
+      "Date": "Sun, 26 May 2024 03:03:17 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "16",
+      "Connection": "close",
+      "X-Powered-By": "Express",
+      "Access-Control-Allow-Origin": "*",
+      "X-Pd-Status": "sent to primary"
+    },
+    "response_body": "{\"success\":true}",
+    "execution_duration": 1.0906479999999874,
+    "response_status": "200"
+  },
+  {
+    "id": 2,
+    "url": "https://example.net/",
+    "trigger": "push_hooks",
+    "request_headers": {
+      "Content-Type": "application/json",
+      "User-Agent": "GitLab/17.1.0-pre",
+      "X-Gitlab-Event": "Push Hook",
+      "X-Gitlab-Webhook-UUID": "a753eedb-1d72-4549-9ca7-eac8ea8e50dd",
+      "X-Gitlab-Instance": "https://gitlab.example.com:3000",
+      "X-Gitlab-Event-UUID": "842d7c3e-3114-4396-8a95-66c084d53cb1",
+      "X-Gitlab-Token": "[REDACTED]"
+    },
+    "request_data": {
+      "object_kind": "push",
+      "event_name": "push",
+      "before": "468abc807a2b2572f43e72c743b76cee6db24025",
+      "after": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "ref": "refs/heads/master",
+      "ref_protected": true,
+      "checkout_sha": "f15b32277d2c55c6c595845a87109b09c913c556",
+      "message": null,
+      "user_id": 1,
+      "user_name": "Administrator",
+      "user_username": "root",
+      "user_email": null,
+      "user_avatar": "https://www.gravatar.com/avatar/13efe0d4559475ba84ecc802061febbdea6e224fcbffd7ec7da9cd431845299c?s=80&d=identicon",
+      "project_id": 7,
+      "project": {
+        "id": 7,
+        "name": "Flight",
+        "description": "Incidunt ea ab officia a veniam.",
+        "web_url": "https://gitlab.example.com/flightjs/Flight",
+        "avatar_url": null,
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "namespace": "Flightjs",
+        "visibility_level": 10,
+        "path_with_namespace": "flightjs/Flight",
+        "default_branch": "master",
+        "ci_config_path": null,
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "http_url": "https://gitlab.example.com/flightjs/Flight.git"
+      },
+      "commits": [
+        {
+          "id": "f15b32277d2c55c6c595845a87109b09c913c556",
+          "message": "v1.5.2\n",
+          "title": "v1.5.2",
+          "timestamp": "2017-06-19T14:39:53-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/f15b32277d2c55c6c595845a87109b09c913c556",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "message": "Merge pull request #378 from flightjs/alunny/publish_lib\n\npublish lib and index to npm",
+          "title": "Merge pull request #378 from flightjs/alunny/publish_lib",
+          "timestamp": "2017-06-16T10:26:39-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/8749d49930866a4871fa086adbd7d2057fcc3ebb",
+          "author": {
+            "name": "angus croll",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        },
+        {
+          "id": "468abc807a2b2572f43e72c743b76cee6db24025",
+          "message": "publish lib and index to npm\n",
+          "title": "publish lib and index to npm",
+          "timestamp": "2017-06-16T10:23:04-07:00",
+          "url": "https://gitlab.example.com/flightjs/Flight/-/commit/468abc807a2b2572f43e72c743b76cee6db24025",
+          "author": {
+            "name": "Andrew Lunny",
+            "email": "[REDACTED]"
+          },
+          "added": [],
+          "modified": [
+            "package.json"
+          ],
+          "removed": []
+        }
+      ],
+      "total_commits_count": 3,
+      "push_options": {},
+      "repository": {
+        "name": "Flight",
+        "url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "description": "Incidunt ea ab officia a veniam.",
+        "homepage": "https://gitlab.example.com/flightjs/Flight",
+        "git_http_url": "https://gitlab.example.com/flightjs/Flight.git",
+        "git_ssh_url": "ssh://git@gitlab.example.com:2222/flightjs/Flight.git",
+        "visibility_level": 10
+      }
+    },
+    "response_headers": {
+      "Date": "Sun, 26 May 2024 03:03:19 GMT",
+      "Content-Type": "application/json; charset=utf-8",
+      "Content-Length": "16",
+      "Connection": "close",
+      "X-Powered-By": "Express",
+      "Access-Control-Allow-Origin": "*",
+      "X-Pd-Status": "sent to primary"
+    },
+    "response_body": "{\"success\":true}",
+    "execution_duration": 1.0716120000000728,
+    "response_status": "200"
+  }
+]
 ```
 
 ### Add group hook

@@ -10,18 +10,16 @@ module RemoteDevelopment
       # Errors - message name should describe the reason for the error
       #---------------------------------------------------------------
 
-      SettingsCurrentSettingsReadFailed = Class.new(Message)
-      SettingsEnvironmentVariableReadFailed = Class.new(Message)
-      SettingsVscodeExtensionsGalleryValidationFailed = Class.new(Message)
-      SettingsVscodeExtensionsGalleryMetadataValidationFailed = Class.new(Message)
-      SettingsFullReconciliationIntervalSecondsValidationFailed = Class.new(Message)
-      SettingsPartialReconciliationIntervalSecondsValidationFailed = Class.new(Message)
+      SettingsCurrentSettingsReadFailed = Class.new(Gitlab::Fp::Message)
+      SettingsEnvironmentVariableOverrideFailed = Class.new(Gitlab::Fp::Message)
+      SettingsFullReconciliationIntervalSecondsValidationFailed = Class.new(Gitlab::Fp::Message)
+      SettingsPartialReconciliationIntervalSecondsValidationFailed = Class.new(Gitlab::Fp::Message)
 
       #---------------------------------------------------------
       # Domain Events - message name should describe the outcome
       #---------------------------------------------------------
 
-      SettingsGetSuccessful = Class.new(Message)
+      SettingsGetSuccessful = Class.new(Gitlab::Fp::Message)
     end
   end
 end

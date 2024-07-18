@@ -27,8 +27,6 @@ Your text is checked for the following secret types:
   - If a [personal access token prefix](../../../../administration/settings/account_and_limit_settings.md#personal-access-token-prefix) has been configured, a token using this prefix is checked.
 - GitLab [feed tokens](../../../../security/token_overview.md#feed-token)
 
-To track the development of this feature, see [issue 405147](https://gitlab.com/gitlab-org/gitlab/-/issues/405147).
-
 ## Related topics
 
 - [Push rules](../../../project/repository/push_rules.md)

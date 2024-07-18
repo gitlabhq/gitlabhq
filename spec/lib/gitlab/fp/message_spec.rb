@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative 'rd_fast_spec_helper'
+require 'fast_spec_helper'
 
-RSpec.describe RemoteDevelopment::Message, :rd_fast, feature_category: :remote_development do
+RSpec.describe Gitlab::Fp::Message, :rd_fast, feature_category: :shared do
   describe '#==' do
     it 'implements equality' do
       expect(described_class.new({ a: 1 })).to eq(described_class.new(a: 1))

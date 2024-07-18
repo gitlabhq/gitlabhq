@@ -12,9 +12,13 @@
 #     provider: string
 #     search: string
 #     active: boolean
+#     admins: boolean
 #     blocked: boolean
+#     humans: boolean
 #     external: boolean
 #     non_external: boolean
+#     without_active: boolean
+#     without_humans: boolean
 #     without_projects: boolean
 #     sort: string
 #     id: integer
@@ -36,9 +40,12 @@ class UsersFinder
     users = by_username(users)
     users = by_id(users)
     users = by_admins(users)
+    users = by_humans(users)
+    users = by_without_humans(users)
     users = by_search(users)
     users = by_blocked(users)
     users = by_active(users)
+    users = by_without_active(users)
     users = by_external_identity(users)
     users = by_external(users)
     users = by_non_external(users)
@@ -86,6 +93,18 @@ class UsersFinder
     users.admins
   end
 
+  def by_humans(users)
+    return users unless params[:humans]
+
+    users.human
+  end
+
+  def by_without_humans(users)
+    return users unless params[:without_humans]
+
+    users.without_humans
+  end
+
   def by_search(users)
     return users unless params[:search].present?
 
@@ -108,19 +127,23 @@ class UsersFinder
     users.active
   end
 
+  def by_without_active(users)
+    return users unless params[:without_active]
+
+    users.without_active
+  end
+
   def by_external_identity(users)
     return users unless params[:extern_uid] && params[:provider]
 
     users.by_provider_and_extern_uid(params[:provider], params[:extern_uid])
   end
 
-  # rubocop: disable CodeReuse/ActiveRecord
   def by_external(users)
     return users unless params[:external]
 
     users.external
   end
-  # rubocop: enable CodeReuse/ActiveRecord
 
   def by_non_external(users)
     return users unless params[:non_external]

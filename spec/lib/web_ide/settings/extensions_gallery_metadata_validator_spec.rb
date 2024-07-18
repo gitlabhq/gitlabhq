@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-require_relative "../rd_fast_spec_helper"
+require_relative "../web_ide_fast_spec_helper"
 
-RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator, :rd_fast, feature_category: :remote_development do
+RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataValidator, :web_ide_fast, feature_category: :web_ide do
   include ResultMatchers
 
   let(:context) do
     {
+      requested_setting_names: [:vscode_extensions_gallery_metadata],
       settings: {
         vscode_extensions_gallery_metadata: extensions_gallery_metadata
       }
@@ -51,7 +52,7 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator, 
       it "returns an err Result containing error details" do
         expect(result).to be_err_result do |message|
           expect(message)
-            .to be_a(RemoteDevelopment::Settings::Messages::SettingsVscodeExtensionsGalleryMetadataValidationFailed)
+            .to be_a(WebIde::Settings::Messages::SettingsVscodeExtensionsGalleryMetadataValidationFailed)
           message.content => { details: String => error_details }
           expect(error_details).to eq(expected_error_details)
         end
@@ -104,6 +105,18 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator, 
         it_behaves_like "err result", expected_error_details:
           "property '/disabled_reason' is not of type: string"
       end
+    end
+  end
+
+  context "when requested_setting_names does not include vscode_extensions_gallery_metadata" do
+    let(:context) do
+      {
+        requested_setting_names: [:some_other_setting]
+      }
+    end
+
+    it "returns an ok result with the original context" do
+      expect(result).to be_ok_result(context)
     end
   end
 end

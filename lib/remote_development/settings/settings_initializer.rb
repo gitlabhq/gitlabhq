@@ -3,38 +3,22 @@
 module RemoteDevelopment
   module Settings
     class SettingsInitializer
-      include Messages
-
-      # @param [Hash] context
-      # @return [Hash]
-      # @raise [RuntimeError]
       def self.init(context)
-        context[:settings] = {}
-        context[:setting_types] = {}
+        context => { requested_setting_names: Array => requested_setting_names }
 
-        DefaultSettings.default_settings.each do |setting_name, setting_value_and_type|
-          unless setting_value_and_type.is_a?(Array) && setting_value_and_type.length == 2
-            raise "Remote Development Setting entry for '#{setting_name}' must " \
-              "be a two-element array containing the value and type."
-          end
+        context[:settings], context[:setting_types] = Gitlab::Fp::Settings::DefaultSettingsParser.parse(
+          module_name: "Remote Development",
+          requested_setting_names: requested_setting_names,
+          default_settings: DefaultSettings.default_settings,
+          mutually_dependent_settings_groups: [
+            [:full_reconciliation_interval_seconds, :partial_reconciliation_interval_seconds]
+          ]
+        )
 
-          setting_value, setting_type = setting_value_and_type
-
-          unless setting_type.is_a?(Class)
-            raise "Remote Development Setting type for '#{setting_name}' " \
-              "must be a class, but it was a #{setting_type.class}."
-          end
-
-          if !setting_value.nil? && !setting_value.is_a?(setting_type)
-            # NOTE: We are raising an exception here instead of returning a Result.err, because this is
-            # a coding syntax error in the 'default_settings', not a user or data error.
-            raise "Remote Development Setting '#{setting_name}' has a type of '#{setting_value.class}', " \
-              "which does not match declared type of '#{setting_type}'."
-          end
-
-          context[:settings][setting_name] = setting_value
-          context[:setting_types][setting_name] = setting_type
-        end
+        # NOTE: This is context which is required by shared Gitlab::Fp::Settings::EnvVarOverrideProcessor class
+        context[:env_var_prefix] = "GITLAB_REMOTE_DEVELOPMENT"
+        context[:env_var_failed_message_class] =
+          RemoteDevelopment::Settings::Messages::SettingsEnvironmentVariableOverrideFailed
 
         context
       end

@@ -1185,8 +1185,10 @@ four standard [pagination arguments](#pagination-arguments):
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="queryusersactive"></a>`active` | [`Boolean`](#boolean) | Filter by active users. When true, returns active users. When false, returns non-active users. |
 | <a id="queryusersadmins"></a>`admins` | [`Boolean`](#boolean) | Return only admin users. |
 | <a id="queryusersgroupid"></a>`groupId` | [`GroupID`](#groupid) | Return users member of a given group. |
+| <a id="queryusershumans"></a>`humans` | [`Boolean`](#boolean) | Filter by regular users. When true, returns only users that are not bot or internal users. When false, returns only users that are bot or internal users. |
 | <a id="queryusersids"></a>`ids` | [`[ID!]`](#id) | List of user Global IDs. |
 | <a id="queryuserssearch"></a>`search` | [`String`](#string) | Query to search users by name, username, or primary email. |
 | <a id="queryuserssort"></a>`sort` | [`Sort`](#sort) | Sort users by the criteria. |
@@ -16342,6 +16344,7 @@ A user with add-on data.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="addonuseractive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="addonuseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="addonuserbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="addonuserbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -16354,6 +16357,7 @@ A user with add-on data.
 | <a id="addonusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="addonusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="addonusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="addonuserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="addonuserid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="addonuseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="addonuserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -17179,6 +17183,7 @@ Core representation of a GitLab user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="autocompleteduseractive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="autocompleteduseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="autocompleteduserbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="autocompleteduserbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -17191,6 +17196,7 @@ Core representation of a GitLab user.
 | <a id="autocompletedusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="autocompletedusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="autocompletedusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="autocompleteduserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="autocompleteduserid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="autocompleteduseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="autocompleteduserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -19411,6 +19417,7 @@ The currently authenticated GitLab user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="currentuseractive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="currentuseravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="currentuserbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="currentuserbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -19425,6 +19432,7 @@ The currently authenticated GitLab user.
 | <a id="currentusergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="currentusergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="currentusergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="currentuserhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="currentuserid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="currentuseride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="currentuserjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -24836,6 +24844,7 @@ A user assigned to a merge request.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestassigneeactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="mergerequestassigneeavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="mergerequestassigneebio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestassigneebot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -24848,6 +24857,7 @@ A user assigned to a merge request.
 | <a id="mergerequestassigneegitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestassigneegroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestassigneegroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestassigneehuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="mergerequestassigneeid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestassigneeide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestassigneejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -25182,6 +25192,7 @@ The author of the merge request.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestauthoractive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="mergerequestauthoravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="mergerequestauthorbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestauthorbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -25194,6 +25205,7 @@ The author of the merge request.
 | <a id="mergerequestauthorgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestauthorgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestauthorgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestauthorhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="mergerequestauthorid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestauthoride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestauthorjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -25574,6 +25586,7 @@ A user participating in a merge request.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestparticipantactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="mergerequestparticipantavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="mergerequestparticipantbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestparticipantbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -25586,6 +25599,7 @@ A user participating in a merge request.
 | <a id="mergerequestparticipantgitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestparticipantgroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestparticipantgroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestparticipanthuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="mergerequestparticipantid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestparticipantide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestparticipantjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -25939,6 +25953,7 @@ A user assigned to a merge request as a reviewer.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestrevieweractive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="mergerequestrevieweravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="mergerequestreviewerbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="mergerequestreviewerbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -25951,6 +25966,7 @@ A user assigned to a merge request as a reviewer.
 | <a id="mergerequestreviewergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="mergerequestreviewergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="mergerequestreviewergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="mergerequestreviewerhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="mergerequestreviewerid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="mergerequestrevieweride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="mergerequestreviewerjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -31946,6 +31962,7 @@ Core representation of a GitLab user.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="usercoreactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="usercoreavatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="usercorebio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="usercorebot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -31958,6 +31975,7 @@ Core representation of a GitLab user.
 | <a id="usercoregitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="usercoregroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usercoregroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="usercorehuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="usercoreid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="usercoreide"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="usercorejobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |
@@ -38555,6 +38573,7 @@ Implementations:
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="useractive"></a>`active` | [`Boolean`](#boolean) | Indicates if the user is active. |
 | <a id="useravatarurl"></a>`avatarUrl` | [`String`](#string) | URL of the user's avatar. |
 | <a id="userbio"></a>`bio` | [`String`](#string) | Bio of the user. |
 | <a id="userbot"></a>`bot` | [`Boolean!`](#boolean) | Indicates if the user is a bot. |
@@ -38567,6 +38586,7 @@ Implementations:
 | <a id="usergitpodenabled"></a>`gitpodEnabled` | [`Boolean`](#boolean) | Whether Gitpod is enabled at the user level. |
 | <a id="usergroupcount"></a>`groupCount` | [`Int`](#int) | Group count for the user. |
 | <a id="usergroupmemberships"></a>`groupMemberships` | [`GroupMemberConnection`](#groupmemberconnection) | Group memberships of the user. (see [Connections](#connections)) |
+| <a id="userhuman"></a>`human` | [`Boolean`](#boolean) | Indicates if the user is a regular user. |
 | <a id="userid"></a>`id` | [`ID!`](#id) | ID of the user. |
 | <a id="useride"></a>`ide` | [`Ide`](#ide) | IDE settings. |
 | <a id="userjobtitle"></a>`jobTitle` | [`String`](#string) | Job title of the user. |

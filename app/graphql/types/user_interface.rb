@@ -173,6 +173,18 @@ module Types
       null: true,
       description: 'Bio of the user.'
 
+    field :active,
+      type: ::GraphQL::Types::Boolean,
+      null: true,
+      method: :active?,
+      description: 'Indicates if the user is active.'
+
+    field :human,
+      type: ::GraphQL::Types::Boolean,
+      null: true,
+      method: :human?,
+      description: 'Indicates if the user is a regular user.'
+
     field :linkedin,
       type: ::GraphQL::Types::String,
       null: true,

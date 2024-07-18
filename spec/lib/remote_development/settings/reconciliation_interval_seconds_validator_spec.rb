@@ -7,6 +7,7 @@ RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidat
 
   let(:context) do
     {
+      requested_setting_names: [:full_reconciliation_interval_seconds, :partial_reconciliation_interval_seconds],
       settings: {
         full_reconciliation_interval_seconds: loaded_full_reconciliation_interval_seconds,
         partial_reconciliation_interval_seconds: loaded_partial_reconciliation_interval_seconds
@@ -67,6 +68,18 @@ RSpec.describe RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidat
           expect(error_details).to eq("Full reconciliation interval must be greater than zero")
         end
       end
+    end
+  end
+
+  context "when requested_setting_names does not include full_reconciliation_interval_seconds" do
+    let(:context) do
+      {
+        requested_setting_names: [:some_other_setting]
+      }
+    end
+
+    it "returns an ok result with the original context" do
+      expect(result).to be_ok_result(context)
     end
   end
 end

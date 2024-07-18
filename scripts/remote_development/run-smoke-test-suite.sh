@@ -29,17 +29,25 @@ function run_rubocop {
   files_for_rubocop=()
   while IFS= read -r -d '' file; do
     files_for_rubocop+=("$file")
-  done < <(find . -path './**/remote_development/*.rb' -print0)
+  done < <(find app lib spec ee/app ee/lib ee/spec \( -path '**/remote_development/*.rb' -o -path '**/gitlab/fp/*.rb' \) -print0)
   files_for_rubocop+=(
-      "lib/gitlab/fp/rop_helpers.rb"
-      "spec/lib/gitlab/fp/rop_helpers_spec.rb"
-      "lib/gitlab/fp/result.rb"
-      "spec/lib/gitlab/fp/result_spec.rb"
       "spec/support/matchers/invoke_rop_steps.rb"
       "spec/support/railway_oriented_programming.rb"
       "spec/support_specs/matchers/result_matchers_spec.rb"
   )
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
+}
+
+function run_fp {
+  printf "\n\n${BBlue}Running backend RSpec FP specs${Color_Off}\n\n"
+
+  files_for_fp=()
+
+  while IFS= read -r file; do
+      files_for_fp+=("$file")
+  done < <(find spec/lib/gitlab/fp -path '**/*_spec.rb')
+
+  bin/rspec "${files_for_fp[@]}"
 }
 
 function run_rspec_fast {
@@ -49,6 +57,7 @@ function run_rspec_fast {
   #       files which require it are tagged with `rd_fast`.
 
   files_for_fast=()
+
   while IFS= read -r file; do
       files_for_fast+=("$file")
   done < <(find spec ee/spec -path '**/remote_development/*_spec.rb' -exec grep -lE 'require_relative.*rd_fast_spec_helper' {} +)
@@ -73,8 +82,6 @@ function run_rspec_rails {
       "ee/spec/graphql/types/subscription_type_spec.rb"
       "ee/spec/requests/api/internal/kubernetes_spec.rb"
       "spec/graphql/types/subscription_type_spec.rb"
-      "spec/lib/gitlab/fp/rop_helpers_spec.rb"
-      "spec/lib/gitlab/fp/result_spec.rb"
       "spec/support_specs/matchers/result_matchers_spec.rb"
   )
 
@@ -105,6 +112,7 @@ function main {
   [ -z "${SKIP_RUBOCOP}" ] && run_rubocop
 
   # Test sections are sorted roughly in increasing order of execution time.
+  [ -z "${SKIP_FP}" ] && run_fp
   [ -z "${SKIP_FAST}" ] && run_rspec_fast
   [ -z "${SKIP_JEST}" ] && run_jest
   [ -z "${SKIP_RAILS}" ] && run_rspec_rails

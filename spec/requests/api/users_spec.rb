@@ -508,6 +508,61 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
         expect(json_response[0]['id']).to eq(external_user.id)
       end
 
+      it "returns an array of human users" do
+        internal_user
+
+        get api("/users?humans=true", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(2)
+        expect(json_response).to contain_exactly(
+          hash_including('id' => user.id),
+          hash_including('id' => admin.id)
+        )
+      end
+
+      it "returns an array of non human users" do
+        internal_user
+
+        get api("/users?exclude_humans=true", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(1)
+        expect(json_response).to contain_exactly(
+          hash_including('id' => internal_user.id)
+        )
+      end
+
+      it "returns active users" do
+        blocked_user
+        banned_user
+
+        get api("/users?active=true", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(2)
+        expect(json_response).to contain_exactly(
+          hash_including('id' => user.id),
+          hash_including('id' => admin.id)
+        )
+      end
+
+      it "returns an array of non-active users" do
+        deactivated_user
+
+        get api("/users?exclude_active=true", user)
+
+        expect(response).to match_response_schema('public_api/v4/user/basics')
+        expect(response).to include_pagination_headers
+        expect(json_response.size).to eq(1)
+        expect(json_response).to contain_exactly(
+          hash_including('id' => deactivated_user.id)
+        )
+      end
+
       it "returns one user" do
         get api("/users?username=#{omniauth_user.username}", user)
 

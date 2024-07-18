@@ -30181,6 +30181,8 @@ CREATE UNIQUE INDEX virtual_registries_pkgs_maven_registries_on_unique_group_ids
 
 CREATE UNIQUE INDEX vulnerability_occurrence_pipelines_on_unique_keys ON vulnerability_occurrence_pipelines USING btree (occurrence_id, pipeline_id);
 
+CREATE INDEX web_hook_logs_on_web_hook_id_and_response_status ON ONLY web_hook_logs USING btree (web_hook_id, response_status);
+
 CREATE INDEX wi_colors_namespace_id_index ON work_item_colors USING btree (namespace_id);
 
 CREATE INDEX wi_datessources_due_date_sourcing_milestone_id_index ON work_item_dates_sources USING btree (due_date_sourcing_milestone_id);

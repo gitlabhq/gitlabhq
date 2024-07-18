@@ -2,70 +2,55 @@
 
 require_relative "../rd_fast_spec_helper"
 
-RSpec.describe RemoteDevelopment::Settings::SettingsInitializer, :rd_fast, feature_category: :remote_development do
-  let(:context) { {} }
-  let(:default_settings_class) { RemoteDevelopment::Settings::DefaultSettings }
+RSpec.describe RemoteDevelopment::Settings::SettingsInitializer,
+  :rd_fast, feature_category: :remote_development do
+  let(:all_possible_requested_setting_names) { RemoteDevelopment::Settings::DefaultSettings.default_settings.keys }
+  let(:requested_setting_names) { all_possible_requested_setting_names }
+  let(:context) do
+    { requested_setting_names: requested_setting_names }
+  end
 
   subject(:returned_value) do
     described_class.init(context)
   end
 
-  context "when settings values and types all match" do
-    it "returns default settings and setting_types" do
-      expect(returned_value).to match(
-        {
-          settings: hash_including(default_max_hours_before_termination: 24),
-          setting_types: hash_including(default_max_hours_before_termination: Integer)
-        }
-      )
-    end
+  it "invokes DefaultSettingsParser and sets up necessary values in context for subsequent steps" do
+    expect(returned_value).to match(
+      {
+        requested_setting_names: [
+          :default_branch_name,
+          :default_max_hours_before_termination,
+          :max_hours_before_termination_limit,
+          :project_cloner_image,
+          :tools_injector_image,
+          :full_reconciliation_interval_seconds,
+          :partial_reconciliation_interval_seconds
+        ],
+        settings: hash_including(default_max_hours_before_termination: 24),
+        setting_types: {
+          default_branch_name: String,
+          default_max_hours_before_termination: Integer,
+          full_reconciliation_interval_seconds: Integer,
+          max_hours_before_termination_limit: Integer,
+          partial_reconciliation_interval_seconds: Integer,
+          project_cloner_image: String,
+          tools_injector_image: String
+        },
+        env_var_prefix: "GITLAB_REMOTE_DEVELOPMENT",
+        env_var_failed_message_class: RemoteDevelopment::Settings::Messages::SettingsEnvironmentVariableOverrideFailed
+      }
+    )
   end
 
-  context "when a setting value has a type mismatch" do
-    before do
-      allow(default_settings_class).to receive(:default_settings).and_return(
-        {
-          setting: ["not an integer", Integer]
-        }
-      )
-    end
+  context "when mutually dependent settings are not all specified" do
+    context "for full_reconciliation_interval_seconds and partial_reconciliation_interval_seconds" do
+      let(:requested_setting_names) { [:full_reconciliation_interval_seconds] }
 
-    it "raises a descriptive exception" do
-      expect { returned_value }.to raise_error(
-        "Remote Development Setting 'setting' has a type of 'String', which does not match declared type of 'Integer'."
-      )
-    end
-  end
-
-  context "when a default_settings entry is not an array" do
-    before do
-      allow(default_settings_class).to receive(:default_settings).and_return(
-        {
-          setting: "Just a value"
-        }
-      )
-    end
-
-    it "raises a descriptive exception" do
-      expect { returned_value }.to raise_error(
-        "Remote Development Setting entry for 'setting' must be a two-element array containing the value and type."
-      )
-    end
-  end
-
-  context "when settings type is not specified as a Class" do
-    before do
-      allow(default_settings_class).to receive(:default_settings).and_return(
-        {
-          setting: ["value", 1]
-        }
-      )
-    end
-
-    it "raises a descriptive exception" do
-      expect { returned_value }.to raise_error(
-        "Remote Development Setting type for 'setting' must be a class, but it was a Integer."
-      )
+      it "raises a descriptive exception" do
+        expect { returned_value }.to raise_error(
+          /full_reconciliation_interval_seconds and partial_reconciliation_interval_seconds.*mutually dependent/
+        )
+      end
     end
   end
 end

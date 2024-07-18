@@ -88,7 +88,7 @@
                 -# This tab is always loaded via AJAX
 
         .loading.hide
-          .gl-spinner.gl-spinner-md
+          = render Pajamas::SpinnerComponent.new(size: :md)
 
       - if profile_tabs.empty?
         - if @user.blocked?

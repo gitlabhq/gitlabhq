@@ -26719,9 +26719,6 @@ msgstr ""
 msgid "IdentityVerification|Enter a valid code."
 msgstr ""
 
-msgid "IdentityVerification|For added security, you'll need to verify your identity in a few quick steps."
-msgstr ""
-
 msgid "IdentityVerification|For added security, you'll need to verify your identity."
 msgstr ""
 
@@ -26852,6 +26849,9 @@ msgid "IdentityVerification|We've sent a verification code to %{email}"
 msgstr ""
 
 msgid "IdentityVerification|We've sent a verification code to +%{phoneNumber}"
+msgstr ""
+
+msgid "IdentityVerification|You are signed in as %{username}. For added security, you'll need to verify your identity in a few quick steps."
 msgstr ""
 
 msgid "IdentityVerification|You will receive a text containing a code. Standard charges may apply."

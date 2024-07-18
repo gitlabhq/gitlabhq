@@ -591,6 +591,7 @@ class User < MainClusterwide::ApplicationRecord
   scope :non_external, -> { where(external: false) }
   scope :confirmed, -> { where.not(confirmed_at: nil) }
   scope :active, -> { with_state(:active).non_internal }
+  scope :without_active, -> { without_state(:active) }
   scope :active_without_ghosts, -> { with_state(:active).without_ghosts }
   scope :all_without_ghosts, -> { without_ghosts }
   scope :deactivated, -> { with_state(:deactivated).non_internal }

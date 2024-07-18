@@ -1483,6 +1483,19 @@ RSpec.describe User, feature_category: :user_profile do
       end
     end
 
+    describe '.without_active' do
+      let_it_be(:user1) { create(:user) }
+      let_it_be(:user2) { create(:user, :ghost) }
+      let_it_be(:user3) { create(:user, :external) }
+      let_it_be(:user4) { create(:user, state: 'blocked') }
+      let_it_be(:user5) { create(:user, state: 'banned') }
+      let_it_be(:user6) { create(:user, :deactivated) }
+
+      it 'returns users who are not active' do
+        expect(described_class.without_active).to match_array([user2, user4, user5, user6])
+      end
+    end
+
     describe '.for_todos' do
       let_it_be(:user1) { create(:user) }
       let_it_be(:user2) { create(:user) }

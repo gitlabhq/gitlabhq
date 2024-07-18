@@ -15,7 +15,7 @@ require 'devfile'
 require 'gitlab/rspec/next_instance_of'
 
 RSpec.configure do |config|
-  # Ensure that all specs which require this fast_spec_helper have the `:fast` tag at the top-level describe
+  # Ensure that all specs which require this fast_spec_helper have the `:rd_fast` tag at the top-level describe
   config.after(:suite) do
     RSpec.world.example_groups.each do |example_group|
       # Check only top-level describes

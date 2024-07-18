@@ -1,12 +1,13 @@
 # frozen_string_literal: true
 
-require 'spec_helper'
+require_relative "../web_ide_fast_spec_helper"
 
-RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataGenerator, :rd_fast, feature_category: :remote_development do
+RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, :web_ide_fast, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax
 
-  let(:input_value) do
+  let(:input_context) do
     {
+      requested_setting_names: [:vscode_extensions_gallery_metadata],
       options: options,
       settings: {
         # NOTE: default value of 'vscode_extensions_gallery_metadata' is an empty hash. Include it here to
@@ -17,8 +18,8 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataGenerator, 
     }
   end
 
-  subject(:returned_value) do
-    described_class.generate(input_value)
+  subject(:returned_context) do
+    described_class.generate(input_context)
   end
 
   shared_examples 'extensions marketplace settings' do
@@ -26,11 +27,11 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataGenerator, 
       if expected_vscode_extensions_gallery_metadata == RuntimeError
         expected_err_msg = "Invalid user.extensions_marketplace_opt_in_status: '#{opt_in_status}'. " \
           "Supported statuses are: [:unset, :enabled, :disabled]."
-        expect { returned_value }
+        expect { returned_context }
           .to raise_error(expected_err_msg)
       else
-        expect(returned_value).to eq(
-          input_value.deep_merge(
+        expect(returned_context).to eq(
+          input_context.deep_merge(
             settings: {
               vscode_extensions_gallery_metadata: expected_vscode_extensions_gallery_metadata
             }
@@ -63,7 +64,9 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataGenerator, 
   end
 
   with_them do
-    let(:user) { create(:user) }
+    let(:user_class) { stub_const('User', Class.new) }
+    let(:user) { user_class.new }
+    let(:enums) { stub_const('Enums::WebIde::ExtensionsMarketplaceOptInStatus', Class.new) }
 
     let(:options) do
       options = {}
@@ -74,8 +77,22 @@ RSpec.describe RemoteDevelopment::Settings::ExtensionsGalleryMetadataGenerator, 
 
     before do
       allow(user).to receive(:extensions_marketplace_opt_in_status) { opt_in_status.to_s }
+      allow(enums).to receive(:statuses).and_return({ unset: :unset, enabled: :enabled, disabled: :disabled })
     end
 
     it_behaves_like "extensions marketplace settings"
+  end
+
+  context "when requested_setting_names does not include vscode_extensions_gallery_metadata" do
+    let(:input_context) do
+      {
+        requested_setting_names: [:some_other_setting],
+        options: {}
+      }
+    end
+
+    it "returns the context unchanged" do
+      expect(returned_context).to eq(input_context)
+    end
   end
 end

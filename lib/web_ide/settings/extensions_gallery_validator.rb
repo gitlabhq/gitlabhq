@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-module RemoteDevelopment
+require 'json_schemer'
+
+module WebIde
   module Settings
     class ExtensionsGalleryValidator
       include Messages
@@ -8,6 +10,10 @@ module RemoteDevelopment
       # @param [Hash] context
       # @return [Gitlab::Fp::Result]
       def self.validate(context)
+        unless context.fetch(:requested_setting_names).intersect?([:vscode_extensions_gallery])
+          return Gitlab::Fp::Result.ok(context)
+        end
+
         context => { settings: Hash => settings }
         settings => { vscode_extensions_gallery: Hash => vscode_extensions_gallery }
 
@@ -41,6 +47,15 @@ module RemoteDevelopment
               "type" => "string"
             },
             "resource_url_template" => {
+              "type" => "string"
+            },
+            "control_url" => {
+              "type" => "string"
+            },
+            "nls_base_url" => {
+              "type" => "string"
+            },
+            "publisher_url" => {
               "type" => "string"
             }
           }

@@ -10,10 +10,7 @@ RSpec.describe RemoteDevelopment::Settings::Main, :rd_fast, feature_category: :r
     [
       [RemoteDevelopment::Settings::SettingsInitializer, :map],
       [RemoteDevelopment::Settings::CurrentSettingsReader, :and_then],
-      [RemoteDevelopment::Settings::ExtensionsGalleryMetadataGenerator, :map],
-      [RemoteDevelopment::Settings::EnvVarReader, :and_then],
-      [RemoteDevelopment::Settings::ExtensionsGalleryValidator, :and_then],
-      [RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator, :and_then],
+      [Gitlab::Fp::Settings::EnvVarOverrideProcessor, :and_then],
       [RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidator, :and_then]
     ]
   end
@@ -73,39 +70,19 @@ RSpec.describe RemoteDevelopment::Settings::Main, :rd_fast, feature_category: :r
           },
         ],
         [
-          "when EnvVarReader returns SettingsEnvironmentVariableReadFailed",
+          "when EnvVarOverrideProcessor returns SettingsEnvironmentVariableOverrideFailed",
           {
-            step_class: RemoteDevelopment::Settings::EnvVarReader,
+            step_class: Gitlab::Fp::Settings::EnvVarOverrideProcessor,
             returned_message:
-              lazy { RemoteDevelopment::Settings::Messages::SettingsEnvironmentVariableReadFailed.new(err_message_content) }
+              lazy do
+                RemoteDevelopment::Settings::Messages::SettingsEnvironmentVariableOverrideFailed.new(
+                  err_message_content
+                )
+              end
           },
           {
             status: :error,
-            message: lazy { "Settings environment variable read failed: #{error_details}" },
-            reason: :internal_server_error
-          },
-        ],
-        [
-          "when ExtensionsGalleryValidator returns SettingsVscodeExtensionsGalleryValidationFailed",
-          {
-            step_class: RemoteDevelopment::Settings::ExtensionsGalleryValidator,
-            returned_message: lazy { RemoteDevelopment::Settings::Messages::SettingsVscodeExtensionsGalleryValidationFailed.new(err_message_content) }
-          },
-          {
-            status: :error,
-            message: lazy { "Settings VSCode extensions gallery validation failed: #{error_details}" },
-            reason: :internal_server_error
-          },
-        ],
-        [
-          "when ExtensionsGalleryMetadataValidator returns SettingsVscodeExtensionsGalleryMetadataValidationFailed",
-          {
-            step_class: RemoteDevelopment::Settings::ExtensionsGalleryMetadataValidator,
-            returned_message: lazy { RemoteDevelopment::Settings::Messages::SettingsVscodeExtensionsGalleryMetadataValidationFailed.new(err_message_content) }
-          },
-          {
-            status: :error,
-            message: lazy { "Settings VSCode extensions gallery metadata validation failed: #{error_details}" },
+            message: lazy { "Settings environment variable override failed: #{error_details}" },
             reason: :internal_server_error
           },
         ],
@@ -150,9 +127,9 @@ RSpec.describe RemoteDevelopment::Settings::Main, :rd_fast, feature_category: :r
           "when an unmatched error is returned, an exception is raised",
           {
             step_class: RemoteDevelopment::Settings::CurrentSettingsReader,
-            returned_message: lazy { Class.new(RemoteDevelopment::Message).new(err_message_content) }
+            returned_message: lazy { Class.new(Gitlab::Fp::Message).new(err_message_content) }
           },
-          RemoteDevelopment::UnmatchedResultError
+          Gitlab::Fp::UnmatchedResultError
         ],
       ]
     end
