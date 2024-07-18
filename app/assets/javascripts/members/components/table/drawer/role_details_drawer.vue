@@ -5,27 +5,13 @@ import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
 import { ACCESS_LEVEL_LABELS } from '~/access_level/constants';
-import axios from '~/lib/utils/axios_utils';
-import { s__ } from '~/locale';
-import {
-  GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
-  MEMBER_ACCESS_LEVEL_PROPERTY_NAME,
-  MEMBERS_TAB_TYPES,
-} from '~/members/constants';
 import {
   getRoleDropdownItems,
   getMemberRole,
 } from 'ee_else_ce/members/components/table/drawer/utils';
-import * as Sentry from '~/ci/runner/sentry_utils';
+import RoleUpdater from 'ee_else_ce/members/components/table/drawer/role_updater.vue';
 import RoleSelector from '~/members/components/role_selector.vue';
 import MemberAvatar from '../member_avatar.vue';
-
-// The API to update members uses different property names for the access level, depending on if it's a user or a group.
-// Users use 'access_level', groups use 'group_access'.
-const ACCESS_LEVEL_PROPERTY_NAME = {
-  [MEMBERS_TAB_TYPES.user]: MEMBER_ACCESS_LEVEL_PROPERTY_NAME,
-  [MEMBERS_TAB_TYPES.group]: GROUP_LINK_ACCESS_LEVEL_PROPERTY_NAME,
-};
 
 export default {
   components: {
@@ -37,11 +23,9 @@ export default {
     GlIcon,
     GlAlert,
     RoleSelector,
+    RoleUpdater,
     RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
-    GuestOverageConfirmation: () =>
-      import('ee_component/members/components/table/drawer/guest_overage_confirmation.vue'),
   },
-  inject: ['group'],
   props: {
     member: {
       type: Object,
@@ -53,7 +37,7 @@ export default {
     return {
       selectedRole: null,
       isSavingRole: false,
-      saveError: null,
+      alert: null,
     };
   },
   computed: {
@@ -63,12 +47,16 @@ export default {
     initialRole() {
       return getMemberRole(this.roles.flatten, this.member);
     },
+    isRoleChanged() {
+      return this.selectedRole !== this.initialRole;
+    },
   },
   watch: {
-    'member.accessLevel': {
+    member: {
       immediate: true,
       handler() {
         if (this.member) {
+          this.alert = null;
           this.selectedRole = this.initialRole;
         }
       },
@@ -76,72 +64,18 @@ export default {
     isSavingRole() {
       this.$emit('busy', this.isSavingRole);
     },
-    selectedRole() {
-      this.saveError = null;
-    },
   },
   methods: {
     closeDrawer() {
-      // Don't close the drawer if the role API call is still underway.
+      // Don't let the drawer close if the role is still saving.
       if (!this.isSavingRole) {
         this.$emit('close');
+        this.alert = null;
       }
     },
-    checkGuestOverage() {
-      this.saveError = null;
-      this.isSavingRole = true;
-      const checkOverageFn = this.$refs.guestOverageConfirmation?.checkOverage;
-      // If guestOverageConfirmation is real instead of the CE dummy, check the guest overage. Otherwise, just update
-      // the role.
-      if (checkOverageFn) {
-        checkOverageFn();
-      } else {
-        this.updateRole();
-      }
-    },
-    async updateRole() {
-      try {
-        const accessLevelProp = ACCESS_LEVEL_PROPERTY_NAME[this.member.namespace];
-
-        const { data } = await axios.put(this.member.memberPath, {
-          [accessLevelProp]: this.selectedRole.accessLevel,
-          member_role_id: this.selectedRole.memberRoleId,
-        });
-
-        // EE has a flow where the role is not changed immediately, but goes through an approval process. In that case
-        // we need to restore the role back to what the member had initially.
-        if (data?.enqueued) {
-          this.$toast.show(s__('Members|Role change request was sent to the administrator.'));
-          this.resetRole();
-        } else {
-          this.$toast.show(s__('Members|Role was successfully updated.'));
-          const { member } = this;
-          // Update the access level on the member object so that the members table shows the new role.
-          member.accessLevel = {
-            stringValue: this.selectedRole.text,
-            integerValue: this.selectedRole.accessLevel,
-            description: this.selectedRole.description,
-            memberRoleId: this.selectedRole.memberRoleId,
-          };
-          // Update the license usage info to show/hide the "Is using seat" badge.
-          if (data?.using_license !== undefined) {
-            member.usingLicense = data?.using_license;
-          }
-        }
-      } catch (error) {
-        this.saveError = s__('MemberRole|Could not update role.');
-        Sentry.captureException(error);
-      } finally {
-        this.isSavingRole = false;
-      }
-    },
-    resetRole() {
-      this.selectedRole = this.initialRole;
-      this.isSavingRole = false;
-    },
-    showCheckOverageError() {
-      this.saveError = s__('MemberRole|Could not check guest overage.');
-      this.isSavingRole = false;
+    setRole(role) {
+      this.selectedRole = role;
+      this.alert = null;
     },
   },
   getContentWrapperHeight,
@@ -183,13 +117,14 @@ export default {
 
         <dl>
           <dt class="gl-mb-3" data-testid="role-header">{{ s__('MemberRole|Role') }}</dt>
-          <dd class="gl-flex gl-flex-wrap gl-gap-x-2 gl-gap-y-3">
+          <dd class="gl-flex gl-flex-wrap gl-items-baseline gl-gap-3">
             <role-selector
               v-if="permissions.canUpdate"
-              v-model="selectedRole"
+              :value="selectedRole"
               :roles="roles"
               :loading="isSavingRole"
               class="gl-w-full"
+              @input="setRole"
             />
             <span v-else data-testid="role-text">{{ selectedRole.text }}</span>
             <role-badges :member="member" :role="selectedRole" />
@@ -207,7 +142,7 @@ export default {
             {{ s__('MemberRole|Permissions') }}
           </dt>
           <dd class="gl-display-flex gl-mb-5">
-            <span v-if="selectedRole.permissions" class="gl-mr-3" data-testid="base-role">
+            <span v-if="selectedRole.memberRoleId" class="gl-mr-3" data-testid="base-role">
               <gl-sprintf :message="s__('MemberRole|Base role: %{role}')">
                 <template #role>
                   {{ $options.ACCESS_LEVEL_LABELS[selectedRole.accessLevel] }}
@@ -245,36 +180,44 @@ export default {
       </div>
 
       <template #footer>
-        <div v-if="selectedRole !== initialRole">
-          <gl-alert v-if="saveError" class="gl-mb-5" variant="danger" :dismissible="false">
-            {{ saveError }}
+        <role-updater
+          v-if="alert || isRoleChanged"
+          #default="{ saveRole }"
+          class="gl-flex gl-flex-col gl-gap-5"
+          :member="member"
+          :role="selectedRole"
+          @busy="isSavingRole = $event"
+          @alert="alert = $event"
+          @reset="selectedRole = initialRole"
+        >
+          <gl-alert
+            v-if="alert"
+            :variant="alert.variant"
+            :dismissible="alert.dismissible"
+            @dismiss="alert = null"
+          >
+            {{ alert.message }}
           </gl-alert>
-          <gl-button
-            variant="confirm"
-            :loading="isSavingRole"
-            data-testid="save-button"
-            @click="checkGuestOverage"
-          >
-            {{ s__('MemberRole|Update role') }}
-          </gl-button>
-          <gl-button
-            class="gl-ml-2"
-            :disabled="isSavingRole"
-            data-testid="cancel-button"
-            @click="resetRole"
-          >
-            {{ __('Cancel') }}
-          </gl-button>
-          <guest-overage-confirmation
-            ref="guestOverageConfirmation"
-            :group-path="group.path"
-            :member="member"
-            :role="selectedRole"
-            @confirm="updateRole"
-            @cancel="resetRole"
-            @error="showCheckOverageError"
-          />
-        </div>
+
+          <div v-if="isRoleChanged">
+            <gl-button
+              variant="confirm"
+              :loading="isSavingRole"
+              data-testid="save-button"
+              @click="saveRole"
+            >
+              {{ s__('MemberRole|Update role') }}
+            </gl-button>
+            <gl-button
+              class="gl-ml-2"
+              :disabled="isSavingRole"
+              data-testid="cancel-button"
+              @click="setRole(initialRole)"
+            >
+              {{ __('Cancel') }}
+            </gl-button>
+          </div>
+        </role-updater>
       </template>
     </gl-drawer>
   </members-table-cell>

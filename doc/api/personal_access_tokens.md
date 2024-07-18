@@ -356,6 +356,8 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 - `204: No Content` if successfully revoked.
 - `400: Bad Request` if not revoked successfully.
+- `401: Unauthorized` if the access token is invalid.
+- `403: Forbidden` if the access token does not have the required permissions.
 
 ### Using a request header
 
@@ -379,6 +381,7 @@ curl --request DELETE --header "PRIVATE-TOKEN: <your_access_token>" "https://git
 
 - `204: No Content` if successfully revoked.
 - `400: Bad Request` if not revoked successfully.
+- `401: Unauthorized` if the access token is invalid.
 
 ## Create a personal access token (administrator only)
 

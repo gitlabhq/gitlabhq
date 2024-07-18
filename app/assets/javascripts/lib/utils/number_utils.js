@@ -1,5 +1,5 @@
 import { formatNumber, sprintf, __ } from '~/locale';
-import { BYTES_IN_KIB, THOUSAND } from './constants';
+import { BYTES_IN_KIB, THOUSAND, MILLION } from './constants';
 
 /**
  * Function that allows a number with an X amount of decimals
@@ -127,16 +127,18 @@ export function numberToHumanSize(size, digits = 2, locale) {
  *
  * @param number Number to format
  * @param digits The number of digits to appear after the decimal point
+ * @param uppercase Whether to use uppercase suffix (K, M)
  * @return {string} Formatted number
  */
-export function numberToMetricPrefix(number, digits = 1) {
+export function numberToMetricPrefix(number, uppercase = false) {
   if (number < THOUSAND) {
     return number.toString();
   }
-  if (number < THOUSAND ** 2) {
-    return `${Number((number / THOUSAND).toFixed(digits))}k`;
+  const digits = 1;
+  if (number < MILLION) {
+    return `${Number((number / THOUSAND).toFixed(digits))}${uppercase ? 'K' : 'k'}`;
   }
-  return `${Number((number / THOUSAND ** 2).toFixed(digits))}m`;
+  return `${Number((number / MILLION).toFixed(digits))}${uppercase ? 'M' : 'm'}`;
 }
 /**
  * A simple method that returns the value of a + b

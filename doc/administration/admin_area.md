@@ -353,7 +353,7 @@ You can administer all runners in the GitLab instance from the Admin area's **Ru
 To access the **Runners** page:
 
 1. On the left sidebar, at the bottom, select **Admin area**.
-1. Select **Overview > Runners**.
+1. Select **CI/CD > Runners**.
 
 #### Search and filter runners
 

@@ -4,7 +4,7 @@ import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
-import { ACCESS_LEVEL_DEVELOPER_INTEGER } from '~/access_level/constants';
+import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import Api from '~/api';
 import { getProjects } from '~/rest_api';
@@ -159,7 +159,7 @@ export default {
       return Api.projectGroups(this.projectPath, {
         search,
         with_shared: true,
-        shared_min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
+        shared_min_access_level: ACCESS_LEVEL_REPORTER_INTEGER,
       }).then((data) =>
         data?.map((group) => ({
           text: group.full_name,

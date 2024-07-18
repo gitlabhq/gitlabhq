@@ -81,6 +81,7 @@ For more information about slash commands, refer to the documentation:
 
 - [/tests](../gitlab_duo_chat/examples.md#write-tests-in-the-ide)
 - [/refactor](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)
+- [/fix](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)
 - [/explain](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)
 
 ## `Error M4001`

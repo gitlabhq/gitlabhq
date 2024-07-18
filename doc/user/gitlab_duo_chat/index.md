@@ -66,7 +66,7 @@ In the IDEs, GitLab Duo Chat knows about these areas:
 | Issues  | Ask about the URL. |
 
 In addition, in the IDEs, when you use any of the slash commands,
-like `/explain`, `/refactor`, or `/tests,` Duo Chat has access to the
+like `/explain`, `/refactor`, `/fix`, or `/tests,` Duo Chat has access to the
 code you selected.
 
 Duo Chat always has access to:

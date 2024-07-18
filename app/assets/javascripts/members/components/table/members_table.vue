@@ -82,6 +82,7 @@ export default {
         return state[this.namespace].members.map((member) => ({
           ...member,
           memberPath: state[this.namespace].memberPath.replace(':id', member.id),
+          ldapOverridePath: state[this.namespace].ldapOverridePath?.replace(':id', member.id),
           namespace: this.namespace,
         }));
       },

@@ -113,5 +113,6 @@ FactoryBot.define do
 
     factory :project_audit_event, traits: [:project_event]
     factory :group_audit_event, traits: [:group_event]
+    factory :instance_audit_event, traits: [:instance_event]
   end
 end

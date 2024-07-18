@@ -14,7 +14,7 @@ import DeployKeyItem from '~/vue_shared/components/list_selector/deploy_key_item
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
-import { ACCESS_LEVEL_DEVELOPER_INTEGER } from '~/access_level/constants';
+import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
 import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK, SUBGROUPS_RESPONSE_MOCK } from './mock_data';
 
 jest.mock('~/alert');
@@ -275,7 +275,7 @@ describe('List Selector spec', () => {
       it('calls query with correct variables when Search box receives an input', () => {
         expect(Api.projectGroups).toHaveBeenCalledWith(USERS_MOCK_PROPS.projectPath, {
           search,
-          shared_min_access_level: ACCESS_LEVEL_DEVELOPER_INTEGER,
+          shared_min_access_level: ACCESS_LEVEL_REPORTER_INTEGER,
           with_shared: true,
         });
       });

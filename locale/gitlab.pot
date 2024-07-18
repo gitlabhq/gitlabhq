@@ -32218,9 +32218,6 @@ msgstr ""
 msgid "MemberRole|Change role"
 msgstr ""
 
-msgid "MemberRole|Could not check guest overage."
-msgstr ""
-
 msgid "MemberRole|Could not fetch available permissions."
 msgstr ""
 
@@ -32314,6 +32311,9 @@ msgstr ""
 msgid "MemberRole|Permissions"
 msgstr ""
 
+msgid "MemberRole|Reverted to LDAP group sync settings. The role will be updated after the next LDAP sync."
+msgstr ""
+
 msgid "MemberRole|Role"
 msgstr ""
 
@@ -32356,6 +32356,9 @@ msgstr ""
 msgid "MemberRole|The Reporter role is suitable for team members who need to stay informed about a project or group but do not actively contribute code."
 msgstr ""
 
+msgid "MemberRole|This member is an LDAP user. Changing their role will override the settings from the LDAP group sync."
+msgstr ""
+
 msgid "MemberRole|This role has been manually selected and will not sync to the LDAP sync role."
 msgstr ""
 
@@ -32363,6 +32366,9 @@ msgid "MemberRole|To delete custom role, remove role from all group members."
 msgstr ""
 
 msgid "MemberRole|Update role"
+msgstr ""
+
+msgid "MemberRole|Use LDAP sync role"
 msgstr ""
 
 msgid "MemberRole|View permissions"

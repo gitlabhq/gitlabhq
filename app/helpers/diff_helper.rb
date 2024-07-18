@@ -72,7 +72,7 @@ module DiffHelper
       spinner = render(Pajamas::SpinnerComponent.new(size: :sm, class: 'gl-display-none gl-text-align-right', data: { visible_when_loading: true }))
       expand_html = content_tag(:div, [expand_button, spinner].join.html_safe, data: { expand_wrapper: true })
     else
-      expand_html = content_tag(:div, '...', data: { visible_when_loading: false, **expand_data })
+      expand_html = '...'
     end
 
     if old_pos

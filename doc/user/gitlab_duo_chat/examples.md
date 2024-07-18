@@ -143,6 +143,25 @@ You can include additional instructions to be considered. For example:
 - Focus on performance, for example `/refactor improving performance`.
 - Focus on potential vulnerabilities, for example `/refactor avoiding memory leaks and exploits`.
 
+## Fix code in the IDE
+
+DETAILS:
+**Tier:** GitLab.com and Self-managed: For a limited time, Premium and Ultimate. In the future, [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Pro or Enterprise.
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Editors:** Web IDE, VS Code, JetBrains IDEs
+**LLMs:** Anthropic: [`claude-3-5-sonnet-20240620`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/429915) for GitLab.com, self-managed and GitLab Dedicated in GitLab 17.3.
+
+`/fix` is a special command to generate a fix suggestion for the selected code in your editor.
+You can include additional instructions to be considered. For example:
+
+- Focus on grammar and typos, for example, `/fix grammar mistakes and typos`.
+- Focus on a concrete algorithm or problem description, for example, `/fix duplicate database inserts` or `/fix race conditions`.
+- Focus on potential bugs that are not directly visible, for example, `/fix potential bugs`.
+- Focus on code performance problems, for example, `/fix performance problems`.
+- Focus on fixing the build when the code does not compile, for example, `/fix the build`. 
+
 ## Write tests in the IDE
 
 DETAILS:
@@ -257,3 +276,4 @@ Use the following commands to quickly accomplish specific tasks.
 | /explain               | [Explain code](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)              |
 | /vulnerability_explain | [Explain current vulnerability](../gitlab_duo/index.md#vulnerability-explanation)   |
 | /refactor              | [Refactor the code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)        |
+| /fix                   | [Fix the code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)        |

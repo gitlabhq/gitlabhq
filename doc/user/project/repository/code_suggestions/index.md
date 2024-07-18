@@ -30,15 +30,14 @@ With GitLab Duo Code Suggestions, you get:
 - Code generation, which generates code based on a natural language code
   comment block. Write a comment like `# check if code suggestions are
   enabled for current user`, then press <kbd>Enter</kbd> to generate code based
-  on the context of your comment and the rest of your code.
-
-  Code generation requests are slower than code completion requests, but provide
-  more accurate responses because:
+  on the context of your comment and the rest of your code. Code generation requests
+  are slower than code completion requests, but provide more accurate responses because:
   - A larger LLM is used.
   - Additional context is sent in the request, for example,
     the libraries used by the project.
 
   Code generation is used when the:
+
   - User writes a comment and hits <kbd>Enter</kbd>.
   - File being edited is less than five lines of code.
   - User enters an empty function or method.

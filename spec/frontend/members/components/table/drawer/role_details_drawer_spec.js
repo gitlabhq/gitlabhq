@@ -1,35 +1,45 @@
-import { GlDrawer, GlSprintf, GlAlert } from '@gitlab/ui';
-import MockAdapter from 'axios-mock-adapter';
-import axios from 'axios';
+import { GlDrawer, GlAlert } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { cloneDeep } from 'lodash';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import RoleDetailsDrawer from '~/members/components/table/drawer/role_details_drawer.vue';
 import MembersTableCell from '~/members/components/table/members_table_cell.vue';
 import MemberAvatar from '~/members/components/table/member_avatar.vue';
 import RoleSelector from '~/members/components/role_selector.vue';
 import { roleDropdownItems } from '~/members/utils';
-import waitForPromises from 'helpers/wait_for_promises';
+import RoleUpdater from 'ee_else_ce/members/components/table/drawer/role_updater.vue';
+import { RENDER_ALL_SLOTS_TEMPLATE, stubComponent } from 'helpers/stub_component';
 import { member as memberData, updateableMember } from '../../../mock_data';
+
+jest.mock('~/lib/utils/dom_utils', () => ({
+  getContentWrapperHeight: () => '123',
+}));
 
 describe('Role details drawer', () => {
   const dropdownItems = roleDropdownItems(updateableMember);
-  const toastShowMock = jest.fn();
   const currentRole = dropdownItems.flatten[5];
   const newRole = dropdownItems.flatten[2];
-  let axiosMock;
+  const saveRoleStub = jest.fn();
   let wrapper;
 
   const createWrapper = ({ member = updateableMember } = {}) => {
     wrapper = shallowMountExtended(RoleDetailsDrawer, {
       propsData: { member },
-      provide: {
-        currentUserId: 1,
-        canManageMembers: true,
-        group: 'group/path',
+      stubs: {
+        GlDrawer: stubComponent(GlDrawer, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+        RoleUpdater: stubComponent(RoleUpdater, {
+          template: '<div><slot :save-role="saveRole"></slot></div>',
+          methods: { saveRole: saveRoleStub },
+        }),
+        MembersTableCell: stubComponent(MembersTableCell, {
+          render() {
+            return this.$scopedSlots.default({
+              memberType: 'user',
+              isCurrentUser: false,
+              permissions: { canUpdate: member.canUpdate },
+            });
+          },
+        }),
       },
-      stubs: { GlDrawer, MembersTableCell, GlSprintf },
-      mocks: { $toast: { show: toastShowMock } },
     });
   };
 
@@ -37,25 +47,17 @@ describe('Role details drawer', () => {
   const findRoleText = () => wrapper.findByTestId('role-text');
   const findRoleSelector = () => wrapper.findComponent(RoleSelector);
   const findRoleDescription = () => wrapper.findByTestId('description-value');
+  const findRoleUpdater = () => wrapper.findComponent(RoleUpdater);
   const findSaveButton = () => wrapper.findByTestId('save-button');
   const findCancelButton = () => wrapper.findByTestId('cancel-button');
+  const findAlert = () => wrapper.findComponent(GlAlert);
 
-  const createWrapperChangeRoleAndClickSave = async () => {
-    createWrapper({ member: cloneDeep(updateableMember) });
+  const createWrapperAndChangeRole = () => {
+    createWrapper();
     findRoleSelector().vm.$emit('input', newRole);
-    await nextTick();
-    findSaveButton().vm.$emit('click');
 
-    return waitForPromises();
+    return nextTick;
   };
-
-  beforeEach(() => {
-    axiosMock = new MockAdapter(axios);
-  });
-
-  afterEach(() => {
-    axiosMock.restore();
-  });
 
   it('does not show the drawer when there is no member', () => {
     createWrapper({ member: null });
@@ -64,41 +66,29 @@ describe('Role details drawer', () => {
   });
 
   describe('when there is a member', () => {
-    beforeEach(() => {
-      createWrapper({ member: memberData });
-    });
+    beforeEach(createWrapper);
 
-    it('shows the drawer with expected props', () => {
-      expect(findDrawer().props()).toMatchObject({ headerSticky: true, open: true, zIndex: 252 });
-    });
-
-    it('shows the user avatar', () => {
-      expect(wrapper.findComponent(MembersTableCell).props('member')).toBe(memberData);
-      expect(wrapper.findComponent(MemberAvatar).props()).toMatchObject({
-        memberType: 'user',
-        isCurrentUser: false,
-        member: memberData,
+    it('shows the drawer', () => {
+      expect(findDrawer().props()).toMatchObject({
+        headerHeight: '123',
+        headerSticky: true,
+        open: true,
+        zIndex: 252,
       });
     });
 
-    it('does not show footer buttons', () => {
-      expect(findSaveButton().exists()).toBe(false);
-      expect(findCancelButton().exists()).toBe(false);
-    });
-
-    it('emits close event when drawer is closed', () => {
-      findDrawer().vm.$emit('close');
-
-      expect(wrapper.emitted('close')).toHaveLength(1);
+    it('shows the user avatar', () => {
+      expect(wrapper.findComponent(MembersTableCell).props('member')).toBe(updateableMember);
+      expect(wrapper.findComponent(MemberAvatar).props()).toEqual({
+        memberType: 'user',
+        isCurrentUser: false,
+        member: updateableMember,
+      });
     });
 
     describe('role name', () => {
       it('shows the header', () => {
         expect(wrapper.findByTestId('role-header').text()).toBe('Role');
-      });
-
-      it('shows the role name', () => {
-        expect(findRoleText().text()).toContain('Owner');
       });
     });
 
@@ -109,17 +99,6 @@ describe('Role details drawer', () => {
 
       it('shows the role description', () => {
         expect(findRoleDescription().text()).toBe(currentRole.description);
-      });
-
-      it('shows "No description" when there is no role description', async () => {
-        // Create a member that's assigned to a non-existent custom role.
-        const member = { ...updateableMember, accessLevel: { memberRoleId: 999 } };
-        wrapper.setProps({ member });
-        await nextTick();
-        const noDescriptionSpan = findRoleDescription().find('span');
-
-        expect(noDescriptionSpan.text()).toBe('No description');
-        expect(noDescriptionSpan.classes('gl-text-gray-400')).toBe(true);
       });
     });
 
@@ -142,7 +121,7 @@ describe('Role details drawer', () => {
     });
   });
 
-  describe('role selector', () => {
+  describe('role name/selector', () => {
     it('shows role name when the member cannot be edited', () => {
       createWrapper({ member: memberData });
 
@@ -162,53 +141,32 @@ describe('Role details drawer', () => {
     });
   });
 
-  describe('when the user only has read access', () => {
-    it('shows the custom role name', () => {
-      const member = {
-        ...memberData,
-        accessLevel: { stringValue: 'Custom role', memberRoleId: 102 },
-      };
-      createWrapper({ member });
-
-      expect(findRoleText().text()).toBe('Custom role');
-    });
-  });
-
   describe('when role is changed', () => {
-    beforeEach(() => {
-      createWrapper();
-      findRoleSelector().vm.$emit('input', newRole);
+    beforeEach(createWrapperAndChangeRole);
+
+    it('shows role updater', () => {
+      expect(findRoleUpdater().props()).toEqual({ member: updateableMember, role: newRole });
     });
 
     it('shows save button', () => {
       expect(findSaveButton().text()).toBe('Update role');
-      expect(findSaveButton().props()).toMatchObject({
-        variant: 'confirm',
-        loading: false,
-      });
+      expect(findSaveButton().props()).toMatchObject({ variant: 'confirm', loading: false });
     });
 
     it('shows cancel button', () => {
-      expect(findCancelButton().props('variant')).toBe('default');
-      expect(findCancelButton().props()).toMatchObject({
-        variant: 'default',
-        loading: false,
-      });
+      expect(findCancelButton().text()).toBe('Cancel');
+      expect(findCancelButton().props()).toMatchObject({ variant: 'default', loading: false });
     });
 
     it('shows the new role in the role selector', () => {
       expect(findRoleSelector().props('value')).toBe(newRole);
     });
+  });
 
-    it('does not call update role API', () => {
-      expect(axiosMock.history.put).toHaveLength(0);
-    });
+  describe('when cancel button is clicked', () => {
+    beforeEach(createWrapperAndChangeRole);
 
-    it('does not emit any events', () => {
-      expect(Object.keys(wrapper.emitted())).toHaveLength(0);
-    });
-
-    it('resets back to initial role when cancel button is clicked', async () => {
+    it('resets back to initial role', async () => {
       findCancelButton().vm.$emit('click');
       await nextTick();
 
@@ -217,118 +175,113 @@ describe('Role details drawer', () => {
   });
 
   describe('when update role button is clicked', () => {
-    beforeEach(() => {
-      axiosMock.onPut('user/path/238').replyOnce(200);
-      createWrapperChangeRoleAndClickSave();
+    it('calls saveRole method on the role updater', async () => {
+      await createWrapperAndChangeRole();
+      findSaveButton().vm.$emit('click');
 
-      return nextTick();
+      expect(saveRoleStub).toHaveBeenCalledTimes(1);
     });
+  });
 
-    it('calls update role API with expected data', () => {
-      const expectedData = JSON.stringify({
-        access_level: newRole.accessLevel,
-        member_role_id: newRole.memberRoleId,
+  describe('role updater', () => {
+    beforeEach(createWrapperAndChangeRole);
+
+    describe.each([true, false])('when busy event is %s', (busy) => {
+      beforeEach(() => {
+        findRoleUpdater().vm.$emit('busy', busy);
       });
 
-      expect(axiosMock.history.put[0].data).toBe(expectedData);
+      it('sets loading on role selector', () => {
+        expect(findRoleSelector().props('loading')).toBe(busy);
+      });
+
+      it('sets loading on save button', () => {
+        expect(findSaveButton().props('loading')).toBe(busy);
+      });
+
+      it('sets disabled on cancel button', () => {
+        expect(findCancelButton().props('disabled')).toBe(busy);
+      });
     });
 
-    it('disables footer buttons', () => {
-      expect(findSaveButton().props('loading')).toBe(true);
-      expect(findCancelButton().props('disabled')).toBe(true);
+    // This needs to be a separate test from the describe.each() block above because watchers aren't invoked if the
+    // value didn't change, so setting the busy state to false when it's already false will cause the test to fail.
+    // Here, we'll set it to true first, then false, which changes the value both times, thus invoking the watcher.
+    it('emits busy event when loading state is changed', async () => {
+      findRoleUpdater().vm.$emit('busy', true);
+      await nextTick();
+
+      expect(wrapper.emitted('busy')[0][0]).toBe(true);
+
+      findRoleUpdater().vm.$emit('busy', false);
+      await nextTick();
+
+      expect(wrapper.emitted('busy')[1][0]).toBe(false);
     });
 
-    it('disables role dropdown', () => {
-      expect(findRoleSelector().props('loading')).toBe(true);
-    });
+    it('resets the selected role on a reset event', async () => {
+      await createWrapperAndChangeRole();
+      findRoleUpdater().vm.$emit('reset');
+      await nextTick();
 
-    it('emits busy event as true', () => {
-      const busyEvents = wrapper.emitted('busy');
-
-      expect(busyEvents).toHaveLength(1);
-      expect(busyEvents[0][0]).toBe(true);
-    });
-
-    it('does not close the drawer when it is trying to close', () => {
-      findDrawer().vm.$emit('close');
-
-      expect(wrapper.emitted('close')).toBeUndefined();
-    });
-  });
-
-  describe('when update role API call is finished', () => {
-    beforeEach(() => {
-      axiosMock.onPut('user/path/238').replyOnce(200);
-      return createWrapperChangeRoleAndClickSave();
-    });
-
-    it('hides footer buttons', () => {
-      expect(findSaveButton().exists()).toBe(false);
-      expect(findCancelButton().exists()).toBe(false);
-    });
-
-    it('enables role selector', () => {
-      expect(findRoleSelector().props('loading')).toBe(false);
-    });
-
-    it('emits busy event with false', () => {
-      const busyEvents = wrapper.emitted('busy');
-
-      expect(busyEvents).toHaveLength(2);
-      expect(busyEvents[1][0]).toBe(false);
-    });
-
-    it('shows toast', () => {
-      expect(toastShowMock).toHaveBeenCalledTimes(1);
-      expect(toastShowMock).toHaveBeenCalledWith('Role was successfully updated.');
-    });
-  });
-
-  describe('when role admin approval is enabled and role is updated', () => {
-    beforeEach(() => {
-      axiosMock.onPut('user/path/238').replyOnce(200, { enqueued: true });
-      return createWrapperChangeRoleAndClickSave();
-    });
-
-    it('resets role back to initial role', () => {
       expect(findRoleSelector().props('value')).toEqual(currentRole);
     });
+  });
 
-    it('shows toast', () => {
-      expect(toastShowMock).toHaveBeenCalledTimes(1);
-      expect(toastShowMock).toHaveBeenCalledWith(
-        'Role change request was sent to the administrator.',
-      );
+  describe('alert', () => {
+    beforeEach(async () => {
+      await createWrapperAndChangeRole();
+      findRoleUpdater().vm.$emit('alert', {
+        message: 'alert message',
+        variant: 'info',
+        dismissible: false,
+      });
+    });
+
+    it('shows an alert when role updater changes the alert', () => {
+      expect(findAlert().text()).toBe('alert message');
+      expect(findAlert().props()).toMatchObject({ variant: 'info', dismissible: false });
+    });
+
+    it('keeps alert when role updater resets selected role', async () => {
+      // Some workflows treat a role reset as a success. We shouldn't clear the alert in this case because it would
+      // clear out the success message.
+      findRoleUpdater().vm.$emit('reset');
+      await nextTick();
+
+      expect(findAlert().exists()).toBe(true);
+    });
+
+    it.each`
+      phrase                                          | setupFn
+      ${'when the role updater emits an empty alert'} | ${() => findRoleUpdater().vm.$emit('alert', null)}
+      ${'when selected role is changed'}              | ${() => findRoleSelector().vm.$emit('input', currentRole)}
+      ${'when drawer is closed'}                      | ${() => findDrawer().vm.$emit('close')}
+      ${'when member is changed'}                     | ${() => wrapper.setProps({ member: memberData })}
+      ${'when alert is dismissed'}                    | ${() => findAlert().vm.$emit('dismiss')}
+    `('clears alert when $phrase', async ({ setupFn }) => {
+      setupFn();
+      await nextTick();
+
+      expect(findAlert().exists()).toBe(false);
     });
   });
 
-  describe('when update role API fails', () => {
-    beforeEach(() => {
-      axiosMock.onPut('user/path/238').replyOnce(500);
-      return createWrapperChangeRoleAndClickSave();
+  describe('when drawer is closing', () => {
+    it('emits close event', () => {
+      createWrapper();
+      findDrawer().vm.$emit('close');
+
+      expect(wrapper.emitted('close')).toHaveLength(1);
     });
 
-    it('enables save and cancel buttons', () => {
-      expect(findSaveButton().props('loading')).toBe(false);
-      expect(findCancelButton().props('disabled')).toBe(false);
-    });
+    it('does not allow the drawer to close when the role is saving', async () => {
+      await createWrapperAndChangeRole();
+      findRoleUpdater().vm.$emit('busy', true);
+      findDrawer().vm.$emit('close');
+      await nextTick();
 
-    it('enables role dropdown', () => {
-      expect(findRoleSelector().props('loading')).toBe(false);
-    });
-
-    it('emits busy event with false', () => {
-      const busyEvents = wrapper.emitted('busy');
-
-      expect(busyEvents).toHaveLength(2);
-      expect(busyEvents[1][0]).toBe(false);
-    });
-
-    it('shows error message', () => {
-      const alert = wrapper.findComponent(GlAlert);
-
-      expect(alert.text()).toBe('Could not update role.');
-      expect(alert.props('variant')).toBe('danger');
+      expect(wrapper.emitted('close')).toBeUndefined();
     });
   });
 });

@@ -309,12 +309,15 @@ describe('MembersTable', () => {
         expect(findRoleDetailsDrawer().props('member')).toBe(null);
       });
 
-      it('disables role button when drawer is busy', async () => {
-        findRoleDetailsDrawer().vm.$emit('busy', true);
-        await nextTick();
+      it.each([true, false])(
+        'enables/disables role button when drawer busy state is %s',
+        async (busy) => {
+          findRoleDetailsDrawer().vm.$emit('busy', busy);
+          await nextTick();
 
-        expect(findRoleButton().props('disabled')).toBe(true);
-      });
+          expect(findRoleButton().props('disabled')).toBe(busy);
+        },
+      );
     });
   });
 
