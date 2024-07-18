@@ -6004,4 +6004,16 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
       expect(ci_build.token).to match(/^glcbt-64_[\w-]{20}$/)
     end
   end
+
+  describe '#source' do
+    it 'defaults to the pipeline source name' do
+      expect(build.source).to eq(build.pipeline.source)
+    end
+
+    it 'returns the associated source name when present' do
+      create(:ci_build_source, build: build, source: 'scan_execution_policy')
+
+      expect(build.source).to eq('scan_execution_policy')
+    end
+  end
 end

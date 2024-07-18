@@ -460,6 +460,7 @@ builds:
 - job_annotations
 - job_artifacts_annotations
 - project_mirror
+- build_source
 bridges:
 - user
 - pipeline

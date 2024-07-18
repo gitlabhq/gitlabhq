@@ -26,7 +26,7 @@ export default {
     [TIMESTAMP_TYPE_CREATED_AT]: __('Created'),
     [TIMESTAMP_TYPE_UPDATED_AT]: __('Updated'),
   },
-  truncateTextToggleButtonProps: { class: 'gl-font-sm!' },
+  truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
     GlAvatarLabeled,
     GlIcon,
@@ -136,13 +136,10 @@ export default {
 </script>
 
 <template>
-  <li class="groups-list-item gl-py-5 gl-border-b gl-display-flex">
-    <div class="md:gl-flex gl-flex-grow-1">
+  <li class="groups-list-item gl-border-b gl-flex gl-py-5">
+    <div class="gl-grow md:gl-flex">
       <div class="gl-flex gl-grow gl-items-start">
-        <div
-          v-if="showGroupIcon"
-          class="gl-display-flex gl-align-items-center gl-flex-shrink-0 gl-h-9 gl-mr-3"
-        >
+        <div v-if="showGroupIcon" class="gl-mr-3 gl-flex gl-h-9 gl-flex-shrink-0 gl-items-center">
           <gl-icon class="gl-text-secondary" :name="groupIconName" />
         </div>
         <gl-avatar-labeled
@@ -155,7 +152,7 @@ export default {
         >
           <template #meta>
             <div class="gl-px-2">
-              <div class="-gl-mx-2 gl-display-flex gl-align-items-center gl-flex-wrap">
+              <div class="-gl-mx-2 gl-flex gl-flex-wrap gl-items-center">
                 <div class="gl-px-2">
                   <gl-icon
                     v-if="visibility"
@@ -186,14 +183,14 @@ export default {
           >
             <div
               v-safe-html="group.descriptionHtml"
-              class="gl-font-sm gl-text-secondary md"
+              class="md gl-text-sm gl-text-secondary"
               data-testid="group-description"
             ></div>
           </gl-truncate-text>
         </gl-avatar-labeled>
       </div>
       <div
-        class="md:gl-flex gl-flex-col gl-items-end gl-shrink-0 gl-mt-3 md:gl-pl-0 md:gl-mt-0"
+        class="gl-mt-3 gl-shrink-0 gl-flex-col gl-items-end md:gl-mt-0 md:gl-flex md:gl-pl-0"
         :class="statsPadding"
       >
         <div class="gl-flex gl-items-center gl-gap-x-3 md:gl-h-9">
@@ -228,14 +225,14 @@ export default {
         </div>
         <div
           v-if="timestamp"
-          class="gl-text-sm gl-whitespace-nowrap gl-text-secondary gl-mt-3 md:-gl-mt-2"
+          class="gl-mt-3 gl-whitespace-nowrap gl-text-sm gl-text-secondary md:-gl-mt-2"
         >
           <span>{{ timestampText }}</span>
           <time-ago-tooltip :time="timestamp" />
         </div>
       </div>
     </div>
-    <div class="gl-display-flex gl-align-items-center gl-h-9 gl-ml-3">
+    <div class="gl-ml-3 gl-flex gl-h-9 gl-items-center">
       <list-actions
         v-if="hasActions"
         :actions="actions"

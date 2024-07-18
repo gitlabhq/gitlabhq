@@ -188,7 +188,7 @@ graph TD
    L2B --> L3A
    L3A -->|Yes| L4A
    L3A -->|No| L4D
-   L5A("<a href=#gitlab-geo-cross-regional-distribution-disaster--recovery>Do you need cross regional distribution</br> or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
+   L5A("<a href=#gitlab-geo-cross-regional-distribution--disaster-recovery>Do you need cross regional distribution</br> or disaster recovery?"</a>) --> |Yes| L6A><b>Additional Recommendation</b><br><br> GitLab Geo]
    L4A ~~~ L5A
    L4B ~~~ L5A
    L4C ~~~ L5A
