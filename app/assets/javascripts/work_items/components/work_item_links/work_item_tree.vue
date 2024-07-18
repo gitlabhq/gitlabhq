@@ -1,5 +1,5 @@
 <script>
-import { GlToggle, GlLoadingIcon } from '@gitlab/ui';
+import { GlToggle, GlIcon, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
 import {
   FORM_TYPES,
@@ -35,6 +35,8 @@ export default {
     WorkItemTreeActions,
     GlToggle,
     GlLoadingIcon,
+    GlIcon,
+    GlTooltip,
   },
   inject: ['hasSubepicsFeature'],
   props: {
@@ -79,6 +81,16 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    showRolledUpWeight: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    rolledUpWeight: {
+      type: Number,
+      required: false,
+      default: 0,
     },
   },
   data() {
@@ -213,6 +225,20 @@ export default {
   >
     <template #header>
       {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
+      <span
+        v-if="showRolledUpWeight"
+        ref="weightData"
+        data-testid="rollup-weight"
+        class="gl-font-normal gl-ml-3 gl-display-flex gl-align-items-center gl-cursor-help gl-gap-2 gl-text-secondary"
+      >
+        <gl-icon name="weight" class="gl-text-secondary" />
+        <span data-testid="weight-value" class="gl-font-sm">{{ rolledUpWeight }}</span>
+        <gl-tooltip :target="() => $refs.weightData">
+          <span class="gl-font-bold">
+            {{ __('Weight') }}
+          </span>
+        </gl-tooltip>
+      </span>
     </template>
     <template #header-right>
       <gl-toggle

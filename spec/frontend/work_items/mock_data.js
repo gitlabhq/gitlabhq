@@ -930,6 +930,7 @@ export const workItemResponseFactory = ({
   linkedItems = mockEmptyLinkedItems,
   developmentItems = workItemDevelopmentFragmentResponse(),
   color = '#1068bf',
+  editableWeightWidget = true,
 } = {}) => ({
   data: {
     workItem: {
@@ -1020,9 +1021,15 @@ export const workItemResponseFactory = ({
           : { type: 'MOCK TYPE' },
         weightWidgetPresent
           ? {
-              __typename: 'WorkItemWidgetWeight',
               type: 'WEIGHT',
-              weight: 0,
+              weight: null,
+              rolledUpWeight: 0,
+              widgetDefinition: {
+                editable: editableWeightWidget,
+                rollUp: !editableWeightWidget,
+                __typename: 'WorkItemWidgetDefinitionWeight',
+              },
+              __typename: 'WorkItemWidgetWeight',
             }
           : { type: 'MOCK TYPE' },
         iterationWidgetPresent
@@ -4352,9 +4359,9 @@ export const allowedChildrenTypesResponse = {
 export const generateWorkItemsListWithId = (count) =>
   Array.from({ length: count }, (_, i) => ({ id: `gid://gitlab/WorkItem/${i + 1}` }));
 
-export const groupProjectsList = {
+export const namespaceProjectsList = {
   data: {
-    group: {
+    namespace: {
       id: 'gid://gitlab/Group/1',
       projects: {
         nodes: [
@@ -4388,50 +4395,6 @@ export const groupProjectsList = {
         __typename: 'ProjectConnection',
       },
       __typename: 'Group',
-    },
-  },
-};
-
-export const relatedProjectsList = {
-  data: {
-    project: {
-      id: 'gid://gitlab/Project/1',
-      group: {
-        id: 'gid://gitlab/Group/33',
-        projects: {
-          nodes: [
-            {
-              id: 'gid://gitlab/Project/1',
-              name: 'Example project A',
-              avatarUrl: null,
-              nameWithNamespace: 'Group A / Example project A',
-              fullPath: 'group-a/example-project-a',
-              namespace: {
-                id: 'gid://gitlab/Group/1',
-                name: 'Group A',
-                __typename: 'Namespace',
-              },
-              __typename: 'Project',
-            },
-            {
-              id: 'gid://gitlab/Project/2',
-              name: 'Example project B',
-              avatarUrl: null,
-              nameWithNamespace: 'Group A / Example project B',
-              fullPath: 'group-a/example-project-b',
-              namespace: {
-                id: 'gid://gitlab/Group/1',
-                name: 'Group A',
-                __typename: 'Namespace',
-              },
-              __typename: 'Project',
-            },
-          ],
-          __typename: 'ProjectConnection',
-        },
-        __typename: 'Group',
-      },
-      __typename: 'Project',
     },
   },
 };

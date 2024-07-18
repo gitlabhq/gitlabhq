@@ -26,6 +26,7 @@ import {
   WORK_ITEM_REFERENCE_CHAR,
   WORK_ITEM_TYPE_VALUE_TASK,
   WORK_ITEM_TYPE_VALUE_EPIC,
+  WIDGET_TYPE_WEIGHT,
 } from '../constants';
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
@@ -283,6 +284,15 @@ export default {
     },
     workItemNotes() {
       return this.isWidgetPresent(WIDGET_TYPE_NOTES);
+    },
+    workItemWeight() {
+      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    showRolledUpWeight() {
+      return this.workItemWeight?.widgetDefinition?.rollUp;
+    },
+    rolledUpWeight() {
+      return this.workItemWeight?.rolledUpWeight;
     },
     workItemBodyClass() {
       return {
@@ -673,6 +683,8 @@ export default {
               :work-item-iid="workItemIid"
               :can-update="canUpdate"
               :can-update-children="canUpdateChildren"
+              :rolled-up-weight="rolledUpWeight"
+              :show-rolled-up-weight="showRolledUpWeight"
               :confidential="workItem.confidential"
               :allowed-child-types="allowedChildTypes"
               @show-modal="openInModal"

@@ -6,7 +6,7 @@ RSpec.describe Sidebars::Admin::Menus::MessagesMenu, feature_category: :navigati
   it_behaves_like 'Admin menu',
     link: '/admin/broadcast_messages',
     title: s_('Admin|Messages'),
-    icon: 'messages'
+    icon: 'bullhorn'
 
   it_behaves_like 'Admin menu without sub menus', active_routes: { controller: :broadcast_messages }
 end

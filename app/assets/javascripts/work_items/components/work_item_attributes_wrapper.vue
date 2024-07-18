@@ -87,11 +87,10 @@ export default {
       return this.isWidgetPresent(WIDGET_TYPE_ROLLEDUP_DATES);
     },
     workItemWeight() {
-      /** TODO remove this check after https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158021 is merged */
-      if (this.workItemType !== WORK_ITEM_TYPE_VALUE_EPIC) {
-        return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
-      }
-      return false;
+      return this.isWidgetPresent(WIDGET_TYPE_WEIGHT);
+    },
+    isWorkItemWeightEditable() {
+      return this.workItemWeight?.widgetDefinition?.editable;
     },
     workItemParticipants() {
       return this.isWidgetPresent(WIDGET_TYPE_PARTICIPANTS);
@@ -178,7 +177,7 @@ export default {
         @labelsUpdated="$emit('attributesUpdated', { type: $options.ListType.label, ids: $event })"
       />
     </template>
-    <template v-if="workItemWeight">
+    <template v-if="isWorkItemWeightEditable">
       <work-item-weight
         class="gl-mb-5"
         :can-update="canUpdate"

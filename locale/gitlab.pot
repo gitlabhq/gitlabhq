@@ -13665,6 +13665,9 @@ msgstr ""
 msgid "ComplianceReport|Create a new framework"
 msgstr ""
 
+msgid "ComplianceReport|Create policy"
+msgstr ""
+
 msgid "ComplianceReport|Dismiss"
 msgstr ""
 
@@ -31670,6 +31673,12 @@ msgid "Manual"
 msgstr ""
 
 msgid "ManualOrdering|Couldn't save the order of the issues"
+msgstr ""
+
+msgid "ManualVariables|There are no manually-specified variables for this pipeline"
+msgstr ""
+
+msgid "ManualVariables|When you %{helpPageUrlStart}run a pipeline manually%{helpPageUrlEnd}, you can specify additional CI/CD variables to use in that pipeline run."
 msgstr ""
 
 msgid "Manually link this issue by adding it to the linked issue section of the %{linkStart}originating vulnerability%{linkEnd}."

@@ -216,8 +216,8 @@ Use sentence case for topic titles. For example:
 
 #### UI text
 
-When referring to specific user interface text, like a button label or menu
-item, use the same capitalization that's displayed in the user interface.
+When referring to specific user interface text, like a button label, page, tab,
+or menu item, use the same capitalization that's displayed in the user interface.
 
 If you think the user interface text contains style mistakes,
 create an issue or an MR to propose a change to the user interface text.
@@ -453,11 +453,15 @@ When the docs are generated, the output is:
 
 To stop the command, press <kbd>Control</kbd>+<kbd>C</kbd>.
 
-### Buttons in the UI
+### Buttons, tabs, and pages in the UI
 
 For elements with a visible label, use the label in bold with matching case.
 
-For example: `Select **Cancel**.`
+For example:
+
+- `Select **Cancel**.`
+- `On the **Issues** page...`
+- `On the **Pipelines** tab...`
 
 ### Text entered in the UI
 

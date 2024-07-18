@@ -318,9 +318,18 @@ export const setNewWorkItemCache = async (
       }
 
       if (widgetName === WIDGET_TYPE_WEIGHT) {
+        const weightWidgetData = widgetDefinitions.find(
+          (definition) => definition.type === WIDGET_TYPE_WEIGHT,
+        );
+
         widgets.push({
           type: 'WEIGHT',
           weight: null,
+          rolledUpWeight: 0,
+          widgetDefinition: {
+            editable: weightWidgetData?.editable,
+            rollUp: weightWidgetData?.rollUp,
+          },
           __typename: 'WorkItemWidgetWeight',
         });
       }

@@ -8,7 +8,7 @@ import {
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
-import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
+import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { stubComponent } from 'helpers/stub_component';
@@ -33,7 +33,7 @@ import {
 } from '~/work_items/constants';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
-import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import convertWorkItemMutation from '~/work_items/graphql/work_item_convert.mutation.graphql';
 
 import {
@@ -86,7 +86,7 @@ describe('WorkItemActions component', () => {
     hide: jest.fn(),
   };
 
-  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
+  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
   const convertWorkItemMutationSuccessHandler = jest
     .fn()
     .mockResolvedValue(convertWorkItemMutationResponse);
@@ -125,7 +125,7 @@ describe('WorkItemActions component', () => {
     wrapper = shallowMountExtended(WorkItemActions, {
       isLoggedIn: isLoggedIn(),
       apolloProvider: createMockApollo([
-        [projectWorkItemTypesQuery, typesQuerySuccessHandler],
+        [namespaceWorkItemTypesQuery, typesQuerySuccessHandler],
         [convertWorkItemMutation, convertWorkItemMutationHandler],
         [updateWorkItemNotificationsMutation, notificationsMutationHandler],
         [updateWorkItemMutation, lockDiscussionMutationHandler],

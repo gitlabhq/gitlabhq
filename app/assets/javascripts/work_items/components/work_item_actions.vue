@@ -41,7 +41,7 @@ import {
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateWorkItemNotificationsMutation from '../graphql/update_work_item_notifications.mutation.graphql';
 import convertWorkItemMutation from '../graphql/work_item_convert.mutation.graphql';
-import projectWorkItemTypesQuery from '../graphql/project_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
 import WorkItemStateToggle from './work_item_state_toggle.vue';
 
 export default {
@@ -173,7 +173,7 @@ export default {
   },
   apollo: {
     workItemTypes: {
-      query: projectWorkItemTypesQuery,
+      query: namespaceWorkItemTypesQuery,
       variables() {
         return {
           fullPath: this.fullPath,

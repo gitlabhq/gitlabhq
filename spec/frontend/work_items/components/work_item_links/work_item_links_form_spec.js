@@ -1,8 +1,7 @@
 import Vue, { nextTick } from 'vue';
 import { GlForm, GlFormGroup, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
-import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
-import groupWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/group_work_item_types.query.graphql.json';
+import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 import { sprintf, s__ } from '~/locale';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -23,27 +22,24 @@ import {
   WORK_ITEM_TYPE_ENUM_EPIC,
 } from '~/work_items/constants';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
-import groupWorkItemTypesQuery from '~/work_items/graphql/group_work_item_types.query.graphql';
-import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import updateWorkItemHierarchyMutation from '~/work_items/graphql/update_work_item_hierarchy.mutation.graphql';
-import groupProjectsForLinksWidgetQuery from '~/work_items/graphql/group_projects_for_links_widget.query.graphql';
-import relatedProjectsForLinksWidgetQuery from '~/work_items/graphql/related_projects_for_links_widget.query.graphql';
+import namespaceProjectsForLinksWidgetQuery from '~/work_items/graphql/namespace_projects_for_links_widget.query.graphql';
 import {
   availableWorkItemsResponse,
   createWorkItemMutationResponse,
   updateWorkItemMutationResponse,
   mockIterationWidgetResponse,
-  groupProjectsList,
-  relatedProjectsList,
+  namespaceProjectsList,
 } from '../../mock_data';
 
 Vue.use(VueApollo);
 
-const projectData = groupProjectsList.data.group.projects.nodes;
+const projectData = namespaceProjectsList.data.namespace.projects.nodes;
 
 const findWorkItemTypeId = (typeName) => {
-  return projectWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
+  return namespaceWorkItemTypesQueryResponse.data.workspace.workItemTypes.nodes.find(
     (node) => node.name === typeName,
   ).id;
 };
@@ -63,12 +59,12 @@ describe('WorkItemLinksForm', () => {
   const createMutationResolver = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const createMutationRejection = jest.fn().mockRejectedValue(new Error('error'));
   const availableWorkItemsResolver = jest.fn().mockResolvedValue(availableWorkItemsResponse);
-  const projectWorkItemTypesResolver = jest
+  const namespaceWorkItemTypesResolver = jest
     .fn()
-    .mockResolvedValue(projectWorkItemTypesQueryResponse);
-  const groupWorkItemTypesResolver = jest.fn().mockResolvedValue(groupWorkItemTypesQueryResponse);
-  const groupProjectsFormLinksWidgetResolver = jest.fn().mockResolvedValue(groupProjectsList);
-  const relatedProjectsForLinksWidgetResolver = jest.fn().mockResolvedValue(relatedProjectsList);
+    .mockResolvedValue(namespaceWorkItemTypesQueryResponse);
+  const namespaceProjectsFormLinksWidgetResolver = jest
+    .fn()
+    .mockResolvedValue(namespaceProjectsList);
 
   const mockParentIteration = mockIterationWidgetResponse;
 
@@ -87,10 +83,8 @@ describe('WorkItemLinksForm', () => {
     wrapper = shallowMountExtended(WorkItemLinksForm, {
       apolloProvider: createMockApollo([
         [projectWorkItemsQuery, availableWorkItemsResolver],
-        [projectWorkItemTypesQuery, projectWorkItemTypesResolver],
-        [groupWorkItemTypesQuery, groupWorkItemTypesResolver],
-        [groupProjectsForLinksWidgetQuery, groupProjectsFormLinksWidgetResolver],
-        [relatedProjectsForLinksWidgetQuery, relatedProjectsForLinksWidgetResolver],
+        [namespaceWorkItemTypesQuery, namespaceWorkItemTypesResolver],
+        [namespaceProjectsForLinksWidgetQuery, namespaceProjectsFormLinksWidgetResolver],
         [updateWorkItemHierarchyMutation, updateMutation],
         [createWorkItemMutation, createMutation],
       ]),
@@ -142,8 +136,8 @@ describe('WorkItemLinksForm', () => {
 
   it.each`
     workspace    | isGroup  | queryResolver
-    ${'project'} | ${false} | ${projectWorkItemTypesResolver}
-    ${'group'}   | ${true}  | ${groupWorkItemTypesResolver}
+    ${'project'} | ${false} | ${namespaceWorkItemTypesResolver}
+    ${'group'}   | ${true}  | ${namespaceWorkItemTypesResolver}
   `(
     'fetches $workspace work item types when isGroup is $isGroup',
     async ({ isGroup, queryResolver }) => {

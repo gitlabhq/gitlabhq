@@ -7,7 +7,6 @@ import {
   GlTooltipDirective,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import axios from '~/lib/utils/axios_utils';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
 import { s__, __, sprintf } from '~/locale';
 import Tracking from '~/tracking';
@@ -15,6 +14,7 @@ import GlCountdown from '~/vue_shared/components/gl_countdown.vue';
 import { confirmJobConfirmationMessage } from '~/ci/pipeline_details/graph/utils';
 import { TRACKING_CATEGORIES } from '../../constants';
 import getPipelineActionsQuery from '../graphql/queries/get_pipeline_actions.query.graphql';
+import jobPlayMutation from '../../jobs_page/graphql/mutations/job_play.mutation.graphql';
 
 export default {
   name: 'PipelinesManualActions',
@@ -96,17 +96,13 @@ export default {
         }
       }
       this.isLoading = true;
-
-      /**
-       * Ideally, the component would not make an api call directly.
-       * However, in order to use the eventhub and know when to
-       * toggle back the `isLoading` property we'd need an ID
-       * to track the request with a watcher - since this component
-       * is rendered at least 20 times in the same page, moving the
-       * api call directly here is the most performant solution
-       */
-      axios
-        .post(`${action.playPath}.json`)
+      this.$apollo
+        .mutate({
+          mutation: jobPlayMutation,
+          variables: {
+            id: action.id,
+          },
+        })
         .then(() => {
           this.isLoading = false;
           this.$emit('refresh-pipeline-table');

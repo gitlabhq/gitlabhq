@@ -24,7 +24,7 @@
           - @pipeline.yaml_errors.split("\n").each do |error|
             %li= error
         - if can_view_pipeline_editor?(@project)
-          = render Pajamas::ButtonComponent.new(href: project_ci_pipeline_editor_path(@project), variant: :confirm) do
+          = render Pajamas::ButtonComponent.new(href: project_ci_pipeline_editor_path(@project, branch_name: @pipeline.source_ref), variant: :confirm) do
             = s_("Pipelines|Go to the pipeline editor")
 
   - else

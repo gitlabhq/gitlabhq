@@ -15,7 +15,6 @@ DETAILS:
 FLAG:
 The availability of this feature is controlled by a feature flag.
 For more information, see the history.
-This feature is available for testing, but not ready for production use.
 
 Use Pipeline execution policies to enforce CI/CD jobs for all applicable projects.
 
@@ -60,6 +59,7 @@ Note the following:
 - The `override_project_ci` strategy will not override other security policy configurations.
 - The `override_project_ci` strategy takes precedence over other policies using the `inject` strategy. If any policy with `override_project_ci` applies, the project CI configuration will be ignored.
 - You should choose unique job names for pipeline execution policies. Some CI/CD configurations are based on job names and it can lead to unwanted results if a job exists multiple times in the same pipeline. The `needs` keyword, for example makes one job dependent on another. In case of multiple jobs with the same name, it will randomly depend on one of them.
+- The ability to enforce a scan execution policy and pipeline execution policy concurrently against the same project is not currently supported. You can use pipeline execution policies in isolation, or you can create scan execution policies and pipeline execution policies that target a different set of projects within the scope. Support for enforcing both a scan execution policy and pipeline execution policy on the same project is proposed in [issue 473112](https://gitlab.com/gitlab-org/gitlab/-/issues/473112).
 
 ### Job naming best practice
 

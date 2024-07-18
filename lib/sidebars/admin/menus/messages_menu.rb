@@ -16,7 +16,7 @@ module Sidebars
 
         override :sprite_icon
         def sprite_icon
-          'messages'
+          'bullhorn'
         end
 
         override :active_routes

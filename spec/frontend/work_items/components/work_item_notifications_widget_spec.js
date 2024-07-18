@@ -2,7 +2,7 @@ import { GlButton, GlIcon } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 
-import projectWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/project_work_item_types.query.graphql.json';
+import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -12,7 +12,7 @@ import { isLoggedIn } from '~/lib/utils/common_utils';
 import toast from '~/vue_shared/plugins/global_toast';
 import WorkItemNotificationsWidget from '~/work_items/components/work_item_notifications_widget.vue';
 import updateWorkItemNotificationsMutation from '~/work_items/graphql/update_work_item_notifications.mutation.graphql';
-import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 
 import { updateWorkItemNotificationsMutationResponse } from '../mock_data';
 
@@ -32,7 +32,7 @@ describe('WorkItemActions component', () => {
     hide: jest.fn(),
   };
 
-  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(projectWorkItemTypesQueryResponse);
+  const typesQuerySuccessHandler = jest.fn().mockResolvedValue(namespaceWorkItemTypesQueryResponse);
   const toggleNotificationsOffHandler = jest
     .fn()
     .mockResolvedValue(updateWorkItemNotificationsMutationResponse(false));
@@ -53,7 +53,7 @@ describe('WorkItemActions component', () => {
     wrapper = shallowMountExtended(WorkItemNotificationsWidget, {
       isLoggedIn: isLoggedIn(),
       apolloProvider: createMockApollo([
-        [projectWorkItemTypesQuery, typesQuerySuccessHandler],
+        [namespaceWorkItemTypesQuery, typesQuerySuccessHandler],
         [updateWorkItemNotificationsMutation, notificationsMutationHandler],
       ]),
       propsData: {

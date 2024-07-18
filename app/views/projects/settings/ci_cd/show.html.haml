@@ -5,123 +5,105 @@
 - expanded = expanded_by_default?
 - general_expanded = @project.errors.empty? ? expanded : true
 
+%h1.gl-sr-only= @breadcrumb_title
+
 - if can?(current_user, :admin_pipeline, @project)
-  %section.settings#js-general-pipeline-settings.no-animate{ class: ('expanded' if general_expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _("General pipelines")
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _("Customize your pipeline configuration.")
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_("General pipelines"),
+    id: 'js-general-pipeline-settings',
+    expanded: general_expanded) do |c|
+    - c.with_description do
+      = _("Customize your pipeline configuration.")
+    - c.with_body do
       = render 'form'
 
-  %section.settings#autodevops-settings.no-animate{ class: ('expanded' if expanded), data: { testid: 'autodevops-settings-content' } }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = s_('CICD|Auto DevOps')
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        - auto_devops_url = help_page_path('topics/autodevops/index')
-        - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
-        - auto_devops_link = link_to('', auto_devops_url, target: '_blank', rel: 'noopener noreferrer')
-        - quickstart_link = link_to('', quickstart_url, target: '_blank', rel: 'noopener noreferrer')
-        = safe_format(s_('AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}'), tag_pair(auto_devops_link, :auto_devops_start, :auto_devops_end), tag_pair(quickstart_link, :quickstart_start, :quickstart_end))
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(s_('CICD|Auto DevOps'),
+    id: 'autodevops-settings',
+    testid: 'autodevops-settings-content',
+    expanded: expanded) do |c|
+    - c.with_description do
+      - auto_devops_url = help_page_path('topics/autodevops/index')
+      - quickstart_url = help_page_path('topics/autodevops/cloud_deployments/auto_devops_with_gke')
+      - auto_devops_link = link_to('', auto_devops_url, target: '_blank', rel: 'noopener noreferrer')
+      - quickstart_link = link_to('', quickstart_url, target: '_blank', rel: 'noopener noreferrer')
+      = safe_format(s_('AutoDevOps|%{auto_devops_start}Automate building, testing, and deploying%{auto_devops_end} your applications based on your continuous integration and delivery configuration. %{quickstart_start}How do I get started?%{quickstart_end}'), tag_pair(auto_devops_link, :auto_devops_start, :auto_devops_end), tag_pair(quickstart_link, :quickstart_start, :quickstart_end))
+    - c.with_body do
       = render 'autodevops_form', auto_devops_enabled: @project.auto_devops_enabled?
 
   = render_if_exists 'projects/settings/ci_cd/protected_environments', expanded: expanded
 
 - if can?(current_user, :admin_runner, @project)
   - expand_runners = expanded || params[:expand_runners]
-  %section.settings.no-animate#js-runners-settings{ class: ('expanded' if expand_runners), data: { testid: 'runners-settings-content' } }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _("Runners")
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expand_runners ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
-        = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Runners'),
+    id: 'js-runners-settings',
+    testid: 'runners-settings-content',
+    expanded: expand_runners) do |c|
+    - c.with_description do
+      = _("Runners are processes that pick up and execute CI/CD jobs for GitLab.")
+      = link_to s_('What is GitLab Runner?'), 'https://docs.gitlab.com/runner/', target: '_blank', rel: 'noopener noreferrer'
+    - c.with_body do
       = render 'projects/runners/settings'
 
 - if can?(current_user, :admin_pipeline, @project)
   - if Gitlab::CurrentSettings.current_application_settings.keep_latest_artifact?
-    %section.settings.no-animate#js-artifacts-settings{ class: ('expanded' if expanded) }
-      .settings-header
-        %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-          = _("Artifacts")
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-          = expanded ? _('Collapse') : _('Expand')
-        %p.gl-text-secondary
-          = _("A job artifact is an archive of files and directories saved by a job when it finishes.")
-      .settings-content
+    = render ::Layouts::SettingsBlockComponent.new(_("Artifacts"),
+      id: 'js-artifacts-settings',
+      expanded: expanded) do |c|
+      - c.with_description do
+        = _("A job artifact is an archive of files and directories saved by a job when it finishes.")
+      - c.with_body do
         #js-artifacts-settings-app{ data: { full_path: @project.full_path, help_page_path: help_page_path('ci/jobs/job_artifacts', anchor: 'keep-artifacts-from-most-recent-successful-jobs') } }
 
 - if can?(current_user, :admin_cicd_variables, @project)
-  %section.settings.no-animate#js-cicd-variables-settings{ class: ('expanded' if expanded), data: { testid: 'variables-settings-content' } }
-    .settings-header
-      = render 'ci/variables/header', expanded: expanded
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Variables'),
+    id: 'js-cicd-variables-settings',
+    testid: 'variables-settings-content',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = render "ci/variables/content", entity: @entity, variable_limit: @variable_limit
+    - c.with_body do
       = render 'ci/variables/index', save_endpoint: project_variables_path(@project)
 
 - if can?(current_user, :admin_pipeline, @project)
-  %section.settings.no-animate#js-pipeline-triggers{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _("Pipeline trigger tokens")
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
-        = link_to _('Learn more.'), help_page_path('ci/triggers/index'), target: '_blank', rel: 'noopener noreferrer'
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Pipeline trigger tokens'),
+    id: 'js-pipeline-triggers',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = _("Trigger a pipeline for a branch or tag by generating a trigger token and using it with an API call. The token impersonates a user's project access and permissions.")
+      = link_to _('Learn more.'), help_page_path('ci/triggers/index'), target: '_blank', rel: 'noopener noreferrer'
+    - c.with_body do
       = render 'projects/triggers/index'
 
   = render_if_exists 'projects/settings/ci_cd/auto_rollback', expanded: expanded
 
   - if can?(current_user, :create_freeze_period, @project)
-    %section.settings.no-animate#js-deploy-freeze-settings{ class: ('expanded' if expanded) }
-      .settings-header
-        %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-          = _("Deploy freezes")
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-          = expanded ? _('Collapse') : _('Expand')
-        %p.gl-text-secondary
-          - freeze_period_docs = help_page_path('user/project/releases/index', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
-          - freeze_period_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: freeze_period_docs }
-          = html_escape(s_('DeployFreeze|Add a freeze period to prevent unintended releases during a period of time for a given environment. You must update the deployment jobs in %{filename} according to the deploy freezes added here. %{freeze_period_link_start}Learn more.%{freeze_period_link_end}')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('.gitlab-ci.yml') }
+    = render ::Layouts::SettingsBlockComponent.new(_('Deploy freezes'),
+      id: 'js-deploy-freeze-settings',
+      expanded: expanded) do |c|
+      - c.with_description do
+        - freeze_period_docs = help_page_path('user/project/releases/index', anchor: 'prevent-unintentional-releases-by-setting-a-deploy-freeze')
+        - freeze_period_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: freeze_period_docs }
+        = html_escape(s_('DeployFreeze|Add a freeze period to prevent unintended releases during a period of time for a given environment. You must update the deployment jobs in %{filename} according to the deploy freezes added here. %{freeze_period_link_start}Learn more.%{freeze_period_link_end}')) % { freeze_period_link_start: freeze_period_link_start, freeze_period_link_end: '</a>'.html_safe, filename: tag.code('.gitlab-ci.yml') }
 
-          - cron_syntax_url = 'https://crontab.guru/'
-          - cron_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: cron_syntax_url }
-          = s_('DeployFreeze|Specify deploy freezes using %{cron_syntax_link_start}cron syntax%{cron_syntax_link_end}.').html_safe % { cron_syntax_link_start: cron_syntax_link_start, cron_syntax_link_end: "</a>".html_safe }
-
-      .settings-content
+        - cron_syntax_url = 'https://crontab.guru/'
+        - cron_syntax_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: cron_syntax_url }
+        = s_('DeployFreeze|Specify deploy freezes using %{cron_syntax_link_start}cron syntax%{cron_syntax_link_end}.').html_safe % { cron_syntax_link_start: cron_syntax_link_start, cron_syntax_link_end: "</a>".html_safe }
+      - c.with_body do
         = render 'ci/deploy_freeze/index'
 
-  %section.settings.no-animate#js-token-access{ class: ('expanded' if expanded) }
-    .settings-header
-      %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-        = _("Job token permissions")
-      = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-        = expanded ? _('Collapse') : _('Expand')
-      %p.gl-text-secondary
-        = _("Control which CI/CD job tokens can be used to authenticate with this project.")
-    .settings-content
+  = render ::Layouts::SettingsBlockComponent.new(_('Job token permissions'),
+    id: 'js-token-access',
+    expanded: expanded) do |c|
+    - c.with_description do
+      = _("Control which CI/CD job tokens can be used to authenticate with this project.")
+    - c.with_body do
       = render 'ci/token_access/index'
 
   - if show_secure_files_setting(@project, current_user)
-    %section.settings.no-animate#js-secure-files{ class: ('expanded' if expanded) }
-      .settings-header
-        %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-          = _("Secure Files")
-        = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-          = expanded ? _('Collapse') : _('Expand')
-        %p.gl-text-secondary
-          = _("Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
-          = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
-      .settings-content
+    = render ::Layouts::SettingsBlockComponent.new(_('Secure Files'),
+      id: 'js-secure-files',
+      expanded: expanded) do |c|
+      - c.with_description do
+        = _("Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
+        = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
+      - c.with_body do
         #js-ci-secure-files{ data: { project_id: @project.id, admin: can?(current_user, :admin_secure_files, @project).to_s, file_size_limit: Ci::SecureFile::FILE_SIZE_LIMIT.to_mb } }

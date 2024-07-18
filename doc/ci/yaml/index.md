@@ -2607,6 +2607,8 @@ job_with_id_tokens:
 
 **Related topics**:
 
+- [ID token authentication](../secrets/id_token_authentication.md).
+- [Connect to cloud services](../cloud_services/index.md).
 - [Keyless signing with Sigstore](signing_examples.md).
 
 ### `image`

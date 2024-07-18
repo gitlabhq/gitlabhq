@@ -15,7 +15,7 @@ import TaskList from '~/task_list';
 import { addHierarchyChild, removeHierarchyChild } from '~/work_items/graphql/cache_utils';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
 import deleteWorkItemMutation from '~/work_items/graphql/delete_work_item.mutation.graphql';
-import projectWorkItemTypesQuery from '~/work_items/graphql/project_work_item_types.query.graphql';
+import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import {
   sprintfWorkItem,
   I18N_WORK_ITEM_ERROR_CREATING,
@@ -110,7 +110,7 @@ export default {
       },
     },
     workItemTypes: {
-      query: projectWorkItemTypesQuery,
+      query: namespaceWorkItemTypesQuery,
       variables() {
         return {
           fullPath: this.fullPath,
