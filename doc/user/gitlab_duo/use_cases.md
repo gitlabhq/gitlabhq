@@ -453,7 +453,7 @@ fun main() {
 ### Get Started with PowerShell
 
 NOTE:
-PowerShell support is [experimental](../project/repository/code_suggestions/supported_extensions.md#add-support-for-more-languages-for-code-suggestions-in-vs-code).
+PowerShell support is [experimental](../project/repository/code_suggestions/supported_extensions.md#add-additional-languages-for-code-suggestions).
 
 1. Use Duo Chat to ask how to get started with a PowerShell script that prints the file size of the current directory.
 

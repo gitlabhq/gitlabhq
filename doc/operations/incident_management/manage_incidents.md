@@ -34,25 +34,25 @@ To add an incident to an [iteration](../../user/group/iterations/index.md):
 
 Alternatively, you can use the `/iteration` [quick action](../../user/project/quick_actions.md#issues-merge-requests-and-epics).
 
-### From the incidents list
+### From the Incidents page
 
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To create an incident from the incidents list:
+To create an incident from the **Incidents** page:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
 1. Select **Create incident**.
 
-### From the issues list
+### From the Issues page
 
 Prerequisites:
 
 - You must have at least the Reporter role for the project.
 
-To create an incident from the issues list:
+To create an incident from the **Issues** page:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Plan > Issues**, and select **New issue**.
@@ -117,9 +117,9 @@ To set up a webhook with PagerDuty:
 To confirm the integration is successful, trigger a test incident from PagerDuty to
 check if a GitLab incident is created from the incident.
 
-## View incidents list
+## View a list of incidents
 
-To view the [incidents list](incidents.md#incidents-list):
+To view a list of the [incidents](incidents.md#incidents-list):
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Monitor > Incidents**.
@@ -151,7 +151,7 @@ To assign a user:
 
 ## Change severity
 
-See [incident list](incidents.md#incidents-list) for a full description of the severity levels available.
+See the [incidents list](incidents.md#incidents-list) topic for a full description of the severity levels available.
 
 Prerequisites:
 

@@ -143,7 +143,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-#### From the issues list
+#### From the Issues page
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15991) in GitLab 15.6.
 
@@ -564,7 +564,7 @@ An issue can be assigned to one or [more users](multiple_assignees_for_issues.md
 
 The assignees can be changed as often as needed. The idea is that the assignees are
 people responsible for an issue.
-When an issue is assigned to someone, it appears in their assigned issues list.
+When an issue is assigned to someone, it appears in their **Assigned issues** page.
 
 If a user is not a member of a project, an issue can only be assigned to them if they create it
 themselves or another project member assigns them.
@@ -623,7 +623,7 @@ To edit health status of an issue:
 
 You can see the issue's health status in:
 
-- Issues list
+- The **Issues** page
 - Epic tree
 - Issue cards in issue boards
 

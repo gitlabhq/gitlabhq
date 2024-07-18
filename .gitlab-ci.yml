@@ -180,6 +180,8 @@ variables:
   GET_SOURCES_ATTEMPTS: "3"
   # CI_FETCH_REPO_GIT_STRATEGY: "none" is from artifacts. "clone" is from cloning
   CI_FETCH_REPO_GIT_STRATEGY: "none"
+  FORCE_COLOR: 1
+  CLICOLOR_FORCE: 1
 
   FLAKY_RSPEC_SUITE_REPORT_PATH: rspec/flaky/report-suite.json
   FRONTEND_FIXTURES_MAPPING_PATH: crystalball/frontend_fixtures_mapping.json

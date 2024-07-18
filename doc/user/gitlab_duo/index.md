@@ -118,16 +118,6 @@ DETAILS:
 - LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
 - [View documentation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
 
-### Vulnerability resolution
-
-DETAILS:
-**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md) add-on
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-- Help resolve a vulnerability by generating a merge request that addresses it.
-- LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
-- [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
-
 ## Beta features
 
 ### Merge request template population
@@ -212,6 +202,17 @@ DETAILS:
 - Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
 - [View documentation](experiments.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+
+### Vulnerability resolution
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com
+**Status:** Experiment
+
+- Help resolve a vulnerability by generating a merge request that addresses it.
+- LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
+- [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
 
 ### Product Analytics
 

@@ -10,7 +10,7 @@ export default {
     showMore: __('Show more'),
     showLess: __('Show less'),
   },
-  truncateTextToggleButtonProps: { class: 'gl-font-sm!' },
+  truncateTextToggleButtonProps: { class: '!gl-text-sm' },
   components: {
     GlAvatarLabeled,
     GlTruncateText,
@@ -34,9 +34,7 @@ export default {
 </script>
 
 <template>
-  <li
-    class="organization-row gl-py-5 gl-px-5 gl-border-b gl-display-flex gl-align-items-flex-start"
-  >
+  <li class="organization-row gl-border-b gl-flex gl-items-start gl-px-5 gl-py-5">
     <gl-avatar-labeled
       :size="48"
       :src="organization.avatarUrl"
@@ -58,7 +56,7 @@ export default {
         <div
           v-safe-html:[$options.safeHtmlConfig]="organization.descriptionHtml"
           data-testid="organization-description-html"
-          class="gl-text-secondary gl-font-sm md"
+          class="md gl-text-sm gl-text-secondary"
         ></div>
       </gl-truncate-text>
     </gl-avatar-labeled>

@@ -79,8 +79,8 @@ export default {
 
 <template>
   <section>
-    <div v-if="showHeader" class="gl-display-flex gl-align-items-center">
-      <h1 class="gl-my-4 gl-font-size-h-display">{{ $options.i18n.organizations }}</h1>
+    <div v-if="showHeader" class="gl-flex gl-items-center">
+      <h1 class="gl-my-4 gl-text-size-h-display">{{ $options.i18n.organizations }}</h1>
       <div class="gl-ml-auto">
         <gl-button v-if="showNewOrganizationButton" :href="newOrganizationUrl" variant="confirm">{{
           $options.i18n.newOrganization

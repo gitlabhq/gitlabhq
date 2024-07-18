@@ -75,7 +75,7 @@ To import Jira issues to a GitLab project:
 
 1. Select **Continue**. You're presented with a confirmation that import has started.
 
-   While the import is running in the background, you can navigate away from the import status page
-   to the issues page, and you can see the new issues appearing in the issues list.
+   While the import is running in the background, you can navigate
+   to the **Issues** page to see the new issues appearing in the list.
 
 1. To check the status of your import, go to the Jira import page again.

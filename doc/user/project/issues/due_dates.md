@@ -37,7 +37,7 @@ The last way to set a due date is by using [quick actions](../quick_actions.md),
 
 ## Making use of due dates
 
-You can see issues with their due dates in the issues list.
+You can see issues with their due dates in the **Issues** page.
 Overdue issues have their icon and date colored red.
 To sort issues by their due dates, select **Due date** from the dropdown list on the right.
 Issues are then sorted from the earliest due date to the latest.

@@ -73,7 +73,7 @@ Confidential issues are hidden in search results for users without the necessary
 ## Confidential issue indicators
 
 Confidential issues are visually different from regular issues in a few ways.
-In the issues list and boards, you can see the confidential (**{eye-slash}**) icon
+In the **Issues** and **Issue boards** pages, you can see the confidential (**{eye-slash}**) icon
 next to issues marked as confidential.
 
 If you don't have [enough permissions](#who-can-see-confidential-issues),
