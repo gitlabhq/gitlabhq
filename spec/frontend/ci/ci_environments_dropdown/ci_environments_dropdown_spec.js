@@ -90,7 +90,7 @@ describe('Ci environments dropdown', () => {
     });
 
     it('does not display active checkmark', () => {
-      expect(findActiveIconByIndex(0).classes('gl-visibility-hidden')).toBe(true);
+      expect(findActiveIconByIndex(0).classes('gl-invisible')).toBe(true);
     });
 
     describe('when isEnvironmentRequired is false', () => {

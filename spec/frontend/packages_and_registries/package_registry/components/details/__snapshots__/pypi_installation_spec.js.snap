@@ -45,7 +45,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
           </span>
         </button>
         <div
-          class="gl-new-dropdown-panel gl-w-31!"
+          class="!gl-w-31 gl-new-dropdown-panel"
           data-testid="base-dropdown-menu"
           id="reference-1"
         >
@@ -83,7 +83,7 @@ exports[`PypiInstallation renders all the messages 1`] = `
                 >
                   <svg
                     aria-hidden="true"
-                    class="gl-align-self-start gl-fill-current gl-icon gl-mt-3 gl-new-dropdown-item-check-icon s16"
+                    class="gl-fill-current gl-icon gl-mt-3 gl-new-dropdown-item-check-icon gl-self-start s16"
                     data-testid="dropdown-item-checkbox"
                     role="img"
                   >

@@ -80,7 +80,7 @@ export default {
 
 <template>
   <section>
-    <h1 class="gl-my-4 gl-font-size-h-display">{{ $options.i18n.users }}</h1>
+    <h1 class="gl-my-4 gl-text-size-h-display">{{ $options.i18n.users }}</h1>
     <users-view
       :users="users"
       :loading="loading"

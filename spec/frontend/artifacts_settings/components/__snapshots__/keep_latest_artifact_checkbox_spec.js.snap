@@ -3,7 +3,7 @@
 exports[`Keep latest artifact toggle when application keep latest artifact setting is enabled sets correct setting value in toggle with query result 1`] = `
 <div>
   <div
-    class="gl-display-flex gl-flex-direction-column gl-mb-0 gl-toggle-wrapper"
+    class="gl-flex gl-flex-col gl-mb-0 gl-toggle-wrapper"
     data-testid="toggle-wrapper"
   >
     <span

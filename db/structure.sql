@@ -17213,7 +17213,7 @@ CREATE TABLE scan_result_policy_violations (
     updated_at timestamp with time zone NOT NULL,
     violation_data jsonb,
     approval_policy_rule_id bigint,
-    status smallint DEFAULT 1 NOT NULL
+    status smallint DEFAULT 1 NOT NULL,
     CONSTRAINT chk_policy_violations_rule_id_or_policy_id_not_null CHECK (((approval_policy_rule_id IS NOT NULL) OR (scan_result_policy_id IS NOT NULL)))
 );
 
