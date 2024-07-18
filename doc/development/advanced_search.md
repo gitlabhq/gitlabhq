@@ -317,6 +317,123 @@ Create the following MRs and have them reviewed by a member of the Global Search
 
 After indexing is done, the index is ready for search.
 
+### Adding a new scope to search service
+
+Search data is available in [`SearchController`](../../app/controllers/search_controller.rb) and
+[Search API](../../lib/api/search.rb). Both use the [`SearchService`](../../app/services/search_service.rb) to return results.
+The `SearchService` can be used to return results outside of the `SearchController` and `Search API`.
+
+#### Search scopes
+
+The `SearchService` exposes searching at [global](../../app/services/search/global_service.rb),
+[group](../../app/services/search/group_service.rb), and [project](../../app/services/search/project_service.rb) levels.
+
+New scopes must be added to the following constants:
+
+- `ALLOWED_SCOPES` (or override `allowed_scopes` method) in each EE `SearchService` file
+- `ALLOWED_SCOPES` in `Gitlab::Search::AbuseDetection`
+- `search_tab_ability_map` method in `Search::Navigation`. Override in the EE version if needed
+
+NOTE:
+Global search can be disabled for a scope. Create an ops feature flag named `global_search_SCOPE_tab` that defaults to `true`
+and add it to the `global_search_enabled_for_scope?` method in [`SearchService`](../../app/services/search_service.rb).
+
+#### Results classes
+
+The search results class available are:
+
+| Search type | Search level | Class |
+| -- | -- | -- |
+| Basic search | global | `Gitlab::SearchResults` |
+| Basic search | group | `Gitlab::GroupSearchResults` |
+| Basic search | project | `Gitlab::ProjectSearchResults` |
+| Advanced search | global | `Gitlab::Elastic::SearchResults` |
+| Advanced search | group | `Gitlab::Elastic::GroupSearchResults` |
+| Advanced search | project | `Gitlab::Elastic::ProjectSearchResults` |
+| Exact code search | global | `Search::Zoekt::SearchResults` |
+| Exact code search | group | `Search::Zoekt::SearchResults` |
+| Exact code search | project | `Search::Zoekt::SearchResults` |
+| All search types | All levels | `Search::EmptySearchResults` |
+
+The result class returns the following data:
+
+1. `objects` - paginated from Elasticsearch transformed into database records or POROs
+1. `formatted_count` - document count returned from Elasticsearch
+1. `highlight_map` - map of highlighted fields from Elasticsearch
+1. `failed?` - if a failure occurred
+1. `error` - error message returned from Elasticsearch
+1. `aggregations` - (optional) aggregations from Elasticsearch
+
+New scopes must add support to these methods within `Gitlab::Elastic::SearchResults` class:
+
+- `objects`
+- `formatted_count`
+- `highlight_map`
+- `failed?`
+- `error`
+
+#### Building a query
+
+The query builder framework is used to build Elasticsearch queries.
+
+A query is built using:
+
+- a query from `Search::Elastic::Queries`
+- one or more filters from `::Search::Elastic::Filters`
+- (optional) aggregations from `::Search::Elastic::Aggregations`
+- one or more formats from `::Search::Elastic::Formats`
+
+New scopes must create a new query builder class that inherits from `Search::Elastic::QueryBuilder`.
+
+### Sending queries to Elasticsearch
+
+The queries are sent to `::Gitlab::Search::Client` from `Gitlab::Elastic::SearchResults`.
+Results are parsed through a `Search::Elastic::ResponseMapper` to translate
+the response from Elasticsearch.
+
+#### Model requirements
+
+The model must response to the `to_ability_name` method so that the redaction logic can check if it has
+`Ability.allowed?(current_user, :"read_#{object.to_ability_name}", object)?`. The method must be added if
+it does not exist.
+
+The model must define a `preload_search_data` scope to avoid N+1s.
+
+### Permissions tests
+
+Search code has a final security check in `SearchService#redact_unauthorized_results`. This prevents
+unauthorized results from being returned to users who don't have permission to view them. The check is
+done in Ruby to handle inconsistencies in Elasticsearch permissions data due to bugs or indexing delays.
+
+New scopes must add visibility specs to ensure proper access control.
+To test that permissions are properly enforced, add tests using the [`'search respects visibility'` shared example](../../ee/spec/support/shared_examples/services/search_service_shared_examples.rb) 
+in the EE specs: 
+
+- `ee/spec/services/search/global_service_spec.rb`
+- `ee/spec/services/search/group_service_spec.rb`
+- `ee/spec/services/search/project_service_spec.rb` 
+
+### Testing the new scope
+
+Test your new scope in the Rails console
+
+```ruby
+search_service = ::SearchService.new(User.first, { search: 'foo', scope: 'SCOPE_NAME' })
+search_service.search_objects
+```
+
+### Recommended process for implementing search for a new document type
+
+Create the following MRs and have them reviewed by a member of the Global Search team:
+
+1. [Enable the new scope](#search-scopes).
+1. Create a [query builder](#building-a-query).
+1. Implement all [model requirements](#model-requirements).
+1. [Add the new scope to `Gitlab::Elastic::SearchResults`](#results-classes) behind a feature flag.
+1. Add specs which must include [permissions tests](#permissions-tests)
+1. [Test the new scope](#testing-the-new-scope)
+1. Update documentation for [Advanced search](../user/search/advanced_search.md) and [Search API](../api/search.md) (if applicable)
+
 ## Zero-downtime reindexing with multiple indices
 
 NOTE:

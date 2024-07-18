@@ -229,7 +229,7 @@ export default {
       ),
       variant: 'warning',
     },
-    optionalText: s__('MlModelRegistry|Optional'),
+    optionalText: s__('MlModelRegistry|(Optional)'),
   },
 };
 </script>
@@ -266,6 +266,7 @@ export default {
         </gl-form-group>
         <gl-form-group
           :label="$options.modal.modelDescription"
+          data-testid="descriptionGroupId"
           label-for="descriptionId"
           optional
           :optional-text="$options.modal.optionalText"
@@ -309,6 +310,7 @@ export default {
         </gl-form-group>
         <gl-form-group
           :label="$options.modal.versionDescriptionTitle"
+          data-testid="versionDescriptionGroupId"
           label-for="versionDescriptionId"
           optional
           :optional-text="$options.modal.optionalText"

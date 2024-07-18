@@ -39,15 +39,7 @@ To view your project's dependencies, ensure you meet the following requirements:
 ## View project dependencies
 
 > - In GitLab 17.2, the `location` field no longer links to the commit where the dependency was last detected when the feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` is enabled. The flag is disabled by default.
-
-FLAG:
-When the feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` is enabled,
-GitLab no longer keeps track of the last pipeline and the last commit
-where a particular dependency was detected.
-As a result, in new projects the `location` field
-links to the commit where the dependency was first detected.
-When disabled, it links to the last commit where the dependency was detected.
-Disabled by default.
+> - In GitLab 17.3 the `location` field always links to the commit where the dependency was first detected. Feature flag `skip_sbom_occurrences_update_on_pipeline_id_change` removed.
 
 To view the dependencies of a project or all projects in a group:
 

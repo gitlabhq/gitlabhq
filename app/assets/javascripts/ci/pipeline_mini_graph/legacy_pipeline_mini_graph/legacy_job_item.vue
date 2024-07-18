@@ -180,9 +180,7 @@ export default {
     :data-testid="testid"
   >
     <template #list-item>
-      <div
-        class="gl-display-flex gl-align-items-center gl-justify-content-space-between -gl-mt-2 -gl-mb-2 -gl-ml-2"
-      >
+      <div class="gl-flex gl-items-center gl-justify-between -gl-my-1 -gl-ml-2">
         <job-name-component
           v-gl-tooltip.viewport.left
           :title="tooltipText"
@@ -198,7 +196,6 @@ export default {
           :action-icon="status.action.icon"
           :should-trigger-click="shouldTriggerActionClick"
           :with-confirmation-modal="withConfirmationModal"
-          class="-gl-mt-2 -gl-mr-2"
           @showActionConfirmationModal="showActionConfirmationModal"
         />
         <gl-modal

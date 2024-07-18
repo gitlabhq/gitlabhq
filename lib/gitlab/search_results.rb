@@ -122,11 +122,11 @@ module Gitlab
       []
     end
 
-    def failed?(_scope)
+    def failed?(*)
       false
     end
 
-    def error
+    def error(*)
       nil
     end
 

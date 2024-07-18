@@ -117,6 +117,10 @@ For more information, see the:
 - [Deprecations and removals documentation](../../update/deprecations.md#non-expiring-access-tokens).
 - [Deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/369122).
 
+## 17.3.0
+
+- Git 2.45.0 and later is required by Gitaly. For installations from source, you should use the [Git version provided by Gitaly](../../install/installation.md#git).
+
 ## 17.1.0
 
 - Bitbucket identities with untrusted `extern_uid` are deleted.

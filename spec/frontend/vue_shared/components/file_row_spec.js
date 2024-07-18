@@ -164,6 +164,6 @@ describe('File row component', () => {
       level: 0,
     });
 
-    expect(wrapper.findComponent(GlIcon).props('name')).toBe('thumbtack');
+    expect(wrapper.findComponent(GlIcon).props('name')).toBe('link');
   });
 });

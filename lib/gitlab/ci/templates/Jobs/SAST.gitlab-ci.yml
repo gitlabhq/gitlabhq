@@ -159,7 +159,6 @@ semgrep-sast:
         - '**/*.hpp'
         - '**/*.go'
         - '**/*.java'
-        - '**/*.html'
         - '**/*.cs'
         - '**/*.scala'
         - '**/*.sc'

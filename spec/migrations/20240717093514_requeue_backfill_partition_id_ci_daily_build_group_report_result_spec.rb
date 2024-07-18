@@ -3,7 +3,7 @@
 require 'spec_helper'
 require_migration!
 
-RSpec.describe QueueBackfillPartitionIdCiDailyBuildGroupReportResult, migration: :gitlab_ci, feature_category: :ci_scaling do
+RSpec.describe RequeueBackfillPartitionIdCiDailyBuildGroupReportResult, migration: :gitlab_ci, feature_category: :ci_scaling do
   let!(:batched_migrations) { table(:batched_background_migrations) }
   let!(:migration) { described_class::MIGRATION }
 

@@ -219,7 +219,7 @@ describe('graph component', () => {
       const jobClasses = [
         'gl-p-3',
         'gl-border-0',
-        'gl-rounded',
+        'gl-rounded-base',
         'hover:gl-bg-strong',
         'focus:gl-bg-strong',
         'gl-hover-text-gray-900',

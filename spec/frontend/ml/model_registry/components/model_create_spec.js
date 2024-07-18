@@ -77,6 +77,8 @@ describe('ModelCreate', () => {
   const findNameInput = () => wrapper.findByTestId('nameId');
   const findVersionInput = () => wrapper.findByTestId('versionId');
   const findVersionGroup = () => wrapper.findByTestId('versionGroupId');
+  const findVersionDescriptionGroup = () => wrapper.findByTestId('versionDescriptionGroupId');
+  const findDescriptionGroup = () => wrapper.findByTestId('descriptionGroupId');
   const findDescriptionInput = () => wrapper.findByTestId('descriptionId');
   const findVersionDescriptionInput = () => wrapper.findByTestId('versionDescriptionId');
   const findImportArtifactZone = () => wrapper.findComponent(ImportArtifactZone);
@@ -166,10 +168,29 @@ describe('ModelCreate', () => {
         );
       });
 
-      it('renders the version group description', () => {
-        expect(findVersionGroup().attributes('description')).toBe(
-          ModelCreate.modal.versionDescription,
-        );
+      it('renders the version group', () => {
+        expect(findVersionGroup().attributes()).toMatchObject({
+          description: 'Example: 1.0.0',
+          optional: 'true',
+          optionaltext: '(Optional)',
+          label: 'Version',
+        });
+      });
+
+      it('renders the version description group', () => {
+        expect(findVersionDescriptionGroup().attributes()).toMatchObject({
+          optional: 'true',
+          optionaltext: '(Optional)',
+          label: 'Version description',
+        });
+      });
+
+      it('renders the description group', () => {
+        expect(findDescriptionGroup().attributes()).toMatchObject({
+          optionaltext: '(Optional)',
+          optional: 'true',
+          label: 'Model description',
+        });
       });
 
       it('renders the description input', () => {

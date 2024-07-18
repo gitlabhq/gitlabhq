@@ -30,7 +30,6 @@ import createNotesStore from '~/notes/stores/modules';
 import diffsModule from '~/diffs/store/modules';
 import { SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED } from '~/diffs/i18n';
 import diffLineNoteFormMixin from '~/notes/mixins/diff_line_note_form';
-import { SET_PINNED_FILE_HASH } from '~/diffs/store/mutation_types';
 import { getDiffFileMock } from '../mock_data/diff_file';
 import diffFileMockDataUnreadable from '../mock_data/diff_file_unreadable';
 import diffsMockData from '../mock_data/merge_request_diffs';
@@ -794,15 +793,6 @@ describe('DiffFile', () => {
           errorCallback,
         );
       });
-    });
-  });
-
-  describe('pinned file', () => {
-    it('passes down pinned prop', async () => {
-      createComponent();
-      store.commit(`diffs/${SET_PINNED_FILE_HASH}`, getReadableFile().file_hash);
-      await nextTick();
-      expect(wrapper.findComponent(DiffFileHeaderComponent).props('pinned')).toBe(true);
     });
   });
 });
