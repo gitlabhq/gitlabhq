@@ -9,7 +9,7 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
   describe '#generate_json' do
     it 'generates the correct JSON' do
       stub_env('CI_COMMIT_SHORT_SHA', 'abcdef')
-      stub_env('CI_COMMIT_REF_SLUG', '15-10-stable')
+      stub_env('CI_COMMIT_REF_NAME', '15-10-stable')
       expected_json = {
         'gitaly' => '15-10-stable-abcdef',
         'registry' => '15-10-stable-abcdef',
@@ -49,21 +49,21 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
 
       context 'for stable branch' do
         it 'returns the correct environment' do
-          stub_env('CI_COMMIT_REF_SLUG', '15-10-stable-ee')
+          stub_env('CI_COMMIT_REF_NAME', '15-10-stable-ee')
           expect(model.environment).to eq('15-10-stable')
         end
       end
 
       context 'for RC tag' do
         it 'returns the correct environment' do
-          stub_env('CI_COMMIT_REF_SLUG', 'v15.10.3-rc42-ee')
+          stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-rc42-ee')
           expect(model.environment).to eq('15-10-stable')
         end
       end
 
       context 'for release tag' do
         it 'returns the correct environment' do
-          stub_env('CI_COMMIT_REF_SLUG', 'v15.10.3-ee')
+          stub_env('CI_COMMIT_REF_NAME', 'v15.10.3-ee')
           expect(model.environment).to eq('15-10-stable')
         end
       end
@@ -72,7 +72,7 @@ RSpec.describe ReleaseEnvironmentsModel, feature_category: :delivery do
     context 'when CI_PROJECT_PATH is gitlab-org/security/gitlab' do
       before do
         stub_env('CI_PROJECT_PATH', 'gitlab-org/security/gitlab')
-        stub_env('CI_COMMIT_REF_SLUG', '15-10-stable-ee')
+        stub_env('CI_COMMIT_REF_NAME', '15-10-stable-ee')
       end
 
       it 'returns the environment with -security' do
