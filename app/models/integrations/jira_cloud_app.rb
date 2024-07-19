@@ -19,7 +19,7 @@ module Integrations
             }
 
     def self.title
-      s_('JiraCloudApp|GitLab For Jira Cloud app')
+      s_('JiraCloudApp|GitLab for Jira Cloud app')
     end
 
     def self.description
@@ -28,9 +28,13 @@ module Integrations
 
     def self.help
       jira_doc_link_start = format('<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe,
-        url: Gitlab::Routing.url_helpers.help_page_path('integration/jira/connect-app'))
+        url: Gitlab::Routing.url_helpers.help_page_path('integration/jira/connect-app',
+          anchor: 'configure-jira-service-management')
+      )
+
       format(
-        s_("JiraCloudApp|You must configure GitLab For Jira before enabling this integration. " \
+        s_('JiraCloudApp|This integration is enabled automatically when a group is linked in the ' \
+          'GitLab for Jira Cloud app and cannot be enabled or disabled through this form. ' \
           "%{jira_doc_link_start}Learn more.%{link_end}"),
         jira_doc_link_start: jira_doc_link_start,
         link_end: '</a>'.html_safe)
@@ -49,7 +53,11 @@ module Integrations
         {
           type: SECTION_TYPE_CONFIGURATION,
           title: s_('JiraCloudApp|Jira Service Management'),
-          description: s_('Seamlessly create change requests when your team initiates deployments.').concat(" #{help}")
+          description: format(
+            '%{description}<br><br>%{help}'.html_safe,
+            description: s_('Seamlessly create change requests when your team initiates deployments.'),
+            help: help
+          )
         }
       ]
     end
@@ -57,6 +65,13 @@ module Integrations
     override :show_active_box?
     def show_active_box?
       false
+    end
+
+    # The form fields of this integration are editable only after the GitLab for Jira Cloud app configuration
+    # flow has been completed for a group, which causes the integration to become activated/enabled.
+    override :editable?
+    def editable?
+      activated?
     end
 
     private

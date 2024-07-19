@@ -53,4 +53,16 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
       jira_cloud_app_integration.validate
     end
   end
+
+  describe '#editable?' do
+    it 'is true when integration is active' do
+      expect(integration).to be_editable
+    end
+
+    it 'is false when integration is disabled' do
+      integration.active = false
+
+      expect(integration).not_to be_editable
+    end
+  end
 end

@@ -1,6 +1,6 @@
 #import "./work_item_hierarchy.fragment.graphql"
 
-query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 1000) {
+query workItemTreeQuery($id: WorkItemID!, $pageSize: Int = 100, $endCursor: String) {
   workItem(id: $id) {
     ...WorkItemHierarchy
   }

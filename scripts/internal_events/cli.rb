@@ -1,7 +1,6 @@
+#!/usr/bin/env ruby
 # frozen_string_literal: true
 
-# !/usr/bin/env ruby
-#
 # Generate a metric/event files in the correct locations.
 
 require 'tty-prompt'

@@ -98,7 +98,7 @@ export const MR_FILTER_OPTIONS = [
   {
     text: __('Edits'),
     value: 'edits',
-    systemNoteIcons: ['pencil', 'task-done'],
+    systemNoteIcons: ['pencil', 'todo-done'],
   },
   {
     text: __('Labels'),

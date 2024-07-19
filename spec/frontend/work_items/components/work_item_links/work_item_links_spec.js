@@ -2,6 +2,8 @@ import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlToggle } from '@gitlab/ui';
 
+import { createAlert } from '~/alert';
+
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -22,11 +24,14 @@ import {
   getIssueDetailsResponse,
   groupWorkItemByIidResponseFactory,
   workItemHierarchyTreeResponse,
+  workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeEmptyResponse,
   workItemHierarchyNoUpdatePermissionResponse,
   workItemByIidResponseFactory,
   mockWorkItemCommentNote,
 } from '../../mock_data';
+
+jest.mock('~/alert');
 
 Vue.use(VueApollo);
 
@@ -222,11 +227,11 @@ describe('WorkItemLinks', () => {
   });
 
   it('opens the modal if work item iid URL parameter is found in child items', async () => {
-    setWindowLocation('?work_item_iid=2');
+    setWindowLocation('?work_item_iid=37');
     await createComponent();
 
     expect(showModal).toHaveBeenCalled();
-    expect(findWorkItemDetailModal().props('workItemIid')).toBe('2');
+    expect(findWorkItemDetailModal().props('workItemIid')).toBe('37');
   });
 
   describe('abuse category selector', () => {
@@ -265,6 +270,46 @@ describe('WorkItemLinks', () => {
       createComponent();
 
       expect(groupResponseWithAddChildPermission).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('pagination', () => {
+    const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
+    let workItemTreeQueryHandler;
+
+    beforeEach(async () => {
+      workItemTreeQueryHandler = jest
+        .fn()
+        .mockResolvedValue(workItemHierarchyPaginatedTreeResponse);
+
+      await createComponent({
+        fetchHandler: workItemTreeQueryHandler,
+      });
+    });
+
+    it('shows work-item-children-load-more component when hasNextPage is true and node is expanded', () => {
+      const loadMore = findWorkItemChildrenLoadMore();
+      expect(loadMore.exists()).toBe(true);
+      expect(loadMore.props('fetchNextPageInProgress')).toBe(false);
+    });
+
+    it('queries next page children when work-item-children-load-more emits "fetch-next-page"', async () => {
+      findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
+      await waitForPromises();
+
+      expect(workItemTreeQueryHandler).toHaveBeenCalled();
+    });
+
+    it('shows alert message when fetching next page fails', async () => {
+      jest.spyOn(wrapper.vm.$apollo.queries.workItem, 'fetchMore').mockRejectedValueOnce({});
+      findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
+      await waitForPromises();
+
+      expect(createAlert).toHaveBeenCalledWith({
+        captureError: true,
+        error: expect.any(Object),
+        message: 'Something went wrong while fetching children.',
+      });
     });
   });
 

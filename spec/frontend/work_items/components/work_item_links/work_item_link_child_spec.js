@@ -15,12 +15,14 @@ import {
   WIDGET_TYPE_HIERARCHY,
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORK_ITEM_TYPE_VALUE_TASK,
+  DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '~/work_items/constants';
 
 import {
   workItemTask,
   workItemObjectiveWithChild,
   workItemHierarchyTreeResponse,
+  workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeFailureResponse,
   changeIndirectWorkItemParentMutationResponse,
   workItemUpdateFailureResponse,
@@ -247,6 +249,62 @@ describe('WorkItemLinkChild', () => {
         captureError: true,
         error: expect.any(Object),
         message: 'Something went wrong while removing child.',
+      });
+    });
+
+    describe('pagination', () => {
+      const findWorkItemChildrenLoadMore = () => wrapper.findByTestId('work-item-load-more');
+      const expandButton = async () => {
+        findExpandButton().vm.$emit('click');
+        await waitForPromises();
+      };
+      let workItemTreeQueryHandler;
+      let apolloProvider;
+
+      beforeEach(async () => {
+        workItemTreeQueryHandler = jest
+          .fn()
+          .mockResolvedValue(workItemHierarchyPaginatedTreeResponse);
+        apolloProvider = createMockApollo([[getWorkItemTreeQuery, workItemTreeQueryHandler]]);
+
+        createComponent({
+          childItem: workItemObjectiveWithChild,
+          workItemType: WORK_ITEM_TYPE_VALUE_OBJECTIVE,
+          apolloProvider,
+        });
+
+        await expandButton();
+      });
+
+      it('shows work-item-children-load-more component when hasNextPage is true and node is expanded', () => {
+        const loadMore = findWorkItemChildrenLoadMore();
+        expect(loadMore.exists()).toBe(true);
+        expect(loadMore.props('fetchNextPageInProgress')).toBe(false);
+      });
+
+      it('queries next page children when work-item-children-load-more emits "fetch-next-page"', async () => {
+        findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
+        await waitForPromises();
+
+        expect(workItemTreeQueryHandler).toHaveBeenCalledWith({
+          endCursor: 'Y3Vyc29yOjE=',
+          id: 'gid://gitlab/WorkItem/12',
+          pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+        });
+      });
+
+      it('shows alert message when fetching next page fails', async () => {
+        jest
+          .spyOn(wrapper.vm.$apollo.queries.hierarchyWidget, 'fetchMore')
+          .mockRejectedValueOnce({});
+        findWorkItemChildrenLoadMore().vm.$emit('fetch-next-page');
+        await waitForPromises();
+
+        expect(createAlert).toHaveBeenCalledWith({
+          captureError: true,
+          error: expect.any(Object),
+          message: 'Something went wrong while fetching children.',
+        });
       });
     });
   });

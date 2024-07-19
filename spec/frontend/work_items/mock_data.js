@@ -1849,6 +1849,53 @@ export const workItemHierarchyTreeEmptyResponse = {
   },
 };
 
+export const mockHierarchyChildren = [
+  {
+    id: 'gid://gitlab/WorkItem/37',
+    iid: '37',
+    workItemType: {
+      id: 'gid://gitlab/WorkItems::Type/2411',
+      name: 'Objective',
+      iconName: 'issue-type-objective',
+      __typename: 'WorkItemType',
+    },
+    title: 'Objective 2',
+    state: 'OPEN',
+    confidential: false,
+    reference: 'test-project-path#13',
+    createdAt: '2022-08-03T12:41:54Z',
+    closedAt: null,
+    webUrl: '/gitlab-org/gitlab-test/-/work_items/13',
+    widgets: [
+      {
+        type: 'HIERARCHY',
+        hasChildren: true,
+        __typename: 'WorkItemWidgetHierarchy',
+      },
+    ],
+    __typename: 'WorkItem',
+  },
+];
+
+export const mockHierarchyWidget = {
+  type: 'HIERARCHY',
+  parent: null,
+  hasChildren: true,
+  children: {
+    pageInfo: {
+      hasNextPage: false,
+      hasPreviousPage: false,
+      startCursor: null,
+      endCursor: null,
+      __typename: 'PageInfo',
+    },
+    count: 1,
+    nodes: mockHierarchyChildren,
+    __typename: 'WorkItemConnection',
+  },
+  __typename: 'WorkItemWidgetHierarchy',
+};
+
 export const workItemHierarchyTreeResponse = {
   data: {
     workItem: {
@@ -1884,52 +1931,38 @@ export const workItemHierarchyTreeResponse = {
           type: 'DESCRIPTION',
           __typename: 'WorkItemWidgetDescription',
         },
-        {
-          type: 'HIERARCHY',
-          parent: null,
-          hasChildren: true,
-          children: {
-            pageInfo: {
-              hasNextPage: false,
-              hasPreviousPage: false,
-              startCursor: null,
-              endCursor: null,
-              __typename: 'PageInfo',
-            },
-            count: 1,
-            nodes: [
-              {
-                id: 'gid://gitlab/WorkItem/2',
-                iid: '2',
-                workItemType: {
-                  id: 'gid://gitlab/WorkItems::Type/2411',
-                  name: 'Objective',
-                  iconName: 'issue-type-objective',
-                  __typename: 'WorkItemType',
-                },
-                title: 'Objective 2',
-                state: 'OPEN',
-                confidential: false,
-                reference: 'test-project-path#13',
-                createdAt: '2022-08-03T12:41:54Z',
-                closedAt: null,
-                webUrl: '/gitlab-org/gitlab-test/-/work_items/13',
-                widgets: [
-                  {
-                    type: 'HIERARCHY',
-                    hasChildren: true,
-                    __typename: 'WorkItemWidgetHierarchy',
-                  },
-                ],
-                __typename: 'WorkItem',
-              },
-            ],
-            __typename: 'WorkItemConnection',
-          },
-          __typename: 'WorkItemWidgetHierarchy',
-        },
+        mockHierarchyWidget,
       ],
       __typename: 'WorkItem',
+    },
+  },
+};
+
+export const workItemHierarchyPaginatedTreeResponse = {
+  data: {
+    workItem: {
+      ...workItemHierarchyTreeResponse.data.workItem,
+      widgets: [
+        {
+          type: 'DESCRIPTION',
+          __typename: 'WorkItemWidgetDescription',
+        },
+        {
+          ...mockHierarchyWidget,
+          children: {
+            count: 2,
+            pageInfo: {
+              hasNextPage: true,
+              hasPreviousPage: false,
+              startCursor: 'Y3Vyc29yOjE=',
+              endCursor: 'Y3Vyc29yOjE=',
+              __typename: 'PageInfo',
+            },
+            nodes: mockHierarchyChildren,
+            __typename: 'WorkItemConnection',
+          },
+        },
+      ],
     },
   },
 };

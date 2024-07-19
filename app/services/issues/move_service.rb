@@ -36,8 +36,6 @@ module Issues
     end
 
     def move_children
-      return if Feature.disabled?(:move_issue_children, original_entity.resource_parent, type: :beta)
-
       WorkItems::ParentLink.for_parents(original_entity).each do |link|
         new_child = self.class.new(
           container: container,

@@ -28,7 +28,7 @@ export const workItemTypes = {
   },
   TASK: {
     title: __('Task'),
-    icon: 'task-done',
+    icon: 'todo-done',
     color: '#217645',
     backgroundColor: '#C3E6CD',
     isWorkItem: true,

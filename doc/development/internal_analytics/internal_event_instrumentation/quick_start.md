@@ -20,7 +20,7 @@ In order to instrument your code with Internal Events Tracking you need to do th
 To create event and/or metric definitions, use the `internal_events` generator from the `gitlab` directory:
 
 ```shell
-ruby scripts/internal_events/cli.rb
+scripts/internal_events/cli.rb
 ```
 
 This CLI will help you create the correct defintion files based on your specific use-case, then provide code examples for instrumentation and testing.

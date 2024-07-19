@@ -25,8 +25,14 @@ RSpec.shared_examples 'integration settings form' do
             next if exclude_field?(integration, field)
 
             field_name = field[:name]
-            expect(page).to have_field(field[:title], wait: 0),
-              "#{integration.title} field #{field_name} not present"
+
+            if editable?(integration)
+              expect(page).to have_field(field[:title], wait: 0),
+                "#{integration.title} field #{field_name} not present"
+            else
+              expect(page).to have_field(field[:title], wait: 0, disabled: true),
+                "#{integration.title} field #{field_name} not disabled"
+            end
           end
 
           api_only_fields = integration.fields.select { _1[:api_only] }
@@ -44,8 +50,13 @@ RSpec.shared_examples 'integration settings form' do
                               trigger[:title]
                             end
 
-            expect(page).to have_field(trigger_title, type: 'checkbox', wait: 0),
-              "#{integration.title} field #{trigger_title} checkbox not present"
+            if editable?(integration)
+              expect(page).to have_field(trigger_title, type: 'checkbox', wait: 0),
+                "#{integration.title} field #{trigger_title} checkbox not present"
+            else
+              expect(page).to have_field(trigger_title, type: 'checkbox', wait: 0, disabled: true),
+                "#{integration.title} field #{trigger_title} checkbox not disabled"
+            end
           end
         end
       end
@@ -61,6 +72,11 @@ RSpec.shared_examples 'integration settings form' do
   # Fields that have specific handling on the frontend
   def exclude_field?(integration, field)
     integration.is_a?(Integrations::Jira) && field[:name] == 'jira_auth_type'
+  end
+
+  # Some integrations are only editable when active, otherwise their fields are disabled
+  def editable?(integration)
+    integration.editable?
   end
 
   def trigger_event_title(name)

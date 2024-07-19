@@ -31,9 +31,11 @@ No contextual information (for example, a list of project dependencies) is sent 
 
 To enable License scanning of CycloneDX files:
 
-- Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#enabling-the-analyzer)
-  and ensure that its prerequisites are met.
-- On GitLab self-managed only, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
+- Using the Dependency Scanning template
+  - Enable [Dependency Scanning](../../application_security/dependency_scanning/index.md#enabling-the-analyzer)
+      and ensure that its prerequisites are met.
+  - On GitLab self-managed only, you can [choose package registry metadata to synchronize](../../../administration/settings/security_and_compliance.md#choose-package-registry-metadata-to-sync) in the Admin area for the GitLab instance. For this data synchronization to work, you must allow outbound network traffic from your GitLab instance to the domain `storage.googleapis.com`. If you have limited or no network connectivity then refer to the documentation section [running in an offline environment](#running-in-an-offline-environment) for further guidance.
+- Or use the [CI/CD component](../../../ci/components/index.md) for applicable package registries.
 
 ## Supported languages and package managers
 
@@ -45,68 +47,115 @@ License scanning is supported for the following languages and package managers:
     <tr>
       <th>Language</th>
       <th>Package Manager</th>
+      <th>Dependency Scanning Template</th>
+      <th>CI/CD Component</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <td>.NET</td>
       <td rowspan="2"><a href="https://www.nuget.org/">NuGet</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>C#</td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>C</td>
       <td rowspan="2"><a href="https://conan.io/">Conan</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>C++</td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>Go</td>
       <td><a href="https://go.dev/">Go</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
-      <td rowspan="2">Java</td>
+      <td rowspan="3">Java</td>
       <td><a href="https://gradle.org/">Gradle</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td><a href="https://maven.apache.org/">Maven</a></td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td><a href="https://developer.android.com/">Android</a></td>
+      <td>Yes</td>
+      <td><a href="https://gitlab.com/components/android-dependency-scanning">Yes</a></td>
     </tr>
     <tr>
       <td rowspan="3">JavaScript and TypeScript</td>
       <td><a href="https://www.npmjs.com/">npm</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td><a href="https://pnpm.io/">pnpm</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td><a href="https://classic.yarnpkg.com/en/">yarn</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>PHP</td>
       <td><a href="https://getcomposer.org/">Composer</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td rowspan="4">Python</td>
       <td><a href="https://setuptools.readthedocs.io/en/latest/">setuptools</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td><a href="https://pip.pypa.io/en/stable/">pip</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td><a href="https://pipenv.pypa.io/en/latest/">Pipenv</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td><a href="https://python-poetry.org/">Poetry</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>Ruby</td>
       <td><a href="https://bundler.io/">Bundler</a></td>
+      <td>Yes</td>
+      <td>No</td>
     </tr>
     <tr>
       <td>Scala</td>
       <td><a href="https://www.scala-sbt.org/">sbt</a></td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <td>Rust</td>
+      <td><a href="https://doc.rust-lang.org/cargo/">cargo</a></td>
+      <td>No</td>
+      <td><a href="https://gitlab.com/components/dependency-scanning#generating-cargo-sboms">Yes</a></td>
     </tr>
   </tbody>
 </table>

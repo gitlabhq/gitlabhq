@@ -29369,7 +29369,7 @@ msgstr ""
 msgid "JiraCloudApp|Copy and paste your JSM Service ID here. Use comma (,) to separate multiple IDs."
 msgstr ""
 
-msgid "JiraCloudApp|GitLab For Jira Cloud app"
+msgid "JiraCloudApp|GitLab for Jira Cloud app"
 msgstr ""
 
 msgid "JiraCloudApp|Jira Service Management"
@@ -29381,7 +29381,7 @@ msgstr ""
 msgid "JiraCloudApp|Sync development information to Jira in real time."
 msgstr ""
 
-msgid "JiraCloudApp|You must configure GitLab For Jira before enabling this integration. %{jira_doc_link_start}Learn more.%{link_end}"
+msgid "JiraCloudApp|This integration is enabled automatically when a group is linked in the GitLab for Jira Cloud app and cannot be enabled or disabled through this form. %{jira_doc_link_start}Learn more.%{link_end}"
 msgstr ""
 
 msgid "JiraCloudApp|cannot have more than %{limit} service IDs"
@@ -60452,6 +60452,9 @@ msgid "WorkItem|Linked item removed"
 msgstr ""
 
 msgid "WorkItem|Linked items"
+msgstr ""
+
+msgid "WorkItem|Load more"
 msgstr ""
 
 msgid "WorkItem|Magenta"

@@ -245,7 +245,7 @@ export const FORM_TYPES = {
 export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
 export const DEFAULT_PAGE_SIZE_NOTES = 30;
 export const DEFAULT_PAGE_SIZE_EMOJIS = 100;
-export const DEFAULT_PAGE_SIZE_CHILD_ITEMS = 1000;
+export const DEFAULT_PAGE_SIZE_CHILD_ITEMS = 20;
 
 export const WORK_ITEM_NOTES_SORT_ORDER_KEY = 'sort_direction_work_item';
 

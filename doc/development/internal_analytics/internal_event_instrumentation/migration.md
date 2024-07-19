@@ -48,7 +48,7 @@ In addition, you have to create definitions for the metrics that you would like 
 To generate metric definitions, you can use the generator:
 
 ```shell
-ruby scripts/internal_events/cli.rb
+scripts/internal_events/cli.rb
 ```
 
 The generator walks you through the required inputs step-by-step.

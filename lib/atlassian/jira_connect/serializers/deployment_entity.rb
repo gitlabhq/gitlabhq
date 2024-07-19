@@ -5,6 +5,7 @@ module Atlassian
     module Serializers
       class DeploymentEntity < Grape::Entity
         include Gitlab::Routing
+        include Gitlab::Utils::StrongMemoize
 
         COMMITS_LIMIT = 5_000
 
@@ -27,12 +28,6 @@ module Atlassian
           @issue_keys ||= (issue_keys_from_pipeline + issue_keys_from_commits_since_last_deploy).uniq
         end
 
-        private
-
-        delegate :project, :deployable, :environment, :iid, :ref, :short_sha, to: :object
-        alias_method :deployment, :object
-        alias_method :build, :deployable
-
         def associations
           keys = issue_keys
 
@@ -40,6 +35,13 @@ module Atlassian
           combined_associations << { associationType: :issueKeys, values: keys } if keys.present?
           combined_associations.presence
         end
+        strong_memoize_attr :associations
+
+        private
+
+        delegate :project, :deployable, :environment, :iid, :ref, :short_sha, to: :object
+        alias_method :deployment, :object
+        alias_method :build, :deployable
 
         def display_name
           "Deployment #{iid} (#{ref}@#{short_sha}) to #{environment.name}"

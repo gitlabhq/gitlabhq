@@ -151,18 +151,6 @@ RSpec.describe Issues::MoveService, feature_category: :team_planning do
             [old_issue, task1, task2].map(&:title)
           )
         end
-
-        context 'when move_issue_children feature flag is disabled' do
-          before do
-            stub_feature_flags(move_issue_children: false)
-          end
-
-          it "does not move the issue's children", :aggregate_failures do
-            expect { move_service.execute(old_issue, new_project) }.to change { Issue.count }.by(1)
-            expect(new_project.issues.count).to eq(1)
-            expect(new_project.issues.pluck(:title)).to contain_exactly(old_issue.title)
-          end
-        end
       end
 
       context 'issue with award emoji' do

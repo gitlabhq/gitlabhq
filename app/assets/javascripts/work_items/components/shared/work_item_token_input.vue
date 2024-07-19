@@ -137,7 +137,7 @@ export default {
       return !this.areWorkItemsToAddValid ? '!gl-shadow-inner-1-red-500' : '';
     },
     queryVariables() {
-      return {
+      const variables = {
         fullPath: this.fullPath,
         searchTerm: this.searchTerm,
         types: this.childrenType ? [this.childrenType] : [],
@@ -146,6 +146,13 @@ export default {
         searchByIid: isNumeric(this.searchTerm),
         searchByText: true,
       };
+
+      if (this.isGroup) {
+        variables.includeAncestors = true;
+        variables.includeDescendants = true;
+      }
+
+      return variables;
     },
   },
   created() {

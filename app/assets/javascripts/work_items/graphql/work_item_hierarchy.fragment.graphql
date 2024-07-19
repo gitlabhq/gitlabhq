@@ -22,10 +22,11 @@ fragment WorkItemHierarchy on WorkItem {
     type
     ... on WorkItemWidgetHierarchy {
       type
+      hasChildren
       parent {
         id
       }
-      children(first: $pageSize) {
+      children(first: $pageSize, after: $endCursor) {
         pageInfo {
           ...PageInfo
         }

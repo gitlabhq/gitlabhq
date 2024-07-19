@@ -1,6 +1,7 @@
 <script>
 import { GlToggle, GlIcon, GlTooltip, GlLoadingIcon } from '@gitlab/ui';
 import { sprintf, s__ } from '~/locale';
+import { createAlert } from '~/alert';
 import {
   FORM_TYPES,
   WIDGET_TYPE_HIERARCHY,
@@ -16,6 +17,7 @@ import {
 } from '../../constants';
 import { findHierarchyWidgets } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
+import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemActionsSplitButton from './work_item_actions_split_button.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
@@ -32,6 +34,7 @@ export default {
     WidgetWrapper,
     WorkItemLinksForm,
     WorkItemChildrenWrapper,
+    WorkItemChildrenLoadMore,
     WorkItemTreeActions,
     GlToggle,
     GlLoadingIcon,
@@ -101,6 +104,7 @@ export default {
       childType: null,
       widgetName: CHILD_ITEMS_ANCHOR,
       showLabels: true,
+      fetchNextPageInProgress: false,
     };
   },
   apollo: {
@@ -110,6 +114,7 @@ export default {
         return {
           id: this.workItemId,
           pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+          endCursor: '',
         };
       },
       skip() {
@@ -177,6 +182,15 @@ export default {
     showEmptyMessage() {
       return !this.isShownAddForm && this.children.length === 0 && !this.isLoadingChildren;
     },
+    pageInfo() {
+      return this.hierarchyWidget?.pageInfo;
+    },
+    endCursor() {
+      return this.pageInfo?.endCursor || '';
+    },
+    hasNextPage() {
+      return this.pageInfo?.hasNextPage;
+    },
   },
   methods: {
     genericActionItems(workItem) {
@@ -207,6 +221,26 @@ export default {
     },
     showModal({ event, child }) {
       this.$emit('show-modal', { event, modalWorkItem: child });
+    },
+    async fetchNextPage() {
+      if (this.hasNextPage && !this.fetchNextPageInProgress) {
+        this.fetchNextPageInProgress = true;
+        try {
+          await this.$apollo.queries.hierarchyWidget.fetchMore({
+            variables: {
+              endCursor: this.endCursor,
+            },
+          });
+        } catch (error) {
+          createAlert({
+            message: s__('Hierarchy|Something went wrong while fetching children.'),
+            captureError: true,
+            error,
+          });
+        } finally {
+          this.fetchNextPageInProgress = false;
+        }
+      }
     },
   },
   i18n: {
@@ -283,7 +317,6 @@ export default {
           @addChild="$emit('addChild')"
         />
         <work-item-children-wrapper
-          v-if="!isLoadingChildren"
           :children="children"
           :can-update="canUpdateChildren"
           :full-path="fullPath"
@@ -294,7 +327,14 @@ export default {
           @error="error = $event"
           @show-modal="showModal"
         />
-        <gl-loading-icon v-else size="md" />
+        <gl-loading-icon v-if="isLoadingChildren && !fetchNextPageInProgress" size="md" />
+        <work-item-children-load-more
+          v-if="hasNextPage"
+          data-testid="work-item-load-more"
+          class="gl-ml-4 gl-pl-1"
+          :fetch-next-page-in-progress="fetchNextPageInProgress"
+          @fetch-next-page="fetchNextPage"
+        />
       </div>
     </template>
   </widget-wrapper>

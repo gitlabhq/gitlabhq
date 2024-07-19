@@ -13,8 +13,10 @@ import {
   WORK_ITEM_TYPE_VALUE_TASK,
   DEFAULT_PAGE_SIZE_CHILD_ITEMS,
 } from '../../constants';
+import { findHierarchyWidgets } from '../../utils';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChildContents from '../shared/work_item_link_child_contents.vue';
+import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WorkItemTreeChildren from './work_item_tree_children.vue';
 
 export default {
@@ -23,6 +25,7 @@ export default {
     GlButton,
     WorkItemTreeChildren,
     WorkItemLinkChildContents,
+    WorkItemChildrenLoadMore,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -69,14 +72,64 @@ export default {
   data() {
     return {
       isExpanded: false,
-      children: [],
       isLoadingChildren: false,
       activeToast: null,
+      children: [],
       childrenBeforeRemoval: [],
       hasChildren: false,
+      fetchNextPageInProgress: false,
+      hierarchyWidget: {},
+      childItemId: '',
     };
   },
+  apollo: {
+    hierarchyWidget: {
+      query: getWorkItemTreeQuery,
+      variables() {
+        return {
+          id: this.childItemId,
+          pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
+          endCursor: '',
+        };
+      },
+      skip() {
+        return !this.childItemId;
+      },
+      update({ workItem }) {
+        if (workItem) {
+          this.isLoadingChildren = false;
+          const { hasChildren, children } = findHierarchyWidgets(workItem.widgets);
+          this.children = children.nodes;
+          return {
+            pageInfo: children.pageInfo,
+            count: children.count,
+            nodes: children.nodes,
+            hasChildren,
+          };
+        }
+        this.childItemId = '';
+        return {};
+      },
+      error(error) {
+        this.isExpanded = !this.isExpanded;
+        createAlert({
+          message: s__('Hierarchy|Something went wrong while fetching children.'),
+          captureError: true,
+          error,
+        });
+      },
+    },
+  },
   computed: {
+    pageInfo() {
+      return this.hierarchyWidget.pageInfo || {};
+    },
+    hasNextPage() {
+      return Boolean(this.pageInfo?.hasNextPage);
+    },
+    endCursor() {
+      return this.pageInfo?.endCursor || '';
+    },
     canHaveChildren() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_OBJECTIVE;
     },
@@ -118,40 +171,37 @@ export default {
       },
       immediate: true,
     },
-    children(val) {
-      this.hasChildren = val?.length > 0;
-    },
   },
   methods: {
     toggleItem() {
       this.isExpanded = !this.isExpanded;
       if (this.children.length === 0 && this.hasChildren) {
-        this.fetchChildren();
+        this.isLoadingChildren = true;
+        this.childItemId = this.childItem.id;
       }
     },
     getWidgetByType(workItem, widgetType) {
       return workItem?.widgets?.find((widget) => widget.type === widgetType);
     },
-    async fetchChildren() {
-      this.isLoadingChildren = true;
-      try {
-        const { data } = await this.$apollo.query({
-          query: getWorkItemTreeQuery,
-          variables: {
-            id: this.childItem.id,
-            pageSize: DEFAULT_PAGE_SIZE_CHILD_ITEMS,
-          },
-        });
-        this.children = this.getWidgetByType(data?.workItem, WIDGET_TYPE_HIERARCHY).children.nodes;
-      } catch (error) {
-        this.isExpanded = !this.isExpanded;
-        createAlert({
-          message: s__('Hierarchy|Something went wrong while fetching children.'),
-          captureError: true,
-          error,
-        });
-      } finally {
-        this.isLoadingChildren = false;
+    async fetchNextPage() {
+      if (this.hasNextPage && !this.fetchNextPageInProgress) {
+        this.fetchNextPageInProgress = true;
+
+        try {
+          await this.$apollo.queries.hierarchyWidget.fetchMore({
+            variables: {
+              endCursor: this.endCursor,
+            },
+          });
+        } catch (error) {
+          createAlert({
+            message: s__('Hierarchy|Something went wrong while fetching children.'),
+            captureError: true,
+            error,
+          });
+        } finally {
+          this.fetchNextPageInProgress = false;
+        }
       }
     },
     showScopedLabel(label) {
@@ -235,7 +285,7 @@ export default {
         :icon="chevronType"
         category="tertiary"
         size="small"
-        :loading="isLoadingChildren"
+        :loading="isLoadingChildren && !fetchNextPageInProgress"
         class="gl-px-0! gl-py-3!"
         data-testid="expand-child"
         @click="toggleItem"
@@ -262,6 +312,13 @@ export default {
       :work-item-full-path="workItemFullPath"
       @removeChild="removeChild"
       @click="$emit('click', $event)"
+    />
+    <work-item-children-load-more
+      v-if="hasNextPage && isExpanded"
+      data-testid="work-item-load-more"
+      class="gl-ml-7 gl-pl-2"
+      :fetch-next-page-in-progress="fetchNextPageInProgress"
+      @fetch-next-page="fetchNextPage"
     />
   </li>
 </template>

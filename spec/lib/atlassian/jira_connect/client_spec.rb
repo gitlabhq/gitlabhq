@@ -261,14 +261,43 @@ RSpec.describe Atlassian::JiraConnect::Client, feature_category: :integrations d
       subject.send(:store_deploy_info, project: project, deployments: deployments)
     end
 
-    it 'does not call the API if no issue keys are found' do
+    it 'calls the API if no issue keys are found, but there are service IDs' do
       allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
         allow(entity).to receive(:issue_keys).and_return([])
+        allow(entity).to receive(:service_ids_from_integration_configuration).and_return([{ associationType: 'serviceIdOrKeys', values: ['foo'] }])
+      end
+
+      expect(subject).to receive(:post).with(
+        '/rest/deployments/0.1/bulk', { deployments: have_attributes(size: 1) }
+      ).and_call_original
+
+      subject.send(:store_deploy_info, project: project, deployments: deployments)
+    end
+
+    it 'does not call the API if no issue keys or service IDs are found' do
+      allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
+        allow(entity).to receive(:issue_keys).and_return([])
+        allow(entity).to receive(:service_ids_from_integration_configuration).and_return([])
       end
 
       expect(subject).not_to receive(:post)
+    end
 
-      subject.send(:store_deploy_info, project: project, deployments: deployments)
+    context 'when the flag is disabled' do
+      before do
+        stub_feature_flags(enable_jira_connect_configuration: false)
+      end
+
+      it 'does not call the API if no issue keys are found, but there are service IDs' do
+        allow_next_instances_of(Atlassian::JiraConnect::Serializers::DeploymentEntity, nil) do |entity|
+          allow(entity).to receive(:issue_keys).and_return([])
+          allow(entity).to receive(:service_ids_from_integration_configuration).and_return([{ associationType: 'serviceIdOrKeys', values: ['foo'] }])
+        end
+
+        expect(subject).not_to receive(:post)
+
+        subject.send(:store_deploy_info, project: project, deployments: deployments)
+      end
     end
 
     context 'when there are errors' do
