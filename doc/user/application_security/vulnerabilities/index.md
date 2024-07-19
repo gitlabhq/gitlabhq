@@ -91,7 +91,7 @@ The following data is shared with third-party AI APIs:
 
 DETAILS:
 **Tier:** Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com
 **Status:** Experiment
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.

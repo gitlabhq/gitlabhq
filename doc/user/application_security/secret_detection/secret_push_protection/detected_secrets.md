@@ -54,5 +54,5 @@ This table lists the secrets detected by [secret push protection](index.md).
 | Slack token                                                        | Slack token                            | xoxb, xoxa, xoxp, xoxr, xoxs       |
 | Stripe                                                             | Stripe                                 | sk_test, pk_test, sk_live, pk_live |
 
-<!-- markdownlint-disable MD037 -->
-<!-- markdownlint-disable MD044 -->
+<!-- markdownlint-enable MD037 -->
+<!-- markdownlint-enable MD044 -->

@@ -286,7 +286,8 @@ The [security-report-schema](https://gitlab.com/gitlab-org/security-products/sec
 
 In order to
 [restrict the number of people who have write access to the container registry](https://gitlab.com/gitlab-org/gitlab/-/issues/297525),
-all images are to be published to the location below.
+all images are to be published to the location below. The container registry in the development
+project must be [made private](https://gitlab.com/gitlab-org/gitlab/-/issues/470641).
 
 - Group: [`https://gitlab.com/security-products/`](https://gitlab.com/security-products/)
 - Project path: `https://gitlab.com/security-products/<NAME>` ([example](https://gitlab.com/security-products/container-scanning))

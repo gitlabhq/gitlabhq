@@ -226,6 +226,9 @@ rule in the defined policy are met.
 | `tags` | `array` of `string` | | A list of runner tags for the policy. The policy jobs are run by runner with the specified tags. |
 | `template` | `string` | `default`, `latest` | CI/CD template edition to be enforced. The [`latest`](../../../development/cicd/templates.md#latest-version) edition may introduce breaking changes. |
 
+NOTE:
+If you have Merge Request Pipelines enabled for your project, you must select `template: latest` in your policy for each enforced scan. Using the latest template is crucial for compatibility with Merge Request Pipelines and allows you to take full advantage of GitLab security features. For more information on using security scanning tools with Merge Request Pipelines, please refer to our [security scanning documentation](../../application_security/index.md#use-security-scanning-tools-with-merge-request-pipelines).
+
 ### Scan field details
 
 There are additional requirements for some of the `scan` action fields.

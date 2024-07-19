@@ -406,7 +406,7 @@ unauthorized results from being returned to users who don't have permission to v
 done in Ruby to handle inconsistencies in Elasticsearch permissions data due to bugs or indexing delays.
 
 New scopes must add visibility specs to ensure proper access control.
-To test that permissions are properly enforced, add tests using the [`'search respects visibility'` shared example](../../ee/spec/support/shared_examples/services/search_service_shared_examples.rb) 
+To test that permissions are properly enforced, add tests using the [`'search respects visibility'` shared example](https://gitlab.com/gitlab-org/gitlab/-/blob/a489ad0fe4b4d1e392272736b020cf9bd43646da/ee/spec/support/shared_examples/services/search_service_shared_examples.rb) 
 in the EE specs: 
 
 - `ee/spec/services/search/global_service_spec.rb`

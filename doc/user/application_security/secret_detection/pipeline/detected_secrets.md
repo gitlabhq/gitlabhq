@@ -144,7 +144,7 @@ This table lists the secrets detected by [pipeline secret detection](index.md).
 | Yandex.Cloud IAM Cookie v1                                         | Yandex.Cloud IAM Cookie v1 - 1                | yandex                                |
 | Yandex.Cloud IAM Token v1                                          | Yandex.Cloud IAM Cookie v1 - 2                | yandex                                |
 
-<!-- vale gitlab.SentenceSpacing = NO -->
-<!-- markdownlint-disable MD044 -->
-<!-- markdownlint-disable MD037 -->
-<!-- markdownlint-disable MD034 -->
+<!-- vale gitlab.SentenceSpacing = YES -->
+<!-- markdownlint-enable MD044 -->
+<!-- markdownlint-enable MD037 -->
+<!-- markdownlint-enable MD034 -->
