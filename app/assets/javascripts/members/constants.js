@@ -153,10 +153,20 @@ export const FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS = {
   type: 'groups_with_inherited_permissions',
 };
 
+export const FILTERED_SEARCH_MAX_ROLE = {
+  type: 'max_role',
+  icon: 'shield',
+  title: __('Role'),
+  token: GlFilteredSearchToken,
+  unique: true,
+  operators: OPERATORS_IS,
+};
+
 export const AVAILABLE_FILTERED_SEARCH_TOKENS = [
   FILTERED_SEARCH_TOKEN_TWO_FACTOR,
   FILTERED_SEARCH_TOKEN_WITH_INHERITED_PERMISSIONS,
   FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS,
+  FILTERED_SEARCH_MAX_ROLE,
 ];
 
 export const AVATAR_SIZE = 48;

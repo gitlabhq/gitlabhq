@@ -919,6 +919,14 @@ RSpec.describe Member, feature_category: :groups_and_projects do
     end
   end
 
+  describe '.with_static_role' do
+    let_it_be(:membership_without_custom_role) { create(:group_member) }
+
+    subject { described_class.with_static_role }
+
+    it { is_expected.to contain_exactly(membership_without_custom_role) }
+  end
+
   describe '.with_group_group_sharing_access' do
     let_it_be(:shared_group) { create(:group) }
     let_it_be(:invited_group) { create(:group) }

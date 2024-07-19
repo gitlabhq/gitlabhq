@@ -5,7 +5,6 @@ class UserDetail < MainClusterwide::ApplicationRecord
   extend ::Gitlab::Utils::Override
 
   ignore_column :requires_credit_card_verification, remove_with: '16.1', remove_after: '2023-06-22'
-  ignore_column :onboarding_step_url, remove_with: '17.1', remove_after: '2024-05-16'
 
   REGISTRATION_OBJECTIVE_PAIRS = { basics: 0, move_repository: 1, code_storage: 2, exploring: 3, ci: 4, other: 5, joining_team: 6 }.freeze
 

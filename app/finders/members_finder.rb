@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MembersFinder
+  include Members::RoleParser
+
   RELATIONS = %i[direct inherited descendants invited_groups shared_into_ancestors].freeze
   DEFAULT_RELATIONS = %i[direct inherited].freeze
 
@@ -53,7 +55,14 @@ class MembersFinder
     members = members.search(params[:search]) if params[:search].present?
     members = members.sort_by_attribute(params[:sort]) if params[:sort].present?
     members = members.owners_and_maintainers if params[:owners_and_maintainers].present?
-    members
+    filter_by_max_role(members)
+  end
+
+  def filter_by_max_role(members)
+    max_role = get_access_level(params[:max_role])
+    return members unless max_role&.in?(Gitlab::Access.all_values)
+
+    members.all_by_access_level(max_role).with_static_role
   end
 
   def group_union_members(include_relations)
@@ -132,3 +141,5 @@ class MembersFinder
     end.join(',')
   end
 end
+
+MembersFinder.prepend_mod

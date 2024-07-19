@@ -83,9 +83,9 @@ RSpec.describe WorkItems::ParentLinks::CreateService, feature_category: :portfol
       subject { described_class.new(parent_item, user, { target_issuable: current_item }).execute }
 
       where(:adjacent_position, :expected_order) do
-        -100 | lazy { [adjacent, current_item] }
-        0    | lazy { [adjacent, current_item] }
-        100  | lazy { [adjacent, current_item] }
+        -100 | lazy { [current_item, adjacent] }
+        0    | lazy { [current_item, adjacent] }
+        100  | lazy { [current_item, adjacent] }
       end
 
       with_them do

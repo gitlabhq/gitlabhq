@@ -17,6 +17,7 @@ module Issuable
       def before_update; end
       def after_update_commit; end
       def after_save_commit; end
+      def after_save; end
 
       private
 

@@ -83,7 +83,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   def filter_params
-    params.permit(:two_factor, :search, :user_type).merge(sort: @sort)
+    params.permit(:two_factor, :search, :user_type, :max_role).merge(sort: @sort)
   end
 
   def membershipable_members

@@ -42,7 +42,8 @@ module WorkItems
       participants: 20,
       time_tracking: 21,
       designs: 22,
-      development: 23
+      development: 23,
+      crm_contacts: 24
     }
 
     attribute :widget_options, :ind_jsonb

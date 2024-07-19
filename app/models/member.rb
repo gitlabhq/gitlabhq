@@ -300,6 +300,8 @@ class Member < ApplicationRecord
 
   scope :on_project_and_ancestors, ->(project) { where(source: [project] + project.ancestors) }
 
+  scope :with_static_role, -> { where(member_role_id: nil) }
+
   before_validation :set_member_namespace_id, on: :create
   before_validation :generate_invite_token, on: :create, if: ->(member) { member.invite_email.present? && !member.invite_accepted_at? }
 

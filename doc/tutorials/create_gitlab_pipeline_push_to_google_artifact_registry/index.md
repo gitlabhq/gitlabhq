@@ -119,11 +119,11 @@ registry, and copies the image to Google Artifact Registry.
 
     In the example, replace the following:
 
-    - <var class="edit" scope="LOCATION"><code>LOCATION</code></var>: the
+    - <var><code>LOCATION</code></var>: the
        Google Cloud region where you created your Google Artifact Registry repository.
-    - <var class="edit" scope="PROJECT"><code>PROJECT</code></var>: your
+    - <var><code>PROJECT</code></var>: your
        Google Cloud project ID.
-    - <var class="edit" scope="REPOSITORY"><code>REPOSITORY</code></var>: the
+    - <var><code>REPOSITORY</code></var>: the
        repository ID of your Google Artifact Registry repository.
 
     ```yaml
@@ -150,7 +150,7 @@ registry, and copies the image to Google Artifact Registry.
         inputs:
           stage: deploy
           source: $GITLAB_IMAGE
-          target: {{ov}}LOCATION{{cv}}-docker.pkg.dev/{{ov}}PROJECT{{cv}}/{{ov}}REPOSITORY{{cv}}/image:v1.0.0
+          target: LOCATION-docker.pkg.dev/PROJECT/REPOSITORY/image:v1.0.0
     ```
 
 The pipeline uses Docker in Docker to build the image `docker:24.0.5`, stores it
@@ -231,4 +231,4 @@ avoid exceeding project quota limits.
 
 - Learn how to [Optimize GitLab CI/CD configuration files](../../ci/yaml/yaml_optimization.md).
 - Read about how the GitLab on Google Cloud integration uses IAM with
-   workload identity federation to control access to Google Cloud in [Access control with {{iam_name}}](https://cloud.google.com/docs/gitlab/access-control).
+   workload identity federation to control access to Google Cloud in [Access control with IAM](https://cloud.google.com/docs/gitlab/access-control).

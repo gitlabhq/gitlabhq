@@ -22189,6 +22189,9 @@ msgstr ""
 msgid "Feature Flags"
 msgstr ""
 
+msgid "Feature disabled"
+msgstr ""
+
 msgid "Feature flag status"
 msgstr ""
 
@@ -60263,6 +60266,9 @@ msgid "Work in progress limit"
 msgstr ""
 
 msgid "Work in progress limit: %{wipLimit}"
+msgstr ""
+
+msgid "Work item not supported"
 msgstr ""
 
 msgid "WorkItems|An error occurred while fetching children"

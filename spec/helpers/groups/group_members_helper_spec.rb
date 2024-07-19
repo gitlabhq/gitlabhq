@@ -15,6 +15,9 @@ RSpec.describe Groups::GroupMembersHelper do
     let(:members) { create_list(:group_member, 2, group: shared_group, created_by: current_user) }
     let(:invited) { create_list(:group_member, 2, :invited, group: shared_group, created_by: current_user) }
     let!(:access_requests) { create_list(:group_member, 2, :access_request, group: shared_group, created_by: current_user) }
+    let(:available_roles) do
+      Gitlab::Access.options_with_owner.map { |name, access_level| { title: name, value: "static-#{access_level}" } }
+    end
 
     let(:members_collection) { members }
 
@@ -61,7 +64,8 @@ RSpec.describe Groups::GroupMembersHelper do
         can_manage_access_requests: be_in([true, false]),
         group_name: shared_group.name,
         group_path: shared_group.full_path,
-        can_approve_access_requests: true
+        can_approve_access_requests: true,
+        available_roles: available_roles
       }
 
       expect(subject).to include(expected)

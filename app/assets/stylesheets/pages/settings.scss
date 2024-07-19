@@ -49,7 +49,7 @@
 
 .settings-section,
 .settings-section-no-bottom ~ .settings-section {
-  padding-top: 0;
+  padding-top: 0 !important;
 }
 
 // Fix for sticky header when there is no search bar.
@@ -66,7 +66,7 @@
 }
 
 .settings-section-no-bottom::after {
-  padding-bottom: 0;
+  padding-bottom: 0 !important;
 
   @include media-breakpoint-up(sm) {
     padding-bottom: $gl-spacing-scale-5;

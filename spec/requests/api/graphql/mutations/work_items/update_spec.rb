@@ -29,6 +29,16 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
   let(:mutation_response) { graphql_mutation_response(:work_item_update) }
 
+  shared_examples 'request with error' do |message|
+    it 'ignores update and returns an error' do
+      post_graphql_mutation(mutation, current_user: current_user)
+
+      expect(response).to have_gitlab_http_status(:success)
+      expect(mutation_response['workItem']).to be_nil
+      expect(mutation_response['errors'].first).to include(message)
+    end
+  end
+
   context 'the user is not allowed to update a work item' do
     let(:current_user) { create(:user) }
 
@@ -1398,18 +1408,6 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       end
 
       context 'when user can award work item' do
-        shared_examples 'request with error' do |message|
-          it 'ignores update and returns an error' do
-            expect do
-              update_work_item
-            end.not_to change(AwardEmoji, :count)
-
-            expect(response).to have_gitlab_http_status(:success)
-            expect(mutation_response['workItem']).to be_nil
-            expect(mutation_response['errors'].first).to include(message)
-          end
-        end
-
         shared_examples 'request that removes emoji' do
           it "updates work item's award emoji" do
             expect do
@@ -1600,16 +1598,6 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
     end
 
     context 'with time tracking widget input', time_travel_to: "2024-02-20" do
-      shared_examples 'request with error' do |message|
-        it 'ignores update and returns an error' do
-          post_graphql_mutation(mutation, current_user: current_user)
-
-          expect(response).to have_gitlab_http_status(:success)
-          expect(mutation_response['workItem']).to be_nil
-          expect(mutation_response['errors'].first).to include(message)
-        end
-      end
-
       shared_examples 'mutation updating work item with time tracking data' do
         it 'updates time tracking' do
           expect do
@@ -1783,6 +1771,73 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
               'type' => 'TIME_TRACKING'
             )
           end
+        end
+      end
+    end
+
+    context 'with CRM contacts widget input' do
+      let(:fields) do
+        <<~FIELDS
+          workItem {
+            widgets {
+              ... on WorkItemWidgetCrmContacts {
+                type
+                contacts {
+                  nodes {
+                    id
+                    firstName
+                  }
+                }
+              }
+            }
+          }
+          errors
+        FIELDS
+      end
+
+      let_it_be(:contact) { create(:contact, group: project.group) }
+
+      shared_examples 'mutation updating work item contacts' do
+        it 'updates contacts' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.to change { mutation_work_item.customer_relations_contacts.to_a }.from([]).to([
+            contact
+          ])
+
+          expect(mutation_response['workItem']['widgets']).to include(
+            'contacts' => {
+              'nodes' => [
+                {
+                  'id' => expected_result[:id],
+                  'firstName' => expected_result[:first_name]
+                }
+              ]
+            },
+            'type' => 'CRM_CONTACTS'
+          )
+        end
+      end
+
+      context 'when updating the contacts' do
+        context 'when mutating the work item' do
+          let(:input) do
+            {
+              'crmContactsWidget' => {
+                'contactIds' => [global_id_of(contact)]
+              }
+            }
+          end
+
+          let(:expected_result) do
+            {
+              id: global_id_of(contact).to_s,
+              first_name: contact.first_name
+            }
+          end
+
+          it_behaves_like 'mutation updating work item contacts'
         end
       end
     end

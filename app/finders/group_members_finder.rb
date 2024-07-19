@@ -14,6 +14,7 @@ class GroupMembersFinder < UnionFinder
   }.freeze
 
   include CreatedAtFilter
+  include Members::RoleParser
 
   # Params can be any of the following:
   #   two_factor: string. 'enabled' or 'disabled' are returning different set of data, other values are not effective.
@@ -73,6 +74,7 @@ class GroupMembersFinder < UnionFinder
     members = members.by_access_level(params[:access_levels]) if params[:access_levels].present?
 
     members = filter_by_user_type(members)
+    members = filter_by_max_role(members)
     members = apply_additional_filters(members)
 
     members = by_created_at(members)
@@ -120,6 +122,13 @@ class GroupMembersFinder < UnionFinder
     return members unless params[:user_type] && can_manage_members
 
     members.filter_by_user_type(params[:user_type])
+  end
+
+  def filter_by_max_role(members)
+    max_role = get_access_level(params[:max_role])
+    return members unless max_role&.in?(group.access_level_roles.values)
+
+    members.all_by_access_level(max_role).with_static_role
   end
 
   def apply_additional_filters(members)

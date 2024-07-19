@@ -244,7 +244,7 @@
     - "1\n" # Create an event
     - "Internal Event CLI is opened\n" # Submit description
     - "internal_events_cli_opened\n" # Submit action name
-    - "6\n" # Select: None
+    - "7\n" # Select: None
     - "\n" # Select (add props): None! Continue to next step!
     - "\n" # Skip MR URL
     - "instrumentation" # Filters to the analytics instrumentation group

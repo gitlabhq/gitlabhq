@@ -319,6 +319,33 @@ RSpec.describe GroupMembersFinder, '#execute', feature_category: :groups_and_pro
     end
   end
 
+  context 'filter by max role' do
+    subject(:by_max_role) { described_class.new(group, user1, params: { max_role: max_role }).execute }
+
+    let_it_be(:guest_member) { create(:group_member, :guest, group: group, user: user2) }
+    let_it_be(:owner_member) { create(:group_member, :owner, group: group, user: user3) }
+
+    describe 'provided access level is incorrect' do
+      where(:max_role) { [nil, '', 'static', 'xstatic-50', 'static-50x', 'static-99'] }
+
+      with_them do
+        it { is_expected.to match_array(group.members) }
+      end
+    end
+
+    describe 'none of the members have the provided access level' do
+      let(:max_role) { 'static-20' }
+
+      it { is_expected.to be_empty }
+    end
+
+    describe 'one of the members has the provided access level' do
+      let(:max_role) { 'static-50' }
+
+      it { is_expected.to contain_exactly(owner_member) }
+    end
+  end
+
   context 'filter by non-invite' do
     let_it_be(:member) { group.add_maintainer(user1) }
     let_it_be(:invited_member) do

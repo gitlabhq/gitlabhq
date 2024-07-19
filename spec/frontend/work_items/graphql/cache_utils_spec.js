@@ -50,11 +50,11 @@ describe('work items graphql cache utils', () => {
                 type: WIDGET_TYPE_HIERARCHY,
                 children: {
                   nodes: [
+                    child,
                     {
                       id: 'gid://gitlab/WorkItem/20',
                       title: 'Child',
                     },
-                    child,
                   ],
                 },
               },

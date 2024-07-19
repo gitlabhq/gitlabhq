@@ -28,7 +28,8 @@ module Gitlab
           participants: 'Participants',
           time_tracking: 'Time tracking',
           designs: 'Designs',
-          development: 'Development'
+          development: 'Development',
+          crm_contacts: 'CRM contacts'
         }.freeze
 
         WIDGETS_FOR_TYPE = {
@@ -50,7 +51,8 @@ module Gitlab
             :participants,
             :time_tracking,
             :designs,
-            :development
+            :development,
+            :crm_contacts
           ],
           incident: [
             :assignees,
@@ -63,7 +65,8 @@ module Gitlab
             :linked_items,
             :participants,
             :time_tracking,
-            :development
+            :development,
+            :crm_contacts
           ],
           test_case: [
             :description,
@@ -103,7 +106,8 @@ module Gitlab
             :award_emoji,
             :linked_items,
             :participants,
-            :time_tracking
+            :time_tracking,
+            :crm_contacts
           ],
           objective: [
             :assignees,
@@ -152,7 +156,8 @@ module Gitlab
             :color,
             :rolledup_dates,
             :participants,
-            :time_tracking
+            :time_tracking,
+            :crm_contacts
           ],
           ticket: [
             :assignees,
@@ -170,7 +175,8 @@ module Gitlab
             :award_emoji,
             :linked_items,
             :participants,
-            :time_tracking
+            :time_tracking,
+            :crm_contacts
           ]
         }.freeze
 

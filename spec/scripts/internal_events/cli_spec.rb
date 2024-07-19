@@ -1036,7 +1036,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "1\n", # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
           "Internal Event CLI is opened\n", # Submit description
           "internal_events_cli_opened\n", # Submit action name
-          "6\n", # Select: None
+          "7\n", # Select: None
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "analytics_instrumentation\n", # Input group
@@ -1109,7 +1109,7 @@ RSpec.describe Cli, feature_category: :service_ping do
           "1\n", # Enum-select: New Event -- start tracking when an action or scenario occurs on gitlab instances
           "Internal Event CLI is opened\n", # Submit description
           "internal_events_cli_opened\n", # Submit action name
-          "6\n", # Select: None
+          "7\n", # Select: None
           "\n", # Select: None! Continue to next section!
           "\n", # Skip MR URL
           "instrumentation\n", # Filter & select group

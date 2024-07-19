@@ -28,7 +28,8 @@ module Groups::GroupMembersHelper
       group_name: group.name,
       group_path: group.full_path,
       can_approve_access_requests: true, # true for CE, overridden in EE
-      placeholder: placeholder_users
+      placeholder: placeholder_users,
+      available_roles: available_group_roles(group)
     }
   end
   # rubocop:enable Metrics/ParameterLists
@@ -82,6 +83,13 @@ module Groups::GroupMembersHelper
       pagination: members_pagination_data(group_links),
       member_path: group_group_link_path(group, ':id')
     }
+  end
+
+  # Overridden in `ee/app/helpers/ee/groups/group_members_helper.rb`
+  def available_group_roles(group)
+    group.access_level_roles.sort_by { |_, access_level| access_level }.map do |name, access_level|
+      { title: name, value: "static-#{access_level}" }
+    end
   end
 end
 

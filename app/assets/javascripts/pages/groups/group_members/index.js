@@ -21,7 +21,7 @@ const APP_OPTIONS = {
     requestFormatter: groupMemberRequestFormatter,
     filteredSearchBar: {
       show: true,
-      tokens: ['two_factor', 'with_inherited_permissions', 'enterprise', 'user_type'],
+      tokens: ['two_factor', 'with_inherited_permissions', 'enterprise', 'user_type', 'max_role'],
       searchParam: 'search',
       placeholder: s__('Members|Filter members'),
       recentSearchesStorageKey: 'group_members',

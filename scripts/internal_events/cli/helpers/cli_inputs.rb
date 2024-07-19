@@ -4,14 +4,14 @@
 module InternalEventsCli
   module Helpers
     module CliInputs
-      def prompt_for_array_selection(message, choices, default = nil, &formatter)
+      def prompt_for_array_selection(message, choices, default = nil, **opts, &formatter)
         formatter ||= ->(choice) { choice.sort.join(", ") }
 
         choices = choices.map do |choice|
           { name: formatter.call(choice), value: choice }
         end
 
-        cli.select(message, choices, **select_opts) do |menu|
+        cli.select(message, choices, **select_opts, **opts) do |menu|
           menu.enum "."
           menu.default formatter.call(default) if default
         end

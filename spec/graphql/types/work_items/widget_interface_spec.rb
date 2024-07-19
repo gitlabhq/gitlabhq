@@ -30,6 +30,8 @@ RSpec.describe Types::WorkItems::WidgetInterface, feature_category: :team_planni
       WorkItems::Widgets::Participants     | Types::WorkItems::Widgets::ParticipantsType
       WorkItems::Widgets::TimeTracking     | Types::WorkItems::Widgets::TimeTracking::TimeTrackingType
       WorkItems::Widgets::Designs          | Types::WorkItems::Widgets::DesignsType
+      WorkItems::Widgets::Development      | Types::WorkItems::Widgets::DevelopmentType
+      WorkItems::Widgets::CrmContacts      | Types::WorkItems::Widgets::CrmContactsType
     end
 
     with_them do

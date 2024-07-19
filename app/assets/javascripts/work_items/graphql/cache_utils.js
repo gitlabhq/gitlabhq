@@ -173,7 +173,7 @@ export const addHierarchyChild = ({ cache, id, workItem }) => {
         (child) => child.id === workItem?.id,
       );
       if (!existingChild) {
-        findHierarchyWidgetChildren(draftState?.workItem).push(workItem);
+        findHierarchyWidgetChildren(draftState?.workItem).unshift(workItem);
       }
     }),
   });

@@ -28,7 +28,7 @@ initMembersApp(document.querySelector('.js-project-members-list-app'), {
     requestFormatter: projectMemberRequestFormatter,
     filteredSearchBar: {
       show: true,
-      tokens: ['with_inherited_permissions'],
+      tokens: ['with_inherited_permissions', 'max_role'],
       searchParam: 'search',
       placeholder: s__('Members|Filter members'),
       recentSearchesStorageKey: 'project_members',
