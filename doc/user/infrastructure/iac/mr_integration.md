@@ -30,12 +30,12 @@ This setting ensures artifacts are accessible only to GitLab administrators and 
 
 ## Configure Terraform report artifacts
 
-GitLab [integrates with Terraform](index.md#integrate-your-project-with-terraform) and [OpenTofu](index.md#integrate-your-project-with-opentofu)
+GitLab [integrates with Terraform](index.md#quickstart-a-terraform-project-in-pipelines) and [OpenTofu](index.md#quickstart-an-opentofu-project-in-pipelines)
 through CI/CD templates and components that use GitLab-managed Terraform state and display Terraform changes on merge requests.
 
 ### Automatically configure Terraform report artifacts
 
-You should use either the [Terraform CI/CD templates](index.md#integrate-your-project-with-terraform)
+You should use either the [Terraform CI/CD templates](index.md#quickstart-a-terraform-project-in-pipelines)
 or the [OpenTofu CI/CD component](https://gitlab.com/components/opentofu), which automatically configure the Terraform report artifacts
 in the `plan` jobs.
 

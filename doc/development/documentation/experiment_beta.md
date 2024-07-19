@@ -44,7 +44,7 @@ the list of users testing this feature, do this thing. If you find a bug,
 
 When the feature is ready for production, remove:
 
-- The text in parentheses.
+- The **Status** from the availability details.
 - Any language about the feature not being ready for production in the body
   description.
 - The feature flag information if available.
