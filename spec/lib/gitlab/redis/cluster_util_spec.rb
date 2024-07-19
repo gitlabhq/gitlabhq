@@ -8,11 +8,11 @@ RSpec.describe Gitlab::Redis::ClusterUtil, feature_category: :scalability do
   let(:router_stub) { instance_double(::RedisClient::Cluster::Router) }
   let(:array) { Array.new(10000, &:to_s) }
 
-  before do
-    allow(::RedisClient::Cluster::Router).to receive(:new).and_return(router_stub)
-  end
-
   describe '.cluster?' do
+    before do
+      allow(::RedisClient::Cluster::Router).to receive(:new).and_return(router_stub)
+    end
+
     context 'when MultiStore' do
       where(:pri_store, :sec_store, :expected_val) do
         :cluster | :cluster | true

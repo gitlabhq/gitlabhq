@@ -67,10 +67,6 @@ The following table lists project permissions available for each role:
 | [Analytics](analytics/index.md):<br>View [code review analytics](analytics/code_review_analytics.md)                                                                                         |       | ✓        | ✓         | ✓          | ✓     |       |
 | [Analytics](analytics/index.md):<br>View [merge request analytics](analytics/merge_request_analytics.md)                                                                                     |       | ✓        | ✓         | ✓          | ✓     |       |
 | [Analytics](analytics/index.md):<br>View [repository analytics](analytics/repository_analytics.md)                                                                                           |       | ✓        | ✓         | ✓          | ✓     |       |
-| [Container Registry](packages/container_registry/index.md):<br>Create, edit, delete [cleanup policies](packages/container_registry/delete_container_registry_images.md#use-a-cleanup-policy) |       |          |           | ✓          | ✓     |       |
-| [Container registry](packages/container_registry/index.md):<br>Push an image to the container registry                                                                                       |       |          | ✓         | ✓          | ✓     |       |
-| [Container registry](packages/container_registry/index.md):<br>Pull an image from the container registry                                                                                     | ✓     | ✓        | ✓         | ✓          | ✓     | The ability to view the container registry and pull images is controlled by the [container registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions). |
-| [Container registry](packages/container_registry/index.md):<br>Remove a container registry image                                                                                             |       |          | ✓         | ✓          | ✓     |       |
 | [GitLab agent for Kubernetes](clusters/agent/index.md):<br>View agents                                                                                                                       |       |          | ✓         | ✓          | ✓     |       |
 | [GitLab agent for Kubernetes](clusters/agent/index.md):<br>Manage agents                                                                                                                     |       |          |           | ✓          | ✓     |       |
 | [GitLab Pages](project/pages/index.md):<br>View Pages protected by [access control](project/pages/pages_access_control.md)                                                                   | ✓     | ✓        | ✓         | ✓          | ✓     |       |
@@ -90,10 +86,6 @@ The following table lists project permissions available for each role:
 | [Incident Management](../operations/incident_management/index.md):<br>Change [incident escalation policy](../operations/incident_management/manage_incidents.md#change-escalation-policy)    |       |          | ✓         | ✓          | ✓     |       |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [on-call schedules](../operations/incident_management/oncall_schedules.md)                                      |       |          |           | ✓          | ✓     |       |
 | [Incident Management](../operations/incident_management/index.md):<br>Manage [escalation policies](../operations/incident_management/escalation_policies.md)                                 |       |          |           | ✓          | ✓     |       |
-| [Package registry](packages/index.md):<br>Pull a package                                                                                                                                     | ✓     | ✓        | ✓         | ✓          | ✓     | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
-| [Package registry](packages/index.md):<br>Publish a package                                                                                                                                  |       |          | ✓         | ✓          | ✓     |       |
-| [Package registry](packages/index.md):<br>Delete a package                                                                                                                                   |       |          |           | ✓          | ✓     |       |
-| [Package registry](packages/index.md):<br>Delete a file associated with a package                                                                                                            |       |          |           | ✓          | ✓     |       |
 | [Project operations](../operations/index.md):<br>View [Error Tracking](../operations/error_tracking.md) list                                                                                 |       | ✓        | ✓         | ✓          | ✓     |       |
 | [Project operations](../operations/index.md):<br>Manage [Feature flags](../operations/feature_flags.md)                                                                                      |       |          | ✓         | ✓          | ✓     |       |
 | [Project operations](../operations/index.md):<br>Manage [Error Tracking](../operations/error_tracking.md)                                                                                    |       |          |           | ✓          | ✓     |       |
@@ -215,6 +207,26 @@ Project permissions for [wikis](project/wiki/index.md):
 | Create and edit wiki pages |       |          |     ✓     |     ✓      |   ✓   |       |
 | Delete wiki pages          |       |          |     ✓     |     ✓      |   ✓   |       |
 
+### Packages and Registries
+
+Project permissions for [container registry](../user/packages/index.md):
+
+| Action                                    | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|-------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Pull an image from the container registry |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | The ability to view the container registry and pull images is controlled by the [container registry's visibility permissions](packages/container_registry/index.md#container-registry-visibility-permissions). |
+| Push an image to the container registry   |       |          |     ✓     |     ✓      |   ✓   |       |
+| Delete a container registry image         |       |          |     ✓     |     ✓      |   ✓   |       |
+| Manage cleanup policies                   |       |          |           |     ✓      |   ✓   |       |
+
+Project permissions for [package registry](../user/packages/index.md):
+
+| Action                                  | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|-----------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Pull a package                          |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
+| Publish a package                       |       |          |     ✓     |     ✓      |   ✓   |       |
+| Delete a package                        |       |          |           |     ✓      |   ✓   |       |
+| Delete a file associated with a package |       |          |           |     ✓      |   ✓   |       |
+
 ### Repository
 
 Project permissions for [repository](project/repository/index.md) features including source code, branches, push rules, and more:
@@ -332,29 +344,19 @@ The following table lists group permissions available for each role:
 | Action                                                                                  | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-----------------------------------------------------------------------------------------|-------|----------|-----------|------------|-------|-------|
 | Browse group                                                                            | ✓     | ✓        | ✓         | ✓          | ✓     |       |
-| Pull a container image using the dependency proxy                                       | ✓     | ✓        | ✓         | ✓          | ✓     |       |
-| Pull a container registry image                                                         | ✓     | ✓        | ✓         | ✓          | ✓     | Guests can only view events based on their individual actions. |
 | View [Insights](project/insights/index.md)                                              | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View [Insights](project/insights/index.md) charts                                       | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View [Issue analytics](group/issues_analytics/index.md)                                 | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View Contribution analytics                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View value stream analytics                                                             | ✓     | ✓        | ✓         | ✓          | ✓     |       |
-| Pull [packages](packages/index.md)                                                      |       | ✓        | ✓         | ✓          | ✓     |       |
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |       |
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |       |
 | View metrics dashboard annotations                                                      |       | ✓        | ✓         | ✓          | ✓     |       |
-| Publish [packages](packages/index.md)                                                   |       |          | ✓         | ✓          | ✓     |       |
-| Remove a container registry image                                                       |       |          | ✓         | ✓          | ✓     |       |
 | Create project in group                                                                 |       |          | ✓         | ✓          | ✓     | Developers, Maintainers and Owners: Only if the project creation role is set at the [instance level](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or the [group level](group/index.md#specify-who-can-add-projects-to-a-group).<br><br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |       |
 | View group audit events                                                                 |       |          | ✓         | ✓          | ✓     | Developers and Maintainers can only view events based on their individual actions. |
 | Create subgroup                                                                         |       |          |           | ✓          | ✓     | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/index.md#change-who-can-create-subgroups). |
-| Create/edit/delete [Maven](packages/maven_repository/index.md#do-not-allow-duplicate-maven-packages), [generic](packages/generic_packages/index.md#do-not-allow-duplicate-generic-packages), [NuGet](packages/nuget_repository/index.md#do-not-allow-duplicate-nuget-packages), and [Terraform Modules](packages/terraform_module_registry/index.md#allow-duplicate-terraform-modules) package duplicate settings |  |  |  |   | ✓ |       |
-| Create/edit/delete dependency proxy [cleanup policies](packages/dependency_proxy/reduce_dependency_proxy_storage.md#cleanup-policies)         |  |  |  |   | ✓ |       |
-| Delete [packages](packages/index.md)                                                    |       |          |           | ✓          | ✓     |       |
 | Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓          | ✓     |       |
-| Enable/disable a dependency proxy                                                       |       |          |           |            | ✓     |       |
-| Enable/disable package request forwarding                                               |       |          |           |            | ✓     |       |
 | Fork project into a group                                                               |       |          |           | ✓          | ✓     |       |
 | View group runners                                                                      |       |          |           | ✓          | ✓     |       |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |       |
@@ -434,6 +436,29 @@ Group permissions for [wikis](project/wiki/group.md):
 | View group wiki                  |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | Guests: In addition, if your group is public or internal, all users who can see the group can also see group wiki pages. |
 | Create and edit group wiki pages |       |          |     ✓     |     ✓      |   ✓   |       |
 | Delete group wiki pages          |       |          |     ✓     |     ✓      |   ✓   |       |
+
+### Packages and Registries
+
+Group permissions for [container registry](../user/packages/index.md):
+
+| Action                                            | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|---------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Pull a container registry image                   |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | Guests can only view events based on their individual actions. |
+| Pull a container image using the dependency proxy |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Delete a container registry image                 |       |          |     ✓     |     ✓      |   ✓   |       |
+
+Group permissions for [package registry](../user/packages/index.md):
+
+| Action                                    | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|-------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Pull packages                             |       |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Publish packages                          |       |          |     ✓     |     ✓      |   ✓   |       |
+| Delete packages                           |       |          |           |     ✓      |   ✓   |       |
+| Manage package settings                   |       |          |           |            |   ✓   |       |
+| Manage dependency proxy cleanup policies  |       |          |           |            |   ✓   |       |
+| Purge the dependency proxy for a group    |       |          |           |            |   ✓   |       |
+| Enable/disable a dependency proxy         |       |          |           |            |   ✓   |       |
+| Enable/disable package request forwarding |       |          |           |            |   ✓   |       |
 
 ### Repository
 
