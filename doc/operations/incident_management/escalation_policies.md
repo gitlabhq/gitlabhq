@@ -4,16 +4,16 @@ group: Respond
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Escalation Policies
+# Escalation policies
 
 DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Escalation Policies protect your company from missed critical alerts. Escalation Policies contain
+Escalation policies protect your company from missed critical alerts. Escalation policies contain
 time-boxed steps that automatically page the next responder in the escalation step if the responder
 in the previous step has not responded. You can create an escalation policy in the GitLab project
-where you manage [On-call schedules](oncall_schedules.md).
+where you manage [on-call schedules](oncall_schedules.md).
 
 ## Add an escalation policy
 

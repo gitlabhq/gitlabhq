@@ -130,6 +130,9 @@ Other merge requests can now be added to the train.
 
 ## Add a merge request to a merge train
 
+> - Auto-merge for merge trains [introduced](https://gitlab.com/groups/gitlab-org/-/epics/10874) in GitLab 17.2 [with a flag](../../administration/feature_flags.md) named `merge_when_checks_pass_merge_train`. Disabled by default.
+> - Auto-merge for merge trains [enabled](https://gitlab.com/gitlab-org/gitlab/-/issues/470667) on GitLab.com in GitLab 17.2.
+
 Prerequisites:
 
 - You must have [permissions](../../user/permissions.md) to merge or push to the target branch.

@@ -9,8 +9,6 @@ module Gitlab
         @batch_size = batch_size
         @start = start
         @finish = finish
-
-        fix_google_api_logger
       end
 
       # Yields a Range of IDs and a Hash of failed verifications (object => error)
@@ -66,13 +64,6 @@ module Gitlab
 
       def failure(object, message)
         [object, message]
-      end
-
-      # It's already set to Logger::INFO, but acts as if it is set to
-      # Logger::DEBUG, and this fixes it...
-      def fix_google_api_logger
-        require 'google/apis'
-        Google::Apis.logger.level = Logger::INFO
       end
 
       # This should return an ActiveRecord::Relation suitable for calling #in_batches on

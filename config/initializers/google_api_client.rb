@@ -15,3 +15,9 @@ Google::Apis::RequestOptions.default.retries = 3 if Gitlab::Utils.to_boolean(ENV
 # while using more memory at peak, see discussion in
 # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108456#note_1259008557
 Google::Apis::RequestOptions.default.upload_chunk_size = 10.megabytes
+
+logger = Gitlab::AppJsonLogger.build
+
+logger.level = Logger::INFO
+
+Google::Apis.logger = logger

@@ -19,8 +19,8 @@ RSpec.describe WorkItems::Type, feature_category: :team_planning do
 
     it 'has many `enabled_widget_definitions`' do
       type = create(:work_item_type)
-      widget1 = create(:widget_definition, work_item_type: type)
-      create(:widget_definition, work_item_type: type, disabled: true)
+      widget1 = create(:widget_definition, work_item_type: type, name: 'Enabled widget')
+      create(:widget_definition, work_item_type: type, disabled: true, name: 'Disabled widget')
 
       expect(type.enabled_widget_definitions).to match_array([widget1])
     end

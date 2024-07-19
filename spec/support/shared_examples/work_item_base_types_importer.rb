@@ -22,7 +22,7 @@ RSpec.shared_examples 'work item base types importer' do
     expect { subject }.to change { WorkItems::WidgetDefinition.count }
       .from(0).to(widget_mapping.values.flatten(1).count)
 
-    created_widgets = WorkItems::WidgetDefinition.global.map do |widget|
+    created_widgets = WorkItems::WidgetDefinition.all.map do |widget|
       { name: widget.work_item_type.name, type: widget.widget_type, options: widget.widget_options }
     end
     expected_widgets = widget_mapping.flat_map do |type_sym, widget_types|
@@ -51,7 +51,7 @@ RSpec.shared_examples 'work item base types importer' do
   end
 
   it 'upserts default widget definitions if they already exist and type changes' do
-    widget = WorkItems::WidgetDefinition.global.find_by_widget_type(:labels)
+    widget = WorkItems::WidgetDefinition.find_by_widget_type(:labels)
 
     widget.update!(widget_type: :assignees)
 
@@ -64,7 +64,7 @@ RSpec.shared_examples 'work item base types importer' do
   end
 
   it 'does not change default widget definitions if they already exist with changed disabled status' do
-    widget = WorkItems::WidgetDefinition.global.find_by_widget_type(:labels)
+    widget = WorkItems::WidgetDefinition.find_by_widget_type(:labels)
 
     widget.update!(disabled: true)
 

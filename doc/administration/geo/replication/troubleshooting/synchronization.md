@@ -19,13 +19,27 @@ DETAILS:
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.
 
-   ```ruby
-   Upload.verification_state_table_class.each_batch do |relation|
-     relation.update_all(verification_state: 0)
-   end
-   ```
+### Reverify all uploads
 
-1. This causes the primary to start checksumming all Uploads.
+```ruby
+Upload.verification_state_table_class.each_batch do |relation|
+  relation.update_all(verification_state: 0)
+end
+```
+
+### Reverify failed uploads only
+
+```ruby
+Upload.verification_state_table_class.where(verification_state: 3).each_batch do |relation|
+  relation.update_all(verification_state: 0)
+end
+```
+
+### How the reverification process works
+
+When you [reverify all uploads](#reverify-all-uploads) or [reverify failed uploads only](#reverify-failed-uploads-only):
+
+1. This causes the primary to start checksumming the Uploads depending on which commands were executed.
 1. When a primary successfully checksums a record, then all secondaries recalculate the checksum as well, and they compare the values.
 
 You can perform a similar operation with other the Models handled by the [Geo Self-Service Framework](../../../../development/geo/framework.md) which have implemented verification:

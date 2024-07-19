@@ -41,18 +41,17 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
   end
 
   describe 'associations' do
-    it { is_expected.to belong_to(:namespace) }
     it { is_expected.to belong_to(:work_item_type) }
   end
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
-    it { is_expected.to validate_uniqueness_of(:name).case_insensitive.scoped_to([:namespace_id, :work_item_type_id]) }
+    it { is_expected.to validate_uniqueness_of(:name).case_insensitive.scoped_to([:work_item_type_id]) }
     it { is_expected.to validate_length_of(:name).is_at_most(255) }
 
     describe 'widget_options' do
       subject(:widget_definition) do
-        build(:widget_definition, :default, widget_type: widget_type, widget_options: widget_options)
+        build(:widget_definition, widget_type: widget_type, widget_options: widget_options)
       end
 
       context 'when widget type is weight' do
@@ -97,24 +96,18 @@ RSpec.describe WorkItems::WidgetDefinition, feature_category: :team_planning do
 
   context 'with some widgets disabled' do
     before do
-      described_class.global.where(widget_type: :notes).update_all(disabled: true)
+      described_class.where(widget_type: :notes).update_all(disabled: true)
     end
 
     describe '.available_widgets' do
       subject { described_class.available_widgets }
 
-      it 'returns all global widgets excluding the disabled ones' do
-        # WorkItems::Widgets::Notes is excluded from widget class because:
-        # * although widget_definition below is enabled and uses notes widget, it's namespaced (has namespace != nil)
-        # * available_widgets takes into account only global definitions (which have namespace=nil)
-        namespace = create(:namespace)
-        create(:widget_definition, namespace: namespace, widget_type: :notes)
-
+      it 'returns all widgets excluding the disabled ones' do
         is_expected.to match_array(all_widget_classes - [::WorkItems::Widgets::Notes])
       end
 
-      it 'returns all global widgets if there is at least one global widget definition which is enabled' do
-        create(:widget_definition, namespace: nil, widget_type: :notes)
+      it 'returns all widgets if there is at least one widget definition which is enabled' do
+        create(:widget_definition, widget_type: :notes)
 
         is_expected.to match_array(all_widget_classes)
       end
