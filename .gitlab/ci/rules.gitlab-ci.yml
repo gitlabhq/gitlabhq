@@ -1605,6 +1605,8 @@
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
+    - <<: *if-merge-request-targeting-stable-branch
+      changes: *setup-test-env-patterns
     # Otherwise, only run tests in pipeline::tier-3 and above
     - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
@@ -1623,8 +1625,6 @@
       changes: *code-patterns
     - <<: *if-merge-request-and-specific-devops-stage
       changes: *code-patterns
-    - <<: *if-merge-request-targeting-stable-branch
-      changes: *setup-test-env-patterns
     - <<: *if-ruby-branch
 
 # .qa:rules:e2e-blocking-base-* are similar to .qa:rules:package-and-test-common, but not allowed to fail.
