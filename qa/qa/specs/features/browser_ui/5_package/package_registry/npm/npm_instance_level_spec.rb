@@ -43,10 +43,7 @@ module QA
       end
 
       after do
-        package.remove_via_api!
         runner.remove_via_api!
-        project.remove_via_api!
-        another_project.remove_via_api!
       end
 
       where(:case_name, :authentication_token_type, :token_name, :testcase) do
@@ -70,7 +67,8 @@ module QA
         end
 
         it 'push and pull a npm package via CI', :blocking, testcase: params[:testcase] do
-          npm_upload_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_upload_package_instance.yaml.erb')).result(binding)
+          npm_upload_yaml = ERB.new(read_fixture('package_managers/npm',
+            'npm_upload_package_instance.yaml.erb')).result(binding)
           package_json = ERB.new(read_fixture('package_managers/npm', 'package.json.erb')).result(binding)
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
@@ -88,6 +86,10 @@ module QA
             ])
           end
 
+          Support::Waiter.wait_until(max_duration: 180, message: 'Wait for first pipeline creation') do
+            project.pipelines.present?
+          end
+
           project.visit!
           Flow::Pipeline.visit_latest_pipeline
 
@@ -99,7 +101,8 @@ module QA
             expect(job).to be_successful(timeout: 180)
           end
 
-          npm_install_yaml = ERB.new(read_fixture('package_managers/npm', 'npm_install_package_instance.yaml.erb')).result(binding)
+          npm_install_yaml = ERB.new(read_fixture('package_managers/npm',
+            'npm_install_package_instance.yaml.erb')).result(binding)
 
           Support::Retrier.retry_on_exception(max_attempts: 3, sleep_interval: 2) do
             create(:commit, project: another_project, commit_message: 'Add .gitlab-ci.yml', actions: [

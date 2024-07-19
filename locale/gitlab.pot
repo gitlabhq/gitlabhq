@@ -39165,6 +39165,9 @@ msgstr ""
 msgid "Pipelines|The GitLab CI configuration could not be updated."
 msgstr ""
 
+msgid "Pipelines|The visualization in this tab will be %{linkStart}removed%{linkEnd}. Instead, view %{codeStart}needs%{codeEnd} relationships with the %{strongStart}Job dependency%{strongEnd} option in the %{strongStart}Pipeline%{strongEnd} tab."
+msgstr ""
+
 msgid "Pipelines|There are currently no finished pipelines."
 msgstr ""
 
@@ -39235,6 +39238,9 @@ msgid "Pipelines|Unable to create pipeline"
 msgstr ""
 
 msgid "Pipelines|Unable to validate CI/CD configuration. See the %{linkStart}GitLab CI/CD troubleshooting guide%{linkEnd} for more details."
+msgstr ""
+
+msgid "Pipelines|Upcoming visualization change"
 msgstr ""
 
 msgid "Pipelines|Update Trigger"

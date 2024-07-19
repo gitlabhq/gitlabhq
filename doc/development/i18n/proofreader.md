@@ -103,6 +103,7 @@ are very appreciative of the work done by translators and proofreaders!
 - Spanish
   - David Elizondo - [GitLab](https://gitlab.com/daelmo), [Crowdin](https://crowdin.com/profile/daelmo)
   - Pablo Reyes - [GitLab](https://gitlab.com/pabloryst9n), [Crowdin](https://crowdin.com/profile/pabloryst9n)
+  - Gustavo Román - [GitLab](https://gitlab.com/GustavoStark), [Crowdin](https://crowdin.com/profile/gustavonewton)
 - Swedish
   - Johannes Nilsson - [GitLab](https://gitlab.com/nlssn), [Crowdin](https://crowdin.com/profile/nlssn)
 - Turkish

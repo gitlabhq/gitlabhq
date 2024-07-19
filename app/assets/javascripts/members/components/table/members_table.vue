@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlBadge, GlTooltipDirective, GlButton } from '@gitlab/ui';
+import { GlTable, GlBadge, GlButton } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import MembersTableCell from 'ee_else_ce/members/components/table/members_table_cell.vue';
@@ -60,7 +60,6 @@ export default {
       import('ee_component/members/components/table/user_limit_reached_alert.vue'),
     RoleBadges: () => import('ee_component/members/components/table/role_badges.vue'),
   },
-  directives: { GlTooltip: GlTooltipDirective },
   mixins: [glFeatureFlagsMixin()],
   inject: ['namespace', 'currentUserId', 'canManageMembers'],
   props: {
@@ -294,7 +293,6 @@ export default {
         <members-table-cell #default="{ permissions }" :member="member" data-testid="max-role">
           <div v-if="glFeatures.showRoleDetailsInDrawer">
             <gl-button
-              v-gl-tooltip.d0.hover="member.accessLevel.description"
               variant="link"
               :disabled="isRoleDrawerBusy"
               class="gl-block"

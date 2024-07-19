@@ -43,7 +43,7 @@ To set up SSO with Azure as your identity provider:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > SAML SSO**.
 1. Note the information on this page.
-1. Go to Azure and [follow the instructions for configuring SSO for an application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
+1. Go to Azure, [create a non-gallery application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/overview-application-gallery#create-your-own-application), and [configure SSO for an application](https://learn.microsoft.com/en-us/entra/identity/enterprise-apps/add-application-portal-setup-sso). The following GitLab settings correspond to the Azure fields.
 
    | GitLab setting                           | Azure field                                    |
    | -----------------------------------------| ---------------------------------------------- |

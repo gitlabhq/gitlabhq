@@ -1982,23 +1982,37 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     end
 
     context 'when organization owner' do
-      let_it_be(:admin) { create(:admin) }
-
-      context 'when admin mode is enabled', :enable_admin_mode do
-        it 'returns OWNER by default' do
-          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::OWNER)
-        end
+      let_it_be(:organization) { create(:organization) }
+      let_it_be(:group) { create(:group, organization: organization) }
+      let_it_be(:org_owner) do
+        create(:organization_owner, organization: organization).user
       end
 
-      context 'when admin mode is disabled' do
-        it 'returns NO_ACCESS by default' do
-          expect(group.max_member_access_for_user(admin)).to eq(Gitlab::Access::NO_ACCESS)
+      it 'returns OWNER by default' do
+        expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::OWNER)
+      end
+
+      context 'when organization owner is also an admin' do
+        before do
+          org_owner.update!(admin: true)
+        end
+
+        context 'when admin mode is enabled', :enable_admin_mode do
+          it 'returns OWNER by default' do
+            expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::OWNER)
+          end
+        end
+
+        context 'when admin mode is disabled' do
+          it 'returns NO_ACCESS by default' do
+            expect(group.max_member_access_for_user(org_owner)).to eq(Gitlab::Access::NO_ACCESS)
+          end
         end
       end
 
       context 'when only concrete members' do
         it 'returns NO_ACCESS' do
-          expect(group.max_member_access_for_user(admin, only_concrete_membership: true))
+          expect(group.max_member_access_for_user(org_owner, only_concrete_membership: true))
             .to eq(Gitlab::Access::NO_ACCESS)
         end
       end

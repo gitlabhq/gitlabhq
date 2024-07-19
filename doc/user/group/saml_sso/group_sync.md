@@ -207,7 +207,7 @@ To configure for a GitLab.com group:
 1. Select **Settings > SAML SSO**.
 1. Configure [SAML SSO for the group](../../../user/group/saml_sso/index.md).
 1. In the **Microsoft Azure integration** section, select the **Enable Microsoft Azure integration for this group** checkbox.
-   This section will only be visible if SAML SSO is configured and enabled for the group.
+   This section is only visible if SAML SSO is configured and enabled for the group.
 1. Enter the **Tenant ID**, **Client ID**, and **Client secret** obtained earlier when configuring Azure Active Directory in the Azure Portal.
 1. Optional. If using Azure AD for US Government or Azure AD China, enter the appropriate **Login API endpoint** and **Graph API endpoint**. The default values work for most organizations.
 1. Select **Save changes**.
@@ -363,4 +363,4 @@ not limited to 150 groups.
 
 Otherwise, you can work around this issue by changing the [group claims](https://learn.microsoft.com/en-us/entra/identity/hybrid/connect/how-to-connect-fed-group-claims#configure-the-microsoft-entra-application-registration-for-group-attributes) to use the `Groups assigned to the application` option instead.
 
-![Manage Group Claims](img/Azure-manage-group-claims.png).
+![Manage Group Claims](img/Azure-manage-group-claims.png)

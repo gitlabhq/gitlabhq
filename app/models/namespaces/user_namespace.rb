@@ -31,5 +31,29 @@ module Namespaces
     def owners
       Array.wrap(owner)
     end
+
+    def member?(user, min_access_level = Gitlab::Access::GUEST)
+      return false unless user
+
+      max_member_access_for_user(user) >= min_access_level
+    end
+
+    # Return the highest access level for a user
+    #
+    # A special case is handled here when the user is a GitLab admin
+    # which implies it has "OWNER" access everywhere, but should not
+    # officially appear as a member unless specifically added to it
+    #
+    # @param user [User]
+    # @param only_concrete_membership [Bool] whether require admin concrete membership status
+    def max_member_access_for_user(user, only_concrete_membership: false)
+      return Gitlab::Access::NO_ACCESS unless user
+
+      if !only_concrete_membership && (user.can_admin_all_resources? || user.can_admin_organization?(organization))
+        return Gitlab::Access::OWNER
+      end
+
+      owner == user ? Gitlab::Access::OWNER : Gitlab::Access::NO_ACCESS
+    end
   end
 end

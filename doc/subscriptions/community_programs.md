@@ -55,7 +55,7 @@ Benefits of the GitLab Open Source Program apply to all projects in a GitLab nam
 #### Screenshot 2: License contents
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1.Select **Code > Repository** and locate the project's `LICENSE` file.
+1. Select **Code > Repository** and locate the project's `LICENSE` file.
 1. Take a screenshot of the contents of the file. Make sure the screenshot includes the title of the license.
 
 ![License file](img/license-file.png)
