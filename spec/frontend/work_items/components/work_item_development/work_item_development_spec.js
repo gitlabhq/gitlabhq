@@ -2,7 +2,6 @@ import Vue from 'vue';
 import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
@@ -32,17 +31,7 @@ describe('WorkItemDevelopment CE', () => {
       },
     },
   };
-  const groupWorkItemResponseWithMRList = {
-    data: {
-      workspace: {
-        __typename: 'Group',
-        id: 'gid://gitlab/Group/1',
-        workItem: workItem.data.workItem,
-      },
-    },
-  };
   const successQueryHandler = jest.fn().mockResolvedValue(projectWorkItemResponseWithMRList);
-  const groupQueryHandler = jest.fn().mockResolvedValue(groupWorkItemResponseWithMRList);
   const workItemWithEmptyMRList = workItemResponseFactory({
     developmentWidgetPresent: true,
     developmentItems: workItemDevelopmentFragmentResponse([]),
@@ -64,10 +53,7 @@ describe('WorkItemDevelopment CE', () => {
     workItemFullPath = 'full-path',
     workItemQueryHandler = successQueryHandler,
   } = {}) => {
-    mockApollo = createMockApollo([
-      [workItemByIidQuery, workItemQueryHandler],
-      [groupWorkItemByIidQuery, groupQueryHandler],
-    ]);
+    mockApollo = createMockApollo([[workItemByIidQuery, workItemQueryHandler]]);
 
     wrapper = shallowMountExtended(WorkItemDevelopment, {
       apolloProvider: mockApollo,

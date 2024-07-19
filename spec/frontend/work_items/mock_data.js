@@ -1259,19 +1259,6 @@ export const workItemByIidResponseFactory = (options) => {
   };
 };
 
-export const groupWorkItemByIidResponseFactory = (options) => {
-  const response = workItemResponseFactory(options);
-  return {
-    data: {
-      workspace: {
-        __typename: 'Group',
-        id: 'gid://gitlab/Group/1',
-        workItem: response.data.workItem,
-      },
-    },
-  };
-};
-
 export const getIssueDetailsResponse = ({ confidential = false } = {}) => ({
   data: {
     issue: {

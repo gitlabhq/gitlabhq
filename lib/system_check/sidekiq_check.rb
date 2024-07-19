@@ -18,9 +18,9 @@ module SystemCheck
       $stdout.print "Running? ... "
 
       if sidekiq_worker_process_count > 0
-        $stdout.puts "yes".color(:green)
+        $stdout.puts Rainbow("yes").green
       else
-        $stdout.puts "no".color(:red)
+        $stdout.puts Rainbow("no").red
         try_fixing_it(
           sudo_gitlab("RAILS_ENV=production bin/background_jobs start")
         )
@@ -40,15 +40,15 @@ module SystemCheck
       $stdout.print 'Number of Sidekiq processes (cluster/worker) ... '
 
       if cluster_count == 1 && worker_count >= 1
-        $stdout.puts "#{cluster_count}/#{worker_count}".color(:green)
+        $stdout.puts Rainbow("#{cluster_count}/#{worker_count}").green
       elsif File.symlink?(SYSTEMD_UNIT_PATH)
-        $stdout.puts "#{cluster_count}/#{worker_count}".color(:red)
+        $stdout.puts Rainbow("#{cluster_count}/#{worker_count}").red
         try_fixing_it(
           'sudo systemctl restart gitlab-sidekiq.service'
         )
         fix_and_rerun
       else
-        $stdout.puts "#{cluster_count}/#{worker_count}".color(:red)
+        $stdout.puts Rainbow("#{cluster_count}/#{worker_count}").red
         try_fixing_it(
           'sudo service gitlab stop',
           "sudo pkill -u #{gitlab_user} -f sidekiq",

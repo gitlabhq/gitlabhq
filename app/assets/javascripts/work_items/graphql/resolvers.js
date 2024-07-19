@@ -11,13 +11,11 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_IID,
 } from '../constants';
-import groupWorkItemByIidQuery from './group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
 export const updateNewWorkItemCache = (input, cache) => {
   const {
     healthStatus,
-    isGroup,
     fullPath,
     workItemType,
     assignees,
@@ -29,7 +27,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     rolledUpDates,
   } = input;
 
-  const query = isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
+  const query = workItemByIidQuery;
 
   const variables = {
     fullPath: newWorkItemFullPath(fullPath, workItemType),

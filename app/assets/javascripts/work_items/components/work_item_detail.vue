@@ -31,7 +31,6 @@ import {
 
 import workItemUpdatedSubscription from '../graphql/work_item_updated.subscription.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import getAllowedWorkItemChildTypes from '../graphql/work_item_allowed_children.query.graphql';
 import { findHierarchyWidgetDefinition } from '../utils';
@@ -83,7 +82,7 @@ export default {
     WorkItemLoading,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'isGroup', 'reportAbusePath', 'groupPath', 'hasSubepicsFeature'],
+  inject: ['fullPath', 'reportAbusePath', 'groupPath', 'hasSubepicsFeature'],
   props: {
     isModal: {
       type: Boolean,
@@ -126,9 +125,7 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,

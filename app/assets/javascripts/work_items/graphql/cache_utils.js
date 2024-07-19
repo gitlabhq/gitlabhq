@@ -29,7 +29,6 @@ import {
   WIDGET_TYPE_DESCRIPTION,
   NEW_WORK_ITEM_IID,
 } from '../constants';
-import groupWorkItemByIidQuery from './group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 import getWorkItemTreeQuery from './work_item_tree.query.graphql';
 
@@ -222,7 +221,6 @@ export const updateParent = ({ cache, query, fullPath, iid, workItem }) => {
 };
 
 export const setNewWorkItemCache = async (
-  isGroup,
   fullPath,
   widgetDefinitions,
   workItemType,
@@ -437,7 +435,7 @@ export const setNewWorkItemCache = async (
   const newWorkItemPath = newWorkItemFullPath(fullPath, workItemType);
 
   cacheProvider.clients.defaultClient.cache.writeQuery({
-    query: isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+    query: workItemByIidQuery,
     variables: {
       fullPath: newWorkItemPath,
       iid: NEW_WORK_ITEM_IID,

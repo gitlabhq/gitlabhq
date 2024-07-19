@@ -10,7 +10,6 @@ import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/g
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import { isScopedLabel } from '~/lib/utils/common_utils';
 import Tracking from '~/tracking';
-import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
@@ -149,9 +148,7 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,
@@ -223,7 +220,6 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              isGroup: this.isGroup,
               workItemType: this.workItemType,
               fullPath: this.fullPath,
               labels: this.visibleLabels.filter(({ id }) => selectedIds.includes(id)),

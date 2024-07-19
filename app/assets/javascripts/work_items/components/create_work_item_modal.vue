@@ -63,7 +63,6 @@ export default {
           return;
         }
         await setNewWorkItemCache(
-          this.isGroup,
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,
@@ -94,7 +93,6 @@ export default {
       this.visible = false;
       if (this.workItemTypes && this.workItemTypes[0]) {
         setNewWorkItemCache(
-          this.isGroup,
           this.fullPath,
           this.workItemTypes[0]?.widgetDefinitions,
           this.workItemTypeName,

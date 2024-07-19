@@ -22,7 +22,6 @@ import getWorkItemTreeQuery from '~/work_items/graphql/work_item_tree.query.grap
 
 import {
   getIssueDetailsResponse,
-  groupWorkItemByIidResponseFactory,
   workItemHierarchyTreeResponse,
   workItemHierarchyPaginatedTreeResponse,
   workItemHierarchyTreeEmptyResponse,
@@ -42,9 +41,6 @@ describe('WorkItemLinks', () => {
   let mockApollo;
 
   const responseWithAddChildPermission = jest.fn().mockResolvedValue(workItemHierarchyTreeResponse);
-  const groupResponseWithAddChildPermission = jest
-    .fn()
-    .mockResolvedValue(groupWorkItemByIidResponseFactory());
   const responseWithoutAddChildPermission = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ adminParentLink: false }));
@@ -259,18 +255,10 @@ describe('WorkItemLinks', () => {
     });
   });
 
-  describe('when project context', () => {
-    it('calls the project work item query', () => {
-      createComponent();
+  it('calls the project work item query', () => {
+    createComponent();
 
-      expect(responseWithAddChildPermission).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work item query', () => {
-      createComponent();
-
-      expect(groupResponseWithAddChildPermission).not.toHaveBeenCalled();
-    });
+    expect(responseWithAddChildPermission).toHaveBeenCalled();
   });
 
   describe('pagination', () => {

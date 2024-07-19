@@ -13,7 +13,6 @@ import { findHierarchyWidgets } from '../../utils';
 import { addHierarchyChild, removeHierarchyChild } from '../../graphql/cache_utils';
 import reorderWorkItem from '../../graphql/reorder_work_item.mutation.graphql';
 import updateWorkItemMutation from '../../graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemLinkChild from './work_item_link_child.vue';
@@ -22,7 +21,6 @@ export default {
   components: {
     WorkItemLinkChild,
   },
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -146,7 +144,7 @@ export default {
     },
     addWorkItemQuery({ iid }) {
       this.$apollo.addSmartQuery('prefetchedWorkItem', {
-        query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+        query: workItemByIidQuery,
         variables: {
           fullPath: this.fullPath,
           iid,

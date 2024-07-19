@@ -15,7 +15,6 @@ import {
   i18n,
 } from '../constants';
 import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 
 export default {
@@ -27,7 +26,6 @@ export default {
     GlLink,
   },
   mixins: [Tracking.mixin()],
-  inject: ['isGroup'],
   props: {
     workItemState: {
       type: String,
@@ -68,9 +66,7 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.fullPath,

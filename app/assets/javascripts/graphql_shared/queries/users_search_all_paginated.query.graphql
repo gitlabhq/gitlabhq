@@ -1,8 +1,14 @@
 #import "~/graphql_shared/fragments/page_info.fragment.graphql"
 #import "../fragments/user.fragment.graphql"
 
-query searchAllUsersPaginated($search: String!, $after: String = "", $first: Int = null) {
-  users(search: $search, after: $after, first: $first) {
+query searchAllUsersPaginated(
+  $active: Boolean
+  $humans: Boolean
+  $search: String!
+  $after: String = ""
+  $first: Int = null
+) {
+  users(active: $active, humans: $humans, search: $search, after: $after, first: $first) {
     nodes {
       ...User
     }

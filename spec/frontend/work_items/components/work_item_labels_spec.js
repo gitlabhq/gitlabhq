@@ -14,12 +14,10 @@ import DropdownContentsCreateView from '~/sidebar/components/labels/labels_selec
 import groupLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/group_labels.query.graphql';
 import projectLabelsQuery from '~/sidebar/components/labels/labels_select_widget/graphql/project_labels.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import {
-  groupWorkItemByIidResponseFactory,
   projectLabelsResponse,
   groupLabelsResponse,
   getProjectLabelsResponse,
@@ -50,9 +48,6 @@ describe('WorkItemLabels component', () => {
   const workItemQueryWithFewLabelsHandler = jest
     .fn()
     .mockResolvedValue(workItemByIidResponseFactory({ labels: [mockLabels[0], mockLabels[1]] }));
-  const groupWorkItemQuerySuccess = jest
-    .fn()
-    .mockResolvedValue(groupWorkItemByIidResponseFactory({ labels: null }));
   const projectLabelsQueryHandler = jest.fn().mockResolvedValue(projectLabelsResponse);
   const groupLabelsQueryHandler = jest.fn().mockResolvedValue(groupLabelsResponse);
   const errorHandler = jest.fn().mockRejectedValue('Error');
@@ -82,7 +77,6 @@ describe('WorkItemLabels component', () => {
     wrapper = shallowMountExtended(WorkItemLabels, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemQueryHandler],
-        [groupWorkItemByIidQuery, groupWorkItemQuerySuccess],
         [projectLabelsQuery, searchQueryHandler],
         [groupLabelsQuery, groupLabelsQueryHandler],
         [updateWorkItemMutation, updateWorkItemMutationHandler],
@@ -167,7 +161,6 @@ describe('WorkItemLabels component', () => {
     await waitForPromises();
 
     expect(workItemQueryWithLabelsHandler).toHaveBeenCalled();
-    expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
 
     expect(findWorkItemSidebarDropdownWidget().props('itemValue')).toStrictEqual([
       label1Id,
@@ -421,27 +414,11 @@ describe('WorkItemLabels component', () => {
     expect(workItemQuerySuccess).not.toHaveBeenCalled();
   });
 
-  it('skips calling the group work item query when missing workItemIid', async () => {
-    createComponent({ isGroup: true, workItemIid: '' });
-
-    await waitForPromises();
-
-    expect(groupWorkItemQuerySuccess).not.toHaveBeenCalled();
-  });
-
   describe('when group context', () => {
     beforeEach(async () => {
       createComponent({ isGroup: true });
 
       await waitForPromises();
-    });
-
-    it('skips calling the project work item query', () => {
-      expect(workItemQuerySuccess).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query', () => {
-      expect(groupWorkItemQuerySuccess).toHaveBeenCalled();
     });
 
     it('calls the group labels query on search', async () => {

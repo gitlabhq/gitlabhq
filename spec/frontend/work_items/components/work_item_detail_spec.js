@@ -24,14 +24,12 @@ import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_sel
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import { i18n } from '~/work_items/constants';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import workItemUpdatedSubscription from '~/work_items/graphql/work_item_updated.subscription.graphql';
 import getAllowedWorkItemChildTypes from '~/work_items/graphql/work_item_allowed_children.query.graphql';
 
 import {
-  groupWorkItemByIidResponseFactory,
   mockParent,
   workItemByIidResponseFactory,
   objectiveType,
@@ -53,10 +51,6 @@ describe('WorkItemDetail component', () => {
     canUpdate: false,
     canDelete: false,
   });
-  const groupWorkItemQueryResponse = groupWorkItemByIidResponseFactory({
-    canUpdate: true,
-    canDelete: true,
-  });
   const workItemQueryResponseWithoutParent = workItemByIidResponseFactory({
     parent: null,
     canUpdate: true,
@@ -66,7 +60,6 @@ describe('WorkItemDetail component', () => {
   const successHandlerWithNoPermissions = jest
     .fn()
     .mockResolvedValue(workItemQueryResponseWithNoPermissions);
-  const groupSuccessHandler = jest.fn().mockResolvedValue(groupWorkItemQueryResponse);
   const showModalHandler = jest.fn();
   const { id } = workItemQueryResponse.data.workspace.workItem;
   const workItemUpdatedSubscriptionHandler = jest
@@ -117,7 +110,6 @@ describe('WorkItemDetail component', () => {
     wrapper = shallowMountExtended(WorkItemDetail, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, handler],
-        [groupWorkItemByIidQuery, groupSuccessHandler],
         [updateWorkItemMutation, mutationHandler],
         [workItemUpdatedSubscription, workItemUpdatedSubscriptionHandler],
         [getAllowedWorkItemChildTypes, allowedChildrenTypesHandler],
@@ -453,64 +445,25 @@ describe('WorkItemDetail component', () => {
     expect(findAlert().text()).toBe(updateError);
   });
 
-  describe('when project context', () => {
-    it('calls the project work item query', async () => {
-      createComponent();
-      await waitForPromises();
+  it('calls the work item query', async () => {
+    createComponent();
+    await waitForPromises();
 
-      expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
-    });
-
-    it('skips calling the group work item query', async () => {
-      createComponent();
-      await waitForPromises();
-
-      expect(groupSuccessHandler).not.toHaveBeenCalled();
-    });
-
-    it('skips calling the project work item query when there is no workItemIid', async () => {
-      createComponent({ workItemIid: null });
-      await waitForPromises();
-
-      expect(successHandler).not.toHaveBeenCalled();
-    });
-
-    it('calls the project work item query when isModal=true', async () => {
-      createComponent({ isModal: true });
-      await waitForPromises();
-
-      expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
-    });
+    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
   });
 
-  describe('when group context', () => {
-    it('skips calling the project work item query', async () => {
-      createComponent({ isGroup: true });
-      await waitForPromises();
+  it('skips calling the work item query when there is no workItemIid', async () => {
+    createComponent({ workItemIid: null });
+    await waitForPromises();
 
-      expect(successHandler).not.toHaveBeenCalled();
-    });
+    expect(successHandler).not.toHaveBeenCalled();
+  });
 
-    it('calls the group work item query', async () => {
-      createComponent({ isGroup: true });
-      await waitForPromises();
+  it('calls the work item query when isModal=true', async () => {
+    createComponent({ isModal: true });
+    await waitForPromises();
 
-      expect(groupSuccessHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
-    });
-
-    it('skips calling the group work item query when there is no workItemIid', async () => {
-      createComponent({ isGroup: true, workItemIid: null });
-      await waitForPromises();
-
-      expect(groupSuccessHandler).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query when isModal=true', async () => {
-      createComponent({ isGroup: true, isModal: true });
-      await waitForPromises();
-
-      expect(groupSuccessHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
-    });
+    expect(successHandler).toHaveBeenCalledWith({ fullPath: 'group/project', iid: '1' });
   });
 
   describe('hierarchy widget', () => {

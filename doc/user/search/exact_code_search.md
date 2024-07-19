@@ -65,20 +65,16 @@ When this feature is enabled for instances with more than 20,000 projects, your 
 ## Search modes
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434417) in GitLab 16.8 [with a flag](../../administration/feature_flags.md) named `zoekt_exact_search`. Disabled by default.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/436457) in GitLab 17.3. Feature flag `zoekt_exact_search` removed.
 
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
-
-When `zoekt_exact_search` is enabled, you can switch between two search modes:
+GitLab has two search modes:
 
 - **Regular expression mode:** supports regular and boolean expressions.
 - **Exact match mode:** returns results that exactly match the query.
 
-To switch between the two modes, to the right of the search box,
+The exact match mode is used by default.
+To switch to the regular expression mode, to the right of the search box,
 select **Use regular expression** (**{regular-expression}**).
-When `zoekt_exact_search` is disabled, the regular expression mode is used by default.
 
 ### Syntax
 

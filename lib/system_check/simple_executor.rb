@@ -51,7 +51,7 @@ module SystemCheck
 
       # When implements skip method, we run it first, and if true, skip the check
       if check.can_skip? && check.skip?
-        $stdout.puts check.skip_reason.try(:color, :magenta) || check_klass.skip_reason.color(:magenta)
+        $stdout.puts check.skip_reason.try(:color, :magenta) || Rainbow(check_klass.skip_reason).magenta
         return
       end
 
@@ -80,7 +80,7 @@ module SystemCheck
         check.show_error
       end
     rescue StandardError => e
-      $stdout.puts "Exception: #{e.message}".color(:red)
+      $stdout.puts Rainbow("Exception: #{e.message}").red
     end
 
     private
@@ -90,26 +90,26 @@ module SystemCheck
     end
 
     def print_check_pass(check_klass)
-      $stdout.puts check_klass.check_pass.color(:green)
+      $stdout.puts Rainbow(check_klass.check_pass).green
     end
 
     def print_check_failure(check_klass)
-      $stdout.puts check_klass.check_fail.color(:red)
+      $stdout.puts Rainbow(check_klass.check_fail).red
     end
 
     def print_success
-      $stdout.puts 'Success'.color(:green)
+      $stdout.puts Rainbow('Success').green
     end
 
     def print_failure
-      $stdout.puts 'Failed'.color(:red)
+      $stdout.puts Rainbow('Failed').red
     end
 
     # Prints header content for the series of checks to be executed for this component
     #
     # @param [String] component name of the component relative to the checks being executed
     def start_checking(component)
-      $stdout.puts "Checking #{component.color(:yellow)} ..."
+      $stdout.puts "Checking #{Rainbow(component).yellow} ..."
       $stdout.puts ''
     end
 
@@ -118,7 +118,7 @@ module SystemCheck
     # @param [String] component name of the component relative to the checks being executed
     def finished_checking(component)
       $stdout.puts ''
-      $stdout.puts "Checking #{component.color(:yellow)} ... #{'Finished'.color(:green)}"
+      $stdout.puts "Checking #{Rainbow(component).yellow} ... #{Rainbow('Finished').green}"
       $stdout.puts ''
     end
   end

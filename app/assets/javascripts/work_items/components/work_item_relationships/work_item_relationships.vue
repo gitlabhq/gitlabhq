@@ -5,7 +5,6 @@ import { GlLoadingIcon, GlIcon, GlButton, GlLink, GlToggle } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 
-import groupWorkItemByIidQuery from '../../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import removeLinkedItemsMutation from '../../graphql/remove_linked_items.mutation.graphql';
 import {
@@ -31,7 +30,6 @@ export default {
     WorkItemAddRelationshipForm,
     GlToggle,
   },
-  inject: ['isGroup'],
   props: {
     workItemId: {
       type: String,
@@ -54,9 +52,7 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,
@@ -154,7 +150,7 @@ export default {
               return;
             }
             const queryArgs = {
-              query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+              query: workItemByIidQuery,
               variables: { fullPath: this.workItemFullPath, iid: this.workItemIid },
             };
             const sourceData = cache.readQuery(queryArgs);

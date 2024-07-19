@@ -74,6 +74,8 @@ export default {
     queryVariables() {
       return {
         first: USERS_PER_PAGE,
+        active: true,
+        humans: true,
         search: this.search,
       };
     },

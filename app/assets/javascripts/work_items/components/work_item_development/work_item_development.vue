@@ -3,7 +3,6 @@ import { GlLoadingIcon, GlIcon, GlButton, GlTooltipDirective, GlModalDirective }
 
 import { s__, __ } from '~/locale';
 
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { WIDGET_TYPE_DEVELOPMENT } from '~/work_items/constants';
 
@@ -20,7 +19,6 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
-  inject: ['isGroup'],
   props: {
     canUpdate: {
       type: Boolean,
@@ -38,9 +36,7 @@ export default {
   },
   apollo: {
     workItemDevelopment: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.workItemFullPath,

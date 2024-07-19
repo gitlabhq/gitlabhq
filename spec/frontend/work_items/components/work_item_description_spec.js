@@ -11,11 +11,9 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemDescriptionRendered from '~/work_items/components/work_item_description_rendered.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
 import {
-  groupWorkItemByIidResponseFactory,
   updateWorkItemMutationResponse,
   workItemByIidResponseFactory,
   workItemQueryResponse,
@@ -31,7 +29,6 @@ describe('WorkItemDescription', () => {
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(updateWorkItemMutationResponse);
   let workItemResponseHandler;
-  let groupWorkItemResponseHandler;
 
   const findForm = () => wrapper.findComponent(GlForm);
   const findMarkdownEditor = () => wrapper.findComponent(MarkdownEditor);
@@ -56,15 +53,11 @@ describe('WorkItemDescription', () => {
     showButtonsBelowField,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
-    groupWorkItemResponseHandler = jest
-      .fn()
-      .mockResolvedValue(groupWorkItemByIidResponseFactory({ canUpdate }));
 
     const { id } = workItemQueryResponse.data.workItem;
     wrapper = shallowMount(WorkItemDescription, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
-        [groupWorkItemByIidQuery, groupWorkItemResponseHandler],
         [updateWorkItemMutation, mutationHandler],
       ]),
       propsData: {
@@ -186,32 +179,10 @@ describe('WorkItemDescription', () => {
     });
   });
 
-  describe('when project context', () => {
-    it('calls the project work item query', () => {
-      createComponent();
+  it('calls the project work item query', () => {
+    createComponent();
 
-      expect(workItemResponseHandler).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work item query', () => {
-      createComponent();
-
-      expect(groupWorkItemResponseHandler).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('when group context', () => {
-    it('skips calling the project work item query', () => {
-      createComponent({ isGroup: true });
-
-      expect(workItemResponseHandler).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query', () => {
-      createComponent({ isGroup: true });
-
-      expect(groupWorkItemResponseHandler).toHaveBeenCalled();
-    });
+    expect(workItemResponseHandler).toHaveBeenCalled();
   });
 
   describe('when edit mode is inactive', () => {

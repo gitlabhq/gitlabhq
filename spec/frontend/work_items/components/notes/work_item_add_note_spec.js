@@ -10,12 +10,10 @@ import WorkItemCommentLocked from '~/work_items/components/notes/work_item_comme
 import WorkItemCommentForm from '~/work_items/components/notes/work_item_comment_form.vue';
 import createNoteMutation from '~/work_items/graphql/notes/create_work_item_note.mutation.graphql';
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
 import {
   createWorkItemNoteResponse,
-  groupWorkItemByIidResponseFactory,
   workItemByIidResponseFactory,
   workItemQueryResponse,
 } from '../../mock_data';
@@ -32,7 +30,6 @@ describe('Work item add note', () => {
 
   const mutationSuccessHandler = jest.fn().mockResolvedValue(createWorkItemNoteResponse);
   let workItemResponseHandler;
-  let groupWorkItemResponseHandler;
 
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
@@ -44,7 +41,6 @@ describe('Work item add note', () => {
     canCreateNote = true,
     workItemIid = '1',
     workItemResponse = workItemByIidResponseFactory({ canUpdate, canCreateNote }),
-    groupWorkItemResponse = groupWorkItemByIidResponseFactory({ canUpdate, canCreateNote }),
     signedIn = true,
     isEditing = true,
     isGroup = false,
@@ -52,7 +48,6 @@ describe('Work item add note', () => {
     isInternalThread = false,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
-    groupWorkItemResponseHandler = jest.fn().mockResolvedValue(groupWorkItemResponse);
     if (signedIn) {
       window.gon.current_user_id = '1';
       window.gon.current_user_avatar_url = 'avatar.png';
@@ -62,7 +57,6 @@ describe('Work item add note', () => {
     wrapper = shallowMountExtended(WorkItemAddNote, {
       apolloProvider: createMockApollo([
         [workItemByIidQuery, workItemResponseHandler],
-        [groupWorkItemByIidQuery, groupWorkItemResponseHandler],
         [createNoteMutation, mutationHandler],
       ]),
       provide: {
@@ -277,44 +271,16 @@ describe('Work item add note', () => {
     });
   });
 
-  describe('when project context', () => {
-    it('calls the project work item query', async () => {
-      await createComponent();
+  it('calls the work item query', async () => {
+    await createComponent();
 
-      expect(workItemResponseHandler).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work item query', async () => {
-      await createComponent();
-
-      expect(groupWorkItemResponseHandler).not.toHaveBeenCalled();
-    });
-
-    it('skips calling the project work item query when missing workItemIid', async () => {
-      await createComponent({ workItemIid: '', isEditing: false });
-
-      expect(workItemResponseHandler).not.toHaveBeenCalled();
-    });
+    expect(workItemResponseHandler).toHaveBeenCalled();
   });
 
-  describe('when group context', () => {
-    it('skips calling the project work item query', async () => {
-      await createComponent({ isGroup: true });
+  it('skips calling the work item query when missing workItemIid', async () => {
+    await createComponent({ workItemIid: '', isEditing: false });
 
-      expect(workItemResponseHandler).not.toHaveBeenCalled();
-    });
-
-    it('calls the group work item query', async () => {
-      await createComponent({ isGroup: true });
-
-      expect(groupWorkItemResponseHandler).toHaveBeenCalled();
-    });
-
-    it('skips calling the group work item query when missing workItemIid', async () => {
-      await createComponent({ isGroup: true, workItemIid: '', isEditing: false });
-
-      expect(groupWorkItemResponseHandler).not.toHaveBeenCalled();
-    });
+    expect(workItemResponseHandler).not.toHaveBeenCalled();
   });
 
   it('wrapper adds `internal-note` class when internal thread', async () => {

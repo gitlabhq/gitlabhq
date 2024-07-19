@@ -66,11 +66,7 @@ export default {
       return !this.query.repository_ref || this.query.repository_ref === this.defaultBranchName;
     },
     isRegexButtonVisible() {
-      return (
-        this.searchType === ZOEKT_SEARCH_TYPE &&
-        this.isDefaultBranch &&
-        this.glFeatures.zoektExactSearch
-      );
+      return this.searchType === ZOEKT_SEARCH_TYPE && this.isDefaultBranch;
     },
   },
   created() {

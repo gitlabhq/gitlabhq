@@ -241,7 +241,6 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              isGroup: this.isGroup,
               workItemType: this.workItemType,
               fullPath: this.fullPath,
               assignees: this.localAssignees,

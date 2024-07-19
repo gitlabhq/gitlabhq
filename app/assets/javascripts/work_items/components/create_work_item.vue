@@ -33,7 +33,6 @@ import {
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
-import groupWorkItemByIidQuery from '../graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '../graphql/work_item_by_iid.query.graphql';
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 
@@ -62,7 +61,7 @@ export default {
     WorkItemRolledupDates: () =>
       import('ee_component/work_items/components/work_item_rolledup_dates.vue'),
   },
-  inject: ['fullPath', 'isGroup'],
+  inject: ['fullPath'],
   props: {
     workItemTypeName: {
       type: String,
@@ -88,9 +87,7 @@ export default {
   },
   apollo: {
     workItem: {
-      query() {
-        return this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery;
-      },
+      query: workItemByIidQuery,
       variables() {
         return {
           fullPath: this.newWorkItemPath,
@@ -132,7 +129,6 @@ export default {
         } else {
           this.workItemTypes.forEach(async (workItemType) => {
             await setNewWorkItemCache(
-              this.isGroup,
               this.fullPath,
               workItemType?.widgetDefinitions,
               workItemType.name,
@@ -277,7 +273,6 @@ export default {
           mutation: updateNewWorkItemMutation,
           variables: {
             input: {
-              isGroup: this.isGroup,
               fullPath: this.fullPath,
               workItemType: this.selectedWorkItemTypeName || this.workItemTypeName,
               [type]: value,
@@ -355,7 +350,7 @@ export default {
             const { workItem } = workItemCreate;
 
             store.writeQuery({
-              query: this.isGroup ? groupWorkItemByIidQuery : workItemByIidQuery,
+              query: workItemByIidQuery,
               variables: {
                 fullPath: this.fullPath,
                 iid: workItem.iid,

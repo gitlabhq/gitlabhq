@@ -522,8 +522,10 @@ will be fed to the model. You can specify inputs to be plugged into the prompt b
 # ai_gateway/agents/definitions/rewrite_description/base.yml
 
 name: Description rewriter
-provider: anthropic
-model: claude-3-sonnet-20240229
+model:
+  name: claude-3-sonnet-20240229
+  params:
+    model_class_provider: anthropic
 prompt_template:
   system: |
     You are a helpful assistant that rewrites the description of resources. You'll be given the current description, and a prompt on how you should rewrite it. Reply only with your rewritten description.
@@ -531,6 +533,32 @@ prompt_template:
     <description>{description}</description>
 
     <prompt>{prompt}</prompt>
+```
+
+If your AI action is part of a broader feature, the definitions can be organized in a tree structure:
+
+```yaml
+# ai_gateway/agents/definitions/code_suggestions/generations/base.yml
+
+name: Code generations
+model:
+  name: claude-3-sonnet-20240229
+  params:
+    model_class_provider: anthropic
+...
+```
+
+To specify prompts for multiple models, use the name of the model as the filename for the definition:
+
+```yaml
+# ai_gateway/agents/definitions/code_suggestions/generations/mistral.yml
+
+name: Code generations
+model:
+  name: mistral
+  params:
+    model_class_provider: litellm
+...
 ```
 
 ### 3. Create a Completion class

@@ -13,7 +13,6 @@ import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
-import groupWorkItemByIidQuery from '~/work_items/graphql/group_work_item_by_iid.query.graphql';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { resolvers } from '~/graphql_shared/issuable_client';
 import { createWorkItemMutationResponse, createWorkItemQueryResponse } from '../mock_data';
@@ -39,10 +38,7 @@ describe('Create work item component', () => {
   const createWorkItemSuccessHandler = jest.fn().mockResolvedValue(createWorkItemMutationResponse);
   const errorHandler = jest.fn().mockRejectedValue('Houston, we have a problem');
 
-  const projectWorkItemQuerySuccessHandler = jest
-    .fn()
-    .mockResolvedValue(createWorkItemQueryResponse);
-  const groupWorkItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse);
+  const workItemQuerySuccessHandler = jest.fn().mockResolvedValue(createWorkItemQueryResponse);
   const namespaceWorkItemTypesHandler = jest
     .fn()
     .mockResolvedValue(namespaceWorkItemTypesQueryResponse);
@@ -68,8 +64,7 @@ describe('Create work item component', () => {
   } = {}) => {
     mockApollo = createMockApollo(
       [
-        [groupWorkItemByIidQuery, groupWorkItemQuerySuccessHandler],
-        [workItemByIidQuery, projectWorkItemQuerySuccessHandler],
+        [workItemByIidQuery, workItemQuerySuccessHandler],
         [createWorkItemMutation, mutationHandler],
         [namespaceWorkItemTypesQuery, namespaceWorkItemTypesHandler],
       ],

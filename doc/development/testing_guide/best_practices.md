@@ -663,7 +663,7 @@ find_field _('Checkbox label'), checked: true
 find_field _('Checkbox label'), unchecked: true
 
 # acceptable when finding a element that is not a button, link, or field
-find('[data-testid="element"]')
+find_by_testid('element')
 ```
 
 ##### Matchers
