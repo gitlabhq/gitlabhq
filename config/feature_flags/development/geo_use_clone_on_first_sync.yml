@@ -1,8 +1,0 @@
----
-name: geo_use_clone_on_first_sync
-introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/77143
-rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/357462
-milestone: '14.10'
-type: development
-group: group::geo
-default_enabled: true
