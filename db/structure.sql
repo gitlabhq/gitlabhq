@@ -10518,6 +10518,8 @@ CREATE TABLE external_status_checks (
     updated_at timestamp with time zone NOT NULL,
     external_url text NOT NULL,
     name text NOT NULL,
+    encrypted_shared_secret bytea,
+    encrypted_shared_secret_iv bytea,
     CONSTRAINT check_7e3b9eb41a CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_ae0dec3f61 CHECK ((char_length(external_url) <= 255))
 );
