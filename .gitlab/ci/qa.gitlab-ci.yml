@@ -219,21 +219,6 @@ e2e:package-and-test-nightly:
     PIPELINE_NAME: E2E Omnibus GitLab Nightly
     DYNAMIC_PIPELINE_YML: package-and-test-nightly-pipeline.yml
 
-e2e:test-on-gdk:
-  extends:
-    - .e2e-trigger-base
-    - .qa:rules:e2e:test-on-gdk
-  stage: qa
-  needs:
-    - build-gdk-image
-    - e2e-test-pipeline-generate
-  variables:
-    QA_RUN_TYPE: e2e-test-on-gdk
-    PIPELINE_NAME: E2E GDK
-    DYNAMIC_PIPELINE_YML: test-on-gdk-pipeline.yml
-    SKIP_MESSAGE: Skipping test-on-gdk due to mr containing only quarantine changes!
-    GDK_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-qa-gdk:${CI_COMMIT_SHA}"
-
 e2e:test-on-cng:
   extends:
     - .e2e-trigger-base
@@ -247,45 +232,6 @@ e2e:test-on-cng:
     PIPELINE_NAME: E2E CNG
     DYNAMIC_PIPELINE_YML: test-on-cng-pipeline.yml
     SKIP_MESSAGE: Skipping test-on-cng due to mr containing only quarantine changes!
-
-e2e:code-suggestions-eval:
-  extends:
-    - .qa:rules:code-suggestions-eval
-  stage: qa
-  needs: ["build-gdk-image"]
-  variables:
-    CS_EVAL_DOWNSTREAM_BRANCH: main
-    GITLAB_SHA: $CI_COMMIT_SHA
-  trigger:
-    strategy: depend
-    forward:
-      yaml_variables: true
-      pipeline_variables: true
-    project: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
-    branch: $CS_EVAL_DOWNSTREAM_BRANCH
-
-e2e:code-suggestions-eval-results:
-  extends:
-    - .default-retry
-    - .qa:rules:code-suggestions-eval-results
-  stage: post-qa
-  needs:
-    - e2e:code-suggestions-eval
-  variables:
-    TRIGGER_JOB_NAME: "e2e:code-suggestions-eval"
-    DOWNSTREAM_PROJECT: gitlab-com/create-stage/code-creation/code-suggestion-scenarios
-    DOWNSTREAM_JOB_NAME: run_scenarios
-    DOWNSTREAM_JOB_ARTIFACT_PATH: scores-DOWNSTREAM_JOB_ID.csv
-    OUTPUT_ARTIFACT_PATH: scores.csv
-  before_script:
-    - source scripts/utils.sh
-    - install_gitlab_gem
-  script:
-    - scripts/download-downstream-artifact.rb
-  artifacts:
-    expose_as: 'Code Suggestions evaluation results'
-    paths:
-      - scores.csv
 
 e2e:fulfillment-quarantine-report:
   extends:
