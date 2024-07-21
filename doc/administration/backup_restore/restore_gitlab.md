@@ -153,6 +153,17 @@ sudo gitlab-rake gitlab:lfs:check
 sudo gitlab-rake gitlab:uploads:check
 ```
 
+After the restore is completed, it's recommended to generate database statistics to improve the database performance and avoid inconsistencies in the UI:
+
+1. Enter the [database console](https://docs.gitlab.com/omnibus/settings/database.html#connecting-to-the-postgresql-database).
+1. Run the following:
+
+   ```sql
+   SET STATEMENT_TIMEOUT=0 ; ANALYZE VERBOSE;
+   ```
+
+There are ongoing discussions about integrating the command into the restore command, see [issue 276184](https://gitlab.com/gitlab-org/gitlab/-/issues/276184) for more details.
+
 ## Restore for Docker image and GitLab Helm chart installations
 
 For GitLab installations using the Docker image or the GitLab Helm chart on a
