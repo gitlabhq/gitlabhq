@@ -97,7 +97,7 @@ export default {
     <form-errors-alert v-model="errors" />
     <gl-card
       class="gl-new-card gl-mt-0"
-      header-class="gl-new-card-header gl-flex-direction-column"
+      header-class="gl-new-card-header gl-flex-col"
       body-class="gl-new-card-body gl-px-5 gl-py-4"
     >
       <template #header>
@@ -123,7 +123,7 @@ export default {
             />
           </template>
         </gl-form-fields>
-        <div class="gl-display-flex gl-gap-3">
+        <div class="gl-flex gl-gap-3">
           <gl-button
             type="submit"
             variant="danger"

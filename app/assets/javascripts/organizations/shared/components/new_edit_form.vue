@@ -35,9 +35,8 @@ export default {
     charactersOverLimit: (char) => n__('%d character over limit', '%d characters over limit', char),
   },
   formId: 'organization-form',
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
   markdownDocsPath: helpPagePath('user/organization/index', {
-    anchor: 'organization-description-supported-markdown',
+    anchor: 'supported-markdown-for-organization-description',
   }),
   restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,
   inject: ['organizationsPath', 'previewMarkdownPath'],
@@ -186,7 +185,7 @@ export default {
       v-model="formValues"
       :form-id="$options.formId"
       :fields="fields"
-      class="gl-display-flex gl-gap-x-5 gl-flex-wrap"
+      class="gl-flex gl-flex-wrap gl-gap-x-5"
       @submit="$emit('submit', formValues)"
     >
       <template #input(path)="{ id, value, validation, input, blur }">
@@ -234,7 +233,7 @@ export default {
         />
       </template>
     </gl-form-fields>
-    <div class="gl-display-flex gl-gap-3">
+    <div class="gl-flex gl-gap-3">
       <gl-button
         type="submit"
         variant="confirm"

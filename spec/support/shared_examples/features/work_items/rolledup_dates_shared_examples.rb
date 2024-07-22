@@ -79,6 +79,9 @@ RSpec.shared_examples 'work items rolled up dates' do
         within_testid('work-item-milestone') do
           fill_in 'Milestone', with: milestone
         end
+
+        page.refresh
+        wait_for_all_requests
       end
 
       def update_child_date(title:, start_date:, due_date:)
@@ -137,6 +140,9 @@ RSpec.shared_examples 'work items rolled up dates' do
 
           wait_for_all_requests
         end
+
+        page.refresh
+        wait_for_all_requests
       end
 
       context 'when adding existing work item with fixed dates as children' do
@@ -182,6 +188,9 @@ RSpec.shared_examples 'work items rolled up dates' do
 
       context 'when removing all children' do
         it 'rolled up child dates' do
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(107)
+
           add_new_child(title: 'child issue 1', start_date: '2020-11-01', due_date: '2020-12-02')
           add_new_child(title: 'child issue 2', start_date: '2020-12-01', due_date: '2021-01-02')
 

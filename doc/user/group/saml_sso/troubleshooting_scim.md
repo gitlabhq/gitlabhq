@@ -63,12 +63,12 @@ To check if a user's SAML `NameId` matches their SCIM `externalId`:
 
 Whether the value was changed or you need to map to a different field, the following must map to the same field:
 
-- `externalId`
+- `extern_Id`
 - `NameId`
 
-If the GitLab `extern_uid` does not match the SAML `NameId`, you must update the GitLab `extern_uid` to enable the user to sign in.
+If the SCIM `extern_uid` does not match the SAML `NameId`, you must update the SCIM `extern_uid` to enable the user to sign in.
 
-Be cautious if you revise the fields used by your SCIM identity provider, typically `externalId`.
+Be cautious if you revise the fields used by your SCIM identity provider, typically `extern_Id`.
 Your identity provider should be configured to do this update.
 In some cases the identity provider cannot do the update, for example when a user lookup fails.
 

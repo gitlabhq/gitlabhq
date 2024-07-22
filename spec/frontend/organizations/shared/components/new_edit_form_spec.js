@@ -83,7 +83,7 @@ describe('NewEditForm', () => {
     expect(wrapper.findComponent(MarkdownField).props()).toMatchObject({
       markdownPreviewPath: defaultProvide.previewMarkdownPath,
       markdownDocsPath: helpPagePath('user/organization/index', {
-        anchor: 'organization-description-supported-markdown',
+        anchor: 'supported-markdown-for-organization-description',
       }),
       textareaValue: '',
       restrictedToolBarItems: RESTRICTED_TOOLBAR_ITEMS_BASIC_EDITING_ONLY,

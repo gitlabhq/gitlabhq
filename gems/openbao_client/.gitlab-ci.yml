@@ -1,0 +1,5 @@
+include:
+  - local: gems/gem.gitlab-ci.yml
+    inputs:
+      gem_name: "openbao_client"
+      skip_gem_validation: true # Skipping for now, as ownership may move under openbao namespace

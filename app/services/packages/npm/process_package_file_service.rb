@@ -5,6 +5,7 @@ module Packages
     class ProcessPackageFileService
       ExtractionError = Class.new(StandardError)
       PACKAGE_JSON_ENTRY_PATH = 'package/package.json'
+      PACKAGE_JSON_ENTRY_REGEX = %r{^[^/]+/package.json$}
       MAX_FILE_SIZE = 4.megabytes
 
       delegate :package, to: :package_file
@@ -41,9 +42,30 @@ module Packages
       def with_package_json_entry
         package_file.file.use_open_file(unlink_early: false) do |open_file|
           Zlib::GzipReader.open(open_file.file_path) do |gz|
-            entry = Gem::Package::TarReader.new(gz).find { |e| File.fnmatch(PACKAGE_JSON_ENTRY_PATH, e.full_name) }
+            tar_reader = Gem::Package::TarReader.new(gz)
+
+            if Feature.disabled?(:allow_custom_root_folder_name_in_npm_upload, package.project)
+              entry = tar_reader.find { |e| File.fnmatch(PACKAGE_JSON_ENTRY_PATH, e.full_name) }
+            else
+              entry_path = entry_full_name(tar_reader)
+              yield unless entry_path.is_a?(String)
+
+              tar_reader.rewind
+              entry = tar_reader.find { |e| e.full_name == entry_path }
+            end
+
             yield entry
           end
+        end
+      end
+
+      def entry_full_name(tar_reader)
+        # We need to reverse the entries to find the last package.json file in the tarball,
+        # as the last one is the one that's used by npm.
+        # We cannot get the entry directly when using #reverse_each because
+        # TarReader closes the stream after iterating over all entries
+        tar_reader.reverse_each do |entry|
+          break entry.full_name if entry.full_name.match?(PACKAGE_JSON_ENTRY_REGEX)
         end
       end
     end

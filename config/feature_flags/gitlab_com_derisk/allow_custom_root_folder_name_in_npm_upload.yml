@@ -1,0 +1,9 @@
+---
+name: allow_custom_root_folder_name_in_npm_upload
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/463327
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159095
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/473225
+milestone: '17.3'
+group: group::package registry
+type: gitlab_com_derisk
+default_enabled: false

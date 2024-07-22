@@ -32,10 +32,6 @@ update-tests-metadata:
   needs:
     - job: retrieve-tests-metadata
       optional: true
-    - job: generate-frontend-fixtures-mapping
-      optional: true
-    - job: setup-test-env
-      optional: true
     - job: rspec:artifact-collector unit
       optional: true
     - job: rspec:artifact-collector part-a

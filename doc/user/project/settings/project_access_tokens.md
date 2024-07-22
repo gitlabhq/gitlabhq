@@ -67,11 +67,28 @@ A project access token is displayed. Save the project access token somewhere saf
 
 ## Revoke a project access token
 
+> - Ability to view revoked tokens [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/462217) in GitLab 17.3 [with a flag](../../../administration/feature_flags.md) named `retain_resource_access_token_user_after_revoke`. Disabled by default.
+
 To revoke a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Access Tokens**.
 1. Next to the project access token to revoke, select **Revoke** (**{remove}**).
+
+In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`
+feature flag, you can view both active and inactive revoked project access tokens
+on the access tokens page. If you do not enable the feature flag, you can only view
+the active tokens. The inactive project access tokens table:
+
+- Contains:
+  - Existing tokens that have been revoked but have not yet expired. After these
+    tokens expire, they are no longer in the table.
+  - Tokens created after the feature flag was enabled that have been revoked.
+    These tokens remain in the table even after they have expired.
+
+- Does not contain:
+  - Tokens that have already expired or been revoked.
+  - Existing tokens that expire in the future or have not been revoked.
 
 ## Scopes for a project access token
 

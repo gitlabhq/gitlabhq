@@ -22,6 +22,7 @@ in the `Gitlab::Access` module as `access_level`.
 - Developer (`30`)
 - Maintainer (`40`)
 - Owner (`50`)
+- Admin (`60`)
 
 ## Limitations
 

@@ -415,6 +415,7 @@ export default {
 
       const options = {
         sha: latestSha || this.mr.sha,
+        commit_message: this.commitMessage,
         auto_merge_strategy: useAutoMerge ? this.preferredAutoMergeStrategy : undefined,
         should_remove_source_branch: this.removeSourceBranch === true,
         squash: this.squashBeforeMerge,
@@ -424,12 +425,8 @@ export default {
       // If users can't alter the squash message (e.g. for 1-commit merge requests),
       // we shouldn't send the commit message because that would make the backend
       // do unnecessary work.
-      if (this.shouldShowSquashBeforeMerge && this.squashCommitMessageIsTouched) {
+      if (this.shouldShowSquashBeforeMerge) {
         options.squash_commit_message = this.squashCommitMessage;
-      }
-
-      if (this.commitMessageIsTouched) {
-        options.commit_message = this.commitMessage;
       }
 
       this.isMakingRequest = true;
@@ -617,7 +614,6 @@ export default {
                     :label="__('Squash commit message')"
                     input-id="squash-message-edit"
                     class="gl-m-0! gl-p-0!"
-                    data-testid="squash-commit-message"
                     @input="setSquashCommitMessage"
                   >
                     <template #header>
