@@ -102,10 +102,10 @@ RSpec.describe Emails::Imports, feature_category: :importers do
 
     it 'sends reassign email' do
       is_expected.to have_subject("Reassignments on #{group.full_path} waiting for review.")
-      is_expected.to have_content("Migrated from: #{source_user.source_hostname}")
+      is_expected.to have_content("Imported from: #{source_user.source_hostname}")
       is_expected.to have_content("Original user: #{source_user.source_name} (@#{source_user.source_username})")
-      is_expected.to have_content("Migrated to: #{group.name}")
-      is_expected.to have_content("Reassigned to user: #{user.name} (@#{user.username})")
+      is_expected.to have_content("Imported to: #{group.name}")
+      is_expected.to have_content("Reassigned to: #{user.name} (@#{user.username})")
       is_expected.to have_content(
         "Reassigned by: #{source_user.reassigned_by_user.name} (@#{source_user.reassigned_by_user.username})"
       )

@@ -246,7 +246,7 @@
   height: $height;
   min-height: $height;
   background: var(--white, $white);
-  border: 1px solid var(--border-color, $border-color);
+  border: 1px solid var(--gl-border-color-default);
   color: var(--gl-text-color, $gl-text-color);
   padding: $grid-size;
 }

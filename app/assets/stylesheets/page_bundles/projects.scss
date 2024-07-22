@@ -43,7 +43,7 @@
     &.static-namespace {
       height: 35px;
       border-radius: 3px;
-      border: 1px solid var(--border-color, $border-color);
+      border: 1px solid var(--gl-border-color-default);
       max-width: 100%;
       flex-grow: 1;
     }
@@ -137,7 +137,7 @@
     padding: 16px 0;
 
     &:not(:first-child) {
-      border-top: 1px solid var(--border-color, $border-color);
+      border-top: 1px solid var(--gl-border-color-default);
     }
 
     .controls {
@@ -441,7 +441,7 @@
   .form-control {
     @include gl-font-monospace;
     background-color: var(--white, $white);
-    border-color: var(--border-color, $border-color);
+    border-color: var(--gl-border-color-default);
     font-size: 14px;
     margin-left: -1px;
     cursor: auto;

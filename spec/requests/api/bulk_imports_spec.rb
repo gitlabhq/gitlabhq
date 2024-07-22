@@ -532,6 +532,26 @@ RSpec.describe API::BulkImports, feature_category: :importers do
   describe 'POST /bulk_imports/:id/cancel' do
     let(:import) { create(:bulk_import, user: user) }
 
+    context 'when user is canceling their own migration' do
+      it 'cancels the migration and returns 200' do
+        post api("/bulk_imports/#{import.id}/cancel", user)
+
+        expect(response).to have_gitlab_http_status(:ok)
+
+        expect(json_response['status']).to eq('canceled')
+      end
+    end
+
+    context 'when user is trying to cancel a migration they have not created' do
+      it 'returns an error' do
+        import = create(:bulk_import)
+
+        post api("/bulk_imports/#{import.id}/cancel", user)
+
+        expect(response).to have_gitlab_http_status(:forbidden)
+      end
+    end
+
     context 'when authenticated as admin' do
       let_it_be(:admin) { create(:admin) }
 
@@ -549,14 +569,6 @@ RSpec.describe API::BulkImports, feature_category: :importers do
 
           expect(response).to have_gitlab_http_status(:not_found)
         end
-      end
-    end
-
-    context 'when not authenticated as admin' do
-      it 'returns an error' do
-        post api("/bulk_imports/#{import.id}/cancel", user)
-
-        expect(response).to have_gitlab_http_status(:forbidden)
       end
     end
   end

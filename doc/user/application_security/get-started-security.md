@@ -71,7 +71,7 @@ even if the vulnerability already exists on the default branch.
 
 For more information, see:
 
-- [Enable Secret Detection](secret_detection/pipeline/index.md#enabling-the-analyzer)
+- [Enable Secret Detection](secret_detection/pipeline/index.md#enable-the-analyzer)
 - [Secret Detection settings](secret_detection/pipeline/index.md#configuration)
 - [Enable Dependency Scanning](dependency_scanning/index.md#configuration)
 - [Dependency Scanning settings](dependency_scanning/index.md#available-cicd-variables)

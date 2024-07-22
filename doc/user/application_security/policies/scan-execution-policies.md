@@ -249,7 +249,7 @@ Some scanners also behave differently in a `scan` action than they do in a regul
 #### Scanner behavior
 
 - For Secret Detection:
-  - Only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/pipeline/index.md#custom-rulesets) are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/pipeline/index.md#specify-a-remote-configuration-file) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
+  - Only rules with the default ruleset are supported. [Custom rulesets](../secret_detection/pipeline/index.md#customize-analyzer-rulesets) are not supported. Alternatively, you may configure a [remote configuration file](../secret_detection/pipeline/index.md#with-a-remote-ruleset) and set the `SECRET_DETECTION_RULESET_GIT_REFERENCE` variable.
   - By default, for `scheduled` scan execution policies, secret detection scans configured without any CI variables defined run first in `historic` mode (`SECRET_DETECTION_HISTORIC_SCAN` = `true`). All subsequent scheduled scans run in default mode with `SECRET_DETECTION_LOG_OPTIONS` set to the commit range between last run and current SHA. CI variables provided in the scan execution policy can override this behavior. Learn more about [historic mode](../secret_detection/pipeline/index.md#full-history-pipeline-secret-detection).
   - For `triggered` scan execution policies, secret detection works just like regular scan [configured manually in the `.gitlab-ci.yml`](../secret_detection/pipeline/index.md#edit-the-gitlab-ciyml-file-manually).
 - A Container Scanning scan that is configured for the `pipeline` rule type ignores the agent defined in the `agents` object. The `agents` object is only considered for `schedule` rule types.

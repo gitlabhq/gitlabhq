@@ -389,7 +389,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/438281) in GitLab 17.1.
 
-Cancel a direct transfer migration. Requires administrator access.
+Cancel a direct transfer migration.
 
 ```plaintext
 POST /bulk_imports/:id/cancel

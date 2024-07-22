@@ -2,7 +2,7 @@
   display: inline-block;
   padding: 8px 10px 9px;
   width: 100%;
-  border: 1px solid var(--border-color, $border-color);
+  border: 1px solid var(--gl-border-color-default);
   border-radius: $border-radius;
   background-color: var(--white, $white);
 

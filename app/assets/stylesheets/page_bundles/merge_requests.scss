@@ -406,7 +406,7 @@
   }
 
   &:not(:last-child) {
-    border-bottom: 1px solid var(--border-color, $border-color);
+    border-bottom: 1px solid var(--gl-border-color-default);
   }
 }
 
@@ -459,7 +459,7 @@
 }
 
 .mr-section-container {
-  border: 1px solid var(--border-color, $border-color);
+  border: 1px solid var(--gl-border-color-default);
   border-radius: $gl-border-radius-base;
   background: var(--white, $white);
 
@@ -713,7 +713,7 @@
     &.mr-pipeline-suggest {
       border-radius: $gl-border-radius-base;
       line-height: 20px;
-      border: 1px solid var(--border-color, $border-color);
+      border: 1px solid var(--gl-border-color-default);
 
       .circle-icon-container {
         color: var(--gray-100, $gray-100);
@@ -749,7 +749,7 @@
 }
 
 .mr-widget-border-top {
-  border-top: 1px solid var(--border-color, $border-color);
+  border-top: 1px solid var(--gl-border-color-default);
 
   &:last-child {
     .report-block-container {
@@ -760,7 +760,7 @@
 }
 
 .mr-widget-extension {
-  border-top: 1px solid var(--border-color, $border-color);
+  border-top: 1px solid var(--gl-border-color-default);
   background-color: var(--gray-10, $gray-10);
   container-name: mr-widget-extension;
   container-type: inline-size;

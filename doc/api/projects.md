@@ -2959,7 +2959,7 @@ GET /projects/:id/hooks/:hook_id
 
 ### Get project hook events
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.2.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/151048) in GitLab 17.3.
 
 Get a list of events for a specific project hook in the past 7 days from start date.
 

@@ -54193,9 +54193,6 @@ msgstr ""
 msgid "This command is used for troubleshooting jobs and can only be invoked from a failed job log page."
 msgstr ""
 
-msgid "This command is used for troubleshooting jobs and can only be invoked from a job log page."
-msgstr ""
-
 msgid "This comment changed after you started editing it. Review the %{startTag}updated comment%{endTag} to ensure information is not lost."
 msgstr ""
 
@@ -57737,16 +57734,13 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
-msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}. Review details to approve or reject the reassignment. Learn more about reassignments"
+msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}."
 msgstr ""
 
-msgid "UserMapping|Approve Contributions Reassignment"
+msgid "UserMapping|Accept reassignments only from users that you trust. Reassignment of contributions is permanent. Accepting these reassignments might cause contributions to be incorrectly attributed to you."
 msgstr ""
 
 msgid "UserMapping|Approve reassignment"
-msgstr ""
-
-msgid "UserMapping|Approve reassignment of contributions from %{source_username} on %{source_hostname} to you on %{destination_group}"
 msgstr ""
 
 msgid "UserMapping|Awaiting reassignment"
@@ -57755,19 +57749,19 @@ msgstr ""
 msgid "UserMapping|Don't reassign"
 msgstr ""
 
+msgid "UserMapping|Import details:"
+msgstr ""
+
+msgid "UserMapping|Imported from: %{source_hostname}"
+msgstr ""
+
+msgid "UserMapping|Imported to: %{destination_group}"
+msgstr ""
+
 msgid "UserMapping|Kept as placeholder"
 msgstr ""
 
-msgid "UserMapping|Migrated from: %{source_hostname}"
-msgstr ""
-
-msgid "UserMapping|Migrated to: %{destination_group}"
-msgstr ""
-
-msgid "UserMapping|Migration details:"
-msgstr ""
-
-msgid "UserMapping|Migration to: %{destination_group}"
+msgid "UserMapping|Learn more about reassignments"
 msgstr ""
 
 msgid "UserMapping|Notification email sent."
@@ -57809,10 +57803,7 @@ msgstr ""
 msgid "UserMapping|Reassigned to"
 msgstr ""
 
-msgid "UserMapping|Reassigned to user: %{reassign_to_name} (%{reassign_to_username})"
-msgstr ""
-
-msgid "UserMapping|Reassigned to user: %{reassign_to_username}"
+msgid "UserMapping|Reassigned to: %{reassign_to_name} (%{reassign_to_username})"
 msgstr ""
 
 msgid "UserMapping|Reassigning"
@@ -57869,13 +57860,10 @@ msgstr ""
 msgid "UserMapping|There was a problem resending notification email."
 msgstr ""
 
-msgid "UserMapping|To learn more about reassignments, %{link_start}visit the docs%{link_end}. If you don't recognize this request, you can safely ignore this email or %{report_link_start}report abuse%{report_link_end}."
+msgid "UserMapping|To learn more about reassignments, %{link_start}visit the docs%{link_end}. %{strong_open}If you don't recognize this request, %{report_link_start}report abuse%{report_link_end}.%{strong_close}"
 msgstr ""
 
-msgid "UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, you can safely ignore this email or report abuse (%{report_link})."
-msgstr ""
-
-msgid "UserMapping|You have reassignments from a GitLab migration waiting for review."
+msgid "UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, report abuse (%{report_link})."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"

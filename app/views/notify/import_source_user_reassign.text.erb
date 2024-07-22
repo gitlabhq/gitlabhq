@@ -2,23 +2,29 @@
 <% source_name = @source_user.source_name %>
 <% source_username = "@#{@source_user.source_username}" %>
 <% reassign_to_name = @reassign_to_user.name %>
-<% reassign_to_username = "@#{@reassign_to_user.username}" %>
+<% reassign_to_username = "#{@reassign_to_user.to_reference} - #{user_url(@reassign_to_user)}" %>
 <% reassigned_by = @source_user.reassigned_by_user %>
 <% reassigned_by_name = reassigned_by.name %>
-<% reassigned_by_username = "@#{reassigned_by.username}" %>
-<% destination_group = @source_user.namespace.name %>
+<% reassigned_by_username = "#{reassigned_by.to_reference} - #{user_url(reassigned_by)}" %>
+<% destination_group = "#{@source_user.namespace.name} (/#{@source_user.namespace.full_path})" %>
 <% help_link = help_page_url('user/group/import/index', anchor: 'memberships') %>
 <% report_link = help_page_url('user/report_abuse') %>
-<%= s_('UserMapping|You have reassignments from a GitLab migration waiting for review.') %>
+<%= s_('UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}.') % { reassigned_by_name: reassigned_by_name,
+    reassigned_by_username: reassigned_by_username,
+    source_name: source_name,
+    source_username: source_username,
+    source_hostname: source_hostname,
+    destination_group: destination_group } %>
+
 <%= s_('UserMapping|Review reassignment details') %>: <%= import_source_user_url(@source_user) %>
 
-<%= s_('UserMapping|Migration details:') %>
-<%= safe_format(s_('UserMapping|Migrated from: %{source_hostname}'), source_hostname: source_hostname) %>
+<%= s_('UserMapping|Import details:') %>
+<%= safe_format(s_('UserMapping|Imported from: %{source_hostname}'), source_hostname: source_hostname) %>
 <%= safe_format(s_('UserMapping|Original user: %{source_name} (%{source_username})'), source_name: source_name, source_username: source_username) %>
 
 <%= s_('UserMapping|Reassignment details:') %>
-<%= safe_format(s_('UserMapping|Migration to: %{destination_group}'), destination_group: destination_group) %>
-<%= safe_format(s_('UserMapping|Reassigned to user: %{reassign_to_name} (%{reassign_to_username})'), reassign_to_name: reassign_to_name, reassign_to_username: reassign_to_username) %>
+<%= safe_format(s_('UserMapping|Imported to: %{destination_group}'), destination_group: destination_group) %>
+<%= safe_format(s_('UserMapping|Reassigned to: %{reassign_to_name} (%{reassign_to_username})'), reassign_to_name: reassign_to_name, reassign_to_username: reassign_to_username) %>
 <%= safe_format(s_('UserMapping|Reassigned by: %{reassigned_by_name} (%{reassigned_by_username})'), reassigned_by_name: reassigned_by_name, reassigned_by_username: reassigned_by_username) %>
 
-<%= s_("UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, you can safely ignore this email or report abuse (%{report_link}).") % { help_link: help_link, report_link: report_link } %>
+<%= s_("UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, report abuse (%{report_link}).") % { help_link: help_link, report_link: report_link } %>

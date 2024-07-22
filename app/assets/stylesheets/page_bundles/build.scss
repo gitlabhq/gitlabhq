@@ -10,7 +10,7 @@
     border-radius: 2px 2px 0 0;
     color: var(--orange-600, $orange-600);
     background-color: var(--orange-50, $orange-50);
-    border: 1px solid var(--border-color, $border-color);
+    border: 1px solid var(--gl-border-color-default);
   }
 
   .top-bar {
@@ -42,7 +42,7 @@
   }
 
   .environment-information {
-    border: 1px solid var(--border-color, $border-color);
+    border: 1px solid var(--gl-border-color-default);
     padding: 8px $gl-padding 12px;
     border-radius: $gl-border-radius-base;
   }

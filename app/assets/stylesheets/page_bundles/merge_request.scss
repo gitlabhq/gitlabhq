@@ -159,7 +159,7 @@ $comparison-empty-state-height: 62px;
 .merge-request-tabs-holder {
   top: $calc-application-header-height;
   z-index: $tabs-holder-z-index;
-  border-bottom: 1px solid var(--border-color, $border-color);
+  border-bottom: 1px solid var(--gl-border-color-default);
   background-color: $white;
 
   .gl-dark & {

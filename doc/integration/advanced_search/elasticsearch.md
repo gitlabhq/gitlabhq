@@ -1144,7 +1144,6 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['queue_selector'] = false
 
    sidekiq['routing_rules'] = [
       ["feature_category=global_search", "global_search"],
@@ -1158,6 +1157,13 @@ To create both an indexing and a non-indexing Sidekiq process in one node:
 
    sidekiq['min_concurrency'] = 20
    sidekiq['max_concurrency'] = 20
+   ```
+
+   If you are using GitLab 16.11 and earlier, explicitly disable any
+   [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+   ```ruby
+   sidekiq['queue_selector'] = false
    ```
 
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)

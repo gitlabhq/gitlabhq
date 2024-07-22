@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Create', product_group: :ide do
+  RSpec.describe 'Create', product_group: :remote_development do
     describe 'Closing Web IDE' do
       let(:file_name) { 'file.txt' }
       let(:project) { create(:project, :with_readme, name: 'webide-close-with-unsaved-changes') }

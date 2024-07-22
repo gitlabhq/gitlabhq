@@ -1,5 +1,6 @@
 .crud-body:has(.gl-table) {
-  margin: 0;
+  margin-block: -1px;
+  margin-inline: 0;
 
   // Table adjustments
   @mixin new-card-table-adjustments {

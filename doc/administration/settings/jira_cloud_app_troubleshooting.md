@@ -93,39 +93,39 @@ Depending on how you installed the app, you might want to check the following:
 
   <!-- markdownlint-disable MD044 -->
 
-    1. In Jira, on the top bar, select **Apps > Manage your apps**.
-    1. Expand **GitLab for Jira (gitlab.com)**.
-    1. Select **Get started**.
-    1. Select **Change GitLab version**.
-    1. Select **GitLab.com (SaaS)**, then select **Save**.
-    1. Select **Change GitLab version** again.
-    1. Select **GitLab (self-managed)**, then select **Next**.
-    1. Select all checkboxes, then select **Next**.
-    1. Enter your **GitLab instance URL**, then select **Save**.
+  1. In Jira, on the top bar, select **Apps > Manage your apps**.
+  1. Expand **GitLab for Jira (gitlab.com)**.
+  1. Select **Get started**.
+  1. Select **Change GitLab version**.
+  1. Select **GitLab.com (SaaS)**, then select **Save**.
+  1. Select **Change GitLab version** again.
+  1. Select **GitLab (self-managed)**, then select **Next**.
+  1. Select all checkboxes, then select **Next**.
+  1. Enter your **GitLab instance URL**, then select **Save**.
 
   <!-- markdownlint-enable MD044 -->
 
-    If this method does not work, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
-    Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
+  If this method does not work, [submit a support ticket](https://support.gitlab.com/hc/en-us/requests/new) if you're a Premium or Ultimate customer.
+  Provide your GitLab instance URL and Jira URL. GitLab Support can try to run the following scripts to resolve the issue:
 
-    ```ruby
-    # Check if GitLab.com can connect to the self-managed instance
-    checker = Gitlab::TcpChecker.new("gitlab.example.com", 443)
+  ```ruby
+  # Check if GitLab.com can connect to the self-managed instance
+  checker = Gitlab::TcpChecker.new("gitlab.example.com", 443)
 
-    # Returns `true` if successful
-    checker.check
+  # Returns `true` if successful
+  checker.check
 
-    # Returns an error if the check fails
-    checker.error
-    ```
+  # Returns an error if the check fails
+  checker.error
+  ```
 
-    ```ruby
-    # Locate the installation record for the self-managed instance
-    installation = JiraConnectInstallation.find_by_instance_url("https://gitlab.example.com")
+  ```ruby
+  # Locate the installation record for the self-managed instance
+  installation = JiraConnectInstallation.find_by_instance_url("https://gitlab.example.com")
 
-    # Try to send the token again from GitLab.com to the self-managed instance
-    ProxyLifecycleEventService.execute(installation, :installed, installation.instance_url)
-    ```
+  # Try to send the token again from GitLab.com to the self-managed instance
+  ProxyLifecycleEventService.execute(installation, :installed, installation.instance_url)
+  ```
 
 - If you [installed the app manually](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-manually):
   - Ask [Jira Cloud Support](https://support.atlassian.com/jira-software-cloud/) to verify that Jira can connect to your

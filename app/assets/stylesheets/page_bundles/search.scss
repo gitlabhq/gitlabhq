@@ -8,7 +8,7 @@ $language-filter-max-height: 20rem;
 
 .search-results {
   .search-result-row {
-    border-bottom: 1px solid var(--border-color, $border-color);
+    border-bottom: 1px solid var(--gl-border-color-default);
     padding-bottom: $gl-padding;
     margin-bottom: $gl-padding;
 

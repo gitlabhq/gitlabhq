@@ -9,12 +9,12 @@
   background: none;
   word-break: normal;
   overflow-x: auto;
-  border-left: 3px solid var(--border-color, $gray-100);
+  border-left: 3px solid var(--gl-border-color-default);
   color: var(--gl-text-color-subtle);
 }
 
 .commit-box {
-  border-top: 1px solid var(--border-color, $border-color);
+  border-top: 1px solid var(--gl-border-color-default);
   padding: $gl-padding 0;
 
   .commit-title {

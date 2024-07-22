@@ -108,7 +108,14 @@ export default {
 </script>
 
 <template>
-  <gl-table :items="filteredIntegrations" :fields="fields" :empty-text="emptyText" show-empty fixed>
+  <gl-table
+    :items="filteredIntegrations"
+    :fields="fields"
+    :empty-text="emptyText"
+    show-empty
+    fixed
+    class="gl-mb-0"
+  >
     <template #cell(active)="{ item }">
       <gl-icon
         v-if="item.configured"

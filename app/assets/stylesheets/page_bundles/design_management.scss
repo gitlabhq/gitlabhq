@@ -153,10 +153,10 @@ $t-gray-a-16-design-pin: rgba($black, 0.16);
 
   .toggle-comments {
     line-height: 20px;
-    border-top: 1px solid var(--border-color, $border-color);
+    border-top: 1px solid var(--gl-border-color-default);
 
     &.expanded {
-      border-bottom: 1px solid var(--border-color, $border-color);
+      border-bottom: 1px solid var(--gl-border-color-default);
       border-bottom-left-radius: 0;
       border-bottom-right-radius: 0;
     }

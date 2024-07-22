@@ -160,7 +160,6 @@ sidekiq['routing_rules'] = [
   ['*', 'default']
 ]
 
-sidekiq['queue_selector'] = false
 sidekiq['queue_groups'] = [
   # Run two processes just for importers
   'importers',
@@ -170,6 +169,13 @@ sidekiq['queue_groups'] = [
   # Run one 'catchall' process on the default and mailers queues
   'default,mailers'
 ]
+```
+
+If you are using GitLab 16.11 and earlier, explicitly disable any
+[queue selectors](../../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+```ruby
+sidekiq['queue_selector'] = false
 ```
 
 Increasing the number of workers on the destination instance helps reduce the migration duration until the source instance hardware resources are saturated. Exporting and importing relations in batches, available by default from GitLab 16.8, makes having enough available workers on
