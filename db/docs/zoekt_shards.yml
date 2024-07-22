@@ -1,7 +1,6 @@
 ---
 table_name: zoekt_shards
-classes:
-- Search::Zoekt::Node
+classes: []
 feature_categories:
 - global_search
 description: Describes a Zoekt server that will be used for indexing and search for

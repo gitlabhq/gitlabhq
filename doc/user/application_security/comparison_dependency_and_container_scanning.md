@@ -30,4 +30,4 @@ The following table summarizes which types of dependencies each scanning tool ca
 | Language-specific dependencies installed on the operating system (not built by your project) | **{dotted-circle}** | **{check-circle}**              |
 
 1. Lock file must be present in the image to be detected.
-1. Binary file must be present in the image to be detected.
+1. [Report language-specific findings](container_scanning/index.md#report-language-specific-findings) must be enabled, and binaries must be present in the image to be detected.

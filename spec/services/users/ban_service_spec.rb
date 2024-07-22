@@ -45,13 +45,6 @@ RSpec.describe Users::BanService, feature_category: :user_management do
 
         ban_user
       end
-
-      it 'tracks the event', :experiment do
-        expect(experiment(:phone_verification_for_low_risk_users))
-          .to track(:banned).on_next_instance.with_context(user: user)
-
-        ban_user
-      end
     end
 
     context 'when failed' do
