@@ -9,7 +9,7 @@ module ApplicationCable
 
     def validate_token_scope
       validate_and_save_access_token!(scopes: authorization_scopes)
-    rescue Gitlab::Auth::InsufficientScopeError
+    rescue Gitlab::Auth::AuthenticationError
       reject
     end
 
