@@ -8,7 +8,7 @@ module Gitlab
     InvalidQueueError = Class.new(StandardError)
 
     WORKER_KEY = 'worker_class'
-    ALLOWED_KEYS = Gitlab::ApplicationContext.known_keys.map(&:to_s) + [WORKER_KEY]
+    ALLOWED_KEYS = Gitlab::ApplicationContext.allowed_job_keys.map(&:to_s) + [WORKER_KEY]
 
     attr_reader :queue_name
 

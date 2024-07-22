@@ -48,7 +48,8 @@ class GraphqlChannel < ApplicationCable::Channel # rubocop:disable Gitlab/Namesp
   # Objects added to the context may also need to be reloaded in
   # `Subscriptions::BaseSubscription` so that they are not stale
   def context
-    # is_sessionless_user is always false because we only support cookie auth in ActionCable
-    { channel: self, current_user: current_user, is_sessionless_user: false }
+    request_authenticator = Gitlab::Auth::RequestAuthenticator.new(request)
+    scope_validator = ::Gitlab::Auth::ScopeValidator.new(current_user, request_authenticator)
+    { channel: self, current_user: current_user, is_sessionless_user: false, scope_validator: scope_validator }
   end
 end

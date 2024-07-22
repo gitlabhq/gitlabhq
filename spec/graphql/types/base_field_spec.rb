@@ -235,4 +235,21 @@ RSpec.describe Types::BaseField, feature_category: :api do
       described_class.new(**base_args.merge(args))
     end
   end
+
+  describe '#field_authorized?' do
+    let(:object) { :object }
+    let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator) }
+    let(:user) { :user }
+    let(:context) { { current_user: user, scope_validator: scope_validator } }
+
+    it 'delegates to authorization' do
+      expect_next_instance_of(::Gitlab::Graphql::Authorize::ObjectAuthorization) do |authorization|
+        expect(authorization).to receive(:ok?)
+          .with(object, user, scope_validator: scope_validator)
+      end
+
+      field = described_class.new(name: 'test', type: GraphQL::Types::String, null: true)
+      field.authorized?(object, nil, context)
+    end
+  end
 end
