@@ -1365,7 +1365,6 @@
 - './ee/spec/lib/gitlab/reference_extractor_spec.rb'
 - './ee/spec/lib/gitlab/regex_spec.rb'
 - './ee/spec/lib/gitlab/return_to_location_spec.rb'
-- './ee/spec/lib/gitlab/search/aggregation_parser_spec.rb'
 - './ee/spec/lib/gitlab/search/aggregation_spec.rb'
 - './ee/spec/lib/gitlab/search_context/builder_spec.rb'
 - './ee/spec/lib/gitlab/search/recent_epics_spec.rb'

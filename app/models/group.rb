@@ -972,6 +972,9 @@ class Group < Namespace
   # NOTE: We still want to keep this after removing `Namespace#feature_available?`.
   override :feature_available?
   def feature_available?(feature, user = nil)
+    # when we check the :issues feature at group level we need to check the `epics` license feature instead
+    feature = feature == :issues ? :epics : feature
+
     if ::Groups::FeatureSetting.available_features.include?(feature)
       group_feature.feature_available?(feature, user) # rubocop:disable Gitlab/FeatureAvailableUsage
     else

@@ -169,7 +169,6 @@ To change the location of project dashboards:
    to create the project to store your dashboard files.
 1. On the left sidebar, select **Search or go to** and find the analytics project.
 1. Select **Settings > Analytics**.
-1. Select **Expand** to see custom dashboard projects.
 1. In the **Analytics Dashboards** section, select your dashboard files project.
 1. Select **Save changes**.
 

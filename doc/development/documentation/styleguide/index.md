@@ -809,21 +809,24 @@ However, you should avoid putting too many links on any page. Too many links can
 - Consider using [Related topics](../topic_types/index.md#related-topics) to reduce links that interrupt the flow of a task.
 - Try to avoid anchor links to sections on the same page. Let users rely on the right navigation instead.
 
-### Links within the same repository
+### Links in the same repository
 
-To link to another page in the same repository,
-use a relative file path. For example, `../user/gitlab_com/index.md`.
+To link to another documentation (`.md`) file in the same repository:
 
-Use inline link Markdown markup `[Text](https://example.com)`,
-rather than reference-style links, like `[Text][identifier]`.
+- Use an inline link with a relative file path. For example, `[GitLab.com settings](../user/gitlab_com/index.md)`.
+- Put the entire link on a single line, even if the link is very long. ([Vale](../testing/vale.md) rule: [`SubstitutionWarning.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/MultiLineLinks.yml)).
 
-Put the entire link on a single line so that [linters](../testing/index.md) can find it.
+To link to a file outside of the documentation files, for example to link from development
+documentation to a specific code file, you can:
+
+- Use a full URL. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/views/help/show.html.haml)``
+- (Optional) Use a full URL with a specific ref. For example: ``[`app/views/help/show.html.haml`](https://gitlab.com/gitlab-org/gitlab/-/blob/6d01aa9f1cfcbdfa88edf9d003bd073f1a6fff1d/app/views/help/show.html.haml)``
 
 ### Links in separate repositories
 
-To link to a page in a different repository, use an absolute URL.
+To link to a page in a different repository, use a full URL.
 For example, to link from a page in the GitLab repository to the Charts repository,
-use a URL like `https://docs.gitlab.com/charts/`.
+use a URL like `[GitLab Charts documentation](https://docs.gitlab.com/charts/)`.
 
 ### Anchor links
 
@@ -851,7 +854,7 @@ any related links, search these directories:
 - `ee/app/views/*`
 
 If you do not fix these links, the [`ui-docs-lint` job](../testing/index.md#tests-in-ui-docs-links-lint)
-in your merge request fails.
+in your merge request might fail.
 
 ### Text for links
 

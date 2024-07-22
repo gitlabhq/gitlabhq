@@ -234,6 +234,10 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`cluster_agent_create_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | Event triggered when a user attempts to create a cluster agent but it failed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
+| [`cluster_agent_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | Event triggered when a user creates a cluster agent| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
+| [`cluster_agent_delete_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | Event triggered when a user attempts to delete a cluster agent but it failed| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
+| [`cluster_agent_deleted`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159593) | Event triggered when a user deletes a cluster agent| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/462749) | Project |
 | [`cluster_agent_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | Event triggered when a user creates a cluster agent token| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
 | [`cluster_agent_token_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112036) | Event triggered when a user revokes a cluster agent token| **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.10](https://gitlab.com/gitlab-org/gitlab/-/issues/382133) | Project |
 

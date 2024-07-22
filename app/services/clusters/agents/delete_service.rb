@@ -3,7 +3,9 @@
 module Clusters
   module Agents
     class DeleteService < ::BaseContainerService
-      def execute(cluster_agent)
+      def execute
+        cluster_agent = params[:cluster_agent]
+
         return error_no_permissions unless current_user.can?(:admin_cluster, cluster_agent)
 
         if cluster_agent.destroy
@@ -21,3 +23,5 @@ module Clusters
     end
   end
 end
+
+Clusters::Agents::DeleteService.prepend_mod

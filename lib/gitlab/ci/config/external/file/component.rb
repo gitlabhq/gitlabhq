@@ -62,6 +62,13 @@ module Gitlab
 
             attr_reader :path, :version
 
+            def content_result
+              context.logger.instrument(:config_component_fetch_content_hash) do
+                super
+              end
+            end
+            strong_memoize_attr :content_result
+
             def component_result
               ::Ci::Components::FetchService.new(
                 address: location,

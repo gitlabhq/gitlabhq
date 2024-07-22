@@ -705,6 +705,8 @@
   - 1
 - - search_elastic_default_branch_changed
   - 1
+- - search_elastic_delete
+  - 1
 - - search_elastic_group_association_deletion
   - 1
 - - search_elastic_trigger_indexing
@@ -728,6 +730,8 @@
 - - search_zoekt_namespace_initial_indexing
   - 1
 - - search_zoekt_project_transfer
+  - 1
+- - security_create_security_policy_project
   - 1
 - - security_delete_orchestration_configuration
   - 1

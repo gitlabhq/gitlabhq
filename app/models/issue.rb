@@ -769,6 +769,12 @@ class Issue < ApplicationRecord
     project_id.blank?
   end
 
+  def autoclose_by_merged_closing_merge_request?
+    return false if group_level?
+
+    project.autoclose_referenced_issues
+  end
+
   private
 
   def project_level_readable_by?(user)

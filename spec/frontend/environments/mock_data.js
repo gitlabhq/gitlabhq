@@ -318,12 +318,21 @@ const mockKasTunnelUrl = 'https://kas.gitlab.com/k8s-proxy';
 const fluxResourceStatus = [{ status: 'True', type: 'Ready', message: '', reason: '' }];
 const fluxKustomization = {
   kind: 'Kustomization',
-  metadata: { name: 'my-kustomization' },
+  status: { conditions: fluxResourceStatus },
+  spec: {},
+  metadata: {
+    name: 'my-kustomization',
+    namespace: 'my-namespace',
+    creationTimestamp: '',
+    labels: {},
+    annotations: {},
+  },
   conditions: fluxResourceStatus,
   inventory: [
     { id: 'flux-system_notification-controller_apps_Deployment' },
     { id: 'flux-system_source-controller_apps_Deployment' },
   ],
+  __typename: 'LocalWorkloadItem',
 };
 
 const k8sDeploymentsMock = [

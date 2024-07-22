@@ -1,11 +1,13 @@
-import { nextTick } from 'vue';
+import Vue, { nextTick } from 'vue';
+import VueRouter from 'vue-router';
 import { GlTabs } from '@gitlab/ui';
-import { TEST_HOST } from 'helpers/test_constants';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { updateHistory } from '~/lib/utils/url_utility';
 import YourWorkProjectsApp from '~/projects/your_work/components/app.vue';
-import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
+import { createRouter } from '~/projects/your_work';
 import {
+  ROOT_ROUTE_NAME,
+  DASHBOARD_ROUTE_NAME,
+  PROJECTS_DASHBOARD_ROUTE_NAME,
   PROJECT_DASHBOARD_TABS,
   CONTRIBUTED_TAB,
   STARRED_TAB,
@@ -13,22 +15,33 @@ import {
   MEMBER_TAB,
 } from 'ee_else_ce/projects/your_work/constants';
 
-jest.mock('~/lib/utils/url_utility', () => ({
-  ...jest.requireActual('~/lib/utils/url_utility'),
-  updateHistory: jest.fn(),
-}));
+Vue.use(VueRouter);
+
+const defaultRoute = {
+  name: ROOT_ROUTE_NAME,
+};
 
 describe('YourWorkProjectsApp', () => {
   let wrapper;
+  let router;
 
-  const createComponent = () => {
-    wrapper = mountExtended(YourWorkProjectsApp);
+  const createComponent = ({ route = defaultRoute } = {}) => {
+    router = createRouter();
+    router.push(route);
+
+    wrapper = mountExtended(YourWorkProjectsApp, {
+      router,
+    });
   };
 
   const findPageTitle = () => wrapper.find('h1');
   const findGlTabs = () => wrapper.findComponent(GlTabs);
   const findAllTabTitles = () => wrapper.findAllByTestId('projects-dashboard-tab-title');
   const findActiveTab = () => wrapper.find('.tab-pane.active');
+
+  afterEach(() => {
+    router = null;
+  });
 
   describe('template', () => {
     beforeEach(() => {
@@ -52,22 +65,17 @@ describe('YourWorkProjectsApp', () => {
   });
 
   describe.each`
-    path                                 | expectedTab
-    ${'/'}                               | ${CONTRIBUTED_TAB}
-    ${'/dashboard'}                      | ${CONTRIBUTED_TAB}
-    ${'/dashboard/projects'}             | ${CONTRIBUTED_TAB}
-    ${'/dashboard/projects/contributed'} | ${CONTRIBUTED_TAB}
-    ${'/dashboard/projects/starred'}     | ${STARRED_TAB}
-    ${'/dashboard/projects/personal'}    | ${PERSONAL_TAB}
-    ${'/dashboard/projects/member'}      | ${MEMBER_TAB}
-    ${'/dashboard/projects/fake'}        | ${CONTRIBUTED_TAB}
-  `('onMount when path is $path', ({ path, expectedTab }) => {
-    useMockLocationHelper();
+    name                             | expectedTab
+    ${ROOT_ROUTE_NAME}               | ${CONTRIBUTED_TAB}
+    ${DASHBOARD_ROUTE_NAME}          | ${CONTRIBUTED_TAB}
+    ${PROJECTS_DASHBOARD_ROUTE_NAME} | ${CONTRIBUTED_TAB}
+    ${CONTRIBUTED_TAB.value}         | ${CONTRIBUTED_TAB}
+    ${STARRED_TAB.value}             | ${STARRED_TAB}
+    ${PERSONAL_TAB.value}            | ${PERSONAL_TAB}
+    ${MEMBER_TAB.value}              | ${MEMBER_TAB}
+  `('onMount when route name is $name', ({ name, expectedTab }) => {
     beforeEach(() => {
-      delete window.location;
-      window.location = new URL(`${TEST_HOST}/${path}`);
-
-      createComponent();
+      createComponent({ route: { name } });
     });
 
     it('initializes to the correct tab', () => {
@@ -79,48 +87,45 @@ describe('YourWorkProjectsApp', () => {
     describe('when tab is already active', () => {
       beforeEach(() => {
         createComponent();
+        router.push = jest.fn();
       });
 
-      it('does not update the url path', async () => {
+      it('does not push new route', async () => {
         findGlTabs().vm.$emit('input', 0);
 
         await nextTick();
 
-        expect(updateHistory).not.toHaveBeenCalled();
+        expect(router.push).not.toHaveBeenCalled();
       });
     });
 
     describe('when tab is a valid tab', () => {
       beforeEach(() => {
         createComponent();
+        router.push = jest.fn();
       });
 
-      it('updates the url path correctly', async () => {
+      it('pushes new route correctly', async () => {
         findGlTabs().vm.$emit('input', 2);
 
         await nextTick();
 
-        expect(updateHistory).toHaveBeenCalledWith({
-          url: `/dashboard/projects/${PROJECT_DASHBOARD_TABS[2].value}`,
-          replace: true,
-        });
+        expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[2].value });
       });
     });
 
     describe('when tab is an invalid tab', () => {
       beforeEach(() => {
         createComponent();
+        router.push = jest.fn();
       });
 
-      it('update the url path with the default Contributed tab', async () => {
+      it('pushes new route with default Contributed tab', async () => {
         findGlTabs().vm.$emit('input', 100);
 
         await nextTick();
 
-        expect(updateHistory).toHaveBeenCalledWith({
-          url: `/dashboard/projects/${CONTRIBUTED_TAB.value}`,
-          replace: true,
-        });
+        expect(router.push).toHaveBeenCalledWith({ name: CONTRIBUTED_TAB.value });
       });
     });
 
@@ -128,17 +133,16 @@ describe('YourWorkProjectsApp', () => {
       beforeEach(() => {
         gon.relative_url_root = '/gitlab';
         createComponent();
+        router.push = jest.fn();
       });
 
-      it('update the url path correctly with relative url', async () => {
+      it('pushes new route correctly and respects relative url', async () => {
         findGlTabs().vm.$emit('input', 3);
 
         await nextTick();
 
-        expect(updateHistory).toHaveBeenCalledWith({
-          url: `/gitlab/dashboard/projects/${PROJECT_DASHBOARD_TABS[3].value}`,
-          replace: true,
-        });
+        expect(router.options.base).toBe('/gitlab');
+        expect(router.push).toHaveBeenCalledWith({ name: PROJECT_DASHBOARD_TABS[3].value });
       });
     });
   });

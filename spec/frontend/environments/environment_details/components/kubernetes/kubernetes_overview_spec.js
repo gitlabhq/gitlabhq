@@ -1,14 +1,16 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlEmptyState, GlAlert } from '@gitlab/ui';
+import { GlEmptyState, GlAlert, GlDrawer } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import KubernetesOverview from '~/environments/environment_details/components/kubernetes/kubernetes_overview.vue';
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
 import KubernetesAgentInfo from '~/environments/environment_details/components/kubernetes/kubernetes_agent_info.vue';
 import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
+import { mockPodsTableItems } from 'jest/kubernetes_dashboard/graphql/mock_data';
 import { agent, kubernetesNamespace } from '../../../graphql/mock_data';
 import { mockKasTunnelUrl, fluxResourceStatus, fluxKustomization } from '../../../mock_data';
 
@@ -40,13 +42,13 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
     'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app';
 
   const fluxKustomizationQuery = jest.fn().mockReturnValue({});
-  const fluxHelmReleaseStatusQuery = jest.fn().mockReturnValue({});
+  const fluxHelmReleaseQuery = jest.fn().mockReturnValue({});
 
   const createApolloProvider = () => {
     const mockResolvers = {
       Query: {
         fluxKustomization: fluxKustomizationQuery,
-        fluxHelmReleaseStatus: fluxHelmReleaseStatusQuery,
+        fluxHelmRelease: fluxHelmReleaseQuery,
       },
     };
 
@@ -74,6 +76,8 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
   const findKubernetesTabs = () => wrapper.findComponent(KubernetesTabs);
   const findEmptyState = () => wrapper.findComponent(GlEmptyState);
   const findAlert = () => wrapper.findComponent(GlAlert);
+  const findDrawer = () => wrapper.findComponent(GlDrawer);
+  const findWorkloadDetails = () => wrapper.findComponent(WorkloadDetails);
 
   describe('when the agent data is present', () => {
     it('renders kubernetes agent info', () => {
@@ -150,7 +154,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
 
         it("doesn't request Kustomizations and HelmReleases", () => {
           expect(fluxKustomizationQuery).not.toHaveBeenCalled();
-          expect(fluxHelmReleaseStatusQuery).not.toHaveBeenCalled();
+          expect(fluxHelmReleaseQuery).not.toHaveBeenCalled();
         });
 
         it('provides empty `fluxResourceStatus` to KubernetesStatusBar', () => {
@@ -181,7 +185,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           });
 
           it("doesn't request HelmRelease resource status", () => {
-            expect(fluxHelmReleaseStatusQuery).not.toHaveBeenCalled();
+            expect(fluxHelmReleaseQuery).not.toHaveBeenCalled();
           });
         });
 
@@ -194,7 +198,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           });
 
           it('requests the HelmRelease resource status', () => {
-            expect(fluxHelmReleaseStatusQuery).toHaveBeenCalledWith(
+            expect(fluxHelmReleaseQuery).toHaveBeenCalledWith(
               {},
               expect.objectContaining({
                 configuration,
@@ -215,7 +219,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
             const mockResolvers = {
               Query: {
                 fluxKustomization: jest.fn().mockReturnValue(fluxKustomization),
-                fluxHelmReleaseStatus: fluxHelmReleaseStatusQuery,
+                fluxHelmRelease: fluxHelmReleaseQuery,
               },
             };
 
@@ -245,7 +249,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
             const mockResolvers = {
               Query: {
                 fluxKustomization: jest.fn().mockRejectedValueOnce(error),
-                fluxHelmReleaseStatus: jest.fn().mockRejectedValueOnce(error),
+                fluxHelmRelease: jest.fn().mockRejectedValueOnce(error),
               },
             };
 
@@ -264,6 +268,90 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
           it('provides api error to KubernetesStatusBar', () => {
             expect(findKubernetesStatusBar().props('fluxApiError')).toEqual(error.message);
           });
+        });
+      });
+    });
+
+    describe('resource details drawer', () => {
+      it('is closed by default', () => {
+        wrapper = createWrapper();
+
+        expect(findDrawer().props('open')).toBe(false);
+      });
+
+      describe('when receives show-resource-details event from the tabs', () => {
+        beforeEach(() => {
+          wrapper = createWrapper();
+          findKubernetesTabs().vm.$emit('show-resource-details', mockPodsTableItems[0]);
+        });
+
+        it('opens the drawer', () => {
+          expect(findDrawer().props('open')).toBe(true);
+        });
+
+        it('provides the resource details to the drawer', () => {
+          expect(findWorkloadDetails().props('item')).toEqual(mockPodsTableItems[0]);
+        });
+
+        it('renders a title with the selected item name', () => {
+          expect(findDrawer().text()).toContain(mockPodsTableItems[0].name);
+        });
+
+        it('is closed when clicked on a cross button', async () => {
+          expect(findDrawer().props('open')).toBe(true);
+
+          await findDrawer().vm.$emit('close');
+          expect(findDrawer().props('open')).toBe(false);
+        });
+
+        it('is closed on remove-selection event', async () => {
+          expect(findDrawer().props('open')).toBe(true);
+
+          await findKubernetesTabs().vm.$emit('remove-selection');
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
+
+      describe('when receives show-flux-resource-details event from the status bar', () => {
+        beforeEach(async () => {
+          const createApolloProviderWithKustomizations = () => {
+            const mockResolvers = {
+              Query: {
+                fluxKustomization: jest.fn().mockReturnValue(fluxKustomization),
+                fluxHelmRelease: fluxHelmReleaseQuery,
+              },
+            };
+
+            return createMockApollo([], mockResolvers);
+          };
+          wrapper = createWrapper({
+            fluxResourcePath: kustomizationResourcePath,
+            apolloProvider: createApolloProviderWithKustomizations(),
+          });
+          await waitForPromises();
+
+          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', fluxKustomization);
+        });
+
+        it('opens the drawer when gets selected item', () => {
+          expect(findDrawer().props('open')).toBe(true);
+        });
+
+        it('provides the resource details to the drawer', () => {
+          const selectedItem = {
+            name: fluxKustomization.metadata.name,
+            status: 'reconciled',
+            labels: fluxKustomization.metadata.labels,
+            annotations: fluxKustomization.metadata.annotations,
+            kind: fluxKustomization.kind,
+            spec: fluxKustomization.spec,
+            fullStatus: fluxKustomization.status.conditions,
+          };
+          expect(findWorkloadDetails().props('item')).toEqual(selectedItem);
+        });
+
+        it('renders a title with the selected item name', () => {
+          expect(findDrawer().text()).toContain(fluxKustomization.metadata.name);
         });
       });
     });

@@ -23,7 +23,7 @@ RSpec.describe ContainerRegistry::Client, feature_category: :container_registry 
     it 'handles network timeouts' do
       actual_retries = 0
       retry_options_with_block = retry_options.merge(
-        retry_block: ->(_, _, _, _) { actual_retries += 1 }
+        retry_block: ->(*) { actual_retries += 1 }
       )
 
       stub_const('ContainerRegistry::BaseClient::RETRY_OPTIONS', retry_options_with_block)

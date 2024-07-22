@@ -1,0 +1,23 @@
+---
+description: Internal Event CLI is opened
+internal_events: true
+action: internal_events_cli_opened
+identifiers:
+- project
+- namespace
+- user
+additional_properties:
+  label:
+    description: TODO
+  value:
+    description: Time the CLI ran before closing (seconds)
+product_group: analytics_instrumentation
+milestone: '16.6'
+introduced_by_url: TODO
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

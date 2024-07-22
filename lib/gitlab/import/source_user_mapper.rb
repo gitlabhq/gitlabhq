@@ -43,7 +43,7 @@ module Gitlab
 
         return unless source_user
 
-        source_user.reassign_to_user || source_user.placeholder_user
+        source_user.accepted_reassign_to_user || source_user.placeholder_user
       end
 
       def create_source_user_mapping

@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import dateFormat from '~/lib/dateformat';
 import axios from '~/lib/utils/axios_utils';
 import { getDayName, getDayDifference } from '~/lib/utils/datetime_utility';
-import { formatDate } from '~/lib/utils/datetime/date_format_utility';
+import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import { n__, s__, __ } from '~/locale';
 import { loadingIconForLegacyJS } from '~/loading_icon_for_legacy_js';
 
@@ -289,7 +289,7 @@ export default class ActivityCalendar {
             .querySelector(this.activitiesContainer)
             .querySelectorAll('.js-localtime')
             .forEach((el) => {
-              el.setAttribute('title', formatDate(el.dataset.datetime));
+              el.setAttribute('title', localeDateFormat.asDateTimeFull.format(el.dataset.datetime));
             });
         })
         .catch(() =>

@@ -304,3 +304,128 @@
     - "1\n" # Select: Copy & continue
     - "n\n" # Don't overwrite file
     - "5\n" # Exit
+
+- description: Create weekly/monthly metrics for a single event, filtering on multiple values for one property and skipping another property completely
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_additional_properties.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - "internal_events_cli_used" # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\e[B" # Arrow down to: Weekly count of unique users where label/value is...
+    - "\n" # Select: Weekly count of unique users where label/value is...
+    - "failure, incomplete\n" # Input multiple values for "label" filter
+    - "\n" # Skip "value" filter
+    - "who tried and failed to define an internal event using the CLI\n" # Input description
+    - "failed_usage_attempts\n" # Input metric key path
+    - "\n" # Submit monthly description for weekly
+    - "\n" # Submit monthly name for weekly
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_failed_usage_attempts_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event_additional_props.yml
+    - path: config/metrics/counts_7d/count_distinct_user_id_from_failed_usage_attempts_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event_additional_props.yml
+
+- description: Create a weekly/monthly metric for a single event with all additional properties
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_all_additional_properties.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "1\n" # Enum-select: Single event -- count occurrences of a specific event or user interaction
+    - "internal_events_cli_used" # Filters to this event
+    - "\n" # Select: config/events/internal_events_cli_used.yml
+    - "\e[B" # Arrow down to: Weekly count of unique users where label/value is...
+    - "\n" # Select: Weekly count of unique users where label/value is...
+    - "failure, incomplete\n" # Input multiple values for "label" filter
+    - "metrics, events\n" # Input multiple values for "property" filter
+    - "bad input, 16\n" # Fail "value" validation
+    - "60\n" # Input valid "value"
+    - "who tried and failed to define an internal event using the CLI\n" # Input description
+    - "failed_usage_attempts_under_60s\n" # Input metric key path
+    - "\n" # Submit weekly description for monthly
+    - "\n" # Submit weekly name for monthly
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_28d/count_distinct_user_id_from_failed_usage_attempts_under_60s_monthly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_28d_single_event_all_additional_props.yml
+    - path: config/metrics/counts_7d/count_distinct_user_id_from_failed_usage_attempts_under_60s_weekly.yml
+      content: spec/fixtures/scripts/internal_events/metrics/user_id_7d_single_event_all_additional_props.yml
+
+- description: Create a weekly/monthly metric for multiple events with and without additional properties
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_all_additional_properties.yml
+    - path: config/events/internal_events_cli_closed.yml
+      content: spec/fixtures/scripts/internal_events/events/secondary_event_with_identifiers.yml
+    - path: config/events/internal_events_cli_opened.yml
+      content: spec/fixtures/scripts/internal_events/events/ee_event_without_identifiers.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "2\n" # Enum-select: Multiple events -- count occurrences of several separate events or interactions
+    - 'internal_events_cli' # Filters to the relevant events
+    - ' ' # Multi-select: internal_events_cli_closed
+    - "\e[B " # Multi-select: Arrow down and select internal_events_cli_opened
+    - "\e[B " # Multi-select: Arrow down and select internal_events_cli_used
+    - "\n" # Submit selections
+    - "\e[A\n" # Multi-select: Arrow up and select Total count of events where label/property/value is...
+    - "\n" # Select Yes: include internal_events_cli_closed in the metric anyways (no additional properties)
+    - "n\n" # Select No: remove internal_events_cli_opened from the metric (no additional properties)
+    - "failure\n" # Input value for "label" filter
+    - "events\n" # Input value for "property" filter
+    - "\n" # Skip "value" filter
+    - "when someone tried and failed to define an internal event using the CLI\n" # Input description
+    - "failed_usage_attempts\n" # Input metric key path
+    - "\n" # Submit description
+    - "1\n" # Enum-select: Copy & continue
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_all/count_total_failed_usage_attempts.yml
+      content: spec/fixtures/scripts/internal_events/metrics/total_multi_event_some_additional_props.yml
+
+- description: Creates metric under a user-provided name if the default is too long
+  inputs:
+    files:
+    - path: config/events/internal_events_cli_used.yml
+      content: spec/fixtures/scripts/internal_events/events/event_with_identifiers.yml
+    - path: config/events/internal_events_cli_closed.yml
+      content: spec/fixtures/scripts/internal_events/events/secondary_event_with_identifiers.yml
+    - path: config/events/internal_events_cli_opened.yml
+      content: spec/fixtures/scripts/internal_events/events/secondary_event_with_additional_properties.yml
+    - path: config/events/random_name.yml
+      content: spec/fixtures/scripts/internal_events/events/keyboard_smashed_event.yml
+    keystrokes:
+    - "2\n" # Enum-select: New Metric -- calculate how often one or more existing events occur over time
+    - "2\n" # Enum-select: Multiple events -- count occurrences of several separate events or interactions
+    - "_events_cli" # Filter list to just our CLI events
+    - "\e[B \e[B \e[B " # Select all 3 internal_events_cli events
+    - "\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F\u007F" # Clear filter
+    - "random_name " # Filter list to the last event & select
+    - "\n" # Submit selections
+    - "\e[A\e[A\n" # Arrow up & Select: Total count of events (no filters)
+    - "CLI interations\n" # Input description
+    - "cli_interactions\n" # Input new metric name
+    - "1\n" # Enum-select: Copy & continue
+    - "instrumentation\n" # Select the analytics instrumentation group
+    - "y\n" # Create file
+    - "5\n" # Exit
+  outputs:
+    files:
+    - path: config/metrics/counts_all/count_total_cli_interactions.yml
+      content: spec/fixtures/scripts/internal_events/metrics/total_multiple_events_with_rename.yml

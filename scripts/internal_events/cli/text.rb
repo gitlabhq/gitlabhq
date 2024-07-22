@@ -218,7 +218,7 @@ module InternalEventsCli
       #{format_info('SELECTED EVENT(S):')}
     TEXT
 
-    METRIC_DESCRIPTION_HELP = <<~TEXT.freeze
+    METRIC_DESCRIPTION_HELP = <<~TEXT.chomp.freeze
       #{format_warning('Required. 10+ words likely, but length may vary.')}
 
          An event description can often be rearranged to work as a metric description.
@@ -228,6 +228,32 @@ module InternalEventsCli
              Metric description: Weekly count of unqiue users who created merge requests
 
          Look at the event descriptions above to get ideas!
+    TEXT
+
+    METRIC_NAME_FILTER_HELP = <<~TEXT.freeze
+      #{format_warning('Required. Max %{count} characters. Only lowercase/numbers/underscores allowed.')}
+
+      Metrics with filters must manually define this portion of their key path.
+
+      Auto-generated key paths for metrics filters results in long & confusing naming. By defining them manually, clarity and discoverability should be better.
+    TEXT
+
+    METRIC_NAME_CONFLICT_HELP = <<~TEXT.freeze
+      #{format_warning('Required. Max %{count} characters. Only lowercase/numbers/underscores allowed.')}
+
+      Conflict! A metric with the same name already exists: %{name}
+    TEXT
+
+    METRIC_NAME_LENGTH_HELP = <<~TEXT.freeze
+      #{format_warning('Required. Max %{count} characters. Only lowercase/numbers/underscores allowed.')}
+
+      Filenames cannot exceed 100 characters. The key path (ID) is not restricted, but keeping them aligned is recommended.
+
+      If needed, you can modify the key path and filename further after saving.
+    TEXT
+
+    METRIC_NAME_ERROR = <<~TEXT.freeze
+      #{format_warning('Input is invalid. Max %{count} characters. Only lowercase/numbers/underscores allowed. Ensure this key path (ID) is not already in use.')}
     TEXT
   end
 end

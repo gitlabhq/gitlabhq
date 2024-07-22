@@ -457,7 +457,6 @@ RSpec/NamedSubject:
     - 'ee/spec/lib/gitlab/patch/draw_route_spec.rb'
     - 'ee/spec/lib/gitlab/proxy_spec.rb'
     - 'ee/spec/lib/gitlab/reference_extractor_spec.rb'
-    - 'ee/spec/lib/gitlab/search/aggregation_parser_spec.rb'
     - 'ee/spec/lib/gitlab/search/aggregation_spec.rb'
     - 'ee/spec/lib/gitlab/search/client_spec.rb'
     - 'ee/spec/lib/gitlab/search_context/builder_spec.rb'

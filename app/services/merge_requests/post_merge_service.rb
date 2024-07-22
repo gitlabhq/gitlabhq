@@ -60,7 +60,7 @@ module MergeRequests
         # as the worker only supports finding an Issue. We are also only experiencing
         # SQL timeouts when closing an Issue.
         if issue.is_a?(Issue)
-          next if issue.project.present? && !issue.project.autoclose_referenced_issues
+          next unless issue.autoclose_by_merged_closing_merge_request?
 
           MergeRequests::CloseIssueWorker.perform_async(
             project.id,

@@ -743,8 +743,10 @@ export function visitUrl(destination, openWindow = false) {
   if (isExternal(url)) {
     const target = openWindow ? '_blank' : '_self';
     // Sets window.opener to null and avoids leaking referrer information.
+    // eslint-disable-next-line no-restricted-properties
     window.open(url, target, 'noreferrer');
   } else if (openWindow) {
+    // eslint-disable-next-line no-restricted-properties
     window.open(url);
   } else {
     window.location.assign(url);

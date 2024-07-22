@@ -349,14 +349,14 @@ After indexing is done, the index is ready for search.
 
 ### Adding a new scope to search service
 
-Search data is available in [`SearchController`](../../app/controllers/search_controller.rb) and
-[Search API](../../lib/api/search.rb). Both use the [`SearchService`](../../app/services/search_service.rb) to return results.
+Search data is available in [`SearchController`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/controllers/search_controller.rb) and
+[Search API](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/api/search.rb). Both use the [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb) to return results.
 The `SearchService` can be used to return results outside of the `SearchController` and `Search API`.
 
 #### Search scopes
 
-The `SearchService` exposes searching at [global](../../app/services/search/global_service.rb),
-[group](../../app/services/search/group_service.rb), and [project](../../app/services/search/project_service.rb) levels.
+The `SearchService` exposes searching at [global](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search/global_service.rb),
+[group](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search/group_service.rb), and [project](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search/project_service.rb) levels.
 
 New scopes must be added to the following constants:
 
@@ -366,7 +366,7 @@ New scopes must be added to the following constants:
 
 NOTE:
 Global search can be disabled for a scope. Create an ops feature flag named `global_search_SCOPE_tab` that defaults to `true`
-and add it to the `global_search_enabled_for_scope?` method in [`SearchService`](../../app/services/search_service.rb).
+and add it to the `global_search_enabled_for_scope?` method in [`SearchService`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/services/search_service.rb).
 
 #### Results classes
 

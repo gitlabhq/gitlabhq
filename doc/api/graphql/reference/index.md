@@ -8644,6 +8644,30 @@ Input type: `SecurityPolicyProjectCreateInput`
 | <a id="mutationsecuritypolicyprojectcreateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationsecuritypolicyprojectcreateproject"></a>`project` | [`Project`](#project) | Security Policy Project that was created. |
 
+### `Mutation.securityPolicyProjectCreateAsync`
+
+**Status:** Alpha. Creates and assigns a security policy project for the given project or group (`full_path`) async.
+
+DETAILS:
+**Introduced** in GitLab 17.3.
+**Status**: Experiment.
+
+Input type: `SecurityPolicyProjectCreateAsyncInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritypolicyprojectcreateasyncclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritypolicyprojectcreateasyncfullpath"></a>`fullPath` | [`String!`](#string) | Full path of the project or group. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationsecuritypolicyprojectcreateasyncclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationsecuritypolicyprojectcreateasyncerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+
 ### `Mutation.securityPolicyProjectUnassign`
 
 Unassigns the security policy project for the given project (`full_path`).
@@ -27990,6 +28014,18 @@ Represents policy violation for `license_scanning` report_type.
 | <a id="policylicensescanningviolationlicense"></a>`license` | [`String!`](#string) | License name. |
 | <a id="policylicensescanningviolationurl"></a>`url` | [`String`](#string) | URL of the license. |
 
+### `PolicyProjectCreated`
+
+Response of security policy creation.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="policyprojectcreatederrormessage"></a>`errorMessage` | [`String`](#string) | Error message in case status is :error. |
+| <a id="policyprojectcreatedproject"></a>`project` | [`Project`](#project) | Security Policy Project that was created. |
+| <a id="policyprojectcreatedstatus"></a>`status` | [`PolicyProjectCreatedStatus`](#policyprojectcreatedstatus) | Status of the creation of the security policy project. |
+
 ### `PolicyScanFindingViolation`
 
 Represents policy violation for `scan_finding` report_type.
@@ -36003,6 +36039,15 @@ Pipeline security report finding sort values.
 | <a id="pipelinestatusenumsuccess"></a>`SUCCESS` | Pipeline completed successfully. |
 | <a id="pipelinestatusenumwaiting_for_callback"></a>`WAITING_FOR_CALLBACK` | Pipeline is waiting for an external action. |
 | <a id="pipelinestatusenumwaiting_for_resource"></a>`WAITING_FOR_RESOURCE` | A resource (for example, a runner) that the pipeline requires to run is unavailable. |
+
+### `PolicyProjectCreatedStatus`
+
+Types of security policy project created status.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="policyprojectcreatedstatuserror"></a>`ERROR` | Creating the security policy project faild. |
+| <a id="policyprojectcreatedstatussuccess"></a>`SUCCESS` | Creating the security policy project was successful. |
 
 ### `PolicyViolationErrorType`
 

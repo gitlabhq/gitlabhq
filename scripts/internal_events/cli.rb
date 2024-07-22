@@ -102,7 +102,7 @@ class Cli
   def proceed_to_metric_definition
     new_page!
 
-    cli.say format_info("Amazing! The next step is adding a new metric! (~8 min)\n")
+    cli.say format_info("Amazing! The next step is adding a new metric! (~8-15 min)\n")
 
     return not_ready_error('New Metric') unless cli.yes?(format_prompt('Ready to start?'))
 

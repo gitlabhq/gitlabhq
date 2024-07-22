@@ -12,7 +12,7 @@ import k8sServicesQuery from './queries/k8s_services.query.graphql';
 import k8sDeploymentsQuery from './queries/k8s_deployments.query.graphql';
 import k8sNamespacesQuery from './queries/k8s_namespaces.query.graphql';
 import fluxKustomizationQuery from './queries/flux_kustomization.query.graphql';
-import fluxHelmReleaseStatusQuery from './queries/flux_helm_release_status.query.graphql';
+import fluxHelmReleaseQuery from './queries/flux_helm_release.query.graphql';
 import { resolvers } from './resolvers';
 import typeDefs from './typedefs.graphql';
 import { connectionStatus } from './resolvers/kubernetes/constants';
@@ -132,10 +132,8 @@ export const apolloProvider = (endpoint) => {
   cache.writeQuery({
     query: fluxKustomizationQuery,
     data: {
+      ...k8sData,
       kind: '',
-      metadata: {
-        name: '',
-      },
       conditions: {
         message: '',
         reason: '',
@@ -146,8 +144,10 @@ export const apolloProvider = (endpoint) => {
     },
   });
   cache.writeQuery({
-    query: fluxHelmReleaseStatusQuery,
+    query: fluxHelmReleaseQuery,
     data: {
+      ...k8sData,
+      kind: '',
       conditions: {
         message: '',
         reason: '',

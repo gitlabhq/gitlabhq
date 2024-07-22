@@ -211,7 +211,7 @@ DETAILS:
 **Status:** Experiment
 
 - Help resolve a vulnerability by generating a merge request that addresses it.
-- LLM: Anthropic's [`claude-3-haiku`](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
+- LLM: Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
 - [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
 
 ### Product Analytics

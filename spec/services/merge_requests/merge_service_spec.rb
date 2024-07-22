@@ -304,7 +304,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
           )
         end
 
-        it 'only closes issues where the setting is enabled or belong to a group' do
+        it 'only closes project issues where the setting is enabled' do
           merge_request.cache_merge_request_closes_issues!
 
           expect do
@@ -314,7 +314,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
           ).and(
             not_change { no_close_issue.reload.opened? }.from(true)
           ).and(
-            change { group_issue.reload.closed? }.from(false).to(true)
+            not_change { group_issue.reload.opened? }.from(true)
           )
         end
       end

@@ -10,6 +10,7 @@ import {
 } from '~/environments/graphql/resolvers/kubernetes/constants';
 import {
   fluxKustomizationMock,
+  fluxHelmReleaseMock,
   fluxKustomizationMapped,
   fluxHelmReleaseMapped,
 } from '../mock_data';
@@ -144,7 +145,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
   });
 
-  describe('fluxHelmReleaseStatus', () => {
+  describe('fluxHelmRelease', () => {
     const client = { writeQuery: jest.fn() };
     const fluxResourcePath =
       'helm.toolkit.fluxcd.io/v2beta1/namespaces/my-namespace/helmreleases/app';
@@ -156,7 +157,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
     });
     const mockOnDataFn = jest.fn().mockImplementation((eventName, callback) => {
       if (eventName === 'data') {
-        callback([fluxKustomizationMock]);
+        callback([fluxHelmReleaseMock]);
       }
     });
     const resourceName = 'custom-resource';
@@ -174,11 +175,11 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
           .reply(HTTP_STATUS_OK, {
             apiVersion,
-            ...fluxKustomizationMock,
+            ...fluxHelmReleaseMock,
           });
       });
       it('should watch HelmRelease by the metadata name from the cluster_client library when the data is present', async () => {
-        await mockResolvers.Query.fluxHelmReleaseStatus(
+        await mockResolvers.Query.fluxHelmRelease(
           null,
           {
             configuration,
@@ -197,7 +198,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       });
 
       it('should return data when received from the library', async () => {
-        const fluxHelmReleaseStatus = await mockResolvers.Query.fluxHelmReleaseStatus(
+        const fluxHelmRelease = await mockResolvers.Query.fluxHelmRelease(
           null,
           {
             configuration,
@@ -206,7 +207,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
           { client },
         );
 
-        expect(fluxHelmReleaseStatus).toEqual(fluxHelmReleaseMapped);
+        expect(fluxHelmRelease).toEqual(fluxHelmReleaseMapped);
       });
     });
 
@@ -215,7 +216,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .onGet(endpoint, { withCredentials: true, headers: configuration.baseOptions.headers })
         .reply(HTTP_STATUS_OK, {});
 
-      await mockResolvers.Query.fluxHelmReleaseStatus(
+      await mockResolvers.Query.fluxHelmRelease(
         null,
         {
           configuration,
@@ -233,7 +234,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
         .onGet(endpoint, { withCredentials: true, headers: configuration.base })
         .reply(HTTP_STATUS_UNAUTHORIZED, { message: apiError });
 
-      const fluxHelmReleasesError = mockResolvers.Query.fluxHelmReleaseStatus(
+      const fluxHelmReleasesError = mockResolvers.Query.fluxHelmRelease(
         null,
         {
           configuration,

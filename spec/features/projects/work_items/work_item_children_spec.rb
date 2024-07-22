@@ -59,6 +59,8 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     it 'adds a new child task', :aggregate_failures do
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(104)
+
       within_testid('work-item-links') do
         click_button 'Add'
         click_button 'New task'
@@ -77,6 +79,7 @@ RSpec.describe 'Work item children', :js, feature_category: :team_planning do
     end
 
     it 'removes a child task and undoing', :aggregate_failures do
+      allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(104)
       within_testid('work-item-links') do
         click_button 'Add'
         click_button 'New task'

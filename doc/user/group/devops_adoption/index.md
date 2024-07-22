@@ -4,7 +4,7 @@ group: Optimize
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Group DevOps Adoption
+# DevOps adoption by group
 
 DETAILS:
 **Tier:** Ultimate
@@ -12,32 +12,20 @@ DETAILS:
 
 > - [Added](https://gitlab.com/gitlab-org/gitlab/-/issues/367093) to the [Registration Features Program](../../../administration/settings/usage_statistics.md#registration-features-program) in GitLab 16.6.
 
-DevOps Adoption shows you how groups in your organization adopt and use the most essential features of GitLab.
+DevOps adoption shows you how groups in your organization adopt and use GitLab features.
+This information is available for groups and [instances](../../../administration/analytics/dev_ops_reports.md).
 
-You can use Group DevOps Adoption to:
+Use DevOps adoption for groups to:
 
-- Identify specific subgroups that are lagging in their adoption of GitLab features, so you can guide them on
+- Identify subgroups that are lagging in their adoption of GitLab features, so you can guide them on
   their DevOps journey.
 - Find subgroups that have adopted certain features, and provide guidance to other subgroups on
   how to use those features.
 - Verify if you are getting the return on investment that you expected from GitLab.
 
-![DevOps Adoption](img/group_devops_adoption_v14_2.png)
+## Feature adoption
 
-## View DevOps Adoption
-
-Prerequisites:
-
-- You must have at least the Reporter role for the group.
-
-To view DevOps Adoption:
-
-1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Analyze > DevOps adoption**
-
-## DevOps Adoption categories
-
-DevOps Adoption shows feature adoption for development, security, and operations.
+DevOps adoption shows feature adoption for development, security, and operations.
 
 | Category    | Feature |
 |-------------|---------|
@@ -45,48 +33,69 @@ DevOps Adoption shows feature adoption for development, security, and operations
 | Security    | DAST<br>Dependency Scanning<br>Fuzz Testing<br>SAST |
 | Operations  | Deployments<br>Pipelines<br>Runners |
 
-## Feature adoption
+A feature shows as **adopted** when a group or subgroup has used the feature in a project in the last full calendar month.
+For example, if an issue was created in a project in a group, the group has adopted issues in that time.
 
-DevOps Adoption shows feature adoption data for groups and subgroups for the previous calendar month.
+The DevOps adoption report excludes:
 
-A feature shows as **adopted** when a group has used the feature in a project during the time period.
-This includes projects in any subgroups of the group. For example, if an issue was created in a project in a group, the group has adopted issues in that time.
-
-### Exceptions to feature adoption data
-
-When GitLab measures DevOps Adoption, some common DevOps information is not included:
-
-- Dormant projects. It doesn't matter how many projects in the group use a feature. Even if you have many dormant projects, it doesn't lower the adoption.
+- Dormant projects. The number of projects that use a feature is not considered. Having many dormant projects doesn't lower the adoption.
 - New GitLab features. Adoption is the total number of features adopted, not the percent of features.
 
-## When DevOps Adoption data is gathered
+## Data processing
 
-A weekly task processes data for DevOps Adoption. This task is disabled until you access
-DevOps Adoption for a group for the first time.
+A weekly task processes data for DevOps adoption.
+This task is disabled until you access DevOps adoption for a group for the first time.
 
-The data processing task updates the data on the first day of each month. If the monthly update
-fails, the task tries daily until it succeeds.
+The data processing task updates the data on the first day of each month.
+If the monthly update fails, the task tries daily until it succeeds.
 
-DevOps Adoption data may take up to a minute to appear while GitLab processes the group's data.
+DevOps adoption data may take up to a minute to appear while GitLab processes the group's data.
 
-## View feature adoption over time
+## View DevOps adoption for groups
 
-The **Adoption over time** chart shows the total number of adopted features from the previous
-twelve months. The chart only shows data from when you enabled DevOps Adoption for the group.
+Prerequisites:
 
-To view feature adoption over time:
+- You must have at least the Reporter role for the group.
+
+To view DevOps adoption:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Analyze > DevOps adoption**.
-1. Select the **Overview** tab.
 
-Tooltips display information about the features tracked for individual months.
+The **Overview** tab displays the:
 
-## Add or remove a subgroup
+- Total number of features adopted.
+- Features adopted in each category.
+- Number of features adopted in each category by month in the **Adoption over time** chart.
+The chart shows only data from the date you enabled DevOps adoption for the group.
+- Number of features adopted in each category by subgroup in the **Adoption by subgroup** table.
 
-To add or remove a subgroup from the DevOps Adoption report:
+The **Dev**, **Sec**, and **Ops** tabs display the features adopted in development, security, and operations by subgroup.
 
-1. Select **Add or remove subgroups**.
-1. Select the subgroup you want to add or remove and select **Save changes**.
+## Add a subgroup to DevOps adoption
 
-It may take up to a minute for subgroup data to appear while GitLab collects the data.
+Prerequisites:
+
+- You must have at least the Reporter role for the group.
+
+To add a subgroup to the DevOps adoption report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > DevOps adoption**.
+1. From the **Add or remove subgroups** dropdown list, select the subgroup you want to add.
+
+## Remove a subgroup from DevOps adoption
+
+Prerequisites:
+
+- You must have at least the Reporter role for the group.
+
+To remove a subgroup from the DevOps adoption report:
+
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Analyze > DevOps adoption**.
+1. Either:
+
+- From the **Add or remove subgroups** dropdown list, clear the subgroup you want to remove.
+- From the **Adoption by subgroup** table, in the row of the group you want to remove, select
+**Remove Group from the table** (**{remove}**).

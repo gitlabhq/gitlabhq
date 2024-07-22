@@ -5,8 +5,10 @@ import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import PersistentUserCallout from '~/persistent_user_callout';
+import { visitUrl } from '~/lib/utils/url_utility';
 
 jest.mock('~/alert');
+jest.mock('~/lib/utils/url_utility');
 
 describe('PersistentUserCallout', () => {
   const dismissEndpoint = '/dismiss';
@@ -121,7 +123,6 @@ describe('PersistentUserCallout', () => {
     let normalLink;
     let mockAxios;
     let persistentUserCallout;
-    let windowSpy;
 
     beforeEach(() => {
       const fixture = createDeferredLinkFixture();
@@ -132,7 +133,6 @@ describe('PersistentUserCallout', () => {
       mockAxios = new MockAdapter(axios);
       persistentUserCallout = new PersistentUserCallout(container);
       jest.spyOn(persistentUserCallout.container, 'remove').mockImplementation(() => {});
-      windowSpy = jest.spyOn(window, 'open').mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -140,14 +140,14 @@ describe('PersistentUserCallout', () => {
     });
 
     it('defers loading of a link until callout is dismissed', async () => {
-      const { href, target } = deferredLink;
+      const { href } = deferredLink;
       mockAxios.onPost(dismissEndpoint).replyOnce(HTTP_STATUS_OK);
 
       deferredLink.click();
 
       await waitForPromises();
 
-      expect(windowSpy).toHaveBeenCalledWith(href, target);
+      expect(visitUrl).toHaveBeenCalledWith(href, true);
       expect(persistentUserCallout.container.remove).toHaveBeenCalled();
       expect(mockAxios.history.post[0].data).toBe(JSON.stringify({ feature_name: featureName }));
     });
@@ -157,7 +157,7 @@ describe('PersistentUserCallout', () => {
 
       await waitForPromises();
 
-      expect(windowSpy).not.toHaveBeenCalled();
+      expect(visitUrl).not.toHaveBeenCalled();
       expect(persistentUserCallout.container.remove).not.toHaveBeenCalled();
     });
 
@@ -168,7 +168,7 @@ describe('PersistentUserCallout', () => {
 
       await waitForPromises();
 
-      expect(windowSpy).not.toHaveBeenCalled();
+      expect(visitUrl).not.toHaveBeenCalled();
       expect(persistentUserCallout.container.remove).toHaveBeenCalled();
     });
   });

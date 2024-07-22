@@ -14,6 +14,7 @@ FactoryBot.define do
     end
 
     trait :with_reassign_to_user do
+      with_placeholder_user
       reassign_to_user factory: :user
     end
 

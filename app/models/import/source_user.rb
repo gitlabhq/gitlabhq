@@ -92,6 +92,14 @@ module Import
       end
     end
 
+    def accepted_reassign_to_user
+      reassign_to_user if accepted_status?
+    end
+
+    def accepted_status?
+      reassignment_in_progress? || completed? || failed?
+    end
+
     def reassignable_status?
       pending_reassignment? || rejected?
     end

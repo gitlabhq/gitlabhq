@@ -22,7 +22,7 @@ export default {
           <slot v-if="$scopedSlots.heading" name="heading"></slot>
           <template v-else>{{ heading }}</template>
         </h2>
-        <p v-if="$scopedSlots.description || description" class="gl-text-secondary gl-m-0">
+        <p v-if="$scopedSlots.description || description" class="gl-text-secondary gl-mb-3">
           <slot v-if="$scopedSlots.description" name="description"></slot>
           <template v-else>{{ description }}</template>
         </p>

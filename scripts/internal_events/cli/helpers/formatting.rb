@@ -31,8 +31,31 @@ module InternalEventsCli
         pastel.red(string)
       end
 
+      # Strips all existing color/text style
+      def clear_format(string)
+        pastel.strip(string)
+      end
+
       def format_heading(string)
         [divider, pastel.cyan(string), divider].join("\n")
+      end
+
+      # Used for grouping prompts that occur on the same screen
+      # or as part of the same step of a flow.
+      #
+      # Counter is exluded if total is 1.
+      # The subject's formatting is extended to the counter.
+      #
+      # @return [String] ex) -- EATING COOKIES (2/3): Chocolate Chip --
+      # @param subject [String] describes task generically ex) EATING COOKIES
+      # @param item [String] describes specific context ex) Chocolate Chip
+      # @param count [Integer] ex) 2
+      # @param total [Integer] ex) 3
+      def format_subheader(subject, item, count, total)
+        formatting_end = "\e[0m"
+        suffix = formatting_end if subject[-formatting_end.length..] == formatting_end
+
+        "-- #{[subject.chomp(formatting_end), counter(count, total)].compact.join(' ')}:#{suffix} #{item} --"
       end
 
       def format_prefix(prefix, string)
@@ -59,8 +82,11 @@ module InternalEventsCli
         "#{status}\n|==#{complete}>#{incomplete}|\n"
       end
 
+      # Formats a counter if there's anything to count
+      #
+      # @return [String, nil] ex) "(3/4)""
       def counter(idx, total)
-        format_prompt("(#{idx + 1}/#{total})") if total > 1
+        "(#{idx + 1}/#{total})" if total > 1
       end
 
       private

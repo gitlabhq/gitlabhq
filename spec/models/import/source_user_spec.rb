@@ -208,19 +208,41 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     end
   end
 
+  describe '#accepted_reassign_to_user' do
+    let_it_be(:source_user) { build(:import_source_user, :with_reassign_to_user) }
+
+    subject(:accepted_reassign_to_user) { source_user.accepted_reassign_to_user }
+
+    before do
+      allow(source_user).to receive(:accepted_status?).and_return(accepted)
+    end
+
+    context 'when accepted' do
+      let(:accepted) { true }
+
+      it { is_expected.to eq(source_user.reassign_to_user) }
+    end
+
+    context 'when not accepted' do
+      let(:accepted) { false }
+
+      it { is_expected.to be_nil }
+    end
+  end
+
   describe '#reassignable_status?' do
     reassignable_statuses = [:pending_reassignment, :rejected]
     all_states = described_class.state_machines[:status].states
 
     all_states.reject { |state| reassignable_statuses.include?(state.name) }.each do |state|
       it "returns false for #{state.name}" do
-        expect(described_class.new(status: state.value).reassignable_status?).to eq(false)
+        expect(described_class.new(status: state.value)).not_to be_reassignable_status
       end
     end
 
     all_states.select { |state| reassignable_statuses.include?(state.name) }.each do |state|
       it "returns true for #{state.name}" do
-        expect(described_class.new(status: state.value).reassignable_status?).to eq(true)
+        expect(described_class.new(status: state.value)).to be_reassignable_status
       end
     end
   end
@@ -231,13 +253,30 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
     all_states.reject { |state| cancelable_statuses.include?(state.name) }.each do |state|
       it "returns false for #{state.name}" do
-        expect(described_class.new(status: state.value).cancelable_status?).to eq(false)
+        expect(described_class.new(status: state.value)).not_to be_cancelable_status
       end
     end
 
     all_states.select { |state| cancelable_statuses.include?(state.name) }.each do |state|
       it "returns true for #{state.name}" do
-        expect(described_class.new(status: state.value).cancelable_status?).to eq(true)
+        expect(described_class.new(status: state.value)).to be_cancelable_status
+      end
+    end
+  end
+
+  describe '#accepted_status?' do
+    accepted_statuses = [:reassignment_in_progress, :completed, :failed]
+    all_states = described_class.state_machines[:status].states
+
+    all_states.reject { |state| accepted_statuses.include?(state.name) }.each do |state|
+      it "returns false for #{state.name}" do
+        expect(described_class.new(status: state.value)).not_to be_accepted_status
+      end
+    end
+
+    all_states.select { |state| accepted_statuses.include?(state.name) }.each do |state|
+      it "returns true for #{state.name}" do
+        expect(described_class.new(status: state.value)).to be_accepted_status
       end
     end
   end

@@ -3,7 +3,7 @@ import { GlBadge, GlTruncate } from '@gitlab/ui';
 import { stringify } from 'yaml';
 import { s__ } from '~/locale';
 import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
-import { WORKLOAD_STATUS_BADGE_VARIANTS } from '../constants';
+import { WORKLOAD_STATUS_BADGE_VARIANTS, STATUS_LABELS } from '../constants';
 import WorkloadDetailsItem from './workload_details_item.vue';
 
 export default {
@@ -73,6 +73,7 @@ export default {
     containers: s__('KubernetesDashboard|Containers'),
   },
   WORKLOAD_STATUS_BADGE_VARIANTS,
+  STATUS_LABELS,
 };
 </script>
 
@@ -86,21 +87,21 @@ export default {
     </workload-details-item>
     <workload-details-item v-if="itemLabels.length" :label="$options.i18n.labels">
       <div class="gl-display-flex gl-flex-wrap gl-gap-2">
-        <gl-badge v-for="label of itemLabels" :key="label" class="gl-max-w-full">
+        <gl-badge v-for="label of itemLabels" :key="label" class="gl-max-w-full gl-w-auto">
           <gl-truncate :text="label" with-tooltip />
         </gl-badge>
       </div>
     </workload-details-item>
     <workload-details-item v-if="item.status && !item.fullStatus" :label="$options.i18n.status">
       <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
-        item.status
+        $options.STATUS_LABELS[item.status]
       }}</gl-badge>
     </workload-details-item>
     <workload-details-item v-if="item.fullStatus" :label="$options.i18n.status" collapsible>
       <template v-if="item.status" #label>
         <span class="gl-mr-2 gl-font-bold">{{ $options.i18n.status }}</span>
         <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[item.status]">{{
-          item.status
+          $options.STATUS_LABELS[item.status]
         }}</gl-badge>
       </template>
       <pre>{{ statusYaml }}</pre>

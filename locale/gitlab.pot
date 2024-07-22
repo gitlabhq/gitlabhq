@@ -20774,7 +20774,13 @@ msgstr ""
 msgid "Environment|Unauthorized to access %{resourceType} from this environment."
 msgstr ""
 
+msgid "Environment|Unavailable"
+msgstr ""
+
 msgid "Environment|Unhealthy"
+msgstr ""
+
+msgid "Environment|Unknown"
 msgstr ""
 
 msgid "Environment|You don't have permission to view all the namespaces in the cluster. If a namespace is not shown, you can still enter its name to select it."
@@ -23723,6 +23729,9 @@ msgstr ""
 msgid "GitLab Duo Pro seats"
 msgstr ""
 
+msgid "GitLab Duo didn't find any reviewable files. Code Review request skipped."
+msgstr ""
+
 msgid "GitLab Enterprise Edition"
 msgstr ""
 
@@ -25450,9 +25459,6 @@ msgstr ""
 msgid "GroupSettings|An experiment is a feature that is in the process of being developed. It is not production-ready. We encourage users to try experimental features and provide feedback. %{link_start}Learn more%{link_end}."
 msgstr ""
 
-msgid "GroupSettings|Analytics"
-msgstr ""
-
 msgid "GroupSettings|Analytics Dashboards"
 msgstr ""
 
@@ -25493,9 +25499,6 @@ msgid "GroupSettings|Choose a group path that does not start with a dash or end 
 msgstr ""
 
 msgid "GroupSettings|Choose the merge request checks for projects in this group. This setting overrides the same settings configured on each project in this group."
-msgstr ""
-
-msgid "GroupSettings|Configure analytics features for this group."
 msgstr ""
 
 msgid "GroupSettings|Configure limits on the number of repositories users can download, clone, or fork in a given time."
@@ -41646,7 +41649,7 @@ msgstr ""
 msgid "ProjectSettings|Build, test, and deploy your changes. Does not apply to project integrations."
 msgstr ""
 
-msgid "ProjectSettings|By default the current project is used."
+msgid "ProjectSettings|Change the location of dashboards?"
 msgstr ""
 
 msgid "ProjectSettings|Checkbox is visible and selected by default."
@@ -41689,9 +41692,6 @@ msgid "ProjectSettings|Container registry"
 msgstr ""
 
 msgid "ProjectSettings|Cube API URL"
-msgstr ""
-
-msgid "ProjectSettings|Custom dashboard projects"
 msgstr ""
 
 msgid "ProjectSettings|Data sources"
@@ -42003,7 +42003,7 @@ msgstr ""
 msgid "ProjectSettings|Storage name:"
 msgstr ""
 
-msgid "ProjectSettings|Store configuration files for custom dashboards and visualizations."
+msgid "ProjectSettings|Store configuration files for custom dashboards and visualizations. By default the current project is used."
 msgstr ""
 
 msgid "ProjectSettings|Submit changes to be merged upstream."

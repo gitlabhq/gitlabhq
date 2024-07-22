@@ -2,6 +2,7 @@ import { createAlert } from '~/alert';
 import axios from './lib/utils/axios_utils';
 import { parseBoolean } from './lib/utils/common_utils';
 import { __ } from './locale';
+import { visitUrl } from './lib/utils/url_utility';
 
 const DEFERRED_LINK_CLASS = 'deferred-link';
 
@@ -69,7 +70,7 @@ export default class PersistentUserCallout {
 
         if (deferredLinkOptions) {
           const { href, target } = deferredLinkOptions;
-          window.open(href, target);
+          visitUrl(href, target === '_blank');
         }
       })
       .catch(() => {

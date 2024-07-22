@@ -369,7 +369,6 @@ RSpec/ContextWording:
     - 'ee/spec/lib/gitlab/insights/finders/issuable_finder_spec.rb'
     - 'ee/spec/lib/gitlab/insights/project_insights_config_spec.rb'
     - 'ee/spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'
-    - 'ee/spec/lib/gitlab/search/aggregation_parser_spec.rb'
     - 'ee/spec/lib/gitlab/sitemaps/url_extractor_spec.rb'
     - 'ee/spec/lib/gitlab/slash_commands/presenters/issue_show_spec.rb'
     - 'ee/spec/lib/gitlab/status_page/filter/image_filter_spec.rb'

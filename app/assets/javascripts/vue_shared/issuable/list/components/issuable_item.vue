@@ -16,6 +16,7 @@ import { __, n__, sprintf } from '~/locale';
 import IssuableAssignees from '~/issuable/components/issue_assignees.vue';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 import WorkItemTypeIcon from '~/work_items/components/work_item_type_icon.vue';
+import WorkItemPrefetch from '~/work_items/components/work_item_prefetch.vue';
 import { STATE_OPEN, STATE_CLOSED } from '~/work_items/constants';
 import { isAssigneesWidget, isLabelsWidget } from '~/work_items/utils';
 
@@ -29,6 +30,7 @@ export default {
     GlSprintf,
     IssuableAssignees,
     WorkItemTypeIcon,
+    WorkItemPrefetch,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -286,17 +288,38 @@ export default {
           :title="__('This issue is hidden because its author has been banned.')"
           :aria-label="__('Hidden')"
         />
-        <gl-link
-          class="issue-title-text gl-font-base"
-          dir="auto"
-          :href="issuableLinkHref"
-          data-testid="issuable-title-link"
-          v-bind="issuableTitleProps"
-          @click="handleIssuableItemClick"
-        >
-          {{ issuable.title }}
-          <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
-        </gl-link>
+        <template v-if="preventRedirect">
+          <work-item-prefetch :work-item-iid="issuableIid" data-testid="issuable-prefetch-trigger">
+            <template #default="{ prefetchWorkItem, clearPrefetching }">
+              <gl-link
+                class="issue-title-text gl-font-base"
+                dir="auto"
+                :href="issuableLinkHref"
+                data-testid="issuable-title-link"
+                v-bind="issuableTitleProps"
+                @click="handleIssuableItemClick"
+                @mouseover.native="prefetchWorkItem(issuableIid)"
+                @mouseout.native="clearPrefetching"
+              >
+                {{ issuable.title }}
+                <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
+              </gl-link>
+            </template>
+          </work-item-prefetch>
+        </template>
+        <template v-else>
+          <gl-link
+            class="issue-title-text gl-font-base"
+            dir="auto"
+            :href="issuableLinkHref"
+            data-testid="issuable-title-link"
+            v-bind="issuableTitleProps"
+            @click="handleIssuableItemClick"
+          >
+            {{ issuable.title }}
+            <gl-icon v-if="isIssuableUrlExternal" name="external-link" class="gl-ml-2" />
+          </gl-link>
+        </template>
         <slot v-if="hasSlotContents('title-icons')" name="title-icons"></slot>
         <span
           v-if="taskStatus"

@@ -17,6 +17,7 @@ module InternalEventsCli
     include MetricOptions
 
     MILESTONE = File.read('VERSION').strip.match(/(\d+\.\d+)/).captures.first
+    NAME_REGEX = /\A[a-z0-9_]+\z/
 
     def new_page!(page = nil, total = nil, steps = [])
       cli.say TTY::Cursor.clear_screen

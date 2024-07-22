@@ -7,12 +7,12 @@ import {
 import { updateConnectionStatus } from '~/environments/graphql/resolvers/kubernetes/k8s_connection_status';
 import { connectionStatus } from '~/environments/graphql/resolvers/kubernetes/constants';
 import fluxKustomizationQuery from '../queries/flux_kustomization.query.graphql';
-import fluxHelmReleaseStatusQuery from '../queries/flux_helm_release_status.query.graphql';
+import fluxHelmReleaseQuery from '../queries/flux_helm_release.query.graphql';
 
 const helmReleasesApiVersion = 'helm.toolkit.fluxcd.io/v2beta1';
 const kustomizationsApiVersion = 'kustomize.toolkit.fluxcd.io/v1';
 
-const helmReleaseField = 'fluxHelmReleaseStatus';
+const helmReleaseField = 'fluxHelmRelease';
 const kustomizationField = 'fluxKustomization';
 
 const handleClusterError = (err) => {
@@ -29,19 +29,25 @@ export const buildFluxResourceWatchPath = ({ namespace, apiVersion, resourceType
 };
 
 const mapFluxItems = (fluxItem, resourceType) => {
-  if (resourceType === KUSTOMIZATIONS_RESOURCE_TYPE) {
-    return {
-      kind: fluxItem?.kind || '',
-      metadata: {
-        name: fluxItem?.metadata?.name || '',
-      },
-      conditions: fluxItem?.status?.conditions || [],
-      inventory: fluxItem?.status?.inventory?.entries || [],
-    };
-  }
-  return {
-    conditions: fluxItem?.status?.conditions || [],
+  const metadata = {
+    ...fluxItem.metadata,
+    annotations: fluxItem.metadata?.annotations || {},
+    labels: fluxItem.metadata?.labels || {},
   };
+
+  const result = {
+    kind: fluxItem?.kind || '',
+    status: fluxItem.status || {},
+    spec: fluxItem.spec || {},
+    metadata,
+    conditions: fluxItem.status?.conditions || [],
+    __typename: 'LocalWorkloadItem',
+  };
+
+  if (resourceType === KUSTOMIZATIONS_RESOURCE_TYPE) {
+    result.inventory = fluxItem.status?.inventory?.entries || [];
+  }
+  return result;
 };
 
 const watchFluxResource = ({
@@ -146,7 +152,7 @@ export const watchFluxKustomization = ({ configuration, client, fluxResourcePath
 };
 
 export const watchFluxHelmRelease = ({ configuration, client, fluxResourcePath }) => {
-  const query = fluxHelmReleaseStatusQuery;
+  const query = fluxHelmReleaseQuery;
   const variables = { configuration, fluxResourcePath };
   const field = helmReleaseField;
   const resourceType = HELM_RELEASES_RESOURCE_TYPE;
@@ -189,9 +195,9 @@ export default {
       client,
     });
   },
-  fluxHelmReleaseStatus(_, { configuration, fluxResourcePath }, { client }) {
+  fluxHelmRelease(_, { configuration, fluxResourcePath }, { client }) {
     return getFluxResource({
-      query: fluxHelmReleaseStatusQuery,
+      query: fluxHelmReleaseQuery,
       variables: { configuration, fluxResourcePath },
       field: helmReleaseField,
       resourceType: HELM_RELEASES_RESOURCE_TYPE,

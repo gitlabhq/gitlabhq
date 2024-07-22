@@ -129,10 +129,10 @@ export default {
       return `${this.environmentName}-flux-sync-badge`;
     },
     syncStatusBadge() {
-      if (!this.fluxResourceStatus.length && this.fluxApiError) {
+      if (!this.fluxResourcePresent && this.fluxApiError) {
         return { ...SYNC_STATUS_BADGES.unavailable, popoverText: this.fluxApiError };
       }
-      if (!this.fluxResourceStatus.length) {
+      if (!this.fluxResourcePresent) {
         return SYNC_STATUS_BADGES.unavailable;
       }
 
@@ -165,10 +165,21 @@ export default {
     isFluxConnectionStatus() {
       return Boolean(this.fluxConnectionParams.resourceType);
     },
+    fluxResourcePresent() {
+      return Boolean(this.fluxResourceStatus?.length);
+    },
+    fluxBadgeHref() {
+      return this.fluxResourcePresent ? '#' : null;
+    },
   },
   methods: {
     handleError(error) {
       this.$emit('error', error);
+    },
+    toggleFluxResource() {
+      if (!this.fluxResourcePresent) return;
+
+      this.$emit('show-flux-resource-details');
     },
   },
   i18n: {
@@ -216,10 +227,13 @@ export default {
       <template v-else>
         <gl-badge
           :id="fluxBadgeId"
+          ref="flux_status_badge"
           :icon="syncStatusBadge.icon"
           :variant="syncStatusBadge.variant"
           data-testid="sync-badge"
           tabindex="0"
+          :href="fluxBadgeHref"
+          @click.native="toggleFluxResource"
           >{{ syncStatusBadge.text }}
         </gl-badge>
         <gl-popover :target="fluxBadgeId" :title="syncStatusBadge.popoverTitle">

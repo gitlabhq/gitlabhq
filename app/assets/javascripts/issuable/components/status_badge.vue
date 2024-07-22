@@ -1,5 +1,5 @@
 <script>
-import { GlBadge, GlIcon } from '@gitlab/ui';
+import { GlBadge } from '@gitlab/ui';
 import { __ } from '~/locale';
 import {
   STATUS_CLOSED,
@@ -68,7 +68,6 @@ const badgePropertiesMap = {
 export default {
   components: {
     GlBadge,
-    GlIcon,
   },
   props: {
     issuableType: {
@@ -93,10 +92,10 @@ export default {
 <template>
   <gl-badge
     :variant="badgeProperties.variant"
+    :icon="badgeProperties.icon"
     :aria-label="badgeProperties.text"
     class="gl-shrink-0"
   >
-    <gl-icon :name="badgeProperties.icon" />
     {{ badgeProperties.text }}
   </gl-badge>
 </template>

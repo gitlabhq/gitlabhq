@@ -6,11 +6,11 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
   describe '#find_or_create_internal_user' do
     let_it_be(:namespace) { create(:namespace) }
 
-    let(:import_type) { 'github' }
-    let(:source_hostname) { 'github.com' }
-    let(:source_name) { 'Pry Contributor' }
-    let(:source_username) { 'a_pry_contributor' }
-    let(:source_user_identifier) { '123456' }
+    let_it_be(:import_type) { 'github' }
+    let_it_be(:source_hostname) { 'github.com' }
+    let_it_be(:source_name) { 'Pry Contributor' }
+    let_it_be(:source_username) { 'a_pry_contributor' }
+    let_it_be(:source_user_identifier) { '123456' }
 
     subject(:find_or_create_internal_user) do
       described_class.new(
@@ -63,8 +63,8 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
     end
 
     context 'when the placeholder user limit has not been reached' do
-      let!(:import_source_user_from_another_import) { create(:import_source_user) }
-      let!(:different_source_user_from_same_import) do
+      let_it_be(:import_source_user_from_another_import) { create(:import_source_user) }
+      let_it_be(:different_source_user_from_same_import) do
         create(:import_source_user,
           namespace_id: namespace.id,
           import_type: import_type,
@@ -86,7 +86,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
       end
 
       context 'when retried and another placeholder user was made while waiting' do
-        let!(:existing_import_source_user) do
+        let_it_be(:existing_import_source_user) do
           create(
             :import_source_user,
             :with_placeholder_user,
@@ -113,7 +113,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
 
       context 'and an import source user exists for current import source' do
         context 'and the source user maps to a placeholder user' do
-          let!(:existing_import_source_user) do
+          let_it_be(:existing_import_source_user) do
             create(
               :import_source_user,
               :with_placeholder_user,
@@ -131,7 +131,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
         end
 
         context 'and the source_user maps to a reassigned user' do
-          let!(:existing_import_source_user) do
+          let_it_be(:existing_import_source_user) do
             create(
               :import_source_user,
               :with_reassign_to_user,
@@ -141,11 +141,31 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
               source_user_identifier: '123456')
           end
 
-          it 'returns the existing placeholder user' do
-            expect(find_or_create_internal_user).to eq(existing_import_source_user.reassign_to_user)
+          before do
+            allow_next_found_instance_of(Import::SourceUser) do |source_user|
+              allow(source_user).to receive(:accepted_status?).and_return(accepted)
+            end
           end
 
-          it_behaves_like 'it does not create an import_source_user or placeholder user'
+          context 'when reassigned user has accepted the mapping' do
+            let(:accepted) { true }
+
+            it_behaves_like 'it does not create an import_source_user or placeholder user'
+
+            it 'returns the existing reassign to user' do
+              expect(find_or_create_internal_user).to eq(existing_import_source_user.reassign_to_user)
+            end
+          end
+
+          context 'when reassigned user has not accepted the mapping' do
+            let(:accepted) { false }
+
+            it_behaves_like 'it does not create an import_source_user or placeholder user'
+
+            it 'returns the existing placeholder user' do
+              expect(find_or_create_internal_user).to eq(existing_import_source_user.placeholder_user)
+            end
+          end
         end
       end
     end

@@ -59,7 +59,8 @@ gem 'neighbor', '~> 0.3.2', feature_category: :duo_chat
 
 gem 'rugged', '~> 1.6' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'faraday', '~> 1.10.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'faraday', '~> 2', feature_category: :shared
+gem 'faraday-retry', '~> 2', feature_category: :shared
 gem 'marginalia', '~> 1.11.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Authorization
@@ -116,7 +117,7 @@ gem 'attr_encrypted', '~> 3.2.4', path: 'vendor/gems/attr_encrypted' # rubocop:t
 gem 'validates_hostname', '~> 1.0.13' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'rubyzip', '~> 2.3.2', require: 'zip' # rubocop:todo Gemfile/MissingFeatureCategory
 # GitLab Pages letsencrypt support
-gem 'acme-client', '~> 2.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'acme-client', '~> 2.0.18' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Browser detection
 gem 'browser', '~> 5.3.1' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -146,7 +147,7 @@ gem 'graphql', '~> 2.3.5', feature_category: :api
 gem 'graphql-docs', '~> 5.0.0', group: [:development, :test], feature_category: :api
 gem 'graphiql-rails', '~> 1.10', feature_category: :api
 gem 'apollo_upload_server', '~> 2.1.6', feature_category: :api
-gem 'graphlient', '~> 0.6.0', feature_category: :importers # Used by BulkImport feature (group::import)
+gem 'graphlient', '~> 0.8.0', feature_category: :importers # Used by BulkImport feature (group::import)
 
 # Generate Fake data
 gem 'ffaker', '~> 2.23' # rubocop:todo Gemfile/MissingFeatureCategory
@@ -177,7 +178,7 @@ gem 'fog-local', '~> 0.8' # rubocop:todo Gemfile/MissingFeatureCategory
 # We may want to update this dependency if this is ever addressed upstream, e.g. via
 # https://github.com/aliyun/aliyun-oss-ruby-sdk/pull/93
 gem 'fog-aliyun', '~> 0.4' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'gitlab-fog-azure-rm', '~> 1.9.1', require: 'fog/azurerm' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'gitlab-fog-azure-rm', '~> 2.0.1', require: 'fog/azurerm', feature_category: :shared
 
 # for Google storage
 
@@ -205,14 +206,16 @@ gem 'google-cloud-compute-v1', '~> 2.6.0', feature_category: :shared
 gem 'seed-fu', '~> 2.3.7' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Search
-gem 'elasticsearch-model', '~> 7.2' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'elasticsearch-api',   '7.13.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'elasticsearch-model', '~> 7.2', feature_category: :global_search
+gem 'elasticsearch-rails', '~> 7.2', require: 'elasticsearch/rails/instrumentation', feature_category: :global_search
+gem 'elasticsearch-api', '7.17.11', feature_category: :global_search
 gem 'aws-sdk-core', '~> 3.200.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-cloudformation', '~> 1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'aws-sdk-s3', '~> 1.155.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'faraday_middleware-aws-sigv4', '~>0.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'typhoeus', '~> 1.4.0' # Used with Elasticsearch to support http keep-alive connections # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'faraday-typhoeus', '~> 1.1', feature_category: :global_search
+gem 'faraday_middleware-aws-sigv4', '~> 1.0.1', feature_category: :global_search
+# Used with Elasticsearch to support http keep-alive connections
+gem 'typhoeus', '~> 1.4.0', feature_category: :global_search
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 2.14.3', feature_category: :team_planning
@@ -569,6 +572,8 @@ group :test do
 end
 
 gem 'octokit', '~> 9.0', feature_category: :importers
+# Needed by octokit: https://github.com/octokit/octokit.rb/pull/1688
+gem 'faraday-multipart', '~> 1.0', feature_category: :importers
 
 gem 'gitlab-mail_room', '~> 0.0.24', require: 'mail_room', feature_category: :shared
 

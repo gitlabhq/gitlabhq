@@ -1,20 +1,26 @@
 <script>
-import { GlEmptyState, GlSprintf, GlLink, GlAlert } from '@gitlab/ui';
+import { GlEmptyState, GlSprintf, GlLink, GlAlert, GlDrawer } from '@gitlab/ui';
 import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-state-clusters.svg?url';
+import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
+import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
-import { createK8sAccessConfiguration } from '~/environments/helpers/k8s_integration_helper';
+import {
+  createK8sAccessConfiguration,
+  fluxSyncStatus,
+} from '~/environments/helpers/k8s_integration_helper';
 import fluxKustomizationQuery from '~/environments/graphql/queries/flux_kustomization.query.graphql';
-import fluxHelmReleaseQueryStatus from '~/environments/graphql/queries/flux_helm_release_status.query.graphql';
+import fluxHelmReleaseQueryStatus from '~/environments/graphql/queries/flux_helm_release.query.graphql';
 import {
   CLUSTER_HEALTH_SUCCESS,
   CLUSTER_HEALTH_ERROR,
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
 } from '~/environments/constants';
+import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
@@ -25,9 +31,11 @@ export default {
     KubernetesStatusBar,
     KubernetesAgentInfo,
     KubernetesTabs,
+    WorkloadDetails,
     GlSprintf,
     GlLink,
     GlAlert,
+    GlDrawer,
   },
   inject: ['kasTunnelUrl'],
   props: {
@@ -69,7 +77,7 @@ export default {
         this.fluxApiError = err.message;
       },
     },
-    fluxHelmReleaseStatus: {
+    fluxHelmRelease: {
       query: fluxHelmReleaseQueryStatus,
       variables() {
         return {
@@ -94,6 +102,8 @@ export default {
       podsLoading: false,
       activeTab: k8sResourceType.k8sPods,
       fluxApiError: '',
+      selectedItem: {},
+      showDetailsDrawer: false,
     };
   },
   computed: {
@@ -116,7 +126,13 @@ export default {
       return Object.values(this.failedState).some((item) => item);
     },
     fluxResourceStatus() {
-      return this.fluxKustomization?.conditions || this.fluxHelmReleaseStatus?.conditions;
+      return this.fluxKustomization?.conditions || this.fluxHelmRelease?.conditions;
+    },
+    drawerHeaderHeight() {
+      return getContentWrapperHeight();
+    },
+    hasSelectedItem() {
+      return Object.keys(this.selectedItem).length;
     },
   },
   methods: {
@@ -134,6 +150,37 @@ export default {
         ...event,
       };
     },
+    transformFluxResourceData(item) {
+      return {
+        name: item.metadata.name,
+        status: fluxSyncStatus(item.status.conditions).status,
+        labels: item.metadata.labels,
+        annotations: item.metadata.annotations,
+        kind: item.kind,
+        spec: item.spec,
+        fullStatus: item.status.conditions,
+      };
+    },
+    showFluxResourceDetails() {
+      const fluxResource = this.fluxKustomization || this.fluxHelmRelease;
+      const fluxResourceTransformed = this.transformFluxResourceData(fluxResource);
+
+      this.openDetailsDrawer(fluxResourceTransformed);
+    },
+    openDetailsDrawer(item) {
+      this.selectedItem = item;
+      this.showDetailsDrawer = true;
+      this.$nextTick(() => {
+        this.$refs.drawer?.$el?.querySelector('button')?.focus();
+      });
+    },
+    closeDetailsDrawer() {
+      this.showDetailsDrawer = false;
+      this.selectedItem = {};
+      this.$nextTick(() => {
+        this.$refs.status_bar?.$refs?.flux_status_badge?.$el?.focus();
+      });
+    },
   },
   i18n: {
     emptyTitle: s__('Environment|No Kubernetes clusters configured'),
@@ -145,6 +192,7 @@ export default {
   learnMoreLink: helpPagePath('user/clusters/agent/index'),
   getStartedLink: helpPagePath('ci/environments/kubernetes_dashboard'),
   CLUSTER_EMPTY_SVG,
+  DRAWER_Z_INDEX,
 };
 </script>
 <template>
@@ -154,6 +202,7 @@ export default {
     >
       <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-2 gl-mr-5" />
       <kubernetes-status-bar
+        ref="status_bar"
         :cluster-health-status="clusterHealthStatus"
         :configuration="k8sAccessConfiguration"
         :namespace="kubernetesNamespace"
@@ -163,6 +212,7 @@ export default {
         :flux-resource-status="fluxResourceStatus"
         :flux-api-error="fluxApiError"
         @error="handleError"
+        @show-flux-resource-details="showFluxResourceDetails"
       />
     </div>
 
@@ -178,7 +228,26 @@ export default {
       @cluster-error="handleError"
       @loading="podsLoading = $event"
       @update-failed-state="handleFailedState"
+      @show-resource-details="openDetailsDrawer"
+      @remove-selection="closeDetailsDrawer"
     />
+
+    <gl-drawer
+      ref="drawer"
+      :open="showDetailsDrawer"
+      :header-height="drawerHeaderHeight"
+      :z-index="$options.DRAWER_Z_INDEX"
+      @close="closeDetailsDrawer"
+    >
+      <template #title>
+        <h2 class="gl-font-bold gl-m-0 gl-break-anywhere">
+          {{ selectedItem.name }}
+        </h2>
+      </template>
+      <template #default>
+        <workload-details v-if="hasSelectedItem" :item="selectedItem" />
+      </template>
+    </gl-drawer>
   </div>
   <gl-empty-state
     v-else
