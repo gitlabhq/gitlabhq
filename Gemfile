@@ -386,6 +386,8 @@ gem 'gettext', '~> 3.4', '>= 3.4.9',
 
 gem 'batch-loader', '~> 2.0.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
+gem 'tty-prompt', '~> 0.23', require: false, feature_category: :shared
+
 # Perf bar
 gem 'peek', '~> 1.1' # rubocop:todo Gemfile/MissingFeatureCategory
 
