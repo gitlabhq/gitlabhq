@@ -240,16 +240,16 @@ export default {
     <template #header
       ><strong data-testid="list-selector-title"
         >{{ config.title }}
-        <span class="gl-text-gray-700 gl-ml-3"
+        <span class="gl-ml-3 gl-text-gray-700"
           ><gl-icon :name="config.icon" /> {{ selectedItems.length }}</span
         ></strong
       ></template
     >
 
-    <div class="gl-display-flex gl-gap-3" :class="{ 'gl-mb-4': selectedItems.length }">
+    <div class="gl-flex gl-gap-3" :class="{ 'gl-mb-4': selectedItems.length }">
       <gl-collapsible-listbox
         ref="results"
-        class="list-selector gl-block gl-flex-grow-1"
+        class="list-selector gl-block gl-grow"
         :items="filteredItems"
         @select="handleSelectItem"
         @shown="handleSearchInput"

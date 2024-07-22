@@ -11,7 +11,7 @@
           = render Pajamas::ButtonComponent.new(href: sso_group_saml_providers_path(group, { token: group.saml_discovery_token, redirect: project_new_merge_request_branch_from_path(@source_project) }), button_options: { class: "gl-mr-3 gl-mb-3" }) do
             = group.path
 
-= gitlab_ui_form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form js-requires-input" } do |f|
+= gitlab_ui_form_for [@project, @merge_request], url: project_new_merge_request_path(@project), method: :get, html: { class: "merge-request-form" } do |f|
   - if params[:nav_source].present?
     = hidden_field_tag(:nav_source, params[:nav_source])
   .js-merge-request-new-compare.row{ data: mr_compare_form_data(current_user, @merge_request) }

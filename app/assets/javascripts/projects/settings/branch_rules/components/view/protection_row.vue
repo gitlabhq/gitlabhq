@@ -66,13 +66,13 @@ export default {
 
 <template>
   <div
-    class="gl-display-flex gl-align-items-center gl-gap-7 gl-border-gray-100 gl-mb-4 gl-border-t-1"
-    :class="{ 'gl-border-t-solid gl-pt-4': showDivider }"
+    class="gl-mb-4 gl-flex gl-items-center gl-gap-7 gl-border-t-1 gl-border-gray-100"
+    :class="{ 'gl-pt-4 gl-border-t-solid': showDivider }"
   >
-    <div class="gl-display-flex gl-w-full gl-align-items-center">
-      <div class="gl-flex-basis-quarter">{{ title }}</div>
+    <div class="gl-flex gl-w-full gl-items-center">
+      <div class="gl-basis-1/4">{{ title }}</div>
 
-      <div v-if="statusCheckUrl" class="gl-flex-grow-1">{{ statusCheckUrl }}</div>
+      <div v-if="statusCheckUrl" class="gl-grow">{{ statusCheckUrl }}</div>
 
       <gl-avatars-inline
         v-if="usersAndGroups.length"

@@ -105,7 +105,7 @@ export default {
         >{{ __('Edit') }}</gl-button
       >
       <gl-link v-else :href="headerLinkHref">{{ headerLinkTitle }}</gl-link>
-      <p v-if="showHelpText" class="gl-flex-basis-full gl-mb-0 gl-text-secondary">
+      <p v-if="showHelpText" class="gl-mb-0 gl-basis-full gl-text-secondary">
         {{ helpText }}
       </p></template
     >

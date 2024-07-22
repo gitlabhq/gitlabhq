@@ -195,7 +195,7 @@ class ContainerRepository < ApplicationRecord
   end
 
   def tags_page(before: nil, last: nil, sort: nil, name: nil, page_size: 100, referrers: nil, referrer_type: nil)
-    raise ArgumentError, 'not a migrated repository' unless migrated?
+    raise ArgumentError,  _('GitLab container registry API not supported') unless gitlab_api_client.supports_gitlab_api?
 
     page = gitlab_api_client.tags(
       self.path,

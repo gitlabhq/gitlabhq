@@ -109,6 +109,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       context 'when Gitlab API is supported' do
         before do
           stub_container_registry_gitlab_api_support(supported: true)
+          allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
         end
 
         shared_examples 'returning an instantiated tag from the API response' do
@@ -488,7 +489,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
     end
 
     before do
-      allow(repository).to receive(:migrated?).and_return(true)
+      allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
     end
 
     it 'calls GitlabApiClient#tags and passes parameters' do
@@ -583,13 +584,13 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    context 'calling on a non migrated repository' do
+    context 'when the Gitlab API is is not supported' do
       before do
-        allow(repository).to receive(:migrated?).and_return(false)
+        allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
       end
 
       it 'raises an Argument error' do
-        expect { repository.tags_page }.to raise_error(ArgumentError, 'not a migrated repository')
+        expect { repository.tags_page }.to raise_error(ArgumentError, _('GitLab container registry API not supported'))
       end
     end
   end
@@ -725,7 +726,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
   describe '#size' do
     subject { repository.size }
 
-    context 'supports gitlab api' do
+    context 'when the Gitlab API is supported' do
       before do
         expect(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
         expect(repository.gitlab_api_client).to receive(:repository_details).with(repository.path, sizing: :self).and_return(response)
@@ -744,7 +745,7 @@ RSpec.describe ContainerRepository, :aggregate_failures, feature_category: :cont
       end
     end
 
-    context 'does not support gitlab api' do
+    context 'when the Gitlab API is not supported' do
       before do
         expect(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
         expect(repository.gitlab_api_client).not_to receive(:repository_details)

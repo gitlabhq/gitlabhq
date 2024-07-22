@@ -385,12 +385,11 @@ RSpec.describe 'container repository details', feature_category: :container_regi
 
   it_behaves_like 'handling graphql network errors with the container registry'
 
-  context 'when list tags API is enabled', :saas do
+  context 'when list tags API is enabled' do
     before do
       stub_container_registry_config(enabled: true)
-      allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
-
       allow_next_instances_of(ContainerRegistry::GitlabApiClient, nil) do |client|
+        allow(client).to receive(:supports_gitlab_api?).and_return(true)
         allow(client).to receive(:tags).and_return(response_body)
       end
     end

@@ -23,5 +23,6 @@ RSpec.shared_examples 'Notes::ActiveRecord' do
     it { is_expected.to include_module(Awardable) }
     it { is_expected.to include_module(ResolvableNote) }
     it { is_expected.to include_module(Editable) }
+    it { is_expected.to include_module(Sortable) }
   end
 end

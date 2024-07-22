@@ -137,7 +137,7 @@ export default {
     v-on="$listeners"
   >
     <template #title>
-      <h2 class="gl-font-size-h2 gl-mt-0">{{ title }}</h2>
+      <h2 class="gl-mt-0 gl-text-size-h2">{{ title }}</h2>
     </template>
 
     <template #header>

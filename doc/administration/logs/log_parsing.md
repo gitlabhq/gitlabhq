@@ -204,7 +204,7 @@ To troubleshoot [project imports](../../administration/raketasks/project_import_
 jq 'select(.project_path == "<namespace>/<project>").error_messages' importer.log
 ```
 
-For common issues, see [troubleshooting](../../administration/raketasks/project_import_export.md#troubleshooting).
+For common issues, see [troubleshooting](../../administration/raketasks/import_export_rake_tasks_troubleshooting.md).
 
 ### Parsing `gitlab-workhorse/current`
 

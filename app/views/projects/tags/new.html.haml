@@ -14,7 +14,7 @@
   - link = link_to('', new_namespace_project_release_path)
   = safe_format(s_('TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}New release page%{link_end}.'), tag_pair(link, :link_start, :link_end))
 
-= form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "common-note-form tag-form js-quick-submit js-requires-input" do
+= form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "common-note-form tag-form js-quick-submit" do
   .form-group.row
     .col-sm-12
       = label_tag :tag_name, _('Tag name')

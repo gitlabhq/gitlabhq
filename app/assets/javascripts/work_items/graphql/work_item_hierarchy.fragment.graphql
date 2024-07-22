@@ -40,6 +40,11 @@ fragment WorkItemHierarchy on WorkItem {
             name
             iconName
           }
+          namespace {
+            id
+            fullPath
+            name
+          }
           title
           state
           createdAt

@@ -51,7 +51,7 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
       stub_container_registry_config(enabled: true)
     end
 
-    context 'when Gitlab API is supported', :saas do
+    context 'when Gitlab API is supported' do
       before do
         allow(repository).to receive(:tags_page).and_return({
           tags: [],
@@ -61,7 +61,7 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
           }
         })
 
-        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(true)
+        allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(true)
       end
 
       context 'get the page size based on first and last param' do
@@ -133,7 +133,7 @@ RSpec.describe Resolvers::ContainerRepositoryTagsResolver, feature_category: :co
 
     context 'when Gitlab API is not supported' do
       before do
-        allow(ContainerRegistry::GitlabApiClient).to receive(:supports_gitlab_api?).and_return(false)
+        allow(repository.gitlab_api_client).to receive(:supports_gitlab_api?).and_return(false)
       end
 
       it_behaves_like 'fetching via tags and filter in place'

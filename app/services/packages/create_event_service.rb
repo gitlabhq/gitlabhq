@@ -3,6 +3,7 @@
 module Packages
   class CreateEventService < BaseService
     INTERNAL_EVENTS_NAMES = {
+      'delete_package' => 'delete_package_from_registry',
       'pull_package' => 'pull_package_from_registry'
     }.freeze
 

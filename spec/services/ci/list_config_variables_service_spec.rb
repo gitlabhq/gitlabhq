@@ -213,21 +213,6 @@ RSpec.describe Ci::ListConfigVariablesService,
         expect(result['COMMON_VAR']).to eq({ value: 'include_two', description: 'Common variable' })
       end
     end
-
-    context 'when feature flag is disabled in the project' do
-      before do
-        stub_feature_flags(project_ref_name_in_variables: false)
-      end
-
-      it 'passes nil as the ref name to YamlProcessor' do
-        expect(Gitlab::Ci::YamlProcessor)
-          .to receive(:new)
-          .with(anything, a_hash_including(ref: nil))
-          .and_call_original
-
-        result
-      end
-    end
   end
 
   context 'when project CI config is external' do

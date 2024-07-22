@@ -593,7 +593,11 @@ RSpec.shared_examples 'delete package endpoint' do
       project.add_maintainer(user)
     end
 
-    it_behaves_like 'a package tracking event', 'API::ConanPackages', 'delete_package'
+    it 'triggers an internal event' do
+      expect { subject }
+        .to trigger_internal_events('delete_package_from_registry')
+          .with(user: user, project: project, property: 'user', label: 'conan', category: 'InternalEventTracking')
+    end
 
     it 'deletes a package' do
       expect { subject }.to change { Packages::Package.count }.from(2).to(1)

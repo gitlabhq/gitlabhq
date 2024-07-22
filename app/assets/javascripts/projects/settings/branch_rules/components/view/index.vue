@@ -349,7 +349,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
+    <div class="gl-flex gl-items-center gl-justify-between">
       <h1 class="h3 gl-mb-5">{{ $options.i18n.pageTitle }}</h1>
       <gl-button
         v-if="glFeatures.editBranchRules && branchRule"
@@ -383,10 +383,10 @@ export default {
         <div v-if="allBranches" class="gl-mt-2" data-testid="all-branches">
           {{ $options.i18n.allBranches }}
         </div>
-        <code v-else class="gl-bg-transparent p-0 gl-font-base" data-testid="branch">{{
+        <code v-else class="gl-p-0 gl-bg-transparent gl-text-base" data-testid="branch">{{
           branch
         }}</code>
-        <p v-if="matchingBranchesCount" class="gl-mt-3 gl-mb-0">
+        <p v-if="matchingBranchesCount" class="gl-mb-0 gl-mt-3">
           <gl-link :href="matchingBranchesLinkHref">{{ matchingBranchesLinkTitle }}</gl-link>
         </p>
       </gl-card>

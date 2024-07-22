@@ -1846,6 +1846,12 @@ export const mockHierarchyChildren = [
       iconName: 'issue-type-objective',
       __typename: 'WorkItemType',
     },
+    namespace: {
+      __typename: 'Project',
+      id: '1',
+      fullPath: 'test-objective-project-path',
+      name: 'Project name',
+    },
     title: 'Objective 2',
     state: 'OPEN',
     confidential: false,

@@ -753,7 +753,7 @@ RSpec.shared_examples 'nuget upload endpoint' do |symbol_package: false|
   end
 end
 
-RSpec.shared_examples 'process nuget delete request' do |user_type, status|
+RSpec.shared_examples 'process nuget delete request' do |user_type, status, auth|
   context "for user type #{user_type}" do
     before do
       target.send("add_#{user_type}", user) if user_type
@@ -761,7 +761,22 @@ RSpec.shared_examples 'process nuget delete request' do |user_type, status|
 
     it_behaves_like 'returning response status', status
 
-    it_behaves_like 'a package tracking event', 'API::NugetPackages', 'delete_package'
+    it 'triggers an internal event' do
+      args = { project: project, label: 'nuget', category: 'InternalEventTracking' }
+
+      if auth.nil?
+        args[:property] = 'guest'
+      elsif auth == :deploy_token
+        args[:property] = 'deploy_token'
+      else
+        args[:user] = user
+        args[:property] = 'user'
+      end
+
+      expect { subject }
+        .to trigger_internal_events('delete_package_from_registry')
+          .with(**args)
+    end
 
     it 'marks package for deletion' do
       expect { subject }.to change { package.reset.status }.from('default').to('pending_destruction')

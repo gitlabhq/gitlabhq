@@ -11,10 +11,17 @@ RSpec.describe Note, feature_category: :team_planning do
 
     let_it_be(:note1) { create(:note_on_issue) }
     let_it_be(:note2) { create(:note_on_issue) }
-    let_it_be(:reply) { create(:note_on_issue, in_reply_to: note1) }
+    let_it_be(:reply) { create(:note_on_issue, in_reply_to: note1, project: note1.project) }
 
-    let_it_be(:discussion_note) { create(:discussion_note_on_issue) }
-    let_it_be(:discussion_reply) { create(:discussion_note_on_issue, in_reply_to: discussion_note) }
+    let_it_be_with_reload(:discussion_note) { create(:discussion_note_on_issue) }
+    let_it_be_with_reload(:discussion_note_2) do
+      create(:discussion_note_on_issue, project: discussion_note.project, noteable: discussion_note.noteable)
+    end
+
+    let_it_be_with_reload(:discussion_reply) do
+      create(:discussion_note_on_issue,
+        project: discussion_note.project, noteable: discussion_note.noteable, in_reply_to: discussion_note)
+    end
 
     it_behaves_like 'Notes::ActiveRecord'
     it_behaves_like 'Notes::Discussion'

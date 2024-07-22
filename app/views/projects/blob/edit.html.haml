@@ -26,7 +26,7 @@
 
     = gl_tab_link_to editing_preview_title(@blob.name), '#preview', { data: { 'preview-url': project_preview_blob_path(@project, @id) } }
 
-  = form_tag(project_update_blob_path(@project, @id), method: :put, class: 'js-quick-submit js-requires-input js-edit-blob-form', data: blob_editor_paths(@project, 'put')) do
+  = form_tag(project_update_blob_path(@project, @id), method: :put, class: 'js-quick-submit js-edit-blob-form', data: blob_editor_paths(@project, 'put')) do
     = render 'projects/blob/editor', ref: @ref, path: @path, blob_data: @blob.data
     = render 'shared/new_commit_form', placeholder: "Update #{@blob.name}"
     = hidden_field_tag 'last_commit_sha', @last_commit_sha

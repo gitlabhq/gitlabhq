@@ -1,6 +1,6 @@
 - max_date = ::Gitlab::CurrentSettings.max_ssh_key_lifetime_from_now.to_date if ssh_key_expiration_policy_enabled?
 %div
-  = gitlab_ui_form_for [:user_settings_ssh, @key], html: { class: 'js-requires-input' } do |f|
+  = gitlab_ui_form_for [:user_settings_ssh, @key] do |f|
     = form_errors(@key)
 
     .form-group

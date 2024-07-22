@@ -4509,6 +4509,8 @@ CREATE TABLE abuse_report_notes (
     discussion_id text,
     note text,
     note_html text,
+    type text,
+    CONSTRAINT check_096e19df7f CHECK ((char_length(type) <= 40)),
     CONSTRAINT check_0de721e87e CHECK ((char_length(note) <= 10000)),
     CONSTRAINT check_13235633b5 CHECK ((char_length(discussion_id) <= 255)),
     CONSTRAINT check_21b51956e3 CHECK ((char_length(note_html) <= 20000))

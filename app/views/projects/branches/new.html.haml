@@ -9,7 +9,7 @@
 %h1.page-title.gl-font-size-h-display
   = _('New Branch')
 
-= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form js-requires-input" do
+= form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form" do
   .form-group.gl-max-w-80
     = label_tag :branch_name, _('Branch name')
     = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name monospace'

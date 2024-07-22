@@ -1,7 +1,7 @@
 - page_title _('Edit deploy key')
 %h1.page-title.gl-font-size-h-display= _('Edit deploy key')
 
-= gitlab_ui_form_for [@project, @deploy_key], include_id: false, html: { class: 'js-requires-input' } do |f|
+= gitlab_ui_form_for [@project, @deploy_key], include_id: false do |f|
   = render partial: 'shared/deploy_keys/form', locals: { form: f, deploy_key: @deploy_key }
   .gl-display-flex.gl-gap-3
     = f.submit _('Save changes'), pajamas_button: true

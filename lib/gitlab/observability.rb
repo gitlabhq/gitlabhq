@@ -25,8 +25,7 @@ module Gitlab
     def should_enable_observability_auth_scopes?(resource)
       # Enable the needed oauth scopes if tracing is enabled.
       if resource.is_a?(Group) || resource.is_a?(Project)
-        return Feature.enabled?(:observability_tracing, resource.root_ancestor) ||
-            Feature.enabled?(:observability_features, resource.root_ancestor)
+        return Feature.enabled?(:observability_features, resource.root_ancestor)
       end
 
       false

@@ -23765,6 +23765,9 @@ msgstr ""
 msgid "GitLab commit"
 msgstr ""
 
+msgid "GitLab container registry API not supported"
+msgstr ""
+
 msgid "GitLab detected an attempt to sign in to your %{host} account using an incorrect verification code"
 msgstr ""
 

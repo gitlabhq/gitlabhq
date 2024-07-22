@@ -121,12 +121,7 @@ export default {
 </script>
 
 <template>
-  <form
-    ref="form"
-    class="js-requires-input js-signature-container"
-    method="POST"
-    :action="projectCompareIndexPath"
-  >
+  <form ref="form" class="js-signature-container" method="POST" :action="projectCompareIndexPath">
     <input :value="$options.csrf.token" type="hidden" name="authenticity_token" />
     <h1 class="gl-font-size-h1 gl-mt-4">{{ $options.i18n.title }}</h1>
     <p>

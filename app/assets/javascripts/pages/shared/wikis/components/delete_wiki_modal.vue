@@ -137,7 +137,7 @@ export default {
       @ok="onSubmit"
     >
       {{ modalBody }}
-      <form ref="form" :action="wikiUrl" method="post" class="js-requires-input">
+      <form ref="form" :action="wikiUrl" method="post">
         <input ref="method" type="hidden" name="_method" value="delete" />
         <input :value="csrfToken" type="hidden" name="authenticity_token" />
       </form>

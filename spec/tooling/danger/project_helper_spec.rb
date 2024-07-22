@@ -180,6 +180,8 @@ RSpec.describe Tooling::Danger::ProjectHelper, feature_category: :tooling do
       'spec/lib/gitlab/usage_data_spec.rb' | [:analytics_instrumentation]
       'spec/lib/gitlab/usage/service_ping_report.rb' | [:backend, :analytics_instrumentation]
       'spec/lib/gitlab/usage/metrics/key_path_processor.rb' | [:backend, :analytics_instrumentation]
+      'spec/support/matchers/internal_events_matchers.rb' | [:backend, :analytics_instrumentation]
+      'spec/support_specs/matchers/internal_events_matchers_spec.rb' | [:backend, :analytics_instrumentation]
 
       'app/models/integration.rb' | [:import_integrate_be, :backend]
       'ee/app/models/integrations/github.rb' | [:import_integrate_be, :backend]

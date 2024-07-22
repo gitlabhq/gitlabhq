@@ -94,24 +94,6 @@ RSpec.describe 'Set up Mattermost slash commands', :js, feature_category: :integ
         expect(page).to have_content('test mattermost error message')
       end
 
-      it 'enables the submit button if the required fields are provided', :js do
-        stub_teams(count: 1)
-
-        click_link 'Add to Mattermost'
-
-        expect(find('button[type="submit"]')['disabled']).not_to eq("true")
-      end
-
-      it 'disables the submit button if the required fields are not provided', :js do
-        stub_teams(count: 1)
-
-        click_link 'Add to Mattermost'
-
-        fill_in('mattermost_trigger', with: '')
-
-        expect(find('button[type="submit"]')['disabled']).to eq("true")
-      end
-
       def stub_teams(count: 0)
         teams = create_teams(count)
 

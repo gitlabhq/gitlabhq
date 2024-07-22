@@ -56,19 +56,14 @@ RSpec.shared_examples 'Notes::Discussion' do
   end
 
   describe '#discussion' do
-    # rubocop:disable Rails/SaveBang -- create used as factory method
-    let_it_be(:note1) { create(discussion_factory) }
-    let_it_be(:note2) { create(discussion_factory, project: note1.project, noteable: note1.noteable) }
-    # rubocop:enable Rails/SaveBang
-
     context 'when the note is part of a discussion' do
-      subject { create(discussion_factory, project: note1.project, noteable: note1.noteable, in_reply_to: note1) }
+      subject { discussion_reply }
 
       it 'returns the discussion this note is in' do
         discussion = subject.discussion
 
         expect(discussion.id).to eq(subject.discussion_id)
-        expect(discussion.notes).to eq([note1, subject])
+        expect(discussion.notes).to eq([discussion_note, subject])
       end
     end
 
@@ -92,98 +87,74 @@ RSpec.shared_examples 'Notes::Discussion' do
     end
 
     context 'for a discussion note' do
-      let(:note) { build(discussion_factory) }
-
       it 'returns true' do
-        expect(note.part_of_discussion?).to be_truthy
+        expect(discussion_note.part_of_discussion?).to be_truthy
       end
     end
   end
 
   describe '#in_reply_to?' do
-    # rubocop:disable Rails/SaveBang -- create used as factory method
     context 'for a note' do
       context 'when part of a discussion' do
-        subject(:note) { create(discussion_factory) }
-
-        let(:reply) { create(discussion_factory, in_reply_to: subject) }
-
         it 'checks if the note is in reply to the other discussion' do
-          expect(note).to receive(:in_reply_to?).with(reply).and_call_original
-          expect(note).to receive(:in_reply_to?).with(reply.noteable).and_call_original
-          expect(note).to receive(:in_reply_to?).with(reply.to_discussion).and_call_original
+          expect(discussion_note).to receive(:in_reply_to?).with(discussion_reply).and_call_original
+          expect(discussion_note).to receive(:in_reply_to?).with(discussion_reply.noteable).and_call_original
+          expect(discussion_note).to receive(:in_reply_to?).with(discussion_reply.to_discussion).and_call_original
 
-          note.in_reply_to?(reply)
+          discussion_note.in_reply_to?(discussion_reply)
         end
       end
 
       context 'when not part of a discussion' do
-        subject(:note) { create(factory) }
-
-        let(:reply) { create(factory, in_reply_to: subject) }
+        let(:reply) { create(factory, in_reply_to: note1) }
 
         it 'checks if the note is in reply to the other noteable' do
-          expect(note).to receive(:in_reply_to?).with(reply).and_call_original
-          expect(note).to receive(:in_reply_to?).with(reply.noteable).and_call_original
+          expect(note1).to receive(:in_reply_to?).with(reply).and_call_original
+          expect(note1).to receive(:in_reply_to?).with(reply.noteable).and_call_original
 
-          note.in_reply_to?(reply)
+          note1.in_reply_to?(reply)
         end
       end
     end
 
     context 'for a discussion' do
       context 'when part of the same discussion' do
-        subject(:note) { create(discussion_factory) }
-
-        let(:reply) { create(discussion_factory, in_reply_to: subject) }
-
         it 'returns true' do
-          expect(note.in_reply_to?(reply.to_discussion)).to be_truthy
+          expect(discussion_note.in_reply_to?(discussion_reply.to_discussion)).to be_truthy
         end
       end
 
       context 'when not part of the same discussion' do
-        subject(:note) { create(discussion_factory) }
-
+        # rubocop: disable Rails/SaveBang -- creation using factory
         let(:reply) { create(discussion_factory) }
+        # rubocop: enable Rails/SaveBang
 
         it 'returns false' do
-          expect(note.in_reply_to?(reply.to_discussion)).to be_falsey
+          expect(discussion_note.in_reply_to?(reply.to_discussion)).to be_falsey
         end
       end
     end
 
     context 'for a noteable' do
       context 'when a comment on the same noteable' do
-        subject(:note) { create(factory) }
-
-        let(:reply) { create(factory, in_reply_to: subject) }
-
         it 'returns true' do
-          expect(note.in_reply_to?(reply.noteable)).to be_truthy
+          expect(note1.in_reply_to?(reply.noteable)).to be_truthy
         end
       end
 
       context 'when not a comment on the same noteable' do
-        subject(:note) { create(factory) }
-
-        let(:reply) { create(factory) }
-
         it 'returns false' do
-          expect(note.in_reply_to?(reply.noteable)).to be_falsey
+          expect(note1.in_reply_to?(note2.noteable)).to be_falsey
         end
       end
     end
 
     context 'for a different entity' do
-      subject(:note) { create(factory) }
-
       let(:user) { create(:user) }
 
       it 'returns false' do
-        expect(note.in_reply_to?(user)).to be_falsey
+        expect(note1.in_reply_to?(user)).to be_falsey
       end
     end
-    # rubocop:enable Rails/SaveBang
   end
 end
