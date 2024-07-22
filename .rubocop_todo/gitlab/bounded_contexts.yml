@@ -2112,6 +2112,7 @@ Gitlab/BoundedContexts:
     - 'app/workers/issues/rebalancing_worker.rb'
     - 'app/workers/issues/reschedule_stuck_issue_rebalances_worker.rb'
     - 'app/workers/jira_connect/forward_event_worker.rb'
+    - 'app/workers/jira_connect/jira_cloud_app_deactivation_worker.rb'
     - 'app/workers/jira_connect/retry_request_worker.rb'
     - 'app/workers/jira_connect/send_uninstalled_hook_worker.rb'
     - 'app/workers/jira_connect/sync_branch_worker.rb'

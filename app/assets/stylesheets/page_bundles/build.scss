@@ -212,6 +212,11 @@
   color: $gray-500;
   user-select: none;
   flex-shrink: 0;
+
+  display: none;
+  @include media-breakpoint-up(sm) {
+    display: block;
+  }
 }
 
 .job-log-line-header {

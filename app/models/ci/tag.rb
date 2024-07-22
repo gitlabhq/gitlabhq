@@ -6,7 +6,7 @@ module Ci
 
     self.table_name = :tags
 
-    has_many :taggings, dependent: :destroy, class_name: 'ActsAsTaggableOn::Tagging' # rubocop:disable Cop/ActiveRecordDependent -- existing
+    has_many :taggings, dependent: :destroy, class_name: 'Ci::Tagging' # rubocop:disable Cop/ActiveRecordDependent -- existing
 
     validates :name, presence: true
     validates :name, uniqueness: { case_sensitive: true }

@@ -2,6 +2,7 @@
 table_name: taggings
 classes:
 - ActsAsTaggableOn::Tagging
+- Ci::Tagging
 feature_categories:
 - continuous_integration
 - runner

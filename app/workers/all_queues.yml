@@ -1578,6 +1578,15 @@
   :weight: 1
   :idempotent: false
   :tags: []
+- :name: jira_connect:jira_connect_jira_cloud_app_deactivation
+  :worker_name: JiraConnect::JiraCloudAppDeactivationWorker
+  :feature_category: :integrations
+  :has_external_dependencies: true
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: false
+  :tags: []
 - :name: jira_connect:jira_connect_retry_request
   :worker_name: JiraConnect::RetryRequestWorker
   :feature_category: :integrations

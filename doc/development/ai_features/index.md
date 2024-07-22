@@ -164,6 +164,15 @@ If you currently run you local GDK as Self-Managed (default for GDK), no argumen
 
 It's recommended to run `gdk restart` after the task succeeded.
 
+If you need to use evaluation framework (as described [here](https://gitlab.com/gitlab-org/modelops/ai-model-validation-and-research/ai-evaluation/prompt-library/-/blob/main/doc/how-to/run_duo_chat_eval.md?ref_type=heads#evaluation-on-issueepic))
+you can run special Rake task: `GITLAB_SIMULATE_SAAS=1 bundle exec 'rake gitlab:duo:setup_evaluation[<test-group-name>]'`.
+It repeats steps from original setup Rake task, and also imports specially prepared groups and projects.
+Since we use `Setup` class (under `ee/lib/gitlab/duo/developments/setup.rb`) that requires "saas" mode to create a group
+(necessary for importing subgroups), you need to set `GITLAB_SIMULATE_SAAS=1` if it's currently `GITLAB_SIMULATE_SAAS=0`.
+This is just to complete the import successfully, and then you can switch back to `GITLAB_SIMULATE_SAAS=0`.
+To run this task, your GDK server must be running. After running this Rake task, import process will be in progress for
+said groups and projects.
+
 ### Recommended: Set `CLOUD_CONNECTOR_SELF_SIGN_TOKENS` environment variable
 
 If you plan to run you local GDK as Self-Managed (for GDK), it is recommended to set this environment variable.

@@ -1,10 +1,8 @@
 import { WORKSPACE_GROUP } from '~/issues/constants';
+import { NEW_EPIC_FEEDBACK_PROMPT_EXPIRY, FEATURE_NAME } from '~/work_items/constants';
 import { initWorkItemsRoot } from '~/work_items';
 import { initWorkItemsFeedback } from '~/work_items_feedback';
 import { __ } from '~/locale';
-
-const NEW_EPIC_FEEDBACK_PROMPT_EXPIRY = '2024-11-01';
-const FEATURE_NAME = 'work_item_epic_feedback';
 
 initWorkItemsRoot({ workspaceType: WORKSPACE_GROUP });
 initWorkItemsFeedback({

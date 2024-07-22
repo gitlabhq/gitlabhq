@@ -7,7 +7,7 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
     [create(:ci_tag, name: 'Awesome'), create(:ci_tag, name: 'awesome'), create(:ci_tag, name: 'epic')]
   end
 
-  it { is_expected.to have_many(:taggings).class_name('ActsAsTaggableOn::Tagging') }
+  it { is_expected.to have_many(:taggings).class_name('Ci::Tagging') }
 
   describe 'validations' do
     it { is_expected.to validate_presence_of(:name) }
@@ -29,7 +29,7 @@ RSpec.describe Ci::Tag, feature_category: :continuous_integration do
 
   describe '.for_context' do
     it 'returns the tags for the specified context' do
-      ActsAsTaggableOn::Tagging.create!(tag_id: tags.first.id, context: 'tags')
+      Ci::Tagging.create!(tag_id: tags.first.id, context: 'tags')
 
       expect(described_class.for_context('tags')).to contain_exactly(tags.first)
     end

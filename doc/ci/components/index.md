@@ -600,6 +600,7 @@ However, publishing a component's releases in the catalog makes it discoverable 
 
 Prerequisites:
 
+- You must have at least the Maintainer role in the project.
 - The project must:
   - Be set as a [catalog project](#set-a-component-project-as-a-catalog-project).
   - Have a [project description](../../user/project/working_with_projects.md#edit-project-name-description-and-avatar) defined.

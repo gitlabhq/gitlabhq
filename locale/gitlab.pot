@@ -12849,6 +12849,9 @@ msgstr ""
 msgid "CodeSuggestions|Manage seat assignments for %{addOnName} across your instance."
 msgstr ""
 
+msgid "CodeSuggestions|trial"
+msgstr ""
+
 msgid "CodeownersValidation|An error occurred while loading the validation errors. Please try again later."
 msgstr ""
 
@@ -56037,6 +56040,12 @@ msgid "Tree view"
 msgstr ""
 
 msgid "Trending"
+msgstr ""
+
+msgid "Trial end date"
+msgstr ""
+
+msgid "Trial start date"
 msgstr ""
 
 msgid "TrialDiscoverPage|A single application eliminates complex integrations, data checkpoints, and toolchain maintenance, resulting in greater productivity and lower cost."

@@ -1,3 +1,5 @@
+-# Required when rendering under /epics/ to remove padding on the right side and center the work item view
+- @right_sidebar = false
 - if @work_item.present?
   = render 'shared/work_item_metadata', work_item: @work_item
   - add_work_item_show_breadcrumb(@group, @work_item.iid)
