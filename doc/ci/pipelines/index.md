@@ -352,7 +352,7 @@ To view all the pipelines that ran for your project:
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Pipelines**.
 
-You can filter the pipeline list by:
+You can filter the **Pipelines** page by:
 
 - Trigger author
 - Branch name

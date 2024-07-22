@@ -77,11 +77,14 @@ export default {
     },
     listItems() {
       const items = [];
+      let frequent = [];
       if (this.frequentProjects.length > 0) {
-        const frequent = this.frequentProjects.map((project) => {
+        frequent = this.frequentProjects.map((project) => {
           return {
             text: project.name,
-            value: project.webUrl,
+            value: project.webUrl.startsWith('/')
+              ? project.webUrl.substring(1, project.webUrl.length)
+              : project.webUrl,
             namespace: project.namespace,
             avatarUrl: project.avatar_url,
           };
@@ -93,15 +96,21 @@ export default {
         });
       }
 
+      const frequentFullPaths = frequent.map((freq) => freq.value);
+
       if (this.projects.length > 0) {
-        const allProjects = this.projects.map((project) => {
-          return {
-            text: project.name,
-            value: project.fullPath,
-            namespace: project.namespace?.name,
-            avatarUrl: project.avatarUrl,
-          };
-        });
+        const allProjects = this.projects
+          .filter((project) => {
+            return !frequentFullPaths.includes(project.fullPath);
+          })
+          .map((project) => {
+            return {
+              text: project.name,
+              value: project.fullPath,
+              namespace: project.namespace?.name,
+              avatarUrl: project.avatarUrl,
+            };
+          });
 
         items.push({
           text: __('Projects'),

@@ -76,17 +76,16 @@ To do so:
 ### View milestone details
 
 To view more information about a milestone,
-in the milestone list select the title of the milestone you want to view.
+in the **Milestones** page, select the title of the milestone you want to view.
 
 The milestone view shows the title and description.
+The tabs below the title and description show the following:
 
-There are also tabs below these that show the following:
-
-- **Issues**: Shows all issues assigned to the milestone. These are displayed in three columns named:
+- **Issues**: Shows all issues assigned to the milestone. Issues are displayed in three columns named:
   - Unstarted Issues (open and unassigned)
   - Ongoing Issues (open and assigned)
   - Completed Issues (closed)
-- **Merge Requests**: Shows all merge requests assigned to the milestone. These are displayed in four columns named:
+- **Merge Requests**: Shows all merge requests assigned to the milestone. Merge requests are displayed in four columns named:
   - Work in progress (open and unassigned)
   - Waiting for merge (open and assigned)
   - Rejected (closed)
@@ -230,7 +229,7 @@ You can also use the `/assign` [quick action](../quick_actions.md) in a comment.
 
 ### Filters in list pages
 
-From the project and group issue/merge request list pages, you can filter by both group and project milestones.
+You can filter by both group and project milestones from the project and group issue/merge request list pages.
 
 ### Filters in issue boards
 

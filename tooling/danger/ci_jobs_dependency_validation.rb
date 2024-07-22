@@ -158,7 +158,6 @@ module Tooling
           <details><summary>Click to expand details</summary>
 
           #{failures.join("\n")}
-
           Here are the rules for `#{needed_job_name}`:
 
           ```yaml
@@ -214,7 +213,7 @@ module Tooling
 
           next if added_rules_to_report.empty? && removed_rules_to_report.empty?
 
-          <<~MARKDOWN.chomp
+          <<~MARKDOWN
           `#{dependent_job_with_rule_change.name}`:
 
           - Added rules:

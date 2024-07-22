@@ -38,7 +38,7 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>s</kbd> / <kbd>/</kbd>        | Put cursor in the search bar. |
 | <kbd>f</kbd>                       | Put cursor in the filter bar. |
 | <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your **Issues** page. |
-| <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [Merge requests](project/merge_requests/index.md) page. |
+| <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [**Merge requests**](project/merge_requests/index.md) page. |
 | <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your **Review requests** page. |
 | <kbd>Shift</kbd> + <kbd>t</kbd>    | Go to your **To-Do List** page. |
 | <kbd>p</kbd>, then <kbd>b</kbd>     | Show or hide the Performance Bar. |
@@ -78,12 +78,12 @@ relatively quickly to work, and they take you to another page in the project.
 | <kbd>g</kbd> + <kbd>f</kbd> | Go to the [project files](#project-files) (**Code > Repository**). |
 | <kbd>t</kbd>                | Open the project file search dialog. (**Code > Repository**, select **Find Files**). |
 | <kbd>g</kbd> + <kbd>c</kbd> | Go to the project **Commits** page (**Code > Commits**). |
-| <kbd>g</kbd> + <kbd>n</kbd> | Go to the [Repository graph](#repository-graph) page (**Code > Repository graph**). |
-| <kbd>g</kbd> + <kbd>d</kbd> | Go to the repository charts (**Analyze > Repository analytics**). |
+| <kbd>g</kbd> + <kbd>n</kbd> | Go to the [**Repository graph**](#repository-graph) page (**Code > Repository graph**). |
+| <kbd>g</kbd> + <kbd>d</kbd> | Go to the charts in the **Repository analytics** page (**Analyze > Repository analytics**). |
 | <kbd>g</kbd> + <kbd>i</kbd> | Go to the project **Issues** page (**Plan > Issues**). |
 | <kbd>i</kbd>                | Go to the **New Issue** page (**Plan > Issues**, select **New issue** ). |
 | <kbd>g</kbd> + <kbd>b</kbd> | Go to the project **Issue boards** page (**Plan > Issue boards**). |
-| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [Merge requests](project/merge_requests/index.md) page (**Code > Merge requests**). |
+| <kbd>g</kbd> + <kbd>m</kbd> | Go to the project [**Merge requests**](project/merge_requests/index.md) page (**Code > Merge requests**). |
 | <kbd>g</kbd> + <kbd>p</kbd> | Go to the CI/CD **Pipelines** page (**Build > Pipelines**). |
 | <kbd>g</kbd> + <kbd>j</kbd> | Go to the CI/CD **Jobs** page (**Build > Jobs**). |
 | <kbd>g</kbd> + <kbd>e</kbd> | Go to the project **Environments** page (**Operate > Environments**). |

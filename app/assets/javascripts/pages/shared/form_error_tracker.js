@@ -39,7 +39,7 @@ export default class FormErrorTracker {
   static trackErrorOnEmptyField(event) {
     const inputDomElement = event.target;
 
-    if (inputDomElement.value === '') {
+    if (inputDomElement.value === '' || !inputDomElement.checked) {
       const message = FormErrorTracker.inputErrorMessage(inputDomElement);
 
       Tracking.event(undefined, FormErrorTracker.action(inputDomElement), {
@@ -69,6 +69,11 @@ export default class FormErrorTracker {
   }
 
   static label(element, message) {
+    if (element.type === 'radio') {
+      const labelText = element.closest('.form-group').querySelector('label').textContent;
+      return `missing_${convertToSnakeCase(labelText)}`;
+    }
+
     return `${element.id}_${message}`;
   }
 }

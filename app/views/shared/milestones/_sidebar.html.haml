@@ -137,26 +137,29 @@
               = s_('MilestoneSidebar|Merged:')
               = milestone.merge_requests.merged.count
 
-    - if project
-      - recent_releases, total_count, more_count = recent_releases_with_counts(milestone, current_user)
-      .block.releases{ data: { testid: 'milestone-sidebar-releases' } }
-        .sidebar-collapsed-icon.has-tooltip{ title: milestone_releases_tooltip_text(milestone), data: { container: 'body', placement: 'left', boundary: 'viewport', testid: 'milestone-sidebar-releases-collapsed-icon' } }
-          %strong
-            = sprite_icon("rocket")
-          %span= total_count
-        .title.hide-collapsed= n_('Release', 'Releases', total_count)
-        .hide-collapsed
-          - if total_count == 0
-            .no-value= s_('MilestoneSidebar|None')
-          - else
-            .font-weight-bold
-              - recent_releases.each do |release|
-                = link_to release.name, project_releases_path(project, :anchor => release.tag)
-                - unless release == recent_releases.last
-                  %span.font-weight-normal &bull;
-              - if more_count > 0
+    - recent_releases, total_count, more_count = recent_releases_with_counts(milestone, current_user)
+    .block.releases{ data: { testid: 'milestone-sidebar-releases' } }
+      .sidebar-collapsed-icon.has-tooltip{ title: milestone_releases_tooltip_text(milestone), data: { container: 'body', placement: 'left', boundary: 'viewport', testid: 'milestone-sidebar-releases-collapsed-icon' } }
+        %strong
+          = sprite_icon("rocket")
+        %span= total_count
+      .title.hide-collapsed= n_('Release', 'Releases', total_count)
+      .hide-collapsed
+        - if total_count == 0
+          .no-value= s_('MilestoneSidebar|None')
+        - else
+          .font-weight-bold
+            - recent_releases.each do |release|
+              = link_to release.name, project_releases_path(release.project, anchor: release.tag)
+              - unless release == recent_releases.last
                 %span.font-weight-normal &bull;
-                = link_to n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }, project_releases_path(project), class: 'font-weight-normal'
+            - if more_count > 0
+              %span.font-weight-normal &bull;
+              - more_text = n_('%{count} more release', '%{count} more releases', more_count) % { count: more_count }
+              - if milestone.project_milestone?
+                = link_to more_text, project_releases_path(milestone.project)
+              - else
+                = more_text
 
     - milestone_ref = milestone.try(:to_reference, full: true)
     - if milestone_ref.present?

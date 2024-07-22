@@ -135,13 +135,13 @@ For technical details about how GitLab detects generated files, see the
 
 ## Show one file at a time
 
-For larger merge requests, you can review one file at a time. You can change this setting
-[temporarily in a merge request](#for-this-merge-request-only), or
-so it [applies to all merge requests](#for-all-merge-requests).
+For larger merge requests, you can review one file at a time. You can change this
+setting in your user preferences, or when you review a merge request. If you change this
+setting in a merge request, it updates your user settings as well.
 
-### For this merge request only
+::Tabs
 
-To temporarily change your viewing preferences for a specific merge request:
+:::TabTitle In a merge request
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Code > Merge requests** and find your merge request.
@@ -149,22 +149,20 @@ To temporarily change your viewing preferences for a specific merge request:
 1. Select **Preferences** (**{preferences}**).
 1. Select or clear **Show one file at a time**.
 
-This change overrides your choice in your user preferences. It persists until you
-clear your browser's cookies or change this behavior again.
-
-### For all merge requests
-
-To view one file at a time for all merge requests:
+:::TabTitle In your user preferences
 
 1. On the left sidebar, select your avatar.
 1. Select **Preferences**.
 1. Scroll to the **Behavior** section and select the **Show one file at a time on merge request's Changes tab** checkbox.
 1. Select **Save changes**.
 
-After you enable this setting, GitLab displays only one file at a time when you review
-merge requests. To view other changed files, either:
+::EndTabs
+
+To select another file to view when this setting is enabled, either:
 
 - Scroll to the end of the file and select either **Prev** or **Next**.
+- If [keyboard shortcuts are enabled](../../shortcuts.md#enable-keyboard-shortcuts),
+  press <kbd>&#91;</kbd>, <kbd>]</kbd>, <kbd>k</kbd>, or <kbd>j</kbd>.
 - Select **Show file browser** (**{file-tree}**) and select another file to view.
 
 ## Compare changes

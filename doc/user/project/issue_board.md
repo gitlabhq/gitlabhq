@@ -336,7 +336,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-You're also able to create lists of a milestone. These are lists that filter issues by the assigned
+You can create milestone lists that filter issues by the assigned
 milestone, giving you more freedom and visibility on the issue board.
 
 Prerequisites:

@@ -39,6 +39,7 @@ describe('WorkItemProjectsListbox', () => {
   const findDropdownItemFor = (fullPath) => wrapper.findByTestId(`listbox-item-${fullPath}`);
   const findRecentDropdownItems = () => findDropdown().find('ul').findAll('[role=option]');
   const findRecentDropdownItemAt = (index) => findRecentDropdownItems().at(index);
+  const findAllDropdownItemsFor = (fullPath) => wrapper.findAllByTestId(`listbox-item-${fullPath}`);
 
   const createComponent = async (isGroup = true, fullPath = 'group-a') => {
     wrapper = mountExtended(WorkItemProjectsListbox, {
@@ -233,5 +234,23 @@ describe('WorkItemProjectsListbox', () => {
       expect(content).toHaveLength(1);
       expect(content.at(0).text()).toContain(namespaceProjectsData[0].name);
     });
+  });
+
+  it('does not include duplicate projects if found in both query and localstorage results', async () => {
+    await createComponent();
+    gon.current_username = 'root';
+
+    setLocalstorageFrequentItems();
+
+    findDropdown().vm.$emit('shown');
+
+    await nextTick();
+
+    // de-duplicated
+    expect(findAllDropdownItemsFor(namespaceProjectsData[0].fullPath)).toHaveLength(1);
+    // de-duplicated
+    expect(findAllDropdownItemsFor(namespaceProjectsData[1].fullPath)).toHaveLength(1);
+    // only in query results
+    expect(findAllDropdownItemsFor(namespaceProjectsData[2].fullPath)).toHaveLength(1);
   });
 });

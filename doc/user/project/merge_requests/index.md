@@ -167,7 +167,7 @@ a merge request, or:
 1. Select **Edit**.
 1. Search for the user you want to assign, and select the user.
 
-GitLab adds the merge request to the user's assigned merge request list.
+GitLab adds the merge request to the user's **Assigned merge requests** page.
 
 ### Assign multiple users
 

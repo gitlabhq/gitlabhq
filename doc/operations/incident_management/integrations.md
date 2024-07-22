@@ -446,5 +446,5 @@ To enable Opsgenie integration:
    such as `https://app.opsgenie.com/alert/list`.
 1. Select **Save changes**.
 
-After you enable the integration, go to the Alerts list page at
+After you enable the integration, go to the **Alerts** page at
 **Monitor > Alerts**, and then select **View alerts in Opsgenie**.
