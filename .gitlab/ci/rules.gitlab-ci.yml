@@ -1754,6 +1754,8 @@
 
 .qa:rules:e2e:test-on-cng:
   rules:
+    - <<: *if-merge-request-targeting-stable-branch
+      when: never
     - <<: *if-security-merge-request
       when: never
     - <<: *if-security-schedule
