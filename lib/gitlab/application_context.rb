@@ -27,9 +27,17 @@ module Gitlab
       :artifacts_dependencies_count,
       :root_caller_id,
       :merge_action_status,
-      :bulk_import_entity_id
+      :bulk_import_entity_id,
+      :auth_fail_reason,
+      :auth_fail_token_id
     ].freeze
     private_constant :KNOWN_KEYS
+
+    WEB_ONLY_KEYS = [
+      :auth_fail_reason,
+      :auth_fail_token_id
+    ].freeze
+    private_constant :WEB_ONLY_KEYS
 
     APPLICATION_ATTRIBUTES = [
       Attribute.new(:project, Project),
@@ -47,12 +55,20 @@ module Gitlab
       Attribute.new(:artifacts_dependencies_count, Integer),
       Attribute.new(:root_caller_id, String),
       Attribute.new(:merge_action_status, String),
-      Attribute.new(:bulk_import_entity_id, Integer)
+      Attribute.new(:bulk_import_entity_id, Integer),
+      Attribute.new(:auth_fail_reason, String),
+      Attribute.new(:auth_fail_token_id, String)
     ].freeze
     private_constant :APPLICATION_ATTRIBUTES
 
     def self.known_keys
       KNOWN_KEYS
+    end
+
+    # Sidekiq jobs may be deleted by matching keys in ApplicationContext.
+    # Filter out keys that aren't available in Sidekiq jobs.
+    def self.allowed_job_keys
+      known_keys - WEB_ONLY_KEYS
     end
 
     def self.application_attributes
@@ -110,6 +126,8 @@ module Gitlab
         assign_hash_if_value(hash, :artifacts_dependencies_count)
         assign_hash_if_value(hash, :merge_action_status)
         assign_hash_if_value(hash, :bulk_import_entity_id)
+        assign_hash_if_value(hash, :auth_fail_reason)
+        assign_hash_if_value(hash, :auth_fail_token_id)
 
         hash[:user] = -> { username } if include_user?
         hash[:user_id] = -> { user_id } if include_user?

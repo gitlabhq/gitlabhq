@@ -16,7 +16,6 @@ module API
     GITLAB_SHELL_JWT_ISSUER = "gitlab-shell"
     SUDO_PARAM = :sudo
     API_USER_ENV = 'gitlab.api.user'
-    API_TOKEN_ENV = 'gitlab.api.token'
     API_EXCEPTION_ENV = 'gitlab.api.exception'
     API_RESPONSE_STATUS_CODE = 'gitlab.api.response_status_code'
     INTEGER_ID_REGEX = /^-?\d+$/
@@ -85,11 +84,9 @@ module API
 
       sudo!
 
-      validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+      validate_and_save_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
 
       save_current_user_in_env(@current_user) if @current_user
-
-      save_current_token_in_env
 
       if @current_user
         load_balancer_stick_request(::ApplicationRecord, :user, @current_user.id)
@@ -101,13 +98,6 @@ module API
 
     def save_current_user_in_env(user)
       env[API_USER_ENV] = { user_id: user.id, username: user.username }
-    end
-
-    def save_current_token_in_env
-      token = access_token
-      env[API_TOKEN_ENV] = { token_id: token.id, token_type: token.class } if token
-
-    rescue Gitlab::Auth::UnauthorizedError
     end
 
     def sudo?
@@ -830,7 +820,7 @@ module API
         forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
       end
 
-      validate_access_token!(scopes: [:sudo])
+      validate_and_save_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
       not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
