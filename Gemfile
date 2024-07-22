@@ -370,6 +370,8 @@ gem 'gettext', '~> 3.3', require: false, group: :development
 
 gem 'batch-loader', '~> 2.0.1'
 
+gem 'tty-prompt', '~> 0.23', require: false
+
 # Perf bar
 gem 'peek', '~> 1.1'
 
