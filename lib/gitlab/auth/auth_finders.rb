@@ -23,6 +23,7 @@ module Gitlab
       include ActionController::HttpAuthentication::Basic
       include ActionController::HttpAuthentication::Token
 
+      API_TOKEN_ENV = 'gitlab.api.token'
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'
       PRIVATE_TOKEN_PARAM = :private_token
       JOB_TOKEN_HEADER = 'HTTP_JOB_TOKEN'
@@ -104,7 +105,7 @@ module Gitlab
       def find_user_from_personal_access_token
         return unless access_token
 
-        validate_access_token!
+        validate_and_save_access_token!
 
         access_token&.user || raise(UnauthorizedError)
       end
@@ -118,7 +119,7 @@ module Gitlab
       def find_user_from_web_access_token(request_format, scopes: [:api])
         return unless access_token && valid_web_access_format?(request_format)
 
-        validate_access_token!(scopes: scopes)
+        validate_and_save_access_token!(scopes: scopes)
 
         ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
@@ -128,7 +129,7 @@ module Gitlab
       def find_user_from_access_token
         return unless access_token
 
-        validate_access_token!
+        validate_and_save_access_token!
 
         ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
@@ -173,7 +174,7 @@ module Gitlab
         ::Ci::Runner.find_by_token(token.to_s) || raise(UnauthorizedError)
       end
 
-      def validate_access_token!(scopes: [])
+      def validate_and_save_access_token!(scopes: [], save_auth_context: true)
         # return early if we've already authenticated via a job token
         return if @current_authenticated_job.present? # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
@@ -184,16 +185,22 @@ module Gitlab
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
+          save_auth_failure_in_application_context(access_token, :insufficient_scope) if save_auth_context
           raise InsufficientScopeError, scopes
         when AccessTokenValidationService::EXPIRED
+          save_auth_failure_in_application_context(access_token, :token_expired) if save_auth_context
           raise ExpiredError
         when AccessTokenValidationService::REVOKED
+          save_auth_failure_in_application_context(access_token, :token_revoked) if save_auth_context
           revoke_token_family(access_token)
 
           raise RevokedError
         when AccessTokenValidationService::IMPERSONATION_DISABLED
+          save_auth_failure_in_application_context(access_token, :impersonation_disabled) if save_auth_context
           raise ImpersonationDisabled
         end
+
+        save_current_token_in_env
       end
 
       def authentication_token_present?
@@ -203,6 +210,16 @@ module Gitlab
       end
 
       private
+
+      def save_current_token_in_env
+        request.env[API_TOKEN_ENV] = { token_id: access_token.id, token_type: access_token.class.to_s }
+      end
+
+      def save_auth_failure_in_application_context(access_token, cause)
+        Gitlab::ApplicationContext.push(
+          auth_fail_reason: cause.to_s,
+          auth_fail_token_id: "#{access_token.class}/#{access_token.id}")
+      end
 
       def find_user_from_job_bearer_token
         return unless route_authentication_setting[:job_token_allowed]

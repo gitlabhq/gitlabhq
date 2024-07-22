@@ -8,8 +8,8 @@ module ApplicationCable
     before_subscribe :validate_token_scope
 
     def validate_token_scope
-      validate_access_token!(scopes: [:api, :read_api])
-    rescue Gitlab::Auth::InsufficientScopeError
+      validate_and_save_access_token!(scopes: [:api, :read_api])
+    rescue Gitlab::Auth::AuthenticationError
       reject
     end
 

@@ -11,20 +11,23 @@ RSpec.describe Gitlab::GitalyClient::ObjectPoolService, feature_category: :sourc
   subject { described_class.new(object_pool) }
 
   before do
-    subject.create(raw_repository) # rubocop:disable Rails/SaveBang
+    subject.create(raw_repository) # rubocop:disable Rails/SaveBang -- This is a gitaly call
+    ::Gitlab::GitalyClient.clear_stubs!
   end
 
   describe '#create' do
-    it 'exists on disk' do
-      expect(object_pool.repository.exists?).to be(true)
-    end
+    it 'sends a create_object_pool message' do
+      expected_request = Gitaly::CreateObjectPoolRequest.new(
+        object_pool: object_pool.gitaly_object_pool,
+        origin: raw_repository.gitaly_repository)
 
-    context 'when the pool already exists' do
-      it 'returns an error' do
-        expect do
-          subject.create(raw_repository) # rubocop:disable Rails/SaveBang
-        end.to raise_error(GRPC::FailedPrecondition)
+      expect_next_instance_of(Gitaly::ObjectPoolService::Stub) do |stub|
+        expect(stub)
+          .to receive(:create_object_pool)
+          .with(expected_request, kind_of(Hash))
       end
+
+      subject.create(raw_repository) # rubocop:disable Rails/SaveBang -- This is a gitaly call
     end
   end
 

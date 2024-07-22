@@ -48,6 +48,8 @@ module Ci
         elsif runner_registrar_valid?('group') && group = ::Group.find_by_runners_token(registration_token)
           # Create a group runner
           { runner_type: :group_type, groups: [group] }
+        elsif registration_token.present? && !Gitlab::CurrentSettings.allow_runner_registration_token
+          {} # Will result in a :runner_registration_disallowed response
         end
       end
       strong_memoize_attr :attrs_from_token
@@ -64,7 +66,7 @@ module Ci
       end
 
       def runner_registration_token_valid?(registration_token)
-        return false if registration_token.nil?
+        return false if registration_token.nil? || Gitlab::CurrentSettings.runners_registration_token.nil?
 
         ActiveSupport::SecurityUtils.secure_compare(registration_token, Gitlab::CurrentSettings.runners_registration_token)
       end
