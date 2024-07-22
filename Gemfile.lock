@@ -2071,6 +2071,7 @@ DEPENDENCIES
   timfel-krb5-auth (~> 0.8)
   toml-rb (~> 2.2.0)
   truncato (~> 0.7.12)
+  tty-prompt (~> 0.23)
   typhoeus (~> 1.4.0)
   undercover (~> 0.4.4)
   unleash (~> 3.2.2)
