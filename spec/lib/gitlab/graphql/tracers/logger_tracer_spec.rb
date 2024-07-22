@@ -60,4 +60,19 @@ RSpec.describe Gitlab::Graphql::Tracers::LoggerTracer do
 
     expect { dummy_schema.execute(query_string) }.to raise_error(/This field is supposed to break/)
   end
+
+  it 'logs token details on authenticated requests', :aggregate_failures do
+    variables = { name: "Ada Lovelace" }
+    query_string = 'query fooOperation($name: String) { helloWorld(message: $name) }'
+    mock_token_info = { token_type: "PersonalAccessToken", token_id: "12345" }
+    mock_request_env = { ::Gitlab::Auth::AuthFinders::API_TOKEN_ENV => mock_token_info }
+
+    mock_request = instance_double(ActionDispatch::Request, env: mock_request_env)
+    context = { request: mock_request }
+    expect(::Gitlab::GraphqlLogger).to receive(:info).with(hash_including({
+      token_type: mock_token_info[:token_type],
+      token_id: mock_token_info[:token_id]
+    }))
+    dummy_schema.execute(query_string, variables: variables, context: context)
+  end
 end
