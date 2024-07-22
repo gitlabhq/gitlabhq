@@ -141,6 +141,30 @@ RSpec.describe API::API, feature_category: :system_access do
         end
       end
 
+      context 'with an expired token' do
+        let_it_be(:private_project) { create(:project) }
+        let_it_be(:token) { create(:personal_access_token, :expired, user: user) }
+
+        it 'logs all application context fields and the route' do
+          expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
+            expect(data.stringify_keys).to include(
+              'correlation_id' => an_instance_of(String),
+              'meta.caller_id' => 'GET /api/:version/projects/:id/issues',
+              'meta.remote_ip' => an_instance_of(String),
+              'meta.client_id' => a_string_matching(%r{\Aip/.+}),
+              'meta.auth_fail_reason' => "token_expired",
+              'meta.auth_fail_token_id' => "PersonalAccessToken/#{token.id}",
+              'meta.feature_category' => 'team_planning',
+              'route' => '/api/:version/projects/:id/issues'
+            )
+          end
+
+          get(api("/projects/#{private_project.id}/issues", personal_access_token: token))
+
+          expect(response).to have_gitlab_http_status(:unauthorized)
+        end
+      end
+
       it 'skips context fields that do not apply' do
         expect(described_class::LOG_FORMATTER).to receive(:call) do |_severity, _datetime, _, data|
           expect(data.stringify_keys).to include(
