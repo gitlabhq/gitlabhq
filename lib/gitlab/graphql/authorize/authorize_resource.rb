@@ -64,7 +64,7 @@ module Gitlab
         def authorized_resource?(object)
           raise ConfigurationError, "#{self.class.name} has no authorizations" if self.class.authorization.none?
 
-          self.class.authorization.ok?(object, current_user)
+          self.class.authorization.ok?(object, current_user, scope_validator: context[:scope_validator])
         end
 
         def raise_resource_not_available_error!(...)

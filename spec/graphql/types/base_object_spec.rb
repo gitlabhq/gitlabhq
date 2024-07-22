@@ -12,14 +12,17 @@ RSpec.describe Types::BaseObject, feature_category: :api do
           true
         end
 
-        def ok?(object, _current_user)
+        def ok?(object, _current_user, scope_validator: nil)
           return false if object == { id: 100 }
           return false if object.try(:deactivated?)
+          raise "Missing scope_validator" unless scope_validator
 
           true
         end
       end
     end
+
+    let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
 
     let_it_be(:test_schema) do
       auth = custom_auth.new(nil)
@@ -172,6 +175,7 @@ RSpec.describe Types::BaseObject, feature_category: :api do
 
     let(:data) do
       {
+        scope_validator: scope_validator,
         x: {
           title: 'Hey',
           ys: [{ id: 1 }, { id: 100 }, { id: 2 }]
@@ -216,6 +220,7 @@ RSpec.describe Types::BaseObject, feature_category: :api do
       n = 7
 
       data = {
+        scope_validator: scope_validator,
         x: {
           ys: (95..105).to_a.map { |id| { id: id } }
         }
@@ -262,7 +267,10 @@ RSpec.describe Types::BaseObject, feature_category: :api do
       active_users = create_list(:user, 3, state: :active)
       inactive = create(:user, state: :deactivated)
 
-      data = { user_ids: [inactive, *active_users].map(&:id) }
+      data = {
+        scope_validator: scope_validator,
+        user_ids: [inactive, *active_users].map(&:id)
+      }
 
       doc = GraphQL.parse(<<~GQL)
       query {
@@ -281,6 +289,7 @@ RSpec.describe Types::BaseObject, feature_category: :api do
     it 'filters polymorphic connections' do
       data = {
         current_user: :the_user,
+        scope_validator: scope_validator,
         x: {
           values: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }]
         }
@@ -324,6 +333,7 @@ RSpec.describe Types::BaseObject, feature_category: :api do
     it 'filters interface connections' do
       data = {
         current_user: :the_user,
+        scope_validator: scope_validator,
         x: {
           values: [{ value: 1 }, { value: 2 }, { value: 3 }, { value: 4 }]
         }
@@ -368,6 +378,7 @@ RSpec.describe Types::BaseObject, feature_category: :api do
     it 'redacts polymorphic objects' do
       data = {
         current_user: :the_user,
+        scope_validator: scope_validator,
         x: {
           values: [{ value: 1 }]
         }
@@ -408,7 +419,10 @@ RSpec.describe Types::BaseObject, feature_category: :api do
       inactive = create_list(:user, n - 1, state: :deactivated)
       active_users = create_list(:user, 2, state: :active)
 
-      data = { user_ids: [*inactive, *active_users].map(&:id) }
+      data = {
+        scope_validator: scope_validator,
+        user_ids: [*inactive, *active_users].map(&:id)
+      }
 
       doc = GraphQL.parse(<<~GQL)
       query {

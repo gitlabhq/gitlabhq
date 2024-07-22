@@ -7,13 +7,14 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
     Class.new do
       include Gitlab::Graphql::Authorize::AuthorizeResource
 
-      attr_reader :user, :found_object
+      attr_reader :user, :found_object, :scope_validator
 
       authorize :read_the_thing
 
-      def initialize(user, found_object)
+      def initialize(user, found_object, scope_validator)
         @user = user
         @found_object = found_object
+        @scope_validator = scope_validator
       end
 
       def find_object
@@ -25,7 +26,7 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
       end
 
       def context
-        { current_user: user }
+        { current_user: user, scope_validator: scope_validator }
       end
 
       def self.authorization
@@ -35,9 +36,10 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
   end
 
   let(:user) { build(:user) }
+  let(:scope_validator) { instance_double(::Gitlab::Auth::ScopeValidator, valid_for?: true) }
   let(:project) { build(:project) }
 
-  subject(:loading_resource) { fake_class.new(user, project) }
+  subject(:loading_resource) { fake_class.new(user, project, scope_validator) }
 
   before do
     # don't allow anything by default
@@ -137,6 +139,18 @@ RSpec.describe Gitlab::Graphql::Authorize::AuthorizeResource do
       child = Class.new(parent)
 
       expect(child).to be_authorizes_object
+    end
+  end
+
+  describe '#authorized_resource?' do
+    let(:object) { :object }
+
+    it 'delegates to authorization' do
+      expect(fake_class.authorization).to be_kind_of(::Gitlab::Graphql::Authorize::ObjectAuthorization)
+      expect(fake_class.authorization).to receive(:ok?)
+        .with(object, user, scope_validator: scope_validator)
+
+      fake_class.new(user, :found_object, scope_validator).authorized_resource?(object)
     end
   end
 end

@@ -129,7 +129,7 @@ module API
         def retrieve_user_from_personal_access_token
           return unless access_token.present?
 
-          validate_access_token!(scopes: [Gitlab::Auth::K8S_PROXY_SCOPE])
+          validate_and_save_access_token!(scopes: [Gitlab::Auth::K8S_PROXY_SCOPE])
 
           ::PersonalAccessTokens::LastUsedService.new(access_token).execute
 
