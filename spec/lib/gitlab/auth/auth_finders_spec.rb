@@ -921,7 +921,7 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
   end
 
   describe '#validate_access_token!' do
-    subject { validate_access_token! }
+    subject { validate_and_save_access_token! }
 
     context 'with a job token' do
       let(:route_authentication_setting) { { job_token_allowed: true } }
@@ -937,30 +937,47 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
 
     it 'returns nil if no access_token present' do
-      expect(validate_access_token!).to be_nil
+      expect(validate_and_save_access_token!).to be_nil
     end
 
-    context 'token is not valid' do
+    context 'with a personal access token' do
       let_it_be_with_reload(:personal_access_token) { create(:personal_access_token, user: user) }
 
       before do
         allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
       end
 
-      it 'returns Gitlab::Auth::ExpiredError if token expired' do
-        personal_access_token.update!(expires_at: 1.day.ago)
+      it 'saves the token info in the environment' do
+        subject
 
-        expect { validate_access_token! }.to raise_error(Gitlab::Auth::ExpiredError)
+        expect(request.env).to have_key(described_class::API_TOKEN_ENV)
       end
 
-      it 'returns Gitlab::Auth::RevokedError if token revoked' do
-        personal_access_token.revoke!
+      context 'when the token is not valid' do
+        it 'returns Gitlab::Auth::ExpiredError if token expired', :aggregate_failures do
+          personal_access_token.update!(expires_at: 1.day.ago)
 
-        expect { validate_access_token! }.to raise_error(Gitlab::Auth::RevokedError)
-      end
+          expect { validate_and_save_access_token! }.to raise_error(Gitlab::Auth::ExpiredError)
+          expect(request.env).not_to have_key(described_class::API_TOKEN_ENV)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('token_expired')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
+        end
 
-      it 'returns Gitlab::Auth::InsufficientScopeError if invalid token scope' do
-        expect { validate_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+        it 'returns Gitlab::Auth::RevokedError if token revoked', :aggregate_failures do
+          personal_access_token.revoke!
+
+          expect { validate_and_save_access_token! }.to raise_error(Gitlab::Auth::RevokedError)
+          expect(request.env).not_to have_key(described_class::API_TOKEN_ENV)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('token_revoked')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
+        end
+
+        it 'returns Gitlab::Auth::InsufficientScopeError if invalid token scope', :aggregate_failures do
+          expect { validate_and_save_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
+          expect(request.env).not_to have_key(described_class::API_TOKEN_ENV)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('insufficient_scope')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
+        end
       end
     end
 
@@ -974,7 +991,9 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
         end
 
         it 'returns Gitlab::Auth::ImpersonationDisabled' do
-          expect { validate_access_token! }.to raise_error(Gitlab::Auth::ImpersonationDisabled)
+          expect { validate_and_save_access_token! }.to raise_error(Gitlab::Auth::ImpersonationDisabled)
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_reason']).to eq('impersonation_disabled')
+          expect(Gitlab::ApplicationContext.current['meta.auth_fail_token_id']).to eq("PersonalAccessToken/#{personal_access_token.id}")
         end
       end
     end
