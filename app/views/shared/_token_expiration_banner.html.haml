@@ -1,0 +1,11 @@
+- id = 'token_expiration_banner'
+- cookie_key = 'hide_broadcast_message_token_expiration_banner'
+
+- return unless show_token_expiration_banner?
+- return unless cookies[cookie_key].blank?
+
+-# rubocop:disable Gitlab/DocUrl -- This documentation section is only available in version 17.1 onward.
+- link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: 'https://docs.gitlab.com/ee/security/token_overview.html#troubleshooting' }
+-# rubocop:enable Gitlab/DocUrl
+- message = safe_format(s_('AccessTokens|GitLab now enforces expiry dates on tokens that originally had no set expiration date. Those tokens were given an expiration date of one year later. Please review your personal access tokens, project access tokens and group access tokens to ensure you are aware of upcoming expirations. Administrators of GitLab can find more information on how to identify and mitigate interruption, please take a look at our %{link_start}documentation%{link_end}.'), link_start: link_start, link_end: '</a>'.html_safe)
+= render Pajamas::BroadcastBannerComponent.new(message: message, id: id, theme: 'light-indigo', dismissable: true, expire_date: Time.now.next_year.iso8601, cookie_key: cookie_key)
