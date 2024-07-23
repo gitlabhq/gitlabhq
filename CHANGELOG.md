@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.10.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/401fa9da22fdeffa67c783e11b98ce0c9bb8c7ae) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159057))
+
 ## 16.10.8 (2024-06-25)
 
 ### Fixed (1 change)
