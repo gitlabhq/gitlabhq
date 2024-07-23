@@ -268,7 +268,7 @@ module Projects
 
       def save_all!
         if save_services
-          Gitlab::ImportExport::Saver.save(project: project, shared: @shared)
+          Gitlab::ImportExport::Saver.save(project: project, shared: @shared, user: user)
           notify_success
         else
           cleanup_and_notify_error!

@@ -29,9 +29,9 @@ module API
       get ':id/export/download' do
         check_rate_limit! :group_download_export, scope: [current_user, user_group]
 
-        if user_group.export_file_exists?
-          if user_group.export_archive_exists?
-            present_carrierwave_file!(user_group.export_file)
+        if user_group.export_file_exists?(current_user)
+          if user_group.export_archive_exists?(current_user)
+            present_carrierwave_file!(user_group.export_file(current_user))
           else
             render_api_error!('The group export file is not available yet', 404)
           end

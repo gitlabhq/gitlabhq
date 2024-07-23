@@ -9878,6 +9878,7 @@ CREATE TABLE import_export_uploads (
     export_file text,
     group_id bigint,
     remote_import_url text,
+    user_id bigint,
     CONSTRAINT check_58f0d37481 CHECK ((char_length(remote_import_url) <= 2048))
 );
 
@@ -14363,7 +14364,8 @@ CREATE TABLE project_export_jobs (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     status smallint DEFAULT 0 NOT NULL,
-    jid character varying(100) NOT NULL
+    jid character varying(100) NOT NULL,
+    user_id bigint
 );
 
 CREATE SEQUENCE project_export_jobs_id_seq
@@ -25769,11 +25771,13 @@ CREATE INDEX index_im_timeline_events_promoted_from_note_id ON incident_manageme
 
 CREATE INDEX index_im_timeline_events_updated_by_user_id ON incident_management_timeline_events USING btree (updated_by_user_id);
 
-CREATE UNIQUE INDEX index_import_export_uploads_on_group_id ON import_export_uploads USING btree (group_id) WHERE (group_id IS NOT NULL);
+CREATE INDEX index_import_export_uploads_on_group_id_non_unique ON import_export_uploads USING btree (group_id) WHERE (group_id IS NOT NULL);
 
 CREATE INDEX index_import_export_uploads_on_project_id ON import_export_uploads USING btree (project_id);
 
 CREATE INDEX index_import_export_uploads_on_updated_at ON import_export_uploads USING btree (updated_at);
+
+CREATE INDEX index_import_export_uploads_on_user_id ON import_export_uploads USING btree (user_id);
 
 CREATE INDEX index_import_failures_on_correlation_id_value ON import_failures USING btree (correlation_id_value);
 
@@ -26822,6 +26826,8 @@ CREATE INDEX index_project_export_jobs_on_project_id_and_status ON project_expor
 CREATE INDEX index_project_export_jobs_on_status ON project_export_jobs USING btree (status);
 
 CREATE INDEX index_project_export_jobs_on_updated_at_and_id ON project_export_jobs USING btree (updated_at, id);
+
+CREATE INDEX index_project_export_jobs_on_user_id ON project_export_jobs USING btree (user_id);
 
 CREATE INDEX index_project_feature_usages_on_project_id ON project_feature_usages USING btree (project_id);
 
@@ -30156,6 +30162,9 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_38a74279df FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY import_export_uploads
+    ADD CONSTRAINT fk_38e11735aa FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_39c726d3b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -30284,6 +30293,9 @@ ALTER TABLE ONLY deploy_keys_projects
 
 ALTER TABLE ONLY packages_tags
     ADD CONSTRAINT fk_5a230894f6 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY project_export_jobs
+    ADD CONSTRAINT fk_5ab0242530 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY dependency_list_exports
     ADD CONSTRAINT fk_5b3d11e1ef FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;

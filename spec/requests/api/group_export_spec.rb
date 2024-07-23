@@ -38,6 +38,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
         end
 
         upload.export_file = fixture_file_upload('spec/fixtures/group_export.tar.gz', "`/tar.gz")
+        upload.user = user
         upload.save!
       end
 
@@ -63,11 +64,12 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
       context 'when object is not present' do
         let(:other_group) { create(:group, :with_export) }
+        let!(:export) { create(:import_export_upload, user: user, group: other_group) }
         let(:other_download_path) { "/groups/#{other_group.id}/export/download" }
 
         before do
           other_group.add_owner(user)
-          other_group.export_file.file.delete
+          other_group.export_file(user).file.delete
         end
 
         it 'returns 404' do

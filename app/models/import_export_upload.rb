@@ -5,6 +5,7 @@ class ImportExportUpload < ApplicationRecord
 
   belongs_to :project
   belongs_to :group
+  belongs_to :user
 
   # These hold the project Import/Export archives (.tar.gz files)
   mount_uploader :import_file, ImportExportUploader

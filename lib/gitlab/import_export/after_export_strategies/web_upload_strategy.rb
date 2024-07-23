@@ -26,7 +26,7 @@ module Gitlab
           log_info(message: "Started uploading project", export_size: export_size)
 
           upload_duration = Benchmark.realtime do
-            if project.export_file.file_storage?
+            if project.export_file(current_user).file_storage?
               handle_response_error(send_file)
             else
               upload_project_as_remote_stream
@@ -56,7 +56,7 @@ module Gitlab
 
         def upload_project_as_remote_stream
           Gitlab::ImportExport::RemoteStreamUpload.new(
-            download_url: project.export_file.url,
+            download_url: project.export_file(current_user).url,
             upload_url: url,
             options: {
               upload_method: http_method.downcase.to_sym,
@@ -69,7 +69,7 @@ module Gitlab
         end
 
         def export_file
-          @export_file ||= project.export_file.open
+          @export_file ||= project.export_file(current_user).open
         end
 
         def send_file_options
@@ -87,7 +87,7 @@ module Gitlab
         end
 
         def export_size
-          project.export_file.file.size
+          project.export_file(current_user).file.size
         end
       end
     end

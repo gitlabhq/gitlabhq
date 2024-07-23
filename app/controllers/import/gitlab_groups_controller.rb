@@ -15,7 +15,7 @@ class Import::GitlabGroupsController < ApplicationController
 
     group_data = group_params.except(:file).merge(
       visibility_level: closest_allowed_visibility_level,
-      import_export_upload: ImportExportUpload.new(import_file: group_params[:file])
+      import_export_upload: ImportExportUpload.new(import_file: group_params[:file], user: current_user)
     )
 
     response = ::Groups::CreateService.new(current_user, group_data).execute

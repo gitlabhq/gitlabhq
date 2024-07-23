@@ -22,7 +22,9 @@ module Projects
         project = Project.find_by_id(project_id)
         return unless project
 
-        project_export_job = project.export_jobs.find_or_create_by!(jid: jid)
+        project_export_job = project.export_jobs.find_or_create_by!(jid: jid) do |export_job|
+          export_job.user_id = user_id
+        end
         return if project_export_job.started?
 
         relation_exports = RelationExport.relation_names_list.map do |relation_name|

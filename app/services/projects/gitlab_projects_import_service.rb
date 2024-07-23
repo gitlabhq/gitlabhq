@@ -17,7 +17,7 @@ module Projects
     end
 
     def execute
-      prepare_template_environment(template_file)
+      prepare_template_environment(template_file, current_user)
 
       prepare_import_params
 

@@ -69,7 +69,7 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
     subject(:service) { described_class.new(group: group, user: user) }
 
     before do
-      ImportExportUpload.create!(group: group, import_file: import_file)
+      ImportExportUpload.create!(group: group, import_file: import_file, user: user)
 
       allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
       allow(import_logger).to receive(:error)
@@ -108,7 +108,7 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
       it 'removes import file' do
         service.execute
 
-        expect(group.import_export_upload.import_file.file).to be_nil
+        expect(group.import_export_upload_by_user(user).import_file.file).to be_nil
       end
 
       it 'removes tmp files' do
@@ -213,7 +213,7 @@ RSpec.describe Groups::ImportExport::ImportService, feature_category: :importers
 
     before do
       group.add_owner(user)
-      ImportExportUpload.create!(group: group, import_file: import_file)
+      ImportExportUpload.create!(group: group, import_file: import_file, user: user)
 
       allow(Gitlab::Import::Logger).to receive(:build).and_return(import_logger)
       allow(import_logger).to receive(:error)

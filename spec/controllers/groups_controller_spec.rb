@@ -1266,7 +1266,7 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
     context 'when there is a file available to download' do
       before do
         sign_in(admin)
-        create(:import_export_upload, group: group, export_file: export_file)
+        create(:import_export_upload, group: group, export_file: export_file, user: admin)
       end
 
       it 'sends the file' do
@@ -1280,8 +1280,8 @@ RSpec.describe GroupsController, factory_default: :keep, feature_category: :code
       before do
         sign_in(admin)
 
-        create(:import_export_upload, group: group, export_file: export_file)
-        group.export_file.file.delete
+        create(:import_export_upload, group: group, export_file: export_file, user: admin)
+        group.export_file(admin).file.delete
       end
 
       it 'returns not found' do

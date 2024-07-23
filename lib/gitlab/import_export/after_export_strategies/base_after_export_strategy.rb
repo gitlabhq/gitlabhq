@@ -28,7 +28,7 @@ module Gitlab
         def execute(current_user, project)
           @project = project
 
-          ensure_export_ready!
+          ensure_export_ready!(current_user)
           ensure_lock_files_path!
           @lock_file = File.join(lock_files_path, SecureRandom.hex)
           @current_user = current_user
@@ -52,7 +52,7 @@ module Gitlab
           false
         ensure
           delete_after_export_lock
-          delete_export_file
+          delete_export_file(current_user)
           delete_archive_path
         end
 
@@ -60,8 +60,8 @@ module Gitlab
           @options.to_h.merge!(klass: self.class.name).to_json
         end
 
-        def ensure_export_ready!
-          raise StrategyError unless project.export_file_exists?
+        def ensure_export_ready!(current_user)
+          raise StrategyError unless project.export_file_exists?(current_user)
         end
 
         def ensure_lock_files_path!
@@ -92,10 +92,10 @@ module Gitlab
 
         private
 
-        def delete_export_file
+        def delete_export_file(current_user)
           return if locks_present? || !delete_export?
 
-          project.remove_exports
+          project.remove_export_for_user(current_user)
         end
 
         def delete_archive_path
