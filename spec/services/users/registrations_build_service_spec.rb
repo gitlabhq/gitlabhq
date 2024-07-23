@@ -18,7 +18,7 @@ RSpec.describe Users::RegistrationsBuildService, feature_category: :system_acces
       it 'creates the user_detail record' do
         user = service.execute
 
-        expect { user.save! }.to change { UserDetail.count }.by(1)
+        expect { Namespace.with_disabled_organization_validation { user.save! } }.to change { UserDetail.count }.by(1)
       end
     end
 

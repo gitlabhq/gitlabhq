@@ -60,6 +60,7 @@ export default {
       modelData: null,
       versionData: null,
       markdownDocPath: helpPagePath('user/markdown'),
+      markdownEditorRestrictedToolBarItems: ['full-screen'],
     };
   },
   computed: {
@@ -242,7 +243,7 @@ export default {
       :title="$options.modal.title"
       :action-primary="actionPrimary"
       :action-secondary="$options.modal.actionSecondary"
-      size="sm"
+      size="lg"
       @primary="create"
       @secondary="resetModal"
     >
@@ -284,6 +285,7 @@ export default {
             :markdown-docs-path="markdownDocPath"
             :disable-attachments="disableAttachments"
             :placeholder="$options.modal.nameDescriptionPlaceholder"
+            :restricted-tool-bar-items="markdownEditorRestrictedToolBarItems"
             @input="setDescription"
           />
         </gl-form-group>

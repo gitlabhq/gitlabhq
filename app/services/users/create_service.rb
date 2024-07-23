@@ -13,7 +13,9 @@ module Users
       user = build_class.new(current_user, params).execute
       reset_token = user.generate_reset_token if user.recently_sent_password_reset?
 
-      after_create_hook(user, reset_token) if user.save
+      Namespace.with_disabled_organization_validation do
+        after_create_hook(user, reset_token) if user.save
+      end
 
       user
     end

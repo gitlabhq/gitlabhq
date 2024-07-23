@@ -38,14 +38,15 @@ class RegistrationsController < Devise::RegistrationsController
   def create
     set_resource_fields
 
-    super do |new_user|
-      if new_user.persisted?
-        after_successful_create_hook(new_user)
-      else
-        track_error(new_user)
+    Namespace.with_disabled_organization_validation do
+      super do |new_user|
+        if new_user.persisted?
+          after_successful_create_hook(new_user)
+        else
+          track_error(new_user)
+        end
       end
     end
-
     # Devise sets a flash message on both successful & failed signups,
     # but we only want to show a message if the resource is blocked by a pending approval.
     flash[:notice] = nil unless allow_flash_content?(resource)

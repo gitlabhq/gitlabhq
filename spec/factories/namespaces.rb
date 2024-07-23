@@ -11,6 +11,8 @@ FactoryBot.define do
 
     owner { association(:user, strategy: :build, namespace: instance, username: path) }
 
+    association :organization
+
     after(:create) do |namespace, evaluator|
       # simulating ::Namespaces::ProcessSyncEventsWorker because most tests don't run Sidekiq inline
       # Note: we need to get refreshed `traversal_ids` it is updated via SQL query

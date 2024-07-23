@@ -1757,6 +1757,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_cac7c0698291() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "releases"
+  WHERE "releases"."id" = NEW."release_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_d4487a75bd44() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -10457,7 +10473,8 @@ CREATE TABLE evidences (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     summary_sha bytea,
-    summary jsonb DEFAULT '{}'::jsonb NOT NULL
+    summary jsonb DEFAULT '{}'::jsonb NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE evidences_id_seq
@@ -27366,6 +27383,8 @@ CREATE INDEX index_events_on_project_id_and_id ON events USING btree (project_id
 
 CREATE UNIQUE INDEX index_events_on_target_type_and_target_id_and_fingerprint ON events USING btree (target_type, target_id, fingerprint);
 
+CREATE INDEX index_evidences_on_project_id ON evidences USING btree (project_id);
+
 CREATE INDEX index_evidences_on_release_id ON evidences USING btree (release_id);
 
 CREATE INDEX index_expired_and_not_notified_personal_access_tokens ON personal_access_tokens USING btree (id, expires_at) WHERE ((impersonation = false) AND (revoked = false) AND (expire_notification_delivered = false));
@@ -31914,6 +31933,8 @@ CREATE TRIGGER trigger_c8bc8646bce9 BEFORE INSERT OR UPDATE ON vulnerability_sta
 
 CREATE TRIGGER trigger_c9090feed334 BEFORE INSERT OR UPDATE ON boards_epic_lists FOR EACH ROW EXECUTE FUNCTION trigger_c9090feed334();
 
+CREATE TRIGGER trigger_cac7c0698291 BEFORE INSERT OR UPDATE ON evidences FOR EACH ROW EXECUTE FUNCTION trigger_cac7c0698291();
+
 CREATE TRIGGER trigger_catalog_resource_sync_event_on_project_update AFTER UPDATE ON projects FOR EACH ROW WHEN ((((old.name)::text IS DISTINCT FROM (new.name)::text) OR (old.description IS DISTINCT FROM new.description) OR (old.visibility_level IS DISTINCT FROM new.visibility_level))) EXECUTE FUNCTION insert_catalog_resource_sync_event();
 
 CREATE TRIGGER trigger_d4487a75bd44 BEFORE INSERT OR UPDATE ON terraform_state_versions FOR EACH ROW EXECUTE FUNCTION trigger_d4487a75bd44();
@@ -33124,6 +33145,9 @@ ALTER TABLE ONLY personal_access_tokens
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY evidences
+    ADD CONSTRAINT fk_ca4bbc114d FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY subscription_add_on_purchases
     ADD CONSTRAINT fk_caed789645 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;

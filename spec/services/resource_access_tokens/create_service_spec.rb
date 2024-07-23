@@ -393,7 +393,7 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
     end
 
     context 'when resource organization is not set', :enable_admin_mode do
-      let_it_be(:resource) { create(:project, :private, organization: nil) }
+      let_it_be(:resource) { create(:project, :private, organization_id: nil) }
       let_it_be(:default_organization) { Organizations::Organization.default_organization }
       let(:user) { create(:admin) }
 

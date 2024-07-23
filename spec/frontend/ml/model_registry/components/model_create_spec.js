@@ -115,8 +115,6 @@ describe('ModelCreate', () => {
       it('should show markdown editor', () => {
         createWrapper();
 
-        expect(findMarkdownEditor().exists()).toBe(true);
-
         expect(findMarkdownEditor().props()).toMatchObject({
           enableContentEditor: true,
           formFieldProps: {
@@ -127,6 +125,7 @@ describe('ModelCreate', () => {
           markdownDocsPath: '/help/user/markdown',
           renderMarkdownPath: '/markdown-preview',
           uploadsPath: '',
+          restrictedToolBarItems: ['full-screen'],
         });
       });
     });
@@ -238,7 +237,7 @@ describe('ModelCreate', () => {
         expect(findGlModal().props()).toMatchObject({
           modalId: 'create-model-modal',
           title: 'Create model, version & import artifacts',
-          size: 'sm',
+          size: 'lg',
         });
       });
 

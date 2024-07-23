@@ -165,7 +165,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_identity_exists
       end
     else
-      sign_in_user_flow(auth_module::User)
+      Namespace.with_disabled_organization_validation do
+        sign_in_user_flow(auth_module::User)
+      end
     end
   end
 

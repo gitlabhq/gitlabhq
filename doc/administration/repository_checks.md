@@ -46,7 +46,8 @@ Instead of checking repositories manually, GitLab can be configured to run the c
 1. Enable **Enable repository checks**.
 
 When enabled, GitLab periodically runs a repository check on all project repositories and wiki
-repositories to detect possible data corruption. A project is checked no more than once per month.
+repositories to detect possible data corruption. A project is checked no more than once per month, and new projects aren't checked for at least 24 hours.
+
 Administrators can configure the frequency of repository checks. To edit the frequency:
 
 - For Linux package installations, edit `gitlab_rails['repository_check_worker_cron']` in

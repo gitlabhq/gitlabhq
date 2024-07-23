@@ -8,7 +8,7 @@ import { getCookie, setCookie, parseBoolean } from '~/lib/utils/common_utils';
 import { waitForElement } from '~/lib/utils/dom_utils';
 import findAndFollowLink from '~/lib/utils/navigation_utility';
 import { refreshCurrentPage } from '~/lib/utils/url_utility';
-import { helpCenterState } from '~/super_sidebar/constants';
+import { duoChatGlobalState } from '~/super_sidebar/constants';
 import {
   keysFor,
   TOGGLE_KEYBOARD_SHORTCUTS_DIALOG,
@@ -225,7 +225,7 @@ export default class Shortcuts {
 
   static onToggleDuoChat(e) {
     e.preventDefault();
-    helpCenterState.showTanukiBotChatDrawer = !helpCenterState.showTanukiBotChatDrawer;
+    duoChatGlobalState.isShown = !duoChatGlobalState.isShown;
   }
 
   static onTogglePerfBar(e) {

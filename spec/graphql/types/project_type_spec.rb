@@ -1305,13 +1305,5 @@ RSpec.describe GitlabSchema.types['Project'], feature_category: :groups_and_proj
         )
       end
     end
-
-    context 'when project does not have an organization associated with it' do
-      let_it_be(:project) { create(:project, :public, organization: nil) }
-
-      it 'returns nil' do
-        expect(organization_edit_path).to be_nil
-      end
-    end
   end
 end

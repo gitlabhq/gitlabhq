@@ -314,7 +314,7 @@ RSpec.describe Namespaces::ProjectNamespace, 'Routable', :with_clean_rails_cache
 
   it 'skips route creation for the resource' do
     expect do
-      described_class.create!(project: nil, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
+      described_class.create!(project: nil, organization: group.organization, parent: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC, path: 'foo', name: 'foo')
     end.not_to change { Route.count }
   end
 end

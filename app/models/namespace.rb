@@ -115,6 +115,7 @@ class Namespace < ApplicationRecord
   has_one :import_user, class_name: 'User', through: :namespace_import_user, foreign_key: :user_id
 
   validates :owner, presence: true, if: ->(n) { n.owner_required? }
+  validates :organization, presence: true, if: :require_organization?
   validates :name,
     presence: true,
     length: { maximum: 255 }
@@ -350,6 +351,15 @@ class Namespace < ApplicationRecord
 
       coalesce = Arel::Nodes::NamedFunction.new('COALESCE', [sum, 0])
       coalesce.as(column.to_s)
+    end
+
+    def with_disabled_organization_validation
+      current_value = Gitlab::SafeRequestStore[:require_organization]
+      Gitlab::SafeRequestStore[:require_organization] = false
+
+      yield
+    ensure
+      Gitlab::SafeRequestStore[:require_organization] = current_value
     end
   end
 
@@ -710,6 +720,12 @@ class Namespace < ApplicationRecord
       :project_setting,
       :project_feature,
       :active_pages_deployments)
+  end
+
+  def require_organization?
+    return false unless Feature.enabled?(:require_organization, Feature.current_request)
+
+    Gitlab::SafeRequestStore.fetch(:require_organization) { true } # rubocop:disable Style/RedundantFetchBlock -- This fetch has a different interface
   end
 
   private

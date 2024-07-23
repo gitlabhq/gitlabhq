@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Namespaces::ProjectNamespace, type: :model do
+RSpec.describe Namespaces::ProjectNamespace, type: :model, feature_category: :groups_and_projects do
   let_it_be(:organization) { create(:organization) }
 
   describe 'relationships' do

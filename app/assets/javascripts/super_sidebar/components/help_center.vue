@@ -6,7 +6,7 @@ import { FORUM_URL, PROMO_URL } from 'jh_else_ce/lib/utils/url_utility';
 import { __ } from '~/locale';
 import { STORAGE_KEY } from '~/whats_new/utils/notification';
 import Tracking from '~/tracking';
-import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS, helpCenterState } from '../constants';
+import { DROPDOWN_Y_OFFSET, HELP_MENU_TRACKING_DEFAULTS, duoChatGlobalState } from '../constants';
 
 export default {
   components: {
@@ -39,7 +39,7 @@ export default {
   data() {
     return {
       showWhatsNewNotification: this.shouldShowWhatsNewNotification(),
-      helpCenterState,
+      duoChatGlobalState,
       toggleWhatsNewDrawer: null,
     };
   },

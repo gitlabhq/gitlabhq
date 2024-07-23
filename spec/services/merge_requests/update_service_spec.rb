@@ -700,15 +700,6 @@ RSpec.describe MergeRequests::UpdateService, :mailer, feature_category: :code_re
         describe 'recording the first reviewer assigned at timestamp' do
           subject(:metrics) { merge_request.reload.metrics }
 
-          context 'when store_first_reviewer_assignment_timestamp_in_metrics feature flag is off' do
-            it 'does not record anything' do
-              stub_feature_flags(store_first_reviewer_assignment_timestamp_in_metrics: false)
-              update_merge_request(reviewer_ids: [user2.id])
-
-              expect(metrics.reviewer_first_assigned_at).to eq(nil)
-            end
-          end
-
           it 'sets the current timestamp' do
             freeze_time do
               update_merge_request(reviewer_ids: [user2.id])

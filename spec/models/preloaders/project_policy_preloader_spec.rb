@@ -28,7 +28,7 @@ RSpec.describe Preloaders::ProjectPolicyPreloader do
     control = ActiveRecord::QueryRecorder.new { authorize_all_projects(user) }
 
     new_project1 = create(:project, :private, maintainers: user)
-    new_project2 = create(:project, :private, namespace: root_parent)
+    new_project2 = create(:project, :private, namespace: root_parent, maintainers: user)
 
     another_root = create(:group, :private, name: 'root-3', path: 'root-3')
     new_project3 = create(:project, :private, namespace: another_root, maintainers: user)

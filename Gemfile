@@ -407,7 +407,8 @@ gem 'webrick', '~> 1.8.1', require: false # rubocop:todo Gemfile/MissingFeatureC
 gem 'prometheus-client-mmap', '~> 1.1', '>= 1.1.1', require: 'prometheus/client' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Event-driven reactor for Ruby
-gem 'async', '~> 2.12.1' # rubocop:disable Gemfile/MissingFeatureCategory -- This is general utility gem
+# Required manually in config/initializers/require_async_gem
+gem 'async', '~> 2.12.1', require: false # rubocop:disable Gemfile/MissingFeatureCategory -- This is general utility gem
 
 # OpenTelemetry
 group :opentelemetry do

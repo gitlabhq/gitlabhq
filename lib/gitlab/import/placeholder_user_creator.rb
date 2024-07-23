@@ -19,7 +19,9 @@ module Gitlab
         )
 
         user.assign_personal_namespace(Organizations::Organization.default_organization)
-        user.save!
+        Namespace.with_disabled_organization_validation do
+          user.save!
+        end
         user
       end
 

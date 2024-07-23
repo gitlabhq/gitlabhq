@@ -22,7 +22,9 @@ class Ldap::OmniauthCallbacksController < OmniauthCallbacksController
       return admin_mode_flow(Gitlab::Auth::Ldap::User) if current_user_mode.admin_mode_requested?
     end
 
-    sign_in_user_flow(Gitlab::Auth::Ldap::User)
+    Namespace.with_disabled_organization_validation do
+      sign_in_user_flow(Gitlab::Auth::Ldap::User)
+    end
   end
 
   define_providers!

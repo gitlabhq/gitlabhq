@@ -37,7 +37,9 @@ namespace :gitlab do
 
     tmp_namespace_path = "tmp-project-import-#{Time.now.to_i}"
     puts "Creating temporary namespace #{tmp_namespace_path}"
-    tmp_namespace = Namespace.create!(owner: admin, name: tmp_namespace_path, path: tmp_namespace_path, type: Namespaces::UserNamespace.sti_name)
+    tmp_namespace = Namespace.with_disabled_organization_validation do
+      Namespace.create!(owner: admin, name: tmp_namespace_path, path: tmp_namespace_path, type: Namespaces::UserNamespace.sti_name)
+    end
 
     templates = if template_names.empty?
                   Gitlab::ProjectTemplate.all
@@ -54,7 +56,7 @@ namespace :gitlab do
       }
 
       puts "Creating project for #{template.title}"
-      project = Projects::CreateService.new(admin, params).execute
+      project = Namespace.with_disabled_organization_validation { Projects::CreateService.new(admin, params).execute }
 
       unless project.persisted?
         raise "Failed to create project: #{project.errors.messages}"

@@ -27,7 +27,9 @@ module Ci
 
         runner = ::Ci::Runner.new(params)
 
-        return ServiceResponse.success(payload: { runner: runner }) if runner.save
+        if Namespace.with_disabled_organization_validation { runner.save }
+          return ServiceResponse.success(payload: { runner: runner })
+        end
 
         ServiceResponse.error(message: runner.errors.full_messages, reason: :save_error)
       end

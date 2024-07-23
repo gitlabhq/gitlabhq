@@ -51,7 +51,7 @@ RSpec.describe Gitlab::Auth::Ldap::User do
 
   describe '#valid_sign_in?' do
     before do
-      gl_user.save!
+      Namespace.with_disabled_organization_validation { gl_user.save! }
     end
 
     it 'returns true' do

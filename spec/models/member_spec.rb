@@ -1277,7 +1277,7 @@ RSpec.describe Member, feature_category: :groups_and_projects do
   end
 
   context 'for updating organization_users' do
-    let_it_be(:group) { create(:group, :with_organization) }
+    let_it_be(:group) { create(:group) }
     let_it_be(:user) { create(:user) }
     let(:member) { create(:group_member, source: group, user: user) }
 
@@ -1359,12 +1359,6 @@ RSpec.describe Member, feature_category: :groups_and_projects do
 
       context 'when member is an invite' do
         let(:member) { create(:group_member, :invited, source: group, user: nil) }
-
-        it_behaves_like 'does not create an organization_user entry'
-      end
-
-      context 'when organization does not exist' do
-        let(:member) { create(:group_member, user: user) }
 
         it_behaves_like 'does not create an organization_user entry'
       end

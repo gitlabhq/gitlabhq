@@ -203,6 +203,31 @@ describe('vue_shared/component/markdown/markdown_editor', () => {
     });
   });
 
+  describe('when additional restricted tool bar items are given', () => {
+    beforeEach(() => {
+      buildWrapper({ propsData: { restrictedToolBarItems: ['full-screen'] } });
+    });
+
+    it('passes them to restrictedToolBarItems', () => {
+      expect(findMarkdownField().props().restrictedToolBarItems).toContain('full-screen');
+    });
+
+    describe('when attachments are disabled', () => {
+      beforeEach(() => {
+        buildWrapper({
+          propsData: { disableAttachments: true, restrictedToolBarItems: ['full-screen'] },
+        });
+      });
+
+      it('passes `attach-file` and `full-screen` restrictedToolBarItems', () => {
+        expect(findMarkdownField().props().restrictedToolBarItems).toEqual([
+          'full-screen',
+          'attach-file',
+        ]);
+      });
+    });
+  });
+
   describe('disabled', () => {
     it('disables markdown field when disabled prop is true', () => {
       buildWrapper({ propsData: { disabled: true } });

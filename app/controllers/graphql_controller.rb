@@ -187,10 +187,15 @@ class GraphqlController < ApplicationController
   def disable_query_limiting
     return unless Gitlab::QueryLimiting.enabled_for_env?
 
-    disable_issue = request.headers[DISABLE_SQL_QUERY_LIMIT_HEADER]
-    return unless disable_issue
+    disable_reference = request.headers[DISABLE_SQL_QUERY_LIMIT_HEADER]
+    return unless disable_reference
 
-    Gitlab::QueryLimiting.disable!(disable_issue)
+    disable_issue, new_threshold = disable_reference.split(';')
+    if new_threshold
+      Gitlab::QueryLimiting.disable!(disable_issue, new_threshold: new_threshold&.to_i)
+    else
+      Gitlab::QueryLimiting.disable!(disable_issue)
+    end
   end
 
   def set_user_last_activity

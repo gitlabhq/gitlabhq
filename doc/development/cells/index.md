@@ -31,6 +31,7 @@ All tables with the following `gitlab_schema` are considered "cell-local":
 
 - `gitlab_main_cell`
 - `gitlab_ci`
+- `gitlab_sec`
 
 All newly created cell-local tables are required to have a `sharding_key`
 defined in the corresponding `db/docs/` file for that table.

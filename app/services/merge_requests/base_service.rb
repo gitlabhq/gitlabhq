@@ -88,7 +88,7 @@ module MergeRequests
       trigger_merge_request_reviewers_updated(merge_request)
 
       capture_suggested_reviewers_accepted(merge_request)
-      set_first_reviewer_assigned_at_metrics(merge_request, current_user) if new_reviewers.any?
+      set_first_reviewer_assigned_at_metrics(merge_request) if new_reviewers.any?
     end
 
     def cleanup_environments(merge_request)
@@ -279,9 +279,7 @@ module MergeRequests
       # Implemented in EE
     end
 
-    def set_first_reviewer_assigned_at_metrics(merge_request, user)
-      return unless Feature.enabled?(:store_first_reviewer_assignment_timestamp_in_metrics, user, type: :beta)
-
+    def set_first_reviewer_assigned_at_metrics(merge_request)
       metrics = merge_request.metrics
       return unless metrics
 

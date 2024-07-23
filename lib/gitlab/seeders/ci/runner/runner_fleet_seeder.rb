@@ -178,7 +178,9 @@ module Gitlab
           def create_group(**args)
             logger.info(message: 'Creating group', **args)
 
-            ensure_success(::Groups::CreateService.new(@user, **args).execute[:group])
+            Namespace.with_disabled_organization_validation do
+              ensure_success(::Groups::CreateService.new(@user, **args).execute[:group])
+            end
           end
 
           def ensure_project(name:, namespace_id:, **args)
@@ -194,7 +196,9 @@ module Gitlab
           def create_project(**args)
             logger.info(message: 'Creating project', **args)
 
-            ensure_success(::Projects::CreateService.new(@user, **args).execute)
+            Namespace.with_disabled_organization_validation do
+              ensure_success(::Projects::CreateService.new(@user, **args).execute)
+            end
           end
 
           def register_record(record, records)

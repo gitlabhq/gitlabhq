@@ -118,44 +118,37 @@ Chat interface. The following example shows how to open the GitLab Duo Chat
 drawer by using an event listener and the GitLab Duo Chat global state:
 
 ```javascript
-import { helpCenterState } from '~/super_sidebar/constants';
+import { duoChatGlobalState } from '~/super_sidebar/constants';
 myFancyToggleToOpenChat.addEventListener('click', () => {
-  helpCenterState.showTanukiBotChatDrawer = true;
+  duoChatGlobalState.isShown = true;
 });
 ```
 
 #### Initiating GitLab Duo Chat with a pre-defined prompt
 
 In some scenarios, you may want to direct users towards a specific topic or
-query when they open GitLab Duo Chat. The following example method:
-
-1. Opens the GitLab Duo Chat drawer.
-1. Sends a pre-defined prompt to GitLab Duo Chat.
+query when they open GitLab Duo Chat. We have a utility function that will 
+open DuoChat drawer and send a command in a queue for DuoChat to execute on.
+This should trigger the loading state and the streaming with the given prompt.
 
 ```javascript
-import chatMutation from 'ee/ai/graphql/chat.mutation.graphql';
-import { helpCenterState } from '~/super_sidebar/constants';
+import { sendDuoChatCommand } from 'ee/ai/utils';
 [...]
 
 methods: {
   openChatWithPrompt() {
-    const myPrompt = "What is the meaning of life?"
-    helpCenterState.showTanukiBotChatDrawer = true;
-
-    this.$apollo
-      .mutate({
-        mutation: chatMutation,
-        variables: {
-          question: myPrompt,
-          resourceId: this.resourceId,
-        },
-      })
-      .catch((error) => {
-        // handle potential errors here
-      });
+    sendDuoChatCommand(
+      {
+        question: '/feedback' // This is your prompt
+        resourceId: 'gid:://gitlab/WorkItem/1', // A unique ID to identify the action for streaming
+        variables: {} // Any additional graphql variables you want to pass to ee/app/assets/javascripts/ai/graphql/chat.mutation.graphql when executing the query
+      }
+    )
   }
 }
 ```
+
+Note that `sendDuoChatCommand` cannot be chained, meaning that you can send one command to DuoChat and have to wait until this action is done before sending a different command or the previous command might not work as expected.
 
 This enhancement allows for a more tailored user experience by guiding the
 conversation in GitLab Duo Chat towards predefined areas of interest or concern.

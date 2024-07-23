@@ -18,6 +18,7 @@ namespace :tw do
       end
     end
 
+    # For groups without an assigned TW, comment out the line.
     CODE_OWNER_RULES = [
       # CodeOwnerRule.new('Activation', ''),
       # CodeOwnerRule.new('Acquisition', ''),
@@ -56,7 +57,7 @@ namespace :tw do
       CodeOwnerRule.new('Remote Development', '@ashrafkhamis'),
       CodeOwnerRule.new('Import and Integrate', '@eread'),
       CodeOwnerRule.new('Infrastructure', '@sselhorn'),
-      # CodeOwnerRule.new('Knowledge', ''),
+      CodeOwnerRule.new('Knowledge', '@msedlakjakubowski'),
       CodeOwnerRule.new('MLOps', '@sselhorn @jglassman1 @fneill'),
       # CodeOwnerRule.new('Observability', ''),
       CodeOwnerRule.new('Optimize', '@lciutacu'),

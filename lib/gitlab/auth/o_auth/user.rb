@@ -57,7 +57,9 @@ module Gitlab
 
           block_after_save = needs_blocking?
 
-          Users::UpdateService.new(gl_user, user: gl_user).execute!
+          Namespace.with_disabled_organization_validation do
+            Users::UpdateService.new(gl_user, user: gl_user).execute!
+          end
 
           gl_user.block_pending_approval if block_after_save
           activate_user_if_user_cap_not_reached

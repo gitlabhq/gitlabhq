@@ -271,7 +271,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
 
         it 'does not allow a subgroup to have the same name as an existing subgroup' do
           sub_group1 = create(:group, parent: group, name: "SG", path: 'api')
-          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2')
+          sub_group2 = described_class.new(parent: group, name: "SG", path: 'api2', organization: sub_group1.organization)
 
           expect(sub_group1).to be_valid
           expect(sub_group2).not_to be_valid
