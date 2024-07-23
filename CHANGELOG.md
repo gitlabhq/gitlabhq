@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.2.10 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/ba2d4b91c1220ee8e8fbab936e5590c824abd456) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159401))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/204ef660742a0cae320566a6c8980ad25fc57c56) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156402))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/3c523d867f4bc528ad3703c75e4e7e7910672ec5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158479))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/10386fc56607af6c2c9b9569a67ab63b4a824dd0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153453))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/9f5135c667e30cfc934de7fde88da8c527ea9265) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160239))
+
 ## 16.2.9 (2024-01-11)
 
 ### Security (2 changes)
