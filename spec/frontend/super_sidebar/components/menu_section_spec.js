@@ -103,13 +103,23 @@ describe('MenuSection component', () => {
           });
 
           describe('when section has items', () => {
-            it('is rendered and shown', async () => {
+            beforeEach(() => {
               createWrapper(
                 { title: 'Asdf', items: [{ title: 'Item1', href: '/item1' }] },
                 { 'has-flyout': true, expanded: false },
               );
+            });
+
+            it('is rendered and shown', async () => {
               await findButton().trigger('pointerover', { pointerType: 'mouse' });
               expect(findFlyout().isVisible()).toBe(true);
+            });
+
+            it('adds a class to keep hover effect on button while flyout is hovered', async () => {
+              await findButton().trigger('pointerover', { pointerType: 'mouse' });
+              expect(findButton().classes()).not.toContain('with-mouse-over-flyout');
+              await findFlyout().vm.$emit('mouseover');
+              expect(findButton().classes()).toContain('with-mouse-over-flyout');
             });
           });
         });

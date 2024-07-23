@@ -427,7 +427,8 @@ $command-palette-spacing: px-to-rem(14px);
 
   .super-sidebar-nav-item {
     &:hover,
-    &:focus {
+    &:focus,
+    &.with-mouse-over-flyout {
       background-color: var(--super-sidebar-nav-item-hover-bg);
     }
 

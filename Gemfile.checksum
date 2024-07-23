@@ -359,7 +359,7 @@
 {"name":"llhttp-ffi","version":"0.4.0","platform":"ruby","checksum":"e5f7327db3cf8007e648342ef76347d6e0ae545a8402e519cca9c886eb37b001"},
 {"name":"locale","version":"2.1.3","platform":"ruby","checksum":"b6ddee011e157817cb98e521b3ce7cb626424d5882f1e844aafdee3e8b212725"},
 {"name":"lockbox","version":"1.3.0","platform":"ruby","checksum":"ca8e5806e4e0c56d1d762ac5cf401940ff53fc37554ef623d3313c7a6331a3ea"},
-{"name":"logger","version":"1.6.0","platform":"ruby","checksum":"0ab7c120262dd8de2a18cb8d377f1f318cbe98535160a508af9e7710ff43ef3e"},
+{"name":"logger","version":"1.5.3","platform":"ruby","checksum":"ed443128c2c9254db1a3573c53708b00319c01022b40dcce60a873911831d67b"},
 {"name":"lograge","version":"0.11.2","platform":"ruby","checksum":"4cbd1554b86f545d795eff15a0c24fd25057d2ac4e1caa5fc186168b3da932ef"},
 {"name":"loofah","version":"2.22.0","platform":"ruby","checksum":"10d76e070c86b12fec74b6a9515fd1940f4459198b991342d0a7897d86c372fe"},
 {"name":"lookbook","version":"2.3.2","platform":"ruby","checksum":"abcdefeb13d9150ab30ab8022a2f459db85cbd02e90a0e8e066b32f9048e160a"},
