@@ -15,66 +15,72 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
   subject(:client) { described_class.new(options) }
 
   describe '#each_page' do
-    let_it_be(:item1) do
-      { 'username' => 'Ben' }
+    shared_examples 'fetching bitbucket data' do |params|
+      let_it_be(:item1) do
+        { 'username' => 'Ben' }
+      end
+
+      let_it_be(:item2) do
+        { 'username' => 'Affleck' }
+      end
+
+      let_it_be(:item3) do
+        { 'username' => 'Jane' }
+      end
+
+      let_it_be(:response1) do
+        { 'values' => [item1], 'next' => 'https://example.com/next' }
+      end
+
+      let_it_be(:response2) do
+        { 'values' => [item2], 'next' => 'https://example.com/next2' }
+      end
+
+      let_it_be(:response3) do
+        { 'values' => [item3], 'next' => nil }
+      end
+
+      before do
+        allow(client)
+          .to receive(params[:fetch_type])
+          .with('repo')
+          .and_return(response1)
+
+        allow(client)
+          .to receive(params[:fetch_type])
+          .with('repo', { next_url: 'https://example.com/next' })
+          .and_return(response2)
+
+        allow(client)
+          .to receive(params[:fetch_type])
+          .with('repo', { next_url: 'https://example.com/next2' })
+          .and_return(response3)
+      end
+
+      it 'yields every retrieved page to the supplied block' do
+        pages = []
+
+        client.each_page(params[:fetch_type], params[:representation_type], 'repo') { |page| pages << page }
+
+        expect(pages[0]).to be_an_instance_of(Bitbucket::Page)
+
+        expect(pages[0].items.count).to eq(1)
+        expect(pages[0].items.first.raw).to eq(item1)
+        expect(pages[0].attrs[:next]).to eq('https://example.com/next')
+
+        expect(pages[1].items.count).to eq(1)
+        expect(pages[1].items.first.raw).to eq(item2)
+        expect(pages[1].attrs[:next]).to eq('https://example.com/next2')
+
+        expect(pages[2].items.count).to eq(1)
+        expect(pages[2].items.first.raw).to eq(item3)
+        expect(pages[2].attrs[:next]).to eq(nil)
+      end
     end
 
-    let_it_be(:item2) do
-      { 'username' => 'Affleck' }
-    end
+    it_behaves_like 'fetching bitbucket data', { fetch_type: :pull_requests, representation_type: :pull_request }
 
-    let_it_be(:item3) do
-      { 'username' => 'Jane' }
-    end
-
-    let_it_be(:response1) do
-      { 'values' => [item1], 'next' => 'https://example.com/next' }
-    end
-
-    let_it_be(:response2) do
-      { 'values' => [item2], 'next' => 'https://example.com/next2' }
-    end
-
-    let_it_be(:response3) do
-      { 'values' => [item3], 'next' => nil }
-    end
-
-    before do
-      allow(client)
-        .to receive(:pull_requests)
-        .with('repo')
-        .and_return(response1)
-
-      allow(client)
-        .to receive(:pull_requests)
-        .with('repo', { next_url: 'https://example.com/next' })
-        .and_return(response2)
-
-      allow(client)
-        .to receive(:pull_requests)
-        .with('repo', { next_url: 'https://example.com/next2' })
-        .and_return(response3)
-    end
-
-    it 'yields every retrieved page to the supplied block' do
-      pages = []
-
-      client.each_page(:pull_requests, :pull_request, 'repo') { |page| pages << page }
-
-      expect(pages[0]).to be_an_instance_of(Bitbucket::Page)
-
-      expect(pages[0].items.count).to eq(1)
-      expect(pages[0].items.first.raw).to eq(item1)
-      expect(pages[0].attrs[:next]).to eq('https://example.com/next')
-
-      expect(pages[1].items.count).to eq(1)
-      expect(pages[1].items.first.raw).to eq(item2)
-      expect(pages[1].attrs[:next]).to eq('https://example.com/next2')
-
-      expect(pages[2].items.count).to eq(1)
-      expect(pages[2].items.first.raw).to eq(item3)
-      expect(pages[2].attrs[:next]).to eq(nil)
-    end
+    it_behaves_like 'fetching bitbucket data', { fetch_type: :issues, representation_type: :issue }
 
     context 'when fetch_data not defined' do
       it 'raises argument error' do
@@ -107,6 +113,18 @@ RSpec.describe Bitbucket::Client, feature_category: :importers do
       expect(Bitbucket::Paginator).to receive(:new).with(anything, path, :issue, page_number: nil, limit: nil)
 
       client.issues(repo)
+    end
+
+    context 'with options raw' do
+      let(:url) { "#{root_url}#{path}" }
+
+      it 'returns raw result' do
+        stub_request(:get, url).to_return(status: 200, headers: headers, body: '{}')
+
+        client.issues(repo, raw: true)
+
+        expect(WebMock).to have_requested(:get, url)
+      end
     end
   end
 

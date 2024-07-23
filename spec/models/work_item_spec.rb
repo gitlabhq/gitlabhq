@@ -420,7 +420,7 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   describe '#linked_items_keyset_order' do
     subject { described_class.linked_items_keyset_order }
 
-    it { is_expected.to eq('"issue_links"."id" ASC') }
+    it { is_expected.to eq('"issue_links"."id" DESC') }
   end
 
   context 'with hierarchy' do

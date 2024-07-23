@@ -28,14 +28,26 @@ import {
   renderTableCell,
   renderTableRow,
   renderOrderedList,
-  renderHeading,
   renderHTMLNode,
-  renderContent,
   renderBulletList,
   renderReference,
   renderReferenceLabel,
   preserveUnchanged,
 } from './serialization_helpers';
+import descriptionList from './serializer/description_list';
+import descriptionItem from './serializer/description_item';
+import details from './serializer/details';
+import detailsContent from './serializer/details_content';
+import emoji from './serializer/emoji';
+import footnoteDefinition from './serializer/footnote_definition';
+import footnoteReference from './serializer/footnote_reference';
+import frontmatter from './serializer/frontmatter';
+import figure from './serializer/figure';
+import figureCaption from './serializer/figure_caption';
+import heading from './serializer/heading';
+import horizontalRule from './serializer/horizontal_rule';
+import listItem from './serializer/list_item';
+import loading from './serializer/loading';
 
 const defaultSerializerConfig = {
   marks: {
@@ -66,61 +78,22 @@ const defaultSerializerConfig = {
     [extensions.Diagram.name]: diagram,
     [extensions.CodeSuggestion.name]: codeSuggestion,
     [extensions.DrawioDiagram.name]: drawioDiagram,
-    [extensions.DescriptionList.name]: renderHTMLNode('dl', true),
-    [extensions.DescriptionItem.name]: (state, node, parent, index) => {
-      if (index === 1) state.ensureNewLine();
-      renderHTMLNode(node.attrs.isTerm ? 'dt' : 'dd')(state, node);
-      if (index === parent.childCount - 1) state.ensureNewLine();
-    },
-    [extensions.Details.name]: renderHTMLNode('details', true),
-    [extensions.DetailsContent.name]: (state, node, parent, index) => {
-      if (!index) renderHTMLNode('summary')(state, node);
-      else {
-        if (index === 1) state.ensureNewLine();
-        renderContent(state, node);
-        if (index === parent.childCount - 1) state.ensureNewLine();
-      }
-    },
-    [extensions.Emoji.name]: (state, node) => {
-      const { name } = node.attrs;
-
-      state.write(`:${name}:`);
-    },
-    [extensions.FootnoteDefinition.name]: preserveUnchanged((state, node) => {
-      state.write(`[^${node.attrs.identifier}]: `);
-      state.renderInline(node);
-      state.ensureNewLine();
-    }),
-    [extensions.FootnoteReference.name]: preserveUnchanged({
-      render: (state, node) => {
-        state.write(`[^${node.attrs.identifier}]`);
-      },
-      inline: true,
-    }),
-    [extensions.Frontmatter.name]: preserveUnchanged((state, node) => {
-      const { language } = node.attrs;
-      const syntax = {
-        toml: '+++',
-        json: ';;;',
-        yaml: '---',
-      }[language];
-
-      state.write(`${syntax}\n`);
-      state.text(node.textContent, false);
-      state.ensureNewLine();
-      state.write(syntax);
-      state.closeBlock(node);
-    }),
-    [extensions.Figure.name]: renderHTMLNode('figure'),
-    [extensions.FigureCaption.name]: renderHTMLNode('figcaption'),
+    [extensions.DescriptionList.name]: descriptionList,
+    [extensions.DescriptionItem.name]: descriptionItem,
+    [extensions.Details.name]: details,
+    [extensions.DetailsContent.name]: detailsContent,
+    [extensions.Emoji.name]: emoji,
+    [extensions.FootnoteDefinition.name]: footnoteDefinition,
+    [extensions.FootnoteReference.name]: footnoteReference,
+    [extensions.Frontmatter.name]: frontmatter,
+    [extensions.Figure.name]: figure,
+    [extensions.FigureCaption.name]: figureCaption,
     [extensions.HardBreak.name]: preserveUnchanged(renderHardBreak),
-    [extensions.Heading.name]: preserveUnchanged(renderHeading),
-    [extensions.HorizontalRule.name]: preserveUnchanged(
-      defaultMarkdownSerializer.nodes.horizontal_rule,
-    ),
+    [extensions.Heading.name]: heading,
+    [extensions.HorizontalRule.name]: horizontalRule,
     [extensions.Image.name]: image,
-    [extensions.ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
-    [extensions.Loading.name]: () => {},
+    [extensions.ListItem.name]: listItem,
+    [extensions.Loading.name]: loading,
     [extensions.OrderedList.name]: preserveUnchanged(renderOrderedList),
     [extensions.Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
     [extensions.HTMLComment.name]: (state, node) => {

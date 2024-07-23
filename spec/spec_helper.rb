@@ -462,6 +462,9 @@ RSpec.configure do |config|
 
     # Re-enable query limiting in case it was disabled
     Gitlab::QueryLimiting.enable!
+
+    # Reset ActiveSupport::CurrentAttributes models
+    ActiveSupport::CurrentAttributes.reset_all
   end
 
   config.before(:example, :mailer) do

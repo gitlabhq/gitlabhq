@@ -55,11 +55,8 @@ Prerequisites:
 
 To create a workspace:
 
-1. On the left sidebar, select **Search or go to**.
-1. Select **Your work**.
-1. Select **Workspaces**.
-1. Select **New workspace**.
-1. From the **Project** dropdown list, select a project with a [devfile](index.md#devfile).
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Edit > New workspace**.
 1. From the **Cluster agent** dropdown list, select a cluster agent owned by the group the project belongs to.
 1. From the **Git reference** dropdown list, select the branch, tag, or commit hash
    GitLab uses to create the workspace.

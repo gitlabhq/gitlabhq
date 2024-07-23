@@ -178,7 +178,6 @@ export default {
               cache,
               fullPath: this.fullPath,
               iid: this.oldParent?.iid,
-              isGroup: this.isGroup,
               workItem: { id: this.workItemId },
             }),
         });

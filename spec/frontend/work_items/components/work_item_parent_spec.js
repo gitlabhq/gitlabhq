@@ -341,7 +341,6 @@ describe('WorkItemParent component', () => {
         cache: expect.anything(Object),
         fullPath: mockFullPath,
         iid: undefined,
-        isGroup: false,
         workItem: { id: 'gid://gitlab/WorkItem/1' },
       });
     });
@@ -377,7 +376,6 @@ describe('WorkItemParent component', () => {
         cache: expect.anything(Object),
         fullPath: mockFullPath,
         iid: '1',
-        isGroup: false,
         workItem: { id: 'gid://gitlab/WorkItem/1' },
       });
     });

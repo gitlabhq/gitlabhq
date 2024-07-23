@@ -22,16 +22,6 @@ class ContainerRepository < ApplicationRecord
 
   belongs_to :project
 
-  ignore_columns %i[
-    migration_aborted_at
-    migration_import_done_at
-    migration_import_started_at
-    migration_plan
-    migration_pre_import_started_at
-    migration_pre_import_done_at
-    migration_skipped_at
-  ], remove_with: '17.3', remove_after: '2024-07-22'
-
   validates :name, length: { minimum: 0, allow_nil: false }
   validates :name, uniqueness: { scope: :project_id }
 

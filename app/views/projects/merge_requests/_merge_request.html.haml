@@ -22,25 +22,26 @@
       .issuable-info
         %span.issuable-reference.gl-inline-block
           #{issuable_reference(merge_request)}
-        %span.issuable-authored.gl-inline-block.gl-text-gray-500!
-          &middot;
-          #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
-        - if merge_request.milestone
-          %span.issuable-milestone.gl-inline-block
-            &nbsp;
-            = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: 'gl-text-gray-500!', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
-              = sprite_icon('milestone', size: 12, css_class: 'gl-vertical-align-text-bottom')
-              = merge_request.milestone.title
-        - if merge_request.target_project.default_branch != merge_request.target_branch
-          %span.project-ref-path.has-tooltip.gl-inline-block{ title: _('Target branch: %{target_branch}') % {target_branch: merge_request.target_branch} }
-            &nbsp;
-            = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name gl-text-gray-500!' do
-              = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
-              = merge_request.target_branch
-        - if merge_request.labels.any?
-          .gl-mt-2.gl-flex.gl-flex-wrap.gl-gap-2{ role: 'group', 'aria-label': _('Labels') }
-            - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
-              = link_to_label(label, type: :merge_request)
+        %span.gl-hidden.sm:gl-inline
+          %span.issuable-authored.gl-inline-block.gl-text-gray-500!
+            &middot;
+            #{s_('IssueList|created %{timeAgoString} by %{user}').html_safe % { timeAgoString: time_ago_with_tooltip(merge_request.created_at, placement: 'bottom'), user: link_to_member(merge_request.author, avatar: false, extra_class: 'gl-text-gray-500!') }}
+          - if merge_request.milestone
+            %span.issuable-milestone.gl-inline-block
+              &nbsp;
+              = link_to project_merge_requests_path(merge_request.project, milestone_title: merge_request.milestone.title), class: 'gl-text-gray-500!', data: { html: 'true', toggle: 'tooltip', title: milestone_tooltip_due_date(merge_request.milestone) } do
+                = sprite_icon('milestone', size: 12, css_class: 'gl-vertical-align-text-bottom')
+                = merge_request.milestone.title
+          - if merge_request.target_project.default_branch != merge_request.target_branch
+            %span.project-ref-path.has-tooltip.gl-inline-block.gl-text-truncate.gl-max-w-26.gl-align-bottom{ title: _('Target branch: %{target_branch}') % {target_branch: merge_request.target_branch} }
+              &nbsp;
+              = link_to project_ref_path(merge_request.project, merge_request.target_branch), class: 'ref-name gl-text-gray-500!' do
+                = sprite_icon('branch', size: 12, css_class: 'fork-sprite')
+                = merge_request.target_branch
+          - if merge_request.labels.any?
+            .gl-mt-2.gl-flex.gl-flex-wrap.gl-gap-2{ role: 'group', 'aria-label': _('Labels') }
+              - presented_labels_sorted_by_title(merge_request.labels, merge_request.project).each do |label|
+                = link_to_label(label, type: :merge_request)
 
     .gl-font-sm.gl-flex.gl-flex-shrink-0.gl-align-self-start.gl-gap-1.gl-flex-direction-row.gl-justify-content-space-between.gl-w-full.gl-md-w-auto{ class: 'gl-md-flex-direction-column!' }
       %ul.controls.gl-gap-3.gl-pl-0.gl-align-self-end

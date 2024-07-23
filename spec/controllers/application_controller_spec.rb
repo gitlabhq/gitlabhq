@@ -56,6 +56,31 @@ RSpec.describe ApplicationController, feature_category: :shared do
     end
   end
 
+  describe '#set_current_organization' do
+    let_it_be(:current_organization) { create(:organization, :default) }
+
+    before do
+      sign_in user
+    end
+
+    controller(described_class) do
+      def index; end
+    end
+
+    it 'sets current organization' do
+      expect { get :index, format: :json }.to change { Current.organization }.from(nil).to(current_organization)
+    end
+
+    context 'when multiple calls in one example are done' do
+      it 'does not update the organization' do
+        expect(Current).to receive(:organization=).once.and_call_original
+
+        get :index, format: :json
+        get :index, format: :json
+      end
+    end
+  end
+
   describe '#add_gon_variables' do
     before do
       Gon.clear

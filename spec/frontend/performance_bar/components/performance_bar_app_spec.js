@@ -1,14 +1,16 @@
-import { mount } from '@vue/test-utils';
+import { shallowMount } from '@vue/test-utils';
 import { GlLink } from '@gitlab/ui';
 import PerformanceBarApp from '~/performance_bar/components/performance_bar_app.vue';
 import PerformanceBarStore from '~/performance_bar/stores/performance_bar_store';
+import InfoApp from '~/performance_bar/components/info_modal/info_app.vue';
 
 describe('performance bar app', () => {
   let wrapper;
   const store = new PerformanceBarStore();
   store.addRequest('123', 'https://gitlab.com', '', {}, 'GET');
+
   const createComponent = () => {
-    wrapper = mount(PerformanceBarApp, {
+    wrapper = shallowMount(PerformanceBarApp, {
       propsData: {
         store,
         env: 'development',
@@ -23,8 +25,20 @@ describe('performance bar app', () => {
     });
   };
 
+  const findInfoApp = () => wrapper.findComponent(InfoApp);
+
   beforeEach(() => {
     createComponent();
+  });
+
+  describe('info section', () => {
+    it('renders the info section button', () => {
+      expect(findInfoApp().exists()).toBe(true);
+    });
+
+    it('passes the currentRequest prop', () => {
+      expect(findInfoApp().props().currentRequest).toEqual(store.findRequest('123'));
+    });
   });
 
   describe('flamegraph buttons', () => {

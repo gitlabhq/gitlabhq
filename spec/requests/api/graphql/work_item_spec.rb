@@ -595,8 +595,16 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
       describe 'linked items widget' do
         let_it_be(:related_item) { create(:work_item, project: project) }
         let_it_be(:blocked_item) { create(:work_item, project: project) }
-        let_it_be(:link1) { create(:work_item_link, source: work_item, target: related_item, link_type: 'relates_to') }
-        let_it_be(:link2) { create(:work_item_link, source: work_item, target: blocked_item, link_type: 'blocks') }
+        let_it_be(:link1) do
+          create(:work_item_link, source: work_item, target: related_item, link_type: 'relates_to',
+            created_at: Time.current + 1.day)
+        end
+
+        let_it_be(:link2) do
+          create(:work_item_link, source: work_item, target: blocked_item, link_type: 'blocks',
+            created_at: Time.current + 2.days)
+        end
+
         let(:work_item_fields) do
           <<~GRAPHQL
             id
@@ -661,7 +669,7 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
             include_context 'no sort argument'
 
             let(:first_param) { 1 }
-            let(:all_records) { [link1, link2] }
+            let(:all_records) { [link2, link1] }
             let(:data_path) { %w[workItem widgets linkedItems] }
 
             def widget_fields(args)

@@ -99,7 +99,7 @@ class WorkItem < Issue
           ::Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
             attribute_name: 'issue_link_id',
             column_expression: IssueLink.arel_table[:id],
-            order_expression: IssueLink.arel_table[:id].asc,
+            order_expression: IssueLink.arel_table[:id].desc,
             nullable: :not_nullable
           )
         ])

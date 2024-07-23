@@ -28,6 +28,7 @@ class ApplicationController < BaseActionController
   include StrongPaginationParams
 
   before_action :authenticate_user!, except: [:route_not_found]
+  before_action :set_current_organization
   before_action :enforce_terms!, if: :should_enforce_terms?
   before_action :check_password_expiration, if: :html_request?
   before_action :ldap_security_check
@@ -523,6 +524,15 @@ class ApplicationController < BaseActionController
   # `auth_user` again would also trigger the Warden callbacks again
   def context_user
     auth_user if strong_memoized?(:auth_user)
+  end
+
+  def set_current_organization
+    return if ::Current.lock_organization
+
+    ::Current.organization = Gitlab::Current::Organization.new(
+      params: params.permit(:controller, :namespace_id, :group_id, :id),
+      user: current_user
+    ).organization
   end
 end
 

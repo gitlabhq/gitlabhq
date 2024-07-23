@@ -38283,6 +38283,9 @@ msgstr ""
 msgid "PerformanceBar|DOM Content Loaded"
 msgstr ""
 
+msgid "PerformanceBar|Debugging information"
+msgstr ""
+
 msgid "PerformanceBar|Download"
 msgstr ""
 
@@ -38307,6 +38310,9 @@ msgstr ""
 msgid "PerformanceBar|Gitaly calls"
 msgstr ""
 
+msgid "PerformanceBar|Host"
+msgstr ""
+
 msgid "PerformanceBar|Memory"
 msgstr ""
 
@@ -38322,6 +38328,9 @@ msgstr ""
 msgid "PerformanceBar|Redis calls"
 msgstr ""
 
+msgid "PerformanceBar|Request made from Canary"
+msgstr ""
+
 msgid "PerformanceBar|SQL queries"
 msgstr ""
 
@@ -38335,6 +38344,9 @@ msgid "PerformanceBar|Sort chronologically"
 msgstr ""
 
 msgid "PerformanceBar|Stats"
+msgstr ""
+
+msgid "PerformanceBar|There is no host information"
 msgstr ""
 
 msgid "PerformanceBar|Total duration"

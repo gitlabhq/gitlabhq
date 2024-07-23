@@ -120,17 +120,6 @@ DETAILS:
 
 ## Beta features
 
-### Merge request template population
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Beta
-
-- Helps populate a merge request more quickly by generating a description based on the contents of the template.
-- LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
-- [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-description-from-a-template).
-
 ### Merge request summary
 
 DETAILS:

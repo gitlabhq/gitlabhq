@@ -9,6 +9,12 @@ module Organizations
     DEFAULT_ORGANIZATION_ID = 1
 
     scope :without_default, -> { where.not(id: DEFAULT_ORGANIZATION_ID) }
+    scope :with_namespace_path, ->(path) {
+      joins(namespaces: :route).where(route: { path: path.to_s })
+    }
+    scope :with_user, ->(user) {
+      joins(:users).where(users: user).order(Arel.sql('organization_users.id asc'))
+    }
 
     before_destroy :check_if_default_organization
 

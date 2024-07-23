@@ -918,6 +918,7 @@ smartcard
 smartcards
 snake_case
 snake_cased
+Snapcraft
 snapshotting
 Snowplow
 Snyk

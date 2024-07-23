@@ -5,6 +5,7 @@ import { mergeUrlParams } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import AddRequest from './add_request.vue';
 import DetailedMetric from './detailed_metric.vue';
+import InfoApp from './info_modal/info_app.vue';
 import RequestSelector from './request_selector.vue';
 
 export default {
@@ -12,6 +13,7 @@ export default {
     AddRequest,
     DetailedMetric,
     GlLink,
+    InfoApp,
     RequestSelector,
   },
   directives: {
@@ -112,12 +114,6 @@ export default {
         this.currentRequestId = requestId;
       },
     },
-    hasHost() {
-      return this.currentRequest && this.currentRequest.details && this.currentRequest.details.host;
-    },
-    isCanary() {
-      return Boolean(this.currentRequest.details.host.canary);
-    },
     downloadPath() {
       const data = JSON.stringify(this.requests);
       const blob = new Blob([data], { type: 'text/plain' });
@@ -178,21 +174,7 @@ export default {
       data-testid="performance-bar"
     >
       <div class="gl-display-flex gl-flex-shrink-0 view-performance-container">
-        <div v-if="hasHost" id="peek-view-host" class="gl-display-flex gl-gap-2 view">
-          <span class="current-host" :class="{ canary: isCanary }">
-            <gl-emoji
-              v-if="isCanary"
-              id="canary-emoji"
-              v-gl-tooltip.viewport="'Canary'"
-              data-name="baby_chick"
-            />
-            <gl-emoji
-              id="host-emoji"
-              v-gl-tooltip.viewport="currentRequest.details.host.hostname"
-              data-name="computer"
-            />
-          </span>
-        </div>
+        <info-app :current-request="currentRequest" />
         <detailed-metric
           v-for="metric in $options.detailedMetrics"
           :key="metric.metric"

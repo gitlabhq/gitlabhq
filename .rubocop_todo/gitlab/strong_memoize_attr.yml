@@ -405,7 +405,6 @@ Gitlab/StrongMemoizeAttr:
     - 'ee/lib/gitlab/elastic/document_reference.rb'
     - 'ee/lib/gitlab/elastic/indexer.rb'
     - 'ee/lib/gitlab/elastic/project_search_results.rb'
-    - 'ee/lib/gitlab/elastic/search_results.rb'
     - 'ee/lib/gitlab/expiring_subscription_message.rb'
     - 'ee/lib/gitlab/geo/health_check.rb'
     - 'ee/lib/gitlab/geo/jwt_request_decoder.rb'

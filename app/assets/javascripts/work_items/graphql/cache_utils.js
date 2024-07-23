@@ -199,9 +199,9 @@ export const removeHierarchyChild = ({ cache, id, workItem }) => {
   });
 };
 
-export const updateParent = ({ cache, query, fullPath, iid, workItem }) => {
+export const updateParent = ({ cache, fullPath, iid, workItem }) => {
   const queryArgs = {
-    query,
+    query: workItemByIidQuery,
     variables: { fullPath, iid },
   };
   const sourceData = cache.readQuery(queryArgs);

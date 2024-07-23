@@ -1,5 +1,4 @@
 import { uniq, omit, isFunction } from 'lodash';
-import { defaultMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 
 const defaultAttrs = {
   td: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
@@ -335,12 +334,6 @@ export function renderHardBreak(state, node, parent, index) {
       return;
     }
   }
-}
-
-export function renderHeading(state, node) {
-  if (state.options.skipEmptyNodes && !node.childCount) return;
-
-  defaultMarkdownSerializer.nodes.heading(state, node);
 }
 
 const expandPreserveUnchangedConfig = (configOrRender) =>

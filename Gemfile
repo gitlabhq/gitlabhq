@@ -663,7 +663,7 @@ gem 'valid_email', '~> 0.1' # rubocop:todo Gemfile/MissingFeatureCategory
 # JSON
 gem 'jsonb_accessor', '~> 1.3.10' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'json', '~> 2.7.2', feature_category: :shared
-gem 'json_schemer', '~> 0.2.18' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'json_schemer', '~> 2.3.0', feature_category: :shared
 gem 'oj', '~> 3.13.21' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'oj-introspect', '~> 0.7' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'multi_json', '~> 1.14.1' # rubocop:todo Gemfile/MissingFeatureCategory
