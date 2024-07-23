@@ -105,6 +105,17 @@ For more information about how Smart Commits work and what commands are availabl
 - [Process issues with Smart Commits](https://support.atlassian.com/jira-software-cloud/docs/process-issues-with-smart-commits/)
 - [Using Smart Commits](https://confluence.atlassian.com/fisheye/using-smart-commits-960155400.html)
 
+## Jira deployments
+
+You can use Jira deployments to track and visualize the progress of software releases directly in Jira.
+
+GitLab sends information about your environments and deployments to Jira if:
+
+- Your project's `.gitlab-ci.yml` file contains the [`environment`](../../ci/yaml/index.md#environment) keyword.
+- A Jira issue ID is [mentioned in certain parts of GitLab](#information-displayed-in-the-development-panel) and a pipeline is triggered.
+
+For more information, see [environments and deployments](../../ci/environments/index.md).
+
 ## Related topics
 
 - [Troubleshoot the development panel in Jira Server](https://confluence.atlassian.com/jirakb/troubleshoot-the-development-panel-in-jira-server-574685212.html)

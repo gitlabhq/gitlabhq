@@ -1,6 +1,37 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`UsageTrendsCountChart when fetching more data when the fetchMore query returns data passes the data to the line chart 1`] = `
+exports[`UsageTrendsCountChart with data passes the data to the line chart 1`] = `
+[
+  {
+    "data": [
+      [
+        "2020-07-01",
+        41,
+      ],
+      [
+        "2020-06-01",
+        22,
+      ],
+    ],
+    "name": "Mock Query 1",
+  },
+  {
+    "data": [
+      [
+        "2020-07-01",
+        10,
+      ],
+      [
+        "2020-06-01",
+        21,
+      ],
+    ],
+    "name": "Mock Query 2",
+  },
+]
+`;
+
+exports[`UsageTrendsCountChart with multiple pages of data fetched more data passes the data to the line chart 1`] = `
 [
   {
     "data": [
@@ -17,25 +48,24 @@ exports[`UsageTrendsCountChart when fetching more data when the fetchMore query 
         5,
       ],
     ],
-    "name": "Mock Query",
+    "name": "Mock Query 1",
   },
-]
-`;
-
-exports[`UsageTrendsCountChart with data passes the data to the line chart 1`] = `
-[
   {
     "data": [
       [
         "2020-07-01",
-        41,
+        10,
       ],
       [
         "2020-06-01",
-        22,
+        21,
+      ],
+      [
+        "2020-08-01",
+        10,
       ],
     ],
-    "name": "Mock Query",
+    "name": "Mock Query 2",
   },
 ]
 `;

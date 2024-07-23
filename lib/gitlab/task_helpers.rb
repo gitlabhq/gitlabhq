@@ -26,7 +26,7 @@ module Gitlab
     def ask_to_continue
       return if Gitlab::Utils.to_boolean(ENV['GITLAB_ASSUME_YES'])
 
-      answer = prompt("Do you want to continue (yes/no)? ".color(:blue), %w[yes no])
+      answer = prompt(Rainbow("Do you want to continue (yes/no)? ").blue, %w[yes no])
       raise Gitlab::TaskAbortedByUserError unless answer == "yes"
     end
 
@@ -141,10 +141,10 @@ module Gitlab
       strong_memoize(:warned_user_not_gitlab) do
         current_user = run_command(%w[whoami]).chomp
 
-        puts " Warning ".color(:black).background(:yellow)
-        puts "  You are running as user #{current_user.color(:magenta)}, we hope you know what you are doing."
+        puts Rainbow(" Warning ").color(:black).background(:yellow)
+        puts "  You are running as user #{Rainbow(current_user).magenta}, we hope you know what you are doing."
         puts "  Things may work\/fail for the wrong reasons."
-        puts "  For correct results you should run this as user #{gitlab_user.color(:magenta)}."
+        puts "  For correct results you should run this as user #{Rainbow(gitlab_user).magenta}."
         puts ""
       end
     end

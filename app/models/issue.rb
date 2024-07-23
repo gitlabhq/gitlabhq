@@ -58,7 +58,6 @@ class Issue < ApplicationRecord
 
   # prevent caching this column by rails, as we want to easily remove it after the backfilling
   ignore_column :tmp_epic_id, remove_with: '16.11', remove_after: '2024-03-31'
-  ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
   belongs_to :project
   belongs_to :namespace, inverse_of: :issues

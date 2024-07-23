@@ -3,9 +3,6 @@
 class ResourceMilestoneEvent < ResourceTimeboxEvent
   include EachBatch
   include Import::HasImportSource
-  include IgnorableColumns
-
-  ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
   belongs_to :milestone
 

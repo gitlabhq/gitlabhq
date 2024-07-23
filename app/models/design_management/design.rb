@@ -16,9 +16,6 @@ module DesignManagement
     include Participable
     include CacheMarkdownField
     include Subscribable
-    include IgnorableColumns
-
-    ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
     cache_markdown_field :description
 

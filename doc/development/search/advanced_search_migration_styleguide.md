@@ -444,7 +444,7 @@ We choose to use GitLab [required stops](../database/required_stops.md) as a saf
 backwards compatibility for indices that have not been fully migrated. We
 [document this in our upgrade documentation](../../update/index.md#upgrading-to-a-new-major-version).
 
-[GitLab Housekeeper](../../../gems/gitlab-housekeeper/README.md)
+[GitLab Housekeeper](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md)
 is used to automate the cleanup process. This process includes
 marking existing migrations as obsolete and deleting obsolete migrations.
 When a migration is marked as obsolete, the migration code is replaced with
@@ -472,7 +472,7 @@ deployments.
 
 ### Process for marking migrations as obsolete
 
-Run the [`Keeps::MarkOldAdvancedSearchMigrationsAsObsolete` Keep](../../../gems/gitlab-housekeeper/README.md#running-for-real)
+Run the [`Keeps::MarkOldAdvancedSearchMigrationsAsObsolete` Keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md#running-for-real)
 manually to mark migrations as obsolete.
 
 For every migration that was created two versions before the last required stop,
@@ -498,7 +498,7 @@ The MR assignee must:
 
 ### Process for removing obsolete migrations
 
-Run the [`Keeps::DeleteObsoleteAdvancedSearchMigrations` Keep](../../../gems/gitlab-housekeeper/README.md#running-for-real)
+Run the [`Keeps::DeleteObsoleteAdvancedSearchMigrations` Keep](https://gitlab.com/gitlab-org/gitlab/-/blob/master/gems/gitlab-housekeeper/README.md#running-for-real)
 manually to remove obsolete migrations and specs. The Keep removes all but the most
 recent obsolete migration.
 

@@ -2486,25 +2486,34 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
     end
 
     context 'when group is within a provided organization' do
-      let_it_be(:current_organization) { create(:organization, name: "Current Organization") }
       let_it_be(:organization) { create(:organization) }
-
-      before do
-        allow(Current).to receive(:organization).and_return(current_organization)
-      end
 
       context 'when user is an organization user' do
         before_all do
-          create(:organization_user, user: user3, organization: current_organization)
           create(:organization_user, user: user3, organization: organization)
         end
 
         context 'and organization_id is not passed' do
-          it 'uses database default value' do
-            post api('/groups', user3), params: attributes_for_group_api
+          context 'and current_organization is set', :with_current_organization do
+            before_all do
+              create(:organization_user, user: user3, organization: current_organization)
+            end
 
-            expect(response).to have_gitlab_http_status(:created)
-            expect(json_response['organization_id']).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
+            it 'uses current_organization' do
+              post api('/groups', user3), params: attributes_for_group_api
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['organization_id']).to eq(current_organization.id)
+            end
+          end
+
+          context 'and current organization is not set' do
+            it 'uses database default value' do
+              post api('/groups', user3), params: attributes_for_group_api
+
+              expect(response).to have_gitlab_http_status(:created)
+              expect(json_response['organization_id']).to eq(Organizations::Organization::DEFAULT_ORGANIZATION_ID)
+            end
           end
         end
 

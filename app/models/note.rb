@@ -28,9 +28,6 @@ class Note < ApplicationRecord
   include Sortable
   include EachBatch
   include Spammable
-  include IgnorableColumns
-
-  ignore_column :imported, remove_with: '17.2', remove_after: '2024-07-22'
 
   cache_markdown_field :note, pipeline: :note, issuable_reference_expansion_enabled: true
 

@@ -32,6 +32,20 @@ module Import
 
     SerializationError = Class.new(StandardError)
 
+    def aliased_model
+      Import::PlaceholderReferenceAliasResolver.aliased_model(model)
+    end
+
+    def aliased_user_reference_column
+      Import::PlaceholderReferenceAliasResolver.aliased_column(model, user_reference_column)
+    end
+
+    def aliased_composite_key
+      composite_key.transform_keys do |key|
+        Import::PlaceholderReferenceAliasResolver.aliased_column(model, key)
+      end
+    end
+
     def to_serialized
       Gitlab::Json.dump(attributes.slice(*SERIALIZABLE_ATTRIBUTES).to_h.values)
     end

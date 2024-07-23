@@ -1281,13 +1281,8 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
     end
   end
 
-  describe "POST /users" do
-    let_it_be(:current_organization) { create(:organization) }
+  describe "POST /users", :with_current_organization do
     let(:path) { '/users' }
-
-    before do
-      allow(Current).to receive(:organization).and_return(current_organization)
-    end
 
     it_behaves_like 'POST request permissions for admin mode' do
       let(:params) { attributes_for(:user, projects_limit: 3) }

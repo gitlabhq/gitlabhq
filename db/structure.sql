@@ -10223,7 +10223,9 @@ CREATE TABLE emails (
     updated_at timestamp without time zone,
     confirmation_token character varying,
     confirmed_at timestamp without time zone,
-    confirmation_sent_at timestamp without time zone
+    confirmation_sent_at timestamp without time zone,
+    detumbled_email text,
+    CONSTRAINT check_319f6999dc CHECK ((char_length(detumbled_email) <= 255))
 );
 
 CREATE SEQUENCE emails_id_seq

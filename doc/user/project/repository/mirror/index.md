@@ -14,11 +14,6 @@ DETAILS:
 You can _mirror_ a repository to and from external sources. You can select which repository
 serves as the source. Branches, tags, and commits are synced automatically.
 
-NOTE:
-SCP-style URLs are **not** supported. However, the work for implementing SCP-style URLs is tracked
-in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/18993).
-Subscribe to the issue to follow its progress.
-
 Several mirroring methods exist:
 
 - [Push](push.md): Mirror a repository from GitLab to another location.
@@ -36,6 +31,13 @@ Mirror a repository when:
   Configure your GitLab repository as a [pull mirror](pull.md) of the other project.
   Your GitLab repository pulls copies of the commits, tags, and branches of project.
   They become available to use on GitLab.
+
+The following is not supported:
+
+- SCP-style URLs. The work to implement SCP-style URLs is ongoing.
+  For more information and to track its progress, see
+  [issue 18993](https://gitlab.com/gitlab-org/gitlab/-/issues/18993).
+- Mirroring repositories over [dumb HTTP protocol](https://git-scm.com/book/en/v2/Git-on-the-Server-The-Protocols#_dumb_http).
 
 ## Create a repository mirror
 

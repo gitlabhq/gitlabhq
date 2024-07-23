@@ -1183,7 +1183,6 @@ To handle these queue groups on two nodes:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['queue_selector'] = false
 
    sidekiq['routing_rules'] = [
       ["feature_category=global_search", "global_search"],
@@ -1198,6 +1197,13 @@ To handle these queue groups on two nodes:
    sidekiq['max_concurrency'] = 20
    ```
 
+   If you are using GitLab 16.11 and earlier, explicitly disable any
+   [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+   ```ruby
+   sidekiq['queue_selector'] = false
+   ```
+
 1. Save the file and [reconfigure GitLab](../../administration/restart_gitlab.md)
    for the changes to take effect.
 
@@ -1205,7 +1211,6 @@ To handle these queue groups on two nodes:
 
    ```ruby
    sidekiq['enable'] = true
-   sidekiq['queue_selector'] = false
 
    sidekiq['routing_rules'] = [
       ["feature_category=global_search", "global_search"],
@@ -1218,6 +1223,13 @@ To handle these queue groups on two nodes:
 
    sidekiq['min_concurrency'] = 20
    sidekiq['max_concurrency'] = 20
+   ```
+
+   If you are using GitLab 16.11 and earlier, explicitly disable any
+   [queue selectors](../../administration/sidekiq/processing_specific_job_classes.md#queue-selectors-deprecated):
+
+   ```ruby
+   sidekiq['queue_selector'] = false
    ```
 
 1. On all other Rails and Sidekiq nodes, ensure that `sidekiq['routing_rules']` is the same as above.

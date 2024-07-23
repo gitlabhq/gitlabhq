@@ -11,19 +11,19 @@ module Gitlab
     end
 
     def warn(message)
-      progress.puts "#{Time.zone.now} -- #{message}".color(:yellow)
+      progress.puts Rainbow("#{Time.zone.now} -- #{message}").yellow
 
       super
     end
 
     def info(message)
-      progress.puts "#{Time.zone.now} -- #{message}".color(:cyan)
+      progress.puts Rainbow("#{Time.zone.now} -- #{message}").cyan
 
       super
     end
 
     def error(message)
-      progress.puts "#{Time.zone.now} -- #{message}".color(:red)
+      progress.puts Rainbow("#{Time.zone.now} -- #{message}").red
 
       super
     end

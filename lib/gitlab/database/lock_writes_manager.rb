@@ -46,7 +46,7 @@ module Gitlab
           return result_hash(action: 'skipped')
         end
 
-        logger&.info "Database: '#{database_name}', Table: '#{table_name}': Lock Writes".color(:yellow)
+        logger&.info Rainbow("Database: '#{database_name}', Table: '#{table_name}': Lock Writes").yellow
         sql_statement = <<~SQL
           CREATE TRIGGER #{write_trigger_name}
             BEFORE INSERT OR UPDATE OR DELETE OR TRUNCATE
@@ -65,7 +65,7 @@ module Gitlab
           return result_hash(action: 'skipped')
         end
 
-        logger&.info "Database: '#{database_name}', Table: '#{table_name}': Allow Writes".color(:green)
+        logger&.info Rainbow("Database: '#{database_name}', Table: '#{table_name}': Allow Writes").green
         sql_statement = <<~SQL
           DROP TRIGGER IF EXISTS #{write_trigger_name} ON #{table_name};
         SQL

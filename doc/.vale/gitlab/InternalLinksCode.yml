@@ -9,4 +9,4 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: error
 scope: raw
 raw:
-  - '\[[^\]]*\]\([\.\/]*(ee|app|bin|config|db|data|fixtures|lib|locale|qa|scripts|spec)\/'
+  - '\[[^\]]*\]\([\.\/]*(ee|app|bin|config|db|data|fixtures|gems|lib|locale|qa|scripts|spec)\/'

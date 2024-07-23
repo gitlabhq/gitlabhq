@@ -67,6 +67,74 @@ RSpec.describe Import::SourceUserPlaceholderReference, feature_category: :import
     end
   end
 
+  describe "#aliased_model" do
+    let(:source_user_placeholder_reference) { build(:import_source_user_placeholder_reference, model: "Note") }
+
+    subject(:aliased_model) { source_user_placeholder_reference.aliased_model }
+
+    it "gets the model" do
+      expect(aliased_model).to eq(Note)
+    end
+
+    context "when the model name has changed" do
+      let(:source_user_placeholder_reference) do
+        build(:import_source_user_placeholder_reference, model: "Description")
+      end
+
+      before do
+        allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_model).and_return(Note)
+      end
+
+      it "uses the new model" do
+        expect(aliased_model).to eq(Note)
+      end
+    end
+  end
+
+  describe "#aliased_user_reference_column" do
+    let(:source_user_placeholder_reference) do
+      build(:import_source_user_placeholder_reference, model: "Note", user_reference_column: "author_id")
+    end
+
+    subject(:aliased_user_reference_column) { source_user_placeholder_reference.aliased_user_reference_column }
+
+    it "gets the column" do
+      expect(aliased_user_reference_column).to eq("author_id")
+    end
+
+    context "when the column name has changed" do
+      before do
+        allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_column).and_return("user_id")
+      end
+
+      it "uses the new column" do
+        expect(aliased_user_reference_column).to eq("user_id")
+      end
+    end
+  end
+
+  describe "#aliased_composite_key" do
+    let(:source_user_placeholder_reference) do
+      build(
+        :import_source_user_placeholder_reference,
+        model: "Note",
+        composite_key: { "author_id" => 1, "old_id" => 2 }
+      )
+    end
+
+    before do
+      allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_column).and_call_original
+      allow(Import::PlaceholderReferenceAliasResolver).to receive(:aliased_column)
+        .with("Note", "old_id").and_return("new_id")
+    end
+
+    subject(:aliased_composite_key) { source_user_placeholder_reference.aliased_composite_key }
+
+    it "gets the keys for the composite key" do
+      expect(aliased_composite_key).to eq("author_id" => 1, "new_id" => 2)
+    end
+  end
+
   describe '#to_serialized' do
     let(:reference) do
       build(:import_source_user_placeholder_reference,
