@@ -7,7 +7,7 @@ RSpec.describe "Converts a work item to a new type", feature_category: :team_pla
 
   let_it_be(:project) { create(:project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
-  let_it_be(:new_type) { create(:work_item_type, :incident, :default) }
+  let_it_be(:new_type) { create(:work_item_type, :incident) }
   let_it_be(:work_item, refind: true) do
     create(:work_item, :task, project: project, milestone: create(:milestone, project: project))
   end

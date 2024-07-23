@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :related_link_restriction, class: 'WorkItems::RelatedLinkRestriction' do
-    source_type { association :work_item_type, :default }
-    target_type { association :work_item_type, :default }
+    source_type { association :work_item_type }
+    target_type { association :work_item_type }
     link_type { 0 }
 
     initialize_with do

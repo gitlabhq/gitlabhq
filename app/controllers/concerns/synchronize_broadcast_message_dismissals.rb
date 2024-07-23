@@ -15,6 +15,13 @@ module SynchronizeBroadcastMessageDismissals
   private
 
   def create_dismissal_cookie(dismissal)
+    Gitlab::AppLogger.info(
+      "Creating cookie for broadcast message dismissal: " \
+        "user_id=#{dismissal.user_id} " \
+        "broadcast_message_id=#{dismissal.broadcast_message_id} " \
+        "expires_at=#{dismissal.expires_at}"
+    )
+
     cookies[dismissal.cookie_key] = { value: true, expires: dismissal.expires_at }
   end
 end

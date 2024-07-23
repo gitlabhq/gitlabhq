@@ -2,25 +2,27 @@
 
 FactoryBot.define do
   factory :work_item_type, class: 'WorkItems::Type' do
-    namespace
-
     name      { generate(:work_item_type_name) }
     base_type { WorkItems::Type.base_types[:issue] }
     icon_name { 'issue-type-issue' }
 
-    initialize_with do
-      type_base_attributes = attributes.with_indifferent_access.slice(:base_type, :namespace, :namespace_id)
-
-      # Expect base_types to exist on the DB
-      if type_base_attributes.slice(:namespace, :namespace_id).compact.empty?
-        WorkItems::Type.find_or_initialize_by(type_base_attributes)
-      else
-        WorkItems::Type.new(attributes)
-      end
+    transient do
+      default { true }
     end
 
-    trait :default do
-      namespace { nil }
+    initialize_with do
+      next WorkItems::Type.new(attributes) unless default
+
+      type_base_attributes = attributes.with_indifferent_access.slice(:base_type)
+
+      # Expect base_types to exist on the DB
+      WorkItems::Type.find_or_initialize_by(type_base_attributes)
+    end
+
+    # non_default work item types don't exist in production. This trait only exists to simplify work item type
+    # specific specs
+    trait :non_default do
+      default { false }
     end
 
     trait :issue do

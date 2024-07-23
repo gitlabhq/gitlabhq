@@ -2,20 +2,20 @@
 
 exports[`packages_list_row renders 1`] = `
 <div
-  class="gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-t-transparent gl-display-flex gl-flex-direction-column"
+  class="gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid gl-border-t-1 gl-border-t-solid gl-border-t-transparent gl-flex gl-flex-col"
   data-testid="package-row"
 >
   <div
-    class="gl-align-items-center gl-display-flex gl-py-3"
+    class="gl-flex gl-items-center gl-py-3"
   >
     <div
-      class="gl-align-items-stretch gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-justify-content-space-between gl-sm-flex-direction-row"
+      class="gl-flex gl-flex-col gl-grow gl-items-stretch gl-justify-between sm:gl-flex-row"
     >
       <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-mb-3 gl-min-w-0 gl-sm-mb-0"
+        class="gl-flex gl-flex-col gl-grow gl-mb-3 gl-min-w-0 sm:gl-mb-0"
       >
         <div
-          class="gl-align-items-center gl-display-flex gl-font-semibold gl-min-h-6 gl-min-w-0 gl-text-body"
+          class="gl-flex gl-font-semibold gl-items-center gl-min-h-6 gl-min-w-0 gl-text-primary"
         >
           <div
             class="gl-align-items-center gl-display-flex gl-min-w-0 gl-mr-3"
@@ -33,7 +33,7 @@ exports[`packages_list_row renders 1`] = `
           </div>
         </div>
         <div
-          class="gl-align-items-center gl-display-flex gl-flex-grow-1 gl-font-sm gl-min-h-6 gl-min-w-0 gl-text-secondary"
+          class="gl-flex gl-grow gl-items-center gl-min-h-6 gl-min-w-0 gl-text-secondary gl-text-sm"
         >
           <div
             class="gl-display-flex"
@@ -49,17 +49,17 @@ exports[`packages_list_row renders 1`] = `
         </div>
       </div>
       <div
-        class="gl-display-flex gl-flex-direction-column gl-flex-shrink-0 gl-justify-content-space-between gl-sm-align-items-flex-end gl-text-secondary"
+        class="gl-flex gl-flex-col gl-flex-shrink-0 gl-justify-between gl-text-secondary sm:gl-items-end"
       >
         <div
-          class="gl-align-items-center gl-display-flex gl-min-h-6 gl-sm-text-body"
+          class="gl-flex gl-items-center gl-min-h-6 sm:gl-text-primary"
         >
           <publish-method-stub
             packageentity="[object Object]"
           />
         </div>
         <div
-          class="gl-align-items-center gl-display-flex gl-font-sm gl-min-h-6"
+          class="gl-flex gl-items-center gl-min-h-6 gl-text-sm"
         >
           <span>
             Created
@@ -73,7 +73,7 @@ exports[`packages_list_row renders 1`] = `
       </div>
     </div>
     <div
-      class="gl-display-flex gl-justify-content-end gl-pr-1 gl-w-9"
+      class="gl-flex gl-justify-end gl-pr-1 gl-w-9"
     >
       <gl-button-stub
         aria-label="Remove package"

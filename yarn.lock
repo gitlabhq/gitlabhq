@@ -1359,10 +1359,10 @@
   resolved "https://registry.yarnpkg.com/@gitlab/svgs/-/svgs-3.109.0.tgz#af953d8114768343034f1f02bc8e2d93eb613c65"
   integrity sha512-MmBTsco2LIh/l16iJQy6R98YDOlE3C++AE0Z1+KCpAX/3+fLAmULx2sWp+JnmM0ws8J0LaeLN6+vWiPaEWA16Q==
 
-"@gitlab/ui@86.13.0":
-  version "86.13.0"
-  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-86.13.0.tgz#c365418154119d3238ee0e90e1a3246da47f9ca8"
-  integrity sha512-vXGDXs6vIm4kp2jGs/3umGec+117Wi7IEeLUtcNCZfBrFxrEH5hu5qPGl7AjSwNhCkOnENfRkW43ud47rZ0BHQ==
+"@gitlab/ui@86.14.1":
+  version "86.14.1"
+  resolved "https://registry.yarnpkg.com/@gitlab/ui/-/ui-86.14.1.tgz#b97903e5b214cc19000ba56798137d8124fa3e3d"
+  integrity sha512-ZgZZ0R9vG/p5XlAj9narLEB8BPcPjCwKbQ2VZhPEDNeWrttQCPRgC/t4IMWwmyfoPTrGIiRcKfl83urSdumPaQ==
   dependencies:
     "@floating-ui/dom" "1.4.3"
     echarts "^5.3.2"
@@ -7734,10 +7734,10 @@ graphql@^15.7.2:
   resolved "https://registry.yarnpkg.com/graphql/-/graphql-15.7.2.tgz#85ab0eeb83722977151b3feb4d631b5f2ab287ef"
   integrity sha512-AnnKk7hFQFmU/2I9YSQf3xw44ctnSFCfp3zE0N6W174gqe9fWG/2rKaKxROK7CcI3XtERpjEKFqts8o319Kf7A==
 
-gridstack@^10.3.0:
-  version "10.3.0"
-  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-10.3.0.tgz#8fa065f896d0a880c5c54c24d189f3197184488a"
-  integrity sha512-eGKsmU2TppV4coyDu9IIdIkm4qjgLLdjlEOFwQyQMuSwfOpzSfLdPc8du0HuebGr7CvAIrJxN4lBOmGrWSBg9g==
+gridstack@^10.3.1:
+  version "10.3.1"
+  resolved "https://registry.yarnpkg.com/gridstack/-/gridstack-10.3.1.tgz#4ed704279c40094fc1b9e3318f20b573f2fe9f40"
+  integrity sha512-Ra82k/88gdeiu3ZP40COS4bI4sGhNQlZAaAQ6szfPfr68zVpsXxiyLKr5zYcTpKX4jjcwyNsNNdcV1tDJc71fA==
 
 gzip-size@^6.0.0:
   version "6.0.0"

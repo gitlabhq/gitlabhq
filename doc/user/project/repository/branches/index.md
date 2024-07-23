@@ -11,26 +11,30 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-Branches are versions of a project's working tree. When you create a new
-[project](../../index.md), GitLab creates a [default branch](default.md) (which
-cannot be deleted) for your repository. Default branch settings can be configured
-at the project, subgroup, group, or instance level.
+A branch is a version of a project's working tree. Branches are the
+foundation of development in a project. When you create a new
+[project](../../index.md), GitLab creates a [default branch](default.md)
+for your repository. Default branch settings are configured in a project,
+subgroup, group, or instance.
 
-As your project grows, your team creates more
-branches, preferably by following [branch naming patterns](#prefix-branch-names-with-issue-numbers).
+As your project grows, your team creates more branches.
 Each branch represents a set of changes, which allows development work to be done
 in parallel. Development work in one branch does not affect another branch.
 
-Branches are the foundation of development in a project:
+The development workflow for branches is:
 
-1. To get started, create a branch and add commits to it.
-1. When the work is ready for review, create a [merge request](../../merge_requests/index.md) to propose
-   merging the changes in your branch. To streamline this process, you should follow
+1. [Create a branch](#create-a-branch) and add commits to it.
+   To streamline this process, you should follow
    [branch naming patterns](#prefix-branch-names-with-issue-numbers).
-1. Preview changes in a branch with a [review app](../../../../ci/review_apps/index.md).
+1. When the work is ready for review, create a [merge request](../../merge_requests/index.md) to propose merging the changes in your branch.
+1. Preview the changes with a [review app](../../../../ci/review_apps/index.md).
+1. [Request a review](../../../project/merge_requests/reviews/index.md#request-a-review).
+1. After your merge request is approved, merge your branch to the origin branch.
+   The [merge method](../../../project/merge_requests/methods/index.md) determines how merge requests
+   are handled in your project.
 1. After the contents of your branch are merged, [delete the merged branch](#delete-merged-branches).
 
-## Create branch
+## Create a branch
 
 Prerequisites:
 
@@ -59,7 +63,7 @@ Prerequisites:
   must be set to `Partially protected` or `Not protected` for you to push a commit
   to the default branch.
 
-To add a [default branch](default.md) to an empty project:
+To add a [default branch](default.md) to a blank project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Scroll to **The repository for this project is empty** and select the type of
@@ -70,10 +74,6 @@ To add a [default branch](default.md) to an empty project:
 GitLab creates a default branch and adds your file to it.
 
 ### From an issue
-
-Prerequisites:
-
-- You must have at least the Developer role for the project.
 
 When viewing an issue, you can create an associated branch directly from that page.
 Branches created this way use the

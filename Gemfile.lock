@@ -1016,7 +1016,7 @@ GEM
     kaminari-core (1.2.2)
     kas-grpc (0.5.0)
       grpc (~> 1.0)
-    knapsack (1.22.0)
+    knapsack (4.0.0)
       rake
     kramdown (2.3.2)
       rexml
@@ -2095,7 +2095,7 @@ DEPENDENCIES
   jwt (~> 2.5)
   kaminari (~> 1.2.2)
   kas-grpc (~> 0.5.0)
-  knapsack (~> 1.22.0)
+  knapsack (~> 4.0.0)
   kramdown (~> 2.3.1)
   kubeclient (~> 4.11.0)
   lefthook (~> 1.6.8)

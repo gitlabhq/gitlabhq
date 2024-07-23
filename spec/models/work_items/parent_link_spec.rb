@@ -61,8 +61,8 @@ RSpec.describe WorkItems::ParentLink, feature_category: :portfolio_management do
       end
 
       context 'with nested ancestors' do
-        let_it_be(:type1) { create(:work_item_type, namespace: project.namespace) }
-        let_it_be(:type2) { create(:work_item_type, namespace: project.namespace) }
+        let_it_be(:type1) { create(:work_item_type, :non_default) }
+        let_it_be(:type2) { create(:work_item_type, :non_default) }
         let_it_be(:item1) { create(:work_item, work_item_type: type1, project: project) }
         let_it_be(:item2) { create(:work_item, work_item_type: type2, project: project) }
         let_it_be(:item3) { create(:work_item, work_item_type: type2, project: project) }

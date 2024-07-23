@@ -14,8 +14,8 @@ RSpec.describe Resolvers::WorkItems::TypesResolver do
 
     subject(:result) { resolve(described_class, obj: object, args: args) }
 
-    it 'returns all default work item types' do
-      expect(result.to_a).to match(WorkItems::Type.default.order_by_name_asc)
+    it 'returns all work item types' do
+      expect(result.to_a).to match(WorkItems::Type.order_by_name_asc)
     end
 
     context 'when filtering by type name' do

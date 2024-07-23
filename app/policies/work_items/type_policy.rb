@@ -2,8 +2,8 @@
 
 module WorkItems
   class TypePolicy < BasePolicy
-    condition(:is_default_type) { @subject.default? }
+    condition(:type_present) { @subject.present? }
 
-    rule { is_default_type }.enable :read_work_item_type
+    rule { type_present }.enable :read_work_item_type
   end
 end

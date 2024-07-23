@@ -71,7 +71,7 @@ export default {
 
 <template>
   <div>
-    <div class="issuable-discussion gl-mb-5 gl-clearfix!">
+    <div class="issuable-discussion gl-mb-5 !gl-clearfix">
       <template v-if="initialLoading">
         <ul class="notes main-notes-list timeline">
           <skeleton-loading-container

@@ -1612,6 +1612,29 @@ export const workItemTask = {
   __typename: 'WorkItem',
 };
 
+export const otherNamespaceChild = {
+  id: 'gid://gitlab/WorkItem/24',
+  iid: '24',
+  workItemType: {
+    id: 'gid://gitlab/WorkItems::Type/5',
+    name: 'Task',
+    iconName: 'issue-type-task',
+    __typename: 'WorkItemType',
+  },
+  title: 'baz',
+  state: 'OPEN',
+  confidential: false,
+  reference: 'test-project-path/other#24',
+  namespace: {
+    fullPath: 'test-project-path/other',
+  },
+  createdAt: '2022-08-03T12:41:54Z',
+  closedAt: null,
+  webUrl: '/gitlab-org/gitlab-test/-/work_items/24',
+  widgets: [workItemObjectiveMetadataWidgets.ASSIGNEES],
+  __typename: 'WorkItem',
+};
+
 export const childrenWorkItems = [
   confidentialWorkItemTask,
   closedWorkItemTask,

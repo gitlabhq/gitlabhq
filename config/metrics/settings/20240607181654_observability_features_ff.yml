@@ -1,0 +1,17 @@
+---
+key_path: settings.observability_features_ff
+description: Count of groups with the observability_features feature flag enabled, where the flag is disabled globally
+product_group: observability
+value_type: boolean
+status: active
+milestone: "17.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159930
+time_frame: none
+data_source: database
+data_category: optional
+instrumentation_class: ObservabilityFeaturesFfMetric
+performance_indicator_type: []
+distribution:
+- ee
+tier:
+- ultimate

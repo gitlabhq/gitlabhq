@@ -398,6 +398,12 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   describe '#link_reference_pattern' do
     let(:match_data) { described_class.link_reference_pattern.match(link_reference_url) }
 
+    before_all do
+      # Required on the unlikely event that factory lint specs load the WorkItem class for the first time as
+      # those will define the instance's URL to be gitlab.com and link_reference_pattern is memoized in the class
+      described_class.instance_variable_set(:@link_reference_pattern, nil)
+    end
+
     context 'with work item url' do
       let(:link_reference_url) { 'http://localhost/namespace/project/-/work_items/1' }
 
@@ -424,10 +430,10 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
   end
 
   context 'with hierarchy' do
-    let_it_be(:type1) { create(:work_item_type, namespace: reusable_project.namespace) }
-    let_it_be(:type2) { create(:work_item_type, namespace: reusable_project.namespace) }
-    let_it_be(:type3) { create(:work_item_type, namespace: reusable_project.namespace) }
-    let_it_be(:type4) { create(:work_item_type, namespace: reusable_project.namespace) }
+    let_it_be(:type1) { create(:work_item_type, :non_default) }
+    let_it_be(:type2) { create(:work_item_type, :non_default) }
+    let_it_be(:type3) { create(:work_item_type, :non_default) }
+    let_it_be(:type4) { create(:work_item_type, :non_default) }
     let_it_be(:hierarchy_restriction1) { create(:hierarchy_restriction, parent_type: type1, child_type: type2) }
     let_it_be(:hierarchy_restriction2) { create(:hierarchy_restriction, parent_type: type2, child_type: type2) }
     let_it_be(:hierarchy_restriction3) { create(:hierarchy_restriction, parent_type: type2, child_type: type3) }
@@ -494,11 +500,11 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
     end
 
     context 'with ParentLink relation' do
-      let_it_be(:old_type) { create(:work_item_type) }
-      let_it_be(:new_type) { create(:work_item_type) }
+      let_it_be(:old_type) { create(:work_item_type, :non_default) }
+      let_it_be(:new_type) { create(:work_item_type, :non_default) }
 
       context 'with hierarchy restrictions' do
-        let_it_be(:child_type) { create(:work_item_type) }
+        let_it_be(:child_type) { create(:work_item_type, :non_default) }
 
         let_it_be_with_reload(:parent) { create(:work_item, work_item_type: old_type, project: reusable_project) }
         let_it_be_with_reload(:child) { create(:work_item, work_item_type: child_type, project: reusable_project) }

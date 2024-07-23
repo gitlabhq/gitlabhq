@@ -93,7 +93,7 @@ describe('Abuse Report Add Note', () => {
           'note-wrapper',
           'note-comment',
           'discussion-reply-holder',
-          'gl-border-t-0!',
+          '!gl-border-t-0',
           'clearfix',
         ]),
       );
@@ -101,12 +101,7 @@ describe('Abuse Report Add Note', () => {
       expect(findTimelineEntryInner().classes()).toEqual([]);
 
       expect(findCommentFormWrapper().classes()).toEqual(
-        expect.arrayContaining([
-          'gl-relative',
-          'gl-display-flex',
-          'gl-align-items-flex-start',
-          'gl-flex-nowrap',
-        ]),
+        expect.arrayContaining(['gl-relative', 'gl-flex', 'gl-items-start', 'gl-flex-nowrap']),
       );
     });
 

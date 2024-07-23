@@ -59,4 +59,30 @@ RSpec.describe ApplicationController, type: :request, feature_category: :shared 
       expect(response.body.encoding.name).to eq('UTF-8')
     end
   end
+
+  describe 'User-Agent header' do
+    before do
+      sign_in(user)
+
+      get root_path, headers: { 'User-Agent': user_agent }
+    end
+
+    context 'when missing' do
+      let(:user_agent) { nil }
+
+      it { expect(response).to have_gitlab_http_status(:ok) }
+    end
+
+    context 'when correct' do
+      let(:user_agent) { 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)' }
+
+      it { expect(response).to have_gitlab_http_status(:ok) }
+    end
+
+    context 'when too long' do
+      let(:user_agent) { 'a' * 3000 }
+
+      it { expect(response).to have_gitlab_http_status(:forbidden) }
+    end
+  end
 end

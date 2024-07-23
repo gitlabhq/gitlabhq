@@ -16,6 +16,7 @@ import {
   workItemObjectiveWithChild,
   confidentialWorkItemTask,
   closedWorkItemTask,
+  otherNamespaceChild,
   workItemObjectiveMetadataWidgets,
 } from '../../mock_data';
 
@@ -139,6 +140,16 @@ describe('WorkItemLinkChildContents', () => {
         iid: '12',
         reference: '#12',
         metadataWidgets: workItemObjectiveMetadataWidgets,
+      });
+    });
+    it('renders full path when not in the same namespace', () => {
+      createComponent({
+        childItem: otherNamespaceChild,
+      });
+
+      expect(findMetadataComponent().props()).toMatchObject({
+        iid: '24',
+        reference: 'test-project-path/other#24',
       });
     });
   });

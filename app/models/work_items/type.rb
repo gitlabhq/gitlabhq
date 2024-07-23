@@ -6,9 +6,13 @@
 # 3. an emoji, with the format of `:smile:`
 module WorkItems
   class Type < ApplicationRecord
+    include IgnorableColumns
+
     DEFAULT_TYPES_NOT_SEEDED = Class.new(StandardError)
 
     self.table_name = 'work_item_types'
+
+    ignore_column :namespace_id, remove_with: '17.5', remove_after: '2024-09-19'
 
     include CacheMarkdownField
     include ReactiveCaching
@@ -55,7 +59,6 @@ module WorkItems
 
     enum base_type: BASE_TYPES.transform_values { |value| value[:enum_value] }
 
-    belongs_to :namespace, optional: true
     has_many :work_items, class_name: 'Issue', foreign_key: :work_item_type_id, inverse_of: :work_item_type
     has_many :widget_definitions, foreign_key: :work_item_type_id, inverse_of: :work_item_type
     has_many :enabled_widget_definitions, -> { where(disabled: false) }, foreign_key: :work_item_type_id,
@@ -77,16 +80,15 @@ module WorkItems
     # TODO: review validation rules
     # https://gitlab.com/gitlab-org/gitlab/-/issues/336919
     validates :name, presence: true
-    validates :name, uniqueness: { case_sensitive: false, scope: [:namespace_id] }
+    validates :name, uniqueness: { case_sensitive: false }
     validates :name, length: { maximum: 255 }
     validates :icon_name, length: { maximum: 255 }
 
-    scope :default, -> { where(namespace: nil) }
     scope :order_by_name_asc, -> { order(arel_table[:name].lower.asc) }
     scope :by_type, ->(base_type) { where(base_type: base_type) }
 
     def self.default_by_type(type)
-      found_type = find_by(namespace_id: nil, base_type: type)
+      found_type = find_by(base_type: type)
       return found_type if found_type || !WorkItems::Type.base_types.key?(type.to_s)
 
       if Feature.enabled?(:rely_on_work_item_type_seeder, type: :beta) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- Default types exist instance wide
@@ -105,7 +107,7 @@ module WorkItems
       Gitlab::DatabaseImporters::WorkItems::BaseTypeImporter.upsert_types
       Gitlab::DatabaseImporters::WorkItems::HierarchyRestrictionsImporter.upsert_restrictions
       Gitlab::DatabaseImporters::WorkItems::RelatedLinksRestrictionsImporter.upsert_restrictions
-      find_by(namespace_id: nil, base_type: type)
+      find_by(base_type: type)
     end
 
     def self.default_issue_type
@@ -123,10 +125,6 @@ module WorkItems
       else
         []
       end
-    end
-
-    def default?
-      namespace.blank?
     end
 
     # resource_parent is used in EE

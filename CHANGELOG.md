@@ -7475,6 +7475,25 @@ No changes.
 - [Remove pubsub migration helper for actioncable](gitlab-org/gitlab@763ca1305db6f1c9cf6700b8497494a81926d742) ([merge request](gitlab-org/gitlab!133066))
 - [Use partitioned table for CommitStatus](gitlab-org/gitlab@063826e042778995fae13928a2fb5de2c8855b45) ([merge request](gitlab-org/gitlab!134489))
 
+## 16.5.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/38e92182768a2727bd93e71988af72841e66f606) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159093))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/e4940da36a2ce954bec919de96b0cbaa15f2e8f9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156399))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/d41286dccd5eccef58cf04a76e7b743fced6e2ea) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158110))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/43329df2117133bb8841acdfd67b3c912ebf4e97) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153459))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/cb2000d3a93c8e3b98213d0e23291a2d4331c2c6) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160245))
+
 ## 16.5.8 (2024-01-24)
 
 ### Security (1 change)
@@ -8227,6 +8246,26 @@ No changes.
 - [Remove FF when canceling redundant pipelines](gitlab-org/gitlab@16bb8c5ff1ef7c6b1d854c71f4fec555439de210) ([merge request](gitlab-org/gitlab!131978))
 - [Alias read_namespace to access_namespace and move usages to new ability](gitlab-org/gitlab@61cdb4127143162a9bf9182f9c3c2d8421ee447f) by @Taucher2003 ([merge request](gitlab-org/gitlab!126625))
 - [Remove `custom_roles_on_groups` feature flag](gitlab-org/gitlab@ddb4b4399b8bb82793410005c5778a002ae409b9) ([merge request](gitlab-org/gitlab!132187)) **GitLab Enterprise Edition**
+
+## 16.4.6 (2024-07-23)
+
+### Added (2 changes)
+
+- [Removed nil constraint from personal access token table](https://gitlab.com/gitlab-org/gitlab/-/commit/f20aab9203d7b085d5963a7e75a537efb02896b7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159125)) **GitLab Enterprise Edition**
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/385110959faf9d65fa3a33f1d2dff49659eb835a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159125))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/fda6b0a5e5be798e3537e817e3ba03cb969e2594) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156400))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/a23e1d214732b53465904ea271864f99c8e52151) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158474))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/8dda03380e73f82e72c77f965c2be50ba74a22d5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153458))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/22395fb7fd39e0074ad0c86efae39fe5698a5487) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160242))
 
 ## 16.4.5 (2024-01-11)
 

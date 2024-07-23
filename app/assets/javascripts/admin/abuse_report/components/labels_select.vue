@@ -158,7 +158,7 @@ export default {
 </script>
 <template>
   <div class="labels-select-wrapper">
-    <div class="gl-display-flex gl-align-items-center gl-gap-3 gl-mb-2">
+    <div class="gl-mb-2 gl-flex gl-items-center gl-gap-3">
       <span>{{ $options.i18n.label }}</span>
       <gl-loading-icon v-if="initialLoading" size="sm" inline class="gl-ml-2" />
       <gl-button
@@ -171,7 +171,7 @@ export default {
         {{ $options.i18n.edit }}
       </gl-button>
     </div>
-    <div class="gl-text-gray-500 gl-mb-2" data-testid="selected-labels">
+    <div class="gl-mb-2 gl-text-gray-500" data-testid="selected-labels">
       <template v-if="isLabelsEmpty">{{ $options.i18n.noLabels }}</template>
       <dropdown-value
         v-else

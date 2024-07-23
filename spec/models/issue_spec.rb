@@ -236,8 +236,8 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
 
     describe '#ensure_work_item_type' do
-      let_it_be(:issue_type) { create(:work_item_type, :issue, :default) }
-      let_it_be(:incident_type) { create(:work_item_type, :incident, :default) }
+      let_it_be(:issue_type) { create(:work_item_type, :issue) }
+      let_it_be(:incident_type) { create(:work_item_type, :incident) }
       let_it_be(:project) { create(:project) }
 
       context 'when a type was already set' do
@@ -2330,7 +2330,7 @@ RSpec.describe Issue, feature_category: :team_planning do
   end
 
   describe '#has_widget?' do
-    let_it_be(:work_item_type) { create(:work_item_type).tap { |wit| wit.widget_definitions.delete_all } }
+    let_it_be(:work_item_type) { create(:work_item_type, :non_default) }
     let_it_be_with_reload(:issue) { create(:issue, project: reusable_project, work_item_type: work_item_type) }
 
     # Setting a fixed widget here so we don't get a licensed widget from the list as that could break the specs.

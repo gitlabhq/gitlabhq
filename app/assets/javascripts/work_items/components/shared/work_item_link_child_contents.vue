@@ -132,7 +132,10 @@ export default {
     displayReference() {
       // The reference is replaced by work item fullpath in case the project and group are same.
       // e.g., gitlab-org/gitlab-test#45 will be shown as #45
-      return this.childItem.reference.replace(new RegExp(`${this.workItemFullPath}(?!-)`, 'g'), '');
+      if (new RegExp(`${this.workItemFullPath}#`, 'g').test(this.childItem.reference)) {
+        return this.childItem.reference.replace(new RegExp(`${this.workItemFullPath}`, 'g'), '');
+      }
+      return this.childItem.reference;
     },
   },
   methods: {

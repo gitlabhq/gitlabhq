@@ -15,8 +15,8 @@ module Resolvers
         context.scoped_set!(:resource_parent, object)
 
         # This will require a finder in the future when groups/projects get their work item types
-        # All groups/projects use the default types for now
-        base_scope = ::WorkItems::Type.default
+        # All groups/projects use all types for now
+        base_scope = ::WorkItems::Type
         base_scope = base_scope.by_type(name) if name
 
         apply_lookahead(base_scope.order_by_name_asc)

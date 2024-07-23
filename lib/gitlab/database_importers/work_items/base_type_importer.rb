@@ -197,7 +197,7 @@ module Gitlab
         end
 
         def self.upsert_widgets
-          type_ids_by_name = ::WorkItems::Type.default.pluck(:name, :id).to_h # rubocop: disable CodeReuse/ActiveRecord
+          type_ids_by_name = ::WorkItems::Type.pluck(:name, :id).to_h # rubocop: disable CodeReuse/ActiveRecord
 
           widgets = WIDGETS_FOR_TYPE.flat_map do |type_sym, widget_syms|
             type_name = ::WorkItems::Type::TYPE_NAMES[type_sym]
