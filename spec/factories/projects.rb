@@ -231,8 +231,15 @@ FactoryBot.define do
     end
 
     trait :with_export do
-      after(:create) do |project, _evaluator|
-        ProjectExportWorker.new.perform(project.creator.id, project.id)
+      transient do
+        export_user { nil }
+      end
+
+      after(:create) do |project, evaluator|
+        export_user = evaluator.export_user || project.creator
+
+        project.add_maintainer(export_user)
+        ProjectExportWorker.new.perform(export_user.id, project.id)
       end
     end
 

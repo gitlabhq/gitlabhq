@@ -24,7 +24,7 @@ RSpec.describe Projects::ImportExport::ParallelExportService, feature_category: 
 
     it 'creates a project export archive file' do
       expect(Gitlab::ImportExport::Saver).to receive(:save)
-        .with(exportable: project, shared: project.import_export_shared)
+        .with(exportable: project, shared: project.import_export_shared, user: user)
 
       service.execute
     end

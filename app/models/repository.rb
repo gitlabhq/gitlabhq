@@ -1228,14 +1228,18 @@ class Repository
     @cache ||= Gitlab::RepositoryCache.new(self)
   end
 
-  def remove_prohibited_branches
+  def remove_prohibited_refs
     return unless exists?
 
-    prohibited_branches = raw_repository.branch_names.select { |name| name.match(Gitlab::Git::COMMIT_ID) }
+    patterns = [Gitlab::Git::BRANCH_REF_PREFIX, Gitlab::Git::TAG_REF_PREFIX]
 
-    return if prohibited_branches.blank?
+    prohibited_refs = raw_repository.list_refs(patterns).select do |ref|
+      ref.name.match(Gitlab::Git::SHA_LIKE_REF)
+    end
 
-    prohibited_branches.each { |name| raw_repository.delete_branch(name) }
+    return if prohibited_refs.blank?
+
+    raw_repository.delete_refs(*prohibited_refs.map(&:name))
   end
 
   def get_patch_id(old_revision, new_revision)

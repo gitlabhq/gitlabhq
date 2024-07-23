@@ -38,6 +38,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
         end
 
         upload.export_file = fixture_file_upload('spec/fixtures/group_export.tar.gz', "`/tar.gz")
+        upload.user = user
         upload.save!
       end
 
@@ -63,11 +64,12 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
       context 'when object is not present' do
         let(:other_group) { create(:group, :with_export) }
+        let!(:export) { create(:import_export_upload, user: user, group: other_group) }
         let(:other_download_path) { "/groups/#{other_group.id}/export/download" }
 
         before do
           other_group.add_owner(user)
-          other_group.export_file.file.delete
+          other_group.export_file(user).file.delete
         end
 
         it 'returns 404' do
@@ -242,7 +244,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
     describe 'GET /groups/:id/export_relations/download' do
       context 'when export request is not batched' do
-        let(:export) { create(:bulk_import_export, group: group, relation: 'labels') }
+        let(:export) { create(:bulk_import_export, group: group, relation: 'labels', user: user) }
         let(:upload) { create(:bulk_import_export_upload, export: export) }
 
         context 'when export file exists' do
@@ -269,7 +271,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
         context 'when export is batched' do
           let(:relation) { 'milestones' }
 
-          let_it_be(:export) { create(:bulk_import_export, :batched, group: group, relation: 'milestones') }
+          let_it_be(:export) { create(:bulk_import_export, :batched, group: group, relation: 'milestones', user: user) }
 
           it 'returns 400' do
             export.update!(batched: true)
@@ -283,7 +285,7 @@ RSpec.describe API::GroupExport, feature_category: :importers do
       end
 
       context 'when export request is batched' do
-        let(:export) { create(:bulk_import_export, :batched, group: group, relation: 'labels') }
+        let(:export) { create(:bulk_import_export, :batched, group: group, relation: 'labels', user: user) }
         let(:upload) { create(:bulk_import_export_upload) }
         let!(:batch) { create(:bulk_import_export_batch, export: export, upload: upload) }
 
@@ -329,9 +331,12 @@ RSpec.describe API::GroupExport, feature_category: :importers do
     end
 
     describe 'GET /groups/:id/export_relations/status' do
-      let_it_be(:started_export) { create(:bulk_import_export, :started, group: group, relation: 'labels') }
-      let_it_be(:finished_export) { create(:bulk_import_export, :finished, group: group, relation: 'milestones') }
-      let_it_be(:failed_export) { create(:bulk_import_export, :failed, group: group, relation: 'badges') }
+      let_it_be(:started_export) { create(:bulk_import_export, :started, group: group, relation: 'labels', user: user) }
+      let_it_be(:finished_export) do
+        create(:bulk_import_export, :finished, group: group, relation: 'milestones', user: user)
+      end
+
+      let_it_be(:failed_export) { create(:bulk_import_export, :failed, group: group, relation: 'badges', user: user) }
 
       it 'returns a list of relation export statuses' do
         get api(status_path, user)
@@ -355,7 +360,15 @@ RSpec.describe API::GroupExport, feature_category: :importers do
 
       context 'when there is a batched export' do
         let_it_be(:batched_export) do
-          create(:bulk_import_export, :started, :batched, group: group, relation: 'boards', batches_count: 1)
+          create(
+            :bulk_import_export,
+            :started,
+            :batched,
+            group: group,
+            relation: 'boards',
+            batches_count: 1,
+            user: user
+          )
         end
 
         let_it_be(:batch) { create(:bulk_import_export_batch, objects_count: 5, export: batched_export) }
@@ -380,6 +393,27 @@ RSpec.describe API::GroupExport, feature_category: :importers do
               )
             )
           )
+        end
+      end
+
+      context 'when the export was started by another user' do
+        let_it_be(:other_user) { create(:user) }
+
+        before_all do
+          group.add_owner(other_user)
+        end
+
+        it 'returns not_found when a relation was specified' do
+          get api(status_path, other_user), params: { relation: 'labels' }
+
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
+
+        it 'does not appear in the list of all statuses' do
+          get api(status_path, other_user)
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response).to be_empty
         end
       end
     end

@@ -4,11 +4,12 @@ require 'spec_helper'
 
 RSpec.describe Projects::ExportJobFinder do
   let(:project) { create(:project) }
-  let(:project_export_job1) { create(:project_export_job, project: project) }
-  let(:project_export_job2) { create(:project_export_job, project: project) }
+  let(:user) { create(:user) }
+  let(:project_export_job1) { create(:project_export_job, project: project, user: user) }
+  let(:project_export_job2) { create(:project_export_job, project: project, user: user) }
 
   describe '#execute' do
-    subject { described_class.new(project, params).execute }
+    subject { described_class.new(project, user, params).execute }
 
     context 'when queried for a project' do
       let(:params) { {} }

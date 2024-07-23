@@ -197,7 +197,7 @@ e.send(:design_repo_saver).send(:save)
 ## continue using `e.send(:exporter_name).send(:save)` going through the list of exporters
 
 # The following line should show you the export_path similar to /var/opt/gitlab/gitlab-rails/shared/tmp/gitlab_exports/@hashed/49/94/4994....
-s = Gitlab::ImportExport::Saver.new(exportable: p, shared:p.import_export_shared)
+s = Gitlab::ImportExport::Saver.new(exportable: p, shared: p.import_export_shared, user: u)
 
 # To try and upload use:
 s.send(:compress_and_save)

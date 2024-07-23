@@ -28,7 +28,7 @@
             %li= _('Projects')
             %li= _('Runner tokens')
             %li= _('SAML discovery tokens')
-    - if group.export_file_exists?
+    - if group.export_file_exists?(current_user)
       = render Pajamas::ButtonComponent.new(href: download_export_group_path(group), button_options: { rel: 'nofollow', data: { method: :get } }) do
         = _('Download export')
       = render Pajamas::ButtonComponent.new(href: export_group_path(group), button_options: { data: { method: :post } }) do
