@@ -26,6 +26,14 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
     end
   end
 
+  shared_examples 'increments fetch statistics' do
+    it 'calls Projects::FetchStatisticsIncrementService service' do
+      expect(Projects::FetchStatisticsIncrementService).to receive(:new).with(project).and_call_original
+
+      send_request
+    end
+  end
+
   context 'when repository container is a project' do
     it_behaves_like described_class do
       let(:container) { project }
@@ -111,10 +119,46 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
             stub_feature_flags(disable_git_http_fetch_writes: true)
           end
 
-          it 'does not increment statistics' do
-            expect(Projects::FetchStatisticsIncrementService).not_to receive(:new)
+          context 'and allow_git_http_fetch_writes is disabled' do
+            before do
+              stub_feature_flags(allow_git_http_fetch_writes: false)
+            end
 
-            send_request
+            it 'does not increment statistics' do
+              expect(Projects::FetchStatisticsIncrementService).not_to receive(:new)
+
+              send_request
+            end
+          end
+
+          context 'and allow_git_http_fetch_writes is enabled' do
+            before do
+              stub_feature_flags(allow_git_http_fetch_writes: true)
+            end
+
+            it_behaves_like 'increments fetch statistics'
+          end
+        end
+
+        context 'when disable_git_http_fetch_writes is disabled' do
+          before do
+            stub_feature_flags(disable_git_http_fetch_writes: false)
+          end
+
+          context 'and allow_git_http_fetch_writes is disabled' do
+            before do
+              stub_feature_flags(allow_git_http_fetch_writes: false)
+            end
+
+            it_behaves_like 'increments fetch statistics'
+          end
+
+          context 'and allow_git_http_fetch_writes is enabled' do
+            before do
+              stub_feature_flags(allow_git_http_fetch_writes: true)
+            end
+
+            it_behaves_like 'increments fetch statistics'
           end
         end
       end

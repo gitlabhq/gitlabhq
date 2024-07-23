@@ -1320,8 +1320,10 @@ module API
 
         if service.success?
           present user.credit_card_validation, with: Entities::UserCreditCardValidations
+        elsif service.reason == :rate_limited
+          render_api_error!(service.message, 400)
         else
-          render_api_error!('400 Bad Request', 400)
+          bad_request!
         end
       end
 
@@ -1342,13 +1344,13 @@ module API
 
         attrs = declared_params(include_missing: false)
 
-        render_api_error!('400 Bad Request', 400) unless attrs
+        bad_request! unless attrs
 
         service = ::UserPreferences::UpdateService.new(current_user, attrs).execute
         if service.success?
           present preferences, with: Entities::UserPreferences
         else
-          render_api_error!('400 Bad Request', 400)
+          bad_request!
         end
       end
 

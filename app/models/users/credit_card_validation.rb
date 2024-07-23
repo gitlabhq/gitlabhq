@@ -5,6 +5,7 @@ module Users
     include IgnorableColumns
 
     RELEASE_DAY = Date.new(2021, 5, 17)
+    DAILY_VERIFICATION_LIMIT = 5
 
     self.table_name = 'user_credit_card_validations'
 
@@ -81,6 +82,17 @@ module Users
 
     def set_expiration_date_hash
       self.expiration_date_hash = Gitlab::CryptoHelper.sha256(expiration_date.to_s)
+    end
+
+    def exceeded_daily_verification_limit?
+      return false unless Feature.enabled?(:credit_card_validation_daily_limit, user, type: :gitlab_com_derisk)
+
+      duplicate_record_count = self.class
+        .where(stripe_card_fingerprint: stripe_card_fingerprint)
+        .where('credit_card_validated_at > ?', 24.hours.ago)
+        .count
+
+      duplicate_record_count >= DAILY_VERIFICATION_LIMIT
     end
   end
 end

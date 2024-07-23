@@ -14,6 +14,7 @@ export const mountWorkItemsListApp = () => {
   Vue.use(VueApollo);
 
   const {
+    autocompleteAwardEmojisPath,
     fullPath,
     hasEpicsFeature,
     hasIssuableHealthStatusFeature,
@@ -34,6 +35,7 @@ export const mountWorkItemsListApp = () => {
     name: 'WorkItemsListRoot',
     apolloProvider,
     provide: {
+      autocompleteAwardEmojisPath,
       fullPath,
       hasEpicsFeature: parseBoolean(hasEpicsFeature),
       hasIssuableHealthStatusFeature: parseBoolean(hasIssuableHealthStatusFeature),

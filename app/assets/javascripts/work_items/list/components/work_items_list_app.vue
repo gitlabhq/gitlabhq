@@ -12,6 +12,7 @@ import {
   WORKSPACE_GROUP,
   WORKSPACE_PROJECT,
 } from '~/issues/constants';
+import { AutocompleteCache } from '~/issues/dashboard/utils';
 import { defaultTypeTokenOptions } from '~/issues/list/constants';
 import searchLabelsQuery from '~/issues/list/queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '~/issues/list/queries/set_sort_preference.mutation.graphql';
@@ -29,14 +30,20 @@ import {
   OPERATORS_IS_NOT_OR,
   TOKEN_TITLE_ASSIGNEE,
   TOKEN_TITLE_AUTHOR,
+  TOKEN_TITLE_CONFIDENTIAL,
+  TOKEN_TITLE_GROUP,
   TOKEN_TITLE_LABEL,
   TOKEN_TITLE_MILESTONE,
+  TOKEN_TITLE_MY_REACTION,
   TOKEN_TITLE_SEARCH_WITHIN,
   TOKEN_TITLE_TYPE,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_GROUP,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -47,11 +54,15 @@ import { STATE_CLOSED } from '../../constants';
 import { sortOptions, urlSortParams } from '../constants';
 import getWorkItemsQuery from '../queries/get_work_items.query.graphql';
 
-const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
+const EmojiToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/emoji_token.vue');
+const GroupToken = () =>
+  import('~/vue_shared/components/filtered_search_bar/tokens/group_token.vue');
 const LabelToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/label_token.vue');
 const MilestoneToken = () =>
   import('~/vue_shared/components/filtered_search_bar/tokens/milestone_token.vue');
+const UserToken = () => import('~/vue_shared/components/filtered_search_bar/tokens/user_token.vue');
 
 export default {
   issuableListTabs,
@@ -63,7 +74,14 @@ export default {
     IssueCardTimeInfo,
   },
   mixins: [glFeatureFlagMixin()],
-  inject: ['fullPath', 'initialSort', 'isGroup', 'isSignedIn', 'workItemType'],
+  inject: [
+    'autocompleteAwardEmojisPath',
+    'fullPath',
+    'initialSort',
+    'isGroup',
+    'isSignedIn',
+    'workItemType',
+  ],
   props: {
     eeCreatedWorkItemsCount: {
       type: Number,
@@ -97,6 +115,7 @@ export default {
           search: this.searchQuery,
           ...this.apiFilterParams,
           ...this.pageParams,
+          includeDescendants: !this.apiFilterParams.fullPath,
           types: this.apiFilterParams.types || [this.workItemType],
         };
       },
@@ -186,6 +205,15 @@ export default {
           multiSelect: this.glFeatures.groupMultiSelectTokens,
         },
         {
+          type: TOKEN_TYPE_GROUP,
+          icon: 'group',
+          title: TOKEN_TITLE_GROUP,
+          unique: true,
+          token: GroupToken,
+          operators: OPERATORS_IS,
+          fullPath: this.fullPath,
+        },
+        {
           type: TOKEN_TYPE_LABEL,
           title: TOKEN_TITLE_LABEL,
           icon: 'labels',
@@ -231,6 +259,31 @@ export default {
         });
       }
 
+      if (this.isSignedIn) {
+        tokens.push({
+          type: TOKEN_TYPE_CONFIDENTIAL,
+          title: TOKEN_TITLE_CONFIDENTIAL,
+          icon: 'eye-slash',
+          token: GlFilteredSearchToken,
+          unique: true,
+          operators: OPERATORS_IS,
+          options: [
+            { icon: 'eye-slash', value: 'yes', title: __('Yes') },
+            { icon: 'eye', value: 'no', title: __('No') },
+          ],
+        });
+
+        tokens.push({
+          type: TOKEN_TYPE_MY_REACTION,
+          title: TOKEN_TITLE_MY_REACTION,
+          icon: 'thumb-up',
+          token: EmojiToken,
+          unique: true,
+          fetchEmojis: this.fetchEmojis,
+          recentSuggestionsStorageKey: `${this.fullPath}-issues-recent-tokens-my_reaction`,
+        });
+      }
+
       tokens.sort((a, b) => a.title.localeCompare(b.title));
 
       return tokens;
@@ -251,7 +304,18 @@ export default {
       this.$apollo.queries.workItems.refetch();
     },
   },
+  created() {
+    this.autocompleteCache = new AutocompleteCache();
+  },
   methods: {
+    fetchEmojis(search) {
+      return this.autocompleteCache.fetch({
+        url: this.autocompleteAwardEmojisPath,
+        cacheName: 'emojis',
+        searchProperty: 'name',
+        search,
+      });
+    },
     fetchLabelsWithFetchPolicy(search, fetchPolicy = fetchPolicies.CACHE_FIRST) {
       return this.$apollo
         .query({

@@ -18,6 +18,7 @@ import {
   TOKEN_TYPE_CONTACT,
   TOKEN_TYPE_DRAFT,
   TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_GROUP,
   TOKEN_TYPE_HEALTH,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_LABEL,
@@ -232,6 +233,16 @@ export const filtersMap = {
       },
       [OPERATOR_OR]: {
         [NORMAL_FILTER]: 'or[assignee_username][]',
+      },
+    },
+  },
+  [TOKEN_TYPE_GROUP]: {
+    [API_PARAM]: {
+      [NORMAL_FILTER]: 'fullPath',
+    },
+    [URL_PARAM]: {
+      [OPERATOR_IS]: {
+        [NORMAL_FILTER]: 'group_path',
       },
     },
   },

@@ -8428,6 +8428,9 @@ msgstr ""
 msgid "BillingPlan|Upgrade"
 msgstr ""
 
+msgid "Billings|Credit card has exceeded the daily verification limit. Use a different card or try again later."
+msgstr ""
+
 msgid "Billings|Error validating card details"
 msgstr ""
 

@@ -198,5 +198,21 @@ RSpec.describe Users::UpsertCreditCardValidationService, feature_category: :user
         expect(service_result.message).to eq(_('Error saving credit card validation record'))
       end
     end
+
+    context 'when the credit card verification limit has been reached' do
+      before do
+        allow_next_instance_of(Users::CreditCardValidation) do |instance|
+          allow(instance).to receive(:exceeded_daily_verification_limit?).and_return(true)
+        end
+      end
+
+      it 'returns an error', :aggregate_failures do
+        service_result = service.execute
+
+        expect(service_result).to be_error
+        expect(service_result.message).to eq('Credit card verification limit exceeded')
+        expect(service_result.reason).to eq(:rate_limited)
+      end
+    end
   end
 end

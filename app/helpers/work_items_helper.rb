@@ -29,6 +29,7 @@ module WorkItemsHelper
 
   def work_items_list_data(group, current_user)
     {
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       full_path: group.full_path,
       initial_sort: current_user&.user_preference&.issues_sort,
       is_signed_in: current_user.present?.to_s,

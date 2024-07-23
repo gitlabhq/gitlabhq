@@ -2205,6 +2205,35 @@ RSpec.describe API::Users, :aggregate_failures, feature_category: :user_manageme
         expect(response).to have_gitlab_http_status(:not_found)
         expect(json_response['message']).to eq('404 User Not Found')
       end
+
+      context 'when the credit card daily verification limit has been exceeded' do
+        before do
+          stub_const("Users::CreditCardValidation::DAILY_VERIFICATION_LIMIT", 1)
+          create(:credit_card_validation, stripe_card_fingerprint: stripe_card_fingerprint)
+        end
+
+        it "returns a 400 error with the reason" do
+          put api(path, admin, admin_mode: true), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('Credit card verification limit exceeded')
+        end
+      end
+
+      context 'when UpsertCreditCardValidationService returns an unexpected error' do
+        before do
+          allow_next_instance_of(::Users::UpsertCreditCardValidationService) do |instance|
+            allow(instance).to receive(:execute).and_return(ServiceResponse.error(message: 'upsert failed'))
+          end
+        end
+
+        it "returns a generic 400 error" do
+          put api(path, admin, admin_mode: true), params: params
+
+          expect(response).to have_gitlab_http_status(:bad_request)
+          expect(json_response['message']).to eq('400 Bad request')
+        end
+      end
     end
   end
 

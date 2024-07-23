@@ -23,8 +23,11 @@ import {
   OPERATOR_IS,
   TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_AUTHOR,
+  TOKEN_TYPE_CONFIDENTIAL,
+  TOKEN_TYPE_GROUP,
   TOKEN_TYPE_LABEL,
   TOKEN_TYPE_MILESTONE,
+  TOKEN_TYPE_MY_REACTION,
   TOKEN_TYPE_SEARCH_WITHIN,
   TOKEN_TYPE_TYPE,
 } from '~/vue_shared/components/filtered_search_bar/constants';
@@ -60,6 +63,7 @@ describe('WorkItemsListApp component', () => {
         [setSortPreferenceMutation, sortPreferenceMutationResponse],
       ]),
       provide: {
+        autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         fullPath: 'full/path',
         initialSort: CREATED_DESC,
         isGroup: true,
@@ -120,6 +124,7 @@ describe('WorkItemsListApp component', () => {
     it('calls query to fetch work items', () => {
       expect(defaultQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full/path',
+        includeDescendants: true,
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
@@ -154,6 +159,7 @@ describe('WorkItemsListApp component', () => {
 
       expect(defaultQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full/path',
+        includeDescendants: true,
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
@@ -225,8 +231,11 @@ describe('WorkItemsListApp component', () => {
       expect(findIssuableList().props('searchTokens')).toMatchObject([
         { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
         { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+        { type: TOKEN_TYPE_CONFIDENTIAL },
+        { type: TOKEN_TYPE_GROUP },
         { type: TOKEN_TYPE_LABEL },
         { type: TOKEN_TYPE_MILESTONE },
+        { type: TOKEN_TYPE_MY_REACTION },
         { type: TOKEN_TYPE_SEARCH_WITHIN },
         { type: TOKEN_TYPE_TYPE },
       ]);
@@ -240,8 +249,11 @@ describe('WorkItemsListApp component', () => {
         expect(findIssuableList().props('searchTokens')).toMatchObject([
           { type: TOKEN_TYPE_ASSIGNEE, preloadedUsers },
           { type: TOKEN_TYPE_AUTHOR, preloadedUsers },
+          { type: TOKEN_TYPE_CONFIDENTIAL },
+          { type: TOKEN_TYPE_GROUP },
           { type: TOKEN_TYPE_LABEL },
           { type: TOKEN_TYPE_MILESTONE },
+          { type: TOKEN_TYPE_MY_REACTION },
           { type: TOKEN_TYPE_SEARCH_WITHIN },
         ]);
       });
@@ -276,6 +288,7 @@ describe('WorkItemsListApp component', () => {
 
         expect(defaultQueryHandler).toHaveBeenCalledWith({
           fullPath: 'full/path',
+          includeDescendants: true,
           sort: CREATED_DESC,
           state: STATUS_OPEN,
           search: 'find issues',
