@@ -17,8 +17,11 @@ FactoryBot.define do
     end
 
     trait :invalid do
+      transient do
+        error { 'This report is invalid because it contains errors.' }
+      end
       after(:build) do |report, options|
-        report.add_error('This report is invalid because it contains errors.')
+        report.add_error(options.error)
       end
     end
 

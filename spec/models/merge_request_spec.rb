@@ -5076,6 +5076,8 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       context 'when transaction is not committed' do
         it_behaves_like 'transition not triggering mergeRequestMergeStatusUpdated GraphQL subscription' do
           def transition!
+            subject
+
             MergeRequest.transaction do
               super
 

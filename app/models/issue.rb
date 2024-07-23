@@ -117,7 +117,7 @@ class Issue < ApplicationRecord
   validates :confidential, inclusion: { in: [true, false], message: 'must be a boolean' }
 
   validate :allowed_work_item_type_change, on: :update, if: :work_item_type_id_changed?
-  validate :due_date_after_start_date
+  validate :due_date_after_start_date, if: :validate_due_date?
   validate :parent_link_confidentiality
 
   alias_attribute :external_author, :service_desk_reply_to
@@ -890,6 +890,10 @@ class Issue < ApplicationRecord
       'issue_links.target_id as issue_link_source_id',
       'issue_links.created_at as issue_link_created_at',
       'issue_links.updated_at as issue_link_updated_at'])
+  end
+
+  def validate_due_date?
+    true
   end
 end
 

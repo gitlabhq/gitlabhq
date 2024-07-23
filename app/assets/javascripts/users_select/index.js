@@ -62,7 +62,7 @@ function UsersSelect(currentUser, els, options = {}) {
       const abilityName = $dropdown.data('abilityName');
       let $value = $block.find('.value');
       const $collapsedSidebar = $block.find('.sidebar-collapsed-user');
-      const $loading = $block.find('.block-loading').addClass('gl-display-none');
+      const $loading = $block.find('.block-loading').addClass('gl-hidden');
       const selectedIdDefault = defaultNullUser && showNullUser ? 0 : null;
       let selectedId = $dropdown.data('selected');
       let assignTo;
@@ -71,7 +71,7 @@ function UsersSelect(currentUser, els, options = {}) {
 
       const suggestedReviewersHelpPath = $dropdown.data('suggestedReviewersHelpPath');
       const suggestedReviewersHeaderTemplate = template(
-        `<div class="gl-display-flex gl-align-items-center">
+        `<div class="gl-flex gl-items-center">
          <%- header %>
          <a
            title="${s__('SuggestedReviewers|Learn about suggested reviewers')}"
@@ -79,7 +79,7 @@ function UsersSelect(currentUser, els, options = {}) {
            rel="noopener"
            target="_blank"
            aria-label="${s__('SuggestedReviewers|Suggested reviewers help link')}"
-           class="gl-hover-bg-transparent! gl-p-0! has-tooltip">
+           class="hover:!gl-bg-transparent !gl-p-0 has-tooltip">
            ${spriteIcon('question-o', 'gl-ml-3 gl-icon s16')}
          </a>
        </div>`,
@@ -221,14 +221,14 @@ function UsersSelect(currentUser, els, options = {}) {
         const data = {};
         data[abilityName] = {};
         data[abilityName].assignee_id = selected != null ? selected : null;
-        $loading.removeClass('gl-display-none');
+        $loading.removeClass('gl-hidden');
         $dropdown.trigger('loading.gl.dropdown');
 
         return axios.put(issueURL, data).then(({ data }) => {
           let user = {};
           let tooltipTitle;
           $dropdown.trigger('loaded.gl.dropdown');
-          $loading.addClass('gl-display-none');
+          $loading.addClass('gl-hidden');
           if (data.assignee) {
             user = {
               name: data.assignee.name,
@@ -637,7 +637,7 @@ function UsersSelect(currentUser, els, options = {}) {
             )}</a></li>`;
           } else {
             // 0 margin, because it's now handled by a wrapper
-            img = `<img src='${avatar}' class='avatar avatar-inline gl-m-0!' width='32' />`;
+            img = `<img src='${avatar}' class='avatar avatar-inline !gl-m-0' width='32' />`;
           }
 
           return userSelect.renderRow(
@@ -718,9 +718,9 @@ UsersSelect.prototype.renderRow = function (
       : '';
   return `
     <li data-user-id=${user.id} ${dataUserSuggested}>
-      <a href="#" class="dropdown-menu-user-link gl-display-flex! gl-align-items-center ${linkClasses}" ${tooltipAttributes}>
+      <a href="#" class="dropdown-menu-user-link !gl-flex gl-items-center ${linkClasses}" ${tooltipAttributes}>
         ${this.renderRowAvatar(issuableType, user, img)}
-        <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">
+        <span class="gl-flex gl-flex-col gl-overflow-hidden">
           <strong class="dropdown-menu-user-full-name gl-font-bold">
             ${escape(user.name)}
             ${busyBadge}
@@ -767,8 +767,8 @@ UsersSelect.prototype.renderApprovalRules = function (elsClassName, approvalRule
   const renderApprovalRulesCount = count > 1 ? `<span class="gl-ml-2">${countText}</span>` : '';
   const ruleName = rule.rule_type === 'code_owner' ? __('Code Owner') : escape(rule.name);
 
-  return `<div class="gl-display-flex gl-font-sm">
-    <span class="gl-text-truncate" title="${ruleName}">${ruleName}</span>
+  return `<div class="gl-flex gl-text-sm">
+    <span class="gl-truncate" title="${ruleName}">${ruleName}</span>
     ${renderApprovalRulesCount}
   </div>`;
 };

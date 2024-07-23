@@ -102,7 +102,7 @@ describe('~/users_select/index', () => {
         expect(
           UsersSelect.prototype.renderApprovalRules('reviewer', [{ name }]),
         ).toMatchInterpolatedText(
-          `<div class="gl-display-flex gl-font-sm"> <span class="gl-text-truncate" title="${escapedName}">${escapedName}</span> </div>`,
+          `<div class="gl-flex gl-text-sm"> <span class="gl-truncate" title="${escapedName}">${escapedName}</span> </div>`,
         );
       });
     });

@@ -9077,6 +9077,25 @@ No changes.
 - [Convert design_user_mentions.note_id to bigint for self-managed](gitlab-org/gitlab@08219da99fc356fecc4e9965fe1891baca4d10ff) ([merge request](gitlab-org/gitlab!129111))
 - [Migrate etag cache store from SharedState to Cache](gitlab-org/gitlab@6476298fcdcf77206fa768bcca6bd1e3c7994936) ([merge request](gitlab-org/gitlab!129050))
 
+## 16.3.8 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/5cff20e0f81c46192f7da21a99fcb2ccb3f1a759) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159383))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/f43da768fb134d230c927f725cf6f303f33259f9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156401))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/c188632b066fefce719fbe3233d79d24474e8567) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158475))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/64da75077c8218d683c131476a6b1d24fab7a92d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153457))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/db817ea6889be2eb82815b22b7fa9d0e67c02d83) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160265))
+
 ## 16.3.7 (2024-01-11)
 
 ### Security (2 changes)
@@ -9953,6 +9972,25 @@ No changes.
 - [Fix test pollution in count_deployments_metric_spec](gitlab-org/gitlab@610e6a033fe9b20aabc237b18837cddf150d4d1b) ([merge request](gitlab-org/gitlab!126808))
 - [Update BulkImports::PipelineBatchWorker resource boundary](gitlab-org/gitlab@7d2477d81bcc2d035be26587802706f7098b6e44) ([merge request](gitlab-org/gitlab!126696))
 
+## 16.2.10 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/ba2d4b91c1220ee8e8fbab936e5590c824abd456) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159401))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/204ef660742a0cae320566a6c8980ad25fc57c56) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156402))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/3c523d867f4bc528ad3703c75e4e7e7910672ec5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158479))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/10386fc56607af6c2c9b9569a67ab63b4a824dd0) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153453))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/9f5135c667e30cfc934de7fde88da8c527ea9265) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160239))
+
 ## 16.2.9 (2024-01-11)
 
 ### Security (2 changes)
@@ -10781,6 +10819,25 @@ No changes.
 - [Accept period_time as string on DORA executor](gitlab-org/gitlab@7d0792288be02cd3300410144067ea947da4846a) ([merge request](gitlab-org/gitlab!123975)) **GitLab Enterprise Edition**
 - [Add schema_version in the commits index mapping](gitlab-org/gitlab@e75b94903b69e1e1588e251217926882875555a8) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123435)) **GitLab Enterprise Edition**
 - [Allow to set labels for Redis calls](gitlab-org/gitlab@8ccfff9e2d250eb22afaa7d0243e707b536a5436) ([merge request](gitlab-org/gitlab!122340))
+
+## 16.1.7 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/2cf8f8fd9a150d7fa7cee48a71218e9095504b20) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159414))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/a77d096190bb805624c2748a73bd8b5b65ca7252) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156403))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/c42702ce6f92ee069c34bf40e932fe549ec6f26f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158476))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/2d2d1f29000179c0bddde32a6b5d2ad20871ec7d) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153448))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/7d007c04790b027d4f7656258d5c57012d0ccfe9) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160238))
 
 ## 16.1.6 (2024-01-11)
 
