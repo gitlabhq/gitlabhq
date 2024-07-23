@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.4.6 (2024-07-23)
+
+### Added (2 changes)
+
+- [Removed nil constraint from personal access token table](https://gitlab.com/gitlab-org/gitlab/-/commit/f20aab9203d7b085d5963a7e75a537efb02896b7) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159125)) **GitLab Enterprise Edition**
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/385110959faf9d65fa3a33f1d2dff49659eb835a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159125))
+
+### Fixed (1 change)
+
+- [Update an expired test certificate](https://gitlab.com/gitlab-org/gitlab/-/commit/fda6b0a5e5be798e3537e817e3ba03cb969e2594) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/156400))
+
+### Changed (2 changes)
+
+- [Add a banner informing about token expiration](https://gitlab.com/gitlab-org/gitlab/-/commit/a23e1d214732b53465904ea271864f99c8e52151) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158474))
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/8dda03380e73f82e72c77f965c2be50ba74a22d5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153458))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/22395fb7fd39e0074ad0c86efae39fe5698a5487) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160242))
+
 ## 16.4.5 (2024-01-11)
 
 ### Security (2 changes)
