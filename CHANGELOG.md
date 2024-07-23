@@ -2,6 +2,20 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.7.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/22ab35073260e27d979f7cb54e9fba85e7327327) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159069))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/0fc9d3cfb69f6f2008557fcbd99c5c61eba5ff07) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153468))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/b1626d144508b52a015578a5b5089606b88a1671) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160248))
+
 ## 16.7.8 (2024-06-25)
 
 ### Fixed (1 change)
