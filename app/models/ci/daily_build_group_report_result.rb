@@ -3,9 +3,6 @@
 module Ci
   class DailyBuildGroupReportResult < Ci::ApplicationRecord
     include Ci::Partitionable
-    include SafelyChangeColumnDefault
-
-    columns_changing_default :partition_id
 
     PARAM_TYPES = %w[coverage].freeze
 

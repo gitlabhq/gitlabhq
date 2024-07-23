@@ -178,6 +178,7 @@ Returns [`BlobSearch`](#blobsearch).
 | <a id="queryblobsearchpage"></a>`page` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Page number to fetch the results. |
 | <a id="queryblobsearchperpage"></a>`perPage` **{warning-solid}** | [`Int`](#int) | **Introduced** in GitLab 17.2. **Status**: Experiment. Number of results per page. |
 | <a id="queryblobsearchprojectid"></a>`projectId` **{warning-solid}** | [`ProjectID`](#projectid) | **Introduced** in GitLab 17.2. **Status**: Experiment. Project to search in. |
+| <a id="queryblobsearchregex"></a>`regex` **{warning-solid}** | [`Boolean`](#boolean) | **Introduced** in GitLab 17.3. **Status**: Experiment. Uses the regular expression search mode. Default is false. |
 | <a id="queryblobsearchrepositoryref"></a>`repositoryRef` **{warning-solid}** | [`String`](#string) | **Introduced** in GitLab 17.2. **Status**: Experiment. Repository reference to search in. |
 | <a id="queryblobsearchsearch"></a>`search` | [`String!`](#string) | Searched term. |
 

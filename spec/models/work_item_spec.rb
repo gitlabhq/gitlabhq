@@ -776,4 +776,46 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
   end
+
+  describe '#due_date' do
+    let_it_be(:work_item) { create(:work_item, :issue) }
+
+    context 'when work_item have no dates_source fallbacks to work_item due_date' do
+      before do
+        work_item.update!(due_date: 1.day.from_now)
+      end
+
+      specify { expect(work_item.due_date).to eq(work_item.due_date) }
+    end
+
+    context 'when work_item have dates_source use it instead of work_item due_date value' do
+      before do
+        work_item.create_dates_source!(due_date: 1.day.ago)
+        work_item.reload.update!(due_date: nil)
+      end
+
+      specify { expect(work_item.due_date).to eq(work_item.dates_source.due_date) }
+    end
+  end
+
+  describe '#start_date' do
+    let_it_be(:work_item) { create(:work_item, :issue) }
+
+    context 'when work_item have no dates_source fallbacks to work_item start_date' do
+      before do
+        work_item.update!(start_date: 1.day.ago)
+      end
+
+      specify { expect(work_item.start_date).to eq(work_item.start_date) }
+    end
+
+    context 'when work_item have dates_source use it instead of work_item start_date value' do
+      before do
+        work_item.create_dates_source!(start_date: 1.day.from_now)
+        work_item.reload.update!(start_date: nil)
+      end
+
+      specify { expect(work_item.start_date).to eq(work_item.dates_source.start_date) }
+    end
+  end
 end

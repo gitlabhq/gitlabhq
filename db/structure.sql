@@ -953,15 +953,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION trigger_2428b5519042() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_2514245c7fc5() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1026,15 +1017,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION trigger_2ac3d66ed1d3() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_2b8fdc9b4a4e() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1065,15 +1047,6 @@ END IF;
 RETURN NEW;
 
 END
-$$;
-
-CREATE FUNCTION trigger_3857ca5ea4af() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  RETURN NEW;
-END;
 $$;
 
 CREATE FUNCTION trigger_388e93f88fdd() RETURNS trigger
@@ -1901,15 +1874,6 @@ RETURN NEW;
 END
 $$;
 
-CREATE FUNCTION trigger_fb587b1ae7ad() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."head_pipeline_id_convert_to_bigint" := NEW."head_pipeline_id";
-  RETURN NEW;
-END;
-$$;
-
 CREATE FUNCTION trigger_fbd42ed69453() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -1940,15 +1904,6 @@ END IF;
 RETURN NEW;
 
 END
-$$;
-
-CREATE FUNCTION trigger_fd041fe2d1a7() RETURNS trigger
-    LANGUAGE plpgsql
-    AS $$
-BEGIN
-  NEW."pipeline_id_convert_to_bigint" := NEW."pipeline_id";
-  RETURN NEW;
-END;
 $$;
 
 CREATE FUNCTION trigger_ff16c1fd43ea() RETURNS trigger
@@ -12674,7 +12629,6 @@ CREATE TABLE merge_request_metrics (
     merged_at timestamp without time zone,
     created_at timestamp without time zone NOT NULL,
     updated_at timestamp without time zone NOT NULL,
-    pipeline_id_convert_to_bigint integer,
     merged_by_id integer,
     latest_closed_by_id integer,
     latest_closed_at timestamp with time zone,
@@ -12808,7 +12762,6 @@ CREATE TABLE merge_requests (
     cached_markdown_version integer,
     last_edited_at timestamp without time zone,
     last_edited_by_id integer,
-    head_pipeline_id_convert_to_bigint integer,
     merge_jid character varying,
     discussion_locked boolean,
     latest_merge_request_diff_id integer,
@@ -12881,7 +12834,6 @@ CREATE TABLE merge_trains (
     id bigint NOT NULL,
     merge_request_id integer NOT NULL,
     user_id integer NOT NULL,
-    pipeline_id_convert_to_bigint integer,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     target_project_id integer NOT NULL,
@@ -19144,7 +19096,6 @@ CREATE TABLE vulnerability_feedback (
     category smallint NOT NULL,
     project_id integer NOT NULL,
     author_id integer NOT NULL,
-    pipeline_id_convert_to_bigint integer,
     issue_id integer,
     project_fingerprint character varying(40) NOT NULL,
     merge_request_id integer,
@@ -19368,7 +19319,6 @@ CREATE TABLE vulnerability_occurrence_pipelines (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     occurrence_id bigint NOT NULL,
-    pipeline_id_convert_to_bigint integer DEFAULT 0 NOT NULL,
     pipeline_id bigint NOT NULL
 );
 
@@ -31833,8 +31783,6 @@ CREATE TRIGGER trigger_207005e8e995 BEFORE INSERT OR UPDATE ON operations_strate
 
 CREATE TRIGGER trigger_219952df8fc4 BEFORE INSERT OR UPDATE ON merge_request_blocks FOR EACH ROW EXECUTE FUNCTION trigger_219952df8fc4();
 
-CREATE TRIGGER trigger_2428b5519042 BEFORE INSERT OR UPDATE ON vulnerability_feedback FOR EACH ROW EXECUTE FUNCTION trigger_2428b5519042();
-
 CREATE TRIGGER trigger_2514245c7fc5 BEFORE INSERT OR UPDATE ON dast_site_profile_secret_variables FOR EACH ROW EXECUTE FUNCTION trigger_2514245c7fc5();
 
 CREATE TRIGGER trigger_25c44c30884f BEFORE INSERT OR UPDATE ON work_item_parent_links FOR EACH ROW EXECUTE FUNCTION trigger_25c44c30884f();
@@ -31843,13 +31791,9 @@ CREATE TRIGGER trigger_25d35f02ab55 BEFORE INSERT OR UPDATE ON ml_candidate_meta
 
 CREATE TRIGGER trigger_25fe4f7da510 BEFORE INSERT OR UPDATE ON vulnerability_issue_links FOR EACH ROW EXECUTE FUNCTION trigger_25fe4f7da510();
 
-CREATE TRIGGER trigger_2ac3d66ed1d3 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_2ac3d66ed1d3();
-
 CREATE TRIGGER trigger_2b8fdc9b4a4e BEFORE INSERT OR UPDATE ON ml_experiment_metadata FOR EACH ROW EXECUTE FUNCTION trigger_2b8fdc9b4a4e();
 
 CREATE TRIGGER trigger_3691f9f6a69f BEFORE INSERT OR UPDATE ON remote_development_agent_configs FOR EACH ROW EXECUTE FUNCTION trigger_3691f9f6a69f();
-
-CREATE TRIGGER trigger_3857ca5ea4af BEFORE INSERT OR UPDATE ON merge_trains FOR EACH ROW EXECUTE FUNCTION trigger_3857ca5ea4af();
 
 CREATE TRIGGER trigger_388e93f88fdd BEFORE INSERT OR UPDATE ON packages_build_infos FOR EACH ROW EXECUTE FUNCTION trigger_388e93f88fdd();
 
@@ -31957,13 +31901,9 @@ CREATE TRIGGER trigger_ebab34f83f1d BEFORE INSERT OR UPDATE ON packages_debian_p
 
 CREATE TRIGGER trigger_f6c61cdddf31 BEFORE INSERT OR UPDATE ON ml_model_metadata FOR EACH ROW EXECUTE FUNCTION trigger_f6c61cdddf31();
 
-CREATE TRIGGER trigger_fb587b1ae7ad BEFORE INSERT OR UPDATE ON merge_requests FOR EACH ROW EXECUTE FUNCTION trigger_fb587b1ae7ad();
-
 CREATE TRIGGER trigger_fbd42ed69453 BEFORE INSERT OR UPDATE ON external_status_checks_protected_branches FOR EACH ROW EXECUTE FUNCTION trigger_fbd42ed69453();
 
 CREATE TRIGGER trigger_fbd8825b3057 BEFORE INSERT OR UPDATE ON boards_epic_board_labels FOR EACH ROW EXECUTE FUNCTION trigger_fbd8825b3057();
-
-CREATE TRIGGER trigger_fd041fe2d1a7 BEFORE INSERT OR UPDATE ON merge_request_metrics FOR EACH ROW EXECUTE FUNCTION trigger_fd041fe2d1a7();
 
 CREATE TRIGGER trigger_ff16c1fd43ea BEFORE INSERT OR UPDATE ON geo_event_log FOR EACH ROW EXECUTE FUNCTION trigger_ff16c1fd43ea();
 

@@ -25,7 +25,7 @@ class MergeRequest < ApplicationRecord
   include Todoable
   include Spammable
 
-  ignore_columns :head_pipeline_id_convert_to_bigint, remove_with: '17.1', remove_after: '2024-06-14'
+  ignore_columns :head_pipeline_id_convert_to_bigint, remove_with: '17.4', remove_after: '2024-08-14'
 
   extend ::Gitlab::Utils::Override
 

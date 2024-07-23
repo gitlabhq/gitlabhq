@@ -1,3 +1,4 @@
+import { set } from 'lodash';
 import { produce } from 'immer';
 import { findWidget } from '~/issues/list/utils';
 import { pikadayToString } from '~/lib/utils/datetime_utility';
@@ -12,6 +13,35 @@ import {
   NEW_WORK_ITEM_IID,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
+
+const updateWidget = (draftData, widgetType, newData, nodePath) => {
+  if (!newData) return;
+
+  const widget = findWidget(widgetType, draftData.workspace.workItem);
+  set(widget, nodePath, newData);
+};
+
+const updateRolledUpDatesWidget = (draftData, rolledUpDates) => {
+  if (!rolledUpDates) return;
+
+  const dueDateFixed = rolledUpDates.dueDateFixed
+    ? pikadayToString(rolledUpDates.dueDateFixed)
+    : null;
+  const startDateFixed = rolledUpDates.startDateFixed
+    ? pikadayToString(rolledUpDates.startDateFixed)
+    : null;
+
+  const widget = findWidget(WIDGET_TYPE_ROLLEDUP_DATES, draftData.workspace.workItem);
+  Object.assign(widget, {
+    dueDate: dueDateFixed,
+    dueDateFixed,
+    dueDateIsFixed: rolledUpDates.dueDateIsFixed,
+    startDate: startDateFixed,
+    startDateFixed,
+    startDateIsFixed: rolledUpDates.startDateIsFixed,
+    __typename: 'WorkItemWidgetRolledupDates',
+  });
+};
 
 export const updateNewWorkItemCache = (input, cache) => {
   const {
@@ -28,7 +58,6 @@ export const updateNewWorkItemCache = (input, cache) => {
   } = input;
 
   const query = workItemByIidQuery;
-
   const variables = {
     fullPath: newWorkItemFullPath(fullPath, workItemType),
     iid: NEW_WORK_ITEM_IID,
@@ -36,101 +65,42 @@ export const updateNewWorkItemCache = (input, cache) => {
 
   cache.updateQuery({ query, variables }, (sourceData) =>
     produce(sourceData, (draftData) => {
-      if (healthStatus) {
-        const healthStatusWidget = findWidget(
-          WIDGET_TYPE_HEALTH_STATUS,
-          draftData?.workspace?.workItem,
-        );
+      const widgetUpdates = [
+        {
+          widgetType: WIDGET_TYPE_HEALTH_STATUS,
+          newData: healthStatus,
+          nodePath: 'healthStatus',
+        },
+        {
+          widgetType: WIDGET_TYPE_ASSIGNEES,
+          newData: assignees,
+          nodePath: 'assignees.nodes',
+        },
+        {
+          widgetType: WIDGET_TYPE_LABELS,
+          newData: labels,
+          nodePath: 'labels.nodes',
+        },
+        {
+          widgetType: WIDGET_TYPE_COLOR,
+          newData: color,
+          nodePath: 'color',
+        },
+        {
+          widgetType: WIDGET_TYPE_DESCRIPTION,
+          newData: description,
+          nodePath: 'description',
+        },
+      ];
 
-        healthStatusWidget.healthStatus = healthStatus;
+      widgetUpdates.forEach(({ widgetType, newData, nodePath }) => {
+        updateWidget(draftData, widgetType, newData, nodePath);
+      });
 
-        const healthStatusWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-          (widget) => widget.type === WIDGET_TYPE_HEALTH_STATUS,
-        );
-        draftData.workspace.workItem.widgets[healthStatusWidgetIndex] = healthStatusWidget;
-      }
+      updateRolledUpDatesWidget(draftData, rolledUpDates);
 
-      if (assignees) {
-        const assigneesWidget = findWidget(WIDGET_TYPE_ASSIGNEES, draftData?.workspace?.workItem);
-        assigneesWidget.assignees.nodes = assignees;
-
-        const assigneesWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-          (widget) => widget.type === WIDGET_TYPE_ASSIGNEES,
-        );
-        draftData.workspace.workItem.widgets[assigneesWidgetIndex] = assigneesWidget;
-      }
-
-      if (labels) {
-        const labelsWidget = findWidget(WIDGET_TYPE_LABELS, draftData?.workspace?.workItem);
-
-        labelsWidget.labels.nodes = labels;
-
-        const labelsWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-          (widget) => widget.type === WIDGET_TYPE_LABELS,
-        );
-
-        draftData.workspace.workItem.widgets[labelsWidgetIndex] = labelsWidget;
-      }
-
-      if (rolledUpDates) {
-        let rolledUpDatesWidget = findWidget(
-          WIDGET_TYPE_ROLLEDUP_DATES,
-          draftData?.workspace?.workItem,
-        );
-
-        const dueDate = rolledUpDates.dueDateFixed || null;
-        const dueDateFixed = dueDate ? pikadayToString(rolledUpDates.dueDateFixed) : null;
-        const startDate = rolledUpDates.startDateFixed || null;
-        const startDateFixed = startDate ? pikadayToString(rolledUpDates.startDateFixed) : null;
-
-        rolledUpDatesWidget = {
-          type: 'ROLLEDUP_DATES',
-          dueDate: dueDateFixed,
-          dueDateFixed,
-          dueDateIsFixed: rolledUpDates.dueDateIsFixed,
-          startDate: startDateFixed,
-          startDateFixed,
-          startDateIsFixed: rolledUpDates.startDateIsFixed,
-          __typename: 'WorkItemWidgetRolledupDates',
-        };
-
-        const rolledUpDatesWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-          (widget) => widget.type === WIDGET_TYPE_ROLLEDUP_DATES,
-        );
-
-        draftData.workspace.workItem.widgets[rolledUpDatesWidgetIndex] = rolledUpDatesWidget;
-      }
-
-      if (color) {
-        const colorWidget = findWidget(WIDGET_TYPE_COLOR, draftData?.workspace?.workItem);
-        colorWidget.color = color;
-
-        const colorWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-          (widget) => widget.type === WIDGET_TYPE_COLOR,
-        );
-        draftData.workspace.workItem.widgets[colorWidgetIndex] = colorWidget;
-      }
-
-      if (title) {
-        draftData.workspace.workItem.title = title;
-      }
-
-      if (description) {
-        const descriptionWidget = findWidget(
-          WIDGET_TYPE_DESCRIPTION,
-          draftData?.workspace?.workItem,
-        );
-        descriptionWidget.description = description;
-
-        const descriptionWidgetIndex = draftData.workspace.workItem.widgets.findIndex(
-          (widget) => widget.type === WIDGET_TYPE_DESCRIPTION,
-        );
-        draftData.workspace.workItem.widgets[descriptionWidgetIndex] = descriptionWidget;
-      }
-
-      if (confidential !== undefined) {
-        draftData.workspace.workItem.confidential = confidential;
-      }
+      if (title) draftData.workspace.workItem.title = title;
+      if (confidential !== undefined) draftData.workspace.workItem.confidential = confidential;
     }),
   );
 };

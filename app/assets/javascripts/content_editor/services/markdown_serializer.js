@@ -3,6 +3,7 @@ import {
   defaultMarkdownSerializer,
 } from '~/lib/prosemirror_markdown_serializer';
 import * as extensions from '../extensions';
+import codeSuggestion from './serializer/code_suggestion';
 import code from './serializer/code';
 import bold from './serializer/bold';
 import italic from './serializer/italic';
@@ -14,17 +15,20 @@ import highlight from './serializer/highlight';
 import inlineDiff from './serializer/inline_diff';
 import mathInline from './serializer/math_inline';
 import htmlMark from './serializer/html_mark';
+import image from './serializer/image';
+import audio from './serializer/audio';
+import drawioDiagram from './serializer/drawio_diagram';
+import video from './serializer/video';
+import blockquote from './serializer/blockquote';
+import codeBlock from './serializer/code_block';
+import diagram from './serializer/diagram';
 import {
-  renderCodeBlock,
   renderHardBreak,
   renderTable,
   renderTableCell,
   renderTableRow,
   renderOrderedList,
-  renderImage,
   renderHeading,
-  renderBlockquote,
-  renderPlayable,
   renderHTMLNode,
   renderContent,
   renderBulletList,
@@ -55,19 +59,13 @@ const defaultSerializerConfig = {
   },
 
   nodes: {
-    [extensions.Audio.name]: preserveUnchanged({
-      render: renderPlayable,
-      inline: true,
-    }),
-    [extensions.Blockquote.name]: preserveUnchanged(renderBlockquote),
+    [extensions.Audio.name]: audio,
+    [extensions.Blockquote.name]: blockquote,
     [extensions.BulletList.name]: preserveUnchanged(renderBulletList),
-    [extensions.CodeBlockHighlight.name]: preserveUnchanged(renderCodeBlock),
-    [extensions.Diagram.name]: preserveUnchanged(renderCodeBlock),
-    [extensions.CodeSuggestion.name]: preserveUnchanged(renderCodeBlock),
-    [extensions.DrawioDiagram.name]: preserveUnchanged({
-      render: renderImage,
-      inline: true,
-    }),
+    [extensions.CodeBlockHighlight.name]: codeBlock,
+    [extensions.Diagram.name]: diagram,
+    [extensions.CodeSuggestion.name]: codeSuggestion,
+    [extensions.DrawioDiagram.name]: drawioDiagram,
     [extensions.DescriptionList.name]: renderHTMLNode('dl', true),
     [extensions.DescriptionItem.name]: (state, node, parent, index) => {
       if (index === 1) state.ensureNewLine();
@@ -120,10 +118,7 @@ const defaultSerializerConfig = {
     [extensions.HorizontalRule.name]: preserveUnchanged(
       defaultMarkdownSerializer.nodes.horizontal_rule,
     ),
-    [extensions.Image.name]: preserveUnchanged({
-      render: renderImage,
-      inline: true,
-    }),
+    [extensions.Image.name]: image,
     [extensions.ListItem.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.list_item),
     [extensions.Loading.name]: () => {},
     [extensions.OrderedList.name]: preserveUnchanged(renderOrderedList),
@@ -178,10 +173,7 @@ const defaultSerializerConfig = {
       else renderBulletList(state, node);
     }),
     [extensions.Text.name]: defaultMarkdownSerializer.nodes.text,
-    [extensions.Video.name]: preserveUnchanged({
-      render: renderPlayable,
-      inline: true,
-    }),
+    [extensions.Video.name]: video,
     [extensions.WordBreak.name]: (state) => state.write('<wbr>'),
     ...extensions.HTMLNodes.reduce((serializers, htmlNode) => {
       return {

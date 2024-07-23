@@ -26,12 +26,12 @@ export default {
 };
 </script>
 <template>
-  <div class="content-editor-switcher gl-inline-flex gl-align-items-center">
+  <div class="content-editor-switcher gl-inline-flex gl-items-center">
     <gl-button
       :id="$options.richTextEditorButtonId"
       size="small"
       category="tertiary"
-      class="gl-font-sm! gl-text-secondary! gl-px-4!"
+      class="!gl-px-4 !gl-text-sm !gl-text-secondary"
       data-testid="editing-mode-switcher"
       @click="$emit('switch')"
       >{{ text }}</gl-button

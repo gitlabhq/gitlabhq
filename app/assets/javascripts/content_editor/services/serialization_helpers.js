@@ -337,85 +337,10 @@ export function renderHardBreak(state, node, parent, index) {
   }
 }
 
-function getMediaSrc(node, useCanonicalSrc = true) {
-  const { canonicalSrc, src } = node.attrs;
-
-  if (useCanonicalSrc) return canonicalSrc || src || '';
-  return src || '';
-}
-
-export function renderImage(state, node) {
-  const { alt, title, width, height, isReference } = node.attrs;
-  const realSrc = getMediaSrc(node, state.options.useCanonicalSrc);
-  // eslint-disable-next-line @gitlab/require-i18n-strings
-  if (realSrc.startsWith('data:') || realSrc.startsWith('blob:')) return;
-
-  if (realSrc) {
-    const quotedTitle = title ? ` ${state.quote(title)}` : '';
-    const sourceExpression = isReference ? `[${realSrc}]` : `(${realSrc}${quotedTitle})`;
-
-    const sizeAttributes = [];
-    if (width) {
-      sizeAttributes.push(`width=${JSON.stringify(width)}`);
-    }
-    if (height) {
-      sizeAttributes.push(`height=${JSON.stringify(height)}`);
-    }
-
-    const attributes = sizeAttributes.length ? `{${sizeAttributes.join(' ')}}` : '';
-
-    state.write(`![${state.esc(alt || '')}]${sourceExpression}${attributes}`);
-  }
-}
-
-export function renderPlayable(state, node) {
-  renderImage(state, node);
-}
-
 export function renderHeading(state, node) {
   if (state.options.skipEmptyNodes && !node.childCount) return;
 
   defaultMarkdownSerializer.nodes.heading(state, node);
-}
-
-export function renderBlockquote(state, node) {
-  if (state.options.skipEmptyNodes) {
-    if (!node.childCount) return;
-    if (node.childCount === 1) {
-      const child = node.child(0);
-      if (child.type.name === 'paragraph' && !child.childCount) return;
-    }
-  }
-
-  if (node.attrs.multiline) {
-    state.write('>>>');
-    state.ensureNewLine();
-    state.renderContent(node);
-    state.ensureNewLine();
-    state.write('>>>');
-    state.closeBlock(node);
-  } else {
-    state.wrapBlock('> ', null, node, () => state.renderContent(node));
-  }
-}
-
-export function renderCodeBlock(state, node) {
-  if (state.options.skipEmptyNodes && !node.childCount) return;
-
-  let { language } = node.attrs;
-  if (language === 'plaintext') language = '';
-
-  const numBackticks = Math.max(2, node.textContent.match(/```+/g)?.[0]?.length || 0) + 1;
-  const backticks = state.repeat('`', numBackticks);
-  state.write(
-    `${backticks}${
-      (language || '') + (node.attrs.langParams ? `:${node.attrs.langParams}` : '')
-    }\n`,
-  );
-  state.text(node.textContent, false);
-  state.ensureNewLine();
-  state.write(backticks);
-  state.closeBlock(node);
 }
 
 const expandPreserveUnchangedConfig = (configOrRender) =>

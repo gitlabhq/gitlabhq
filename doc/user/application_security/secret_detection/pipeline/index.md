@@ -343,9 +343,9 @@ You can also use a ruleset configuration file stored remotely (i.e. in a remote 
 You can disable rules that you don't want active. To disable rules from the analyzer default ruleset:
 
 1. [Create a ruleset configuration file](#create-a-ruleset-configuration-file), if one doesn't exist already.
-1. Set the `disabled` flag to `true` in the context of a [`ruleset` section](../pipeline/customize_rulesets.md#the-secretsruleset-section).
+1. Set the `disabled` flag to `true` in the context of a [`ruleset` section](../pipeline/custom_rulesets_schema.md#the-secretsruleset-section).
 1. In one or more `ruleset.identifier` subsections, list the rules to disable. Every
-   [`ruleset.identifier` section](../pipeline/customize_rulesets.md#the-secretsrulesetidentifier-section) has:
+   [`ruleset.identifier` section](../pipeline/custom_rulesets_schema.md#the-secretsrulesetidentifier-section) has:
    - A `type` field for the predefined rule identifier.
    - A `value` field for the rule name.
 
@@ -370,10 +370,10 @@ To override rules from the analyzer default ruleset:
 
 1. [Create a ruleset configuration file](#create-a-ruleset-configuration-file), if one doesn't exist already.
 1. In one or more `ruleset.identifier` subsections, list the rules to override. Every
-   [`ruleset.identifier` section](../pipeline/customize_rulesets.md#the-secretsrulesetidentifier-section) has:
+   [`ruleset.identifier` section](../pipeline/custom_rulesets_schema.md#the-secretsrulesetidentifier-section) has:
    - A `type` field for the predefined rule identifier.
    - A `value` field for the rule name.
-1. In the [`ruleset.override` context](../pipeline/customize_rulesets.md#the-secretsrulesetoverride-section) of a [`ruleset` section](../pipeline/customize_rulesets.md#the-secretsruleset-section), provide the keys to override. Any combination of keys can be overridden. Valid keys are:
+1. In the [`ruleset.override` context](../pipeline/custom_rulesets_schema.md#the-secretsrulesetoverride-section) of a [`ruleset` section](../pipeline/custom_rulesets_schema.md#the-secretsruleset-section), provide the keys to override. Any combination of keys can be overridden. Valid keys are:
    - `description`
    - `message`
    - `name`
@@ -434,18 +434,18 @@ See [bot users for groups](../../../../user/group/settings/group_access_tokens.m
 
 #### Replace the default ruleset
 
-You can replace the default ruleset configuration using a number of [customizations](../pipeline/customize_rulesets.md). Those can be combined using [passthroughs](../pipeline/customize_rulesets.md#passthrough-types) into a single configuration.
+You can replace the default ruleset configuration using a number of [customizations](../pipeline/custom_rulesets_schema.md). Those can be combined using [passthroughs](../pipeline/custom_rulesets_schema.md#passthrough-types) into a single configuration.
 
 Using passthroughs, you can:
 
-- Chain up to [20 passthroughs](../pipeline/customize_rulesets.md#the-secretspassthrough-section) into a single configuration to replace or extend predefined rules.
-- Include [environment variables in passthroughs](../pipeline/customize_rulesets.md#interpolate).
-- Set a [timeout](../pipeline/customize_rulesets.md#the-secrets-configuration-section) for evaluating passthroughs.
-- [Validate](../pipeline/customize_rulesets.md#the-secrets-configuration-section) TOML syntax used in each defined passthrough.
+- Chain up to [20 passthroughs](../pipeline/custom_rulesets_schema.md#the-secretspassthrough-section) into a single configuration to replace or extend predefined rules.
+- Include [environment variables in passthroughs](../pipeline/custom_rulesets_schema.md#interpolate).
+- Set a [timeout](../pipeline/custom_rulesets_schema.md#the-secrets-configuration-section) for evaluating passthroughs.
+- [Validate](../pipeline/custom_rulesets_schema.md#the-secrets-configuration-section) TOML syntax used in each defined passthrough.
 
 ##### With an inline ruleset
 
-You can use [`raw` passthrough](../pipeline/customize_rulesets.md#passthrough-types) to replace default ruleset with configuration provided inline.
+You can use [`raw` passthrough](../pipeline/custom_rulesets_schema.md#passthrough-types) to replace default ruleset with configuration provided inline.
 
 To do so, add the following in the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository, and adjust the rule defined under `[[rules]]` as appropriate:
 
@@ -465,11 +465,11 @@ regex = '''Custom Raw Ruleset T[est]{3}'''
 
 The above example replaces the default ruleset with a rule that checks for the regex defined - `Custom Raw Ruleset T` with a suffix of 3 characters from either one of `e`, `s`, or `t` letters.
 
-For more information on the passthrough syntax to use, see [Schema](../pipeline/customize_rulesets.md#schema).
+For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
 ##### With a local ruleset
 
-You can use [`file` passthrough](../pipeline/customize_rulesets.md#passthrough-types) to replace the default ruleset with another file committed to the current repository.
+You can use [`file` passthrough](../pipeline/custom_rulesets_schema.md#passthrough-types) to replace the default ruleset with another file committed to the current repository.
 
 To do so, add the following in the `.gitlab/secret-detection-ruleset.toml` configuration file stored in the same repository and adjust the `value` as appropriate to point to the path of the file with the local ruleset configuration:
 
@@ -483,7 +483,7 @@ To do so, add the following in the `.gitlab/secret-detection-ruleset.toml` confi
 
 This would replace the default ruleset with the configuration defined in `config/gitleaks.toml` file.
 
-For more information on the passthrough syntax to use, see [Schema](../pipeline/customize_rulesets.md#schema).
+For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
 ##### With a remote ruleset
 
@@ -523,11 +523,11 @@ To use the `url` passthrough, add the following to the `.gitlab/secret-detection
 
 In this configuration the analyzer loads the ruleset configuration from `gitleaks.toml` file stored at the address provided.
 
-For more information on the passthrough syntax to use, see [Schema](../pipeline/customize_rulesets.md#schema).
+For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
 ##### With a private remote ruleset
 
-If a ruleset configuration is stored in a private repository you must provide the credentials to access the repository by using the passthrough's [`auth` setting](../pipeline/customize_rulesets.md#the-secretspassthrough-section).
+If a ruleset configuration is stored in a private repository you must provide the credentials to access the repository by using the passthrough's [`auth` setting](../pipeline/custom_rulesets_schema.md#the-secretspassthrough-section).
 
 NOTE:
 The `auth` setting only works with `git` passthrough.
@@ -545,9 +545,9 @@ To use a remote ruleset stored in a private repository, add the following to the
 ```
 
 WARNING:
-Beware of leaking credentials when using this feature. Check [this section](../pipeline/customize_rulesets.md#interpolate) for an example on how to use environment variables to minimize the risk.
+Beware of leaking credentials when using this feature. Check [this section](../pipeline/custom_rulesets_schema.md#interpolate) for an example on how to use environment variables to minimize the risk.
 
-For more information on the passthrough syntax to use, see [Schema](../pipeline/customize_rulesets.md#schema).
+For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
 #### Extend the default ruleset
 
@@ -590,7 +590,7 @@ path = "/gitleaks.toml"
 
 With this ruleset configuration the analyzer detects any strings matching with those two defined regex patterns.
 
-For more information on the passthrough syntax to use, see [Schema](../pipeline/customize_rulesets.md#schema).
+For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
 ##### With a remote ruleset
 
@@ -640,7 +640,7 @@ To use a `url` passthrough, add the following to `.gitlab/secret-detection-rules
     value  = "https://example.com/gitleaks.toml"
 ```
 
-For more information on the passthrough syntax to use, see [Schema](../pipeline/customize_rulesets.md#schema).
+For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
 #### Ignore patterns and paths
 
@@ -700,7 +700,7 @@ path = "/gitleaks.toml"
 
 This ignores any secrets detected in either `/gitleaks.toml` file or any file ending with one of the specified extensions.
 
-For more information on the passthrough syntax to use, see [Schema](../pipeline/customize_rulesets.md#schema).
+For more information on the passthrough syntax to use, see [Schema](../pipeline/custom_rulesets_schema.md#schema).
 
 #### Ignore secrets inline
 

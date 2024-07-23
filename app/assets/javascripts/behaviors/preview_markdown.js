@@ -136,7 +136,7 @@ $(document).on('markdown-preview:show', (e, $form) => {
   if (!$previewButton.parents('.js-vue-markdown-field').length) {
     $previewButton.val('edit');
     $previewButton.children('span.gl-button-text').text(__('Continue editing'));
-    $previewButton.addClass('!gl-shadow-none gl-bg-transparent!');
+    $previewButton.addClass('!gl-shadow-none !gl-bg-transparent');
   }
 
   // toggle content
@@ -196,19 +196,19 @@ $(document).on('click', previewButtonSelector, function (e) {
 $(document).on('mousedown', previewButtonSelector, function (e) {
   e.preventDefault();
   const $form = $(this).closest('form');
-  $form.find(previewButtonSelector).removeClass('!gl-shadow-none gl-bg-transparent!');
+  $form.find(previewButtonSelector).removeClass('!gl-shadow-none !gl-bg-transparent');
 });
 
 $(document).on('mouseenter', previewButtonSelector, function (e) {
   e.preventDefault();
   const $form = $(this).closest('form');
-  $form.find(previewButtonSelector).removeClass('gl-bg-transparent!');
+  $form.find(previewButtonSelector).removeClass('!gl-bg-transparent');
 });
 
 $(document).on('mouseleave', previewButtonSelector, function (e) {
   e.preventDefault();
   const $form = $(this).closest('form');
-  $form.find(previewButtonSelector).addClass('gl-bg-transparent!');
+  $form.find(previewButtonSelector).addClass('!gl-bg-transparent');
 });
 
 export default MarkdownPreview;

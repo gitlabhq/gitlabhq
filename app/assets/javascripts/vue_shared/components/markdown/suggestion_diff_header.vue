@@ -149,13 +149,13 @@ export default {
     </gl-badge>
     <div
       v-else-if="isApplying"
-      class="gl-display-flex gl-align-items-center text-secondary"
+      class="text-secondary gl-flex gl-items-center"
       data-testid="applying-badge"
     >
-      <gl-loading-icon size="sm" class="gl-align-items-center gl-justify-content-center gl-mr-3" />
+      <gl-loading-icon size="sm" class="gl-mr-3 gl-items-center gl-justify-center" />
       <span>{{ applyingSuggestionsMessage }}</span>
     </div>
-    <div v-else-if="isLoggedIn" class="gl-display-flex gl-align-items-center">
+    <div v-else-if="isLoggedIn" class="gl-flex gl-items-center">
       <div v-if="isBatched">
         <gl-button
           class="btn-inverted js-remove-from-batch-btn btn-grouped"

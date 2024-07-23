@@ -452,12 +452,40 @@ RSpec.describe WorkItems::UpdateService, feature_category: :team_planning do
           let(:widget_params) { { start_and_due_date_widget: { due_date: updated_date } } }
 
           it_behaves_like 'update service that triggers graphql dates updated subscription'
+
+          it 'updates the dates as expected' do
+            expect { update_work_item }
+              .to change { work_item.dates_source&.due_date }
+          end
+
+          context 'when work item validation fails' do
+            let(:opts) { { title: '' } }
+
+            it 'does not change the dates_source' do
+              expect { update_work_item }
+                .not_to change { work_item.dates_source&.due_date }
+            end
+          end
         end
 
         context 'when start_date is updated' do
           let(:widget_params) { { start_and_due_date_widget: { start_date: updated_date } } }
 
           it_behaves_like 'update service that triggers graphql dates updated subscription'
+
+          it 'updates the dates as expected' do
+            expect { update_work_item }
+              .to change { work_item&.dates_source&.start_date }
+          end
+
+          context 'when work item validation fails' do
+            let(:opts) { { title: '' } }
+
+            it 'does not change the dates_source' do
+              expect { update_work_item }
+                .not_to change { work_item&.dates_source&.start_date }
+            end
+          end
         end
 
         context 'when no date param is updated' do

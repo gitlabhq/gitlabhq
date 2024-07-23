@@ -2861,6 +2861,16 @@ entry.
 - [Migrate self-managed custom roles to the instance-level roles](gitlab-org/gitlab@46ab664a1877f8b761c2b25e13e01561d56cf6fd) ([merge request](gitlab-org/gitlab!147829))
 - [Feature cleanup flag wiki_content_background_job](gitlab-org/gitlab@c39a37db4a6112456052c11bf5fd1afa9c23bd6d) by @ivantedja ([merge request](gitlab-org/gitlab!148820))
 
+## 16.11.7 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/74bda3d7064c5d346b89c3b81fc9ee9189919945) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159056))
+
+### Fixed (1 change)
+
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/gitlab/-/commit/b1ce2c82376ff000984686c22e739464458d868b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159021))
+
 ## 16.11.6 (2024-07-09)
 
 ### Fixed (1 change)
@@ -3567,6 +3577,12 @@ entry.
 - [Drop promote_ultimate_features_at column](gitlab-org/gitlab@b5dbcc83686be21fbf90d176bfd07707f21d1518) ([merge request](gitlab-org/gitlab!145706))
 - [Finalize the backfill migration for onboarding status step url](gitlab-org/gitlab@f986c1b1cf00968ff106136893bfe68d47895c69) ([merge request](gitlab-org/gitlab!147278))
 - [Remove ClusterRepositoryCache migration helper class](gitlab-org/gitlab@f71a7a94ce8d70d9d378ebc225b802b58f0ae006) ([merge request](gitlab-org/gitlab!147244))
+
+## 16.10.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/401fa9da22fdeffa67c783e11b98ce0c9bb8c7ae) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159057))
 
 ## 16.10.8 (2024-06-25)
 
@@ -4357,6 +4373,16 @@ No changes.
 - [Add sharding keys for code_review_workflow](gitlab-org/gitlab@f0ad99cc932bd74a5d02de99ee62651b32a34af2) ([merge request](gitlab-org/gitlab!143310))
 - [Add sharding keys for system_access](gitlab-org/gitlab@62c2fd4788e62e46f1469e2f18d178840e8e3df2) ([merge request](gitlab-org/gitlab!142501))
 - [Add sharding keys for purchase](gitlab-org/gitlab@9c3843da74714c72483c17489d5d3d68ceffd2c8) ([merge request](gitlab-org/gitlab!142505))
+
+## 16.9.10 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/7747e83d1860f2186df35c5a29370e0e5bb0c810) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159058))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/c7dc314ace84491b696fb65c3384fb0302d00d5a) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153470))
 
 ## 16.9.9 (2024-06-25)
 
@@ -5198,6 +5224,20 @@ No changes.
 
 - [Add remediation badge to vulnerability report](gitlab-org/gitlab@e6236197509eae1bb27edf8fb2c63ccf769c2642) ([merge request](gitlab-org/gitlab!142455))
 
+## 16.8.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/b8d88ab89f76ff7ed39d4d561ef79bd9c8c664cd) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159066))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/8a7138eaae89c433bcc234a59a9fb9c696c3081f) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153469))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/3d02306a06855503e8aaafd68b9234343d5ae84b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160249))
+
 ## 16.8.8 (2024-06-25)
 
 ### Fixed (1 change)
@@ -5780,6 +5820,20 @@ No changes.
 - [Finalize merge_request_diffs.project_id backfill](gitlab-org/gitlab@26aded629ba0a944e9c1ef138d9d5563de0d86ac) ([merge request](gitlab-org/gitlab!139726))
 - [Bump the finalize_after date of backfill migration](gitlab-org/gitlab@770ab7faa2048bfeb8bddd506e6f37fe18bb4d06) ([merge request](gitlab-org/gitlab!140109))
 - [Remove code_suggestions_completion_api feature](gitlab-org/gitlab@988e2f57f9635ed9cc3896b15965b608fce54756) ([merge request](gitlab-org/gitlab!138174)) **GitLab Enterprise Edition**
+
+## 16.7.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/22ab35073260e27d979f7cb54e9fba85e7327327) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159069))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/0fc9d3cfb69f6f2008557fcbd99c5c61eba5ff07) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153468))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/b1626d144508b52a015578a5b5089606b88a1671) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160248))
 
 ## 16.7.8 (2024-06-25)
 
@@ -6771,6 +6825,20 @@ No changes.
 ### fixed EE: true (1 change)
 
 - [Move export buttons next to each other](gitlab-org/gitlab@106bea7a6246cd153cf66d133936a09d46369ae3) ([merge request](gitlab-org/gitlab!137461))
+
+## 16.6.9 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/3dc90cff5b65c02d77ad188d9e03cb6beebd7ea5) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159089))
+
+### Changed (1 change)
+
+- [Do not enqueue PAT expiry enforcement migration](https://gitlab.com/gitlab-org/gitlab/-/commit/0bfdb5a3473850bad2db375f2e46e317829e9535) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/153466))
+
+### Other (1 change)
+
+- [Clear instance value](https://gitlab.com/gitlab-org/gitlab/-/commit/c80c110f8e413fd6d076a8320acb0e838306da59) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160246))
 
 ## 16.6.8 (2024-06-25)
 

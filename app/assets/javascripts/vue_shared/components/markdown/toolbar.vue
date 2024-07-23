@@ -61,11 +61,11 @@ export default {
 <template>
   <div
     v-if="showCommentToolBar"
-    class="comment-toolbar gl-display-flex gl-flex-direction-row gl-px-2 gl-rounded-bottom-left-base gl-rounded-bottom-right-base"
+    class="comment-toolbar gl-flex gl-flex-row gl-rounded-bl-base gl-rounded-br-base gl-px-2"
     :class="
       showContentEditorSwitcher
-        ? 'gl-justify-content-space-between gl-align-items-center gl-border-t gl-border-gray-100'
-        : 'gl-justify-content-end gl-my-2'
+        ? 'gl-border-t gl-items-center gl-justify-between gl-border-gray-100'
+        : 'gl-my-2 gl-justify-end'
     "
   >
     <editor-mode-switcher
@@ -74,8 +74,8 @@ export default {
       value="markdown"
       @switch="$emit('enableContentEditor')"
     />
-    <div class="gl-display-flex">
-      <div v-if="canAttachFile" class="uploading-container gl-font-sm gl-leading-32 gl-mr-3">
+    <div class="gl-flex">
+      <div v-if="canAttachFile" class="uploading-container gl-mr-3 gl-text-sm gl-leading-32">
         <span class="uploading-progress-container hide">
           <gl-icon name="paperclip" />
           <span class="attaching-file-message"></span>
@@ -100,7 +100,7 @@ export default {
               <gl-button
                 variant="link"
                 category="primary"
-                class="retry-uploading-link gl-align-baseline gl-font-sm!"
+                class="retry-uploading-link gl-align-baseline !gl-text-sm"
               >
                 {{ content }}
               </gl-button>
@@ -109,7 +109,7 @@ export default {
               <gl-button
                 variant="link"
                 category="primary"
-                class="markdown-selector attach-new-file gl-align-baseline gl-font-sm!"
+                class="markdown-selector attach-new-file gl-align-baseline !gl-text-sm"
               >
                 {{ content }}
               </gl-button>
@@ -119,7 +119,7 @@ export default {
         <gl-button
           variant="link"
           category="primary"
-          class="button-cancel-uploading-files gl-align-baseline hide gl-font-sm!"
+          class="button-cancel-uploading-files hide gl-align-baseline !gl-text-sm"
         >
           {{ __('Cancel') }}
         </gl-button>
@@ -134,7 +134,7 @@ export default {
         size="small"
         :title="__('Markdown is supported')"
         :aria-label="__('Markdown is supported')"
-        class="gl-px-3!"
+        class="!gl-px-3"
       />
     </div>
   </div>

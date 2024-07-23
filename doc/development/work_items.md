@@ -162,6 +162,8 @@ Because any WIT can have any widget, we only need to define which widget is acti
 specific WIT. So, after switching the type of a specific work item, we display a different set
 of widgets.
 
+Read more about [work item widgets](work_items_widgets.md) and how to create a new one.
+
 ### Widgets metadata
 
 In order to customize each WIT with corresponding active widgets we will need a data

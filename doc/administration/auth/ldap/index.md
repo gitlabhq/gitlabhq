@@ -489,6 +489,9 @@ required when `external_groups` is configured:
 | `external_groups` | An array of CNs of groups containing users that should be considered external. Not `cn=interns` or the full DN. | `['interns', 'contractors']` |
 | `sync_ssh_keys`   | The LDAP attribute containing a user's public SSH key. | `'sshPublicKey'` or false if not set |
 
+NOTE:
+If Sidekiq is configured on a different server to the Rails server, you must add the LDAP configuration to every Sidekiq server as well for LDAP synchronisation to work.
+
 ### Use multiple LDAP servers
 
 DETAILS:

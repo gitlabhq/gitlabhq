@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe WorkItems::Widgets::StartAndDueDate do
+RSpec.describe WorkItems::Widgets::StartAndDueDate, feature_category: :team_planning do
   let_it_be(:work_item) { create(:work_item, start_date: Date.today, due_date: 1.week.from_now) }
 
   describe '.type' do

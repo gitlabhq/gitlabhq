@@ -88,31 +88,34 @@ FactoryBot.define do
       end
     end
 
-    trait :instance_event do
-      transient { instance_scope { Gitlab::Audit::InstanceScope.new } }
+    if Gitlab.ee?
+      trait :instance_event do
+        transient { instance_scope { Gitlab::Audit::InstanceScope.new } }
 
-      entity_type { Gitlab::Audit::InstanceScope.name }
-      entity_id   { instance_scope.id }
-      entity_path { instance_scope.full_path }
-      target_details { instance_scope.name }
-      ip_address { IPAddr.new '127.0.0.1' }
-      details do
-        {
-          change: 'project_creation_level',
-          from: nil,
-          to: 'Developers + Maintainers',
-          author_name: user.name,
-          target_id: instance_scope.id,
-          target_type: Gitlab::Audit::InstanceScope.name,
-          target_details: instance_scope.name,
-          ip_address: '127.0.0.1',
-          entity_path: instance_scope.full_path
-        }
+        entity_type { Gitlab::Audit::InstanceScope.name }
+        entity_id   { instance_scope.id }
+        entity_path { instance_scope.full_path }
+        target_details { instance_scope.name }
+        ip_address { IPAddr.new '127.0.0.1' }
+        details do
+          {
+            change: 'project_creation_level',
+            from: nil,
+            to: 'Developers + Maintainers',
+            author_name: user.name,
+            target_id: instance_scope.id,
+            target_type: Gitlab::Audit::InstanceScope.name,
+            target_details: instance_scope.name,
+            ip_address: '127.0.0.1',
+            entity_path: instance_scope.full_path
+          }
+        end
       end
+
+      factory :instance_audit_event, traits: [:instance_event]
     end
 
     factory :project_audit_event, traits: [:project_event]
     factory :group_audit_event, traits: [:group_event]
-    factory :instance_audit_event, traits: [:instance_event]
   end
 end

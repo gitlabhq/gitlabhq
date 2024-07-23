@@ -1546,7 +1546,7 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/models/concerns/identity_verifiable.rb
 /ee/config/routes/identity_verification.rb
 
-[Deploy:Environments - KAS Version Maintainers] @gitlab-org/maintainers/kas-version-maintainers
+[Deploy:Environments - KAS Version Maintainers] @project_278964_bot6 @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 /GITLAB_KAS_VERSION
 
 ^[DiffMatchPatch gem]

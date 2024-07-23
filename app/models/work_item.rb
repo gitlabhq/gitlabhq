@@ -17,7 +17,11 @@ class WorkItem < Issue
 
   has_one :parent_link, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_id
   has_one :work_item_parent, through: :parent_link, class_name: 'WorkItem'
-  has_one :dates_source, class_name: 'WorkItems::DatesSource', foreign_key: 'issue_id', inverse_of: :work_item
+  has_one :dates_source,
+    class_name: 'WorkItems::DatesSource',
+    foreign_key: 'issue_id',
+    inverse_of: :work_item,
+    autosave: true
 
   has_many :child_links, class_name: '::WorkItems::ParentLink', foreign_key: :work_item_parent_id
   has_many :work_item_children, through: :child_links, class_name: 'WorkItem',
@@ -197,6 +201,14 @@ class WorkItem < Issue
 
   def supports_time_tracking?
     work_item_type.supports_time_tracking?(resource_parent)
+  end
+
+  def due_date
+    dates_source&.due_date || read_attribute(:due_date)
+  end
+
+  def start_date
+    dates_source&.start_date || read_attribute(:start_date)
   end
 
   private

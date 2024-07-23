@@ -370,16 +370,16 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           let(:input) { { 'descriptionWidget' => { 'description' => "/remove_due_date" } } }
 
           before do
-            work_item.update!(due_date: due_date)
+            (work_item.dates_source || work_item.build_dates_source)
+              .update!(due_date: due_date)
           end
 
           it 'updates start and due date' do
-            expect do
-              post_graphql_mutation(mutation, current_user: current_user)
-              work_item.reload
-            end.to not_change(work_item, :start_date).and(
-              change(work_item, :due_date).from(due_date).to(nil)
-            )
+            expect { post_graphql_mutation(mutation, current_user: current_user) }
+              .to change { work_item.reload.due_date }.from(due_date).to(nil)
+              .and change { work_item.dates_source&.due_date }.from(due_date).to(nil)
+              .and not_change { work_item.start_date }
+              .and not_change { work_item.dates_source&.start_date }
 
             expect(response).to have_gitlab_http_status(:success)
             expect(mutation_response['workItem']['widgets']).to include({
@@ -451,7 +451,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       context 'when dates were already set for the work item' do
         before do
-          work_item.update!(start_date: start_date, due_date: due_date)
+          (work_item.dates_source || work_item.build_dates_source)
+            .update!(start_date: start_date, due_date: due_date)
         end
 
         context 'when updating only start date' do
@@ -459,13 +460,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             { 'startAndDueDateWidget' => { 'startDate' => nil } }
           end
 
-          it 'allows setting a single date to null' do
-            expect do
-              post_graphql_mutation(mutation, current_user: current_user)
-              work_item.reload
-            end.to change(work_item, :start_date).from(start_date).to(nil).and(
-              not_change(work_item, :due_date).from(due_date)
-            )
+          it 'allows setting a single date to null', :aggregate_failures do
+            expect { post_graphql_mutation(mutation, current_user: current_user) }
+              .to change { work_item.reload.start_date }.from(start_date).to(nil)
+              .and change { work_item.dates_source.start_date }.from(start_date).to(nil)
+              .and not_change { work_item.due_date }.from(due_date)
+              .and not_change { work_item.dates_source.due_date }.from(due_date)
           end
         end
 
@@ -475,12 +475,11 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
           end
 
           it 'allows setting a single date to null' do
-            expect do
-              post_graphql_mutation(mutation, current_user: current_user)
-              work_item.reload
-            end.to change(work_item, :due_date).from(due_date).to(nil).and(
-              not_change(work_item, :start_date).from(start_date)
-            )
+            expect { post_graphql_mutation(mutation, current_user: current_user) }
+              .to change { work_item.reload.due_date }.from(due_date).to(nil)
+              .and change { work_item.dates_source.due_date }.from(due_date).to(nil)
+              .and not_change { work_item.start_date }.from(start_date)
+              .and not_change { work_item.dates_source.start_date }.from(start_date)
           end
         end
       end
@@ -896,10 +895,12 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             let(:description) { "Updating work item\n/type issue\n/due tomorrow\n/title Foo" }
 
             it 'updates the work item type and other attributes' do
-              expect do
-                post_graphql_mutation(mutation, current_user: current_user)
-                work_item.reload
-              end.to change { work_item.work_item_type.base_type }.from('task').to('issue')
+              tomorrow = 1.day.from_now.to_date
+
+              expect { post_graphql_mutation(mutation, current_user: current_user) }
+                .to change { work_item.reload.work_item_type.base_type }.from('task').to('issue')
+                .and change { work_item.dates_source&.due_date }.to(tomorrow)
+                .and change { work_item.due_date }.to(tomorrow)
 
               expect(response).to have_gitlab_http_status(:success)
               expect(mutation_response['workItem']['workItemType']['name']).to eq('Issue')
@@ -919,10 +920,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             let(:error_msg) { 'Work item type cannot be changed to issue when linked to a parent issue.' }
 
             it 'does not update the work item type' do
-              expect do
-                post_graphql_mutation(mutation, current_user: current_user)
-                work_item.reload
-              end.not_to change { work_item.work_item_type.base_type }
+              expect { post_graphql_mutation(mutation, current_user: current_user) }
+                .not_to change { work_item.reload.work_item_type.base_type }
 
               expect(response).to have_gitlab_http_status(:success)
               expect(mutation_response['errors']).to include(error_msg)
@@ -931,18 +930,20 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
           context 'when new type does not support a widget' do
             before do
-              work_item.update!(start_date: Date.current, due_date: Date.tomorrow)
+              (work_item.dates_source || work_item.build_dates_source)
+                .update!(start_date: Date.current, due_date: Date.tomorrow)
+
               WorkItems::Type.default_by_type(:issue).widget_definitions
                 .find_by_widget_type(:start_and_due_date).update!(disabled: true)
             end
 
             it 'updates the work item type and clear widget attributes' do
-              expect do
-                post_graphql_mutation(mutation, current_user: current_user)
-                work_item.reload
-              end.to change { work_item.work_item_type.base_type }.from('task').to('issue')
-                 .and change { work_item.start_date }.to(nil)
-                 .and change { work_item.start_date }.to(nil)
+              expect { post_graphql_mutation(mutation, current_user: current_user) }
+                .to change { work_item.reload.work_item_type.base_type }.from('task').to('issue')
+                .and change { work_item.due_date }.to(nil)
+                .and change { work_item.dates_source&.due_date }.to(nil)
+                .and change { work_item.start_date }.to(nil)
+                .and change { work_item.dates_source&.start_date }.to(nil)
 
               expect(response).to have_gitlab_http_status(:success)
               expect(mutation_response['workItem']['workItemType']['name']).to eq('Issue')
