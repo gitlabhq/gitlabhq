@@ -60,6 +60,10 @@ RSpec.describe Gitlab::Redis::Queues do
       described_class.remove_instance_variable(:@instances) if described_class.instance_variable_defined?(:@instances)
     end
 
+    after do
+      described_class.remove_instance_variable(:@instances) if described_class.instance_variable_defined?(:@instances)
+    end
+
     shared_examples 'no extra shards' do
       it 'returns a single map of self' do
         expect(described_class.instances).to eq({ 'main' => described_class })
