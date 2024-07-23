@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.7 (2024-07-23)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/gitlab/-/commit/74bda3d7064c5d346b89c3b81fc9ee9189919945) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159056))
+
+### Fixed (1 change)
+
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/gitlab/-/commit/b1ce2c82376ff000984686c22e739464458d868b) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159021))
+
 ## 16.11.6 (2024-07-09)
 
 ### Fixed (1 change)
