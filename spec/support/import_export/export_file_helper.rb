@@ -56,9 +56,9 @@ module ExportFileHelper
   end
 
   # Expands the compressed file for an exported project into +tmpdir+
-  def in_directory_with_expanded_export(project)
+  def in_directory_with_expanded_export(project, user)
     Dir.mktmpdir do |tmpdir|
-      export_file = project.export_file.path
+      export_file = project.export_file(user).path
       _output, exit_status = Gitlab::Popen.popen(%W[tar -zxf #{export_file} -C #{tmpdir}])
 
       yield(exit_status, tmpdir)

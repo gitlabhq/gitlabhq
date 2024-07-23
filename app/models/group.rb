@@ -108,7 +108,7 @@ class Group < Namespace
 
   has_many :todos
 
-  has_one :import_export_upload
+  has_many :import_export_uploads, dependent: :destroy, inverse_of: :group # rubocop:disable Cop/ActiveRecordDependent -- Previously was has_one association, dependent: :destroy to be removed in a separate issue and cascade FK will be added
 
   has_many :import_failures, inverse_of: :group
 
@@ -820,16 +820,20 @@ class Group < Namespace
     false
   end
 
-  def export_file_exists?
-    import_export_upload&.export_file_exists?
+  def import_export_upload_by_user(user)
+    import_export_uploads.find_by(user_id: user.id)
   end
 
-  def export_file
-    import_export_upload&.export_file
+  def export_file_exists?(user)
+    import_export_upload_by_user(user)&.export_file_exists?
   end
 
-  def export_archive_exists?
-    import_export_upload&.export_archive_exists?
+  def export_file(user)
+    import_export_upload_by_user(user)&.export_file
+  end
+
+  def export_archive_exists?(user)
+    import_export_upload_by_user(user)&.export_archive_exists?
   end
 
   def adjourned_deletion?

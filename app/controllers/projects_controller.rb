@@ -268,9 +268,10 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def download_export
-    if @project.export_file_exists?
-      if @project.export_archive_exists?
-        send_upload(@project.export_file, attachment: @project.export_file.filename)
+    if @project.export_file_exists?(current_user)
+      if @project.export_archive_exists?(current_user)
+        export_file = @project.export_file(current_user)
+        send_upload(export_file, attachment: export_file.filename)
       else
         redirect_to(
           edit_project_path(@project, anchor: 'js-project-advanced-settings'),
@@ -286,7 +287,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def remove_export
-    if @project.remove_exports
+    if @project.remove_export_for_user(current_user)
       flash[:notice] = _("Project export has been deleted.")
     else
       flash[:alert] = _("Project export could not be deleted.")
@@ -296,7 +297,7 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def generate_new_export
-    if @project.remove_exports
+    if @project.remove_export_for_user(current_user)
       export
     else
       redirect_to(

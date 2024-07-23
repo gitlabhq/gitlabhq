@@ -209,9 +209,10 @@ class GroupsController < Groups::ApplicationController
   end
 
   def download_export
-    if @group.export_file_exists?
-      if @group.export_archive_exists?
-        send_upload(@group.export_file, attachment: @group.export_file.filename)
+    if @group.export_file_exists?(current_user)
+      if @group.export_archive_exists?(current_user)
+        export_file = @group.export_file(current_user)
+        send_upload(export_file, attachment: export_file.filename)
       else
         redirect_to edit_group_path(@group),
           alert: _('The file containing the export is not available yet; it may still be transferring. Please try again later.')

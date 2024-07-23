@@ -27,11 +27,17 @@ RSpec.describe ImportExportUpload do
     it_behaves_like 'stores the Import/Export file', :export_file
   end
 
+  describe 'associations' do
+    it { is_expected.to belong_to(:project) }
+    it { is_expected.to belong_to(:group) }
+    it { is_expected.to belong_to(:user) }
+  end
+
   describe 'scopes' do
     let_it_be(:upload1) { create(:import_export_upload, export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz')) }
-    let_it_be(:upload2) { create(:import_export_upload) }
+    let_it_be(:upload2) { create(:import_export_upload, export_file: nil) }
     let_it_be(:upload3) { create(:import_export_upload, export_file: fixture_file_upload('spec/fixtures/project_export.tar.gz'), updated_at: 25.hours.ago) }
-    let_it_be(:upload4) { create(:import_export_upload, updated_at: 2.days.ago) }
+    let_it_be(:upload4) { create(:import_export_upload, export_file: nil, updated_at: 2.days.ago) }
 
     describe '.with_export_file' do
       it 'returns uploads with export file' do

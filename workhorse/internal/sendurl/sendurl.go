@@ -33,6 +33,7 @@ type entryParams struct {
 	TimeoutResponseStatus int
 	Body                  string
 	Header                http.Header
+	ResponseHeaders       http.Header
 	Method                string
 }
 
@@ -165,6 +166,15 @@ func (e *entry) Inject(w http.ResponseWriter, r *http.Request, sendData string) 
 			w.Header()[key] = value
 		}
 	}
+
+	// set response headers sent by rails
+	for key, values := range params.ResponseHeaders {
+		w.Header().Del(key)
+		for _, value := range values {
+			w.Header().Add(key, value)
+		}
+	}
+
 	w.WriteHeader(resp.StatusCode)
 
 	defer func() {

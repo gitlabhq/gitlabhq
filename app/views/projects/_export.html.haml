@@ -24,7 +24,7 @@
         %li= _('Pipeline triggers')
         %li= _('Webhooks')
         %li= _('Any encrypted tokens')
-    - if project.export_status == :finished
+    - if project.export_status(current_user) == :finished
       = render Pajamas::ButtonComponent.new(href: download_export_project_path(project),
         method: :get,
         button_options: { ref: 'nofollow', download: '', data: { testid: 'download-export-link' } }) do
