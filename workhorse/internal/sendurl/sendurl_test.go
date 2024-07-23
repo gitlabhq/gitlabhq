@@ -265,6 +265,11 @@ func TestPostRequest(t *testing.T) {
 	require.Equal(t, testData, string(result))
 }
 
+func TestResponseHeaders(t *testing.T) {
+	response := testEntryServer(t, "/get/request", http.Header{"CustomHeader": {"Upstream"}}, false, option{Key: "ResponseHeaders", Value: http.Header{"CustomHeader": {"Overridden"}}})
+	testhelper.RequireResponseHeader(t, response, "CustomHeader", "Overridden")
+}
+
 func TestTimeout(t *testing.T) {
 	response := testEntryServer(t, "/get/timeout", nil, false, option{Key: "ResponseHeaderTimeout", Value: "10ms"})
 	require.Equal(t, http.StatusInternalServerError, response.Code)

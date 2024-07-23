@@ -2312,7 +2312,7 @@ class Project < ApplicationRecord
 
   def after_import
     repository.expire_content_cache
-    repository.remove_prohibited_branches
+    repository.remove_prohibited_refs
     wiki.repository.expire_content_cache
 
     DetectRepositoryLanguagesWorker.perform_async(id)

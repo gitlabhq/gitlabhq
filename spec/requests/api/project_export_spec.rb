@@ -596,7 +596,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
       describe 'GET /projects/:id/export_relations/download' do
         context 'when export request is not batched' do
-          let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels') }
+          let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
           let_it_be(:upload) { create(:bulk_import_export_upload, export: export) }
 
           context 'when export file exists' do
@@ -631,7 +631,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
           context 'when export is batched' do
             let(:relation) { 'issues' }
 
-            let_it_be(:export) { create(:bulk_import_export, :batched, project: project, relation: 'issues') }
+            let_it_be(:export) { create(:bulk_import_export, :batched, project: project, relation: 'issues', user: user) }
 
             it 'returns 400' do
               export.update!(batched: true)
@@ -645,7 +645,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         context 'when export request is batched' do
-          let(:export) { create(:bulk_import_export, :batched, project: project, relation: 'labels') }
+          let(:export) { create(:bulk_import_export, :batched, project: project, relation: 'labels', user: user) }
           let(:upload) { create(:bulk_import_export_upload) }
           let!(:batch) { create(:bulk_import_export_batch, export: export, upload: upload) }
 
@@ -690,9 +690,9 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
       end
 
       describe 'GET /projects/:id/export_relations/status' do
-        let_it_be(:started_export) { create(:bulk_import_export, :started, project: project, relation: 'labels') }
-        let_it_be(:finished_export) { create(:bulk_import_export, :finished, project: project, relation: 'milestones') }
-        let_it_be(:failed_export) { create(:bulk_import_export, :failed, project: project, relation: 'project_badges') }
+        let_it_be(:started_export) { create(:bulk_import_export, :started, project: project, relation: 'labels', user: user) }
+        let_it_be(:finished_export) { create(:bulk_import_export, :finished, project: project, relation: 'milestones', user: user) }
+        let_it_be(:failed_export) { create(:bulk_import_export, :failed, project: project, relation: 'project_badges', user: user) }
 
         it 'returns a list of relation export statuses' do
           get api(status_path, user)
@@ -716,7 +716,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
 
         context 'when there is a batched export' do
           let_it_be(:batched_export) do
-            create(:bulk_import_export, :started, :batched, project: project, relation: 'issues', batches_count: 1)
+            create(:bulk_import_export, :started, :batched, project: project, relation: 'issues', batches_count: 1, user: user)
           end
 
           let_it_be(:batch) { create(:bulk_import_export_batch, objects_count: 5, export: batched_export) }
@@ -741,6 +741,27 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
                 )
               )
             )
+          end
+        end
+
+        context 'when the export was started by another user' do
+          let_it_be(:other_user) { create(:user) }
+
+          before_all do
+            project.add_maintainer(other_user)
+          end
+
+          it 'returns not_found when a relation was specified' do
+            get api(status_path, other_user), params: { relation: 'labels' }
+
+            expect(response).to have_gitlab_http_status(:not_found)
+          end
+
+          it 'does not appear in the list of all statuses' do
+            get api(status_path, other_user)
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(json_response).to be_empty
           end
         end
       end
@@ -781,7 +802,7 @@ RSpec.describe API::ProjectExport, :aggregate_failures, :clean_gitlab_redis_cach
         end
 
         describe 'GET /projects/:id/export_relations/download' do
-          let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels') }
+          let_it_be(:export) { create(:bulk_import_export, project: project, relation: 'labels', user: user) }
           let_it_be(:upload) { create(:bulk_import_export_upload, export: export) }
 
           subject(:request) { get api(download_path, user) }

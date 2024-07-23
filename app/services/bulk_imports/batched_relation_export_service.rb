@@ -35,7 +35,9 @@ module BulkImports
     attr_reader :user, :portable, :relation, :jid, :config, :resolved_relation
 
     def export
-      @export ||= portable.bulk_import_exports.find_or_create_by!(relation: relation) # rubocop:disable CodeReuse/ActiveRecord
+      # rubocop:disable Performance/ActiveRecordSubtransactionMethods -- This is only executed from within a worker
+      @export ||= portable.bulk_import_exports.safe_find_or_create_by!(relation: relation, user: user)
+      # rubocop:enable Performance/ActiveRecordSubtransactionMethods
     end
 
     def objects_count

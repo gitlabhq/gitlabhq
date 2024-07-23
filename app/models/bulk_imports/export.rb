@@ -12,6 +12,7 @@ module BulkImports
 
     belongs_to :project, optional: true
     belongs_to :group, optional: true
+    belongs_to :user, optional: true
 
     has_one :upload, class_name: 'BulkImports::ExportUpload'
     has_many :batches, class_name: 'BulkImports::ExportBatch'
@@ -21,6 +22,9 @@ module BulkImports
     validates :relation, :status, presence: true
 
     validate :portable_relation?
+
+    scope :for_user, ->(user) { where(user: user) }
+    scope :for_user_and_relation, ->(user, relation) { where(user: user, relation: relation) }
 
     state_machine :status, initial: :started do
       state :started, value: STARTED
