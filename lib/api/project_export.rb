@@ -28,7 +28,7 @@ module API
           tags ['project_export']
         end
         get ':id/export' do
-          present user_project, with: Entities::ProjectExportStatus
+          present user_project, with: Entities::ProjectExportStatus, current_user: current_user
         end
 
         desc 'Download export' do
@@ -46,9 +46,9 @@ module API
         get ':id/export/download' do
           check_rate_limit! :project_download_export, scope: [current_user, user_project.namespace]
 
-          if user_project.export_file_exists?
-            if user_project.export_archive_exists?
-              present_carrierwave_file!(user_project.export_file)
+          if user_project.export_file_exists?(current_user)
+            if user_project.export_archive_exists?(current_user)
+              present_carrierwave_file!(user_project.export_file(current_user))
             else
               render_api_error!('The project export file is not available yet', 404)
             end
@@ -81,7 +81,7 @@ module API
         post ':id/export' do
           check_rate_limit! :project_export, scope: current_user
 
-          user_project.remove_exports
+          user_project.remove_export_for_user(current_user)
 
           project_export_params = declared_params(include_missing: false)
           after_export_params = project_export_params.delete(:upload) || {}
@@ -165,7 +165,7 @@ module API
           all_or_none_of :batched, :batch_number
         end
         get ':id/export_relations/download' do
-          export = user_project.bulk_import_exports.find_by_relation(params[:relation])
+          export = user_project.bulk_import_exports.for_user_and_relation(current_user, params[:relation]).first
 
           break render_api_error!('Export not found', 404) unless export
 
@@ -205,13 +205,13 @@ module API
         end
         get ':id/export_relations/status' do
           if params[:relation]
-            export = user_project.bulk_import_exports.find_by_relation(params[:relation])
+            export = user_project.bulk_import_exports.for_user_and_relation(current_user, params[:relation]).first
 
             break render_api_error!('Export not found', 404) unless export
 
             present export, with: Entities::BulkImports::ExportStatus
           else
-            present user_project.bulk_import_exports, with: Entities::BulkImports::ExportStatus
+            present user_project.bulk_import_exports.for_user(current_user), with: Entities::BulkImports::ExportStatus
           end
         end
       end

@@ -1622,7 +1622,8 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
     end
 
     describe '#download_export', :clean_gitlab_redis_rate_limiting do
-      let(:project) { create(:project, :with_export, service_desk_enabled: false) }
+      let(:project) { create(:project, service_desk_enabled: false, creator: user) }
+      let!(:export) { create(:import_export_upload, project: project, user: user) }
       let(:action) { :download_export }
 
       context 'object storage enabled' do
@@ -1636,7 +1637,7 @@ RSpec.describe ProjectsController, feature_category: :groups_and_projects do
 
         context 'when project export file is absent' do
           it 'alerts the user and returns 302' do
-            project.export_file.file.delete
+            project.export_file(user).file.delete
 
             get action, params: { namespace_id: project.namespace, id: project }
 

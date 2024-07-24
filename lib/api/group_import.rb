@@ -80,7 +80,7 @@ module API
           name: params[:name],
           parent_id: params[:parent_id],
           visibility_level: closest_allowed_visibility_level,
-          import_export_upload: ImportExportUpload.new(import_file: params[:file]),
+          import_export_upload: ImportExportUpload.new(import_file: params[:file], user: current_user),
           organization_id: params[:organization_id]
         }
 

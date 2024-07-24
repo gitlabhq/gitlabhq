@@ -29,9 +29,9 @@ module API
       get ':id/export/download' do
         check_rate_limit! :group_download_export, scope: [current_user, user_group]
 
-        if user_group.export_file_exists?
-          if user_group.export_archive_exists?
-            present_carrierwave_file!(user_group.export_file)
+        if user_group.export_file_exists?(current_user)
+          if user_group.export_archive_exists?(current_user)
+            present_carrierwave_file!(user_group.export_file(current_user))
           else
             render_api_error!('The group export file is not available yet', 404)
           end
@@ -116,7 +116,7 @@ module API
           all_or_none_of :batched, :batch_number
         end
         get ':id/export_relations/download' do
-          export = user_group.bulk_import_exports.find_by_relation(params[:relation])
+          export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation]).first
 
           break render_api_error!('Export not found', 404) unless export
 
@@ -156,13 +156,13 @@ module API
         end
         get ':id/export_relations/status' do
           if params[:relation]
-            export = user_group.bulk_import_exports.find_by_relation(params[:relation])
+            export = user_group.bulk_import_exports.for_user_and_relation(current_user, params[:relation]).first
 
             break render_api_error!('Export not found', 404) unless export
 
             present export, with: Entities::BulkImports::ExportStatus
           else
-            present user_group.bulk_import_exports, with: Entities::BulkImports::ExportStatus
+            present user_group.bulk_import_exports.for_user(current_user), with: Entities::BulkImports::ExportStatus
           end
         end
       end

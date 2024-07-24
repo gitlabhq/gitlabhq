@@ -3786,63 +3786,88 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe '#remove_prohibited_branches' do
-    let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759d597' }
+  describe '#remove_prohibited_refs' do
+    context "when repository contains allowed and prohibited ref names" do
+      let(:mutable_project) { create(:project, :repository) }
+      let(:repository) { mutable_project.repository }
+      let(:raw_repository) { repository.raw }
+      let(:commit_id) { raw_repository.commit.id }
+      let(:prohibited_name) { '37fd3601be4c25497a39fa2e6a206e09e759d597' }
+      let(:prohibited_hex_64_name) { '5f50b1461c836081ed677f05e08d10dc7dc68631fa5767bc3e3946349b348275' }
+      let(:allowed_basic_name) { 'some-tag-name' }
+      let(:allowed_non_hex_40_name) { '37fd3601be4c25497a39fa2e6a206e09e759d59s' }
 
-    before do
-      allow(repository.raw_repository).to receive(:branch_names).and_return([branch_name])
-    end
+      before do
+        raw_repository.add_tag(prohibited_name, user: user, target: commit_id)
+        raw_repository.add_branch(prohibited_name, user: user, target: commit_id)
 
-    shared_examples 'deletes the branch' do
-      it 'deletes prohibited branch' do
-        expect(repository.raw_repository).to receive(:delete_branch).with(branch_name)
+        raw_repository.add_tag(allowed_basic_name, user: user, target: commit_id)
+        raw_repository.add_branch(allowed_basic_name, user: user, target: commit_id)
 
-        repository.remove_prohibited_branches
+        raw_repository.add_tag(prohibited_hex_64_name, user: user, target: commit_id)
+        raw_repository.add_branch(prohibited_hex_64_name, user: user, target: commit_id)
+
+        raw_repository.add_tag(allowed_non_hex_40_name, user: user, target: commit_id)
+        raw_repository.add_branch(allowed_non_hex_40_name, user: user, target: commit_id)
+      end
+
+      it 'only deletes prohibited refs' do
+        # Check everything exists before calling `remove_prohibited_refs`.
+        expect(repository.find_branch(allowed_basic_name)).not_to be_nil
+        expect(repository.find_tag(allowed_basic_name)).not_to be_nil
+
+        expect(repository.find_branch(prohibited_hex_64_name)).not_to be_nil
+        expect(repository.find_tag(prohibited_hex_64_name)).not_to be_nil
+
+        expect(repository.find_branch(allowed_non_hex_40_name)).not_to be_nil
+        expect(repository.find_tag(allowed_non_hex_40_name)).not_to be_nil
+
+        expect(repository.find_branch(prohibited_name)).not_to be_nil
+        expect(repository.find_tag(prohibited_name)).not_to be_nil
+
+        repository.remove_prohibited_refs
+
+        # Check allowed refs were not deleted.
+        expect(repository.find_branch(allowed_basic_name)).not_to be_nil
+        expect(repository.find_tag(allowed_basic_name)).not_to be_nil
+
+        expect(repository.find_branch(allowed_non_hex_40_name)).not_to be_nil
+        expect(repository.find_tag(allowed_non_hex_40_name)).not_to be_nil
+
+        # Check prohibited refs were deleted.
+        expect(repository.find_branch(prohibited_name)).to be_nil
+        expect(repository.find_tag(prohibited_name)).to be_nil
+
+        expect(repository.find_branch(prohibited_hex_64_name)).to be_nil
+        expect(repository.find_tag(prohibited_hex_64_name)).to be_nil
       end
     end
 
-    shared_examples 'does not delete branch' do
-      it 'returns without removing the branch' do
-        expect(repository.raw_repository).not_to receive(:delete_branch)
+    context "when repository contains no prohibited ref names" do
+      let(:mutable_project) { create(:project, :repository) }
+      let(:repository) { mutable_project.repository }
+      let(:raw_repository) { repository.raw }
+      let(:commit_id) { raw_repository.commit.id }
+      let(:allowed_basic_name) { 'some-tag-name' }
 
-        repository.remove_prohibited_branches
-      end
-    end
-
-    context 'when branch name is hexadecmal and 40-characters long' do
-      include_examples 'deletes the branch'
-    end
-
-    context 'when branch name is hexadecmal and 64-characters long' do
-      let(:branch_name) { '5f50b1461c836081ed677f05e08d10dc7dc68631fa5767bc3e3946349b348275' }
-
-      include_examples 'deletes the branch'
-    end
-
-    context 'when branch name is 40-characters long but not hexadecimal' do
-      let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759d59s' }
-
-      include_examples 'does not delete branch'
-    end
-
-    context 'when branch name is hexadecimal' do
-      context 'when branch name is less than 40-characters long' do
-        let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759d' }
-
-        include_examples 'does not delete branch'
+      before do
+        raw_repository.add_tag(allowed_basic_name, user: user, target: commit_id)
+        raw_repository.add_branch(allowed_basic_name, user: user, target: commit_id)
       end
 
-      context 'when branch name is more than 40-characters long' do
-        let(:branch_name) { '37fd3601be4c25497a39fa2e6a206e09e759dfdfd' }
+      it 'does not delete any branches' do
+        expect(repository.raw).not_to receive(:delete_refs)
 
-        include_examples 'does not delete branch'
+        expect { repository.remove_prohibited_refs }
+          .not_to change { raw_repository.branch_count }
       end
-    end
 
-    context 'when prohibited branch does not exist' do
-      let(:branch_name) { 'main' }
+      it 'does not delete any tags' do
+        expect(repository.raw).not_to receive(:delete_refs)
 
-      include_examples 'does not delete branch'
+        expect { repository.remove_prohibited_refs }
+          .not_to change { raw_repository.tag_count }
+      end
     end
 
     context 'when raw repository does not exist' do
@@ -3850,7 +3875,10 @@ RSpec.describe Repository, feature_category: :source_code_management do
         allow(repository).to receive(:exists?).and_return(false)
       end
 
-      include_examples 'does not delete branch'
+      it "does not attempt to find prohibited refs" do
+        expect(repository.raw).not_to receive(:list_refs)
+        repository.remove_prohibited_refs
+      end
     end
   end
 

@@ -15,10 +15,12 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
   let(:example_url) { 'http://www.example.com' }
   let(:strategy) { subject.new(url: example_url, http_method: 'post') }
   let(:user) { build(:user) }
-  let(:project) { import_export_upload.project }
-  let(:import_export_upload) do
+  let(:project) { create(:project, creator: user) }
+  let!(:import_export_upload) do
     create(
       :import_export_upload,
+      project: project,
+      user: user,
       export_file: fixture_file_upload('spec/fixtures/gitlab/import_export/lightweight_project_export.tar.gz')
     )
   end
@@ -47,11 +49,11 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
       end
 
       it 'does not remove the exported project file after the upload', :aggregate_failures do
-        expect(project).not_to receive(:remove_exports)
+        expect(project).not_to receive(:remove_exports_for_user)
 
-        expect { strategy.execute(user, project) }.not_to change(project, :export_status)
+        expect { strategy.execute(user, project) }.not_to change { project.export_status(user) }
 
-        expect(project.export_status).to eq(:finished)
+        expect(project.export_status(user)).to eq(:finished)
       end
 
       it 'logs when upload starts and finishes' do
@@ -112,8 +114,10 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::WebUploadStrategy do
       before do
         stub_uploads_object_storage(FileUploader)
 
-        allow(import_export_upload.export_file).to receive(:url).and_return(object_store_url)
-        allow(import_export_upload.export_file).to receive(:file_storage?).and_return(false)
+        export_file = import_export_upload.export_file
+        allow(project).to receive(:export_file).with(user).and_return(export_file)
+        allow(export_file).to receive(:url).and_return(object_store_url)
+        allow(export_file).to receive(:file_storage?).and_return(false)
       end
 
       it 'uploads file as a remote stream' do

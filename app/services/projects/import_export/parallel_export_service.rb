@@ -50,7 +50,7 @@ module Projects
       end
 
       def save_export_archive
-        Gitlab::ImportExport::Saver.save(exportable: project, shared: shared)
+        Gitlab::ImportExport::Saver.save(exportable: project, shared: shared, user: current_user)
       end
 
       def version_saver

@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.0.5 (2024-07-24)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/security/gitlab/-/commit/10f23572a1c4aca31a9e3a9eb9f5546fe5353dfe)
+
+### Fixed (1 change)
+
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f34b4a189ab52c96b69716b3b02290c11e67ff42)
+
+### Security (7 changes)
+
+- [Refactor import_export_upload to be user-based](https://gitlab.com/gitlab-org/security/gitlab/-/commit/762b76f8c82061702e4854b978462f8f5f915a4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4265))
+- [Fix for private txt artifacts being accessible through the artifacts/browse link](https://gitlab.com/gitlab-org/security/gitlab/-/commit/502b678220abbc1427d2c9320d6e26deb4084234) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4292))
+- [Attribute BulkImport::Export to a particular user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc6479e121222a51d8281b445626959732880f67) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4286))
+- [Don't include project-level analytics settings in DOM](https://gitlab.com/gitlab-org/security/gitlab/-/commit/60d862aa715e1692942faaa8fa4ecf719e05407e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4131))
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7be78d4cf575453967f23b09054551299841fd8a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4243))
+- [Do not allow script execution on dependency responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1afc21105ee1285c40a701edf729bb2a247c1438) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4255))
+- [Remove prohibited tags after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a3b8343e3ef3fd0025db94a8b8d14006d821b831) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4250))
+
 ## 17.0.4 (2024-07-09)
 
 ### Fixed (1 change)

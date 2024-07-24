@@ -628,26 +628,52 @@ RSpec.describe Ci::Processable, feature_category: :continuous_integration do
     end
   end
 
-  describe 'find_dependencies_with_accessible_artifacts' do
-    let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
-    let(:build2) { create(:ci_build, :created, project: project, pipeline: pipeline) }
-    let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: build2, accessibility: accessibility) }
+  describe 'job_dependencies_with_accessible_artifacts' do
+    context 'in the same project' do
+      let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+      let(:build2) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: build2, accessibility: accessibility) }
 
-    let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
-    let!(:job_variable_2) { create(:ci_job_variable, job: build2) }
+      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
+      let!(:job_variable_2) { create(:ci_job_variable, job: build2) }
 
-    subject { build.find_dependencies_with_accessible_artifacts([build2]) }
+      subject { build.job_dependencies_with_accessible_artifacts([build2]) }
 
-    context 'inherits only jobs whose artifacts are public' do
-      let(:accessibility) { 'public' }
+      context 'inherits only jobs whose artifacts are public' do
+        let(:accessibility) { 'public' }
 
-      it { expect(subject).to eq([build2]) }
+        it { expect(subject).to eq([build2]) }
+      end
+
+      context 'inherits jobs whose artifacts are private' do
+        let(:accessibility) { 'private' }
+
+        it { expect(subject).to eq([build2]) }
+      end
     end
 
-    context 'does not inherits jobs whose artifacts are private' do
-      let(:accessibility) { 'private' }
+    context 'in a different project' do
+      let_it_be(:public_project) { create(:project, :public) }
+      let(:build) { create(:ci_build, :created, project: project, pipeline: pipeline) }
+      let(:build2) { create(:ci_build, :created, project: public_project) }
+      let!(:job_artifact) { create(:ci_job_artifact, :dotenv, job: build2, accessibility: accessibility) }
 
-      it { expect(subject).to eq([]) }
+      let!(:job_variable_1) { create(:ci_job_variable, :dotenv_source, job: build2) }
+      let!(:job_variable_2) { create(:ci_job_variable, job: build2) }
+
+      subject { build.job_dependencies_with_accessible_artifacts([build2]) }
+
+      context 'inherits only jobs whose artifacts are public' do
+        let(:accessibility) { 'public' }
+
+        it { expect(subject).to eq([build2]) }
+      end
+
+      context 'does not inherit jobs whose artifacts are private' do
+        let(:accessibility) { 'private' }
+
+        it { expect(subject).to eq([]) }
+      end
     end
   end
 end

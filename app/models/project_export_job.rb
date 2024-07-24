@@ -7,7 +7,7 @@ class ProjectExportJob < ApplicationRecord
 
   belongs_to :project
   has_many :relation_exports, class_name: 'Projects::ImportExport::RelationExport'
-
+  belongs_to :user
   validates :project, :jid, :status, presence: true
 
   STATUS = {
@@ -19,6 +19,7 @@ class ProjectExportJob < ApplicationRecord
 
   scope :prunable, -> { where("updated_at < ?", EXPIRES_IN.ago) }
   scope :order_by_updated_at, -> { order(:updated_at, :id) }
+  scope :by_user_id, ->(user_id) { where(user_id: user_id) }
 
   state_machine :status, initial: :queued do
     event :start do

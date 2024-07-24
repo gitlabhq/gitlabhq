@@ -51,7 +51,8 @@ module Projects
           importable: project,
           archive_file: nil,
           shared: project.import_export_shared,
-          tmpdir: tmpdir
+          tmpdir: tmpdir,
+          user: current_user
         )
       end
 
