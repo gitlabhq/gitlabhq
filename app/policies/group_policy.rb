@@ -415,6 +415,8 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :destroy_resource_access_tokens
   end
 
+  rule { can?(:admin_group) | can?(:admin_runner) }.enable :admin_group_or_admin_runner
+
   # Should be matched with ProjectPolicy#read_internal_note
   rule { admin | reporter }.enable :read_internal_note
 

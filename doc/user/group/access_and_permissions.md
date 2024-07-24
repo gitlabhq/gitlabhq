@@ -35,7 +35,7 @@ In GitLab 15.3 and earlier, to configure push rules for a group:
 The group's new subgroups have push rules set for them based on either:
 
 - The closest parent group with push rules defined.
-- Push rules set at the instance level, if no parent groups have push rules defined.
+- Push rules set for the entire instance, if no parent groups have push rules defined.
 
 ## Restrict Git access protocols
 

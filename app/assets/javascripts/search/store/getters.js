@@ -91,4 +91,4 @@ export const navigationItems = (state) =>
     items: [],
   }));
 
-export const showArchived = (state) => !state.query?.[PROJECT_DATA.queryParam];
+export const hasProjectContext = (state) => !state.query?.[PROJECT_DATA.queryParam];

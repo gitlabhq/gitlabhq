@@ -129,7 +129,10 @@ voters to agree.
 
 ## Deprecations and removals
 
-When features are deprecated and removed, update the related documentation.
+When GitLab deprecates or removes a feature, use the following process to update the documentation.
+This process requires temporarily changing content to be "deprecated" or "removed" before it's deleted.
+
+If a feature is not generally available, you can delete the content outright instead of following these instructions.
 
 NOTE:
 A separate process exists for [GraphQL docs](../api_graphql_styleguide.md#deprecating-schema-items)

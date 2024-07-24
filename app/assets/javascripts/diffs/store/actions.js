@@ -67,7 +67,6 @@ import {
   getNoteFormData,
   convertExpandLines,
   idleCallback,
-  allDiscussionWrappersExpanded,
   prepareLineForRenamedFile,
   parseUrlHashAsFileHash,
   isUrlHashNoteLink,
@@ -584,11 +583,11 @@ export const loadCollapsedDiff = ({ commit, getters, state }, { file, params = {
  * @param {Object} discussion
  */
 export const toggleFileDiscussion = ({ commit }, discussion) => {
-  commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, discussion);
+  commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, { discussion });
 };
 
-export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
-  const discussionWrappersExpanded = allDiscussionWrappersExpanded(diff);
+export const toggleFileDiscussionWrappers = ({ commit, getters }, diff) => {
+  const discussionWrappersExpanded = getters.diffHasExpandedDiscussions(diff);
   const lineCodesWithDiscussions = new Set();
   const lineHasDiscussion = (line) => Boolean(line?.discussions.length);
   const registerDiscussionLine = (line) => lineCodesWithDiscussions.add(line.line_code);
@@ -602,6 +601,17 @@ export const toggleFileDiscussionWrappers = ({ commit }, diff) => {
         expanded: !discussionWrappersExpanded,
         lineCode,
       });
+    });
+  }
+
+  if (diff.discussions.length) {
+    diff.discussions.forEach((discussion) => {
+      if (discussion.position?.position_type === FILE_DIFF_POSITION_TYPE) {
+        commit(types.TOGGLE_FILE_DISCUSSION_EXPAND, {
+          discussion,
+          expandedOnDiff: !discussionWrappersExpanded,
+        });
+      }
     });
   }
 };

@@ -560,10 +560,10 @@ This limit is [enabled on GitLab.com](../user/gitlab_com/index.md#gitlab-cicd).
 
 ### CI/CD variable limits
 
-> - Group and project-level variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
+> - Group and project variable limits [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/362227) in GitLab 15.7.
 
 The number of [CI/CD variables](../ci/variables/index.md) that can be defined in project,
-group, and instance settings are all limited at the instance level. These limits are checked
+group, and instance settings are all limited for the entire instance. These limits are checked
 each time a new variable is created. If a new variable would cause the total number of variables
 to exceed the respective limit, the new variable is not created.
 
@@ -676,7 +676,7 @@ of extra Pages deployments permitted for a top-level namespace is 1000.
 
 > - Runner stale timeout [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155795) from 3 months to 7 days in GitLab 17.1.
 
-The total number of registered runners is limited at the group and project levels. Each time a new runner is registered,
+The total number of registered runners is limited for groups and projects. Each time a new runner is registered,
 GitLab checks these limits against runners that have been active in the last 7 days.
 A runner's registration fails if it exceeds the limit for the scope determined by the runner registration token.
 If the limit value is set to zero, the limit is disabled.

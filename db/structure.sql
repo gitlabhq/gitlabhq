@@ -7199,6 +7199,7 @@ CREATE TABLE bulk_import_exports (
     batched boolean DEFAULT false NOT NULL,
     batches_count integer DEFAULT 0 NOT NULL,
     total_objects_count integer DEFAULT 0 NOT NULL,
+    user_id bigint,
     CONSTRAINT check_24cb010672 CHECK ((char_length(relation) <= 255)),
     CONSTRAINT check_8f0f357334 CHECK ((char_length(error) <= 255)),
     CONSTRAINT check_9ee6d14d33 CHECK ((char_length(jid) <= 255))
@@ -11222,6 +11223,7 @@ CREATE TABLE import_export_uploads (
     export_file text,
     group_id bigint,
     remote_import_url text,
+    user_id bigint,
     CONSTRAINT check_58f0d37481 CHECK ((char_length(remote_import_url) <= 2048))
 );
 
@@ -26419,6 +26421,12 @@ CREATE INDEX index_bulk_import_entities_on_project_id ON bulk_import_entities US
 
 CREATE INDEX index_bulk_import_export_uploads_on_export_id ON bulk_import_export_uploads USING btree (export_id);
 
+CREATE INDEX index_bulk_import_exports_on_group_id ON bulk_import_exports USING btree (group_id);
+
+CREATE INDEX index_bulk_import_exports_on_project_id ON bulk_import_exports USING btree (project_id);
+
+CREATE INDEX index_bulk_import_exports_on_user_id ON bulk_import_exports USING btree (user_id);
+
 CREATE INDEX index_bulk_import_failures_on_bulk_import_entity_id ON bulk_import_failures USING btree (bulk_import_entity_id);
 
 CREATE INDEX index_bulk_import_failures_on_correlation_id_value ON bulk_import_failures USING btree (correlation_id_value);
@@ -27579,11 +27587,13 @@ CREATE INDEX index_im_timeline_events_promoted_from_note_id ON incident_manageme
 
 CREATE INDEX index_im_timeline_events_updated_by_user_id ON incident_management_timeline_events USING btree (updated_by_user_id);
 
-CREATE UNIQUE INDEX index_import_export_uploads_on_group_id ON import_export_uploads USING btree (group_id) WHERE (group_id IS NOT NULL);
+CREATE INDEX index_import_export_uploads_on_group_id_non_unique ON import_export_uploads USING btree (group_id) WHERE (group_id IS NOT NULL);
 
 CREATE INDEX index_import_export_uploads_on_project_id ON import_export_uploads USING btree (project_id);
 
 CREATE INDEX index_import_export_uploads_on_updated_at ON import_export_uploads USING btree (updated_at);
+
+CREATE INDEX index_import_export_uploads_on_user_id ON import_export_uploads USING btree (user_id);
 
 CREATE INDEX index_import_failures_on_correlation_id_value ON import_failures USING btree (correlation_id_value);
 
@@ -30021,9 +30031,9 @@ CREATE INDEX packages_packages_pending_verification ON packages_package_files US
 
 CREATE INDEX pages_deployments_deleted_at_index ON pages_deployments USING btree (id, project_id, path_prefix) WHERE (deleted_at IS NULL);
 
-CREATE UNIQUE INDEX partial_index_bulk_import_exports_on_group_id_and_relation ON bulk_import_exports USING btree (group_id, relation) WHERE (group_id IS NOT NULL);
+CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_group_user_and_relation ON bulk_import_exports USING btree (group_id, relation, user_id) WHERE ((group_id IS NOT NULL) AND (user_id IS NOT NULL));
 
-CREATE UNIQUE INDEX partial_index_bulk_import_exports_on_project_id_and_relation ON bulk_import_exports USING btree (project_id, relation) WHERE (project_id IS NOT NULL);
+CREATE UNIQUE INDEX partial_idx_bulk_import_exports_on_project_user_and_relation ON bulk_import_exports USING btree (project_id, relation, user_id) WHERE ((project_id IS NOT NULL) AND (user_id IS NOT NULL));
 
 CREATE INDEX partial_index_ci_builds_on_scheduled_at_with_scheduled_jobs ON ci_builds USING btree (scheduled_at) WHERE ((scheduled_at IS NOT NULL) AND ((type)::text = 'Ci::Build'::text) AND ((status)::text = 'scheduled'::text));
 
@@ -32340,6 +32350,9 @@ ALTER TABLE ONLY incident_management_timeline_events
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_3995d73930 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY import_export_uploads
+    ADD CONSTRAINT fk_38e11735aa FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_39c726d3b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -33134,6 +33147,9 @@ ALTER TABLE ONLY issue_links
 
 ALTER TABLE ONLY vulnerability_finding_signatures
     ADD CONSTRAINT fk_c909c7e07b FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY bulk_import_exports
+    ADD CONSTRAINT fk_c9250a4d3f FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY personal_access_tokens
     ADD CONSTRAINT fk_c951fbf57e FOREIGN KEY (previous_personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE SET NULL;

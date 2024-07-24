@@ -23,6 +23,8 @@ information on general testing practices at GitLab.
 
 If you are looking for a guide on Vue component testing, you can jump right away to this [section](../fe_guide/vue.md#testing-vue-components).
 
+Information on testing Vue 3 is contained in [this page](../testing_guide/testing_vue3.md).
+
 ## Jest
 
 We use Jest to write frontend unit and integration tests.

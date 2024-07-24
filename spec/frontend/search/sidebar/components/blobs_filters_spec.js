@@ -6,6 +6,7 @@ import { MOCK_QUERY } from 'jest/search/mock_data';
 import BlobsFilters from '~/search/sidebar/components/blobs_filters.vue';
 import LanguageFilter from '~/search/sidebar/components/language_filter/index.vue';
 import ArchivedFilter from '~/search/sidebar/components/archived_filter/index.vue';
+import ForksFilter from '~/search/sidebar/components/forks_filter/index.vue';
 import {
   SEARCH_TYPE_ZOEKT,
   SEARCH_TYPE_ADVANCED,
@@ -19,7 +20,7 @@ describe('GlobalSearch BlobsFilters', () => {
 
   const defaultGetters = {
     currentScope: () => 'blobs',
-    showArchived: () => true,
+    hasProjectContext: () => true,
   };
 
   const createComponent = (initialState = { searchType: SEARCH_TYPE_ADVANCED }) => {
@@ -38,6 +39,7 @@ describe('GlobalSearch BlobsFilters', () => {
 
   const findLanguageFilter = () => wrapper.findComponent(LanguageFilter);
   const findArchivedFilter = () => wrapper.findComponent(ArchivedFilter);
+  const findForksFilter = () => wrapper.findComponent(ForksFilter);
 
   beforeEach(() => {
     createComponent();
@@ -62,14 +64,18 @@ describe('GlobalSearch BlobsFilters', () => {
     expect(findArchivedFilter().exists()).toBe(true);
   });
 
-  describe('ShowArchived getter', () => {
+  describe('hasProjectContext getter', () => {
     beforeEach(() => {
-      defaultGetters.showArchived = () => false;
+      defaultGetters.hasProjectContext = () => false;
       createComponent();
     });
 
     it('hides archived filter', () => {
       expect(findArchivedFilter().exists()).toBe(false);
+    });
+
+    it('hides forks filter', () => {
+      expect(findForksFilter().exists()).toBe(false);
     });
   });
 });

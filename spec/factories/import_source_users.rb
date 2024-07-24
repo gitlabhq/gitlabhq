@@ -8,13 +8,9 @@ FactoryBot.define do
     source_name { generate(:name) }
     source_username { generate(:username) }
     import_type { 'github' }
-
-    trait :with_placeholder_user do
-      placeholder_user factory: [:user, :placeholder]
-    end
+    placeholder_user factory: [:user, :placeholder]
 
     trait :with_reassign_to_user do
-      with_placeholder_user
       reassign_to_user factory: :user
     end
 

@@ -32,6 +32,7 @@ import { DIFF_FILE, SOMETHING_WENT_WRONG, SAVING_THE_COMMENT_FAILED, CONFLICT_TE
 import { collapsedType, getShortShaFromFile } from '../utils/diff_file';
 import DiffDiscussions from './diff_discussions.vue';
 import DiffFileHeader from './diff_file_header.vue';
+import DiffFileDiscussionExpansion from './diff_file_discussion_expansion.vue';
 
 export default {
   components: {
@@ -45,6 +46,7 @@ export default {
     DiffFileDrafts,
     NoteForm,
     DiffDiscussions,
+    DiffFileDiscussionExpansion,
   },
   directives: {
     SafeHtml,
@@ -220,6 +222,9 @@ export default {
     fileId() {
       return fileContentsId(this.file);
     },
+    isFileDiscussionsExpanded() {
+      return this.fileDiscussions.every((d) => d.expandedOnDiff);
+    },
   },
   watch: {
     'file.id': {
@@ -271,6 +276,7 @@ export default {
       'setFileCollapsedByUser',
       'saveDiffDiscussion',
       'toggleFileCommentForm',
+      'toggleFileDiscussion',
     ]),
     manageViewedEffects() {
       if (
@@ -386,6 +392,9 @@ export default {
     },
     handleSaveDraftNote(note, _, parentElement, errorCallback) {
       this.addToReview(note, this.$options.FILE_DIFF_POSITION_TYPE, parentElement, errorCallback);
+    },
+    toggleFileDiscussionVisibility() {
+      this.fileDiscussions.forEach((d) => this.toggleFileDiscussion(d));
     },
   },
   CONFLICT_TEXT,
@@ -515,17 +524,24 @@ export default {
       >
         <div v-if="showFileDiscussions" data-testid="file-discussions">
           <div class="diff-file-discussions-wrapper">
-            <diff-discussions
-              v-if="fileDiscussions.length"
-              class="diff-file-discussions"
-              data-testid="diff-file-discussions"
+            <template v-if="isFileDiscussionsExpanded">
+              <diff-discussions
+                v-if="fileDiscussions.length"
+                class="diff-file-discussions"
+                data-testid="diff-file-discussions"
+                :discussions="fileDiscussions"
+              />
+              <diff-file-drafts
+                :file-hash="file.file_hash"
+                :show-pin="false"
+                :position-type="$options.FILE_DIFF_POSITION_TYPE"
+                class="diff-file-discussions"
+              />
+            </template>
+            <diff-file-discussion-expansion
+              v-else
               :discussions="fileDiscussions"
-            />
-            <diff-file-drafts
-              :file-hash="file.file_hash"
-              :show-pin="false"
-              :position-type="$options.FILE_DIFF_POSITION_TYPE"
-              class="diff-file-discussions"
+              @toggle="toggleFileDiscussionVisibility"
             />
             <note-form
               v-if="file.hasCommentForm"

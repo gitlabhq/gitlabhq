@@ -10,7 +10,7 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
   let_it_be(:project) { create(:project) }
   let_it_be(:label) { create(:group_label, group: group) }
   let_it_be(:export_path) { "#{Dir.tmpdir}/relation_export_service_spec/tree" }
-  let_it_be_with_reload(:export) { create(:bulk_import_export, group: group, relation: relation) }
+  let_it_be_with_reload(:export) { create(:bulk_import_export, group: group, relation: relation, user: user) }
 
   before do
     FileUtils.mkdir_p(export_path)
@@ -120,7 +120,9 @@ RSpec.describe BulkImports::RelationExportService, feature_category: :importers 
 
     context 'when export was batched' do
       let(:relation) { 'milestones' }
-      let(:export) { create(:bulk_import_export, group: group, relation: relation, batched: true, batches_count: 2) }
+      let(:export) do
+        create(:bulk_import_export, group: group, user: user, relation: relation, batched: true, batches_count: 2)
+      end
 
       it 'removes existing batches and marks export as not batched' do
         create(:bulk_import_export_batch, batch_number: 1, export: export)

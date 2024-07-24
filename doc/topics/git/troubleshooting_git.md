@@ -243,9 +243,9 @@ To help identify the underlying issue:
   To learn about MTR and how to read its output, see the Cloudflare article
   [What is My Traceroute (MTR)?](https://www.cloudflare.com/en-gb/learning/network-layer/what-is-mtr/).
 
-## `git clone` over HTTP fails with `transfer closed with outstanding read data remaining` error
+## Error: transfer closed with outstanding read data remaining
 
-Sometimes, when cloning old or large repositories, the following error is thrown:
+Sometimes, when cloning old or large repositories, the following error is shown when running `git clone` over HTTP:
 
 ```plaintext
 error: RPC failed; curl 18 transfer closed with outstanding read data remaining

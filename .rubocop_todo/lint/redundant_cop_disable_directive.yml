@@ -294,7 +294,6 @@ Lint/RedundantCopDisableDirective:
     - 'lib/gitlab/ci/reports/test_suite.rb'
     - 'lib/gitlab/ci/reports/test_suite_summary.rb'
     - 'lib/gitlab/cleanup/personal_access_tokens.rb'
-    - 'lib/gitlab/composer/cache.rb'
     - 'lib/gitlab/data_builder/pipeline.rb'
     - 'lib/gitlab/database/consistency_checker.rb'
     - 'lib/gitlab/database/gitlab_schema.rb'

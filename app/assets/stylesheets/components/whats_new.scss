@@ -38,19 +38,6 @@
   }
 }
 
-.whats-new-item-title-link {
-  &:hover,
-  &:focus,
-  &:active {
-    color: $gray-900;
-  }
-}
-
-.whats-new-item-image {
-  border-color: $gray-50;
-  height: 250px;
-}
-
 .whats-new-modal-backdrop {
   z-index: 699;
 }

@@ -66,7 +66,7 @@ export const diffHasExpandedDiscussions = () => (diff) => {
   const diffLineDiscussionsExpanded = diff[INLINE_DIFF_LINES_KEY].filter(
     (l) => l.discussions.length >= 1,
   ).some((l) => l.discussionsExpanded);
-  const diffFileDiscussionsExpanded = diff.discussions?.some((d) => d.expanded);
+  const diffFileDiscussionsExpanded = diff.discussions?.some((d) => d.expandedOnDiff);
 
   return diffFileDiscussionsExpanded || diffLineDiscussionsExpanded;
 };

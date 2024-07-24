@@ -227,8 +227,11 @@ export default {
     }
   },
 
-  [types.TOGGLE_FILE_DISCUSSION_EXPAND](state, discussion) {
-    Object.assign(discussion, { expandedOnDiff: !discussion.expandedOnDiff });
+  [types.TOGGLE_FILE_DISCUSSION_EXPAND](
+    state,
+    { discussion, expandedOnDiff = !discussion.expandedOnDiff },
+  ) {
+    Object.assign(discussion, { expandedOnDiff });
     const fileHash = discussion.diff_file.file_hash;
     const diff = state.diffFiles.find((f) => f.file_hash === fileHash);
     // trigger Vue reactivity

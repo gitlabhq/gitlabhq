@@ -276,19 +276,37 @@ RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts d
   end
 
   describe 'GET browse' do
-    context 'when the directory exists' do
-      it 'renders the browse view' do
-        get :browse, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'other_artifacts_0.1.2' }
+    context 'for public artifacts' do
+      context 'when the directory exists' do
+        it 'renders the browse view' do
+          get :browse, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'other_artifacts_0.1.2' }
 
-        expect(response).to render_template('projects/artifacts/browse')
+          expect(response).to render_template('projects/artifacts/browse')
+        end
+      end
+
+      context 'when the directory does not exist' do
+        it 'responds Not Found' do
+          get :browse, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown' }
+
+          expect(response).to be_not_found
+        end
       end
     end
 
-    context 'when the directory does not exist' do
-      it 'responds Not Found' do
-        get :browse, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'unknown' }
+    context 'for private artifacts' do
+      before do
+        job.job_artifacts.update_all(accessibility: 'private')
+      end
 
-        expect(response).to be_not_found
+      context 'when the directory exists' do
+        let(:user) { create(:user) }
+
+        it 'responds not found' do
+          get :browse, params: { namespace_id: project.namespace, project_id: project, job_id: job, path: 'other_artifacts_0.1.2' }
+
+          expect(response).to be_not_found
+        end
       end
     end
   end
@@ -511,6 +529,20 @@ RSpec.describe Projects::ArtifactsController, feature_category: :job_artifacts d
 
             expect(response).to have_gitlab_http_status(:not_found)
           end
+        end
+      end
+
+      context 'fetching an private artifact' do
+        let(:user) { create(:user) }
+
+        before do
+          job.job_artifacts.update_all(accessibility: 'private')
+        end
+
+        it 'responds with not found' do
+          subject
+
+          expect(response).to be_not_found
         end
       end
     end

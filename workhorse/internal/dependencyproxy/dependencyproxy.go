@@ -33,9 +33,10 @@ type Injector struct {
 }
 
 type entryParams struct {
-	URL          string
-	Headers      http.Header
-	UploadConfig uploadConfig
+	URL             string
+	Headers         http.Header
+	ResponseHeaders http.Header
+	UploadConfig    uploadConfig
 }
 
 type uploadConfig struct {
@@ -126,12 +127,12 @@ func (p *Injector) Inject(w http.ResponseWriter, r *http.Request, sendData strin
 	// forward headers from dependencyResponse to rails and client
 	for key, values := range dependencyResponse.Header {
 		saveFileRequest.Header.Del(key)
-		w.Header().Del(key)
 		for _, value := range values {
 			saveFileRequest.Header.Add(key, value)
-			w.Header().Add(key, value)
 		}
 	}
+
+	p.forwardHeadersToResponse(w, dependencyResponse.Header, params.ResponseHeaders)
 
 	// workhorse hijack overwrites the Content-Type header, but we need this header value
 	saveFileRequest.Header.Set("Workhorse-Proxy-Content-Type", dependencyResponse.Header.Get("Content-Type"))
@@ -175,6 +176,17 @@ func (p *Injector) newUploadRequest(ctx context.Context, params *entryParams, or
 	}
 
 	return request, nil
+}
+
+func (p *Injector) forwardHeadersToResponse(w http.ResponseWriter, headers ...http.Header) {
+	for _, h := range headers {
+		for key, values := range h {
+			w.Header().Del(key)
+			for _, v := range values {
+				w.Header().Add(key, v)
+			}
+		}
+	}
 }
 
 func (p *Injector) unpackParams(sendData string) (*entryParams, error) {

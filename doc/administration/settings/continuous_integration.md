@@ -100,29 +100,30 @@ To view the rendered details:
 ## Maximum artifacts size
 
 An administrator can set the maximum size of the
-[job artifacts](../../administration/job_artifacts.md) at:
+[job artifacts](../../administration/job_artifacts.md) for:
 
-- The instance level
-- The project and group level
+- The entire instance
+- Each project
+- Each group
 
 For the setting on GitLab.com, see [Artifacts maximum size](../../user/gitlab_com/index.md#gitlab-cicd).
 
-The value is in MB, and the default is 100 MB per job. An administrator can change the default value at the:
+The value is in MB, and the default value is 100 MB per job. An administrator can change the default value for the:
 
-- Instance level:
+- Instance:
 
   1. On the left sidebar, at the bottom, select **Admin area**.
   1. On the left sidebar, select **Settings > CI/CD > Continuous Integration and Deployment**.
   1. Change the value of **Maximum artifacts size (MB)**.
   1. Select **Save changes** for the changes to take effect.
 
-- Group level (this overrides the instance setting):
+- Group (this overrides the instance setting):
 
   1. Go to the group's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **Maximum artifacts size** (in MB).
   1. Select **Save changes** for the changes to take effect.
 
-- Project level (this overrides the instance and group settings):
+- Project (this overrides the instance and group settings):
 
   1. Go to the project's **Settings > CI/CD > General Pipelines**.
   1. Change the value of **Maximum artifacts size** (in MB).
@@ -159,8 +160,8 @@ are locked against deletion and kept regardless of the expiry time.
 When disabled, the latest artifacts for any **new** successful or fixed pipelines
 are allowed to expire.
 
-This setting takes precedence over the [project level setting](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
-If disabled at the instance level, you cannot enable this per-project.
+This setting takes precedence over the [project setting](../../ci/jobs/job_artifacts.md#keep-artifacts-from-most-recent-successful-jobs).
+If disabled for the entire instance, you cannot enable this in individual projects.
 
 To disable the setting:
 
@@ -208,7 +209,7 @@ To set all new [CI/CD variables](../../ci/variables/index.md) as
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/207270) in GitLab 16.0.
 
-The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set at the instance level.
+The maximum number of [includes](../../ci/yaml/includes.md) per pipeline can be set for the entire instance.
 The default is `150`.
 
 1. On the left sidebar, at the bottom, select **Admin area**.
@@ -221,8 +222,8 @@ The default is `150`.
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/144077) in GitLab 16.10.
 
 The maximum number of [downstream pipelines](../../ci/pipelines/downstream_pipelines.md) that can be triggered per minute
-(for a given project, user, and commit) can be set at the instance level.
-The default is `0` (no restriction).
+(for a given project, user, and commit) can be set for the entire instance.
+The default value is `0` (no restriction).
 
 1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > CI/CD**.

@@ -742,11 +742,14 @@ After you've built a Docker image, you can push it to the
 
 ## Troubleshooting
 
-### `docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?`
+### Error: `docker: Cannot connect to the Docker daemon at tcp://docker:2375`
 
-This is a common error when you are using
-[Docker-in-Docker](#use-docker-in-docker)
-v19.03 or later.
+This error is common when you are using [Docker-in-Docker](#use-docker-in-docker)
+v19.03 or later:
+
+```plaintext
+docker: Cannot connect to the Docker daemon at tcp://docker:2375. Is the docker daemon running?
+```
 
 This error occurs because Docker starts on TLS automatically.
 
@@ -784,7 +787,7 @@ default:
       alias: docker
 ```
 
-### `Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?`
+### Error: `Cannot connect to the Docker daemon at unix:///var/run/docker.sock`
 
 You might get the following error when trying to run a `docker` command
 to access a `dind` service:

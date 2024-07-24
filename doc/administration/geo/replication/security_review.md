@@ -235,7 +235,7 @@ from [owasp.org](https://owasp.org/).
 
 - Git repositories and files, tracking information related to them, and the GitLab database contents.
 
-### What data is or may need to be encrypted and what key management requirements have been defined?
+### What data should be encrypted? What key management requirements are defined?
 
 - Neither **primary** sites or **secondary** sites encrypt Git repository or file system data at
   rest. A subset of database columns are encrypted at rest using the `db_otp_key`.

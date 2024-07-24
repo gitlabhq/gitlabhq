@@ -14,8 +14,10 @@ module QA
         wait_for_pipelines
       end
 
+      # Do not add to :blocking until flakiness is resolved
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/470904#note_2013076687
       it(
-        'is not inheritable when forward:pipeline_variables is false', :blocking,
+        'is not inheritable when forward:pipeline_variables is false',
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358199'
       ) do
@@ -28,8 +30,10 @@ module QA
         verify_job_log_does_not_show_variable_value
       end
 
+      # Do not add to :blocking until flakiness is resolved
+      # https://gitlab.com/gitlab-org/gitlab/-/issues/470904#note_2013076687
       it(
-        'is not inheritable by default', :blocking,
+        'is not inheritable by default',
         :aggregate_failures,
         testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/358200'
       ) do

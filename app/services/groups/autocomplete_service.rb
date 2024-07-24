@@ -11,7 +11,7 @@ module Groups
       finder_params[:issue_types] = issue_types if issue_types.present?
 
       finder_class =
-        if show_namespace_level_work_items?
+        if group.namespace_work_items_enabled?
           finder_params[:include_descendants] = true
           WorkItems::WorkItemsFinder
         else
@@ -52,11 +52,6 @@ module Groups
       return [] unless noteable
 
       QuickActions::InterpretService.new(container: group, current_user: current_user).available_commands(noteable)
-    end
-
-    def show_namespace_level_work_items?
-      ::Feature.enabled?(:namespace_level_work_items, group) &&
-        ::Feature.enabled?(:cache_autocomplete_sources_issues, group, type: :wip)
     end
   end
 end

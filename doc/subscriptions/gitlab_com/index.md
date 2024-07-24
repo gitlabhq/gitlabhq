@@ -538,3 +538,14 @@ To view purchases in the Customers Portal, in the **Manage Purchases** page, you
 must be a contact in your organization for the subscription.
 
 To be added as a contact, [create a ticket with the GitLab Support team](https://support.gitlab.com/hc/en-us/requests/new?ticket_form_id=360000071293).
+
+### Error: `Subscription not allowed to add ...`
+
+You might get the error `Subscription not allowed to add ...` when purchasing subscription add-ons, such as additional seats, compute minutes, storage, or GitLab Duo Pro.
+
+This issue occurs when you have an active subscription that:
+
+- Was [purchased through a reseller](../customers_portal.md#customers-that-purchased-through-a-reseller).
+- Is a multi-year subscription.
+
+To resolve this issue, contact your [GitLab sales representative](https://about.gitlab.com/sales/) to assist you with the purchase.

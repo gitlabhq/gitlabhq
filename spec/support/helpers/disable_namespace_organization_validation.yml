@@ -67,4 +67,3 @@
 - spec/services/groups/nested_create_service_spec.rb
 - spec/services/resource_access_tokens/create_service_spec.rb
 - spec/tasks/gitlab/seed/runner_fleet_rake_spec.rb
-- spec/tasks/gitlab/update_templates_rake_spec.rb

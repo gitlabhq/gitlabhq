@@ -1028,10 +1028,14 @@ To ensure the `action: stop` can always run when needed, you can:
     when: manual
   ```
 
-### Error: "This job could not be executed because it would create an environment with an invalid parameter"
+### Error: job would create an environment with an invalid parameter
 
 If your project is configured to [create a dynamic environment](#create-a-dynamic-environment),
-you might encounter this error in a deployment job because the dynamically generated parameter can't be used for creating an environment.
+you might encounter this error in a deployment job because the dynamically generated parameter can't be used for creating an environment:
+
+```plaintext
+This job could not be executed because it would create an environment with an invalid parameter.
+```
 
 For example, your project has the following `.gitlab-ci.yml`:
 

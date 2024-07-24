@@ -334,8 +334,8 @@ based on scope:
 
 - Build-specific variables which are evaluated at build time. For example `${bamboo.planKey}`.
 - System variables inherited from the Bamboo instance or system environment.
-- Global variables defined at the instance level and accessible to every plan.
-- Project variables defined at the project level and accessible by plans in the same project.
+- Global variables defined for the entire instance and accessible to every plan.
+- Project variables specific to a project and accessible by plans in the same project.
 - Plan variables specific to a plan.
 
 You can access variables in Bamboo using the format `${system.variableName}` for System variables

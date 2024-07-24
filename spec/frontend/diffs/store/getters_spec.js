@@ -195,7 +195,7 @@ describe('Diffs Module Getters', () => {
 
     it('returns true when file discussion is expanded', () => {
       const diffFile = {
-        discussions: [{ ...discussionMock, expanded: true }],
+        discussions: [{ ...discussionMock, expandedOnDiff: true }],
         highlighted_diff_lines: [],
       };
 

@@ -51,9 +51,9 @@ If secret push protection does not detect any secrets in your commits, no messag
 
 ## Enable secret push protection
 
-On GitLab Dedicated and Self-managed instances, secret push protection must be enabled at the instance level and then you must enable it per project.
+On GitLab Dedicated and Self-managed instances, secret push protection must be enabled for the entire instance and then you must enable it per project.
 
-On GitLab.com, this setting has been enabled at the instance level. You must enable it per project.
+On GitLab.com, this setting has been enabled for the entire instance. You must enable it per project.
 
 ### Allow the use of secret push protection in your GitLab instance
 

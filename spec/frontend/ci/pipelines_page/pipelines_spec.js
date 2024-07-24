@@ -43,6 +43,7 @@ import {
   setIdTypePreferenceMutationResponseWithErrors,
 } from 'jest/issues/list/mock_data';
 import { legacyStageReply } from 'jest/ci/pipeline_mini_graph/mock_data';
+import { describeSkipVue3, SkipReason } from 'helpers/vue3_conditional';
 import { users, mockSearch, branches } from '../pipeline_details/mock_data';
 
 Vue.use(VueApollo);
@@ -59,7 +60,13 @@ const mockPipelineWithStages = mockPipelinesResponse.pipelines.find(
   (p) => p.details.stages && p.details.stages.length,
 );
 
-describe('Pipelines', () => {
+const skipReason = new SkipReason({
+  name: 'Pipelines',
+  reason: 'OOM on the worker',
+  issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/458411',
+});
+
+describeSkipVue3(skipReason, () => {
   let wrapper;
   let mockApollo;
   let mock;

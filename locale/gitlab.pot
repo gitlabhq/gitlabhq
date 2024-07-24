@@ -1556,9 +1556,6 @@ msgstr ""
 msgid "(Unlimited compute minutes)"
 msgstr ""
 
-msgid "(check progress)"
-msgstr ""
-
 msgid "(deleted)"
 msgstr ""
 
@@ -4769,6 +4766,9 @@ msgid "Advanced Settings"
 msgstr ""
 
 msgid "Advanced export options"
+msgstr ""
+
+msgid "Advanced search indexing in progress. It might take a few minutes to create indices and initiate indexing.Please use gitlab:elastic:info rake task to check progress."
 msgstr ""
 
 msgid "AdvancedSearch|Could not fetch index entities. Please try again later."
@@ -19838,9 +19838,6 @@ msgstr ""
 msgid "Elasticsearch indexing restrictions"
 msgstr ""
 
-msgid "Elasticsearch indexing started"
-msgstr ""
-
 msgid "Elasticsearch migration halted"
 msgstr ""
 
@@ -27814,13 +27811,13 @@ msgstr ""
 msgid "Index"
 msgstr ""
 
-msgid "Index all projects"
-msgstr ""
-
 msgid "Index deletion is canceled"
 msgstr ""
 
 msgid "Index root namespaces automatically"
+msgstr ""
+
+msgid "Index the instance"
 msgstr ""
 
 msgid "Indexing status"
@@ -30688,6 +30685,9 @@ msgid "Last activity:"
 msgstr ""
 
 msgid "Last attempted number:"
+msgstr ""
+
+msgid "Last comment by %{author} %{timeago}"
 msgstr ""
 
 msgid "Last commit"
@@ -39634,9 +39634,6 @@ msgid "Please copy, download, or print your recovery codes before proceeding."
 msgstr ""
 
 msgid "Please create a username with only alphanumeric characters."
-msgstr ""
-
-msgid "Please create an index before enabling indexing"
 msgstr ""
 
 msgid "Please enter a URL for the custom emoji."

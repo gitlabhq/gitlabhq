@@ -2503,7 +2503,6 @@ RSpec/FeatureCategory:
     - 'spec/lib/gitlab/code_navigation_path_spec.rb'
     - 'spec/lib/gitlab/color_schemes_spec.rb'
     - 'spec/lib/gitlab/color_spec.rb'
-    - 'spec/lib/gitlab/composer/cache_spec.rb'
     - 'spec/lib/gitlab/conan_token_spec.rb'
     - 'spec/lib/gitlab/config/entry/attributable_spec.rb'
     - 'spec/lib/gitlab/config/entry/boolean_spec.rb'

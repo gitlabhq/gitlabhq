@@ -204,7 +204,7 @@ With RBAC disabled and services deployed,
 [Auto DevOps](../../../topics/autodevops/index.md) can now be leveraged
 to build, test, and deploy the app.
 
-[Enable Auto DevOps](../../../topics/autodevops/index.md#at-the-project-level)
+[Enable Auto DevOps](../../../topics/autodevops/index.md#per-project)
 if not already enabled. If a wildcard DNS entry was created resolving to the
 Load Balancer, enter it in the `domain` field under the Auto DevOps settings.
 Otherwise, the deployed app isn't externally available outside of the cluster.

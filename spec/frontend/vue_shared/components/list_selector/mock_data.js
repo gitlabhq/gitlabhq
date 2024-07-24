@@ -39,15 +39,3 @@ export const GROUPS_RESPONSE_MOCK = {
     },
   },
 };
-
-export const SUBGROUPS_RESPONSE_MOCK = {
-  data: [
-    {
-      id: 13,
-      web_url: 'some url',
-      name: 'Subgroup name',
-      full_name: 'Group / Subgroup name',
-      full_path: 'Group path',
-    },
-  ],
-};

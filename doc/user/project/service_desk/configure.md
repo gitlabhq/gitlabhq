@@ -124,7 +124,7 @@ To keep your emails on brand, you can create a custom new note email template. T
    email. Be sure to include the `%{NOTE_TEXT}` in the template to make sure the email recipient can
    read the contents of the comment.
 
-### Instance-level email header, footer, and additional text
+### Instance-wide email header, footer, and additional text
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -507,7 +507,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-You can use an additional alias email address for Service Desk on an instance level.
+You can use an additional alias email address for Service Desk for an instance.
 
 To do this, you must configure
 a [`service_desk_email`](#configure-service-desk-alias-email) in the instance configuration. You can also configure a

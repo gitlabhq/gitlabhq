@@ -375,9 +375,10 @@ Sensitive fields are not exposed over the API. Sensitive fields are those fields
 
 ## Availability of integrations
 
-By default, integrations are available on the project, group, and instance level.
+By default, integrations can apply to a specific project or group, or
+to an entire instance.
 Most integrations only act in a project context, but can be still configured
-from the group and instance levels.
+for the group and instance.
 
 For some integrations it can make sense to only make it available on the project level.
 To do that, the integration must be removed from `Integration::INTEGRATION_NAMES` and

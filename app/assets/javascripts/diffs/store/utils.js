@@ -555,21 +555,6 @@ export const updateLineInFile = (selectedFile, lineCode, updateFn) => {
   getLinesFromFileByLineCode(selectedFile, lineCode).forEach(updateFn);
 };
 
-export const allDiscussionWrappersExpanded = (diff) => {
-  let discussionsExpanded = true;
-  const changeExpandedResult = (line) => {
-    if (line && line.discussions.length) {
-      discussionsExpanded = discussionsExpanded && line.discussionsExpanded;
-    }
-  };
-
-  diff[INLINE_DIFF_LINES_KEY].forEach((line) => {
-    changeExpandedResult(line);
-  });
-
-  return discussionsExpanded;
-};
-
 export function isUrlHashNoteLink(urlHash = '') {
   const id = urlHash.replace(/^#/, '');
 

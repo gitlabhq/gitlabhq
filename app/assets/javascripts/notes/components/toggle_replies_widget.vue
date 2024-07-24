@@ -1,9 +1,8 @@
 <script>
-import { GlButton, GlLink, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlLink, GlSprintf, GlAvatarLink, GlAvatar, GlAvatarsInline } from '@gitlab/ui';
 import { uniqBy } from 'lodash';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 
 export default {
   i18n: {
@@ -15,7 +14,9 @@ export default {
     GlButton,
     GlLink,
     GlSprintf,
-    UserAvatarLink,
+    GlAvatarLink,
+    GlAvatar,
+    GlAvatarsInline,
     TimeAgoTooltip,
   },
   props: {
@@ -72,18 +73,25 @@ export default {
       @click="toggle"
     />
     <template v-if="collapsed">
-      <user-avatar-link
-        v-for="author in uniqueAuthors"
-        :key="author.username"
-        class="gl-mr-3 reply-author-avatar"
-        :link-href="author.path || author.webUrl"
-        :img-alt="author.name"
-        img-css-classes="gl-mr-0!"
-        :img-src="author.avatar_url || author.avatarUrl"
-        :img-size="24"
-        :tooltip-text="author.name"
-        tooltip-placement="bottom"
-      />
+      <gl-avatars-inline
+        :avatars="uniqueAuthors"
+        :avatar-size="24"
+        :max-visible="5"
+        badge-sr-only-text=""
+        class="gl-mr-3"
+      >
+        <template #avatar="{ avatar }">
+          <gl-avatar-link
+            target="_blank"
+            :href="avatar.path || author.webUrl"
+            :data-user-id="avatar.id"
+            :data-username="avatar.username"
+            class="js-user-link"
+          >
+            <gl-avatar :size="24" :src="avatar.avatar_url || avatar.avatarUrl" :alt="avatar.name" />
+          </gl-avatar-link>
+        </template>
+      </gl-avatars-inline>
       <gl-button class="gl-mr-2" variant="link" data-testid="expand-replies-button" @click="toggle">
         {{ n__('%d reply', '%d replies', replies.length) }}
       </gl-button>

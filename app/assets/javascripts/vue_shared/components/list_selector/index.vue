@@ -45,11 +45,6 @@ export default {
       required: false,
       default: null,
     },
-    groupId: {
-      type: Number,
-      required: false,
-      default: null,
-    },
     autofocus: {
       type: Boolean,
       required: false,
@@ -143,10 +138,6 @@ export default {
     },
     async fetchGroupsBySearchTerm(search) {
       let groups = [];
-      if (this.groupId) {
-        groups = await this.fetchSubgroupsBySearchTerm(search);
-        return groups;
-      }
       if (parseBoolean(this.isProjectNamespace)) {
         groups = await this.fetchProjectGroups(search);
       } else {
@@ -183,17 +174,6 @@ export default {
             type: 'group',
           })),
         );
-    },
-    async fetchSubgroupsBySearchTerm(search) {
-      let groups = [];
-      const subgroups = await Api.groupSubgroups(this.groupId, search);
-      groups = subgroups?.data || [];
-      return groups?.map((group) => ({
-        text: group.fullName,
-        value: group.name,
-        type: 'group',
-        ...group,
-      }));
     },
     fetchDeployKeysBySearchTerm() {
       // TODO - implement API request (follow-up)

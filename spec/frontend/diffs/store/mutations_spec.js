@@ -1294,7 +1294,7 @@ describe('DiffsStoreMutations', () => {
         diffFiles: [{ file_hash: fileHash, discussions: [discussion] }],
       };
 
-      mutations[types.TOGGLE_FILE_DISCUSSION_EXPAND](state, discussion);
+      mutations[types.TOGGLE_FILE_DISCUSSION_EXPAND](state, { discussion });
 
       expect(state.diffFiles[0].discussions[0].expandedOnDiff).toBe(true);
     });
@@ -1308,7 +1308,7 @@ describe('DiffsStoreMutations', () => {
         diffFiles: [{ file_hash: fileHash, discussions: [discussion] }],
       };
 
-      mutations[types.TOGGLE_FILE_DISCUSSION_EXPAND](state, discussion);
+      mutations[types.TOGGLE_FILE_DISCUSSION_EXPAND](state, { discussion });
 
       expect(state.diffFiles[0].discussions[0].expandedOnDiff).toBe(false);
     });

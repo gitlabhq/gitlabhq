@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.2.1 (2024-07-24)
+
+### Fixed (1 change)
+
+- [Fix PEP when SEC is available](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5cbd3187cab87e736c260d374f75cf849997d66c) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Refactor import_export_upload to be user-based](https://gitlab.com/gitlab-org/security/gitlab/-/commit/07257efc00d8f4984eddf9576debd62edc6d485d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4269))
+- [Fix for private txt artifacts being accessible through the artifacts/browse link](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4ccfc7bb6d3b2aca48e6c9ab5580c92cb2df85f9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4295))
+- [Attribute BulkImport::Export to a particular user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53f8ad67517a92f1e914858c07829ec57e261cc1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4284))
+- [Don't include project-level analytics settings in DOM](https://gitlab.com/gitlab-org/security/gitlab/-/commit/639bf845ed2537e44487d8c9e804ec9ac4844045) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4271))
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49a4b36f4155702f8277e043d1d1c146b5a52e01) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4275))
+- [Do not allow script execution on dependency responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e1a84f999c73dab1ce45e9027738a59be977304e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4276))
+- [Remove prohibited tags after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/41db34926ea53f45215294138da716fba4ec03dd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4268))
+
 ## 17.2.0 (2024-07-17)
 
 ### Added (159 changes)
@@ -774,6 +790,23 @@ entry.
 - [Quarantine a flaky test](https://gitlab.com/gitlab-org/gitlab/-/commit/121d4e81b497b6795650aef58122a92222d91894) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155349))
 - [Remove "use_remote_mirror_destroy_service" feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/74e1e921d003960afd6f259384aee2dfec18f30e) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/155852))
 - [Protected containers: Cleanup renaming of protected_up_to_access_level](https://gitlab.com/gitlab-org/gitlab/-/commit/4606b5ef64f75acdd581258a0b93034195626e83) by @gerardo-navarro ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146177))
+
+## 17.1.3 (2024-07-24)
+
+### Fixed (2 changes)
+
+- [Fix wildcard search for package.json in npm upload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f319a2257eca7ef742367b9b4636645ad4781ea2)
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/01c080264ccb25ec17c04eeb470014389a916cfa)
+
+### Security (7 changes)
+
+- [Refactor import_export_upload to be user-based](https://gitlab.com/gitlab-org/security/gitlab/-/commit/70145f096f59d1729df3f0e1244a039c6e14f0b7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4264))
+- [Fix for private txt artifacts being accessible through the artifacts/browse link](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8889c5c795eb2bd19b1bbcf7e05050c009843f82) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4293))
+- [Attribute BulkImport::Export to a particular user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/68eb8994474a9b0fdd15d03ae2f0a75a61eecd1f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4285))
+- [Don't include project-level analytics settings in DOM](https://gitlab.com/gitlab-org/security/gitlab/-/commit/caf6a3a26a0bedfc309f8ba45bea605fc37e70f7) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4185))
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/ed6d149e28b4c8aafe36d6c6ff2824e1d459c651) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4242))
+- [Do not allow script execution on dependency responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f412b11cacce187d0d7c463fdba0a3c1d4d378ad) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4254))
+- [Remove prohibited tags after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fda79ce08be8700a75eadaf9641e1ee00b0d92ec) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4249))
 
 ## 17.1.2 (2024-07-09)
 
@@ -1916,6 +1949,26 @@ entry.
 ### fix (1 change)
 
 - [Update Web IDE dependency to receive duo fixes](gitlab-org/gitlab@47323c05565dd32ea4de9f999adbd9f7aa8748e3) ([merge request](gitlab-org/gitlab!154064))
+
+## 17.0.5 (2024-07-24)
+
+### Added (1 change)
+
+- [Add Rake task to show token expiration info](https://gitlab.com/gitlab-org/security/gitlab/-/commit/10f23572a1c4aca31a9e3a9eb9f5546fe5353dfe)
+
+### Fixed (1 change)
+
+- [Ignore object pool already exists creation errors](https://gitlab.com/gitlab-org/security/gitlab/-/commit/f34b4a189ab52c96b69716b3b02290c11e67ff42)
+
+### Security (7 changes)
+
+- [Refactor import_export_upload to be user-based](https://gitlab.com/gitlab-org/security/gitlab/-/commit/762b76f8c82061702e4854b978462f8f5f915a4d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4265))
+- [Fix for private txt artifacts being accessible through the artifacts/browse link](https://gitlab.com/gitlab-org/security/gitlab/-/commit/502b678220abbc1427d2c9320d6e26deb4084234) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4292))
+- [Attribute BulkImport::Export to a particular user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/bc6479e121222a51d8281b445626959732880f67) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4286))
+- [Don't include project-level analytics settings in DOM](https://gitlab.com/gitlab-org/security/gitlab/-/commit/60d862aa715e1692942faaa8fa4ecf719e05407e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4131))
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7be78d4cf575453967f23b09054551299841fd8a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4243))
+- [Do not allow script execution on dependency responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1afc21105ee1285c40a701edf729bb2a247c1438) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4255))
+- [Remove prohibited tags after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a3b8343e3ef3fd0025db94a8b8d14006d821b831) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4250))
 
 ## 17.0.4 (2024-07-09)
 

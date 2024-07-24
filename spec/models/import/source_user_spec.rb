@@ -12,6 +12,13 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
   describe 'validations' do
     it { is_expected.to validate_presence_of(:namespace_id) }
     it { is_expected.to validate_presence_of(:import_type) }
+    it { is_expected.to validate_presence_of(:placeholder_user_id) }
+
+    context 'when completed' do
+      subject { build(:import_source_user, :completed) }
+
+      it { is_expected.not_to validate_presence_of(:placeholder_user_id) }
+    end
   end
 
   describe 'scopes' do

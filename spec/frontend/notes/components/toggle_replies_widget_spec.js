@@ -1,7 +1,7 @@
+import { GlAvatarsInline } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import ToggleRepliesWidget from '~/notes/components/toggle_replies_widget.vue';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
-import UserAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
 import { note } from '../mock_data';
 
 describe('toggle replies widget for notes', () => {
@@ -24,7 +24,7 @@ describe('toggle replies widget for notes', () => {
     wrapper.findByRole('button', { text: ToggleRepliesWidget.i18n.expandReplies });
   const findRepliesButton = () => wrapper.findByRole('button', { text: '5 replies' });
   const findTimeAgoTooltip = () => wrapper.findComponent(TimeAgoTooltip);
-  const findUserAvatarLink = () => wrapper.findAllComponents(UserAvatarLink);
+  const findAvatars = () => wrapper.findComponent(GlAvatarsInline);
   const findUserLink = () => wrapper.findByRole('link', { text: noteFromAnotherUser.author.name });
 
   const mountComponent = ({ collapsed = false }) =>
@@ -37,7 +37,7 @@ describe('toggle replies widget for notes', () => {
 
     it('renders collapsed state elements', () => {
       expect(findExpandToggleButton().exists()).toBe(true);
-      expect(findUserAvatarLink()).toHaveLength(3);
+      expect(findAvatars().props('avatars')).toHaveLength(3);
       expect(findRepliesButton().exists()).toBe(true);
       expect(wrapper.text()).toContain('Last reply by');
       expect(findUserLink().exists()).toBe(true);

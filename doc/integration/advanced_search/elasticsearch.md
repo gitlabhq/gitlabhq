@@ -361,7 +361,7 @@ Elasticsearch cluster.
 
 For GitLab instances with more than 50 GB of repository data, see [Index large instances efficiently](#index-large-instances-efficiently).
 
-### Index all projects
+### Index the instance
 
 DETAILS:
 **Offering:** Self-managed
@@ -370,28 +370,34 @@ Prerequisites:
 
 - You must have administrator access to the instance.
 
-You can only use the **Index all projects** setting to perform
-initial indexing, not to re-create an index from scratch.
-To enable advanced search with **Index all projects**:
+You can use **Index the instance** to perform initial indexing
+or re-create an index from scratch.
+
+To enable advanced search with this setting:
 
 1. On the left sidebar, at the bottom, select **Admin area**.
 1. Select **Settings > Search**.
 1. Select the **Elasticsearch indexing** checkbox, then select **Save changes**.
-1. Select **Index all projects**.
-1. Optional. Select **Check progress** to see the status of background jobs.
+1. Select **Index the instance**.
 
-To index epics, group wikis, personal snippets, and users, you must use Rake tasks:
+To index specific data, you can use the following Rake tasks:
 
 ```shell
 # Omnibus installations
 sudo gitlab-rake gitlab:elastic:index_epics
+sudo gitlab-rake gitlab:elastic:index_work_items
 sudo gitlab-rake gitlab:elastic:index_group_wikis
+sudo gitlab-rake gitlab:elastic:index_namespaces
+sudo gitlab-rake gitlab:elastic:index_projects
 sudo gitlab-rake gitlab:elastic:index_snippets
 sudo gitlab-rake gitlab:elastic:index_users
 
 # Installations from source
 bundle exec rake gitlab:elastic:index_epics RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_work_items RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_group_wikis RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_namespaces RAILS_ENV=production
+bundle exec rake gitlab:elastic:index_projects RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_snippets RAILS_ENV=production
 bundle exec rake gitlab:elastic:index_users RAILS_ENV=production
 ```

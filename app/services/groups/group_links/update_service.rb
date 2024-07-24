@@ -10,6 +10,10 @@ module Groups
       end
 
       def execute(group_link_params)
+        @group_link_params = group_link_params
+
+        remove_unallowed_params
+
         group_link.update!(group_link_params)
 
         if requires_authorization_refresh?(group_link_params)
@@ -21,7 +25,7 @@ module Groups
 
       private
 
-      attr_accessor :group_link
+      attr_accessor :group_link, :group_link_params
 
       def requires_authorization_refresh?(params)
         params.include?(:group_access)

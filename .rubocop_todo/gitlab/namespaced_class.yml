@@ -1035,7 +1035,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/workers/repository_update_mirror_worker.rb'
     - 'ee/app/workers/scan_security_report_secrets_worker.rb'
     - 'ee/app/workers/set_user_status_based_on_user_cap_setting_worker.rb'
-    - 'ee/app/workers/store_security_reports_worker.rb'
     - 'ee/app/workers/sync_seat_link_request_worker.rb'
     - 'ee/app/workers/sync_seat_link_worker.rb'
     - 'ee/app/workers/update_all_mirrors_worker.rb'

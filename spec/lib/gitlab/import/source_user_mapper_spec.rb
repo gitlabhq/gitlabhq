@@ -42,7 +42,7 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
       end
 
       it 'creates a new placeholder user with a unique email and username' do
-        expect { find_or_create_internal_user }.to change { User.where(user_type: :placeholder).count }.from(0).to(1)
+        expect { find_or_create_internal_user }.to change { User.where(user_type: :placeholder).count }.by(1)
 
         new_placeholder_user = User.where(user_type: :placeholder).last
 
@@ -89,7 +89,6 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
         let_it_be(:existing_import_source_user) do
           create(
             :import_source_user,
-            :with_placeholder_user,
             namespace: namespace,
             import_type: import_type,
             source_hostname: source_hostname,
@@ -112,59 +111,76 @@ RSpec.describe Gitlab::Import::SourceUserMapper, feature_category: :importers do
       end
 
       context 'and an import source user exists for current import source' do
-        context 'and the source user maps to a placeholder user' do
-          let_it_be(:existing_import_source_user) do
-            create(
-              :import_source_user,
-              :with_placeholder_user,
-              namespace: namespace,
-              import_type: import_type,
-              source_hostname: source_hostname,
-              source_user_identifier: '123456')
+        let_it_be(:existing_import_source_user) do
+          create(
+            :import_source_user,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname,
+            source_user_identifier: '123456')
+        end
+
+        it 'returns the existing placeholder user' do
+          expect(find_or_create_internal_user).to eq(existing_import_source_user.placeholder_user)
+        end
+
+        it_behaves_like 'it does not create an import_source_user or placeholder user'
+      end
+
+      context 'and the source user does not map to a placeholder user' do
+        let_it_be(:existing_import_source_user) do
+          create(
+            :import_source_user,
+            :completed,
+            :with_reassign_to_user,
+            placeholder_user: nil,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname,
+            source_user_identifier: '123456')
+        end
+
+        it 'returns the existing reassigned user' do
+          expect(find_or_create_internal_user).to eq(existing_import_source_user.reassign_to_user)
+        end
+
+        it_behaves_like 'it does not create an import_source_user or placeholder user'
+      end
+
+      context 'and the source_user maps to a reassigned user' do
+        let_it_be(:existing_import_source_user) do
+          create(
+            :import_source_user,
+            :with_reassign_to_user,
+            namespace: namespace,
+            import_type: import_type,
+            source_hostname: source_hostname,
+            source_user_identifier: '123456')
+        end
+
+        before do
+          allow_next_found_instance_of(Import::SourceUser) do |source_user|
+            allow(source_user).to receive(:accepted_status?).and_return(accepted)
           end
+        end
+
+        context 'when reassigned user has accepted the mapping' do
+          let(:accepted) { true }
+
+          it_behaves_like 'it does not create an import_source_user or placeholder user'
+
+          it 'returns the existing reassign to user' do
+            expect(find_or_create_internal_user).to eq(existing_import_source_user.reassign_to_user)
+          end
+        end
+
+        context 'when reassigned user has not accepted the mapping' do
+          let(:accepted) { false }
+
+          it_behaves_like 'it does not create an import_source_user or placeholder user'
 
           it 'returns the existing placeholder user' do
             expect(find_or_create_internal_user).to eq(existing_import_source_user.placeholder_user)
-          end
-
-          it_behaves_like 'it does not create an import_source_user or placeholder user'
-        end
-
-        context 'and the source_user maps to a reassigned user' do
-          let_it_be(:existing_import_source_user) do
-            create(
-              :import_source_user,
-              :with_reassign_to_user,
-              namespace: namespace,
-              import_type: import_type,
-              source_hostname: source_hostname,
-              source_user_identifier: '123456')
-          end
-
-          before do
-            allow_next_found_instance_of(Import::SourceUser) do |source_user|
-              allow(source_user).to receive(:accepted_status?).and_return(accepted)
-            end
-          end
-
-          context 'when reassigned user has accepted the mapping' do
-            let(:accepted) { true }
-
-            it_behaves_like 'it does not create an import_source_user or placeholder user'
-
-            it 'returns the existing reassign to user' do
-              expect(find_or_create_internal_user).to eq(existing_import_source_user.reassign_to_user)
-            end
-          end
-
-          context 'when reassigned user has not accepted the mapping' do
-            let(:accepted) { false }
-
-            it_behaves_like 'it does not create an import_source_user or placeholder user'
-
-            it 'returns the existing placeholder user' do
-              expect(find_or_create_internal_user).to eq(existing_import_source_user.placeholder_user)
-            end
           end
         end
       end

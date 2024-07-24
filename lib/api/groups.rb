@@ -546,13 +546,15 @@ module API
         requires :group_id, type: Integer, desc: 'The ID of the group to share'
         requires :group_access, type: Integer, values: Gitlab::Access.all_values, desc: 'The group access level'
         optional :expires_at, type: Date, desc: 'Share expiration date'
+        optional :member_role_id, type: Integer, desc: 'The ID of the Member Role to be assigned to the group'
       end
       post ":id/share", feature_category: :groups_and_projects, urgency: :low do
         shared_with_group = find_group!(params[:group_id])
 
         group_link_create_params = {
           shared_group_access: params[:group_access],
-          expires_at: params[:expires_at]
+          expires_at: params[:expires_at],
+          member_role_id: params[:member_role_id]
         }
 
         result = ::Groups::GroupLinks::CreateService.new(user_group, shared_with_group, current_user, group_link_create_params).execute

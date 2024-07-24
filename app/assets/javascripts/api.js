@@ -497,6 +497,7 @@ const Api = {
       expires_at: options.expires_at,
       group_access: options.group_access,
       group_id: options.group_id,
+      member_role_id: options.member_role_id,
     });
   },
 

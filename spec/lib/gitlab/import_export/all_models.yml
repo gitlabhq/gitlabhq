@@ -726,7 +726,7 @@ project:
 - settings
 - ci_cd_settings
 - project_settings
-- import_export_upload
+- import_export_uploads
 - repository_languages
 - pool_repository
 - kubernetes_namespaces

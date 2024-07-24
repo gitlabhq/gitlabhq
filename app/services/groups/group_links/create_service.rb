@@ -22,11 +22,14 @@ module Groups
       end
 
       def build_link
+        remove_unallowed_params
+
         @link = GroupGroupLink.new(
           shared_group: group,
           shared_with_group: shared_with_group,
           group_access: params[:shared_group_access],
-          expires_at: params[:expires_at]
+          expires_at: params[:expires_at],
+          member_role_id: params[:member_role_id]
         )
       end
 

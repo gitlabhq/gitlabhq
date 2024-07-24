@@ -569,8 +569,6 @@
   - 1
 - - package_repositories
   - 1
-- - packages_composer_cache_update
-  - 1
 - - pages
   - 1
 - - pages_deactivate_mr_deployments

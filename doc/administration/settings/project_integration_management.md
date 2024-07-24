@@ -59,7 +59,7 @@ When you make further changes to the instance defaults:
 - Groups and projects with custom settings selected for the integration are not immediately affected and may
   choose to use the latest defaults at any time.
 
-If [group-level settings](../../user/project/integrations/index.md#manage-group-level-default-settings-for-a-project-integration) have also
+If [group-level settings](../../user/project/integrations/index.md#manage-group-default-settings-for-a-project-integration) have also
 been configured for the same integration, projects in that group inherit the group-level settings
 instead of the instance-level settings.
 

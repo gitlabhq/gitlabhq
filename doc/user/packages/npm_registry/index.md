@@ -35,13 +35,17 @@ Depending on how the package is installed, you may need to adhere to the naming 
 
 You can use one of three API endpoints to install packages:
 
-- **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
-- **Group-level**: Use when you have many npm packages in different projects under the same group or subgroup.
-- **Project-level**: Use when you have few npm packages and they are not in the same GitLab group.
+- **Instance**: Use when you have many npm packages in different GitLab groups or in their own namespace.
+- **Group**: Use when you have many npm packages in different projects under the same group or subgroup.
+- **Project**: Use when you have few npm packages and they are not in the same GitLab group.
 
-If you plan to install a package through the [project level](#install-from-the-project-level) or [group level](#install-from-the-group-level), then you do not have to adhere to the naming convention.
+If you plan to install a package from a [project](#install-from-a-project) or [group](#install-from-a-group),
+then you do not have to adhere to the naming convention.
 
-If you plan to install a package through the [instance level](#install-from-the-instance-level), then you must name your package with a [scope](https://docs.npmjs.com/misc/scope/). Scoped packages begin with a `@` have the format of `@owner/package-name`. You can set up the scope for your package in the `.npmrc` file and by using the `publishConfig` option in the `package.json`.
+If you plan to install a package from an [instance](#install-from-an-instance), then you must name your package
+with a [scope](https://docs.npmjs.com/misc/scope/). Scoped packages begin with a `@` have the format of
+`@owner/package-name`. You can set up the scope for your package in the `.npmrc` file and by using the `publishConfig`
+option in the `package.json`.
 
 - The value used for the `@scope` is the root of the project that is hosting the packages and not the root
   of the project with the source code of the package itself. The scope should be lowercase.
@@ -123,9 +127,9 @@ If multiple packages have the same name and version, when you install a package,
 
 You can install a package from a GitLab project, group, or instance:
 
-- **Instance-level**: Use when you have many npm packages in different GitLab groups or in their own namespace.
-- **Group-level**: Use when you have many npm packages in different projects in the same GitLab group.
-- **Project-level**: Use when you have few npm packages and they are not in the same GitLab group.
+- **Instance**: Use when you have many npm packages in different GitLab groups or in their own namespace.
+- **Group**: Use when you have many npm packages in different projects in the same GitLab group.
+- **Project**: Use when you have few npm packages and they are not in the same GitLab group.
 
 ### Authenticate to the package registry
 
@@ -144,19 +148,19 @@ With npm version 7 or earlier, use the full URL to the endpoint.
 
 If you're installing:
 
-- From the instance level:
+- From an instance:
 
   ```shell
   npm config set -- //your_domain_name/api/v4/packages/npm/:_authToken=your_token
   ```
 
-- From the group level:
+- From a group:
 
   ```shell
   npm config set -- //your_domain_name/api/v4/groups/your_group_id/-/packages/npm/:_authToken=your_token
   ```
 
-- From the project level:
+- From a project:
 
   ```shell
   npm config set -- //your_domain_name/api/v4/projects/your_project_id/packages/npm/:_authToken=your_token
@@ -171,13 +175,13 @@ In these examples:
 
 NOTE:
 Starting with npm version 8, you can [use a URI fragment instead of a full URL](https://docs.npmjs.com/cli/v8/configuring-npm/npmrc/?v=true#auth-related-configuration)
-in the `_authToken` parameter. However, [group-level endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/299834)
+in the `_authToken` parameter. However, [group-specific endpoints](https://gitlab.com/gitlab-org/gitlab/-/issues/299834)
 are not supported.
 
-### Install from the instance level
+### Install from an instance
 
 WARNING:
-To install a package from the instance level, the package must have been published following the scoped [naming convention](#naming-convention).
+To install a package from an instance, the package must have been published following the scoped [naming convention](#naming-convention).
 
 1. [Authenticate to the package registry](#authenticate-to-the-package-registry).
 
@@ -197,7 +201,7 @@ To install a package from the instance level, the package must have been publish
    npm install @scope/my-package
    ```
 
-### Install from the group level
+### Install from a group
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/299834) in GitLab 16.0 [with a flag](../../../administration/feature_flags.md) named `npm_group_level_endpoints`. Disabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/121837) in GitLab 16.1. Feature flag `npm_group_level_endpoints` removed.
@@ -220,7 +224,7 @@ To install a package from the instance level, the package must have been publish
    npm install @scope/my-package
    ```
 
-### Install from the project level
+### Install from a project
 
 1. [Authenticate to the package registry](#authenticate-to-the-package-registry).
 
