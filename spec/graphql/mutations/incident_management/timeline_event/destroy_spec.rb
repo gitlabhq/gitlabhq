@@ -2,13 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::IncidentManagement::TimelineEvent::Destroy do
+RSpec.describe Mutations::IncidentManagement::TimelineEvent::Destroy, feature_category: :api do
+  include GraphqlHelpers
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:incident) { create(:incident, project: project) }
 
   let(:timeline_event) { create(:incident_management_timeline_event, incident: incident, project: project) }
   let(:args) { { id: timeline_event.to_global_id } }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: current_user }) }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_incident_management_timeline_event) }
 
@@ -60,7 +63,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Destroy do
 
   private
 
-  def mutation_for(project, user)
-    described_class.new(object: project, context: { current_user: user }, field: nil)
+  def mutation_for(project, _user)
+    described_class.new(object: project, context: context, field: nil)
   end
 end

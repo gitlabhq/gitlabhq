@@ -80,7 +80,35 @@ You can also ask to explain specific job errors by copy-pasting the error messag
 
 - `Please explain this CI/CD job error message in the context of a Go project: build.sh: line 14: go command not found`
 
-Alternatively, you can use [root cause analysis in CI/CD](../gitlab_duo/experiments.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+Alternatively, you can use root cause analysis to [troubleshoot failed CI/CD jobs](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+
+## Troubleshoot failed CI/CD jobs with root cause analysis
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
+
+You can ask GitLab Duo Chat to determine the root cause of a CI/CD job failure by analyzing the logs.
+
+Prerequisites:
+
+- Have permission to view the CI/CD job.
+- Have a paid GitLab Duo Enterprise seat.
+
+To troubleshoot a failed CI/CD job:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Build > Jobs**.
+1. Select the failed CI/CD job.
+1. From the job log page, do one of the following:
+
+   - Above the job log, select **Troubleshoot**.
+   - Open GitLab Duo Chat and type `/troubleshoot`.
+
+An analysis of the reasons for the failure and an example fix is displayed.
 
 ## Explain a vulnerability
 
@@ -276,4 +304,5 @@ Use the following commands to quickly accomplish specific tasks.
 | /explain               | [Explain code](../gitlab_duo_chat/examples.md#explain-code-in-the-ide)              |
 | /vulnerability_explain | [Explain current vulnerability](../gitlab_duo/index.md#vulnerability-explanation)   |
 | /refactor              | [Refactor the code](../gitlab_duo_chat/examples.md#refactor-code-in-the-ide)        |
+| /troubleshoot          | [Troubleshoot failed CI/CD jobs with root cause analysis](#troubleshoot-failed-cicd-jobs-with-root-cause-analysis) |
 | /fix                   | [Fix the code](../gitlab_duo_chat/examples.md#fix-code-in-the-ide)        |

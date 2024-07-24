@@ -2,7 +2,9 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
+RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update, feature_category: :api do
+  include GraphqlHelpers
+
   let_it_be(:developer) { create(:user) }
   let_it_be(:reporter) { create(:user) }
   let_it_be(:project) { create(:project, developers: developer, reporters: reporter) }
@@ -29,6 +31,9 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
       timeline_event_tag_names: tag_names
     }
   end
+
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: current_user }) }
 
   let(:note) { 'Updated Note' }
   let(:timeline_event_id) { GitlabSchema.id_from_object(timeline_event).to_s }
@@ -154,7 +159,7 @@ RSpec.describe Mutations::IncidentManagement::TimelineEvent::Update do
 
   private
 
-  def mutation_for(user)
-    described_class.new(object: nil, context: { current_user: user }, field: nil)
+  def mutation_for(_user)
+    described_class.new(object: nil, context: context, field: nil)
   end
 end

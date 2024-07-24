@@ -2,18 +2,21 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Groups::Update do
+RSpec.describe Mutations::Groups::Update, feature_category: :api do
+  include GraphqlHelpers
   using RSpec::Parameterized::TableSyntax
 
   let_it_be_with_reload(:group) { create(:group) }
   let_it_be(:user) { create(:user) }
 
   let(:params) { { full_path: group.full_path } }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_group) }
 
   describe '#resolve' do
-    subject { described_class.new(object: group, context: { current_user: user }, field: nil).resolve(**params) }
+    subject { described_class.new(object: group, context: context, field: nil).resolve(**params) }
 
     shared_examples 'updating the group shared runners setting' do
       it 'updates the group shared runners setting' do

@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Issues::SetAssignees do
+RSpec.describe Mutations::Issues::SetAssignees, feature_category: :api do
+  include GraphqlHelpers
   context 'when the user does not have permissions' do
     let_it_be(:issue) { create(:issue) }
     let_it_be(:user) { create(:user) }
     let_it_be(:assignee) { create(:user) }
 
-    subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+    let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+    let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
+
+    subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
     describe '#resolve' do
       subject do

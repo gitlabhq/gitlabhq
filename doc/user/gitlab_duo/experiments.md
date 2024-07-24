@@ -74,30 +74,6 @@ is displayed.
 
 Provide feedback on this experimental feature in [issue 416833](https://gitlab.com/gitlab-org/gitlab/-/issues/416833).
 
-## Troubleshoot failed CI/CD jobs with Root cause analysis
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment).
-
-Determine the root cause of a CI/CD job failure by analyzing the logs.
-
-Prerequisites:
-
-- You must belong to at least one group with the [experiment and beta features setting](turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
-- You must have permission to view the CI/CD job.
-
-To view root cause analysis:
-
-1. Open a merge request.
-1. On the **Pipelines** tab, select the failed CI/CD job.
-1. Above the job output, select **Troubleshoot**.
-
-An analysis of the reasons for the failure is displayed.
-
 ## Summarize an issue with Issue description generation
 
 DETAILS:

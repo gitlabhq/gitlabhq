@@ -2,12 +2,16 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Issues::SetDueDate do
+RSpec.describe Mutations::Issues::SetDueDate, feature_category: :api do
+  include GraphqlHelpers
+
   let(:issue) { create(:issue, due_date: '2021-05-01') }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
 
   let_it_be(:user) { create(:user) }
 
-  subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue) }
 

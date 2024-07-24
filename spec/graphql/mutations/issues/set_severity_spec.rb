@@ -2,13 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Issues::SetSeverity do
+RSpec.describe Mutations::Issues::SetSeverity, feature_category: :api do
+  include GraphqlHelpers
+
   let_it_be(:project) { create(:project) }
   let_it_be(:guest) { create(:user, guest_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:issue) { create(:incident, project: project) }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   specify { expect(described_class).to require_graphql_authorizations(:update_issue, :admin_issue) }
 

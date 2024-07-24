@@ -119,6 +119,7 @@ The following table lists the valid `objects` that can be used:
 | `dependency_proxy` | [Dependency Proxy](packages/dependency_proxy.md)                    |
 | `terraform_state`  | [Terraform state files](terraform_state.md)                                |
 | `pages`            | [Pages](pages/index.md)                                             |
+| `ci_secure_files`  | [Secure files](secure_files.md)                                            |
 
 Within each object type, three parameters can be defined:
 
@@ -166,11 +167,11 @@ supported by the consolidated form, refer to the following guides:
 
 | Object storage type | Supported by consolidated form? |
 |---------------------|------------------------------------------|
-| [Secure Files](secure_files.md#using-object-storage) | **{dotted-circle}** No |
 | [Backups](../administration/backup_restore/backup_gitlab.md#upload-backups-to-a-remote-cloud-storage) | **{dotted-circle}** No |
 | [Container registry](packages/container_registry.md#use-object-storage) (optional feature) | **{dotted-circle}** No |
 | [Mattermost](https://docs.mattermost.com/configure/file-storage-configuration-settings.html)| **{dotted-circle}** No |
 | [Autoscale runner caching](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching) (optional for improved performance) | **{dotted-circle}** No |
+| [Secure Files](secure_files.md#using-object-storage) | **{check-circle}** Yes |
 | [Job artifacts](job_artifacts.md#using-object-storage) including archived job logs | **{check-circle}** Yes |
 | [LFS objects](lfs/index.md#storing-lfs-objects-in-remote-object-storage) | **{check-circle}** Yes |
 | [Uploads](uploads.md#using-object-storage) | **{check-circle}** Yes |
@@ -483,6 +484,7 @@ The following example uses AWS S3 to enable object storage for all supported ser
    gitlab_rails['object_store']['objects']['packages']['bucket'] = 'gitlab-packages'
    gitlab_rails['object_store']['objects']['dependency_proxy']['bucket'] = 'gitlab-dependency-proxy'
    gitlab_rails['object_store']['objects']['terraform_state']['bucket'] = 'gitlab-terraform-state'
+   gitlab_rails['object_store']['objects']['ci_secure_files']['bucket'] = 'gitlab-ci-secure-files'
    gitlab_rails['object_store']['objects']['pages']['bucket'] = 'gitlab-pages'
    ```
 

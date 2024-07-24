@@ -85,9 +85,9 @@ $avatar-sizes: (
   width: 40px;
   height: 40px;
   padding: 0;
-  background: $gray-10;
+  background: var(--gl-background-color-subtle);
   overflow: hidden;
-  box-shadow: inset 0 0 0 1px rgba($gray-950, $gl-avatar-border-opacity);
+  box-shadow: inset 0 0 0 1px var(--gl-avatar-border-color-default);
 
   &.avatar-inline {
     float: none;
@@ -116,8 +116,8 @@ $avatar-sizes: (
 .identicon {
   text-align: center;
   vertical-align: top;
-  color: $gray-900;
-  background-color: $gray-50;
+  color: var(--gl-text-color-strong);
+  background-color: var(--gl-avatar-fallback-background-color-neutral);
 
   // Sizes
   @each $size, $size-config in $avatar-sizes {
@@ -208,7 +208,7 @@ $avatar-sizes: (
 
   &.user-popover-cannot-merge {
     .popover-header {
-      background-color: $orange-50;
+      background-color: var(--gl-feedback-warning-background-color);
     }
   }
 }

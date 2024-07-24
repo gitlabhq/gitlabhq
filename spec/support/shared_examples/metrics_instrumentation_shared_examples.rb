@@ -41,6 +41,25 @@ RSpec.shared_examples 'a correct instrumented metric query' do |params|
   end
 end
 
+RSpec.shared_examples 'a correct instrumented database query execution value' do |params|
+  let(:time_frame) { params[:time_frame] }
+  let(:options) { params[:options] }
+  let(:metric) { described_class.new(time_frame: time_frame, options: options) }
+
+  around do |example|
+    freeze_time { example.run }
+  end
+
+  before do
+    allow(metric.relation).to receive(:transaction_open?).and_return(false)
+  end
+
+  it 'returns correct value' do
+    query_result = metric.relation.connection.execute(metric.instrumentation).to_a.first.each_value.first
+    expect(query_result).to eq(expected_value)
+  end
+end
+
 RSpec.shared_examples 'a correct instrumented metric value and query' do |params|
   it_behaves_like 'a correct instrumented metric value', params
   it_behaves_like 'a correct instrumented metric query', params

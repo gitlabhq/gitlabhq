@@ -2,12 +2,17 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::Issues::Move do
+RSpec.describe Mutations::Issues::Move, feature_category: :api do
+  include GraphqlHelpers
+
   let_it_be(:issue) { create(:issue) }
   let_it_be(:user) { create(:user) }
   let_it_be(:target_project) { create(:project) }
 
-  subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let(:query) { GraphQL::Query.new(empty_schema, document: nil, context: {}, variables: {}) }
+  let(:context) { GraphQL::Query::Context.new(query: query, values: { current_user: user }) }
+
+  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   describe '#resolve' do
     subject(:resolve) { mutation.resolve(project_path: issue.project.full_path, iid: issue.iid, target_project_path: target_project.full_path) }

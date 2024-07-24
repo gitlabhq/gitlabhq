@@ -43,6 +43,19 @@ the [Duo Chat examples](../gitlab_duo_chat_examples.md).
 For self-managed, the models also depend on your GitLab version.
 For the most benefit, use the latest GitLab version whenever possible.
 
+#### Root cause analysis
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
+
+- Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
+- LLM: Anthropic's [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- [View documentation](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis)
+
 ### Code Suggestions
 
 DETAILS:
@@ -190,7 +203,7 @@ DETAILS:
 
 - Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison)
-- [View documentation](experiments.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
+- [View documentation](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ### Vulnerability resolution
 

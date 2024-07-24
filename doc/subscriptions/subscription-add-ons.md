@@ -116,7 +116,7 @@ Prerequisites:
 - You must be an administrator.
 
 1. Sign in to the [GitLab Customers Portal](https://customers.gitlab.com/).
-1. On the **GitLab Duo Pro** section of your subscription card click **Add seats** button.
+1. On the **GitLab Duo Pro** section of your subscription card select **Add seats**.
 1. Enter the number of seats. The amount cannot be higher than the number of seats in the subscription.
 1. Review the **Purchase summary** section.
 1. From the **Payment method** dropdown list, select your payment method.
