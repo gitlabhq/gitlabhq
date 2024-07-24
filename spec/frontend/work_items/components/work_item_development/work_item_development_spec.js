@@ -6,10 +6,12 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import { createMockDirective } from 'helpers/vue_mock_directive';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import waitForPromises from 'helpers/wait_for_promises';
+import { STATE_CLOSED, STATE_OPEN } from '~/work_items/constants';
 
 import {
   workItemResponseFactory,
   workItemDevelopmentFragmentResponse,
+  workItemDevelopmentNodes,
 } from 'jest/work_items/mock_data';
 
 import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
@@ -22,6 +24,15 @@ describe('WorkItemDevelopment CE', () => {
   let mockApollo;
 
   const workItem = workItemResponseFactory({ developmentWidgetPresent: true });
+  const workItemWithOneMR = workItemResponseFactory({
+    developmentWidgetPresent: true,
+    developmentItems: workItemDevelopmentFragmentResponse([workItemDevelopmentNodes[0]], true),
+  });
+  const workItemWithMRList = workItemResponseFactory({
+    developmentWidgetPresent: true,
+    developmentItems: workItemDevelopmentFragmentResponse(workItemDevelopmentNodes, true),
+  });
+
   const projectWorkItemResponseWithMRList = {
     data: {
       workspace: {
@@ -31,11 +42,50 @@ describe('WorkItemDevelopment CE', () => {
       },
     },
   };
+
+  const closedWorkItemWithAutoCloseFlagEnabled = {
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: {
+          ...workItemWithMRList.data.workItem,
+          state: STATE_CLOSED,
+        },
+      },
+    },
+  };
+
+  const openWorkItemWithAutoCloseFlagEnabledAndOneMR = {
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: workItemWithOneMR.data.workItem,
+      },
+    },
+  };
+
+  const openWorkItemWithAutoCloseFlagEnabledAndMRList = {
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: workItemWithMRList.data.workItem,
+      },
+    },
+  };
+
   const successQueryHandler = jest.fn().mockResolvedValue(projectWorkItemResponseWithMRList);
   const workItemWithEmptyMRList = workItemResponseFactory({
     developmentWidgetPresent: true,
     developmentItems: workItemDevelopmentFragmentResponse([]),
   });
+  const workItemWithAutoCloseFlagEnabled = workItemResponseFactory({
+    developmentWidgetPresent: true,
+    developmentItems: workItemDevelopmentFragmentResponse(workItemDevelopmentNodes, true),
+  });
+
   const successQueryHandlerWithEmptyMRList = jest.fn().mockResolvedValue({
     data: {
       workspace: {
@@ -45,6 +95,26 @@ describe('WorkItemDevelopment CE', () => {
       },
     },
   });
+
+  const successQueryHandlerWorkItemWithAutoCloseFlagEnabled = jest.fn().mockResolvedValue({
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: workItemWithAutoCloseFlagEnabled.data.workItem,
+      },
+    },
+  });
+
+  const successQueryHandlerWithOneMR = jest
+    .fn()
+    .mockResolvedValue(openWorkItemWithAutoCloseFlagEnabledAndOneMR);
+  const successQueryHandlerWithMRList = jest
+    .fn()
+    .mockResolvedValue(openWorkItemWithAutoCloseFlagEnabledAndMRList);
+  const successQueryHandlerWithClosedWorkItem = jest
+    .fn()
+    .mockResolvedValue(closedWorkItemWithAutoCloseFlagEnabled);
 
   const createComponent = ({
     isGroup = false,
@@ -78,6 +148,7 @@ describe('WorkItemDevelopment CE', () => {
   const findAddMoreIcon = () => wrapper.findComponent(GlIcon);
   const findCreateMRButton = () => wrapper.findByTestId('create-mr-button');
   const findCreateBranchButton = () => wrapper.findByTestId('create-branch-button');
+  const findMoreInformation = () => wrapper.findByTestId('more-information');
   const findRelationshipList = () => wrapper.findComponent(WorkItemDevelopmentRelationshipList);
 
   describe('Default', () => {
@@ -134,5 +205,40 @@ describe('WorkItemDevelopment CE', () => {
         expect(findRelationshipList().exists()).toBe(true);
       });
     });
+
+    it('when auto close flag is disabled, should not show the "i" indicator', async () => {
+      createComponent();
+      await waitForPromises();
+
+      expect(findMoreInformation().exists()).toBe(false);
+    });
+
+    it('when auto close flag is enabled, should show the "i" indicator', async () => {
+      createComponent({
+        workItemQueryHandler: successQueryHandlerWorkItemWithAutoCloseFlagEnabled,
+      });
+
+      await waitForPromises();
+
+      expect(findMoreInformation().exists()).toBe(true);
+    });
+
+    it.each`
+      queryHandler                             | message                                                            | workItemState   | linkedMRsNumber
+      ${successQueryHandlerWithOneMR}          | ${'This task will be closed when the following is merged.'}        | ${STATE_OPEN}   | ${1}
+      ${successQueryHandlerWithMRList}         | ${'This task will be closed when any of the following is merged.'} | ${STATE_OPEN}   | ${workItemDevelopmentNodes.length}
+      ${successQueryHandlerWithClosedWorkItem} | ${'The task was closed automatically when a branch was merged.'}   | ${STATE_CLOSED} | ${workItemDevelopmentNodes.length}
+    `(
+      'when the workItemState is `$workItemState` and number of linked MRs is `$linkedMRsNumber` shows message `$message`',
+      async ({ queryHandler, message }) => {
+        createComponent({
+          workItemQueryHandler: queryHandler,
+        });
+
+        await waitForPromises();
+
+        expect(findMoreInformation().attributes('aria-label')).toBe(message);
+      },
+    );
   });
 });

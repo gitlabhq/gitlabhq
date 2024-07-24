@@ -8,7 +8,7 @@ import component from '~/packages_and_registries/settings/project/components/pac
 import PackagesCleanupPolicyForm from '~/packages_and_registries/settings/project/components/packages_cleanup_policy_form.vue';
 import { FETCH_SETTINGS_ERROR_MESSAGE } from '~/packages_and_registries/settings/project/constants';
 import packagesCleanupPolicyQuery from '~/packages_and_registries/settings/project/graphql/queries/get_packages_cleanup_policy.query.graphql';
-import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 
 import { packagesCleanupPolicyPayload, packagesCleanupPolicyData } from '../mock_data';
 
@@ -24,13 +24,12 @@ describe('Packages cleanup policy project settings', () => {
 
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findFormComponent = () => wrapper.findComponent(PackagesCleanupPolicyForm);
-  const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
+  const findSettingsBlock = () => wrapper.findComponent(SettingsSection);
 
   const mountComponent = (provide = defaultProvidedValues, config) => {
     wrapper = shallowMount(component, {
       stubs: {
         GlSprintf,
-        SettingsBlock,
       },
       provide,
       ...config,

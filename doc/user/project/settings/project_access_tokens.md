@@ -11,6 +11,9 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 Project access tokens are similar to passwords, except you can [limit access to resources](#scopes-for-a-project-access-token),
 select a limited role, and provide an expiry date.
 
+NOTE:
+Actual access to a project is controlled by a combination of [roles and permissions](../../permissions.md), and the [token scopes](#scopes-for-a-project-access-token).
+
 Use a project access token to authenticate:
 
 - With the [GitLab API](../../../api/rest/index.md#personalprojectgroup-access-tokens).

@@ -6,6 +6,7 @@ import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_s
 import { queryToObject, objectToQuery, visitUrl } from '~/lib/utils/url_utility';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
 import { ACCESS_LEVEL_OWNER_INTEGER } from '~/access_level/constants';
+import { InternalEvents } from '~/tracking';
 import {
   SORT_OPTIONS,
   SORT_DIRECTION_ASC,
@@ -14,6 +15,8 @@ import {
   FILTERED_SEARCH_TERM_KEY,
   FILTERED_SEARCH_NAMESPACE,
 } from '../constants';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   name: 'ProjectsExploreFilteredSearchAndSort',
@@ -25,6 +28,7 @@ export default {
   components: {
     FilteredSearchAndSort,
   },
+  mixins: [trackingMixin],
   inject: ['initialSort', 'programmingLanguages', 'starredExploreProjectsPath', 'exploreRootPath'],
   computed: {
     filteredSearchTokens() {
@@ -110,6 +114,10 @@ export default {
         isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC
       }`;
 
+      this.trackEvent('use_sort_projects_explore', {
+        label: sort,
+      });
+
       this.visitUrlWithQueryObject({
         ...this.queryAsObjectWithoutPagination,
         sort,
@@ -117,6 +125,10 @@ export default {
     },
     onSortByChange(sortBy) {
       const sort = `${sortBy}_${this.isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC}`;
+
+      this.trackEvent('use_sort_projects_explore', {
+        label: sort,
+      });
 
       this.visitUrlWithQueryObject({ ...this.queryAsObjectWithoutPagination, sort });
     },
@@ -130,6 +142,27 @@ export default {
       if (this.queryAsObject.archived) {
         queryObject.archived = this.queryAsObject.archived;
       }
+
+      const trackingProperty = Object.entries(filtersQuery).reduce(
+        (accumulator, [tokenType, optionValue]) => {
+          if (tokenType === FILTERED_SEARCH_TERM_KEY) {
+            return {
+              ...accumulator,
+              search: optionValue,
+            };
+          }
+
+          const token = this.filteredSearchTokens.find(({ type }) => type === tokenType);
+          const option = token.options.find(({ value }) => value === optionValue[0]);
+
+          return { ...accumulator, [token.title.toLowerCase()]: option.title };
+        },
+        {},
+      );
+
+      this.trackEvent('use_filter_bar_projects_explore', {
+        label: JSON.stringify(trackingProperty),
+      });
 
       this.visitUrlWithQueryObject(queryObject);
     },

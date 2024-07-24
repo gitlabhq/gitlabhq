@@ -227,18 +227,6 @@ DETAILS:
 - LLM: Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat)
 - [View documentation](../analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo).
 
-### Value stream forecasting
-
-DETAILS:
-**Tier:** GitLab.com and Self-managed: For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md). <br>GitLab Dedicated: GitLab Duo Enterprise.
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-**Status:** Experiment
-
-- Helps you improve planning and decision-making by predicting productivity metrics and identifying anomalies across your software development lifecycle.
-- LLM: Statistical forecasting
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=6u8_8QQ5pEQ&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
-- [View documentation](experiments.md#forecast-deployment-frequency-with-value-stream-forecasting).
-
 ## Disable GitLab Duo features for specific groups or projects or an entire instance
 
 Disable GitLab Duo features by [following these instructions](turn_on_off.md).

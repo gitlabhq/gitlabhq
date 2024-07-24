@@ -4,7 +4,7 @@ import { GlLoadingIcon, GlIcon, GlButton, GlTooltipDirective, GlModalDirective }
 import { s__, __ } from '~/locale';
 
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
-import { WIDGET_TYPE_DEVELOPMENT } from '~/work_items/constants';
+import { sprintfWorkItem, WIDGET_TYPE_DEVELOPMENT, STATE_OPEN } from '~/work_items/constants';
 
 import WorkItemDevelopmentRelationshipList from './work_item_development_relationship_list.vue';
 
@@ -35,7 +35,7 @@ export default {
     },
   },
   apollo: {
-    workItemDevelopment: {
+    workItem: {
       query: workItemByIidQuery,
       variables() {
         return {
@@ -44,11 +44,7 @@ export default {
         };
       },
       update(data) {
-        return (
-          data.workspace?.workItem?.widgets?.find(
-            (widget) => widget.type === WIDGET_TYPE_DEVELOPMENT,
-          ) || {}
-        );
+        return data.workspace?.workItem || {};
       },
       skip() {
         return !this.workItemIid;
@@ -65,14 +61,45 @@ export default {
     };
   },
   computed: {
+    workItemState() {
+      return this.workItem?.state;
+    },
+    workItemTypeName() {
+      return this.workItem?.workItemType?.name;
+    },
+    workItemDevelopment() {
+      return this.workItem?.widgets?.find(({ type }) => type === WIDGET_TYPE_DEVELOPMENT);
+    },
     isLoading() {
-      return this.$apollo.queries.workItemDevelopment.loading;
+      return this.$apollo.queries.workItem.loading;
+    },
+    willAutoCloseByMergeRequest() {
+      return this.workItemDevelopment?.willAutoCloseByMergeRequest;
     },
     linkedMergeRequests() {
       return this.workItemDevelopment?.closingMergeRequests?.nodes || [];
     },
     isEmptyRelatedWorkItems() {
       return !this.error && this.linkedMergeRequests.length === 0;
+    },
+    showAutoCloseInformation() {
+      return (
+        this.linkedMergeRequests.length > 0 && this.willAutoCloseByMergeRequest && !this.isLoading
+      );
+    },
+    openStateText() {
+      return this.linkedMergeRequests.length > 1
+        ? sprintfWorkItem(this.$options.i18n.openStateText, this.workItemTypeName)
+        : sprintfWorkItem(
+            this.$options.i18n.openStateWithOneMergeRequestText,
+            this.workItemTypeName,
+          );
+    },
+    closedStateText() {
+      return sprintfWorkItem(this.$options.i18n.closedStateText, this.workItemTypeName);
+    },
+    tooltipText() {
+      return this.workItemState === STATE_OPEN ? this.openStateText : this.closedStateText;
     },
   },
   createMRModalId: 'create-merge-request-modal',
@@ -81,14 +108,37 @@ export default {
     fetchError: s__('WorkItem|Something went wrong when fetching items. Please refresh this page.'),
     createMergeRequest: __('Create merge request'),
     createBranch: __('Create branch'),
+    openStateWithOneMergeRequestText: s__(
+      'WorkItem|This %{workItemType} will be closed when the following is merged.',
+    ),
+    openStateText: s__(
+      'WorkItem|This %{workItemType} will be closed when any of the following is merged.',
+    ),
+    closedStateText: s__(
+      'WorkItem|The %{workItemType} was closed automatically when a branch was merged.',
+    ),
   },
 };
 </script>
 <template>
   <div>
     <div class="gl-flex gl-items-center gl-gap-3 gl-justify-between">
-      <h3 class="gl-mb-0! gl-heading-5" data-testid="dev-widget-label">
+      <h3
+        class="gl-mb-0! gl-heading-5 gl-flex gl-items-center gl-gap-2"
+        data-testid="dev-widget-label"
+      >
         {{ $options.i18n.development }}
+        <gl-button
+          v-if="showAutoCloseInformation"
+          v-gl-tooltip
+          class="hover:!gl-bg-transparent !gl-p-0"
+          category="tertiary"
+          :title="tooltipText"
+          :aria-label="tooltipText"
+          data-testid="more-information"
+        >
+          <gl-icon name="information-o" class="!gl-text-blue-500" />
+        </gl-button>
       </h3>
       <gl-button
         v-if="canUpdate"

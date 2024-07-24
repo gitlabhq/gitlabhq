@@ -119,6 +119,7 @@ fragment WorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetDevelopment {
     type
+    willAutoCloseByMergeRequest
     closingMergeRequests {
       nodes {
         fromMrDescription

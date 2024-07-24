@@ -14609,6 +14609,29 @@ The edge type for [`PipelineExecutionPolicy`](#pipelineexecutionpolicy).
 | <a id="pipelineexecutionpolicyedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="pipelineexecutionpolicyedgenode"></a>`node` | [`PipelineExecutionPolicy`](#pipelineexecutionpolicy) | The item at the end of the edge. |
 
+#### `PipelineManualVariableConnection`
+
+The connection type for [`PipelineManualVariable`](#pipelinemanualvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinemanualvariableconnectionedges"></a>`edges` | [`[PipelineManualVariableEdge]`](#pipelinemanualvariableedge) | A list of edges. |
+| <a id="pipelinemanualvariableconnectionnodes"></a>`nodes` | [`[PipelineManualVariable]`](#pipelinemanualvariable) | A list of nodes. |
+| <a id="pipelinemanualvariableconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `PipelineManualVariableEdge`
+
+The edge type for [`PipelineManualVariable`](#pipelinemanualvariable).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinemanualvariableedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="pipelinemanualvariableedgenode"></a>`node` | [`PipelineManualVariable`](#pipelinemanualvariable) | The item at the end of the edge. |
+
 #### `PipelineScheduleConnection`
 
 The connection type for [`PipelineSchedule`](#pipelineschedule).
@@ -27604,7 +27627,7 @@ Returns [`UserMergeRequestInteraction`](#usermergerequestinteraction).
 | <a id="pipelineiid"></a>`iid` | [`String!`](#string) | Internal ID of the pipeline. |
 | <a id="pipelinejobartifacts"></a>`jobArtifacts` | [`[CiJobArtifact!]`](#cijobartifact) | Job artifacts of the pipeline. |
 | <a id="pipelinelatest"></a>`latest` | [`Boolean!`](#boolean) | If the pipeline is the latest one or not. |
-| <a id="pipelinemanualvariables"></a>`manualVariables` | [`CiManualVariableConnection`](#cimanualvariableconnection) | CI/CD variables added to a manual pipeline. (see [Connections](#connections)) |
+| <a id="pipelinemanualvariables"></a>`manualVariables` | [`PipelineManualVariableConnection`](#pipelinemanualvariableconnection) | CI/CD variables added to a manual pipeline. (see [Connections](#connections)) |
 | <a id="pipelinemergerequest"></a>`mergeRequest` | [`MergeRequest`](#mergerequest) | The MR which the Pipeline is attached to. |
 | <a id="pipelinemergerequesteventtype"></a>`mergeRequestEventType` | [`PipelineMergeRequestEventType`](#pipelinemergerequesteventtype) | Event type of the pipeline associated with a merge request. |
 | <a id="pipelinename"></a>`name` | [`String`](#string) | Name of the pipeline. |
@@ -27823,6 +27846,18 @@ Represents the pipeline execution policy.
 | <a id="pipelineexecutionpolicysource"></a>`source` | [`SecurityPolicySource!`](#securitypolicysource) | Source of the policy. Its fields depend on the source type. |
 | <a id="pipelineexecutionpolicyupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the policy YAML was last updated. |
 | <a id="pipelineexecutionpolicyyaml"></a>`yaml` | [`String!`](#string) | YAML definition of the policy. |
+
+### `PipelineManualVariable`
+
+CI/CD variables added to a manual pipeline.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="pipelinemanualvariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
+| <a id="pipelinemanualvariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
+| <a id="pipelinemanualvariablevalue"></a>`value` | [`String`](#string) | Value of the variable. |
 
 ### `PipelineMessage`
 

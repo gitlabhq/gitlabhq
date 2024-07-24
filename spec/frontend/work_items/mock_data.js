@@ -871,9 +871,13 @@ export const workItemDevelopmentNodes = [
   },
 ];
 
-export const workItemDevelopmentFragmentResponse = (nodes = workItemDevelopmentNodes) => {
+export const workItemDevelopmentFragmentResponse = (
+  nodes = workItemDevelopmentNodes,
+  willAutoCloseByMergeRequest = false,
+) => {
   return {
     type: 'DEVELOPMENT',
+    willAutoCloseByMergeRequest,
     closingMergeRequests: {
       nodes,
       __typename: 'WorkItemClosingMergeRequestConnection',

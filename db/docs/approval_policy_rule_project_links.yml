@@ -1,0 +1,12 @@
+---
+table_name: approval_policy_rule_project_links
+classes:
+- Security::ApprovalPolicyRuleProjectLink
+feature_categories:
+- security_policy_management
+description: Project/ApprovalPolicyRule join table.
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158441
+milestone: '17.3'
+gitlab_schema: gitlab_main_cell
+sharding_key:
+  project_id: projects

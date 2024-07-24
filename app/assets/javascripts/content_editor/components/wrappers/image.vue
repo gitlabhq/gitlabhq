@@ -25,10 +25,17 @@ export default {
       required: false,
       default: false,
     },
+    updateAttributes: {
+      type: Function,
+      required: true,
+      default: () => {},
+    },
   },
   data() {
     return {
       dragData: {},
+      width: this.node.attrs.width,
+      height: this.node.attrs.height,
     };
   },
   computed: {
@@ -51,8 +58,8 @@ export default {
         handle,
         startX: event.screenX,
         startY: event.screenY,
-        width: this.$refs.image.width,
-        height: this.$refs.image.height,
+        width: Number(this.width) || this.$refs.image.width,
+        height: Number(this.height) || this.$refs.image.height,
       };
     },
     onDrag(event) {
@@ -63,8 +70,8 @@ export default {
       const newWidth = handle.includes('w') ? width - deltaX : width + deltaX;
       const newHeight = (height / width) * newWidth;
 
-      this.$refs.image.setAttribute('width', newWidth);
-      this.$refs.image.setAttribute('height', newHeight);
+      this.width = Math.max(newWidth, 0);
+      this.height = Math.max(newHeight, 0);
     },
     onDragEnd() {
       const { handle } = this.dragData;
@@ -72,15 +79,12 @@ export default {
 
       this.dragData = {};
 
-      this.editor
-        .chain()
-        .focus()
-        .updateAttributes(this.node.type.name, {
-          width: this.$refs.image.width,
-          height: this.$refs.image.height,
-        })
-        .setNodeSelection(this.getPos())
-        .run();
+      const { width, height } = this.$refs.image;
+
+      this.width = width;
+      this.height = height;
+
+      this.updateAttributes({ width, height });
     },
   },
   resizeHandles: ['ne', 'nw', 'se', 'sw'],
@@ -108,8 +112,8 @@ export default {
       :src="node.attrs.src"
       :alt="node.attrs.alt"
       :title="node.attrs.title"
-      :width="node.attrs.width || 'auto'"
-      :height="node.attrs.height || 'auto'"
+      :width="width || 'auto'"
+      :height="height || 'auto'"
       :class="{ 'ProseMirror-selectednode': selected }"
     />
   </node-view-wrapper>

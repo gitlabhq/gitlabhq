@@ -16,6 +16,7 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
 import { OPERATORS_IS } from '~/vue_shared/components/filtered_search_bar/constants';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 
 jest.mock('~/lib/utils/url_utility', () => ({
   ...jest.requireActual('~/lib/utils/url_utility'),
@@ -101,6 +102,7 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
   });
 
   describe('when filtered search bar is submitted', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
     const searchTerm = 'foo bar';
 
     beforeEach(() => {
@@ -117,9 +119,23 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
         `?${FILTERED_SEARCH_TERM_KEY}=foo%20bar&language=5&sort=${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_ASC}&archived=only`,
       );
     });
+
+    it('tracks event', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'use_filter_bar_projects_explore',
+        {
+          label: JSON.stringify({ search: searchTerm, language: 'CSS' }),
+        },
+        undefined,
+      );
+    });
   });
 
   describe('when sort item is changed', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
     beforeEach(() => {
       createComponent();
 
@@ -131,9 +147,23 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
         `?archived=only&${FILTERED_SEARCH_TERM_KEY}=foo&sort=${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`,
       );
     });
+
+    it('tracks event', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'use_sort_projects_explore',
+        {
+          label: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`,
+        },
+        undefined,
+      );
+    });
   });
 
   describe('when sort direction is changed', () => {
+    const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
     beforeEach(() => {
       createComponent();
 
@@ -143,6 +173,18 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
     it('visits URL with correct query string', () => {
       expect(visitUrl).toHaveBeenCalledWith(
         `?archived=only&${FILTERED_SEARCH_TERM_KEY}=foo&sort=${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_DESC}`,
+      );
+    });
+
+    it('tracks event', () => {
+      const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      expect(trackEventSpy).toHaveBeenCalledWith(
+        'use_sort_projects_explore',
+        {
+          label: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_DESC}`,
+        },
+        undefined,
       );
     });
   });

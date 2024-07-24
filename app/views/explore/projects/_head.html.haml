@@ -7,5 +7,5 @@
   %h1.page-title.gl-font-size-h-display= page_title
   .page-title-controls
     - if current_user&.can_create_project?
-      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm) do
+      = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { event_tracking: 'click_new_project_projects_explore' } }) do
         = _("New project")

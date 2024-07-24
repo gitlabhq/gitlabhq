@@ -7,7 +7,7 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import ContainerProtectionRuleForm from '~/packages_and_registries/settings/project/components/container_protection_rule_form.vue';
 import ContainerProtectionRules from '~/packages_and_registries/settings/project/components/container_protection_rules.vue';
-import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import ContainerProtectionRuleQuery from '~/packages_and_registries/settings/project/graphql/queries/get_container_protection_rules.query.graphql';
 import deleteContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_container_protection_rule.mutation.graphql';
 import updateContainerProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_container_registry_protection_rule.mutation.graphql';
@@ -30,7 +30,7 @@ describe('Container protection rules project settings', () => {
 
   const $toast = { show: jest.fn() };
 
-  const findSettingsBlock = () => wrapper.findComponent(SettingsBlock);
+  const findSettingsBlock = () => wrapper.findComponent(SettingsSection);
   const findTable = () =>
     extendedWrapper(wrapper.findByRole('table', { name: /protected containers/i }));
   const findTableBody = () => extendedWrapper(findTable().findAllByRole('rowgroup').at(1));
@@ -46,7 +46,7 @@ describe('Container protection rules project settings', () => {
   const mountComponent = (mountFn = mountExtended, provide = defaultProvidedValues, config) => {
     wrapper = mountFn(ContainerProtectionRules, {
       stubs: {
-        SettingsBlock,
+        SettingsSection,
         GlModal: true,
       },
       mocks: {

@@ -19515,6 +19515,9 @@ msgstr ""
 msgid "DuoProTrial|Code refactorization"
 msgstr ""
 
+msgid "DuoProTrial|Congratulations, your free GitLab Duo Pro trial is activated and will expire on %{exp_date}. The new license might take a minute to show on the page. To give members access to new GitLab Duo Pro features, %{assign_link_start}assign them%{assign_link_end} to GitLab Duo Pro seats."
+msgstr ""
+
 msgid "DuoProTrial|Day %{daysUsed}/%{duration}"
 msgstr ""
 
@@ -19564,9 +19567,6 @@ msgid "DuoProTrial|We just need some additional information to activate your tri
 msgstr ""
 
 msgid "DuoProTrial|You do not have access to the GitLab Duo Pro trial"
-msgstr ""
-
-msgid "DuoProTrial|You have successfully created a trial subscription for GitLab Duo Pro. It will expire on %{exp_date}.%{new_line}To get started, enable the GitLab Duo Pro add-on for team members on this page by turning on the toggle for each team member. The subscription may take a minute to sync, so refresh the page if it's not visible yet."
 msgstr ""
 
 msgid "DuoProTrial|You no longer have access to GitLab Duo Pro features"
@@ -46538,9 +46538,6 @@ msgstr ""
 msgid "SSL verification"
 msgstr ""
 
-msgid "SVG could not be rendered correctly: "
-msgstr ""
-
 msgid "Sat"
 msgstr ""
 
@@ -60691,6 +60688,9 @@ msgstr ""
 msgid "WorkItem|Test case"
 msgstr ""
 
+msgid "WorkItem|The %{workItemType} was closed automatically when a branch was merged."
+msgstr ""
+
 msgid "WorkItem|The current key result"
 msgstr ""
 
@@ -60707,6 +60707,12 @@ msgid "WorkItem|This %{workItemType} is confidential and should only be visible 
 msgstr ""
 
 msgid "WorkItem|This %{workItemType} is currently blocked by the following items:"
+msgstr ""
+
+msgid "WorkItem|This %{workItemType} will be closed when any of the following is merged."
+msgstr ""
+
+msgid "WorkItem|This %{workItemType} will be closed when the following is merged."
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."

@@ -878,6 +878,10 @@ project:
 - security_policy_project_linked_namespaces
 - relation_import_trackers
 - saved_replies
+- security_policy_project_links
+- security_policies
+- approval_policy_rule_project_links
+- approval_policy_rules
 award_emoji:
 - awardable
 - user
@@ -1134,6 +1138,7 @@ approval_rules:
   - approval_project_rules_users
   - approval_project_rules_protected_branches
   - scan_result_policy_read
+  - approval_policy_rules
 approval_project_rules_users:
   - user
   - approval_project_rule

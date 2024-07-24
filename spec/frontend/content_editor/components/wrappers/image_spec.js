@@ -1,7 +1,7 @@
 import { NodeViewWrapper } from '@tiptap/vue-2';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import ImageWrapper from '~/content_editor/components/wrappers/image.vue';
-import { createTestEditor, mockChainedCommands } from '../../test_utils';
+import { createTestEditor } from '../../test_utils';
 import '~/content_editor/services/upload_helpers';
 
 jest.mock('~/content_editor/services/upload_helpers', () => ({
@@ -13,14 +13,17 @@ jest.mock('~/content_editor/services/upload_helpers', () => ({
 describe('content/components/wrappers/image_spec', () => {
   let wrapper;
   let tiptapEditor;
+  let updateAttributes;
 
   const createWrapper = (node = {}) => {
     tiptapEditor = createTestEditor();
+    updateAttributes = jest.fn();
     wrapper = shallowMountExtended(ImageWrapper, {
       propsData: {
         editor: tiptapEditor,
         node,
         getPos: jest.fn().mockReturnValue(12),
+        updateAttributes,
       },
     });
   };
@@ -117,19 +120,9 @@ describe('content/components/wrappers/image_spec', () => {
     });
 
     it('updates prosemirror doc state on mouse release with final size', () => {
-      const commands = mockChainedCommands(tiptapEditor, [
-        'focus',
-        'updateAttributes',
-        'setNodeSelection',
-        'run',
-      ]);
-
       document.dispatchEvent(new MouseEvent('mouseup'));
 
-      expect(commands.focus).toHaveBeenCalled();
-      expect(commands.updateAttributes).toHaveBeenCalledWith('image', tiptapNodeAttributes);
-      expect(commands.setNodeSelection).toHaveBeenCalledWith(12);
-      expect(commands.run).toHaveBeenCalled();
+      expect(updateAttributes).toHaveBeenCalledWith(tiptapNodeAttributes);
     });
   });
 });

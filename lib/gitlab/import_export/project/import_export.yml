@@ -1072,6 +1072,7 @@ excluded_attributes:
   epic_issue:
     - :epic_id
     - :issue_id
+    - :namespace_id
   system_note_metadata:
     - :description_version_id
     - :note_id

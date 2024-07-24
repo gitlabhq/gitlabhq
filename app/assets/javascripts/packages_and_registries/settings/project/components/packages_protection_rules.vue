@@ -16,7 +16,7 @@ import packagesProtectionRuleQuery from '~/packages_and_registries/settings/proj
 import { getPackageTypeLabel } from '~/packages_and_registries/package_registry/utils';
 import deletePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/delete_packages_protection_rule.mutation.graphql';
 import updatePackagesProtectionRuleMutation from '~/packages_and_registries/settings/project/graphql/mutations/update_packages_protection_rule.mutation.graphql';
-import SettingsBlock from '~/packages_and_registries/shared/components/settings_block.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import PackagesProtectionRuleForm from '~/packages_and_registries/settings/project/components/packages_protection_rule_form.vue';
 import { s__, __ } from '~/locale';
 
@@ -27,7 +27,7 @@ const I18N_MINIMUM_ACCESS_LEVEL_FOR_PUSH = s__('PackageRegistry|Minimum access l
 export default {
   components: {
     CrudComponent,
-    SettingsBlock,
+    SettingsSection,
     GlButton,
     GlAlert,
     GlTable,
@@ -134,9 +134,11 @@ export default {
   methods: {
     showProtectionRuleForm() {
       this.protectionRuleFormVisibility = true;
+      this.$refs.packagesCrud.showForm();
     },
     hideProtectionRuleForm() {
       this.protectionRuleFormVisibility = false;
+      this.$refs.packagesCrud.hideForm();
     },
     refetchProtectionRules() {
       this.$apollo.queries.packageProtectionRulesQueryPayload.refetch();
@@ -259,15 +261,12 @@ export default {
 </script>
 
 <template>
-  <settings-block>
-    <template #title>{{ $options.i18n.settingBlockTitle }}</template>
-
-    <template #description>
-      {{ $options.i18n.settingBlockDescription }}
-    </template>
-
+  <settings-section
+    :heading="$options.i18n.settingBlockTitle"
+    :description="$options.i18n.settingBlockDescription"
+  >
     <template #default>
-      <crud-component :title="$options.i18n.settingBlockTitle">
+      <crud-component ref="packagesCrud" :title="$options.i18n.settingBlockTitle">
         <template #actions>
           <gl-button
             size="small"
@@ -278,13 +277,14 @@ export default {
           </gl-button>
         </template>
 
-        <template #default>
+        <template v-if="protectionRuleFormVisibility" #form>
           <packages-protection-rule-form
-            v-if="protectionRuleFormVisibility"
             @cancel="hideProtectionRuleForm"
             @submit="refetchProtectionRules"
           />
+        </template>
 
+        <template #default>
           <gl-alert
             v-if="alertErrorMessage"
             class="gl-mb-5"
@@ -331,15 +331,14 @@ export default {
               />
             </template>
           </gl-table>
+        </template>
 
-          <div class="gl-display-flex gl-justify-content-center">
-            <gl-keyset-pagination
-              v-bind="packageProtectionRulesQueryPageInfo"
-              class="gl-mb-3"
-              @prev="onPrevPage"
-              @next="onNextPage"
-            />
-          </div>
+        <template #pagination>
+          <gl-keyset-pagination
+            v-bind="packageProtectionRulesQueryPageInfo"
+            @prev="onPrevPage"
+            @next="onNextPage"
+          />
         </template>
       </crud-component>
 
@@ -364,5 +363,5 @@ export default {
         <p>{{ $options.i18n.protectionRuleDeletionConfirmModal.descriptionConsequence }}</p>
       </gl-modal>
     </template>
-  </settings-block>
+  </settings-section>
 </template>

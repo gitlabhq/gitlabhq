@@ -1,0 +1,95 @@
+# frozen_string_literal: true
+
+module Ci
+  module Catalog
+    module Resources
+      module Versions
+        # This service is called from the Versions::CreateService and
+        # responsible for building components for a release version.
+        class BuildComponentsService
+          MAX_COMPONENTS = Ci::Catalog::ComponentsProject::COMPONENTS_LIMIT
+
+          def initialize(release, version)
+            @release = release
+            @version = version
+
+            @project = release.project
+            @components_project = Ci::Catalog::ComponentsProject.new(project)
+            @errors = []
+          end
+
+          def execute
+            components = build_components_from_fetched_data
+
+            if errors.empty?
+              ServiceResponse.success(payload: components)
+            else
+              ServiceResponse.error(message: errors.flatten.first(10).join(', '))
+            end
+          end
+
+          private
+
+          attr_reader :release, :version, :project, :components_project, :errors
+
+          def build_components_from_fetched_data
+            component_paths = components_project.fetch_component_paths(release.sha, limit: MAX_COMPONENTS + 1)
+
+            check_number_of_components(component_paths.size)
+            return if errors.present?
+
+            build_components_from_paths(component_paths)
+          end
+
+          def build_components_from_paths(component_paths)
+            paths_with_oids = component_paths.map { |path| [release.sha, path] }
+            blobs = project.repository.blobs_at(paths_with_oids)
+
+            blobs.map do |blob|
+              metadata = extract_metadata(blob)
+              build_catalog_resource_component(metadata)
+            end
+          rescue ::Gitlab::Config::Loader::FormatError => e
+            error(e)
+          end
+
+          def extract_metadata(blob)
+            component_name = components_project.extract_component_name(blob.path)
+
+            {
+              name: component_name,
+              spec: components_project.extract_spec(blob.data)
+            }
+          end
+
+          def check_number_of_components(size)
+            return if size <= MAX_COMPONENTS
+
+            error("Release cannot contain more than #{MAX_COMPONENTS} components")
+          end
+
+          def build_catalog_resource_component(metadata)
+            return if errors.present?
+
+            component = Ci::Catalog::Resources::Component.new(
+              name: metadata[:name],
+              project: version.project,
+              spec: metadata[:spec],
+              version: version,
+              catalog_resource: version.catalog_resource,
+              created_at: Time.current
+            )
+
+            return component if component.valid?
+
+            error("Build component error: #{component.errors.full_messages.join(', ')}")
+          end
+
+          def error(message)
+            errors << message
+          end
+        end
+      end
+    end
+  end
+end
