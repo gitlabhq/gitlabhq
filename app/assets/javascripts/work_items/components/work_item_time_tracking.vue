@@ -211,6 +211,7 @@ export default {
 
     <gl-modal
       modal-id="time-tracking-report"
+      data-testid="time-tracking-report-modal"
       hide-footer
       size="lg"
       :title="__('Time tracking report')"

@@ -157,7 +157,7 @@ describe('Workload table component', () => {
       });
 
       it('renders correct props for each dropdown', () => {
-        expect(findAllActionsDropdowns().at(0).attributes('title')).toEqual('Actions');
+        expect(findAllActionsDropdowns().at(0).attributes('title')).toBe('Actions');
         expect(findAllActionsDropdowns().at(0).props('items')).toMatchObject([
           {
             text: 'Delete Pod',

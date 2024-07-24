@@ -374,9 +374,7 @@ describe('~/frontend/environments/graphql/resolvers', () => {
   });
 
   describe('deleteKubernetesPod', () => {
-    const mockPodsDeleteFn = jest.fn().mockImplementation(() => {
-      return Promise.resolve({ errors: [] });
-    });
+    const mockPodsDeleteFn = jest.fn().mockResolvedValue({ errors: [] });
     const podToDelete = 'my-pod';
 
     it('should request delete pod API from the cluster_client library', async () => {

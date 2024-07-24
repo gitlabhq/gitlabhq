@@ -38,8 +38,8 @@ const encodedJavaScriptUrls = [
   '\\u006A\\u0061\\u0076\\u0061\\u0073\\u0063\\u0072\\u0069\\u0070\\u0074\\u003A\\u0061\\u006C\\u0065\\u0072\\u0074\\u0028\\u0027\\u0058\\u0053\\u0053\\u0027\\u0029',
 ];
 
-export const safeUrls = [...absoluteUrls, ...rootRelativeUrls];
-export const unsafeUrls = [
+export const validURLs = [...absoluteUrls, ...rootRelativeUrls];
+export const invalidURLs = [
   ...relativeUrls,
   ...urlsWithoutHost,
   ...nonHttpUrls,

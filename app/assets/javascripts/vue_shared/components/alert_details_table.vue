@@ -6,7 +6,7 @@ import {
   convertToSentenceCase,
   splitCamelCase,
 } from '~/lib/utils/text_utility';
-import { isSafeURL } from '~/lib/utils/url_utility';
+import { isValidURL } from '~/lib/utils/url_utility';
 import { s__ } from '~/locale';
 import { PAGE_CONFIG } from '~/vue_shared/alert_details/constants';
 
@@ -97,7 +97,7 @@ export default {
       return allowedFields.includes(fieldName);
     },
     isValidLink(value) {
-      return typeof value === 'string' && isSafeURL(value);
+      return typeof value === 'string' && isValidURL(value);
     },
   },
 };

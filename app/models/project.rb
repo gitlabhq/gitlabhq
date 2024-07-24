@@ -63,6 +63,7 @@ class Project < ApplicationRecord
   BoardLimitExceeded = Class.new(StandardError)
   ExportLimitExceeded = Class.new(StandardError)
 
+  EPOCH_CACHE_EXPIRATION = 30.days
   STATISTICS_ATTRIBUTE = 'repositories_count'
   UNKNOWN_IMPORT_URL = 'http://unknown.git'
   # Hashed Storage versions handle rolling out new storage to project and dependents models:
@@ -3371,7 +3372,35 @@ class Project < ApplicationRecord
     false
   end
 
+  def lfs_file_locks_changed_epoch
+    get_epoch_from(lfs_file_locks_changed_epoch_cache_key)
+  end
+
+  def refresh_lfs_file_locks_changed_epoch
+    refresh_epoch_cache(lfs_file_locks_changed_epoch_cache_key)
+  end
+
   private
+
+  def with_redis(&block)
+    Gitlab::Redis::Cache.with(&block)
+  end
+
+  def lfs_file_locks_changed_epoch_cache_key
+    "project:#{id}:lfs_file_locks_changed_epoch"
+  end
+
+  def get_epoch_from(cache_key)
+    with_redis { |redis| redis.get(cache_key) }&.to_i || refresh_epoch_cache(cache_key)
+  end
+
+  def refresh_epoch_cache(cache_key)
+    # %s = seconds since the Unix Epoch
+    # %L = milliseconds of the second
+    Time.current.strftime('%s%L').to_i.tap do |epoch|
+      with_redis { |redis| redis.set(cache_key, epoch, ex: EPOCH_CACHE_EXPIRATION) }
+    end
+  end
 
   # overridden in EE
   def project_group_links_with_preload

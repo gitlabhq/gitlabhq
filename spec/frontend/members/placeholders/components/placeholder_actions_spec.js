@@ -8,6 +8,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import PlaceholderActions from '~/members/placeholders/components/placeholder_actions.vue';
 import searchUsersQuery from '~/graphql_shared/queries/users_search_all_paginated.query.graphql';
+import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import importSourceUserReassignMutation from '~/members/placeholders/graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '~/members/placeholders/graphql/mutations/keep_as_placeholder.mutation.graphql';
 import importSourceUserResendNotificationMutation from '~/members/placeholders/graphql/mutations/resend_notification.mutation.graphql';
@@ -15,6 +16,7 @@ import importSourceUserCancelReassignmentMutation from '~/members/placeholders/g
 
 import {
   mockSourceUsers,
+  mockSourceUsersQueryResponse,
   mockReassignMutationResponse,
   mockKeepAsPlaceholderMutationResponse,
   mockResendNotificationMutationResponse,
@@ -36,6 +38,7 @@ describe('PlaceholderActions', () => {
     sourceUser: mockSourceUsers[0],
   };
   const usersQueryHandler = jest.fn().mockResolvedValue(mockUsersQueryResponse);
+  const sourceUsersQueryHandler = jest.fn().mockResolvedValue(mockSourceUsersQueryResponse());
   const reassignMutationHandler = jest.fn().mockResolvedValue(mockReassignMutationResponse);
   const keepAsPlaceholderMutationHandler = jest
     .fn()
@@ -53,11 +56,22 @@ describe('PlaceholderActions', () => {
   const createComponent = ({ seachUsersQueryHandler = usersQueryHandler, props = {} } = {}) => {
     mockApollo = createMockApollo([
       [searchUsersQuery, seachUsersQueryHandler],
+      [importSourceUsersQuery, sourceUsersQueryHandler],
       [importSourceUserReassignMutation, reassignMutationHandler],
       [importSourceUserKeepAsPlaceholderMutation, keepAsPlaceholderMutationHandler],
       [importSourceUserResendNotificationMutation, resendNotificationMutationHandler],
       [importSourceUserCancelReassignmentMutation, cancelReassignmentMutationHandler],
     ]);
+    // refetchQueries will only refetch active queries, so simply registering a query handler is not enough.
+    // We need to call `subscribe()` to make the query observable and avoid "Unknown query" errors.
+    // This simulates what the actual code in VueApollo is doing when adding a smart query.
+    // Docs: https://www.apollographql.com/docs/react/api/core/ApolloClient/#watchquery
+    mockApollo.clients.defaultClient
+      .watchQuery({
+        query: importSourceUsersQuery,
+        variables: { fullPath: 'test' },
+      })
+      .subscribe();
 
     wrapper = shallowMountExtended(PlaceholderActions, {
       apolloProvider: mockApollo,
@@ -158,6 +172,15 @@ describe('PlaceholderActions', () => {
             id: mockSourceUsers[0].id,
           });
         });
+
+        it('refetches sourceUsersQuery', () => {
+          expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(2);
+        });
+
+        it('emits "confirm" event', async () => {
+          await waitForPromises();
+          expect(wrapper.emitted('confirm')[0]).toEqual([]);
+        });
       });
     });
 
@@ -193,6 +216,15 @@ describe('PlaceholderActions', () => {
             id: mockSourceUsers[0].id,
             userId: mockUser1.id,
           });
+        });
+
+        it('does not refetch sourceUsersQuery', () => {
+          expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(1);
+        });
+
+        it('does not emit "confirm" event', async () => {
+          await waitForPromises();
+          expect(wrapper.emitted('confirm')).toBeUndefined();
         });
       });
     });

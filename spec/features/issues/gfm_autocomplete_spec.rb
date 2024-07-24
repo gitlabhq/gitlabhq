@@ -353,7 +353,7 @@ RSpec.describe 'GFM autocomplete', :js, feature_category: :team_planning do
       end
     end
 
-    context 'issues' do
+    context 'issues', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/471790' do
       let(:object) { issue }
       let(:expected_body) { object.to_reference }
 

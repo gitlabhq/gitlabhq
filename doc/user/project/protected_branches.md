@@ -207,6 +207,12 @@ check in directly to a protected branch:
 1. From the **Allowed to push and merge** list, select **No one**.
 1. Select **Protect**.
 
+Alternatively, you can [create](repository/branches/index.md#create-a-branch-rule) or [edit](repository/branches/index.md#edit-a-branch-rule) a branch rule. Then:
+
+1. Select **Edit** in the **Allowed to merge** section.
+1. Select **Developers and Maintainers**.
+1. Select **Save changes**.
+
 ## Allow everyone to push directly to a protected branch
 
 You can allow everyone with write access to push to the protected branch.
@@ -218,6 +224,12 @@ You can allow everyone with write access to push to the protected branch.
 1. From the **Branch** dropdown list, select the branch you want to protect.
 1. From the **Allowed to push and merge** list, select **Developers + Maintainers**.
 1. Select **Protect**.
+
+Alternatively, you can [create](repository/branches/index.md#create-a-branch-rule) or [edit](repository/branches/index.md#edit-a-branch-rule) a branch rule. Then:
+
+1. Select **Edit** in the **Allowed to push and merge** section.
+1. Select **Developers and Maintainers**.
+1. Select **Save changes**.
 
 ## Allow deploy keys to push to a protected branch
 
@@ -271,6 +283,10 @@ To enable force pushes on branches that are already protected:
 1. Select **Settings > Repository**.
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
+1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
+
+Alternatively, you can [create](repository/branches/index.md#create-a-branch-rule) or [edit](repository/branches/index.md#edit-a-branch-rule) a branch rule. Then:
+
 1. In the list of protected branches, next to the branch, turn on the **Allowed to force push** toggle.
 
 Members who can push to this branch can now also force push.
@@ -327,6 +343,10 @@ To enable Code Owner's approval on branches that are already protected:
 1. Expand **Protected branches**.
 1. Select **Add protected branch**.
 1. In the list of protected branches, next to the branch, turn on the **Code owner approval** toggle.
+
+Alternatively, you can [create](repository/branches/index.md#create-a-branch-rule) or [edit](repository/branches/index.md#edit-a-branch-rule) a branch rule.
+Then, in the list of protected branches, next to the branch,
+turn on the **Code owner approval** toggle.
 
 When enabled, all merge requests for these branches require approval
 by a Code Owner per matched rule before they can be merged.

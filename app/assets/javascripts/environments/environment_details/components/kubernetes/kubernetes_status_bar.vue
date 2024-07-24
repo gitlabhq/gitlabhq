@@ -227,7 +227,6 @@ export default {
       <template v-else>
         <gl-badge
           :id="fluxBadgeId"
-          ref="flux_status_badge"
           :icon="syncStatusBadge.icon"
           :variant="syncStatusBadge.variant"
           data-testid="sync-badge"

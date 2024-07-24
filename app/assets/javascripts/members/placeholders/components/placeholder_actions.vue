@@ -12,6 +12,7 @@ import {
   PLACEHOLDER_STATUS_AWAITING_APPROVAL,
   PLACEHOLDER_STATUS_REASSIGNING,
 } from '~/import_entities/import_groups/constants';
+import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import importSourceUserReassignMutation from '../graphql/mutations/reassign.mutation.graphql';
 import importSourceUserKeepAsPlaceholderMutation from '../graphql/mutations/keep_as_placeholder.mutation.graphql';
 import importSourceUseResendNotificationMutation from '../graphql/mutations/resend_notification.mutation.graphql';
@@ -241,21 +242,26 @@ export default {
     onConfirm() {
       this.isValidated = true;
       if (!this.userSelectInvalid) {
+        const hasSelectedUser = Boolean(this.selectedUser.id);
         this.isConfirmLoading = true;
         this.$apollo
           .mutate({
-            mutation: this.selectedUser.id
+            mutation: hasSelectedUser
               ? importSourceUserReassignMutation
               : importSourceUserKeepAsPlaceholderMutation,
             variables: {
               id: this.sourceUser.id,
-              ...(this.selectedUser.id ? { userId: this.selectedUser.id } : {}),
+              ...(hasSelectedUser ? { userId: this.selectedUser.id } : {}),
             },
+            // importSourceUsersQuery used in app.vue
+            refetchQueries: [hasSelectedUser ? {} : importSourceUsersQuery],
           })
           .then(({ data }) => {
             const { errors } = getFirstPropertyValue(data);
             if (errors?.length) {
               createAlert({ message: errors.join() });
+            } else if (!hasSelectedUser) {
+              this.$emit('confirm');
             }
           })
           .catch(() => {

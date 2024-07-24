@@ -377,6 +377,16 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
 
         expect(findDeletePodModal().props('pod')).toEqual(podToDelete);
       });
+
+      it('provides correct pod when emitted from the details drawer', async () => {
+        const podToDelete = mockPodsTableItems[1];
+        findKubernetesTabs().vm.$emit('show-resource-details', mockPodsTableItems[1]);
+        await nextTick();
+        findWorkloadDetails().vm.$emit('delete-pod', podToDelete);
+        await nextTick();
+
+        expect(findDeletePodModal().props('pod')).toEqual(podToDelete);
+      });
     });
 
     describe('on child component error', () => {

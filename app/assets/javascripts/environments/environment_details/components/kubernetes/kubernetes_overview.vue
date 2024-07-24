@@ -106,6 +106,7 @@ export default {
       fluxApiError: '',
       selectedItem: {},
       showDetailsDrawer: false,
+      focusedElement: null,
       podToDelete: {},
     };
   },
@@ -173,6 +174,7 @@ export default {
     openDetailsDrawer(item) {
       this.selectedItem = item;
       this.showDetailsDrawer = true;
+      this.focusedElement = document.activeElement;
       this.$nextTick(() => {
         this.$refs.drawer?.$el?.querySelector('button')?.focus();
       });
@@ -181,7 +183,7 @@ export default {
       this.showDetailsDrawer = false;
       this.selectedItem = {};
       this.$nextTick(() => {
-        this.$refs.status_bar?.$refs?.flux_status_badge?.$el?.focus();
+        this.focusedElement?.focus();
       });
     },
     onDeletePod(pod) {
@@ -261,7 +263,7 @@ export default {
         </h2>
       </template>
       <template #default>
-        <workload-details v-if="hasSelectedItem" :item="selectedItem" />
+        <workload-details v-if="hasSelectedItem" :item="selectedItem" @delete-pod="onDeletePod" />
       </template>
     </gl-drawer>
   </div>

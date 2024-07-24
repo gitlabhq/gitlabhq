@@ -15,6 +15,9 @@ export const validateQueryString = (queryStringObj) => {
         const runnerTypesValueValid = jobRunnerTypeValues.includes(runnerTypesValue);
         return runnerTypesValueValid ? { ...acc, runnerTypes: runnerTypesValue } : acc;
       }
+      case 'name': {
+        return { ...acc, name: queryStringValue };
+      }
       default:
         return acc;
     }

@@ -2,7 +2,7 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import * as urlUtils from '~/lib/utils/url_utility';
 import { setGlobalAlerts } from '~/lib/utils/global_alerts';
-import { safeUrls, unsafeUrls } from './mock_data';
+import { validURLs, invalidURLs } from './mock_data';
 
 jest.mock('~/lib/utils/global_alerts', () => ({
   getGlobalAlerts: jest.fn().mockImplementation(() => [
@@ -781,24 +781,24 @@ describe('URL utility', () => {
     );
   });
 
-  describe('isSafeUrl', () => {
+  describe('isValidURL', () => {
     describe('with URL constructor support', () => {
-      it.each(safeUrls)('returns true for %s', (url) => {
-        expect(urlUtils.isSafeURL(url)).toBe(true);
+      it.each(validURLs)('returns true for %s', (url) => {
+        expect(urlUtils.isValidURL(url)).toBe(true);
       });
 
-      it.each(unsafeUrls)('returns false for %s', (url) => {
-        expect(urlUtils.isSafeURL(url)).toBe(false);
+      it.each(invalidURLs)('returns false for %s', (url) => {
+        expect(urlUtils.isValidURL(url)).toBe(false);
       });
     });
   });
 
   describe('sanitizeUrl', () => {
-    it.each(safeUrls)('returns the url for %s', (url) => {
+    it.each(validURLs)('returns the url for %s', (url) => {
       expect(urlUtils.sanitizeUrl(url)).toBe(url);
     });
 
-    it.each(unsafeUrls)('returns `about:blank` for %s', (url) => {
+    it.each(invalidURLs)('returns `about:blank` for %s', (url) => {
       expect(urlUtils.sanitizeUrl(url)).toBe('about:blank');
     });
   });

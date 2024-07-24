@@ -280,7 +280,11 @@ export default {
           >
         </div>
       </div>
-      <node-view-content ref="nodeViewContent" as="code" class="gl-relative gl-z-1" />
+      <node-view-content
+        ref="nodeViewContent"
+        as="code"
+        class="gl-relative gl-z-1 !gl-break-words"
+      />
     </node-view-wrapper>
   </editor-state-observer>
 </template>

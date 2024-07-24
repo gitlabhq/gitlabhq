@@ -98,6 +98,10 @@ export default {
 
       return {};
     },
+
+    onConfirm(item) {
+      this.$emit('confirm', item);
+    },
   },
 };
 </script>
@@ -142,7 +146,7 @@ export default {
           :label="reassginedUser(item).name"
           :sub-label="`@${reassginedUser(item).username}`"
         />
-        <placeholder-actions v-else :source-user="item" />
+        <placeholder-actions v-else :source-user="item" @confirm="onConfirm(item)" />
       </template>
     </gl-table>
 

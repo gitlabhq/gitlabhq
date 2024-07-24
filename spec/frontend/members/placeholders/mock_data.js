@@ -186,3 +186,9 @@ export const mockUsersWithPaginationQueryResponse = {
     },
   },
 };
+
+export const pagination = {
+  awaitingReassignmentItems: 5,
+  reassignedItems: 2,
+  totalItems: 7,
+};

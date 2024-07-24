@@ -28,7 +28,7 @@ describe('Jobs filtered search', () => {
         ...props,
       },
       provide: {
-        glFeatures: { adminJobsFilterRunnerType: true },
+        glFeatures: { adminJobsFilterRunnerType: true, populateAndUseBuildNamesTable: true },
         ...provideOptions,
       },
     });
@@ -38,6 +38,19 @@ describe('Jobs filtered search', () => {
     createComponent();
 
     expect(findFilteredSearch().exists()).toBe(true);
+  });
+
+  it('displays filtered search placeholder', () => {
+    createComponent();
+
+    expect(findFilteredSearch().props('placeholder')).toBe('Search or filter jobs...');
+  });
+
+  it('displays filtered search text label', () => {
+    createComponent();
+
+    expect(findFilteredSearch().props('searchTextOptionLabel')).toBe('Search for this text');
+    expect(findFilteredSearch().props('termsAsTokens')).toBe(true);
   });
 
   it('displays status token', () => {
@@ -82,7 +95,11 @@ describe('Jobs filtered search', () => {
       const tokenRunnerTypesValue = 'INSTANCE_VALUE';
 
       createComponent({
-        queryString: { statuses: tokenStatusesValue, runnerTypes: tokenRunnerTypesValue },
+        queryString: {
+          statuses: tokenStatusesValue,
+          runnerTypes: tokenRunnerTypesValue,
+          name: 'rspec',
+        },
       });
 
       expect(findFilteredSearch().props('value')).toEqual([
@@ -90,6 +107,12 @@ describe('Jobs filtered search', () => {
         {
           type: TOKEN_TYPE_JOBS_RUNNER_TYPE,
           value: { data: tokenRunnerTypesValue, operator: '=' },
+        },
+        {
+          type: 'filtered-search-term',
+          value: {
+            data: 'rspec',
+          },
         },
       ]);
     });
@@ -118,6 +141,39 @@ describe('Jobs filtered search', () => {
           { type: TOKEN_TYPE_STATUS, value: { data: tokenStatusesValue, operator: '=' } },
         ]);
       });
+    });
+  });
+
+  describe('when feature flag `populateAndUseBuildNamesTable` is disabled', () => {
+    const provideOptions = { glFeatures: { populateAndUseBuildNamesTable: false } };
+
+    describe('with query string passed', () => {
+      it('filtered search returns only data shape for search token `status`', () => {
+        const tokenStatusesValue = 'SUCCESS';
+        const tokenRunnerTypesValue = 'INSTANCE_VALUE';
+
+        createComponent(
+          {
+            queryString: {
+              statuses: tokenStatusesValue,
+              runnerTypes: tokenRunnerTypesValue,
+              name: 'rspec',
+            },
+          },
+          provideOptions,
+        );
+
+        expect(findFilteredSearch().props('value')).toEqual([
+          { type: TOKEN_TYPE_STATUS, value: { data: tokenStatusesValue, operator: '=' } },
+        ]);
+      });
+    });
+
+    it('displays legacy filtered search attributes', () => {
+      createComponent({}, provideOptions);
+
+      expect(findFilteredSearch().props('placeholder')).toBe('Filter jobs');
+      expect(findFilteredSearch().props('termsAsTokens')).toBe(false);
     });
   });
 });

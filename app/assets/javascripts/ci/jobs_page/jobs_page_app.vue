@@ -6,6 +6,7 @@ import { setUrlParams, updateHistory, queryToObject } from '~/lib/utils/url_util
 import JobsSkeletonLoader from '~/ci/admin/jobs_table/components/jobs_skeleton_loader.vue';
 import JobsFilteredSearch from '~/ci/common/private/jobs_filtered_search/app.vue';
 import { validateQueryString } from '~/ci/common/private/jobs_filtered_search/utils';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import GetJobs from './graphql/queries/get_jobs.query.graphql';
 import GetJobsCount from './graphql/queries/get_jobs_count.query.graphql';
 import JobsTable from './components/jobs_table.vue';
@@ -31,6 +32,7 @@ export default {
     GlLoadingIcon,
     JobsSkeletonLoader,
   },
+  mixins: [glFeatureFlagsMixin()],
   inject: {
     fullPath: {
       default: '',
@@ -83,6 +85,7 @@ export default {
       filterSearchTriggered: false,
       jobsCount: null,
       count: 0,
+      requestData: {},
     };
   },
   computed: {
@@ -127,11 +130,18 @@ export default {
     },
   },
   methods: {
-    updateHistoryAndFetchCount(status = null) {
-      this.$apollo.queries.jobsCount.refetch({ statuses: status });
+    resetRequestData() {
+      if (this.glFeatures.populateAndUseBuildNamesTable) {
+        this.requestData = { statuses: null, name: null };
+      } else {
+        this.requestData = { statuses: null };
+      }
+    },
+    updateHistoryAndFetchCount() {
+      this.$apollo.queries.jobsCount.refetch(this.requestData);
 
       updateHistory({
-        url: setUrlParams({ statuses: status }, window.location.href, true),
+        url: setUrlParams(this.requestData, window.location.href, true),
       });
     },
     fetchJobsByStatus(scope) {
@@ -141,6 +151,8 @@ export default {
 
       this.scope = scope;
 
+      this.resetRequestData();
+
       if (!this.scope) this.updateHistoryAndFetchCount();
 
       this.$apollo.queries.jobs.refetch({ statuses: scope });
@@ -149,33 +161,31 @@ export default {
       this.infiniteScrollingTriggered = false;
       this.filterSearchTriggered = true;
 
-      // all filters have been cleared reset query param
-      // and refetch jobs/count with defaults
-      if (!filters.length) {
-        this.updateHistoryAndFetchCount();
-        this.$apollo.queries.jobs.refetch({ statuses: null });
-
-        return;
-      }
-
-      // Eventually there will be more tokens available
-      // this code is written to scale for those tokens
       filters.forEach((filter) => {
-        // Raw text input in filtered search does not have a type
-        // when a user enters raw text we alert them that it is
-        // not supported and we do not make an additional API call
         if (!filter.type) {
-          createAlert({
-            message: RAW_TEXT_WARNING,
-            variant: 'warning',
-          });
+          if (this.glFeatures.populateAndUseBuildNamesTable) {
+            this.requestData.name = filter;
+          } else {
+            createAlert({
+              message: RAW_TEXT_WARNING,
+              variant: 'warning',
+            });
+          }
         }
 
         if (filter.type === 'status') {
-          this.updateHistoryAndFetchCount(filter.value.data);
-          this.$apollo.queries.jobs.refetch({ statuses: filter.value.data });
+          this.requestData.statuses = filter.value.data;
         }
       });
+
+      // all filters have been cleared reset query params
+      // and refetch jobs/count with defaults
+      if (!filters.length) {
+        this.resetRequestData();
+      }
+
+      this.$apollo.queries.jobs.refetch(this.requestData);
+      this.updateHistoryAndFetchCount();
     },
     fetchMoreJobs() {
       if (!this.loading) {

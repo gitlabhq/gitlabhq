@@ -9559,4 +9559,49 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it { expect(project.merge_trains_enabled?).to eq(false) }
   end
+
+  describe '#lfs_file_locks_changed_epoch', :clean_gitlab_redis_cache do
+    let(:project) { build(:project, id: 1) }
+    let(:epoch) { Time.current.strftime('%s%L').to_i }
+
+    it 'returns a cached epoch value in milliseconds', :aggregate_failures, :freeze_time do
+      cold_cache_control = RedisCommands::Recorder.new do
+        expect(project.lfs_file_locks_changed_epoch).to eq epoch
+      end
+
+      expect(cold_cache_control.by_command('get').count).to eq 1
+      expect(cold_cache_control.by_command('set').count).to eq 1
+
+      warm_cache_control = RedisCommands::Recorder.new do
+        expect(project.lfs_file_locks_changed_epoch).to eq epoch
+      end
+
+      expect(warm_cache_control.by_command('get').count).to eq 1
+      expect(warm_cache_control.by_command('set').count).to eq 0
+    end
+  end
+
+  describe '#refresh_lfs_file_locks_changed_epoch' do
+    let(:project) { build(:project, id: 1) }
+    let(:original_time) { Time.current }
+    let(:refresh_time) { original_time + 1.second }
+    let(:original_epoch) { original_time.strftime('%s%L').to_i }
+    let(:refreshed_epoch) { original_epoch + 1.second.in_milliseconds }
+
+    it 'refreshes the cache and returns the new epoch value', :aggregate_failures, :freeze_time do
+      expect(project.lfs_file_locks_changed_epoch).to eq(original_epoch)
+
+      travel_to(refresh_time)
+
+      expect(project.lfs_file_locks_changed_epoch).to eq(original_epoch)
+
+      control = RedisCommands::Recorder.new do
+        expect(project.refresh_lfs_file_locks_changed_epoch).to eq(refreshed_epoch)
+      end
+      expect(control.by_command('get').count).to eq 0
+      expect(control.by_command('set').count).to eq 1
+
+      expect(project.lfs_file_locks_changed_epoch).to eq(refreshed_epoch)
+    end
+  end
 end

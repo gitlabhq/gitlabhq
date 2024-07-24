@@ -37,41 +37,6 @@ Provide feedback on this feature in [issue 443236](https://gitlab.com/gitlab-org
 
 **Data usage**: The diff of changes between the source branch's head and the target branch is sent to the large language model.
 
-## Generate a description from a template
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Beta
-
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10591) in GitLab 16.3 as an [experiment](../../../policy/experiment-beta-support.md#experiment).
-> - [Changed](https://gitlab.com/gitlab-org/gitlab/-/issues/429882) to beta in GitLab 16.10.
-
-Many projects include [templates](../description_templates.md#create-a-merge-request-template)
-that you populate when you create a merge request. These templates help populate the description
-of the merge request. They can help the team conform to standards, and help reviewers
-and others understand the purpose and changes proposed in the merge request.
-
-When you create a merge request, GitLab Duo Merge request template population
-can generate a description for your merge request, based on the contents of the template.
-GitLab Duo fills in the template and replaces the contents of the description.
-
-To use GitLab Duo to generate a merge request description:
-
-1. [Create a new merge request](creating_merge_requests.md) and go to the **Description** field.
-1. Select **GitLab Duo** (**{tanuki-ai}**).
-1. Select **Fill in merge request template**.
-
-The updated description is applied. You can edit or revise the description before you finish creating your merge request.
-
-Provide feedback on this experimental feature in [issue 416537](https://gitlab.com/gitlab-org/gitlab/-/issues/416537).
-
-**Data usage**: When you use this feature, the following data is sent to the large language model referenced above:
-
-- Title of the merge request
-- Contents of the description
-- Diff of changes between the source branch's head and the target branch
-
 ## Summarize a code review
 
 DETAILS:

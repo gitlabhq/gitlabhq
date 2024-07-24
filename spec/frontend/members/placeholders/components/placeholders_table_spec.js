@@ -206,4 +206,18 @@ describe('PlaceholdersTable', () => {
       expect(wrapper.emitted('next')[0]).toEqual([]);
     });
   });
+
+  describe('actions events', () => {
+    beforeEach(() => {
+      createComponent({ mountFn: mount });
+    });
+
+    it('emits "confirm" event with item', () => {
+      const actions = findTableRows().at(2).findComponent(PlaceholderActions);
+
+      actions.vm.$emit('confirm');
+
+      expect(wrapper.emitted('confirm')[0]).toEqual([mockSourceUsers[2]]);
+    });
+  });
 });

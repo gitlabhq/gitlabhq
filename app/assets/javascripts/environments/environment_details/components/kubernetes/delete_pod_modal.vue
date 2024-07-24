@@ -76,7 +76,7 @@ export default {
       'Environments|Are you sure you want to delete %{podName}? This action cannot be undone.',
     ),
     buttonPrimary: s__('Environments|Delete pod'),
-    buttonCancel: s__('Environments|Cancel'),
+    buttonCancel: __('Cancel'),
     success: s__('Environments|Pod deleted successfully'),
     error: __('Error: '),
   },
@@ -84,7 +84,12 @@ export default {
 };
 </script>
 <template>
-  <gl-modal v-model="visible" :modal-id="$options.DELETE_POD_MODAL_ID" @hide="hideModal">
+  <gl-modal
+    v-model="visible"
+    :modal-id="$options.DELETE_POD_MODAL_ID"
+    :aria-label="$options.i18n.buttonPrimary"
+    @hide="hideModal"
+  >
     <template #modal-title>
       <gl-sprintf :message="$options.i18n.title">
         <template #podName>

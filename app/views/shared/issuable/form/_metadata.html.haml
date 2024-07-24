@@ -22,7 +22,7 @@
 - if can?(current_user, :"set_#{issuable.to_ability_name}_metadata", issuable)
   .row.gl-pt-4
     %div{ class: (has_due_date ? "col-lg-6" : "col-12") }
-      .form-group.row.merge-request-assignee
+      .form-group.row{ data: { testid: 'merge-request-assignee' } }
         = render "shared/issuable/form/metadata_issuable_assignee", issuable: issuable, form: form, has_due_date: has_due_date
 
       - if issuable.allows_reviewers?

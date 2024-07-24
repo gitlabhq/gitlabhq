@@ -217,7 +217,7 @@ export default {
             @keydown.esc.stop="cancelEditing"
           />
         </comment-field-layout>
-        <div class="note-form-actions">
+        <div class="note-form-actions" data-testid="work-item-comment-form-actions">
           <gl-form-checkbox
             v-if="isNewDiscussion"
             v-model="isNoteInternal"

@@ -486,7 +486,7 @@ References:
 
 ##### Vue
 
-- [isSafeURL](https://gitlab.com/gitlab-org/gitlab/-/blob/v12.7.5-ee/app/assets/javascripts/lib/utils/url_utility.js#L190-207)
+- [isValidURL](https://gitlab.com/gitlab-org/gitlab/-/blob/v17.3.0-ee/app/assets/javascripts/lib/utils/url_utility.js#L427-451)
 - [GlSprintf](https://gitlab-org.gitlab.io/gitlab-ui/?path=/docs/utilities-sprintf--sentence-with-link)
 
 #### Content Security Policy

@@ -1,7 +1,9 @@
 <script>
+// eslint-disable-next-line no-restricted-imports
+import { mapState } from 'vuex';
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { s__ } from '~/locale';
+import { s__, sprintf } from '~/locale';
 
 import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholdersTable from './placeholders_table.vue';
@@ -21,6 +23,8 @@ export default {
   data() {
     return {
       selectedTabIndex: 0,
+      unassignedCount: null,
+      reassignedCount: null,
       cursor: {
         before: null,
         after: null,
@@ -50,10 +54,7 @@ export default {
   },
 
   computed: {
-    tabCount() {
-      // WIP: https://gitlab.com/groups/gitlab-org/-/epics/12378
-      return 0;
-    },
+    ...mapState('placeholder', ['pagination']),
     isLoading() {
       return Boolean(this.$apollo.queries.sourceUsers.loading);
     },
@@ -65,7 +66,23 @@ export default {
     },
   },
 
+  mounted() {
+    this.unassignedCount = this.pagination.awaitingReassignmentItems;
+    this.reassignedCount = this.pagination.reassignedItems;
+  },
+
   methods: {
+    onConfirm(item) {
+      this.$toast.show(
+        sprintf(s__('UserMapping|Placeholder %{name} (@%{username}) kept as placeholder.'), {
+          name: item.placeholderUser.name,
+          username: item.placeholderUser.username,
+        }),
+      );
+      this.reassignedCount += 1;
+      this.unassignedCount -= 1;
+    },
+
     onPrevPage() {
       this.cursor = {
         before: this.sourceUsers.pageInfo.startCursor,
@@ -88,7 +105,7 @@ export default {
     <gl-tab>
       <template #title>
         <span>{{ s__('UserMapping|Awaiting reassignment') }}</span>
-        <gl-badge class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
+        <gl-badge class="gl-tab-counter-badge">{{ unassignedCount || 0 }}</gl-badge>
       </template>
 
       <placeholders-table
@@ -96,6 +113,7 @@ export default {
         :items="nodes"
         :page-info="pageInfo"
         :is-loading="isLoading"
+        @confirm="onConfirm"
         @prev="onPrevPage"
         @next="onNextPage"
       />
@@ -104,11 +122,11 @@ export default {
     <gl-tab>
       <template #title>
         <span>{{ s__('UserMapping|Reassigned') }}</span>
-        <gl-badge class="gl-tab-counter-badge">{{ tabCount }}</gl-badge>
+        <gl-badge class="gl-tab-counter-badge">{{ reassignedCount || 0 }}</gl-badge>
       </template>
 
       <placeholders-table
-        key="assigned"
+        key="reassigned"
         reassigned
         :items="nodes"
         :page-info="pageInfo"

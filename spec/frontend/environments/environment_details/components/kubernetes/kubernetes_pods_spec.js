@@ -106,8 +106,9 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_po
       const actions = [
         {
           name: 'delete-pod',
-          text: 'Delete Pod',
+          text: 'Delete pod',
           icon: 'remove',
+          variant: 'danger',
           class: '!gl-text-red-500',
         },
       ];

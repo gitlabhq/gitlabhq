@@ -48,8 +48,9 @@ export default {
               actions: [
                 {
                   name: 'delete-pod',
-                  text: s__('KubernetesDashboard|Delete Pod'),
+                  text: s__('KubernetesDashboard|Delete pod'),
                   icon: 'remove',
+                  variant: 'danger',
                   class: '!gl-text-red-500',
                 },
               ],
