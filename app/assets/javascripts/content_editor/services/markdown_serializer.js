@@ -1,7 +1,4 @@
-import {
-  MarkdownSerializer as ProseMirrorMarkdownSerializer,
-  defaultMarkdownSerializer,
-} from '~/lib/prosemirror_markdown_serializer';
+import { MarkdownSerializer as ProseMirrorMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
 import * as extensions from '../extensions';
 import codeSuggestion from './serializer/code_suggestion';
 import code from './serializer/code';
@@ -22,18 +19,6 @@ import video from './serializer/video';
 import blockquote from './serializer/blockquote';
 import codeBlock from './serializer/code_block';
 import diagram from './serializer/diagram';
-import {
-  renderHardBreak,
-  renderTable,
-  renderTableCell,
-  renderTableRow,
-  renderOrderedList,
-  renderHTMLNode,
-  renderBulletList,
-  renderReference,
-  renderReferenceLabel,
-  preserveUnchanged,
-} from './serialization_helpers';
 import descriptionList from './serializer/description_list';
 import descriptionItem from './serializer/description_item';
 import details from './serializer/details';
@@ -48,6 +33,24 @@ import heading from './serializer/heading';
 import horizontalRule from './serializer/horizontal_rule';
 import listItem from './serializer/list_item';
 import loading from './serializer/loading';
+import htmlComment from './serializer/html_comment';
+import referenceDefinition from './serializer/reference_definition';
+import tableOfContents from './serializer/table_of_contents';
+import taskItem from './serializer/task_item';
+import taskList from './serializer/task_list';
+import bulletList from './serializer/bullet_list';
+import orderedList from './serializer/ordered_list';
+import paragraph from './serializer/paragraph';
+import hardBreak from './serializer/hard_break';
+import text from './serializer/text';
+import wordBreak from './serializer/word_break';
+import referenceLabel from './serializer/reference_label';
+import reference from './serializer/reference';
+import tableCell from './serializer/table_cell';
+import tableHeader from './serializer/table_header';
+import tableRow from './serializer/table_row';
+import table from './serializer/table';
+import htmlNode from './serializer/html_node';
 
 const defaultSerializerConfig = {
   marks: {
@@ -61,19 +64,13 @@ const defaultSerializerConfig = {
     [extensions.Link.name]: link,
     [extensions.MathInline.name]: mathInline,
     [extensions.Strike.name]: strike,
-    ...extensions.HTMLMarks.reduce(
-      (acc, { name }) => ({
-        ...acc,
-        [name]: htmlMark(name),
-      }),
-      {},
-    ),
+    ...extensions.HTMLMarks.reduce((acc, { name }) => ({ ...acc, [name]: htmlMark(name) }), {}),
   },
 
   nodes: {
     [extensions.Audio.name]: audio,
     [extensions.Blockquote.name]: blockquote,
-    [extensions.BulletList.name]: preserveUnchanged(renderBulletList),
+    [extensions.BulletList.name]: bulletList,
     [extensions.CodeBlockHighlight.name]: codeBlock,
     [extensions.Diagram.name]: diagram,
     [extensions.CodeSuggestion.name]: codeSuggestion,
@@ -88,72 +85,29 @@ const defaultSerializerConfig = {
     [extensions.Frontmatter.name]: frontmatter,
     [extensions.Figure.name]: figure,
     [extensions.FigureCaption.name]: figureCaption,
-    [extensions.HardBreak.name]: preserveUnchanged(renderHardBreak),
+    [extensions.HardBreak.name]: hardBreak,
     [extensions.Heading.name]: heading,
     [extensions.HorizontalRule.name]: horizontalRule,
     [extensions.Image.name]: image,
     [extensions.ListItem.name]: listItem,
     [extensions.Loading.name]: loading,
-    [extensions.OrderedList.name]: preserveUnchanged(renderOrderedList),
-    [extensions.Paragraph.name]: preserveUnchanged(defaultMarkdownSerializer.nodes.paragraph),
-    [extensions.HTMLComment.name]: (state, node) => {
-      state.write('<!--');
-      state.write(node.attrs.description || '');
-      state.write('-->');
-      state.closeBlock(node);
-    },
-    [extensions.Reference.name]: renderReference,
-    [extensions.ReferenceLabel.name]: renderReferenceLabel,
-    [extensions.ReferenceDefinition.name]: preserveUnchanged({
-      render: (state, node, parent, index, same, sourceMarkdown) => {
-        const nextSibling = parent.maybeChild(index + 1);
-
-        state.text(same ? sourceMarkdown : node.textContent, false);
-
-        /**
-         * Do not insert a blank line between reference definitions
-         * because it isn’t necessary and a more compact text format
-         * is preferred.
-         */
-        if (!nextSibling || nextSibling.type.name !== extensions.ReferenceDefinition.name) {
-          state.closeBlock(node);
-        } else {
-          state.ensureNewLine();
-        }
-      },
-      overwriteSourcePreservationStrategy: true,
-    }),
-    [extensions.TableOfContents.name]: preserveUnchanged((state, node) => {
-      state.write('[[_TOC_]]');
-      state.closeBlock(node);
-    }),
-    [extensions.Table.name]: preserveUnchanged(renderTable),
-    [extensions.TableCell.name]: renderTableCell,
-    [extensions.TableHeader.name]: renderTableCell,
-    [extensions.TableRow.name]: renderTableRow,
-    [extensions.TaskItem.name]: preserveUnchanged((state, node) => {
-      let symbol = ' ';
-      if (node.attrs.inapplicable) symbol = '~';
-      else if (node.attrs.checked) symbol = 'x';
-
-      state.write(`[${symbol}] `);
-
-      if (!node.textContent) state.write('&nbsp;');
-      state.renderContent(node);
-    }),
-    [extensions.TaskList.name]: preserveUnchanged((state, node) => {
-      if (node.attrs.numeric) renderOrderedList(state, node);
-      else renderBulletList(state, node);
-    }),
-    [extensions.Text.name]: defaultMarkdownSerializer.nodes.text,
+    [extensions.OrderedList.name]: orderedList,
+    [extensions.Paragraph.name]: paragraph,
+    [extensions.HTMLComment.name]: htmlComment,
+    [extensions.Reference.name]: reference,
+    [extensions.ReferenceLabel.name]: referenceLabel,
+    [extensions.ReferenceDefinition.name]: referenceDefinition,
+    [extensions.TableOfContents.name]: tableOfContents,
+    [extensions.Table.name]: table,
+    [extensions.TableCell.name]: tableCell,
+    [extensions.TableHeader.name]: tableHeader,
+    [extensions.TableRow.name]: tableRow,
+    [extensions.TaskItem.name]: taskItem,
+    [extensions.TaskList.name]: taskList,
+    [extensions.Text.name]: text,
     [extensions.Video.name]: video,
-    [extensions.WordBreak.name]: (state) => state.write('<wbr>'),
-    ...extensions.HTMLNodes.reduce((serializers, htmlNode) => {
-      return {
-        ...serializers,
-        [htmlNode.name]: (state, node) => renderHTMLNode(htmlNode.options.tagName)(state, node),
-      };
-    }, {}),
+    [extensions.WordBreak.name]: wordBreak,
+    ...extensions.HTMLNodes.reduce((acc, { name }) => ({ ...acc, [name]: htmlNode(name) }), {}),
   },
 };
 

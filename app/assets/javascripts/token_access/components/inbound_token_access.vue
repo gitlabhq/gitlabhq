@@ -9,8 +9,8 @@ import {
   GlIcon,
   GlLoadingIcon,
   GlSprintf,
-  GlToggle,
   GlTooltipDirective,
+  GlFormRadioGroup,
 } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
@@ -27,16 +27,16 @@ import TokenAccessTable from './token_access_table.vue';
 
 export default {
   i18n: {
-    toggleLabelTitle: s__('CICD|Limit access %{italicStart}to%{italicEnd} this project'),
-    toggleDescription: s__(
-      `CICD|When enabled, only groups and projects in the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. When disabled, any group or project can do so. %{linkStart}Learn more%{linkEnd}.`,
+    radioGroupTitle: s__('CICD|Authorized groups and projects'),
+    radioGroupDescription: s__(
+      `CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}.`,
     ),
-    cardHeaderTitle: s__('CICD|Authorized groups and projects'),
+    cardHeaderTitle: s__('CICD|CI/CD job token allowlist'),
     cardHeaderDescription: s__(
       `CICD|Ensure only groups and projects with members authorized to access sensitive project data are added to the allowlist.`,
     ),
     settingDisabledMessage: s__(
-      'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project. Enable this setting to restrict authentication to only job tokens generated in the groups and projects in the allowlist below.',
+      'CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project.',
     ),
     addGroupOrProject: __('Add group or project'),
     add: __('Add'),
@@ -45,7 +45,18 @@ export default {
     projectsFetchError: __('There was a problem fetching the projects'),
     scopeFetchError: __('There was a problem fetching the job token scope value'),
     projectInScopeError: s__('CICD|Target project is already in the job token scope.'),
+    saveButtonTitle: __('Save Changes'),
   },
+  inboundJobTokenScopeOptions: [
+    {
+      value: false,
+      text: s__('CICD|All groups and projects'),
+    },
+    {
+      value: true,
+      text: s__('CICD|Only this project and any groups and projects in the allowlist'),
+    },
+  ],
   components: {
     GlAlert,
     GlButton,
@@ -56,9 +67,9 @@ export default {
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
-    GlToggle,
     GroupsAndProjectsListbox,
     TokenAccessTable,
+    GlFormRadioGroup,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -78,6 +89,9 @@ export default {
       },
       update({ project }) {
         return project.ciCdSettings.inboundJobTokenScopeEnabled;
+      },
+      result({ data }) {
+        this.projectName = data?.project?.name;
       },
       error() {
         createAlert({ message: this.$options.i18n.scopeFetchError });
@@ -107,9 +121,11 @@ export default {
   data() {
     return {
       inboundJobTokenScopeEnabled: null,
+      isUpdating: false,
       groupsAndProjectsWithAccess: [],
       groupOrProjectPath: '',
       projectCount: 0,
+      projectName: '',
       groupCount: 0,
       isAddFormVisible: false,
     };
@@ -145,6 +161,8 @@ export default {
   },
   methods: {
     async updateCIJobTokenScope() {
+      this.isUpdating = true;
+
       try {
         const {
           data: {
@@ -163,9 +181,17 @@ export default {
         if (errors.length) {
           throw new Error(errors[0]);
         }
+
+        const toastMessage = sprintf(
+          __("CI/CD job token permissions for '%{projectName}' were successfully updated."),
+          { projectName: this.projectName },
+        );
+        this.$toast.show(toastMessage);
       } catch (error) {
         this.inboundJobTokenScopeEnabled = !this.inboundJobTokenScopeEnabled;
         createAlert({ message: error.message });
+      } finally {
+        this.isUpdating = false;
       }
     },
     async addGroupOrProject() {
@@ -247,42 +273,49 @@ export default {
 };
 </script>
 <template>
-  <div>
-    <gl-loading-icon v-if="$apollo.loading" size="lg" class="gl-mt-5" />
+  <div class="gl-mt-5">
+    <gl-loading-icon v-if="$apollo.loading" size="lg" />
     <template v-else>
-      <gl-toggle
+      <gl-form-radio-group
         v-model="inboundJobTokenScopeEnabled"
-        :label="$options.i18n.toggleLabelTitle"
-        class="gl-mt-5"
-        @change="updateCIJobTokenScope"
+        :options="$options.inboundJobTokenScopeOptions"
+        stacked
       >
-        <template #label>
-          <gl-sprintf :message="$options.i18n.toggleLabelTitle">
-            <template #italic="{ content }">
-              <i>{{ content }}</i>
-            </template>
-          </gl-sprintf>
+        <template #first>
+          <div class="gl-mb-2 gl-font-bold">
+            {{ $options.i18n.radioGroupTitle }}
+          </div>
+          <div class="gl-mb-3">
+            <gl-sprintf :message="$options.i18n.radioGroupDescription">
+              <template #link="{ content }">
+                <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">{{
+                  content
+                }}</gl-link>
+              </template>
+            </gl-sprintf>
+          </div>
         </template>
-        <template #description>
-          <gl-sprintf :message="$options.i18n.toggleDescription" class="gl-text-secondary">
-            <template #link="{ content }">
-              <gl-link :href="ciJobTokenHelpPage" class="inline-link" target="_blank">{{
-                content
-              }}</gl-link>
-            </template>
-          </gl-sprintf>
-        </template>
-      </gl-toggle>
+      </gl-form-radio-group>
 
       <gl-alert
         v-if="!inboundJobTokenScopeEnabled"
         variant="warning"
-        class="gl-mt-6"
+        class="gl-my-3"
         :dismissible="false"
         :show-icon="false"
       >
         {{ $options.i18n.settingDisabledMessage }}
       </gl-alert>
+
+      <gl-button
+        variant="confirm"
+        class="gl-mt-3"
+        data-testid="save-ci-job-token-scope-changes-btn"
+        :loading="isUpdating"
+        @click="updateCIJobTokenScope"
+      >
+        {{ $options.i18n.saveButtonTitle }}
+      </gl-button>
 
       <div>
         <gl-card

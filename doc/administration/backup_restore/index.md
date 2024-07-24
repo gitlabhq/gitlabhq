@@ -58,6 +58,7 @@ When working with GitLab backups, you might need to know how GitLab creates back
    - `registry` to back up container registry images.
    - `packages` to back up packages.
    - `ci_secure_files` to back up project-level secure files.
+   - `external_diffs` to back up external merge request diffs.
 1. Archives the backup staging area into a tar file.
 1. Optional. Uploads the new backup archive to object-storage.
 1. Cleans up backup staging directory files that are now archived.

@@ -19,12 +19,24 @@ module API
     end
 
     helpers do
-      def endpoint_scope
-        :project
-      end
+      include Gitlab::Utils::StrongMemoize
 
       def error_reason_to_http_status(reason)
         ERROR_REASON_TO_HTTP_STATUS_MAPPTING.fetch(reason, 400)
+      end
+
+      def metadata_cache
+        ::Packages::Npm::MetadataCache
+          .find_by_package_name_and_project_id(params[:package_name], project.id)
+      end
+      strong_memoize_attr :metadata_cache
+
+      def project
+        user_project(action: :read_package)
+      end
+
+      def project_id_or_nil
+        params[:id]
       end
     end
 

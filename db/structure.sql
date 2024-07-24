@@ -17371,6 +17371,7 @@ CREATE TABLE security_policies (
     actions jsonb DEFAULT '[]'::jsonb NOT NULL,
     approval_settings jsonb DEFAULT '{}'::jsonb NOT NULL,
     security_policy_management_project_id bigint NOT NULL,
+    content jsonb DEFAULT '{}'::jsonb NOT NULL,
     CONSTRAINT check_3fa0f29e4b CHECK ((char_length(name) <= 255)),
     CONSTRAINT check_966e08b242 CHECK ((char_length(checksum) <= 255)),
     CONSTRAINT check_99c8e08928 CHECK ((char_length(description) <= 255))

@@ -104,7 +104,7 @@ The [backup command](#backup-command) doesn't back up blobs that aren't stored o
   - Hosted by you (like MinIO).
   - A Storage Appliance that exposes an Object Storage-compatible API.
 
-The backup command backs up registry data when they are stored in the default location on the file system.
+The backup command does not back up registry data when they are stored in Object Storage.
 
 ### Storing configuration files
 

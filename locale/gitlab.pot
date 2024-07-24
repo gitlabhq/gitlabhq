@@ -10050,7 +10050,7 @@ msgstr ""
 msgid "CICDAnalytics|What is instance runner duration?"
 msgstr ""
 
-msgid "CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project. Enable this setting to restrict authentication to only job tokens generated in the groups and projects in the allowlist below."
+msgid "CICD|Access unrestricted, so users with sufficient permissions in this project can authenticate with a job token generated in any other project."
 msgstr ""
 
 msgid "CICD|Add a %{base_domain_link_start}base domain%{link_end} to your %{kubernetes_cluster_link_start}Kubernetes cluster%{link_end} for your deployment strategy to work."
@@ -10065,6 +10065,9 @@ msgstr ""
 msgid "CICD|Additional permissions"
 msgstr ""
 
+msgid "CICD|All groups and projects"
+msgstr ""
+
 msgid "CICD|Allow Git push requests to the repository"
 msgstr ""
 
@@ -10075,6 +10078,9 @@ msgid "CICD|Auto DevOps"
 msgstr ""
 
 msgid "CICD|Automatic deployment to staging, manual deployment to production"
+msgstr ""
+
+msgid "CICD|CI/CD job token allowlist"
 msgstr ""
 
 msgid "CICD|CI/CD job token can be used to authenticate a Git push to this repository, using the permissions of the user that started the job."
@@ -10119,10 +10125,10 @@ msgstr ""
 msgid "CICD|Limit access %{italicStart}from%{italicEnd} this project (Deprecated)"
 msgstr ""
 
-msgid "CICD|Limit access %{italicStart}to%{italicEnd} this project"
+msgid "CICD|Maintainer"
 msgstr ""
 
-msgid "CICD|Maintainer"
+msgid "CICD|Only this project and any groups and projects in the allowlist"
 msgstr ""
 
 msgid "CICD|Pipelines and jobs cannot be cancelled"
@@ -10131,10 +10137,13 @@ msgstr ""
 msgid "CICD|Prevent CI/CD job tokens from this project from being used to access other projects unless the other project is added to the allowlist. It is a security risk to disable this feature, because unauthorized projects might attempt to retrieve an active token and access the API. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
+msgid "CICD|Select the groups and projects authorized to use a CI/CD job token to authenticate requests to this project. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
 msgid "CICD|Target project is already in the job token scope."
 msgstr ""
 
-msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and will be removed in the 18.0 milestone. Use the %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}to%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
+msgid "CICD|The %{boldStart}Limit access %{boldEnd}%{italicAndBoldStart}from%{italicAndBoldEnd}%{boldStart} this project%{boldEnd} setting is deprecated and scheduled for removal in the 18.0 milestone. Use the %{boldStart}Authorized groups and projects%{boldEnd} setting and allowlist instead. %{linkStart}How do I do this?%{linkEnd}"
 msgstr ""
 
 msgid "CICD|The Auto DevOps pipeline runs by default in all projects with no CI/CD configuration file. %{link_start}What is Auto DevOps?%{link_end}"
@@ -10150,9 +10159,6 @@ msgid "CICD|Unprotected branches will not have access to the cache from protecte
 msgstr ""
 
 msgid "CICD|Use separate caches for protected branches"
-msgstr ""
-
-msgid "CICD|When enabled, only groups and projects in the allowlist are authorized to use a CI/CD job token to authenticate requests to this project. When disabled, any group or project can do so. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "CICD|group enabled"
@@ -13563,7 +13569,7 @@ msgstr ""
 msgid "ComplianceFrameworks|There can be only one default framework."
 msgstr ""
 
-msgid "ComplianceFrameworks|This project is covered by the rules defined in the compliance framework. Only group owners and maintainers can view details of the compliance framework."
+msgid "ComplianceFrameworks|This project is covered by the rules defined in the compliance framework. Only admins of the parent group can edit the compliance framework."
 msgstr ""
 
 msgid "ComplianceFrameworks|To link this policy and framework,  edit  the policy's scope."
@@ -34175,7 +34181,7 @@ msgstr ""
 msgid "Namespace or project is required"
 msgstr ""
 
-msgid "Namespace reached its allowed limit of %{limit} extra deployments"
+msgid "Namespace reached its allowed limit of %{limit} extra deployments. Learn more: %{docs_link}"
 msgstr ""
 
 msgid "Namespace:"

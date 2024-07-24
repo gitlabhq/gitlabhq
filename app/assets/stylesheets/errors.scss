@@ -13,11 +13,8 @@
 @import '@gitlab/ui/src/scss/utility-mixins/index';
 @import '@gitlab/ui/src/components/base/button/button';
 
-$body-color: #666;
-$header-color: #456;
-
 body {
-  color: $body-color;
+  color: $gl-text-color-subtle;
   text-align: center;
   font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   margin: auto;
@@ -28,20 +25,19 @@ h1 {
   font-size: 56px;
   line-height: 100px;
   font-weight: 400;
-  color: $header-color;
+  color: $gl-text-color-default;
 }
 
 h2 {
   font-size: 24px;
-  color: $body-color;
-  line-height: 1.5em;
+  line-height: $gl-line-height-24;
 }
 
 h3 {
-  color: $header-color;
+  color: $gl-text-color-default;
   font-size: 20px;
   font-weight: 400;
-  line-height: 28px;
+  line-height: $gl-line-height-28;
 }
 
 img {
@@ -52,7 +48,7 @@ img {
 
 a {
   text-decoration: none;
-  color: $blue-600;
+  color: $gl-text-color-link;
 }
 
 .page-container {

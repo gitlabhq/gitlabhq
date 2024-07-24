@@ -116,8 +116,13 @@ update the main docs site:
    [pipeline schedules](https://gitlab.com/gitlab-org/gitlab-docs/-/pipeline_schedules)
    and run the **Build Docker images manually** schedule.
 
+1. A dialog with a link to the **pipelines** page appears. Select that link.
+
 1. Open the **Build Docker images** pipeline you just started, find the
    **image:docs-latest** job, and start it manually.
+
+   You might have to wait for the
+   **test:image:docs-latest** job in the **test** stage to finish first.
 
 1. When the **image:docs-latest** job is finished,
   [run a new pipeline](https://gitlab.com/gitlab-org/gitlab-docs/-/pipelines/new)

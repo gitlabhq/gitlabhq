@@ -167,99 +167,6 @@ NOTE:
 If all users are blocked due to the LDAP server not being available when an LDAP user synchronization is run,
 a subsequent LDAP user synchronization does not automatically unblock those users.
 
-### Adjust LDAP user sync schedule
-
-By default, GitLab runs a worker once per day at 01:30 a.m. server time to
-check and update GitLab users against LDAP.
-
-You can manually configure LDAP user sync times by setting the
-following configuration values, in cron format. If needed, you can
-use a [crontab generator](http://www.crontabgenerator.com).
-The example below shows how to set LDAP user
-sync to run once every 12 hours at the top of the hour.
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
-   ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-:::TabTitle Helm chart (Kubernetes)
-
-1. Export the Helm values:
-
-   ```shell
-   helm get values gitlab > gitlab_values.yaml
-   ```
-
-1. Edit `gitlab_values.yaml`:
-
-   ```yaml
-   global:
-     appConfig:
-       cron_jobs:
-         ldap_sync_worker:
-           cron: "0 */12 * * *"
-   ```
-
-1. Save the file and apply the new values:
-
-   ```shell
-   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
-   ```
-
-:::TabTitle Docker
-
-1. Edit `docker-compose.yml`:
-
-   ```yaml
-   version: "3.6"
-   services:
-     gitlab:
-       environment:
-         GITLAB_OMNIBUS_CONFIG: |
-           gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
-   ```
-
-1. Save the file and restart GitLab:
-
-   ```shell
-   docker compose up -d
-   ```
-
-:::TabTitle Self-compiled (source)
-
-1. Edit `/home/git/gitlab/config/gitlab.yml`:
-
-   ```yaml
-   production: &base
-     ee_cron_jobs:
-       ldap_sync_worker:
-         cron: "0 */12 * * *"
-   ```
-
-1. Save the file and restart GitLab:
-
-   ```shell
-   # For systems running systemd
-   sudo systemctl restart gitlab.target
-
-   # For systems running SysV init
-   sudo service gitlab restart
-   ```
-
-::EndTabs
-
 ## Group sync
 
 If your LDAP supports the `memberof` property, when the user signs in for the
@@ -529,105 +436,6 @@ When **Allow group owners to manage LDAP-related settings** is disabled:
 - Group Owners cannot change LDAP synchronization settings for either top-level groups and subgroups.
 - Instance administrators can manage LDAP group synchronization settings on all groups on an instance.
 
-### Adjust LDAP group sync schedule
-
-By default, GitLab runs a group sync process every hour, on the hour.
-The values shown are in cron format. If needed, you can use a
-[Crontab Generator](http://www.crontabgenerator.com).
-
-WARNING:
-Do not start the sync process too frequently as this
-could lead to multiple syncs running concurrently. This concern is primarily
-for installations with a large number of LDAP users. Review the
-[LDAP group sync benchmark metrics](#benchmarks) to see how
-your installation compares before proceeding.
-
-You can manually configure LDAP group sync times by setting the
-following configuration values. The example below shows how to set group
-sync to run once every two hours at the top of the hour.
-
-::Tabs
-
-:::TabTitle Linux package (Omnibus)
-
-1. Edit `/etc/gitlab/gitlab.rb`:
-
-   ```ruby
-   gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
-   ```
-
-1. Save the file and reconfigure GitLab:
-
-   ```shell
-   sudo gitlab-ctl reconfigure
-   ```
-
-:::TabTitle Helm chart (Kubernetes)
-
-1. Export the Helm values:
-
-   ```shell
-   helm get values gitlab > gitlab_values.yaml
-   ```
-
-1. Edit `gitlab_values.yaml`:
-
-   ```yaml
-   global:
-     appConfig:
-       cron_jobs:
-         ldap_group_sync_worker:
-           cron: "*/30 * * * *"
-   ```
-
-1. Save the file and apply the new values:
-
-   ```shell
-   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
-   ```
-
-:::TabTitle Docker
-
-1. Edit `docker-compose.yml`:
-
-   ```yaml
-   version: "3.6"
-   services:
-     gitlab:
-       environment:
-         GITLAB_OMNIBUS_CONFIG: |
-           gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
-   ```
-
-1. Save the file and restart GitLab:
-
-   ```shell
-   docker compose up -d
-   ```
-
-:::TabTitle Self-compiled (source)
-
-1. Edit `/home/git/gitlab/config/gitlab.yml`:
-
-   ```yaml
-   production: &base
-     ee_cron_jobs:
-       ldap_group_sync_worker:
-         cron: "*/30 * * * *"
-   ```
-
-1. Save the file and restart GitLab:
-
-   ```shell
-   # For systems running systemd
-   sudo systemctl restart gitlab.target
-
-   # For systems running SysV init
-   sudo service gitlab restart
-   ```
-
-::EndTabs
-
 ### External groups
 
 Using the `external_groups` setting allows you to mark all users belonging
@@ -796,6 +604,197 @@ These metrics are meant to provide a baseline and performance may vary based on
 any number of factors. This benchmark was extreme and most instances don't
 have near this many users or groups. Disk speed, database performance,
 network and LDAP server response time affects these metrics.
+
+### Adjust LDAP user sync schedule
+
+By default, GitLab runs a worker once per day at 01:30 a.m. server time to
+check and update GitLab users against LDAP.
+
+WARNING:
+Do not run the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule. For more information, see the [LDAP Security documentation](index.md#security).
+
+You can manually configure LDAP user sync times by setting the
+following configuration values, in cron format. If needed, you can
+use a [crontab generator](http://www.crontabgenerator.com).
+The example below shows how to set LDAP user
+sync to run once every 12 hours at the top of the hour.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       cron_jobs:
+         ldap_sync_worker:
+           cron: "0 */12 * * *"
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['ldap_sync_worker_cron'] = "0 */12 * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ee_cron_jobs:
+       ldap_sync_worker:
+         cron: "0 */12 * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
+
+### Adjust LDAP group sync schedule
+
+By default, GitLab runs a group sync process every hour, on the hour.
+The values shown are in cron format. If needed, you can use a
+[Crontab Generator](http://www.crontabgenerator.com).
+
+WARNING:
+Do not start the sync process too frequently as this could lead to multiple syncs running concurrently. Most installations do not need to modify the sync schedule.
+
+You can manually configure LDAP group sync times by setting the
+following configuration values. The example below shows how to set group
+sync to run once every two hours at the top of the hour.
+
+::Tabs
+
+:::TabTitle Linux package (Omnibus)
+
+1. Edit `/etc/gitlab/gitlab.rb`:
+
+   ```ruby
+   gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
+   ```
+
+1. Save the file and reconfigure GitLab:
+
+   ```shell
+   sudo gitlab-ctl reconfigure
+   ```
+
+:::TabTitle Helm chart (Kubernetes)
+
+1. Export the Helm values:
+
+   ```shell
+   helm get values gitlab > gitlab_values.yaml
+   ```
+
+1. Edit `gitlab_values.yaml`:
+
+   ```yaml
+   global:
+     appConfig:
+       cron_jobs:
+         ldap_group_sync_worker:
+           cron: "*/30 * * * *"
+   ```
+
+1. Save the file and apply the new values:
+
+   ```shell
+   helm upgrade -f gitlab_values.yaml gitlab gitlab/gitlab
+   ```
+
+:::TabTitle Docker
+
+1. Edit `docker-compose.yml`:
+
+   ```yaml
+   version: "3.6"
+   services:
+     gitlab:
+       environment:
+         GITLAB_OMNIBUS_CONFIG: |
+           gitlab_rails['ldap_group_sync_worker_cron'] = "0 */2 * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   docker compose up -d
+   ```
+
+:::TabTitle Self-compiled (source)
+
+1. Edit `/home/git/gitlab/config/gitlab.yml`:
+
+   ```yaml
+   production: &base
+     ee_cron_jobs:
+       ldap_group_sync_worker:
+         cron: "*/30 * * * *"
+   ```
+
+1. Save the file and restart GitLab:
+
+   ```shell
+   # For systems running systemd
+   sudo systemctl restart gitlab.target
+
+   # For systems running SysV init
+   sudo service gitlab restart
+   ```
+
+::EndTabs
 
 ## Troubleshooting
 

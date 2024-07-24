@@ -1,4 +1,4 @@
-import { renderHTMLNode } from '../serialization_helpers';
+import { renderHTMLNode } from './html_node';
 
 const descriptionItem = (state, node, parent, index) => {
   if (index === 1) state.ensureNewLine();

@@ -261,7 +261,7 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
 
     {
       id: pipeline.id,
-      path: [*project.namespace.traversal_ids, project.project_namespace_id].map { |id| "#{id}/" }.join,
+      path: project.namespace.traversal_path + "#{project.project_namespace_id}/",
       committed_at: a_value_within(0.001.seconds).of(pipeline.committed_at || Time.at(0).utc),
       created_at: a_value_within(0.001.seconds).of(pipeline.created_at || Time.at(0).utc),
       started_at: a_value_within(0.001.seconds).of(pipeline.started_at || Time.at(0).utc),

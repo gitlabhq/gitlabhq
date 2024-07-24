@@ -3,7 +3,7 @@ import { debounce } from 'lodash';
 import { VARIANT_WARNING } from '~/alert';
 import { __ } from '~/locale';
 import { getMarkdownSource } from '../services/markdown_sourcemap';
-import { shouldRenderHTMLTable } from '../services/serialization_helpers';
+import { shouldRenderHTMLTable } from '../services/serializer/table';
 
 let alertShown = false;
 const onUpdate = debounce((editor) => {

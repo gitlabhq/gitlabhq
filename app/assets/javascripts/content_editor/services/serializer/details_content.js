@@ -1,4 +1,5 @@
-import { renderContent, renderHTMLNode } from '../serialization_helpers';
+import { renderContent } from '../serialization_helpers';
+import { renderHTMLNode } from './html_node';
 
 const detailsContent = (state, node, parent, index) => {
   if (!index) renderHTMLNode('summary')(state, node);

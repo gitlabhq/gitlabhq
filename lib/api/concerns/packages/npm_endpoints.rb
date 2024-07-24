@@ -16,6 +16,7 @@ module API
 
         included do
           helpers ::API::Helpers::Packages::DependencyProxyHelpers
+          helpers ::API::Helpers::Packages::Npm
 
           rescue_from ActiveRecord::RecordInvalid do |e|
             render_structured_api_error!({ message: e.message, error: e.message }, 400)
@@ -27,8 +28,6 @@ module API
           end
 
           helpers do
-            include Gitlab::Utils::StrongMemoize
-
             params :package_name do
               requires :package_name, type: String, file_path: true, desc: 'Package name',
                 documentation: { example: 'mypackage' }
@@ -54,11 +53,11 @@ module API
               ::Packages::Npm::GenerateMetadataService.new(params[:package_name], packages)
             end
 
-            def metadata_cache
-              ::Packages::Npm::MetadataCache
-                .find_by_package_name_and_project_id(params[:package_name], project.id)
+            def bad_request_missing_attribute!(attribute)
+              reason = "\"#{attribute}\" not given"
+              message = "400 Bad request - #{reason}"
+              render_structured_api_error!({ message: message, error: reason }, 400)
             end
-            strong_memoize_attr :metadata_cache
           end
 
           params do

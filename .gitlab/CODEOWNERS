@@ -435,10 +435,6 @@ Dangerfile
 /spec/models/onboarding/
 /app/services/onboarding/
 /spec/services/onboarding/
-/ee/app/components/namespaces/free_user_cap/
-/ee/spec/components/namespaces/free_user_cap/
-/ee/app/models/namespaces/free_user_cap/
-/ee/spec/models/namespaces/free_user_cap/
 /app/controllers/registrations_controller.rb
 /spec/controllers/registrations_controller_spec.rb
 /app/controllers/registrations/
@@ -1402,8 +1398,8 @@ lib/gitlab/checks/**
 # Verify Frontend, optional approvals
 ^[Verify frontend] @gitlab-org/ci-cd/verify/frontend
 /**/javascripts/ci/
-/**/javascripts/token_access/ 
-/**/javascripts/admin/application_settings/runner_token_expiration/ 
+/**/javascripts/token_access/
+/**/javascripts/admin/application_settings/runner_token_expiration/
 /**/javascripts/editor/schema/ci.json
 /app/**/ci/*.haml
 /app/views/projects/artifacts/
@@ -1487,11 +1483,22 @@ ee/lib/ee/api/entities/project.rb
 /ee/app/models/concerns/audit_events/
 /config/audit_events/types/type_schema.json
 
-^[Fulfillment::Utilization] @sheldonled @aalakkad @kpalchyk
-/ee/app/assets/javascripts/usage_quotas/components/
-/ee/app/assets/javascripts/usage_quotas/seats/
-/ee/app/assets/javascripts/usage_quotas/storage/
-/**/javascripts/usage_quotas/pipelines/
+# Fulfillment::Utilization
+^[Usage Quotas] @gitlab-org/fulfillment/utilization/fe
+/**/javascripts/usage_quotas/
+
+^[Storage Statistics] @gitlab-org/fulfillment/utilization/be
+/app/models/namespace/root_storage_statistics.rb
+/ee/app/models/ee/namespace/root_storage_statistics.rb
+/app/models/project_statistics.rb
+/ee/app/models/ee/project_statistics.rb
+
+^[Free User Cap] @gitlab-org/fulfillment/utilization/engineers
+/ee/app/components/namespaces/free_user_cap/
+/ee/spec/components/namespaces/free_user_cap/
+/ee/app/models/namespaces/free_user_cap/
+/ee/spec/models/namespaces/free_user_cap/
+# END Fulfillment::Utilization
 
 ^[Manage::Foundations] @gitlab-org/manage/foundations/engineering
 /lib/sidebars/
@@ -1555,12 +1562,6 @@ ee/lib/ee/api/entities/project.rb
 ^[Gitlab Housekeeper gem] @DylanGriffith @rymai @tigerwnz
 /gems/gitlab-housekeeper/
 /keeps/
-
-^[Storage Statistics] @jagood @suraj_tripathy @vij
-/app/models/namespace/root_storage_statistics.rb
-/ee/app/models/ee/namespace/root_storage_statistics.rb
-/app/models/project_statistics.rb
-/ee/app/models/ee/project_statistics.rb
 
 # JiHu GitLab rules. See https://gitlab.com/gitlab-jh/gitlab-jh-enablement/-/issues/213#note_1024367528
 
