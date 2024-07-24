@@ -493,6 +493,7 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
         'URL' => url,
         'AllowRedirects' => false,
         'Header' => {},
+        'ResponseHeaders' => {},
         'Body' => '',
         'Method' => 'GET'
       }
@@ -508,22 +509,24 @@ RSpec.describe Gitlab::Workhorse, feature_category: :shared do
       expect(params).to eq(expected_params)
     end
 
-    context 'when body, headers and method are specified' do
+    context 'when body, headers, response headers and method are specified' do
       let(:body) { 'body' }
       let(:headers) { { Authorization: ['Bearer token'] } }
+      let(:response_headers) { { 'CustomHeader' => 'test' } }
       let(:method) { 'POST' }
 
       let(:expected_params) do
         super().merge(
           'Body' => body,
           'Header' => headers,
+          'ResponseHeaders' => { 'CustomHeader' => ['test'] },
           'Method' => method
         ).deep_stringify_keys
       end
 
-      it 'sets the header correctly' do
+      it 'sets everything correctly' do
         key, command, params = decode_workhorse_header(
-          described_class.send_url(url, body: body, headers: headers, method: method)
+          described_class.send_url(url, body: body, headers: headers, response_headers: response_headers, method: method)
         )
 
         expect(key).to eq("Gitlab-Workhorse-Send-Data")

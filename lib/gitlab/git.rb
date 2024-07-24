@@ -13,6 +13,7 @@ module Gitlab
     COMMIT_ID = /\A#{Gitlab::Git::Commit::RAW_FULL_SHA_PATTERN}\z/
     TAG_REF_PREFIX = "refs/tags/"
     BRANCH_REF_PREFIX = "refs/heads/"
+    SHA_LIKE_REF = %r{\A(#{TAG_REF_PREFIX}|#{BRANCH_REF_PREFIX})#{Gitlab::Git::Commit::RAW_FULL_SHA_PATTERN}\z}
 
     # NOTE: We don't use linguist anymore, but we'd still want to support it
     # to be backward/GitHub compatible. Using `gitlab-*` prefixed overrides

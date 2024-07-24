@@ -33,7 +33,7 @@ module BulkImports
     delegate :export_path, to: :config
 
     def find_or_create_export!
-      export = portable.bulk_import_exports.safe_find_or_create_by!(relation: relation)
+      export = portable.bulk_import_exports.safe_find_or_create_by!(relation: relation, user: user)
 
       return export if export.finished? && export.updated_at > EXISTING_EXPORT_TTL.ago && !export.batched?
 

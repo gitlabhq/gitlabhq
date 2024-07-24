@@ -196,6 +196,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.to have_many(:alert_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:incident_hooks_integrations).class_name('Integration') }
     it { is_expected.to have_many(:relation_import_trackers).class_name('Projects::ImportExport::RelationImportTracker') }
+    it { is_expected.to have_many(:import_export_uploads).dependent(:destroy) }
 
     # GitLab Pages
     it { is_expected.to have_many(:pages_domains) }
@@ -5387,9 +5388,13 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   end
 
   describe '#remove_export' do
-    let(:project) { create(:project, :with_export) }
+    let(:project) { create(:project) }
+    let(:export_file) { fixture_file_upload('spec/fixtures/project_export.tar.gz') }
+    let(:export) { create(:import_export_upload, project: project, export_file: export_file) }
 
     before do
+      export
+
       allow_next_instance_of(ProjectExportWorker) do |job|
         allow(job).to receive(:jid).and_return(SecureRandom.hex(8))
       end
@@ -5398,19 +5403,42 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it 'removes the export' do
       project.remove_exports
 
-      expect(project.export_file_exists?).to be_falsey
+      expect(project.export_file_exists?(export.user)).to be_falsey
+    end
+  end
+
+  describe '#remove_export_for_user' do
+    let(:project) { create(:project) }
+    let(:export_file) { fixture_file_upload('spec/fixtures/project_export.tar.gz') }
+    let(:user) { create(:user) }
+    let(:export) { create(:import_export_upload, project: project, export_file: export_file, user: user) }
+
+    before do
+      export
+
+      allow_next_instance_of(ProjectExportWorker) do |job|
+        allow(job).to receive(:jid).and_return(SecureRandom.hex(8))
+      end
+    end
+
+    it 'removes the export' do
+      project.remove_export_for_user(user)
+
+      expect(project.export_file_exists?(export.user)).to be_falsey
     end
   end
 
   context 'with export' do
-    let(:project) { create(:project, :with_export) }
+    let(:project) { create(:project) }
+    let(:export_file) { fixture_file_upload('spec/fixtures/project_export.tar.gz') }
+    let!(:export) { create(:import_export_upload, project: project, export_file: export_file) }
 
     it '#export_file_exists? returns true' do
-      expect(project.export_file_exists?).to be true
+      expect(project.export_file_exists?(export.user)).to be true
     end
 
     it '#export_archive_exists? returns false' do
-      expect(project.export_archive_exists?).to be true
+      expect(project.export_archive_exists?(export.user)).to be true
     end
   end
 
@@ -6055,7 +6083,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
     it 'runs the correct hooks' do
       expect(project.repository).to receive(:expire_content_cache).ordered
-      expect(project.repository).to receive(:remove_prohibited_branches).ordered
+      expect(project.repository).to receive(:remove_prohibited_refs).ordered
       expect(project.wiki.repository).to receive(:expire_content_cache)
       expect(import_state).to receive(:finish)
       expect(project).to receive(:reset_counters_and_iids)
@@ -7895,10 +7923,10 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
 
   describe '#export_in_progress?' do
     let(:project) { build(:project) }
-    let!(:project_export_job) { create(:project_export_job, project: project) }
+    let!(:project_export_job) { create(:project_export_job, project: project, user: project.creator) }
 
     context 'when project export is enqueued' do
-      it { expect(project.export_in_progress?).to be false }
+      it { expect(project.export_in_progress?(project_export_job.user)).to be false }
     end
 
     context 'when project export is in progress' do
@@ -7906,7 +7934,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project_export_job.start!
       end
 
-      it { expect(project.export_in_progress?).to be true }
+      it { expect(project.export_in_progress?(project_export_job.user)).to be true }
     end
 
     context 'when project export is completed' do
@@ -7914,16 +7942,16 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         finish_job(project_export_job)
       end
 
-      it { expect(project.export_in_progress?).to be false }
+      it { expect(project.export_in_progress?(project_export_job.user)).to be false }
     end
   end
 
   describe '#export_status' do
     let(:project) { build(:project) }
-    let!(:project_export_job) { create(:project_export_job, project: project) }
+    let!(:project_export_job) { create(:project_export_job, project: project, user: project.creator) }
 
     context 'when project export is enqueued' do
-      it { expect(project.export_status).to eq :queued }
+      it { expect(project.export_status(project.creator)).to eq :queued }
     end
 
     context 'when project export is failed' do
@@ -7931,7 +7959,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project_export_job.fail_op!
       end
 
-      it { expect(project.export_status).to eq :failed }
+      it { expect(project.export_status(project.creator)).to eq :failed }
     end
 
     context 'when project export is in progress' do
@@ -7939,7 +7967,7 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         project_export_job.start!
       end
 
-      it { expect(project.export_status).to eq :started }
+      it { expect(project.export_status(project.creator)).to eq :started }
     end
 
     context 'when project export is completed' do
@@ -7948,18 +7976,36 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
         allow(project).to receive(:export_file_exists?).and_return(true)
       end
 
-      it { expect(project.export_status).to eq :finished }
+      it { expect(project.export_status(project.creator)).to eq :finished }
     end
 
     context 'when project export is being regenerated' do
-      let!(:new_project_export_job) { create(:project_export_job, project: project) }
+      let!(:new_project_export_job) { create(:project_export_job, project: project, user: project.creator) }
 
       before do
         finish_job(project_export_job)
         allow(project).to receive(:export_file_exists?).and_return(true)
       end
 
-      it { expect(project.export_status).to eq :regeneration_in_progress }
+      it { expect(project.export_status(new_project_export_job.user)).to eq :regeneration_in_progress }
+    end
+  end
+
+  describe '#import_export_upload_by_user' do
+    let(:project) { create(:project) }
+    let(:user) { create(:user) }
+    let!(:import_export_upload) { create(:import_export_upload, project: project, user: user) }
+
+    it 'returns the import_export_upload' do
+      expect(project.import_export_upload_by_user(user)).to eq import_export_upload
+    end
+
+    context 'when import_export_upload does not exist for user' do
+      let(:import_export_upload) { create(:import_export_upload, project: project) }
+
+      it 'returns nil' do
+        expect(project.import_export_upload_by_user(user)).to be nil
+      end
     end
   end
 

@@ -10,7 +10,7 @@ RSpec.describe Gitlab::ImportExport::Saver do
   let(:export_path) { "#{archive_path}/export" }
   let(:shared) { project.import_export_shared }
 
-  subject { described_class.new(exportable: project, shared: shared) }
+  subject { described_class.new(exportable: project, shared: shared, user: project.creator) }
 
   before do
     allow(shared).to receive(:base_path).and_return(base_path)

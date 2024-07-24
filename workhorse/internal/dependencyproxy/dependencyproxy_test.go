@@ -30,7 +30,7 @@ type fakeUploadHandler struct {
 }
 
 const (
-	tokenJSON = `{"Token": "token", "Url": "`
+	tokenJSON = `{"ResponseHeaders": { "CustomHeader": ["Overridden"] }, "Token": "token", "Url": "`
 	urlJSON   = `/url"}`
 )
 
@@ -134,6 +134,8 @@ func TestSuccessfullRequest(t *testing.T) {
 		w.Header().Set("Content-Type", contentType)
 		w.Header().Set("Docker-Content-Digest", dockerContentDigest)
 		w.Header().Set("Overridden-Header", overriddenHeader)
+		w.Header().Set("CustomHeader", "Upstream")
+		w.Header().Set("AnotherCustomHeader", "Upstream")
 		w.Write(content)
 	}))
 	defer originResourceServer.Close()
@@ -161,6 +163,8 @@ func TestSuccessfullRequest(t *testing.T) {
 	require.Equal(t, string(content), response.Body.String())
 	require.Equal(t, contentLength, response.Header().Get("Content-Length"))
 	require.Equal(t, dockerContentDigest, response.Header().Get("Docker-Content-Digest"))
+	require.Equal(t, "Overridden", response.Header().Get("CustomHeader"))
+	require.Equal(t, "Upstream", response.Header().Get("AnotherCustomHeader"))
 }
 
 func TestValidUploadConfiguration(t *testing.T) {

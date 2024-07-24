@@ -297,7 +297,7 @@ class Project < ApplicationRecord
     inverse_of: :project
 
   has_one :import_state, autosave: true, class_name: 'ProjectImportState', inverse_of: :project
-  has_one :import_export_upload, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+  has_many :import_export_uploads, dependent: :destroy, inverse_of: :project # rubocop:disable Cop/ActiveRecordDependent -- Previously was has_one association, dependent: :destroy to be removed in a separate issue and cascade FK will be added
   has_many :relation_import_trackers, class_name: 'Projects::ImportExport::RelationImportTracker', inverse_of: :project
   has_many :export_jobs, class_name: 'ProjectExportJob'
   has_many :bulk_import_exports, class_name: 'BulkImports::Export', inverse_of: :project
@@ -2332,7 +2332,7 @@ class Project < ApplicationRecord
 
   def after_import
     repository.expire_content_cache
-    repository.remove_prohibited_branches
+    repository.remove_prohibited_refs
     wiki.repository.expire_content_cache
 
     DetectRepositoryLanguagesWorker.perform_async(id)
@@ -2410,61 +2410,75 @@ class Project < ApplicationRecord
     import_export_shared.archive_path
   end
 
-  def export_status
-    if regeneration_in_progress?
+  def export_status(user)
+    if regeneration_in_progress?(user)
       :regeneration_in_progress
-    elsif export_enqueued?
+    elsif export_enqueued?(user)
       :queued
-    elsif export_in_progress?
+    elsif export_in_progress?(user)
       :started
-    elsif export_file_exists?
+    elsif export_file_exists?(user)
       :finished
-    elsif export_failed?
+    elsif export_failed?(user)
       :failed
     else
       :none
     end
   end
 
-  def export_in_progress?
+  def export_in_progress?(user)
     strong_memoize(:export_in_progress) do
-      ::Projects::ExportJobFinder.new(self, { status: :started }).execute.present?
+      ::Projects::ExportJobFinder.new(self, user, { status: :started }).execute.present?
     end
   end
 
-  def export_enqueued?
+  def export_enqueued?(user)
     strong_memoize(:export_enqueued) do
-      ::Projects::ExportJobFinder.new(self, { status: :queued }).execute.present?
+      ::Projects::ExportJobFinder.new(self, user, { status: :queued }).execute.present?
     end
   end
 
-  def export_failed?
+  def export_failed?(user)
     strong_memoize(:export_failed) do
-      ::Projects::ExportJobFinder.new(self, { status: :failed }).execute.present?
+      ::Projects::ExportJobFinder.new(self, user, { status: :failed }).execute.present?
     end
   end
 
-  def regeneration_in_progress?
-    (export_enqueued? || export_in_progress?) && export_file_exists?
+  def regeneration_in_progress?(user)
+    (export_enqueued?(user) || export_in_progress?(user)) && export_file_exists?(user)
   end
 
   def remove_exports
-    return unless export_file_exists?
+    import_export_uploads.each do |import_export_upload|
+      next unless import_export_upload.export_file_exists?
+
+      import_export_upload.remove_export_file!
+      import_export_upload.save unless import_export_upload.destroyed?
+    end
+  end
+
+  def remove_export_for_user(user)
+    import_export_upload = import_export_upload_by_user(user)
+    return unless import_export_upload&.export_file_exists?
 
     import_export_upload.remove_export_file!
     import_export_upload.save unless import_export_upload.destroyed?
   end
 
-  def export_file_exists?
-    import_export_upload&.export_file_exists?
+  def import_export_upload_by_user(user)
+    import_export_uploads.find_by(user_id: user.id)
   end
 
-  def export_archive_exists?
-    import_export_upload&.export_archive_exists?
+  def export_file_exists?(user)
+    import_export_upload_by_user(user)&.export_file_exists?
   end
 
-  def export_file
-    import_export_upload&.export_file
+  def export_archive_exists?(user)
+    import_export_upload_by_user(user)&.export_archive_exists?
+  end
+
+  def export_file(user)
+    import_export_upload_by_user(user)&.export_file
   end
 
   def full_path_slug

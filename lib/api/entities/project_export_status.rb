@@ -7,8 +7,10 @@ module API
 
       expose :export_status, documentation: {
         type: 'string', example: 'finished', values: %w[queued started finished failed]
-      }
-      expose :_links, if: lambda { |project, _options| project.export_status == :finished } do
+      } do |project, options|
+        project.export_status(options[:current_user])
+      end
+      expose :_links, if: lambda { |project, options| project.export_status(options[:current_user]) == :finished } do
         expose :api_url, documentation: {
           type: 'string',
           example: 'https://gitlab.example.com/api/v4/projects/1/export/download'

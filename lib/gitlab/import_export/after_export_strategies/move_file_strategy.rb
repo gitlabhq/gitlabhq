@@ -12,7 +12,7 @@ module Gitlab
         private
 
         def strategy_execute
-          FileUtils.mv(project.export_file.path, @archive_path)
+          FileUtils.mv(project.export_file(current_user).path, @archive_path)
         end
       end
     end
