@@ -2,6 +2,22 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 17.2.1 (2024-07-24)
+
+### Fixed (1 change)
+
+- [Fix PEP when SEC is available](https://gitlab.com/gitlab-org/security/gitlab/-/commit/5cbd3187cab87e736c260d374f75cf849997d66c) **GitLab Enterprise Edition**
+
+### Security (7 changes)
+
+- [Refactor import_export_upload to be user-based](https://gitlab.com/gitlab-org/security/gitlab/-/commit/07257efc00d8f4984eddf9576debd62edc6d485d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4269))
+- [Fix for private txt artifacts being accessible through the artifacts/browse link](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4ccfc7bb6d3b2aca48e6c9ab5580c92cb2df85f9) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4295))
+- [Attribute BulkImport::Export to a particular user](https://gitlab.com/gitlab-org/security/gitlab/-/commit/53f8ad67517a92f1e914858c07829ec57e261cc1) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4284))
+- [Don't include project-level analytics settings in DOM](https://gitlab.com/gitlab-org/security/gitlab/-/commit/639bf845ed2537e44487d8c9e804ec9ac4844045) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4271))
+- [Fix for private dotenv artifacts not accessible to downstream jobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/49a4b36f4155702f8277e043d1d1c146b5a52e01) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4275))
+- [Do not allow script execution on dependency responses](https://gitlab.com/gitlab-org/security/gitlab/-/commit/e1a84f999c73dab1ce45e9027738a59be977304e) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4276))
+- [Remove prohibited tags after import](https://gitlab.com/gitlab-org/security/gitlab/-/commit/41db34926ea53f45215294138da716fba4ec03dd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4268))
+
 ## 17.2.0 (2024-07-17)
 
 ### Added (159 changes)
