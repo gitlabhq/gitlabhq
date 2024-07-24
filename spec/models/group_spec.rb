@@ -44,6 +44,7 @@ RSpec.describe Group, feature_category: :groups_and_projects do
     it { is_expected.to have_many(:debian_distributions).class_name('Packages::Debian::GroupDistribution').dependent(:destroy) }
     it { is_expected.to have_many(:daily_build_group_report_results).class_name('Ci::DailyBuildGroupReportResult') }
     it { is_expected.to have_many(:group_callouts).class_name('Users::GroupCallout').with_foreign_key(:group_id) }
+    it { is_expected.to have_many(:import_export_uploads).dependent(:destroy) }
 
     it { is_expected.to have_many(:bulk_import_exports).class_name('BulkImports::Export') }
 
@@ -3279,14 +3280,34 @@ RSpec.describe Group, feature_category: :groups_and_projects do
   end
 
   context 'with export' do
-    let(:group) { create(:group, :with_export) }
+    let(:group) { create(:group) }
+    let(:export_file) { fixture_file_upload('spec/fixtures/group_export.tar.gz') }
+    let(:export) { create(:import_export_upload, group: group, export_file: export_file) }
 
     it '#export_file_exists? returns true' do
-      expect(group.export_file_exists?).to be true
+      expect(group.export_file_exists?(export.user)).to be true
     end
 
     it '#export_archive_exists? returns true' do
-      expect(group.export_archive_exists?).to be true
+      expect(group.export_archive_exists?(export.user)).to be true
+    end
+  end
+
+  describe '#import_export_upload_by_user' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let!(:import_export_upload) { create(:import_export_upload, group: group, user: user) }
+
+    it 'returns the import_export_upload' do
+      expect(group.import_export_upload_by_user(user)).to eq import_export_upload
+    end
+
+    context 'when import_export_upload does not exist for user' do
+      let(:import_export_upload) { create(:import_export_upload, group: group) }
+
+      it 'returns nil' do
+        expect(group.import_export_upload_by_user(user)).to be nil
+      end
     end
   end
 

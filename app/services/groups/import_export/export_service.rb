@@ -23,7 +23,7 @@ module Groups
       def execute
         validate_user_permissions
 
-        remove_existing_export! if group.export_file_exists?
+        remove_existing_export! if group.export_file_exists?(current_user)
 
         save!
       ensure
@@ -44,7 +44,7 @@ module Groups
       end
 
       def remove_existing_export!
-        import_export_upload = group.import_export_upload
+        import_export_upload = group.import_export_upload_by_user(current_user)
 
         import_export_upload.remove_export_file!
         import_export_upload.save
@@ -90,7 +90,7 @@ module Groups
       end
 
       def file_saver
-        Gitlab::ImportExport::Saver.new(exportable: group, shared: shared)
+        Gitlab::ImportExport::Saver.new(exportable: group, shared: shared, user: current_user)
       end
 
       def remove_archive_tmp_dir

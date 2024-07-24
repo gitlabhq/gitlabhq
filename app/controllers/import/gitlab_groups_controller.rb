@@ -17,7 +17,7 @@ class Import::GitlabGroupsController < ApplicationController
       .except(:file)
       .merge(
         visibility_level: closest_allowed_visibility_level,
-        import_export_upload: ImportExportUpload.new(import_file: group_params[:file])
+        import_export_upload: ImportExportUpload.new(import_file: group_params[:file], user: current_user)
       )
       .with_defaults(organization_id: Current.organization_id)
 

@@ -45,9 +45,9 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
     end
 
     it 'exports a project successfully', :sidekiq_inline do
-      export_project_and_download_file(page, project)
+      export_project_and_download_file(page, project, user)
 
-      in_directory_with_expanded_export(project) do |exit_status, tmpdir|
+      in_directory_with_expanded_export(project, user) do |exit_status, tmpdir|
         expect(exit_status).to eq(0)
 
         project_json_path = File.join(tmpdir, 'tree', 'project.json')
@@ -72,7 +72,7 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
     end
   end
 
-  def export_project_and_download_file(page, project)
+  def export_project_and_download_file(page, project, user)
     visit edit_project_path(project)
 
     expect(page).to have_content('Export project')
@@ -82,8 +82,8 @@ RSpec.describe 'Import/Export - project export integration test', :js, feature_c
     visit edit_project_path(project)
 
     expect(page).to have_content('Download export')
-    expect(project.export_status).to eq(:finished)
-    expect(project.export_file.path).to include('tar.gz')
+    expect(project.export_status(user)).to eq(:finished)
+    expect(project.export_file(user).path).to include('tar.gz')
   end
 
   def failure_message(key_found, parent, sensitive_word)

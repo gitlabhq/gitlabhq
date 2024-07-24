@@ -10,7 +10,7 @@ RSpec.describe Gitlab::ImportExport::AfterExportStrategies::BaseAfterExportStrat
   end
 
   let!(:service) { described_class.new }
-  let!(:project) { create(:project, :with_export) }
+  let!(:project) { create(:project, :with_export, creator: user) }
   let(:shared) { project.import_export_shared }
   let!(:user) { create(:user) }
 

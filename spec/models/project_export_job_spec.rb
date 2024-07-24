@@ -21,9 +21,11 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
     let_it_be(:seven_days_ago) { current_time - 7.days }
     let_it_be(:five_days_ago) { current_time - 5.days }
 
-    let_it_be(:recent_export_job) { create(:project_export_job, updated_at: five_days_ago) }
+    let_it_be(:user) { create(:user) }
+
+    let_it_be(:recent_export_job) { create(:project_export_job, updated_at: five_days_ago, user: user) }
     let_it_be(:week_old_export_job) { create(:project_export_job, updated_at: seven_days_ago) }
-    let_it_be(:prunable_export_job_1) { create(:project_export_job, updated_at: eight_days_ago) }
+    let_it_be(:prunable_export_job_1) { create(:project_export_job, updated_at: eight_days_ago, user: user) }
     let_it_be(:prunable_export_job_2) { create(:project_export_job, updated_at: eight_days_ago) }
 
     around do |example|
@@ -52,6 +54,12 @@ RSpec.describe ProjectExportJob, feature_category: :importers, type: :model do
         export_jobs_with_same_updated_at = described_class.where(updated_at: eight_days_ago).order_by_updated_at
 
         expect(export_jobs_with_same_updated_at[0].id).to be < export_jobs_with_same_updated_at[1].id
+      end
+    end
+
+    describe '.by_user_id' do
+      it 'returns export_jobs filtered by user_id' do
+        expect(described_class.by_user_id(user.id)).to match_array([recent_export_job, prunable_export_job_1])
       end
     end
   end

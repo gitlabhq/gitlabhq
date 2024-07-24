@@ -99,7 +99,7 @@ namespace :gitlab do
       project.reset
 
       Projects::ImportExport::ExportService.new(project, admin).execute
-      downloader.call(project.export_file, template.archive_path)
+      downloader.call(project.export_file(admin), template.archive_path)
 
       unless Projects::DestroyService.new(project, admin).execute
         puts "Failed to destroy project #{template.name} (but namespace will be cleaned up later)"
