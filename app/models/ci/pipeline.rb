@@ -4,6 +4,7 @@ module Ci
   class Pipeline < Ci::ApplicationRecord
     include Ci::Partitionable
     include Ci::HasStatus
+    include Ci::HasCompletionReason
     include Importable
     include AfterCommitQueue
     include Presentable

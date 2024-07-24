@@ -60,15 +60,13 @@ RSpec.describe Gitlab::Ci::Status::Bridge::Factory, feature_category: :continuou
 
     context 'failed with downstream_pipeline_creation_failed' do
       before do
-        bridge.options = { downstream_errors: ['Pipeline will not run for the selected trigger. ' \
-            'The rules configuration prevented any jobs from being added to the pipeline.', 'other error'] }
+        bridge.options = { downstream_errors: [Ci::Pipeline.rules_failure_message, 'other error'] }
         bridge.failure_reason = 'downstream_pipeline_creation_failed'
       end
 
       it 'fabricates correct status_tooltip' do
         expect(status.status_tooltip).to eq(
-          "#{s_('CiStatusLabel|Failed')} - (downstream pipeline can not be created, Pipeline will not run for the selected trigger. " \
-          "The rules configuration prevented any jobs from being added to the pipeline., other error)"
+          "#{s_('CiStatusLabel|Failed')} - (downstream pipeline can not be created, #{Ci::Pipeline.rules_failure_message}, other error)"
         )
       end
     end

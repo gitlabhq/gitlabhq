@@ -63541,9 +63541,6 @@ msgstr ""
 msgid "mrWidget|Added to the merge train by %{merge_author}"
 msgstr ""
 
-msgid "mrWidget|Added to the merge train. There are %{mergeTrainPosition} merge requests waiting to be merged"
-msgstr ""
-
 msgid "mrWidget|An error occurred while removing your approval."
 msgstr ""
 

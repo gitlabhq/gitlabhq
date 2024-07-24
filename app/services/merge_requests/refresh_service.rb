@@ -193,7 +193,12 @@ module MergeRequests
     def abort_auto_merges(merge_request)
       return unless abort_auto_merges?(merge_request)
 
-      abort_auto_merge(merge_request, 'source branch was updated')
+      learn_more_url = Rails.application.routes.url_helpers.help_page_url(
+        'ci/pipelines/merge_trains',
+        anchor: 'merge-request-dropped-from-the-merge-train'
+      )
+
+      abort_auto_merge(merge_request, "the source branch was updated. [Learn more](#{learn_more_url}).")
     end
 
     def abort_ff_merge_requests_with_auto_merges

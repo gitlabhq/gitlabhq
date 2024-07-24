@@ -19,8 +19,7 @@ module Gitlab
 
             if no_pipeline_to_create?
               return error(
-                'Pipeline will not run for the selected trigger. ' \
-                  'The rules configuration prevented any jobs from being added to the pipeline.',
+                ::Ci::Pipeline.rules_failure_message,
                 failure_reason: :filtered_by_rules
               )
             end

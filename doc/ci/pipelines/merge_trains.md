@@ -145,7 +145,7 @@ To add a merge request to a merge train:
    - When a pipeline is running, [**Set to auto-merge**](../../user/project/merge_requests/auto_merge.md).
 
 The merge request's merge train status displays under the pipeline widget with a
-message similar to `Added to the merge train. There are 2 merge requests waiting to be merged.`
+message similar to `This merge request is 2 of 3 in queue.`
 
 Each merge train can run a maximum of twenty pipelines in parallel. If you add more than
 twenty merge requests to the merge train, the extra merge requests are queued, waiting

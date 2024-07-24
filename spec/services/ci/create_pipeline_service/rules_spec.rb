@@ -1309,7 +1309,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         let(:ref) { 'refs/heads/wip' }
 
         it 'invalidates the pipeline with a workflow rules error' do
-          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline.errors[:base]).to include(Ci::Pipeline.workflow_rules_failure_message)
           expect(pipeline).not_to be_persisted
         end
       end
@@ -1318,7 +1318,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         let(:ref) { 'refs/heads/fix' }
 
         it 'invalidates the pipeline with a workflow rules error' do
-          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline.errors[:base]).to include(Ci::Pipeline.workflow_rules_failure_message)
           expect(pipeline).not_to be_persisted
         end
       end
@@ -1375,7 +1375,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         let(:ref) { 'refs/heads/feature_conflict' }
 
         it 'invalidates the pipeline with a workflow rules error' do
-          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline.errors[:base]).to include(Ci::Pipeline.workflow_rules_failure_message)
           expect(pipeline).not_to be_persisted
         end
       end
@@ -1401,8 +1401,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         let(:ref) { 'refs/heads/master' }
 
         it 'invalidates the pipeline with an empty jobs error' do
-          expect(pipeline.errors[:base]).to include('Pipeline will not run for the selected trigger. ' \
-            'The rules configuration prevented any jobs from being added to the pipeline.')
+          expect(pipeline.errors[:base]).to include(Ci::Pipeline.rules_failure_message)
           expect(pipeline).not_to be_persisted
         end
       end
@@ -1420,7 +1419,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         let(:ref) { 'refs/heads/fix' }
 
         it 'invalidates the pipeline with a workflow rules error' do
-          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline.errors[:base]).to include(Ci::Pipeline.workflow_rules_failure_message)
           expect(pipeline).not_to be_persisted
         end
       end
@@ -1429,7 +1428,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
         let(:ref) { 'refs/heads/wip' }
 
         it 'invalidates the pipeline with a workflow rules error' do
-          expect(pipeline.errors[:base]).to include('Pipeline filtered out by workflow rules.')
+          expect(pipeline.errors[:base]).to include(Ci::Pipeline.workflow_rules_failure_message)
           expect(pipeline).not_to be_persisted
         end
       end
@@ -1621,7 +1620,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
           end
 
           it 'creates the pipeline with a job' do
-            expect(pipeline.errors.full_messages).to eq(['Pipeline filtered out by workflow rules.'])
+            expect(pipeline.errors.full_messages).to eq([Ci::Pipeline.workflow_rules_failure_message])
             expect(response).to be_error
             expect(pipeline).not_to be_persisted
           end

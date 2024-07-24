@@ -5,7 +5,10 @@ import { throttle, isEmpty } from 'lodash';
 // eslint-disable-next-line no-restricted-imports
 import { mapGetters, mapState, mapActions } from 'vuex';
 import JobLogTopBar from 'ee_else_ce/ci/job_details/components/job_log_top_bar.vue';
+import RootCauseAnalysisButton from 'ee_else_ce/ci/job_details/components/root_cause_analysis_button.vue';
 import SafeHtml from '~/vue_shared/directives/safe_html';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import glAbilitiesMixin from '~/vue_shared/mixins/gl_abilities_mixin';
 import { isScrolledToBottom } from '~/lib/utils/scroll_utils';
 import { __, sprintf } from '~/locale';
 import delayedJobMixin from '~/ci/mixins/delayed_job_mixin';
@@ -29,6 +32,7 @@ export default {
     GlIcon,
     Log,
     JobLogTopBar,
+    RootCauseAnalysisButton,
     StuckBlock,
     UnmetPrerequisitesBlock,
     Sidebar,
@@ -39,7 +43,7 @@ export default {
   directives: {
     SafeHtml,
   },
-  mixins: [delayedJobMixin],
+  mixins: [delayedJobMixin, glAbilitiesMixin(), glFeatureFlagMixin()],
   props: {
     artifactHelpUrl: {
       type: String,
@@ -131,6 +135,13 @@ export default {
     },
     jobConfirmationMessage() {
       return this.job.status?.action?.confirmation_message;
+    },
+    jobFailed() {
+      const { status } = this.job;
+
+      const failedGroups = ['failed', 'failed-with-warnings'];
+
+      return failedGroups.includes(status.group);
     },
   },
   watch: {
@@ -314,6 +325,7 @@ export default {
             @exitFullscreen="exitFullscreen"
           />
           <log :search-results="searchResults" />
+          <root-cause-analysis-button :job-failed="jobFailed" />
         </div>
         <!-- EO job log -->
 

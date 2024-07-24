@@ -109,7 +109,7 @@ Pod termination raises two important concerns:
 - Data/Repository corruption
 - Service disruption
 
-This section focuses on reducing the blast radius and protecting the service as a whole.
+This section focuses on reducing the scope of impact and protecting the service as a whole.
 
 #### Constrain Git processes resource usage
 
