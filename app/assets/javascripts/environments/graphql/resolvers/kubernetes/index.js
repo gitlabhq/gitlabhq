@@ -1,4 +1,5 @@
 import { CoreV1Api, AppsV1Api, Configuration } from '@gitlab/cluster-client';
+import { __ } from '~/locale';
 import {
   getK8sPods,
   watchWorkloadItems,
@@ -39,6 +40,24 @@ const watchDeployments = ({ configuration, namespace, client }) => {
   watchWorkloadItems({ client, query, configuration, namespace, watchPath, queryField });
 };
 
+const buildKubernetesErrors = (errors = []) => ({
+  errors,
+  __typename: 'LocalKubernetesErrors',
+});
+
+const handleKubernetesMutationError = async (err) => {
+  const defaultError = __('Something went wrong. Please try again.');
+  if (!err.response) {
+    return err.message || defaultError;
+  }
+
+  const errorData = await err.response.json();
+  if (errorData.message) {
+    return errorData.message;
+  }
+  return defaultError;
+};
+
 export const kubernetesMutations = {
   reconnectToCluster(_, { configuration, namespace, resourceTypeParam }, { client }) {
     const errors = [];
@@ -63,6 +82,21 @@ export const kubernetesMutations = {
     }
 
     return { errors };
+  },
+
+  deleteKubernetesPod(_, { configuration, namespace, podName }) {
+    const config = new Configuration(configuration);
+    const coreV1Api = new CoreV1Api(config);
+
+    return coreV1Api
+      .deleteCoreV1NamespacedPod({ namespace, name: podName })
+      .then(() => {
+        return buildKubernetesErrors();
+      })
+      .catch(async (err) => {
+        const error = await handleKubernetesMutationError(err);
+        return buildKubernetesErrors([error]);
+      });
   },
 };
 

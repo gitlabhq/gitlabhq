@@ -18,7 +18,6 @@ describe('WorkItemCreatedUpdated component', () => {
   Vue.use(VueApollo);
 
   const findCreatedAt = () => wrapper.find('[data-testid="work-item-created"]');
-  const findUpdatedAt = () => wrapper.find('[data-testid="work-item-updated"]');
 
   const findCreatedAtText = () => findCreatedAt().text().replace(/\s+/g, ' ');
   const findWorkItemTypeIcon = () => wrapper.findComponent(WorkItemTypeIcon);
@@ -100,18 +99,6 @@ describe('WorkItemCreatedUpdated component', () => {
     await createComponent({ author: null });
 
     expect(findCreatedAtText()).toBe('created');
-  });
-
-  it('shows updated time', async () => {
-    await createComponent();
-
-    expect(findUpdatedAt().exists()).toBe(true);
-  });
-
-  it('does not show updated time for new work items', async () => {
-    await createComponent({ updatedAt: null });
-
-    expect(findUpdatedAt().exists()).toBe(false);
   });
 
   describe('confidential badge', () => {

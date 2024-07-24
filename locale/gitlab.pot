@@ -20468,6 +20468,9 @@ msgstr ""
 msgid "Environments|An error occurred while stopping the environment, please try again"
 msgstr ""
 
+msgid "Environments|Are you sure you want to delete %{podName}? This action cannot be undone."
+msgstr ""
+
 msgid "Environments|Are you sure you want to stop this environment?"
 msgstr ""
 
@@ -20475,6 +20478,9 @@ msgid "Environments|Auto stop"
 msgstr ""
 
 msgid "Environments|Auto stops %{autoStopAt}"
+msgstr ""
+
+msgid "Environments|Cancel"
 msgstr ""
 
 msgid "Environments|Clean up"
@@ -20492,10 +20498,16 @@ msgstr ""
 msgid "Environments|Delete"
 msgstr ""
 
+msgid "Environments|Delete %{podName}?"
+msgstr ""
+
 msgid "Environments|Delete '%{environmentName}'?"
 msgstr ""
 
 msgid "Environments|Delete environment"
+msgstr ""
+
+msgid "Environments|Delete pod"
 msgstr ""
 
 msgid "Environments|Deleting the '%{environmentName}' environment cannot be undone. Do you want to delete it anyway?"
@@ -20586,6 +20598,9 @@ msgid "Environments|Open live environment"
 msgstr ""
 
 msgid "Environments|Or select namespace: %{searchTerm}"
+msgstr ""
+
+msgid "Environments|Pod deleted successfully"
 msgstr ""
 
 msgid "Environments|Re-deploy environment"
@@ -21087,6 +21102,9 @@ msgid "Error while migrating %{upload_id}: %{error_message}"
 msgstr ""
 
 msgid "Error with Akismet. Please check the logs for more info."
+msgstr ""
+
+msgid "Error: "
 msgstr ""
 
 msgid "Error: %{error_message}"
@@ -30333,6 +30351,9 @@ msgid "KubernetesDashboard|DaemonSets"
 msgstr ""
 
 msgid "KubernetesDashboard|Dashboard"
+msgstr ""
+
+msgid "KubernetesDashboard|Delete Pod"
 msgstr ""
 
 msgid "KubernetesDashboard|Deployment"

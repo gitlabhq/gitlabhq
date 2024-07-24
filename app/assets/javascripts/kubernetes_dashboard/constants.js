@@ -94,6 +94,11 @@ export const PODS_TABLE_FIELDS = [
     label: s__('KubernetesDashboard|Logs'),
     sortable: false,
   },
+  {
+    key: 'actions',
+    label: '',
+    sortable: false,
+  },
 ];
 
 export const STATUS_TRUE = 'True';

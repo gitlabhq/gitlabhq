@@ -159,4 +159,9 @@ extend type Mutation {
   setEnvironmentToStop(environment: LocalEnvironmentInput): LocalErrors
   setEnvironmentToChangeCanary(environment: LocalEnvironmentInput, weight: Int): LocalErrors
   action(environment: LocalEnvironmentInput): LocalErrors
+  deleteKubernetesPod(
+    configuration: LocalConfiguration
+    namespace: String
+    podName: String
+  ): LocalErrors
 }

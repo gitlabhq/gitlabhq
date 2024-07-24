@@ -41,9 +41,6 @@ export default {
     createdAt() {
       return this.workItem?.createdAt || '';
     },
-    updatedAt() {
-      return this.workItem?.updatedAt || '';
-    },
     author() {
       return this.workItem?.author ?? {};
     },
@@ -124,18 +121,6 @@ export default {
       <gl-sprintf v-else-if="createdAt" :message="__('created %{timeAgo}')">
         <template #timeAgo>
           <time-ago-tooltip :time="createdAt" />
-        </template>
-      </gl-sprintf>
-    </span>
-
-    <span
-      v-if="updatedAt"
-      class="gl-ml-5 gl-hidden sm:gl-inline-block gl-align-middle"
-      data-testid="work-item-updated"
-    >
-      <gl-sprintf :message="__('Updated %{timeAgo}')">
-        <template #timeAgo>
-          <time-ago-tooltip :time="updatedAt" />
         </template>
       </gl-sprintf>
     </span>

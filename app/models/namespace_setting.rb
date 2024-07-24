@@ -10,8 +10,8 @@ class NamespaceSetting < ApplicationRecord
   ignore_column :code_suggestions, remove_with: '17.0', remove_after: '2024-05-16'
   ignore_column :toggle_security_policies_policy_scope, remove_with: '17.0', remove_after: '2024-05-16'
   ignore_column :lock_toggle_security_policies_policy_scope, remove_with: '17.2', remove_after: '2024-07-12'
+  ignore_columns %i[toggle_security_policy_custom_ci lock_toggle_security_policy_custom_ci], remove_with: '17.5', remove_after: '2024-08-15'
 
-  cascading_attr :toggle_security_policy_custom_ci
   cascading_attr :math_rendering_limits_enabled
 
   scope :for_namespaces, ->(namespaces) { where(namespace: namespaces) }

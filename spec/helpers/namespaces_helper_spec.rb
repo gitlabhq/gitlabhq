@@ -43,7 +43,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
   end
 
   describe '#cascading_namespace_settings_popover_data' do
-    attribute = :toggle_security_policy_custom_ci
+    attribute = :math_rendering_limits_enabled
 
     subject do
       helper.cascading_namespace_settings_popover_data(
@@ -94,7 +94,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
   end
 
   describe '#cascading_namespace_setting_locked?' do
-    let(:attribute) { :toggle_security_policy_custom_ci }
+    let(:attribute) { :math_rendering_limits_enabled }
 
     context 'when `group` argument is `nil`' do
       it 'returns `false`' do
@@ -110,13 +110,13 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
     context 'when `*_locked?` method does exist' do
       before do
-        allow(admin_group.namespace_settings).to receive(:toggle_security_policy_custom_ci_locked?).and_return(true)
+        allow(admin_group.namespace_settings).to receive(:"#{attribute}_locked?").and_return(true)
       end
 
       it 'calls corresponding `*_locked?` method' do
         helper.cascading_namespace_setting_locked?(attribute, admin_group, include_self: true)
 
-        expect(admin_group.namespace_settings).to have_received(:toggle_security_policy_custom_ci_locked?).with(include_self: true)
+        expect(admin_group.namespace_settings).to have_received(:"#{attribute}_locked?").with(include_self: true)
       end
     end
   end

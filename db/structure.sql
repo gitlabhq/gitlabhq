@@ -29749,8 +29749,6 @@ CREATE INDEX index_vulnerability_occurrences_on_location_k8s_agent_id ON vulnera
 
 CREATE INDEX index_vulnerability_occurrences_on_location_k8s_cluster_id ON vulnerability_occurrences USING gin ((((location -> 'kubernetes_resource'::text) -> 'cluster_id'::text))) WHERE (report_type = 7);
 
-CREATE INDEX index_vulnerability_occurrences_on_primary_identifier_id ON vulnerability_occurrences USING btree (primary_identifier_id);
-
 CREATE INDEX index_vulnerability_occurrences_on_scanner_id ON vulnerability_occurrences USING btree (scanner_id);
 
 CREATE UNIQUE INDEX index_vulnerability_occurrences_on_uuid_1 ON vulnerability_occurrences USING btree (uuid);

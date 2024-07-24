@@ -25,7 +25,6 @@ RSpec/ExampleWording:
     - 'ee/spec/services/merge_requests/reset_approvals_service_spec.rb'
     - 'ee/spec/services/quick_actions/interpret_service_spec.rb'
     - 'ee/spec/services/security/ingestion/schedule_mark_dropped_as_resolved_service_spec.rb'
-    - 'ee/spec/services/security/security_orchestration_policies/ci_action/custom_spec.rb'
     - 'ee/spec/workers/ai/store_repository_xray_worker_spec.rb'
     - 'qa/spec/specs/helpers/context_selector_spec.rb'
     - 'spec/controllers/projects/milestones_controller_spec.rb'

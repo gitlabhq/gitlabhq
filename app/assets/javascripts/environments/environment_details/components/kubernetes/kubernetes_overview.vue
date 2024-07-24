@@ -24,6 +24,7 @@ import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
+import DeletePodModal from './delete_pod_modal.vue';
 
 export default {
   components: {
@@ -36,6 +37,7 @@ export default {
     GlLink,
     GlAlert,
     GlDrawer,
+    DeletePodModal,
   },
   inject: ['kasTunnelUrl'],
   props: {
@@ -104,6 +106,7 @@ export default {
       fluxApiError: '',
       selectedItem: {},
       showDetailsDrawer: false,
+      podToDelete: {},
     };
   },
   computed: {
@@ -181,6 +184,12 @@ export default {
         this.$refs.status_bar?.$refs?.flux_status_badge?.$el?.focus();
       });
     },
+    onDeletePod(pod) {
+      this.podToDelete = pod;
+    },
+    onCloseModal() {
+      this.podToDelete = {};
+    },
   },
   i18n: {
     emptyTitle: s__('Environment|No Kubernetes clusters configured'),
@@ -230,6 +239,13 @@ export default {
       @update-failed-state="handleFailedState"
       @show-resource-details="openDetailsDrawer"
       @remove-selection="closeDetailsDrawer"
+      @delete-pod="onDeletePod"
+    />
+
+    <delete-pod-modal
+      :pod="podToDelete"
+      :configuration="k8sAccessConfiguration"
+      @close="onCloseModal"
     />
 
     <gl-drawer

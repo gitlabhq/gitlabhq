@@ -9,6 +9,7 @@ import KubernetesOverview from '~/environments/environment_details/components/ku
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
 import KubernetesAgentInfo from '~/environments/environment_details/components/kubernetes/kubernetes_agent_info.vue';
 import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
+import DeletePodModal from '~/environments/environment_details/components/kubernetes/delete_pod_modal.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { mockPodsTableItems } from 'jest/kubernetes_dashboard/graphql/mock_data';
 import { agent, kubernetesNamespace } from '../../../graphql/mock_data';
@@ -78,6 +79,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
   const findAlert = () => wrapper.findComponent(GlAlert);
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkloadDetails = () => wrapper.findComponent(WorkloadDetails);
+  const findDeletePodModal = () => wrapper.findComponent(DeletePodModal);
 
   describe('when the agent data is present', () => {
     it('renders kubernetes agent info', () => {
@@ -353,6 +355,27 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         it('renders a title with the selected item name', () => {
           expect(findDrawer().text()).toContain(fluxKustomization.metadata.name);
         });
+      });
+    });
+
+    describe('pod delete modal', () => {
+      beforeEach(() => {
+        wrapper = createWrapper();
+      });
+
+      it('is rendered with correct props', () => {
+        expect(findDeletePodModal().props()).toEqual({
+          pod: {},
+          configuration,
+        });
+      });
+
+      it('provides correct pod when emitted from the tabs', async () => {
+        const podToDelete = mockPodsTableItems[0];
+        findKubernetesTabs().vm.$emit('delete-pod', podToDelete);
+        await nextTick();
+
+        expect(findDeletePodModal().props('pod')).toEqual(podToDelete);
       });
     });
 

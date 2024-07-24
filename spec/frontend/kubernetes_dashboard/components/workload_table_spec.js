@@ -1,6 +1,7 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
+import { GlTable, GlBadge, GlPagination, GlDisclosureDropdown } from '@gitlab/ui';
 import { nextTick } from 'vue';
+import { cloneDeep } from 'lodash';
 import { stubComponent } from 'helpers/stub_component';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import {
@@ -34,6 +35,7 @@ const findAllBadges = () => wrapper.findAllComponents(GlBadge);
 const findBadge = (at) => findAllBadges().at(at);
 const findPagination = () => wrapper.findComponent(GlPagination);
 const findAllPodLogsButtons = () => wrapper.findAllComponents(PodLogsButton);
+const findAllActionsDropdowns = () => wrapper.findAllComponents(GlDisclosureDropdown);
 
 describe('Workload table component', () => {
   it('renders GlTable component with the default fields if no fields specified in props', () => {
@@ -102,7 +104,7 @@ describe('Workload table component', () => {
 
     describe('with containers field specified', () => {
       const containers = [{ name: 'my-container-1' }, { name: 'my-container-2' }];
-      const itemsWithContainers = mockPodsTableItems;
+      const itemsWithContainers = cloneDeep(mockPodsTableItems);
       itemsWithContainers[0].containers = containers;
 
       beforeEach(() => {
@@ -120,6 +122,47 @@ describe('Workload table component', () => {
           namespace: pod.namespace,
           containers,
         });
+      });
+    });
+
+    describe('with actions field specified', () => {
+      const actions = [
+        {
+          name: 'delete-pod',
+          text: 'Delete Pod',
+        },
+      ];
+      const podItemsWithActions = mockPodsTableItems.map((item) => {
+        return {
+          ...item,
+          actions,
+        };
+      });
+      const lastField = PODS_TABLE_FIELDS.length - 1;
+
+      beforeEach(() => {
+        createWrapper({ items: podItemsWithActions, fields: PODS_TABLE_FIELDS });
+      });
+
+      it('renders actions column', () => {
+        expect(findTable().props('fields')[lastField]).toEqual({
+          key: 'actions',
+          label: '',
+          sortable: false,
+        });
+      });
+
+      it('renders actions dropdown for each row', () => {
+        expect(findAllActionsDropdowns()).toHaveLength(podItemsWithActions.length);
+      });
+
+      it('renders correct props for each dropdown', () => {
+        expect(findAllActionsDropdowns().at(0).attributes('title')).toEqual('Actions');
+        expect(findAllActionsDropdowns().at(0).props('items')).toMatchObject([
+          {
+            text: 'Delete Pod',
+          },
+        ]);
       });
     });
   });

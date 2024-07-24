@@ -372,4 +372,46 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       },
     );
   });
+
+  describe('deleteKubernetesPod', () => {
+    const mockPodsDeleteFn = jest.fn().mockImplementation(() => {
+      return Promise.resolve({ errors: [] });
+    });
+    const podToDelete = 'my-pod';
+
+    it('should request delete pod API from the cluster_client library', async () => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'deleteCoreV1NamespacedPod')
+        .mockImplementation(mockPodsDeleteFn);
+
+      const result = await mockResolvers.Mutation.deleteKubernetesPod(null, {
+        configuration,
+        namespace,
+        podName: podToDelete,
+      });
+
+      expect(mockPodsDeleteFn).toHaveBeenCalledWith({ name: podToDelete, namespace });
+      expect(result).toEqual({
+        __typename: 'LocalKubernetesErrors',
+        errors: [],
+      });
+    });
+
+    it('should return errors array if the API call fails', async () => {
+      jest
+        .spyOn(CoreV1Api.prototype, 'deleteCoreV1NamespacedPod')
+        .mockRejectedValue({ message: CLUSTER_AGENT_ERROR_MESSAGES['not found'] });
+
+      const result = await mockResolvers.Mutation.deleteKubernetesPod(null, {
+        configuration,
+        namespace,
+        podName: podToDelete,
+      });
+
+      expect(result).toEqual({
+        __typename: 'LocalKubernetesErrors',
+        errors: [CLUSTER_AGENT_ERROR_MESSAGES['not found']],
+      });
+    });
+  });
 });

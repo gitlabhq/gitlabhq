@@ -1,5 +1,5 @@
 <script>
-import { GlTable, GlBadge, GlPagination } from '@gitlab/ui';
+import { GlTable, GlBadge, GlPagination, GlDisclosureDropdown } from '@gitlab/ui';
 import { __ } from '~/locale';
 import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
 import {
@@ -14,6 +14,7 @@ export default {
     GlBadge,
     GlPagination,
     PodLogsButton,
+    GlDisclosureDropdown,
   },
   props: {
     items: {
@@ -61,9 +62,22 @@ export default {
         this.$emit('remove-selection');
       }
     },
+    getActions(item) {
+      const actions = item.actions || [];
+      return actions.map((action) => {
+        return {
+          text: action.text,
+          extraAttrs: { class: action.class },
+          action: () => {
+            this.$emit(action.name, item);
+          },
+        };
+      });
+    },
   },
   i18n: {
     emptyText: __('No results found'),
+    actions: __('Actions'),
   },
   WORKLOAD_STATUS_BADGE_VARIANTS,
 };
@@ -97,6 +111,18 @@ export default {
           :namespace="namespace"
           :pod-name="name"
           :containers="containers"
+        />
+      </template>
+
+      <template #cell(actions)="{ item }">
+        <gl-disclosure-dropdown
+          v-if="item.actions"
+          :title="$options.i18n.actions"
+          :items="getActions(item)"
+          text-sr-only
+          category="tertiary"
+          no-caret
+          icon="ellipsis_v"
         />
       </template>
     </gl-table>

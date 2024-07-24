@@ -24735,7 +24735,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 | <a id="mergerequestsquashonmerge"></a>`squashOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request will be squashed when merged. |
 | <a id="mergerequeststate"></a>`state` | [`MergeRequestState!`](#mergerequeststate) | State of the merge request. |
 | <a id="mergerequestsubscribed"></a>`subscribed` | [`Boolean!`](#boolean) | Indicates if the currently logged in user is subscribed to this merge request. |
-| <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` **{warning-solid}** | [`SuggestedReviewersType`](#suggestedreviewerstype) | **Introduced** in GitLab 15.4. **Status**: Experiment. Suggested reviewers for merge request. Returns `null` if `suggested_reviewers` feature flag is disabled. This flag is disabled by default and only available on GitLab.com because the feature is experimental and is subject to change without notice. |
+| <a id="mergerequestsuggestedreviewers"></a>`suggestedReviewers` | [`SuggestedReviewersType`](#suggestedreviewerstype) | Suggested reviewers for merge request. |
 | <a id="mergerequestsupportslockonmerge"></a>`supportsLockOnMerge` | [`Boolean!`](#boolean) | Indicates if the merge request supports locked labels. |
 | <a id="mergerequesttargetbranch"></a>`targetBranch` | [`String!`](#string) | Target branch of the merge request. |
 | <a id="mergerequesttargetbranchexists"></a>`targetBranchExists` | [`Boolean!`](#boolean) | Indicates if the target branch of the merge request exists. |

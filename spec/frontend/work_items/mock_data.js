@@ -1292,7 +1292,6 @@ export const createWorkItemMutationResponse = {
         description: 'description',
         confidential: false,
         createdAt: '2022-08-03T12:41:54Z',
-        updatedAt: null,
         closedAt: null,
         webUrl: 'http://gdk.test/gitlab-org/gitlab/-/issues/1',
         author: {

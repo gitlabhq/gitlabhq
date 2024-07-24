@@ -160,5 +160,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ta
       findKubernetesPods().vm.$emit('cluster-error', errorMessage);
       expect(wrapper.emitted('cluster-error')).toEqual([[errorMessage]]);
     });
+
+    it('emits delete pod event when gets it from the component', () => {
+      expect(wrapper.emitted('delete-pod')).toBeUndefined();
+
+      findKubernetesPods().vm.$emit('delete-pod', mockPodsTableItems[0]);
+      expect(wrapper.emitted('delete-pod')).toEqual([[mockPodsTableItems[0]]]);
+    });
   });
 });
