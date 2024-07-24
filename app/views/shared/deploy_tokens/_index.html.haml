@@ -1,12 +1,11 @@
 - expanded = expand_deploy_tokens_section?(@new_deploy_token, @created_deploy_token)
 
-%section.settings.no-animate#js-deploy-tokens{ class: ('expanded' if expanded), data: { testid: 'deploy-tokens-settings-content' } }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only= s_('DeployTokens|Deploy tokens')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = description
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(s_('DeployTokens|Deploy tokens'),
+  id: 'js-deploy-tokens',
+  testid: 'deploy-tokens-settings-content',
+  expanded: expanded) do |c|
+  - c.with_description do
+    = description
+  - c.with_body do
     #new-deploy-token-alert
     = render 'shared/deploy_tokens/table', group_or_project: group_or_project, active_tokens: @deploy_tokens

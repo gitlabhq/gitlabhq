@@ -1,12 +1,9 @@
-%section.settings.as-default-branch-name.no-animate#js-default-branch-name{ class: ('expanded' if expanded_by_default?) }
-  .settings-header
-    %h4.settings-title.js-settings-toggle.js-settings-toggle-trigger-only
-      = _('Default branch')
-    = render Pajamas::ButtonComponent.new(button_options: { class: 'js-settings-toggle' }) do
-      = expanded_by_default? ? _('Collapse') : _('Expand')
-    %p.gl-text-secondary
-      = s_('GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group.')
-  .settings-content
+= render ::Layouts::SettingsBlockComponent.new(_('Default branch'),
+  id: 'js-default-branch-name',
+  expanded: expanded_by_default?) do |c|
+  - c.with_description do
+    = s_('GroupSettings|Set the initial name and protections for the default branch of new repositories created in the group.')
+  - c.with_body do
     = gitlab_ui_form_for @group, url: group_path(@group, anchor: 'js-default-branch-name'), html: { class: 'fieldset-form' } do |f|
       = form_errors(@group)
       - fallback_branch_name = "<code>#{Gitlab::DefaultBranch.value(object: @group)}</code>"

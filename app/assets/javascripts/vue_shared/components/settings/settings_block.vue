@@ -83,7 +83,7 @@ export default {
           <slot v-if="$scopedSlots.title" name="title"></slot>
           <template v-else>{{ title }}</template>
         </component>
-        <p class="gl-text-secondary gl-m-0"><slot name="description"></slot></p>
+        <p class="gl-text-subtle gl-m-0"><slot name="description"></slot></p>
       </div>
       <div class="gl-flex-shrink-0 gl-px-2">
         <gl-button

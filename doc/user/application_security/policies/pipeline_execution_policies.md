@@ -86,7 +86,11 @@ Examples:
 | `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
 | `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
-### Example security policies project
+### Examples
+
+These examples demonstrate what you can achieve with pipeline execution policies.
+
+#### Pipeline execution policy
 
 You can use the following example in a `.gitlab/security-policies/policy.yml` file stored in a
 [security policy project](index.md#security-policy-project):
@@ -107,4 +111,28 @@ pipeline_execution_policy:
     projects:
       including:
       - id: 361
+```
+
+##### Customize enforced jobs based on project variables
+
+You can customize enforced jobs, based on the presence of a project variable. In this example,
+the value of `CS_IMAGE` is defined in the policy as `alpine:latest`. However, if the project
+also defines the value of `CS_IMAGE`, that value is used instead. The CI/CD variable must be a
+predefined project variable, not defined in the project's `.gitlab-ci.yml` file.
+
+```yaml
+variables:
+  CS_ANALYZER_IMAGE: "$CI_TEMPLATE_REGISTRY_HOST/security-products/container-scanning:7"
+  CS_IMAGE: alpine:latest
+
+policy::container-security:
+  stage: .pipeline-policy-pre
+  rules:
+    - if: $CS_IMAGE
+      variables:
+        CS_IMAGE: $PROJECT_CS_IMAGE
+    - when: always
+  script:
+    - echo "CS_ANALYZER_IMAGE:$CS_ANALYZER_IMAGE"
+    - echo "CS_IMAGE:$CS_IMAGE"
 ```

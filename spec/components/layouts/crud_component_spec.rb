@@ -51,6 +51,15 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       expect(page).to have_css('[data-testid="crud-action-toggle"].js-toggle-button.js-toggle-content')
     end
 
+    it 'renders action toggle custom attributes' do
+      render_inline described_class.new(title,
+        toggle_text: toggle_text,
+        toggle_options: { class: 'custom-button-class', data: { testid: 'crud-custom-toggle-id' } })
+
+      expect(page).to have_css('.custom-button-class', text: toggle_text)
+      expect(page).to have_css('[data-testid="crud-custom-toggle-id"]', text: toggle_text)
+    end
+
     it 'renders actions slot' do
       render_inline component_title do |c|
         c.with_actions { actions }
@@ -59,12 +68,23 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       expect(page).to have_css('[data-testid="crud-actions"]', text: actions)
     end
 
-    it 'renders form slot' do
-      render_inline component_title do |c|
+    it 'renders hidden form slot if toggle is set' do
+      render_inline described_class.new(title, toggle_text: toggle_text) do |c|
         c.with_form { form }
       end
 
-      expect(page).to have_css('[data-testid="crud-form"]', text: form)
+      expect(page).to have_css('.gl-hidden', text: form)
+    end
+
+    it 'renders form custom attributes' do
+      render_inline described_class.new(title,
+        form_options: { class: 'error-class', data: { testid: 'crud-custom-form-id' } }) do |c|
+        c.with_form { form }
+      end
+
+      expect(page).to have_css('.error-class', text: form)
+      expect(page).not_to have_css('.gl-hidden', text: form)
+      expect(page).to have_css('[data-testid="crud-custom-form-id"]', text: form)
     end
 
     it 'renders body slot' do
@@ -73,6 +93,16 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       end
 
       expect(page).to have_css('[data-testid="crud-body"]', text: body)
+    end
+
+    it 'renders body custom attributes' do
+      render_inline described_class.new(title,
+        body_options: { class: '!gl-m-0', data: { testid: 'crud-custom-body-id' } }) do |c|
+        c.with_body { body }
+      end
+
+      expect(page).to have_css('.\!gl-m-0', text: body)
+      expect(page).to have_css('[data-testid="crud-custom-body-id"]', text: body)
     end
 
     it 'renders footer slot' do

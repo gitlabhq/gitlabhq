@@ -73,7 +73,7 @@ RSpec.describe 'Protected Tags', :js, :with_license, feature_category: :source_c
       set_allowed_to('create')
       click_on_protect
 
-      within("#js-protected-tags-settings .gl-new-card-count") do
+      within('#js-protected-tags-settings [data-testid="crud-count"]') do
         expect(page).to have_content("2")
       end
 

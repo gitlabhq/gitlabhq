@@ -1,24 +1,8 @@
-= render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-  - c.with_header do
-    .gl-new-card-title-wrapper
-      %h5.gl-new-card-title
-        = s_("DeployTokens|Active deploy tokens")
-      .gl-new-card-count
-        = sprite_icon('token', css_class: 'gl-mr-2')
-        = active_tokens.length
-    .gl-new-card-actions
-      = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content" }) do
-        = _('Add token')
+= render ::Layouts::CrudComponent.new(s_("DeployTokens|Active deploy tokens"),
+  icon: 'token',
+  count: active_tokens.length,
+  toggle_text: _('Add token')) do |c|
   - c.with_body do
-    .gl-new-card-add-form.gl-m-3.gl-mb-4.gl-display-none.js-toggle-content
-      #js-new-deploy-token{ data: {
-          container_registry_enabled: container_registry_enabled?(group_or_project),
-          packages_registry_enabled: packages_registry_enabled?(group_or_project),
-          create_new_token_path: create_deploy_token_path(group_or_project),
-          token_type: group_or_project.is_a?(Group) ? 'group' : 'project',
-          deploy_tokens_help_url: help_page_path('user/project/deploy_tokens/index')
-        }
-      }
     - if active_tokens.present?
       %table.table.b-table.gl-table.b-table-stacked-md
         %thead
@@ -50,5 +34,14 @@
                 .js-deploy-token-revoke-button{ data: deploy_token_revoke_button_data(token: token, group_or_project: group_or_project) }
 
     - else
-      .gl-new-card-empty.gl-px-5.gl-py-4
+      .gl-text-subtle
         = s_('DeployTokens|This %{entity_type} has no active deploy tokens.') % { entity_type: group_or_project.class.name.downcase }
+  - c.with_form do
+    #js-new-deploy-token{ data: {
+        container_registry_enabled: container_registry_enabled?(group_or_project),
+        packages_registry_enabled: packages_registry_enabled?(group_or_project),
+        create_new_token_path: create_deploy_token_path(group_or_project),
+        token_type: group_or_project.is_a?(Group) ? 'group' : 'project',
+        deploy_tokens_help_url: help_page_path('user/project/deploy_tokens/index')
+      }
+    }

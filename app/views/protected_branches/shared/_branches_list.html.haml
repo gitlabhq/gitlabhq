@@ -1,6 +1,6 @@
 .protected-branches-list.js-protected-branches-list{ data: { testid: 'protected-branches-list' } }
   - if @protected_branches.empty?
-    %p.gl-new-card-empty.gl-px-5.gl-py-4.js-toggle-content
+    %p.gl-text-subtle
       = s_("ProtectedBranch|There are currently no protected branches, to protect a branch start by creating a new one above.")
   - else
     .flash-container

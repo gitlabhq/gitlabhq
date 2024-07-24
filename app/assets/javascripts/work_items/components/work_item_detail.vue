@@ -1,7 +1,7 @@
 <script>
 import { isEmpty } from 'lodash';
 import { GlAlert, GlButton, GlTooltipDirective, GlEmptyState } from '@gitlab/ui';
-import noAccessSvg from '@gitlab/svgs/dist/illustrations/analytics/no-access.svg?raw';
+import noAccessSvg from '@gitlab/svgs/dist/illustrations/empty-state/empty-search-md.svg';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url_utility';
@@ -249,9 +249,6 @@ export default {
     workItemIconName() {
       return this.workItem.workItemType?.iconName;
     },
-    noAccessSvgPath() {
-      return `data:image/svg+xml;utf8,${encodeURIComponent(noAccessSvg)}`;
-    },
     hasDescriptionWidget() {
       return this.isWidgetPresent(WIDGET_TYPE_DESCRIPTION);
     },
@@ -480,6 +477,7 @@ export default {
   },
   WORK_ITEM_TYPE_VALUE_OBJECTIVE,
   WORKSPACE_PROJECT,
+  noAccessSvg,
 };
 </script>
 
@@ -528,8 +526,7 @@ export default {
           v-else-if="error"
           :title="$options.i18n.fetchErrorTitle"
           :description="error"
-          :svg-path="noAccessSvgPath"
-          :svg-height="null"
+          :svg-path="$options.noAccessSvg"
         />
         <div v-else data-testid="detail-wrapper">
           <div class="gl-block sm:!gl-flex gl-items-start gl-flex-row gl-gap-3">
