@@ -27,9 +27,6 @@ ignore: |
   # Has some special indentation
   doc/user/project/integrations/samples/cloudwatch.yml
 
-  # Broken on purpose (for testing)
-  spec/fixtures/lib/gitlab/metrics/dashboard/broken_yml_syntax.yml
-
   # Dynamic YAML files have syntax errors sometimes.
   *.erb
 

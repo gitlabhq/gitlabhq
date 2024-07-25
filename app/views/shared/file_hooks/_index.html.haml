@@ -1,16 +1,11 @@
 - file_hooks = Gitlab::FileHook.files
 
-.settings-section
-  .settings-sticky-header
-    .settings-sticky-header-inner
-      %h4.gl-my-0
-        = s_('Webhooks|File hooks')
-  %p.gl-text-secondary
+= render ::Layouts::SettingsSectionComponent.new(s_('Webhooks|File hooks')) do |c|
+  - c.with_description do
     = _('File hooks are similar to system hooks but are executed as files instead of sending data to a URL.')
     = link_to _('For more information, see the file hooks documentation.'), help_page_path('administration/file_hooks')
-
-  .gl-mb-3
-    = render ::Layouts::CrudComponent.new(s_('Webhooks|File hooks'), icon: 'document', count: file_hooks.count) do |c|
+  - c.with_body do
+    = render ::Layouts::CrudComponent.new(s_('Webhooks|File hooks'), icon: 'document', count: file_hooks.count, options: { class: 'gl-mt-3' }) do |c|
       - c.with_body do
         - if file_hooks.any?
           %ul.content-list{ class: '!-gl-my-3' }

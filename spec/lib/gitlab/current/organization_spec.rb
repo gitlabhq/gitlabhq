@@ -114,6 +114,20 @@ RSpec.describe Gitlab::Current::Organization, feature_category: :cell do
         it { is_expected.to be(nil) }
       end
     end
+
+    context 'when params contains organization_path' do
+      context 'and path exists' do
+        let(:params) { super().merge(organization_path: other_organization.path) }
+
+        it { is_expected.to eq(other_organization) }
+      end
+
+      context 'and path does not exists' do
+        let(:params) { super().merge(organization_path: non_existing_record_id) }
+
+        it { is_expected.to be_nil }
+      end
+    end
   end
 
   describe '.from_user' do

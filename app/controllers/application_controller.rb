@@ -534,7 +534,9 @@ class ApplicationController < BaseActionController
     return if ::Current.lock_organization
 
     ::Current.organization = Gitlab::Current::Organization.new(
-      params: params.permit(:controller, :namespace_id, :group_id, :id),
+      params: params.permit(
+        :controller, :namespace_id, :group_id, :id, :organization_path
+      ),
       user: current_user
     ).organization
   end

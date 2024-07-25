@@ -7,12 +7,12 @@ module Layouts
     # @param [String] id
     # @param [String] testid
     # @param [Hash] options
-    def initialize(heading, description: nil, id: nil, testid: nil, options: nil)
+    def initialize(heading, description: nil, id: nil, testid: nil, options: {})
       @heading = heading
       @description = description
       @id = id
       @testid = testid
-      @options = options || {}
+      @options = options
     end
 
     renders_one :heading

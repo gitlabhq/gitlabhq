@@ -21,8 +21,9 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     end
 
     let(:chunk_code) { 200 }
+    let(:chunk_content) { 'some chunk context' }
     let(:chunk_double) do
-      double('chunk', size: 100, code: chunk_code, http_response: double(to_hash: headers), to_s: 'some chunk context')
+      double('chunk', size: 100, code: chunk_code, http_response: double(to_hash: headers), to_s: chunk_content)
     end
 
     subject(:service) do
@@ -351,6 +352,28 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
         it 'raises an error when the filename is not provided in the request header' do
           expect(subject.execute).to eq(File.join(tmpdir, "x.b"))
         end
+      end
+    end
+
+    context 'when logging a chunk context' do
+      let(:file_size_limit) { 1 }
+      let(:import_logger) { instance_double(BulkImports::Logger) }
+      let(:chunk_content) { "\x8d\x21\x3f\xad\x76" }
+
+      before do
+        allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
+        allow(import_logger).to receive(:warn)
+      end
+
+      it 'scrubs non-utf characters from the chunk' do
+        expect(import_logger).to receive(:warn).once.with(
+          a_hash_including(last_chunk_context: "�!?�v")
+        )
+
+        expect { service.execute }.to raise_error(
+          described_class::ServiceError,
+          'File size 100 B exceeds limit of 1 B'
+        )
       end
     end
   end

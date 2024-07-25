@@ -192,6 +192,22 @@ gitaly-transactions-selective-parallel:
       variables:
         QA_TESTS: ""
 
+# ========== git sha256 enabled ===========
+git-sha256-repositories:
+  when: manual
+  extends:
+    - .parallel
+    - .qa
+  parallel: 5
+  variables:
+    QA_SCENARIO: Test::Instance::Image
+    QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE: true
+    GITLAB_QA_OPTS: "--enable-feature support_sha256_repositories"
+  rules:
+    - !reference [.rules:test:smoke-for-omnibus-mr, rules]
+    - !reference [.rules:test:feature-flags-set, rules]
+    - !reference [.rules:test:qa-parallel, rules]
+    - if: $QA_SUITES =~ /Test::Instance::All/
 # ------------------------------------------
 # Non parallel jobs
 # ------------------------------------------

@@ -1,7 +1,8 @@
 = render ::Layouts::CrudComponent.new(title,
   icon: 'hook',
   count: hooks.size,
-  toggle_text: _('Add new webhook')) do |c|
+  toggle_text: _('Add new webhook'),
+  options: { class: 'gl-mt-3' }) do |c|
   - c.with_body do
     - if hooks.any?
       %ul.content-list

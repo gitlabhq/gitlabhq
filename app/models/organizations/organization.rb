@@ -13,7 +13,7 @@ module Organizations
       joins(namespaces: :route).where(route: { path: path.to_s })
     }
     scope :with_user, ->(user) {
-      joins(:users).where(users: user).order(Arel.sql('organization_users.id asc'))
+      joins(:organization_users).merge(Organizations::OrganizationUser.by_user(user).order(:id))
     }
 
     before_destroy :check_if_default_organization

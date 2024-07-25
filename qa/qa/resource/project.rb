@@ -15,7 +15,8 @@ module QA
         :github_repository_path,
         :gitlab_repository_path,
         :personal_namespace,
-        :import_wait_duration
+        :import_wait_duration,
+        :repository_object_format
 
       attr_reader :repository_storage
 
@@ -262,6 +263,9 @@ module QA
 
         post_body[:repository_storage] = repository_storage if repository_storage
         post_body[:template_name] = @template_name if @template_name
+
+        # Use experimental SHA256 support https://gitlab.com/groups/gitlab-org/-/epics/794
+        post_body[:repository_object_format] = 'sha256' if Runtime::Env.use_sha256_repository_object_storage
 
         post_body
       end

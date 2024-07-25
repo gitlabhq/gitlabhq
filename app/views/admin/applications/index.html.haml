@@ -16,7 +16,10 @@
       = s_('AdminArea|Manage applications for your instance that can use GitLab as an OAuth provider, start by creating a new one above.')
 
 - else
-  = render ::Layouts::CrudComponent.new(s_('AdminArea|Instance OAuth applications'), icon: 'applications', count: @applications.size, options: { class: 'gl-mt-5' }) do |c|
+  = render ::Layouts::CrudComponent.new(s_('AdminArea|Instance OAuth applications'),
+    icon: 'applications',
+    count: @applications.size,
+    options: { class: 'gl-mt-5', data: { testid: 'oauth-applications' } }) do |c|
     - c.with_description do
       - docs_link_path = help_page_path('integration/oauth_provider')
       - docs_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer nofollow">'.html_safe % { url: docs_link_path }
@@ -34,7 +37,7 @@
               %th= _('Trusted')
               %th= _('Confidential')
               %th.gl-text-right= _('Actions')
-          %tbody{ data: { testid: "oauth-applications" } }
+          %tbody
             - @applications.each do |application|
               %tr{ id: "application_#{application.id}" }
                 %td{ data: { label: _('Name') } }= link_to application.name, admin_application_path(application)

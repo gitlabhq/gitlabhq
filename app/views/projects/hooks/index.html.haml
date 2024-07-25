@@ -2,6 +2,9 @@
 - page_title _('Webhooks')
 - @force_desktop_expanded_sidebar = true
 
-.gl-mt-3.js-search-settings-section
-  = render 'shared/web_hooks/title_and_docs', hook: @hook
-  = render 'shared/web_hooks/index', hooks: @hooks, title: @hook.pluralized_name, partial: 'shared/web_hooks/form', url: polymorphic_path([@project, :hooks])
+.js-search-settings-section
+  = render ::Layouts::SettingsSectionComponent.new(page_title) do |c|
+    - c.with_description do
+      = render 'shared/web_hooks/description', hook: @hook
+    - c.with_body do
+      = render 'shared/web_hooks/index', hooks: @hooks, title: @hook.pluralized_name, partial: 'shared/web_hooks/form', url: polymorphic_path([@project, :hooks])

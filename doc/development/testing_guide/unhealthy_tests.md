@@ -208,17 +208,42 @@ Then, you can use the `quarantine: '<issue url>'` metadata with the URL of the
 ~"failure::flaky-test" issue you created previously.
 
 ```ruby
+# Quarantine a single spec
 it 'succeeds', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
   expect(response).to have_gitlab_http_status(:ok)
 end
+
+# Quarantine a describe/context block
+describe '#flaky-method', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
+  [...]
+end
 ```
 
-This means it is skipped in CI. By default, the quarantined tests will run locally.
+This means it will be skipped in CI. By default, the quarantined tests will run locally.
 
 We can skip them in local development as well by running with `--tag ~quarantine`:
 
 ```shell
+# Bash
 bin/rspec --tag ~quarantine
+
+# ZSH
+bin/rspec --tag \~quarantine
+```
+
+Note that we [should not quarantine a shared example/context](https://gitlab.com/gitlab-org/gitlab/-/issues/404388), and [we cannot quarantine a call to `it_behaves_like` or `include_examples`](https://github.com/rspec/rspec-core/pull/2307#issuecomment-236006902):
+
+```ruby
+# Will be flagged by Rubocop
+shared_examples 'loads all the users when opened', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345' do
+  [...]
+end
+
+# Does not work
+it_behaves_like 'a shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
+
+# Does not work
+include_examples 'a shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/12345'
 ```
 
 After the long-term quarantining MR has reached production, you should revert the fast-quarantine MR you created earlier.

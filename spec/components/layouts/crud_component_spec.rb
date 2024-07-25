@@ -68,22 +68,40 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       expect(page).to have_css('[data-testid="crud-actions"]', text: actions)
     end
 
+    it 'renders form slot' do
+      render_inline component_title do |c|
+        c.with_form { form }
+      end
+
+      expect(page).to have_css('[data-testid="crud-form"]', text: form)
+    end
+
     it 'renders hidden form slot if toggle is set' do
       render_inline described_class.new(title, toggle_text: toggle_text) do |c|
         c.with_form { form }
       end
 
       expect(page).to have_css('.gl-hidden', text: form)
+      expect(page).to have_css('[data-testid="crud-form"].js-toggle-content', text: form)
+    end
+
+    it 'renders form visible when form has errors and toggle_text is present' do
+      render_inline described_class.new(title,
+        toggle_text: toggle_text,
+        form_options: { form_errors: true }) do |c|
+        c.with_form { form }
+      end
+
+      expect(page).not_to have_css('.gl-hidden', text: form)
     end
 
     it 'renders form custom attributes' do
       render_inline described_class.new(title,
-        form_options: { class: 'error-class', data: { testid: 'crud-custom-form-id' } }) do |c|
+        form_options: { class: 'form-class', data: { testid: 'crud-custom-form-id' } }) do |c|
         c.with_form { form }
       end
 
-      expect(page).to have_css('.error-class', text: form)
-      expect(page).not_to have_css('.gl-hidden', text: form)
+      expect(page).to have_css('.form-class', text: form)
       expect(page).to have_css('[data-testid="crud-custom-form-id"]', text: form)
     end
 

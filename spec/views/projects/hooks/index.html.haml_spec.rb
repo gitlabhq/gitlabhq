@@ -17,7 +17,7 @@ RSpec.describe 'projects/hooks/index' do
   it 'renders webhooks page with "Webhooks"' do
     render
 
-    expect(rendered).to have_css('h4', text: _('Webhooks'))
+    expect(rendered).to have_css('.gl-heading-2', text: _('Webhooks'))
     expect(rendered).to have_text('Webhooks')
     expect(rendered).not_to have_css('.gl-badge', text: _('Disabled'))
     expect(rendered).not_to have_css('.gl-badge', text: s_('Webhooks|Failed to connect'))

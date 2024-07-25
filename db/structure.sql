@@ -17784,7 +17784,7 @@ CREATE TABLE snippets (
     secret boolean DEFAULT false NOT NULL,
     repository_read_only boolean DEFAULT false NOT NULL,
     imported_from smallint DEFAULT 0 NOT NULL,
-    organization_id bigint DEFAULT 1
+    organization_id bigint
 );
 
 CREATE SEQUENCE snippets_id_seq

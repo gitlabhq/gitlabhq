@@ -43,7 +43,7 @@ module Layouts
       @body_options.merge(default_attrs(@body_options, default_testid, default_classes))
     end
 
-    def button_options_attrs
+    def toggle_button_options_attrs
       default_testid = 'crud-action-toggle'
       default_classes = ['js-toggle-button js-toggle-content']
       @toggle_options.merge(default_attrs(@toggle_options, default_testid, default_classes))
@@ -53,7 +53,7 @@ module Layouts
       default_testid = 'crud-form'
       default_classes = [
         ('js-toggle-content' if @toggle_text),
-        ('gl-hidden' if @toggle_text && !@form_options[:class])
+        ('gl-hidden' if @toggle_text && !@form_options[:form_errors])
       ]
       @form_options.merge(default_attrs(@form_options, default_testid, default_classes))
     end

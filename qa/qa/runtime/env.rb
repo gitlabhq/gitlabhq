@@ -261,6 +261,10 @@ module QA
         enabled?(ENV['USE_SELENOID'], default: false)
       end
 
+      def use_sha256_repository_object_storage
+        enabled?(ENV['QA_USE_SHA256_REPOSITORY_OBJECT_STORAGE'], default: false)
+      end
+
       def save_all_videos?
         enabled?(ENV['QA_SAVE_ALL_VIDEOS'], default: false)
       end

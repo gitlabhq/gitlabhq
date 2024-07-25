@@ -15,7 +15,7 @@
             = description || @description
       .gl-flex.gl-gap-3.gl-items-baseline{ data: { testid: 'crud-actions' } }
         - if @toggle_text
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: button_options_attrs) do
+          = render Pajamas::ButtonComponent.new(size: :small, button_options: toggle_button_options_attrs) do
             = @toggle_text
         = actions
 
