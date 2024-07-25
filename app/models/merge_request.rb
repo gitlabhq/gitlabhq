@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MergeRequest < ApplicationRecord
+  extend Gitlab::Cache::RequestCache
+
   include AtomicInternalId
   include IidRoutes
   include Issuable
@@ -905,6 +907,11 @@ class MergeRequest < ApplicationRecord
       merge_request_diff.modified_paths(fallback_on_overflow: fallback_on_overflow)
     end
   end
+
+  def changed_paths
+    project.repository.find_changed_paths(commits, merge_commit_diff_mode: :all_parents)
+  end
+  request_cache(:changed_paths) { [id, diff_head_sha] }
 
   def new_paths
     diffs.diff_files.map(&:new_path)

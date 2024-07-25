@@ -95,21 +95,18 @@ module API
           documentation: { example: 1234 }
         optional :project_id, type: Integer, desc: 'Project ID',
           documentation: { example: 1234 }
+        optional :additional_properties, type: Hash, desc: 'Additional properties to be tracked',
+          documentation: { example: { label: 'login_button', value: 1 } }
       end
       post 'track_event', urgency: :low do
         event_name = params[:event]
         namespace_id = params[:namespace_id]
         project_id = params[:project_id]
-        additional_properties = params
-          .fetch(:additional_properties, Gitlab::InternalEvents::DEFAULT_ADDITIONAL_PROPERTIES)
-          .symbolize_keys
+        additional_properties = params.fetch(:additional_properties, {}).symbolize_keys
 
         unless Gitlab::Tracking::AiTracking.track_via_code_suggestions?(event_name, current_user)
           Gitlab::Tracking::AiTracking.track_event(event_name, additional_properties.merge(user: current_user))
         end
-
-        internal_event_additional_props = additional_properties
-          .slice(*Gitlab::InternalEvents::ALLOWED_ADDITIONAL_PROPERTIES.keys)
 
         track_event(
           event_name,
@@ -117,7 +114,7 @@ module API
           user: current_user,
           namespace_id: namespace_id,
           project_id: project_id,
-          additional_properties: internal_event_additional_props
+          additional_properties: additional_properties
         )
 
         status :ok

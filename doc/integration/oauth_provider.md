@@ -71,7 +71,7 @@ DETAILS:
 
 To create an application for your GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Applications**.
 1. Select **New application**.
 

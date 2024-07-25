@@ -67,7 +67,7 @@ Prerequisites:
 - You must be an administrator for your GitLab instance.
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Security and compliance**.
 1. Under **Secret Detection**, select or clear **Allow secret push protection**.
 

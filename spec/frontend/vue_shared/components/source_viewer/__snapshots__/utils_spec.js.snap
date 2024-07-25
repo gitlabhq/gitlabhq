@@ -5,7 +5,7 @@ exports[`SourceViewer utils toggleBlameClasses adds classes 1`] = `
   class="content"
 >
   <div
-    class="gl-border-gray-500 gl-border-t gl-pt-3!"
+    class="!gl-pt-3 gl-border-gray-500 gl-border-t"
   >
     <div
       id="reference-0"
@@ -25,19 +25,19 @@ exports[`SourceViewer utils toggleBlameClasses adds classes 1`] = `
   </div>
   <div>
     <div
-      class="gl-pt-3!"
+      class="!gl-pt-3"
       id="reference-3"
     >
       Content 1
     </div>
     <div
-      class="gl-border-gray-500 gl-border-t gl-pt-3!"
+      class="!gl-pt-3 gl-border-gray-500 gl-border-t"
       id="reference-4"
     >
       Content 2
     </div>
     <div
-      class="gl-border-gray-500 gl-border-t gl-pt-3!"
+      class="!gl-pt-3 gl-border-gray-500 gl-border-t"
       id="reference-5"
     >
       Content 3

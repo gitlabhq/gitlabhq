@@ -47,7 +47,7 @@ sign in.
 
 To view user sign ups pending approval:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Pending approval**, and press <kbd>Enter</kbd>.
 
@@ -59,7 +59,7 @@ A user sign up pending approval can be approved or rejected from the Admin area.
 
 To approve or reject a user sign up:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Pending approval** and press <kbd>Enter</kbd>.
 1. For the user sign up you want to approve or reject, select the vertical ellipsis (**{ellipsis_v}**), then **Approve** or **Reject**.
@@ -96,7 +96,7 @@ You can block a user's access to the instance.
 
 To block a user:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. For the user you want to block, select the vertical ellipsis (**{ellipsis_v}**), then **Block**.
 
@@ -110,7 +110,7 @@ To report abuse from other users, see [report abuse](../user/report_abuse.md). F
 
 A blocked user can be unblocked from the Admin area. To do this:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. For the user you want to unblock, select the vertical ellipsis (**{ellipsis_v}**), then **Unblock**.
@@ -124,7 +124,7 @@ Users can also be unblocked using the [GitLab API](../api/users.md#unblock-user)
 The unblock option may be unavailable for LDAP users. To enable the unblock option,
 the LDAP identity first needs to be deleted:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Blocked** and press <kbd>Enter</kbd>.
 1. Select a user.
@@ -154,7 +154,7 @@ Prerequisites:
 
 To deactivate a user:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. For the user you want to deactivate, select the vertical ellipsis (**{ellipsis_v}**) and then **Deactivate**.
 1. On the dialog, select **Deactivate**.
@@ -176,7 +176,7 @@ Administrators can enable automatic deactivation of users who either:
 
 To do this:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
 1. Under **Dormant users**, check **Deactivate dormant users after a period of inactivity**.
@@ -230,7 +230,7 @@ A deactivated user can be activated from the Admin area.
 
 To do this:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Deactivated** and press <kbd>Enter</kbd>.
 1. For the user you want to activate, select the vertical ellipsis (**{ellipsis_v}**), then **Activate**.
@@ -262,7 +262,7 @@ To block a user and hide their contributions, administrators can ban the user.
 
 Users can be banned using the Admin area. To do this:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. For the user you want to ban, select the vertical ellipsis (**{ellipsis_v}**), then **Ban user**.
 
@@ -272,7 +272,7 @@ Users can be banned using the Admin area. To do this:
 
 A banned user can be unbanned using the Admin area. To do this:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box , filter by **State=Banned** and press <kbd>Enter</kbd>.
 1. For the user you want to unban, select the vertical ellipsis (**{ellipsis_v}**), then **Unban user**.
@@ -284,7 +284,7 @@ The user's state is set to active and they consume a
 
 Use the Admin area to delete users.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. For the user you want to delete, select the vertical ellipsis (**{ellipsis_v}**), then **Delete user**.
 1. Type the username.
@@ -295,7 +295,7 @@ You can only delete a user if there are inherited or direct owners of a group. Y
 
 You can also delete a user and their contributions, such as merge requests, issues, and groups of which they are the only group owner.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. For the user you want to delete, select the vertical ellipsis (**{ellipsis_v}**), then **Delete user and contributions**.
 1. Type the username.
@@ -321,7 +321,7 @@ Prerequisites:
 
 :::TabTitle Trust a user
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. Select a user.
 1. From the **User administration** dropdown list, select **Trust user**.
@@ -331,7 +331,7 @@ The user is trusted.
 
 :::TabTitle Untrust a user
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. In the search box, filter by **State=Trusted** and press <kbd>Enter</kbd>.
 1. Select a user.

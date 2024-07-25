@@ -16,10 +16,12 @@ To connect a Kubernetes cluster to GitLab, you must install an agent in your clu
 
 Before you can install the agent in your cluster, you need:
 
-- An existing Kubernetes cluster. If you don't have a cluster, you can create one on a cloud provider, like:
-  - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
+- An existing [Kubernetes cluster that you can connect to from your local terminal](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/). If you don't have a cluster, you can create one on a cloud provider, like:
   - [Amazon Elastic Kubernetes Service (EKS)](https://docs.aws.amazon.com/eks/latest/userguide/getting-started.html)
+  - [Azure Kubernetes Service (AKS)](https://learn.microsoft.com/en-us/azure/aks/what-is-aks)
   - [Digital Ocean](https://docs.digitalocean.com/products/kubernetes/getting-started/quickstart/)
+  - [Google Kubernetes Engine (GKE)](https://cloud.google.com/kubernetes-engine/docs/deploy-app-cluster)
+  - You should use [Infrastructure as Code techniques](../../../infrastructure/iac/index.md) for managing infrastructure resources at scale.
 - On self-managed GitLab instances, a GitLab administrator must set up the
   [agent server](../../../../administration/clusters/kas.md).
   Then it is available by default at `wss://gitlab.example.com/-/kubernetes-agent/`.
@@ -27,9 +29,9 @@ Before you can install the agent in your cluster, you need:
 
 ## Installation steps
 
-To install the agent in your cluster:
+It takes three steps to install the agent in your cluster:
 
-1. [Create an agent configuration file](#create-an-agent-configuration-file).
+1. Optional. [Create an agent configuration file](#create-an-agent-configuration-file).
 1. [Register the agent with GitLab](#register-the-agent-with-gitlab).
 1. [Install the agent in your cluster](#install-the-agent-in-the-cluster).
 
@@ -38,10 +40,9 @@ To install the agent in your cluster:
 
 ### Create an agent configuration file
 
-The agent configuration file can be added to multiple directories (or subdirectories) of the repository.
-For configuration settings, the agent uses a YAML file in the GitLab project. You must create this file if:
+For configuration settings, the agent uses a YAML file in the GitLab project. Adding an agent configuration file is optional. You must create this file if:
 
-- You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#use-gitlab-cicd-with-your-cluster) and want to authorize a different project to use the agent.
+- You use [a GitLab CI/CD workflow](../ci_cd_workflow.md#use-gitlab-cicd-with-your-cluster) and want to authorize a different project or group to access the agent.
 - You [allow specific project or group members to access Kubernetes](../user_access.md).
 
 To create an agent configuration file:
@@ -55,26 +56,18 @@ To create an agent configuration file:
    - Start with an alphanumeric character.
    - End with an alphanumeric character.
 
-1. In the repository, in the default branch, create an agent configuration file at the root:
+1. In the repository, in the default branch, create an agent configuration file at:
 
    ```plaintext
    .gitlab/agents/<agent-name>/config.yaml
    ```
 
-You can leave the file blank for now, and [configure it](#configure-your-agent) later.
+You can leave the file blank for now, and [configure it](../work_with_agent.md#configure-your-agent) later.
 
 ### Register the agent with GitLab
 
 You can create a new agent record directly from the GitLab UI.
 The agent can be registered without creating an agent configuration file.
-
-FLAG:
-A [flag](../../../../administration/feature_flags.md) named `certificate_based_clusters` changed the **Actions** menu to focus on the agent rather than certificates. The flag is [enabled on GitLab.com, GitLab Dedicated, and self-managed](https://gitlab.com/groups/gitlab-org/configure/-/epics/8).
-
-Prerequisites:
-
-- For a [GitLab CI/CD workflow](../ci_cd_workflow.md), ensure that
-  [GitLab CI/CD is not disabled](../../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines).
 
 You must register an agent before you can install the agent in your cluster. To register an agent:
 
@@ -117,7 +110,7 @@ For simplicity, the default Helm chart configuration sets up a service account f
 
 To install the agent on your cluster using Helm:
 
-1. [Install Helm](https://helm.sh/docs/intro/install/).
+1. [Install the Helm CLI](https://helm.sh/docs/intro/install/).
 1. In your computer, open a terminal and [connect to your cluster](https://kubernetes.io/docs/tasks/access-application-cluster/access-cluster/).
 1. Run the command you copied when you [registered your agent with GitLab](#register-the-agent-with-gitlab). The command should look like:
 
@@ -133,7 +126,7 @@ To install the agent on your cluster using Helm:
    ```
 
 1. Optional. [Customize the Helm installation](#customize-the-helm-installation).
-   If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. See [How to deploy the GitLab agent for Kubernetes with limited permissions](https://about.gitlab.com/blog/2021/09/10/setting-up-the-k-agent/).
+   If you install the agent on a production system, you should customize the Helm installation to restrict the permissions of the service account. Related customization options are described below.
 
 ##### Customize the Helm installation
 
@@ -190,13 +183,6 @@ and the domain DNS can't be resolved.
 #### Advanced installation method
 
 GitLab also provides a [KPT package for the agent](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/tree/master/build/deployment/gitlab-agent). This method provides greater flexibility, but is only recommended for advanced users.
-
-### Configure your agent
-
-To configure your agent, add content to the `config.yaml` file:
-
-- For a GitLab CI/CD workflow, [authorize the agent to access your projects](../ci_cd_workflow.md#authorize-the-agent). Then
-  [add `kubectl` commands to your `.gitlab-ci.yml` file](../ci_cd_workflow.md#update-your-gitlab-ciyml-file-to-run-kubectl-commands).
 
 ## Install multiple agents in your cluster
 

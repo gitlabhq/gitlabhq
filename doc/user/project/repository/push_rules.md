@@ -44,7 +44,7 @@ Prerequisites:
 
 To create global push rules:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Push rules**.
 1. Expand **Push rules**.
 1. Set the rule you want.

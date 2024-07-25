@@ -8,12 +8,11 @@ module Gitlab
 
     SNOWPLOW_EMITTER_BUFFER_SIZE = 100
     DEFAULT_BUFFER_SIZE = 1
-    ALLOWED_ADDITIONAL_PROPERTIES = {
+    BASE_ADDITIONAL_PROPERTIES = {
       label: [String],
       property: [String],
       value: [Integer, Float]
     }.freeze
-    DEFAULT_ADDITIONAL_PROPERTIES = {}.freeze
     KEY_EXPIRY_LENGTH = Gitlab::UsageDataCounters::HLLRedisCounter::KEY_EXPIRY_LENGTH
 
     class << self
@@ -23,7 +22,10 @@ module Gitlab
 
       def track_event(
         event_name, category: nil, send_snowplow_event: true,
-        additional_properties: DEFAULT_ADDITIONAL_PROPERTIES, **kwargs)
+        additional_properties: {}, **kwargs)
+
+        extra = custom_additional_properties(additional_properties)
+        additional_properties = additional_properties.slice(*BASE_ADDITIONAL_PROPERTIES.keys)
 
         unless Gitlab::Tracking::EventDefinition.internal_event_exists?(event_name)
           raise UnknownEventError, "Unknown event: #{event_name}"
@@ -35,7 +37,7 @@ module Gitlab
         kwargs[:namespace] ||= project.namespace if project
 
         update_redis_values(event_name, additional_properties, kwargs)
-        trigger_snowplow_event(event_name, category, additional_properties, kwargs) if send_snowplow_event
+        trigger_snowplow_event(event_name, category, additional_properties, extra, kwargs) if send_snowplow_event
         send_application_instrumentation_event(event_name, additional_properties, kwargs) if send_snowplow_event
 
         if Feature.enabled?(:early_access_program, kwargs[:user], type: :wip)
@@ -73,17 +75,8 @@ module Gitlab
       end
 
       def validate_additional_properties!(additional_properties)
-        return if additional_properties.empty?
-
-        disallowed_properties = additional_properties.keys - ALLOWED_ADDITIONAL_PROPERTIES.keys
-        unless disallowed_properties.empty?
-          info = "Additional properties should include only #{ALLOWED_ADDITIONAL_PROPERTIES.keys}. " \
-                 "Disallowed properties found: #{disallowed_properties}"
-          raise InvalidPropertyError, info
-        end
-
-        additional_properties.each do |key, _value|
-          allowed_classes = ALLOWED_ADDITIONAL_PROPERTIES[key]
+        BASE_ADDITIONAL_PROPERTIES.keys.intersection(additional_properties.keys).each do |key|
+          allowed_classes = BASE_ADDITIONAL_PROPERTIES[key]
           validate_property!(additional_properties, key, *allowed_classes)
         end
       end
@@ -104,6 +97,10 @@ module Gitlab
             update_unique_counter(event_selection_rule, kwargs)
           end
         end
+      end
+
+      def custom_additional_properties(additional_properties)
+        additional_properties.except(*BASE_ADDITIONAL_PROPERTIES.keys)
       end
 
       def update_total_counter(event_selection_rule)
@@ -132,7 +129,7 @@ module Gitlab
         )
       end
 
-      def trigger_snowplow_event(event_name, category, additional_properties, kwargs)
+      def trigger_snowplow_event(event_name, category, additional_properties, extra, kwargs)
         user = kwargs[:user]
         project = kwargs[:project]
         namespace = kwargs[:namespace]
@@ -143,7 +140,8 @@ module Gitlab
           user_id: user&.id,
           namespace_id: namespace&.id,
           plan_name: namespace&.actual_plan_name,
-          feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids
+          feature_enabled_by_namespace_ids: feature_enabled_by_namespace_ids,
+          **extra
         ).to_context
 
         service_ping_context = Tracking::ServicePingContext.new(

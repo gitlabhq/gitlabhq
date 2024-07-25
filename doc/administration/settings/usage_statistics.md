@@ -84,7 +84,7 @@ In the following table, you can see:
 ### Enable registration features
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand the **Usage statistics** section.
 1. If not enabled, select the **Enable Service Ping** checkbox.
@@ -106,7 +106,7 @@ for all authenticated users, and on the Admin area pages. The statuses are:
 
 ### Enable or disable version check
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the **Enable version check** checkbox.
@@ -146,7 +146,7 @@ The payload is available in the [Metrics and profiling](#manually-upload-service
 
 To enable or disable Service Ping:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
 1. Select or clear the  **Enable Service Ping** checkbox.
@@ -202,7 +202,7 @@ For more information, see [Customer product usage information](https://handbook.
 
 To enable or disable optional data in Service Ping:
 
-1. In the left sidebar, at the bottom, select on **Admin area**.
+1. In the left sidebar, at the bottom, select **Admin**.
 1. Go to **Settings > Metrics and Profiling**.
 1. Expand the **Usage Statistics** section.
 1. To enable optional data, select the **Include optional data in Service Ping** checkbox. To disable it, clear the box.
@@ -254,7 +254,7 @@ See an [example Service Ping payload](../../development/internal_analytics/servi
 ### In the UI
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Preview payload**.
 
@@ -270,7 +270,7 @@ or if the Service Ping [cron job](../../development/internal_analytics/service_p
 To upload the payload manually:
 
 1. Sign in as a user with administrator access.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Metrics and profiling > Usage statistics**.
 1. Select **Download payload**.
 1. Save the JSON file.

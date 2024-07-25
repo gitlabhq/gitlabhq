@@ -45,7 +45,12 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
         end
       end
 
-      shared_examples 'rescheduling in until_executed' do
+      context 'when job is reschedulable' do
+        before do
+          allow(fake_duplicate_job).to receive(:reschedulable?).and_return(true)
+          allow(fake_duplicate_job).to receive(:check_and_del_reschedule_signal).and_return(true)
+        end
+
         it 'reschedules the job if deduplication happened' do
           expect(fake_duplicate_job).to receive(:delete!).once
           expect(fake_duplicate_job).to receive(:reschedule).once
@@ -60,29 +65,6 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::Strategies::UntilExecut
           expect(fake_duplicate_job).not_to receive(:reschedule)
 
           perform_strategy_with_error
-        end
-      end
-
-      context 'when job is reschedulable' do
-        before do
-          allow(fake_duplicate_job).to receive(:reschedulable?).and_return(true)
-        end
-
-        context 'when use_sidekiq_dedup_signaling is enabled' do
-          before do
-            allow(fake_duplicate_job).to receive(:check_and_del_reschedule_signal).and_return(true)
-          end
-
-          it_behaves_like 'rescheduling in until_executed'
-        end
-
-        context 'when use_sidekiq_dedup_signaling is disabled' do
-          before do
-            allow(fake_duplicate_job).to receive(:should_reschedule?).and_return(true)
-            stub_feature_flags(use_sidekiq_dedup_signaling: false)
-          end
-
-          it_behaves_like 'rescheduling in until_executed'
         end
       end
 

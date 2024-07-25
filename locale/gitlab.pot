@@ -25462,6 +25462,9 @@ msgstr ""
 msgid "GroupSettings| %{link_start}What do experiment and beta mean?%{link_end}"
 msgstr ""
 
+msgid "GroupSettings|'%{name}' has been scheduled for removal on %{date}."
+msgstr ""
+
 msgid "GroupSettings|After the instance reaches the user cap, any user who is added or requests access must be approved by an administrator. Leave empty for an unlimited user cap. If you change the user cap to unlimited, you must re-enable %{project_sharing_docs_link_start}project sharing%{link_end} and %{group_sharing_docs_link_start}group sharing%{link_end}."
 msgstr ""
 

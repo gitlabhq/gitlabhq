@@ -22,7 +22,7 @@ and Grafana allows you to query the data to display graphs.
 After setting up Grafana, you can enable a link to access it from the
 GitLab sidebar:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand **Metrics - Grafana**.
 1. Select the **Add a link to Grafana** checkbox.

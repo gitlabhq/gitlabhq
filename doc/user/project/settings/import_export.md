@@ -105,7 +105,7 @@ Before you can migrate projects on a self-managed GitLab instance using file exp
 
 To enable file exports as an import source for the destination instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Import and export settings**.
 1. Scroll to **Import sources**.

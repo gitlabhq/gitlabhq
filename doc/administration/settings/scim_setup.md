@@ -30,7 +30,7 @@ Prerequisites:
 
 To configure GitLab SCIM:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **SCIM Token** section and select **Generate a SCIM token**.
 1. For configuration of your identity provider, save the:

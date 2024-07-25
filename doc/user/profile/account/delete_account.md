@@ -43,7 +43,7 @@ DETAILS:
 
 As an administrator, to delete a user account:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. Select a user.
 1. Under the **Account** tab, select:

@@ -313,7 +313,7 @@ secondary site is a read-only copy.
    ```
 
 1. Go to the primary node GitLab instance:
-   1. On the left sidebar, at the bottom, select **Admin area**..
+   1. On the left sidebar, at the bottom, select **Admin**..
    1. Select **Geo > Sites**.
    1. Select **Add site**.
 
@@ -368,7 +368,7 @@ If you convert an existing site to Geo, you should check that the clone method i
 
 On the primary site:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. If you use Git over SSH:
@@ -383,7 +383,7 @@ the primary site.
 
 After you sign in:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
 1. Verify that the site is correctly identified as a secondary Geo site, and that
    Geo is enabled.

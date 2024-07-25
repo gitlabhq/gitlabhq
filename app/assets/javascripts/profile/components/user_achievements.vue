@@ -8,8 +8,6 @@ import timeagoMixin from '~/vue_shared/mixins/timeago';
 import { joinPaths } from '~/lib/utils/url_utility';
 import getUserAchievements from './graphql/get_user_achievements.query.graphql';
 
-export const MAX_VISIBLE_ACHIEVEMENTS = 7;
-
 export default {
   name: 'UserAchievements',
   components: { GlAvatar, GlBadge, GlPopover, GlSprintf },
@@ -38,27 +36,25 @@ export default {
   },
   methods: {
     processNodes(nodes) {
-      return Object.entries(groupBy(nodes, 'achievement.id'))
-        .slice(0, MAX_VISIBLE_ACHIEVEMENTS)
-        .map(([id, values]) => {
-          const {
-            achievement: { name, avatarUrl, description, namespace },
-            createdAt,
-          } = values[0];
-          const count = values.length;
-          return {
-            id: `user-achievement-${id}`,
-            name,
-            timeAgo: this.timeFormatted(createdAt),
-            avatarUrl: avatarUrl || gon.gitlab_logo,
-            description,
-            namespace: namespace && {
-              fullPath: namespace.fullPath,
-              webUrl: joinPaths(this.rootUrl, namespace.achievementsPath),
-            },
-            count,
-          };
-        });
+      return Object.entries(groupBy(nodes, 'achievement.id')).map(([id, values]) => {
+        const {
+          achievement: { name, avatarUrl, description, namespace },
+          createdAt,
+        } = values[0];
+        const count = values.length;
+        return {
+          id: `user-achievement-${id}`,
+          name,
+          timeAgo: this.timeFormatted(createdAt),
+          avatarUrl: avatarUrl || gon.gitlab_logo,
+          description,
+          namespace: namespace && {
+            fullPath: namespace.fullPath,
+            webUrl: joinPaths(this.rootUrl, namespace.achievementsPath),
+          },
+          count,
+        };
+      });
     },
     achievementAwardedMessage(userAchievement) {
       return userAchievement.namespace
@@ -85,51 +81,56 @@ export default {
     <h2 class="gl-font-base gl-mb-2 gl-mt-4">
       {{ $options.i18n.achievementsLabel }}
     </h2>
-    <div
-      v-for="userAchievement in userAchievements"
-      :key="userAchievement.id"
-      class="gl-mr-2 gl-display-inline-block gl-align-top gl-text-center"
-      data-testid="user-achievement"
-    >
-      <gl-avatar
-        :id="userAchievement.id"
-        :src="userAchievement.avatarUrl"
-        :size="32"
-        tabindex="0"
-        shape="rect"
-        class="gl-p-1 gl-border-none"
-      />
-      <br />
-      <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info">{{
-        getCountBadge(userAchievement.count)
-      }}</gl-badge>
-      <gl-popover :target="userAchievement.id">
-        <div>
-          <span class="gl-font-bold">{{ userAchievement.name }}</span>
-          <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info">{{
-            getCountBadge(userAchievement.count)
-          }}</gl-badge>
-        </div>
-        <div>
-          <gl-sprintf :message="achievementAwardedMessage(userAchievement)">
-            <template #timeAgo>
-              <span>{{ userAchievement.timeAgo }}</span>
-            </template>
-            <template v-if="userAchievement.namespace" #namespace>
-              <a :href="userAchievement.namespace.webUrl">{{
-                userAchievement.namespace.fullPath
-              }}</a>
-            </template>
-          </gl-sprintf>
-        </div>
-        <div
-          v-if="userAchievement.description"
-          class="gl-mt-5"
-          data-testid="achievement-description"
+    <div class="gl-flex gl-gap-3 gl-flex-wrap">
+      <div
+        v-for="userAchievement in userAchievements"
+        :key="userAchievement.id"
+        class="gl-relative"
+        data-testid="user-achievement"
+      >
+        <gl-avatar
+          :id="userAchievement.id"
+          :src="userAchievement.avatarUrl"
+          :size="48"
+          tabindex="0"
+          shape="rect"
+          class="gl-p-1 gl-outline-none"
+        />
+        <br />
+        <gl-badge
+          v-if="showCountBadge(userAchievement.count)"
+          class="gl-absolute gl-left-7 gl-top-7 gl-z-1"
+          variant="info"
+          >{{ getCountBadge(userAchievement.count) }}</gl-badge
         >
-          {{ userAchievement.description }}
-        </div>
-      </gl-popover>
+        <gl-popover :target="userAchievement.id">
+          <div>
+            <span class="gl-font-bold">{{ userAchievement.name }}</span>
+            <gl-badge v-if="showCountBadge(userAchievement.count)" variant="info">{{
+              getCountBadge(userAchievement.count)
+            }}</gl-badge>
+          </div>
+          <div>
+            <gl-sprintf :message="achievementAwardedMessage(userAchievement)">
+              <template #timeAgo>
+                <span>{{ userAchievement.timeAgo }}</span>
+              </template>
+              <template v-if="userAchievement.namespace" #namespace>
+                <a :href="userAchievement.namespace.webUrl">{{
+                  userAchievement.namespace.fullPath
+                }}</a>
+              </template>
+            </gl-sprintf>
+          </div>
+          <div
+            v-if="userAchievement.description"
+            class="gl-mt-5"
+            data-testid="achievement-description"
+          >
+            {{ userAchievement.description }}
+          </div>
+        </gl-popover>
+      </div>
     </div>
   </div>
 </template>

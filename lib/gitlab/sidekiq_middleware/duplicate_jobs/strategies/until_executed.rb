@@ -19,19 +19,9 @@ module Gitlab
             # early return since not reschedulable. ensure block to handle cleanup.
             return unless duplicate_job.reschedulable?
 
-            should_reschedule = if Feature.enabled?(:use_sidekiq_dedup_signaling, :request)
-                                  # use the deduplicating-signalling key
-                                  duplicate_job.delete!
-                                  duplicate_job.check_and_del_reschedule_signal
-                                else
-                                  # use the deduplicated flag in cookie
-                                  res = duplicate_job.should_reschedule?
-                                  duplicate_job.delete!
-                                  res
-                                end
-
+            duplicate_job.delete!
             job_deleted = true
-            duplicate_job.reschedule if should_reschedule
+            duplicate_job.reschedule if duplicate_job.check_and_del_reschedule_signal
           ensure
             duplicate_job.delete! unless job_deleted
           end

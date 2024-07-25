@@ -28,7 +28,7 @@ the activity feed.
 To modify this setting:
 
 - In the Admin area:
-  1. On the left sidebar, at the bottom, select **Admin area**.
+  1. On the left sidebar, at the bottom, select **Admin**.
   1. Select **Settings > Network**.
   1. Expand **Performance optimization**.
 - Through the [Application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls)

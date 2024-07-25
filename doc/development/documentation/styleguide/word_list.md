@@ -93,9 +93,9 @@ Do not use **Add new**.
 
 ## Admin area
 
-Use sentence case for **Admin area**. The UI uses title case.
+Use sentence case for **Admin**. The UI uses sentence case.
 
-Do not use **administrator area**, **administration area**, or other variants.
+Do not use **Admin area**, **administrator area**, **administration area**, or other variants.
 
 ## Admin Mode
 

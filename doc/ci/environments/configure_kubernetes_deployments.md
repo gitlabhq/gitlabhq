@@ -42,7 +42,7 @@ When you use the GitLab Kubernetes integration to deploy to a Kubernetes cluster
 you can view cluster and namespace information. On the deployment
 job page, it's displayed above the job trace:
 
-![Deployment cluster information](../img/environments_deployment_cluster_v12_8.png)
+![Deployment cluster information with cluster and namespace.](../img/environments_deployment_cluster_v12_8.png)
 
 ## Configure incremental rollouts
 

@@ -18,7 +18,7 @@ Redis. To avoid excessive memory for Redis, we:
 
 To access Sidekiq job size limits:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Preferences**.
 1. Expand **Sidekiq job size limits**.
 1. Adjust the compression threshold or size limit. The compression can

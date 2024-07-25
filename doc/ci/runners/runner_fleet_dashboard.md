@@ -32,7 +32,7 @@ Prerequisites:
 
 To view the runner fleet dashboard:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Runners**.
 1. Select **Fleet dashboard**.
 
@@ -52,7 +52,7 @@ CSV file shows the runner type and job status for each project. The CSV is sent 
 
 To export compute minutes used by instance runners:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Runners**.
 1. Select **Fleet dashboard**.
 1. Select **Export CSV**.

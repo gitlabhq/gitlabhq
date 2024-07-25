@@ -129,6 +129,9 @@ module Types
       field :failure_message, GraphQL::Types::String, null: true,
         description: 'Message on why the job failed.'
 
+      field :source, GraphQL::Types::String, null: true,
+        description: 'Policy or action that initiated the job. If not set, the value is inherited from the pipeline.'
+
       def can_play_job?
         object.playable? && Ability.allowed?(current_user, :play_job, object)
       end
@@ -161,6 +164,10 @@ module Types
 
       def artifacts
         object.job_artifacts if object.is_a?(::Ci::Build)
+      end
+
+      def source
+        object.source if object.is_a?(::Ci::Build)
       end
 
       def trace

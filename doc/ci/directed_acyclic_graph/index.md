@@ -84,9 +84,9 @@ that need or are needed by other jobs. Jobs with no dependencies are not display
 
 To see the needs visualization, select **Needs** when viewing a pipeline that uses the `needs` keyword.
 
-![Needs visualization example](img/dag_graph_example_v13_1.png)
+![Needs visualization example.](img/dag_graph_example_v13_1.png)
 
 Selecting a node highlights all the job paths it depends on.
 
-![Needs visualization with path highlight](img/dag_graph_example_clicked_v13_1.png)
+![Needs visualization with path highlight.](img/dag_graph_example_clicked_v13_1.png)
 <!--- end_remove -->

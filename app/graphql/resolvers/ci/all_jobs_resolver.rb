@@ -44,7 +44,8 @@ module Resolvers
           web_path: [{ project: { namespace: [:route] } }],
           tags: [:tags],
           ai_failure_analysis: [{ project: [:project_feature, :namespace] }],
-          trace: [{ project: [:namespace] }, :job_artifacts_trace]
+          trace: [{ project: [:namespace] }, :job_artifacts_trace],
+          source: [:build_source]
         }
       end
 

@@ -53,7 +53,7 @@ mapping:
   - source:
       - '(?<prefix>ee/)?config/events/.+\.yml'
       - 'config/events/schema\.json'
-    test: 'spec/lib/gitlab/tracking/event_definition_validate_all_spec.rb'
+    test: 'spec/lib/gitlab/tracking/event_definition_validator_validate_all_spec.rb'
 
   # DB structure should map to schema spec
   - source: 'db/structure\.sql'

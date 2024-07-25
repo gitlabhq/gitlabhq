@@ -32,7 +32,7 @@ Whether you want to install the GitLab for Jira Cloud app [from the Atlassian Ma
 
 To create an OAuth application on your self-managed instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Applications**.
 1. Select **New application**.
 1. In **Redirect URI**:
@@ -112,7 +112,7 @@ Alternatively, you might want to [install the GitLab for Jira Cloud app manually
 
 To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Proxy URL**, enter `https://gitlab.com`.
@@ -182,7 +182,7 @@ To support your self-managed instance with Jira Cloud, do one of the following:
 
 To set up your self-managed instance for the GitLab for Jira Cloud app in GitLab 15.7 and later:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **GitLab for Jira App**.
 1. In **Jira Connect Proxy URL**, ensure this is blank.
@@ -247,7 +247,7 @@ You might want to use a proxy if you're managing multiple GitLab instances but o
 
 To configure your GitLab instance to serve as a proxy:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **GitLab for Jira App**.
 1. Select **Enable public key storage**.

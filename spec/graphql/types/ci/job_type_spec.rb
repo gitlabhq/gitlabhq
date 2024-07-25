@@ -46,6 +46,7 @@ RSpec.describe Types::Ci::JobType, feature_category: :continuous_integration do
       scheduledAt
       schedulingType
       shortSha
+      source
       stage
       started_at
       status

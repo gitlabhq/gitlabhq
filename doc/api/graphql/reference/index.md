@@ -18349,6 +18349,7 @@ CI/CD variables for a GitLab instance.
 | <a id="cijobscheduledat"></a>`scheduledAt` | [`Time`](#time) | Schedule for the build. |
 | <a id="cijobschedulingtype"></a>`schedulingType` | [`String`](#string) | Type of job scheduling. Value is `dag` if the job uses the `needs` keyword, and `stage` otherwise. |
 | <a id="cijobshortsha"></a>`shortSha` | [`String!`](#string) | Short SHA1 ID of the commit. |
+| <a id="cijobsource"></a>`source` | [`String`](#string) | Policy or action that initiated the job. If not set, the value is inherited from the pipeline. |
 | <a id="cijobstage"></a>`stage` | [`CiStage`](#cistage) | Stage of the job. |
 | <a id="cijobstartedat"></a>`startedAt` | [`Time`](#time) | When the job was started. |
 | <a id="cijobstatus"></a>`status` | [`CiJobStatus`](#cijobstatus) | Status of the job. |

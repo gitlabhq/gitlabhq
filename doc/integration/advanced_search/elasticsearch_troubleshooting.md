@@ -448,7 +448,7 @@ These settings limit indexing to 2000 documents per minute.
 
 To adjust worker settings:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Advanced Search**.
 1. Select the **Requeue indexing workers** checkbox.

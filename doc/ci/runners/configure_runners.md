@@ -31,7 +31,7 @@ On GitLab.com, you cannot override the job timeout for instance runners and must
 
 To set the maximum job timeout:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner, you want to edit, select **Edit** (**{pencil}**).
 1. In the **Maximum job timeout** field, enter a value in seconds. The minimum amount is 600 seconds (10 minutes).
@@ -229,7 +229,7 @@ Prerequisites:
 
 To automatically rotate runner authentication tokens:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 1. Expand **Continuous Integration and Deployment**.
 1. Set a **Runners expiration** time for runners, leave empty for no expiration.
@@ -252,7 +252,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner you want to protect, select **Edit** (**{pencil}**).
 1. Select the **Protected** checkbox.
@@ -300,7 +300,7 @@ Prerequisites:
 
 To set the maximum job timeout:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
 1. To the right of the runner you want to edit, select **Edit** (**{pencil}**).
 1. Set the runner to run tagged or untagged jobs:

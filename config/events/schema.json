@@ -86,7 +86,7 @@
           "additionalProperties": false
         }
       },
-      "additionalProperties": false
+      "additionalProperties": true
     },
     "iglu_schema_url": {
       "type": [

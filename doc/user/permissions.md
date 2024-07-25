@@ -161,6 +161,17 @@ Project permissions for [compliance](compliance/index.md) features including com
 | Create, edit, and delete license approval policies                                                |       |          |     ✓     |     ✓      |   ✓   |       |
 | Manage [audit streams](compliance/audit_event_streaming.md)                                       |       |          |           |            |   ✓   |       |
 
+### Machine learning model registry and experiments
+
+Project permissions for [model registry](project/ml/model_registry/index.md) and [model experiments](project/ml/experiment_tracking/index.md).
+
+| Action                                                                                            | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|---------------------------------------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| View [models and versions](project/ml/model_registry/index.md)                                    |       |     ✓    |     ✓     |     ✓      |   ✓   |       |
+| Create, edit, and delete models, versions, and artifacts                                           |       |          |     ✓     |     ✓      |   ✓   |       |
+| View [model experiments](project/ml/experiment_tracking/index.md)                                 |       |     ✓    |     ✓     |     ✓      |   ✓   |       |
+| Create, edit, and delete experiments, candidates etc                                              |       |          |     ✓     |     ✓      |   ✓   |       |
+
 ### Project planning
 
 Project permissions for [issues](project/issues/index.md):

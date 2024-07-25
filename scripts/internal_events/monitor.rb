@@ -54,7 +54,8 @@ def extract_standard_context(event)
       user_id: context["data"]["user_id"],
       namespace_id: context["data"]["namespace_id"],
       project_id: context["data"]["project_id"],
-      plan: context["data"]["plan"]
+      plan: context["data"]["plan"],
+      extra: context["data"]["extra"]
     }
   end
   {}
@@ -75,7 +76,8 @@ def generate_snowplow_table
     'plan',
     'Label',
     'Property',
-    'Value'
+    'Value',
+    'Extra'
   ]
 
   rows << :separator
@@ -93,7 +95,8 @@ def generate_snowplow_table
       standard_context[:plan],
       event['event']['se_label'],
       event['event']['se_property'],
-      event['event']['se_value']
+      event['event']['se_value'],
+      standard_context[:extra]
     ]
 
     row.map! { |value| red(value) } if event['rawEvent']['parameters']['dtm'].to_i > @initial_max_timestamp

@@ -41,7 +41,7 @@ If 2FA is enabled, users are locked after three failed sign-in attempts. Account
 
 ## Unlock a user from the Admin area
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
 1. Use the search bar to find the locked user.
 1. From the **User administration** dropdown list, select **Unlock**.

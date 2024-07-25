@@ -30,7 +30,7 @@ notifications:
 1. To enable the integration for your group or project:
    1. In your group or project, on the left sidebar, select **Settings > Integrations**.
 1. To enable the integration for your instance:
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Settings > Integrations**.
 1. Select the **Pumble** integration.
 1. Ensure that the **Active** toggle is enabled.

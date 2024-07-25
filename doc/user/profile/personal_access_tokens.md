@@ -212,7 +212,7 @@ Prerequisites:
 
 - You must be an administrator for your self-managed instance.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Account and limit**.
 1. Clear the **Service account token expiration** checkbox.

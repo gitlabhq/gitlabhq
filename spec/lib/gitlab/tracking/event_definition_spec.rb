@@ -76,33 +76,6 @@ RSpec.describe Gitlab::Tracking::EventDefinition, feature_category: :service_pin
     end
   end
 
-  describe '#validate' do
-    using RSpec::Parameterized::TableSyntax
-
-    where(:attribute, :value) do
-      :description          | 1
-      :category             | nil
-      :action               | nil
-      :label_description    | 1
-      :property_description | 1
-      :value_description    | 1
-      :extra_properties     | 'smth'
-      :product_group        | nil
-      :distributions        | %(be eb)
-      :tiers                | %(pro)
-    end
-
-    with_them do
-      before do
-        attributes[attribute] = value
-      end
-
-      it 'has validation errors' do
-        expect(described_class.new(path, attributes).validation_errors).not_to be_empty
-      end
-    end
-  end
-
   describe '.definitions' do
     let(:metric1) { Dir.mktmpdir('metric1') }
     let(:metric2) { Dir.mktmpdir('metric2') }

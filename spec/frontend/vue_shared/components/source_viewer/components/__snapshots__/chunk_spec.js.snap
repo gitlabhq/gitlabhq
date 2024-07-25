@@ -2,7 +2,7 @@
 
 exports[`Chunk component rendering isHighlighted is true renders line numbers 1`] = `
 <div
-  class="diff-line-num gl-border-r gl-display-flex gl-p-0! gl-z-3 line-links line-numbers"
+  class="!gl-p-0 diff-line-num gl-border-r gl-flex gl-z-3 line-links line-numbers"
   data-testid="line-numbers"
 >
   <a

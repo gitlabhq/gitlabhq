@@ -12,7 +12,7 @@ DETAILS:
 
 To manage labels for the GitLab instance:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Labels**.
 
 For more details on how to manage labels, see [Labels](../user/project/labels.md).

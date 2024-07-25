@@ -31,7 +31,7 @@ the site more time before scheduling a planned failover.
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
 1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
@@ -41,7 +41,7 @@ On the **primary** site:
 
 On the **secondary** site:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
 1. Expand **Verification information** tab for that site to view automatic checksumming
    status for repositories and wikis. Successes are shown in green, pending work
@@ -69,7 +69,7 @@ increase load and vice versa.
 
 On the **primary** site:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Geo > Sites**.
 1. Select **Edit** for the **primary** site to customize the minimum
    re-verification interval:
@@ -102,7 +102,7 @@ sudo gitlab-rake geo:verification:wiki:reset
 If the **primary** and **secondary** sites have a checksum verification mismatch, the cause may not be apparent. To find the cause of a checksum mismatch:
 
 1. On the **primary** site:
-   1. On the left sidebar, at the bottom, select **Admin area**.
+   1. On the left sidebar, at the bottom, select **Admin**.
    1. On the left sidebar, select **Overview > Projects**.
    1. Find the project that you want to check the checksum differences and
       select its name.

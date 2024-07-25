@@ -20,7 +20,7 @@ Prerequisites:
 
 To access the visibility and access control options:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 
@@ -34,7 +34,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. For **Default project creation protection**, select the desired roles:
@@ -57,7 +57,7 @@ Prerequisites:
 
 To restrict project deletion to only administrators:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to:
@@ -112,7 +112,7 @@ To configure delayed project deletion:
 
 :::TabTitle GitLab 16.0 and later
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to **Deletion protection** and set the retention period to a value between `1` and `90` days.
@@ -120,7 +120,7 @@ To configure delayed project deletion:
 
 :::TabTitle GitLab 15.11 and earlier
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Scroll to:
@@ -144,7 +144,7 @@ In GitLab 16.0 and later, the **Keep deleted** option is removed, and delayed gr
 To enable delayed group deletion in GitLab 15:
 
 1. GitLab 15.11 only: enable the `always_perform_delayed_deletion` feature flag.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. For **Deletion projection**, select **Keep deleted**.
@@ -166,7 +166,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Select the desired default project visibility:
@@ -184,7 +184,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. For **Default snippet visibility**, select your desired visibility level:
@@ -203,7 +203,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. For **Default group visibility**, select your desired visibility level:
@@ -231,7 +231,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. For **Restricted visibility levels**, select the desired visibility levels to restrict.
@@ -269,7 +269,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. For **Enabled Git access protocols**, select your desired protocols:
@@ -300,7 +300,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Enter a root URL for **Custom Git clone URL for HTTP(S)**.
@@ -312,7 +312,7 @@ These options specify the [permitted types and lengths](../../security/ssh_keys_
 
 To specify a restriction for each key type:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. Go to **RSA SSH keys**.
@@ -337,7 +337,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Repository**.
 1. Expand **Repository mirroring**.
 1. Select **Allow project maintainers to configure repository mirroring**.
@@ -363,7 +363,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Visibility and access controls**.
 1. In **Globally-allowed IP ranges**, provide a list of IP address ranges. This list:

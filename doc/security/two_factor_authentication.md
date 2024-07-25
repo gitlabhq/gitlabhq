@@ -41,7 +41,7 @@ You can use the UI or the API to enforce 2FA for all users.
 
 ### Use the UI
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **Sign-in restrictions**:
    - Select **Enforce two-factor authentication** to enable this feature.
@@ -67,7 +67,7 @@ DETAILS:
 
 Administrators can enforce 2FA for administrator users in a self-managed instance.
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. On the left sidebar, select **Settings > General**.
 1. Expand the **Sign-in restrictions** section:
     - Select **Require administrators to enable 2FA**.

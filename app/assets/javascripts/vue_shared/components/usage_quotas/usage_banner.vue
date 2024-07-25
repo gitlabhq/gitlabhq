@@ -18,21 +18,17 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-direction-column">
-    <div class="gl-display-flex gl-align-items-center gl-py-3">
-      <div
-        class="gl-display-flex gl-flex-direction-column gl-sm-flex-direction-row gl-justify-content-space-between gl-align-items-stretch gl-flex-grow-1"
-      >
-        <div
-          class="gl-display-flex gl-flex-direction-column gl-mb-3 gl-sm-mb-0 gl-min-w-0 gl-flex-grow-1"
-        >
+  <div class="gl-flex gl-flex-col">
+    <div class="gl-flex gl-items-center gl-py-3">
+      <div class="gl-flex gl-grow gl-flex-col gl-items-stretch gl-justify-between sm:gl-flex-row">
+        <div class="gl-mb-3 gl-flex gl-min-w-0 gl-grow gl-flex-col sm:gl-mb-0">
           <div
             v-if="
               /* eslint-disable-line @gitlab/vue-prefer-dollar-scopedslots */ $slots[
                 'left-primary-text'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-text-body gl-font-bold gl-min-h-6 gl-min-w-0"
+            class="gl-flex gl-min-h-6 gl-min-w-0 gl-items-center gl-font-bold gl-text-primary"
           >
             <slot name="left-primary-text"></slot>
           </div>
@@ -42,13 +38,13 @@ export default {
                 'left-secondary-text'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-text-gray-500 gl-min-h-6 gl-min-w-0 gl-flex-grow-1 gl-w-7/10 gl-md-max-w-70p"
+            class="gl-flex gl-min-h-6 gl-w-7/10 gl-min-w-0 gl-grow gl-items-center gl-text-gray-500 md:gl-max-w-7/10"
           >
             <slot name="left-secondary-text"></slot>
           </div>
         </div>
         <div
-          class="gl-display-flex gl-flex-direction-column gl-sm-align-items-flex-end gl-justify-content-space-between gl-text-gray-500 gl-flex-shrink-0"
+          class="gl-flex gl-flex-shrink-0 gl-flex-col gl-justify-between gl-text-gray-500 sm:gl-items-end"
         >
           <div
             v-if="
@@ -56,7 +52,7 @@ export default {
                 'right-primary-text'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-sm-text-body sm:gl-font-bold gl-min-h-6"
+            class="gl-flex gl-min-h-6 gl-items-center sm:gl-font-bold sm:gl-text-primary"
           >
             <slot name="right-primary-text"></slot>
           </div>
@@ -66,7 +62,7 @@ export default {
                 'right-secondary-text'
               ]
             "
-            class="gl-display-flex gl-align-items-center gl-min-h-6"
+            class="gl-flex gl-min-h-6 gl-items-center"
           >
             <slot v-if="!loading" name="right-secondary-text"></slot>
             <gl-skeleton-loader v-else :width="60" :lines="1" />

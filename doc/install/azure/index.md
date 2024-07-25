@@ -251,7 +251,7 @@ in this section whenever you need to update GitLab.
 
 To determine the version of GitLab you're currently running:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Dashboard**.
 1. Find the version under the **Components** table.
 

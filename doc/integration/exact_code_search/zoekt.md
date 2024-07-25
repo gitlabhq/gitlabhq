@@ -50,7 +50,7 @@ Prerequisites:
 
 To enable [exact code search](../../user/search/exact_code_search.md) in GitLab:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Enable indexing for exact code search** and **Enable exact code search** checkboxes.
@@ -64,7 +64,7 @@ Prerequisites:
 
 You can index both existing and new root namespaces automatically. To index all root namespaces automatically:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Index root namespaces automatically** checkbox.
@@ -83,7 +83,7 @@ Prerequisites:
 
 To pause indexing for [exact code search](../../user/search/exact_code_search.md):
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Search**.
 1. Expand **Exact code search configuration**.
 1. Select the **Pause indexing for exact code search** checkbox.

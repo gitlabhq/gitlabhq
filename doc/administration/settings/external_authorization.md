@@ -49,7 +49,7 @@ Alternatively, learn where to install custom certificates by using
 
 The external authorization service can be enabled by an administrator:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **External authorization**.
 1. Complete the fields.
@@ -69,7 +69,7 @@ Prerequisites:
 
 To allow authorization with deploy tokens and keys:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand **External authorization**, and:
    - Leave the service URL field empty.

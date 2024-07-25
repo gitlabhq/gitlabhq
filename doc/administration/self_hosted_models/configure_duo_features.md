@@ -42,7 +42,7 @@ Prerequisites:
 
 To configure a self-hosted model:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **AI-powered features**.
    - If the **AI-powered features** menu item is not available, synchronize your
      subscription after purchase:
@@ -67,7 +67,7 @@ Prerequisites:
 
 To configure the AI-powered features to use your model:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **AI-powered features**.
    - If the **AI-powered features** menu item is not available, synchronize your
      subscription after purchase:

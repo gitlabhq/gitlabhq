@@ -24,6 +24,10 @@ To ensure access to your cluster is safe:
 
 To use GitLab CI/CD to interact with your cluster, runners must be registered with GitLab. However, these runners do not have to be in the cluster where the agent is.
 
+Prerequisites:
+
+- Make sure [GitLab CI/CD is enabled](../../../ci/pipelines/settings.md#disable-gitlab-cicd-pipelines).
+
 ## Use GitLab CI/CD with your cluster
 
 To update a Kubernetes cluster with GitLab CI/CD:

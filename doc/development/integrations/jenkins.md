@@ -24,7 +24,7 @@ brew services start jenkins
 GitLab does not allow requests to localhost or the local network by default. When running Jenkins on your local machine, you need to enable local access.
 
 1. Sign in to your GitLab instance as an administrator.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Network**.
 1. Expand **Outbound requests**, and select the following checkboxes:
 

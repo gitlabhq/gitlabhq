@@ -1742,6 +1742,46 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
+  describe '#changed_paths' do
+    let(:commits) { [double(:commit)] }
+    let(:changed_paths) { [double(:changed_path, path: 'path.rb')] }
+    let(:merge_request) { build(:merge_request, id: 1, project: project) }
+
+    before do
+      allow(merge_request).to receive(:commits).and_return(commits)
+    end
+
+    it 'fetches the changed paths from gitaly' do
+      expect(project.repository)
+        .to receive(:find_changed_paths).with(commits, merge_commit_diff_mode: :all_parents)
+        .once.and_return(changed_paths)
+      expect(merge_request.changed_paths).to eq(changed_paths)
+    end
+
+    it 'uses a cache', :request_store do
+      expect(project.repository).to receive(:find_changed_paths).once
+
+      2.times { merge_request.changed_paths }
+    end
+
+    it 'uses a different cache for different MRs', :request_store do
+      merge_request_2 = build(:merge_request, id: 2, project: project)
+      expect(project.repository).to receive(:find_changed_paths).twice
+      merge_request.changed_paths
+      merge_request_2.changed_paths
+    end
+
+    it 'invalidates the cache when the diff_head_sha changes', :request_store do
+      expect(project.repository).to receive(:find_changed_paths).twice
+
+      2.times { merge_request.changed_paths }
+
+      allow(merge_request).to receive(:diff_head_sha).and_return('new_sha')
+
+      2.times { merge_request.changed_paths }
+    end
+  end
+
   describe '#new_paths' do
     let(:merge_request) do
       create(:merge_request, source_branch: 'expand-collapse-files', target_branch: 'master')

@@ -60,7 +60,7 @@ By default, new users are not assigned the Guest role.
 
 To assign the Guest role to new users:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview** > **Users**.
 1. Select the relevant user or [create a new one](../user/profile/account/create_accounts.md).
 1. In the **Max Role** column, select **Guest**.

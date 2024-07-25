@@ -122,7 +122,7 @@ to your instance and then upgrade it for any relevant features you're using.
   [turning on maintenance mode](../administration/maintenance_mode/index.md) during the
   upgrade.
 - About PostgreSQL:
-  1. On the left sidebar, at the bottom, select **Admin area**..
+  1. On the left sidebar, at the bottom, select **Admin**..
   1. Look for the version of PostgreSQL you are using.
      If [a PostgreSQL upgrade is needed](../administration/package_information/postgresql_versions.md),
      account for the relevant

@@ -570,7 +570,7 @@ domain as a custom domain to their project.
 If your user base is private or otherwise trusted, you can disable the
 verification requirement:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Clear the **Require users to prove ownership of custom domains** checkbox.
@@ -585,7 +585,7 @@ sites served under a custom domain.
 To enable it:
 
 1. Choose an email address on which you want to receive notifications about expiring domains.
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Enter the email address for receiving notifications and accept Let's Encrypt's Terms of Service.
@@ -636,7 +636,7 @@ pre-existing applications must modify the GitLab Pages OAuth application. Follow
 this:
 
 1. Enable [access control](#access-control).
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Applications**.
 1. Expand **GitLab Pages**.
 1. Clear the `api` scope's checkbox and select the desired scope's checkbox (for example,
@@ -653,7 +653,7 @@ This can be helpful to restrict information published with Pages websites to the
 of your instance only.
 To do that:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Select the **Disable public access to Pages sites** checkbox.
@@ -895,7 +895,7 @@ Prerequisites:
 
 To set the global maximum pages size for a project:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Preferences**.
 1. Expand **Pages**.
 1. In **Maximum size of pages**, enter a value. The default is `100`.
@@ -944,7 +944,7 @@ Prerequisites:
 
 To set the maximum number of GitLab Pages custom domains for a project:
 
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Preferences**.
 1. Expand **Pages**.
 1. Enter a value for **Maximum number of custom domains per project**. Use `0` for unlimited domains.

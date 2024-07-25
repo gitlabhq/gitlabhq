@@ -1040,7 +1040,7 @@ To create a group:
 To open the Admin area:
 
 ```markdown
-1. On the left sidebar, at the bottom, select **Admin area**.
+1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.
 ```
 
@@ -1287,6 +1287,7 @@ include detailed information in the text.
 - Don't use a string of keywords. Include keywords in a complete sentence to enhance context.
 - Introduce the image in the section text, not the alt text.
 - Try to avoid repeating content that you've already used in the section text.
+- Don't use inline styling, like bold, italics, or backticks. Screen readers will read `**text**` as `star star text star star`.
 
 #### Automatic screenshot generator
 
