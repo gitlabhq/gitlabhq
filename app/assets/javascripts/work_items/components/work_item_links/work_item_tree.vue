@@ -5,7 +5,7 @@ import { createAlert } from '~/alert';
 import {
   FORM_TYPES,
   WIDGET_TYPE_HIERARCHY,
-  WORK_ITEMS_TREE_TEXT_MAP,
+  WORK_ITEMS_TREE_TEXT,
   WORK_ITEM_TYPE_VALUE_MAP,
   WORK_ITEMS_TYPE_MAP,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
@@ -26,7 +26,7 @@ import WorkItemTreeActions from './work_item_tree_actions.vue';
 
 export default {
   FORM_TYPES,
-  WORK_ITEMS_TREE_TEXT_MAP,
+  WORK_ITEMS_TREE_TEXT,
   WORK_ITEM_TYPE_ENUM_OBJECTIVE,
   WORK_ITEM_TYPE_ENUM_KEY_RESULT,
   components: {
@@ -258,7 +258,7 @@ export default {
     @dismissAlert="error = undefined"
   >
     <template #header>
-      {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].title }}
+      {{ $options.WORK_ITEMS_TREE_TEXT.title }}
       <span
         v-if="showRolledUpWeight"
         ref="weightData"
@@ -298,7 +298,7 @@ export default {
       <div class="gl-new-card-content gl-px-0">
         <div v-if="showEmptyMessage" data-testid="tree-empty">
           <p class="gl-new-card-empty">
-            {{ $options.WORK_ITEMS_TREE_TEXT_MAP[workItemType].empty }}
+            {{ $options.WORK_ITEMS_TREE_TEXT.empty }}
           </p>
         </div>
         <work-item-links-form

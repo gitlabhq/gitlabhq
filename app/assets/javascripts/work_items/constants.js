@@ -216,21 +216,11 @@ export const WORK_ITEM_TYPE_VALUE_MAP = {
   [WORK_ITEM_TYPE_VALUE_TASK]: WORK_ITEM_TYPE_ENUM_TASK,
 };
 
-export const WORK_ITEMS_TREE_TEXT_MAP = {
-  [WORK_ITEM_TYPE_VALUE_OBJECTIVE]: {
-    title: s__('WorkItem|Child objectives and key results'),
-    empty: s__('WorkItem|No objectives or key results are currently assigned.'),
-  },
-  [WORK_ITEM_TYPE_VALUE_ISSUE]: {
-    title: s__('WorkItem|Tasks'),
-    empty: s__(
-      'WorkItem|No tasks are currently assigned. Use tasks to break down this issue into smaller parts.',
-    ),
-  },
-  [WORK_ITEM_TYPE_VALUE_EPIC]: {
-    title: s__('WorkItem|Child items'),
-    empty: s__('WorkItem|No epics or issues are currently assigned.'),
-  },
+export const WORK_ITEMS_TREE_TEXT = {
+  title: s__('WorkItem|Child items'),
+  empty: s__(
+    'WorkItem|No child items are currently assigned. Use child items to break down work into smaller parts.',
+  ),
 };
 
 export const FORM_TYPES = {

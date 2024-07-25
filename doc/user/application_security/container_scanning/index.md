@@ -67,10 +67,8 @@ GitLab compares the found vulnerabilities between the source and target branches
 | Support for Trivy | **{check-circle}** Yes | **{check-circle}** Yes |
 | Inclusion of GitLab Advisory Database | Limited to the time-delayed content from GitLab [advisories-communities](https://gitlab.com/gitlab-org/advisories-community/) project | Yes - all the latest content from [Gemnasium DB](https://gitlab.com/gitlab-org/security-products/gemnasium-db) |
 | Presentation of Report data in Merge Request and Security tab of the CI pipeline job | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Interaction with Vulnerabilities](#interacting-with-the-vulnerabilities) such as merge request approvals | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Solutions for vulnerabilities (auto-remediation)](#solutions-for-vulnerabilities-auto-remediation) | **{dotted-circle}** No | **{check-circle}** Yes |
 | Support for the [vulnerability allow list](#vulnerability-allowlisting) | **{dotted-circle}** No | **{check-circle}** Yes |
-| [Access to Security Dashboard page](#security-dashboard) | **{dotted-circle}** No | **{check-circle}** Yes |
 | [Access to Dependency List page](../dependency_list/index.md) | **{dotted-circle}** No | **{check-circle}** Yes |
 
 ## Configuration
@@ -726,11 +724,6 @@ To enable container scanning for the GitLab Container Registry:
 1. Select **Secure > Security configuration**.
 1. Scroll down to the **Container Scanning For Registry** section and turn on the toggle.
 
-## Security Dashboard
-
-The [Security Dashboard](../security_dashboard/index.md) shows you an overview of all
-the security vulnerabilities in your groups, projects and pipelines.
-
 ## Vulnerabilities database
 
 All analyzer images are [updated daily](https://gitlab.com/gitlab-org/security-products/analyzers/container-scanning/-/blob/master/README.md#image-updates).
@@ -763,10 +756,6 @@ In the GitLab Ultimate tier, the data from the [GitLab Advisory Database](https:
 
 Database update information for other analyzers is available in the
 [maintenance table](../index.md#vulnerability-scanner-maintenance).
-
-## Interacting with the vulnerabilities
-
-After a vulnerability is found, you can [address it](../vulnerabilities/index.md).
 
 ## Solutions for vulnerabilities (auto-remediation)
 

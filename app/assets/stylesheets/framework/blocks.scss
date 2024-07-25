@@ -29,10 +29,6 @@
   border-bottom: 1px solid $border-color;
   color: $gl-text-color;
 
-  &.white {
-    background-color: $white;
-  }
-
   &.top-block {
     border-top: 0;
 
@@ -96,29 +92,10 @@
   overflow: hidden;
   display: flex;
   position: relative;
-  border: 1px solid $blue-300;
+  border: 1px solid var(--gl-banner-intro-border-color);
   border-radius: $gl-border-radius-base;
-  background-color: $blue-50;
+  background-color: var(--gl-feedback-info-background-color);
   justify-content: center;
-
-  .dismiss-button {
-    position: absolute;
-    right: $gl-padding-8;
-    top: $gl-padding-8;
-    cursor: pointer;
-    color: $blue-500;
-    z-index: 1;
-    border: 0;
-    background-color: transparent;
-    padding: $gl-padding-8;
-    line-height: 0;
-
-    &:hover,
-    &:focus {
-      border: 0;
-      color: $blue-700;
-    }
-  }
 
   .svg-container {
     align-self: center;

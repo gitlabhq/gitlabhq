@@ -2,14 +2,13 @@
 stage: Create
 group: Code Review
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
-description: "Developer documentation for extending the merge request report widget with additional features."
+description: 'Developer documentation for extending the merge request report widget with additional features.'
 ---
 
-# Merge request widget extensions
+# Merge request widgets
 
-Extensions in the merge request widget enable you to add new features
-into the merge request widget that match the design framework.
-With extensions we get a lot of benefits out of the box without much effort required, like:
+Merge request widgets enable you to add new features that match the design framework.
+With these widgets we get a lot of benefits out of the box without much effort required, like:
 
 - A consistent look and feel.
 - Tracking when the extension is opened.
@@ -17,268 +16,160 @@ With extensions we get a lot of benefits out of the box without much effort requ
 
 ## Usage
 
-To use extensions you must first create a new extension object to fetch the
-data to render in the extension. For a working example, refer to the example file in
-`app/assets/javascripts/vue_merge_request_widget/extensions/issues.js`.
+The widgets are regular Vue components that make use of the
+`~/vue_merge_request_widget/components/widget/widget.vue` component.
+Depending on the complexity of the use case, it is possible to pass down
+configuration objects, or extend the component through `slot`s.
 
-The basic object structure:
+For an example that uses slots, refer to the following file:
+`ee/app/assets/javascripts/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue`
 
-```javascript
+For an example that uses data objects, refer to the following file:
+`ee/app/assets/javascripts/vue_merge_request_widget/extensions/metrics/index.vue`
+
+Here is a minimal example that renders a Hello World widget:
+
+```vue
+<script>
+import MrWidget from '~/vue_merge_request_widget/components/widget/widget.vue';
+import { __ } from '~/locale';
+
 export default {
-  name: '',       // Required: This helps identify the widget
-  props: [],      // Required: Props passed from the widget state
-  i18n: {         // Required: Object to hold i18n text
-    label: '',    // Required: Used for tooltips and aria-labels
-    loading: '',  // Required: Loading text for when data is loading
+  name: 'WidgetHelloWorld',
+  components: {
+    MrWidget,
   },
-  expandEvent: '',      // Optional: RedisHLL event name to track expanding content
-  enablePolling: false, // Optional: Tells extension to poll for data
-  modalComponent: null, // Optional: The component to use for the modal
-  telemetry: true,      // Optional: Reports basic telemetry for the extension. Set to false to disable telemetry
   computed: {
-    summary(data) {},     // Required: Level 1 summary text
-    statusIcon(data) {},  // Required: Level 1 status icon
-    tertiaryButtons() {}, // Optional: Level 1 action buttons
-    shouldCollapse(data) {}, // Optional: Add logic to determine if the widget can expand or not
-  },
-  methods: {
-    fetchCollapsedData(props) {}, // Required: Fetches data required for collapsed state
-    fetchFullData(props) {},      // Required: Fetches data for the full expanded content
-    fetchMultiData() {},          // Optional: Works in conjunction with `enablePolling` and allows polling multiple endpoints
+    summary() {
+      return { title: __('Hello World') };
+    },
   },
 };
+</script>
+<template>
+  <mr-widget :summary="summary" :is-collapsible="false" :widget-name="$options.name" />
+</template>
 ```
 
-By following the same data structure, each extension can follow the same registering structure,
-but each extension can manage its data sources.
+### Registering widgets
 
-After creating this structure, you must register it. You can register the extension at any
-point _after_ the widget has been created. To register a extension:
+The example above won't be rendered anywhere in the page. In order to mount it in the Merge Request
+Widget section, we have to register the widget in one or both of these two locations:
 
-```javascript
-// Import the register method
-import { registerExtension } from '~/vue_merge_request_widget/components/extensions';
+- `app/assets/javascripts/vue_merge_request_widget/components/widget/app.vue` (for CE widgets)
+- `ee/app/assets/javascripts/vue_merge_request_widget/components/widget/app.vue` (for CE and EE widgets)
 
-// Import the new extension
-import issueExtension from '~/vue_merge_request_widget/extensions/issues';
+Defining the component in the components list and adding the name to the `widgets` computed property
+will mount the widget:
 
-// Register the imported extension
-registerExtension(issueExtension);
+```vue
+<script>
+export default {
+  components: {
+    MrHelloWorldWidget: () =>
+      import('ee/vue_merge_request_widget/extensions/hello_world/index.vue'),
+  },
+  computed: {
+    mrHelloWorldWidget() {
+      return this.mr.shouldRenderHelloWorldWidget ? 'MrHelloWorldWidget' : undefined;
+    },
+    widgets() {
+      return [
+        this.mrHelloWorldWidget,
+      ].filter((w) => w);
+    },
+  },
+};
+</script>
 ```
 
 ## Data fetching
 
-Each extension must fetch data. Fetching is handled when registering the extension,
-not by the core component itself. This approach allows for various different
-data fetching methods to be used, such as GraphQL or REST API calls.
-
-### API calls
-
-For performance reasons, it is best if the collapsed state fetches only the data required to
-render the collapsed state. This fetching happens in the `fetchCollapsedData` method.
-This method is called with the props as an argument, so you can easily access
-any paths set in the state.
-
-To allow the extension to set the data, this method **must** return the data. No
-special formatting is required. When the extension receives this data,
-it is set to `collapsedData`. You can access `collapsedData` in any computed property or
-method.
-
-When the user selects **Expand**, the `fetchFullData` method is called. This method
-also gets called with the props as an argument. This method **must** also return
-the full data. However, this data must be correctly formatted to match the format
-mentioned in the data structure section.
-
-#### Technical debt
-
-For some of the current extensions, there is no split in data fetching. All the data
-is fetched through the `fetchCollapsedData` method. While less performant,
-it allows for faster iteration.
-
-To handle this the `fetchFullData` returns the data set through
-the `fetchCollapsedData` method call. In these cases, the `fetchFullData` must
-return a promise:
-
-```javascript
-fetchCollapsedData() {
-  return ['Some data'];
-},
-fetchFullData() {
-  return Promise.resolve(this.collapsedData)
-},
-```
-
-### Data structure
-
-The data returned from `fetchFullData` must match the format below. This format
-allows the core component to render the data in a way that matches
-the design framework. Any text properties can use the styling placeholders
-mentioned below:
-
-```javascript
-{
-  id: data.id,    // Required: ID used as a key for each row
-  header: 'Header' || ['Header', 'sub-header'], // Required: String or array can be used for the header text
-  text: '',       // Required: Main text for the row
-  subtext: '',    // Optional: Smaller sub-text to be displayed below the main text
-  icon: {         // Optional: Icon object
-    name: EXTENSION_ICONS.success, // Required: The icon name for the row
-  },
-  badge: {        // Optional: Badge displayed after text
-    text: '',     // Required: Text to be displayed inside badge
-    variant: '',  // Optional: GitLab UI badge variant, defaults to info
-  },
-  link: {         // Optional: Link to a URL displayed after text
-    text: '',     // Required: Text of the link
-    href: '',     // Optional: URL for the link
-  },
-  modal: {        // Optional: Link to open a modal displayed after text
-    text: '',     // Required: Text of the link
-    onClick: () => {} // Optional: Function to run when link is clicked, i.e. to set this.modalData
-  }
-  actions: [],    // Optional: Action button for row
-  children: [],   // Optional: Child content to render, structure matches the same structure
-}
-```
-
-### Polling
-
-To enable polling for an extension, an options flag must be present in the extension:
-
-```javascript
-export default {
-  //...
-  enablePolling: true
-};
-```
-
-This flag tells the base component we should poll the `fetchCollapsedData()`
-defined in the extension. Polling stops if the response has data, or if an error is present.
-
-When writing the logic for `fetchCollapsedData()`, a complete Axios response must be returned
-from the method. The polling utility needs data like polling headers to work correctly:
-
-```javascript
-export default {
-  //...
-  enablePolling: true
-  methods: {
-    fetchCollapsedData() {
-      return axios.get(this.reportPath)
-    },
-  },
-};
-```
-
-Most of the time the data returned from the extension's endpoint is not in the format
-the UI needs. We must format the data before setting the collapsed data in the base component.
-
-If the computed property `summary` can rely on `collapsedData`, you can format the data
-when `fetchFullData` is invoked:
-
-```javascript
-export default {
-  //...
-  enablePolling: true
-  methods: {
-    fetchCollapsedData() {
-      return axios.get(this.reportPath)
-    },
-     fetchFullData() {
-      return Promise.resolve(this.prepareReports());
-    },
-    // custom method
-    prepareReports() {
-      // unpack values from collapsedData
-      const { new_errors, existing_errors, resolved_errors } = this.collapsedData;
-
-      // perform data formatting
-
-      return [...newErrors, ...existingErrors, ...resolvedErrors]
-    }
-  },
-};
-```
-
-If the extension relies on `collapsedData` being formatted before invoking `fetchFullData()`,
-then `fetchCollapsedData()` must return the Axios response as well as the formatted data:
-
-```javascript
-export default {
-  //...
-  enablePolling: true
-  methods: {
-    fetchCollapsedData() {
-      return axios.get(this.reportPath).then(res => {
-        const formattedData = this.prepareReports(res.data)
-
-        return {
-          ...res,
-          data: formattedData,
-        }
-      })
-    },
-    // Custom method
-    prepareReports() {
-      // Unpack values from collapsedData
-      const { new_errors, existing_errors, resolved_errors } = this.collapsedData;
-
-      // Perform data formatting
-
-      return [...newErrors, ...existingErrors, ...resolvedErrors]
-    }
-  },
-};
-```
-
-If the extension must poll multiple endpoints at the same time, then `fetchMultiData`
-can be used to return an array of functions. A new `poll` object is created for each
-endpoint and they are polled separately. After all endpoints are resolved, polling is
-stopped and `setCollapsedData` is called with an array of `response.data`.
-
-```javascript
-export default {
-  //...
-  enablePolling: true
-  methods: {
-    fetchMultiData() {
-      return [
-        () => axios.get(this.reportPath1),
-        () => axios.get(this.reportPath2),
-        () => axios.get(this.reportPath3)
-    },
-  },
-};
-```
+To fetch data when the widget is mounted, pass the `:fetch-collapsed-data` property a function
+that performs an API call.
 
 WARNING:
-The function must return a `Promise` that resolves the `response` object.
+The function must return a `Promise` that resolves to the `response` object.
 The implementation relies on the `POLL-INTERVAL` header to keep polling, therefore it is
 important not to alter the status code and headers.
 
-### Errors
-
-If `fetchCollapsedData()` or `fetchFullData()` methods throw an error:
-
-- The loading state of the extension is updated to `LOADING_STATES.collapsedError` if
-  `fetchCollapsedData()` method throws an error.
-- The loading state of the extension is updated to `LOADING_STATES.expandedError` if
-  `fetchFullData()` method throws an error.
-- The extensions header displays an error icon and updates the text to be either:
-  - The text defined in `$options.i18n.error`.
-  - "Failed to load" if `$options.i18n.error` is not defined.
-- The error is sent to Sentry to log that it occurred.
-
-To customise the error text, add it to the `i18n` object in your extension:
-
-```javascript
+```vue
+<script>
 export default {
-  //...
-  i18n: {
-    //...
-    error: __('Your error text'),
+  // ...
+  data() {
+    return {
+      collapsedData: [],
+    };
+  },
+  methods: {
+    fetchCollapsedData() {
+      return axios.get('/my/path').then((response) => {
+        this.collapsedData = response.data;
+        return response;
+      });
+    },
   },
 };
+</script>
+<template>
+  <mr-widget :fetch-collapsed-data="fetchCollapsedData" />
+</template>
+```
+
+`:fetch-expanded-data` works the same way, but it will be called only when the user expands the widget.
+
+### Data structure
+
+The `content` and `summary` properties can be used to render the `Widget`. Below is the documentation for both
+properties:
+
+```javascript
+// content
+{
+  text: '',           // Required: Main text for the row
+  subtext: '',        // Optional: Smaller sub-text to be displayed below the main text
+  supportingText: '', // Optional: Paragraph to be displayed below the subtext
+  icon: {             // Optional: Icon object
+    name: EXTENSION_ICONS.success, // Required: The icon name for the row
+  },
+  badge: {            // Optional: Badge displayed after text
+    text: '',         // Required: Text to be displayed inside badge
+    variant: '',      // Optional: GitLab UI badge variant, defaults to info
+  },
+  link: {             // Optional: Link to a URL displayed after text
+    text: '',         // Required: Text of the link
+    href: '',         // Optional: URL for the link
+  },
+  actions: [],        // Optional: Action button for row
+  children: [],       // Optional: Child content to render, structure matches the same structure
+  helpPopover: {      // Optional: If provided, an information icon will be display at the right-most corner of the content row
+    options: {
+      title: ''       // Required: The title of the popover
+    },
+    content: {
+      text: '',           // Optional: Text content of the popover
+      learnMorePath: '',  // Optional: The path to the documentation. A learn more link will be displayed if provided.
+    }
+  }
+}
+
+// summary
+{
+  title: '',    // Required: The main text of the summary part
+  subtitle: '', // Optional: The subtext of the summary part
+}
+```
+
+### Errors
+
+If `:fetch-collapsed-data` or `:fetch-expanded-data` methods throw an error.
+To customise the error text, you can use the `:error-text` property:
+
+```vue
+<template>
+  <mr-widget :error-text="__('Failed to load.')" />
+</template>
 ```
 
 ## Telemetry
@@ -389,25 +280,6 @@ only some of these icons should be used on level 1:
 - `severityInfo`
 - `severityUnknown`
 
-## Text styling
-
-Any area that has text can be styled with the placeholders below. This
-technique follows the same technique as `sprintf`. However, instead of specifying
-these through `sprintf`, the extension does this automatically.
-
-Every placeholder contains starting and ending tags. For example, `success` uses
-`Hello %{success_start}world%{success_end}`. The extension then
-adds the start and end tags with the correct styling classes.
-
-| Placeholder | Style                                   |
-|-------------|-----------------------------------------|
-| success     | `gl-font-bold gl-text-green-500` |
-| danger      | `gl-font-bold gl-text-red-500`   |
-| critical    | `gl-font-bold gl-text-red-800`   |
-| same        | `gl-font-bold gl-text-gray-700`  |
-| strong      | `gl-font-bold`                   |
-| small       | `gl-font-sm`                            |
-
 ## Action buttons
 
 You can add action buttons to all level 1 and 2 in each extension. These buttons
@@ -436,3 +308,8 @@ For internal action buttons, follow this structure:
   onClick() {}
 }
 ```
+
+## Demo
+
+Visit [GitLab MR Widgets Demo](https://gitlab.com/gitlab-org/frontend/playground/gitlab-mr-widgets-demo/-/merge_requests/26) to
+see an example of all widgets displayed together.

@@ -1225,7 +1225,6 @@ lib/gitlab/checks/**
 /ee/app/models/ee/project_authorization.rb
 /ee/app/models/scim_oauth_access_token.rb
 /ee/app/serializers/scim_oauth_access_token_entity.rb
-/ee/app/services/arkose/token_verification_service.rb
 /ee/app/services/ee/auth/
 /ee/app/services/ee/personal_access_tokens/
 /ee/app/services/ee/resource_access_tokens/
@@ -1547,11 +1546,22 @@ ee/lib/ee/api/entities/project.rb
 /ee/spec/frontend/**/remote_development/
 
 [Identity Verification] @gitlab-org/modelops/anti-abuse/identity-verification-approvers
-/ee/app/controllers/users/registrations_identity_verification_controller.rb
+/app/controllers/concerns/verifies_with_email.rb
+/app/models/concerns/require_email_verification.rb
+/app/services/users/email_verification/
+/ee/app/controllers/concerns/arkose/
+/ee/app/controllers/phone_verification/
 /ee/app/controllers/users/base_identity_verification_controller.rb
 /ee/app/controllers/users/identity_verification_controller.rb
+/ee/app/controllers/users/registrations_identity_verification_controller.rb
 /ee/app/models/concerns/identity_verifiable.rb
+/ee/app/services/arkose/
+/ee/app/services/phone_verification/
+/ee/app/services/users/email_verification/
+/ee/app/workers/arkose/
 /ee/config/routes/identity_verification.rb
+/ee/lib/arkose/
+/ee/lib/telesign/
 
 [Deploy:Environments - KAS Version Maintainers] @project_278964_bot6 @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
 /GITLAB_KAS_VERSION

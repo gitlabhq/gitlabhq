@@ -13394,6 +13394,7 @@ CREATE TABLE namespace_settings (
     remove_dormant_members_period integer DEFAULT 90 NOT NULL,
     early_access_program_joined_by_id bigint,
     seat_control smallint DEFAULT 0 NOT NULL,
+    last_dormant_member_review_at timestamp with time zone,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))
@@ -25886,6 +25887,8 @@ CREATE INDEX idx_mr_cc_diff_files_on_mr_cc_id_and_sha ON merge_request_context_c
 CREATE INDEX idx_mrs_on_target_id_and_created_at_and_state_id ON merge_requests USING btree (target_project_id, state_id, created_at, id);
 
 CREATE UNIQUE INDEX idx_namespace_settings_on_default_compliance_framework_id ON namespace_settings USING btree (default_compliance_framework_id);
+
+CREATE INDEX idx_namespace_settings_on_last_dormant_member_review_at ON namespace_settings USING btree (last_dormant_member_review_at) WHERE (remove_dormant_members IS TRUE);
 
 CREATE UNIQUE INDEX idx_on_approval_group_rules_any_approver_type ON approval_group_rules USING btree (group_id, rule_type) WHERE (rule_type = 4);
 
