@@ -48,6 +48,18 @@ RSpec.describe FixSequenceOwnersForCiBuilds, :migration, feature_category: :cont
 
       ApplicationRecord.connection.execute('DROP SEQUENCE unrelated_seq;')
     end
+
+    it 'ignores unknown sequences', :aggregate_failures do
+      ApplicationRecord.connection.execute('DROP SEQUENCE IF EXISTS unknown_seq;')
+      ApplicationRecord.connection.execute('CREATE SEQUENCE unknown_seq;')
+      ApplicationRecord.connection.execute(<<-SQL)
+        ALTER SEQUENCE unknown_seq OWNED BY ci_builds.id;
+      SQL
+
+      expect { migration.up }.not_to change { sequence_owner('unknown_seq') }
+
+      ApplicationRecord.connection.execute('DROP SEQUENCE unknown_seq;')
+    end
   end
 
   def sequence_owner(sequence_name)

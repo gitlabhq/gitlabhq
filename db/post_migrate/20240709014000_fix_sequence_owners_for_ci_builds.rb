@@ -665,7 +665,14 @@ class FixSequenceOwnersForCiBuilds < Gitlab::Database::Migration[2.2]
     sequences = find_sequences_owned_by_ci_builds.to_a.pluck('seq_name') - ['ci_builds_id_seq']
 
     sequences.each do |seq_name|
-      owner = SEQUENCES.fetch(seq_name)
+      owner = SEQUENCES[seq_name]
+
+      # Ignore unknown sequences: it's possible that a sequence was
+      # assigned the wrong owner due to a bug in `sequences_owned_by`
+      # (fixed by https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160528),
+      # and so it didn't get dropped automatically when its associated
+      # table was dropped: https://gitlab.com/gitlab-org/gitlab/-/issues/474293
+      next unless owner
 
       with_lock_retries do
         execute(<<~SQL.squish)
