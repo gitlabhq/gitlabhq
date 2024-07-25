@@ -53,6 +53,18 @@ module Gitlab
             'existing_wal_locations' => job_wal_locations
           }
 
+          # Signal to any server middleware for the same idempotency_key that
+          # there is at least one client middleware performing deduplication checks.
+          #
+          # The server middleware can determine if there is a duplicate job using the signaling key
+          # instead of reading the cookie key. Using a single key, the server can atomically read and delete it.
+          # This prevents a data race between the server and client in trying to read/write the key.
+          #
+          # There are 2 cases for deleting this key:
+          # 1. Server middleware's until_executed strategy atomically reads and delete it. Reschedules if key exists.
+          # 2. Client deletes key if job is not deduplicated.
+          set_signaling_key(expiry)
+
           # There are 3 possible scenarios. In order of decreasing likelyhood:
           # 1. SET NX succeeds.
           # 2. SET NX fails, GET succeeds.
@@ -69,6 +81,22 @@ module Gitlab
           self.existing_jid = actual_cookie['jid']
         end
 
+        def set_signaling_key(expiry)
+          return unless strategy == :until_executed && reschedulable? && job['rescheduled_once'].nil?
+
+          with_redis { |r| r.set(reschedule_signal_key, "1", ex: expiry) }
+        end
+
+        def clear_signaling_key
+          return unless strategy == :until_executed && reschedulable? && job['rescheduled_once'].nil?
+
+          with_redis { |r| r.del(reschedule_signal_key) }
+        end
+
+        def check_and_del_reschedule_signal
+          with_redis { |r| r.del(reschedule_signal_key) } == 1 # del returns 1 if key exists
+        end
+
         def update_latest_wal_location!
           return unless job_wal_locations.present?
 
@@ -79,6 +107,10 @@ module Gitlab
           end
 
           with_redis { |r| r.eval(UPDATE_WAL_COOKIE_SCRIPT, keys: [cookie_key], argv: argv) }
+        end
+
+        def idempotency_key
+          @idempotency_key ||= job['idempotency_key'] || "#{namespace}:#{idempotency_hash}"
         end
 
         # Generally speaking, updating a Redis key by deserializing and
@@ -122,7 +154,7 @@ module Gitlab
         def reschedule
           Gitlab::SidekiqLogging::DeduplicationLogger.instance.rescheduled_log(job)
 
-          worker_klass.perform_async(*arguments)
+          worker_klass.rescheduled_once.perform_async(*arguments)
         end
 
         def scheduled?
@@ -181,6 +213,18 @@ module Gitlab
           job['deferred']
         end
 
+        def strategy
+          return DEFAULT_STRATEGY unless worker_klass
+          return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)
+          return STRATEGY_NONE unless worker_klass.deduplication_enabled?
+
+          worker_klass.get_deduplicate_strategy
+        end
+
+        def reschedulable?
+          !scheduled? && options[:if_deduplicated] == :reschedule_once
+        end
+
         private
 
         attr_writer :existing_wal_locations
@@ -204,14 +248,6 @@ module Gitlab
           )
         end
 
-        def strategy
-          return DEFAULT_STRATEGY unless worker_klass
-          return DEFAULT_STRATEGY unless worker_klass.respond_to?(:idempotent?)
-          return STRATEGY_NONE unless worker_klass.deduplication_enabled?
-
-          worker_klass.get_deduplicate_strategy
-        end
-
         def worker_class_name
           job['class']
         end
@@ -222,6 +258,10 @@ module Gitlab
 
         def jid
           job['jid']
+        end
+
+        def reschedule_signal_key
+          "#{idempotency_key}:checking_duplicate"
         end
 
         def cookie_key
@@ -235,10 +275,6 @@ module Gitlab
 
         def get_cookie
           with_redis { |redis| MessagePack.unpack(redis.get(cookie_key) || "\x80") }
-        end
-
-        def idempotency_key
-          @idempotency_key ||= job['idempotency_key'] || "#{namespace}:#{idempotency_hash}"
         end
 
         def idempotency_hash
@@ -261,10 +297,6 @@ module Gitlab
 
         def existing_wal_locations
           @existing_wal_locations ||= {}
-        end
-
-        def reschedulable?
-          !scheduled? && options[:if_deduplicated] == :reschedule_once
         end
 
         def with_redis(&block)
