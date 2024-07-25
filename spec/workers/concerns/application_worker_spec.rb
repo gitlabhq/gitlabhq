@@ -584,6 +584,24 @@ RSpec.describe ApplicationWorker, feature_category: :shared do
     end
   end
 
+  describe '.rescheduled_once' do
+    around do |example|
+      Sidekiq::Testing.fake!(&example)
+    end
+
+    it 'sets rescheduled_once in job hash' do
+      worker.rescheduled_once.perform_async
+
+      expect(Sidekiq::Queues[worker.queue].first).to include('rescheduled_once' => true)
+    end
+
+    it 'does not set rescheduled_once key if .rescheduled_once is not called' do
+      worker.perform_async
+
+      expect(Sidekiq::Queues[worker.queue].first).not_to include('rescheduled_once' => true)
+    end
+  end
+
   describe '.with_ip_address_state' do
     around do |example|
       Sidekiq::Testing.fake!(&example)

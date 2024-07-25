@@ -53,6 +53,18 @@ module Gitlab
             'existing_wal_locations' => job_wal_locations
           }
 
+          # Signal to any server middleware for the same idempotency_key that
+          # there is at least one client middleware performing deduplication checks.
+          #
+          # The server middleware can determine if there is a duplicate job using the signaling key
+          # instead of reading the cookie key. Using a single key, the server can atomically read and delete it.
+          # This prevents a data race between the server and client in trying to read/write the key.
+          #
+          # There are 2 cases for deleting this key:
+          # 1. Server middleware's until_executed strategy atomically reads and delete it. Reschedules if key exists.
+          # 2. Client deletes key if job is not deduplicated.
+          set_signaling_key(expiry)
+
           # There are 3 possible scenarios. In order of decreasing likelyhood:
           # 1. SET NX succeeds.
           # 2. SET NX fails, GET succeeds.
@@ -67,6 +79,22 @@ module Gitlab
 
           self.existing_wal_locations = actual_cookie['existing_wal_locations']
           self.existing_jid = actual_cookie['jid']
+        end
+
+        def set_signaling_key(expiry)
+          return unless strategy == :until_executed && reschedulable? && job['rescheduled_once'].nil?
+
+          with_redis { |r| r.set(reschedule_signal_key, "1", ex: expiry) }
+        end
+
+        def clear_signaling_key
+          return unless strategy == :until_executed && reschedulable? && job['rescheduled_once'].nil?
+
+          with_redis { |r| r.del(reschedule_signal_key) }
+        end
+
+        def check_and_del_reschedule_signal
+          with_redis { |r| r.del(reschedule_signal_key) } == 1 # del returns 1 if key exists
         end
 
         def update_latest_wal_location!
@@ -126,7 +154,7 @@ module Gitlab
         def reschedule
           Gitlab::SidekiqLogging::DeduplicationLogger.instance.rescheduled_log(job)
 
-          worker_klass.perform_async(*arguments)
+          worker_klass.rescheduled_once.perform_async(*arguments)
         end
 
         def scheduled?
@@ -230,6 +258,10 @@ module Gitlab
 
         def jid
           job['jid']
+        end
+
+        def reschedule_signal_key
+          "#{idempotency_key}:checking_duplicate"
         end
 
         def cookie_key
