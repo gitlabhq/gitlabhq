@@ -1,7 +1,7 @@
 <script>
 import { GlButton, GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { difference } from 'lodash';
+import { difference, unionBy } from 'lodash';
 import { WORKSPACE_GROUP, WORKSPACE_PROJECT } from '~/issues/constants';
 import { __, n__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -15,6 +15,14 @@ import updateWorkItemMutation from '../graphql/update_work_item.mutation.graphql
 import updateNewWorkItemMutation from '../graphql/update_new_work_item.mutation.graphql';
 import { i18n, I18N_WORK_ITEM_ERROR_FETCHING_LABELS, TRACKING_CATEGORY_SHOW } from '../constants';
 import { isLabelsWidget, newWorkItemId, newWorkItemFullPath } from '../utils';
+
+function formatLabelForListbox(label) {
+  return {
+    text: label.title || label.text,
+    value: label.id || label.value,
+    color: label.color,
+  };
+}
 
 export default {
   components: {
@@ -63,6 +71,8 @@ export default {
       createdLabelId: undefined,
       removeLabelIds: [],
       addLabelIds: [],
+      labelsCache: [],
+      labelsToShowAtTopOfTheListbox: [],
     };
   },
   computed: {
@@ -103,20 +113,15 @@ export default {
       return this.searchLabels;
     },
     labelsList() {
-      const visibleLabels =
-        this.visibleLabels?.map(({ id, title, color }) => ({
-          value: id,
-          text: title,
-          color,
-        })) || [];
+      const visibleLabels = this.visibleLabels?.map(formatLabelForListbox) || [];
 
       if (this.searchTerm || this.itemValues.length === 0) {
         return visibleLabels;
       }
 
-      const selectedLabels = visibleLabels.filter(({ value }) => this.itemValues.includes(value));
+      const selectedLabels = this.labelsToShowAtTopOfTheListbox.map(formatLabelForListbox) || [];
       const unselectedLabels = visibleLabels.filter(
-        ({ value }) => !this.itemValues.includes(value),
+        ({ value }) => !this.labelsToShowAtTopOfTheListbox.find((l) => l.id === value),
       );
 
       return [
@@ -146,6 +151,22 @@ export default {
       return this.isGroup ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
   },
+  watch: {
+    searchTerm(newVal, oldVal) {
+      if (newVal === '' && oldVal !== '') {
+        const selectedIds = [...this.itemValues, ...this.addLabelIds].filter(
+          (x) => !this.removeLabelIds.includes(x),
+        );
+
+        this.labelsToShowAtTopOfTheListbox = this.labelsCache.filter(({ id }) =>
+          selectedIds.includes(id),
+        );
+      }
+    },
+    localLabels(newVal) {
+      this.labelsToShowAtTopOfTheListbox = newVal;
+    },
+  },
   apollo: {
     workItem: {
       query: workItemByIidQuery,
@@ -157,6 +178,11 @@ export default {
       },
       update(data) {
         return data.workspace?.workItem || {};
+      },
+      result({ data }) {
+        const labels =
+          data?.workspace?.workItem?.widgets?.find(isLabelsWidget)?.labels?.nodes || [];
+        this.labelsCache = unionBy(this.labelsCache, labels, 'id');
       },
       skip() {
         return !this.workItemIid;
@@ -180,6 +206,10 @@ export default {
       },
       update(data) {
         return data.workspace?.labels?.nodes;
+      },
+      result({ data }) {
+        const labels = data?.workspace?.labels?.nodes || [];
+        this.labelsCache = unionBy(this.labelsCache, labels, 'id');
       },
       error() {
         this.$emit('error', I18N_WORK_ITEM_ERROR_FETCHING_LABELS);

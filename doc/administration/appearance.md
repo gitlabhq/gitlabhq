@@ -143,8 +143,8 @@ You can use [Markdown](../user/markdown.md) in the description.
 
 The member guidelines are visible to users who have the [permission](../user/permissions.md) to manage either:
 
-- Group members at the group level.
-- Project members at the project level.
+- A group's members.
+- A project's members.
 
 You should add member guidelines if you manage group and project membership using either:
 

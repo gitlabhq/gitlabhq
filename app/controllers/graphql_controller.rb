@@ -190,11 +190,12 @@ class GraphqlController < ApplicationController
     disable_reference = request.headers[DISABLE_SQL_QUERY_LIMIT_HEADER]
     return unless disable_reference
 
-    disable_issue, new_threshold = disable_reference.split(';')
-    if new_threshold
-      Gitlab::QueryLimiting.disable!(disable_issue, new_threshold: new_threshold&.to_i)
+    first, second = disable_reference.split(',')
+
+    if first.match?(/^\d+$/)
+      Gitlab::QueryLimiting.disable!(second, new_threshold: first&.to_i)
     else
-      Gitlab::QueryLimiting.disable!(disable_issue)
+      Gitlab::QueryLimiting.disable!(first)
     end
   end
 

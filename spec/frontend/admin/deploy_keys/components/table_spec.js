@@ -189,8 +189,6 @@ describe('DeployKeysTable', () => {
           value: 1,
           perPage: DEFAULT_PER_PAGE,
           totalItems: responseBody.length,
-          nextText: DeployKeysTable.i18n.pagination.next,
-          prevText: DeployKeysTable.i18n.pagination.prev,
           align: 'center',
         });
       });

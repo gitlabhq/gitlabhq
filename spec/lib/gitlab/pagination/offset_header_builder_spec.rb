@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+# require 'fast_spec_helper' -- this no longer runs under fast_spec_helper
+require 'spec_helper'
 
 RSpec.describe Gitlab::Pagination::OffsetHeaderBuilder do
   let(:request) { double(url: 'http://localhost') }

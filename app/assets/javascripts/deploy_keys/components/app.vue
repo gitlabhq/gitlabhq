@@ -1,7 +1,7 @@
 <script>
 import { GlIcon, GlLoadingIcon, GlPagination } from '@gitlab/ui';
 import { createAlert } from '~/alert';
-import { s__, __ } from '~/locale';
+import { s__ } from '~/locale';
 import { captureException } from '~/sentry/sentry_browser_wrapper';
 import pageInfoQuery from '~/graphql_shared/client/page_info.query.graphql';
 import NavigationTabs from '~/vue_shared/components/navigation_tabs.vue';
@@ -89,10 +89,6 @@ export default {
   },
   i18n: {
     loading: s__('DeployKeys|Loading deploy keys'),
-    prevPage: __('Go to previous page'),
-    nextPage: __('Go to next page'),
-    next: __('Next'),
-    prev: __('Prev'),
   },
   computed: {
     tabs() {
@@ -204,10 +200,6 @@ export default {
         :total-items="pageInfo.total"
         :per-page="pageInfo.perPage"
         :value="currentPage"
-        :next="$options.i18n.next"
-        :prev="$options.i18n.prev"
-        :label-previous-page="$options.i18n.prevPage"
-        :label-next-page="$options.i18n.nextPage"
         @next="moveNext()"
         @previous="movePrevious()"
         @input="moveToPage"

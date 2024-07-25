@@ -130,7 +130,7 @@
       }
 
       .project-stat-value {
-        color: var(--gl-text-color, $gl-text-color);
+        color: var(--gl-text-color-default);
       }
 
       .icon {
@@ -153,7 +153,7 @@
   margin-bottom: 7px;
 
   h5 {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-heading);
   }
 }
 

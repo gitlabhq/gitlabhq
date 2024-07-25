@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-This is the administration documentation. For information about moderating users at the group level, see the [group-level documentation](../user/group/moderate_users.md).
+This is the administration documentation. For information about moderating users in a group, see the [group documentation](../user/group/moderate_users.md).
 
 GitLab administrators can moderate user access by approving, blocking, banning, or deactivating
 users.

@@ -28,10 +28,6 @@
   .build-state {
     padding: 20px 2px;
 
-    .build-name {
-      font-weight: $gl-font-weight-normal;
-    }
-
     .stage {
       color: var(--gray-500, $gray-500);
       font-weight: $gl-font-weight-normal;
@@ -55,21 +51,6 @@
     width: 100%;
     text-align: left;
     margin-top: $gl-padding;
-  }
-
-  .build-name {
-    width: 196px;
-
-    a {
-      font-weight: $gl-font-weight-bold;
-      color: var(--gl-text-color, $gl-text-color);
-      text-decoration: none;
-
-      &:focus,
-      &:hover {
-        text-decoration: underline;
-      }
-    }
   }
 
   .build-actions {

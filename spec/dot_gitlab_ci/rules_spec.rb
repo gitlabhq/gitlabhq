@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
-require 'fast_spec_helper'
+# NOTE: Do not remove the parentheses from this require statement!
+#       They are necessary so it doesn't match the regex in `scripts/run-fast-specs.sh`,
+#       and make the "fast" portion of that suite run slow.
+require('fast_spec_helper') # NOTE: Do not remove the parentheses from this require statement!
 
 PatternsList = Struct.new(:name, :patterns)
 

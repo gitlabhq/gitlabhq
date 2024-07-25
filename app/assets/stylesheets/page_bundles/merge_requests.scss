@@ -495,7 +495,7 @@
 }
 
 .mr-state-widget {
-  color: var(--gl-text-color, $gl-text-color);
+  color: var(--gl-text-color-default);
 
   .commit-message-edit {
     border-radius: $gl-border-radius-base;
@@ -547,7 +547,7 @@
   }
 
   .ci-widget {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -726,11 +726,11 @@
   }
 
   .stop-env-container {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
     float: right;
 
     a {
-      color: var(--gl-text-color, $gl-text-color);
+      color: var(--gl-text-color-default);
     }
   }
 }
@@ -810,7 +810,7 @@
 }
 
 .mr-version-controls {
-  color: var(--gl-text-color, $gl-text-color);
+  color: var(--gl-text-color-default);
 
   .mr-version-menus-container {
     display: flex;
@@ -854,7 +854,7 @@
   }
 
   .dropdown-title {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-strong);
   }
 }
 

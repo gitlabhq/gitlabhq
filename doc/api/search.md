@@ -23,9 +23,6 @@ these additional scopes are available for the [advanced search](#advanced-search
 
 ## Advanced search API
 
-DETAILS:
-**Tier:** Premium, Ultimate
-
 Search for a [term](../user/search/advanced_search.md#syntax) across the entire GitLab instance.
 The response depends on the requested scope.
 

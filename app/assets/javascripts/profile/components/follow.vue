@@ -8,14 +8,9 @@ import {
   GlEmptyState,
 } from '@gitlab/ui';
 import { DEFAULT_PER_PAGE } from '~/api';
-import { NEXT, PREV } from '~/vue_shared/components/pagination/constants';
 import { isCurrentUser } from '~/lib/utils/common_utils';
 
 export default {
-  i18n: {
-    prev: PREV,
-    next: NEXT,
-  },
   components: {
     GlAvatarLabeled,
     GlAvatarLink,
@@ -112,8 +107,6 @@ export default {
       :value="page"
       :total-items="totalItems"
       :per-page="perPage"
-      :prev-text="$options.i18n.prev"
-      :next-text="$options.i18n.next"
       @input="$emit('pagination-input', $event)"
     />
   </div>

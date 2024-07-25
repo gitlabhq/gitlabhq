@@ -30,10 +30,6 @@ export default {
     ),
     delete: __('Delete deploy key'),
     edit: __('Edit deploy key'),
-    pagination: {
-      next: __('Next'),
-      prev: __('Prev'),
-    },
     modal: {
       title: __('Are you sure?'),
       body: __('Are you sure you want to delete this deploy key?'),
@@ -289,8 +285,6 @@ export default {
       v-model="page"
       :per-page="$options.DEFAULT_PER_PAGE"
       :total-items="totalItems"
-      :next-text="$options.i18n.pagination.next"
-      :prev-text="$options.i18n.pagination.prev"
       align="center"
       class="gl-mt-5"
     />

@@ -79,7 +79,7 @@ export default {
 
 <template>
   <div class="well-segment">
-    <gl-icon :name="refIcon" :size="14" class="gl-ml-2 gl-mr-3" />
+    <gl-icon :name="refIcon" class="gl-ml-2 gl-mr-3" />
     <span data-testid="title" class="gl-mr-2">{{ namespace }}</span>
     <gl-badge
       v-for="ref in tippingRefs"

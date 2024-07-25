@@ -57,7 +57,7 @@ more information about this offering, see [subscriptions](../../subscriptions/se
 To deploy a self-hosted large language model:
 
 1. [Set up your self-hosted model deployment infrastructure](../../administration/self_hosted_models/install_infrastructure.md) and connect it to your GitLab instance.
-1. [Configure your GitLab instance to access self-hosted models](../../administration/self_hosted_models/configure_duo_features.md) using instance and group level settings.
+1. [Configure your GitLab instance to access self-hosted models](../../administration/self_hosted_models/configure_duo_features.md) using instance and group settings.
 
 ## Self-hosted models compared to the default GitLab AI vendor architecture
 

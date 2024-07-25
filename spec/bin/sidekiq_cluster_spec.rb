@@ -4,7 +4,7 @@ require 'fast_spec_helper'
 require 'shellwords'
 require 'rspec-parameterized'
 
-RSpec.describe 'bin/sidekiq-cluster', :aggregate_failures do
+RSpec.describe 'bin/sidekiq-cluster', :uses_fast_spec_helper_but_runs_slow, :fails_if_sidekiq_not_configured, :aggregate_failures do
   using RSpec::Parameterized::TableSyntax
 
   let(:root) { File.expand_path('../..', __dir__) }

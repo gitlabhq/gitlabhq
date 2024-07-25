@@ -30,8 +30,8 @@ export default {
     },
   },
   methods: {
-    onResize() {
-      const { scrollWidth, offsetWidth } = this.$el;
+    onResize({ target }) {
+      const { scrollWidth, offsetWidth } = target;
       this.overflowing = scrollWidth > offsetWidth;
     },
   },
@@ -41,10 +41,11 @@ export default {
 <template>
   <gl-badge
     v-gl-tooltip="tooltip"
-    v-gl-resize-observer="onResize"
-    class="gl-display-inline-block gl-max-w-full gl-text-truncate"
+    class="gl-inline-block gl-overflow-hidden"
     :variant="$options.RUNNER_TAG_BADGE_VARIANT"
   >
-    {{ tag }}
+    <span v-gl-resize-observer="onResize" class="gl-truncate">
+      {{ tag }}
+    </span>
   </gl-badge>
 </template>

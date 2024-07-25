@@ -41,7 +41,7 @@ describe('MembersPagination', () => {
       value: mockPagination.currentPage,
       perPage: mockPagination.perPage,
       totalItems: mockPagination.totalItems,
-      prevText: 'Prev',
+      prevText: 'Previous',
       nextText: 'Next',
       labelNextPage: 'Go to next page',
       labelPrevPage: 'Go to previous page',

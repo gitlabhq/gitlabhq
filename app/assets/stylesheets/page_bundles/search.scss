@@ -164,7 +164,7 @@ $language-filter-max-height: 20rem;
     .dropdown-header {
       // Necessary because deprecatedJQueryDropdown doesn't support a second style of headers
       font-weight: $gl-font-weight-bold;
-      color: var(--gl-text-color, $gl-text-color);
+      color: var(--gl-text-color-strong);
       font-size: $gl-font-size;
       line-height: 16px;
     }
@@ -199,7 +199,7 @@ $language-filter-max-height: 20rem;
       }
 
       .search-input {
-        color: var(--gl-text-color, $gl-text-color);
+        color: var(--gl-text-color-default);
         transition: color ease-in-out $default-transition-duration;
       }
 

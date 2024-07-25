@@ -379,7 +379,7 @@ Prerequisites:
 
 You can clean up group runners that have been inactive for more than three months.
 
-Group runners are those that were created at the group level.
+Group runners are those that were created in a specific group.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.

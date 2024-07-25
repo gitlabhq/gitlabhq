@@ -46,10 +46,6 @@ export default {
     :per-page="pagination.perPage"
     :total-items="pagination.totalItems"
     :link-gen="paginationLinkGenerator"
-    :prev-text="__('Prev')"
-    :next-text="__('Next')"
-    :label-next-page="__('Go to next page')"
-    :label-prev-page="__('Go to previous page')"
     align="center"
   />
 </template>

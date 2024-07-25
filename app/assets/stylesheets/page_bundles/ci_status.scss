@@ -29,7 +29,7 @@
   &.ci-disabled,
   &.ci-scheduled,
   &.ci-manual {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
     border-color: currentColor;
 
     &:not(span):hover {

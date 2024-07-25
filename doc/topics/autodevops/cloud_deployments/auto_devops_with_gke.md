@@ -136,8 +136,8 @@ Follow these steps to configure the base domain and other settings required for 
 
 ## Enable Auto DevOps and run the pipeline
 
-While Auto DevOps is enabled by default, Auto DevOps can be disabled at both
-the instance level (for self-managed instances) and the group level. Complete
+While Auto DevOps is enabled by default, Auto DevOps can be disabled for both
+the instance (for self-managed instances) and the group. Complete
 these steps to enable Auto DevOps if it's disabled:
 
 1. On the left sidebar, select **Search or go to** and find the application project.

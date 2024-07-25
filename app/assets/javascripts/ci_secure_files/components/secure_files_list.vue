@@ -49,10 +49,6 @@ export default {
     uploadLabel: __('Upload File'),
     uploadingLabel: __('Uploading...'),
     noFilesMessage: __('There are no secure files yet.'),
-    pagination: {
-      next: __('Next'),
-      prev: __('Prev'),
-    },
     uploadErrorMessages: {
       duplicate: __('A file with this name already exists.'),
       tooLarge: __('File too large. Secure Files must be less than %{limit} MB.'),
@@ -281,8 +277,6 @@ export default {
       v-model="page"
       :per-page="$options.DEFAULT_PER_PAGE"
       :total-items="totalItems"
-      :next-text="$options.i18n.pagination.next"
-      :prev-text="$options.i18n.pagination.prev"
       align="center"
       class="gl-mt-5"
     />

@@ -9678,7 +9678,8 @@ CREATE TABLE deploy_tokens (
     write_registry boolean DEFAULT false NOT NULL,
     read_package_registry boolean DEFAULT false NOT NULL,
     write_package_registry boolean DEFAULT false NOT NULL,
-    creator_id bigint
+    creator_id bigint,
+    read_virtual_registry boolean DEFAULT false NOT NULL
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq
@@ -18931,6 +18932,39 @@ CREATE SEQUENCE value_stream_dashboard_counts_id_seq
 
 ALTER SEQUENCE value_stream_dashboard_counts_id_seq OWNED BY value_stream_dashboard_counts.id;
 
+CREATE TABLE virtual_registries_packages_maven_cached_responses (
+    id bigint NOT NULL,
+    group_id bigint NOT NULL,
+    upstream_id bigint NOT NULL,
+    upstream_checked_at timestamp with time zone DEFAULT now() NOT NULL,
+    downloaded_at timestamp with time zone DEFAULT now() NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    file_store integer DEFAULT 1 NOT NULL,
+    size integer NOT NULL,
+    downloads_count integer DEFAULT 1 NOT NULL,
+    relative_path text NOT NULL,
+    file text NOT NULL,
+    object_storage_key text NOT NULL,
+    upstream_etag text,
+    content_type text DEFAULT 'application/octet-stream'::text NOT NULL,
+    CONSTRAINT check_28c64d513d CHECK ((char_length(object_storage_key) <= 255)),
+    CONSTRAINT check_30b7e853d9 CHECK ((char_length(upstream_etag) <= 255)),
+    CONSTRAINT check_68b105cda6 CHECK ((char_length(file) <= 255)),
+    CONSTRAINT check_731cd48dbf CHECK ((char_length(content_type) <= 255)),
+    CONSTRAINT check_c2aad543bf CHECK ((downloads_count > 0)),
+    CONSTRAINT check_d35a8e931f CHECK ((char_length(relative_path) <= 255))
+);
+
+CREATE SEQUENCE virtual_registries_packages_maven_cached_responses_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE virtual_registries_packages_maven_cached_responses_id_seq OWNED BY virtual_registries_packages_maven_cached_responses.id;
+
 CREATE TABLE virtual_registries_packages_maven_registries (
     id bigint NOT NULL,
     group_id bigint NOT NULL,
@@ -21652,6 +21686,8 @@ ALTER TABLE ONLY users_statistics ALTER COLUMN id SET DEFAULT nextval('users_sta
 
 ALTER TABLE ONLY value_stream_dashboard_counts ALTER COLUMN id SET DEFAULT nextval('value_stream_dashboard_counts_id_seq'::regclass);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_cached_responses_id_seq'::regclass);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_registries ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registries_id_seq'::regclass);
 
 ALTER TABLE ONLY virtual_registries_packages_maven_registry_upstreams ALTER COLUMN id SET DEFAULT nextval('virtual_registries_packages_maven_registry_upstreams_id_seq'::regclass);
@@ -24366,6 +24402,9 @@ ALTER TABLE ONLY value_stream_dashboard_counts
 ALTER TABLE ONLY verification_codes
     ADD CONSTRAINT verification_codes_pkey PRIMARY KEY (created_at, visitor_id_code, code, phone);
 
+ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses
+    ADD CONSTRAINT virtual_registries_packages_maven_cached_responses_pkey PRIMARY KEY (id);
+
 ALTER TABLE ONLY virtual_registries_packages_maven_registries
     ADD CONSTRAINT virtual_registries_packages_maven_registries_pkey PRIMARY KEY (id);
 
@@ -26025,6 +26064,8 @@ CREATE INDEX idx_user_credit_card_validations_on_holder_name_hash ON user_credit
 CREATE INDEX idx_user_credit_card_validations_on_similar_to_meta_data ON user_credit_card_validations USING btree (expiration_date_hash, last_digits_hash, network_hash, credit_card_validated_at);
 
 CREATE INDEX idx_user_details_on_provisioned_by_group_id_user_id ON user_details USING btree (provisioned_by_group_id, user_id);
+
+CREATE UNIQUE INDEX idx_vregs_pkgs_mvn_cached_resp_on_uniq_upstrm_id_and_rel_path ON virtual_registries_packages_maven_cached_responses USING btree (upstream_id, relative_path);
 
 CREATE INDEX idx_vuln_reads_for_filtering ON vulnerability_reads USING btree (project_id, state, dismissal_reason, severity DESC, vulnerability_id DESC NULLS LAST);
 
@@ -29675,6 +29716,8 @@ CREATE UNIQUE INDEX index_users_star_projects_on_user_id_and_project_id ON users
 CREATE UNIQUE INDEX index_verification_codes_on_phone_and_visitor_id_code ON ONLY verification_codes USING btree (visitor_id_code, phone, created_at);
 
 COMMENT ON INDEX index_verification_codes_on_phone_and_visitor_id_code IS 'JiHu-specific index';
+
+CREATE INDEX index_virtual_reg_pkgs_maven_cached_responses_on_group_id ON virtual_registries_packages_maven_cached_responses USING btree (group_id);
 
 CREATE INDEX index_virtual_reg_pkgs_maven_reg_upstreams_on_group_id ON virtual_registries_packages_maven_registry_upstreams USING btree (group_id);
 
@@ -33574,6 +33617,9 @@ ALTER TABLE ONLY search_namespace_index_assignments
 ALTER TABLE ONLY issue_assignment_events
     ADD CONSTRAINT fk_rails_07683f8e80 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
 
+ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses
+    ADD CONSTRAINT fk_rails_0816e694a3 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY security_policies
     ADD CONSTRAINT fk_rails_08722e8ac7 FOREIGN KEY (security_policy_management_project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -33645,6 +33691,9 @@ ALTER TABLE ONLY audit_events_streaming_headers
 
 ALTER TABLE ONLY ci_sources_projects
     ADD CONSTRAINT fk_rails_10a1eb379a_p FOREIGN KEY (partition_id, pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE;
+
+ALTER TABLE ONLY virtual_registries_packages_maven_cached_responses
+    ADD CONSTRAINT fk_rails_1167f21441 FOREIGN KEY (upstream_id) REFERENCES virtual_registries_packages_maven_upstreams(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY zoom_meetings
     ADD CONSTRAINT fk_rails_1190f0e0fa FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

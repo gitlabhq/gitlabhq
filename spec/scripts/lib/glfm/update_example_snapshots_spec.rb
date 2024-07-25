@@ -28,7 +28,7 @@ require_relative '../../../../scripts/lib/glfm/update_example_snapshots'
 # Also, the textual content of the individual fixture file entries is also crafted to help
 # indicate which scenarios which they are covering.
 # rubocop:disable RSpec/MultipleMemoizedHelpers
-RSpec.describe Glfm::UpdateExampleSnapshots, '#process', feature_category: :team_planning do
+RSpec.describe Glfm::UpdateExampleSnapshots, '#process', :uses_fast_spec_helper_but_runs_slow, feature_category: :team_planning do
   subject { described_class.new }
 
   # GLFM input files

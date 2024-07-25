@@ -335,25 +335,40 @@ describe('WorkItemLabels component', () => {
   });
 
   it('shows selected labels at top of list', async () => {
+    const [label1, label2, label3] = mockLabels;
+    const label999 = {
+      __typename: 'Label',
+      id: 'gid://gitlab/Label/999',
+      title: 'Label 999',
+      description: 'Label not in the label query result',
+      color: '#fff',
+      textColor: '#000',
+    };
+
     createComponent({
       workItemQueryHandler: workItemQuerySuccess,
-      updateWorkItemMutationHandler: successAddRemoveLabelWorkItemMutationHandler,
+      updateWorkItemMutationHandler: jest.fn().mockResolvedValue(
+        updateWorkItemMutationResponseFactory({
+          labels: [label1, label999],
+        }),
+      ),
     });
 
-    updateLabels([label1Id, label3Id]);
+    updateLabels([label1Id, label999.id]);
 
     showDropdown();
 
     await waitForPromises();
 
-    const [label1, label2, label3] = mockLabels;
-
     const selected = [
       { color: label1.color, text: label1.title, value: label1.id },
-      { color: label3.color, text: label3.title, value: label3.id },
+      { color: label999.color, text: label999.title, value: label999.id },
     ];
 
-    const unselected = [{ color: label2.color, text: label2.title, value: label2.id }];
+    const unselected = [
+      { color: label2.color, text: label2.title, value: label2.id },
+      { color: label3.color, text: label3.title, value: label3.id },
+    ];
 
     expect(findWorkItemSidebarDropdownWidget().props('listItems')).toEqual([
       { options: selected, text: __('Selected') },

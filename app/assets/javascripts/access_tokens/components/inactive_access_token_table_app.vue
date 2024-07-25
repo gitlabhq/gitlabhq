@@ -114,10 +114,6 @@ export default {
       v-model="currentPage"
       :per-page="$options.PAGE_SIZE"
       :total-items="inactiveAccessTokens.length"
-      :prev-text="__('Prev')"
-      :next-text="__('Next')"
-      :label-next-page="__('Go to next page')"
-      :label-prev-page="__('Go to previous page')"
       align="center"
       class="gl-mt-5"
     />

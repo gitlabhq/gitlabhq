@@ -3904,7 +3904,6 @@ Layout/LineLength:
     - 'spec/presenters/packages/helm/index_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/package_metadata_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/packages_metadata_presenter_spec.rb'
-    - 'spec/presenters/packages/nuget/search_results_presenter_spec.rb'
     - 'spec/presenters/projects/security/configuration_presenter_spec.rb'
     - 'spec/presenters/prometheus_alert_presenter_spec.rb'
     - 'spec/presenters/snippet_blob_presenter_spec.rb'

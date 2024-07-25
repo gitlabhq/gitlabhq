@@ -24536,9 +24536,6 @@ msgstr ""
 msgid "Go to merge requests"
 msgstr ""
 
-msgid "Go to next page"
-msgstr ""
-
 msgid "Go to parent"
 msgstr ""
 
@@ -24549,9 +24546,6 @@ msgid "Go to permalink"
 msgstr ""
 
 msgid "Go to pipelines"
-msgstr ""
-
-msgid "Go to previous page"
 msgstr ""
 
 msgid "Go to project"

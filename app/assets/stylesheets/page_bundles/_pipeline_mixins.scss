@@ -9,7 +9,7 @@
   &:hover {
     background-color: var(--gray-50, $gray-50);
     border: 1px solid $dropdown-toggle-active-border-color;
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
   }
 }
 

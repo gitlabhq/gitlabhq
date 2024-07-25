@@ -248,7 +248,7 @@ and use it to automatically:
 
 ## DORA metrics availability
 
-The table below provides an overview of the DORA metrics' availability at project and group level:
+The table below provides an overview of the DORA metrics' availability in projects and groups:
 
 | Metric                    | Level             | Comments |
 |---------------------------|-------------------|----------|

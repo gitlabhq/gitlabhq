@@ -181,7 +181,7 @@ supports this case.
 
 #### Authorization
 
-Project and group level permissions exist for `read_package`, `create_package`, and `destroy_package`. Each
+Project permissions and group permissions exist for `read_package`, `create_package`, and `destroy_package`. Each
 endpoint should
 [authorize the requesting user](https://gitlab.com/gitlab-org/gitlab/-/blob/398fef1ca26ae2b2c3dc89750f6b20455a1e5507/ee/lib/api/conan_packages.rb)
 against the project or group before continuing.

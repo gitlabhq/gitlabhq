@@ -107,7 +107,7 @@ export default {
         class="gl-py-5 gl-pl-8"
         :class="{ 'gl-border-b': borderBottom(idx) }"
       >
-        <div class="-gl-mt-1 gl-pl-4 gl-pb-2 gl-font-bold">
+        <div class="-gl-mt-1 gl-pb-2 gl-pl-4 gl-font-bold">
           {{ easyButton.description }}
           <gl-accordion :header-level="3" class="gl-pt-3">
             <gl-accordion-item
@@ -131,17 +131,17 @@ export default {
     </p>
     <template v-if="registrationToken">
       <h5 class="gl-mb-3">{{ $options.i18n.runnerRegistrationToken }}</h5>
-      <div class="gl-display-flex">
-        <pre class="gl-bg-gray gl-flex-grow-1 gl-whitespace-pre-line">{{ registrationToken }}</pre>
+      <div class="gl-flex">
+        <pre class="gl-bg-gray gl-grow gl-whitespace-pre-line">{{ registrationToken }}</pre>
         <modal-copy-button
           :title="$options.i18n.copyInstructions"
           :text="registrationToken"
-          css-classes="gl-align-self-start gl-ml-2 gl-mt-2"
+          css-classes="gl-self-start gl-ml-2 gl-mt-2"
           category="tertiary"
         />
       </div>
     </template>
-    <footer class="gl-display-flex gl-justify-content-end gl-pt-3 gl-gap-3">
+    <footer class="gl-flex gl-justify-end gl-gap-3 gl-pt-3">
       <gl-button @click="onClose()">{{ $options.i18n.close }}</gl-button>
       <gl-button variant="confirm" @click="onOk()">
         {{ $options.i18n.deployRunnerInAws }}

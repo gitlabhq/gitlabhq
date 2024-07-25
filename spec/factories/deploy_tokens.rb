@@ -8,6 +8,7 @@ FactoryBot.define do
     write_registry { false }
     read_package_registry { false }
     write_package_registry { false }
+    read_virtual_registry { false }
     revoked { false }
     expires_at { 5.days.from_now.to_datetime }
     deploy_token_type { DeployToken.deploy_token_types[:project_type] }
@@ -36,6 +37,7 @@ FactoryBot.define do
       write_registry { true }
       read_package_registry { true }
       write_package_registry { true }
+      read_virtual_registry { true }
     end
 
     trait :dependency_proxy_scopes do

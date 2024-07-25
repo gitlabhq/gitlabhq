@@ -334,8 +334,6 @@ export default {
       v-model="currentPage"
       :per-page="clustersPerPage"
       :total-items="totalClusters"
-      :prev-text="__('Prev')"
-      :next-text="__('Next')"
       align="center"
     />
   </section>

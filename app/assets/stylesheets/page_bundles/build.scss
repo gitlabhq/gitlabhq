@@ -61,7 +61,7 @@
 
   .header-content {
     a {
-      color: var(--gl-text-color, $gl-text-color);
+      color: var(--gl-text-color-heading);
 
       &:hover {
         color: var(--blue-600, $blue-600);

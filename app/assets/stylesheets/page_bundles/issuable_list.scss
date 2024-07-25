@@ -56,7 +56,7 @@
       color: var(--gray-500, $gl-text-color-secondary);
 
       a {
-        color: var(--gl-text-color, $gl-text-color);
+        color: var(--gl-text-color-default);
       }
 
       // stylelint-disable-next-line gitlab/no-gl-class

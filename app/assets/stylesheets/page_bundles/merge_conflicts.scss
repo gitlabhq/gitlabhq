@@ -172,6 +172,6 @@
     background-color: var(--gray-10, $gray-10);
     text-align: right;
     padding: $gl-padding-top $gl-padding;
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
   }
 }

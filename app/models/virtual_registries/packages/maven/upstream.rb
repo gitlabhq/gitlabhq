@@ -9,6 +9,9 @@ module VirtualRegistries
           class_name: 'VirtualRegistries::Packages::Maven::RegistryUpstream',
           inverse_of: :upstream
         has_one :registry, class_name: 'VirtualRegistries::Packages::Maven::Registry', through: :registry_upstream
+        has_many :cached_responses,
+          class_name: 'VirtualRegistries::Packages::Maven::CachedResponse',
+          inverse_of: :upstream
 
         attr_encrypted :credentials,
           mode: :per_attribute_iv,

@@ -115,7 +115,7 @@
   margin: 0;
 
   a {
-    color: var(--gl-text-color, $gl-text-color);
+    color: var(--gl-text-color-default);
   }
 
   .dropdown-menu {
@@ -264,7 +264,7 @@
 .project-row {
   .description p {
     margin-bottom: 0;
-    color: var(--gl-text-color-secondary, $gl-text-color-secondary);
+    color: var(--gl-text-color-subtle);
     @include str-truncated(100%);
   }
 }

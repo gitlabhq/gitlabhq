@@ -85,10 +85,6 @@ export default {
     cleanUpEnvsButtonLabel: s__('Environments|Clean up environments'),
     active: __('Active'),
     stopped: __('Stopped'),
-    prevPage: __('Go to previous page'),
-    nextPage: __('Go to next page'),
-    next: __('Next'),
-    prev: __('Prev'),
     searchPlaceholder: s__('Environments|Search by environment name'),
   },
   modalId: 'enable-review-app-info',
@@ -339,10 +335,6 @@ export default {
       :total-items="totalItems"
       :per-page="itemsPerPage"
       :value="page"
-      :next="$options.i18n.next"
-      :prev="$options.i18n.prev"
-      :label-previous-page="$options.prevPage"
-      :label-next-page="$options.nextPage"
       @next="movePage('next')"
       @previous="movePage('previous')"
       @input="moveToPage"

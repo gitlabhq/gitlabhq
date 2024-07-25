@@ -30,14 +30,14 @@
   right: $gl-padding;
   max-width: 300px;
   width: auto;
-  background: $white;
-  border: 1px solid $gray-100;
-  box-shadow: 0 1px 2px 0 rgba($black, 0.1);
+  background: var(--gl-background-color-default);
+  border: 1px solid var(--gl-border-color-default);
+  box-shadow: 0 1px 2px 0 var(--gl-shadow-color-default);
   border-radius: $gl-border-radius-base;
   z-index: 999;
 
-  &.preview {
-    position: static;
+  .gl-broadcast-message.banner {
+    color: $gl-text-color;
   }
 }
 

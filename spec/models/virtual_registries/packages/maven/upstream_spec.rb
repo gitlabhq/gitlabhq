@@ -9,6 +9,12 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
 
   describe 'associations' do
     it do
+      is_expected.to have_many(:cached_responses)
+        .class_name('VirtualRegistries::Packages::Maven::CachedResponse')
+        .inverse_of(:upstream)
+    end
+
+    it do
       is_expected.to have_one(:registry_upstream)
         .class_name('VirtualRegistries::Packages::Maven::RegistryUpstream')
         .inverse_of(:upstream)
