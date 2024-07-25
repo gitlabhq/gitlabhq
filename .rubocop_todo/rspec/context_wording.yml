@@ -2268,7 +2268,6 @@ RSpec/ContextWording:
     - 'spec/requests/api/members_spec.rb'
     - 'spec/requests/api/merge_request_diffs_spec.rb'
     - 'spec/requests/api/merge_requests_spec.rb'
-    - 'spec/requests/api/metrics/user_starred_dashboards_spec.rb'
     - 'spec/requests/api/notes_spec.rb'
     - 'spec/requests/api/npm_project_packages_spec.rb'
     - 'spec/requests/api/nuget_group_packages_spec.rb'

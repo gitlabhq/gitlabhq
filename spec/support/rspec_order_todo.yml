@@ -7266,8 +7266,6 @@
 - './spec/requests/api/merge_request_diffs_spec.rb'
 - './spec/requests/api/merge_requests_spec.rb'
 - './spec/requests/api/metadata_spec.rb'
-- './spec/requests/api/metrics/dashboard/annotations_spec.rb'
-- './spec/requests/api/metrics/user_starred_dashboards_spec.rb'
 - './spec/requests/api/namespaces_spec.rb'
 - './spec/requests/api/notes_spec.rb'
 - './spec/requests/api/notification_settings_spec.rb'

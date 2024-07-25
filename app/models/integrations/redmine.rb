@@ -15,8 +15,7 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to _('Learn more.'), Rails.application.routes.url_helpers.help_page_url('user/project/integrations/redmine'), target: '_blank', rel: 'noopener noreferrer'
-      s_('IssueTracker|Use Redmine as the issue tracker. %{docs_link}').html_safe % { docs_link: docs_link.html_safe }
+      build_help_page_url('user/project/integrations/redmine', s_("IssueTracker|Use Redmine as the issue tracker."))
     end
 
     def self.to_param

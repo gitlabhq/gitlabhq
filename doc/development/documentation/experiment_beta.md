@@ -31,9 +31,9 @@ DETAILS:
 > - [Introduced](https://issue-link) in GitLab 15.10. This feature is an [experiment](<link_to>/policy/experiment-beta-support.md).
 
 FLAG:
-On self-managed GitLab, by default this feature is not available.
-To make it available, an administrator can enable the feature flag named `example_flag`.
-On GitLab.com and GitLab Dedicated, this feature is not available. This feature is not ready for production use.
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
 
 Use this new feature when you need to do this new thing.
 

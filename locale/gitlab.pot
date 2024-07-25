@@ -16,6 +16,9 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
+msgid " %{link_start}Learn More%{link_end}."
+msgstr ""
+
 msgid " %{start} to %{end}"
 msgstr ""
 
@@ -3137,10 +3140,10 @@ msgstr ""
 msgid "Add comment to review"
 msgstr ""
 
-msgid "Add commit messages as comments to Asana tasks. %{docs_link}"
+msgid "Add commit messages as comments to Asana tasks."
 msgstr ""
 
-msgid "Add commit messages as comments to Pivotal Tracker stories. %{docs_link}"
+msgid "Add commit messages as comments to Pivotal Tracker stories."
 msgstr ""
 
 msgid "Add customer relation contacts"
@@ -8008,7 +8011,7 @@ msgstr ""
 msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo."
 msgstr ""
 
-msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and a repository trigger in Bamboo. %{docs_link}"
+msgid "BambooService|Run CI/CD pipelines with Atlassian Bamboo. You must set up automatic revision labeling and a repository trigger in Bamboo."
 msgstr ""
 
 msgid "BambooService|User with API access to the Bamboo server."
@@ -15003,7 +15006,7 @@ msgstr ""
 msgid "Control whether to display customer experience improvement content and third-party offers in GitLab."
 msgstr ""
 
-msgid "Control which CI/CD job tokens can be used to authenticate with this project."
+msgid "Control which projects can use CI/CD job tokens to authenticate with this project."
 msgstr ""
 
 msgid "Converts item to %{type}. Widgets not supported in new type are removed."
@@ -28291,7 +28294,7 @@ msgstr ""
 msgid "Integrations|Send notifications about project events to Unify Circuit."
 msgstr ""
 
-msgid "Integrations|Send notifications about project events to a Unify Circuit conversation. %{docs_link}"
+msgid "Integrations|Send notifications about project events to a Unify Circuit conversation."
 msgstr ""
 
 msgid "Integrations|Standard"
@@ -28959,9 +28962,6 @@ msgstr ""
 msgid "IssueTracker|Use Bugzilla as this project's issue tracker."
 msgstr ""
 
-msgid "IssueTracker|Use Bugzilla as this project's issue tracker. %{docs_link}"
-msgstr ""
-
 msgid "IssueTracker|Use ClickUp as this project's issue tracker. %{docs_link}"
 msgstr ""
 
@@ -28971,13 +28971,7 @@ msgstr ""
 msgid "IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker."
 msgstr ""
 
-msgid "IssueTracker|Use IBM Engineering Workflow Management as this project's issue tracker. %{docs_link}"
-msgstr ""
-
 msgid "IssueTracker|Use JetBrains YouTrack as this project's issue tracker."
-msgstr ""
-
-msgid "IssueTracker|Use JetBrains YouTrack as this project's issue tracker. %{docs_link}"
 msgstr ""
 
 msgid "IssueTracker|Use Phorge as this project's issue tracker."
@@ -28986,7 +28980,7 @@ msgstr ""
 msgid "IssueTracker|Use Phorge as this project's issue tracker. %{link_start}Learn more.%{link_end}"
 msgstr ""
 
-msgid "IssueTracker|Use Redmine as the issue tracker. %{docs_link}"
+msgid "IssueTracker|Use Redmine as the issue tracker."
 msgstr ""
 
 msgid "IssueTracker|Use Redmine as this project's issue tracker."
@@ -31844,6 +31838,21 @@ msgid "Marks to do as done."
 msgstr ""
 
 msgid "Match not found; try refining your search query."
+msgstr ""
+
+msgid "MatrixIntegration|Leave blank to use your current token."
+msgstr ""
+
+msgid "MatrixIntegration|New token"
+msgstr ""
+
+msgid "MatrixIntegration|Send notifications about project events to Matrix."
+msgstr ""
+
+msgid "MatrixIntegration|Send notifications about project events to Matrix. %{link_start}Learn More%{link_end}."
+msgstr ""
+
+msgid "MatrixIntegration|Unique authentication token."
 msgstr ""
 
 msgid "Mattermost"
@@ -43311,9 +43320,6 @@ msgstr ""
 msgid "PumbleIntegration|Send notifications about project events to Pumble."
 msgstr ""
 
-msgid "PumbleIntegration|Send notifications about project events to Pumble. %{docs_link}"
-msgstr ""
-
 msgid "Purchase more minutes"
 msgstr ""
 
@@ -45260,7 +45266,7 @@ msgstr ""
 msgid "Run CI/CD pipelines for external repositories"
 msgstr ""
 
-msgid "Run CI/CD pipelines with Jenkins when you push to a repository, or when a merge request is created, updated, or merged. %{docs_link}"
+msgid "Run CI/CD pipelines with Jenkins when you push to a repository, or when a merge request is created, updated, or merged."
 msgstr ""
 
 msgid "Run CI/CD pipelines with Jenkins."
@@ -49417,9 +49423,6 @@ msgstr ""
 msgid "Send notifications about project events to Mattermost channels."
 msgstr ""
 
-msgid "Send notifications about project events to Mattermost channels. %{docs_link}"
-msgstr ""
-
 msgid "Send notifications about project events to a Discord channel. %{docs_link}"
 msgstr ""
 
@@ -51351,9 +51354,6 @@ msgstr ""
 msgid "SquashTmIntegration|Update Squash TM requirements when GitLab issues are modified."
 msgstr ""
 
-msgid "SquashTmIntegration|Update Squash TM requirements when GitLab issues are modified. %{docs_link}"
-msgstr ""
-
 msgid "Stack trace"
 msgstr ""
 
@@ -52718,9 +52718,6 @@ msgstr ""
 msgid "TelegramIntegration|Send notifications about project events to Telegram."
 msgstr ""
 
-msgid "TelegramIntegration|Send notifications about project events to Telegram. %{docs_link}"
-msgstr ""
-
 msgid "TelegramIntegration|Unique authentication token."
 msgstr ""
 
@@ -53157,6 +53154,9 @@ msgstr ""
 msgid "The Issue Tracker is the place to add things that need to be improved or solved in a project. You can register or sign in to create issues for this project."
 msgstr ""
 
+msgid "The Matrix access token (for example, `syt-zyx57W2v1u123ew11`)."
+msgstr ""
+
 msgid "The Mattermost token."
 msgstr ""
 
@@ -53444,9 +53444,6 @@ msgid "The invitation could not be declined."
 msgstr ""
 
 msgid "The invitation has already been accepted."
-msgstr ""
-
-msgid "The invitation is not valid"
 msgstr ""
 
 msgid "The invitation was successfully resent."
@@ -56716,6 +56713,9 @@ msgstr ""
 msgid "Unique identifier for the target chat or the username of the target channel (in the format `@channelusername`)."
 msgstr ""
 
+msgid "Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`)."
+msgstr ""
+
 msgid "Units|d"
 msgstr ""
 
@@ -57863,6 +57863,12 @@ msgstr ""
 msgid "UserMapping|Reassigning"
 msgstr ""
 
+msgid "UserMapping|Reassignment approved"
+msgstr ""
+
+msgid "UserMapping|Reassignment cancelled"
+msgstr ""
+
 msgid "UserMapping|Reassignment details:"
 msgstr ""
 
@@ -57873,6 +57879,9 @@ msgid "UserMapping|Reassignment has not started."
 msgstr ""
 
 msgid "UserMapping|Reassignment in progress."
+msgstr ""
+
+msgid "UserMapping|Reassignment rejected"
 msgstr ""
 
 msgid "UserMapping|Reassignment status"
@@ -57902,6 +57911,18 @@ msgstr ""
 msgid "UserMapping|Select user"
 msgstr ""
 
+msgid "UserMapping|The invitation could not be accepted."
+msgstr ""
+
+msgid "UserMapping|The invitation could not be declined."
+msgstr ""
+
+msgid "UserMapping|The invitation is not valid"
+msgstr ""
+
+msgid "UserMapping|The reassignment has been cancelled by the group owner."
+msgstr ""
+
 msgid "UserMapping|There was a problem cancelling placeholder user reassignment."
 msgstr ""
 
@@ -57918,6 +57939,12 @@ msgid "UserMapping|To learn more about reassignments, %{link_start}visit the doc
 msgstr ""
 
 msgid "UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, report abuse (%{report_link})."
+msgstr ""
+
+msgid "UserMapping|You have approved the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}. Reassignment processing is in progress. You&#39;ll have access to the group soon."
+msgstr ""
+
+msgid "UserMapping|You have rejected the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}."
 msgstr ""
 
 msgid "UserProfile|%{count} %{file}"
@@ -59492,9 +59519,6 @@ msgid "WebIDE|You need permission to edit files directly in this project."
 msgstr ""
 
 msgid "WebexTeamsService|Send notifications about project events to Webex Teams."
-msgstr ""
-
-msgid "WebexTeamsService|Send notifications about project events to a Webex Teams conversation. %{docs_link}"
 msgstr ""
 
 msgid "WebexTeamsService|Webex Teams"

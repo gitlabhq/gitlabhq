@@ -464,7 +464,6 @@ Layout/LineEndStringConcatenationIndentation:
     - 'lib/api/groups.rb'
     - 'lib/api/issue_links.rb'
     - 'lib/api/metadata.rb'
-    - 'lib/api/metrics/dashboard/annotations.rb'
     - 'lib/api/ml/mlflow/registered_models.rb'
     - 'lib/api/ml/mlflow/runs.rb'
     - 'lib/api/releases.rb'

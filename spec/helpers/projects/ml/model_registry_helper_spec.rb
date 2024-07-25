@@ -7,12 +7,14 @@ require 'mime/types'
 
 RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
   let_it_be(:project) { build_stubbed(:project) }
-  let_it_be(:user) { project.owner }
+  let_it_be(:user) { project.first_owner }
 
   describe '#index_ml_model_data' do
     subject(:parsed) { Gitlab::Json.parse(helper.index_ml_model_data(project, user)) }
 
     it 'generates the correct data' do
+      stub_member_access_level(project, owner: user)
+
       is_expected.to eq({
         'projectPath' => project.full_path,
         'createModelPath' => "/#{project.full_path}/-/ml/models/new",
@@ -45,6 +47,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
     subject(:parsed) { Gitlab::Json.parse(helper.show_ml_model_data(model, user)) }
 
     it 'generates the correct data' do
+      stub_member_access_level(project, owner: user)
+
       is_expected.to eq({
         'projectPath' => project.full_path,
         'indexModelsPath' => "/#{project.full_path}/-/ml/models",
@@ -83,6 +87,8 @@ RSpec.describe Projects::Ml::ModelRegistryHelper, feature_category: :mlops do
     subject(:parsed) { Gitlab::Json.parse(helper.show_ml_model_version_data(model_version, user)) }
 
     it 'generates the correct data' do
+      stub_member_access_level(project, owner: user)
+
       is_expected.to eq({
         "projectPath" => project.full_path,
         "modelId" => model.id,

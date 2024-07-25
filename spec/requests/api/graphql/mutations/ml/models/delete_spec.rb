@@ -68,7 +68,8 @@ RSpec.describe 'Deleting a model', feature_category: :mlops do
 
     context 'with valid id' do
       where(:user_role, :mutation_behavior) do
-        :reporter   | 'destroying the model'
+        :developer  | 'destroying the model'
+        :reporter   | 'denying the mutation request'
         :guest      | 'denying the mutation request'
       end
 

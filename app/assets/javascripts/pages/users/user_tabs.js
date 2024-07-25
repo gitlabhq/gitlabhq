@@ -267,6 +267,7 @@ export default class UserTabs {
     new ActivityCalendar({
       container: '.tab-pane.active .js-contrib-calendar',
       activitiesContainer: '.tab-pane.active .user-calendar-activities',
+      recentActivitiesContainer: '.tab-pane.active .overview-content-list',
       timestamps: data,
       calendarActivitiesPath,
       utcOffset,

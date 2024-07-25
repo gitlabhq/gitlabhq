@@ -285,8 +285,6 @@ module API
         mount ::API::MergeRequests
         mount ::API::MergeRequestDiffs
         mount ::API::Metadata
-        mount ::API::Metrics::Dashboard::Annotations
-        mount ::API::Metrics::UserStarredDashboards
         mount ::API::MlModelPackages
         mount ::API::Namespaces
         mount ::API::NpmGroupPackages

@@ -80,6 +80,10 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
     find('#js-overview .user-calendar-activities', visible: visible).text
   end
 
+  def recent_activities(visible: true)
+    find_by_testid('user-activity-content', visible: visible)
+  end
+
   shared_context 'when user page is visited' do
     before do
       visit user.username
@@ -112,6 +116,10 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
           expect(selected_day_activities).not_to be_empty
         end
 
+        it 'hides recent activities' do
+          expect(recent_activities(visible: false)).not_to be_visible
+        end
+
         describe 'select another calendar day' do
           it 'displays different calendar day activities' do
             first_day_activities = selected_day_activities
@@ -126,12 +134,14 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         describe 'deselect calendar day' do
           before do
             cells[0].click
-            wait_for_requests
-            cells[0].click
           end
 
           it 'hides calendar day activities' do
             expect(selected_day_activities(visible: false)).to be_empty
+          end
+
+          it 'shows recent activities' do
+            expect(recent_activities).to be_visible
           end
         end
       end

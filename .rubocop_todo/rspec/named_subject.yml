@@ -2597,6 +2597,7 @@ RSpec/NamedSubject:
     - 'spec/models/integrations/irker_spec.rb'
     - 'spec/models/integrations/jenkins_spec.rb'
     - 'spec/models/integrations/mattermost_slash_commands_spec.rb'
+    - 'spec/models/integrations/matrix_spec.rb'
     - 'spec/models/integrations/pipelines_email_spec.rb'
     - 'spec/models/integrations/pivotaltracker_spec.rb'
     - 'spec/models/integrations/pushover_spec.rb'

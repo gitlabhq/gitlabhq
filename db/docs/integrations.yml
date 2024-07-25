@@ -41,6 +41,7 @@ classes:
 - Integrations::JiraCloudApp
 - Integrations::Mattermost
 - Integrations::MattermostSlashCommands
+- Integrations::Matrix
 - Integrations::MicrosoftTeams
 - Integrations::MockCi
 - Integrations::MockMonitoring

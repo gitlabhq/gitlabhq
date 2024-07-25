@@ -1,0 +1,11 @@
+= render Pajamas::AlertComponent.new(variant: :success, title: s_('UserMapping|Reassignment approved'), alert_options: { class: 'gl-mt-4' }) do |c|
+  - c.with_body do
+    = safe_format(s_('UserMapping|You have approved the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}. Reassignment processing is in progress. You&#39;ll have access to the group soon.'),
+      tag_pair(tag.strong, :strong_open, :strong_close),
+    source_user_name: source_user.source_name,
+    source_username: source_user.source_username,
+    source_hostname: source_user.source_hostname,
+    destination_group: source_user.namespace.name)
+  - c.with_actions do
+    = render Pajamas::ButtonComponent.new(variant: :default, href: help_page_path('user/group/import/index'), button_options: { class: 'deferred-link gl-alert-action', rel: 'noreferrer noopener' }, target: '_blank') do
+      = _('Learn more')

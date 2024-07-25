@@ -36392,6 +36392,7 @@ State of a Sentry error.
 | <a id="servicetypejenkins_service"></a>`JENKINS_SERVICE` | JenkinsService type. |
 | <a id="servicetypejira_cloud_app_service"></a>`JIRA_CLOUD_APP_SERVICE` | JiraCloudAppService type. |
 | <a id="servicetypejira_service"></a>`JIRA_SERVICE` | JiraService type. |
+| <a id="servicetypematrix_service"></a>`MATRIX_SERVICE` | MatrixService type. |
 | <a id="servicetypemattermost_service"></a>`MATTERMOST_SERVICE` | MattermostService type. |
 | <a id="servicetypemattermost_slash_commands_service"></a>`MATTERMOST_SLASH_COMMANDS_SERVICE` | MattermostSlashCommandsService type. |
 | <a id="servicetypemicrosoft_teams_service"></a>`MICROSOFT_TEAMS_SERVICE` | MicrosoftTeamsService type. |

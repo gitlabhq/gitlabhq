@@ -21,7 +21,7 @@ class Integration < ApplicationRecord
   INTEGRATION_NAMES = %w[
     asana assembla bamboo bugzilla buildkite campfire clickup confluence custom_issue_tracker
     datadog diffblue_cover discord drone_ci emails_on_push ewm external_wiki
-    gitlab_slack_application hangouts_chat harbor irker jira jira_cloud_app
+    gitlab_slack_application hangouts_chat harbor irker jira jira_cloud_app matrix
     mattermost mattermost_slash_commands microsoft_teams packagist phorge pipelines_email
     pivotaltracker prometheus pumble pushover redmine slack slack_slash_commands squash_tm teamcity telegram
     unify_circuit webex_teams youtrack zentao
@@ -744,6 +744,18 @@ class Integration < ApplicationRecord
   end
 
   private
+
+  def self.build_help_page_url(url_path, help_text, options = {})
+    docs_link = ActionController::Base.helpers.link_to(
+      '',
+      Rails.application.routes.url_helpers.help_page_url(url_path, **options),
+      target: '_blank',
+      rel: 'noopener noreferrer'
+    )
+    tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
+
+    safe_format(help_text + s_(" %{link_start}Learn More%{link_end}."), tag_pair_docs_link)
+  end
 
   # Ancestors sorted by hierarchy depth in bottom-top order.
   def self.sorted_ancestors(scope)

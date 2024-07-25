@@ -142,6 +142,7 @@ To use custom settings for a project or group integration:
 | [Jira](../../../integration/jira/index.md)                                  | Use Jira as an issue tracker.                                         | **{dotted-circle}** No |
 | [Mattermost notifications](mattermost.md)                                   | Send notifications about project events to Mattermost channels.       | **{dotted-circle}** No |
 | [Mattermost slash commands](mattermost_slash_commands.md)                   | Run slash commands from a Mattermost chat environment.                | **{dotted-circle}** No |
+| [Matrix](matrix.md)                                                         | Send notifications about project events to Matrix.                    | **{dotted-circle}** No |
 | [Microsoft Teams notifications](microsoft_teams.md)                         | Receive event notifications in Microsoft Teams.                       | **{dotted-circle}** No |
 | Packagist                                                                   | Update your PHP dependencies in Packagist.                            | **{check-circle}** Yes |
 | [Phorge](phorge.md)                                                         | Use Phorge as an issue tracker.                                       | **{dotted-circle}** No |

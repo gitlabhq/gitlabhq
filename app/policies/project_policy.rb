@@ -1020,19 +1020,19 @@ class ProjectPolicy < BasePolicy
     enable :read_namespace_catalog
   end
 
-  rule { model_registry_enabled }.policy do
+  rule { reporter & model_registry_enabled }.policy do
     enable :read_model_registry
   end
 
-  rule { can?(:reporter_access) & model_registry_enabled }.policy do
+  rule { developer & model_registry_enabled }.policy do
     enable :write_model_registry
   end
 
-  rule { model_experiments_enabled }.policy do
+  rule { reporter & model_experiments_enabled }.policy do
     enable :read_model_experiments
   end
 
-  rule { can?(:reporter_access) & model_experiments_enabled }.policy do
+  rule { developer & model_experiments_enabled }.policy do
     enable :write_model_experiments
   end
 

@@ -871,8 +871,6 @@
 - spec/requests/api/maven_packages_spec.rb
 - spec/requests/api/merge_request_approvals_spec.rb
 - spec/requests/api/merge_requests_spec.rb
-- spec/requests/api/metrics/dashboard/annotations_spec.rb
-- spec/requests/api/metrics/user_starred_dashboards_spec.rb
 - spec/requests/api/namespaces_spec.rb
 - spec/requests/api/notes_spec.rb
 - spec/requests/api/project_events_spec.rb

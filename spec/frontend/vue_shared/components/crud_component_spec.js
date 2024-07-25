@@ -48,7 +48,14 @@ describe('CRUD Component', () => {
     expect(findDescription().text()).toBe('Description slot');
   });
 
-  it('renders count and icon', () => {
+  it('renders count and icon appropriately when count does not exist', () => {
+    createComponent({ icon: 'rocket' });
+
+    expect(findCount().text()).toBe('0');
+    expect(findIcon().props('name')).toBe('rocket');
+  });
+
+  it('renders count and icon appropriately when count exists', () => {
     createComponent({ count: 99, icon: 'rocket' });
 
     expect(findCount().text()).toBe('99');

@@ -1,0 +1,19 @@
+---
+key_path: counts.instances_matrix_active
+description: Count of instances with active integrations for Matrix
+product_group: personal_productivity
+value_type: number
+status: active
+milestone: "17.3"
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160223
+time_frame: all
+data_source: database
+data_category: optional
+performance_indicator_type: []
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate

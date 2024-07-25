@@ -37,6 +37,11 @@ export default {
       isFormVisible: false,
     };
   },
+  computed: {
+    displayedCount() {
+      return this.icon && !this.count ? '0' : this.count;
+    },
+  },
   methods: {
     toggleForm() {
       this.isFormVisible = !this.isFormVisible;
@@ -64,12 +69,12 @@ export default {
           >
             {{ title }}
             <span
-              v-if="count"
+              v-if="displayedCount"
               class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-secondary"
               data-testid="crud-count"
             >
-              <gl-icon v-if="icon" :name="icon" />
-              {{ count }}
+              <gl-icon v-if="icon" :name="icon" data-testid="crud-icon" />
+              {{ displayedCount }}
             </span>
           </h2>
           <p

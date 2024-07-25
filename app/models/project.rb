@@ -238,6 +238,7 @@ class Project < ApplicationRecord
   has_one :jira_cloud_app_integration, class_name: 'Integrations::JiraCloudApp'
   has_one :mattermost_integration, class_name: 'Integrations::Mattermost'
   has_one :mattermost_slash_commands_integration, class_name: 'Integrations::MattermostSlashCommands'
+  has_one :matrix_integration, class_name: 'Integrations::Matrix'
   has_one :microsoft_teams_integration, class_name: 'Integrations::MicrosoftTeams'
   has_one :mock_ci_integration, class_name: 'Integrations::MockCi'
   has_one :mock_monitoring_integration, class_name: 'Integrations::MockMonitoring'

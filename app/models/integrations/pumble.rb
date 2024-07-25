@@ -33,15 +33,10 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to(
-        _('Learn more.'),
-        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/pumble'),
-        target: '_blank',
-        rel: 'noopener noreferrer'
+      build_help_page_url(
+        'user/project/integrations/pumble',
+        s_("PumbleIntegration|Send notifications about project events to Pumble.")
       )
-      # rubocop:disable Layout/LineLength
-      s_("PumbleIntegration|Send notifications about project events to Pumble. %{docs_link}") % { docs_link: docs_link.html_safe }
-      # rubocop:enable Layout/LineLength
     end
 
     def default_channel_placeholder

@@ -21,7 +21,26 @@
   if: '$FORCE_GITLAB_CI'
 
 .if-default-refs: &if-default-refs
-  if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/ || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/ || $CI_COMMIT_REF_NAME =~ /^security\// || $CI_COMMIT_REF_NAME =~ /^ruby\d+(_\d)*$/ || ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") || $CI_COMMIT_TAG || $FORCE_GITLAB_CI'
+  if: '
+      (
+        $CI_PIPELINE_SOURCE != "merge_request_event"
+        &&
+        (
+          $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+          || $CI_COMMIT_REF_NAME =~ /^[\d-]+-stable(-ee)?$/
+          || $CI_COMMIT_REF_NAME =~ /^\d+-\d+-auto-deploy-\d+$/
+          || $CI_COMMIT_REF_NAME =~ /^security\//
+          || $CI_COMMIT_REF_NAME =~ /^ruby\d+(_\d)*$/
+        )
+      )
+      ||
+      (
+        $CI_PIPELINE_SOURCE == "merge_request_event"
+        && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train"
+      )
+      || $CI_COMMIT_TAG
+      || $FORCE_GITLAB_CI
+      '
 
 .if-default-branch-refs: &if-default-branch-refs
   if: '$CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_MERGE_REQUEST_IID == null'
@@ -36,103 +55,103 @@
   if: '$CI_COMMIT_TAG'
 
 .if-merge-request: &if-merge-request
-  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached"'
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train"'
 
 .if-not-merge-request: &if-not-merge-request
   if: '$CI_MERGE_REQUEST_EVENT_TYPE == null'
 
 # Once https://gitlab.com/gitlab-org/gitlab/-/issues/373904 is implemented, we should be able to change this back to
-# if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
+# if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_APPROVALS_COUNT > 0'
 # or any similar condition to check that the MR has *any* approval (not just required approval).
 .if-merge-request-approved: &if-merge-request-approved
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:mr-approved/'
 
 .if-merge-request-not-approved: &if-merge-request-not-approved
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline:mr-approved/'
 
 .if-merge-request-and-specific-devops-stage: &if-merge-request-and-specific-devops-stage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::(create|govern|manage|plan|verify|package|monitor|data stores|fulfillment|systems)/'
 
 .if-merge-request-and-devops-fulfillment: &if-merge-request-and-devops-fulfillment
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /devops::fulfillment/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /devops::fulfillment/'
 
 .if-automated-merge-request: &if-automated-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/)'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_SOURCE_BRANCH_NAME == "release-tools/update-gitaly" || $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /stable-(ee|jh)$/)'
 
 .if-merge-request-targeting-stable-branch: &if-merge-request-targeting-stable-branch
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable(-ee|-jh)?$/'
 
 .if-merge-request-labels-as-if-foss: &if-merge-request-labels-as-if-foss
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-foss/'
 
 .if-merge-request-labels-as-if-jh: &if-merge-request-labels-as-if-jh
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-as-if-jh/'
 
 .if-merge-request-labels-force-as-if-jh: &if-merge-request-labels-force-as-if-jh
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:force-run-as-if-jh/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:force-run-as-if-jh/'
 
 .if-merge-request-labels-update-caches: &if-merge-request-labels-update-caches
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:update-cache/'
 
 .if-merge-request-labels-run-all-rspec: &if-merge-request-labels-run-all-rspec
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-rspec/'
 
 .if-merge-request-labels-run-all-jest: &if-merge-request-labels-run-all-jest
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-jest/'
 
 .if-merge-request-labels-run-all-e2e: &if-merge-request-labels-run-all-e2e
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-all-e2e/'
 
 .if-merge-request-labels-run-single-db: &if-merge-request-labels-run-single-db
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-single-db/'
 
 .if-merge-request-labels-run-clusterwide-db: &if-merge-request-labels-run-clusterwide-db
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-clusterwide-db/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-clusterwide-db/'
 
 .if-merge-request-labels-run-review-app: &if-merge-request-labels-run-review-app
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-review-app/'
 
 .if-merge-request-labels-run-cs-evaluation: &if-merge-request-labels-run-cs-evaluation
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-CS-evaluation/'
 
 .if-merge-request-labels-skip-undercoverage: &if-merge-request-labels-skip-undercoverage
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-undercoverage/'
 
 .if-merge-request-labels-jh-contribution: &if-merge-request-labels-jh-contribution
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /JiHu contribution/'
 
 .if-merge-request-labels-group-global-search: &if-merge-request-labels-group-global-search
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /group::global search/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /group::global search/'
 
 .if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
 
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
 .if-merge-request-labels-run-praefect-with-db: &if-merge-request-labels-run-praefect-with-db
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-praefect-with-db/'
 
 .if-merge-request-labels-run-without-gitaly-transactions: &if-merge-request-labels-run-without-gitaly-transactions
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
 
 .if-security-merge-request: &if-security-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_PROJECT_NAMESPACE == "gitlab-org/security"'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE == "gitlab-org/security"'
 
 .if-fork-merge-request: &if-fork-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE !~ /^gitlab(-org)?($|\/)/ && $CI_MERGE_REQUEST_LABELS !~ /pipeline:run-all-rspec/'
 
 .if-merge-request-no-tier: &if-merge-request-no-tier
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS !~ /pipeline::tier-/'
 
 .if-merge-request-tier-1: &if-merge-request-tier-1
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-1/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-1/'
 
 .if-merge-request-tier-2: &if-merge-request-tier-2
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-2/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-2/'
 
 .if-merge-request-tier-3: &if-merge-request-tier-3
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline::tier-3/'
 
 .if-schedule-pipeline: &if-schedule-pipeline
   if: '$CI_PIPELINE_SOURCE == "schedule"'
@@ -165,13 +184,13 @@
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "maintenance"'
 
 .if-dot-com-gitlab-org-default-branch: &if-dot-com-gitlab-org-default-branch
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH'
+  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org" && $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH && $CI_PIPELINE_SOURCE != "merge_request_event"'
 
 .if-dot-com-gitlab-org-merge-request: &if-dot-com-gitlab-org-merge-request
-  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"'
+  if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE == "gitlab-org"'
 
 .if-dot-com-gitlab-org-and-subgroups-merge-train: &if-dot-com-gitlab-org-and-subgroups-merge-train
-  if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org/'
+  if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org/'
 
 .if-dot-com-gitlab-org-ee-tag: &if-dot-com-gitlab-org-ee-tag
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_TAG =~ /^v?[\d]+\.[\d]+\.[\d]+[\d\w-]*-ee$/'
@@ -180,7 +199,7 @@
   if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_TAG =~ /^v?[\d]+\.[\d]+\.[\d]+[\d\w-]*-ee$/'
 
 .if-ruby-branch: &if-ruby-branch
-  if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || (($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
+  if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || (($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
 
 ####################
 # Changes patterns #
@@ -964,7 +983,7 @@
   rules:
     - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_TAG =~ /^v\d+\.\d+\.0-ee$/ && $CI_PIPELINE_SOURCE == "push"'
     # In case gdk base tag is updated via backport mr, make sure we retag it with stable prefix as well
-    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable-ee$/'
+    - if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME =~ /^[\d-]+-stable-ee$/'
       changes:
         - qa/gdk/Dockerfile.gdk
 
@@ -1439,7 +1458,7 @@
     - <<: *if-default-branch-refs
       changes: *frontend-build-patterns
       allow_failure: true
-    - if: '$DANGER_GITLAB_API_TOKEN && ($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+    - if: '$DANGER_GITLAB_API_TOKEN && ($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
       changes: *frontend-build-patterns
       allow_failure: true
 

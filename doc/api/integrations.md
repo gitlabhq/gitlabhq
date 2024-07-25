@@ -1245,6 +1245,52 @@ Get the Jira integration settings for a project.
 GET /projects/:id/integrations/jira
 ```
 
+## Matrix notifications
+
+### Set up Matrix notifications
+
+Set up Matrix notifications for a project.
+
+```plaintext
+PUT /projects/:id/integrations/matrix
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `hostname`   | string | no | Custom hostname of the Matrix server. The default value is `https://matrix.org`. |
+| `token`   | string | yes | The Matrix access token (for example, `syt-zyx57W2v1u123ew11`). |
+| `room` | string | yes | Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`). |
+| `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
+| `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
+| `push_events` | boolean | yes | Enable notifications for push events. |
+| `issues_events` | boolean | yes | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | yes | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | yes | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | yes | Enable notifications for tag push events. |
+| `note_events` | boolean | yes | Enable notifications for note events. |
+| `confidential_note_events` | boolean | yes | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | yes | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | yes | Enable notifications for wiki page events. |
+| `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
+
+### Disable Matrix notifications
+
+Disable Matrix notifications for a project. Integration settings are reset.
+
+```plaintext
+DELETE /projects/:id/integrations/matrix
+```
+
+### Get Matrix notifications settings
+
+Get the Matrix notifications settings for a project.
+
+```plaintext
+GET /projects/:id/integrations/matrix
+```
+
 ## Mattermost notifications
 
 ### Set up Mattermost notifications
