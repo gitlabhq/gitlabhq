@@ -46,7 +46,7 @@ describe('IssuableDescription', () => {
     });
 
     it('renders hidden textarea element when issuable.description is present and enableTaskList prop is true', () => {
-      const textareaEl = wrapper.find('textarea.gl-display-none.js-task-list-field');
+      const textareaEl = wrapper.find('textarea.gl-hidden.js-task-list-field');
 
       expect(textareaEl.exists()).toBe(true);
       expect(textareaEl.attributes('data-update-url')).toBe(`${mockIssuable.webUrl}.json`);

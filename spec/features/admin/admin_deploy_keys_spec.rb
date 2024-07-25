@@ -10,13 +10,6 @@ RSpec.describe 'admin deploy keys', :js, feature_category: :system_access do
   let!(:deploy_key) { create(:deploy_key, public: true) }
   let!(:another_deploy_key) { create(:another_deploy_key, public: true) }
 
-  def page_breadcrumbs
-    all('[data-testid=breadcrumb-links] a').map do |a|
-      # We use `.dom_attribute` because Selenium transforms `.attribute('href')` to include the full URL.
-      { text: a.text, href: a.native.dom_attribute('href') }
-    end
-  end
-
   before do
     sign_in(admin)
     enable_admin_mode!(admin)

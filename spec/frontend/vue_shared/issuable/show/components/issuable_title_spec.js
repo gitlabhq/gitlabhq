@@ -71,7 +71,7 @@ describe('IssuableTitle', () => {
 
       expect(titleEl.exists()).toBe(true);
       expect(titleEl.html()).toBe(
-        '<h1 dir="auto" data-testid="issuable-title" class="title gl-font-size-h-display"><b>Sample</b> title</h1>',
+        '<h1 dir="auto" data-testid="issuable-title" class="title gl-text-size-h-display"><b>Sample</b> title</h1>',
       );
 
       wrapperWithTitle.destroy();

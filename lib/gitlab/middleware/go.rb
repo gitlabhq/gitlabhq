@@ -112,7 +112,14 @@ module Gitlab
           path_segments.pop
         end while path_segments.length >= 2
 
-        Project.where_full_path_in(project_paths).first
+        project = Project.where_full_path_in(project_paths).first
+        return project if project
+
+        # It's possible that the project was transferred and has a redirect
+        redirect = RedirectRoute.for_source_type(Project).by_paths(project_paths).first
+        return redirect.source if redirect
+
+        nil
       end
 
       # can_read_project? checks if the request's credentials have read access to the project

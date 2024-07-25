@@ -292,10 +292,6 @@ module ApplicationHelper
     "#{request.path}?#{options.compact.to_param}"
   end
 
-  def stylesheet_link_tag_defer(path)
-    universal_stylesheet_link_tag(path, media: "all", crossorigin: ActionController::Base.asset_host ? 'anonymous' : nil)
-  end
-
   def sign_in_with_redirect?
     current_page?(new_user_session_path) && session[:user_return_to].present?
   end
@@ -419,17 +415,13 @@ module ApplicationHelper
     }
   end
 
-  def add_page_specific_style(path, defer: true)
+  def add_page_specific_style(path)
     @already_added_styles ||= Set.new
     return if @already_added_styles.include?(path)
 
     @already_added_styles.add(path)
     content_for :page_specific_styles do
-      if defer
-        stylesheet_link_tag_defer path
-      else
-        universal_stylesheet_link_tag path
-      end
+      universal_stylesheet_link_tag path
     end
   end
 

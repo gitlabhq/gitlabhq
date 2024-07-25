@@ -140,7 +140,7 @@ export default {
       :label="__('Description')"
       :label-sr-only="!showFieldTitle"
       label-for="issuable-description"
-      class="col-12 gl-px-0 common-note-form"
+      class="col-12 common-note-form gl-px-0"
     >
       <markdown-editor
         v-model="description"
@@ -152,10 +152,7 @@ export default {
         @keydown="handleKeydown($event, 'description')"
       />
     </gl-form-group>
-    <div
-      data-testid="actions"
-      class="col-12 gl-mt-3 gl-mb-3 gl-px-0 clearfix gl-display-flex gl-gap-3"
-    >
+    <div data-testid="actions" class="col-12 clearfix gl-mb-3 gl-mt-3 gl-flex gl-gap-3 gl-px-0">
       <slot
         name="edit-form-actions"
         :issuable-title="title"

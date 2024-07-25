@@ -14,7 +14,7 @@ RSpec.describe Mutations::Achievements::Revoke, feature_category: :user_profile 
 
   describe '#resolve' do
     subject(:resolve_mutation) do
-      described_class.new(object: nil, context: { current_user: current_user }, field: nil).resolve(
+      described_class.new(object: nil, context: query_context, field: nil).resolve(
         user_achievement_id: user_achievement&.to_global_id
       )
     end

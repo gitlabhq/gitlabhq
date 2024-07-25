@@ -6,6 +6,7 @@
   - else
     = universal_stylesheet_link_tag "application_dark"
     = universal_stylesheet_link_tag "application_utilities_dark"
+  = universal_stylesheet_link_tag 'tailwind'
 
 %body
   .gl-mt-6{ class: (params[:lookbook][:display][:layout] == "fluid" ? "container-fluid" : "container") }

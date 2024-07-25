@@ -2,26 +2,27 @@
 
 require 'spec_helper'
 
-RSpec.describe Mutations::DesignManagement::Delete do
+RSpec.describe Mutations::DesignManagement::Delete, feature_category: :api do
   include DesignManagementTestHelpers
+  include GraphqlHelpers
 
   let(:issue) { create(:issue) }
   let(:current_designs) { issue.designs.current }
-  let(:user) { issue.author }
+  let(:current_user) { issue.author }
   let(:project) { issue.project }
   let(:design_a) { create(:design, :with_file, issue: issue) }
   let(:design_b) { create(:design, :with_file, issue: issue) }
   let(:design_c) { create(:design, :with_file, issue: issue) }
   let(:filenames) { [design_a, design_b, design_c].map(&:filename) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: context, field: nil) }
 
   before do
     stub_const('Errors', Gitlab::Graphql::Errors, transfer_nested_constants: true)
   end
 
   def run_mutation
-    mutation = described_class.new(object: nil, context: { current_user: user }, field: nil)
+    mutation = described_class.new(object: nil, context: query_context, field: nil)
     mutation.resolve(project_path: project.full_path, iid: issue.iid, filenames: filenames)
   end
 
@@ -54,7 +55,7 @@ RSpec.describe Mutations::DesignManagement::Delete do
       end
 
       context "when the user is not allowed to delete designs" do
-        let(:user) { create(:user) }
+        let(:current_user) { create(:user) }
 
         it_behaves_like "resource not available"
       end

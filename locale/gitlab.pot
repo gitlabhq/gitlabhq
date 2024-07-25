@@ -53848,6 +53848,9 @@ msgstr ""
 msgid "There is no data available. Please change your selection."
 msgstr ""
 
+msgid "There is no job log to troubleshoot."
+msgstr ""
+
 msgid "There is no table data available."
 msgstr ""
 

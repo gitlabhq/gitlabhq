@@ -131,7 +131,7 @@ export default {
         </div>
       </div>
     </div>
-    <div data-testid="issuable-create-actions" class="footer-block gl-display-flex gl-mt-6">
+    <div data-testid="issuable-create-actions" class="footer-block gl-mt-6 gl-flex">
       <slot
         name="actions"
         :issuable-title="issuableTitle"

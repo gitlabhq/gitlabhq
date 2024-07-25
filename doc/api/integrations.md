@@ -1264,15 +1264,15 @@ Parameters:
 | `room` | string | yes | Unique identifier for the target room (in the format `!qPKKM111FFKKsfoCVy:matrix.org`). |
 | `notify_only_broken_pipelines` | boolean | no | Send notifications for broken pipelines. |
 | `branches_to_be_notified` | string | no | Branches to send notifications for. Valid options are `all`, `default`, `protected`, and `default_and_protected`. The default value is `default`. |
-| `push_events` | boolean | yes | Enable notifications for push events. |
-| `issues_events` | boolean | yes | Enable notifications for issue events. |
-| `confidential_issues_events` | boolean | yes | Enable notifications for confidential issue events. |
-| `merge_requests_events` | boolean | yes | Enable notifications for merge request events. |
-| `tag_push_events` | boolean | yes | Enable notifications for tag push events. |
-| `note_events` | boolean | yes | Enable notifications for note events. |
-| `confidential_note_events` | boolean | yes | Enable notifications for confidential note events. |
-| `pipeline_events` | boolean | yes | Enable notifications for pipeline events. |
-| `wiki_page_events` | boolean | yes | Enable notifications for wiki page events. |
+| `push_events` | boolean | no | Enable notifications for push events. |
+| `issues_events` | boolean | no | Enable notifications for issue events. |
+| `confidential_issues_events` | boolean | no | Enable notifications for confidential issue events. |
+| `merge_requests_events` | boolean | no | Enable notifications for merge request events. |
+| `tag_push_events` | boolean | no | Enable notifications for tag push events. |
+| `note_events` | boolean | no | Enable notifications for note events. |
+| `confidential_note_events` | boolean | no | Enable notifications for confidential note events. |
+| `pipeline_events` | boolean | no | Enable notifications for pipeline events. |
+| `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
 | `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
 
 ### Disable Matrix notifications

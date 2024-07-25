@@ -69,7 +69,7 @@ export default {
     <div class="title-container">
       <h1
         v-safe-html="issuable.titleHtml || issuable.title"
-        class="title gl-font-size-h-display"
+        class="title gl-text-size-h-display"
         dir="auto"
         data-testid="issuable-title"
       ></h1>
@@ -87,11 +87,11 @@ export default {
       <transition name="issuable-header-slide">
         <div
           v-if="stickyTitleVisible"
-          class="issue-sticky-header gl-fixed gl-z-3 gl-bg-default gl-border-b gl-py-3"
+          class="issue-sticky-header gl-border-b gl-fixed gl-z-3 gl-bg-default gl-py-3"
           data-testid="header"
         >
-          <div class="issue-sticky-header-text gl-flex gl-items-baseline gl-mx-auto gl-gap-3">
-            <gl-badge class="gl-whitespace-nowrap gl-self-center" :variant="badgeVariant">
+          <div class="issue-sticky-header-text gl-mx-auto gl-flex gl-items-baseline gl-gap-3">
+            <gl-badge class="gl-self-center gl-whitespace-nowrap" :variant="badgeVariant">
               <gl-icon v-if="statusIcon" class="sm:gl-hidden" :name="statusIcon" />
               <span class="gl-sr-only sm:gl-not-sr-only">
                 <slot name="status-badge"></slot>
@@ -104,7 +104,7 @@ export default {
               :workspace-type="workspaceType"
             />
             <p
-              class="gl-font-bold gl-overflow-hidden gl-whitespace-nowrap gl-text-overflow-ellipsis gl-my-0"
+              class="gl-my-0 gl-overflow-hidden gl-text-ellipsis gl-whitespace-nowrap gl-font-bold"
               :title="issuable.title"
             >
               {{ issuable.title }}

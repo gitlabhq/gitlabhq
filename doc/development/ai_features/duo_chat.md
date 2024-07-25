@@ -127,7 +127,7 @@ myFancyToggleToOpenChat.addEventListener('click', () => {
 #### Initiating GitLab Duo Chat with a pre-defined prompt
 
 In some scenarios, you may want to direct users towards a specific topic or
-query when they open GitLab Duo Chat. We have a utility function that will 
+query when they open GitLab Duo Chat. We have a utility function that will
 open DuoChat drawer and send a command in a queue for DuoChat to execute on.
 This should trigger the loading state and the streaming with the given prompt.
 
@@ -375,7 +375,7 @@ The GraphQL Subscription for Chat behaves slightly different because it's user-c
 We therefore need to broadcast messages to multiple clients to keep them in sync. The `aiAction` mutation with the `chat` action behaves the following:
 
 1. All complete Chat messages (including messages from the user) are broadcasted with the `userId`, `aiAction: "chat"` as identifier.
-1. Chunks from streamed Chat messages and currently used tools are broadcasted with the `userId`, `resourceId`, and the `clientSubscriptionId` from the mutation as identifier.
+1. Chunks from streamed Chat messages are broadcasted with the `clientSubscriptionId` from the mutation as identifier.
 
 Examples of GraphQL Subscriptions in a Vue component:
 
@@ -417,8 +417,8 @@ Examples of GraphQL Subscriptions in a Vue component:
         query: aiResponseSubscription,
         variables() {
           return {
+            aiAction: 'CHAT',
             userId, // for example "gid://gitlab/User/1"
-            resourceId, // can be either a resourceId (on Issue, Epic, etc. items), or userId
             clientSubscriptionId // randomly generated identifier for every message
             htmlResponse: false, // important to bypass HTML processing on every chunk
           };
@@ -433,8 +433,7 @@ Examples of GraphQL Subscriptions in a Vue component:
     },
    ```
 
-Note that we still broadcast chat messages and currently used tools using the `userId` and `resourceId` as identifier.
-However, this is deprecated and should no longer be used. We want to remove `resourceId` on the subscription as part of [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/420296).
+Please keep in mind that the clientSubscriptionId must be unique for every request. Reusing a clientSubscriptionId will cause several unwanted side effects in the subscription responses.
 
 ### Duo Chat GraphQL queries
 

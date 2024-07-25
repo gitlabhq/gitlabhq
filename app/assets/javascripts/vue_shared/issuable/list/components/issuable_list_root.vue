@@ -330,7 +330,7 @@ export default {
       :checkbox-checked="allIssuablesChecked"
       :show-friendly-text="showFilteredSearchFriendlyText"
       terms-as-tokens
-      class="gl-grow gl-border-t-0 row-content-block max-md:-gl-ml-5 max-md:gl-w-screen max-md:gl-border-t max-md:-gl-mt-1 sm:gl-flex"
+      class="row-content-block gl-grow gl-border-t-0 max-md:gl-border-t max-md:-gl-ml-5 max-md:-gl-mt-1 max-md:gl-w-screen sm:gl-flex"
       data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"
@@ -355,7 +355,7 @@ export default {
     </issuable-bulk-edit-sidebar>
     <slot name="list-body"></slot>
     <ul v-if="issuablesLoading" class="content-list">
-      <li v-for="n in skeletonItemCount" :key="n" class="issue gl-px-5! gl-py-5!">
+      <li v-for="n in skeletonItemCount" :key="n" class="issue !gl-px-5 !gl-py-5">
         <gl-skeleton-loader />
       </li>
     </ul>
@@ -415,9 +415,7 @@ export default {
       <slot v-else-if="!error" name="empty-state"></slot>
     </template>
 
-    <div
-      class="gl-display-flex gl-justify-content-space-between gl-md-justify-content-center! gl-mt-6 gl-relative"
-    >
+    <div class="gl-relative gl-mt-6 gl-flex gl-justify-between md:!gl-justify-center">
       <gl-keyset-pagination
         v-if="showPaginationControls && useKeysetPagination"
         :has-next-page="hasNextPage"
@@ -445,7 +443,7 @@ export default {
       >
         <page-size-selector
           :value="defaultPageSize"
-          class="gl-right-0 gl-relative md:gl-absolute"
+          class="gl-relative gl-right-0 md:gl-absolute"
           @input="handlePageSizeChange"
         />
       </local-storage-sync>

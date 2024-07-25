@@ -31,9 +31,9 @@
 
   - if user_application_dark_mode?
     %meta{ name: 'color-scheme', content: 'dark light' }
-    = stylesheet_link_tag_defer "application_dark"
+    = universal_stylesheet_link_tag "application_dark"
     = yield :page_specific_styles
-    = stylesheet_link_tag_defer "application_utilities_dark"
+    = universal_stylesheet_link_tag "application_utilities_dark"
   - elsif user_application_system_mode?
     %meta{ name: 'color-scheme', content: 'light dark' }
     = universal_stylesheet_link_tag "application", media: "(prefers-color-scheme: light)"
@@ -42,16 +42,16 @@
     = universal_stylesheet_link_tag "application_utilities", media: "(prefers-color-scheme: light)"
     = universal_stylesheet_link_tag "application_utilities_dark", media: "(prefers-color-scheme: dark)"
   - else
-    = stylesheet_link_tag_defer "application"
+    = universal_stylesheet_link_tag "application"
     = yield :page_specific_styles
-    = stylesheet_link_tag_defer 'application_utilities'
-  = stylesheet_link_tag_defer 'tailwind'
+    = universal_stylesheet_link_tag 'application_utilities'
+  = universal_stylesheet_link_tag 'tailwind'
   = universal_stylesheet_link_tag "disable_animations", media: "all" if Rails.env.test? || Gitlab.config.gitlab['disable_animations']
   = universal_stylesheet_link_tag "test_environment", media: "all" if Rails.env.test?
 
-  = stylesheet_link_tag_defer "fonts"
+  = universal_stylesheet_link_tag "fonts"
 
-  = stylesheet_link_tag_defer "highlight/themes/#{user_color_scheme}"
+  = universal_stylesheet_link_tag "highlight/themes/#{user_color_scheme}"
 
   = universal_stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 

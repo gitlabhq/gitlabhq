@@ -80,6 +80,7 @@ PUT /projects/:id/external_status_checks/:check_id
 | `check_id`             | integer          | yes      | ID of an external status check service         |
 | `name`                 | string           | no       | Display name of external status check service  |
 | `external_url`         | string           | no       | URL of external status check service           |
+| `shared_secret`        | string           | no       | HMAC secret for external status check          |
 | `protected_branch_ids` | `array<Integer>` | no       | IDs of protected branches to scope the rule by |
 
 ## Delete external status check service

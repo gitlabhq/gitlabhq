@@ -869,12 +869,6 @@ RSpec.describe ApplicationHelper do
     end
   end
 
-  describe 'stylesheet_link_tag_defer' do
-    it 'uses media="all" in stylesheet' do
-      expect(helper.stylesheet_link_tag_defer('test')).to eq('<link rel="stylesheet" href="/stylesheets/test.css" media="all" />')
-    end
-  end
-
   describe 'sign_in_with_redirect?' do
     context 'when on the sign-in page that redirects afterwards' do
       before do

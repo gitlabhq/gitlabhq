@@ -13,9 +13,6 @@ DETAILS:
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/) in GitLab 17.3.
 
 You can configure GitLab to send notifications to a Matrix room.
-To set up the Matrix integration, you must:
-
-1. [Set up the Matrix integration in GitLab](#set-up-the-matrix-integration-in-gitlab).
 
 ## Set up the Matrix integration in GitLab
 

@@ -24,10 +24,9 @@ module Glfm
     include Shared
     include ParseExamples
 
-    # skip_static_and_wysiwyg can be used to skip the backend/frontend html and prosemirror JSON
-    # generation which depends on external calls. This allows for faster processing in unit tests
-    # which do not require it.
-    def process(skip_static_and_wysiwyg: false)
+    # skip_static can be used to skip the backend html generation which depends on external
+    # calls. This allows for faster processing in unit tests which do not require it.
+    def process(skip_static: false)
       output('Updating example snapshots...')
 
       output("Reading #{ES_SNAPSHOT_SPEC_MD_PATH}...")
@@ -41,7 +40,7 @@ module Glfm
 
       reject_disabled_examples(all_examples)
 
-      write_snapshot_example_files(all_examples, skip_static_and_wysiwyg: skip_static_and_wysiwyg)
+      write_snapshot_example_files(all_examples, skip_static: skip_static)
     end
 
     private
@@ -112,7 +111,7 @@ module Glfm
       all_examples.reject! { |example| example[:disabled] }
     end
 
-    def write_snapshot_example_files(all_examples, skip_static_and_wysiwyg:)
+    def write_snapshot_example_files(all_examples, skip_static: false)
       output("Reading #{GLFM_EXAMPLE_STATUS_YML_PATH}...")
       glfm_examples_statuses = YAML.safe_load(File.open(GLFM_EXAMPLE_STATUS_YML_PATH), symbolize_names: true) || {}
       validate_glfm_example_status_yml(glfm_examples_statuses)
@@ -123,8 +122,8 @@ module Glfm
 
       write_markdown_yml(all_examples)
 
-      if skip_static_and_wysiwyg
-        output("Skipping static/WYSIWYG HTML and prosemirror JSON generation...")
+      if skip_static
+        output("Skipping static HTML generation...")
         return
       end
 
@@ -134,11 +133,8 @@ module Glfm
       # it straightforward to pass arguments via the command line.
       ENV['INPUT_MARKDOWN_YML_PATH'], ENV['INPUT_METADATA_YML_PATH'] = copy_tempfiles_for_subprocesses
       static_html_hash = generate_static_html
-      wysiwyg_html_and_json_hash = generate_wysiwyg_html_and_json
 
-      write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
-
-      write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash, glfm_examples_statuses)
+      write_html_yml(all_examples, static_html_hash, glfm_examples_statuses)
     end
 
     def validate_glfm_example_status_yml(glfm_examples_statuses)
@@ -281,23 +277,7 @@ module Glfm
       YAML.safe_load(File.open(static_html_tempfile_path), symbolize_names: true)
     end
 
-    def generate_wysiwyg_html_and_json
-      output("Generating WYSIWYG HTML and prosemirror JSON from markdown examples...")
-
-      # Dir::Tmpname.create requires a block, but we are using the non-block form to get the path
-      # via the return value, so we pass an empty block to avoid an error.
-      wysiwyg_html_and_json_tempfile_path = Dir::Tmpname.create(WYSIWYG_HTML_AND_JSON_TEMPFILE_BASENAME) {}
-      ENV['OUTPUT_WYSIWYG_HTML_AND_JSON_TEMPFILE_PATH'] = wysiwyg_html_and_json_tempfile_path
-
-      cmd = "yarn jest:scripts #{__dir__}/render_wysiwyg_html_and_json.js"
-      run_external_cmd(cmd)
-
-      output("Reading generated WYSIWYG HTML and prosemirror JSON from tempfile " \
-        "#{wysiwyg_html_and_json_tempfile_path}...")
-      YAML.safe_load(File.open(wysiwyg_html_and_json_tempfile_path), symbolize_names: true)
-    end
-
-    def write_html_yml(all_examples, static_html_hash, wysiwyg_html_and_json_hash, glfm_examples_statuses)
+    def write_html_yml(all_examples, static_html_hash, glfm_examples_statuses)
       generate_and_write_for_all_examples(
         all_examples, ES_HTML_YML_PATH, glfm_examples_statuses: glfm_examples_statuses
       ) do |example, hash, existing_hash|
@@ -310,34 +290,10 @@ module Glfm
                    static_html_hash[name]
                  end
 
-        wysiwyg = if example_statuses[:skip_update_example_snapshot_html_wysiwyg]
-                    existing_hash.dig(name, :wysiwyg)
-                  else
-                    wysiwyg_html_and_json_hash.dig(name, :html)
-                  end
-
         hash[name] = {
           'canonical' => example.fetch(:html),
-          'static' => static,
-          'wysiwyg' => wysiwyg
+          'static' => static
         }.compact # Do not assign nil values
-      end
-    end
-
-    def write_prosemirror_json_yml(all_examples, wysiwyg_html_and_json_hash, glfm_examples_statuses)
-      generate_and_write_for_all_examples(
-        all_examples, ES_PROSEMIRROR_JSON_YML_PATH, glfm_examples_statuses: glfm_examples_statuses
-      ) do |example, hash, existing_hash|
-        name = example.fetch(:name).to_sym
-
-        json = if glfm_examples_statuses.dig(name, :skip_update_example_snapshot_prosemirror_json)
-                 existing_hash[name]
-               else
-                 wysiwyg_html_and_json_hash.dig(name, :json)
-               end
-
-        # Do not assign nil values
-        hash[name] = json if json
       end
     end
 

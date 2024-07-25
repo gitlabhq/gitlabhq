@@ -372,11 +372,17 @@ With the `concurrency_limit` property, you can limit the worker's concurrency. I
 a separate `LIST` and re-enqueued when it falls under the limit. `ConcurrencyLimit::ResumeWorker` is a cron
 worker that checks if any throttled jobs should be re-enqueued.
 
-The first job that crosses the defined concurency limit initiates the throttling process for all other jobs of this class.
+The first job that crosses the defined concurrency limit initiates the throttling process for all other jobs of this class.
 Until this happens, jobs are scheduled and executed as usual.
 
 When the throttling starts, newly scheduled and executed jobs will be added to the end of the `LIST` to ensure that
 the execution order is preserved. As soon as the `LIST` is empty again, the throttling process ends.
+
+Prometheus metrics are exposed to monitor workers using concurrency limit middleware:
+
+- `sidekiq_concurrency_limit_deferred_jobs_total`
+- `sidekiq_concurrency_limit_queue_jobs`
+- `sidekiq_concurrency_limit_max_concurrent_jobs`
 
 WARNING:
 If there is a sustained workload over the limit, the `LIST` is going to grow until the limit is disabled or

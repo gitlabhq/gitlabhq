@@ -59,7 +59,7 @@ RSpec.describe 'layouts/_head' do
 
     render
 
-    expect(rendered).to match('<link rel="stylesheet" href="/stylesheets/highlight/themes/solarised-light.css" media="all" />')
+    expect(rendered).to match('<link rel="stylesheet" href="/stylesheets/highlight/themes/solarised-light.css" />')
   end
 
   context 'for apple touch icon' do

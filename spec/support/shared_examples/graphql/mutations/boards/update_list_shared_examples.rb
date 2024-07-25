@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.shared_examples 'update board list mutation' do
+  include GraphqlHelpers
+
   describe '#resolve' do
-    let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+    let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
     let(:list_update_params) { { position: 1, collapsed: true } }
 
     subject { mutation.resolve(list: list, **list_update_params) }

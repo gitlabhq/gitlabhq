@@ -518,10 +518,14 @@ Users with the Minimal Access role do not:
 Owners must explicitly add these users to the specific subgroups and
 projects.
 
-You can use the Minimal Access role to give the same member more than one role in a group:
+You can use the Minimal Access role with [SAML SSO for GitLab.com groups](group/saml_sso/index.md)
+to control access to groups and projects in the group hierarchy. You can set the default role to 
+Minimal Access for members automatically added to the root group through SSO.
 
-1. Add the member to the root group with a Minimal Access role.
-1. Invite the member as a direct member with a specific role in any subgroup or project in that group.
+1. On the left sidebar, select **Search or go to** and find your group.
+1. Select **Settings > SAML SSO**.
+1. From the **Default membership role** dropdown list, select **Minimal Access**.
+1. Select **Save changes**.
 
 ### Minimal access users receive 404 errors
 

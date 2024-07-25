@@ -71,6 +71,15 @@ RSpec.describe Gitlab::Middleware::Go, feature_category: :source_code_management
               end
             end
           end
+
+          context 'when the project accessed by a redirect' do
+            let!(:redirect_route) { create(:redirect_route, source: project, path: 'redirect/project') }
+            let(:path) { redirect_route.path }
+
+            it 'returns the full project path' do
+              expect_response_with_path(go, enabled_protocol, project.full_path, project.default_branch)
+            end
+          end
         end
 
         context 'with a nested project path' do

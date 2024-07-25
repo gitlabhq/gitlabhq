@@ -32,7 +32,7 @@ For CI jobs where `FF_TIMESTAMPS` is enabled,
 the size of generated artifacts is bigger by approximately 10 percent.
 
 NOTE:
-If `FF_TIMESTMPS` is disabled or not included in `.gitlab-ci.yml`,
+If `FF_TIMESTAMPS` is disabled or not included in `.gitlab-ci.yml`,
 the CI log output does not include the timestamp for each log line.
 
 ## Example configuration and output
