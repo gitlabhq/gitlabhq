@@ -51,12 +51,20 @@ Selecting an individual job shows you its job log, and allows you to:
 
 ### View all jobs in a project
 
+DETAILS:
+**Offering:** GitLab.com, Self-managed
+
+> - Filtering jobs by job name [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/387547) on GitLab.com and self-managed in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `populate_and_use_build_names_table`. On GitLab.com, this feature is enabled by default. On self-managed, this feature is disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag. For more information, see the history.
+
 To view the full list of jobs that ran in a project:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Build > Jobs**.
 
-You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline).
+You can filter the list by [job status](#the-order-of-jobs-in-a-pipeline) and [job name](#job-name-limitations).
 
 ## See why a job failed
 

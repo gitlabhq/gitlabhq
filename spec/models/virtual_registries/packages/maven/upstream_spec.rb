@@ -94,6 +94,32 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
           end
         end
       end
+
+      context 'when url is updated' do
+        where(:new_url, :new_user, :new_pwd, :expected_user, :expected_pwd, :expected_credentials) do
+          'http://original_url.test' | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
+          'http://update_url.test'   | 'test' | 'test' | 'test' | 'test' | { 'username' => 'test', 'password' => 'test' }
+          'http://update_url.test'   | :none  | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
+          'http://update_url.test'   | 'test' | :none  | nil    | nil    | { 'username' => nil, 'password' => nil }
+          'http://update_url.test'   | :none  | 'test' | nil    | nil    | { 'username' => nil, 'password' => nil }
+        end
+
+        with_them do
+          before do
+            upstream.update!(url: 'http://original_url.test', username: 'original_user', password: 'original_pwd')
+          end
+
+          it 'resets the username and the password when necessary' do
+            new_attributes = { url: new_url, username: new_user, password: new_pwd }.select { |_, v| v != :none }
+            upstream.update!(new_attributes)
+
+            expect(upstream.reload.url).to eq(new_url)
+            expect(upstream.username).to eq(expected_user)
+            expect(upstream.password).to eq(expected_pwd)
+            expect(upstream.credentials).to eq(expected_credentials)
+          end
+        end
+      end
     end
   end
 

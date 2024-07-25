@@ -2,17 +2,33 @@
 
 require 'spec_helper'
 
-# TODO: This is now a legacy filter, and is only used with the Ruby parser.
-# The current markdown parser now properly handles autolinking.
-# The Ruby parser is now only for benchmarking purposes.
-# issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
-RSpec.describe Banzai::Filter::AutolinkLegacyFilter, feature_category: :team_planning do
+RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning do
   include FilterSpecHelper
 
   let_it_be(:context) { { markdown_engine: Banzai::Filter::MarkdownFilter::CMARK_ENGINE } }
 
   let(:link) { 'http://about.gitlab.com/' }
   let(:quotes) { ['"', "'"] }
+
+  context 'when using default markdown engine' do
+    it 'does nothing' do
+      exp = act = link
+
+      expect(filter(act, {}).to_html).to eq exp
+    end
+
+    it 'autolinks when using single_line pipeline' do
+      doc = filter("See #{link}", { pipeline: :single_line })
+
+      expect(doc.at_css('a').text).to eq link
+    end
+
+    it 'autolinks when using commit_description pipeline' do
+      doc = filter("See #{link}", { pipeline: :commit_description })
+
+      expect(doc.at_css('a').text).to eq link
+    end
+  end
 
   it 'does nothing when :autolink is false' do
     exp = act = link

@@ -32,7 +32,7 @@ module Banzai
           Filter::TableOfContentsLegacyFilter,
           Filter::TableOfContentsTagLegacyFilter,
           Filter::TableOfContentsTagFilter,
-          Filter::AutolinkLegacyFilter,
+          Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
           Filter::SuggestionFilter,
           Filter::FootnoteFilter,

@@ -9925,9 +9925,6 @@ msgstr ""
 msgid "Burnup chart could not be generated due to too many events"
 msgstr ""
 
-msgid "Business"
-msgstr ""
-
 msgid "Business metrics (Custom)"
 msgstr ""
 
@@ -33141,75 +33138,6 @@ msgstr ""
 msgid "Metrics:"
 msgstr ""
 
-msgid "Metrics|Create metric"
-msgstr ""
-
-msgid "Metrics|Delete metric"
-msgstr ""
-
-msgid "Metrics|Delete metric?"
-msgstr ""
-
-msgid "Metrics|Edit metric"
-msgstr ""
-
-msgid "Metrics|For grouping similar metrics"
-msgstr ""
-
-msgid "Metrics|Label of the y-axis (usually the unit). The x-axis always represents time."
-msgstr ""
-
-msgid "Metrics|Legend label (optional)"
-msgstr ""
-
-msgid "Metrics|Must be a valid PromQL query."
-msgstr ""
-
-msgid "Metrics|New metric"
-msgstr ""
-
-msgid "Metrics|PromQL query is valid"
-msgstr ""
-
-msgid "Metrics|Prometheus Query Documentation"
-msgstr ""
-
-msgid "Metrics|There was an error trying to validate your query"
-msgstr ""
-
-msgid "Metrics|Unit label"
-msgstr ""
-
-msgid "Metrics|Used as a title for the chart"
-msgstr ""
-
-msgid "Metrics|Used if the query returns a single series. If it returns multiple series, their legend labels will be picked up from the response."
-msgstr ""
-
-msgid "Metrics|Validating query"
-msgstr ""
-
-msgid "Metrics|Y-axis label"
-msgstr ""
-
-msgid "Metrics|You're about to permanently delete this metric. This cannot be undone."
-msgstr ""
-
-msgid "Metrics|e.g. HTTP requests"
-msgstr ""
-
-msgid "Metrics|e.g. Requests/second"
-msgstr ""
-
-msgid "Metrics|e.g. Throughput"
-msgstr ""
-
-msgid "Metrics|e.g. rate(http_requests_total[5m])"
-msgstr ""
-
-msgid "Metrics|e.g. req/sec"
-msgstr ""
-
 msgid "Mi"
 msgstr ""
 
@@ -43539,9 +43467,6 @@ msgstr ""
 msgid "QualitySummary|Project quality"
 msgstr ""
 
-msgid "Query"
-msgstr ""
-
 msgid "Queued"
 msgstr ""
 
@@ -48054,9 +47979,6 @@ msgstr ""
 msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply and bot message enabled. No additional approvals are required."
 msgstr ""
 
-msgid "SecurityOrchestration|For any MR that matches this policy's rules, only the override project approval settings apply. No additional approvals are required."
-msgstr ""
-
 msgid "SecurityOrchestration|For any merge request on %{branches}%{commitType}%{branchExceptionsString}"
 msgstr ""
 
@@ -48177,9 +48099,6 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "SecurityOrchestration|Only overriding settings and bot message will take effect"
-msgstr ""
-
-msgid "SecurityOrchestration|Only overriding settings will take effect"
 msgstr ""
 
 msgid "SecurityOrchestration|Only owners can update Security Policy Project"
@@ -52457,9 +52376,6 @@ msgstr ""
 msgid "SynthaxHighlightingTheme|Solarized Light"
 msgstr ""
 
-msgid "System"
-msgstr ""
-
 msgid "System default (%{default})"
 msgstr ""
 
@@ -54062,9 +53978,6 @@ msgid "There was an error subscribing to this label."
 msgstr ""
 
 msgid "There was an error syncing project %{name}"
-msgstr ""
-
-msgid "There was an error trying to validate your query"
 msgstr ""
 
 msgid "There was an error updating the Maintenance Mode Settings"

@@ -98,7 +98,9 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
     it_behaves_like 'a Broadcast Messages'
 
-    it_behaves_like 'a dismissible Broadcast Messages'
+    context 'when quarantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/474308' do
+      it_behaves_like 'a dismissible Broadcast Messages'
+    end
   end
 
   describe 'notification type' do

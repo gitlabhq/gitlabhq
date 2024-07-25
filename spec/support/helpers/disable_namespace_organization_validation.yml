@@ -57,7 +57,6 @@
 - spec/lib/gitlab/auth/saml/user_spec.rb
 - spec/lib/gitlab/import/placeholder_user_creator_spec.rb
 - spec/lib/gitlab/import/source_user_mapper_spec.rb
-- spec/lib/gitlab/seeders/ci/runner/runner_fleet_seeder_spec.rb
 - spec/models/hooks/system_hook_spec.rb
 - spec/requests/api/groups_spec.rb
 - spec/requests/import/gitlab_groups_controller_spec.rb
@@ -66,4 +65,3 @@
 - spec/services/groups/create_service_spec.rb
 - spec/services/groups/nested_create_service_spec.rb
 - spec/services/resource_access_tokens/create_service_spec.rb
-- spec/tasks/gitlab/seed/runner_fleet_rake_spec.rb

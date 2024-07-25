@@ -2,10 +2,10 @@
 
 require 'uri'
 
-# TODO: This is now a legacy filter, and is only used with the Ruby parser.
-# The current markdown parser now properly handles autolinking.
-# The Ruby parser is now only for benchmarking purposes.
-# issue: https://gitlab.com/gitlab-org/gitlab/-/issues/454601
+# This filter handles autolinking when a pipeline does not
+# use the MarkdownFilter, which handles it's own autolinking.
+# This happens in particular for the SingleLinePipeline and the
+# CommitDescriptionPipeline.
 #
 # rubocop:disable Rails/OutputSafety -- this is legacy/unused, no need fixing.
 # rubocop:disable Gitlab/NoCodeCoverageComment -- no coverage needed for a legacy filter
@@ -16,15 +16,11 @@ module Banzai
     #
     # Based on HTML::Pipeline::AutolinkFilter
     #
-    # Note that our CommonMark parser, `commonmarker` (using the autolink extension)
-    # handles standard autolinking, like http/https. We detect additional
-    # schemes (smb, rdar, etc).
-    #
     # Context options:
     #   :autolink  - Boolean, skips all processing done by this filter when false
     #   :link_attr - Hash of attributes for the generated links
     #
-    class AutolinkLegacyFilter < HTML::Pipeline::Filter
+    class AutolinkFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::TagHelper
       include Gitlab::Utils::SanitizeNodeLink
 
@@ -67,7 +63,12 @@ module Banzai
       }.freeze
 
       def call
-        return doc if MarkdownFilter.glfm_markdown?(context) && context[:pipeline] != :single_line
+        if MarkdownFilter.glfm_markdown?(context) &&
+            context[:pipeline] != :single_line &&
+            context[:pipeline] != :commit_description
+          return doc
+        end
+
         return doc if context[:autolink] == false
 
         doc.xpath(TEXT_QUERY).each do |node|

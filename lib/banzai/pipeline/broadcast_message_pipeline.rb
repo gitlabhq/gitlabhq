@@ -10,7 +10,7 @@ module Banzai
           Filter::BroadcastMessageSanitizationFilter,
           Filter::EmojiFilter,
           Filter::ColorFilter,
-          Filter::AutolinkLegacyFilter,
+          Filter::AutolinkFilter,
           Filter::ExternalLinkFilter
         ]
       end
