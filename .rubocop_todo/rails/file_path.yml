@@ -18,7 +18,6 @@ Rails/FilePath:
     - 'ee/lib/ee/gitlab/audit/type/definition.rb'
     - 'ee/lib/ee/gitlab/usage/metric_definition.rb'
     - 'ee/lib/gitlab/geo/health_check.rb'
-    - 'ee/lib/tasks/gitlab/seed/metrics.rake'
     - 'ee/spec/db/production/license_spec.rb'
     - 'ee/spec/factories/spdx_catalogue.rb'
     - 'ee/spec/factories/vulnerabilities/findings.rb'

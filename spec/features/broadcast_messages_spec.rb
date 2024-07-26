@@ -31,7 +31,9 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
       expect_to_be_on_explore_projects_page
 
-      find(".js-dismiss-current-broadcast-notification[data-id='#{broadcast_message.id}']").click
+      within('body.page-initialised') do
+        find(".js-dismiss-current-broadcast-notification[data-id='#{broadcast_message.id}']").click
+      end
 
       expect_message_dismissed
     end
@@ -41,7 +43,9 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
       expect_to_be_on_explore_projects_page
 
-      find(".js-dismiss-current-broadcast-notification[data-id='#{broadcast_message.id}']").click
+      within('body.page-initialised') do
+        find(".js-dismiss-current-broadcast-notification[data-id='#{broadcast_message.id}']").click
+      end
 
       expect_message_dismissed
 
@@ -57,7 +61,9 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
       expect_to_be_on_explore_projects_page
 
-      find(".js-dismiss-current-broadcast-notification[data-id='#{broadcast_message.id}']").click
+      within('body.page-initialised') do
+        find(".js-dismiss-current-broadcast-notification[data-id='#{broadcast_message.id}']").click
+      end
 
       expect_message_dismissed
 
@@ -98,9 +104,7 @@ RSpec.describe 'Broadcast Messages', feature_category: :notifications do
 
     it_behaves_like 'a Broadcast Messages'
 
-    context 'when quarantined shared example', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/474308' do
-      it_behaves_like 'a dismissible Broadcast Messages'
-    end
+    it_behaves_like 'a dismissible Broadcast Messages'
   end
 
   describe 'notification type' do

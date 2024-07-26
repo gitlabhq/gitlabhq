@@ -51,6 +51,7 @@ for previously created wikis.
 ## Create the wiki home page
 
 > - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+> - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
 
 When a wiki is created, it is empty. On your first visit, you can create the
 home page users see when viewing the wiki. This page requires a specific path
@@ -72,6 +73,7 @@ to be used as your wiki's home page. To create it:
 ## Create a new wiki page
 
 > - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+> - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
 
 Prerequisites:
 
@@ -114,6 +116,7 @@ Files with unsupported extensions don't display when pushed to GitLab:
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/133521) front matter based titles in GitLab 16.7 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Disabled by default.
 > - Feature flags [`wiki_front_matter`](https://gitlab.com/gitlab-org/gitlab/-/issues/435056) and [`wiki_front_matter_title`](https://gitlab.com/gitlab-org/gitlab/-/issues/428259) enabled by default in GitLab 17.2.
+> - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
 
 Wiki pages are stored as files in a Git repository, and by default, the filename of
 a page is also its title. Certain characters in the filename have a special meaning:
@@ -193,6 +196,7 @@ Prerequisites:
 
 > - Redirects for moved or renamed wiki pages [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/257892) in GitLab 17.1 [with a flag](../../../administration/feature_flags.md) named `wiki_redirection`. Enabled by default.
 > - Separation of page title and path [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/30758) in GitLab 17.2 [with flags](../../../administration/feature_flags.md) named `wiki_front_matter` and `wiki_front_matter_title`. Enabled by default.
+> - Feature flags `wiki_front_matter` and `wiki_front_matter_title` removed in GitLab 17.3.
 
 In GitLab 17.1 and later, when you move or rename a page, a redirect is
 automatically set up from the old page to the new page. A list of redirects

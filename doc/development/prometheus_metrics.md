@@ -4,59 +4,12 @@ group: Respond
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-# Prometheus metrics development guidelines
-
-## Adding to the library
-
-We strive to support the 2-4 most important metrics for each common system service that supports Prometheus. If you are looking for support for a particular exporter which has not yet been added to the library, additions can be made [to the `common_metrics.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/config/prometheus/common_metrics.yml) file.
-
-### Query identifier
-
-The requirement for adding a new metric is to make each query to have an unique identifier which is used to update the metric later when changed:
-
-```yaml
-- group: Response metrics (NGINX Ingress)
-  metrics:
-    - title: "Throughput"
-      y_axis:
-        name: "Requests / Sec"
-        format: "number"
-        precision: 2
-      queries:
-        - id: response_metrics_nginx_ingress_throughput_status_code
-          query_range: 'sum(rate(nginx_upstream_responses_total{upstream=~"%{kube_namespace}-%{ci_environment_slug}-.*"}[2m])) by (status_code)'
-          unit: req / sec
-          label: Status Code
-```
-
-### Update existing metrics
-
-After you add or change an existing common metric, you must [re-run the import script](../administration/raketasks/maintenance.md#import-common-metrics) that queries and updates all existing metrics.
-
-Or, you can create a database migration:
-
-```ruby
-class ImportCommonMetrics < Gitlab::Database::Migration[2.1]
-  def up
-    ::Gitlab::DatabaseImporters::CommonMetrics::Importer.new.execute
-  end
-
-  def down
-    # no-op
-  end
-end
-```
-
-If a query metric (which is identified by `id:`) is removed, it isn't removed from database by default.
-You might want to add additional database migration that makes a decision what to do with removed one.
-For example: you might be interested in migrating all dependent data to a different metric.
-
-## GitLab Prometheus metrics
+# GitLab Prometheus metrics development guidelines
 
 GitLab provides [Prometheus metrics](../administration/monitoring/prometheus/gitlab_metrics.md)
 to monitor itself.
 
-### Adding a new metric
+## Adding a new metric
 
 This section describes how to add new metrics for self-monitoring
 ([example](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/15440)).

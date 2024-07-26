@@ -80,7 +80,7 @@ class WikiPage
   alias_method :to_param, :slug
 
   def human_title
-    return front_matter_title if Feature.enabled?(:wiki_front_matter_title, container) && front_matter_title.present?
+    return front_matter_title if front_matter_title.present?
     return 'Home' if title == Wiki::HOMEPAGE
 
     title
@@ -333,7 +333,6 @@ class WikiPage
   end
 
   def update_front_matter(attrs)
-    return unless Gitlab::WikiPages::FrontMatterParser.enabled?(container)
     return unless attrs.has_key?(:front_matter)
 
     fm_yaml = serialize_front_matter(attrs[:front_matter])
@@ -344,7 +343,7 @@ class WikiPage
 
   def parsed_content
     strong_memoize(:parsed_content) do
-      Gitlab::WikiPages::FrontMatterParser.new(raw_content, container).parse
+      Gitlab::WikiPages::FrontMatterParser.new(raw_content).parse
     end
   end
 

@@ -1164,7 +1164,6 @@ Layout/LineLength:
     - 'ee/lib/system_check/geo/geo_database_configured_check.rb'
     - 'ee/lib/tasks/geo.rake'
     - 'ee/lib/tasks/gitlab/elastic/test.rake'
-    - 'ee/lib/tasks/gitlab/seed/metrics.rake'
     - 'ee/lib/world.rb'
     - 'ee/spec/controllers/admin/elasticsearch_controller_spec.rb'
     - 'ee/spec/controllers/admin/impersonations_controller_spec.rb'

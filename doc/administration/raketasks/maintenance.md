@@ -459,18 +459,6 @@ You should not use the task for routine checks as database inconsistencies might
 gitlab-rake gitlab:db:schema_checker:run
 ```
 
-## Import common metrics
-
-Sometimes you may need to re-import the common metrics that power the Metrics dashboards.
-
-This could be as a result of [updating existing metrics](../../development/prometheus_metrics.md#update-existing-metrics).
-
-To re-import the metrics you can run:
-
-```shell
-sudo gitlab-rake metrics:setup_common_metrics
-```
-
 ## Troubleshooting
 
 ### Advisory lock connection information

@@ -274,13 +274,13 @@ export default {
             Object.assign(line, { discussionsExpanded: expanded });
           });
         });
-      } else {
-        const discussions = file.discussions.map((discussion) => {
-          Object.assign(discussion, { expandedOnDiff: expanded });
-          return discussion;
-        });
-        Object.assign(file, { discussions });
       }
+
+      const discussions = file.discussions.map((discussion) => {
+        Object.assign(discussion, { expandedOnDiff: expanded });
+        return discussion;
+      });
+      Object.assign(file, { discussions });
     });
   },
 

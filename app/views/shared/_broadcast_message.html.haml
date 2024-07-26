@@ -8,4 +8,4 @@
     = render Pajamas::BroadcastBannerComponent.new(message: content, id: message.id, theme: nil, dismissable: true, expire_date: expire_date, cookie_key: cookie_key, dismissal_path: dismissal_path, button_testid: 'close-button')
 
 - else
-  = render Pajamas::BroadcastBannerComponent.new(message: content, id: message.id, theme: message.theme, dismissable: message.dismissable?, expire_date: expire_date, cookie_key: cookie_key, dismissal_path: dismissal_path)
+  = render Pajamas::BroadcastBannerComponent.new(message: content, id: message.id, theme: message.theme, dismissable: message.dismissable?, expire_date: expire_date, cookie_key: cookie_key, dismissal_path: dismissal_path, banner: true)

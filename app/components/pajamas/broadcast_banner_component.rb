@@ -12,7 +12,7 @@ module Pajamas
     # @param [String] button_testid
     def initialize(
       message:, id:, theme:, dismissable:, expire_date:, cookie_key:, dismissal_path: nil,
-      button_testid: nil)
+      button_testid: nil, banner: nil)
       @message = message
       @id = id
       @theme = theme
@@ -21,6 +21,7 @@ module Pajamas
       @cookie_key = cookie_key
       @dismissal_path = dismissal_path
       @button_testid = button_testid
+      @banner = banner
     end
 
     delegate :sprite_icon, to: :helpers

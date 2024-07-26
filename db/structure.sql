@@ -32393,11 +32393,11 @@ ALTER TABLE ONLY protected_tag_create_access_levels
 ALTER TABLE ONLY incident_management_timeline_events
     ADD CONSTRAINT fk_38a74279df FOREIGN KEY (updated_by_user_id) REFERENCES users(id) ON DELETE SET NULL;
 
-ALTER TABLE ONLY approval_group_rules_users
-    ADD CONSTRAINT fk_3995d73930 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
-
 ALTER TABLE ONLY import_export_uploads
     ADD CONSTRAINT fk_38e11735aa FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL;
+
+ALTER TABLE ONLY approval_group_rules_users
+    ADD CONSTRAINT fk_3995d73930 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY bulk_import_exports
     ADD CONSTRAINT fk_39c726d3b5 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
