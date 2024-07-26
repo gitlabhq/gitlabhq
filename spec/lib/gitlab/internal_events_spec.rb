@@ -12,6 +12,7 @@ RSpec.describe Gitlab::InternalEvents, :snowplow, feature_category: :product_ana
     allow(Gitlab::UsageDataCounters::HLLRedisCounter).to receive(:track_event)
     allow(redis).to receive(:incr)
     allow(redis).to receive(:set)
+    allow(redis).to receive(:eval)
     allow(redis).to receive(:ttl).and_return(123456)
     allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis)
     allow(Gitlab::Tracking).to receive(:tracker).and_return(fake_snowplow)

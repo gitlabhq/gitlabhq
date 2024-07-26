@@ -439,7 +439,7 @@ RSpec.describe Gitlab::SidekiqMiddleware::DuplicateJobs::DuplicateJob,
       fake_logger = instance_double(Gitlab::SidekiqLogging::DeduplicationLogger)
       expect(Gitlab::SidekiqLogging::DeduplicationLogger).to receive(:instance).and_return(fake_logger)
       expect(fake_logger).to receive(:rescheduled_log).with(a_hash_including({ 'jid' => '123' }))
-      expect(AuthorizedProjectsWorker).to receive(:perform_async).with(1).once
+      expect(AuthorizedProjectsWorker).to receive_message_chain(:rescheduled_once, :perform_async)
 
       duplicate_job.reschedule
     end
