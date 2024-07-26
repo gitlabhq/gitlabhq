@@ -137,6 +137,7 @@ the page is rendered to HTML. There can be only **one** level 1 heading per page
 - Do not skip a level. For example: `##` > `####`.
 - Leave one blank line before and after the topic title.
 - If you use code in topic titles, ensure the code is in backticks.
+- Do not use bold text in topic titles.
 
 ### Backticks in Markdown
 

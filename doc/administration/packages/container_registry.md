@@ -12,7 +12,7 @@ DETAILS:
 
 NOTE:
 The [next-generation container registry](container_registry_metadata_database.md)
-is now available for upgrade and testing on self-managed instances as a beta feature.
+is now available for upgrade on self-managed instances.
 This upgraded registry supports online garbage collection, and has significant performance
 and reliability improvements.
 
@@ -1093,7 +1093,6 @@ end
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
-**Status:** Beta
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -1290,15 +1289,9 @@ blobs start being deleted is anything permanent done.
 ### Continuous Zero-Downtime Garbage Collection
 
 DETAILS:
-**Status:** Beta
 
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
 if you migrate to the [metadata database](container_registry_metadata_database.md).
-
-NOTE:
-If you would like to try this [beta feature](../../policy/experiment-beta-support.md#beta),
-you should review the [known limitations](container_registry_metadata_database.md#known-limitations). If you have any feedback,
-you can let us know in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 
 ## Configure GitLab and Registry to run on separate nodes (Linux package installations)
 

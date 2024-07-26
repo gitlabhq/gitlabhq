@@ -305,7 +305,9 @@ The configuration arguments disabled for authentication tokens are:
 - `--run-untagged`
 - `--tag-list`
 
-This change is a breaking change. You should use an [authentication token](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) in the `gitlab-runner register` command instead.
+This change is a breaking change. You must use an [authentication token](https://docs.gitlab.com/ee/ci/runners/runners_scope.html) in the `gitlab-runner register` command instead.
+
+See also how to [prevent your runner registration workflow from breaking](https://docs.gitlab.com/ee/ci/runners/new_creation_workflow.html#prevent-your-runner-registration-workflow-from-breaking) in GitLab 17.0 and later.
 
 </div>
 

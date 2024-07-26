@@ -9,15 +9,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
-**Status:** Beta
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
-
-WARNING:
-The metadata database is a [beta feature](../../policy/experiment-beta-support.md#beta).
-Carefully review the documentation before enabling the registry database in production!
-If you encounter a problem with either the import or operation of the
-registry, please add a comment in the [feedback issue](https://gitlab.com/gitlab-org/gitlab/-/issues/423459).
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -53,7 +46,7 @@ for the status of features related to the container registry database.
 
 Prerequisites:
 
-- GitLab 16.7 or later.
+- GitLab 17.3 or later.
 - PostgreSQL database version 12 or later. It must be accessible from the registry node.
 
 Follow the instructions that match your situation:

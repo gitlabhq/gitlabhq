@@ -76,9 +76,9 @@ module Tasks
         ensure
           backup_progress.puts(
             "#{Time.current} " +
-              '-- Deleting backup and restore PID file at ['.color(:blue) +
-              PID_FILE.to_s + '] ... '.color(:blue) +
-              'done'.color(:green)
+              Rainbow('-- Deleting backup and restore PID file at [').blue +
+              PID_FILE.to_s + Rainbow('] ... ').blue +
+              Rainbow('done').green
           )
           File.delete(PID_FILE)
         end
