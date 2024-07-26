@@ -298,14 +298,9 @@ describe('Job table app', () => {
 
       createComponent();
 
-      expect(successHandler).toHaveBeenCalledTimes(1);
-      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
-
       await findFilteredSearch().vm.$emit('filterJobsBySearch', ['raw text']);
 
       expect(createAlert).toHaveBeenCalledWith(expectedWarning);
-      expect(successHandler).toHaveBeenCalledTimes(1);
-      expect(countSuccessHandler).toHaveBeenCalledTimes(1);
     });
 
     it('updates URL query string when filtering jobs by status', async () => {
@@ -369,10 +364,45 @@ describe('Job table app', () => {
           first: 30,
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
+          statuses: null,
         });
         expect(countSuccessHandler).toHaveBeenCalledWith({
           fullPath: 'gitlab-org/gitlab',
           name: mockJobName,
+          statuses: null,
+        });
+      });
+
+      it('filters only by name after removing status filter', async () => {
+        await findFilteredSearch().vm.$emit('filterJobsBySearch', [
+          mockFailedSearchToken,
+          mockJobName,
+        ]);
+
+        expect(successHandler).toHaveBeenCalledWith({
+          first: 30,
+          fullPath: 'gitlab-org/gitlab',
+          name: mockJobName,
+          statuses: 'FAILED',
+        });
+        expect(countSuccessHandler).toHaveBeenCalledWith({
+          fullPath: 'gitlab-org/gitlab',
+          name: mockJobName,
+          statuses: 'FAILED',
+        });
+
+        await findFilteredSearch().vm.$emit('filterJobsBySearch', [mockJobName]);
+
+        expect(successHandler).toHaveBeenCalledWith({
+          first: 30,
+          fullPath: 'gitlab-org/gitlab',
+          name: mockJobName,
+          statuses: null,
+        });
+        expect(countSuccessHandler).toHaveBeenCalledWith({
+          fullPath: 'gitlab-org/gitlab',
+          name: mockJobName,
+          statuses: null,
         });
       });
 

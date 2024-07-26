@@ -135,6 +135,9 @@
 .if-merge-request-labels-run-without-gitaly-transactions: &if-merge-request-labels-run-without-gitaly-transactions
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /run-without-gitaly-transactions/'
 
+.if-merge-request-labels-skip-ci-validation: &if-merge-request-labels-skip-ci-validation
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:skip-ci-validation/'
+
 .if-security-merge-request: &if-security-merge-request
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_PROJECT_NAMESPACE == "gitlab-org/security"'
 
@@ -2369,6 +2372,15 @@
     - if: '$START_AS_IF_FOSS == "true"'
     - !reference ['.rails:rules:ee-and-foss-integration', rules]
     - !reference ['.rails:rules:ee-and-foss-migration', rules]
+
+.rails:rules:rspec-ci-config-validation:
+  rules:
+    - <<: *if-merge-request-labels-skip-ci-validation
+      when: never
+    - <<: *if-merge-request
+      changes:
+        - "{,jh/}.gitlab-ci.yml"
+        - "{,jh/}.gitlab/ci/**/*"
 
 .rails:rules:detect-tests:
   rules:

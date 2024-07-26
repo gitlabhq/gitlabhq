@@ -144,6 +144,12 @@ PATH
     diff_match_patch (0.1.0)
 
 PATH
+  remote: vendor/gems/gitlab-topology-service-client
+  specs:
+    gitlab-topology-service-client (0.1)
+      grpc
+
+PATH
   remote: vendor/gems/mail-smtp_pool
   specs:
     mail-smtp_pool (0.1.0)
@@ -2038,6 +2044,7 @@ DEPENDENCIES
   gitlab-secret_detection!
   gitlab-sidekiq-fetcher!
   gitlab-styles (~> 12.0.1)
+  gitlab-topology-service-client (~> 0.1)!
   gitlab-utils!
   gitlab_chronic_duration (~> 0.12)
   gitlab_omniauth-ldap (~> 2.2.0)

@@ -64,7 +64,7 @@
     "@floating-ui/dom": "^1.2.9",
     "@gitlab/application-sdk-browser": "^0.3.2",
     "@gitlab/at.js": "1.5.7",
-    "@gitlab/cluster-client": "^2.2.0",
+    "@gitlab/cluster-client": "^2.2.1",
     "@gitlab/favicon-overlay": "2.0.0",
     "@gitlab/fonts": "^1.3.0",
     "@gitlab/svgs": "3.109.0",

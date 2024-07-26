@@ -161,6 +161,8 @@ export default {
       this.infiniteScrollingTriggered = false;
       this.filterSearchTriggered = true;
 
+      this.resetRequestData();
+
       filters.forEach((filter) => {
         if (!filter.type) {
           if (this.glFeatures.populateAndUseBuildNamesTable) {
@@ -177,12 +179,6 @@ export default {
           this.requestData.statuses = filter.value.data;
         }
       });
-
-      // all filters have been cleared reset query params
-      // and refetch jobs/count with defaults
-      if (!filters.length) {
-        this.resetRequestData();
-      }
 
       this.$apollo.queries.jobs.refetch(this.requestData);
       this.updateHistoryAndFetchCount();

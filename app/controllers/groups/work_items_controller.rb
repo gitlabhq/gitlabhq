@@ -31,7 +31,7 @@ module Groups
     private
 
     def namespace_work_items_enabled?
-      group&.namespace_work_items_enabled?
+      group&.namespace_work_items_enabled?(current_user)
     end
 
     def show_params

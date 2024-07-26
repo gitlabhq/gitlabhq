@@ -15,8 +15,7 @@ require 'spec_helper'
 # See `with gitlab.com gitlab-org gitlab-foss project` context below for details.
 # If you think we are missing important test cases for a pipeline type, please add them following this exmaple.
 # ***********************************************************************************************************
-RSpec.describe 'ci jobs dependency', feature_category: :tooling,
-  quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/34040#note_1991033499' do
+RSpec.describe 'ci jobs dependency', feature_category: :tooling do
   include ProjectForksHelper
 
   def sync_local_files_to_project(project, user, branch_name, files:)
@@ -105,7 +104,7 @@ RSpec.describe 'ci jobs dependency', feature_category: :tooling,
   end
 
   before do
-    # delete once we have a migration to permenantly increase limit
+    # delete once we have a migration to permanently increase limit
     stub_application_setting(max_yaml_size_bytes: 2.megabytes)
   end
 

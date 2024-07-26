@@ -130,7 +130,7 @@ module WorkItems
     end
 
     def include_namespace_level_work_items?
-      params.group? && params.group.namespace_work_items_enabled?
+      params.group? && params.group.namespace_work_items_enabled?(current_user)
     end
 
     def include_descendants?

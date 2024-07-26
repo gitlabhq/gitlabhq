@@ -952,7 +952,7 @@ class Group < Namespace
   end
 
   # Note: this method is overridden in EE to check the work_item_epics feature flag  which also enables this feature
-  def namespace_work_items_enabled?
+  def namespace_work_items_enabled?(_user = nil)
     ::Feature.enabled?(:namespace_level_work_items, self, type: :development)
   end
 

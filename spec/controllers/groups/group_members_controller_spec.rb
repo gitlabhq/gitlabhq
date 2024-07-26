@@ -72,7 +72,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
 
       context 'when there are import source users available' do
         it 'returns import source users count' do
-          create(:import_source_user, :pending_assignment, namespace: group)
+          create(:import_source_user, :pending_reassignment, namespace: group)
           create(:import_source_user, :awaiting_approval, namespace: group)
           create(:import_source_user, :completed, namespace: group)
 
@@ -105,7 +105,7 @@ RSpec.describe Groups::GroupMembersController, feature_category: :groups_and_pro
           it 'returns 0 counts' do
             stub_feature_flags(importer_user_mapping: false)
 
-            create(:import_source_user, :pending_assignment, namespace: group)
+            create(:import_source_user, :pending_reassignment, namespace: group)
 
             get :index, params: { group_id: group }
 

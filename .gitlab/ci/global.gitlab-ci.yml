@@ -451,7 +451,7 @@
 .os1-services:
   services:
     - !reference [.zoekt-services, services]
-    - name: opensearchproject/opensearch:1.3.5
+    - name: opensearchproject/opensearch:1.3.18
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 
@@ -490,7 +490,7 @@
 .os2-services:
   services:
     - !reference [.zoekt-services, services]
-    - name: opensearchproject/opensearch:2.2.1
+    - name: opensearchproject/opensearch:2.15.0
       alias: elasticsearch
       command: ["bin/opensearch", "-E", "discovery.type=single-node", "-E", "plugins.security.disabled=true", "-E", "cluster.routing.allocation.disk.threshold_enabled=false"]
 

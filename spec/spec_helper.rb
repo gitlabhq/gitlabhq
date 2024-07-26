@@ -148,6 +148,10 @@ RSpec.configure do |config|
     metadata[:type] = :feature
   end
 
+  config.define_derived_metadata(file_path: %r{spec/dot_gitlab_ci/}) do |metadata|
+    metadata[:ci_config_validation] = true
+  end
+
   config.include LicenseHelpers
   config.include ActiveJob::TestHelper
   config.include ActiveSupport::Testing::TimeHelpers
@@ -393,6 +397,11 @@ RSpec.configure do |config|
   config.around(:example, :quarantine) do |example|
     # Skip tests in quarantine unless we explicitly focus on them or not in CI
     example.run if config.inclusion_filter[:quarantine] || !ENV['CI']
+  end
+
+  config.around(:example, :ci_config_validation) do |example|
+    # Skip tests for ci config validation unless we explicitly focus on them or not in CI
+    example.run if config.inclusion_filter[:ci_config_validation] || !ENV['CI']
   end
 
   config.around(:example, :request_store) do |example|

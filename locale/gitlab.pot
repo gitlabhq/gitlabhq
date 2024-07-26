@@ -260,11 +260,6 @@ msgid_plural "%d epics"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "%d exporter"
-msgid_plural "%d exporters"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "%d failed security job"
 msgid_plural "%d failed security jobs"
 msgstr[0] ""
@@ -347,11 +342,6 @@ msgstr[1] ""
 
 msgid "%d merge requests"
 msgid_plural "%d merge requests"
-msgstr[0] ""
-msgstr[1] ""
-
-msgid "%d metric"
-msgid_plural "%d metrics"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -19062,6 +19052,9 @@ msgid "Disable for this project"
 msgstr ""
 
 msgid "Disable group runners"
+msgstr ""
+
+msgid "Disable personal access tokens"
 msgstr ""
 
 msgid "Disable two-factor authentication"
@@ -42449,9 +42442,6 @@ msgstr ""
 msgid "PrometheusAlerts|is less than"
 msgstr ""
 
-msgid "PrometheusService|%{exporters} with %{metrics} were found"
-msgstr ""
-
 msgid "PrometheusService|Active"
 msgstr ""
 
@@ -42503,9 +42493,6 @@ msgstr ""
 msgid "PrometheusService|New metric"
 msgstr ""
 
-msgid "PrometheusService|No %{docsUrlStart}common metrics%{docsUrlEnd} were found"
-msgstr ""
-
 msgid "PrometheusService|No custom metrics have been created. Create one using the button above"
 msgstr ""
 
@@ -42522,9 +42509,6 @@ msgid "PrometheusService|The Prometheus API base URL."
 msgstr ""
 
 msgid "PrometheusService|The contents of the credentials.json file of your service account."
-msgstr ""
-
-msgid "PrometheusService|These metrics will only be monitored after your first deployment to an environment"
 msgstr ""
 
 msgid "PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries."

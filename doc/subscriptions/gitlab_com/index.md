@@ -79,7 +79,11 @@ which must be paid at your next [reconciliation](../quarterly_reconciliation.md)
 
 A top-level group can be [changed](../../user/group/manage.md#change-a-groups-path) like any other group.
 
-Every user is included in seat usage, with the following exceptions:
+### Billable users
+
+Billable users count toward the number of subscription seats purchased in your subscription.
+
+A user is not counted as a billable user if:
 
 - Users who are pending approval.
 - Members with the [Guest role on an Ultimate subscription](#free-guest-users).

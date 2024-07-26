@@ -42,7 +42,7 @@ class GroupsController < Groups::ApplicationController
     push_force_frontend_feature_flag(:work_items_alpha, group.work_items_alpha_feature_flag_enabled?)
     push_frontend_feature_flag(:issues_grid_view)
     push_frontend_feature_flag(:group_multi_select_tokens, group)
-    push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?)
+    push_force_frontend_feature_flag(:namespace_level_work_items, group.namespace_work_items_enabled?(current_user))
   end
 
   before_action only: :merge_requests do

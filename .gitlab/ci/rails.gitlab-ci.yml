@@ -387,6 +387,17 @@ rspec-ee unit clickhouse:
     - .rspec-base-pg14-clickhouse23
     - .rails:rules:ee-only-clickhouse-changes
 
+rspec ci-config-validation:
+  extends:
+    - .rspec-base-pg14
+    - .rails:rules:rspec-ci-config-validation
+  stage: test
+  script:
+    - !reference [.base-script, script]
+    - rspec_section rspec_simple_job "--tag ci_config_validation -- spec/dot_gitlab_ci/"
+  after_script:
+    - echo 'OK' # override after_script from .rspec-base
+
 gitlab:clickhouse:rollback:main:
   extends:
     - .rspec-base

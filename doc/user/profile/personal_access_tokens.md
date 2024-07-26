@@ -97,6 +97,14 @@ Prerequisites:
 
 In GitLab 15.7 and later, you can [use the application settings API to disable personal access tokens](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
 
+In GitLab 17.3 and later, you can disable personal access tokens in the Admin UI:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Visibility and access controls**.
+1. Select the **Disable personal access tokens** checkbox.
+1. Select **Save changes**.
+
 ### Disable personal access tokens for enterprise users
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369504) in GitLab 16.11 [with a flag](../../administration/feature_flags.md) named `enterprise_disable_personal_access_tokens`. Disabled by default.

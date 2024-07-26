@@ -3,8 +3,6 @@
 module Packages
   module Protection
     class Rule < ApplicationRecord
-      include IgnorableColumns
-
       enum package_type: Packages::Package.package_types.slice(:npm)
       enum minimum_access_level_for_push:
           Gitlab::Access.sym_options_with_admin.slice(:maintainer, :owner, :admin),

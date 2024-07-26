@@ -18,7 +18,7 @@ FactoryBot.define do
       reassigned_by_user factory: :user
     end
 
-    trait :pending_assignment do
+    trait :pending_reassignment do
       status { 0 }
     end
 

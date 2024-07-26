@@ -38,11 +38,11 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     describe '.awaiting_reassignment' do
       it 'only returns source users that await reassignment' do
         namespace = create(:namespace)
-        pending_assignment_user = create(:import_source_user, :pending_assignment, namespace: namespace)
+        pending_reassignment_user = create(:import_source_user, :pending_reassignment, namespace: namespace)
         awaiting_approval_user = create(:import_source_user, :awaiting_approval, namespace: namespace)
 
         expect(namespace.import_source_users.awaiting_reassignment)
-          .to match_array([pending_assignment_user, awaiting_approval_user])
+          .to match_array([pending_reassignment_user, awaiting_approval_user])
       end
     end
 

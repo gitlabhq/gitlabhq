@@ -37,7 +37,7 @@
 
     &:hover {
       a {
-        color: var(--black, $black);
+        color: var(--gl-text-color-default);
       }
     }
 
@@ -46,13 +46,6 @@
         display: block;
       }
     }
-  }
-
-  .wiki-list-expand-button,
-  .wiki-list-collapse-button {
-    color: $gray-400;
-    position: absolute;
-    right: $gl-spacing-scale-2;
   }
 
   ul.wiki-pages,
@@ -68,10 +61,6 @@
 }
 
 ul.wiki-pages-list.content-list {
-  a {
-    color: var(--blue-600, $blue-600);
-  }
-
   ul {
     list-style: none;
     margin-left: 0;

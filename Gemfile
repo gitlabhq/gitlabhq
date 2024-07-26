@@ -152,6 +152,11 @@ gem 'graphiql-rails', '~> 1.10', feature_category: :api
 gem 'apollo_upload_server', '~> 2.1.6', feature_category: :api
 gem 'graphlient', '~> 0.8.0', feature_category: :importers # Used by BulkImport feature (group::import)
 
+# Cells
+gem 'gitlab-topology-service-client', '~> 0.1',
+  path: 'vendor/gems/gitlab-topology-service-client',
+  feature_category: :cell
+
 # Generate Fake data
 gem 'ffaker', '~> 2.23' # rubocop:todo Gemfile/MissingFeatureCategory
 
