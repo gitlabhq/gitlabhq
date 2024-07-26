@@ -93,9 +93,14 @@ Do not use **Add new**.
 
 ## Admin area
 
-Use sentence case for **Admin**. The UI uses sentence case.
+To describe this area of the UI, use **Admin** area. The UI button is **Admin**.
 
-Do not use **Admin area**, **administrator area**, **administration area**, or other variants.
+Do not use:
+
+- **Admin area** (with both words as bold)
+- **Admin Area** (with **Area** capitalized)
+- **administrator area**
+- or other variants
 
 ## Admin Mode
 

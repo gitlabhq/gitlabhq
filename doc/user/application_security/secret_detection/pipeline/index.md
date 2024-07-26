@@ -160,7 +160,7 @@ Different features are available in different [GitLab tiers](https://about.gitla
 
 To enable pipeline secret detection, either:
 
-- Enable [Auto DevOps](../../../../topics/autodevops/index.md), which includes [Auto Pipeline Secret Detection](../../../../topics/autodevops/stages.md#auto-secret-detection).
+- Enable [Auto DevOps](../../../../topics/autodevops/index.md), which includes [Auto Secret Detection](../../../../topics/autodevops/stages.md#auto-secret-detection).
 
 - [Edit the `.gitlab-ci.yml` file manually](#edit-the-gitlab-ciyml-file-manually). Use this method
   if your `.gitlab-ci.yml` file is complex.
@@ -188,7 +188,7 @@ your GitLab CI/CD configuration file is complex.
 1. In the **Branch** text box, enter the name of the default branch.
 1. Select **Commit changes**.
 
-Pipelines now include a pipeline Secret Detection job.
+Pipelines now include a pipeline secret detection job.
 
 #### Use an automatically configured merge request
 
@@ -207,7 +207,7 @@ To enable pipeline secret detection:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Secure > Security configuration**.
-1. In the **Pipeline Secret Detection** row, select **Configure with a merge request**.
+1. In the **Pipeline secret detection** row, select **Configure with a merge request**.
 1. Optional. Complete the fields.
 1. Select **Create merge request**.
 1. Review and merge the merge request.
@@ -844,7 +844,7 @@ Below is a table with the demonstration projects and their associated workflows:
 
 There are also some video demonstrations walking through setting up remote rulesets:
 
-- [Secret Detection with local and remote ruleset](https://youtu.be/rsN1iDug5GU)
+- [Secret detection with local and remote ruleset](https://youtu.be/rsN1iDug5GU)
 
 ## FIPS-enabled images
 
