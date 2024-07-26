@@ -94,7 +94,11 @@ exports[`FindingsDrawer General Rendering matches the snapshot with detected bad
             <span
               class="badge badge-pill badge-warning gl-badge text-capitalize"
             >
-              detected
+              <span
+                class="gl-badge-content"
+              >
+                detected
+              </span>
             </span>
           </p>
         </li>
@@ -314,7 +318,11 @@ exports[`FindingsDrawer General Rendering matches the snapshot with dismissed ba
             <span
               class="badge badge-pill badge-warning gl-badge text-capitalize"
             >
-              detected
+              <span
+                class="gl-badge-content"
+              >
+                detected
+              </span>
             </span>
           </p>
         </li>
