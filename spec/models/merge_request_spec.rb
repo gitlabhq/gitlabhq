@@ -6869,4 +6869,49 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
     end
   end
+
+  describe '#diffs_for_streaming' do
+    let(:base_diff) do
+      instance_double(
+        MergeRequestDiff,
+        diffs: ['base diff']
+      )
+    end
+
+    let(:head_diff) do
+      instance_double(
+        MergeRequestDiff,
+        diffs: ['HEAD diff']
+      )
+    end
+
+    let(:merge_request) { build_stubbed(:merge_request) }
+    let(:diffable_merge_ref?) { false }
+
+    before do
+      allow(merge_request)
+        .to receive(:diffable_merge_ref?)
+        .and_return(diffable_merge_ref?)
+
+      allow(merge_request)
+        .to receive(:merge_request_diff)
+        .and_return(base_diff)
+
+      allow(merge_request)
+        .to receive(:merge_head_diff)
+        .and_return(head_diff)
+    end
+
+    it 'returns diffs from base diff' do
+      expect(merge_request.diffs_for_streaming).to eq(['base diff'])
+    end
+
+    context 'when HEAD diff is diffable' do
+      let(:diffable_merge_ref?) { true }
+
+      it 'returns diffs from HEAD diff' do
+        expect(merge_request.diffs_for_streaming).to eq(['HEAD diff'])
+      end
+    end
+  end
 end

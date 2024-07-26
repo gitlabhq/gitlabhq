@@ -2265,6 +2265,19 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     end
   end
 
+  describe '.by_not_in_root_id' do
+    let_it_be(:group1) { create(:group) }
+    let_it_be(:group2) { create(:group) }
+    let_it_be(:group1_project) { create(:project, namespace: group1) }
+    let_it_be(:group2_project) { create(:project, namespace: group2) }
+    let_it_be(:subgroup_project) { create(:project, namespace: create(:group, parent: group1)) }
+
+    it 'returns correct namespaces' do
+      expect(described_class.by_not_in_root_id(group1.id)).to contain_exactly(group2_project)
+      expect(described_class.by_not_in_root_id(group2.id)).to contain_exactly(group1_project, subgroup_project)
+    end
+  end
+
   describe '.order_by_storage_size' do
     let_it_be(:project_1) { create(:project_statistics, repository_size: 1).project }
     let_it_be(:project_2) { create(:project_statistics, repository_size: 3).project }

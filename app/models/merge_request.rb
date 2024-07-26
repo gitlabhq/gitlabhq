@@ -837,6 +837,12 @@ class MergeRequest < ApplicationRecord
     compare.present? ? compare.raw_diffs(*args) : merge_request_diff.raw_diffs(*args)
   end
 
+  def diffs_for_streaming(diff_options = {})
+    diff = diffable_merge_ref? ? merge_head_diff : merge_request_diff
+
+    diff.diffs(diff_options)
+  end
+
   def diffs(diff_options = {})
     if compare
       # When saving MR diffs, `expanded` is implicitly added (because we need

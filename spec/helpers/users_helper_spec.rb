@@ -66,27 +66,38 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     end
   end
 
-  describe '#profile_tabs' do
-    subject(:tabs) { helper.profile_tabs }
+  describe '#profile_actions' do
+    subject(:profile_actions) { helper.profile_actions(other_user) }
+
+    let_it_be(:other_user) { create(:user) }
 
     before do
       allow(helper).to receive(:current_user).and_return(user)
-      allow(helper).to receive(:can?).and_return(true)
+      allow(user).to receive(:bot?).and_return(false)
+      allow(helper).to receive(:can?).with(user, :read_user_profile, other_user).and_return(true)
     end
 
     context 'with public profile' do
-      it 'includes all the expected tabs' do
-        expect(tabs).to include(:activity, :groups, :contributed, :projects, :starred, :snippets)
+      it 'contains all profile actions' do
+        expect(profile_actions).to match_array [:overview, :activity, :groups, :contributed, :projects, :starred, :snippets, :followers, :following]
       end
     end
 
     context 'with private profile' do
       before do
-        allow(helper).to receive(:can?).with(user, :read_user_profile, nil).and_return(false)
+        allow(helper).to receive(:can?).with(user, :read_user_profile, other_user).and_return(false)
       end
 
       it 'is empty' do
-        expect(tabs).to be_empty
+        expect(profile_actions).to match_array []
+      end
+    end
+
+    context 'with a public bot user' do
+      let_it_be(:other_user) { create(:user, :bot) }
+
+      it 'contains bot profile actions' do
+        expect(profile_actions).to match_array [:overview, :activity]
       end
     end
   end

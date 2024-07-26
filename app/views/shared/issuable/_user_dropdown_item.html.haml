@@ -2,11 +2,11 @@
 - avatar = local_assigns.fetch(:avatar, { })
 
 %li.filter-dropdown-item{ class: ('js-current-user' if user == current_user) }
-  %button.gl-button.btn.btn-link.dropdown-user{ type: :button }
-    .avatar-container.s40
+  = render Pajamas::ButtonComponent.new(variant: :link, button_text_classes: 'gl-flex gl-items-center') do
+    .gl-shrink-0
       = user_avatar_without_link(user: user, lazy: avatar[:lazy], url: avatar[:url], size: 40, has_tooltip: false)
-    .dropdown-user-details
-      %span
+    .gl-flex.gl-flex-col
+      %span.gl-font-bold.gl-whitespace-normal.gl-break-all
         = user.name
-      %span.dropdown-light-content
+      %span.js-dropdown-light-content.gl-text-subtle.gl-whitespace-normal.gl-break-all
         = user.to_reference

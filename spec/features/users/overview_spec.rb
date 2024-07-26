@@ -44,7 +44,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'does not show a link to the activity list' do
-        expect(find('#js-overview .activities-block')).to have_selector('.js-view-all', visible: false)
+        expect(find('#js-legacy-tabs-container .activities-block')).to have_selector('.js-view-all', visible: false)
       end
     end
 
@@ -56,7 +56,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       include_context 'visit overview tab'
 
       it 'display 3 entries in the list of activities' do
-        expect(find('#js-overview')).to have_selector('.event-item', count: 3)
+        expect(find('#js-legacy-tabs-container')).to have_selector('.event-item', count: 3)
       end
     end
 
@@ -68,11 +68,11 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       include_context 'visit overview tab'
 
       it 'displays 15 entries in the list of activities' do
-        expect(find('#js-overview')).to have_selector('.event-item', count: 15)
+        expect(find('#js-legacy-tabs-container')).to have_selector('.event-item', count: 15)
       end
 
       it 'shows a link to the activity list' do
-        expect(find('#js-overview .activities-block')).to have_selector('.js-view-all', visible: true)
+        expect(find('#js-legacy-tabs-container .activities-block')).to have_selector('.js-view-all', visible: true)
       end
 
       it 'links to the activity tab' do
@@ -100,11 +100,11 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows a link to the project list' do
-        expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
+        expect(find('#js-legacy-tabs-container .projects-block')).to have_selector('.js-view-all', visible: true)
       end
 
       it 'shows projects in "card mode"' do
-        page.within('#js-overview .projects-block') do
+        page.within('#js-legacy-tabs-container .projects-block') do
           expect(find('.js-projects-list-holder')).to have_css('.gl-card')
         end
       end
@@ -126,7 +126,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows a link to the project list' do
-        expect(find('#js-overview .projects-block')).to have_selector('.js-view-all', visible: true)
+        expect(find('#js-legacy-tabs-container .projects-block')).to have_selector('.js-view-all', visible: true)
       end
 
       it 'does not show pagination' do
@@ -145,7 +145,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows an empty followers list with an info message' do
-        page.within('#followers') do
+        page.within('#js-legacy-tabs-container') do
           expect(page).to have_content('You do not have any followers')
           expect(page).not_to have_selector('.gl-card.gl-mb-5')
           expect(page).not_to have_selector('.gl-pagination')
@@ -163,7 +163,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows followers' do
-        page.within('#followers') do
+        page.within('#js-legacy-tabs-container') do
           expect(page).to have_content(follower.name)
           expect(page).to have_selector('.gl-card.gl-mb-5')
           expect(page).not_to have_selector('.gl-pagination')
@@ -184,7 +184,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows paginated followers' do
-        page.within('#followers') do
+        page.within('#js-legacy-tabs-container') do
           other_users.each_with_index do |follower, i|
             break if i == 20
 
@@ -206,7 +206,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows an empty following list with an info message' do
-        page.within('#following') do
+        page.within('#js-legacy-tabs-container') do
           expect(page).to have_content('You are not following other users')
           expect(page).not_to have_selector('.gl-card.gl-mb-5')
           expect(page).not_to have_selector('.gl-pagination')
@@ -224,7 +224,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows following user' do
-        page.within('#following') do
+        page.within('#js-legacy-tabs-container') do
           expect(page).to have_content(followee.name)
           expect(page).to have_selector('.gl-card.gl-mb-5')
           expect(page).not_to have_selector('.gl-pagination')
@@ -245,7 +245,7 @@ RSpec.describe 'Overview tab on a user profile', :js, feature_category: :user_pr
       end
 
       it 'shows paginated following' do
-        page.within('#following') do
+        page.within('#js-legacy-tabs-container') do
           other_users.each_with_index do |followee, i|
             break if i == 20
 

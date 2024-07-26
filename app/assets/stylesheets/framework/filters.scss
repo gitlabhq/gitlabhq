@@ -101,7 +101,7 @@
     padding: 2px 7px;
     @include gl-font-sm;
   }
-  
+
   .name,
   .operator,
   .value-container {
@@ -270,11 +270,6 @@
     max-width: none;
     min-width: 100%;
   }
-
-  .btn-helptext {
-    margin-left: auto;
-    color: var(--gray);
-  }
 }
 
 .filtered-search-history-dropdown-wrapper {
@@ -369,25 +364,6 @@
       width: 17px;
       height: 17px;
       top: 0;
-    }
-  }
-
-  .dropdown-light-content {
-    font-size: 14px;
-    font-weight: $gl-font-weight-normal;
-  }
-
-  .dropdown-user {
-    display: flex;
-  }
-
-  .dropdown-user-details {
-    display: flex;
-    flex-direction: column;
-
-    > span {
-      white-space: normal;
-      word-break: break-all;
     }
   }
 }

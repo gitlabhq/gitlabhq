@@ -115,7 +115,18 @@ func (a *archive) Inject(w http.ResponseWriter, r *http.Request, sendData string
 
 	// Start writing the response
 	setArchiveHeaders(w, format, archiveFilename)
-	w.WriteHeader(200) // Don't bother with HTTP 500 from this point on, just return
+
+	// According to https://github.com/golang/go/blob/go1.22.4/src/net/http/server.go#L119-L120:
+	//
+	// 	  If [ResponseWriter.WriteHeader] has not yet been called, Write calls
+	// 	  WriteHeader(http.StatusOK) before writing the data.
+	//
+	// For io.Copy() below, ResponseWriter.WriteHeader(StatusOK) is ultimately called at
+	// https://github.com/golang/go/blob/go1.22.4/src/net/http/server.go#L1639 (actually
+	// https://gitlab.com/gitlab-org/gitlab/-/blob/4f89a18e85ea039cc52e7308d46d62566d54d70b/workhorse/internal/helper/countingresponsewriter.go#L32)
+	// which means we're stuck always returning a HTTP 200, even if io.Copy() errors.
+	w.WriteHeader(http.StatusOK)
+
 	if _, err := io.Copy(w, reader); err != nil {
 		log.WithRequest(r).WithError(&copyError{fmt.Errorf("SendArchive: copy 'git archive' output: %v", err)}).Error()
 		return

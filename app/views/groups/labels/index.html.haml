@@ -11,14 +11,14 @@
 
   .labels-container.gl-mt-5
     - if @labels.any?
-      .text-muted.gl-mb-5
+      .gl-text-subtle.gl-mb-5
         = labels_function_introduction
-      .other-labels.gl-rounded-base.gl-border.gl-bg-gray-10
-        .gl-px-5.gl-py-4.gl-bg-white.gl-rounded-top-base.gl-border-b
-          %h3.card-title.h5.gl-m-0.gl-relative.gl-leading-24
-            = _('Labels')
-        %ul.manage-labels-list.js-other-labels.gl-px-3.gl-rounded-base
-          = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
+
+      = render ::Layouts::CrudComponent.new(_('Labels'), count: @labels.total_count, icon: 'label', options: { class: 'other-labels' }, body_options: { class: '!gl-m-0' }) do |c|
+        - c.with_body do
+          %ul.manage-labels-list.js-other-labels
+            = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }
+        - c.with_pagination do
           = paginate @labels, theme: 'gitlab'
     - elsif search.present?
       .nothing-here-block

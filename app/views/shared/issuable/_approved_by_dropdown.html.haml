@@ -1,10 +1,10 @@
 #js-dropdown-approved-by.filtered-search-input-dropdown-menu.dropdown-menu
   %ul{ data: { dropdown: true } }
     %li.filter-dropdown-item{ data: { value: 'None' } }
-      %button.gl-button.btn.btn-link{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(variant: :link) do
         = _('None')
     %li.filter-dropdown-item{ data: { value: 'Any' } }
-      %button.gl-button.btn.btn-link{ type: 'button' }
+      = render Pajamas::ButtonComponent.new(variant: :link) do
         = _('Any')
     %li.divider.droplab-item-ignore
     - if current_user

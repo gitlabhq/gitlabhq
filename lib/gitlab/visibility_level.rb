@@ -84,6 +84,23 @@ module Gitlab
         valid_level?(level) && non_restricted_level?(level)
       end
 
+      def allowed_levels_for_user(user, subject)
+        return [] if user.nil?
+
+        visibility_levels = if user.can_admin_all_resources?
+                              # admin can create groups even with restricted visibility levels
+                              self.values
+                            else
+                              self.allowed_levels
+                            end
+
+        # visibility_level_allowed? is not supporting root-groups, so we have to create a dummy sub-group.
+        subgroup = Group.new(parent_id: subject.id)
+
+        # return the allowed visibility levels for the subject
+        visibility_levels.select { |level| subgroup.visibility_level_allowed?(level) }
+      end
+
       def non_restricted_level?(level)
         !restricted_level?(level)
       end

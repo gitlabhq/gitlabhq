@@ -298,7 +298,7 @@ hub_docker_quota_check:
 
 ### Authentication error: "HTTP Basic: Access Denied"
 
-If you receive an `HTTP Basic: Access denied` error when authenticating against the Dependency Proxy, refer to the [two-factor authentication troubleshooting guide](../../profile/account/two_factor_authentication.md#troubleshooting).
+If you receive an `HTTP Basic: Access denied` error when authenticating against the Dependency Proxy, refer to the [two-factor authentication troubleshooting guide](../../profile/account/two_factor_authentication_troubleshooting.md).
 
 ### Dependency Proxy Connection Failure
 

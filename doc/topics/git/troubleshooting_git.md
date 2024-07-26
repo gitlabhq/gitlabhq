@@ -355,7 +355,7 @@ The bug was reported [in this issue](https://gitlab.com/gitlab-org/gitlab/-/issu
 ## Error on Git fetch: "HTTP Basic: Access Denied"
 
 If you receive an `HTTP Basic: Access denied` error when using Git over HTTP(S),
-refer to the [two-factor authentication troubleshooting guide](../../user/profile/account/two_factor_authentication.md#troubleshooting).
+refer to the [two-factor authentication troubleshooting guide](../../user/profile/account/two_factor_authentication_troubleshooting.md).
 
 ## `401` errors logged during successful `git clone`
 

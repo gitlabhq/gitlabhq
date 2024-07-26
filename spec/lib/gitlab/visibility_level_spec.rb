@@ -132,6 +132,40 @@ RSpec.describe Gitlab::VisibilityLevel do
     end
   end
 
+  describe '.allowed_levels_for_user' do
+    let_it_be(:group) { create(:group) }
+
+    subject { described_class.allowed_levels_for_user(user, group) }
+
+    context 'when user is not present' do
+      let(:user) { nil }
+
+      it 'returns an empty array' do
+        is_expected.to be_empty
+      end
+    end
+
+    context 'when user is present' do
+      let(:user) { build(:user) }
+
+      before do
+        allow(Gitlab::CurrentSettings).to receive(:restricted_visibility_levels).and_return([0])
+      end
+
+      it 'returns an array with correct allowed levels for a user' do
+        is_expected.to match_array([described_class::PUBLIC, described_class::INTERNAL])
+      end
+    end
+
+    context 'when admin mode is enabled', :enable_admin_mode do
+      let(:user) { build(:user, :admin) }
+
+      it 'returns an array with correct allowed levels for admin user' do
+        is_expected.to match_array([described_class::PUBLIC, described_class::INTERNAL, described_class::PRIVATE])
+      end
+    end
+  end
+
   describe '.valid_level?' do
     it 'returns true when visibility is valid' do
       expect(described_class.valid_level?(described_class::PRIVATE)).to be_truthy

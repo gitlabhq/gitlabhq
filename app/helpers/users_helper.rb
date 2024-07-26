@@ -30,12 +30,12 @@ module UsersHelper
     }) + content_tag(:p) { confirmation_link }
   end
 
-  def profile_tabs
-    @profile_tabs ||= get_profile_tabs
-  end
+  def profile_actions(user)
+    return [] unless can?(current_user, :read_user_profile, user)
 
-  def profile_tab?(tab)
-    profile_tabs.include?(tab)
+    return [:overview, :activity] if user.bot?
+
+    [:overview, :activity, :groups, :contributed, :projects, :starred, :snippets, :followers, :following]
   end
 
   def user_internal_regex_data
@@ -276,16 +276,6 @@ module UsersHelper
     return ldap_blocked_badge if user.ldap_blocked?
 
     { text: s_('AdminUsers|Blocked'), variant: 'danger' }
-  end
-
-  def get_profile_tabs
-    tabs = []
-
-    if can?(current_user, :read_user_profile, @user)
-      tabs += [:overview, :activity, :groups, :contributed, :projects, :starred, :snippets, :followers, :following]
-    end
-
-    tabs
   end
 
   def get_current_user_menu_items

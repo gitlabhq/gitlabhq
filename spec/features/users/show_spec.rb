@@ -28,42 +28,6 @@ RSpec.describe 'User page', feature_category: :user_profile do
   end
 
   context 'with public profile' do
-    context 'with `profile_tabs_vue` feature flag disabled' do
-      before do
-        stub_feature_flags(profile_tabs_vue: false)
-      end
-
-      it 'shows all the tabs' do
-        subject
-
-        page.within '.nav-links' do
-          expect(page).to have_link('Overview')
-          expect(page).to have_link('Activity')
-          expect(page).to have_link('Groups')
-          expect(page).to have_link('Contributed projects')
-          expect(page).to have_link('Personal projects')
-          expect(page).to have_link('Snippets')
-          expect(page).to have_link('Followers')
-          expect(page).to have_link('Following')
-        end
-      end
-    end
-
-    it 'shows all the tabs', :js do
-      subject
-
-      page.within '[role="tablist"]' do
-        expect(page).to have_link('Overview')
-        expect(page).to have_link('Activity')
-        expect(page).to have_link('Groups')
-        expect(page).to have_link('Contributed projects')
-        expect(page).to have_link('Personal projects')
-        expect(page).to have_link('Snippets')
-        expect(page).to have_link('Followers')
-        expect(page).to have_link('Following')
-      end
-    end
-
     it 'does not show private profile message' do
       subject
 
@@ -225,55 +189,17 @@ RSpec.describe 'User page', feature_category: :user_profile do
   context 'with private profile' do
     let_it_be(:user) { create(:user, private_profile: true) }
 
-    it 'shows no tab' do
+    it 'shows no page content container' do
       subject
 
       expect(page).to have_css("div.profile-header")
-      expect(page).not_to have_css("ul.nav-links")
+      expect(page).not_to have_css("#js-legacy-tabs-container")
     end
 
     it 'shows private profile message' do
       subject
 
       expect(page).to have_content("This user has a private profile")
-    end
-
-    context 'with `profile_tabs_vue` feature flag disabled' do
-      before do
-        stub_feature_flags(profile_tabs_vue: false)
-      end
-
-      it 'shows own tabs' do
-        sign_in(user)
-        subject
-
-        page.within '.nav-links' do
-          expect(page).to have_link('Overview')
-          expect(page).to have_link('Activity')
-          expect(page).to have_link('Groups')
-          expect(page).to have_link('Contributed projects')
-          expect(page).to have_link('Personal projects')
-          expect(page).to have_link('Snippets')
-          expect(page).to have_link('Followers')
-          expect(page).to have_link('Following')
-        end
-      end
-    end
-
-    it 'shows own tabs', :js do
-      sign_in(user)
-      subject
-
-      page.within '[role="tablist"]' do
-        expect(page).to have_link('Overview')
-        expect(page).to have_link('Activity')
-        expect(page).to have_link('Groups')
-        expect(page).to have_link('Contributed projects')
-        expect(page).to have_link('Personal projects')
-        expect(page).to have_link('Snippets')
-        expect(page).to have_link('Followers')
-        expect(page).to have_link('Following')
-      end
     end
   end
 
@@ -295,9 +221,9 @@ RSpec.describe 'User page', feature_category: :user_profile do
       visit_profile
     end
 
-    it 'shows no tab' do
+    it 'shows no content container' do
       expect(page).not_to have_css("div.profile-header")
-      expect(page).not_to have_css("ul.nav-links")
+      expect(page).not_to have_css("#js-legacy-tabs-container")
     end
 
     it 'shows no sidebar' do
@@ -350,9 +276,9 @@ RSpec.describe 'User page', feature_category: :user_profile do
         expect(page).to have_css('[data-testid="user-profile-header"]', text: 'Unconfirmed user')
       end
 
-      it 'shows no tab' do
+      it 'shows no content container' do
         expect(page).to have_css('[data-testid="user-profile-header"]')
-        expect(page).not_to have_css("ul.nav-links")
+        expect(page).not_to have_css("#js-legacy-tabs-container")
       end
 
       it 'shows no additional fields' do
@@ -458,29 +384,6 @@ RSpec.describe 'User page', feature_category: :user_profile do
     end
 
     it_behaves_like 'page meta description', 'Lorem ipsum dolor sit amet'
-  end
-
-  context 'with a bot user' do
-    let_it_be(:user) { create(:user, user_type: :security_bot) }
-
-    before do
-      stub_feature_flags(profile_tabs_vue: false)
-    end
-
-    it 'only shows Overview and Activity tabs' do
-      subject
-
-      page.within '.nav-links' do
-        expect(page).to have_link('Overview')
-        expect(page).to have_link('Activity')
-        expect(page).to have_link('Groups')
-        expect(page).to have_link('Contributed projects')
-        expect(page).to have_link('Personal projects')
-        expect(page).to have_link('Snippets')
-        expect(page).to have_link('Followers')
-        expect(page).to have_link('Following')
-      end
-    end
   end
 
   context 'structured markup' do

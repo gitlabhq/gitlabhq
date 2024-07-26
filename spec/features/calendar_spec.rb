@@ -77,7 +77,7 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
   end
 
   def selected_day_activities(visible: true)
-    find('#js-overview .user-calendar-activities', visible: visible).text
+    find('#js-legacy-tabs-container .user-calendar-activities', visible: visible).text
   end
 
   def recent_activities(visible: true)
@@ -101,11 +101,11 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
       include_context 'when user page is visited'
 
       it 'displays calendar' do
-        expect(find('#js-overview')).to have_css('.js-contrib-calendar')
+        expect(find('#js-legacy-tabs-container')).to have_css('.js-contrib-calendar')
       end
 
       describe 'select calendar day' do
-        let(:cells) { page.all('#js-overview .user-contrib-cell') }
+        let(:cells) { page.all('#js-legacy-tabs-container .user-contrib-cell') }
 
         before do
           cells[0].click
@@ -152,10 +152,10 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         include_context 'when user page is visited'
 
         it 'displays calendar activity square for 1 contribution', :sidekiq_inline do
-          expect(find('#js-overview')).to have_selector(get_cell_level_selector(contribution_count), count: 1)
+          expect(find('#js-legacy-tabs-container')).to have_selector(get_cell_level_selector(contribution_count), count: 1)
 
           today = Date.today.strftime(date_format)
-          expect(find('#js-overview')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
+          expect(find('#js-legacy-tabs-container')).to have_selector(get_cell_date_selector(contribution_count, today), count: 1)
         end
       end
 
@@ -179,7 +179,7 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
           include_context 'when user page is visited'
 
           it 'displays calendar activity log', :sidekiq_inline do
-            expect(all('#js-overview .overview-content-list .event-target-title').map(&:text)).to contain_exactly(
+            expect(all('#js-legacy-tabs-container .overview-content-list .event-target-title').map(&:text)).to contain_exactly(
               match(/#{issue_title}/),
               match(/new task/)
             )
@@ -219,17 +219,17 @@ RSpec.describe 'Contributions Calendar', :js, feature_category: :user_profile do
         include_context 'when user page is visited'
 
         it 'displays calendar activity squares for both days', :sidekiq_inline do
-          expect(find('#js-overview')).to have_selector(get_cell_level_selector(1), count: 2)
+          expect(find('#js-legacy-tabs-container')).to have_selector(get_cell_level_selector(1), count: 2)
         end
 
         it 'displays calendar activity square for yesterday', :sidekiq_inline do
           yesterday = Date.yesterday.strftime(date_format)
-          expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
+          expect(find('#js-legacy-tabs-container')).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
         end
 
         it 'displays calendar activity square for today' do
           today = Date.today.strftime(date_format)
-          expect(find('#js-overview')).to have_selector(get_cell_date_selector(1, today), count: 1)
+          expect(find('#js-legacy-tabs-container')).to have_selector(get_cell_date_selector(1, today), count: 1)
         end
       end
     end
