@@ -60,22 +60,41 @@ describe('GlobalSearch BlobsFilters', () => {
     });
   });
 
-  it('renders ArchivedFilter', () => {
-    expect(findArchivedFilter().exists()).toBe(true);
+  describe.each`
+    searchType              | hasProjectContent | isShown
+    ${SEARCH_TYPE_BASIC}    | ${true}           | ${false}
+    ${SEARCH_TYPE_BASIC}    | ${false}          | ${false}
+    ${SEARCH_TYPE_ADVANCED} | ${true}           | ${false}
+    ${SEARCH_TYPE_ADVANCED} | ${false}          | ${false}
+    ${SEARCH_TYPE_ZOEKT}    | ${true}           | ${true}
+    ${SEARCH_TYPE_ZOEKT}    | ${false}          | ${false}
+  `('sidebar blobs fork filter:', ({ searchType, hasProjectContent, isShown }) => {
+    beforeEach(() => {
+      defaultGetters.hasProjectContext = () => hasProjectContent;
+      createComponent({ searchType });
+    });
+
+    it(`does ${isShown ? '' : 'not '}render ForksFilter when search_type ${searchType} and hasProjectContent ${hasProjectContent}}`, () => {
+      expect(findForksFilter().exists()).toBe(isShown);
+    });
   });
 
-  describe('hasProjectContext getter', () => {
+  describe.each`
+    searchType              | hasProjectContent | isShown
+    ${SEARCH_TYPE_BASIC}    | ${true}           | ${true}
+    ${SEARCH_TYPE_BASIC}    | ${false}          | ${false}
+    ${SEARCH_TYPE_ADVANCED} | ${true}           | ${true}
+    ${SEARCH_TYPE_ADVANCED} | ${false}          | ${false}
+    ${SEARCH_TYPE_ZOEKT}    | ${true}           | ${true}
+    ${SEARCH_TYPE_ZOEKT}    | ${false}          | ${false}
+  `('sidebar blobs archived filter:', ({ searchType, hasProjectContent, isShown }) => {
     beforeEach(() => {
-      defaultGetters.hasProjectContext = () => false;
-      createComponent();
+      defaultGetters.hasProjectContext = () => hasProjectContent;
+      createComponent({ searchType });
     });
 
-    it('hides archived filter', () => {
-      expect(findArchivedFilter().exists()).toBe(false);
-    });
-
-    it('hides forks filter', () => {
-      expect(findForksFilter().exists()).toBe(false);
+    it(`does ${isShown ? '' : 'not '}render ArchivedFilter when search_type ${searchType} and hasProjectContent ${hasProjectContent}}`, () => {
+      expect(findArchivedFilter().exists()).toBe(isShown);
     });
   });
 });

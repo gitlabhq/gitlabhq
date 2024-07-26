@@ -24,11 +24,7 @@ export default {
       return this.searchType === SEARCH_TYPE_ADVANCED;
     },
     shouldShowZoektForksFilter() {
-      return (
-        this.searchType === SEARCH_TYPE_ZOEKT &&
-        this.glFeatures.searchAddForkFilterToZoekt &&
-        this.hasProjectContext
-      );
+      return this.searchType === SEARCH_TYPE_ZOEKT && this.hasProjectContext;
     },
   },
 };

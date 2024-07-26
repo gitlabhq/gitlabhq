@@ -179,6 +179,8 @@ export default {
           :text="tag.location"
           category="tertiary"
           :disabled="disabled"
+          class="gl-ml-2"
+          size="small"
         />
 
         <gl-icon

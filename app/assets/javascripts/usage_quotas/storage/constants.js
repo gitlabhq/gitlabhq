@@ -21,10 +21,9 @@ export const containerRegistryPopover = {
   content: s__(
     'UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total.',
   ),
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
   docsLink: helpPagePath(
     'user/packages/container_registry/reduce_container_registry_storage.html',
-    { anchor: 'check-container-registry-storage-use' },
+    { anchor: 'view-container-registry-usage' },
   ),
 };
 
@@ -36,13 +35,11 @@ export const usageQuotasHelpPaths = {
     anchor: 'repository-size-limit',
   }),
   usageQuotas: helpPagePath('user/usage_quotas'),
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
   usageQuotasProjectStorageLimit: helpPagePath('user/usage_quotas', {
-    anchor: 'project-storage-limit',
+    anchor: 'view-storage',
   }),
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
   usageQuotasNamespaceStorageLimit: helpPagePath('user/usage_quotas', {
-    anchor: 'namespace-storage-limit',
+    anchor: 'view-storage',
   }),
 };
 

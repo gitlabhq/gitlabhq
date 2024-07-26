@@ -59,3 +59,66 @@ export const RESOLVED_USER_HTML =
 
 export const RESOLVED_VULNERABILITY_HTML =
   '<p data-sourcepos="1:1-1:56" dir="auto"><a href="/gitlab-org/gitlab-shell/-/security/vulnerabilities/1" data-reference-type="vulnerability" data-original="[vulnerability:1]" data-link="false" data-link-reference="false" data-project="2" data-vulnerability="1" data-container="body" data-placement="top" title="oh no!" class="gfm gfm-vulnerability has-tooltip">[vulnerability:1]</a> <a href="/gitlab-org/gitlab-shell/-/security/vulnerabilities/1" data-reference-type="vulnerability" data-original="[vulnerability:1]" data-link="false" data-link-reference="false" data-project="2" data-vulnerability="1" data-container="body" data-placement="top" title="oh no!" class="gfm gfm-vulnerability has-tooltip">[vulnerability:1]</a>+ <a href="/gitlab-org/gitlab-shell/-/security/vulnerabilities/1" data-reference-type="vulnerability" data-original="[vulnerability:1]" data-link="false" data-link-reference="false" data-project="2" data-vulnerability="1" data-container="body" data-placement="top" title="oh no!" class="gfm gfm-vulnerability has-tooltip">[vulnerability:1]</a>+s</p>';
+
+export const BULLET_LIST_MARKDOWN = `+ list item 1
++ list item 2
+  - embedded list item 3`;
+
+export const BULLET_LIST_HTML = `<ul data-sourcepos="1:1-3:24" dir="auto">
+  <li data-sourcepos="1:1-1:13">list item 1</li>
+  <li data-sourcepos="2:1-3:24">list item 2
+    <ul data-sourcepos="3:3-3:24">
+      <li data-sourcepos="3:3-3:24">embedded list item 3</li>
+    </ul>
+  </li>
+</ul>`;
+
+export const MALFORMED_BULLET_LIST_HTML =
+  `<ul data-sourcepos="1:1-3:24" dir="auto">
+  <li data-sourcepos="1:1-1:13">list item 1</li>` +
+  // below line has malformed sourcepos
+  `<li data-sourcepos="5:1-5:24">list item 2
+    <ul data-sourcepos="3:3-3:24">
+      <li data-sourcepos="3:3-3:24">embedded list item 3</li>
+    </ul>
+  </li>
+</ul>`;
+
+export const BULLET_TASK_LIST_MARKDOWN = `- [ ] list item 1
++ [x] checked list item 2
+  + [ ] embedded list item 1
+  - [x] checked embedded list item 2`;
+
+export const BULLET_TASK_LIST_HTML = `<ul data-sourcepos="1:1-4:36" class="task-list" dir="auto">
+  <li data-sourcepos="1:1-1:17" class="task-list-item"><input type="checkbox" class="task-list-item-checkbox"> list item 1</li>
+  <li data-sourcepos="2:1-4:36" class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" checked> checked list item 2
+    <ul data-sourcepos="3:3-4:36" class="task-list">
+      <li data-sourcepos="3:3-3:28" class="task-list-item"><input type="checkbox" class="task-list-item-checkbox"> embedded list item 1</li>
+      <li data-sourcepos="4:3-4:36" class="task-list-item"><input type="checkbox" class="task-list-item-checkbox" checked> checked embedded list item 2</li>
+    </ul>
+  </li>
+</ul>`;
+
+export const PARAGRAPHS_MARKDOWN = `You could bold with **asterisks** or you could bold with __underscores__. You could even bold with <strong>strong</strong> or <b>b</b> html tags. You could add newlines in your paragraph, or \`code\` tags with \`\` nested \`backticks\` \`\`.
+
+You could italicise with *asterisks* or you could italicise with _underscores_. You could even italicise with <em>em</em> or <i>i</i> html tags.
+
+As long as you don't touch a paragraph, it will ~~discard~~ <s>destroy</s> <del>delete</del> <strike>remove</strike> preserve the original markdown style.`;
+
+export const PARAGRAPHS_HTML = `<p data-sourcepos="1:1-1:233" dir="auto">
+  You could bold with <strong data-sourcepos="1:21-1:33">asterisks</strong> or you could bold with
+  <strong data-sourcepos="1:58-1:72">underscores</strong>. You could even bold with
+  <strong>strong</strong> or <b>b</b> html tags. You could add newlines in your paragraph,
+  or <code data-sourcepos="1:193-1:196">code</code> tags with
+  <code data-sourcepos="1:211-1:230">nested \`backticks\`</code>.
+</p>
+<p data-sourcepos="3:1-3:144" dir="auto">
+  You could italicise with <em data-sourcepos="3:26-3:36">asterisks</em> or
+  you could italicise with <em data-sourcepos="3:66-3:78">underscores</em>.
+  You could even italicise with <em>em</em> or <i>i</i> html tags.
+</p>
+<p data-sourcepos="5:1-5:154" dir="auto">
+  As long as you don't touch a paragraph, it will
+  <del data-sourcepos="5:49-5:59">discard</del> <s>destroy</s> <del>delete</del>
+  <strike>remove</strike> preserve the original markdown style.
+</p>`;

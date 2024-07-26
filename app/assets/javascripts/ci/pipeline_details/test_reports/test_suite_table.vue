@@ -67,9 +67,8 @@ export default {
   },
   wrapSymbols: ['::', '#', '.', '_', '-', '/', '\\'],
   i18n,
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
   learnMorePath: helpPagePath('ci/testing/unit_test_reports', {
-    anchor: 'viewing-unit-test-reports-on-gitlab',
+    anchor: 'view-unit-test-reports-on-gitlab',
   }),
 };
 </script>

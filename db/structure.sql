@@ -9679,7 +9679,9 @@ CREATE TABLE deploy_tokens (
     read_package_registry boolean DEFAULT false NOT NULL,
     write_package_registry boolean DEFAULT false NOT NULL,
     creator_id bigint,
-    read_virtual_registry boolean DEFAULT false NOT NULL
+    read_virtual_registry boolean DEFAULT false NOT NULL,
+    project_id bigint,
+    group_id bigint
 );
 
 CREATE SEQUENCE deploy_tokens_id_seq
@@ -27155,6 +27157,10 @@ CREATE INDEX index_deploy_keys_projects_on_project_id ON deploy_keys_projects US
 
 CREATE INDEX index_deploy_tokens_on_creator_id ON deploy_tokens USING btree (creator_id);
 
+CREATE INDEX index_deploy_tokens_on_group_id ON deploy_tokens USING btree (group_id);
+
+CREATE INDEX index_deploy_tokens_on_project_id ON deploy_tokens USING btree (project_id);
+
 CREATE UNIQUE INDEX index_deploy_tokens_on_token_encrypted ON deploy_tokens USING btree (token_encrypted);
 
 CREATE INDEX index_deployment_approvals_on_approval_rule_id ON deployment_approvals USING btree (approval_rule_id);
@@ -32513,6 +32519,9 @@ ALTER TABLE ONLY approval_group_rules_protected_branches
 ALTER TABLE ONLY alert_management_alerts
     ADD CONSTRAINT fk_51ab4b6089 FOREIGN KEY (prometheus_alert_id) REFERENCES prometheus_alerts(id) ON DELETE CASCADE;
 
+ALTER TABLE ONLY deploy_tokens
+    ADD CONSTRAINT fk_51bf7bfb69 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
+
 ALTER TABLE ONLY path_locks
     ADD CONSTRAINT fk_5265c98f24 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
@@ -32890,6 +32899,9 @@ ALTER TABLE ONLY approval_group_rules_users
 
 ALTER TABLE ONLY import_failures
     ADD CONSTRAINT fk_9a9b9ba21c FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY deploy_tokens
+    ADD CONSTRAINT fk_9b0d2e92a6 FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY milestones
     ADD CONSTRAINT fk_9bd0a0c791 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;

@@ -1,4 +1,5 @@
 import { Extension } from '@tiptap/core';
+import { getMarkdownSource, docHasSourceMap } from '../services/markdown_sourcemap';
 import Audio from './audio';
 import Blockquote from './blockquote';
 import Bold from './bold';
@@ -34,6 +35,8 @@ export default Extension.create({
   name: 'sourcemap',
 
   addGlobalAttributes() {
+    const preserveMarkdown = () => gon.features?.preserveMarkdown;
+
     return [
       {
         types: [
@@ -77,10 +80,18 @@ export default Extension.create({
            */
           sourceMarkdown: {
             default: null,
+            parseHTML: (element) => preserveMarkdown() && getMarkdownSource(element),
             renderHTML: () => '',
           },
           sourceMapKey: {
             default: null,
+            parseHTML: (element) => preserveMarkdown() && element.dataset.sourcepos,
+            renderHTML: () => '',
+          },
+          sourceTagName: {
+            default: null,
+            parseHTML: (element) =>
+              preserveMarkdown() && docHasSourceMap(element) && element.tagName.toLowerCase(),
             renderHTML: () => '',
           },
         },

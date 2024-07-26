@@ -153,6 +153,8 @@ export default {
         :text="item.location"
         :title="$options.i18n.COPY_IMAGE_PATH_TITLE"
         category="tertiary"
+        class="gl-ml-2"
+        size="small"
       />
     </template>
     <template #left-secondary>

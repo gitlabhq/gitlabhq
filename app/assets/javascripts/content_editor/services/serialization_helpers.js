@@ -5,7 +5,7 @@ const defaultAttrs = {
   th: { colspan: 1, rowspan: 1, colwidth: null, align: 'left' },
 };
 
-const defaultIgnoreAttrs = ['sourceMarkdown', 'sourceMapKey'];
+const defaultIgnoreAttrs = ['sourceMarkdown', 'sourceMapKey', 'sourceTagName'];
 
 const ignoreAttrs = {
   dd: ['isTerm'],

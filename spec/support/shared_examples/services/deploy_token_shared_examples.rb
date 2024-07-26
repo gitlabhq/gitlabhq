@@ -23,6 +23,12 @@ RSpec.shared_examples 'a deploy token creation service' do
       it 'sets the creator_id as the id of the current_user' do
         expect(subject[:deploy_token].read_attribute(:creator_id)).to eq(user.id)
       end
+
+      it 'sets the sharding key' do
+        sharding_key = "#{entity.class.name.downcase}_id"
+
+        expect(subject[:deploy_token].read_attribute(sharding_key)).to eq(entity.id)
+      end
     end
 
     context 'when expires at date is not passed' do

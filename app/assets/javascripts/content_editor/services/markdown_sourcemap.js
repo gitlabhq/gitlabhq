@@ -1,5 +1,10 @@
 import { isString } from 'lodash';
 
+export const docHasSourceMap = (element) => {
+  const commentNode = element.ownerDocument.body.lastChild;
+  return Boolean(commentNode?.nodeName === '#comment' && isString(commentNode.textContent));
+};
+
 export const getFullSource = (element) => {
   const commentNode = element.ownerDocument.body.lastChild;
 
@@ -32,14 +37,26 @@ export const getMarkdownSource = (element) => {
     if (!source.length) return undefined;
 
     for (let i = range.start.row; i <= range.end.row; i += 1) {
-      if (i === range.start.row) {
-        elSource += source[i].substring(range.start.col);
+      if (i === range.start.row && i === range.end.row) {
+        // include leading whitespace in the sourcemap
+        if (!source[i]?.substring(0, range.start.col).trim()) {
+          range.start.col = 0;
+        }
+        elSource += source[i].substring(range.start.col, range.end.col + 1);
+      } else if (i === range.start.row) {
+        // include leading whitespace in the sourcemap
+        if (!source[i]?.substring(0, range.start.col).trim()) {
+          range.start.col = 0;
+        }
+        elSource += source[i]?.substring(range.start.col) || '';
+      } else if (i === range.end.row) {
+        elSource += `\n${source[i]?.substring(0, range.end.col + 1) || ''}`;
       } else {
         elSource += `\n${source[i]}` || '';
       }
     }
 
-    return elSource.trim();
+    return elSource;
   } catch {
     return undefined;
   }
