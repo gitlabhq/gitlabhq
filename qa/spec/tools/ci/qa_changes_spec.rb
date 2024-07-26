@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require "fog/google"
+
 RSpec.describe QA::Tools::Ci::QaChanges do
+  include QA::Support::Helpers::StubEnv
   subject(:qa_changes) { described_class.new(mr_diff, mr_labels, additional_group_spec_list) }
 
   let(:mr_labels) { [] }
@@ -8,6 +11,7 @@ RSpec.describe QA::Tools::Ci::QaChanges do
 
   before do
     allow(File).to receive(:directory?).and_return(false)
+    stub_env('SELECTIVE_EXECUTION_IMPROVED', false)
   end
 
   context "with spec only changes" do
@@ -82,6 +86,64 @@ RSpec.describe QA::Tools::Ci::QaChanges do
           "qa/specs/features/browser_ui/1_manage/",
           "qa/specs/features/api/1_manage/"
         )
+      end
+    end
+
+    context "with SELECTIVE_EXECUTION_IMPROVED enabled" do
+      let(:code_paths_mapping_data) do
+        {
+          "./qa/specs/features/test_spec.rb:23": %w[./lib/model.rb ./lib/second.rb],
+          "./qa/specs/features/test_spec_2.rb:11": ['./app/controller.rb']
+        }.stringify_keys
+      end
+
+      let(:selected_specs) { "qa/specs/features/test_spec.rb" }
+      let(:gcs_project_id) { 'gitlab-qa-resources' }
+      let(:gcs_creds) { 'gcs-creds' }
+      let(:gcs_bucket_name) { 'metrics-gcs-bucket' }
+      let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- instance_double complains put_object is not implemented but it is
+
+      let(:code_paths_mapping) do
+        instance_double(QA::Tools::Ci::CodePathsMapping, import: code_paths_mapping_data)
+      end
+
+      before do
+        stub_env('SELECTIVE_EXECUTION_IMPROVED', true)
+        stub_env('QA_CODE_PATH_MAPPINGS_GCS_CREDENTIALS', gcs_creds)
+        allow(Fog::Storage::Google).to receive(:new)
+                                         .with(google_project: gcs_project_id,
+                                           google_json_key_string: gcs_creds)
+                                         .and_return(gcs_client)
+        allow(QA::Tools::Ci::CodePathsMapping).to receive(:new).and_return(code_paths_mapping)
+      end
+
+      describe '#qa_tests' do
+        context 'when there is a match from code paths mapping' do
+          let(:mr_diff) { [{ path: 'lib/model.rb' }] }
+
+          it "returns specific specs" do
+            expect(qa_changes.qa_tests.split(" ")).to include(selected_specs)
+          end
+        end
+
+        context 'when there is no match from code paths mapping' do
+          let(:mr_diff) { [{ path: 'lib/new.rb' }] }
+
+          it "returns nil" do
+            expect(qa_changes.qa_tests).to be_nil
+          end
+        end
+
+        context 'when code paths mapping import returns nil' do
+          let(:mr_diff) { [{ path: 'lib/model.rb' }] }
+          let(:code_paths_mapping) do
+            instance_double(QA::Tools::Ci::CodePathsMapping, import: nil)
+          end
+
+          it "does not throw an error" do
+            expect(qa_changes.qa_tests).to be_nil
+          end
+        end
       end
     end
 

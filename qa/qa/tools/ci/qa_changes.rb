@@ -38,7 +38,20 @@ module QA
               .join(" ")
           end
 
-          qa_spec_directories_for_devops_stage&.join(" ") if non_qa_changes? && mr_labels.any?
+          fetch_list_of_specs_or_directories
+        end
+
+        # Fetches list of E2E specs from code paths mapping OR list of spec directories from stage labels
+        #
+        # @return [String]
+        def fetch_list_of_specs_or_directories
+          if QA::Runtime::Env.selective_execution_improved_enabled? && non_qa_changes?
+            tests = selective_tests_from_code_paths_mapping
+            logger.info("Selected tests from mapping: '#{tests}'")
+            tests.nil? || tests.empty? ? nil : tests.join(" ")
+          elsif non_qa_changes? && mr_labels.any?
+            qa_spec_directories_for_devops_stage&.join(" ")
+          end
         end
 
         # Qa framework changes
@@ -86,6 +99,9 @@ module QA
 
         # @return [Array]
         attr_reader :mr_labels
+
+        # @return [Array]
+        attr_reader :selected_e2e_tests
 
         # @return [Hash<String, Array<String>>]
         attr_reader :additional_group_spec_list
@@ -149,6 +165,24 @@ module QA
         # @return [Array<String>]
         def changed_files
           @changed_files ||= mr_diff.map { |change| change[:path] }
+        end
+
+        # Selective E2E tests based on code paths mapping
+        #
+        # @return [array]
+        def selective_tests_from_code_paths_mapping
+          clean_map = code_paths_map&.each_with_object({}) do |(test_filename, code_mappings), hsh|
+            name = test_filename.gsub("./", "").split(":").first
+            hsh[name] = hsh.key?(name) ? (code_mappings + hsh[name]).uniq : code_mappings
+          end
+          clean_map&.select { |_test, mappings| changed_files.any? { |file| mappings.include?("./#{file}") } }&.keys
+        end
+
+        # Get the mapping hash from GCP storage
+        #
+        # @return [Hash]
+        def code_paths_map
+          @code_paths_map ||= QA::Tools::Ci::CodePathsMapping.new.import("master", "e2e-test-on-gdk")
         end
 
         # Devops stage specs

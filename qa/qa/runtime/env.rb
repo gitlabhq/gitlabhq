@@ -94,6 +94,10 @@ module QA
         enabled?(ENV['COVERBAND_ENABLED'], default: false)
       end
 
+      def selective_execution_improved_enabled?
+        enabled?(ENV['SELECTIVE_EXECUTION_IMPROVED'], default: false)
+      end
+
       def schedule_type
         ENV['SCHEDULE_TYPE']
       end

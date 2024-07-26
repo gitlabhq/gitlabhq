@@ -879,7 +879,6 @@ Gitlab/NamespacedClass:
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/models/gitlab/seat_link_data.rb'
     - 'ee/app/models/gitlab_subscription.rb'
-    - 'ee/app/models/gitlab_subscription_history.rb'
     - 'ee/app/models/group_deletion_schedule.rb'
     - 'ee/app/models/group_merge_request_approval_setting.rb'
     - 'ee/app/models/group_wiki.rb'

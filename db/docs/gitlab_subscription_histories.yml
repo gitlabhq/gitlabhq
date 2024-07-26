@@ -1,7 +1,7 @@
 ---
 table_name: gitlab_subscription_histories
 classes:
-- GitlabSubscriptionHistory
+- GitlabSubscriptions::SubscriptionHistory
 feature_categories:
 - subscription_management
 description: History log for the gitlab_subscriptions table

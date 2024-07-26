@@ -74,6 +74,7 @@ curl --request POST --header "PRIVATE-TOKEN: <your_access_token_for_destination_
   "id": 1,
   "status": "created",
   "source_type": "gitlab",
+  "source_url": "https://gitlab.example.com",
   "created_at": "2021-06-18T09:45:55.358Z",
   "updated_at": "2021-06-18T09:46:27.003Z",
   "has_failures": false
@@ -110,6 +111,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "id": 1,
         "status": "finished",
         "source_type": "gitlab",
+        "source_url": "https://gitlab.example.com",
         "created_at": "2021-06-18T09:45:55.358Z",
         "updated_at": "2021-06-18T09:46:27.003Z",
         "has_failures": false
@@ -118,6 +120,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
         "id": 2,
         "status": "started",
         "source_type": "gitlab",
+        "source_url": "https://gitlab.example.com",
         "created_at": "2021-06-18T09:47:36.581Z",
         "updated_at": "2021-06-18T09:47:58.286Z",
         "has_failures": false
@@ -231,6 +234,7 @@ curl --request GET --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab
   "id": 1,
   "status": "finished",
   "source_type": "gitlab",
+  "source_url": "https://gitlab.example.com",
   "created_at": "2021-06-18T09:45:55.358Z",
   "updated_at": "2021-06-18T09:46:27.003Z"
 }

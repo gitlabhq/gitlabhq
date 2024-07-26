@@ -44,6 +44,14 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
         ])
       end
     end
+
+    describe '.with_configuration' do
+      it 'includes configuration association' do
+        imports = described_class.with_configuration
+
+        expect(imports.first.association_cached?(:configuration)).to be(true)
+      end
+    end
   end
 
   describe '.all_human_statuses' do
@@ -204,6 +212,22 @@ RSpec.describe BulkImport, type: :model, feature_category: :importers do
 
     it 'returns the topmost group note of the import entity tree' do
       expect(import.parent_group_entity).to eq(root_node)
+    end
+  end
+
+  describe '#source_url' do
+    it 'returns migration source url via configuration' do
+      import = create(:bulk_import, :with_configuration)
+
+      expect(import.source_url).to eq(import.configuration.url)
+    end
+
+    context 'when configuration is missing' do
+      it 'returns nil' do
+        import = create(:bulk_import)
+
+        expect(import.source_url).to be_nil
+      end
     end
   end
 end

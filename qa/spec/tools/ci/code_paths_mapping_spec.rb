@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
-RSpec.describe QA::Tools::Ci::ExportCodePathsMapping do
+require 'active_support/testing/time_helpers'
+
+RSpec.describe QA::Tools::Ci::CodePathsMapping do
   include QA::Support::Helpers::StubEnv
+  include ActiveSupport::Testing::TimeHelpers
 
   let(:glob) { "test_code_paths/*.json" }
   let(:file_paths) { ["/test_code/test_code_path_mappings.json"] }
@@ -55,6 +58,56 @@ RSpec.describe QA::Tools::Ci::ExportCodePathsMapping do
       expect(logger).to receive(:warn).with(/No files matched pattern/).once
       expect(::File).not_to receive(:write)
       described_class.export(glob)
+    end
+  end
+
+  context "with import" do
+    subject(:code_paths_mapping) { described_class.new }
+
+    let(:branch) { "master" }
+    let(:run_type) { "e2e-test-on-gdk" }
+    let(:file_path_2) { "#{branch}/#{run_type}/test-code-paths-mapping-merged-pipeline-2.json" }
+
+    let(:google_api_object_1) do
+      instance_double('Google::Apis::StorageV1::Object',
+        name: "test_path", bucket: "code-path-mappings")
+    end
+
+    let(:google_api_object_2) do
+      instance_double('Google::Apis::StorageV1::Object',
+        name: file_path_2, bucket: "code-path-mappings")
+    end
+
+    let(:mapping_files_list) do
+      instance_double('Google::Apis::StorageV1::Objects', items:
+        [google_api_object_1, google_api_object_2], next_page_token: nil)
+    end
+
+    context "when mapping file present for pipeline type" do
+      let(:response_from_gcs) { { name: "file_name", body: "{}" } }
+
+      before do
+        allow(gcs_client).to receive(:list_objects).and_return(mapping_files_list)
+        allow(gcs_client).to receive(:get_object).with(gcs_bucket_name, String).and_return(response_from_gcs)
+      end
+
+      it 'calls get_object with correct mapping file path' do
+        expect(gcs_client).to receive(:get_object).with(gcs_bucket_name, file_path_2)
+        code_paths_mapping.import(branch, run_type)
+      end
+    end
+
+    context "when mapping file cannot be retrieved" do
+      before do
+        allow(code_paths_mapping).to receive(:code_paths_mapping_file).and_return(nil)
+        allow(gcs_client).to receive(:get_object).with(gcs_bucket_name, nil).and_raise(ArgumentError)
+      end
+
+      it 'logs the error and does not raise an exception' do
+        expect(logger).to receive(:error).with("Failed to download code paths mapping from GCS. Error: ArgumentError")
+        expect(logger).to receive(:error).with(/Backtrace: \[.*/)
+        code_paths_mapping.import(branch, run_type)
+      end
     end
   end
 end

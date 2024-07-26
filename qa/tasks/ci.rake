@@ -88,6 +88,6 @@ namespace :ci do
   task :export_code_paths_mapping, [:glob] do |_, args|
     raise("Code paths mapping JSON glob pattern is required") unless args[:glob]
 
-    QA::Tools::Ci::ExportCodePathsMapping.export(args[:glob])
+    QA::Tools::Ci::CodePathsMapping.export(args[:glob])
   end
 end

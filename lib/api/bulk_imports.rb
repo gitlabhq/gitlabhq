@@ -11,7 +11,7 @@ module API
       def bulk_imports
         @bulk_imports ||= ::BulkImports::ImportsFinder.new(
           user: current_user,
-          params: params
+          params: params.merge(include_configuration: true)
         ).execute
       end
 
