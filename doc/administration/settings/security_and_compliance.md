@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** Self-managed
 
-The settings for package metadata synchronization are located in the [Admin area](index.md).
+The settings for package metadata synchronization are located in the [**Admin** area](index.md).
 
 ## Choose package registry metadata to sync
 

@@ -2571,7 +2571,7 @@ This endpoint:
   [default deletion delay](../administration/settings/visibility_and_access_controls.md#deletion-protection).
 
 WARNING:
-The option to delete projects immediately from deletion protection settings in the Admin area was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
+The option to delete projects immediately from deletion protection settings in the **Admin** area was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/issues/389557) in GitLab 15.9 and removed in GitLab 16.0.
 
 ```plaintext
 DELETE /projects/:id

@@ -17,9 +17,9 @@ To manage labels for the GitLab instance:
 
 For more details on how to manage labels, see [Labels](../user/project/labels.md).
 
-Labels created in the Admin area are automatically added to new projects.
+Labels created in the **Admin** area are automatically added to new projects.
 They are not available to new groups.
-Updating or adding labels in the Admin area does not modify labels in existing projects.
+Updating or adding labels in the **Admin** area does not modify labels in existing projects.
 
 ![Default label set](img/admin_labels_v17_0.png)
 

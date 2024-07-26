@@ -63,7 +63,7 @@ A user is not counted as a billable user if:
     - [Bot users for groups](../../user/group/settings/group_access_tokens.md#bot-users-for-groups).
     - Other [internal users](../../development/internal_users.md#internal-users).
 
-The amount of **Billable users** is reported once a day in the Admin area.
+The amount of **Billable users** is reported once a day in the **Admin** area.
 
 ### Maximum users
 
@@ -466,7 +466,7 @@ For example, if a license has a start date of January 1, 2024 and an end date of
 
 ## Activate a license file or key
 
-If you have a license file or key, you can activate it [in the Admin area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
+If you have a license file or key, you can activate it [in the **Admin** area](../../administration/license_file.md#activate-gitlab-ee-with-a-license-file-or-key).
 
 ## Contact Support
 

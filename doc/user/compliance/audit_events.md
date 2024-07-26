@@ -105,4 +105,4 @@ If you don't see the event you want in any of the epics, you can either:
 
 ## Administer topics
 
-Instance administrators can [administer audit events](../../administration/audit_event_reports.md) from the Admin area.
+Instance administrators can [administer audit events](../../administration/audit_event_reports.md) from the **Admin** area.

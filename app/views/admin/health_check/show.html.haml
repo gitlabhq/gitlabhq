@@ -32,7 +32,7 @@
       = sprite_icon('check', css_class: 'cgreen')
       #{ s_('HealthCheck|Healthy') }
     - else
-      = sprite_icon('warning-solid', css_class: 'cred')
+      = sprite_icon('warning-solid', css_class: 'gl-text-danger')
       #{ s_('HealthCheck|Unhealthy') }
   - c.with_body do
     - if no_errors

@@ -12,7 +12,7 @@ DETAILS:
 
 GitLab tracks user activity and flags certain behavior for potential spam.
 
-In the Admin area, a GitLab administrator can view and resolve spam logs.
+In the **Admin** area, a GitLab administrator can view and resolve spam logs.
 
 ## Manage spam logs
 

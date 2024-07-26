@@ -660,7 +660,7 @@ To do that:
 1. Select **Save changes**.
 
 NOTE:
-You must enable [Access Control](#access-control) first for the setting to show in the Admin area.
+You must enable [Access Control](#access-control) first for the setting to show in the **Admin** area.
 
 ### Running behind a proxy
 

@@ -67,4 +67,4 @@ Spamcheck service on its own cannot communicate directly over TLS with GitLab.
 However, Spamcheck can be deployed behind a reverse proxy which performs TLS
 termination. In such a scenario, GitLab can be made to communicate with
 Spamcheck over TLS by specifying `tls://` scheme for the external Spamcheck URL
-instead of `grpc://` in the Admin area settings.
+instead of `grpc://` in the **Admin** area settings.

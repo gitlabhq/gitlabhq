@@ -111,7 +111,7 @@
             %li{ class: 'gl-px-5!' }
               %span.light
                 = _('repository:')
-              %strong.cred
+              %strong.gl-text-danger
                 = _('does not exist')
 
           - if @project.archived?
@@ -155,7 +155,7 @@
               = _("This repository has never been checked.")
             - elsif @project.last_repository_check_failed?
               - failed_message = _("This repository was last checked %{last_check_timestamp}. The check %{strong_start}failed.%{strong_end} See the 'repocheck.log' file for error messages.")
-              - failed_message = failed_message % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium), strong_start: "<strong class='cred'>", strong_end: "</strong>" }
+              - failed_message = failed_message % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium), strong_start: "<strong class='gl-text-danger'>", strong_end: "</strong>" }
               = failed_message.html_safe
             - else
               = _("This repository was last checked %{last_check_timestamp}. The check passed.") % { last_check_timestamp: @project.last_repository_check_at.to_fs(:medium) }

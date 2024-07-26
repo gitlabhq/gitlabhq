@@ -3729,7 +3729,13 @@ msgstr ""
 msgid "AdminSelfHostedModels|API token (if needed)"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Add a new AI model that can be used for GitLab Duo features."
+msgstr ""
+
 msgid "AdminSelfHostedModels|Add self-hosted language models to use as backups for GitLab Duo features."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Add self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|An API key is set"
@@ -9648,9 +9654,6 @@ msgstr ""
 msgid "BroadcastMessages|Your message here"
 msgstr ""
 
-msgid "Browse CI/CD Catalog"
-msgstr ""
-
 msgid "Browse Directory"
 msgstr ""
 
@@ -12728,10 +12731,10 @@ msgstr ""
 msgid "Code Coverage: %{coveragePercentage}%{percentSymbol}"
 msgstr ""
 
-msgid "Code Coverage| Empty code coverage data"
+msgid "Code Coverage|Couldn't fetch the code coverage data"
 msgstr ""
 
-msgid "Code Coverage|Couldn't fetch the code coverage data"
+msgid "Code Coverage|No code coverage data"
 msgstr ""
 
 msgid "Code Owner"
@@ -12752,9 +12755,6 @@ msgstr ""
 msgid "Code Review"
 msgstr ""
 
-msgid "Code Review Analytics displays a table of open merge requests considered to be in code review. There are currently no merge requests in review for this project and/or filters."
-msgstr ""
-
 msgid "Code block"
 msgstr ""
 
@@ -12762,6 +12762,9 @@ msgid "Code completion test failed: %{error}"
 msgstr ""
 
 msgid "Code completion test was successful"
+msgstr ""
+
+msgid "Code coverage results are not yet available. Try again later."
 msgstr ""
 
 msgid "Code coverage statistics for %{ref} %{start_date} - %{end_date}"
@@ -15420,6 +15423,9 @@ msgid "Create a merge request"
 msgstr ""
 
 msgid "Create a merge request branch target."
+msgstr ""
+
+msgid "Create a merge request, or edit your criteria and try again."
 msgstr ""
 
 msgid "Create a new %{codeStart}.gitlab-ci.yml%{codeEnd} file at the root of the repository to get started."
@@ -29098,9 +29104,6 @@ msgstr ""
 msgid "It seems like the Dependency Scanning job ran successfully, but no dependencies have been detected in your project."
 msgstr ""
 
-msgid "It seems that there is currently no available data for code coverage"
-msgstr ""
-
 msgid "It's you"
 msgstr ""
 
@@ -33080,9 +33083,6 @@ msgstr ""
 msgid "Metric"
 msgstr ""
 
-msgid "Metric:"
-msgstr ""
-
 msgid "MetricChart|Please select a metric"
 msgstr ""
 
@@ -35010,6 +35010,9 @@ msgid "No more than %{max_issues} issues can be updated at the same time"
 msgstr ""
 
 msgid "No more than %{max_work_items} work items can be modified at the same time."
+msgstr ""
+
+msgid "No open merge requests"
 msgstr ""
 
 msgid "No options found"
@@ -61380,9 +61383,6 @@ msgid "You don't have any applications."
 msgstr ""
 
 msgid "You don't have any authorized applications."
-msgstr ""
-
-msgid "You don't have any open merge requests"
 msgstr ""
 
 msgid "You don't have any recent searches"

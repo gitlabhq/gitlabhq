@@ -13,7 +13,7 @@ DETAILS:
 
 The instructions on this page guide you through configuring your GitLab Dedicated instance, including enabling and updating the settings for [available functionality](../../subscriptions/gitlab_dedicated/index.md#available-features).
 
-Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [Admin area](../../administration/admin_area.md).
+Any functionality in the GitLab application that is not controlled by the SaaS environment can be configured by using the [**Admin** area](../../administration/admin_area.md).
 
 Examples of SaaS environment settings include `gitlab.rb` configurations and access to shell, Rails console, and PostgreSQL console.
 These environment settings cannot be changed by tenants.

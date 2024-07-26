@@ -1038,7 +1038,7 @@ To create a group:
 1. On the left sidebar, at the top, select **Create new** (**{plus}**) and **New group**.
 ```
 
-To open the Admin area:
+To open the **Admin** area:
 
 ```markdown
 1. On the left sidebar, at the bottom, select **Admin**.

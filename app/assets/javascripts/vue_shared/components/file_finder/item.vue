@@ -106,7 +106,7 @@ export default {
         <span class="cgreen bold">
           <gl-icon name="file-addition" class="align-text-top" /> {{ file.addedLines }}
         </span>
-        <span class="cred bold ml-1">
+        <span class="gl-text-red-500 bold ml-1">
           <gl-icon name="file-deletion" class="align-text-top" /> {{ file.removedLines }}
         </span>
       </span>

@@ -29,12 +29,12 @@ GitLab sidebar:
 1. Configure the **Grafana URL**. Enter the full URL of the Grafana instance.
 1. Select **Save changes**.
 
-GitLab displays your link in the Admin area under **Monitoring > Metrics Dashboard**.
+GitLab displays your link in the **Admin** area under **Monitoring > Metrics Dashboard**.
 
 ## Required Scopes
 
 When setting up Grafana through the process above, no scope shows in the screen in
-the Admin area under **Applications > GitLab Grafana**. However, the `read_user` scope is
+the **Admin** area under **Applications > GitLab Grafana**. However, the `read_user` scope is
 required and is provided to the application automatically. Setting any scope other than
 `read_user` without also including `read_user` leads to this error when you try to sign in using
 GitLab as the OAuth provider:

@@ -1112,7 +1112,7 @@ Example response:
 ## Storage limit exclusions
 
 The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.
-These endpoints can only be consumed in the Admin area of GitLab.com.
+These endpoints can only be consumed in the **Admin** area of GitLab.com.
 
 ### Retrieve storage limit exclusions
 
@@ -1208,7 +1208,7 @@ Example response:
 
 ### Known consumers
 
-- GitLab.com Admin area
+- GitLab.com **Admin** area
 
 ## Compute quota provisioning
 
@@ -1603,7 +1603,7 @@ Example response:
 Returns a `201` status code if successful.
 
 NOTE:
-After you create a group SCIM identity for a user, you can see that SCIM identity in the Admin area.
+After you create a group SCIM identity for a user, you can see that SCIM identity in the **Admin** area.
 
 ### Update a single SCIM provisioned user
 

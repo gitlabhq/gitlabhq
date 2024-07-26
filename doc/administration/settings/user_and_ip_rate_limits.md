@@ -120,7 +120,7 @@ attached into the response headers.
 
 | Header                | Example                         | Description                                                                                                                                                                                                      |
 |:----------------------|:--------------------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| `RateLimit-Limit`     | `60`                            | The request quota for the client **each minute**. If the rate limit period set in the Admin area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
+| `RateLimit-Limit`     | `60`                            | The request quota for the client **each minute**. If the rate limit period set in the **Admin** area is different from 1 minute, the value of this header is adjusted to approximately the nearest 60-minute period. |
 | `RateLimit-Name`      | `throttle_authenticated_web`    | Name of the throttle blocking the requests.                                                                                                                                                                      |
 | `RateLimit-Observed`  | `67`                            | Number of requests associated to the client in the time window.                                                                                                                                                  |
 | `RateLimit-Remaining` | `0`                             | Remaining quota in the time window. The result of `RateLimit-Limit` - `RateLimit-Observed`.                                                                                                                     |
@@ -223,7 +223,7 @@ request continue. The log message contains an `env` field set to `track`. The `m
 field contains the name of throttle that was hit.
 
 It is important to set the environment variable **before** enabling
-the rate limiting in the settings. The settings in the Admin area
+the rate limiting in the settings. The settings in the **Admin** area
 take effect immediately, while setting the environment variable
 requires a restart of all the Puma processes.
 

@@ -81,7 +81,7 @@ should be used instead. For more information, see [Migrating to the new runner r
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the Admin area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the **Admin** area.
 - You must be an administrator.
 
 To create an instance runner:
@@ -689,7 +689,7 @@ you can enable runner registration tokens for projects and groups. This setting 
 
 Prerequisites:
 
-- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the Admin area.
+- Runner registration tokens must be [enabled](../../administration/settings/continuous_integration.md#enable-runner-registrations-tokens) in the **Admin** area.
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > CI/CD**.

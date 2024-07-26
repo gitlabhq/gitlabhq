@@ -27,7 +27,7 @@ the activity feed.
 
 To modify this setting:
 
-- In the Admin area:
+- In the **Admin** area:
   1. On the left sidebar, at the bottom, select **Admin**.
   1. Select **Settings > Network**.
   1. Expand **Performance optimization**.

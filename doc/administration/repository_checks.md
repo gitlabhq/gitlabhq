@@ -34,7 +34,7 @@ To check a project's repository using GitLab UI:
 1. In the **Repository check** section, select **Trigger repository check**.
 
 The checks run asynchronously so it may take a few minutes before the check result is visible on the
-project page in the Admin area. If the checks fail, see [what to do](#what-to-do-if-a-check-failed).
+project page in the **Admin** area. If the checks fail, see [what to do](#what-to-do-if-a-check-failed).
 
 ## Enable repository checks for all projects
 

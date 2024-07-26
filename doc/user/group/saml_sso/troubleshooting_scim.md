@@ -53,7 +53,7 @@ The following are possible solutions for problems where users cannot sign in:
 
 To check if a user's SAML `NameId` matches their SCIM `externalId`:
 
-- Administrators can use the Admin area to [list SCIM identities for a user](../../../administration/admin_area.md#user-identities).
+- Administrators can use the **Admin** area to [list SCIM identities for a user](../../../administration/admin_area.md#user-identities).
 - Group owners can see the list of users and the identifier stored for each user in the group SAML SSO Settings page.
 - You can use the [SCIM API](../../../api/scim.md) to manually retrieve the `extern_uid` GitLab has stored for users and compare the value for each user from the [SAML API](../../../api/saml.md) .
 - Have the user use a [SAML Tracer](troubleshooting.md#saml-debugging-tools) and compare the `extern_uid` to

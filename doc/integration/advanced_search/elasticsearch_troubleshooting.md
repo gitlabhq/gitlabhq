@@ -108,7 +108,7 @@ There are a couple of ways to achieve that:
   This is always correctly identifying whether the current project/namespace
   being searched is using Elasticsearch.
 
-- From the Admin area under **Settings > Search** check that the
+- From the **Admin** area under **Settings > Search** check that the
   advanced search settings are checked.
 
   Those same settings there can be obtained from the Rails console if necessary:

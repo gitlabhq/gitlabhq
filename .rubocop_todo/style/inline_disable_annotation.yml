@@ -1702,7 +1702,6 @@ Style/InlineDisableAnnotation:
     - 'ee/lib/ee/users/internal.rb'
     - 'ee/lib/elastic/instance_proxy_util.rb'
     - 'ee/lib/elastic/latest/git_class_proxy.rb'
-    - 'ee/lib/elastic/latest/issue_class_proxy.rb'
     - 'ee/lib/elastic/latest/note_class_proxy.rb'
     - 'ee/lib/elastic/latest/project_class_proxy.rb'
     - 'ee/lib/elastic/latest/user_class_proxy.rb'

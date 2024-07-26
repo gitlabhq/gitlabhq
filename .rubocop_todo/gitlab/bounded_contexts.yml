@@ -1378,7 +1378,6 @@ Gitlab/BoundedContexts:
     - 'app/policies/list_policy.rb'
     - 'app/policies/merge_request_policy.rb'
     - 'app/policies/merge_requests_closing_issues_policy.rb'
-    - 'app/policies/metrics/dashboard/annotation_policy.rb'
     - 'app/policies/milestone_policy.rb'
     - 'app/policies/namespace/package_setting_policy.rb'
     - 'app/policies/namespace/root_storage_statistics_policy.rb'

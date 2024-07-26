@@ -282,9 +282,9 @@ sudo gitlab-rake gitlab:geo:check
   Checking Geo ... Finished
   ```
 
-  Ensure you have added the secondary site in the Admin area under **Geo > Sites** on the web interface for the **primary** site.
+  Ensure you have added the secondary site in the **Admin** area under **Geo > Sites** on the web interface for the **primary** site.
   Also ensure you entered the `gitlab_rails['geo_node_name']`
-  when adding the secondary site in the Admin area of the **primary** site.
+  when adding the secondary site in the **Admin** area of the **primary** site.
 
 - Check returns `Exception: PG::UndefinedTable: ERROR:  relation "geo_nodes" does not exist`.
 
@@ -457,7 +457,7 @@ This machine's Geo node name matches a database record ... no
 ```
 
 For more information about recommended site names in the description of the Name field, see
-[Geo Admin area Common Settings](../../../../administration/geo_sites.md#common-settings).
+[Geo **Admin** area Common Settings](../../../../administration/geo_sites.md#common-settings).
 
 ### Check OS locale data compatibility
 
@@ -472,7 +472,7 @@ See the [PostgreSQL wiki for more details](https://wiki.postgresql.org/wiki/Loca
 
 ## Fixing common errors
 
-This section documents common error messages reported in the Admin area on the web interface, and how to fix them.
+This section documents common error messages reported in the **Admin** area on the web interface, and how to fix them.
 
 ### Geo database configuration file is missing
 

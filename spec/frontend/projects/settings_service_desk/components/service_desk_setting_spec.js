@@ -62,8 +62,8 @@ describe('ServiceDeskSetting', () => {
       expect(findIssueTrackerInfo().exists()).toBe(true);
       expect(findIssueHelpLink().text()).toEqual('activate the issue tracker');
       expect(findIssueHelpLink().attributes('href')).toBe(
-        helpPagePath('user/project/settings/index.md', {
-          anchor: 'configure-project-visibility-features-and-permissions',
+        helpPagePath('user/project/settings/index', {
+          anchor: 'configure-project-features-and-permissions',
         }),
       );
     });

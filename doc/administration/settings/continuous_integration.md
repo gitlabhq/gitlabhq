@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-The [Admin area](index.md) has the instance settings for Auto DevOps, runners, and
+The [**Admin** area](index.md) has the instance settings for Auto DevOps, runners, and
 job artifacts.
 
 ## Auto DevOps
@@ -132,7 +132,7 @@ The value is in MB, and the default value is 100 MB per job. An administrator ca
 ## Default artifacts expiration
 
 The default expiration time of the [job artifacts](../../administration/job_artifacts.md)
-can be set in the Admin area of your GitLab instance. The syntax of duration is
+can be set in the **Admin** area of your GitLab instance. The syntax of duration is
 described in [`artifacts:expire_in`](../../ci/yaml/index.md#artifactsexpire_in)
 and the default value is `30 days`.
 
@@ -232,7 +232,7 @@ The default value is `0` (no restriction).
 
 ## Default CI/CD configuration file
 
-The default CI/CD configuration file and path for new projects can be set in the Admin area
+The default CI/CD configuration file and path for new projects can be set in the **Admin** area
 of your GitLab instance (`.gitlab-ci.yml` if not set):
 
 1. On the left sidebar, at the bottom, select **Admin**.
@@ -247,7 +247,7 @@ It is also possible to specify a [custom CI/CD configuration file for a specific
 > - **Maximum number of active pipelines per project** setting [removed](https://gitlab.com/gitlab-org/gitlab/-/issues/368195) in GitLab 16.0.
 
 You can configure some [CI/CD limits](../../administration/instance_limits.md#cicd-limits)
-from the Admin area:
+from the **Admin** area:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**.

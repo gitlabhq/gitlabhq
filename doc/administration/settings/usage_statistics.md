@@ -95,7 +95,7 @@ In the following table, you can see:
 
 If enabled, version check informs you if a new version is available and the
 importance of it through a status. The status displays on the help pages (`/help`)
-for all authenticated users, and on the Admin area pages. The statuses are:
+for all authenticated users, and on the **Admin** area pages. The statuses are:
 
 - Green: You are running the latest version of GitLab.
 - Orange: An updated version of GitLab is available.
@@ -155,7 +155,7 @@ To enable or disable Service Ping:
 ### Through the configuration file
 
 To disable Service Ping and prevent it from being configured in the future through
-the Admin area.
+the **Admin** area.
 
 ::Tabs
 
@@ -248,7 +248,7 @@ To enable or disable optional data in Service Ping:
 
 ## Access the Service Ping payload
 
-You can access the exact JSON payload sent to GitLab Inc. in the Admin area or through the API.
+You can access the exact JSON payload sent to GitLab Inc. in the **Admin** area or through the API.
 See an [example Service Ping payload](../../development/internal_analytics/service_ping/index.md#example-service-ping-payload).
 
 ### In the UI

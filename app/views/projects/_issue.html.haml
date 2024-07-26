@@ -30,7 +30,7 @@
               = sprite_icon('milestone', css_class: 'gl-vertical-align-text-bottom')
               = issue.milestone.title
         - if issue.due_date
-          %span.issuable-due-date.gl-hidden.sm:gl-inline-block.has-tooltip{ class: "#{'cred' if issue.overdue? && !issue.closed?}", title: _('Due date') }
+          %span.issuable-due-date.gl-hidden.sm:gl-inline-block.has-tooltip{ class: "#{'gl-text-danger' if issue.overdue? && !issue.closed?}", title: _('Due date') }
             &nbsp;
             = sprite_icon('calendar')
             = issue.due_date.to_fs(:medium)

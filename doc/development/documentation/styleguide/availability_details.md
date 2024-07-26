@@ -154,7 +154,7 @@ Instance administrator documentation often includes sections that mention:
 
 - Changing the `gitlab.rb` or `gitlab.yml` files.
 - Accessing the rails console or running Rake tasks.
-- Doing things in the Admin area.
+- Doing things in the **Admin** area.
 
 These pages should also mention if the tasks can only be accomplished by an
 instance administrator.

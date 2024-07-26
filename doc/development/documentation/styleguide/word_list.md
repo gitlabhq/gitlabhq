@@ -216,7 +216,7 @@ Do not use **and so on**. Instead, be more specific. For more information, see t
 
 ## area
 
-Use [**section**](#section) instead of **area**. The only exception is [the Admin area](#admin-area).
+Use [**section**](#section) instead of **area**. The only exception is [the **Admin** area](#admin-area).
 
 ## as
 

@@ -122,7 +122,7 @@ For most JSON requests, `POST`, `PUT`, `PATCH`, and `DELETE` are blocked, and th
 | `POST` | Paths ending with `/compare`| Git revision routes. |
 | `POST` | `.git/git-upload-pack` | To allow Git pull/clone. |
 | `POST` | `/api/v4/internal` | [internal API routes](../../development/internal_api/index.md) |
-| `POST` | `/admin/sidekiq` | To allow management of background jobs in the Admin area |
+| `POST` | `/admin/sidekiq` | To allow management of background jobs in the **Admin** area |
 | `POST` | `/admin/geo` | To allow updating Geo Nodes in the administrator UI |
 | `POST` | `/api/v4/geo_replication`| To allow certain Geo-specific administrator UI actions on secondary sites |
 

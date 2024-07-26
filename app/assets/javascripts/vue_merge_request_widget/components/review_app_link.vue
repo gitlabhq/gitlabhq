@@ -43,6 +43,6 @@ export default {
     data-track-action="open_review_app"
     data-track-label="review_app"
   >
-    {{ display.text }} <gl-icon class="fgray" name="external-link" />
+    {{ display.text }} <gl-icon class="gl-fill-gray-500" name="external-link" />
   </gl-button>
 </template>

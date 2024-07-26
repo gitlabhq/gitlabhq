@@ -555,7 +555,7 @@ To access the CI/CD Catalog and view the published components that are available
 1. Select **CI/CD Catalog**.
 
 Alternatively, if you are already in the [pipeline editor](../pipeline_editor/index.md)
-in your project, you can select **Browse CI/CD Catalog**.
+in your project, you can select **CI/CD Catalog**.
 
 Visibility of components in the CI/CD catalog follows the component source project's
 [visibility setting](../../user/public_access.md). Components with source projects set to:

@@ -17,7 +17,7 @@ DETAILS:
 By default, users are locked after 10 failed sign-in attempts. These users remain locked:
 
 - For 10 minutes, after which time they are automatically unlocked.
-- Until an administrator unlocks them from the [Admin area](../administration/admin_area.md) or the command line in under 10 minutes.
+- Until an administrator unlocks them from the [**Admin** area](../administration/admin_area.md) or the command line in under 10 minutes.
 
 In GitLab 16.5 and later, administrators can [use the API](../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) to configure:
 

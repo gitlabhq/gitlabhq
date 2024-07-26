@@ -20,8 +20,8 @@ module DisableNamespaceOrganizationValidationHelper
     end
   end
 
-  included do
-    spec_file = Pathname.new(example.metadata[:example_group][:file_path]).realpath.to_s
+  included do |base|
+    spec_file = base.metadata[:absolute_file_path]
 
     if spec_file.in?(DisableNamespaceOrganizationValidationHelper.todo_list)
       around do |example|

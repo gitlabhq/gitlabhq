@@ -64,7 +64,7 @@ For a single node search cluster, the functional cluster health status is always
 The search index updates after you:
 
 - Add data to the database or repository.
-- [Enable advanced search](#enable-advanced-search) in the Admin area.
+- [Enable advanced search](#enable-advanced-search) in the **Admin** area.
 
 NOTE:
 Before you use a new Elasticsearch cluster in production, see the
@@ -978,7 +978,7 @@ due to large volumes of data being indexed, follow these steps:
    ```
 
    This enqueues a Sidekiq job for each project that needs to be indexed.
-   You can view the jobs in the Admin area under **Monitoring > Background jobs > Queues Tab**
+   You can view the jobs in the **Admin** area under **Monitoring > Background jobs > Queues Tab**
    and select `elastic_commit_indexer`, or you can query indexing status using a Rake task:
 
    ```shell

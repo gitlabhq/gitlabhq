@@ -570,7 +570,7 @@ For more information about Sidekiq jobs, see the [Sidekiq-cron](https://github.c
 
 ## Disabling cron jobs
 
-You can disable any Sidekiq cron jobs by visiting the [Monitoring section in the Admin area](../admin_area.md#monitoring-section). You can also perform the same action using the command line and [Rails Runner](../operations/rails_console.md#using-the-rails-runner).
+You can disable any Sidekiq cron jobs by visiting the [Monitoring section in the **Admin** area](../admin_area.md#monitoring-section). You can also perform the same action using the command line and [Rails Runner](../operations/rails_console.md#using-the-rails-runner).
 
 To disable all cron jobs:
 

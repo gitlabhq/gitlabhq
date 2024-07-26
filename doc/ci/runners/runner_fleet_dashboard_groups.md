@@ -24,7 +24,7 @@ The following metrics are available in the runner fleet dashboard:
 
 | Metric                        | Description |
 |-------------------------------|-------------|
-| Online                        | Number of online runners. In the Admin area, this metric displays the number of runners for the entire instance. In a group, this metric displays the number of runners for the group and its subgroups. |
+| Online                        | Number of online runners. In the **Admin** area, this metric displays the number of runners for the entire instance. In a group, this metric displays the number of runners for the group and its subgroups. |
 | Offline                       | Number of offline runners. |
 | Active runners                | Number of active runners. |
 | Runner usage (previous month) | Number of compute minutes used by each project on group runners. Includes the option to export as CSV for cost analysis. |

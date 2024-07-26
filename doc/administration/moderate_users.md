@@ -55,7 +55,7 @@ To view user sign ups pending approval:
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A user sign up pending approval can be approved or rejected from the Admin area.
+A user sign up pending approval can be approved or rejected from the **Admin** area.
 
 To approve or reject a user sign up:
 
@@ -102,13 +102,13 @@ To block a user:
 
 The user receives an email notification that their account has been blocked. After this email, they no longer receive notifications.
 
-To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the Admin area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
+To report abuse from other users, see [report abuse](../user/report_abuse.md). For more information on abuse reports in the **Admin** area, see [resolving abuse reports](../administration/review_abuse_reports.md#resolving-abuse-reports).
 
 ### Unblock a user
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A blocked user can be unblocked from the Admin area. To do this:
+A blocked user can be unblocked from the **Admin** area. To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
@@ -226,7 +226,7 @@ A maximum of 240,000 users can be deleted per day.
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A deactivated user can be activated from the Admin area.
+A deactivated user can be activated from the **Admin** area.
 
 To do this:
 
@@ -260,7 +260,7 @@ A banned user:
 
 To block a user and hide their contributions, administrators can ban the user.
 
-Users can be banned using the Admin area. To do this:
+Users can be banned using the **Admin** area. To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
@@ -270,7 +270,7 @@ Users can be banned using the Admin area. To do this:
 
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-A banned user can be unbanned using the Admin area. To do this:
+A banned user can be unbanned using the **Admin** area. To do this:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
@@ -282,7 +282,7 @@ The user's state is set to active and they consume a
 
 ## Delete a user
 
-Use the Admin area to delete users.
+Use the **Admin** area to delete users.
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
@@ -309,7 +309,7 @@ Before 15.1, additionally groups of which deleted user were the only owner among
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/132402) in GitLab 16.5.
 > - Ability to filter a user by state [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-You can trust and untrust users from the Admin area.
+You can trust and untrust users from the **Admin** area.
 
 By default, a user is not trusted and is blocked from creating issues, notes, and snippets considered to be spam. When you trust a user, they can create issues, notes, and snippets without being blocked.
 

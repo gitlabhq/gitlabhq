@@ -353,7 +353,7 @@ to enact the following, basic troubleshooting steps:
 #### Resync and reverify multiple components
 
 NOTE:
-There is an [issue to implement this functionality in the Admin area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+There is an [issue to implement this functionality in the **Admin** area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
 WARNING:
 Commands that change data can cause damage if not run correctly or under the right conditions. Always run commands in a test environment first and have a backup instance ready to restore.

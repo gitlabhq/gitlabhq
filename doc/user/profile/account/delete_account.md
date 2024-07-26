@@ -88,7 +88,7 @@ When a user is deleted from an [abuse report](../../../administration/review_abu
 records are always removed.
 
 The deleting associated records option can be requested in the [API](../../../api/users.md#user-deletion) as well as
-the Admin area.
+the **Admin** area.
 
 WARNING:
 User approvals are associated with a user ID. Other user contributions do not have an associated user ID. When you delete a user and their contributions are moved to a "Ghost User", the approval contributions refer to a missing or invalid user ID. Instead of deleting users, consider [blocking](../../../administration/moderate_users.md#block-a-user), [banning](../../../administration/moderate_users.md#ban-a-user), or [deactivating](../../../administration/moderate_users.md#deactivate-a-user) them.
@@ -99,7 +99,7 @@ DETAILS:
 **Offering:** Self-managed
 
 WARNING:
-The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [Admin area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
+The root account is the most privileged account on the system. Deleting the root account might result in losing access to the instance [**Admin** area](../../../administration/admin_area.md) if there is no other administrator available on the instance.
 
 You can delete the root account using either the UI or the [GitLab Rails console](../../../administration/operations/rails_console.md).
 
@@ -117,7 +117,7 @@ Prerequisites:
 
 To delete the root account:
 
-1. In the Admin area, [create a new user with administrator access](../../profile/account/create_accounts.md#create-users-in-admin-area). This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
+1. In the **Admin** area, [create a new user with administrator access](../../profile/account/create_accounts.md#create-users-in-admin-area). This ensures that you maintain administrator access to the instance whilst mitigating the risks associated with deleting the root account.
 1. [Delete the root account](#delete-users-and-user-contributions).
 
 ### Use the GitLab Rails console
@@ -179,7 +179,7 @@ ERROR: null value in column "user_id" violates not-null constraint
 ```
 
 The error can be found in the [PostgreSQL log](../../../administration/logs/index.md#postgresql-logs) and
-in the **Retries** section of the [background jobs view](../../../administration/admin_area.md#background-jobs) in the Admin area.
+in the **Retries** section of the [background jobs view](../../../administration/admin_area.md#background-jobs) in the **Admin** area.
 
 If the user being deleted used the [iterations](../../group/iterations/index.md) feature, such
 as adding an issue to an iteration, you must use

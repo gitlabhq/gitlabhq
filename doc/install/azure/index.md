@@ -291,7 +291,7 @@ To update GitLab to the latest version:
    before anything else.
    ```
 
-Refresh your GitLab instance in the browser and go to the Admin area. You should now have an
+Refresh your GitLab instance in the browser and go to the **Admin** area. You should now have an
 up-to-date GitLab instance.
 
 ## Next steps and further configuration

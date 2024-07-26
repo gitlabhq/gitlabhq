@@ -124,7 +124,7 @@ for customers that have unique permission requirements.
 
 GitLab also supports the following user types for unique use cases:
 
-- [Auditor Users](../administration/auditor_users.md) - The auditor role provides read-only access to all groups, projects and other resources except for the Admin area and project/group settings. You can use the auditor role when engaging with third-party auditors that require access to certain projects to validate processes.
+- [Auditor Users](../administration/auditor_users.md) - The auditor role provides read-only access to all groups, projects and other resources except for the **Admin** area and project/group settings. You can use the auditor role when engaging with third-party auditors that require access to certain projects to validate processes.
 
 - [External Users](../administration/external_users.md) -
     External users can be set to provide limited access for users that
@@ -140,7 +140,7 @@ GitLab also supports the following user types for unique use cases:
     Service accounts may be added to accommodate automated tasks.
     Service accounts do not use a seat under the license.
 
-**Admin area** - In the Admin area, administrators can [export permissions](../administration/admin_area.md#user-permission-export),
+**Admin** area - In the **Admin** area, administrators can [export permissions](../administration/admin_area.md#user-permission-export),
 [review user identities](../administration/admin_area.md#user-identities), [administer groups](../administration/admin_area.md#administering-groups),
 and much more. Functions that can be used to meet FedRAMP / NIST 800-53
 requirements:
@@ -161,7 +161,7 @@ requirements:
     FedRAMP requires organizations to monitor accounts for atypical use
     (AC-2(12)). GitLab empowers users to flag abuse in abuse reports,
     where administrators can remove access pending investigation. Spam
-    logs are consolidated in the **Spam logs** section of the Admin area.
+    logs are consolidated in the **Spam logs** section of the **Admin** area.
     Administrators can remove, block, or trust users flagged in that
     area.
 
@@ -183,7 +183,7 @@ requirements:
     with the GitLab UI, which organizations interested
     in enforcing longer passwords can use. Additionally, self-managed customers
     may [configure complexity requirements](../administration/settings/sign_up_restrictions.md#password-complexity-requirements)
-    through the Admin area UI.
+    through the **Admin** area UI.
 
 - [Default session durations](../administration/settings/account_and_limit_settings.md#customize-the-default-session-duration) -
     FedRAMP establishes that users that have been inactive for a set
@@ -194,10 +194,10 @@ requirements:
 
 - [Provisioning New Users](../user/profile/account/create_accounts.md) -
     Administrators can create new users for their GitLab account with the
-    Admin area UI. In compliance with IA-5, GitLab requires new users to
+    **Admin** area UI. In compliance with IA-5, GitLab requires new users to
     change their passwords on first login.
 
-- Deprovisioning Users - Administrators are able to [remove users with the Admin area UI](../user/profile/account/delete_account.md#delete-users-and-user-contributions).
+- Deprovisioning Users - Administrators are able to [remove users with the **Admin** area UI](../user/profile/account/delete_account.md#delete-users-and-user-contributions).
     An alternative to deleting users is to [block a user](../administration/moderate_users.md#block-a-user)
     and remove all access. Blocking a user maintains their data in
     repositories while removing all access. Blocked users do not impact

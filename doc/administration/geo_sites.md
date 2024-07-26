@@ -79,7 +79,7 @@ The internal URL defaults to external URL. To change it:
 1. Edit the internal URL.
 1. Select **Save changes**.
 
-When enabled, the Admin area for Geo shows replication details for each site directly
+When enabled, the **Admin** area for Geo shows replication details for each site directly
 from the primary site's UI, and through the Geo secondary proxy, if enabled.
 
 WARNING:

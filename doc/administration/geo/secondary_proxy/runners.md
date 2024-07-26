@@ -57,7 +57,7 @@ If you are not concerned about these issues, there is nothing to do here.
 
 You must have administrator access to use any of the following methods:
 
-- Through the Admin area:
+- Through the **Admin** area:
   1. On the left sidebar, at the bottom, select **Admin**.
   1. Select **Settings > Runners**.
   1. Identify the runners you would like to pause.

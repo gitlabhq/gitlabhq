@@ -426,7 +426,7 @@ Specific information applies to Linux package installations:
 
   Workarounds:
 
-  - Pause the running migration in the [Admin area](../background_migrations.md#from-the-gitlab-ui).
+  - Pause the running migration in the [**Admin** area](../background_migrations.md#from-the-gitlab-ui).
   - Recreate table statistics manually on the
     [database console](../../administration/troubleshooting/postgresql.md#start-a-database-console)
     to ensure the right query plan is selected:

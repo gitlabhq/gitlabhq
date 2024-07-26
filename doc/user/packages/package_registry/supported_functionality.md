@@ -98,7 +98,7 @@ To reduce the associated security risks, before deleting a package you can:
 
 - Verify the package is not being actively used.
 - Disable request forwarding:
-  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the Admin area.
+  - Instance administrators can disable forwarding in the [**Continuous Integration** section](../../../administration/settings/continuous_integration.md#package-registry-configuration) of the **Admin** area.
   - Group owners can disable forwarding in the **Packages and Registries** section of the group settings.
 
 ## Importing packages from other repositories

@@ -61,7 +61,7 @@
           %li.two-factor-status{ class: list_item_classes }
             %span.gl-text-secondary= _('Two-factor Authentication:')
             .gl-col-span-2
-              %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'cred' }
+              %strong{ class: @user.two_factor_enabled? ? 'cgreen' : 'gl-text-danger' }
                 - if @user.two_factor_enabled?
                   = _('Enabled')
                   = link_button_to _('Disable'), disable_two_factor_admin_user_path(@user), aria: { label: _('Disable') }, data: { confirm: _('Are you sure?'), 'confirm-btn-variant': 'danger' }, method: :patch, class: 'gl-float-right', title: _('Disable Two-factor Authentication'), variant: :danger, size: :small
@@ -103,7 +103,7 @@
             %li{ class: list_item_classes }
               %span.gl-text-secondary= _('Confirmed:')
               .gl-col-span-2
-                %strong.cred= _('No')
+                %strong.gl-text-danger= _('No')
 
           %li{ class: list_item_classes }
             %span.gl-text-secondary= _('Current sign-in IP:')

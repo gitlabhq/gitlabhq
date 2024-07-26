@@ -166,7 +166,7 @@ If you are only using `HTTPS` for external/internal URLs, it is not necessary to
 #### Internal URL
 
 HTTP requests from any Geo secondary site to the primary Geo site use the Internal URL of the primary
-Geo site. If this is not explicitly defined in the primary Geo site settings in the Admin area, the
+Geo site. If this is not explicitly defined in the primary Geo site settings in the **Admin** area, the
 public URL of the primary site is used.
 
 To update the internal URL of the primary Geo site:

@@ -77,7 +77,7 @@ Auto DevOps runs pipelines automatically only if a [`Dockerfile` or matching bui
 Depending on your instance type, you can enable or disable Auto DevOps at the
 following levels:
 
-| Instance type       | [Project](#per-project) | [Group](#per-group) | [Instance](#per-instance) (Admin area)  |
+| Instance type       | [Project](#per-project) | [Group](#per-group) | [Instance](#per-instance) (**Admin** area) |
 |---------------------|------------------------|------------------------|------------------------|
 | GitLab SaaS         | **{check-circle}** Yes | **{check-circle}** Yes | **{dotted-circle}** No |
 | GitLab self-managed | **{check-circle}** Yes | **{check-circle}** Yes | **{check-circle}** Yes |

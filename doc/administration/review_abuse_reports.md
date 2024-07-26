@@ -13,7 +13,7 @@ DETAILS:
 View and resolve abuse reports from GitLab users.
 
 GitLab administrators can view and [resolve](#resolving-abuse-reports) abuse
-reports in the Admin area.
+reports in the **Admin** area.
 
 ## Receive notification of abuse reports by email
 

@@ -10,7 +10,12 @@ import axios from '~/lib/utils/axios_utils';
 
 import { HTTP_STATUS_NOT_FOUND, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
-import { mergeUrlParams, getLocationHash, getParameterValues } from '~/lib/utils/url_utility';
+import {
+  mergeUrlParams,
+  getLocationHash,
+  getParameterValues,
+  removeParams,
+} from '~/lib/utils/url_utility';
 import notesEventHub from '~/notes/event_hub';
 import { generateTreeList } from '~/diffs/utils/tree_worker_utils';
 import { sortTree } from '~/ide/stores/utils';
@@ -394,7 +399,7 @@ export const fetchCoverageFiles = ({ commit, state }) => {
 export const setHighlightedRow = ({ commit }, { lineCode, event }) => {
   if (event && event.target.href) {
     event.preventDefault();
-    window.history.replaceState(null, undefined, event.target.href);
+    window.history.replaceState(null, undefined, removeParams(['pin'], event.target.href));
   }
   const fileHash = lineCode.split('_')[0];
   commit(types.SET_HIGHLIGHTED_ROW, lineCode);

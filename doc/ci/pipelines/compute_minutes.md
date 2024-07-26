@@ -406,12 +406,12 @@ An administrator can reset the compute usage for a namespace for the current mon
 
 ### Reset usage for a personal namespace
 
-1. Find the [user in the Admin area](../../administration/admin_area.md#administering-users).
+1. Find the [user in the **Admin** area](../../administration/admin_area.md#administering-users).
 1. Select **Edit**.
 1. In **Limits**, select **Reset compute usage**.
 
 ### Reset usage for a group namespace
 
-1. Find the [group in the Admin area](../../administration/admin_area.md#administering-groups).
+1. Find the [group in the **Admin** area](../../administration/admin_area.md#administering-groups).
 1. Select **Edit**.
 1. In **Permissions and group features**, select **Reset compute usage**.

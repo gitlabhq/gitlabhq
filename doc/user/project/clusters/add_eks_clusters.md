@@ -57,7 +57,7 @@ cluster certificates:
 1. Go to your:
    - Project's **Operate > Kubernetes clusters** page, for a project-level cluster.
    - Group's **Kubernetes** page, for a group-level cluster.
-   - The Admin area's **Kubernetes** page, for an instance-level cluster.
+   - The **Admin** area's **Kubernetes** page, for an instance-level cluster.
 1. Select **Integrate with a cluster certificate**.
 1. Under the **Create new cluster** tab, select **Amazon EKS** to display an
    `Account ID` and `External ID` needed for later steps.

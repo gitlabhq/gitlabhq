@@ -62,7 +62,7 @@ Prerequisites:
 To configure Okta for SCIM:
 
 1. Sign in to Okta.
-1. In the upper-right corner, select **Admin**. The button is not visible from the Admin area.
+1. In the upper-right corner, select **Admin**. The button is not visible from the **Admin** area.
 1. In the **Application** tab, select **Browse App Catalog**.
 1. Find and select the **GitLab** application.
 1. On the GitLab application overview page, select **Add Integration**.

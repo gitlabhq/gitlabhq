@@ -24,6 +24,6 @@ describe('Diff file row stats', () => {
   });
 
   it('renders removed lines count', () => {
-    expect(wrapper.find('.cred').text()).toContain('-10');
+    expect(wrapper.find('[data-testid="file-removed-lines"]').text()).toContain('-10');
   });
 });

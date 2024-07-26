@@ -12,7 +12,7 @@ export default {
 <template>
   <span class="file-row-stats">
     <span class="cgreen"> +{{ file.addedLines }} </span>
-    <span class="cred"> -{{ file.removedLines }} </span>
+    <span data-testid="file-removed-lines" class="gl-text-red-500"> -{{ file.removedLines }} </span>
   </span>
 </template>
 

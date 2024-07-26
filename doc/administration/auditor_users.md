@@ -12,7 +12,7 @@ DETAILS:
 
 Users with auditor access have read-only access to all groups, projects, and other resources except:
 
-- The [Admin area](../administration/admin_area.md).
+- The [**Admin** area](../administration/admin_area.md).
 - Project and group settings.
 
 For more information, see [Auditor user permissions and restrictions](#auditor-user-permissions-and-restrictions)
@@ -49,7 +49,7 @@ You can also give users auditor access using [SAML groups](../integration/saml.m
 
 ## Auditor user permissions and restrictions
 
-Auditor access is _not_ a read-only version of administrator access because it doesn't permit access to the Admin area.
+Auditor access is _not_ a read-only version of administrator access because it doesn't permit access to the **Admin** area.
 
 For access to their own resources and resources within a group or project where they are a member,
 users with auditor access have the same [permissions](../user/permissions.md) as regular users.
@@ -61,7 +61,7 @@ If you are signed in with auditor access, you:
 - Have [permissions](../user/permissions.md) based on your role to projects and groups you are a member of. For example, if you have the Developer role,
   you can push commits or comment on issues.
 - Can access the same resources using the GitLab UI or API.
-- Can't view the Admin area, or perform any administration actions.
+- Can't view the **Admin** area, or perform any administration actions.
 - Can't view job logs when [debug logging](../ci/variables/index.md#enable-debug-logging) is enabled.
 
 ## Maintain auditor users using API

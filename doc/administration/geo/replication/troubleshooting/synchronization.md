@@ -57,7 +57,7 @@ You can perform a similar operation with other the Models handled by the [Geo Se
 
 NOTE:
 `GroupWikiRepository` is not in the previous list since verification is not implemented.
-There is an [issue to implement this functionality in the Admin area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
+There is an [issue to implement this functionality in the **Admin** area UI](https://gitlab.com/gitlab-org/gitlab/-/issues/364729).
 
 ## Message: `Synchronization failed - Error syncing repository`
 

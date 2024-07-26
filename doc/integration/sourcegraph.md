@@ -51,8 +51,8 @@ Prerequisites:
 
 In Sourcegraph:
 
-1. Go to the site Admin area.
-1. Optional. [Configure your GitLab external service](https://docs.sourcegraph.com/admin/external_service/gitlab).
+1. Go to the **Site admin** area.
+1. Optional. [Configure your GitLab external service](https://sourcegraph.com/docs/admin/code_hosts/gitlab).
    If your GitLab repositories are already searchable in Sourcegraph, you can skip this step.
 1. Confirm that you can search your repositories from GitLab in your Sourcegraph instance by running a test query.
 1. Add your GitLab instance URL to the [`corsOrigin` setting](https://docs.sourcegraph.com/admin/config/site_config#corsOrigin)

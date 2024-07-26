@@ -10,10 +10,11 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-The Admin area provides a web UI to manage and configure features of GitLab
-self-managed instances. If you are an administrator, to access the Admin area:
+The **Admin** area provides a web UI to manage and configure features of GitLab
+self-managed instances. If you are an administrator, to access the **Admin** area:
 
-- In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin**.
+- In GitLab 17.3 and later: on the left sidebar, at the bottom, select **Admin**.
+- In GitLab 16.7 and later: on the left sidebar, at the bottom, select **Admin area**.
 - In GitLab 16.1 and later: on the left sidebar, select **Search or go to**, then select **Admin**.
 - In GitLab 16.0 and earlier: on the top bar, select **Main menu > Admin**.
 
@@ -21,7 +22,7 @@ If the GitLab instance uses Admin Mode, you must [enable Admin Mode for your ses
 the **Admin** button is visible.
 
 NOTE:
-Only administrators on GitLab self-managed or GitLab Dedicated can access the Admin area. On GitLab.com the Admin area feature is not available.
+Only administrators on GitLab self-managed or GitLab Dedicated can access the **Admin** area. On GitLab.com the **Admin** area feature is not available.
 
 ## Administering organizations
 
@@ -32,7 +33,7 @@ On self-managed GitLab, by default this feature is not available. To make it ava
 On GitLab.com and GitLab Dedicated, this feature is not available.
 This feature is not ready for production use.
 
-You can administer all organizations in the GitLab instance from the Admin area's Organizations page.
+You can administer all organizations in the GitLab instance from the **Admin** area's Organizations page.
 
 To access the Organizations page:
 
@@ -41,7 +42,7 @@ To access the Organizations page:
 
 ## Administering projects
 
-You can administer all projects in the GitLab instance from the Admin area's Projects page.
+You can administer all projects in the GitLab instance from the **Admin** area's Projects page.
 
 To access the Projects page:
 
@@ -96,7 +97,7 @@ You can combine the filter options. For example, to list only public projects wi
 
 > - Filtering users [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/238183) in GitLab 17.0.
 
-You can administer all users in the GitLab instance from the Admin area's Users page:
+You can administer all users in the GitLab instance from the **Admin** area's Users page:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Overview > Users**.
@@ -168,7 +169,7 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** Self-managed, GitLab Dedicated
 
-An administrator can export user permissions for all users in the GitLab instance from the Admin area's Users page.
+An administrator can export user permissions for all users in the GitLab instance from the **Admin** area's Users page.
 The export lists direct membership the users have in groups and projects.
 
 The following data is included in the export:
@@ -228,7 +229,7 @@ It is also possible to [limit which roles can create a subgroup within a group](
 
 ## Administering groups
 
-You can administer all groups in the GitLab instance from the Admin area's Groups page.
+You can administer all groups in the GitLab instance from the **Admin** area's Groups page.
 
 To access the Groups page:
 
@@ -323,7 +324,7 @@ To merge topics:
 
 ## Administering Gitaly servers
 
-You can list all Gitaly servers in the GitLab instance from the Admin area's **Gitaly servers**
+You can list all Gitaly servers in the GitLab instance from the **Admin** area's **Gitaly servers**
 page. For more details, see [Gitaly](gitaly/index.md).
 
 To access the **Gitaly servers** page:
@@ -347,7 +348,7 @@ For each Gitaly server, the following details are listed:
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/340859) from **Overview > Runners** to **CI/CD > Runners** in GitLab 15.8.
 
-You can administer all runners in the GitLab instance from the Admin area's **Runners** page. See
+You can administer all runners in the GitLab instance from the **Admin** area's **Runners** page. See
 [GitLab Runner](https://docs.gitlab.com/runner/) for more information.
 
 To access the **Runners** page:
@@ -404,7 +405,7 @@ You can also edit, pause, or remove each runner.
 
 > - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/386311) from **Overview > Jobs** to **CI/CD > Jobs** in GitLab 15.8.
 
-You can administer all jobs in the GitLab instance from the Admin area's Jobs page.
+You can administer all jobs in the GitLab instance from the **Admin** area's Jobs page.
 
 To access the Jobs page:
 
@@ -429,7 +430,7 @@ For each job, the following details are listed:
 
 ## Monitoring section
 
-The following topics document the **Monitoring** section of the Admin area.
+The following topics document the **Monitoring** section of the **Admin** area.
 
 ### System information
 
@@ -466,7 +467,7 @@ The Sidekiq dashboard consists of the following elements:
 
 ### Logs
 
-**Log** view has been removed from the Admin area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
+**Log** view has been removed from the **Admin** area dashboard since the logging does not work in multi-node setups and could cause confusion for administrators by displaying partial information.
 
 For multi-node systems we recommend ingesting the logs into services like Elasticsearch and Splunk.
 

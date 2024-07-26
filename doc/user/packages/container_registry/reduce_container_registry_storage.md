@@ -271,7 +271,7 @@ For self-managed instances, those settings can be updated in the [Rails console]
 ApplicationSetting.last.update(container_registry_expiration_policies_worker_capacity: 3)
 ```
 
-They are also available in the [Admin area](../../../administration/admin_area.md):
+They are also available in the [**Admin** area](../../../administration/admin_area.md):
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > CI/CD**

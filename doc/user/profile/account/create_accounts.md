@@ -14,7 +14,7 @@ DETAILS:
 You can create users:
 
 - [Manually through the sign-in page](#create-users-on-sign-in-page).
-- [Manually in the Admin area](#create-users-in-admin-area).
+- [Manually in the **Admin** area](#create-users-in-admin-area).
 - [Manually using the API](../../../api/users.md).
 - [Automatically through user authentication integrations](#create-users-through-authentication-integrations).
 

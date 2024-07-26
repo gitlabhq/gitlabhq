@@ -589,7 +589,7 @@ gem 'gitlab-mail_room', '~> 0.0.24', require: 'mail_room', feature_category: :sh
 gem 'email_reply_trimmer', '~> 0.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'html2text' # rubocop:todo Gemfile/MissingFeatureCategory
 
-gem 'stackprof', '~> 0.2.25', require: false # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'stackprof', '~> 0.2.26', require: false, feature_category: :shared
 gem 'rbtrace', '~> 0.4', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'memory_profiler', '~> 1.0', require: false # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'activerecord-explain-analyze', '~> 0.1', require: false # rubocop:todo Gemfile/MissingFeatureCategory
@@ -614,7 +614,7 @@ gem 'ssh_data', '~> 1.3' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'spamcheck', '~> 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Gitaly GRPC protocol definitions
-gem 'gitaly', '~> 17.1.0', feature_category: :gitaly
+gem 'gitaly', '~> 17.2.0', feature_category: :gitaly
 
 # KAS GRPC protocol definitions
 gem 'kas-grpc', '~> 0.5.0', feature_category: :deployment_management

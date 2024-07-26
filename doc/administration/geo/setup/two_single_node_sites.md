@@ -403,7 +403,7 @@ Fast lookup is [required for Geo](../../operations/fast_ssh_key_lookup.md#fast-l
 
 NOTE:
 Authentication is handled by the primary site. Don't set up custom authentication for the secondary site.
-Any change that requires access to the Admin area should be made in the primary site, because the
+Any change that requires access to the **Admin** area should be made in the primary site, because the
 secondary site is a read-only copy.
 
 ### Manually replicate secret GitLab values

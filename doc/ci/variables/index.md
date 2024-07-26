@@ -292,7 +292,7 @@ Prerequisites:
 
 To mask a variable:
 
-1. For the group, project, or in the Admin area, select **Settings > CI/CD**.
+1. For the group, project, or in the **Admin** area, select **Settings > CI/CD**.
 1. Expand **Variables**.
 1. Next to the variable you want to protect, select **Edit**.
 1. Select the **Mask variable** checkbox.
