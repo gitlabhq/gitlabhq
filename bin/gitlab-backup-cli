@@ -3,12 +3,12 @@
 
 $:.unshift File.expand_path("../../lib", __FILE__)
 
-# We require APP_PATH when the rails environment is required only,
-# this allows for faster CLI execution when rails is not needed
-APP_PATH = File.expand_path('../config/application', __dir__)
+# GITLAB_PATH points to the Rails.root, which the tool can use to load
+# the Rails environment when necessary or to help find configuration files
+# when used with GDK
+GITLAB_PATH = File.expand_path('../', __dir__)
 
 require_relative '../config/boot'
-
 require 'gitlab/backup/cli'
 
 Gitlab::Backup::Cli::Runner.start(ARGV)

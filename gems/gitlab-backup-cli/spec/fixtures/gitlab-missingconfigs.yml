@@ -1,0 +1,9 @@
+# # # # # # # # # # # # # # # # # #
+# GitLab application config file  #
+# # # # # # # # # # # # # # # # # #
+
+test:
+  gravatar:
+    enabled: true
+  shared:
+    path: 'test-shared'

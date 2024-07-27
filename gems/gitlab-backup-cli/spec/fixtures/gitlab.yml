@@ -1,0 +1,233 @@
+# # # # # # # # # # # # # # # # # #
+# GitLab application config file  #
+# # # # # # # # # # # # # # # # # #
+
+test:
+  object_store:
+    enabled: false
+  gravatar:
+    enabled: true
+  gitlab_ci:
+    builds_path: /tmp/gitlab/full/builds
+  shared:
+    path: /tmp/gitlab/full/shared
+  external_diffs:
+    enabled: false
+    # Diffs may be `always` external (the default), or they can be made external
+    # after they have become `outdated` (i.e., the MR is closed or a new version
+    # has been pushed).
+    # when: always
+    # The location where external diffs are stored (default: shared/external-diffs).
+    storage_path: tmp/tests/external-diffs
+    object_store:
+      enabled: false
+      remote_directory: external-diffs # The bucket name
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+  lfs:
+    enabled: false
+    # The location where LFS objects are stored (default: shared/lfs-objects).
+    storage_path: /tmp/gitlab/full/lfs-objects
+    object_store:
+      enabled: false
+      remote_directory: lfs-objects # The bucket name
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+  artifacts:
+    path: /tmp/gitlab/full/artifacts
+    enabled: true
+    # The location where build artifacts are stored (default: shared/artifacts).
+    # path: shared/artifacts
+    object_store:
+      enabled: false
+      remote_directory: artifacts # The bucket name
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+  uploads:
+    storage_path: /tmp/gitlab/full/public
+    object_store:
+      enabled: false
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+  packages:
+    enabled: true
+    storage_path: /tmp/gitlab/full/packages
+
+  terraform_state:
+    enabled: true
+    storage_path: /tmp/gitlab/full/terraform_state
+    object_store:
+      enabled: false
+      remote_directory: terraform
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
+  ci_secure_files:
+    enabled: true
+    storage_path: /tmp/gitlab/full/ci_secure_files
+    object_store:
+      enabled: false
+      remote_directory: ci-secure-files
+      connection:
+        provider: AWS # Only AWS supported at the moment
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+
+  registry:
+    enabled: true
+    path: /tmp/gitlab/full/registry
+
+  gitlab:
+    host: localhost
+    port: 80
+
+    content_security_policy:
+      enabled: true
+      report_only: false
+      directives:
+        base_uri:
+        child_src:
+        connect_src:
+        default_src: "'self'"
+        font_src:
+        form_action:
+        frame_ancestors: "'self'"
+        frame_src: "'self' https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://content.googleapis.com https://content-compute.googleapis.com https://content-cloudbilling.googleapis.com https://content-cloudresourcemanager.googleapis.com"
+        img_src: "* data: blob:"
+        manifest_src:
+        media_src:
+        object_src: "'none'"
+        script_src: "'self' 'unsafe-eval' http://localhost:* https://www.google.com/recaptcha/ https://www.recaptcha.net/ https://www.gstatic.com/recaptcha/ https://apis.google.com"
+        style_src: "'self' 'unsafe-inline'"
+        worker_src: "'self' blob:"
+        report_uri:
+
+    # When you run tests we clone and set up gitlab-shell
+    # In order to set it up correctly you need to specify
+    # your system username you use to run GitLab
+    # user: YOUR_USERNAME
+  pages:
+    path: /tmp/gitlab/full/pages
+    object_store:
+      enabled: false
+      remote_directory: pages # The bucket name
+      connection:
+        provider: AWS
+        aws_access_key_id: AWS_ACCESS_KEY_ID
+        aws_secret_access_key: AWS_SECRET_ACCESS_KEY
+        region: us-east-1
+    local_store:
+      enabled: true
+      path: /tmp/gitlab/full/pages
+  repositories:
+    storages:
+      default:
+        path: tmp/tests/repositories/
+        gitaly_address: unix:tmp/tests/gitaly/praefect.socket
+
+  gitaly:
+    client_path: tmp/tests/gitaly/_build/bin
+    token: secret
+  workhorse:
+    secret_file: tmp/gitlab_workhorse_test_secret
+  backup:
+    path: tmp/tests/backups
+    gitaly_backup_path: tmp/tests/gitaly/_build/bin/gitaly-backup
+  gitlab_shell:
+    path: tmp/tests/gitlab-shell/
+    authorized_keys_file: tmp/tests/authorized_keys
+  issues_tracker:
+    redmine:
+      title: "Redmine"
+      project_url: "http://redmine/projects/:issues_tracker_id"
+      issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
+      new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+    jira:
+      title: "Jira"
+      url: https://sample_company.atlassian.net
+      project_key: PROJECT
+
+  omniauth:
+    # enabled: true
+    allow_single_sign_on: true
+    external_providers: []
+
+    providers:
+      - { name: 'alicloud',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'github',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          url: "https://github.com/",
+          verify_ssl: false,
+          args: { scope: 'user:email' } }
+      - { name: 'bitbucket',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET' }
+      - { name: 'gitlab',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          args: { scope: 'api' } }
+      - { name: 'google_oauth2',
+          app_id: 'YOUR_APP_ID',
+          app_secret: 'YOUR_APP_SECRET',
+          args: { access_type: 'offline', approval_prompt: '' } }
+      - { name: 'jwt',
+          app_secret: 'YOUR_APP_SECRET',
+          args: {
+                  algorithm: 'HS256',
+                  uid_claim: 'email',
+                  required_claims: ["name", "email"],
+                  info_map: { name: "name", email: "email" },
+                  auth_url: 'https://example.com/',
+                  valid_within: null,
+                }
+        }
+      - { name: 'auth0',
+          args: {
+            client_id: 'YOUR_AUTH0_CLIENT_ID',
+            client_secret: 'YOUR_AUTH0_CLIENT_SECRET',
+            domain: 'YOUR_AUTH0_DOMAIN',
+            scope: 'openid profile email' } }
+      - { name: 'salesforce',
+          app_id: 'YOUR_CLIENT_ID',
+          app_secret: 'YOUR_CLIENT_SECRET'
+        }
+      - { name: 'atlassian_oauth2',
+          app_id: 'YOUR_CLIENT_ID',
+          app_secret: 'YOUR_CLIENT_SECRET',
+          args: { scope: 'offline_access read:jira-user read:jira-work', prompt: 'consent' }
+      }
+  ldap:
+    enabled: false
+    servers:
+      main:
+        label: ldap
+        host: 127.0.0.1
+        port: 3890
+        uid: 'uid'
+        encryption: 'plain' # "start_tls" or "simple_tls" or "plain"
+        base: 'dc=example,dc=com'
+        user_filter: ''
+        group_base: 'ou=groups,dc=example,dc=com'
+        admin_group: ''
+  prometheus:
+    enabled: true
+    server_address: 'localhost:9090'
