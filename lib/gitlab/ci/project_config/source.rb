@@ -44,7 +44,8 @@ module Gitlab
 
         private
 
-        attr_reader :project, :sha, :custom_content, :pipeline_source, :pipeline_source_bridge
+        attr_reader :project, :sha, :custom_content, :pipeline_source, :pipeline_source_bridge, :triggered_for_branch,
+          :ref, :has_pipeline_execution_policies
 
         def ci_config_path
           @ci_config_path ||= project.ci_config_path_or_default

@@ -21,7 +21,7 @@ RSpec.describe 'User creates branch', :js, feature_category: :source_code_manage
   shared_examples 'renders not found page' do
     specify do
       expect(page).to have_title('Not Found')
-      expect(page).to have_content('Page Not Found')
+      expect(page).to have_content('Page not found')
     end
   end
 

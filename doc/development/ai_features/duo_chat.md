@@ -369,6 +369,16 @@ saves the evaluations artifacts as a snippet, and updates the tracking issue in
 [`GitLab-org/ai-powered/ai-framework/qa-evaluation#1`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation/-/issues/1)
 in the project [`GitLab-org/ai-powered/ai-framework/qa-evaluation`](https://gitlab.com/gitlab-org/ai-powered/ai-framework/qa-evaluation).
 
+### GitLab Duo Chat Self-managed End-to-End Tests
+
+In MRs, the end-to-end tests exercise the Duo Chat functionality of self-managed instances by using an instance of the GitLab Linux package
+integrated with the `latest` version of AI Gateway. The instance of AI Gateway is configured to return [mock responses](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#mocking-ai-model-responses).
+To view the results of these tests, open the `e2e:package-and-test-ee` child pipeline and view the `ai-gateway` job.
+
+The `ai-gateway` job activates a cloud license and then assigns a Duo Pro seat to a test user, before the tests are run.
+
+For further information, please refer to the [GitLab QA documentation](https://gitlab.com/gitlab-org/gitlab-qa/-/blob/master/docs/what_tests_can_be_run.md#aigateway-scenarios)
+
 ## GraphQL Subscription
 
 The GraphQL Subscription for Chat behaves slightly different because it's user-centric. A user could have Chat open on multiple browser tabs, or also on their IDE.
@@ -488,6 +498,18 @@ Premium and Ultimate tiers, Staging Ref may be an easier place to test changes a
 team member because
 [you can make yourself an instance Admin in Staging Ref](https://handbook.gitlab.com/handbook/engineering/infrastructure/environments/staging-ref/#admin-access)
 and, as an Admin, easily create licensed groups for testing.
+
+### GitLab Duo Chat End-to-End Tests in live environments
+
+Duo Chat end-to-end tests run continuously against [Staging](https://staging.gitlab.com/users/sign_in) and [Production](https://gitlab.com/) GitLab environments.
+
+These tests run in scheduled pipelines and ensure the end-to-end user experiences are functioning correctly.
+Results can be viewed in the `#qa-staging` and `#qa-production` Slack channels. The pipelines can be found below, access can be requested in `#test-platform`:
+
+- [Staging-canary pipelines](https://ops.gitlab.net/gitlab-org/quality/staging-canary/-/pipelines)
+- [Staging pipelines](https://ops.gitlab.net/gitlab-org/quality/staging/-/pipelines)
+- [Canary pipelines](https://ops.gitlab.net/gitlab-org/quality/canary/-/pipelines)
+- [Production pipelines](https://ops.gitlab.net/gitlab-org/quality/production/-/pipelines)
 
 ## Product Analysis
 

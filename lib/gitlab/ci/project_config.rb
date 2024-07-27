@@ -6,19 +6,25 @@ module Gitlab
     class ProjectConfig
       # The order of sources is important:
       # - EE uses Compliance first since it must be used first if compliance templates are enabled.
-      #   (see ee/lib/ee/gitlab/ci/project_config.rb)
       # - Parameter is used by on-demand security scanning which passes the actual CI YAML to use as argument.
       # - Bridge is used for downstream pipelines since the config is defined in the bridge job. If lower in priority,
       #   it would evaluate the project's YAML file instead.
       # - Repository / ExternalProject / Remote: their order is not important between each other.
+      # - EE uses PipelineExecutionPolicyForced and it must come before AutoDevops because
+      #   it handles the empty CI config case.
+      #   We want to run Pipeline Execution Policies instead of AutoDevops (if they are present).
       # - AutoDevops is used as default option if nothing else is found and if AutoDevops is enabled.
+      # - EE uses SecurityPolicyDefault and it should come last. It is only necessary if no other source is available.
       SOURCES = [
+        ProjectConfig::Compliance,
         ProjectConfig::Parameter,
         ProjectConfig::Bridge,
         ProjectConfig::Repository,
         ProjectConfig::ExternalProject,
         ProjectConfig::Remote,
-        ProjectConfig::AutoDevops
+        ProjectConfig::PipelineExecutionPolicyForced,
+        ProjectConfig::AutoDevops,
+        ProjectConfig::SecurityPolicyDefault
       ].freeze
 
       def initialize(
@@ -58,5 +64,3 @@ module Gitlab
     end
   end
 end
-
-Gitlab::Ci::ProjectConfig.prepend_mod_with('Gitlab::Ci::ProjectConfig')

@@ -99,7 +99,6 @@ Gitlab/FeatureAvailableUsage:
     - 'ee/lib/ee/gitlab/gon_helper.rb'
     - 'ee/lib/ee/gitlab/tree_summary.rb'
     - 'ee/lib/gitlab/alert_management.rb'
-    - 'ee/lib/gitlab/ci/project_config/compliance.rb'
     - 'ee/lib/gitlab/code_owners.rb'
     - 'ee/lib/gitlab/path_locks_finder.rb'
     - 'ee/spec/models/ee/project_spec.rb'

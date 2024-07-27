@@ -97,15 +97,15 @@ RSpec.describe QA::Support::PageErrorChecker do
       end
 
       let(:error_500_str) do
-        "<html><body><div><p><code>"\
-        "req678"\
-        "</code></p></div></body></html>"
+        "<html><body><div><p><code>" \
+          "req678" \
+          "</code></p></div></body></html>"
       end
 
       let(:error_500_no_code_str) do
-        "<html><body>"\
-        "The code you are looking for is not here"\
-        "</body></html>"
+        "<html><body>" \
+          "The code you are looking for is not here" \
+          "</body></html>"
       end
 
       it 'returns code is present' do
@@ -154,15 +154,15 @@ RSpec.describe QA::Support::PageErrorChecker do
       end
 
       let(:expected_single_error) do
-        "There was 1 SEVERE level error:\n\n"\
-        "bar foo"
+        "There was 1 SEVERE level error:\n\n" \
+          "bar foo"
       end
 
       let(:expected_multiple_error) do
-        "There were 3 SEVERE level errors:\n\n"\
-        "bar foo\n"\
-        "foo\n"\
-        "bar"
+        "There were 3 SEVERE level errors:\n\n" \
+          "bar foo\n" \
+          "foo\n" \
+          "bar"
       end
 
       it 'returns status code report on no severe errors found' do
@@ -182,7 +182,7 @@ RSpec.describe QA::Support::PageErrorChecker do
 
       it 'returns report on multiple severe errors found' do
         allow(QA::Support::PageErrorChecker).to receive(:error_report_for)
-                                                    .with([SingleLog, SingleLog, SingleLog]).and_return("bar foo\nfoo\nbar")
+                                                  .with([SingleLog, SingleLog, SingleLog]).and_return("bar foo\nfoo\nbar")
         allow(QA::Support::PageErrorChecker).to receive(:logs).with(page).and_return(ThreeErrorsMockedLogs)
         allow(page).to receive(:current_path).and_return(test_path)
 
@@ -203,12 +203,15 @@ RSpec.describe QA::Support::PageErrorChecker do
     end
 
     let(:error_404_str) do
-      "<div class=\"error\">"\
-        "<img src=\"404.png\" alt=\"404\" />"\
-      "</div>"
+      "<div class=\"error-container\">" \
+        "<img src=\".\/-\/error-illustrations\/error-404-lg.svg\" alt=\"404 error\" \/>" \
+        "<h1>404: Page not found</h1>" \
+        "<p>Make sure the address is correct and the page has not moved.</p>" \
+        "<p>Please contact your GitLab administrator if you think this is a mistake.</p>" \
+        "</div>"
     end
 
-    let(:error_500_str) { "<head><title>Something went wrong (500)</title></head><body><h1>   500   </h1></body>" }
+    let(:error_500_str) { '<head><title>Something went wrong (500)</title></head><body><img src="./-/error-illustrations/error-500-lg.svg" alt="500 error"><h1>500: We\'re sorry, something went wrong on our end</h1></body>' }
     let(:project_name_500_str) { "<head><title>Project</title></head><h1 class=\"home-panel-title gl-mt-3 gl-mb-2\" itemprop=\"name\">qa-test-2022-05-25-12-12-16-d4500c2e79c37289</h1>" }
     let(:backtrace_str) { "<head><title>Error::Backtrace</title></head><body><section class=\"backtrace\">foo</section></body>" }
     let(:no_error_str) { "<head><title>Nothing wrong here</title></head><body>no 404 or 500 or backtrace</body>" }
@@ -272,7 +275,7 @@ RSpec.describe QA::Support::PageErrorChecker do
 
     it 'returns error report array of log messages' do
       expect(QA::Support::PageErrorChecker.error_report_for([LogOne, LogTwo]))
-          .to eq(%W[foo\n bar])
+        .to eq(%W[foo\n bar])
     end
   end
 

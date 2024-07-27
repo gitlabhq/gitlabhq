@@ -14,6 +14,7 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__, sprintf } from '~/locale';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
+import { reportToSentry } from '~/ci/utils';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
@@ -33,6 +34,7 @@ const defaultPagination = {
 };
 
 export default {
+  name: 'PipelineSchedules',
   i18n: {
     schedulesFetchError: s__('PipelineSchedules|There was a problem fetching pipeline schedules.'),
     scheduleDeleteError: s__(
@@ -112,8 +114,8 @@ export default {
           planLimit: ciPipelineSchedules,
         };
       },
-      error() {
-        this.reportError(this.$options.i18n.schedulesFetchError);
+      error(error) {
+        this.reportError(this.$options.i18n.schedulesFetchError, error);
       },
     },
   },
@@ -216,9 +218,11 @@ export default {
     },
   },
   methods: {
-    reportError(error) {
+    reportError(errorMessage, error) {
       this.hasError = true;
-      this.errorMessage = error;
+      this.errorMessage = errorMessage;
+
+      reportToSentry(this.$options.name, error);
     },
     setDeleteModal(id) {
       this.showDeleteModal = true;
@@ -250,8 +254,8 @@ export default {
           this.$apollo.queries.schedules.refetch();
           this.$toast.show(this.$options.i18n.deleteSuccess);
         }
-      } catch {
-        this.reportError(this.$options.i18n.scheduleDeleteError);
+      } catch (error) {
+        this.reportError(this.$options.i18n.scheduleDeleteError, error);
       }
     },
     async takeOwnership() {
@@ -281,8 +285,8 @@ export default {
             this.$toast.show(toastMsg);
           }
         }
-      } catch {
-        this.reportError(this.$options.i18n.takeOwnershipError);
+      } catch (error) {
+        this.reportError(this.$options.i18n.takeOwnershipError, error);
       }
     },
     async playPipelineSchedule(id) {
@@ -301,9 +305,10 @@ export default {
         } else {
           this.playSuccess = true;
         }
-      } catch {
+      } catch (error) {
         this.playSuccess = false;
-        this.reportError(this.$options.i18n.schedulePlayError);
+
+        this.reportError(this.$options.i18n.schedulePlayError, error);
       }
     },
     resetPagination() {

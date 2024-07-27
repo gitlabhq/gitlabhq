@@ -3,6 +3,7 @@ import { createAlert } from '~/alert';
 import eventHub from '~/ci/event_hub';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { historyPushState, buildUrlWithCurrentLocation } from '~/lib/utils/common_utils';
+import { reportToSentry } from '~/ci/utils';
 import { HTTP_STATUS_UNAUTHORIZED } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
 import { __ } from '~/locale';
@@ -114,9 +115,9 @@ export default {
 
           this.poll.enable({ data: this.requestData, response });
         })
-        .catch(() => {
+        .catch((error) => {
           this.isLoading = false;
-          this.errorCallback();
+          this.errorCallback(error);
 
           // restart polling
           this.poll.restart({ data: this.requestData });
@@ -164,6 +165,7 @@ export default {
         this.hasError = true;
         this.updateGraphDropdown = false;
       }
+      reportToSentry('pipelines_list', error);
     },
     setIsMakingRequest(isMakingRequest) {
       this.isMakingRequest = isMakingRequest;
@@ -219,6 +221,7 @@ export default {
               link: helpPagePath('ci/pipelines/merge_request_pipelines.md'),
             },
           });
+          reportToSentry('run_mr_pipeline', e);
         })
         .finally(() => this.store.toggleIsRunningPipeline(false));
     },

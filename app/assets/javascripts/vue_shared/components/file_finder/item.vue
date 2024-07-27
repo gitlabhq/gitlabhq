@@ -103,10 +103,10 @@ export default {
     </span>
     <span v-if="file.changed || file.tempFile" v-once class="diff-changed-stats">
       <span v-if="showDiffStats">
-        <span class="cgreen bold">
+        <span class="cgreen gl-font-bold">
           <gl-icon name="file-addition" class="align-text-top" /> {{ file.addedLines }}
         </span>
-        <span class="gl-text-red-500 bold ml-1">
+        <span class="gl-text-red-500 gl-font-bold ml-1">
           <gl-icon name="file-deletion" class="align-text-top" /> {{ file.removedLines }}
         </span>
       </span>

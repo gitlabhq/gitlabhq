@@ -1,6 +1,6 @@
 # When adding a group as a code owner, make sure to invite the group to the
 # project here: https://gitlab.com/gitlab-org/gitlab/-/project_members
-# As described in https://docs.gitlab.com/ee/user/project/code_owners.html
+# As described in https://docs.gitlab.com/ee/user/project/codeowners/index.html
 
 * @gitlab-org/maintainers/rails-backend @gitlab-org/maintainers/frontend @gitlab-org/maintainers/database @gl-quality/qe-maintainers @gl-quality/tooling-maintainers @gitlab-org/delivery @gitlab-org/maintainers/cicd-templates @gitlab-org/tw-leadership @gitlab-org/maintainers/kas-version-maintainers
 
@@ -332,7 +332,7 @@ Dangerfile
 /ee/lib/gitlab/code_owners.rb
 /ee/lib/gitlab/code_owners/
 /ee/spec/lib/gitlab/code_owners/
-/doc/user/project/code_owners.md
+/doc/user/project/codeowners/
 
 [Merge Requests backend] @code-review-be/engineers
 /app/controllers/projects/merge_requests_controller.rb

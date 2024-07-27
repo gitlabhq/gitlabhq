@@ -106,7 +106,7 @@ export default {
       >
     </span>
     <gl-tooltip :target="() => $refs.issueDueDate" :placement="tooltipPlacement">
-      <span class="bold">{{ __('Due date') }}</span>
+      <span class="gl-font-bold">{{ __('Due date') }}</span>
       <br />
       <span :class="{ 'gl-text-red-300': isPastDue }">{{ title }}</span>
     </gl-tooltip>

@@ -1,10 +1,10 @@
 - message = local_assigns.fetch(:message, nil)
 - content_for(:title, 'Access Denied')
 
-= image_tag('illustrations/error-403.svg', alt: '403', lazy: false)
-.container
-  %h3
-    = s_("403|You don't have the permission to access this page.")
+.error-container
+  = image_tag('illustrations/error/error-403-lg.svg', alt: '403', lazy: false)
+  %h1
+    = s_("403|403: You do not have the permission to access this page")
   - if message
     %p
       = message
@@ -13,4 +13,4 @@
   .action-container.js-go-back{ hidden: true }
     = render Pajamas::ButtonComponent.new(variant: :confirm) do
       = _('Go Back')
-= render "errors/footer"
+  = render "errors/footer"

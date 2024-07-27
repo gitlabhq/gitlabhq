@@ -150,10 +150,6 @@
   line-height: 24px;
 }
 
-.bold {
-  font-weight: $gl-font-weight-bold;
-}
-
 .tab-content {
   overflow: visible;
   @include media-breakpoint-down(sm) {

@@ -3,11 +3,14 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_composition do
-  let_it_be(:project) { create(:project, :empty_repo) }
+  let_it_be_with_reload(:project) { create(:project, :empty_repo) }
   let(:sha) { '123456' }
   let(:content) { nil }
   let(:source) { :push }
   let(:bridge) { nil }
+  let(:triggered_for_branch) { true }
+  let(:ref) { 'master' }
+  let(:has_pipeline_execution_policies) { false }
 
   subject(:config) do
     described_class.new(
@@ -15,7 +18,10 @@ RSpec.describe Gitlab::Ci::ProjectConfig, feature_category: :pipeline_compositio
       sha: sha,
       custom_content: content,
       pipeline_source: source,
-      pipeline_source_bridge: bridge
+      pipeline_source_bridge: bridge,
+      triggered_for_branch: triggered_for_branch,
+      ref: ref,
+      has_pipeline_execution_policies: has_pipeline_execution_policies
     )
   end
 

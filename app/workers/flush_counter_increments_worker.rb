@@ -18,7 +18,7 @@ class FlushCounterIncrementsWorker
   feature_category :not_owned # rubocop:disable Gitlab/AvoidFeatureCategoryNotOwned
 
   urgency :low
-  deduplicate :until_executing, including_scheduled: true
+  deduplicate :until_executed, including_scheduled: true, if_deduplicated: :reschedule_once
 
   idempotent!
 

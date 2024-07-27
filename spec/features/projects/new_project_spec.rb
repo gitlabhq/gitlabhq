@@ -243,7 +243,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           it 'is not allowed' do
             visit new_project_path(namespace_id: group.id)
 
-            expect(page).to have_content('Not Found')
+            expect(page).to have_content('Page not found')
           end
         end
       end
@@ -270,7 +270,7 @@ RSpec.describe 'New project', :js, feature_category: :groups_and_projects do
           it 'is not allowed' do
             visit new_project_path(namespace_id: group.id, project: { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
 
-            expect(page).to have_content('Not Found')
+            expect(page).to have_content('Page not found')
           end
         end
       end

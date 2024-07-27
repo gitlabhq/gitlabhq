@@ -114,7 +114,7 @@ describe('RelatedIssuableItem', () => {
       const stateTitle = findIcon().attributes('title');
       const formattedCreateDate = formatDate(defaultProps.createdAt);
 
-      expect(stateTitle).toContain('<span class="bold">Created</span>');
+      expect(stateTitle).toContain('Created');
       expect(stateTitle).toContain(`<span class="text-tertiary">${formattedCreateDate}</span>`);
     });
 

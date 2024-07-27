@@ -82,7 +82,7 @@ describe('generate stream', () => {
       'Running with ru',
       'nner 16.5.0\n',
       'Very long line\r\n',
-      'Progress 1\rProgress 2\rDone\r\n',
+      'Progress 1...\rProgress 2...\rDone\r\n',
       'Separated\r',
       '\n',
     ]);
@@ -115,6 +115,23 @@ describe('generate stream', () => {
 
       expect(await fetchLogLines()).toEqual([
         { content: [{ style: [], text: 'done' }], sections: [] },
+      ]);
+    });
+
+    it('preserves section headings', async () => {
+      mockFetchResponse(['section_start:1718017824:get_sources\rGetting sources']);
+
+      expect(await fetchLogLines()).toEqual([
+        {
+          content: [
+            {
+              style: [],
+              text: 'Getting sources',
+            },
+          ],
+          sections: [],
+          header: 'get_sources',
+        },
       ]);
     });
   });

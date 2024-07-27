@@ -78,7 +78,7 @@ export default {
       milestone.title
     }}</span>
     <gl-tooltip :target="() => $refs.milestoneDetails" placement="bottom" class="js-item-milestone">
-      <span class="bold">{{ __('Milestone') }}</span> <br />
+      <span class="gl-font-bold">{{ __('Milestone') }}</span> <br />
       <span>{{ milestone.title }}</span> <br />
       <span
         v-if="milestoneStart || milestoneDue"

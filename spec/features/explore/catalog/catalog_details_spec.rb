@@ -29,7 +29,7 @@ RSpec.describe 'CI/CD Catalog details page', :js, feature_category: :pipeline_co
 
       it 'returns a 404' do
         expect(page).to have_title('Not Found')
-        expect(page).to have_content('Page Not Found')
+        expect(page).to have_content('Page not found')
       end
     end
   end

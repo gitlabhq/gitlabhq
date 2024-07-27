@@ -88,7 +88,7 @@ export const APPROVALS_HELP_PATH = 'user/project/merge_requests/approvals/index.
 
 export const STATUS_CHECKS_HELP_PATH = 'user/project/merge_requests/status_checks.md';
 
-export const CODE_OWNERS_HELP_PATH = 'user/project/code_owners.md';
+export const CODE_OWNERS_HELP_PATH = 'user/project/codeowners/index.md';
 
 export const PUSH_RULES_HELP_PATH = 'user/project/repository/push_rules.md';
 

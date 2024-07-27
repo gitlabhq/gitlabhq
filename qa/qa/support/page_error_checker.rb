@@ -37,7 +37,7 @@ module QA
           if severe_errors.none?
             status_code_report(error_code)
           else
-            "There #{severe_errors.count == 1 ? 'was' : 'were'} #{severe_errors.count} "\
+            "There #{severe_errors.count == 1 ? 'was' : 'were'} #{severe_errors.count} " \
               "SEVERE level error#{severe_errors.count == 1 ? '' : 's'}:\n\n#{error_report_for(severe_errors)}"
           end
         end
@@ -51,7 +51,8 @@ module QA
           QA::Runtime::Logger.debug "Performing page error check!"
 
           # Test for 404 img alt
-          return report!(page, 404) if page_html(page).xpath("//img").map { |t| t[:alt] }.first.eql?('404')
+          error_code = page_html(page).xpath("//img").map { |t| t[:alt] }.first
+          return report!(page, 404) if error_code && error_code.include?('404')
 
           # 500 error page in header surrounded by newlines, try to match
           five_hundred_test = page_html(page).xpath("//h1/text()").map.first
@@ -67,6 +68,7 @@ module QA
 
           QA::Runtime::Logger.error("Page error check raised error `#{e.class}`: #{e.message}")
         end
+
         # rubocop:enable Rails/Pluck
 
         # Log request errors triggered from async api calls from the browser
@@ -102,8 +104,8 @@ module QA
 
         def error_report_for(logs)
           logs
-              .map(&:message)
-              .map { |message| message.gsub('\\n', "\n") }
+            .map(&:message)
+            .map { |message| message.gsub('\\n', "\n") }
         end
 
         def logs(page)

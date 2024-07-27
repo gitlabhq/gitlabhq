@@ -4,7 +4,7 @@ RSpec.shared_examples 'resource access tokens missing access rights' do
   it 'does not show access token page' do
     visit resource_settings_access_tokens_path
 
-    expect(page).to have_content("Page Not Found")
+    expect(page).to have_content("Page not found")
   end
 end
 

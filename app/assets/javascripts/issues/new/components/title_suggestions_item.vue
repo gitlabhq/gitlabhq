@@ -77,7 +77,7 @@ export default {
       <gl-link
         :href="suggestion.webUrl"
         target="_blank"
-        class="suggestion bold str-truncated-100 gl-text-gray-900!"
+        class="suggestion gl-font-bold str-truncated-100 gl-text-gray-900!"
       >
         {{ suggestion.title }}
       </gl-link>
@@ -86,7 +86,8 @@ export default {
       <gl-icon ref="state" :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
       <gl-tooltip :target="() => $refs.state" placement="bottom">
         <span class="gl-block">
-          <span class="bold"> {{ stateTitle }} </span> {{ timeFormatted(closedOrCreatedDate) }}
+          <span class="gl-font-bold"> {{ stateTitle }} </span>
+          {{ timeFormatted(closedOrCreatedDate) }}
         </span>
         <span class="text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
       </gl-tooltip>
@@ -105,7 +106,7 @@ export default {
           tooltip-placement="bottom"
           class="gl-inline-block"
         >
-          <span class="bold gl-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
+          <span class="gl-font-bold gl-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
           <span class="text-tertiary">@{{ suggestion.author.username }}</span>
         </user-avatar-image>
       </gl-link>

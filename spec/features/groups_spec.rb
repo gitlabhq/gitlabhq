@@ -338,7 +338,7 @@ RSpec.describe 'Group', feature_category: :groups_and_projects do
     visit new_group_path(parent_id: group.id, anchor: 'create-group-pane')
 
     expect(page).to have_title('Not Found')
-    expect(page).to have_content('Page Not Found')
+    expect(page).to have_content('Page not found')
   end
 
   describe 'group edit', :js do

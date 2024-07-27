@@ -36,7 +36,7 @@ RSpec.describe 'Group Export', :js, feature_category: :importers do
     it 'does not let the user export the group' do
       visit edit_group_path(group)
 
-      expect(page).to have_content('Page Not Found')
+      expect(page).to have_content('Page not found')
       expect(page).not_to have_content('Export group')
     end
   end

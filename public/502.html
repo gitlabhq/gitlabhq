@@ -5,86 +5,76 @@
   <title>Waiting for GitLab to boot</title>
   <style>
     body {
-      color: #666;
+      color: #333238;
       text-align: center;
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      margin: auto;
-      font-size: 14px;
+      font-family: "Nunito Sans", -apple-system, ".SFNSText-Regular", "San Francisco", BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
     h1 {
-      font-size: 56px;
-      line-height: 100px;
-      font-weight: 400;
-      color: #456;
+      font-size: 1.75rem;
+      line-height: 2.25rem;
+      margin: 1rem 0;
     }
 
-    h2 {
-      font-size: 24px;
-      color: #666;
-      line-height: 1.5em;
-    }
-
-    h3 {
-      color: #456;
-      font-size: 20px;
-      font-weight: 400;
-      line-height: 28px;
-    }
-
-    hr {
-      max-width: 800px;
-      margin: 18px auto;
-      border: 0;
-      border-top: 1px solid #EEE;
-      border-bottom: 1px solid white;
+    p {
+      margin-bottom: .5rem;
     }
 
     img {
-      max-width: 40vw;
       display: block;
-      margin: 40px auto;
+      margin: 0 auto;
     }
 
     a {
-      line-height: 100px;
-      font-weight: 400;
-      color: #4A8BEE;
-      font-size: 18px;
       text-decoration: none;
+      color: #1068bf;
     }
 
-    .container {
-      margin: auto 20px;
+    a:hover {
+      text-decoration: underline;
+    }
+
+    .error-container {
+      max-width: 65ch;
+      margin: auto;
+      padding: 1rem 0;
+    }
+
+    .action-container {
+      margin-top: 1.5rem;
     }
 
     .go-back {
       display: none;
     }
 
+    .footer {
+      margin: 1rem 0 0 0;
+      padding: 1rem 0 0 0;
+      border-top: 1px solid #dcdcde;
+      color: #737278;
+      font-size: 0.75rem;
+    }
+    .footer p {
+      margin: 0;
+    }
   </style>
 </head>
 
 <body>
-  <a href="/">
-    <img src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDI1IDI0IiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgogIDxwYXRoIGQ9Im0yNC41MDcgOS41LS4wMzQtLjA5TDIxLjA4Mi41NjJhLjg5Ni44OTYgMCAwIDAtMS42OTQuMDkxbC0yLjI5IDcuMDFINy44MjVMNS41MzUuNjUzYS44OTguODk4IDAgMCAwLTEuNjk0LS4wOUwuNDUxIDkuNDExLjQxNiA5LjVhNi4yOTcgNi4yOTcgMCAwIDAgMi4wOSA3LjI3OGwuMDEyLjAxLjAzLjAyMiA1LjE2IDMuODY3IDIuNTYgMS45MzUgMS41NTQgMS4xNzZhMS4wNTEgMS4wNTEgMCAwIDAgMS4yNjggMGwxLjU1NS0xLjE3NiAyLjU2LTEuOTM1IDUuMTk3LTMuODkuMDE0LS4wMUE2LjI5NyA2LjI5NyAwIDAgMCAyNC41MDcgOS41WiIKICAgICAgICBmaWxsPSIjRTI0MzI5Ii8+CiAgPHBhdGggZD0ibTI0LjUwNyA5LjUtLjAzNC0uMDlhMTEuNDQgMTEuNDQgMCAwIDAtNC41NiAyLjA1MWwtNy40NDcgNS42MzIgNC43NDIgMy41ODQgNS4xOTctMy44OS4wMTQtLjAxQTYuMjk3IDYuMjk3IDAgMCAwIDI0LjUwNyA5LjVaIgogICAgICAgIGZpbGw9IiNGQzZEMjYiLz4KICA8cGF0aCBkPSJtNy43MDcgMjAuNjc3IDIuNTYgMS45MzUgMS41NTUgMS4xNzZhMS4wNTEgMS4wNTEgMCAwIDAgMS4yNjggMGwxLjU1NS0xLjE3NiAyLjU2LTEuOTM1LTQuNzQzLTMuNTg0LTQuNzU1IDMuNTg0WiIKICAgICAgICBmaWxsPSIjRkNBMzI2Ii8+CiAgPHBhdGggZD0iTTUuMDEgMTEuNDYxYTExLjQzIDExLjQzIDAgMCAwLTQuNTYtMi4wNUwuNDE2IDkuNWE2LjI5NyA2LjI5NyAwIDAgMCAyLjA5IDcuMjc4bC4wMTIuMDEuMDMuMDIyIDUuMTYgMy44NjcgNC43NDUtMy41ODQtNy40NDQtNS42MzJaIgogICAgICAgIGZpbGw9IiNGQzZEMjYiLz4KPC9zdmc+Cg==' alt="GitLab"/>
-  </a>
-
-  <h1>Waiting for GitLab to boot</h1>
-  <h2>HTTP 502</h2>
-
-  <div class="container">
+  <div class="error-container">
+    <img src='./-/error-illustrations/error-502-lg.svg' alt="502 error"/>
+    <h1>HTTP 502: Waiting for GitLab to boot</h1>
     <p>It can take up to a few minutes for GitLab to boot completely.</p>
     <p>This page will automatically reload every 5 seconds.</p>
+    <div class="action-container">
+      <a href="javascript:history.back()" class="js-go-back go-back">Go back</a>
+    </div>
 
-    <a href="javascript:history.back()" class="js-go-back go-back">Go back</a>
+    <div class="footer">
+      <p>Refreshed at <span id="refreshedAt"></span></p>
+    </div>
   </div>
-
-  <hr/>
-
-  <footer>
-    <p>Refreshed at <span id="refreshedAt"></span></p>
-  </footer>
 
   <script>
     const now = new Date();

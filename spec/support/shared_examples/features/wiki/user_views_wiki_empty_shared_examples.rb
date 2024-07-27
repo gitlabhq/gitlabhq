@@ -12,7 +12,7 @@ RSpec.shared_examples 'User views empty wiki' do
       visit wiki_path(wiki)
 
       if @current_user
-        expect(page).to have_content('Page Not Found')
+        expect(page).to have_content('Page not found')
       else
         expect(page).to have_content('You need to sign in')
       end

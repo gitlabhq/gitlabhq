@@ -133,8 +133,11 @@ export default class {
     };
   }
 
-  append(text) {
-    if (text.length === 0) {
+  append(line) {
+    const parts = line.split(CR_LINE_ENDING).filter(Boolean);
+    const text = parts[parts.length - 1];
+
+    if (!text) {
       return;
     }
 

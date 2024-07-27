@@ -45,6 +45,18 @@ describe('Log scanner', () => {
     });
   });
 
+  it('scans line that shows progress with CR char', () => {
+    expect(scanner.scan('Progress 1...\rProgress 2...\rDone!')).toEqual({
+      content: [
+        {
+          text: 'Done!',
+          style: [],
+        },
+      ],
+      sections: [],
+    });
+  });
+
   it('scans a section with its duration', () => {
     const lines = [
       'section_start:1000:my_section\rheader 1',

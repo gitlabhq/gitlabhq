@@ -3,6 +3,7 @@ import { GlIntersectionObserver, GlLoadingIcon, GlSkeletonLoader } from '@gitlab
 import produce from 'immer';
 import { createAlert } from '~/alert';
 import { __ } from '~/locale';
+import { reportToSentry } from '~/ci/utils';
 import eventHub from '~/ci/jobs_page/event_hub';
 import JobsTable from '~/ci/jobs_page/components/jobs_table.vue';
 import { JOBS_TAB_FIELDS } from '~/ci/jobs_page/constants';
@@ -11,6 +12,7 @@ import { POLL_INTERVAL } from '../graph/constants';
 import getPipelineJobs from './graphql/queries/get_pipeline_jobs.query.graphql';
 
 export default {
+  name: 'PipelineJobsApp',
   fields: JOBS_TAB_FIELDS,
   components: {
     GlIntersectionObserver,
@@ -50,8 +52,9 @@ export default {
         }
         this.jobsPageInfo = data.project?.pipeline?.jobs?.pageInfo || {};
       },
-      error() {
+      error(error) {
         createAlert({ message: __('An error occurred while fetching the pipelines jobs.') });
+        reportToSentry(this.$options.name, error);
       },
     },
   },

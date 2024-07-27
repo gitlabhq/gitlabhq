@@ -52,7 +52,7 @@ RSpec.describe 'Commit > User view commits', feature_category: :source_code_mana
 
           it 'renders not found' do
             expect(page).to have_title('Not Found')
-            expect(page).to have_content('Page Not Found')
+            expect(page).to have_content('Page not found')
           end
         end
       end

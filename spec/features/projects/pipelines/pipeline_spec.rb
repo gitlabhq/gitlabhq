@@ -514,7 +514,7 @@ RSpec.describe 'Pipeline', :js, feature_category: :continuous_integration do
         let(:role) { :guest }
 
         it 'does not show the pipeline details page' do
-          expect(page).to have_content('Not Found')
+          expect(page).to have_content('Page not found')
         end
       end
     end

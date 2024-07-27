@@ -90,7 +90,7 @@ RSpec.describe 'User Settings > Password', feature_category: :user_profile do
         visit edit_user_settings_password_path
 
         expect(page).to have_title('Not Found')
-        expect(page).to have_content('Page Not Found')
+        expect(page).to have_content('Page not found')
       end
     end
   end

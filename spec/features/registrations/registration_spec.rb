@@ -38,7 +38,7 @@ RSpec.describe 'Registrations', feature_category: :system_access do
       visit polymorphic_path(group)
 
       expect(page).to have_content(group.name)
-      expect(page).not_to have_content('Page Not Found')
+      expect(page).not_to have_content('Page not found')
     end
   end
 end
