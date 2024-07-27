@@ -722,12 +722,6 @@ class Namespace < ApplicationRecord
       :active_pages_deployments)
   end
 
-  def require_organization?
-    return false unless Feature.enabled?(:require_organization, Feature.current_request)
-
-    Gitlab::SafeRequestStore.fetch(:require_organization) { true } # rubocop:disable Style/RedundantFetchBlock -- This fetch has a different interface
-  end
-
   private
 
   def cross_namespace_reference?(from)

@@ -616,8 +616,8 @@ class Project < ApplicationRecord
     if: :path_changed?
 
   validates :project_feature, presence: true
-
   validates :namespace, presence: true
+  validates :organization, presence: true, if: :require_organization?
   validates :project_namespace, presence: true, on: :create, if: -> { self.namespace }
   validates :project_namespace, presence: true, on: :update, if: -> { self.project_namespace_id_changed?(to: nil) }
   validates :name, uniqueness: { scope: :namespace_id }

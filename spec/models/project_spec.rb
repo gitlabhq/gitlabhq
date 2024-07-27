@@ -707,9 +707,18 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
     it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
     it { is_expected.to validate_presence_of(:creator) }
     it { is_expected.to validate_presence_of(:namespace) }
+    it { is_expected.to validate_presence_of(:organization) }
     it { is_expected.to validate_presence_of(:repository_storage) }
     it { is_expected.to validate_numericality_of(:max_artifacts_size).only_integer.is_greater_than(0) }
     it { is_expected.to validate_length_of(:suggestion_commit_message).is_at_most(255) }
+
+    context 'when require_organization feature is disabled' do
+      before do
+        stub_feature_flags(require_organization: false)
+      end
+
+      it { is_expected.not_to validate_presence_of(:organization) }
+    end
 
     it 'validates name is case-sensitively unique within the scope of namespace_id' do
       project = create(:project)

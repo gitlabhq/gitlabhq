@@ -64,7 +64,10 @@ module ServicePing
         URI.join(base_url, path),
         body: Gitlab::Json.dump(payload),
         allow_local_requests: true,
-        headers: { 'Content-type' => 'application/json' }
+        headers: {
+          'Content-type' => 'application/json',
+          'Accept' => 'application/json'
+        }
       )
     end
 
