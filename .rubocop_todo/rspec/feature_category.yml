@@ -1476,7 +1476,6 @@ RSpec/FeatureCategory:
     - 'spec/frontend/fixtures/pipeline_schedules.rb'
     - 'spec/frontend/fixtures/pipelines.rb'
     - 'spec/frontend/fixtures/projects_json.rb'
-    - 'spec/frontend/fixtures/prometheus_integration.rb'
     - 'spec/frontend/fixtures/raw.rb'
     - 'spec/frontend/fixtures/releases.rb'
     - 'spec/frontend/fixtures/search.rb'

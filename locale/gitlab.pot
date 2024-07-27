@@ -42469,58 +42469,10 @@ msgstr ""
 msgid "PrometheusService|Active"
 msgstr ""
 
-msgid "PrometheusService|Auto configuration settings are used unless you override their values here."
-msgstr ""
-
-msgid "PrometheusService|Common metrics"
-msgstr ""
-
-msgid "PrometheusService|Common metrics are automatically monitored based on a library of metrics from popular exporters."
-msgstr ""
-
-msgid "PrometheusService|Configure GitLab to query a Prometheus installed in one of your clusters."
-msgstr ""
-
-msgid "PrometheusService|Custom metrics"
-msgstr ""
-
-msgid "PrometheusService|Custom metrics require Prometheus installed on a cluster with environment scope \"*\" OR a manually configured Prometheus to be available."
-msgstr ""
-
-msgid "PrometheusService|Enable Prometheus to define custom metrics, using either option above"
-msgstr ""
-
-msgid "PrometheusService|Finding and configuring metrics..."
-msgstr ""
-
-msgid "PrometheusService|Finding custom metrics..."
-msgstr ""
-
 msgid "PrometheusService|IAP_CLIENT_ID.apps.googleusercontent.com"
 msgstr ""
 
-msgid "PrometheusService|Manage clusters"
-msgstr ""
-
-msgid "PrometheusService|Manual configuration"
-msgstr ""
-
-msgid "PrometheusService|Metrics"
-msgstr ""
-
-msgid "PrometheusService|Missing environment variable"
-msgstr ""
-
 msgid "PrometheusService|Monitor application health with Prometheus metrics and dashboards"
-msgstr ""
-
-msgid "PrometheusService|New metric"
-msgstr ""
-
-msgid "PrometheusService|No custom metrics have been created. Create one using the button above"
-msgstr ""
-
-msgid "PrometheusService|Prometheus cluster integration"
 msgstr ""
 
 msgid "PrometheusService|Select this checkbox to override the auto configuration settings with your own settings."
@@ -42533,18 +42485,6 @@ msgid "PrometheusService|The Prometheus API base URL."
 msgstr ""
 
 msgid "PrometheusService|The contents of the credentials.json file of your service account."
-msgstr ""
-
-msgid "PrometheusService|To set up automatic monitoring, add the environment variable %{variable} to exporter's queries."
-msgstr ""
-
-msgid "PrometheusService|To use a Prometheus installed on a cluster, deactivate the manual configuration."
-msgstr ""
-
-msgid "PrometheusService|Waiting for your first deployment to an environment to find common metrics"
-msgstr ""
-
-msgid "PrometheusService|You have a cluster with the Prometheus integration enabled."
 msgstr ""
 
 msgid "PrometheusService|https://prometheus.example.com/"
