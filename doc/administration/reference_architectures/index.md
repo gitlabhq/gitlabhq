@@ -113,9 +113,9 @@ In general then, we'd only recommend you employ HA in the following scenarios:
 
 If you still need to have HA for a lower number of users, this can be achieved with an adjusted [3K architecture](3k_users.md#supported-modifications-for-lower-user-counts-ha).
 
-#### Zero-Downtime Upgrades
+#### Zero-downtime upgrades
 
-[Zero-Downtime Upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is [not supported](https://gitlab.com/groups/gitlab-org/cloud-native/-/epics/52)). This allows for an environment to stay up during an upgrade, but the process is more complex as a result and has some limitations as detailed in the documentation.
+[Zero-downtime upgrades](../../update/zero_downtime.md) are available for standard Reference Architecture environments with HA (Cloud Native Hybrid is [not supported](https://gitlab.com/groups/gitlab-org/cloud-native/-/epics/52)). This allows for an environment to stay up during an upgrade, but the process is more complex as a result and has some limitations as detailed in the documentation.
 
 When going through this process it's worth noting that there may still be brief moments of downtime when the HA mechanisms take effect.
 
@@ -170,7 +170,7 @@ graph TD
    L2A("Equivalent to <a href=3k_users.md#testing-methodology>3,000 users</a> or more?")
    L2B("Equivalent to <a href=2k_users.md#testing-methodology>2,000 users</a> or less?")
 
-   L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or Zero-Downtime Upgrades)")
+   L3A("<a href=#do-you-need-high-availability-ha>Do you need HA?</a><br>(or zero-downtime upgrades)")
    L3B[Do you have experience with<br/>and want additional resilience<br/>with select components in Kubernetes?]
 
    L4A><b>Recommendation</b><br><br>60 RPS / 3K users architecture with HA<br>and supported reductions]

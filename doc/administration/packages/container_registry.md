@@ -1286,7 +1286,7 @@ itself on the system so that the `gitlab-ctl` command can bring the registry ser
 Also, there's no way to save progress or results during the mark phase of the process. Only once
 blobs start being deleted is anything permanent done.
 
-### Continuous Zero-Downtime Garbage Collection
+### Continuous zero-downtime garbage collection
 
 DETAILS:
 
