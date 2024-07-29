@@ -111,6 +111,7 @@ module Types
     mount_mutation Mutations::Notes::Create::Discussion, calls_gitaly: true
     mount_mutation Mutations::Notes::Update::Note
     mount_mutation Mutations::Notes::Update::ImageDiffNote
+    mount_mutation Mutations::Notes::ConvertToThread
     mount_mutation Mutations::Notes::RepositionImageDiffNote
     mount_mutation Mutations::Notes::Destroy
     mount_mutation Mutations::Organizations::Create, alpha: { milestone: '16.6' }

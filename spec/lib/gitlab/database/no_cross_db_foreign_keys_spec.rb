@@ -31,8 +31,10 @@ RSpec.describe 'cross-database foreign keys' do
       'user_group_callouts.user_id',                          # https://gitlab.com/gitlab-org/gitlab/-/issues/421287
       'subscription_user_add_on_assignments.user_id',         # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
       'subscription_add_on_purchases.subscription_add_on_id', # https://gitlab.com/gitlab-org/gitlab/-/issues/444666
-      'sbom_occurrences.source_package_id',                   # https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins
+      'sbom_component_versions.component_id',                 # https://gitlab.com/gitlab-org/gitlab/-/issues/469535
+      'sbom_occurrences.component_id',                        # https://gitlab.com/gitlab-org/gitlab/-/issues/469535
       'sbom_occurrences.source_id',                           # https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins
+      'sbom_occurrences.source_package_id',                   # https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins
       'vulnerability_export_parts.vulnerability_export_id'    # https://gitlab.com/groups/gitlab-org/-/epics/14197#cross-db-issues-to-be-resolved
     ]
   end

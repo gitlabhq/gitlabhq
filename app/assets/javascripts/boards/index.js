@@ -17,6 +17,34 @@ import { fullBoardId } from './boards_util';
 Vue.use(VueApollo);
 Vue.use(PortalVue);
 
+defaultClient.cache.policies.addTypePolicies({
+  BoardList: {
+    fields: {
+      issues: {
+        keyArgs: ['filters'],
+      },
+    },
+  },
+  IssueConnection: {
+    merge(existing = { nodes: [] }, incoming, { args }) {
+      if (!args?.after) {
+        return incoming;
+      }
+      return {
+        ...incoming,
+        nodes: [...existing.nodes, ...incoming.nodes],
+      };
+    },
+  },
+  Board: {
+    fields: {
+      epics: {
+        keyArgs: ['boardId'],
+      },
+    },
+  },
+});
+
 const apolloProvider = new VueApollo({
   defaultClient,
 });

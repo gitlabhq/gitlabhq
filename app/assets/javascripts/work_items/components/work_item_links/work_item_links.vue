@@ -325,6 +325,7 @@ export default {
             ref="wiLinksForm"
             data-testid="add-links-form"
             :full-path="fullPath"
+            :full-name="workItem.namespace.fullName"
             :issuable-gid="issuableGid"
             :work-item-iid="iid"
             :children-ids="childrenIds"

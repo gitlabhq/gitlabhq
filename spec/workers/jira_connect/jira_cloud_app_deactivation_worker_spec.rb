@@ -36,6 +36,10 @@ RSpec.describe JiraConnect::JiraCloudAppDeactivationWorker, feature_category: :i
 
     subject(:perform) { described_class.new.perform(group.id) }
 
+    before do
+      stub_application_setting(jira_connect_application_key: 'mock_key')
+    end
+
     it 'deactivates all subgroup and sub project JiraCloudApp integrations' do
       expect { perform }.not_to change { Integration.count }
 

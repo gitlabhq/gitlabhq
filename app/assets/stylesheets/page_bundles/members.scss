@@ -1,11 +1,5 @@
 @import 'mixins_and_variables_and_functions';
 
-.invite-users-form {
-  .btn-success {
-    margin-right: 10px;
-  }
-}
-
 .member {
   .controls {
     @include media-breakpoint-up(sm) {

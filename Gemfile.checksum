@@ -726,7 +726,7 @@
 {"name":"typhoeus","version":"1.4.0","platform":"ruby","checksum":"fff9880d5dc35950e7706cf132fd297f377c049101794be1cf01c95567f642d4"},
 {"name":"tzinfo","version":"2.0.6","platform":"ruby","checksum":"8daf828cc77bcf7d63b0e3bdb6caa47e2272dcfaf4fbfe46f8c3a9df087a829b"},
 {"name":"uber","version":"0.1.0","platform":"ruby","checksum":"5beeb407ff807b5db994f82fa9ee07cfceaa561dad8af20be880bc67eba935dc"},
-{"name":"undercover","version":"0.4.6","platform":"ruby","checksum":"7255959205be7ba492731d4376d89d7cceaed1e675a14ae55c90f71a1621e6ae"},
+{"name":"undercover","version":"0.5.0","platform":"ruby","checksum":"ef99a8478be5466fb13fcd199f659ae308b81f71145a5a4e57428ff67d109fae"},
 {"name":"unf","version":"0.1.4","platform":"java","checksum":"49a5972ec0b3d091d3b0b2e00113f2f342b9b212f0db855eb30a629637f6d302"},
 {"name":"unf","version":"0.1.4","platform":"ruby","checksum":"4999517a531f2a955750f8831941891f6158498ec9b6cb1c81ce89388e63022e"},
 {"name":"unf_ext","version":"0.0.8.2","platform":"ruby","checksum":"90b9623ee359cc4878461c5d2eab7d3d3ce5801a680a9e7ac83b8040c5b742fa"},

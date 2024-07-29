@@ -192,7 +192,7 @@ describe('WorkItemLinksForm', () => {
         expect(createMutationResolver).toHaveBeenCalledWith({
           input: {
             title: 'Create task test',
-            projectPath: 'group-a',
+            namespacePath: 'group-a',
             workItemTypeId: workItemTypeIdForTask,
             hierarchyWidget: {
               parentId: 'gid://gitlab/WorkItem/1',
@@ -216,7 +216,7 @@ describe('WorkItemLinksForm', () => {
         expect(createMutationResolver).toHaveBeenCalledWith({
           input: {
             title: 'Create confidential task',
-            projectPath: 'group-a',
+            namespacePath: 'group-a',
             workItemTypeId: workItemTypeIdForTask,
             hierarchyWidget: {
               parentId: 'gid://gitlab/WorkItem/1',
@@ -247,7 +247,7 @@ describe('WorkItemLinksForm', () => {
       it('creates child issue in non confidential parent', async () => {
         findInput().vm.$emit('input', 'Create issue test');
 
-        findProjectSelector().vm.$emit('selectProject', projectData[0]);
+        findProjectSelector().vm.$emit('selectProject', projectData[0].fullPath);
 
         findForm().vm.$emit('submit', {
           preventDefault: jest.fn(),
@@ -279,7 +279,7 @@ describe('WorkItemLinksForm', () => {
 
         findInput().vm.$emit('input', 'Create confidential issue');
 
-        findProjectSelector().vm.$emit('selectProject', projectData[0]);
+        findProjectSelector().vm.$emit('selectProject', projectData[0].fullPath);
 
         findForm().vm.$emit('submit', {
           preventDefault: jest.fn(),
@@ -385,7 +385,7 @@ describe('WorkItemLinksForm', () => {
 
       expect(findAddChildButton().props('disabled')).toBe(true);
 
-      findProjectSelector().vm.$emit('selectProject', projectData[0]);
+      findProjectSelector().vm.$emit('selectProject', projectData[0].fullPath);
 
       await nextTick();
 
@@ -501,7 +501,7 @@ describe('WorkItemLinksForm', () => {
       expect(createMutationResolver).toHaveBeenCalledWith({
         input: {
           title: 'Create task test',
-          projectPath: 'group-a',
+          namespacePath: 'group-a',
           workItemTypeId: workItemTypeIdForTask,
           hierarchyWidget: {
             parentId: 'gid://gitlab/WorkItem/1',
@@ -527,7 +527,7 @@ describe('WorkItemLinksForm', () => {
       expect(createMutationResolver).not.toHaveBeenCalledWith({
         input: {
           title: 'Create task test',
-          projectPath: 'group-a',
+          namespacePath: 'group-a',
           workItemTypeId: 'gid://gitlab/WorkItems::Type/3',
           hierarchyWidget: {
             parentId: 'gid://gitlab/WorkItem/1',

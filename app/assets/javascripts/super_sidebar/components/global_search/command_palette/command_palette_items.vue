@@ -160,19 +160,29 @@ export default {
     this.$emit('updated');
   },
   methods: {
-    async fetchSettings() {
-      const projectId = this.searchContext.project.id;
+    fetchSettings() {
+      let settingsUrl = null;
+      const projectId = this.searchContext.project?.id;
+      const groupId = this.searchContext.group?.id;
+
       if (projectId) {
-        await axios
-          .get(`${this.settingsPath}?project_id=${projectId}`)
-          .then((response) => {
-            this.settings = response.data;
-          })
-          .catch((e) => {
-            logError(e);
-            this.settings = [];
-          });
+        settingsUrl = `${this.settingsPath}?project_id=${projectId}`;
+      } else if (groupId) {
+        settingsUrl = `${this.settingsPath}?group_id=${groupId}`;
+      } else {
+        this.settings = [];
+        return;
       }
+
+      axios
+        .get(settingsUrl)
+        .then((response) => {
+          this.settings = response.data;
+        })
+        .catch((e) => {
+          logError(e);
+          this.settings = [];
+        });
     },
     filterBySearchQuery(items, key = 'keywords') {
       return fuzzaldrinPlus.filter(items, this.searchQuery, { key });

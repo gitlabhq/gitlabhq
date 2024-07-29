@@ -379,7 +379,9 @@ class Integration < ApplicationRecord
   def self.disabled_integration_names
     # The GitLab for Slack app integration is only available when enabled through settings.
     # The Slack Slash Commands integration is only available for customers who cannot use the GitLab for Slack app.
-    Gitlab::CurrentSettings.slack_app_enabled ? ['slack_slash_commands'] : ['gitlab_slack_application']
+    disabled = Gitlab::CurrentSettings.slack_app_enabled ? ['slack_slash_commands'] : ['gitlab_slack_application']
+    disabled += ['jira_cloud_app'] unless Gitlab::CurrentSettings.jira_connect_application_key.present?
+    disabled
   end
   private_class_method :disabled_integration_names
 

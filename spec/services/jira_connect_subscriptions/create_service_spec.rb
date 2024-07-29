@@ -47,6 +47,7 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
   context 'when user does have access' do
     before do
       allow(PropagateIntegrationWorker).to receive(:perform_async)
+      stub_application_setting(jira_connect_application_key: 'mock_key')
     end
 
     it 'creates a subscription' do
@@ -64,6 +65,15 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
 
     it 'does not create integration when feature flag is disabled and returns success' do
       stub_feature_flags(enable_jira_connect_configuration: false)
+
+      expect(subject[:status]).to eq(:success)
+
+      expect { subject }.not_to change { Integrations::JiraCloudApp.count }
+      expect(PropagateIntegrationWorker).not_to have_received(:perform_async)
+    end
+
+    it 'does not create integration when instance is not configured for Jira Cloud app and returns success' do
+      stub_application_setting(jira_connect_application_key: nil)
 
       expect(subject[:status]).to eq(:success)
 
@@ -130,6 +140,7 @@ RSpec.describe JiraConnectSubscriptions::CreateService, feature_category: :integ
 
     before do
       allow(PropagateIntegrationWorker).to receive(:perform_async)
+      stub_application_setting(jira_connect_application_key: 'mock_key')
     end
 
     it 'activate existing jira cloud app integrations if subscription saved successfully' do

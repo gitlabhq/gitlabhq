@@ -1,19 +1,25 @@
 # frozen_string_literal: true
 
 module Search
-  class Settings
+  class ProjectSettings
     include Rails.application.routes.url_helpers
 
-    def for_project(project)
-      project_general_settings(project).concat(
-        project_repository_settings(project),
-        project_merge_request_settings(project),
-        project_ci_cd_settings(project),
-        project_monitor_settings(project)
+    attr_reader :project
+
+    def initialize(project)
+      @project = project
+    end
+
+    def all
+      general_settings.concat(
+        repository_settings,
+        merge_request_settings,
+        ci_cd_settings,
+        monitor_settings
       )
     end
 
-    def project_general_settings(project)
+    def general_settings
       [
         { text: _("Naming, topics, avatar"), href: edit_project_path(project, anchor: 'js-general-settings') },
         { text: _("Visibility, project features, permissions"),
@@ -24,7 +30,7 @@ module Search
       ]
     end
 
-    def project_repository_settings(project)
+    def repository_settings
       [
         { text: _("Branch defaults"),
           href: project_settings_repository_path(project, anchor: 'branch-defaults-settings') },
@@ -39,14 +45,14 @@ module Search
       ]
     end
 
-    def project_merge_request_settings(project)
+    def merge_request_settings
       [
         { text: _("Merge requests"),
           href: project_settings_merge_requests_path(project, anchor: 'js-merge-request-settings') }
       ]
     end
 
-    def project_ci_cd_settings(project)
+    def ci_cd_settings
       [
         { text: _("General pipelines"),
           href: project_settings_ci_cd_path(project, anchor: 'js-general-pipeline-settings') },
@@ -64,7 +70,7 @@ module Search
       ]
     end
 
-    def project_monitor_settings(project)
+    def monitor_settings
       [
         { text: _("Error tracking"),
           href: project_settings_operations_path(project, anchor: 'js-error-tracking-settings') },
@@ -77,4 +83,4 @@ module Search
   end
 end
 
-Search::Settings.prepend_mod
+Search::ProjectSettings.prepend_mod

@@ -22,6 +22,7 @@ module Gitlab
         occurrences = batch
           .joins("INNER JOIN sbom_components ON sbom_occurrences.component_id = sbom_components.id")
           .where("sbom_components.purl_type = 8 AND sbom_occurrences.component_name LIKE '%.%'")
+          .allow_cross_joins_across_databases(url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/473758')
 
         return if occurrences.blank?
 

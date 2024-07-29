@@ -159,42 +159,6 @@ export const config = {
           nodes: concatPagination(),
         },
       },
-      BoardList: {
-        fields: {
-          issues: {
-            keyArgs: ['filters'],
-          },
-        },
-      },
-      IssueConnection: {
-        merge(existing = { nodes: [] }, incoming, { args }) {
-          if (!args?.after) {
-            return incoming;
-          }
-          return {
-            ...incoming,
-            nodes: [...existing.nodes, ...incoming.nodes],
-          };
-        },
-      },
-      EpicList: {
-        fields: {
-          epics: {
-            keyArgs: ['filters'],
-          },
-        },
-      },
-      EpicConnection: {
-        merge(existing = { nodes: [] }, incoming, { args }) {
-          if (!args?.after) {
-            return incoming;
-          }
-          return {
-            ...incoming,
-            nodes: [...existing.nodes, ...incoming.nodes],
-          };
-        },
-      },
       Group: {
         fields: {
           projects: {
@@ -213,24 +177,6 @@ export const config = {
       GroupConnection: {
         fields: {
           nodes: concatPagination(),
-        },
-      },
-      Board: {
-        fields: {
-          epics: {
-            keyArgs: ['boardId'],
-          },
-        },
-      },
-      BoardEpicConnection: {
-        merge(existing = { nodes: [] }, incoming, { args }) {
-          if (!args.after) {
-            return incoming;
-          }
-          return {
-            ...incoming,
-            nodes: [...existing.nodes, ...incoming.nodes],
-          };
         },
       },
       MergeRequestApprovalState: {

@@ -356,24 +356,6 @@
     }
   }
 
-  // todo: remove this block after all success buttons have been migrated to gl-button
-  .btn-success:not(.gl-button) {
-    background-color: var(--ide-btn-success-background, $green-500);
-    border-color: var(--ide-btn-success-border, $green-600) !important;
-
-    &:hover,
-    &:focus {
-      background-color: var(--ide-btn-success-background, $green-600);
-      border-color: var(--ide-btn-success-hover-border, $green-700) !important;
-    }
-
-    &:active,
-    &.active {
-      background-color: var(--ide-btn-success-background, $green-700);
-      border-color: var(--ide-btn-success-hover-border, $green-800) !important;
-    }
-  }
-
   // todo: remove this block after all disabled buttons have been migrated to gl-button
   .btn[disabled]:not(.gl-button) {
     background-color: var(--ide-btn-default-background, $gray-10) !important;
@@ -415,10 +397,6 @@
     color: var(--ide-input-color, $gl-text-color);
 
     @include ide-gl-button(default, $white, $gray-50, $gray-100, $gray-200, $gray-300, $gray-300, $gray-400);
-  }
-
-  .btn-success.gl-button.gl-button {
-    @include ide-gl-button(success, $green-500, $green-600, $green-800, $green-600, $green-800, $green-800, $green-900);
   }
 
   .btn-info.gl-button.gl-button,

@@ -147,15 +147,7 @@
     line-height: $gl-btn-small-line-height;
   }
 
-  &.btn-success {
-    @include btn-green;
-  }
-
   &.btn-inverted:not(.disabled):not(:disabled) {
-    &.btn-success {
-      @include btn-outline($white, $green-600, $green-500, $green-100, $green-700, $green-500, $green-200, $green-600, $green-800);
-    }
-
     &.btn-danger {
       @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
     }

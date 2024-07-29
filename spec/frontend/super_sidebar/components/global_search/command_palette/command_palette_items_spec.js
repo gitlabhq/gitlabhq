@@ -69,6 +69,7 @@ describe('CommandPaletteItems', () => {
   beforeEach(() => {
     mockAxios = new MockAdapter(axios);
     mockAxios.onGet('/settings?project_id=1').reply(HTTP_STATUS_OK, SETTINGS);
+    mockAxios.onGet('/settings?group_id=2').reply(HTTP_STATUS_OK, SETTINGS);
   });
 
   describe('Commands and links', () => {
@@ -231,7 +232,7 @@ describe('CommandPaletteItems', () => {
 
   describe('Settings search', () => {
     describe('when in a project', () => {
-      it('fetches settings when entering command mode', async () => {
+      it('fetches project settings when entering command mode', async () => {
         jest.spyOn(axios, 'get');
 
         createComponent({ handle: COMMAND_HANDLE });
@@ -265,14 +266,30 @@ describe('CommandPaletteItems', () => {
       });
     });
 
-    describe('when not in a project', () => {
-      it('does not fetch settings when entering command mode', () => {
+    describe('when in a group', () => {
+      it('fetches group settings when entering command mode', async () => {
         jest.spyOn(axios, 'get');
 
         createComponent(
           { handle: COMMAND_HANDLE },
           {},
           { searchContext: { project: { id: null }, group: { id: 2 } } },
+        );
+        await waitForPromises();
+
+        expect(axios.get).toHaveBeenCalledTimes(1);
+        expect(axios.get).toHaveBeenCalledWith('/settings?group_id=2');
+      });
+    });
+
+    describe('when not in a project or group', () => {
+      it('does not fetch settings when entering command mode', () => {
+        jest.spyOn(axios, 'get');
+
+        createComponent(
+          { handle: COMMAND_HANDLE },
+          {},
+          { searchContext: { project: { id: null }, group: { id: null } } },
         );
         expect(axios.get).not.toHaveBeenCalled();
       });

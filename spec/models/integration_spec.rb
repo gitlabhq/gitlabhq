@@ -1314,8 +1314,24 @@ RSpec.describe Integration, feature_category: :integrations do
   describe '.integration_names' do
     subject { described_class.integration_names }
 
-    it { is_expected.to include(*described_class::INTEGRATION_NAMES) }
+    it { is_expected.to include(*described_class::INTEGRATION_NAMES - ['jira_cloud_app']) }
     it { is_expected.to include('gitlab_slack_application') }
+
+    context 'when instance is configured for Jira Cloud app' do
+      before do
+        stub_application_setting(jira_connect_application_key: 'mock_app_oauth_key')
+      end
+
+      it { is_expected.to include('jira_cloud_app') }
+
+      context 'when the enable_jira_connect_configuration flag is disabled' do
+        before do
+          stub_feature_flags(enable_jira_connect_configuration: false)
+        end
+
+        it { is_expected.not_to include('jira_cloud_app') }
+      end
+    end
 
     context 'when Rails.env is not test' do
       before do

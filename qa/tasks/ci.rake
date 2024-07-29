@@ -42,16 +42,22 @@ namespace :ci do
     tests = run_all_label_present || qa_changes.framework_changes? ? nil : qa_changes.qa_tests
 
     # When QA_TESTS only contain folders and no specific specs, populate KNAPSACK_TEST_FILE_PATTERN
+    files_pattern = ""
     if tests && tests.split(' ').none? { |item| item.include?('_spec') }
       test_paths = tests.split(' ').map { |item| "#{item}**/*" }
 
       files_pattern = "{#{test_paths.join(',')}}"
 
-      logger.info(" Files pattern for tests: #{files_pattern}")
-      append_to_file(env_file, <<~TXT)
-        KNAPSACK_TEST_FILE_PATTERN='#{files_pattern}'
-      TXT
+    elsif tests && tests.split(' ').size > 50
+      # When number of QA_TESTS exceeds threshold, set KNAPSACK_FILE_PATTERN for parallel execution
+      files_pattern = "{#{tests.split(' ').join(',')}}"
     end
+
+    logger.info(" Files pattern for tests: #{files_pattern}")
+
+    append_to_file(env_file, <<~TXT)
+      KNAPSACK_TEST_FILE_PATTERN='#{files_pattern}'
+    TXT
 
     if run_all_label_present
       logger.info(" merge request has pipeline:run-all-e2e label, full test suite will be executed")

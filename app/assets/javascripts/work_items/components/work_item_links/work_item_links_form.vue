@@ -83,6 +83,11 @@ export default {
       required: false,
       default: WORK_ITEM_TYPE_ENUM_TASK,
     },
+    fullName: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   apollo: {
     workItemTypes: {
@@ -106,7 +111,7 @@ export default {
       error: null,
       isInputValid: true,
       search: '',
-      selectedProject: null,
+      selectedProjectFullPath: this.isGroup ? null : this.fullPath,
       childToCreateTitle: null,
       confidential: this.parentConfidential,
       submitInProgress: false,
@@ -126,10 +131,10 @@ export default {
         confidential: this.parentConfidential || this.confidential,
       };
 
-      if (this.selectedProject && !this.workItemChildIsEpic) {
+      if (this.selectedProjectFullPath && !this.workItemChildIsEpic) {
         workItemInput = {
           ...workItemInput,
-          namespacePath: this.selectedProject.fullPath,
+          namespacePath: this.selectedProjectFullPath,
         };
       } else {
         workItemInput = {
@@ -211,7 +216,7 @@ export default {
       return this.search.length > 0;
     },
     hasSelectedProject() {
-      return this.selectedProject !== null && this.selectedProject !== undefined;
+      return Boolean(this.selectedProjectFullPath);
     },
     canSubmitForm() {
       if (this.isCreateForm) {
@@ -385,9 +390,10 @@ export default {
           :description="$options.i18n.projectValidationMessage"
         >
           <work-item-projects-listbox
-            v-model="selectedProject"
+            v-model="selectedProjectFullPath"
             class="gl-w-full"
             :full-path="fullPath"
+            :current-project-name="fullName"
             :is-group="isGroup"
           />
         </gl-form-group>

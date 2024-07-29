@@ -33,5 +33,3 @@ module Organizations
     end
   end
 end
-
-Organizations::GroupsFinder.prepend_mod

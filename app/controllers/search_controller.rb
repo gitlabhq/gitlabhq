@@ -127,13 +127,14 @@ class SearchController < ApplicationController
   def settings
     return render(json: []) unless current_user
 
-    project_id = params.require(:project_id)
-    project = Project.find_by(id: project_id) # rubocop: disable CodeReuse/ActiveRecord -- Using `find_by` as `find` would raise 404s
+    project_id, group_id = params.permit(:project_id, :group_id).values_at(:project_id, :group_id)
 
-    if project && current_user.can?(:admin_project, project)
-      render json: Search::Settings.new.for_project(project)
+    if project_id
+      render json: settings_for_project(project_id)
+    elsif group_id
+      render json: settings_for_group(group_id)
     else
-      render json: []
+      head :bad_request
     end
   end
 
@@ -310,6 +311,20 @@ class SearchController < ApplicationController
 
   def filter_params
     params.permit(:confidential, :state, language: [])
+  end
+
+  def settings_for_project(project_id)
+    project = Project.find_by(id: project_id) # rubocop: disable CodeReuse/ActiveRecord -- Using `find` would raise 404s
+    return [] unless project && current_user.can?(:admin_project, project)
+
+    Search::ProjectSettings.new(project).all
+  end
+
+  def settings_for_group(group_id)
+    group = Group.find_by(id: group_id) # rubocop: disable CodeReuse/ActiveRecord -- Using `find` would raise 404s
+    return [] unless group && current_user.can?(:admin_group, group)
+
+    Search::GroupSettings.new(group).all
   end
 end
 

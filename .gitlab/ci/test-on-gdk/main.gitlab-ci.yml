@@ -5,13 +5,23 @@ include:
   - local: .gitlab/ci/qa-common/variables.gitlab-ci.yml
 
 # code pattern changes
-.code-pattern-changes: &code-pattern-changes
-  if: $MR_CODE_PATTERNS == "true"
+.code-pattern-changes-with-selective-disabled: &code-pattern-changes-with-selective-disabled
+  if: $MR_CODE_PATTERNS == "true" && $SELECTIVE_EXECUTION_IMPROVED != "true"
+
+# code pattern changes with selective execution enabled
+.code-pattern-with-selective-enabled-knapsack-set: &code-pattern-with-selective-enabled-knapsack-set
+  if: $MR_CODE_PATTERNS == "true" && $QA_TESTS != "" && $KNAPSACK_TEST_FILE_PATTERN != "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
+
+.code-pattern-with-selective-enabled-knapsack-unset: &code-pattern-with-selective-enabled-knapsack-unset
+  if: $MR_CODE_PATTERNS == "true" && $QA_TESTS != "" && $KNAPSACK_TEST_FILE_PATTERN == "" && $SELECTIVE_EXECUTION_IMPROVED == "true"
 
 .rules:gdk:qa-selective:
   rules:
-    - <<: *code-pattern-changes
+    - <<: *code-pattern-changes-with-selective-disabled
       when: never
+    - <<: *code-pattern-with-selective-enabled-knapsack-set
+      when: never
+    - <<: *code-pattern-with-selective-enabled-knapsack-unset
     - !reference [.rules:test:qa-selective, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
 
@@ -19,10 +29,13 @@ include:
   rules:
     # To account for cases where a group label is set which may trigger selective execution
     # But we want to execute full blocking suite on gdk in case of code-pattern-changes
-    - <<: *code-pattern-changes
+    - <<: *code-pattern-changes-with-selective-disabled
       variables:
         QA_TESTS: ""
         KNAPSACK_TEST_FILE_PATTERN: ""
+    - <<: *code-pattern-with-selective-enabled-knapsack-unset
+      when: never
+    - <<: *code-pattern-with-selective-enabled-knapsack-set
     - !reference [.rules:test:qa-parallel, rules]
     - if: $QA_SUITES =~ /Test::Instance::Blocking/
     - !reference [.rules:test:manual, rules]

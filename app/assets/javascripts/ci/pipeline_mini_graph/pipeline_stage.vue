@@ -2,6 +2,7 @@
 import { GlButton, GlDisclosureDropdown, GlLoadingIcon, GlTooltipDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, __, sprintf } from '~/locale';
+import { reportToSentry } from '~/ci/utils';
 import { PIPELINE_MINI_GRAPH_POLL_INTERVAL } from '~/ci/pipeline_details/constants';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import { getQueryHeaders, toggleQueryPollingByVisibility } from '~/ci/pipeline_details/graph/utils';
@@ -74,8 +75,9 @@ export default {
       update(data) {
         return data?.ciPipelineStage?.jobs?.nodes || [];
       },
-      error() {
+      error(error) {
         createAlert({ message: this.$options.i18n.stageJobsFetchError });
+        reportToSentry(this.$options.name, error);
       },
     },
   },

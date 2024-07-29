@@ -105,6 +105,7 @@ export default {
       widgetName: CHILD_ITEMS_ANCHOR,
       showLabels: true,
       fetchNextPageInProgress: false,
+      workItem: null,
     };
   },
   apollo: {
@@ -123,6 +124,7 @@ export default {
       update({ workItem = {} }) {
         const { children } = findHierarchyWidgets(workItem.widgets);
         this.$emit('childrenLoaded', Boolean(children?.count));
+        this.workItem = workItem;
         return children || {};
       },
       error() {
@@ -190,6 +192,9 @@ export default {
     },
     hasNextPage() {
       return this.pageInfo?.hasNextPage;
+    },
+    workItemNamespaceName() {
+      return this.workItem?.namespace.fullName;
     },
   },
   methods: {
@@ -306,6 +311,7 @@ export default {
           ref="wiLinksForm"
           data-testid="add-tree-form"
           :full-path="fullPath"
+          :full-name="workItemNamespaceName"
           :issuable-gid="workItemId"
           :work-item-iid="workItemIid"
           :form-type="formType"

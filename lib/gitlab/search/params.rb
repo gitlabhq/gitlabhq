@@ -59,9 +59,7 @@ module Gitlab
       end
 
       def validate
-        if detect_abuse?
-          abuse_detection.validate
-        end
+        abuse_detection.validate if detect_abuse?
 
         super
       end
@@ -85,9 +83,9 @@ module Gitlab
       end
 
       def not_too_many_terms
-        if search_terms.count > SEARCH_TERM_LIMIT
-          errors.add :query_string, "has too many search terms (maximum is #{SEARCH_TERM_LIMIT})"
-        end
+        return unless search_terms.count > SEARCH_TERM_LIMIT
+
+        errors.add :query_string, "has too many search terms (maximum is #{SEARCH_TERM_LIMIT})"
       end
 
       def strip_surrounding_whitespace(obj)
@@ -101,7 +99,7 @@ module Gitlab
 
       def convert_not_params(params)
         not_params = params.delete(:not)
-        return params unless not_params
+        return params unless not_params&.respond_to?(:to_h)
 
         not_params.each do |key, value|
           params[:"not_#{key}"] = value

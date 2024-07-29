@@ -112,7 +112,8 @@ describe('PipelineMiniGraph', () => {
 
       it('does not render upstream if not available', () => {
         pipelineMiniGraphResponse.mockResolvedValue(mockPMGQueryNoUpstreamResponse);
-        expect(findUpstream().exists()).toBe(true);
+        createComponent();
+        expect(findUpstream().exists()).toBe(false);
       });
     });
 
@@ -128,9 +129,14 @@ describe('PipelineMiniGraph', () => {
         });
       });
 
+      it('keeps the latest downstream pipelines', () => {
+        expect(findDownstream().props('pipelines')).toHaveLength(2);
+      });
+
       it('does not render downstream if not available', () => {
         pipelineMiniGraphResponse.mockResolvedValue(mockPMGQueryNoDownstreamResponse);
-        expect(findUpstream().exists()).toBe(true);
+        createComponent();
+        expect(findDownstream().exists()).toBe(false);
       });
     });
   });

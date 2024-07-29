@@ -73,11 +73,11 @@ describe('Group Settings App', () => {
   };
 
   describe.each`
-    finder                           | entitySpecificProps
-    ${findPackageSettings}           | ${packageSettingsProps}
-    ${findPackageForwardingSettings} | ${packageForwardingSettingsProps}
-    ${findDependencyProxySettings}   | ${dependencyProxyProps}
-  `('settings blocks', ({ finder, entitySpecificProps }) => {
+    finder                           | entitySpecificProps               | id
+    ${findPackageSettings}           | ${packageSettingsProps}           | ${'packages-settings'}
+    ${findPackageForwardingSettings} | ${packageForwardingSettingsProps} | ${'packages-forwarding-settings'}
+    ${findDependencyProxySettings}   | ${dependencyProxyProps}           | ${'dependency-proxy-settings'}
+  `('settings blocks', ({ finder, entitySpecificProps, id }) => {
     beforeEach(() => {
       mountComponent();
       return waitForApolloQueryAndRender();
@@ -85,6 +85,10 @@ describe('Group Settings App', () => {
 
     it('renders the settings block', () => {
       expect(finder().exists()).toBe(true);
+    });
+
+    it('has the correct id', () => {
+      expect(finder().attributes('id')).toBe(id);
     });
 
     it('binds the correctProps', () => {

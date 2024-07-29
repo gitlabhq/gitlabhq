@@ -1,7 +1,7 @@
 <script>
 import { GlLink, GlSprintf } from '@gitlab/ui';
 import HelpPopover from '~/vue_shared/components/help_popover.vue';
-import { helpPagePath } from '~/helpers/help_page_helper';
+import { SINGLE_RUNNER_ENTRY_HELP_URL } from '../constants';
 
 export default {
   name: 'RunnerConfigurationPopover',
@@ -10,10 +10,7 @@ export default {
     GlSprintf,
     HelpPopover,
   },
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
-  runnerEntryHelpPath: helpPagePath('/runner/configuration/advanced-configuration.md', {
-    anchor: 'the-runners-section',
-  }),
+  SINGLE_RUNNER_ENTRY_HELP_URL,
 };
 </script>
 
@@ -27,7 +24,7 @@ export default {
       "
     >
       <template #link="{ content }"
-        ><gl-link :href="$options.runnerEntryHelpPath">{{ content }}</gl-link></template
+        ><gl-link :href="$options.SINGLE_RUNNER_ENTRY_HELP_URL">{{ content }}</gl-link></template
       >
       <template #code="{ content }"
         ><code>{{ content }}</code></template

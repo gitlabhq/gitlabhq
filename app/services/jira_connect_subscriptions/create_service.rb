@@ -61,6 +61,8 @@ module JiraConnectSubscriptions
         group_id: namespace.id
       )
 
+      return unless integration
+
       Integrations::JiraCloudApp.transaction do
         integration.inherit_from_id = nil
         integration.activate!

@@ -15,6 +15,11 @@ export const mockDownstreamPipelinesGraphql = () => ({
         label: 'passed',
         __typename: 'DetailedStatus',
       },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/5785',
+        retried: false,
+        __typename: 'CiJob',
+      },
       __typename: 'Pipeline',
     },
     {
@@ -32,6 +37,11 @@ export const mockDownstreamPipelinesGraphql = () => ({
         label: 'passed',
         __typename: 'DetailedStatus',
       },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/5786',
+        retried: false,
+        __typename: 'CiJob',
+      },
       __typename: 'Pipeline',
     },
     {
@@ -48,6 +58,11 @@ export const mockDownstreamPipelinesGraphql = () => ({
         icon: 'status_success',
         label: 'passed',
         __typename: 'DetailedStatus',
+      },
+      sourceJob: {
+        id: 'gid://gitlab/Ci::Bridge/5787',
+        retried: true,
+        __typename: 'CiJob',
       },
       __typename: 'Pipeline',
     },
@@ -259,12 +274,12 @@ export const mockPipelineMiniGraphQueryResponse = {
 };
 
 export const mockPMGQueryNoDownstreamResponse = {
-  ...mockPipelineMiniGraphQueryResponse,
+  ...mockPipelineMiniGraphQueryResponse.data.project.pipeline,
   downstream: { nodes: [] },
 };
 
 export const mockPMGQueryNoUpstreamResponse = {
-  ...mockPipelineMiniGraphQueryResponse,
+  ...mockPipelineMiniGraphQueryResponse.data.project.pipeline,
   upstream: null,
 };
 
@@ -305,6 +320,10 @@ export const downstreamPipelines = [
       icon: 'status_success',
       label: 'passed',
     },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
+    },
   },
   {
     id: 'gid://gitlab/Ci::Pipeline/611',
@@ -318,6 +337,10 @@ export const downstreamPipelines = [
       detailsPath: '/hello',
       icon: 'status_success',
       label: 'passed',
+    },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
     },
   },
   {
@@ -333,6 +356,10 @@ export const downstreamPipelines = [
       icon: 'status_success',
       label: 'passed',
     },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
+    },
   },
   {
     id: 'gid://gitlab/Ci::Pipeline/610',
@@ -346,6 +373,10 @@ export const downstreamPipelines = [
       detailsPath: '/hello',
       icon: 'status_success',
       label: 'passed',
+    },
+    sourceJob: {
+      id: 'gid://gitlab/Ci::Bridge/5785',
+      retried: false,
     },
   },
 ];

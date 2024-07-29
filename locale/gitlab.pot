@@ -17944,6 +17944,9 @@ msgstr ""
 msgid "Deploy to..."
 msgstr ""
 
+msgid "Deploy tokens"
+msgstr ""
+
 msgid "DeployBoards|To see deployment progress for your environments, make sure you are deploying to %{codeStart}$KUBE_NAMESPACE%{codeEnd} and annotating with %{codeStart}app.gitlab.com/app=$CI_PROJECT_PATH_SLUG%{codeEnd} and %{codeStart}app.gitlab.com/env=$CI_ENVIRONMENT_SLUG%{codeEnd}."
 msgstr ""
 
@@ -19622,6 +19625,9 @@ msgid "DuoProTrial|Your %{duration}-day trial has ended"
 msgstr ""
 
 msgid "DuoProTrial|Your trial ends on %{strongStart}%{trialEndDate}%{strongEnd}. To continue using features in GitLab Duo Pro, purchase a subscription add-on."
+msgstr ""
+
+msgid "Duplicate packages"
 msgstr ""
 
 msgid "Duplicate page: A page with that title already exists in the file %{file}"
@@ -37294,6 +37300,9 @@ msgid "Package deleted successfully"
 msgstr ""
 
 msgid "Package file size limits"
+msgstr ""
+
+msgid "Package forwarding"
 msgstr ""
 
 msgid "Package name of the app in Google Play."
