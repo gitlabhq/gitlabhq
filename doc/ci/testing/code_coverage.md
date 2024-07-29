@@ -21,21 +21,21 @@ Code Coverage results are shown in:
 - Group repository analytics
 - Repository badge
 
-For more information on test coverage visualization in the file diff of the MR, see [Test Coverage Visualization](test_coverage_visualization.md).
+For more information on test coverage visualization in the file diff of the merge request, see [Test Coverage Visualization](test_coverage_visualization.md).
 
-### View code coverage results in the MR
+### View code coverage results in the merge request
 
 If you use test coverage in your code, you can use a regular expression to
 find coverage results in the job log. You can then include these results
-in the merge request in GitLab.
+in the merge request.
 
 If the pipeline succeeds, the coverage is shown in the merge request widget and
 in the jobs table. If multiple jobs in the pipeline have coverage reports, they are
 averaged.
 
-![MR widget coverage](img/pipelines_test_coverage_mr_widget.png)
+![MR widget coverage](img/pipelines_test_coverage_mr_widget_v17_3.png)
 
-![Build status coverage](img/pipelines_test_coverage_build.png)
+![Build status coverage](img/pipelines_test_coverage_jobs_v17_3.png)
 
 #### Add test coverage results using `coverage` keyword
 
@@ -110,9 +110,9 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-When merging a request that would cause the project's test coverage to decline, you can stipulate that such merge requests require approval by selected users or a group.
+You can require specific users or a group to approve merge requests that would reduce the project's test coverage.
 
-Follow these steps to enable the `Coverage-Check` MR approval rule:
+To add a `Coverage-Check` approval rule:
 
 1. Set up a [`coverage`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
 1. Go to your project and select **Settings > Merge requests**.
@@ -121,8 +121,6 @@ Follow these steps to enable the `Coverage-Check` MR approval rule:
 1. Set the number of **Approvals required** to greater than zero.
 1. Select the users or groups to provide approval.
 1. Select **Add approval rule**.
-
-![Coverage-Check approval rule](img/coverage_check_approval_rule_14_1.png)
 
 ## Troubleshooting
 

@@ -158,6 +158,30 @@ The change will be introduced in GitLab 16.6 behind a feature flag. If you are i
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Compliance pipelines
+
+<div class="deprecation-notes">
+- Announced in GitLab <span class="milestone">17.3</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/groups/gitlab-org/-/epics/11275).
+</div>
+
+Currently, there are two ways to ensure compliance- or security-related jobs are run in a project pipeline:
+
+- [Compliance pipelines](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html).
+- [Security policies](https://docs.gitlab.com/ee/user/application_security/policies/).
+
+To provide a single place for ensuing required jobs are run in all pipelines for a project, we have deprecated
+compliance pipelines GitLab 17.3 and will remove the feature in GitLab 18.0.
+
+Customers should migrate from compliance pipelines to the new
+[pipeline execution policy type](https://docs.gitlab.com/ee/user/application_security/policies/pipeline_execution_policies.html)
+as soon as possible.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Default CI/CD job token (`CI_JOB_TOKEN`) scope changed
 
 <div class="deprecation-notes">

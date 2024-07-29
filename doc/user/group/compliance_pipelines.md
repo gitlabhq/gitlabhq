@@ -10,6 +10,11 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
+WARNING:
+This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
+and is planned for removal in 18.0. Use [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) instead.
+This change is a breaking change.
+
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
 pipeline configuration (for example, `.compliance-gitlab-ci.yml`) is run instead of the pipeline configuration (for example, `.gitlab-ci.yml`) of labeled
 projects.
