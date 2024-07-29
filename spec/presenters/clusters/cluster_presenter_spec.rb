@@ -121,9 +121,7 @@ RSpec.describe Clusters::ClusterPresenter do
       it do
         is_expected.to include(
           'clusters-path': clusterable_presenter.index_path,
-          'dashboard-endpoint': clusterable_presenter.metrics_dashboard_path(cluster),
           'documentation-path': help_page_path('user/infrastructure/clusters/manage/clusters_health'),
-          'add-dashboard-documentation-path': help_page_path('operations/metrics/dashboards/index', anchor: 'add-a-new-dashboard-to-your-project'),
           'settings-path': '',
           'project-path': '',
           'tags-path': ''

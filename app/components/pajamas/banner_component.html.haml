@@ -3,7 +3,7 @@
 -# https://gitlab.com/gitlab-org/gitlab-ui/-/issues/2324
 
 .gl-banner.gl-card.gl-pl-6.gl-pr-8.gl-py-6{ @banner_options, class: banner_class }
-  .gl-card-body.gl-display-flex.gl-p-0!
+  .gl-card-body.gl-flex{ :class => "!gl-p-0" }
     - if illustration?
       .gl-banner-illustration
         = illustration

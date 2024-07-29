@@ -33,7 +33,6 @@ module Pajamas
 
     def banner_class
       classes = []
-      classes.push('gl-bg-gray-10!') unless introduction?
       classes.push('gl-banner-introduction') if introduction?
       classes.join(' ')
     end

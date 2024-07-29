@@ -116,9 +116,7 @@ describe('Manual Variables Form', () => {
 
     it('renders help text with provided link', () => {
       expect(findHelpText().exists()).toBe(true);
-      expect(findHelpLink().attributes('href')).toBe(
-        '/help/ci/variables/index#add-a-cicd-variable-to-a-project',
-      );
+      expect(findHelpLink().attributes('href')).toBe('/help/ci/variables/index#for-a-project');
     });
   });
 

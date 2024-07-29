@@ -19490,6 +19490,9 @@ msgstr ""
 msgid "Due to inactivity, this project is scheduled to be deleted on %{deletion_date}. %{link_start}Why is this scheduled?%{link_end}"
 msgstr ""
 
+msgid "DuoChat|An administrator has turned off GitLab Duo for this %{reason}"
+msgstr ""
+
 msgid "DuoChat|Ask a question about GitLab"
 msgstr ""
 
@@ -19515,6 +19518,12 @@ msgid "DuoChat|Use AI to answer questions about things like:"
 msgstr ""
 
 msgid "DuoChat|What is a fork?"
+msgstr ""
+
+msgid "DuoChat|group"
+msgstr ""
+
+msgid "DuoChat|project"
 msgstr ""
 
 msgid "DuoCodeReview|Hey :wave: I'm starting to review your merge request and I will let you know when I'm finished."

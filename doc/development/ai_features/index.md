@@ -14,112 +14,14 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 **How:**
 Follow [these instructions](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#install)
-to install the AI Gateway with GDK.
+to install the AI Gateway with GDK. We recommend this route for most users.
 
-### Required: Setup Google Cloud Platform in AI Gateway
+You can also install AI Gateway by:
 
-**Why:** You may not be able to boot AI Gateway if Google Cloud Platform
-credentials isn't correctly setup because AI Gateway checks the access at boot
-time.
+1. [Cloning the repository directly](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist).
+1. [Running the server locally](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist#how-to-run-the-server-locally).
 
-**How:**
-
-1. Set up a Google Cloud project
-   1. Option 1 (recommended for GitLab team members): use the existing
-      `ai-enablement-dev-69497ba7`) Google Cloud project.
-      Using the existing project is recommended because this project has Vertex
-      APIs and Vertex AI Search already enabled.
-      Also, all GitLab team members should already have access to this project.
-      Visit the [Google Cloud console](https://console.cloud.google.com) to
-      confirm that you already have access.
-   1. Option 2: Create a sandbox Google Cloud project by following the instructions
-      in [the handbook](https://handbook.gitlab.com/handbook/infrastructure-standards/#individual-environment).
-      If you are using an individual Google Cloud project, you may also need to
-      enable the Vertex AI API:
-      1. Visit [welcome page](https://console.cloud.google.com/welcome), choose
-         your project (for example: `jdoe-5d23dpe`).
-      1. Go to **APIs & Services > Enabled APIs & services**.
-      1. Select **Enable APIs and Services**.
-      1. Search for `Vertex AI API`.
-      1. Select **Vertex AI API**, then select **Enable**.
-1. Install the [`gcloud` CLI](https://cloud.google.com/sdk/docs/install)
-   1. If you already use [`asdf`](https://asdf-vm.com/) for runtime version
-      management, you can install `gcloud` with the
-      [`asdf gcloud` plugin](https://github.com/jthegedus/asdf-gcloud)
-1. Authenticate locally with Google Cloud using the
-   [`gcloud auth application-default login`](https://cloud.google.com/sdk/gcloud/reference/auth/application-default/login) command.
-
-    NOTE:
-    This command tries to find a quota project from gcloud's context
-    and write it to ADC(Application Default Credentials)
-    so that Google client libraries can use it for billing and quota.
-    To be able to use a project as the quota project, the account in
-    ADC must have the `serviceusage.services.use` permission on the project.
-    If you don't have a project with this permission and you always want to
-    bill the project owning the resources,
-    you can disable the quota project and authenticate using
-    `gcloud auth application-default login --disable-quota-project` command.
-1. Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
-
-   ```shell
-   # <GDK-root>/gitlab-ai-gateway/.env
-
-   # PROJECT_ID = "ai-enablement-dev-69497ba7" for GitLab team members with access
-   # to the shared project
-
-   # PROJECT_ID = "your-google-cloud-project-name" for those with their own sandbox
-   # Google Cloud project.
-
-   AIGW_GOOGLE_CLOUD_PLATFORM__PROJECT='PROJECT_ID'
-   ```
-
-### Required: Setup Anthropic in the AI Gateway
-
-**Why:** some GitLab Duo features use Anthropic models.
-
-**How:**
-After filling out an
-[access request](https://gitlab.com/gitlab-com/team-member-epics/access-requests/-/issues/new?issuable_template=AI_Access_Request),
-you can sign up for an Anthropic account and
-[create an API key](https://docs.anthropic.com/en/docs/getting-access-to-claude).
-
-Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
-
-```shell
-# <GDK-root>/gitlab-ai-gateway/.env
-
-ANTHROPIC_API_KEY='<your-anthropic-api-key>'
-```
-
-### Required: Setup AI Gateway endpoint in GitLab-Rails
-
-**Why:** Your need to tell your local GitLab instance to talk to your local AI
-Gateway. Otherwise, it tries to talk to the production AI Gateway
-(`cloud.gitlab.com`), which results in an authentication error.
-
-**How:**
-
-Update following variable in the `env.runit` file in your GDK root:
-
-```shell
-# <GDK-root>/env.runit
-
-export AI_GATEWAY_URL=http://0.0.0.0:5052
-```
-
-By default, the above URL works as-is.
-
-You can also change it to a different URL by updating the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
-
-```shell
-# <GDK-root>/gitlab-ai-gateway/.env
-
-AIGW_FASTAPI__API_HOST=0.0.0.0
-AIGW_FASTAPI__API_PORT=5052
-```
-
-To check if your monolith is using correct AI Gateway, please visit `http://<your-gdk-url>/help/instance_configuration#ai_gateway_url`
-page.
+We only recommend this for users who know what they are doing.
 
 ### Required: Setup Licenses in GitLab-Rails
 
@@ -180,7 +82,7 @@ It has no effect if you run you local GDK as SaaS, so you can always keep it set
 
 Setting this environment variable will allow the local GL instance to issue tokens itself, without syncing with CustomersDot first.
 This is similar how GitLab.com operates, and we allow it for development purposes to simplify the setup.
-With it you can skip the [CustomersDot setup](#option-2-use-your-customersdot-instance-as-a-provider).
+With it you can skip the [CustomersDot setup](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#option-2-use-your-customersdot-instance-as-a-provider).
 This can done by either:
 
 - setting it in the `env.runit` file in your GDK root
@@ -192,7 +94,7 @@ If you plan to use local CustomersDot or test cross-service integration, you may
 
 ### Option A: Run GDK in SaaS mode and enable AI features for a test group
 
-**How:** the following should be set in the `env.runit` file in your GDK root:
+This is automatically set up when setting up AI Gateway with GDK. If you would like to turn it off, set the `env.runit` file in your GDK root as follows:
 
 ```shell
 # <GDK-root>/env.runit
@@ -285,29 +187,6 @@ correctly reach to AI Gateway:
 
 NOTE:
 See [this doc](../cloud_connector/index.md) for registering unit primitives in Cloud Connector.
-
-### Optional: Enable logging in AI Gateway
-
-**Why:** Logging makes it easier to debug any issues with GitLab Duo requests.
-
-**How:**
-
-Update the [application settings file](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/main/docs/application_settings.md) in AI Gateway:
-
-```shell
-# <GDK-root>/gitlab-ai-gateway/.env
-
-AIGW_LOGGING__LEVEL=debug
-AIGW_LOGGING__FORMAT_JSON=false
-AIGW_LOGGING__TO_FILE='./ai-gateway.log'
-```
-
-For example, you can watch the log file with the following command when in the
-`gitlab-ai-gateway` directory:
-
-```shell
-tail -f ai-gateway.log | fblog -a prefix -a suffix -a current_file_name -a suggestion -a language -a input -a parameters -a score -a exception
-```
 
 ### Optional: Enable authentication and authorization in AI Gateway
 
@@ -724,7 +603,7 @@ end
 ```
 
 NOTE:
-See [this section](#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI Gateway.
+For more information, see [the GitLab AI Gateway documentation](https://gitlab.com/gitlab-org/gitlab-development-kit/-/blob/main/doc/howto/gitlab_ai_gateway.md#optional-enable-authentication-and-authorization-in-ai-gateway) about authentication and authorization in AI Gateway.
 
 ### Pairing requests with responses
 

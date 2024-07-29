@@ -158,5 +158,59 @@ RSpec.describe RemoveExpiredMembersWorker, feature_category: :system_access do
         worker.perform
       end
     end
+
+    context 'pagination' do
+      let_it_be(:expired_group_member) { create(:group_member, expires_at: 1.day.from_now, access_level: GroupMember::DEVELOPER) }
+      let(:instance) { described_class.new }
+      let(:cursor) { nil }
+      let(:has_next_page) { true }
+      let(:cursor_for_next_page) { 'next-page-cursor' }
+
+      let(:paginator) do
+        instance_double(
+          Gitlab::Pagination::Keyset::Paginator,
+          has_next_page?: has_next_page,
+          cursor_for_next_page: cursor_for_next_page
+        )
+      end
+
+      subject(:perform) { instance.perform(cursor) }
+
+      before do
+        allow(paginator).to receive(:each).and_yield(expired_group_member)
+        travel_to(3.days.from_now)
+      end
+
+      it 'logs completed row count and enqueues next batch' do
+        allow(instance).to receive(:paginate).and_return(paginator)
+        expect(instance).to receive(:log_extra_metadata_on_done).with(:result, status: :limit_reached, updated_rows: 1)
+        expect(described_class).to receive(:perform_in).with(described_class::BATCH_DELAY, 'next-page-cursor')
+
+        perform
+      end
+
+      context 'when initialized with cursor' do
+        let(:cursor) { 'fake-base64-encoded-data' }
+
+        it 'passes cursor to paginate method' do
+          expect(instance).to receive(:paginate).with(cursor).and_return(paginator)
+
+          perform
+        end
+      end
+
+      context 'when last page is reached' do
+        let(:has_next_page) { false }
+        let(:cursor_for_next_page) { nil }
+
+        it 'logs completed row count and does not enqueue next batch' do
+          allow(instance).to receive(:paginate).and_return(paginator)
+          expect(instance).to receive(:log_extra_metadata_on_done).with(:result, status: :completed, updated_rows: 1)
+          expect(described_class).not_to receive(:perform_async)
+
+          perform
+        end
+      end
+    end
   end
 end

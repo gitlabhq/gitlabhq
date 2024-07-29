@@ -29,10 +29,6 @@ class ProjectClusterablePresenter < ClusterablePresenter
   def learn_more_link
     ApplicationController.helpers.link_to(s_('ClusterIntegration|Learn more about Kubernetes.'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   end
-
-  def metrics_dashboard_path(cluster)
-    metrics_dashboard_project_cluster_path(clusterable, cluster)
-  end
 end
 
 ProjectClusterablePresenter.prepend_mod_with('ProjectClusterablePresenter')

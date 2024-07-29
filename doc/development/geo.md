@@ -318,22 +318,30 @@ sequenceDiagram
 
 ## Authentication
 
-To authenticate file transfers, each `GeoNode` record has two fields:
+To authenticate Git and file transfers, each `GeoNode` record has two fields:
 
 - A public access key (`access_key` field).
 - A secret access key (`secret_access_key` field).
 
 The **secondary** site authenticates itself via a [JWT request](https://jwt.io/).
-When the **secondary** site wishes to download a file, it sends an
-HTTP request with the `Authorization` header:
+
+The **secondary** site authorizes HTTP requests with the `Authorization` header:
 
 ```plaintext
 Authorization: GL-Geo <access_key>:<JWT payload>
 ```
 
-The **primary** site uses the `access_key` field to look up the
-corresponding **secondary** site and decrypts the JWT payload,
-which contains additional information to identify the file
+The **primary** site uses the `access_key` field to look up the corresponding
+**secondary** site and decrypts the JWT payload.
+
+NOTE:
+JWT requires synchronized clocks between the machines involved, otherwise the
+**primary** site may reject the request.
+
+### File transfers
+
+When the **secondary** site wishes to download a file, the JWT payload
+contains additional information to identify the file
 request. This ensures that the **secondary** site downloads the right
 file for the right database ID. For example, for an LFS object, the
 request must also include the SHA256 sum of the file. An example JWT
@@ -348,9 +356,17 @@ If the requested file matches the requested SHA256 sum, then the Geo
 feature, which allows NGINX to handle the file transfer without tying
 up Rails or Workhorse.
 
-NOTE:
-JWT requires synchronized clocks between the machines
-involved, otherwise it may fail with an encryption error.
+### Git transfers
+
+When the **secondary** site wishes to clone or fetch a Git repository from the
+**primary** site, the JWT payload contains additional information to identify
+the Git repository request. This ensures that the **secondary** site downloads
+the right Git repository for the right database ID. An example JWT
+payload looks like:
+
+```yaml
+{"data": {scope: "mygroup/myproject"}, iat: "1234567890"}
+```
 
 ## Git Push to Geo secondary
 

@@ -73,12 +73,6 @@ RSpec.describe ProjectClusterablePresenter, feature_category: :environment_manag
     it { is_expected.to eq(project_cluster_path(project, cluster)) }
   end
 
-  describe '#metrics_dashboard_path' do
-    subject { presenter.metrics_dashboard_path(cluster) }
-
-    it { is_expected.to eq(metrics_dashboard_project_cluster_path(project, cluster)) }
-  end
-
   describe '#learn_more_link' do
     subject { presenter.learn_more_link }
 
