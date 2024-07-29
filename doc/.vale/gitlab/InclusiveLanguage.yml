@@ -1,7 +1,6 @@
 ---
-# Warning: gitlab.InclusionCultural
-#
-# Suggests alternatives for words that are culturally inappropriate.
+# Warning: gitlab.InclusiveLanguage
+# Suggests alternatives for non-inclusive language.
 #
 # For a list of all options, see https://vale.sh/docs/topics/styles/
 extends: substitution
@@ -11,6 +10,13 @@ level: warning
 ignorecase: true
 swap:
   blacklist(?:ed|ing|s)?: denylist
-  whitelist(?:ed|ing|s)?: allowlist
+  dummy: placeholder, sample, fake
+  (?:he|she): they
+  hers: their
+  his: their
+  mankind: humanity, people
+  manpower: GitLab team members
   master: primary, main
+  sanity (?:check|test): check for completeness
   slave: secondary
+  whitelist(?:ed|ing|s)?: allowlist

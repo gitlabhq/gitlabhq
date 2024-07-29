@@ -63,10 +63,10 @@ A retrospective is a blameless opportunity for the team to identify process impr
 progress.
 You can choose from many retrospective formats.
 
-<!-- vale gitlab.InclusionGender = NO -->
+<!-- vale gitlab.InclusiveLanguage = NO -->
 James Shore provides [an excellent outline for how to conduct a retrospective](https://www.jamesshore.com/v2/books/aoad1/retrospectives)
 in his book, "The Art of Agile."
-<!-- vale gitlab.InclusionGender = YES -->
+<!-- vale gitlab.InclusiveLanguage = YES -->
 
 ### Synchronous retrospectives
 

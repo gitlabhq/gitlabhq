@@ -46,6 +46,8 @@ swap:
   modal: "dialog"
   n/a: "not applicable"
   navigate to: "go to"
+  normally: "usually' or 'typically"
+  normal: "typical' or 'standard"
   OAuth2: "OAuth 2.0"
   omnibus gitlab: "Linux package"
   'omnibus(?!\))': "Linux package"
