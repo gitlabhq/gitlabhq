@@ -1,33 +1,7 @@
+#import "./work_item_ancestors.fragment.graphql"
+
 query workItemAncestorsQuery($id: WorkItemID!) {
   workItem(id: $id) {
-    id
-    title
-    widgets {
-      type
-      ... on WorkItemWidgetHierarchy {
-        type
-        parent {
-          id
-        }
-        ancestors {
-          nodes {
-            id
-            iid
-            confidential
-            workItemType {
-              id
-              name
-              iconName
-            }
-            title
-            state
-            reference(full: true)
-            createdAt
-            closedAt
-            webUrl
-          }
-        }
-      }
-    }
+    ...WorkItemAncestors
   }
 }

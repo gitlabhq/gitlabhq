@@ -4,7 +4,7 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Google Cloud workload identity federation and IAM policies
+# Google Cloud Workload Identity Federation and IAM policies
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
@@ -20,20 +20,77 @@ To use Google Cloud integrations like the
 [Google Artifact Management integration](../user/project/integrations/google_artifact_management.md),
 you must create and configure a
 [workload identity pool and provider](https://cloud.google.com/iam/docs/workload-identity-federation).
-The Google Cloud integration uses the workload identity federation to
+The Google Cloud integration uses Workload Identity Federation to
 grant GitLab workloads access to Google Cloud resources through OpenID Connect
 (OIDC) by using JSON Web Token (JWT) tokens.
 
-## Create and configure a workload identity federation
+## Workload Identity Federation
 
-To set up the workload identity federation you can either:
+Workload Identity Federation lets you use Identity and Access Management (IAM) to grant
+external identities [IAM roles](https://cloud.google.com/iam/docs/overview#roles).
+
+Traditionally, applications running outside Google Cloud used
+[service account keys](https://cloud.google.com/iam/docs/service-account-creds#key-types)
+to access Google Cloud resources. However, service account keys are powerful
+credentials, and can present a security risk if they are not managed
+correctly.
+
+With identity federation, you can use Identity and Access Management (IAM) to grant
+external identities IAM roles
+directly, without requiring service accounts. This approach
+eliminates the maintenance and security burden associated with service
+accounts and their keys.
+
+## Workload identity pools
+
+A _workload identity pool_ is an entity that lets you manage
+non-Google identities on Google Cloud.
+
+The GitLab on Google Cloud integration walks you through setting up a workload
+identity pool to authenticate to Google Cloud. This setup includes
+mapping your GitLab role attributes to IAM claims in your
+Google Cloud IAM policy. For a full list of available GitLab
+attributes for the GitLab on Google Cloud integration, see
+[OIDC custom claims](#oidc-custom-claims).
+
+## Workload identity pool providers
+
+A _workload identity pool provider_ is an entity that describes a relationship
+between Google Cloud and your Identity provider (IdP). GitLab is the
+IdP for your workload identity pool for the GitLab on Google Cloud integration.
+
+For more information on identity federation for external workloads, see
+[Workload Identity Federation](https://cloud.google.com/iam/docs/workload-identity-federation).
+
+The default GitLab on Google Cloud integration assumes you want to set up your authentication from
+GitLab to Google Cloud at the GitLab organization level. If you want to control
+access to Google Cloud on a per project basis, then you must configure your
+IAM policies for your workload identity pool provider. For more
+information on controlling who can access Google Cloud from your GitLab
+organization, see [Access control with IAM](https://cloud.google.com/docs/gitlab/access-control).
+
+## GitLab authentication with Workload Identity Federation
+
+After your workload identity pool and provider are set up to map your GitLab
+roles and permissions to IAM roles, you can provision runners
+to deploy workloads from GitLab to Google Cloud by setting the
+[`identity`](../ci/yaml/index.md#identity) keyword to
+`google_cloud` for authorization on Google Cloud.
+
+For more information on provisioning runners using the GitLab on Google Cloud integration, see the
+tutorial
+[Provisioning runners in Google Cloud](../ci/runners/provision_runners_google_cloud.md).
+
+## Create and configure a Workload Identity Federation
+
+To set up the Workload Identity Federation you can either:
 
 - Use the GitLab UI for a guided setup.
-- Use the Google Cloud CLI to set up the workload identity federation manually.
+- Use the Google Cloud CLI to set up the Workload Identity Federation manually.
 
 ### With the GitLab UI
 
-To use the GitLab UI to set up the workload identity federation:
+To use the GitLab UI to set up the Workload Identity Federation:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > Integrations**.
@@ -52,7 +109,7 @@ Prerequisites:
 - The Google Cloud CLI must be [installed and authenticated](https://cloud.google.com/sdk/docs/install)
   with Google Cloud.
 - You must have the [permissions](https://cloud.google.com/iam/docs/manage-workload-identity-pools-providers#required-roles)
-  to manage workload identity federation in Google Cloud.
+  to manage Workload Identity Federation in Google Cloud.
 
 1. Create a workload identity pool with the following command. Replace these
    values:
@@ -63,7 +120,7 @@ Prerequisites:
   separate from resources and CI/CD projects.
    - `<your_identity_pool_id>` with the ID to use for the pool, which must
   be 4 to 32 lowercase letters, digits, or hyphens. To avoid collisions, use a
-  unique ID. It is recommended to include the GitLab project ID or project path
+  unique ID. You should include the GitLab project ID or project path
   as it facilitates IAM policy management. For example,
   `gitlab-my-project-name`.
 
@@ -79,7 +136,7 @@ Prerequisites:
 
    - `<your_identity_provider_id>` with the ID to use for the provider, which
      must be 4 to 32 lowercase letters, digits, or hyphens. To avoid
-     collisions, use a unique ID within the identity pool. For example,
+     collisions, use a unique ID in the identity pool. For example,
      `gitlab`.
    - `<your_google_cloud_project_id>` with your
      [Google Cloud project ID](https://cloud.google.com/resource-manager/docs/creating-managing-projects#identifying_projects).

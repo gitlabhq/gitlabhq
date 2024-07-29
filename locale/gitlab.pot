@@ -1439,10 +1439,10 @@ msgstr ""
 msgid "%{user} created a merge request: %{mr_link}"
 msgstr ""
 
-msgid "%{user} created an epic: %{epic_link}"
+msgid "%{user} created an %{type}: %{issue_link}"
 msgstr ""
 
-msgid "%{user} created an issue: %{issue_link}"
+msgid "%{user} created an epic: %{epic_link}"
 msgstr ""
 
 msgid "%{user} user’s menu"
@@ -26742,15 +26742,6 @@ msgstr ""
 msgid "IdentityVerification|Country or region"
 msgstr ""
 
-msgid "IdentityVerification|Didn't receive a code?"
-msgstr ""
-
-msgid "IdentityVerification|Didn't receive a code? %{codeLinkStart}Send a new code%{codeLinkEnd} or %{phoneLinkStart}enter a new phone number%{phoneLinkEnd}"
-msgstr ""
-
-msgid "IdentityVerification|Didn't receive a code? Send a new code in %{timer} or %{phoneLinkStart}enter a new phone number%{phoneLinkEnd}"
-msgstr ""
-
 msgid "IdentityVerification|Email update is only offered once."
 msgstr ""
 
@@ -26767,6 +26758,18 @@ msgid "IdentityVerification|For added security, you'll need to verify your ident
 msgstr ""
 
 msgid "IdentityVerification|GitLab will not charge or store your payment information, it will only be used for verification."
+msgstr ""
+
+msgid "IdentityVerification|Having trouble? %{codeLinkStart}Send a new code%{codeLinkEnd}, %{phoneLinkStart}enter a new phone number%{phoneLinkEnd}, or %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr ""
+
+msgid "IdentityVerification|Having trouble? %{resendLinkStart}Send a new code%{resendLinkEnd} or %{supportLinkStart}contact support%{supportLinkEnd}."
+msgstr ""
+
+msgid "IdentityVerification|Having trouble? %{supportLinkStart}Contact support%{supportLinkEnd}."
+msgstr ""
+
+msgid "IdentityVerification|Having trouble? Send a new code in %{timer}, %{phoneLinkStart}enter a new phone number%{phoneLinkEnd}, or %{supportLinkStart}contact support%{supportLinkEnd}."
 msgstr ""
 
 msgid "IdentityVerification|Help us keep GitLab secure"
@@ -26812,9 +26815,6 @@ msgid "IdentityVerification|Resend code"
 msgstr ""
 
 msgid "IdentityVerification|Select country or region"
-msgstr ""
-
-msgid "IdentityVerification|Send a new code"
 msgstr ""
 
 msgid "IdentityVerification|Send code"
@@ -35598,6 +35598,9 @@ msgstr ""
 msgid "Notify|%{strong_open}%{user_name}%{strong_close} updated the custom email address credentials for the Service Desk of %{project_link_start}%{project_name}%{project_link_end} and triggered the verification process."
 msgstr ""
 
+msgid "Notify|%{type} was %{issue_status} by %{updated_by}"
+msgstr ""
+
 msgid "Notify|%{update_at_start} Last update at %{update_at_mid} %{last_update_at} %{update_at_end}"
 msgstr ""
 
@@ -35704,9 +35707,6 @@ msgid "Notify|Incorrect verification token:"
 msgstr ""
 
 msgid "Notify|Invalid credentials:"
-msgstr ""
-
-msgid "Notify|Issue was %{issue_status} by %{updated_by}"
 msgstr ""
 
 msgid "Notify|Issue was moved to another project."
@@ -60177,6 +60177,9 @@ msgstr ""
 msgid "WorkItems|An error occurred while fetching children"
 msgstr ""
 
+msgid "WorkItems|Ancestors not available"
+msgstr ""
+
 msgid "WorkItem|%{count} more assignees"
 msgstr ""
 
@@ -60220,6 +60223,9 @@ msgid "WorkItem|All activity"
 msgstr ""
 
 msgid "WorkItem|Ancestor"
+msgstr ""
+
+msgid "WorkItem|Ancestor not available"
 msgstr ""
 
 msgid "WorkItem|Apricot"
@@ -60643,6 +60649,12 @@ msgid "WorkItem|Work items"
 msgstr ""
 
 msgid "WorkItem|Yes, close %{workItemType}"
+msgstr ""
+
+msgid "WorkItem|You don't have the necessary permission to view the ancestor."
+msgstr ""
+
+msgid "WorkItem|You don't have the necessary permission to view the ancestors."
 msgstr ""
 
 msgid "WorkItem|You're only seeing %{boldStart}other activity%{boldEnd} in the feed. To add a comment, switch to one of the following options."

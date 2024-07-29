@@ -228,7 +228,7 @@ export default {
     parentWorkItem() {
       return this.isWidgetPresent(WIDGET_TYPE_HIERARCHY)?.parent;
     },
-    showAncestors() {
+    hasParent() {
       // TODO: This is a temporary check till the issue work item migration is completed
       // Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/468114
       const { workItemType, glFeatures, parentWorkItem, hasSubepicsFeature } = this;
@@ -241,7 +241,12 @@ export default {
         return hasSubepicsFeature && parentWorkItem;
       }
 
-      return parentWorkItem;
+      return Boolean(parentWorkItem);
+    },
+    shouldShowAncestors() {
+      // Checks whether current work item has parent
+      // or it is in hierarchy but there is no permission to view the parent
+      return this.hasParent || this.workItemHierarchy?.hasParent;
     },
     parentWorkItemConfidentiality() {
       return this.parentWorkItem?.confidential;
@@ -304,16 +309,16 @@ export default {
     },
     titleClassHeader() {
       return {
-        'sm:!gl-hidden gl-mt-3': this.showAncestors,
-        'sm:!gl-block': !this.showAncestors,
-        'gl-w-full': !this.showAncestors && !this.editMode,
-        'editable-wi-title': this.editMode && !this.showAncestors,
+        'sm:!gl-hidden gl-mt-3': this.shouldShowAncestors,
+        'sm:!gl-block': !this.shouldShowAncestors,
+        'gl-w-full': !this.shouldShowAncestors && !this.editMode,
+        'editable-wi-title': this.editMode && !this.shouldShowAncestors,
       };
     },
     titleClassComponent() {
       return {
-        'sm:!gl-block': !this.showAncestors,
-        'gl-hidden sm:!gl-block gl-mt-3': this.showAncestors,
+        'sm:!gl-block': !this.shouldShowAncestors,
+        'gl-hidden sm:!gl-block gl-mt-3': this.shouldShowAncestors,
         'editable-wi-title': this.workItemsAlphaEnabled,
       };
     },
@@ -530,7 +535,7 @@ export default {
         />
         <div v-else data-testid="detail-wrapper">
           <div class="gl-block sm:!gl-flex gl-items-start gl-flex-row gl-gap-3">
-            <work-item-ancestors v-if="showAncestors" :work-item="workItem" class="gl-mb-1" />
+            <work-item-ancestors v-if="shouldShowAncestors" :work-item="workItem" class="gl-mb-1" />
             <div v-if="!error" :class="titleClassHeader" data-testid="work-item-type">
               <work-item-title
                 v-if="workItem.title"
@@ -606,7 +611,7 @@ export default {
           </div>
           <div :class="{ 'gl-mt-3': !editMode }">
             <work-item-title
-              v-if="workItem.title && showAncestors"
+              v-if="workItem.title && shouldShowAncestors"
               ref="title"
               :is-editing="editMode"
               :class="titleClassComponent"

@@ -1,5 +1,13 @@
 <script>
-import { GlButton, GlForm, GlLink, GlLoadingIcon, GlCollapsibleListbox } from '@gitlab/ui';
+import {
+  GlButton,
+  GlForm,
+  GlLink,
+  GlLoadingIcon,
+  GlCollapsibleListbox,
+  GlIcon,
+  GlPopover,
+} from '@gitlab/ui';
 import { debounce } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
@@ -37,6 +45,8 @@ export default {
     GlLink,
     GlForm,
     GlCollapsibleListbox,
+    GlIcon,
+    GlPopover,
   },
   inject: ['fullPath', 'isGroup'],
   props: {
@@ -64,6 +74,11 @@ export default {
       required: false,
       default: '',
     },
+    hasParent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -77,9 +92,6 @@ export default {
     };
   },
   computed: {
-    hasParent() {
-      return this.parent !== null;
-    },
     isIssue() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE;
     },
@@ -289,10 +301,22 @@ export default {
     </gl-form>
     <template v-else-if="hasParent">
       <gl-link
+        v-if="parent"
         data-testid="work-item-parent-link"
         class="gl-link gl-text-gray-900 gl-display-inline-block gl-max-w-full gl-whitespace-nowrap gl-text-overflow-ellipsis gl-overflow-hidden"
         :href="parent.webUrl"
         >{{ listboxText }}</gl-link
+      >
+      <span v-else id="parent-not-available" class="gl-cursor-help">
+        <gl-popover triggers="hover focus" placement="bottom" :target="'parent-not-available'">
+          <span>{{
+            s__(`WorkItem|You don't have the necessary permission to view the ancestor.`)
+          }}</span>
+        </gl-popover>
+        <gl-icon name="eye-slash" class="gl-mr-2 !gl-text-gray-600" />
+        <span data-testid="ancestor-not-available">{{
+          s__('WorkItem|Ancestor not available')
+        }}</span></span
       >
     </template>
     <template v-else>

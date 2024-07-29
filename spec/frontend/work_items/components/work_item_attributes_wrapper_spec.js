@@ -139,13 +139,22 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('parent widget', () => {
-    it(`renders parent component with proper data`, async () => {
+    it(`renders parent component`, async () => {
       const response = workItemResponseFactory();
       createComponent({ workItem: response.data.workItem });
 
       await waitForPromises();
 
       expect(findWorkItemParent().exists()).toBe(true);
+    });
+
+    it.each([true, false])(`renders parent component with hasParent %s`, async (hasParent) => {
+      const response = workItemResponseFactory({ hasParent });
+      createComponent({ workItem: response.data.workItem });
+
+      await waitForPromises();
+
+      expect(findWorkItemParent().props('hasParent')).toBe(hasParent);
     });
 
     it('emits an error event to the wrapper', async () => {

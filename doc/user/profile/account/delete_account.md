@@ -35,6 +35,9 @@ As a user, to delete your own account:
 NOTE:
 On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../../administration/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created. Accounts with no issues, comments, notes, merge requests, or snippets are deleted within an hour. Accounts under paid namespaces are deleted within an hour.
 
+If you cannot delete your own account, submit a [personal data request](https://support.gitlab.io/account-deletion/)
+to ask for your account and data to be removed from GitLab.
+
 ## Delete users and user contributions
 
 DETAILS:

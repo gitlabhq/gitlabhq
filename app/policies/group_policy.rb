@@ -266,6 +266,7 @@ class GroupPolicy < Namespaces::GroupProjectNamespaceSharedPolicy
     enable :set_emails_disabled
     enable :change_prevent_sharing_groups_outside_hierarchy
     enable :set_show_diff_preview_in_email
+    enable :change_seat_control
     enable :change_new_user_signups_cap
     enable :update_default_branch_protection
     enable :create_deploy_token

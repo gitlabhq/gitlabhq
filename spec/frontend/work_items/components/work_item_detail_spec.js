@@ -199,9 +199,9 @@ describe('WorkItemDetail component', () => {
   });
 
   describe('when loaded', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
       createComponent();
-      return waitForPromises();
+      await waitForPromises();
     });
 
     it('does not render skeleton', () => {
@@ -374,14 +374,31 @@ describe('WorkItemDetail component', () => {
     });
 
     describe('with parent', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         const parentResponse = workItemByIidResponseFactory(mockParent);
         createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
 
-        return waitForPromises();
+        await waitForPromises();
       });
 
       it('shows ancestors widget if there is a parent', () => {
+        expect(findAncestors().exists()).toBe(true);
+      });
+
+      it('does not show title in the header when parent exists', () => {
+        expect(findWorkItemType().classes()).toEqual(['sm:!gl-hidden', 'gl-mt-3']);
+      });
+    });
+
+    describe('with inaccessible parent', () => {
+      beforeEach(async () => {
+        const parentResponse = workItemByIidResponseFactory({ parent: null, hasParent: true });
+        createComponent({ handler: jest.fn().mockResolvedValue(parentResponse) });
+
+        await waitForPromises();
+      });
+
+      it('shows ancestors widget if there is a inaccessible parent', () => {
         expect(findAncestors().exists()).toBe(true);
       });
 
@@ -393,10 +410,10 @@ describe('WorkItemDetail component', () => {
 
   describe('when the work item query is unsuccessful', () => {
     describe('full view', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         const errorHandler = jest.fn().mockRejectedValue('Oops');
         createComponent({ handler: errorHandler });
-        return waitForPromises();
+        await waitForPromises();
       });
 
       it('does not show the work item detail wrapper', () => {

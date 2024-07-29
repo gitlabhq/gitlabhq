@@ -20,6 +20,10 @@ module NamespaceSettings
         user_policy: :change_prevent_sharing_groups_outside_hierarchy
       )
       validate_settings_param_for_root_group(
+        param_key: :seat_control,
+        user_policy: :change_seat_control
+      )
+      validate_settings_param_for_root_group(
         param_key: :new_user_signups_cap,
         user_policy: :change_new_user_signups_cap
       )

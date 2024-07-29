@@ -1,4 +1,4 @@
-import { GlForm, GlCollapsibleListbox } from '@gitlab/ui';
+import { GlForm, GlCollapsibleListbox, GlPopover } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -40,13 +40,15 @@ describe('WorkItemParent component', () => {
   const availableWorkItemsFailureHandler = jest.fn().mockRejectedValue(new Error());
 
   const findHeader = () => wrapper.find('h3');
-  const findEditButton = () => wrapper.find('[data-testid="edit-parent"]');
-  const findApplyButton = () => wrapper.find('[data-testid="apply-parent"]');
+  const findEditButton = () => wrapper.findByTestId('edit-parent');
+  const findApplyButton = () => wrapper.findByTestId('apply-parent');
 
-  const findLoadingIcon = () => wrapper.find('[data-testid="loading-icon-parent"]');
+  const findLoadingIcon = () => wrapper.findByTestId('loading-icon-parent');
   const findLabel = () => wrapper.find('label');
   const findForm = () => wrapper.findComponent(GlForm);
   const findCollapsibleListbox = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findAncestorUnavailable = () => wrapper.findByTestId('ancestor-not-available');
+  const findPopover = () => wrapper.findComponent(GlPopover);
 
   const successUpdateWorkItemMutationHandler = jest
     .fn()
@@ -59,6 +61,7 @@ describe('WorkItemParent component', () => {
     mutationHandler = successUpdateWorkItemMutationHandler,
     isEditing = false,
     isGroup = false,
+    hasParent = true,
   } = {}) => {
     wrapper = mountExtended(WorkItemParent, {
       apolloProvider: createMockApollo([
@@ -75,6 +78,7 @@ describe('WorkItemParent component', () => {
         parent,
         workItemId,
         workItemType,
+        hasParent,
       },
     });
 
@@ -179,17 +183,27 @@ describe('WorkItemParent component', () => {
   });
 
   describe('value', () => {
+    beforeEach(() => {
+      createComponent({ parent: mockParentWidgetResponse });
+    });
+
     it('shows None when no parent is set', () => {
-      createComponent();
+      createComponent({ hasParent: false });
 
       expect(wrapper.text()).toContain(__('None'));
     });
 
     it('shows parent when parent is set', () => {
-      createComponent({ parent: mockParentWidgetResponse });
-
       expect(wrapper.text()).not.toContain(__('None'));
       expect(wrapper.text()).toContain(mockParentWidgetResponse.title);
+    });
+
+    it('does not show ancestor not available message', () => {
+      expect(findAncestorUnavailable().exists()).toBe(false);
+    });
+
+    it('does not render inaccessible parent popover', () => {
+      expect(findPopover().exists()).toBe(false);
     });
   });
 
@@ -408,6 +422,25 @@ describe('WorkItemParent component', () => {
         ['Something went wrong while updating the objective. Please try again.'],
       ]);
       expect(Sentry.captureException).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('with inaccessible parent', () => {
+    beforeEach(async () => {
+      await createComponent({ hasParent: true });
+    });
+
+    it('shows ancestor not available message', () => {
+      expect(findAncestorUnavailable().exists()).toBe(true);
+      expect(findAncestorUnavailable().text()).toBe('Ancestor not available');
+    });
+
+    it('displays appropriate message in popover on hover and focus', () => {
+      expect(findPopover().exists()).toBe(true);
+      expect(findPopover().props('triggers')).toBe('hover focus');
+      expect(findPopover().text()).toEqual(
+        `You don't have the necessary permission to view the ancestor.`,
+      );
     });
   });
 });

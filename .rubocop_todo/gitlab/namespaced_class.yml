@@ -582,8 +582,6 @@ Gitlab/NamespacedClass:
     - 'app/serializers/project_note_entity.rb'
     - 'app/serializers/project_note_serializer.rb'
     - 'app/serializers/project_serializer.rb'
-    - 'app/serializers/prometheus_metric_entity.rb'
-    - 'app/serializers/prometheus_metric_serializer.rb'
     - 'app/serializers/release_entity.rb'
     - 'app/serializers/release_serializer.rb'
     - 'app/serializers/remote_mirror_entity.rb'

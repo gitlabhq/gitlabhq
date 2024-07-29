@@ -9,6 +9,14 @@ module NotifyHelper
     link_to(entity.to_reference(full: full), issue_url(entity, *args))
   end
 
+  def work_item_type_for(work_item)
+    type = work_item.work_item_type
+
+    # For now we are limiting the scope of the change only for epic work items,
+    # we can remove this check to support all work item types.
+    type.epic? ? type.base_type : 'issue'
+  end
+
   def merge_request_hash_param(merge_request, reviewer)
     {
       mr_highlight: '<span style="font-weight: 600;color:#333333;">'.html_safe,

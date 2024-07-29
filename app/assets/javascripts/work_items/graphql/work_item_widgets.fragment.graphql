@@ -58,6 +58,7 @@ fragment WorkItemWidgets on WorkItemWidget {
   }
   ... on WorkItemWidgetHierarchy {
     hasChildren
+    hasParent
     parent {
       id
       iid

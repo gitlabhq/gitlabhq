@@ -7,7 +7,9 @@ import waitForPromises from 'helpers/wait_for_promises';
 
 import { createAlert } from '~/alert';
 import DisclosureHierarchy from '~/work_items/components/work_item_ancestors/disclosure_hierarchy.vue';
-import WorkItemAncestors from '~/work_items/components/work_item_ancestors/work_item_ancestors.vue';
+import WorkItemAncestors, {
+  ANCESTOR_NOT_AVAILABLE,
+} from '~/work_items/components/work_item_ancestors/work_item_ancestors.vue';
 import workItemAncestorsQuery from '~/work_items/graphql/work_item_ancestors.query.graphql';
 import workItemAncestorsUpdatedSubscription from '~/work_items/graphql/work_item_ancestors.subscription.graphql';
 import { formatAncestors } from '~/work_items/utils';
@@ -17,6 +19,8 @@ import {
   workItemAncestorsQueryResponse,
   workItemEmptyAncestorsQueryResponse,
   workItemThreeAncestorsQueryResponse,
+  workItemInaccessibleAncestorsQueryResponse,
+  workItemMultipleInaccessibleAncestorsQueryResponse,
 } from './mock_data';
 
 Vue.use(VueApollo);
@@ -77,6 +81,12 @@ describe('WorkItemAncestors', () => {
     );
   });
 
+  it('does not include `ANCESTOR_NOT_AVAILABLE` item when ancestors are accessible', () => {
+    expect(findDisclosureHierarchy().props('items')).toEqual(
+      expect.not.objectContaining(ANCESTOR_NOT_AVAILABLE),
+    );
+  });
+
   it('does not display DisclosureHierarchy component when work item has no ancestor', async () => {
     wrapper = createComponent({ ancestorsQueryHandler: workItemEmptyAncestorsQueryHandler });
     await waitForPromises();
@@ -128,6 +138,51 @@ describe('WorkItemAncestors', () => {
       captureError: true,
       error: expect.any(Object),
       message: 'Something went wrong while fetching ancestors.',
+    });
+  });
+
+  describe('when user has no permission to view ancestors', () => {
+    const workItemInaccessibleRootLevelAncestorsQueryHandler = jest
+      .fn()
+      .mockResolvedValue(workItemInaccessibleAncestorsQueryResponse);
+
+    const workItemMultipleInaccessibleAncestorsQueryHandler = jest
+      .fn()
+      .mockResolvedValue(workItemMultipleInaccessibleAncestorsQueryResponse);
+
+    beforeEach(async () => {
+      wrapper = createComponent({
+        ancestorsQueryHandler: workItemInaccessibleRootLevelAncestorsQueryHandler,
+      });
+      await waitForPromises();
+    });
+
+    it('displays appropriate message in popover on hover and focus', () => {
+      expect(findPopover().exists()).toBe(true);
+      expect(findPopover().props('triggers')).toBe('hover focus');
+      expect(findPopover().text()).toEqual(
+        `You don't have the necessary permission to view the ancestors.`,
+      );
+    });
+
+    describe('DisclosureHierarchy component', () => {
+      it('includes `ANCESTOR_NOT_AVAILABLE` item when there is parent is at root level', () => {
+        expect(findDisclosureHierarchy().props('items')).toEqual([ANCESTOR_NOT_AVAILABLE]);
+      });
+
+      it('includes `ANCESTOR_NOT_AVAILABLE` item with accessible parent if there are multiple ancestors', async () => {
+        wrapper = createComponent({
+          ancestorsQueryHandler: workItemMultipleInaccessibleAncestorsQueryHandler,
+        });
+        await waitForPromises();
+
+        expect(findDisclosureHierarchy().props('items')).toEqual(
+          expect.arrayContaining([
+            ANCESTOR_NOT_AVAILABLE,
+            ...formatAncestors(workItemMultipleInaccessibleAncestorsQueryResponse.data.workItem),
+          ]),
+        );
+      });
     });
   });
 });

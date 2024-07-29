@@ -1,0 +1,42 @@
+fragment WorkItemAncestors on WorkItem {
+  id
+  title
+  widgets {
+    type
+    ... on WorkItemWidgetHierarchy {
+      type
+      hasParent
+      parent {
+        id
+      }
+      ancestors {
+        nodes {
+          id
+          iid
+          confidential
+          workItemType {
+            id
+            name
+            iconName
+          }
+          title
+          state
+          reference(full: true)
+          createdAt
+          closedAt
+          webUrl
+          widgets {
+            type
+            ... on WorkItemWidgetHierarchy {
+              type
+              hasParent
+              parent {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

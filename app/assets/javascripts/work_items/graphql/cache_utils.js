@@ -400,6 +400,7 @@ export const setNewWorkItemCache = async (
         widgets.push({
           type: 'HIERARCHY',
           hasChildren: false,
+          hasParent: false,
           parent: null,
           children: {
             nodes: [],

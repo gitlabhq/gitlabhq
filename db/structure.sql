@@ -1250,6 +1250,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_664594a3d0a7() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "target_project_id"
+  INTO NEW."project_id"
+  FROM "merge_requests"
+  WHERE "merge_requests"."id" = NEW."merge_request_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_68435a54ee2b() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -12755,7 +12771,8 @@ CREATE TABLE merge_request_user_mentions (
     mentioned_users_ids integer[],
     mentioned_projects_ids integer[],
     mentioned_groups_ids integer[],
-    note_id bigint
+    note_id bigint,
+    project_id bigint
 );
 
 CREATE SEQUENCE merge_request_user_mentions_id_seq
@@ -31924,6 +31941,8 @@ CREATE TRIGGER trigger_57ad2742ac16 BEFORE INSERT OR UPDATE ON user_achievements
 CREATE TRIGGER trigger_5ca97b87ee30 BEFORE INSERT OR UPDATE ON merge_request_context_commits FOR EACH ROW EXECUTE FUNCTION trigger_5ca97b87ee30();
 
 CREATE TRIGGER trigger_5f6432d2dccc BEFORE INSERT OR UPDATE ON operations_strategies_user_lists FOR EACH ROW EXECUTE FUNCTION trigger_5f6432d2dccc();
+
+CREATE TRIGGER trigger_664594a3d0a7 BEFORE INSERT OR UPDATE ON merge_request_user_mentions FOR EACH ROW EXECUTE FUNCTION trigger_664594a3d0a7();
 
 CREATE TRIGGER trigger_68435a54ee2b BEFORE INSERT OR UPDATE ON packages_debian_project_architectures FOR EACH ROW EXECUTE FUNCTION trigger_68435a54ee2b();
 

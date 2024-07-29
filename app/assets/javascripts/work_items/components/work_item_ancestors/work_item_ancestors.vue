@@ -5,11 +5,17 @@ import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 
-import { formatAncestors } from '../../utils';
+import { findHierarchyWidgets, formatAncestors } from '../../utils';
 import workItemAncestorsQuery from '../../graphql/work_item_ancestors.query.graphql';
 import workItemAncestorsUpdatedSubscription from '../../graphql/work_item_ancestors.subscription.graphql';
 import WorkItemStateBadge from '../work_item_state_badge.vue';
 import DisclosureHierarchy from './disclosure_hierarchy.vue';
+
+export const ANCESTOR_NOT_AVAILABLE = {
+  title: s__('WorkItems|Ancestors not available'),
+  ancestorNotAvailable: true,
+  icon: 'eye-slash',
+};
 
 export default {
   i18n: {
@@ -45,7 +51,22 @@ export default {
         };
       },
       update(data) {
-        return formatAncestors(data.workItem);
+        const formattedAncestors = formatAncestors(data.workItem).flatMap((ancestor) => {
+          const ancestorHierarchyWidget = findHierarchyWidgets(ancestor.widgets);
+          // Condition is to check if it `hasParent` is true and the parent object is null  i.e, inaccessible
+          // then add "ancestor is not available" with other parents
+          return ancestorHierarchyWidget?.hasParent && !ancestorHierarchyWidget?.parent
+            ? [ANCESTOR_NOT_AVAILABLE, ancestor]
+            : [ancestor];
+        });
+
+        // If the work item has a parent at root level but the parent object is null i.e, inaccessible
+        // then add "ancestor is not available" as the only item
+        const widgets = findHierarchyWidgets(data.workItem?.widgets);
+        if (formattedAncestors.length === 0 && widgets?.hasParent && !widgets?.parent) {
+          formattedAncestors.push(ANCESTOR_NOT_AVAILABLE);
+        }
+        return formattedAncestors;
       },
       skip() {
         return !this.workItem.id;
@@ -81,7 +102,12 @@ export default {
     :ellipsis-tooltip-label="$options.i18n.ancestorsTooltipLabel"
   >
     <template #default="{ item, itemId }">
-      <gl-popover triggers="hover focus" placement="bottom" :target="itemId">
+      <gl-popover
+        v-if="!item.ancestorNotAvailable"
+        triggers="hover focus"
+        placement="bottom"
+        :target="itemId"
+      >
         <template #title>
           <div>
             <gl-badge variant="muted">{{ $options.i18n.ancestorLabel }}</gl-badge>
@@ -102,6 +128,11 @@ export default {
             </template>
           </gl-sprintf>
         </span>
+      </gl-popover>
+      <gl-popover v-else triggers="hover focus" placement="bottom" :target="itemId">
+        <span>{{
+          s__(`WorkItem|You don't have the necessary permission to view the ancestors.`)
+        }}</span>
       </gl-popover>
     </template>
   </disclosure-hierarchy>

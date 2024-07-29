@@ -10,8 +10,8 @@ code_quality:
     - .use-docker-in-docker
     - .code-quality-cache-push
   stage: lint
-  # P95 duration for this job has been 14min from 2023-04-01 until 2024-04-01
-  timeout: 15m
+  # P95 duration for this job has been 15min from 2024-06-10 until 2024-07-22
+  timeout: 20m
   artifacts:
     paths:
       - gl-code-quality-report.json  # GitLab-specific

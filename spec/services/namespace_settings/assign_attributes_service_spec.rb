@@ -231,6 +231,7 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
       where(:setting_key, :setting_changes_from, :setting_changes_to) do
         :prevent_sharing_groups_outside_hierarchy | false | true
         :new_user_signups_cap | nil | 100
+        :seat_control | 'off' | 'user_cap'
         :enabled_git_access_protocol | 'all' | 'ssh'
       end
 

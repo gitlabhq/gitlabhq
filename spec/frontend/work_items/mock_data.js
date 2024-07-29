@@ -935,6 +935,7 @@ export const workItemResponseFactory = ({
   developmentItems = workItemDevelopmentFragmentResponse(),
   color = '#1068bf',
   editableWeightWidget = true,
+  hasParent = false,
 } = {}) => ({
   data: {
     workItem: {
@@ -1155,6 +1156,7 @@ export const workItemResponseFactory = ({
               __typename: 'WorkItemWidgetHierarchy',
               type: 'HIERARCHY',
               hasChildren: true,
+              hasParent,
               children: {
                 nodes: [
                   {
@@ -2042,6 +2044,7 @@ export const changeIndirectWorkItemParentMutationResponse = {
           {
             __typename: 'WorkItemWidgetHierarchy',
             type: 'HIERARCHY',
+            hasParent: false,
             parent: null,
             hasChildren: false,
             children: {
@@ -2112,6 +2115,7 @@ export const changeWorkItemParentMutationResponse = {
           {
             __typename: 'WorkItemWidgetHierarchy',
             type: 'HIERARCHY',
+            hasParent: false,
             parent: null,
             hasChildren: false,
             children: {
@@ -4566,6 +4570,7 @@ export const createWorkItemQueryResponse = {
             type: 'HIERARCHY',
             hasChildren: false,
             parent: null,
+            hasParent: false,
             children: {
               nodes: [],
               __typename: 'WorkItemConnection',

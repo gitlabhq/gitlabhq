@@ -136,6 +136,9 @@ export default {
     workItemDevelopment() {
       return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsAlpha;
     },
+    hasParent() {
+      return this.workItemHierarchy?.hasParent;
+    },
   },
   methods: {
     isWidgetPresent(type) {
@@ -281,6 +284,7 @@ export default {
         :work-item-id="workItem.id"
         :work-item-type="workItemType"
         :parent="workItemParent"
+        :has-parent="hasParent"
         :group-path="groupPath"
         @error="$emit('error', $event)"
       />
