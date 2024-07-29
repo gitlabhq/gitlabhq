@@ -40,6 +40,7 @@ module NamespaceSettings
         user_policy: :update_git_access_protocol
       )
 
+      handle_default_branch_name
       handle_default_branch_protection unless settings_params[:default_branch_protection].blank?
       handle_early_access_program_participation
 
@@ -51,6 +52,17 @@ module NamespaceSettings
     end
 
     private
+
+    def handle_default_branch_name
+      default_branch_key = :default_branch_name
+
+      return if settings_params[default_branch_key].blank?
+
+      unless Gitlab::GitRefValidator.validate(settings_params[default_branch_key])
+        settings_params.delete(default_branch_key)
+        group.namespace_settings.errors.add(default_branch_key, _('is invalid.'))
+      end
+    end
 
     def handle_default_branch_protection
       # We are migrating default_branch_protection from an integer

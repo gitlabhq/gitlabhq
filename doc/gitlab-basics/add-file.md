@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Add, commit, and push a file to your Git repository using the command line."
 ---
 
-# Add files and make changes by using Git
+# Add files to your branch
 
 You can use the Git command line to add files, make changes to existing files, and stash changes you don't need yet.
 

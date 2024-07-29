@@ -236,10 +236,10 @@ Using `update`, `upsert`, `delete`, `update_all`, `upsert_all`, `delete_all` or 
 ActiveRecord methods requires extra care because they modify data and can perform poorly, or they
 can destroy data if improperly scoped. These methods are also
 [incompatible with Common Table Expression (CTE) statements](sql.md#when-to-use-common-table-expressions).
-Danger will comment on a Merge Request Diff when these methods are used.
+Danger will comment on a merge request diff when these methods are used.
 
 Follow documentation for [preparation when adding or modifying queries](#preparation-when-adding-or-modifying-queries)
-to add the raw SQL query and query plan to the Merge Request description, and request a database review.
+to add the raw SQL query and query plan to the merge request description, and request a database review.
 
 ### How to review for database
 

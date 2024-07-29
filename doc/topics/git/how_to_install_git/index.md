@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "How to install Git on your local machine."
 ---
 
-# Install and configure Git
+# Install Git
 
 To begin contributing to GitLab projects, you must download and install the Git client on your computer.
 

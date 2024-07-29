@@ -15,13 +15,13 @@ expressions and runs various aggregations on the data.
 
 For example:
 
-- Duration between the Merge Request creation time and Merge Request merge time.
+- Duration between the merge request creation time and merge request merge time.
 - Duration between the Issue creation time and Issue close time.
 
 This duration is exposed in various ways:
 
 - Aggregation: median, average
-- Listing: list the duration for individual Merge Request and Issue records
+- Listing: list the duration for individual merge request and issue records
 
 Apart from the durations, we expose the record count within a stage.
 

@@ -1094,6 +1094,8 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
+
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
 See the [Container registry metadata database](container_registry_metadata_database.md) page for details.
@@ -1287,8 +1289,6 @@ Also, there's no way to save progress or results during the mark phase of the pr
 blobs start being deleted is anything permanent done.
 
 ### Continuous zero-downtime garbage collection
-
-DETAILS:
 
 You can run garbage collection in the background without the need to schedule it or require read-only mode,
 if you migrate to the [metadata database](container_registry_metadata_database.md).

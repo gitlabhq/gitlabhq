@@ -13,7 +13,6 @@ import { createAlert } from '~/alert';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
-import { isMetaKey } from '~/lib/utils/common_utils';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
 import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
@@ -185,9 +184,6 @@ export default {
       this.isShownAddForm = false;
     },
     openChild({ event, child }) {
-      if (isMetaKey(event)) {
-        return;
-      }
       event.preventDefault();
       this.activeChild = child;
       this.$refs.modal.show();

@@ -108,7 +108,7 @@ Follow [Configure GDK-in-a-box](first_contribution/configure-dev-env-gdk-in-a-bo
 
 ### How community merge requests are triaged
 
-When you create a merge request, a Merge Request Coach will assign relevant reviewers or
+When you create a merge request, a merge request coach will assign relevant reviewers or
 guide you through the review themselves if possible.
 
 The goal is to have a merge request reviewed within a week after a reviewer is assigned.

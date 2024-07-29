@@ -330,7 +330,7 @@ out using the instructions below.
 You can work on the frontend and backend at the same time, because updates over WebSockets
 are difficult to simulate without the necessary backend code in place.
 
-However, it is safer to send changes in separate Merge Requests and deploy the backend changes first.
+However, it is safer to send changes in separate merge requests and deploy the backend changes first.
 This ensures that when the frontend starts subscribing to events, the backend is already prepared
 to service them.
 

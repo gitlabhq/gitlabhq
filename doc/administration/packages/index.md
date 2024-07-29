@@ -43,14 +43,14 @@ guides you through the process.
 | CocoaPods | [#36890](https://gitlab.com/gitlab-org/gitlab/-/issues/36890) |
 | Conda     | [#36891](https://gitlab.com/gitlab-org/gitlab/-/issues/36891) |
 | CRAN      | [#36892](https://gitlab.com/gitlab-org/gitlab/-/issues/36892) |
-| Debian    | [Draft: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50438) |
+| Debian    | [Draft: Merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/50438) |
 | Opkg      | [#36894](https://gitlab.com/gitlab-org/gitlab/-/issues/36894) |
 | P2        | [#36895](https://gitlab.com/gitlab-org/gitlab/-/issues/36895) |
 | Puppet    | [#36897](https://gitlab.com/gitlab-org/gitlab/-/issues/36897) |
 | RPM       | [#5932](https://gitlab.com/gitlab-org/gitlab/-/issues/5932) |
 | RubyGems  | [#803](https://gitlab.com/gitlab-org/gitlab/-/issues/803) |
 | SBT       | [#36898](https://gitlab.com/gitlab-org/gitlab/-/issues/36898) |
-| Terraform | [Draft: Merge Request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
+| Terraform | [Draft: Merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/18834) |
 | Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
 
 <!-- vale gitlab.Spelling = YES -->

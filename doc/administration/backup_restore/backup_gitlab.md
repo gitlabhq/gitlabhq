@@ -455,8 +455,8 @@ Depending on your installation type, slightly different components can be skippe
 - `terraform_state` (Terraform states)
 - `registry` (Container registry images)
 - `packages` (Packages)
-- `ci_secure_files` (Project-level Secure Files)
-- `external_diffs` (External Merge Request diffs)
+- `ci_secure_files` (Project-level secure files)
+- `external_diffs` (External merge request diffs)
 
 :::TabTitle Helm chart (Kubernetes)
 

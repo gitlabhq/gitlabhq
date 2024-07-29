@@ -4,7 +4,7 @@ group: Source Code
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-# Undo changes by using Git
+# Undo changes
 
 Git provides options for undoing changes. The method for undoing a change depends on whether the change is unstaged, staged, committed, or pushed.
 

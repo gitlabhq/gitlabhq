@@ -59,7 +59,7 @@ To set up a protected branch flow:
 1. To ensure that the code is reviewed and checked by the right people in your team, use:
 
    - [Code Owners](../codeowners/index.md)
-   - [Merge Request approval rules](approvals/rules.md)
+   - [Merge request approval rules](approvals/rules.md)
 
 Also available in the Ultimate tier:
 

@@ -54,8 +54,8 @@ verification methods:
 | Blobs    | Terraform Module Registry _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Versioned Terraform State _(file system)_       | Geo with API                                 | SHA256 checksum               |
 | Blobs    | Versioned Terraform State _(object storage)_    | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | External Merge Request Diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
-| Blobs    | External Merge Request Diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blobs    | External merge request diffs _(file system)_    | Geo with API                                 | SHA256 checksum               |
+| Blobs    | External merge request diffs _(object storage)_ | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Pipeline artifacts _(file system)_              | Geo with API                                 | SHA256 checksum               |
 | Blobs    | Pipeline artifacts _(object storage)_           | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Pages _(file system)_                           | Geo with API                                 | SHA256 checksum               |

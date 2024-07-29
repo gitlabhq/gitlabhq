@@ -154,9 +154,14 @@ class GroupsController < Groups::ApplicationController
 
   def update
     if Groups::UpdateService.new(@group, current_user, group_params).execute
-      notice = "Group '#{@group.name}' was successfully updated."
 
-      redirect_to edit_group_origin_location, notice: notice
+      if @group.namespace_settings.errors.present?
+        flash[:alert] = group.namespace_settings.errors.full_messages.to_sentence
+      else
+        flash[:notice] = "Group '#{@group.name}' was successfully updated."
+      end
+
+      redirect_to edit_group_origin_location
     else
       @group.reset
       render action: "edit"

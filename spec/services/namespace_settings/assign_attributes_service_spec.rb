@@ -43,6 +43,28 @@ RSpec.describe NamespaceSettings::AssignAttributesService, feature_category: :gr
           .to change { group.namespace_settings.default_branch_name }
                 .from(nil).to(example_branch_name)
       end
+
+      context 'when default branch name is invalid' do
+        let(:settings) { { default_branch_name: '****' } }
+
+        it "does not update the default branch" do
+          expect { service.execute }.not_to change { group.namespace_settings.default_branch_name }
+
+          expect(group.namespace_settings.errors[:default_branch_name]).to include('is invalid.')
+        end
+      end
+
+      context 'when default branch name is changed to empty' do
+        before do
+          group.namespace_settings.update!(default_branch_name: 'main')
+        end
+
+        let(:settings) { { default_branch_name: '' } }
+
+        it 'updates the default branch' do
+          expect { service.execute }.to change { group.namespace_settings.default_branch_name }.from('main').to('')
+        end
+      end
     end
 
     context 'when default_branch_protection is updated' do

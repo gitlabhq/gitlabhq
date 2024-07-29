@@ -8,16 +8,8 @@ export const SEARCH_INPUT_DESCRIPTION = 'label-search-input-description';
 
 export const SEARCH_RESULTS_DESCRIPTION = 'label-search-results-description';
 
-const header = __('Labels');
+export const LABEL_FILTER_HEADER = __('Labels');
 
-const scopes = {
-  ISSUES: 'issues',
-};
+export const LABEL_FILTER_PARAM = 'labelName';
 
-const filterParam = 'labels';
-
-export const labelFilterData = {
-  header,
-  scopes,
-  filterParam,
-};
+export const LABEL_AGREGATION_NAME = 'labels';

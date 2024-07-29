@@ -121,8 +121,9 @@ export default {
   <gl-modal
     ref="modal"
     modal-id="modal-merge-info"
-    no-focus-on-show
     :title="$options.i18n.title"
+    :no-enforce-focus="true"
+    no-focus-on-show
     no-fade
     hide-footer
   >

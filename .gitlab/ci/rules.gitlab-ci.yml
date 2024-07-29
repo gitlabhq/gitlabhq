@@ -696,6 +696,10 @@
   - GITLAB_SHELL_VERSION
   - GITALY_SERVER_VERSION
 
+.ruby-version-patterns: &ruby-version-patterns
+  - ".ruby-version"
+  - ".tool-versions"
+
 .audit-events-patterns: &audit-events-patterns
   - "{,ee/}config/audit_events/types/*.yml"
   - "doc/user/compliance/audit_event_types.md"
@@ -1005,6 +1009,9 @@
     - <<: *if-force-ci
       when: manual
     # The rest is included to be consistent with .qa:rules:e2e:test-on-gdk
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns
@@ -1599,6 +1606,9 @@
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
       allow_failure: true
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
      # Run tests automatically for MRs that touch GITALY_SERVER_VERSION
     - <<: *if-merge-request
       changes: *gitaly-patterns
@@ -1670,6 +1680,9 @@
   rules:
     - !reference [".qa:rules:package-and-test-never-run", rules]
     - <<: *if-merge-request-labels-run-all-e2e
+    # Run tests automatically for MRs that touch Ruby version files
+    - <<: *if-merge-request
+      changes: *ruby-version-patterns
     # Run tests automatically for MRs that touch QA files
     - <<: *if-merge-request
       changes: *qa-patterns

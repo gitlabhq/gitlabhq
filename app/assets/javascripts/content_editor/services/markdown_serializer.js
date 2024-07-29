@@ -157,8 +157,7 @@ export default class MarkdownSerializer {
    * Markdown from which the node was generated using a Markdown
    * deserializer.
    *
-   * See the Sourcemap metadata extension and the remark_markdown_deserializer
-   * service for more information.
+   * See the Sourcemap metadata extension for more information.
    *
    * @param {ProseMirror.Node} params.doc ProseMirror document to convert into Markdown
    * @param {ProseMirror.Node} params.pristineDoc Pristine version of the document that

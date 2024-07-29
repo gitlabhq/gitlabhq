@@ -63181,6 +63181,9 @@ msgstr ""
 msgid "is invalid because there is upstream lock"
 msgstr ""
 
+msgid "is invalid."
+msgstr ""
+
 msgid "is linked to an account pending deletion."
 msgstr ""
 
