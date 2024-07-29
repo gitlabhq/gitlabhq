@@ -15,12 +15,7 @@ module Gitlab
         @rpc_response.each do |diff_blob_msg|
           if current_diff_blob.nil?
             diff_blobs_params = diff_blob_msg.to_h.slice(
-              :left_blob_id,
-              :right_blob_id,
-              :patch,
-              :status,
-              :binary,
-              :over_patch_bytes_limit
+              *Gitlab::GitalyClient::DiffBlob::ATTRS
             )
 
             current_diff_blob = Gitlab::GitalyClient::DiffBlob.new(diff_blobs_params)
