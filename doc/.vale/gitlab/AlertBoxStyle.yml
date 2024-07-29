@@ -14,7 +14,7 @@ link: https://docs.gitlab.com/ee/development/documentation/styleguide/index.html
 level: error
 nonword: true
 scope: raw
-raw:
-  - '(\n *\> *(?:NOTE|WARNING)|'
-  - '\n\n(NOTE|WARNING):[^\n]|'
-  - '\n\n *(?:> )?\**(Note|note|TIP|Tip|tip|CAUTION|Caution|caution|DANGER|Danger|danger|Warning|warning):.*)'
+tokens:
+  - '^ *> *(NOTE|WARNING)'
+  - '(?<=\n\n)(NOTE|WARNING):[^\n]+\n'
+  - '(?<=\n\n) *(> )?\**([Nn]ote|TIP|[Tt]ip|CAUTION|[Cc]aution|DANGER|[Dd]anger|[Ww]arning):.*'

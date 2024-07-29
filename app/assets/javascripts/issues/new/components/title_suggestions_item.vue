@@ -83,7 +83,9 @@ export default {
       </gl-link>
     </div>
     <div class="text-secondary suggestion-footer">
-      <gl-icon ref="state" :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
+      <span ref="state">
+        <gl-icon :name="stateIconName" :class="stateIconClass" class="gl-cursor-help" />
+      </span>
       <gl-tooltip :target="() => $refs.state" placement="bottom">
         <span class="gl-block">
           <span class="gl-font-bold"> {{ stateTitle }} </span>

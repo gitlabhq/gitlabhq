@@ -9,8 +9,6 @@ message: "Instead of future tense '%s', use present tense."
 ignorecase: true
 level: warning
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#future-tense
-raw:
-  - "(going to( |\n|[[:punct:]])[a-zA-Z]*|"
-  - "will( |\n|[[:punct:]])[a-zA-Z]*|"
-  - "won't( |\n|[[:punct:]])[a-zA-Z]*|"
-  - "[a-zA-Z]*'ll( |\n|[[:punct:]])[a-zA-Z]*)"
+tokens:
+  - (going to|will|won't)[ \n:]\w*
+  - (It?|we|you|they)'ll[ \n:]\w*

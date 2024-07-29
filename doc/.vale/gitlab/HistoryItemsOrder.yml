@@ -7,6 +7,7 @@ extends: existence
 message: "History items must follow the tier, offering, or status details."
 link: https://docs.gitlab.com/ee/development/documentation/versions.html#add-a-version-history-item
 level: error
+nonword: true
 scope: raw
-raw:
-  - '(?m)^\>[^\n]*\n\nDETAILS'
+tokens:
+  - '^\>[^\n]*\n\nDETAILS'

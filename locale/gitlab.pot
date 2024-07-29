@@ -34626,9 +34626,6 @@ msgstr ""
 msgid "New Security findings"
 msgstr ""
 
-msgid "New Snippet"
-msgstr ""
-
 msgid "New User"
 msgstr ""
 

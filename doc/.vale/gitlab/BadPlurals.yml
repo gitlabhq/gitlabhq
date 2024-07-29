@@ -9,5 +9,6 @@ message: "Rewrite '%s' to be plural without parentheses."
 link: https://docs.gitlab.com/ee/development/documentation/styleguide/word_list.html#s
 level: warning
 ignorecase: true
-raw:
-  - '\b\w+\(s\)(?<!http\(s\))'
+nonword: true
+tokens:
+  - '(?<!http)\(s\)'

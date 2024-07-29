@@ -5,7 +5,7 @@
 %div{ data: { event_tracking_load: 'true', event_tracking: 'view_admin_labels_pageload' } }
 
 - if @labels.present?
-  = render ::Layouts::CrudComponent.new(_('Labels'), description: page_description, count: @labels.total_count, count_class: 'js-admin-labels-count', icon: 'label', options: { class: 'labels other-labels gl-mt-5 js-admin-labels-container' }) do |c|
+  = render ::Layouts::CrudComponent.new(_('Labels'), description: page_description, count: number_with_delimiter(@labels.total_count), count_class: 'js-admin-labels-count', icon: 'label', options: { class: 'labels other-labels gl-mt-5 js-admin-labels-container' }) do |c|
     - c.with_actions do
       = render Pajamas::ButtonComponent.new(variant: :default,
         size: :small,

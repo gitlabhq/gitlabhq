@@ -60,7 +60,7 @@ module Ci
     strong_memoize_attr :commit
 
     def first_matching_pipeline
-      pipelines = project.ci_pipelines.newest_first(sha: sha)
+      pipelines = project.ci_pipelines.newest_first(sha: sha, limit: 100)
       pipelines = pipelines.for_ref(params[:ref]) if params[:ref]
       pipelines = pipelines.id_in(params[:pipeline_id]) if params[:pipeline_id]
       pipelines.first

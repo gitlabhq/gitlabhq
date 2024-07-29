@@ -14,7 +14,7 @@
       .gl-text-subtle.gl-mb-5
         = labels_function_introduction
 
-      = render ::Layouts::CrudComponent.new(_('Labels'), count: @labels.total_count, icon: 'label', options: { class: 'other-labels' }, body_options: { class: '!gl-m-0' }) do |c|
+      = render ::Layouts::CrudComponent.new(_('Labels'), count: number_with_delimiter(@labels.total_count), icon: 'label', options: { class: 'other-labels' }, body_options: { class: '!gl-m-0' }) do |c|
         - c.with_body do
           %ul.manage-labels-list.js-other-labels
             = render partial: 'shared/label', collection: @labels, as: :label, locals: { use_label_priority: false, subject: @group }

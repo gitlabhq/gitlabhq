@@ -1174,7 +1174,6 @@ Layout/LineLength:
     - 'ee/spec/controllers/ee/dashboard/projects_controller_spec.rb'
     - 'ee/spec/controllers/ee/groups_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/jobs_controller_spec.rb'
-    - 'ee/spec/controllers/ee/search_controller_spec.rb'
     - 'ee/spec/controllers/ee/uploads_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/tasks_by_type_controller_spec.rb'
     - 'ee/spec/controllers/groups/audit_events_controller_spec.rb'

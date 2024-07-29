@@ -18,7 +18,7 @@
     - hide = @available_labels.empty? || (params[:page].present? && params[:page] != '1')
     = render ::Layouts::CrudComponent.new(_('Prioritized labels'),
       options: {class: ['prioritized-labels', ('gl-hidden' if hide), ('is-not-draggable' unless can_admin_label)].compact.join(' ')},
-      count: @prioritized_labels.size,
+      count: number_with_delimiter(@prioritized_labels.size),
       icon: 'label',
       body_options: { class: '!gl-m-0' },
       description: _('Drag to reorder prioritized labels and change their relative priority.')) do |c|
@@ -33,7 +33,7 @@
               = _('No prioritized labels with such name or description')
 
     - if @labels.any?
-      = render ::Layouts::CrudComponent.new(hide ? _('Labels') : _('Other labels'), options: { class: 'other-labels' }, count: @labels.total_count, icon: 'label', body_options: { class: '!gl-m-0' }) do |c|
+      = render ::Layouts::CrudComponent.new(hide ? _('Labels') : _('Other labels'), options: { class: 'other-labels' }, count: number_with_delimiter(@labels.total_count), icon: 'label', body_options: { class: '!gl-m-0' }) do |c|
         - c.with_body do
           .js-other-labels.manage-labels-list
             = render partial: 'shared/label', collection: @labels, as: :label, locals: { subject: @project }

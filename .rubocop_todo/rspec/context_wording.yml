@@ -15,7 +15,6 @@ RSpec/ContextWording:
     - 'ee/spec/controllers/ee/projects/jobs_controller_spec.rb'
     - 'ee/spec/controllers/ee/projects/merge_requests/content_controller_spec.rb'
     - 'ee/spec/controllers/ee/root_controller_spec.rb'
-    - 'ee/spec/controllers/ee/search_controller_spec.rb'
     - 'ee/spec/controllers/ee/sent_notifications_controller_spec.rb'
     - 'ee/spec/controllers/groups/analytics/cycle_analytics_controller_spec.rb'
     - 'ee/spec/controllers/groups/audit_events_controller_spec.rb'

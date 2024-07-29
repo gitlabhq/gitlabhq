@@ -46,7 +46,6 @@
 - './ee/spec/controllers/ee/projects/variables_controller_spec.rb'
 - './ee/spec/controllers/ee/registrations_controller_spec.rb'
 - './ee/spec/controllers/ee/root_controller_spec.rb'
-- './ee/spec/controllers/ee/search_controller_spec.rb'
 - './ee/spec/controllers/ee/sent_notifications_controller_spec.rb'
 - './ee/spec/controllers/ee/sessions_controller_spec.rb'
 - './ee/spec/controllers/ee/uploads_controller_spec.rb'
