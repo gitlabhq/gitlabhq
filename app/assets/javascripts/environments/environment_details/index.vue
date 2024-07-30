@@ -3,6 +3,7 @@
 import { GlLoadingIcon, GlTabs, GlTab, GlBadge } from '@gitlab/ui';
 import { s__ } from '~/locale';
 import { getParameterValues, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import environmentClusterAgentQuery from '~/environments/graphql/queries/environment_cluster_agent.query.graphql';
 import DeploymentHistory from './components/deployment_history.vue';
 import KubernetesOverview from './components/kubernetes/kubernetes_overview.vue';
@@ -68,6 +69,10 @@ export default {
     fluxResourcePath() {
       return this.environment?.fluxResourcePath || '';
     },
+    environmentId() {
+      const idFromGraphQlId = getIdFromGraphQLId(this.environment.id);
+      return idFromGraphQlId ? idFromGraphQlId.toString() : this.environment.id;
+    },
   },
   i18n: {
     deploymentHistory: s__('Environments|Deployment history'),
@@ -108,6 +113,7 @@ export default {
     >
       <kubernetes-overview
         :environment-name="environmentName"
+        :environment-id="environmentId"
         :cluster-agent="environment.clusterAgent"
         :kubernetes-namespace="kubernetesNamespace"
         :flux-resource-path="fluxResourcePath"

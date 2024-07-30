@@ -15742,6 +15742,7 @@ The connection type for [`Todo`](#todo).
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="todoconnectioncount"></a>`count` | [`Int!`](#int) | Total count of collection. |
 | <a id="todoconnectionedges"></a>`edges` | [`[TodoEdge]`](#todoedge) | A list of edges. |
 | <a id="todoconnectionnodes"></a>`nodes` | [`[Todo]`](#todo) | A list of nodes. |
 | <a id="todoconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
@@ -31717,6 +31718,123 @@ Completion status of tasks.
 | <a id="taskcompletionstatuscompletedcount"></a>`completedCount` | [`Int!`](#int) | Number of completed tasks. |
 | <a id="taskcompletionstatuscount"></a>`count` | [`Int!`](#int) | Number of total tasks. |
 
+### `TerraformModuleMetadata`
+
+Terraform module metadata.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatacreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the metadata was created. |
+| <a id="terraformmodulemetadatafields"></a>`fields` | [`TerraformModuleMetadataFields!`](#terraformmodulemetadatafields) | Fields of the metadata. |
+| <a id="terraformmodulemetadataid"></a>`id` | [`PackagesTerraformModuleMetadatumID!`](#packagesterraformmodulemetadatumid) | ID of the metadata. |
+| <a id="terraformmodulemetadataupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of when the metadata was last updated. |
+
+### `TerraformModuleMetadataDependencies`
+
+Terraform module metadata dependencies.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatadependenciesmodules"></a>`modules` | [`[TerraformModuleMetadataDependency!]`](#terraformmodulemetadatadependency) | Modules of the module. |
+| <a id="terraformmodulemetadatadependenciesproviders"></a>`providers` | [`[TerraformModuleMetadataDependency!]`](#terraformmodulemetadatadependency) | Providers of the module. |
+
+### `TerraformModuleMetadataDependency`
+
+Terraform module metadata dependency.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatadependencyname"></a>`name` | [`String!`](#string) | Name of the dependency. |
+| <a id="terraformmodulemetadatadependencysource"></a>`source` | [`String`](#string) | Source of the dependency. |
+| <a id="terraformmodulemetadatadependencyversion"></a>`version` | [`String`](#string) | Version of the dependency. |
+
+### `TerraformModuleMetadataExample`
+
+Terraform module metadata example.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadataexampleinputs"></a>`inputs` | [`[TerraformModuleMetadataInput!]`](#terraformmodulemetadatainput) | Inputs of the module. |
+| <a id="terraformmodulemetadataexamplename"></a>`name` | [`String!`](#string) | Name of the example. |
+| <a id="terraformmodulemetadataexampleoutputs"></a>`outputs` | [`[TerraformModuleMetadataOutput!]`](#terraformmodulemetadataoutput) | Outputs of the module. |
+| <a id="terraformmodulemetadataexamplereadme"></a>`readme` | [`String`](#string) | Readme data. |
+| <a id="terraformmodulemetadataexamplereadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
+
+### `TerraformModuleMetadataFields`
+
+Terraform module metadata fields type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatafieldsexamples"></a>`examples` | [`[TerraformModuleMetadataExample!]`](#terraformmodulemetadataexample) | Examples of the module. |
+| <a id="terraformmodulemetadatafieldsroot"></a>`root` | [`TerraformModuleMetadataRoot!`](#terraformmodulemetadataroot) | Root module. |
+| <a id="terraformmodulemetadatafieldssubmodules"></a>`submodules` | [`[TerraformModuleMetadataSubmodule!]`](#terraformmodulemetadatasubmodule) | Submodules of the module. |
+
+### `TerraformModuleMetadataInput`
+
+Terraform module metadata input type.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatainputdefault"></a>`default` | [`String`](#string) | Default value of the input. |
+| <a id="terraformmodulemetadatainputdescription"></a>`description` | [`String`](#string) | Description of the input. |
+| <a id="terraformmodulemetadatainputname"></a>`name` | [`String!`](#string) | Name of the input. |
+| <a id="terraformmodulemetadatainputtype"></a>`type` | [`String!`](#string) | Type of the input. |
+
+### `TerraformModuleMetadataOutput`
+
+Terraform module metadata output.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadataoutputdescription"></a>`description` | [`String`](#string) | Description of the output field. |
+| <a id="terraformmodulemetadataoutputname"></a>`name` | [`String!`](#string) | Name of the output field. |
+
+### `TerraformModuleMetadataRoot`
+
+Metadata for Terraform root module.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatarootdependencies"></a>`dependencies` | [`TerraformModuleMetadataDependencies`](#terraformmodulemetadatadependencies) | Dependencies of the module. |
+| <a id="terraformmodulemetadatarootinputs"></a>`inputs` | [`[TerraformModuleMetadataInput!]`](#terraformmodulemetadatainput) | Inputs of the module. |
+| <a id="terraformmodulemetadatarootoutputs"></a>`outputs` | [`[TerraformModuleMetadataOutput!]`](#terraformmodulemetadataoutput) | Outputs of the module. |
+| <a id="terraformmodulemetadatarootreadme"></a>`readme` | [`String`](#string) | Readme data. |
+| <a id="terraformmodulemetadatarootreadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
+| <a id="terraformmodulemetadatarootresources"></a>`resources` | [`[String!]`](#string) | Resources of the module. |
+
+### `TerraformModuleMetadataSubmodule`
+
+Terraform module metadata submodule.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatasubmoduledependencies"></a>`dependencies` | [`TerraformModuleMetadataDependencies`](#terraformmodulemetadatadependencies) | Dependencies of the submodule. |
+| <a id="terraformmodulemetadatasubmoduleinputs"></a>`inputs` | [`[TerraformModuleMetadataInput!]`](#terraformmodulemetadatainput) | Inputs of the module. |
+| <a id="terraformmodulemetadatasubmodulename"></a>`name` | [`String!`](#string) | Name of the submodule. |
+| <a id="terraformmodulemetadatasubmoduleoutputs"></a>`outputs` | [`[TerraformModuleMetadataOutput!]`](#terraformmodulemetadataoutput) | Outputs of the module. |
+| <a id="terraformmodulemetadatasubmodulereadme"></a>`readme` | [`String`](#string) | Readme data. |
+| <a id="terraformmodulemetadatasubmodulereadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
+| <a id="terraformmodulemetadatasubmoduleresources"></a>`resources` | [`[String!]`](#string) | Resources of the submodule. |
+
 ### `TerraformState`
 
 #### Fields
@@ -38004,6 +38122,12 @@ A `PackagesPypiMetadatumID` is a global ID. It is encoded as a string.
 
 An example `PackagesPypiMetadatumID` is: `"gid://gitlab/Packages::Pypi::Metadatum/1"`.
 
+### `PackagesTerraformModuleMetadatumID`
+
+A `PackagesTerraformModuleMetadatumID` is a global ID. It is encoded as a string.
+
+An example `PackagesTerraformModuleMetadatumID` is: `"gid://gitlab/Packages::TerraformModule::Metadatum/1"`.
+
 ### `PagesDeploymentID`
 
 A `PagesDeploymentID` is a global ID. It is encoded as a string.
@@ -38273,6 +38397,7 @@ One of:
 - [`MavenMetadata`](#mavenmetadata)
 - [`NugetMetadata`](#nugetmetadata)
 - [`PypiMetadata`](#pypimetadata)
+- [`TerraformModuleMetadata`](#terraformmodulemetadata)
 
 #### `Registrable`
 
@@ -38708,6 +38833,23 @@ Implementations:
 | <a id="serviceactive"></a>`active` | [`Boolean`](#boolean) | Indicates if the service is active. |
 | <a id="serviceservicetype"></a>`serviceType` | [`ServiceType`](#servicetype) | Type of the service. |
 | <a id="servicetype"></a>`type` | [`String`](#string) | Class name of the service. |
+
+#### `TerraformModuleMetadataSharedFields`
+
+Implementations:
+
+- [`TerraformModuleMetadataExample`](#terraformmodulemetadataexample)
+- [`TerraformModuleMetadataRoot`](#terraformmodulemetadataroot)
+- [`TerraformModuleMetadataSubmodule`](#terraformmodulemetadatasubmodule)
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="terraformmodulemetadatasharedfieldsinputs"></a>`inputs` | [`[TerraformModuleMetadataInput!]`](#terraformmodulemetadatainput) | Inputs of the module. |
+| <a id="terraformmodulemetadatasharedfieldsoutputs"></a>`outputs` | [`[TerraformModuleMetadataOutput!]`](#terraformmodulemetadataoutput) | Outputs of the module. |
+| <a id="terraformmodulemetadatasharedfieldsreadme"></a>`readme` | [`String`](#string) | Readme data. |
+| <a id="terraformmodulemetadatasharedfieldsreadmehtml"></a>`readmeHtml` | [`String`](#string) | GitLab Flavored Markdown rendering of `readme`. |
 
 #### `TimeboxReportInterface`
 
@@ -39558,6 +39700,7 @@ Defines which user roles, users, or groups can merge into a protected branch.
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
+| <a id="mergerequestsresolvernegatedparamsassigneeusernames"></a>`assigneeUsernames` | [`[String!]`](#string) | Usernames of the assignee to exclude. |
 | <a id="mergerequestsresolvernegatedparamslabels"></a>`labels` | [`[String!]`](#string) | Array of label names. All resolved merge requests will not have these labels. |
 | <a id="mergerequestsresolvernegatedparamsmilestonetitle"></a>`milestoneTitle` | [`String`](#string) | Title of the milestone. |
 

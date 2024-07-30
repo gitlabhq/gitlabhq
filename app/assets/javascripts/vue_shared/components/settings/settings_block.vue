@@ -22,11 +22,6 @@ export default {
       default: false,
       required: false,
     },
-    largeTitle: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
   },
   data() {
     return {
@@ -36,14 +31,6 @@ export default {
   computed: {
     ariaExpanded() {
       return this.expanded ? 'true' : 'false';
-    },
-    titleData() {
-      // Admin and group settings have different tags and styling for headers
-      // Should be removed when https://gitlab.com/groups/gitlab-org/gitlab-services/-/epics/19
-      // is completed
-      return this.largeTitle
-        ? { element: 'h2', class: 'gl-heading-2' }
-        : { element: 'h4', class: '' };
     },
     toggleButtonText() {
       return this.expanded ? this.$options.i18n.collapseText : this.$options.i18n.expandText;
@@ -70,19 +57,17 @@ export default {
   <section class="vue-settings-block">
     <div class="gl-flex gl-justify-between gl-items-start">
       <div class="gl-grow">
-        <component
-          :is="titleData.element"
+        <h2
           role="button"
           tabindex="-1"
-          class="gl-cursor-pointer !gl-mb-2 gl-mt-0"
-          :class="titleData.class"
+          class="gl-heading-2 gl-cursor-pointer !gl-mb-2"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"
           @click="toggleExpanded"
         >
           <slot v-if="$scopedSlots.title" name="title"></slot>
           <template v-else>{{ title }}</template>
-        </component>
+        </h2>
         <p class="gl-text-subtle gl-m-0"><slot name="description"></slot></p>
       </div>
       <div class="gl-flex-shrink-0 gl-px-2">

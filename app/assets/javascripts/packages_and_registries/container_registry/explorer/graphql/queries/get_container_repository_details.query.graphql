@@ -8,6 +8,7 @@ query getContainerRepositoryDetails($id: ContainerRepositoryID!) {
     createdAt
     expirationPolicyStartedAt
     expirationPolicyCleanupStatus
+    protectionRuleExists
     project {
       id
       visibility

@@ -14,7 +14,6 @@ export default class LabelManager {
     this.otherLabels = otherLabels || $('.js-other-labels');
     this.errorMessage = __('Unable to update label prioritization at this time');
     this.emptyState = document.querySelector('#js-priority-labels-empty-state');
-    this.$badgeItemTemplate = $('#js-badge-item-template');
 
     if ('sortable' in this.prioritizedLabels.data()) {
       Sortable.create(this.prioritizedLabels.get(0), {
@@ -66,8 +65,6 @@ export default class LabelManager {
     }
 
     const $detachedLabel = $label.detach();
-    this.toggleLabelPriorityBadge($detachedLabel, action);
-
     const $labelEls = $target.find('.js-label-list-item');
 
     /*
@@ -99,14 +96,6 @@ export default class LabelManager {
       }
     } else {
       this.savePrioritySort($label, action).catch(rollbackLabelPosition);
-    }
-  }
-
-  toggleLabelPriorityBadge($label, action) {
-    if (action === 'remove') {
-      $('.js-priority-badge', $label).remove();
-    } else {
-      $('.label-links', $label).prepend(this.$badgeItemTemplate.clone().html());
     }
   }
 

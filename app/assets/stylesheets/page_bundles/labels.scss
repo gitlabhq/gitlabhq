@@ -81,15 +81,6 @@
   margin: 0;
 }
 
-.label-badge {
-  color: var(--gray-900, $gray-900);
-  display: inline-block;
-  font-weight: $gl-font-weight-normal;
-  padding: $gl-padding-4 $gl-padding-8;
-  border-radius: $gl-border-radius-base;
-  font-size: $label-font-size;
-}
-
 .label-content {
   .label-name {
     width: 200px;

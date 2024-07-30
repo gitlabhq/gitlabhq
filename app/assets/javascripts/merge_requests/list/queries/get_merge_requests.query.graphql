@@ -18,6 +18,7 @@ query getMergeRequests(
   $milestoneWildcardId: MilestoneWildcardId
   $sourceBranches: [String!]
   $targetBranches: [String!]
+  $not: MergeRequestsResolverNegatedParams
   $beforeCursor: String
   $afterCursor: String
   $firstPageSize: Int
@@ -39,6 +40,7 @@ query getMergeRequests(
       milestoneWildcardId: $milestoneWildcardId
       sourceBranches: $sourceBranches
       targetBranches: $targetBranches
+      not: $not
       before: $beforeCursor
       after: $afterCursor
       first: $firstPageSize

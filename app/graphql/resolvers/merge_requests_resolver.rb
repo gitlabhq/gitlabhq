@@ -124,6 +124,10 @@ module Resolvers
       default_value: :created_desc
 
     negated do
+      argument :assignee_usernames, [GraphQL::Types::String],
+        as: :assignee_username,
+        required: false,
+        description: 'Usernames of the assignee to exclude.'
       argument :labels, [GraphQL::Types::String],
         required: false,
         as: :label_name,

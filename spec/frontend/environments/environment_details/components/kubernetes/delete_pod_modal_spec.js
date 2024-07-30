@@ -4,6 +4,7 @@ import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { createAlert } from '~/alert';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
 import DeletePodModal from '~/environments/environment_details/components/kubernetes/delete_pod_modal.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import { stubComponent } from 'helpers/stub_component';
@@ -27,10 +28,14 @@ describe('~/environments/environment_details/components/kubernetes/delete_pod_mo
   const defaultProps = {
     configuration,
     pod: mockPodsTableItems[0],
+    environmentId: 'environment_2',
+    agentId: 'agent_1',
   };
 
   let deleteKubernetesPodMutationMock;
   const showToast = jest.fn();
+
+  const { bindInternalEventDocument } = useMockInternalEventsTracking();
 
   const modalStub = `
     <div>
@@ -93,6 +98,18 @@ describe('~/environments/environment_details/components/kubernetes/delete_pod_mo
 
       expect(findModal().findAllComponents(GlButton).at(0).text()).toBe('Cancel');
       expect(findModal().findAllComponents(GlButton).at(1).text()).toBe('Delete pod');
+    });
+
+    it('calls trackEvent method when clicked on primary button', () => {
+      createComponent();
+
+      const { triggerEvent, trackEventSpy } = bindInternalEventDocument(wrapper.element);
+
+      triggerEvent(findDeletePodButton().element);
+      expect(trackEventSpy).toHaveBeenCalledWith('click_delete_pod', {
+        label: 'agent_1',
+        property: 'environment_2',
+      });
     });
 
     describe('delete pod successfully', () => {

@@ -21,6 +21,14 @@ export default {
       required: true,
       type: Object,
     },
+    agentId: {
+      required: true,
+      type: String,
+    },
+    environmentId: {
+      required: true,
+      type: String,
+    },
   },
   data() {
     return {
@@ -112,6 +120,9 @@ export default {
         variant="danger"
         category="primary"
         data-testid="delete-pod-button"
+        data-event-tracking="click_delete_pod"
+        :data-event-label="agentId"
+        :data-event-property="environmentId"
         @click="deletePod"
         >{{ $options.i18n.buttonPrimary }}
       </gl-button>

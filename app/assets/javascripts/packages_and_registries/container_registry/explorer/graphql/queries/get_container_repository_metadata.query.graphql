@@ -7,5 +7,6 @@ query getContainerRepositoryMetadata(
     tagsCount
     size @include(if: $metadataDatabaseEnabled)
     lastPublishedAt @include(if: $metadataDatabaseEnabled)
+    protectionRuleExists
   }
 }

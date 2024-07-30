@@ -46,6 +46,10 @@ export default {
       type: String,
       required: true,
     },
+    environmentId: {
+      type: String,
+      required: true,
+    },
     clusterAgent: {
       type: Object,
       required: false,
@@ -249,6 +253,8 @@ export default {
     <delete-pod-modal
       :pod="podToDelete"
       :configuration="k8sAccessConfiguration"
+      :agent-id="gitlabAgentId"
+      :environment-id="environmentId"
       @close="onCloseModal"
     />
 

@@ -7,11 +7,35 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
   let_it_be(:user) { create(:user) }
 
   before do
-    stub_container_registry_config(enabled: true)
+    stub_container_registry_config(enabled: true, key: 'spec/fixtures/x509_certificate_pk.key')
     stub_container_registry_tags(repository: :any, tags: [])
     stub_container_registry_info
     group.add_reporter(user)
     login_as(user)
+  end
+
+  shared_examples 'having the feature flag "containerRegistryProtectedContainers"' do
+    it { is_expected.to have_gitlab_http_status(:ok) }
+
+    it do
+      is_expected.to have_attributes(
+        body: have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: true)
+      )
+    end
+
+    context 'when feature flag "container_registry_protected_containers" is disabled' do
+      before do
+        stub_feature_flags(container_registry_protected_containers: false)
+      end
+
+      it { is_expected.to have_gitlab_http_status(:ok) }
+
+      it do
+        is_expected.to have_attributes(
+          body: have_pushed_frontend_feature_flags(containerRegistryProtectedContainers: false)
+        )
+      end
+    end
   end
 
   describe 'GET groups/:group_id/-/container_registries.json' do
@@ -33,5 +57,19 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
       repositories = json_response
       expect(repositories.count).to eq(5)
     end
+  end
+
+  describe 'GET groups/:group_id/-/container_registries/:id' do
+    let_it_be(:project) { create(:project, group: group) }
+    let_it_be(:container_repository) { create(:container_repository, :root, project: project) }
+
+    subject do
+      get group_container_registry_path(group, container_repository)
+      response
+    end
+
+    it { is_expected.to have_gitlab_http_status(:ok) }
+
+    it_behaves_like 'having the feature flag "containerRegistryProtectedContainers"'
   end
 end

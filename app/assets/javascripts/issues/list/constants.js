@@ -230,6 +230,7 @@ export const filtersMap = {
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[assignee_username][]',
+        [ALTERNATIVE_FILTER]: 'not[assignee_username]',
       },
       [OPERATOR_OR]: {
         [NORMAL_FILTER]: 'or[assignee_username][]',

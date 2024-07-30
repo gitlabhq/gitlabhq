@@ -4,6 +4,7 @@ import { GlEmptyState, GlAlert, GlDrawer } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import KubernetesOverview from '~/environments/environment_details/components/kubernetes/kubernetes_overview.vue';
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
@@ -23,6 +24,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
 
   const defaultProps = {
     environmentName: 'production',
+    environmentId: '1',
     kubernetesNamespace,
   };
 
@@ -371,9 +373,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       });
 
       it('is rendered with correct props', () => {
+        const agentId = getIdFromGraphQLId(agent.id).toString();
         expect(findDeletePodModal().props()).toEqual({
           pod: {},
           configuration,
+          agentId,
+          environmentId: '1',
         });
       });
 

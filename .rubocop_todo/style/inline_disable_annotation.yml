@@ -1493,7 +1493,6 @@ Style/InlineDisableAnnotation:
     - 'ee/app/services/vulnerabilities/bulk_dismiss_service.rb'
     - 'ee/app/services/vulnerabilities/create_service_base.rb'
     - 'ee/app/services/vulnerabilities/manually_create_service.rb'
-    - 'ee/app/services/work_items/widgets/iteration_service/base_service.rb'
     - 'ee/app/validators/user_existence_validator.rb'
     - 'ee/app/validators/user_id_existence_validator.rb'
     - 'ee/app/workers/active_user_count_threshold_worker.rb'

@@ -148,6 +148,16 @@ RSpec.describe Resolvers::ProjectMergeRequestsResolver do
     end
   end
 
+  context 'with negated params' do
+    context 'with negated assignee username' do
+      it do
+        result = resolve_mr(project, not: { assignee_usernames: [other_user.username] })
+
+        expect(result).to contain_exactly(merge_request2)
+      end
+    end
+  end
+
   def resolve_mr(project, resolver: described_class, user: current_user, **args)
     resolve(resolver, obj: project, args: args, ctx: { current_user: user })
   end

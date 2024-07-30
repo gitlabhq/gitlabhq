@@ -226,6 +226,31 @@ A standard page header with a page title and optional actions.
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/page_heading_component.rb).
 
+#### CRUD component
+
+A list container being used to host a table or list with user actions such as create, read, update, delete.
+
+**Example:**
+
+```haml
+= render ::Layouts::CrudComponent.new(_('CRUD title'), icon: 'ICONNAME', count: COUNT) do |c|
+  - c.with_description do
+    = description
+  - c.with_actions do
+    = buttons
+  - c.with_form do
+    = add item form
+  - c.with_body do
+    = body
+  - c.with_pagination do
+    = pagination component
+  - c.with_footer do
+    = optional footer
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/crud_component.rb).
+
 #### Horizontal section
 
 Many of the settings pages use a layout where the title and description are on the left and the settings fields are on the right. The `Layouts::HorizontalSectionComponent` can be used to create this layout.
@@ -246,6 +271,40 @@ Many of the settings pages use a layout where the title and description are on t
 
 For the full list of options, see its
 [source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/horizontal_section_component.rb).
+
+#### Settings block
+
+A settings block (accordion) to group related settings.
+
+**Example:**
+
+```haml
+= render ::Layouts::SettingsBlock.new(_('Settings block heading')) do |c|
+  - c.with_description do
+    = description
+  - c.with_body do
+    = body
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/settings_block_component.rb).
+
+#### Settings section
+
+Similar to SettingsBlock (see above) this component is used to group related settings together. Unlike SettingsBlock it doesn't provide accordion functionality. Uses a sticky header.
+
+**Example:**
+
+```haml
+= render ::Layouts::SettingsSection.new(_('Settings section heading')) do |c|
+  - c.with_description do
+    = description
+  - c.with_body do
+    = body
+```
+
+For the full list of options, see its
+[source](https://gitlab.com/gitlab-org/gitlab/-/blob/master/app/components/layouts/settings_section_component.rb).
 
 ## Best practices
 

@@ -14,7 +14,7 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
   let_it_be(:common_attrs) { { author: current_user, source_project: project, target_project: project } }
   let_it_be(:merge_request_1) { create(:merge_request, :simple, reviewers: create_list(:user, 2), **common_attrs) }
   let_it_be(:merge_request_2) { create(:merge_request, :rebased, **common_attrs) }
-  let_it_be(:merge_request_3) { create(:merge_request, :unique_branches, **common_attrs) }
+  let_it_be(:merge_request_3) { create(:merge_request, :unique_branches, assignees: [current_user], **common_attrs) }
   let_it_be(:merge_request_4) { create(:merge_request, :unique_branches, :locked, **common_attrs) }
   let_it_be(:merge_request_5) { create(:merge_request, :simple, :locked, **common_attrs) }
   let_it_be(:merge_request_6) do
@@ -391,6 +391,16 @@ RSpec.describe Resolvers::MergeRequestsResolver, feature_category: :code_review_
         result = resolve_mr(project, source_branches: [merge_request_4.source_branch], state: 'locked')
 
         expect(result).to contain_exactly(merge_request_4)
+      end
+    end
+
+    context 'when using negated argument' do
+      context 'with assignee' do
+        it do
+          result = resolve_mr(project, not: { assignee_usernames: [current_user.username] })
+
+          expect(result).to contain_exactly(merge_request_1, merge_request_2, merge_request_4, merge_request_5, merge_request_6, merge_request_with_milestone)
+        end
       end
     end
 

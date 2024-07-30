@@ -116,7 +116,8 @@
     "ConanMetadata",
     "MavenMetadata",
     "NugetMetadata",
-    "PypiMetadata"
+    "PypiMetadata",
+    "TerraformModuleMetadata"
   ],
   "Registrable": [
     "CiSecureFileRegistry",
@@ -147,6 +148,11 @@
   "Service": [
     "BaseService",
     "JiraService"
+  ],
+  "TerraformModuleMetadataSharedFields": [
+    "TerraformModuleMetadataExample",
+    "TerraformModuleMetadataRoot",
+    "TerraformModuleMetadataSubmodule"
   ],
   "TimeboxReportInterface": [
     "Iteration",

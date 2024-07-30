@@ -138,6 +138,7 @@ export const containerRepositoryMock = {
   createdAt: '2020-11-03T13:29:21Z',
   expirationPolicyStartedAt: null,
   expirationPolicyCleanupStatus: 'UNSCHEDULED',
+  protectionRuleExists: false,
   project: {
     visibility: 'public',
     path: 'gitlab-test',
@@ -220,6 +221,7 @@ export const imageTagsCountMock = (override) => ({
       tagsCount: 13,
       size: null,
       lastPublishedAt: '2020-11-05T13:29:32+00:00',
+      protectionRuleExists: false,
       ...override,
     },
   },

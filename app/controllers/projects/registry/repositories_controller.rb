@@ -11,6 +11,7 @@ module Projects
       end
 
       before_action :authorize_update_container_image!, only: [:destroy]
+      before_action :set_feature_flag_container_registry_protected_containers, only: [:show]
 
       def index
         respond_to do |format|
@@ -53,6 +54,10 @@ module Projects
             repository.save! if repository.has_tags?
           end
         end
+      end
+
+      def set_feature_flag_container_registry_protected_containers
+        push_frontend_feature_flag(:container_registry_protected_containers, project)
       end
     end
   end

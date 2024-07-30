@@ -8,10 +8,13 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
 
   let_it_be(:current_user) { create(:user) }
   let_it_be(:project) { create(:project, :repository, developers: current_user) }
+  let_it_be(:public_project) { create(:project, :public) }
   let_it_be(:unauthorize_project) { create(:project) }
   let_it_be(:commit_todo) { create(:on_commit_todo, user: current_user, project: project) }
   let_it_be(:issue) { create(:issue, project: project) }
+  let_it_be(:confidential_issue) { create(:issue, :confidential, project: public_project) }
   let_it_be(:issue_todo) { create(:todo, project: project, user: current_user, target: issue) }
+  let_it_be(:confidential_issue_todo) { create(:todo, project: project, user: current_user, target: confidential_issue) }
   let_it_be(:merge_request_todo) { create(:todo, project: project, user: current_user, target: create(:merge_request, source_project: project)) }
   let_it_be(:design_todo) { create(:todo, project: project, user: current_user, target: create(:design, issue: issue)) }
   let_it_be(:unauthorized_todo) { create(:todo, user: current_user, project: unauthorize_project, target: create(:issue, project: unauthorize_project)) }
@@ -54,6 +57,24 @@ RSpec.describe 'Query current user todos', feature_category: :source_code_manage
       a_hash_including('targetType' => 'MERGEREQUEST'),
       a_hash_including('targetType' => 'DESIGN')
     )
+  end
+
+  context 'when requesting the count' do
+    let(:fields) do
+      <<~QUERY
+      count
+      QUERY
+    end
+
+    subject { graphql_data.dig('currentUser', 'todos', 'count') }
+
+    it 'returns the number of to-do items' do
+      # We should be expecting 4 todos here because the current user
+      # doesn't have access to 2 of them.
+      # This behaviour is tracked in https://gitlab.com/gitlab-org/gitlab/-/issues/473762
+      # and we'll have to update this expectation once that's resolved.
+      is_expected.to eq(6)
+    end
   end
 
   context 'when requesting a single field' do
