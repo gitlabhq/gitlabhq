@@ -101,10 +101,6 @@
   }
 }
 
-@mixin btn-green {
-  @include btn-color($green-500, $green-600, $green-600, $green-700, $green-700, $green-800, $white);
-}
-
 @mixin btn-blue {
   @include btn-color($blue-500, $blue-600, $blue-600, $blue-700, $blue-700, $blue-800, $white-contrast);
 }
@@ -183,10 +179,6 @@
   svg:not(:last-child) {
     margin-right: 5px;
   }
-}
-
-.btn-lg {
-  padding: 12px 20px;
 }
 
 .btn-transparent {

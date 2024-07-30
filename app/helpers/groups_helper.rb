@@ -102,7 +102,7 @@ module GroupsHelper
       remove_form_id: remove_form_id,
       button_text: button_text.nil? ? _('Delete group') : button_text,
       button_testid: 'remove-group-button',
-      disabled: group.prevent_delete?.to_s,
+      disabled: group.linked_to_subscription?.to_s,
       confirm_danger_message: remove_group_message(group, permanently_remove),
       phrase: group.full_path,
       html_confirmation_message: 'true'

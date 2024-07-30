@@ -164,6 +164,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     user_agent_details: %w[subject_id],
     users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id],
     users_star_projects: %w[user_id],
+    vulnerability_finding_links: %w[project_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_scanners: %w[external_id],
     security_scans: %w[pipeline_id], # foreign key is not added as ci_pipeline table will be moved into different db soon

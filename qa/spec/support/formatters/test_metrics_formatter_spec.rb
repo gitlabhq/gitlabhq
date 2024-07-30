@@ -10,6 +10,12 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   include QA::Specs::Helpers::RSpec
   include ActiveSupport::Testing::TimeHelpers
 
+  # some specs are calculating spec location line number
+  # keep this definition on top of the spec file so any change doesn't require test updates
+  let(:default_spec_proc) do
+    -> { it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {} }
+  end
+
   let(:url) { 'http://influxdb.net' }
   let(:token) { 'token' }
   let(:metrics_gcs_project_id) { 'metrics-gcs-project' }
@@ -38,6 +44,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:testcase) { 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234' }
   let(:status) { :passed }
   let(:retry_failed_specs) { false }
+  let(:method_call_data) { {} }
 
   let(:influx_client_args) do
     {
@@ -83,7 +90,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   end
 
   def run_spec(passed: true, &spec)
-    spec ||= -> { it('spec', testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {} }
+    spec ||= default_spec_proc
     method = passed ? :describe_successfully : :describe_unsuccessfully
 
     send(method, 'stats export', &spec).tap do |example_group|
@@ -112,6 +119,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
                                        google_json_key_string: metrics_gcs_creds)
                                      .and_return(gcs_client)
     allow(QA::Tools::TestResourceDataProcessor).to receive(:resources) { fabrication_resources }
+    allow(QA::Support::CodeRuntimeTracker).to receive(:method_call_data) { method_call_data }
     allow_any_instance_of(RSpec::Core::Example::ExecutionResult).to receive(:run_time).and_return(0) # rubocop:disable RSpec/AnyInstanceOf -- simplifies mocking runtime
 
     stub_env('QA_RUN_TYPE', run_type)
@@ -192,7 +200,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           it('spec', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -205,7 +212,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           it('spec', product_group: :import, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [expected_data])
       end
     end
@@ -218,7 +224,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           it('spec', :smoke, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/1234') {}
         end
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -241,7 +246,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           ) {}
         end
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [expected_data])
       end
     end
@@ -259,7 +263,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           ) {}
         end
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [expected_data])
       end
     end
@@ -334,7 +337,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       it 'exports data with correct run type', :aggregate_failures do
         run_spec
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -354,7 +356,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           fields: data[:fields].merge({ custom_field: 1 })
         })
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [custom_data])
       end
     end
@@ -377,7 +378,6 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           ) {}
         end
 
-        expect(influx_write_api).to have_received(:write).once
         expect(influx_write_api).to have_received(:write).with(data: [data])
       end
     end
@@ -446,7 +446,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
 
     context 'with persisting metrics' do
       let(:expected_data) do
-        data.tap { |d| d[:fields][:location] = "./#{Pathname.new(__FILE__).relative_path_from(Dir.pwd)}:86" }
+        data.tap { |d| d[:fields][:location] = "./#{Pathname.new(__FILE__).relative_path_from(Dir.pwd)}:16" }
       end
 
       before do
@@ -494,7 +494,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       end
 
       let(:test_data) do
-        data.tap { |d| d[:fields][:location] = "./#{Pathname.new(__FILE__).relative_path_from(Dir.pwd)}:86" }
+        data.tap { |d| d[:fields][:location] = "./#{Pathname.new(__FILE__).relative_path_from(Dir.pwd)}:16" }
       end
 
       let(:fabrication_data) do
@@ -542,6 +542,33 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           [fabrication_data].to_json,
           **gcs_client_options
         )
+      end
+    end
+
+    context "with code runtime metrics" do
+      let(:time) { DateTime.strptime(ci_timestamp).to_time }
+      let(:method_call_data) do
+        {
+          "has_element?" => [{ runtime: 1, filename: "file.rb", call_arg: "element_for_has" }],
+          "click" => [{ runtime: 1, filename: "file.rb", call_arg: "element_for_click" }]
+        }
+      end
+
+      it "exports code runtime metrics to influxdb" do
+        run_spec
+
+        expect(influx_write_api).to have_received(:write).with(data: [
+          {
+            name: "method-call-stats", time: time,
+            tags: { method: "has_element?", call_arg: "element_for_has", run_type: run_type, merge_request: "false" },
+            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url }
+          },
+          {
+            name: "method-call-stats", time: time,
+            tags: { method: "click", call_arg: "element_for_click", run_type: run_type, merge_request: "false" },
+            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url }
+          }
+        ])
       end
     end
   end

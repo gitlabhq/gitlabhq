@@ -585,6 +585,12 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
             end
           end
         end
+
+        describe '#empty?' do
+          subject { collection.empty? }
+
+          it { is_expected.to be_falsey }
+        end
       end
 
       context 'without generated_files' do
@@ -594,6 +600,12 @@ RSpec.describe Gitlab::Git::DiffCollection, feature_category: :source_code_manag
           collection.each do |d|
             expect(d.generated).to be_nil
           end
+        end
+
+        describe '#empty?' do
+          subject { collection.empty? }
+
+          it { is_expected.to be_falsey }
         end
       end
     end

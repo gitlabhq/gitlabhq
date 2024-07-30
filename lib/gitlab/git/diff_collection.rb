@@ -165,6 +165,8 @@ module Gitlab
         i = @array.length
 
         @iterator.each do |raw|
+          @empty = false
+
           options = { expanded: expand_diff? }
           options[:generated] = @generated_files.include?(raw.from_path) if @generated_files
 

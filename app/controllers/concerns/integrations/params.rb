@@ -68,6 +68,8 @@ module Integrations
       :jira_issue_transition_automatic,
       :jira_issue_transition_id,
       :jira_cloud_app_service_ids,
+      :jira_cloud_app_enable_deployment_gating,
+      :jira_cloud_app_deployment_gating_environments,
       :manual_configuration,
       :merge_requests_events,
       :mock_service_url,

@@ -777,7 +777,7 @@ RSpec.describe GroupsHelper, feature_category: :groups_and_projects do
 
     with_them do
       it "returns expected parameters" do
-        allow(group).to receive(:prevent_delete?).and_return(prevent_delete_response)
+        allow(group).to receive(:linked_to_subscription?).and_return(prevent_delete_response)
 
         expected = helper.group_confirm_modal_data(group: group, remove_form_id: form_value_id, button_text: button_text)
         expect(expected).to eq({

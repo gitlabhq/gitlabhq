@@ -83,7 +83,7 @@ export default {
         <template #avatar="{ avatar }">
           <gl-avatar-link
             target="_blank"
-            :href="avatar.path || author.webUrl"
+            :href="avatar.path || avatar.webUrl"
             :data-user-id="avatar.id"
             :data-username="avatar.username"
             class="js-user-link"

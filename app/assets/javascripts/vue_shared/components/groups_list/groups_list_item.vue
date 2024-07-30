@@ -15,6 +15,7 @@ import {
   TIMESTAMP_TYPE_CREATED_AT,
   TIMESTAMP_TYPE_UPDATED_AT,
 } from '~/vue_shared/components/resource_lists/constants';
+import GroupListItemPreventDeleteModal from './group_list_item_prevent_delete_modal.vue';
 
 export default {
   i18n: {
@@ -33,6 +34,7 @@ export default {
     GlTruncateText,
     GlBadge,
     ListActions,
+    GroupListItemPreventDeleteModal,
     GroupListItemDeleteModal,
     TimeAgoTooltip,
     GroupListItemInactiveBadge: () =>
@@ -130,6 +132,9 @@ export default {
   methods: {
     onActionDelete() {
       this.isDeleteModalVisible = true;
+    },
+    onModalChange(isVisible) {
+      this.isDeleteModalVisible = isVisible;
     },
   },
 };
@@ -240,15 +245,24 @@ export default {
       />
     </div>
 
-    <group-list-item-delete-modal
-      v-if="hasActionDelete"
-      :visible="isDeleteModalVisible"
-      :modal-id="modalId"
-      :phrase="group.fullName"
-      :confirm-loading="isActionDeleteLoading"
-      :group="group"
-      @confirm.prevent="$emit('delete', group)"
-      @change="isDeleteModalVisible = arguments[0]"
-    />
+    <template v-if="hasActionDelete">
+      <group-list-item-prevent-delete-modal
+        v-if="group.isLinkedToSubscription"
+        :visible="isDeleteModalVisible"
+        :modal-id="modalId"
+        :group="group"
+        @change="onModalChange"
+      />
+      <group-list-item-delete-modal
+        v-else
+        :visible="isDeleteModalVisible"
+        :modal-id="modalId"
+        :phrase="group.fullName"
+        :confirm-loading="isActionDeleteLoading"
+        :group="group"
+        @confirm.prevent="$emit('delete', group)"
+        @change="onModalChange"
+      />
+    </template>
   </li>
 </template>

@@ -3,36 +3,36 @@
 - emails_disabled = @group.emails_disabled?
 
 .group-home-panel
-  .gl-display-flex.gl-justify-content-space-between.gl-flex-wrap.gl-flex-direction-column.gl-sm-flex-direction-row.gl-gap-3.gl-my-5
+  .gl-flex.gl-justify-between.gl-flex-wrap.gl-flex-col.sm:gl-flex-row.gl-gap-3.gl-my-5
     .home-panel-title-row.gl-display-flex
       = render Pajamas::AvatarComponent.new(@group, alt: @group.name, size: 48, class: 'float-none gl-align-self-start gl-flex-shrink-0 gl-mr-3', avatar_options: { itemprop: 'logo' })
       %h1.home-panel-title.gl-heading-1.gl-flex.gl-items-center.gl-flex-wrap.gl-gap-3.gl-break-anywhere.gl-mb-0{ itemprop: 'name' }
         = @group.name
-        %span.visibility-icon.gl-text-secondary.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
+        %span.visibility-icon.gl-text-subtle.has-tooltip{ data: { container: 'body' }, title: visibility_icon_description(@group) }
           = visibility_level_icon(@group.visibility_level, options: { class: 'icon' })
         = render_if_exists 'shared/tier_badge', source: @group
 
     - if current_user
-      .home-panel-buttons.gl-display-flex.gl-justify-content-md-end.gl-align-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }
+      .home-panel-buttons.gl-flex.md:gl-justify-end.gl-items-center.gl-flex-wrap.gl-gap-3{ data: { testid: 'group-buttons' } }
         - if current_user.admin?
           = render Pajamas::ButtonComponent.new(href: [:admin, @group], icon: 'admin', button_options: { title: _('View group in admin area'), data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } })
         - if @notification_setting
           .js-vue-notification-dropdown{ data: { disabled: emails_disabled.to_s, dropdown_items: notification_dropdown_items(@notification_setting).to_json, notification_level: @notification_setting.level, help_page_path: help_page_path('user/profile/notifications'), group_id: @group.id, container_class: 'gl-align-top' } }
         - if can_create_subgroups
-          .gl-sm-w-auto.gl-w-full
+          .sm:gl-w-auto.gl-w-full
             = render Pajamas::ButtonComponent.new(href: new_group_path(parent_id: @group.id, anchor: 'create-group-pane'), button_options: { data: { testid: 'new-subgroup-button' }, class: 'gl-sm-w-auto gl-w-full'}) do
               = _("New subgroup")
 
         - if can_create_projects
-          .gl-sm-w-auto.gl-w-full
+          .sm:gl-w-auto.gl-w-full
             = render Pajamas::ButtonComponent.new(href: new_project_path(namespace_id: @group.id), variant: :confirm, button_options: { data: { testid: 'new-project-button' }, class: 'gl-sm-w-auto gl-w-full' }) do
               = _('New project')
 
         = render 'groups/more_actions_dropdown', source: @group
 
   - if @group.description.present?
-    .group-home-desc.mt-1
-      .home-panel-description.text-break
+    .group-home-desc.gl-mt-2
+      .home-panel-description.gl-text-subtle.gl-break-words
         .home-panel-description-markdown.read-more-container{ itemprop: 'description' }
           = markdown_field(@group, :description)
         = render Pajamas::ButtonComponent.new(variant: :link, button_options: { class: 'js-read-more-trigger lg:gl-hidden' }) do

@@ -2394,6 +2394,7 @@
       changes:
         - "{,jh/}.gitlab-ci.yml"
         - "{,jh/}.gitlab/ci/**/*"
+        - "spec/dot_gitlab_ci/**/*"
 
 .rails:rules:detect-tests:
   rules:

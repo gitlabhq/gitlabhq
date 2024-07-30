@@ -36,6 +36,7 @@ query getBlobInfo(
           environmentFormattedExternalUrl
           environmentExternalUrlForRouteMap
           canModifyBlob
+          canModifyBlobWithWebIde
           canCurrentUserPushToBranch
           archived
           storedExternally

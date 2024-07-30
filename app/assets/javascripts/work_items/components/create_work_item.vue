@@ -425,7 +425,6 @@ export default {
               edit-mode
               :autofocus="false"
               :full-path="fullPath"
-              create-flow
               :show-buttons-below-field="false"
               :work-item-id="$options.NEW_WORK_ITEM_GID"
               :work-item-iid="$options.NEW_WORK_ITEM_IID"
@@ -468,7 +467,6 @@ export default {
             <template v-if="workItemLabels">
               <work-item-labels
                 class="gl-mb-5 js-labels"
-                create-flow
                 :can-update="canUpdate"
                 :full-path="fullPath"
                 :work-item-id="workItem.id"

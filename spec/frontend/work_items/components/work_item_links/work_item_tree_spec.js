@@ -302,17 +302,18 @@ describe('WorkItemTree', () => {
   describe('rollup data', () => {
     describe('rolledUp weight', () => {
       it.each`
-        showRolledUpWeight | rolledUpWeight | expected
-        ${false}           | ${0}           | ${'rollup weight is not displayed'}
-        ${false}           | ${10}          | ${'rollup weight is not displayed'}
-        ${true}            | ${0}           | ${'rollup weight is displayed'}
-        ${true}            | ${10}          | ${'rollup weight is displayed'}
+        showRolledUpWeight | rolledUpWeight | rollUpWeightVisible | expected
+        ${false}           | ${0}           | ${false}            | ${'rollup weight is not displayed'}
+        ${false}           | ${10}          | ${false}            | ${'rollup weight is not displayed'}
+        ${true}            | ${0}           | ${true}             | ${'rollup weight is displayed'}
+        ${true}            | ${null}        | ${false}            | ${'rollup weight is not displayed'}
+        ${true}            | ${10}          | ${true}             | ${'rollup weight is displayed'}
       `(
         'When showRolledUpWeight is $showRolledUpWeight and rolledUpWeight is $rolledUpWeight, $expected',
-        ({ showRolledUpWeight, rolledUpWeight }) => {
+        ({ showRolledUpWeight, rollUpWeightVisible, rolledUpWeight }) => {
           createComponent({ showRolledUpWeight, rolledUpWeight });
 
-          expect(findRolledUpWeight().exists()).toBe(showRolledUpWeight);
+          expect(findRolledUpWeight().exists()).toBe(rollUpWeightVisible);
         },
       );
 

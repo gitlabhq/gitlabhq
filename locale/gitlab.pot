@@ -16306,9 +16306,6 @@ msgstr ""
 msgid "CycleAnalytics|Average time to completion"
 msgstr ""
 
-msgid "CycleAnalytics|Average time to completion (days)"
-msgstr ""
-
 msgid "CycleAnalytics|Change failure rate"
 msgstr ""
 
@@ -25116,6 +25113,9 @@ msgstr ""
 msgid "Group by:"
 msgstr ""
 
+msgid "Group can't be be deleted"
+msgstr ""
+
 msgid "Group comment templates"
 msgstr ""
 
@@ -29401,6 +29401,21 @@ msgstr ""
 msgid "JiraCloudApp|Copy and paste your JSM Service ID here. Use comma (,) to separate multiple IDs."
 msgstr ""
 
+msgid "JiraCloudApp|Deployment Gating"
+msgstr ""
+
+msgid "JiraCloudApp|Enable Deployment Gating"
+msgstr ""
+
+msgid "JiraCloudApp|Enable to approve or reject blocked GitLab deployments from Jira Service Management."
+msgstr ""
+
+msgid "JiraCloudApp|Enter the environment (%{names}) where you want to enable deployment gating. Use comma (,) to separate multiple environments."
+msgstr ""
+
+msgid "JiraCloudApp|Environment Tiers"
+msgstr ""
+
 msgid "JiraCloudApp|GitLab for Jira Cloud app"
 msgstr ""
 
@@ -29417,6 +29432,12 @@ msgid "JiraCloudApp|This integration is enabled automatically when a group is li
 msgstr ""
 
 msgid "JiraCloudApp|cannot have more than %{limit} service IDs"
+msgstr ""
+
+msgid "JiraCloudApp|environment names should be provided if deployment gating has been enabled"
+msgstr ""
+
+msgid "JiraCloudApp|only available environment names: %{names}"
 msgstr ""
 
 msgid "JiraConnect|Are you a GitLab administrator?"
@@ -42469,15 +42490,6 @@ msgstr ""
 msgid "Project|already in use"
 msgstr ""
 
-msgid "PrometheusAlerts|exceeded"
-msgstr ""
-
-msgid "PrometheusAlerts|is equal to"
-msgstr ""
-
-msgid "PrometheusAlerts|is less than"
-msgstr ""
-
 msgid "PrometheusService|Active"
 msgstr ""
 
@@ -54247,6 +54259,9 @@ msgid "This group and its subgroups and projects will be placed in a 'pending de
 msgstr ""
 
 msgid "This group can be restored until %{date}. %{linkStart}Learn more%{linkEnd}."
+msgstr ""
+
+msgid "This group can't be deleted because it is linked to a subscription. To delete this group, %{linkStart}link the subscription%{linkEnd} with a different group."
 msgstr ""
 
 msgid "This group can't be removed because it is linked to a subscription. To remove this group, %{linkStart}link the subscription%{linkEnd} with a different group."

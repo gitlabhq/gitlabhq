@@ -429,7 +429,6 @@ Gitlab/NamespacedClass:
     - 'app/presenters/project_hook_presenter.rb'
     - 'app/presenters/project_member_presenter.rb'
     - 'app/presenters/project_presenter.rb'
-    - 'app/presenters/prometheus_alert_presenter.rb'
     - 'app/presenters/release_presenter.rb'
     - 'app/presenters/search_service_presenter.rb'
     - 'app/presenters/sentry_error_presenter.rb'

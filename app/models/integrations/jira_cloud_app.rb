@@ -6,9 +6,17 @@ module Integrations
 
     SERVICE_IDS_REGEX = /\A^[A-Za-z0-9=,:]*$\z/
     SERVICE_IDS_LIMIT = 100
+    ENVIRONMENT_REGEX = /\A^[A-Za-z0-9,]*$\z/
+    AVAILABLE_ENVRIONMENT_NAMES = %w[production staging testing development].freeze
 
     validate :validate_service_ids_limit, if: :activated?
+    validate :validate_deployment_gating_environments, if: :activated?
+    validate :validate_valid_deployment_gating_input, if: :activated?
     validates :jira_cloud_app_service_ids, allow_blank: true, format: { with: SERVICE_IDS_REGEX }, if: :activated?
+    validates :jira_cloud_app_deployment_gating_environments, allow_blank: true, format: { with: ENVIRONMENT_REGEX },
+      if: :activated?
+    before_validation :format_deployment_gating_environments,
+      if: :jira_cloud_app_deployment_gating_environments_changed?
 
     field :jira_cloud_app_service_ids,
       section: SECTION_TYPE_CONFIGURATION,
@@ -17,6 +25,28 @@ module Integrations
       help: -> {
               s_("JiraCloudApp|Copy and paste your JSM Service ID here. Use comma (,) to separate multiple IDs.")
             }
+
+    field :jira_cloud_app_enable_deployment_gating,
+      section: SECTION_TYPE_CONFIGURATION,
+      type: :checkbox,
+      required: false,
+      title: -> { s_('JiraCloudApp|Deployment Gating') },
+      checkbox_label: -> { s_('JiraCloudApp|Enable Deployment Gating') },
+      help: -> {
+              s_('JiraCloudApp|Enable to approve or reject blocked GitLab deployments from Jira Service Management.')
+            }
+
+    field :jira_cloud_app_deployment_gating_environments,
+      section: SECTION_TYPE_CONFIGURATION,
+      required: false,
+      title: -> { s_('JiraCloudApp|Environment Tiers') },
+      help: -> {
+        format(
+          s_('JiraCloudApp|Enter the environment (%{names}) where you want to enable deployment gating. ' \
+            'Use comma (,) to separate multiple environments.'),
+          names: AVAILABLE_ENVRIONMENT_NAMES.join(',')
+        )
+      }
 
     def self.title
       s_('JiraCloudApp|GitLab for Jira Cloud app')
@@ -46,6 +76,15 @@ module Integrations
 
     def self.supported_events
       []
+    end
+
+    override :fields
+    def fields
+      return super if Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
+
+      super.reject do |field|
+        field[:name].include?('deployment_gating')
+      end
     end
 
     def sections
@@ -86,6 +125,42 @@ module Integrations
           s_('JiraCloudApp|cannot have more than %{limit} service IDs'),
           limit: SERVICE_IDS_LIMIT
         )
+      )
+    end
+
+    def format_deployment_gating_environments
+      unformatted = jira_cloud_app_deployment_gating_environments
+      return if unformatted.nil?
+
+      self.jira_cloud_app_deployment_gating_environments = unformatted.split(',').map(&:strip).uniq.join(',')
+    end
+
+    def validate_deployment_gating_environments
+      return unless Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
+      return unless jira_cloud_app_deployment_gating_environments.present?
+
+      return if jira_cloud_app_deployment_gating_environments.split(',').all? do |env|
+                  AVAILABLE_ENVRIONMENT_NAMES.include?(env)
+                end
+
+      errors.add(
+        :jira_cloud_app_deployment_gating_environments,
+        format(
+          s_('JiraCloudApp|only available environment names: %{names}'),
+          names: AVAILABLE_ENVRIONMENT_NAMES.join(',')
+        )
+      )
+    end
+
+    def validate_valid_deployment_gating_input
+      return unless Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
+      return unless jira_cloud_app_enable_deployment_gating
+      return if jira_cloud_app_deployment_gating_environments.present?
+
+      errors.add(
+        :jira_cloud_app_deployment_gating_environments,
+        format(
+          s_('JiraCloudApp|environment names should be provided if deployment gating has been enabled'))
       )
     end
   end

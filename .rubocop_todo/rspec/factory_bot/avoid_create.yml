@@ -395,7 +395,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'spec/presenters/projects/import_export/project_export_presenter_spec.rb'
     - 'spec/presenters/projects/security/configuration_presenter_spec.rb'
     - 'spec/presenters/projects/settings/deploy_keys_presenter_spec.rb'
-    - 'spec/presenters/prometheus_alert_presenter_spec.rb'
     - 'spec/presenters/release_presenter_spec.rb'
     - 'spec/presenters/releases/link_presenter_spec.rb'
     - 'spec/presenters/search_service_presenter_spec.rb'

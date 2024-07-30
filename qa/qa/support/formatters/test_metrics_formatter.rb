@@ -24,8 +24,7 @@ module QA
 
           parse_execution_data(notification.examples)
 
-          push_test_metrics
-          push_fabrication_metrics
+          export_test_metrics
           save_test_metrics
         end
 
@@ -50,12 +49,34 @@ module QA
 
         alias_method :parse_execution_data, :execution_data
 
+        # Export metrics directly to InfluxDb or GCS bucket
+        #
+        # @return [void]
+        def export_test_metrics
+          return log(:info, "Exporting test metrics to not enabled, skipping ") unless export_metrics?
+
+          push_test_metrics
+          push_fabrication_metrics
+          push_code_runtime_metrics
+        end
+
+        # Save metrics in json file
+        #
+        # @return [void]
+        def save_test_metrics
+          return log(:info, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
+
+          file = File.join('tmp', metrics_file_name(prefix: 'test'))
+
+          File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
+        rescue StandardError => e
+          log(:error, "Failed to save test execution metrics, error: #{e}")
+        end
+
         # Upload test execution metrics
         #
         # @return [void]
         def push_test_metrics
-          return log(:info, "Metrics export not enabled, skipping test metrics export") unless export_metrics?
-
           push_test_metrics_to_influxdb
           push_test_metrics_to_gcs
         end
@@ -90,8 +111,6 @@ module QA
         #
         # @return [void]
         def push_fabrication_metrics
-          return log(:info, "Metrics export not enabled, skipping fabrication metrics export") unless export_metrics?
-
           data = Tools::TestResourceDataProcessor.resources.flat_map do |resource, values|
             values.map { |v| fabrication_stats(resource: resource, **v) }
           end
@@ -100,6 +119,18 @@ module QA
 
           push_fabrication_metrics_influxdb(data)
           push_fabrication_metrics_gcs(data)
+        end
+
+        # Push code runtime metrics to influxdb
+        #
+        # @return [void]
+        def push_code_runtime_metrics
+          return if method_call_data.empty?
+
+          write_api.write(data: method_call_data)
+          log(:info, "Pushed #{method_call_data.length} code runtime entries to influxdb")
+        rescue StandardError => e
+          log(:error, "Failed to push code runtime metrics to influxdb, error: #{e}")
         end
 
         # Push resource fabrication metrics to GCS
@@ -144,19 +175,6 @@ module QA
         def gcs_bucket
           @gcs_bucket ||= ENV['QA_METRICS_GCS_BUCKET_NAME'] ||
             raise('Missing QA_METRICS_GCS_BUCKET_NAME env variable')
-        end
-
-        # Save metrics in json file
-        #
-        # @return [void]
-        def save_test_metrics
-          return log(:info, "Saving test metrics json not enabled, skipping") unless save_metrics_json?
-
-          file = File.join('tmp', metrics_file_name(prefix: 'test'))
-
-          File.write(file, execution_data.to_json) && log(:debug, "Saved test metrics to #{file}")
-        rescue StandardError => e
-          log(:error, "Failed to save test execution metrics, error: #{e}")
         end
 
         # Construct file name for metrics
@@ -267,6 +285,31 @@ module QA
               timestamp: timestamp
             }
           }
+        end
+
+        # Data on method call and it's runtimes
+        #
+        # @return [Array]
+        def method_call_data
+          @method_call_data ||= CodeRuntimeTracker.method_call_data.flat_map do |name, params|
+            params.map do |p|
+              {
+                name: 'method-call-stats',
+                time: time,
+                tags: {
+                  method: name,
+                  call_arg: p[:call_arg],
+                  run_type: run_type,
+                  merge_request: merge_request
+                }.compact,
+                fields: {
+                  runtime: p[:run_time],
+                  job_url: ci_job_url,
+                  pipeline_url: env('CI_PIPELINE_URL')
+                }.compact
+              }
+            end
+          end
         end
 
         # Base ci job name

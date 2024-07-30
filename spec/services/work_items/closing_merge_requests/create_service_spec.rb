@@ -74,6 +74,10 @@ RSpec.describe WorkItems::ClosingMergeRequests::CreateService, feature_category:
           expect(create_result.payload[:merge_request_closing_issue].from_mr_description).to be_falsey
         end
 
+        it_behaves_like 'update service that triggers GraphQL work_item_updated subscription' do
+          subject(:execute_service) { create_result }
+        end
+
         it_behaves_like 'a service that works for full references and URLs'
 
         context 'when the merge request was already associated with the work item' do

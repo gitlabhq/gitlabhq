@@ -544,24 +544,27 @@ describe('Blob content viewer component', () => {
     });
 
     it.each`
-      loggedIn | canModifyBlob | createMergeRequestIn | forkProject | showForkSuggestion
-      ${true}  | ${false}      | ${true}              | ${true}     | ${true}
-      ${false} | ${false}      | ${true}              | ${true}     | ${false}
-      ${true}  | ${true}       | ${false}             | ${true}     | ${false}
-      ${true}  | ${true}       | ${true}              | ${false}    | ${false}
+      loggedIn | canModifyBlob | isUsingLfs | createMergeRequestIn | forkProject | showSingleFileEditorForkSuggestion
+      ${true}  | ${true}       | ${false}   | ${true}              | ${true}     | ${false}
+      ${true}  | ${false}      | ${false}   | ${true}              | ${true}     | ${true}
+      ${false} | ${false}      | ${false}   | ${true}              | ${true}     | ${false}
+      ${true}  | ${false}      | ${false}   | ${false}             | ${true}     | ${false}
+      ${true}  | ${false}      | ${false}   | ${true}              | ${false}    | ${false}
+      ${true}  | ${false}      | ${true}    | ${true}              | ${true}     | ${false}
     `(
       'shows/hides a fork suggestion according to a set of conditions',
       async ({
         loggedIn,
         canModifyBlob,
+        isUsingLfs,
         createMergeRequestIn,
         forkProject,
-        showForkSuggestion,
+        showSingleFileEditorForkSuggestion,
       }) => {
         isLoggedIn.mockReturnValueOnce(loggedIn);
         await createComponent(
           {
-            blob: { ...simpleViewerMock, canModifyBlob },
+            blob: { ...simpleViewerMock, canModifyBlob, storedExternally: isUsingLfs },
             createMergeRequestIn,
             forkProject,
           },
@@ -571,7 +574,42 @@ describe('Blob content viewer component', () => {
         findBlobHeader().vm.$emit('edit', 'simple');
         await nextTick();
 
-        expect(findForkSuggestion().exists()).toBe(showForkSuggestion);
+        expect(findForkSuggestion().exists()).toBe(showSingleFileEditorForkSuggestion);
+      },
+    );
+
+    it.each`
+      loggedIn | canModifyBlobWithWebIde | isUsingLfs | createMergeRequestIn | forkProject | showWebIdeForkSuggestion
+      ${true}  | ${true}                 | ${false}   | ${true}              | ${true}     | ${false}
+      ${true}  | ${false}                | ${false}   | ${true}              | ${true}     | ${true}
+      ${false} | ${false}                | ${false}   | ${true}              | ${true}     | ${false}
+      ${true}  | ${false}                | ${false}   | ${false}             | ${true}     | ${false}
+      ${true}  | ${false}                | ${false}   | ${true}              | ${false}    | ${false}
+      ${true}  | ${false}                | ${true}    | ${true}              | ${true}     | ${false}
+    `(
+      'shows/hides a fork suggestion for WebIDE according to a set of conditions',
+      async ({
+        loggedIn,
+        canModifyBlobWithWebIde,
+        isUsingLfs,
+        createMergeRequestIn,
+        forkProject,
+        showWebIdeForkSuggestion,
+      }) => {
+        isLoggedIn.mockReturnValueOnce(loggedIn);
+        await createComponent(
+          {
+            blob: { ...simpleViewerMock, canModifyBlobWithWebIde, storedExternally: isUsingLfs },
+            createMergeRequestIn,
+            forkProject,
+          },
+          mount,
+        );
+
+        findBlobHeader().vm.$emit('edit', 'ide');
+        await nextTick();
+
+        expect(findForkSuggestion().exists()).toBe(showWebIdeForkSuggestion);
       },
     );
   });

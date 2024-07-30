@@ -620,7 +620,7 @@ class Namespace < ApplicationRecord
     root? && actual_plan.paid?
   end
 
-  def prevent_delete?
+  def linked_to_subscription?
     paid?
   end
 

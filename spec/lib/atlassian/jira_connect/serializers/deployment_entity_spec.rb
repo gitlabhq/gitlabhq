@@ -15,6 +15,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
       before do
         allow(subject).to receive(:issue_keys).and_return([])
         allow(subject).to receive(:service_ids_from_integration_configuration).and_return([])
+        allow(subject).to receive(:generate_deployment_commands).and_return(nil)
       end
 
       it 'can encode the object' do
@@ -114,6 +115,88 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
 
         it 'does not include the serviceIdOrKeys association type' do
           expect(associations.any? { |association| association['associationType'] == 'serviceIdOrKeys' }).to be_falsey
+        end
+      end
+    end
+
+    context 'when the project has Jira Cloud app, deployment gating configured and deployment status is blocked' do
+      before do
+        deployment.update!(status: 'blocked')
+      end
+
+      let_it_be(:integration) do
+        create(:jira_cloud_app_integration, jira_cloud_app_enable_deployment_gating: true,
+          jira_cloud_app_deployment_gating_environments: "production", project: project)
+      end
+
+      let(:commands) { Gitlab::Json.parse(subject.to_json)['commands'] }
+
+      it 'is valid according to the deployment info schema' do
+        expect(subject.to_json).to be_valid_json.and match_schema(Atlassian::Schemata.deployment_info)
+      end
+
+      it 'includes initiate_deployment_gating in the commands' do
+        expect(commands).to include(
+          { 'command' => 'initiate_deployment_gating' }
+        )
+      end
+
+      context 'when the integration has comma-separated environments' do
+        before do
+          integration.update!(jira_cloud_app_deployment_gating_environments: 'production,development')
+        end
+
+        it 'includes initiate_deployment_gating in the commands' do
+          expect(commands).to include(
+            { 'command' => 'initiate_deployment_gating' }
+          )
+        end
+      end
+
+      context 'when the integration jira_cloud_app_enable_deployment_gating is false' do
+        before do
+          integration.update!(jira_cloud_app_enable_deployment_gating: false)
+        end
+
+        it 'does not includes initiate_deployment_gating in the commands' do
+          expect(commands).to be(nil)
+        end
+      end
+
+      context 'when the integration jira_cloud_app_deployment_gating_environments is empty' do
+        before do
+          integration.update!(jira_cloud_app_deployment_gating_environments: "")
+        end
+
+        it 'does not includes initiate_deployment_gating in the commands' do
+          expect(commands).to be(nil)
+        end
+      end
+
+      context 'when the integration jira_cloud_app_deployment_gating_environments is not matching with tier' do
+        before do
+          integration.update!(jira_cloud_app_deployment_gating_environments: "development")
+        end
+
+        it 'does not includes initiate_deployment_gating in the commands' do
+          expect(commands).to be(nil)
+        end
+      end
+
+      context 'when the integration jira_cloud_app_deployment_gating_environments deployment status is not blocked' do
+        before do
+          deployment.update!(status: 'created')
+        end
+
+        it 'does not includes initiate_deployment_gating in the commands' do
+          expect(commands).to be(nil)
+        end
+      end
+
+      context 'when the enable_jira_cloud_deployment_gating ff is disabled' do
+        it 'does not includes initiate_deployment_gating in the commands' do
+          stub_feature_flags(enable_jira_cloud_deployment_gating: false)
+          expect(commands).to be(nil)
         end
       end
     end

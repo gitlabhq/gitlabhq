@@ -23,6 +23,7 @@ module Atlassian
         expose :updated_at, as: :lastUpdated, format_with: :iso8601
         expose :pipeline_entity, as: :pipeline
         expose :environment_entity, as: :environment
+        expose :generate_deployment_commands_from_integration_configuration, as: :commands
 
         def issue_keys
           @issue_keys ||= (issue_keys_from_pipeline + issue_keys_from_commits_since_last_deploy).uniq
@@ -70,6 +71,7 @@ module Atlassian
         def state
           case deployment.status
           when 'created' then 'pending'
+          when 'blocked' then 'pending'
           when 'running' then 'in_progress'
           when 'success' then 'successful'
           when 'failed' then 'failed'
@@ -138,6 +140,23 @@ module Atlassian
 
           service_ids = project.jira_cloud_app_integration.jira_cloud_app_service_ids.gsub(/\s+/, '').split(',')
           [{ associationType: 'serviceIdOrKeys', values: service_ids }]
+        end
+
+        def generate_deployment_commands_from_integration_configuration
+          return unless Feature.enabled?(:enable_jira_cloud_deployment_gating) # rubocop:disable Gitlab/FeatureFlagWithoutActor -- flag must be global
+
+          jira_cloud_app_integration = project.jira_cloud_app_integration
+
+          return unless jira_cloud_app_integration&.active
+          return unless jira_cloud_app_integration.jira_cloud_app_enable_deployment_gating
+          return if jira_cloud_app_integration.jira_cloud_app_deployment_gating_environments.blank?
+
+          environments = jira_cloud_app_integration.jira_cloud_app_deployment_gating_environments.split(',')
+          current_environment = environment.tier
+
+          return unless environments.include?(current_environment) && deployment.status == "blocked"
+
+          [{ command: 'initiate_deployment_gating' }]
         end
       end
     end

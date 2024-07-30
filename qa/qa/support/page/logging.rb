@@ -214,9 +214,16 @@ module QA
           result = yield
           ending = kwargs.fetch(:ending_time, Time.now)
           duration = (ending - starting).round(3)
+          location = caller_locations(1, 1).first
+          CodeRuntimeTracker.record_method_call(
+            name: location.label,
+            runtime: duration,
+            filename: location.path,
+            call_arg: param_info
+          )
+
           if duration > kwargs.fetch(:log_slow_threshold, 0.5)
-            caller_method_name = caller_locations(1, 1).first.label
-            QA::Runtime::Logger.warn("Potentially Slow Code '#{caller_method_name} #{param_info}' took #{duration}s")
+            Runtime::Logger.warn("Potentially Slow Code '#{location.label} #{param_info}' took #{duration}s")
           end
 
           result

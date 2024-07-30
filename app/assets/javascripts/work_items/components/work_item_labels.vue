@@ -56,11 +56,6 @@ export default {
       required: false,
       default: false,
     },
-    createFlow: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   data() {
     return {
@@ -76,6 +71,9 @@ export default {
     };
   },
   computed: {
+    createFlow() {
+      return this.workItemId === newWorkItemId(this.workItemType);
+    },
     workItemFullPath() {
       return this.createFlow
         ? newWorkItemFullPath(this.fullPath, this.workItemType)
@@ -241,7 +239,7 @@ export default {
         this.addLabelIds = [];
       }
 
-      if (this.workItemId === newWorkItemId(this.workItemType)) {
+      if (this.createFlow) {
         const selectedIds = [...this.itemValues, ...this.addLabelIds].filter(
           (x) => !this.removeLabelIds.includes(x),
         );

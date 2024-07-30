@@ -7,8 +7,6 @@ module Types
 
     authorize :read_prometheus_alerts
 
-    present_using PrometheusAlertPresenter
-
     field :id, GraphQL::Types::ID, null: false,
       description: 'ID of the alert condition.'
 

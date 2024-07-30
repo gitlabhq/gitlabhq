@@ -3903,7 +3903,6 @@ Layout/LineLength:
     - 'spec/presenters/packages/nuget/package_metadata_presenter_spec.rb'
     - 'spec/presenters/packages/nuget/packages_metadata_presenter_spec.rb'
     - 'spec/presenters/projects/security/configuration_presenter_spec.rb'
-    - 'spec/presenters/prometheus_alert_presenter_spec.rb'
     - 'spec/presenters/snippet_blob_presenter_spec.rb'
     - 'spec/rack_servers/puma_spec.rb'
     - 'spec/requests/admin/background_migrations_controller_spec.rb'

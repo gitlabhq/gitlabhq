@@ -8,6 +8,7 @@ import EditedAt from '~/issues/show/components/edited.vue';
 import Tracking from '~/tracking';
 import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue';
 import {
+  newWorkItemId,
   newWorkItemFullPath,
   autocompleteDataSources,
   markdownPreviewPath,
@@ -64,11 +65,6 @@ export default {
       required: false,
       default: true,
     },
-    createFlow: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemTypeName: {
       type: String,
       required: false,
@@ -119,6 +115,9 @@ export default {
     },
   },
   computed: {
+    createFlow() {
+      return this.workItemId === newWorkItemId(this.workItemType);
+    },
     workItemFullPath() {
       return this.createFlow
         ? newWorkItemFullPath(this.fullPath, this.workItemTypeName)

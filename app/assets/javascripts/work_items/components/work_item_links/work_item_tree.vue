@@ -196,6 +196,9 @@ export default {
     workItemNamespaceName() {
       return this.workItem?.namespace.fullName;
     },
+    shouldRolledUpWeightBeVisible() {
+      return this.showRolledUpWeight && this.rolledUpWeight !== null;
+    },
   },
   methods: {
     genericActionItems(workItem) {
@@ -265,7 +268,7 @@ export default {
     <template #header>
       {{ $options.WORK_ITEMS_TREE_TEXT.title }}
       <span
-        v-if="showRolledUpWeight"
+        v-if="shouldRolledUpWeightBeVisible"
         ref="weightData"
         data-testid="rollup-weight"
         class="gl-font-normal gl-ml-3 gl-display-flex gl-align-items-center gl-cursor-help gl-gap-2 gl-text-secondary"
