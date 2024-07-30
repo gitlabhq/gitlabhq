@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Gitlab::ClosingIssueExtractor do
+  let_it_be(:group) { create(:group) }
   let_it_be_with_reload(:project) { create(:project) }
   let_it_be_with_reload(:project2) { create(:project) }
   let_it_be(:issue) { create(:issue, project: project) }
   let_it_be(:issue2) { create(:issue, project: project2) }
+  let_it_be(:group_work_item) { create(:work_item, :group_level, namespace: group) }
 
   let(:reference) { issue.to_reference }
   let(:cross_reference) { issue2.to_reference(project) }
@@ -17,6 +19,7 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
     project.add_developer(project.creator)
     project.add_developer(project2.creator)
     project2.add_maintainer(project.creator)
+    group.add_developer(project.creator)
   end
 
   describe "#closed_by_message" do
@@ -327,6 +330,30 @@ RSpec.describe Gitlab::ClosingIssueExtractor do
       it do
         message = "Closes #{urls.project_issue_url(issue2.project, issue2)}"
         expect(subject.closed_by_message(message)).to eq([issue2])
+      end
+
+      context 'when multiple references are used for the same issue (also as work item)' do
+        it 'only returns the same issue once' do
+          message =
+            "Closes #{urls.project_issue_url(issue2.project, issue2)} " \
+            "Closes #{urls.project_work_item_url(issue2.project, issue2)}"
+          expect(subject.closed_by_message(message).map(&:id)).to contain_exactly(issue2.id)
+        end
+      end
+
+      context 'when reference is a group level work item' do
+        specify do
+          message = "Closes #{Gitlab::UrlBuilder.build(group_work_item)}"
+          expect(subject.closed_by_message(message)).to contain_exactly(group_work_item)
+        end
+
+        context 'when multiple references are used for the same work item' do
+          it 'only returns the same work item once' do
+            message =
+              "Closes #{Gitlab::UrlBuilder.build(group_work_item)} Closes #{group_work_item.to_reference(full: true)}"
+            expect(subject.closed_by_message(message)).to contain_exactly(group_work_item)
+          end
+        end
       end
     end
 

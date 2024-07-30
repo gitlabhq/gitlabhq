@@ -27,7 +27,6 @@ export default {
     {
       key: 'key',
       label: s__('CiVariables|Key'),
-      tdClass: 'text-plain',
       sortable: true,
       thClass: 'gl-w-2/5',
     },
@@ -49,7 +48,6 @@ export default {
     {
       key: 'key',
       label: s__('CiVariables|Key'),
-      tdClass: 'text-plain',
     },
     {
       key: 'environmentScope',

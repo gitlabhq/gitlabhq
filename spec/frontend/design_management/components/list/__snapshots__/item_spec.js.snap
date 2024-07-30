@@ -11,7 +11,7 @@ exports[`Design management list item component when item appears in view after i
 
 exports[`Design management list item component with notes renders item with multiple comments 1`] = `
 <a
-  class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
+  class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
 >
   <div
     class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"
@@ -77,7 +77,7 @@ exports[`Design management list item component with notes renders item with mult
 
 exports[`Design management list item component with notes renders item with single comment 1`] = `
 <a
-  class="card design-list-item gl-cursor-pointer gl-mb-0 js-design-list-item text-plain"
+  class="card design-list-item gl-cursor-pointer gl-mb-0 gl-text-default hover:gl-text-default js-design-list-item"
 >
   <div
     class="card-body gl-align-items-center gl-display-flex gl-justify-content-center gl-overflow-hidden gl-p-0 gl-relative gl-rounded-top-base"

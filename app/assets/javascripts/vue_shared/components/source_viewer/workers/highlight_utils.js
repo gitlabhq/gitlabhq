@@ -2,7 +2,7 @@ import { highlightPlugins } from '~/highlight_js/plugins';
 import { highlightContent } from '~/highlight_js';
 import { LINES_PER_CHUNK, NEWLINE, ROUGE_TO_HLJS_LANGUAGE_MAP } from '../constants';
 
-const splitByLineBreaks = (content = '') => content.split(/\r?\n/);
+export const splitByLineBreaks = (content = '') => content.split(/\r?\n/);
 
 const createChunk = (language, rawChunkLines, highlightedChunkLines = [], startingFrom = 0) => ({
   highlightedContent: highlightedChunkLines.join(NEWLINE),

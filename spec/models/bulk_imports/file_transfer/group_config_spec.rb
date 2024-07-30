@@ -55,6 +55,12 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
     end
   end
 
+  describe '#relation_included_keys' do
+    it 'returns included keys for relation' do
+      expect(subject.relation_included_keys('user')).to include('id')
+    end
+  end
+
   describe '#batchable_relation?' do
     context 'when relation is batchable' do
       it 'returns true' do
@@ -99,6 +105,27 @@ RSpec.describe BulkImports::FileTransfer::GroupConfig, feature_category: :import
       it 'raises' do
         expect { subject.export_service_for('foo') }.to raise_error(BulkImports::Error, 'Unsupported export relation')
       end
+    end
+  end
+
+  describe '#relation_has_user_contributions?' do
+    subject { described_class.new(exportable).relation_has_user_contributions?(relation) }
+
+    let(:relation) { 'iterations' }
+
+    context 'when the relation has user contribitions' do
+      before do
+        # No group imports have user contribitions
+        allow_next_instance_of(::Gitlab::ImportExport::AttributesFinder) do |instance|
+          allow(instance).to receive(:find_included_keys).with(relation).and_return(%w[author_id start_date])
+        end
+      end
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when the relation does not have user contribitions' do
+      it { is_expected.to eq(false) }
     end
   end
 end

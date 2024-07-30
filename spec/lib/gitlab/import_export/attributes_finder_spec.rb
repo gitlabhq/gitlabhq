@@ -239,4 +239,23 @@ RSpec.describe Gitlab::ImportExport::AttributesFinder, feature_category: :import
       it { is_expected.to eq([]) }
     end
   end
+
+  describe '#find_included_keys' do
+    subject { described_class.new(config: config).find_included_keys(klass_name) }
+
+    let(:klass_name) { 'project' }
+
+    context 'when initialized with included_attributes' do
+      let(:config) { { included_attributes: included_attributes } }
+      let(:included_attributes) { { project: [:name, :path], issues: [:milestone_id] } }
+
+      it { is_expected.to eq(%w[name path]) }
+    end
+
+    context 'when included_attributes are not present in config' do
+      let(:config) { {} }
+
+      it { is_expected.to eq([]) }
+    end
+  end
 end

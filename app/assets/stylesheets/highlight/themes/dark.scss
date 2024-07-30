@@ -12,6 +12,7 @@ $dark-old-bg: rgba(255, 51, 51, 0.2);
 $dark-old-idiff: rgba(255, 51, 51, 0.25);
 $dark-border: #808080;
 $dark-code-border: #666;
+$dark-code-mark: #1d3043;
 $dark-main-bg: #1d1f21;
 $dark-main-color: #1d1f21;
 $dark-line-color: #c5c8c6;
@@ -280,6 +281,28 @@ $dark-il: #de935f;
   pre .hll {
     background-color: $dark-pre-hll-bg !important;
   }
+
+  // mark lines via mark_multiple_lines
+  pre.dark code {
+    .selected-inline-section-marker {
+      background: $dark-code-mark !important;
+    }
+
+    .inline-section-marker {
+      background: $dark-pre-hll-bg;
+    }
+  }
+
+  .file-holder div.code.dark {
+    .selected-inline-number-mark {
+      color: $gray-200;
+    }
+
+    .unselected-inline-number-mark {
+      color: $gray-600;
+    }
+  }
+
 
   // Search result highlight
   span.highlight_word {

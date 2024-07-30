@@ -20,6 +20,11 @@ export default {
       required: false,
       default: true,
     },
+    showBlobSize: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   computed: {
     blobSize() {
@@ -62,7 +67,7 @@ export default {
       css-class="gl-mr-2"
     />
 
-    <small class="gl-mr-3">{{ blobSize }}</small>
+    <small v-if="showBlobSize" class="gl-mr-3">{{ blobSize }}</small>
 
     <gl-badge v-if="showLfsBadge">{{ __('LFS') }}</gl-badge>
   </div>

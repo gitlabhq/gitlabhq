@@ -1,13 +1,12 @@
 - add_to_breadcrumbs _("Branches"), project_branches_path(@project)
-- page_title _("New Branch")
+- page_title _("New branch")
 - default_ref = params[:ref] || @project.default_branch
 
 - if @error
   = render Pajamas::AlertComponent.new(variant: :danger) do |c|
     - c.with_body do
       = @error
-%h1.page-title.gl-font-size-h-display
-  = _('New Branch')
+= render ::Layouts::PageHeadingComponent.new(_('New branch'))
 
 = form_tag namespace_project_branches_path, method: :post, id: "new-branch-form", class: "js-create-branch-form" do
   .form-group.gl-max-w-80

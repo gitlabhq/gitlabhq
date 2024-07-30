@@ -97,7 +97,7 @@
 {"name":"creole","version":"0.5.0","platform":"ruby","checksum":"951701e2d80760f156b1cb2a93471ca97c076289becc067a33b745133ed32c03"},
 {"name":"crystalball","version":"0.7.0","platform":"ruby","checksum":"6e729f372a5071daec877adb40c5df4cb25fe21f350635e2a9624373fc151ef2"},
 {"name":"css_parser","version":"1.14.0","platform":"ruby","checksum":"f2ce6148cd505297b07bdbe7a5db4cce5cf530071f9b732b9a23538d6cdc0113"},
-{"name":"cssbundling-rails","version":"1.4.0","platform":"ruby","checksum":"082034653af0ec53d7662e4cd2f518f36167fe7c014dbcf37a941a4a8324f7db"},
+{"name":"cssbundling-rails","version":"1.4.1","platform":"ruby","checksum":"4b21273d627b21890da9155c88c67efc9274373d8b0add09149c262cf56c7ce1"},
 {"name":"cvss-suite","version":"3.0.1","platform":"ruby","checksum":"b5ca9e9e94032a42fd0dc28c1e305378b62c949e35ed7111fc4a1d76f68ad3f9"},
 {"name":"danger","version":"9.4.2","platform":"ruby","checksum":"43e552c6731030235a30fdeafe703d2e2ab9c30917154489cb0ecd9ad3259d80"},
 {"name":"danger-gitlab","version":"8.0.0","platform":"ruby","checksum":"497dd7d0f6513913de651019223d8058cf494df10acbd17de92b175dfa04a3a8"},

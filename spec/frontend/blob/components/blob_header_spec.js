@@ -184,6 +184,12 @@ describe('Blob Header Default Actions', () => {
 
       expect(findDefaultActions().props('isBinary')).toBe(true);
     });
+
+    it('passes the `showBlobSize` prop to `blobFilepath`', () => {
+      const showBlobSize = false;
+      createComponent({ propsData: { showBlobSize } });
+      expect(findBlobFilePath().props('showBlobSize')).toBe(showBlobSize);
+    });
   });
 
   describe('functionality', () => {

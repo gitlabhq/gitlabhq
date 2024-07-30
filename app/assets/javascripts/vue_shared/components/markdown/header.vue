@@ -499,7 +499,7 @@ export default {
             dropzone_input.js.
           -->
           <toolbar-button
-            v-if="!previewMarkdown && !restrictedToolBarItems.includes('attach-file')"
+            v-show="!previewMarkdown && !restrictedToolBarItems.includes('attach-file')"
             data-testid="button-attach-file"
             data-button-type="attach-file"
             :button-title="__('Attach a file or image')"

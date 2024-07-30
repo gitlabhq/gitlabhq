@@ -95,6 +95,11 @@ export default {
       required: false,
       default: false,
     },
+    showBlobSize: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     return {
@@ -137,7 +142,7 @@ export default {
   <div class="js-file-title file-title-flex-parent">
     <div class="gl-display-flex">
       <table-of-contents class="gl-pr-2" />
-      <blob-filepath :blob="blob" :show-path="showPath">
+      <blob-filepath :blob="blob" :show-path="showPath" :show-blob-size="showBlobSize">
         <template #filepath-prepend>
           <slot name="prepend"></slot>
         </template>

@@ -1286,6 +1286,21 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       )
     end
 
+    it 'works with work item references', :aggregate_failures do
+      work_item_url = Gitlab::Routing.url_helpers.project_work_item_url(issue.project, issue)
+      commit = double('commit1', safe_message: "Fixes #{work_item_url}")
+      allow(subject).to receive(:commits).and_return([commit])
+
+      expect { subject.cache_merge_request_closes_issues!(subject.author) }.to change {
+        subject.merge_requests_closing_issues.count
+      }.by(1)
+      expect(subject.merge_requests_closing_issues.last).to have_attributes(
+        issue: issue,
+        merge_request_id: subject.id,
+        from_mr_description: true
+      )
+    end
+
     it 'updates existing records if they were not created from MR description' do
       existing_association = create(
         :merge_requests_closing_issues,

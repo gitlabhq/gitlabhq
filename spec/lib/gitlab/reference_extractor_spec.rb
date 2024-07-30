@@ -320,7 +320,8 @@ RSpec.describe Gitlab::ReferenceExtractor do
     it 'does not allow one prefix for multiple referables if not allowed specificly' do
       # make sure you are not overriding existing prefix before changing this hash
       multiple_allowed = {
-        '@' => 3
+        '@' => 3,
+        '#' => 2
       }
 
       prefixes.each do |prefix, referables|

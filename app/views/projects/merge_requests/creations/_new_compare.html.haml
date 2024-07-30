@@ -1,12 +1,11 @@
-%h1.page-title.gl-font-size-h-display
-  = _('New merge request')
+= render ::Layouts::PageHeadingComponent.new(_('New merge request'))
 
 - if @saml_groups.present?
   = render Pajamas::AlertComponent.new(variant: :warning, dismissible: false) do |c|
     - c.with_body do
       = s_('GroupSAML|Some branches are inaccessible because your SAML session has expired. To access the branches, select the group’s path to reauthenticate.')
     - c.with_actions do
-      .gl-display-flex.gl-flex-wrap
+      .gl-flex.gl-flex-wrap
         - @saml_groups.each do |group|
           = render Pajamas::ButtonComponent.new(href: sso_group_saml_providers_path(group, { token: group.saml_discovery_token, redirect: project_new_merge_request_branch_from_path(@source_project) }), button_options: { class: "gl-mr-3 gl-mb-3" }) do
             = group.path

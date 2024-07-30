@@ -129,7 +129,7 @@ export default {
       params: { id: filename },
       query: $route.query,
     }"
-    class="card gl-cursor-pointer text-plain js-design-list-item design-list-item gl-mb-0"
+    class="card gl-cursor-pointer gl-text-default hover:gl-text-default js-design-list-item design-list-item gl-mb-0"
   >
     <div
       class="card-body gl-p-0 gl-display-flex gl-align-items-center gl-justify-content-center gl-overflow-hidden gl-relative gl-rounded-top-base"

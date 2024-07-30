@@ -12,10 +12,11 @@ jest.mock('~/lib/utils/number_utils', () => ({
 describe('Blob Header Filepath', () => {
   let wrapper;
 
-  function createComponent(blobProps = {}, options = {}) {
+  function createComponent(blobProps = {}, options = {}, propsData = {}) {
     wrapper = shallowMount(BlobHeaderFilepath, {
       propsData: {
         blob: { ...MockBlob, ...blobProps },
+        ...propsData,
       },
       ...options,
     });
@@ -51,6 +52,11 @@ describe('Blob Header Filepath', () => {
       createComponent();
       expect(numberToHumanSize).toHaveBeenCalled();
       expect(wrapper.vm.blobSize).toBe('a lot');
+    });
+
+    it('should not show blob size', () => {
+      createComponent({}, {}, { showBlobSize: false });
+      expect(wrapper.find('small').exists()).toBe(false);
     });
 
     it('renders LFS badge if LFS if enabled', () => {

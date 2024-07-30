@@ -265,6 +265,8 @@ push from an existing repository.
 
 #### Default closing pattern
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/465391) work item (task, objective, or key result) references in GitLab 17.3.
+
 To automatically close an issue, use the following keywords followed by the issue reference.
 
 Available keywords:
@@ -278,7 +280,10 @@ Available issue reference formats:
 
 - A local issue (`#123`).
 - A cross-project issue (`group/project#123`).
-- The full URL of an issue (`https://gitlab.example.com/group/project/issues/123`).
+- The full URL of an issue (`https://gitlab.example.com/<project_full_path>/-/issues/123`).
+- The full URL of a work item (for example, task, objective, or key result):
+  - In a project (`https://gitlab.example.com/<project_full_path>/-/work_items/123`).
+  - In a group (`https://gitlab.example.com/groups/<group_full_path>/-/work_items/123`).
 
 For example:
 
@@ -287,7 +292,7 @@ Awesome commit message
 
 Fix #20, Fixes #21 and Closes group/otherproject#22.
 This commit is also related to #17 and fixes #18, #19
-and https://gitlab.example.com/group/otherproject/issues/23.
+and https://gitlab.example.com/group/otherproject/-/issues/23.
 ```
 
 The previous commit message closes `#18`, `#19`, `#20`, and `#21` in the project this commit is pushed to,

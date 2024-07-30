@@ -12,6 +12,7 @@ $white-hll-bg: #f8f8f8;
 $white-expanded-border: #e0e0e0;
 $white-expanded-bg: #f7f7f7;
 $white-c: #998;
+$white-code-mark: #d3e3f4;
 $white-err: #a61717;
 $white-err-bg: #e3d2d2;
 $white-cm: #998;
@@ -275,6 +276,27 @@ $white-gc-bg: #eaf2f5;
   // highlight line via anchor
   pre .hll {
     background-color: $white-pre-hll-bg !important;
+  }
+
+  // mark lines via mark_multiple_lines
+  pre.white code {
+    .selected-inline-section-marker {
+      background: $white-code-mark !important;
+    }
+
+    .inline-section-marker {
+      background: $gray-100;
+    }
+  }
+
+  .file-holder div.code.white {
+    .selected-inline-number-mark {
+      color: $gray-600;
+    }
+
+    .unselected-inline-number-mark {
+      color: $gray-200;
+    }
   }
 
   // Search result highlight

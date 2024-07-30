@@ -100,87 +100,39 @@ RSpec.describe 'Runners', feature_category: :fleet_visibility do
         expect(page).not_to have_content(project_runner.display_name)
       end
 
-      context 'when the project_runner_edit_form_vue feature is disabled' do
-        before do
-          stub_feature_flags(project_runner_edit_form_vue: false)
+      it 'user edits runner to set it as protected', :js do
+        visit project_runners_path(project)
+
+        within_testid 'assigned_project_runners' do
+          first('[data-testid="edit-runner-link"]').click
         end
 
-        it 'user edits the runner to be protected' do
-          visit project_runners_path(project)
+        expect(page.find_field('protected')).not_to be_checked
 
-          within_testid 'assigned_project_runners' do
-            first('[data-testid="edit-runner-link"]').click
-          end
+        check 'protected'
+        click_button 'Save changes'
 
-          expect(page.find_field('runner[access_level]')).not_to be_checked
-
-          check 'runner_access_level'
-          click_button 'Save changes'
-
-          expect(page).to have_content 'Protected Yes'
-        end
-
-        context 'when a runner has a tag' do
-          before do
-            project_runner.update!(tag_list: ['tag'])
-          end
-
-          it 'user edits runner not to run untagged jobs' do
-            visit project_runners_path(project)
-
-            within_testid 'assigned_project_runners' do
-              first('[data-testid="edit-runner-link"]').click
-            end
-
-            expect(page.find_field('runner[run_untagged]')).to be_checked
-
-            uncheck 'runner_run_untagged'
-            click_button 'Save changes'
-
-            expect(page).to have_content 'Can run untagged jobs No'
-          end
-        end
+        expect(page).to have_content 'Protected Yes'
       end
 
-      context 'when the project_runner_edit_form_vue feature is enabled', :js do
+      context 'when a runner has a tag', :js do
         before do
-          stub_feature_flags(project_runner_edit_form_vue: true)
+          project_runner.update!(tag_list: ['tag'])
         end
 
-        it 'user edits runner to set it as protected' do
+        it 'user edits runner to not run untagged jobs' do
           visit project_runners_path(project)
 
           within_testid 'assigned_project_runners' do
             first('[data-testid="edit-runner-link"]').click
           end
 
-          expect(page.find_field('protected')).not_to be_checked
+          expect(page.find_field('run-untagged')).to be_checked
 
-          check 'protected'
+          uncheck 'run-untagged'
           click_button 'Save changes'
 
-          expect(page).to have_content 'Protected Yes'
-        end
-
-        context 'when a runner has a tag' do
-          before do
-            project_runner.update!(tag_list: ['tag'])
-          end
-
-          it 'user edits runner to not run untagged jobs' do
-            visit project_runners_path(project)
-
-            within_testid 'assigned_project_runners' do
-              first('[data-testid="edit-runner-link"]').click
-            end
-
-            expect(page.find_field('run-untagged')).to be_checked
-
-            uncheck 'run-untagged'
-            click_button 'Save changes'
-
-            expect(page).to have_content 'Can run untagged jobs No'
-          end
+          expect(page).to have_content 'Can run untagged jobs No'
         end
       end
 

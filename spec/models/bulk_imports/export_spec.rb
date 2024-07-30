@@ -158,4 +158,22 @@ RSpec.describe BulkImports::Export, type: :model, feature_category: :importers d
       end
     end
   end
+
+  describe '#relation_has_user_contributions?' do
+    let(:export) { build(:bulk_import_export, project: build(:project), relation: relation) }
+
+    subject { export.relation_has_user_contributions? }
+
+    context 'when the relation has user contribitions' do
+      let(:relation) { 'issues' }
+
+      it { is_expected.to eq(true) }
+    end
+
+    context 'when the relation does not have user contribitions' do
+      let(:relation) { 'labels' }
+
+      it { is_expected.to eq(false) }
+    end
+  end
 end

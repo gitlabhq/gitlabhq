@@ -8,6 +8,7 @@
 */
 $monokai-bg: #272822;
 $monokai-border: #555;
+$monokai-code-mark: #113953;
 $monokai-text-color: #f8f8f2;
 $monokai-line-num-color: rgba(255, 255, 255, 0.3);
 $monokai-line-num-color-new: #707565;
@@ -271,6 +272,29 @@ $monokai-gh: #75715e;
   pre .hll {
     background-color: $monokai-hll !important;
   }
+
+  // mark lines via mark_multiple_lines
+  pre.monokai code {
+    .selected-inline-section-marker {
+      background: $monokai-code-mark !important;
+    }
+
+    .inline-section-marker {
+      background: $monokai-hll;
+    }
+  }
+
+  .file-holder div.code.monokai {
+    .selected-inline-number-mark {
+      color: $gray-200;
+    }
+
+    .unselected-inline-number-mark {
+      color: $gray-600;
+    }
+  }
+
+
 
   // Search result highlight
   span.highlight_word {
