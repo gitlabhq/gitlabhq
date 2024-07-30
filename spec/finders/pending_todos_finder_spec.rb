@@ -6,6 +6,7 @@ RSpec.describe PendingTodosFinder, feature_category: :notifications do
   let_it_be(:user) { create(:user) }
   let_it_be(:user2) { create(:user) }
   let_it_be(:user3) { create(:user) }
+  let_it_be(:banned_user) { create(:user, :banned) }
   let_it_be(:issue) { create(:issue) }
   let_it_be(:issue2) { create(:issue) }
   let_it_be(:project) { create(:project) }
@@ -14,12 +15,13 @@ RSpec.describe PendingTodosFinder, feature_category: :notifications do
   let_it_be(:todo2) { create(:todo, :pending, user: user, target: issue2, project: project) }
   let_it_be(:todo3) { create(:todo, :pending, user: user2, target: issue) }
   let_it_be(:todo4) { create(:todo, :pending, user: user3, target: issue) }
+  let_it_be(:banned_pending_todo) { create(:todo, :pending, user: user, target: issue, author: banned_user) }
   let_it_be(:done_todo) { create(:todo, :done, user: user) }
 
   let(:users) { [user, user2] }
 
   describe '#execute' do
-    it 'returns all pending todos if no params are passed' do
+    it 'returns all non-hidden pending todos if no params are passed' do
       todos = described_class.new.execute
 
       expect(todos).to match_array([todo, todo2, todo3, todo4])

@@ -380,7 +380,7 @@ export default {
         </gl-disclosure-dropdown-item>
         <gl-disclosure-dropdown-item v-if="canEdit" class="js-note-delete" @action="onDelete">
           <template #list-item>
-            <span class="text-danger">{{ __('Delete comment') }}</span>
+            <span class="gl-text-danger">{{ __('Delete comment') }}</span>
           </template>
         </gl-disclosure-dropdown-item>
       </gl-disclosure-dropdown>

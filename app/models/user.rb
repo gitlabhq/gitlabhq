@@ -546,6 +546,8 @@ class User < MainClusterwide::ApplicationRecord
     after_transition active: :banned do |user|
       user.create_banned_user
 
+      user.invalidate_authored_todo_user_pending_todo_cache_counts
+
       if Gitlab.com? # rubocop:disable Gitlab/AvoidGitlabInstanceChecks -- this is always necessary on GitLab.com
         user.run_after_commit do
           deep_clean_ci = user.custom_attributes.by_key(UserCustomAttribute::DEEP_CLEAN_CI_USAGE_WHEN_BANNED).exists?
@@ -562,6 +564,7 @@ class User < MainClusterwide::ApplicationRecord
 
     after_transition banned: :active do |user|
       user.banned_user&.destroy
+      user.invalidate_authored_todo_user_pending_todo_cache_counts
     end
 
     after_transition any => :active do |user|
@@ -2108,6 +2111,14 @@ class User < MainClusterwide::ApplicationRecord
 
   def invalidate_personal_projects_count
     Rails.cache.delete(['users', id, 'personal_projects_count'])
+  end
+
+  def invalidate_authored_todo_user_pending_todo_cache_counts
+    # Invalidate the todo cache counts for other users with pending todos authored by the user
+    cache_keys = authored_todos.pending.distinct.pluck(:user_id).map { |id| ['users', id, 'todos_pending_count'] }
+    Gitlab::Instrumentation::RedisClusterValidator.allow_cross_slot_commands do
+      Rails.cache.delete_multi(cache_keys)
+    end
   end
 
   # This is copied from Devise::Models::Lockable#valid_for_authentication?, as our auth

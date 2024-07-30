@@ -160,7 +160,7 @@ export default {
         return 'text-success';
       }
       if (delta && parseFloat(delta) < 0) {
-        return 'text-danger';
+        return 'gl-text-danger';
       }
       return '';
     },

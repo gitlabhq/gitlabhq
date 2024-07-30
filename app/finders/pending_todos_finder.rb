@@ -23,7 +23,7 @@ class PendingTodosFinder
   end
 
   def execute
-    todos = Todo.pending
+    todos = Todo.pending_without_hidden
     todos = by_users(todos)
     todos = by_project(todos)
     todos = by_target_id(todos)

@@ -329,7 +329,7 @@ export default {
           <div v-if="hasInvalidRules" class="gl-text-secondary gl-mt-2" data-testid="invalid-rules">
             <gl-sprintf :message="pluralizedRuleText">
               <template #danger="{ content }">
-                <span class="gl-font-bold text-danger">{{ content }}</span>
+                <span class="gl-font-bold gl-text-danger">{{ content }}</span>
               </template>
             </gl-sprintf>
           </div>

@@ -10259,7 +10259,7 @@ msgstr ""
 msgid "CampfireService|ID portion of the Campfire room URL."
 msgstr ""
 
-msgid "CampfireService|Send notifications about push events to Campfire chat rooms. %{docs_link}"
+msgid "CampfireService|Send notifications about push events to Campfire chat rooms."
 msgstr ""
 
 msgid "Can be manually deployed to"
@@ -28781,7 +28781,7 @@ msgstr ""
 msgid "IrkerService|Send update messages to an irker server."
 msgstr ""
 
-msgid "IrkerService|Send update messages to an irker server. Before you can use this, you need to set up the irker daemon. %{docs_link}"
+msgid "IrkerService|Send update messages to an irker server. Before you can use this, you need to set up the irker daemon."
 msgstr ""
 
 msgid "IrkerService|Server host (optional)"
@@ -28988,7 +28988,7 @@ msgstr ""
 msgid "IssueTracker|Use Bugzilla as this project's issue tracker."
 msgstr ""
 
-msgid "IssueTracker|Use ClickUp as this project's issue tracker. %{docs_link}"
+msgid "IssueTracker|Use ClickUp as this project's issue tracker."
 msgstr ""
 
 msgid "IssueTracker|Use Clickup as this project's issue tracker."
@@ -29015,7 +29015,7 @@ msgstr ""
 msgid "IssueTracker|Use a custom issue tracker as this project's issue tracker."
 msgstr ""
 
-msgid "IssueTracker|Use a custom issue tracker that is not in the integration list. %{docs_link}"
+msgid "IssueTracker|Use a custom issue tracker that is not in the integration list."
 msgstr ""
 
 msgid "Issues"
@@ -31296,7 +31296,7 @@ msgstr ""
 msgid "Link Sentry to GitLab to discover and view the errors your application generates."
 msgstr ""
 
-msgid "Link an external wiki from the project's sidebar. %{docs_link}"
+msgid "Link an external wiki from the project's sidebar."
 msgstr ""
 
 msgid "Link copied to clipboard."
@@ -31870,9 +31870,6 @@ msgid "MatrixIntegration|New token"
 msgstr ""
 
 msgid "MatrixIntegration|Send notifications about project events to Matrix."
-msgstr ""
-
-msgid "MatrixIntegration|Send notifications about project events to Matrix. %{link_start}Learn More%{link_end}."
 msgstr ""
 
 msgid "MatrixIntegration|Unique authentication token."
@@ -38585,7 +38582,7 @@ msgstr ""
 msgid "PipelineEditorTutorial|Select the pipeline ID to view the full details about your first pipeline run."
 msgstr ""
 
-msgid "PipelineEditorTutorial|The pipeline stages and jobs are defined in a %{codeStart}.gitlab-ci.yml%{codeEnd} file. You can edit, visualize and validate the syntax in this file by using the Pipeline Editor."
+msgid "PipelineEditorTutorial|The pipeline stages and jobs are defined in a %{codeStart}.gitlab-ci.yml%{codeEnd} file. You can edit, visualize and validate the syntax in this file by using the pipeline editor."
 msgstr ""
 
 msgid "PipelineEditorTutorial|The pipeline status is at the top of the page."
@@ -38594,7 +38591,7 @@ msgstr ""
 msgid "PipelineEditorTutorial|This template creates a simple test pipeline. To use it:"
 msgstr ""
 
-msgid "PipelineEditorTutorial|Use the Visualize and Lint tabs in the Pipeline Editor to visualize your pipeline and check for any errors or warnings before committing your changes."
+msgid "PipelineEditorTutorial|Use the Visualize and Lint tabs in the pipeline editor to visualize your pipeline and check for any errors or warnings before committing your changes."
 msgstr ""
 
 msgid "PipelineEditorTutorial|View %{linkStart}.gitlab-ci.yml syntax reference%{linkEnd}"
@@ -39113,7 +39110,7 @@ msgstr ""
 msgid "Pipelines|Owner"
 msgstr ""
 
-msgid "Pipelines|Pipeline Editor"
+msgid "Pipelines|Pipeline editor"
 msgstr ""
 
 msgid "Pipelines|Pipeline syntax is correct. %{linkStart}Learn more%{linkEnd}"
@@ -58403,7 +58400,7 @@ msgstr ""
 msgid "Verify code"
 msgstr ""
 
-msgid "Verify that GPG keys are authorized by Beyond Identity Authenticator. %{docs_link}"
+msgid "Verify that GPG keys are authorized by Beyond Identity Authenticator."
 msgstr ""
 
 msgid "Version"

@@ -1,4 +1,4 @@
-import * as utils from '~/vue_merge_request_widget/extensions/test_report/utils';
+import * as utils from '~/vue_merge_request_widget/widgets/test_report/utils';
 
 describe('test report widget extension utils', () => {
   describe('summaryTextbuilder', () => {

@@ -44,6 +44,7 @@ class TodosFinder
     raise ArgumentError, invalid_type_message unless valid_types?
 
     items = current_user.todos
+    items = without_hidden(items)
     items = by_action_id(items)
     items = by_action(items)
     items = by_author(items)
@@ -193,9 +194,10 @@ class TodosFinder
   end
 
   def by_state(items)
-    return items.pending if params[:state].blank?
+    return items.pending if filter_pending_only?
+    return items.done if filter_done_only?
 
-    items.with_states(params[:state])
+    items
   end
 
   def by_target_id(items)
@@ -210,6 +212,21 @@ class TodosFinder
     else
       items
     end
+  end
+
+  def without_hidden(items)
+    return items.pending_without_hidden if filter_pending_only?
+    return items if filter_done_only?
+
+    items.all_without_hidden
+  end
+
+  def filter_pending_only?
+    params[:state].blank? || Array.wrap(params[:state]).map(&:to_sym) == [:pending]
+  end
+
+  def filter_done_only?
+    Array.wrap(params[:state]).map(&:to_sym) == [:done]
   end
 end
 

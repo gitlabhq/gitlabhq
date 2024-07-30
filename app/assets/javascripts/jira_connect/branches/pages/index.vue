@@ -47,7 +47,7 @@ export default {
 <template>
   <div>
     <div class="gl-border-1 gl-border-b-solid gl-border-gray-100 gl-mb-5 gl-mt-7">
-      <h1 data-testid="page-title" class="page-title gl-font-size-h-display">{{ pageTitle }}</h1>
+      <h1 data-testid="page-title" class="page-title gl-text-size-h-display">{{ pageTitle }}</h1>
     </div>
 
     <new-branch-form v-if="showForm" @success="onNewBranchFormSuccess" />

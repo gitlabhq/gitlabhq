@@ -9,7 +9,7 @@ export default {
       'PipelineEditorTutorial|GitLab CI/CD can automatically build, test, and deploy your application.',
     ),
     secondParagraph: s__(
-      'PipelineEditorTutorial|The pipeline stages and jobs are defined in a %{codeStart}.gitlab-ci.yml%{codeEnd} file. You can edit, visualize and validate the syntax in this file by using the Pipeline Editor.',
+      'PipelineEditorTutorial|The pipeline stages and jobs are defined in a %{codeStart}.gitlab-ci.yml%{codeEnd} file. You can edit, visualize and validate the syntax in this file by using the pipeline editor.',
     ),
   },
   components: {

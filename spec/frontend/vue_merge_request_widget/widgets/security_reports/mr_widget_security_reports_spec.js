@@ -2,9 +2,9 @@ import Vue from 'vue';
 import { GlDisclosureDropdown } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import api from '~/api';
-import MRSecurityWidget from '~/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue';
+import MRSecurityWidget from '~/vue_merge_request_widget/widgets/security_reports/mr_widget_security_reports.vue';
 import Widget from '~/vue_merge_request_widget/components/widget/widget.vue';
-import securityReportMergeRequestDownloadPathsQuery from '~/vue_merge_request_widget/extensions/security_reports/graphql/security_report_merge_request_download_paths.query.graphql';
+import securityReportMergeRequestDownloadPathsQuery from '~/vue_merge_request_widget/widgets/security_reports/graphql/security_report_merge_request_download_paths.query.graphql';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -12,7 +12,7 @@ import { mockArtifacts } from './mock_data';
 
 Vue.use(VueApollo);
 
-describe('vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue', () => {
+describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_reports.vue', () => {
   let wrapper;
 
   const createComponent = ({ propsData, mockResponse = mockArtifacts() } = {}) => {

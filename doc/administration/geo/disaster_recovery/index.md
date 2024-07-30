@@ -73,6 +73,9 @@ must disable the **primary** site.
   If you plan to [update the primary domain DNS record](#step-4-optional-updating-the-primary-domain-dns-record),
   you may wish to maintain a low TTL to ensure fast propagation of DNS changes.
 
+  NOTE:
+  The primary site's `/etc/gitlab/gitlab.rb` file is not copied to the secondary sites automatically during this process. Make sure that you back up the primary's `/etc/gitlab/gitlab.rb` file, so that you can later restore any needed values on your secondary sites.
+
 ### Step 3. Promoting a **secondary** site
 
 Note the following when promoting a secondary:

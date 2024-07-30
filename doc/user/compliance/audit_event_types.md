@@ -552,6 +552,8 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
+| [`secure_ci_job_token_group_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159754) | Event triggered when group added to CI_JOB_TOKEN scope | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/467840) | Project |
+| [`secure_ci_job_token_group_removed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159754) | Event triggered when group removed from CI_JOB_TOKEN scope | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/467840) | Project |
 | [`secure_ci_job_token_inbound_disabled`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Event triggered when CI_JOB_TOKEN permissions disabled for inbound | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 | [`secure_ci_job_token_inbound_enabled`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Event triggered when CI_JOB_TOKEN permissions enabled for inbound | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |
 | [`secure_ci_job_token_project_added`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/115350) | Event triggered when project added to inbound CI_JOB_TOKEN scope | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.0](https://gitlab.com/gitlab-org/gitlab/-/issues/338255) | Project |

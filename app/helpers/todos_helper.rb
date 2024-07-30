@@ -231,7 +231,7 @@ module TodosHelper
       if is_due_today
         'text-warning'
       elsif is_overdue
-        'text-danger'
+        'gl-text-danger'
       else
         ''
       end

@@ -5,7 +5,7 @@ import waitForPromises from 'helpers/wait_for_promises';
 import axios from '~/lib/utils/axios_utils';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import Poll from '~/lib/utils/poll';
-import terraformExtension from '~/vue_merge_request_widget/extensions/terraform/index.vue';
+import terraformExtension from '~/vue_merge_request_widget/widgets/terraform/index.vue';
 import {
   plans,
   validPlanWithName,

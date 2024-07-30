@@ -545,6 +545,38 @@ RSpec.describe Todo do
     end
   end
 
+  shared_context 'with todos authored by banned and unbanned users' do
+    let(:unbanned_author_pending_todo) { create(:todo, :pending) }
+    let(:unbanned_author_done_todo) { create(:todo, :done) }
+    let(:banned_user) { create(:user, :banned) }
+    let(:banned_author_pending_todo) { create(:todo, :pending, author: banned_user) }
+    let(:banned_author_done_todo) { create(:todo, :done, author: banned_user) }
+  end
+
+  describe '.without_banned_user' do
+    include_context 'with todos authored by banned and unbanned users'
+
+    it 'only returns todos that are not authored by a banned user' do
+      expect(described_class.without_banned_user).to contain_exactly(unbanned_author_pending_todo, unbanned_author_done_todo)
+    end
+  end
+
+  describe '.pending_without_hidden' do
+    include_context 'with todos authored by banned and unbanned users'
+
+    it 'only returns todos that are not pending and authored by a banned user' do
+      expect(described_class.pending_without_hidden).to contain_exactly(unbanned_author_pending_todo)
+    end
+  end
+
+  describe '.all_without_hidden' do
+    include_context 'with todos authored by banned and unbanned users'
+
+    it 'only returns todos that are not pending and authored by a banned user' do
+      expect(described_class.all_without_hidden).to contain_exactly(unbanned_author_pending_todo, unbanned_author_done_todo, banned_author_done_todo)
+    end
+  end
+
   describe '#access_request_url' do
     shared_examples 'returns member access requests tab url/path' do
       it 'returns group access requests tab url/path if target is group' do

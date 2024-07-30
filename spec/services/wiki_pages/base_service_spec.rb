@@ -5,6 +5,7 @@ require 'spec_helper'
 RSpec.describe WikiPages::BaseService, feature_category: :wiki do
   let(:project) { double('project') }
   let(:user) { double('user') }
+  let(:page) { instance_double(WikiPage, template?: false) }
 
   describe '#increment_usage' do
     let(:subject) { bad_service_class.new(container: project, current_user: user) }
@@ -19,7 +20,7 @@ RSpec.describe WikiPages::BaseService, feature_category: :wiki do
       end
 
       it 'raises an error on unknown events' do
-        expect { subject.send(:increment_usage) }.to raise_error(Gitlab::InternalEvents::UnknownEventError)
+        expect { subject.send(:increment_usage, page) }.to raise_error(Gitlab::InternalEvents::UnknownEventError)
       end
     end
   end

@@ -3005,6 +3005,25 @@ RSpec.describe User, feature_category: :user_profile do
         expect(Users::BannedUser.last.user_id).to eq(user.id)
       end
 
+      context 'when the user authored todos' do
+        let_it_be(:todo_users) { create_list(:user, 3) }
+
+        it 'invalidates the cached todo count for users with pending todos authored by the user', :use_clean_rails_redis_caching do
+          todo_users.each do |todo_user|
+            create(:todo, :pending, author: user, user: todo_user)
+            create(:todo, :done, author: user, user: todo_user)
+          end
+
+          expect { user.ban }
+            .to change { todo_users.map(&:todos_pending_count).uniq }.from([1]).to([0])
+                .and not_change { todo_users.map(&:todos_done_count) }
+
+          expect { user.unban }
+          .to change { todo_users.map(&:todos_pending_count).uniq }.from([0]).to([1])
+              .and not_change { todo_users.map(&:todos_done_count) }
+        end
+      end
+
       context 'when GitLab.com' do
         before do
           allow(::Gitlab).to receive(:com?).and_return(true)

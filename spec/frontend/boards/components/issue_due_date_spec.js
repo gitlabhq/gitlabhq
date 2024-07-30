@@ -57,18 +57,18 @@ describe('Issue Due Date component', () => {
     expect(findTime(wrapper).text()).toBe(dateFormat(date, format));
   });
 
-  it('should contain the correct `.text-danger` css class for overdue issue that is open', () => {
+  it('should contain the correct `.gl-text-danger` css class for overdue issue that is open', () => {
     date.setDate(date.getDate() - 17);
     wrapper = createComponent(date);
 
-    expect(findTime(wrapper).classes('text-danger')).toBe(true);
+    expect(findTime(wrapper).classes('gl-text-danger')).toBe(true);
   });
 
-  it('should not contain the `.text-danger` css class for overdue issue that is closed', () => {
+  it('should not contain the `.gl-text-danger` css class for overdue issue that is closed', () => {
     date.setDate(date.getDate() - 17);
     const closed = true;
     wrapper = createComponent(date, closed);
 
-    expect(findTime(wrapper).classes('text-danger')).toBe(false);
+    expect(findTime(wrapper).classes('gl-text-danger')).toBe(false);
   });
 });

@@ -215,13 +215,13 @@ Dangerfile
 /ee/app/assets/javascripts/pages/projects/licenses/**
 /ee/app/assets/javascripts/pages/projects/pipelines/licenses/**
 /ee/app/assets/javascripts/pages/projects/pipelines/show/license_report.js
-/ee/app/assets/javascripts/vue_merge_request_widget/extensions/license_compliance/**
+/ee/app/assets/javascripts/vue_merge_request_widget/widgets/license_compliance/**
 /ee/app/assets/javascripts/vue_shared/license_compliance/**
 /ee/app/views/projects/licenses/**
 /ee/spec/frontend/approvals/components/license_compliance/**
 /ee/spec/frontend/approvals/stores/modules/license_compliance/**
 /ee/spec/frontend/license_compliance/**
-/ee/spec/frontend/vue_merge_request_widget/extensions/license_compliance/**
+/ee/spec/frontend/vue_merge_request_widget/widgets/license_compliance/**
 /ee/spec/frontend/vue_shared/license_compliance/**
 
 /ee/app/assets/javascripts/approvals/components/security_orchestration/**

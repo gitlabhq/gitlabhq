@@ -41,10 +41,6 @@
   .form-actions {
     margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};
   }
-
-  .text-danger:not(.dropdown-item) {
-    font-weight: $gl-font-weight-bold;
-  }
 }
 
 .modal-footer {

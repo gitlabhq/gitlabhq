@@ -910,7 +910,6 @@ the following are the names of GitLab Duo features:
 
 - GitLab Duo Chat
 - GitLab Duo Code Suggestions
-- GitLab Duo Suggested Reviewers
 - GitLab Duo Value stream forecasting
 - GitLab Duo Discussion summary
 - GitLab Duo Merge request summary
@@ -1966,7 +1965,7 @@ To describe tiers:
 
 ## Suggested Reviewers
 
-Use title case for **Suggested Reviewers**. On first mention on a page, use **GitLab Duo Suggested Reviewers**.
+Use title case for **Suggested Reviewers**.
 
 **Suggested Reviewers** should always be plural, and is capitalized even if it's generic.
 

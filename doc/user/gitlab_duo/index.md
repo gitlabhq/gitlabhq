@@ -100,17 +100,6 @@ DETAILS:
 - LLM: Vertex AI Codey [`codechat-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/codechat-bison)
 - [View documentation](../../editor_extensions/gitlab_cli/index.md#gitlab-duo-for-the-cli).
 
-### Suggested Reviewers
-
-DETAILS:
-**Tier:** Ultimate
-**Offering:** GitLab.com
-
-- Helps create faster and higher-quality reviews by automatically suggesting reviewers for your merge request.
-- LLM: GitLab creates a machine learning model for each project, which is used to generate reviewers. [View the issue](https://gitlab.com/gitlab-org/modelops/applied-ml/applied-ml-updates/-/issues/10).
-- <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ivwZQgh4Rxw)
-- [View documentation](../project/merge_requests/reviews/index.md#gitlab-duo-suggested-reviewers).
-
 ### Merge commit message generation
 
 DETAILS:

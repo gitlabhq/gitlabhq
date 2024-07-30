@@ -210,7 +210,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   end
 
   it 'user sees the Pipeline Editor page' do
-    expect(page).to have_content('Pipeline Editor')
+    expect(page).to have_content('Pipeline editor')
   end
 
   describe 'Branch Switcher' do
@@ -237,11 +237,13 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
   describe 'Editor navigation' do
     context 'when no change is made' do
       it 'user can navigate away without a browser alert' do
-        expect(page).to have_content('Pipeline Editor')
+        expect(page).to have_content('Pipeline editor')
 
         click_link 'Pipelines'
 
-        expect(page).not_to have_content('Pipeline Editor')
+        page.within('#content-body') do
+          expect(page).not_to have_content('Pipeline editor')
+        end
       end
     end
 
@@ -260,7 +262,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
 
         page.driver.browser.switch_to.alert.dismiss
 
-        expect(page).to have_content('Pipeline Editor')
+        expect(page).to have_content('Pipeline editor')
 
         page.within('#source-editor-') do
           expect(page).to have_content("#{default_content}123")
@@ -272,7 +274,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
 
         page.driver.browser.switch_to.alert.accept
 
-        expect(page).not_to have_content('Pipeline Editor')
+        expect(page).not_to have_content('Pipeline editor')
       end
 
       it 'user who creates a MR is taken to the merge request page without warnings' do
@@ -283,7 +285,7 @@ RSpec.describe 'Pipeline Editor', :js, feature_category: :pipeline_composition d
 
         click_button 'Commit changes'
 
-        expect(page).not_to have_content('Pipeline Editor')
+        expect(page).not_to have_content('Pipeline editor')
         expect(page).to have_content('New merge request')
       end
     end

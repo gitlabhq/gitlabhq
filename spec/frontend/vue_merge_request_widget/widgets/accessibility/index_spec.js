@@ -4,7 +4,7 @@ import { trimText } from 'helpers/text_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import api from '~/api';
 import axios from '~/lib/utils/axios_utils';
-import AccessibilityWidget from '~/vue_merge_request_widget/extensions/accessibility/index.vue';
+import AccessibilityWidget from '~/vue_merge_request_widget/widgets/accessibility/index.vue';
 import { HTTP_STATUS_INTERNAL_SERVER_ERROR, HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import { accessibilityReportResponseErrors, accessibilityReportResponseSuccess } from './mock_data';
 

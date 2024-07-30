@@ -936,6 +936,7 @@ export const workItemResponseFactory = ({
   color = '#1068bf',
   editableWeightWidget = true,
   hasParent = false,
+  healthStatus = 'onTrack',
 } = {}) => ({
   data: {
     workItem: {
@@ -1130,7 +1131,7 @@ export const workItemResponseFactory = ({
           ? {
               __typename: 'WorkItemWidgetHealthStatus',
               type: 'HEALTH_STATUS',
-              healthStatus: 'onTrack',
+              healthStatus,
             }
           : { type: 'MOCK TYPE' },
         notesWidgetPresent

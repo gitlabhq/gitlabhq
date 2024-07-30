@@ -4,13 +4,13 @@ group: Authentication
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-## Troubleshooting two-factor authentication
+# Troubleshooting two-factor authentication
 
 DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed
 
-### Error: "HTTP Basic: Access denied. The provided password or token ..."
+## Error: "HTTP Basic: Access denied. The provided password or token ..."
 
 When making a request, you can receive the following error:
 
@@ -42,7 +42,7 @@ Instead you can authenticate:
 - If you have configured LDAP, using an [LDAP password](../../../administration/auth/ldap/index.md)
 - Using an [OAuth credential helper](../../profile/account/two_factor_authentication.md#oauth-credential-helpers).
 
-### Error: "invalid pin code"
+## Error: "invalid pin code"
 
 If you receive an `invalid pin code` error, this can indicate that there is a time sync issue
 between the authentication application and the GitLab instance itself.
@@ -60,7 +60,7 @@ generates the codes. For example:
   1. Select Date & Time.
   1. Enable Set Automatically. If it's already enabled, disable it, wait a few seconds, and re-enable.
 
-### Error: "Permission denied (publickey)" when regenerating recovery codes
+## Error: "Permission denied (publickey)" when regenerating recovery codes
 
 If you receive a `Permission denied (publickey)` error when attempting to
 [generate new recovery codes using an SSH key](#generate-new-recovery-codes-using-ssh)

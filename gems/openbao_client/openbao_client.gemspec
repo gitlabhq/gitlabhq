@@ -34,8 +34,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rubocop', '~> 1.50'
   s.add_development_dependency 'gitlab-styles', '~> 12.0.1'
 
-  s.files         = `find *`.split("\n").uniq.sort.select { |f| !f.empty? }
-  s.test_files    = `find spec/*`.split("\n")
+  s.files         = Dir['lib/**/*.rb']
+  s.test_files    = Dir['spec/**/*']
   s.executables   = []
   s.require_paths = ["lib"]
 end

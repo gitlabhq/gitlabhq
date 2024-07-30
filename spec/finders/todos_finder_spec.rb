@@ -9,6 +9,7 @@ RSpec.describe TodosFinder, feature_category: :team_planning do
     let_it_be(:project) { create(:project, :repository, namespace: group) }
     let_it_be(:issue) { create(:issue, project: project) }
     let_it_be(:merge_request) { create(:merge_request, source_project: project) }
+    let_it_be(:banned_user) { create(:user, :banned) }
 
     let(:finder) { described_class }
 
@@ -24,6 +25,13 @@ RSpec.describe TodosFinder, feature_category: :team_planning do
       context 'filtering' do
         let!(:todo1) { create(:todo, user: user, project: project, target: issue) }
         let!(:todo2) { create(:todo, user: user, group: group, target: merge_request) }
+        let!(:banned_pending_todo) { create(:todo, :pending, user: user, project: project, target: issue, author: banned_user) }
+
+        it 'returns excluding pending todos authored by banned users' do
+          todos = finder.new(user, {}).execute
+
+          expect(todos).to match_array([todo1, todo2])
+        end
 
         it 'returns correct todos when filtered by a project' do
           todos = finder.new(user, { project_id: project.id }).execute
@@ -187,24 +195,26 @@ RSpec.describe TodosFinder, feature_category: :team_planning do
 
         context 'by state' do
           let!(:todo1) { create(:todo, user: user, group: group, target: issue, state: :done) }
-          let!(:todo2) { create(:todo, user: user, group: group, target: issue, state: :pending) }
+          let!(:todo2) { create(:todo, user: user, group: group, target: issue, state: :done, author: banned_user) }
+          let!(:todo3) { create(:todo, user: user, group: group, target: issue, state: :pending) }
+          let!(:todo4) { create(:todo, user: user, group: group, target: issue, state: :pending, author: banned_user) }
 
           it 'returns the expected items when no state is provided' do
             todos = finder.new(user, {}).execute
 
-            expect(todos).to match_array([todo2])
+            expect(todos).to match_array([todo3])
           end
 
           it 'returns the expected items when a state is provided' do
             todos = finder.new(user, { state: :done }).execute
 
-            expect(todos).to match_array([todo1])
+            expect(todos).to match_array([todo1, todo2])
           end
 
           it 'returns the expected items when multiple states are provided' do
             todos = finder.new(user, { state: [:pending, :done] }).execute
 
-            expect(todos).to match_array([todo1, todo2])
+            expect(todos).to match_array([todo1, todo2, todo3])
           end
         end
 

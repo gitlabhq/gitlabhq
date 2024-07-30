@@ -142,7 +142,7 @@ export default {
 
           <template #cell(expiresAt)="{ item: { expiresAt, expired, expiresSoon } }">
             <template v-if="expiresAt">
-              <span v-if="expired" class="text-danger">{{ $options.i18n.expired }}</span>
+              <span v-if="expired" class="gl-text-danger">{{ $options.i18n.expired }}</span>
               <time-ago-tooltip v-else :class="{ 'text-warning': expiresSoon }" :time="expiresAt" />
             </template>
             <span v-else v-gl-tooltip :title="$options.i18n.tokenValidity">{{

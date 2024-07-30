@@ -306,9 +306,9 @@ class Namespace < ApplicationRecord
     # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L68 and
     # https://gitlab.com/gitlab-org/gitlab/-/blob/5d34e3488faa3982d30d7207773991c1e0b6368a/app/assets/javascripts/gfm_auto_complete.js#L1053
     def gfm_autocomplete_search(query)
-      without_project_namespaces
-        .allow_cross_joins_across_databases(url: "https://gitlab.com/gitlab-org/gitlab/-/issues/420046")
-        .joins(:route)
+      # This scope does not work with `ProjectNamespace` records because they don't have a corresponding `route` association.
+      # We do not chain the `without_project_namespaces` scope because it results in an expensive query plan in certain cases
+      joins(:route)
         .where(
           "REPLACE(routes.name, ' ', '') ILIKE :pattern OR routes.path ILIKE :pattern",
           pattern: "%#{sanitize_sql_like(query)}%"

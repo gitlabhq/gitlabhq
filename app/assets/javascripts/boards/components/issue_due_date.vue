@@ -94,12 +94,12 @@ export default {
       class="board-card-info gl-mr-3 gl-text-secondary gl-cursor-help"
     >
       <gl-icon
-        :class="{ 'text-danger': isPastDue }"
+        :class="{ 'gl-text-danger': isPastDue }"
         class="board-card-info-icon gl-mr-2"
         name="calendar"
       />
       <time
-        :class="{ 'text-danger': isPastDue }"
+        :class="{ 'gl-text-danger': isPastDue }"
         datetime="date"
         class="gl-font-sm board-card-info-text"
         >{{ body }}</time

@@ -1,0 +1,24 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_update_wiki_page_template_weekly
+description: Weekly count of unique users who updated a wiki page template
+product_group: knowledge
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159484
+time_frame: 7d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+events:
+- name: update_wiki_page
+  unique: user.id
+  filter:
+    label: template

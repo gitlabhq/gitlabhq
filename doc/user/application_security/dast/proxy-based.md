@@ -181,7 +181,7 @@ To configure DAST using the UI:
 1. Do one of the following:
    1. To copy the snippet to your clipboard, select **Copy code only**.
    1. To add the snippet to your project's `.gitlab-ci.yml` file, select
-      **Copy code and open `.gitlab-ci.yml` file**. The Pipeline Editor opens.
+      **Copy code and open `.gitlab-ci.yml` file**. The pipeline editor opens.
       1. Paste the snippet into the `.gitlab-ci.yml` file.
       1. Select the **Validate** tab, then select **Validate pipeline**.
          The message **Simulation completed successfully** indicates the file is valid.

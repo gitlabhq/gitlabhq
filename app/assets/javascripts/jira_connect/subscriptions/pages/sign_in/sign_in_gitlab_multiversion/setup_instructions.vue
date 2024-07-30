@@ -64,7 +64,7 @@ export default {
       </div>
     </div>
 
-    <div class="gl-display-flex gl-justify-content-space-between">
+    <div class="gl-flex gl-justify-between">
       <gl-button @click="$emit('back')">{{ __('Back') }}</gl-button>
       <gl-button variant="confirm" :disabled="nextDisabled" @click="$emit('next')"
         >{{ __('Next') }}

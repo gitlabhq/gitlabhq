@@ -259,8 +259,6 @@ export default {
     <template v-if="workItemHealthStatus">
       <work-item-health-status
         class="gl-mb-5"
-        :health-status="workItemHealthStatus.healthStatus"
-        :can-update="canUpdate"
         :work-item-id="workItem.id"
         :work-item-iid="workItem.iid"
         :work-item-type="workItemType"

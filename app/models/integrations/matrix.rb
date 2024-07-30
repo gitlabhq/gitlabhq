@@ -67,17 +67,9 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to(
-        '',
-        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/matrix'),
-        target: '_blank',
-        rel: 'noopener noreferrer'
-      )
-      tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
-
-      safe_format(
-        s_("MatrixIntegration|Send notifications about project events to Matrix. %{link_start}Learn More%{link_end}."),
-        tag_pair_docs_link
+      build_help_page_url(
+        'user/project/integrations/matrix',
+        s_("MatrixIntegration|Send notifications about project events to Matrix.")
       )
     end
 

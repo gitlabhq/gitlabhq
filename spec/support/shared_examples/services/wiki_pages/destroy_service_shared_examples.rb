@@ -22,6 +22,19 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
     subject(:track_event) { service.execute(page) }
   end
 
+  context 'when the deleted page is a template' do
+    let(:page) { create(:wiki_page, title: "#{Wiki::TEMPLATES_DIR}/foobar") }
+
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'delete_wiki_page' }
+      let(:project) { container if container.is_a?(Project) }
+      let(:namespace) { container.is_a?(Group) ? container : container.namespace }
+      let(:label) { 'template' }
+
+      subject(:track_event) { service.execute(page) }
+    end
+  end
+
   it 'creates a new wiki page deletion event' do
     # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/216904
     pending('group wiki support') if container_type == :group

@@ -2,15 +2,12 @@
 export default {
   components: {
     MrSecurityWidget: () =>
-      import(
-        '~/vue_merge_request_widget/extensions/security_reports/mr_widget_security_reports.vue'
-      ),
-    MrTestReportWidget: () => import('~/vue_merge_request_widget/extensions/test_report/index.vue'),
-    MrTerraformWidget: () => import('~/vue_merge_request_widget/extensions/terraform/index.vue'),
-    MrCodeQualityWidget: () =>
-      import('~/vue_merge_request_widget/extensions/code_quality/index.vue'),
+      import('~/vue_merge_request_widget/widgets/security_reports/mr_widget_security_reports.vue'),
+    MrTestReportWidget: () => import('~/vue_merge_request_widget/widgets/test_report/index.vue'),
+    MrTerraformWidget: () => import('~/vue_merge_request_widget/widgets/terraform/index.vue'),
+    MrCodeQualityWidget: () => import('~/vue_merge_request_widget/widgets/code_quality/index.vue'),
     MrAccessibilityWidget: () =>
-      import('~/vue_merge_request_widget/extensions/accessibility/index.vue'),
+      import('~/vue_merge_request_widget/widgets/accessibility/index.vue'),
   },
 
   props: {

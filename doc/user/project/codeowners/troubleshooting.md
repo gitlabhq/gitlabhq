@@ -5,7 +5,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Use Code Owners to define experts for your code base, and set review requirements based on file type or location."
 ---
 
-## Troubleshooting Code Owners
+# Troubleshooting Code Owners
 
 DETAILS:
 **Tier:** Premium, Ultimate
@@ -16,7 +16,7 @@ When working with Code Owners, you might encounter the following issues.
 For more information about how the Code Owners feature handles errors, see the
 [Code Owners reference](reference.md).
 
-### Approvals shown as optional
+## Approvals shown as optional
 
 A Code Owner approval rule is optional if any of these conditions are true:
 
@@ -27,12 +27,12 @@ A Code Owner approval rule is optional if any of these conditions are true:
 - No eligible code owners are available to approve the merge request due to conflicts
   with other [merge request approval settings](../merge_requests/approvals/settings.md).
 
-### Approvals do not show
+## Approvals do not show
 
 Code Owner approval rules only update when the merge request is created.
 If you update the `CODEOWNERS` file, close the merge request and create a new one.
 
-### User not shown as possible approver
+## User not shown as possible approver
 
 A user might not show as an approver on the Code Owner merge request approval rules
 if any of these conditions are true:
@@ -43,7 +43,7 @@ if any of these conditions are true:
   member of the Code Owner group.
 - Current user is an external user who does not have permission to the internal Code Owner group.
 
-### Approval rule is invalid
+## Approval rule is invalid
 
 You might get an error that states:
 
@@ -56,7 +56,7 @@ This issue occurs when an approval rule uses a Code Owner that is not a direct m
 
 The workaround is to check that the group or user has been invited to the project.
 
-### User or group not shown when viewing Code Owners for a directory
+## User or group not shown when viewing Code Owners for a directory
 
 Code Owners might not show the intended user or group based on your configured rules when viewing a directory,
 but correctly show the Code Owners for files beneath the directory.

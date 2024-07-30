@@ -13,7 +13,7 @@
   .form-group.gl-max-w-80
     = label_tag :branch_name, _('Branch name')
     = text_field_tag :branch_name, params[:branch_name], required: true, autofocus: true, class: 'form-control js-branch-name monospace'
-    .form-text.text-danger.js-branch-name-error{ 'aria-live': 'assertive' }
+    .form-text.gl-text-danger.js-branch-name-error{ 'aria-live': 'assertive' }
   .form-group.gl-max-w-80
     = label_tag :ref, _('Create from')
     .js-new-branch-ref-selector{ data: { project_id: @project.id, default_branch_name: default_ref, hidden_input_name: 'ref' } }

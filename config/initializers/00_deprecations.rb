@@ -28,31 +28,9 @@ else
 
   ActiveSupport::Deprecation.disallowed_behavior = [:stderr, raise_exception]
 
-  rails7_deprecation_warnings = [
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/366910
-    /no longer takes non-deterministic result/,
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/339739
-    /ActiveModel::Errors/,
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/342492
-    /Rendering actions with '\.' in the name is deprecated/,
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/333086
-    /default_hash is deprecated/,
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/369970
-    /Passing an Active Record object to `\w+` directly is deprecated/,
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/410086
-    /Using `return`, `break` or `throw` to exit a transaction block/,
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/414556
-    /Merging .* no longer maintain both conditions, and will be replaced by the latter in Rails 7\.0/,
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/415890
-    /(Date|Time|TimeWithZone)#to_s.+ is deprecated/,
-    # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129686
-    /Sum of non-numeric elements requires an initial argument/
-  ]
+  rails7_deprecation_warnings = []
+  view_component_3_warnings = []
 
-  view_component_3_warnings = [
-    # https://gitlab.com/gitlab-org/gitlab/-/issues/408988
-    /Setting a slot with `#\w+` is deprecated and will be removed from ViewComponent 3.0.0/
-  ]
   ActiveSupport::Deprecation.disallowed_warnings = rails7_deprecation_warnings + view_component_3_warnings
 end
 

@@ -40,7 +40,7 @@ module Integrations
         ERB::Util.html_escape(
           s_('IrkerService|Channels and users separated by whitespaces. %{recipients_docs_link}')
         ) % {
-          recipients_docs_link: recipients_docs_link.html_safe
+          recipients_docs_link: recipients_docs_link.html_safe # rubocop:disable Rails/OutputSafety -- It is fine to call html_safe here
         }
       end
 
@@ -62,20 +62,12 @@ module Integrations
     end
 
     def self.help
-      docs_link = ActionController::Base.helpers.link_to(
-        _('Learn more.'),
-        Rails.application.routes.url_helpers.help_page_url(
-          'user/project/integrations/irker',
-          anchor: 'set-up-an-irker-daemon'
-        ),
-        target: '_blank',
-        rel: 'noopener noreferrer'
+      build_help_page_url(
+        'user/project/integrations/irker',
+        s_('IrkerService|Send update messages to an irker server. Before you can use this, ' \
+        'you need to set up the irker daemon.'),
+        { anchor: 'set-up-an-irker-daemon' }
       )
-
-      format(s_(
-        'IrkerService|Send update messages to an irker server. ' \
-        'Before you can use this, you need to set up the irker daemon. %{docs_link}'
-      ).html_safe, docs_link: docs_link.html_safe)
     end
 
     def self.to_param

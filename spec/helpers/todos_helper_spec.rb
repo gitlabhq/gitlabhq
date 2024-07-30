@@ -414,7 +414,7 @@ RSpec.describe TodosHelper do
       it { expect(result).to match('Due today') }
     end
 
-    context 'due date is not today' do
+    context 'due date is tomorrow' do
       let_it_be(:issue_with_tomorrow_due_date) do
         create(:issue, title: 'Issue 1', project: project, due_date: Date.tomorrow)
       end
@@ -424,6 +424,18 @@ RSpec.describe TodosHelper do
       end
 
       it { expect(result).to match("Due #{l(Date.tomorrow, format: Date::DATE_FORMATS[:medium])}") }
+    end
+
+    context 'due date is yesterday' do
+      let_it_be(:issue_with_yesterday_due_date) do
+        create(:issue, title: 'Issue 1', project: project, due_date: Date.yesterday)
+      end
+
+      let(:todo) do
+        create(:todo, project: issue_with_yesterday_due_date.project, target: issue_with_yesterday_due_date, note: note)
+      end
+
+      it { expect(result).to match("Due #{l(Date.yesterday, format: Date::DATE_FORMATS[:medium])}") }
     end
   end
 

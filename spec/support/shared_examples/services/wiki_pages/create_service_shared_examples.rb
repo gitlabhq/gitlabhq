@@ -41,6 +41,19 @@ RSpec.shared_examples 'WikiPages::CreateService#execute' do |container_type|
     subject(:track_event) { service.execute }
   end
 
+  context 'when the new page is a template' do
+    let(:page_title) { "#{Wiki::TEMPLATES_DIR}/foobar" }
+
+    it_behaves_like 'internal event tracking' do
+      let(:event) { 'create_wiki_page' }
+      let(:project) { container if container.is_a?(Project) }
+      let(:namespace) { container.is_a?(Group) ? container : container.namespace }
+      let(:label) { 'template' }
+
+      subject(:track_event) { service.execute }
+    end
+  end
+
   shared_examples 'correct event created' do
     it 'creates appropriate events' do
       # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/216904

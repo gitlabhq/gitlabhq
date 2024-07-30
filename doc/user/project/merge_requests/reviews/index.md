@@ -252,7 +252,7 @@ To download and apply the patch in a one-line CLI command using [`git am`](https
 curl "https://gitlab.com/gitlab-org/gitlab/-/merge_requests/000000.patch" | git am
 ```
 
-## GitLab Duo Suggested Reviewers
+## Suggested Reviewers
 
 DETAILS:
 **Tier:** Ultimate
@@ -265,22 +265,18 @@ DETAILS:
 
 GitLab uses machine learning to suggest reviewers for your merge request.
 
-<i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
-For an overview, see [GitLab Duo Suggested Reviewers](https://www.youtube.com/embed/ivwZQgh4Rxw).
-<!-- Video published on 2023-11-03 -->
-
 To suggest reviewers, GitLab uses:
 
 - The changes in the merge request
 - The project's contribution graph
 
-GitLab Duo Suggested Reviewers also integrates with Code Owners, profile status,
+Suggested Reviewers also integrates with Code Owners, profile status,
 and merge request rules. It helps you make a more informed decision when choosing
 reviewers who can meet your review criteria.
 
-![GitLab Duo Suggested Reviewers](img/suggested_reviewers_v16_3.png)
+![A list of reviewers.](img/suggested_reviewers_v16_3.png)
 
-For more information, see [Data usage in GitLab Duo Suggested Reviewers](data_usage.md).
+For more information, see [Data usage in Suggested Reviewers](data_usage.md).
 
 ### Enable Suggested Reviewers
 

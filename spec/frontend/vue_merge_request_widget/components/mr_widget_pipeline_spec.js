@@ -170,10 +170,10 @@ describe('MRWidgetPipeline', () => {
       );
 
       describe.each`
-        style           | coverageState  | coverageChangeText | styleClass        | pipelineCoverageDelta
-        ${'no special'} | ${'the same'}  | ${'not change'}    | ${''}             | ${'0'}
-        ${'success'}    | ${'increased'} | ${'increase'}      | ${'text-success'} | ${'10'}
-        ${'danger'}     | ${'decreased'} | ${'decrease'}      | ${'text-danger'}  | ${'-10'}
+        style           | coverageState  | coverageChangeText | styleClass          | pipelineCoverageDelta
+        ${'no special'} | ${'the same'}  | ${'not change'}    | ${''}               | ${'0'}
+        ${'success'}    | ${'increased'} | ${'increase'}      | ${'text-success'}   | ${'10'}
+        ${'danger'}     | ${'decreased'} | ${'decrease'}      | ${'gl-text-danger'} | ${'-10'}
       `(
         'if test coverage is $coverageState',
         ({ style, styleClass, coverageChangeText, pipelineCoverageDelta }) => {
