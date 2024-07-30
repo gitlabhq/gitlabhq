@@ -1,5 +1,5 @@
 import { mount, shallowMount } from '@vue/test-utils';
-import { GlTable, GlBadge, GlPagination, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlTable, GlBadge, GlPagination, GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { nextTick } from 'vue';
 import { cloneDeep } from 'lodash';
 import { stubComponent } from 'helpers/stub_component';
@@ -10,6 +10,7 @@ import {
   PODS_TABLE_FIELDS,
 } from '~/kubernetes_dashboard/constants';
 import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
+import eventHub from '~/environments/event_hub';
 import { mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
@@ -36,6 +37,7 @@ const findBadge = (at) => findAllBadges().at(at);
 const findPagination = () => wrapper.findComponent(GlPagination);
 const findAllPodLogsButtons = () => wrapper.findAllComponents(PodLogsButton);
 const findAllActionsDropdowns = () => wrapper.findAllComponents(GlDisclosureDropdown);
+const findAllPodNameButtons = () => wrapper.findAllComponents(GlButton);
 
 describe('Workload table component', () => {
   it('renders GlTable component with the default fields if no fields specified in props', () => {
@@ -208,25 +210,62 @@ describe('Workload table component', () => {
     });
   });
 
-  describe('row selection', () => {
+  describe('item selection', () => {
     beforeEach(() => {
       createWrapper({ items: mockPodsTableItems });
     });
 
-    it('emits row-selected event on row click', () => {
+    it('emits "select-item" event on the pod name click', () => {
+      const podNameButtons = findAllPodNameButtons();
+
       mockPodsTableItems.forEach((data, index) => {
-        findTable().vm.$emit('row-selected', [data]);
+        podNameButtons.at(index).vm.$emit('click', data);
 
         expect(wrapper.emitted('select-item')[index]).toEqual([data]);
       });
     });
 
-    it('emits remove-selection event on the second click on the same item', () => {
-      findTable().vm.$emit('row-selected', [mockPodsTableItems[0]]);
+    it('emits "remove-selection" event on the second click on the pod name', () => {
+      const podNameButtons = findAllPodNameButtons();
+
+      podNameButtons.at(0).vm.$emit('click', mockPodsTableItems[0]);
+
       expect(wrapper.emitted('select-item')).toEqual([[mockPodsTableItems[0]]]);
 
-      findTable().vm.$emit('row-selected', mockPodsTableItems[0]);
+      podNameButtons.at(0).vm.$emit('click', mockPodsTableItems[0]);
+
       expect(wrapper.emitted('remove-selection')).toHaveLength(1);
+    });
+  });
+
+  describe('on "closeDetailsDrawer" event', () => {
+    const clearSelectedItemSpy = jest.fn();
+
+    beforeAll(() => {
+      eventHub.$on('closeDetailsDrawer', clearSelectedItemSpy);
+    });
+
+    beforeEach(() => {
+      createWrapper({ items: mockPodsTableItems });
+    });
+
+    afterAll(() => {
+      eventHub.$off('closeDetailsDrawer', clearSelectedItemSpy);
+    });
+
+    it('clears the selected item', () => {
+      const podNameButtons = findAllPodNameButtons();
+
+      expect(wrapper.vm.selectedItem).toBeNull();
+
+      podNameButtons.at(0).vm.$emit('click', mockPodsTableItems[0]);
+
+      expect(wrapper.vm.selectedItem).toEqual(mockPodsTableItems[0]);
+
+      eventHub.$emit('closeDetailsDrawer');
+
+      expect(wrapper.vm.selectedItem).toBeNull();
+      expect(clearSelectedItemSpy).toHaveBeenCalled();
     });
   });
 });

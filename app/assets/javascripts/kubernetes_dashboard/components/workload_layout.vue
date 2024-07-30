@@ -2,6 +2,7 @@
 import { GlLoadingIcon, GlAlert, GlDrawer } from '@gitlab/ui';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
+import eventHub from '~/environments/event_hub';
 import WorkloadStats from './workload_stats.vue';
 import WorkloadTable from './workload_table.vue';
 import WorkloadDetails from './workload_details.vue';
@@ -59,6 +60,7 @@ export default {
   },
   methods: {
     closeDetailsDrawer() {
+      eventHub.$emit('closeDetailsDrawer');
       this.showDetailsDrawer = false;
     },
     onItemSelect(item) {

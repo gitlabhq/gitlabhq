@@ -9,6 +9,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags, feature_category: 
   using RSpec::Parameterized::TableSyntax
 
   let(:id) { repository.to_global_id }
+  let(:current_user) { create(:user) }
 
   specify { expect(described_class).to require_graphql_authorizations(:destroy_container_image) }
 
@@ -16,7 +17,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags, feature_category: 
     let(:tags) { %w[A C D E] }
 
     subject do
-      described_class.new(object: nil, context: { current_user: user }, field: nil)
+      described_class.new(object: nil, context: query_context, field: nil)
                      .resolve(id: id, tag_names: tags)
     end
 
@@ -38,7 +39,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags, feature_category: 
 
       it 'creates a package event' do
         expect(::Packages::CreateEventService)
-          .to receive(:new).with(nil, user, event_name: :delete_tag_bulk, scope: :tag).and_call_original
+          .to receive(:new).with(nil, current_user, event_name: :delete_tag_bulk, scope: :tag).and_call_original
         subject
       end
     end
@@ -62,7 +63,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags, feature_category: 
 
       with_them do
         before do
-          project.send("add_#{user_role}", user) unless user_role == :anonymous
+          project.send("add_#{user_role}", current_user) unless user_role == :anonymous
         end
 
         it_behaves_like params[:shared_examples_name]
@@ -77,7 +78,7 @@ RSpec.describe Mutations::ContainerRepositories::DestroyTags, feature_category: 
 
     context 'with service error' do
       before do
-        project.add_maintainer(user)
+        project.add_maintainer(current_user)
         allow_next_instance_of(Projects::ContainerRepository::DeleteTagsService) do |service|
           allow(service).to receive(:execute).and_return(message: 'could not delete tags', status: :error)
         end

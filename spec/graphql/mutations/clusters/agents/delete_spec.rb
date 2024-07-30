@@ -5,17 +5,11 @@ require 'spec_helper'
 RSpec.describe Mutations::Clusters::Agents::Delete do
   include GraphqlHelpers
 
-  subject(:mutation) { described_class.new(object: nil, context: context, field: nil) }
+  subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   let(:cluster_agent) { create(:cluster_agent) }
   let(:project) { cluster_agent.project }
-  let(:user) { create(:user) }
-  let(:context) do
-    GraphQL::Query::Context.new(
-      query: query_double(schema: nil), # rubocop:disable RSpec/VerifiedDoubles
-      values: { current_user: user }
-    )
-  end
+  let(:current_user) { create(:user) }
 
   specify { expect(described_class).to require_graphql_authorizations(:admin_cluster) }
 
@@ -31,7 +25,7 @@ RSpec.describe Mutations::Clusters::Agents::Delete do
 
     context 'with user permissions' do
       before do
-        project.add_maintainer(user)
+        project.add_maintainer(current_user)
       end
 
       it 'deletes a cluster agent', :aggregate_failures do

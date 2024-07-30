@@ -5,6 +5,7 @@ import WorkloadLayout from '~/kubernetes_dashboard/components/workload_layout.vu
 import WorkloadStats from '~/kubernetes_dashboard/components/workload_stats.vue';
 import WorkloadTable from '~/kubernetes_dashboard/components/workload_table.vue';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
+import eventHub from '~/environments/event_hub';
 import { mockPodStats, mockPodsTableItems } from '../graphql/mock_data';
 
 let wrapper;
@@ -132,19 +133,25 @@ describe('Workload layout component', () => {
       });
 
       it('is closed when clicked on a cross button', async () => {
+        const eventHubSpy = jest.spyOn(eventHub, '$emit');
+
         await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
         expect(findDrawer().props('open')).toBe(true);
 
         await findDrawer().vm.$emit('close');
         expect(findDrawer().props('open')).toBe(false);
+        expect(eventHubSpy).toHaveBeenCalledWith('closeDetailsDrawer');
       });
 
       it('is closed on remove-selection event', async () => {
+        const eventHubSpy = jest.spyOn(eventHub, '$emit');
+
         await findWorkloadTable().vm.$emit('select-item', mockPodsTableItems[0]);
         expect(findDrawer().props('open')).toBe(true);
 
         await findWorkloadTable().vm.$emit('remove-selection');
         expect(findDrawer().props('open')).toBe(false);
+        expect(eventHubSpy).toHaveBeenCalledWith('closeDetailsDrawer');
       });
 
       it('renders a title with the selected item name', async () => {

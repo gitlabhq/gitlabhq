@@ -1,7 +1,8 @@
 <script>
-import { GlTable, GlBadge, GlPagination, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlTable, GlBadge, GlPagination, GlDisclosureDropdown, GlButton } from '@gitlab/ui';
 import { __ } from '~/locale';
 import PodLogsButton from '~/environments/environment_details/components/kubernetes/pod_logs_button.vue';
+import eventHub from '~/environments/event_hub';
 import {
   WORKLOAD_STATUS_BADGE_VARIANTS,
   PAGE_SIZE,
@@ -15,6 +16,7 @@ export default {
     GlPagination,
     PodLogsButton,
     GlDisclosureDropdown,
+    GlButton,
   },
   props: {
     items: {
@@ -35,6 +37,7 @@ export default {
   data() {
     return {
       currentPage: 1,
+      selectedItem: null,
     };
   },
   computed: {
@@ -52,15 +55,24 @@ export default {
       this.currentPage = 1;
     },
   },
+  created() {
+    eventHub.$on('closeDetailsDrawer', this.clearSelectedItem);
+  },
+  beforeDestroy() {
+    eventHub.$off('closeDetailsDrawer', this.clearSelectedItem);
+  },
   methods: {
     selectItem(item) {
-      const selectedItem = item[0];
-
-      if (selectedItem) {
-        this.$emit('select-item', selectedItem);
+      if (item !== this.selectedItem) {
+        this.selectedItem = item;
+        this.$emit('select-item', item);
       } else {
+        this.clearSelectedItem();
         this.$emit('remove-selection');
       }
+    },
+    clearSelectedItem() {
+      this.selectedItem = null;
     },
     getActions(item) {
       const actions = item.actions || [];
@@ -91,14 +103,13 @@ export default {
       :per-page="pageSize"
       :current-page="currentPage"
       :empty-text="$options.i18n.emptyText"
-      hover
-      selectable
-      select-mode="single"
-      selected-variant="primary"
       show-empty
       stacked="md"
-      @row-selected="selectItem"
     >
+      <template #cell(name)="{ item }">
+        <gl-button variant="link" @click="selectItem(item)">{{ item.name }}</gl-button>
+      </template>
+
       <template #cell(status)="{ item: { status } }">
         <gl-badge :variant="$options.WORKLOAD_STATUS_BADGE_VARIANTS[status]" class="gl-ml-2">{{
           status

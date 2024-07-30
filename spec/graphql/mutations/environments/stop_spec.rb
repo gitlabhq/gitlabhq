@@ -3,14 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Environments::Stop, feature_category: :environment_management do
+  include GraphqlHelpers
   let_it_be(:project) { create(:project) }
   let_it_be(:environment) { create(:environment, project: project, state: 'available') }
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
 
-  let(:user) { maintainer }
+  let(:current_user) { maintainer }
 
-  subject(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  subject(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   describe '#resolve' do
     subject { mutation.resolve(id: environment_id, force: force) }
@@ -57,7 +58,7 @@ RSpec.describe Mutations::Environments::Stop, feature_category: :environment_man
     end
 
     context 'when user is reporter who does not have permission to access the environment' do
-      let(:user) { reporter }
+      let(:current_user) { reporter }
 
       it 'raises an error' do
         expect { subject }.to raise_error(Gitlab::Graphql::Authorize::AuthorizeResource::RESOURCE_ACCESS_ERROR)

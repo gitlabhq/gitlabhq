@@ -3,12 +3,13 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::CustomEmoji::Destroy do
+  include GraphqlHelpers
   let_it_be(:group) { create(:group) }
-  let_it_be(:user) { create(:user) }
+  let_it_be(:current_user) { create(:user) }
   let_it_be_with_reload(:custom_emoji) { create(:custom_emoji, group: group) }
 
   let(:args) { { id: custom_emoji.to_global_id } }
-  let(:mutation) { described_class.new(object: nil, context: { current_user: user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   context 'field tests' do
     subject { described_class }
@@ -42,7 +43,7 @@ RSpec.describe Mutations::CustomEmoji::Destroy do
 
       context 'when the user is developer and not the owner of custom emoji' do
         before do
-          group.add_developer(user)
+          group.add_developer(current_user)
         end
 
         it_behaves_like 'does not delete custom emoji'
@@ -52,7 +53,7 @@ RSpec.describe Mutations::CustomEmoji::Destroy do
     context 'when user' do
       context 'is maintainer' do
         before do
-          group.add_maintainer(user)
+          group.add_maintainer(current_user)
         end
 
         it_behaves_like 'deletes custom emoji'
@@ -60,7 +61,7 @@ RSpec.describe Mutations::CustomEmoji::Destroy do
 
       context 'is owner' do
         before do
-          group.add_owner(user)
+          group.add_owner(current_user)
         end
 
         it_behaves_like 'deletes custom emoji'
@@ -68,8 +69,8 @@ RSpec.describe Mutations::CustomEmoji::Destroy do
 
       context 'is developer and creator of the emoji' do
         before do
-          group.add_developer(user)
-          custom_emoji.update_attribute(:creator, user)
+          group.add_developer(current_user)
+          custom_emoji.update_attribute(:creator, current_user)
         end
 
         it_behaves_like 'deletes custom emoji'

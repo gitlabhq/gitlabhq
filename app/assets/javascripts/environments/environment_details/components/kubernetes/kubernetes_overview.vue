@@ -21,6 +21,7 @@ import {
   KUSTOMIZATIONS_RESOURCE_TYPE,
 } from '~/environments/constants';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
+import eventHub from '~/environments/event_hub';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
@@ -182,6 +183,7 @@ export default {
     closeDetailsDrawer() {
       this.showDetailsDrawer = false;
       this.selectedItem = {};
+      eventHub.$emit('closeDetailsDrawer');
       this.$nextTick(() => {
         this.focusedElement?.focus();
       });

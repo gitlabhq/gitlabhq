@@ -12,6 +12,7 @@ import KubernetesTabs from '~/environments/environment_details/components/kubern
 import DeletePodModal from '~/environments/environment_details/components/kubernetes/delete_pod_modal.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
 import { mockPodsTableItems } from 'jest/kubernetes_dashboard/graphql/mock_data';
+import eventHub from '~/environments/event_hub';
 import { agent, kubernetesNamespace } from '../../../graphql/mock_data';
 import { mockKasTunnelUrl, fluxResourceStatus, fluxKustomization } from '../../../mock_data';
 
@@ -300,17 +301,23 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         });
 
         it('is closed when clicked on a cross button', async () => {
+          const eventHubSpy = jest.spyOn(eventHub, '$emit');
+
           expect(findDrawer().props('open')).toBe(true);
 
           await findDrawer().vm.$emit('close');
           expect(findDrawer().props('open')).toBe(false);
+          expect(eventHubSpy).toHaveBeenCalledWith('closeDetailsDrawer');
         });
 
         it('is closed on remove-selection event', async () => {
+          const eventHubSpy = jest.spyOn(eventHub, '$emit');
+
           expect(findDrawer().props('open')).toBe(true);
 
           await findKubernetesTabs().vm.$emit('remove-selection');
           expect(findDrawer().props('open')).toBe(false);
+          expect(eventHubSpy).toHaveBeenCalledWith('closeDetailsDrawer');
         });
       });
 
