@@ -357,7 +357,9 @@ See the issue for [allowing parsing of raw Ruby objects](https://gitlab.com/gitl
 
 ### Generator to generate _n_ amount of records
 
-### [Group Labels](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories/labels.rb)
+### Group Labels
+
+[Group Labels](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories/labels.rb):
 
 ```yaml
 group_labels:
@@ -367,7 +369,9 @@ group_labels:
     color: "#FF0000"
 ```
 
-### [Group Milestones](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories/milestones.rb)
+### Group Milestones
+
+[Group Milestones](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/factories/milestones.rb):
 
 ```yaml
 group_milestones:
@@ -397,7 +401,9 @@ group_milestones:
 
 - You _must_ specify `group:` and have it be empty. This is because the Milestones factory manipulates the factory in an `after(:build)`. If this is not present, the Milestone cannot be associated properly with the Group.
 
-### [Epics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/factories/epics.rb)
+### Epics
+
+[Epics](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/spec/factories/epics.rb):
 
 ```yaml
 epics:

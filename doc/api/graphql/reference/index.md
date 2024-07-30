@@ -21594,6 +21594,7 @@ Describes an external status check.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="externalstatuscheckexternalurl"></a>`externalUrl` | [`String!`](#string) | External URL for the status check. |
+| <a id="externalstatuscheckhmac"></a>`hmac` | [`Boolean!`](#boolean) | Whether or not HMAC secret is enabled for the status check. |
 | <a id="externalstatuscheckid"></a>`id` | [`GlobalID!`](#globalid) | ID of the rule. |
 | <a id="externalstatuscheckname"></a>`name` | [`String!`](#string) | Name of the rule. |
 

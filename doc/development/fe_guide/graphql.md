@@ -53,9 +53,9 @@ see [Immutability and cache updates](#immutability-and-cache-updates) for more i
 
 <!-- vale gitlab.Spelling = YES -->
 
-#### [Apollo GraphQL VS Code extension](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo)
+#### Apollo GraphQL VS Code extension
 
-If you use VS Code, the Apollo GraphQL extension supports autocompletion in `.graphql` files. To set up
+If you use VS Code, the [Apollo GraphQL extension](https://marketplace.visualstudio.com/items?itemName=apollographql.vscode-apollo) supports autocompletion in `.graphql` files. To set up
 the GraphQL extension, follow these steps:
 
 1. Generate the schema: `bundle exec rake gitlab:graphql:schema:dump`

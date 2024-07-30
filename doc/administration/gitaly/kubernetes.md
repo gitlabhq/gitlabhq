@@ -26,7 +26,7 @@ masks the problem by:
 
 1. Upgrading the Gitaly binary in-place.
 1. Performing a graceful reload.
- 
+
 The same approach doesn't fit a container-based lifecycle where a container or pod needs to fully shutdown and start as a new container or pod.
 
 Gitaly Cluster (Praefect) solves the data and service high-availability aspect by replicating data across instances. However, Gitaly Cluster is unsuited to run in Kubernetes
@@ -60,9 +60,9 @@ service disruption and helps set expectations. You should use maintenance window
 - Gitaly configuration changes.
 - Kubernetes node maintenance windows. For example, upgrades and patching. Isolating Gitaly into its own dedicated node pool might help.
 
-#### Use [PriorityClass](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass)
+#### Use `PriorityClass`
 
-Assign Gitaly pods higher priority compared to other pods, to help with node saturation pressure, eviction priority, and scheduling latency:
+Use [PriorityClass](https://kubernetes.io/docs/concepts/scheduling-eviction/pod-priority-preemption/#priorityclass) to assign Gitaly pods higher priority compared to other pods, to help with node saturation pressure, eviction priority, and scheduling latency:
 
 1. Create a priority class:
 

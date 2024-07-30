@@ -115,14 +115,14 @@ Reusable components with technical and usage guidelines can be found in our
 
 Read the [frontend FAQ](frontend_faq.md) for common small pieces of helpful information.
 
-#### [Internationalization (i18n) and Translations](../i18n/externalization.md)
+#### Internationalization (i18n) and Translations
 
-Frontend internationalization support is described in [this document](../i18n/index.md).
+Frontend internationalization support is described in [**Translate GitLab to your language**](../i18n/index.md).
 The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
 
-#### [Troubleshooting](troubleshooting.md)
+#### Troubleshooting
 
-Running into a Frontend development problem? Check out [this guide](troubleshooting.md) to help resolve your issue.
+Running into a Frontend development problem? Check out [this troubleshooting guide](troubleshooting.md) to help resolve your issue.
 
 #### Browser support
 

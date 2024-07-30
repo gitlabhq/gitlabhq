@@ -24,7 +24,9 @@ and [must be turned on](#turn-on-beta-and-experimental-features).
 
 ## Configure GitLab Duo on a self-managed instance
 
-To use GitLab Duo on a self-managed instance, you must ensure connectivity exists.
+To use GitLab Duo on a self-managed instance, you must ensure both outbound and inbound connectivity exists.
+
+For example, network firewalls can cause lag or delay. Check both your outbound and inbound settings:
 
 ### Allow outbound connections from the GitLab instance
 
@@ -45,6 +47,17 @@ To use GitLab Duo on a self-managed instance, you must ensure connectivity exist
 - Check for restrictions on WebSocket (`wss://`) traffic to `wss://gitlab.example.com/-/cable` and other `.com` domains.
   Network policy restrictions on `wss://` traffic can cause issues with some GitLab Duo Chat
   services. Consider policy updates to allow these services.
+- If you use reverse proxies, such as Apache, you might see GitLab Duo Chat connection issues in your logs, like **WebSocket connection to .... failures**.
+
+To resolve this problem, try editing your Apache proxy settings:
+
+```apache
+# Enable WebSocket reverse Proxy
+# Needs proxy_wstunnel enabled
+  RewriteCond %{HTTP:Upgrade} websocket [NC]
+  RewriteCond %{HTTP:Connection} upgrade [NC]
+  RewriteRule ^/?(.*) "ws://127.0.0.1:8181/$1" [P,L]
+```
 
 ## Turn off GitLab Duo features
 

@@ -329,7 +329,7 @@ replaces the default sidebar navigation:
 A `_sidebar` example, formatted with Markdown:
 
 ```markdown
-### [Home](home)
+### Home
 
 - [Hello World](hello)
 - [Foo](foo)

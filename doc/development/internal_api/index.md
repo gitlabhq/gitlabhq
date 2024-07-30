@@ -1305,7 +1305,9 @@ to update upcoming reconciliations for namespaces.
 
 Use a PUT command to update `upcoming_reconciliations`.
 
-#### Old API (deprecated, [New API](#new-update-upcoming_reconciliations-api))
+#### Old API (deprecated)
+
+For the new API, see **New Update upcoming_reconciliations API** below.
 
 ```plaintext
 PUT /internal/upcoming_reconciliations
@@ -1370,9 +1372,11 @@ Example response:
 
 ### Delete an `upcoming_reconciliation`
 
-#### Old API (deprecated, [New API](#new-delete-upcoming_reconciliations-api))
+#### Old API (deprecated)
 
 Use a DELETE command to delete an `upcoming_reconciliation`.
+
+For the new API, see **New delete upcoming_reconciliations API** below.
 
 ```plaintext
 DELETE /internal/upcoming_reconciliations

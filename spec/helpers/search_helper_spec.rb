@@ -471,6 +471,18 @@ RSpec.describe SearchHelper, feature_category: :global_search do
         resource_results(term, scope: scope)
       end
     end
+
+    context 'when global_search_users_tab feature flag is disabled' do
+      before do
+        stub_feature_flags(global_search_users_tab: false)
+      end
+
+      it 'does not return results' do
+        results = resource_results('use')
+
+        expect(results).to be_empty
+      end
+    end
   end
 
   describe 'scope_specific_results' do
@@ -508,6 +520,18 @@ RSpec.describe SearchHelper, feature_category: :global_search do
     context 'when scope is unknown' do
       it 'does not return any results' do
         expect(scope_specific_results('sea', 'other')).to eq([])
+      end
+    end
+
+    context 'when global_search_users_tab feature flag is disabled' do
+      before do
+        stub_feature_flags(global_search_users_tab: false)
+      end
+
+      it 'does not return results' do
+        results = scope_specific_results('sea', 'users')
+
+        expect(results).to be_empty
       end
     end
   end

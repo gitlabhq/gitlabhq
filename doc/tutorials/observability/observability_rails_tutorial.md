@@ -11,12 +11,9 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - Observability tracing [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 16.2 [with a flag](../../administration/feature_flags.md) named `observability_tracing`. Disabled by default.
-
 FLAG:
 The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+For more information, see the history of the [**Distributed tracing** feature](../../operations/tracing.md).
 
 In this tutorial, you'll learn how to create, configure, instrument, and monitor a Ruby on Rails application using GitLab Observability features.
 

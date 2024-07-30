@@ -40,8 +40,9 @@ migrating all primary keys to `bigint`, using `bigint` foreign keys
 saves time, and requires fewer steps, when migrating the parent table
 to `bigint` primary keys.
 
-## Consider using `reverse_lock_order` for [high traffic tables](../migration_style_guide.md#high-traffic-tables)
+## Consider `reverse_lock_order`
 
+Consider using `reverse_lock_order` for [high traffic tables](../migration_style_guide.md#high-traffic-tables)
 Both `add_concurrent_foreign_key` and `remove_foreign_key_if_exists` take a
 boolean option `reverse_lock_order` which defaults to false.
 

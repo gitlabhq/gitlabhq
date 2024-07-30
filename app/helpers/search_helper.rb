@@ -370,7 +370,11 @@ module SearchHelper
   end
 
   def users_autocomplete(term, limit = 5)
-    return [] unless current_user && Ability.allowed?(current_user, :read_users_list)
+    unless current_user &&
+        Ability.allowed?(current_user, :read_users_list) &&
+        Feature.enabled?(:global_search_users_tab, current_user, type: :ops)
+      return []
+    end
 
     ::SearchService
       .new(current_user, { scope: 'users', per_page: limit, search: term })

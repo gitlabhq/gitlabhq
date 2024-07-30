@@ -17,7 +17,9 @@ In the Ultimate tier, the compliance framework can optionally enforce
 [compliance pipeline configuration](compliance_pipelines.md) and [security policies](../application_security/policies/scan-execution-policies.md#security-policy-scopes) to the projects on which it is applied.
 
 Compliance frameworks are created on top-level groups. If a project is moved outside of its existing top-level group,
-its framework is removed.
+its frameworks are removed.
+
+You can apply multiple compliance frameworks to a project.
 
 ## Prerequisites
 
@@ -47,7 +49,9 @@ or deleted at the subgroup or project level. Project owners can choose a framewo
 
 ## Add a compliance framework to a project
 
-Add a compliance framework to a project. Compliance frameworks cannot be added to projects in personal namespaces.
+> - Assigning multiple compliance frameworks [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13294) in GitLab 17.3.
+
+Add a compliance framework to a project. You can apply multiple compliance frameworks to a project but cannot add compliance frameworks to projects in personal namespaces.
 
 To assign a compliance framework to a project, apply the compliance framework through the
 [Compliance projects report](../compliance/compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).

@@ -51,7 +51,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     abuse_reports: %w[reporter_id user_id],
     abuse_report_notes: %w[discussion_id],
     application_settings: %w[performance_bar_allowed_group_id slack_app_id snowplow_app_id eks_account_id eks_access_key_id],
-    approvals: %w[user_id],
+    approvals: %w[user_id project_id],
     approver_groups: %w[target_id],
     approvers: %w[target_id user_id],
     analytics_cycle_analytics_aggregations: %w[last_full_issues_id last_full_merge_requests_id last_incremental_issues_id last_full_run_issues_id last_full_run_merge_requests_id last_incremental_merge_requests_id last_consistency_check_issues_stage_event_hash_id last_consistency_check_issues_issuable_id last_consistency_check_merge_requests_stage_event_hash_id last_consistency_check_merge_requests_issuable_id],

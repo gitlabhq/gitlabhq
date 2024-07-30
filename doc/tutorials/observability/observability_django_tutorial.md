@@ -11,14 +11,11 @@ DETAILS:
 **Offering:** GitLab.com
 **Status:** Beta
 
-> - Observability features [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124966) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `observability_features`. Disabled by default.
-
 FLAG:
 The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+For more information, see the history of the [**Distributed tracing** feature](../../operations/tracing.md).
 
-In this tutorial, we'll show you how to create, configure, instrument and monitor a Django application using GitLab observability features.
+In this tutorial, we'll show you how to create, configure, instrument, and monitor a Django application using GitLab observability features.
 
 <!-- vale gitlab.SentenceSpacing = NO -->
 
@@ -178,7 +175,7 @@ To create an application:
 
 1. To start collecting traces, restart the Django server. After refreshing `/animals` a few times, you should see traces in the GitLab UI.
 
-  ![Django traces](img/django_traces.png)
+   ![Django traces](img/django_traces.png)
 
 1. Optional. Django will also export certain metrics by default to GitLab, but custom metrics are supported too. For example, to increment a counter metric every time a page is loaded, add the following code:
 
