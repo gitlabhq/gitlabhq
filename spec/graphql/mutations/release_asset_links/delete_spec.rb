@@ -12,7 +12,7 @@ RSpec.describe Mutations::ReleaseAssetLinks::Delete, feature_category: :release_
   let_it_be(:maintainer) { create(:user, maintainer_of: project) }
   let_it_be_with_reload(:release_link) { create(:release_link, release: release) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
   let(:mutation_arguments) { { id: release_link.to_global_id } }
 
   describe '#resolve' do

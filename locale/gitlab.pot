@@ -23884,9 +23884,6 @@ msgstr ""
 msgid "GitLab group: %{source_link}"
 msgstr ""
 
-msgid "GitLab has redesigned the left sidebar to address customer feedback. View details in %{blog_link_start}this blog post%{link_end}. Here's how to %{issues_link_start}file an issue%{link_end} with the GitLab product team."
-msgstr ""
-
 msgid "GitLab informs you if a new version is available. %{link_start}What information does GitLab Inc. collect?%{link_end}"
 msgstr ""
 

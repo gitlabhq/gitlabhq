@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab do
+RSpec.describe Gitlab, feature_category: :shared do
   %w[root extensions ee? jh?].each do |method_name|
     it "delegates #{method_name} to GitlabEdition" do
       expect(GitlabEdition).to receive(method_name)
@@ -378,6 +378,30 @@ RSpec.describe Gitlab do
         .and_return(false)
 
       expect(described_class.maintenance_mode?).to eq(false)
+    end
+  end
+
+  describe '.next_rails?' do
+    around do |example|
+      example.run
+    ensure
+      described_class.instance_variable_set(:@next_bundle_gemfile, nil)
+    end
+
+    where(:bundle_gemfile, :expected_result) do
+      [
+        [nil, false],
+        ['Gemfile.another', false],
+        ['Gemfile.next', true]
+      ]
+    end
+
+    with_them do
+      it 'returns whether BUNDLE_GEMFILE points to Gemfile.next' do
+        stub_env('BUNDLE_GEMFILE', bundle_gemfile)
+
+        expect(described_class.next_rails?).to eq(expected_result)
+      end
     end
   end
 end

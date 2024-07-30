@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Releases::Create do
+  include GraphqlHelpers
+
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:milestone_12_3) { create(:milestone, project: project, title: '12.3') }
   let_it_be(:milestone_12_4) { create(:milestone, project: project, title: '12.4') }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
   let_it_be(:developer) { create(:user, developer_of: project) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   let(:tag) { 'v1.1.0' }
   let(:ref) { 'master' }

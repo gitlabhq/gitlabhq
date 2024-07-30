@@ -116,9 +116,9 @@ export default {
 
 <template>
   <div class="gl-mt-7">
-    <div class="gl-display-flex gl-justify-content-space-between gl-align-items-center">
+    <div class="gl-flex gl-items-center gl-justify-between">
       <div>
-        <label :id="$options.displayListboxLabelId" class="gl-block gl-mb-2" data-testid="label">{{
+        <label :id="$options.displayListboxLabelId" class="gl-mb-2 gl-block" data-testid="label">{{
           $options.i18n.displayListboxLabel
         }}</label>
         <gl-collapsible-listbox

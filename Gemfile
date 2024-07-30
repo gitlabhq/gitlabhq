@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+def next?
+  File.basename(__FILE__) == "Gemfile.next"
+end
+
 source 'https://rubygems.org'
 
 if ENV.fetch('BUNDLER_CHECKSUM_VERIFICATION_OPT_IN', 'false') != 'false' # this verification is still experimental
@@ -24,7 +28,12 @@ gem 'bundler-checksum', '~> 0.1.0', path: 'vendor/gems/bundler-checksum', requir
 # https://gitlab.com/gitlab-org/gitlab/-/issues/375713
 #
 # See https://docs.gitlab.com/ee/development/gemfile.html#upgrade-rails for guidelines when upgrading Rails
-gem 'rails', '~> 7.0.8.4' # rubocop:todo Gemfile/MissingFeatureCategory
+
+if next?
+  gem 'rails', '~> 7.1.3.4', feature_category: :shared
+else
+  gem 'rails', '~> 7.0.8.4', feature_category: :shared
+end
 
 gem 'activerecord-gitlab', path: 'gems/activerecord-gitlab' # rubocop:todo Gemfile/MissingFeatureCategory
 

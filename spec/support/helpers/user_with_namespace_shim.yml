@@ -429,7 +429,6 @@
 - spec/features/merge_request/user_views_open_merge_request_spec.rb
 - spec/features/merge_requests/user_sees_empty_state_spec.rb
 - spec/features/monitor_sidebar_link_spec.rb
-- spec/features/nav/new_nav_for_everyone_callout_spec.rb
 - spec/features/nav/new_nav_invite_members_spec.rb
 - spec/features/nav/pinned_nav_items_spec.rb
 - spec/features/oauth_provider_authorize_spec.rb

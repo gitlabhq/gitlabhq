@@ -83,7 +83,7 @@ end
 module BundlerChecksum
   class << self
     def checksum_file
-      @checksum_file ||= File.join(File.dirname(Bundler.default_gemfile), 'Gemfile.checksum')
+      @checksum_file ||= "#{Bundler.default_gemfile}.checksum"
     end
 
     def checksums_from_file

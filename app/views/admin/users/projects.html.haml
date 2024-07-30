@@ -12,14 +12,14 @@
       %ul.hover-list
         - @user.group_members.includes(:source).find_each do |group_member|
           - group = group_member.group
-          %li.group_member
+          %li.group_member.gl-flex.gl-items-baseline
             %strong= link_to group.name, admin_group_path(group)
             &ndash; access to
             #{pluralize(group.projects.count, 'project')}
-            .gl-float-right
-              %span.light.vertical-align-middle= group_member.human_access
-              - unless group_member.owner?
-                = link_button_to nil, group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member), confirm_btn_variant: 'danger', testid: 'remove-user' }, aria: { label: _('Remove') }, method: :delete, remote: true, class: 'gl-ml-3', title: _('Remove user from group'), variant: :danger, size: :small, icon: 'remove'
+            %span.light.gl-ml-auto= group_member.human_access
+            = render_if_exists 'admin/users/custom_role_badge', member: group_member, css_class: 'gl-ml-3'
+            - unless group_member.owner?
+              = link_button_to nil, group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member), confirm_btn_variant: 'danger', testid: 'remove-user' }, aria: { label: _('Remove') }, method: :delete, remote: true, class: 'gl-ml-3 gl-self-end', title: _('Remove user from group'), variant: :danger, size: :small, icon: 'remove'
 
 .row
   .col-md-6
@@ -37,18 +37,14 @@
         %ul.hover-list
           - @joined_projects.sort_by(&:full_name).each do |project|
             - member = project.team.find_member(@user.id)
-            %li.project_member
-              .list-item-name
-                = link_to admin_project_path(project), class: dom_class(project) do
-                  = project.full_name
+            %li.project_member.gl-flex.gl-items-baseline
+              = link_to admin_project_path(project), class: dom_class(project) do
+                = project.full_name
 
               - if member
-                .gl-float-right
-                  - if member.owner?
-                    %span.light= _('Owner')
-                  - else
-                    %span.light.vertical-align-middle= member.human_access
+                %span.light.gl-ml-auto= member.human_access
+                = render_if_exists 'admin/users/custom_role_badge', member: member, css_class: 'gl-ml-3'
 
-                    - if member.respond_to? :project
-                      = link_button_to nil, project_project_member_path(project, member), data: { confirm: remove_member_message(member), confirm_btn_variant: 'danger' }, aria: { label: _('Remove') }, remote: true, method: :delete, class: 'gl-ml-3', title: _('Remove user from project'), variant: :danger, size: :small, icon: 'remove'
+                - if member.respond_to? :project
+                  = link_button_to nil, project_project_member_path(project, member), data: { confirm: remove_member_message(member), confirm_btn_variant: 'danger' }, aria: { label: _('Remove') }, remote: true, method: :delete, class: 'gl-ml-3 gl-self-end', title: _('Remove user from project'), variant: :danger, size: :small, icon: 'remove'
 -# rubocop: enable CodeReuse/ActiveRecord

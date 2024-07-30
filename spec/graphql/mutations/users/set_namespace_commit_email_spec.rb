@@ -21,7 +21,7 @@ RSpec.describe Mutations::Users::SetNamespaceCommitEmail, feature_category: :use
 
   describe '#resolve' do
     subject(:resolve_mutation) do
-      described_class.new(object: nil, context: { current_user: current_user }, field: nil).resolve(
+      described_class.new(object: nil, context: query_context, field: nil).resolve(
         namespace_id: namespace_id,
         email_id: email_id
       )

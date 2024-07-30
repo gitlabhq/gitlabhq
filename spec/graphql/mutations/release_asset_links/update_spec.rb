@@ -27,7 +27,7 @@ RSpec.describe Mutations::ReleaseAssetLinks::Update, feature_category: :release_
   end
 
   let(:current_user) { developer }
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   let(:mutation_arguments) do
     {

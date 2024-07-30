@@ -12,7 +12,6 @@
   .content-wrapper{ class: "#{@content_wrapper_class}" }
     = dispensable_render_if_exists 'layouts/header/verification_reminder'
     .alert-wrapper.gl-force-block-formatting-context
-      = dispensable_render 'shared/new_nav_for_everyone_announcement'
       = dispensable_render 'shared/outdated_browser'
       = dispensable_render_if_exists "layouts/header/licensed_user_count_threshold"
       = dispensable_render_if_exists "layouts/header/token_expiry_notification"

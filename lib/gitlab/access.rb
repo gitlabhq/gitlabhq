@@ -128,7 +128,7 @@ module Gitlab
         protection_options.map { |option| option[:value] }
       end
 
-      def human_access(access)
+      def human_access(access, _member_role = nil)
         options_with_owner.key(access)
       end
 

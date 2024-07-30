@@ -984,6 +984,12 @@ Use **GitLab self-managed** to refer to the product offering. It refers to a Git
 
 Use **GitLab.com** to refer to the URL or product offering. GitLab.com is the instance that's managed by GitLab.
 
+## group access token
+
+Use sentence case for **group access token**.
+
+Capitalize the first word when you refer to the UI.
+
 ## guide
 
 We want to speak directly to users. On `docs.gitlab.com`, do not use **guide** as part of a page title.
@@ -1575,7 +1581,9 @@ Permissions are not the same as [**access levels**](#access-level).
 
 ## personal access token
 
-Use lowercase for **personal access token**.
+Use sentence case for **personal access token**.
+
+Capitalize the first word when you refer to the UI.
 
 ## please
 
@@ -1586,7 +1594,7 @@ see the [Microsoft Style Guide](https://learn.microsoft.com/en-us/style-guide/a-
 
 ## Premium
 
-Use **Premium**, in uppercase, for the subscription tier.  When you refer to **Premium**
+Use **Premium**, in uppercase, for the subscription tier. When you refer to **Premium**
 in the context of other subscription tiers, follow [the subscription tier](#subscription-tier) guidance.
 
 ## preferences
@@ -1612,6 +1620,12 @@ Use **press** when talking about keyboard keys. For example:
 ## profanity
 
 Do not use profanity. Doing so may negatively affect other users and contributors, which is contrary to the GitLab value of [Diversity, Inclusion, and Belonging](https://handbook.gitlab.com/handbook/values/#diversity-inclusion).
+
+## project access token
+
+Use sentence case for **project access token**.
+
+Capitalize the first word when you refer to the UI.
 
 ## provision
 

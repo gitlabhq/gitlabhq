@@ -38,7 +38,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center">
+  <div class="gl-flex gl-items-center">
     <gl-avatar
       :entity-id="organization.id"
       :entity-name="organization.name"
@@ -47,18 +47,18 @@ export default {
       :src="organization.avatar_url"
     />
     <div class="gl-ml-3">
-      <div class="gl-display-flex gl-align-items-center">
-        <h1 class="gl-m-0 gl-font-size-h1" data-testid="organization-name">
+      <div class="gl-flex gl-items-center">
+        <h1 class="gl-m-0 gl-text-size-h1" data-testid="organization-name">
           {{ organization.name }}
         </h1>
         <gl-icon
           v-gl-tooltip="visibilityTooltip"
           :name="visibilityIcon"
-          class="gl-text-secondary gl-ml-3"
+          class="gl-ml-3 gl-text-secondary"
         />
       </div>
-      <div class="gl-display-flex gl-align-items-center">
-        <span class="gl-text-secondary gl-font-sm"
+      <div class="gl-flex gl-items-center">
+        <span class="gl-text-sm gl-text-secondary"
           >{{ $options.i18n.orgId }}: {{ organization.id }}</span
         >
         <clipboard-button

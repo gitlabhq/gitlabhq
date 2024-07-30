@@ -82,8 +82,20 @@ RSpec.describe Gitlab::Ci::Jwt, feature_category: :secrets_management do
           subgroup.add_member(user, GroupMember::OWNER)
         end
 
-        it 'has correct values for the sorted direct group full paths' do
-          expect(payload[:groups_direct]).to eq(expected_groups)
+        context 'when feature flag is enabled' do
+          it 'has correct values for the sorted direct group full paths' do
+            expect(payload[:groups_direct]).to eq(expected_groups)
+          end
+        end
+
+        context 'when feature flag is disabled' do
+          before do
+            stub_feature_flags(ci_jwt_groups_direct: false)
+          end
+
+          it 'does not include groups_direct' do
+            expect(payload.keys).not_to include(:groups_direct)
+          end
         end
       end
 

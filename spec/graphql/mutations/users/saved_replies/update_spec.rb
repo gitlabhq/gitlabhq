@@ -3,10 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Users::SavedReplies::Update, feature_category: :code_review_workflow do
+  include GraphqlHelpers
+
   let_it_be(:current_user) { create(:user) }
   let_it_be(:saved_reply) { create(:saved_reply, user: current_user) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   let(:mutation_arguments) { { name: 'save_reply_name', content: 'Save Reply Content' } }
 

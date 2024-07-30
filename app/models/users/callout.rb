@@ -77,7 +77,7 @@ module Users
       vsd_feedback_banner: 75, # EE-only
       security_policy_protected_branch_modification: 76, # EE-only
       vulnerability_report_grouping: 77, # EE-only
-      new_nav_for_everyone_callout: 78,
+      # 78 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161010,
       # 79 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143862
       duo_chat_callout: 80, # EE-only
       # 81 removed in https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146322

@@ -80,7 +80,7 @@ export default {
 
 <template>
   <div class="gl-py-6">
-    <h1 class="gl-mt-0 gl-font-size-h-display">{{ $options.i18n.pageTitle }}</h1>
+    <h1 class="gl-mt-0 gl-text-size-h-display">{{ $options.i18n.pageTitle }}</h1>
     <p>
       <gl-sprintf :message="$options.i18n.pageDescription">
         <template #link="{ content }"

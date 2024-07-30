@@ -6,7 +6,7 @@ module SynchronizeBroadcastMessageDismissals
   def synchronize_broadcast_message_dismissals
     message_ids = System::BroadcastMessage.current.map(&:id)
 
-    Users::BroadcastMessageDismissal.valid_dismissals.for_user_and_broadcast_message(current_user, message_ids)
+    Users::BroadcastMessageDismissalFinder.new(current_user, message_ids: message_ids).execute
       .find_each do |dismissal|
       create_dismissal_cookie(dismissal) if cookies[dismissal.cookie_key].blank?
     end

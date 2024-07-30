@@ -3,13 +3,15 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Terraform::State::Unlock do
-  let_it_be(:user) { create(:user) }
+  include GraphqlHelpers
+
+  let_it_be(:current_user) { create(:user) }
   let_it_be(:state) { create(:terraform_state, :locked) }
 
   let(:mutation) do
     described_class.new(
       object: double,
-      context: { current_user: user },
+      context: query_context,
       field: double
     )
   end
@@ -31,7 +33,7 @@ RSpec.describe Mutations::Terraform::State::Unlock do
 
     context 'user has permission' do
       before do
-        state.project.add_maintainer(user)
+        state.project.add_maintainer(current_user)
       end
 
       it 'unlocks the state', :aggregate_failures do
@@ -50,7 +52,7 @@ RSpec.describe Mutations::Terraform::State::Unlock do
     end
 
     context 'with invalid params' do
-      let(:global_id) { user.to_global_id }
+      let(:global_id) { current_user.to_global_id }
 
       it 'raises an error', :aggregate_failures do
         expect { subject }.to raise_error(Gitlab::Graphql::Errors::ResourceNotAvailable)

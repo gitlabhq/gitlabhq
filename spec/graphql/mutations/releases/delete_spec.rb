@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe Mutations::Releases::Delete do
+  include GraphqlHelpers
+
   let_it_be(:project) { create(:project, :public, :repository) }
   let_it_be(:non_project_member) { create(:user) }
   let_it_be(:reporter) { create(:user, reporter_of: project) }
@@ -11,7 +13,7 @@ RSpec.describe Mutations::Releases::Delete do
   let_it_be(:tag) { 'v1.1.0' }
   let_it_be(:release) { create(:release, project: project, tag: tag) }
 
-  let(:mutation) { described_class.new(object: nil, context: { current_user: current_user }, field: nil) }
+  let(:mutation) { described_class.new(object: nil, context: query_context, field: nil) }
 
   let(:mutation_arguments) do
     {

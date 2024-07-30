@@ -57,7 +57,6 @@ RSpec/NamedSubject:
     - 'ee/spec/controllers/sitemap_controller_spec.rb'
     - 'ee/spec/controllers/subscriptions_controller_spec.rb'
     - 'ee/spec/db/production/license_spec.rb'
-    - 'ee/spec/elastic/migrate/20230724070100_backfill_epics_spec.rb'
     - 'ee/spec/features/projects/pipelines/pipeline_spec.rb'
     - 'ee/spec/features/user_sees_marketing_header_spec.rb'
     - 'ee/spec/features/users/login_spec.rb'
