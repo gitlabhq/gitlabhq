@@ -911,6 +911,21 @@ Parameters:
 | `tag_push_events` | boolean | no | Enable notifications for tag push events. |
 | `vulnerability_events` | boolean | no | Enable notifications for vulnerability events. |
 | `wiki_page_events` | boolean | no | Enable notifications for wiki page events. |
+| `labels_to_be_notified` | string | no | Labels to send notifications for. If not set, receive notifications for all events. |
+| `labels_to_be_notified_behavior` | string | no | Labels to be notified for. Valid options are `match_any` and `match_all`. Defaults to `match_any`. |
+| `push_channel` | string | no | Name of the channel to receive notifications for push events. |
+| `issue_channel` | string | no | Name of the channel to receive notifications for issue events. |
+| `confidential_issue_channel` | string | no | Name of the channel to receive notifications for confidential issue events. |
+| `merge_request_channel` | string | no | Name of the channel to receive notifications for merge request events. |
+| `note_channel` | string | no | Name of the channel to receive notifications for note events. |
+| `confidential_note_channel` | string | no | Name of the channel to receive notifications for confidential note events. |
+| `tag_push_channel` | string | no | Name of the channel to receive notifications for tag push events. |
+| `pipeline_channel` | string | no | Name of the channel to receive notifications for pipeline events. |
+| `wiki_page_channel` | string | no | Name of the channel to receive notifications for wiki page events. |
+| `deployment_channel` | string | no | Name of the channel to receive notifications for deployment events. |
+| `incident_channel` | string | no | Name of the channel to receive notifications for incident events. |
+| `vulnerability_channel` | string | no | Name of the channel to receive notifications for vulnerability events. |
+| `alert_channel` | string | no | Name of the channel to receive notifications for alert events. |
 | `use_inherited_settings` | boolean | no | Indicates whether or not to inherit default settings. Defaults to `false`. |
 
 ### Disable GitLab for Slack app
