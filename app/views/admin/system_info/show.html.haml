@@ -43,8 +43,11 @@
           = sprite_icon('disk')
           = _('Disk usage')
         %h2.gl-mt-0 #{number_to_human_size(disk[:bytes_used])} / #{number_to_human_size(disk[:bytes_total])}
-        - progress = disk[:bytes_used] / (disk[:bytes_total] / 100)
-        = render Pajamas::ProgressComponent.new(value: progress, variant: 'primary')
+        - if disk[:bytes_total] == 0
+          = render Pajamas::ProgressComponent.new(value: 0, variant: 'primary')
+        - else
+          - progress = disk[:bytes_used] / (disk[:bytes_total] / 100)
+          = render Pajamas::ProgressComponent.new(value: progress, variant: 'primary')
         .gl-mt-4
           %code= disk[:disk_name]
           %code= disk[:mount_path]
