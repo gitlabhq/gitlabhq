@@ -47,16 +47,16 @@ You can create, edit, or delete a compliance framework from a compliance project
 Subgroups and projects have access to all compliance frameworks created on their top-level group. However, compliance frameworks cannot be created, edited,
 or deleted at the subgroup or project level. Project owners can choose a framework to apply to their projects.
 
-## Add a compliance framework to a project
+## Apply a compliance framework to a project
 
 > - Assigning multiple compliance frameworks [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13294) in GitLab 17.3.
 
-Add a compliance framework to a project. You can apply multiple compliance frameworks to a project but cannot add compliance frameworks to projects in personal namespaces.
+You can apply multiple compliance frameworks to a project but cannot apply compliance frameworks to projects in personal namespaces.
 
-To assign a compliance framework to a project, apply the compliance framework through the
+To apply a compliance framework to a project, apply the compliance framework through the
 [Compliance projects report](../compliance/compliance_center/compliance_projects_report.md#apply-a-compliance-framework-to-projects-in-a-group).
 
-You can use the [GraphQL API](../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework) to add a
+You can use the [GraphQL API](../../api/graphql/reference/index.md#mutationprojectsetcomplianceframework) to apply a
 compliance framework to a project.
 
 If you create compliance frameworks on subgroups with GraphQL, the framework is created on the root ancestor if the user

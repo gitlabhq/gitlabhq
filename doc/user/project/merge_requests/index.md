@@ -151,7 +151,7 @@ change, and whether you need access to a development environment:
 - [Edit changes in Gitpod](../../../integration/gitpod.md#launch-gitpod-in-gitlab), if you
   need a fully-featured environment to both edit files, and run tests afterward. Gitpod
   supports running the [GitLab Development Kit (GDK)](https://gitlab.com/gitlab-org/gitlab-development-kit).
-  To use Gitpod, you must [enable Gitpod in your user account](../../../integration/gitpod.md#enable-gitpod-in-your-user-settings).
+  To use Gitpod, you must [enable Gitpod in your user account](../../../integration/gitpod.md#enable-gitpod-in-your-user-preferences).
 - [Push changes from the command line](../../../gitlab-basics/start-using-git.md), if you are
   familiar with Git and the command line.
 

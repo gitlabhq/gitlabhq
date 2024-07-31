@@ -17,59 +17,13 @@ The Jira DVCS connector was also deprecated and removed for Jira 8.13 and earlie
 
 Use the Jira DVCS (distributed version control system) connector if you self-host
 your Jira instance with Jira Data Center or Jira Server and want to use the [Jira development panel](../development_panel.md).
-The Jira DVCS connector is developed and maintained by Atlassian. For more information, see the
-[Atlassian documentation](https://confluence.atlassian.com/adminjiraserver/integrating-with-development-tools-using-dvcs-1047552689.html).
+The Jira DVCS connector is developed and maintained by Atlassian.
 
 If you're on Jira Cloud, migrate to the GitLab for Jira Cloud app. For more information, see [Install the GitLab for Jira Cloud app](../connect-app.md#install-the-gitlab-for-jira-cloud-app).
 
 ## Configure the Jira DVCS connector
 
-### Prerequisites
-
-- Your GitLab instance must be accessible by Jira.
-- You must have at least the Maintainer role for the GitLab group.
-- Your network must allow inbound and outbound connections between GitLab and Jira.
-
-### Create a GitLab application for DVCS
-
-- **For projects in a single group**, you should create a [group application](../../oauth_provider.md#create-a-group-owned-application).
-- **For projects across multiple groups**, you should create a separate GitLab user account for Jira integration work only.
-  This account ensures regular maintenance does not affect your integration.
-- **If you cannot create a group application or separate user account**, you can create instead:
-  - [An instance-wide application](../../oauth_provider.md#create-an-instance-wide-application)
-  - [A user-owned application](../../oauth_provider.md#create-a-user-owned-application)
-
-To create a GitLab application for DVCS:
-
-1. Go to the [appropriate **Applications** section](../../oauth_provider.md).
-1. In the **Name** text box, enter a descriptive name for the integration (for example, `Jira`).
-1. In the **Redirect URI** text box, enter the generated **Redirect URL** from
-   [linking GitLab accounts](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html).
-1. In **Scopes**, select `api` and clear any other checkboxes.
-   The Jira DVCS connector requires a **write-enabled** `api` scope to automatically create and manage required webhooks.
-1. Select **Submit**.
-1. Copy the **Application ID** and **Secret** values.
-   You need these values to configure Jira.
-
-### Configure Jira for DVCS
-
-To configure Jira for DVCS:
-
-1. On the top bar, in the upper-right corner, select **Administration** (**{settings}**) > **Applications**.
-1. On the left sidebar, select **DVCS accounts**.
-1. From the **Host** dropdown list, select **GitLab** or **GitLab Self-Managed**.
-1. For **Team or User Account**, enter the relative path of a [top-level GitLab group](#create-a-gitlab-application-for-dvcs) the GitLab user can access.
-1. For **Host URL**, enter the domain of your GitLab instance.
-1. From the **Client Configuration** dropdown list, select the [application link](#create-a-gitlab-application-for-dvcs) you've created.
-1. Optional. Select or clear the **Auto Link New Repositories** and **Enable Smart Commits** checkboxes.
-1. Select **Add**, then **Continue**.
-
-Jira redirects to GitLab where you have to confirm the authorization. GitLab then redirects back to Jira
-where the synced projects are displayed in the new account. The initial sync takes a few minutes.
-After the initial sync, it can take up to 60 minutes to refresh.
-
-To connect additional GitLab projects from other GitLab top-level groups or
-personal namespaces, repeat the previous steps with additional Jira DVCS accounts.
+To configure the Jira DVCS Connector, see the [Atlassian documentation](https://confluence.atlassian.com/adminjiraserver/integrating-with-development-tools-using-dvcs-1047552689.html).
 
 ## Refresh data imported to Jira
 

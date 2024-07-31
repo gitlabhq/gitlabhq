@@ -144,5 +144,25 @@ describe('feature flag form', () => {
       expect(wrapper.findAllComponents(Strategy)).toHaveLength(1);
       expect(wrapper.findComponent(Strategy).props('strategy')).not.toEqual(strategy);
     });
+
+    it('should remove a strategy on delete with numbered id', async () => {
+      factory({
+        strategies: [
+          {
+            shouldBeDestroyed: false,
+            type: ROLLOUT_STRATEGY_PERCENT_ROLLOUT,
+            parameters: { percentage: '30' },
+            scopes: [],
+            id: 1,
+          },
+        ],
+      });
+
+      wrapper.findComponent(Strategy).vm.$emit('delete');
+
+      await nextTick();
+
+      expect(wrapper.findAllComponents(Strategy)).toHaveLength(0);
+    });
   });
 });

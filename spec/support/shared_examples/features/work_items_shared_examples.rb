@@ -498,33 +498,35 @@ RSpec.shared_examples 'work items award emoji' do
 end
 
 RSpec.shared_examples 'work items parent' do |type|
+  let(:work_item_parent_selector) { '[data-testid="work-item-parent"]' }
   let(:work_item_parent) { create(:work_item, type, project: project) }
 
   def set_parent(parent_text)
-    find('[data-testid="listbox-search-input"] .gl-listbox-search-input',
-      visible: true).send_keys "\"#{parent_text}\""
-    wait_for_requests
+    within(work_item_parent_selector) do
+      send_keys(parent_text)
+      wait_for_requests
 
-    find('.gl-new-dropdown-item', text: parent_text).click
-    wait_for_all_requests
+      select_listbox_item(parent_text)
+      wait_for_requests
+    end
   end
 
   it 'searches and sets or removes parent for the work item' do
-    find_by_testid('edit-parent').click
-    within_testid('work-item-parent-form') do
-      set_parent(work_item_parent.title)
-    end
+    find_and_click_edit(work_item_parent_selector)
 
-    expect(find_by_testid('work-item-parent-link')).to have_text(work_item_parent.title)
-    wait_for_requests
+    set_parent(work_item_parent.title)
+
+    expect(page).to have_text(work_item_parent.title)
+
+    find_and_click_edit(work_item_parent_selector)
 
     page.refresh
-    find_by_testid('edit-parent').click
 
-    click_button('Unassign')
-    wait_for_requests
+    find_and_click_edit(work_item_parent_selector)
 
-    expect(find_by_testid('work-item-parent-none')).to have_text('None')
+    find_and_click_clear(work_item_parent_selector, 'Unassign')
+
+    expect(find(work_item_parent_selector)).to have_content('None')
   end
 end
 
@@ -534,9 +536,9 @@ def find_and_click_edit(selector)
   end
 end
 
-def find_and_click_clear(selector)
+def find_and_click_clear(selector, button_name = 'Clear')
   within(selector) do
-    click_button 'Clear'
+    click_button button_name
   end
 end
 

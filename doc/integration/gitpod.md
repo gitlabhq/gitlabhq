@@ -20,17 +20,17 @@ This means you don't have to wait for dependencies to be downloaded and builds t
 coding immediately. With Gitpod you can start coding instantly on any project, branch, and merge
 request from your browser.
 
-To use the GitLab Gitpod integration, it must be enabled for your GitLab instance. Users of:
+To use the GitLab Gitpod integration, it must be enabled for your GitLab instance and in your preferences. Users of:
 
-- GitLab.com can use it immediately after it's [enabled in their user settings](#enable-gitpod-in-your-user-settings).
+- GitLab.com can use it immediately after it's [enabled in their user preferences](#enable-gitpod-in-your-user-preferences).
 - GitLab self-managed instances can use it after:
   1. It's [enabled and configured by a GitLab administrator](#configure-a-self-managed-instance).
-  1. It's [enabled in their user settings](#enable-gitpod-in-your-user-settings).
+  1. It's [enabled in their user settings](#enable-gitpod-in-your-user-preferences).
 
 For more information about Gitpod, see the Gitpod [features](https://www.gitpod.io/) and
 [documentation](https://www.gitpod.io/docs).
 
-## Enable Gitpod in your user settings
+## Enable Gitpod in your user preferences
 
 With the Gitpod integration enabled for your GitLab instance, to enable it for yourself:
 
@@ -56,11 +56,12 @@ For self-managed GitLab instances, a GitLab administrator must:
    1. Select **Save changes**.
 1. Register the self-managed GitLab instance in Gitpod. For more information, see the [Gitpod documentation](https://www.gitpod.io/docs/configure/authentication/gitlab#registering-a-self-hosted-gitlab-installation).
 
-GitLab users can then [enable the Gitpod integration for themselves](#enable-gitpod-in-your-user-settings).
+GitLab users can then [enable the Gitpod integration for themselves](#enable-gitpod-in-your-user-preferences).
 
 ## Launch Gitpod in GitLab
 
-You can launch Gitpod directly from GitLab in one of these ways:
+After you [enable Gitpod](#enable-gitpod-in-your-user-preferences),
+you can launch it from GitLab in one of these ways:
 
 - **From a project repository:**
   1. On the left sidebar, select **Search or go to** and find your project.

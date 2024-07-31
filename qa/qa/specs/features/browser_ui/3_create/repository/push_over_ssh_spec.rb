@@ -13,7 +13,7 @@ module QA
       end
 
       after(:context) do
-        @key.remove_via_api!
+        @key&.remove_via_api!
       end
 
       before do

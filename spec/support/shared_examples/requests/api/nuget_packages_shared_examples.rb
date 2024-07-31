@@ -489,14 +489,12 @@ end
 RSpec.shared_examples 'allows anyone to pull public nuget packages on group level' do
   let_it_be(:package_name) { 'dummy.package' }
   let_it_be(:package) { create(:nuget_package, project: project, name: package_name) }
-  let_it_be(:external_user) { create(:user, external: true) }
-  let_it_be(:personal_access_token) { create(:personal_access_token, user: external_user) }
 
-  subject { get api(url), headers: basic_auth_header(external_user.username, personal_access_token.token) }
+  subject { get api(url), headers: basic_auth_header(user.username, personal_access_token.token) }
 
   before do
     [subgroup, group, project].each do |entity|
-      entity.update!(visibility_level: Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
+      entity.update_column(:visibility_level, Gitlab::VisibilityLevel.const_get(:PRIVATE, false))
     end
     project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
     stub_application_setting(package_registry_allow_anyone_to_pull_option: true)
@@ -504,7 +502,26 @@ RSpec.shared_examples 'allows anyone to pull public nuget packages on group leve
 
   it_behaves_like 'returning response status', :ok
 
-  context 'when allow_anyone_to_pull_public_nuget_packages_on_group_level FF is disabled' do
+  context 'when target package is in a private registry and group has another public registry' do
+    let(:other_project) { create(:project, group: target, visibility_level: target.visibility_level) }
+
+    before do
+      project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PRIVATE)
+      other_project.project_feature.update!(package_registry_access_level: ::ProjectFeature::PUBLIC)
+    end
+
+    it_behaves_like 'returning response status', :not_found
+
+    context 'when package is in the project with public registry' do
+      before do
+        package.update!(project: other_project)
+      end
+
+      it_behaves_like 'returning response status', :ok
+    end
+  end
+
+  context 'when the FF allow_anyone_to_pull_public_nuget_packages_on_group_level is disabled' do
     before do
       stub_feature_flags(allow_anyone_to_pull_public_nuget_packages_on_group_level: false)
     end

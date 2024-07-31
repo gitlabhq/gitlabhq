@@ -10,7 +10,11 @@ module QA
 
       RegexMismatchError = Class.new(StandardError)
 
-      DEFAULT_TEST_PATH_ARGS = ['--', File.expand_path('./features', __dir__)].freeze
+      DEFAULT_TEST_PATH_ARGS = [
+        '--',
+        File.expand_path('./features', __dir__),
+        GitlabEdition.jh? ? File.expand_path('../../.././jh/qa/qa/specs/features', __dir__) : nil
+      ].compact.freeze
       DEFAULT_STD_ARGS = [$stderr, $stdout].freeze
       DEFAULT_SKIPPED_TAGS = %w[orchestrated transient].freeze
 

@@ -200,7 +200,7 @@ module API
               tags %w[nuget_packages]
             end
             get 'index', format: :json, urgency: :low do
-              present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages(params[:package_name])),
+              present ::Packages::Nuget::PackagesVersionsPresenter.new(find_packages),
                 with: ::API::Entities::Nuget::PackagesVersions
             end
 
@@ -219,7 +219,7 @@ module API
               requires :package_filename, type: String, desc: 'The NuGet package filename', regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: 'mynugetpkg.1.3.0.17.nupkg' }
             end
             get '*package_version/*package_filename', format: [:nupkg, :snupkg], urgency: :low do
-              package = find_package(params[:package_name], params[:package_version])
+              package = find_package
               filename = format_filename(package)
               package_file = ::Packages::PackageFileFinder.new(package, filename, with_file_name_like: true)
                                                           .execute
@@ -333,8 +333,7 @@ module API
           delete '*package_name/*package_version', format: false, urgency: :low do
             authorize_destroy_package!(project_or_group)
 
-            package = find_package(params[:package_name], params[:package_version])
-            destroy_conditionally!(package) do |package|
+            destroy_conditionally!(find_package) do |package|
               ::Packages::MarkPackageForDestructionService.new(container: package, current_user: current_user).execute
 
               track_package_event('delete_package', :nuget, category: 'API::NugetPackages', project: package.project, namespace: package.project.namespace)

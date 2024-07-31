@@ -101,13 +101,13 @@ gem 'omniauth-oauth2-generic', '~> 0.2.2' # rubocop:todo Gemfile/MissingFeatureC
 gem 'omniauth-saml', '~> 2.1.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-shibboleth-redux', '~> 2.0', require: 'omniauth-shibboleth' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth_crowd', '~> 2.4.0', path: 'vendor/gems/omniauth_crowd' # See vendor/gems/omniauth_crowd/README.md # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'omniauth_openid_connect', '~> 0.6.1' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'omniauth_openid_connect', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 # Locked until Ruby 3.0 upgrade since upgrading will pull in an updated net-smtp gem.
 # See https://docs.gitlab.com/ee/development/emails.html#rationale.
-gem 'openid_connect', '= 1.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'openid_connect', '~> 2.3.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-salesforce', '~> 1.0.5', path: 'vendor/gems/omniauth-salesforce' # See gem README.md # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'omniauth-atlassian-oauth2', '~> 0.2.0' # rubocop:todo Gemfile/MissingFeatureCategory
-gem 'rack-oauth2', '~> 1.21.3' # rubocop:todo Gemfile/MissingFeatureCategory
+gem 'rack-oauth2', '~> 2.2.1' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'jwt', '~> 2.5' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Kerberos authentication. EE-only

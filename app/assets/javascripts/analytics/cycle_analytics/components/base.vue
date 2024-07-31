@@ -11,6 +11,7 @@ import StageTable from '~/analytics/cycle_analytics/components/stage_table.vue';
 import ValueStreamFilters from '~/analytics/cycle_analytics/components/value_stream_filters.vue';
 import UrlSync from '~/vue_shared/components/url_sync.vue';
 import { __, s__ } from '~/locale';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
 import { SUMMARY_METRICS_REQUEST, METRICS_REQUESTS } from '../constants';
 
 const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
@@ -18,6 +19,7 @@ const OVERVIEW_DIALOG_COOKIE = 'cycle_analytics_help_dismissed';
 export default {
   name: 'CycleAnalytics',
   components: {
+    PageHeading,
     GlLoadingIcon,
     PathNavigation,
     StageTable,
@@ -164,7 +166,7 @@ export default {
 </script>
 <template>
   <div>
-    <h3>{{ $options.i18n.pageTitle }}</h3>
+    <page-heading :heading="$options.i18n.pageTitle" />
     <value-stream-filters
       :namespace-path="filterBarNamespacePath"
       :has-project-filter="false"

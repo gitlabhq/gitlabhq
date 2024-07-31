@@ -1,18 +1,16 @@
 - add_to_breadcrumbs s_('TagsPage|Tags'), project_tags_path(@project)
 - page_title s_('TagsPage|New tag')
 - default_ref = params[:ref] || @project.default_branch
+- link = link_to('', new_namespace_project_release_path)
+- page_description = safe_format(s_('TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}new release page%{link_end}.'), tag_pair(link, :link_start, :link_end))
 
 - if @error
   = render Pajamas::AlertComponent.new(variant: :danger, dismissible: true) do |c|
     - c.with_body do
       = @error
 
-%h1.page-title.gl-font-size-h-display
-  = s_('TagsPage|New tag')
-
-%p.gl-text-secondary
-  - link = link_to('', new_namespace_project_release_path)
-  = safe_format(s_('TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}New release page%{link_end}.'), tag_pair(link, :link_start, :link_end))
+= render ::Layouts::PageHeadingComponent.new(s_('TagsPage|New tag'),
+  description: page_description)
 
 = form_tag namespace_project_tags_path, method: :post, id: "new-tag-form", class: "common-note-form tag-form js-quick-submit" do
   .form-group.row
@@ -23,16 +21,16 @@
     .col-sm-auto.create-from
       = label_tag :ref, _('Create from')
       .js-new-tag-ref-selector{ data: { project_id: @project.id, default_branch_name: default_ref, hidden_input_name: 'ref' } }
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = s_('TagsPage|Existing branch name, tag, or commit SHA')
   .form-group.row
     .col-sm-12
       = label_tag :message, _('Message')
       = text_area_tag :message, @message, required: false, class: 'form-control', rows: 5, data: { testid: 'tag-message-field' }
-      .form-text.text-muted
+      .form-text.gl-text-subtle
         = tag_description_help_text
 
-  .gl-display-flex
+  .gl-flex
     = render Pajamas::ButtonComponent.new(variant: :confirm, button_options: { class: 'gl-mr-3', data: { testid: 'create-tag-button' }, type: 'submit' }) do
       = s_('TagsPage|Create tag')
     = render Pajamas::ButtonComponent.new(href: project_tags_path(@project)) do

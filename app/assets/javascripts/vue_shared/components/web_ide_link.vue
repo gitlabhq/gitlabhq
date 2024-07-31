@@ -1,8 +1,5 @@
 <script>
 import {
-  GlModal,
-  GlSprintf,
-  GlLink,
   GlDisclosureDropdown,
   GlDisclosureDropdownGroup,
   GlDisclosureDropdownItem,
@@ -16,14 +13,6 @@ import { shouldDisableShortcuts } from '~/behaviors/shortcuts/shortcuts_toggle';
 import { KEY_EDIT, KEY_WEB_IDE, KEY_GITPOD, KEY_PIPELINE_EDITOR } from './constants';
 
 export const i18n = {
-  modal: {
-    title: __('Enable Gitpod?'),
-    content: s__(
-      'Gitpod|To use Gitpod you must first enable the feature in the integrations section of your %{linkStart}user preferences%{linkEnd}.',
-    ),
-    actionCancelText: __('Cancel'),
-    actionPrimaryText: __('Enable Gitpod'),
-  },
   webIdeText: s__('WebIDE|Quickly and easily edit multiple files in your project.'),
   webIdeTooltip: s__(
     'WebIDE|Quickly and easily edit multiple files in your project. Press . to open',
@@ -36,9 +25,6 @@ const TRACKING_ACTION_NAME = 'click_consolidated_edit';
 export default {
   name: 'CEWebIdeLink',
   components: {
-    GlModal,
-    GlSprintf,
-    GlLink,
     GlDisclosureDropdown,
     GlDisclosureDropdownGroup,
     GlDisclosureDropdownItem,
@@ -91,16 +77,6 @@ export default {
       type: Boolean,
       required: false,
       default: false,
-    },
-    userPreferencesGitpodPath: {
-      type: String,
-      required: false,
-      default: '',
-    },
-    userProfileEnableGitpodPath: {
-      type: String,
-      required: false,
-      default: '',
     },
     editUrl: {
       type: String,
@@ -160,7 +136,6 @@ export default {
   },
   data() {
     return {
-      showEnableGitpodModal: false,
       showForkModal: false,
     };
   },
@@ -262,9 +237,7 @@ export default {
       return this.gitpodText || __('Gitpod');
     },
     computedShowGitpodButton() {
-      return (
-        this.showGitpodButton && this.userPreferencesGitpodPath && this.userProfileEnableGitpodPath
-      );
+      return this.showGitpodButton && this.gitpodEnabled;
     },
     pipelineEditorAction() {
       if (!this.showPipelineEditorButton) {
@@ -288,13 +261,7 @@ export default {
       if (!this.computedShowGitpodButton) {
         return null;
       }
-      const handleOptions = this.gitpodEnabled
-        ? { href: this.gitpodUrl }
-        : {
-            handle: () => {
-              this.showModal('showEnableGitpodModal');
-            },
-          };
+      const handleOptions = { href: this.gitpodUrl };
 
       const secondaryText = __('Launch a ready-to-code development environment for your project.');
 
@@ -307,25 +274,6 @@ export default {
           label: 'gitpod',
         },
         ...handleOptions,
-      };
-    },
-    enableGitpodModalProps() {
-      return {
-        'modal-id': 'enable-gitpod-modal',
-        size: 'sm',
-        title: this.$options.i18n.modal.title,
-        'action-cancel': {
-          text: this.$options.i18n.modal.actionCancelText,
-        },
-        'action-primary': {
-          text: this.$options.i18n.modal.actionPrimaryText,
-          attributes: {
-            variant: 'confirm',
-            category: 'primary',
-            href: this.userProfileEnableGitpodPath,
-            'data-method': 'put',
-          },
-        },
       };
     },
     mountForkModal() {
@@ -389,17 +337,6 @@ export default {
       </gl-disclosure-dropdown-group>
       <slot name="after-actions"></slot>
     </gl-disclosure-dropdown>
-    <gl-modal
-      v-if="computedShowGitpodButton && !gitpodEnabled"
-      v-model="showEnableGitpodModal"
-      v-bind="enableGitpodModalProps"
-    >
-      <gl-sprintf :message="$options.i18n.modal.content">
-        <template #link="{ content }">
-          <gl-link :href="userPreferencesGitpodPath">{{ content }}</gl-link>
-        </template>
-      </gl-sprintf>
-    </gl-modal>
     <confirm-fork-modal
       v-if="mountForkModal"
       v-model="showForkModal"

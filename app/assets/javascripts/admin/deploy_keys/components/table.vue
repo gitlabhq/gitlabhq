@@ -199,11 +199,9 @@ export default {
     class="gl-mt-5"
   >
     <template #actions>
-      <div class="gl-new-card-actions">
-        <gl-button size="small" :href="createPath" data-testid="new-deploy-key-button">{{
-          $options.i18n.newDeployKeyButtonText
-        }}</gl-button>
-      </div>
+      <gl-button size="small" :href="createPath" data-testid="new-deploy-key-button">{{
+        $options.i18n.newDeployKeyButtonText
+      }}</gl-button>
     </template>
 
     <gl-table

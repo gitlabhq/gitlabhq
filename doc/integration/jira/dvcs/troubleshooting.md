@@ -83,10 +83,10 @@ The requested scope is invalid, unknown, or malformed.
 Potential resolutions:
 
 1. Verify that the URL shown in the browser after being redirected from Jira in the
-   [Jira DVCS connector setup](index.md#configure-jira-for-dvcs) includes `scope=api` in
+   [Jira DVCS connector setup](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html#LinkingGitLabaccounts-InJiraagain) includes `scope=api` in
    the query string.
 1. If `scope=api` is missing from the URL, edit the
-   [GitLab account configuration](index.md#create-a-gitlab-application-for-dvcs). Review
+   [GitLab account configuration](https://confluence.atlassian.com/adminjiraserver/linking-gitlab-accounts-1027142272.html#LinkingGitLabaccounts-InGitLab). Review
    the **Scopes** field and ensure the `api` checkbox is selected.
 
 ## `410 Gone` when connecting to Jira

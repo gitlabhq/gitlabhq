@@ -89,8 +89,6 @@ describe('Blob Header Default Actions', () => {
           gitpodUrl: gitpodBlobUrl,
           showGitpodButton: applicationInfoMock.gitpodEnabled,
           gitpodEnabled: userInfoMock.currentUser.gitpodEnabled,
-          userPreferencesGitpodPath: userInfoMock.currentUser.preferencesGitpodPath,
-          userProfileEnableGitpodPath: userInfoMock.currentUser.profileEnableGitpodPath,
         });
       });
 

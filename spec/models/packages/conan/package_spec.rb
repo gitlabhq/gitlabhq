@@ -39,7 +39,8 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
 
     context 'for recipe uniqueness' do
       let_it_be(:package) { create(:conan_package) }
-      let_it_be(:new_package) do
+
+      let(:new_package) do
         build(:conan_package, project: package.project, name: package.name, version: package.version)
       end
 

@@ -32,7 +32,7 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
       subject
 
       expect(response).to redirect_to(dashboard_groups_path)
-      expect(flash[:alert]).to match(/The invitation is not valid/)
+      expect(flash[:alert]).to match(/The invitation is no longer valid./)
     end
   end
 

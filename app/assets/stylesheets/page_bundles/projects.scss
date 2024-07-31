@@ -449,18 +449,6 @@
 }
 
 .compare-revision-cards {
-  @media (max-width: $breakpoint-lg) {
-    .swap-button {
-      display: none;
-    }
-  }
-
-  @media (max-width: $breakpoint-lg) {
-    .swap-button-mobile {
-      display: flex;
-    }
-  }
-
   @media (min-width: $breakpoint-lg) {
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-card {

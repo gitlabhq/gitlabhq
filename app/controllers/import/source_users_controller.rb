@@ -38,7 +38,7 @@ module Import
     def check_source_user_status!
       return if source_user.awaiting_approval?
 
-      redirect_to(dashboard_groups_path, alert: s_('UserMapping|The invitation is not valid'))
+      redirect_to(dashboard_groups_path, alert: s_('UserMapping|The invitation is no longer valid.'))
     end
 
     def check_current_user_matches_invite!

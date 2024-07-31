@@ -86,7 +86,7 @@ module API
         namespace '/nuget' do
           after_validation do
             # This API can't be accessed anonymously
-            require_authenticated! unless allow_anyone_to_pull_public_packages?
+            require_authenticated!
           end
 
           include ::API::Concerns::Packages::Nuget::PrivateEndpoints

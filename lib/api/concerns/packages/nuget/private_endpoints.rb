@@ -41,7 +41,7 @@ module API
                 tags %w[nuget_packages]
               end
               get 'index', format: :json, urgency: :low do
-                present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages(params[:package_name])),
+                present ::Packages::Nuget::PackagesMetadataPresenter.new(find_packages),
                   with: ::API::Entities::Nuget::PackagesMetadata
               end
 
@@ -60,10 +60,7 @@ module API
                   regexp: API::NO_SLASH_URL_PART_REGEX, documentation: { example: '1.0.0' }
               end
               get '*package_version', format: :json, urgency: :low do
-                present ::Packages::Nuget::PackageMetadataPresenter.new(
-                  find_package(params[:package_name],
-                    params[:package_version])
-                ),
+                present ::Packages::Nuget::PackageMetadataPresenter.new(find_package),
                   with: ::API::Entities::Nuget::PackageMetadata
               end
             end

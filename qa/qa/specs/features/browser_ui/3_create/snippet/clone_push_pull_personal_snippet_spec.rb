@@ -25,7 +25,7 @@ module QA
       end
 
       after do
-        ssh_key.remove_via_api!
+        ssh_key&.remove_via_api!
       end
 
       it 'clones, pushes, and pulls a snippet over HTTP, edits via UI', :blocking, testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/347793' do

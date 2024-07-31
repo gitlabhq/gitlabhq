@@ -12773,9 +12773,6 @@ msgstr ""
 msgid "Code Quality scans found %{findings}."
 msgstr ""
 
-msgid "Code Review"
-msgstr ""
-
 msgid "Code block"
 msgstr ""
 
@@ -20089,12 +20086,6 @@ msgstr ""
 msgid "Enable GitLab Prometheus metrics endpoint"
 msgstr ""
 
-msgid "Enable Gitpod"
-msgstr ""
-
-msgid "Enable Gitpod?"
-msgstr ""
-
 msgid "Enable Invisible Captcha during sign up"
 msgstr ""
 
@@ -24218,9 +24209,6 @@ msgid "Gitpod|Gitpod URL"
 msgstr ""
 
 msgid "Gitpod|The URL to your Gitpod instance configured to read your GitLab projects, such as https://gitpod.example.com."
-msgstr ""
-
-msgid "Gitpod|To use Gitpod you must first enable the feature in the integrations section of your %{linkStart}user preferences%{linkEnd}."
 msgstr ""
 
 msgid "Gitpod|To use the integration, each user must also enable Gitpod on their GitLab account. %{help_link_start}How do I enable it?%{help_link_end}"
@@ -32730,9 +32718,6 @@ msgid "Merge Conflicts"
 msgstr ""
 
 msgid "Merge Request"
-msgstr ""
-
-msgid "Merge Request Analytics"
 msgstr ""
 
 msgid "Merge Requests"
@@ -44617,9 +44602,6 @@ msgstr ""
 msgid "Repository"
 msgstr ""
 
-msgid "Repository Analytics"
-msgstr ""
-
 msgid "Repository Graph"
 msgstr ""
 
@@ -48404,6 +48386,9 @@ msgid "SecurityOrchestration|YAML"
 msgstr ""
 
 msgid "SecurityOrchestration|You already have the maximum %{maximumAllowed} %{policyType} %{instance}."
+msgstr ""
+
+msgid "SecurityOrchestration|You can select this option only once."
 msgstr ""
 
 msgid "SecurityOrchestration|You can't change the default branch because its protection is enforced by one or more %{security_policies_link_start}security policies%{security_policies_link_end}. %{learn_more_link_start}Learn more%{learn_more_link_end}."
@@ -52474,7 +52459,7 @@ msgstr ""
 msgid "TagsPage|Deleting the %{strongStart}%{tagName}%{strongEnd} tag cannot be undone."
 msgstr ""
 
-msgid "TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}New release page%{link_end}."
+msgid "TagsPage|Do you want to create a release with the new tag? You can do that in the %{link_start}new release page%{link_end}."
 msgstr ""
 
 msgid "TagsPage|Edit release"
@@ -57796,7 +57781,7 @@ msgstr ""
 msgid "UserMapping|The invitation could not be declined."
 msgstr ""
 
-msgid "UserMapping|The invitation is not valid"
+msgid "UserMapping|The invitation is no longer valid."
 msgstr ""
 
 msgid "UserMapping|The reassignment has been cancelled by the group owner."

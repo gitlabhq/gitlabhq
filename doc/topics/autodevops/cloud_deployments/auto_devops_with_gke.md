@@ -273,13 +273,11 @@ bin/rails test test/controllers/welcome_controller_test.rb:4
 To fix the broken test:
 
 1. Return to your merge request.
-1. In the upper-right corner, select **Code**, then select **Open in Gitpod**.
+1. In the upper right corner, select **Code**, then select **Open in Web IDE**.
 1. In the left-hand directory of files, find the `test/controllers/welcome_controller_test.rb`
    file, and select it to open it.
 1. Change line 7 to say `You're on Rails! Powered by GitLab Auto DevOps.`
-1. Select **Commit**.
-1. In the left-hand column, under **Unstaged changes**, select the checkmark icon
-   (**{stage-all}**) to stage the changes.
+1. On the left sidebar, select **Source Control** (**{merge}**).
 1. Write a commit message, and select **Commit**.
 
 Return to the **Overview** page of your merge request, and you should not only
