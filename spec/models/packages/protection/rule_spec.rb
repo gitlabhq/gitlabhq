@@ -165,6 +165,25 @@ RSpec.describe Packages::Protection::Rule, type: :model, feature_category: :pack
     end
   end
 
+  describe '.for_package_type' do
+    let_it_be(:npm_package_rule) { create(:package_protection_rule, package_type: :npm) }
+
+    subject { described_class.for_package_type(package_type) }
+
+    where(:package_type, :expected_package_protection_rules) do
+      :npm                   | lazy { [npm_package_rule] }
+      'npm'                  | lazy { [npm_package_rule] }
+
+      :maven                 | []
+      :invalid_package_type  | []
+      nil                    | []
+    end
+
+    with_them do
+      it { is_expected.to match_array expected_package_protection_rules }
+    end
+  end
+
   describe '.for_push_exists?' do
     let_it_be(:project_with_ppr) { create(:project) }
     let_it_be(:project_without_ppr) { create(:project) }

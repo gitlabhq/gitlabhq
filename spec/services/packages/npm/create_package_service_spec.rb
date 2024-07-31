@@ -444,9 +444,10 @@ RSpec.describe Packages::Npm::CreatePackageService, feature_category: :package_r
         let(:service) { described_class.new(project, deploy_token, params) }
 
         where(:package_name_pattern, :minimum_access_level_for_push, :shared_examples_name) do
-          ref(:package_name)                  | :maintainer | 'valid package'
-          ref(:package_name)                  | :owner      | 'valid package'
-          ref(:package_name)                  | :admin      | 'valid package'
+          ref(:package_name)                  | :maintainer | 'protected package'
+          ref(:package_name)                  | :owner      | 'protected package'
+          ref(:package_name)                  | :admin      | 'protected package'
+
           ref(:package_name_pattern_no_match) | :owner      | 'valid package'
         end
 
