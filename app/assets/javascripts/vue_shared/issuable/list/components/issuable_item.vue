@@ -87,6 +87,9 @@ export default {
     issuableIid() {
       return this.issuable.iid;
     },
+    workItemFullPath() {
+      return this.issuable.namespace?.fullPath;
+    },
     author() {
       return this.issuable.author || {};
     },
@@ -289,7 +292,11 @@ export default {
           :aria-label="__('Hidden')"
         />
         <template v-if="preventRedirect">
-          <work-item-prefetch :work-item-iid="issuableIid" data-testid="issuable-prefetch-trigger">
+          <work-item-prefetch
+            :work-item-iid="issuableIid"
+            :work-item-full-path="workItemFullPath"
+            data-testid="issuable-prefetch-trigger"
+          >
             <template #default="{ prefetchWorkItem, clearPrefetching }">
               <gl-link
                 class="issue-title-text gl-text-base"

@@ -14,6 +14,11 @@ export default {
       type: String,
       required: true,
     },
+    workItemFullPath: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -27,7 +32,7 @@ export default {
       },
       variables() {
         return {
-          fullPath: this.fullPath,
+          fullPath: this.workItemFullPath || this.fullPath,
           iid: this.workItemIid,
         };
       },

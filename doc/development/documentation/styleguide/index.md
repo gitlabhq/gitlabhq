@@ -1132,25 +1132,31 @@ To describe multiple fields, use unordered list items:
 
 ## Illustrations
 
+GitLab documentation uses two illustration types:
+
+- Screenshots, used to show a portion of the GitLab user interface.
+- Diagrams, used to illustrate processes or relationships between entities.
+
 Illustrations can help the reader understand a concept, where they are in a complicated process,
-or how they should interact with the application.
+or how they should interact with the application. Use illustrations sparingly because:
 
-Use illustrations sparingly because:
-
-- They tend to become out-of-date.
+- They become outdated.
 - They are difficult and expensive to localize.
-- Their content cannot be read by screen readers.
+- They cannot be read by screen readers.
 
-Types of illustrations used in GitLab documentation are:
+If you must use illustrations in documentation, they should:
 
-- Screenshot. Use a screenshot when you need to show a portion of the GitLab user interface.
-- Diagram. Use a diagram to illustrate a process or the relationship between entities, for example.
+- Supplement the text, not replace it.
+  The reader should not have to rely only on the illustration to get the needed information.
+- Have an introductory sentence in the preceding text.
+  For example, `The following diagram illustrates the product analytics flow:`.
+- Be accessible. For more information, see the guidelines specific to screenshots and diagrams.
+- Exclude personally identifying information.
 
-Use illustrations only to supplement text, not replace it.
+### Screenshots
 
-### Screenshot
-
-Use a screenshot when you need to show a portion of the GitLab user interface.
+Use screenshots to show a portion of the GitLab user interface, if some relevant information
+can't be conveyed in text.
 
 #### Capture the screenshot
 
@@ -1345,41 +1351,67 @@ You can take a screenshot of a single element.
 
 Use `spec/docs_screenshots/container_registry_docs.rb` as a guide to create your own scripts.
 
-### Diagram
+### Diagrams
 
-Use a diagram to illustrate a process or the relationship between entities, for example.
+Use a diagram to illustrate a process or the relationship between entities, if the information is too
+complex to be understood from text only.
 
-Use [Mermaid](https://mermaid.js.org/#/) to create a diagram. This method has several advantages
-over a static image format (screenshot):
+To create a diagram, use [Mermaid](https://mermaid.js.org/#/), which has the following advantages:
 
-- The Mermaid format is easier to maintain because:
-  - Their definition is stored as a code block in the documentation's Markdown source.
-  - The diagram is rendered dynamically at runtime.
-  - Text content that may change over time, such as feature names, can be found using text search
+- The Mermaid format is easier to maintain because the:
+  - Diagram definition is stored as a code block in the documentation's Markdown source.
+  - Diagram is rendered dynamically at runtime.
+  - Text content in the diagram (such as feature names) can be found with text search
     tools and edited.
-- The diagram is rendered as an scalable image, better suited to various output devices and sizes.
+- The diagram is rendered as a scalable image, better suited to various output devices and sizes.
+
+To learn how to create diagrams with the [Mermaid syntax](https://mermaid.js.org/intro/syntax-reference.html),
+see the Mermaid [Mermaid user guide](https://mermaid.js.org/intro/getting-started.html)
+and the examples on the Mermaid site.
+
+#### Guidelines
+
+To create accessible and easily maintainable diagrams, follow these guidelines:
+
+- Keep diagrams simple and focused. Include only essential elements and information.
+- Use different but consistent visual cues (such as shape, color, and font) to distinguish between categories:
+
+  - Rectangles for processes or steps.
+  - Diamonds for decision points.
+  - Solid lines for direct relationships between elements.
+  - Dotted lines for indirect relationship between elements.
+  - Arrows for flow or direction in a process.
+  - GitLab Sans font.
+
+- Add clear labels and brief descriptions to diagram elements.
+- Include a title and brief description for the diagram.
+- For complex processes, consider creating multiple simple diagrams instead of one large diagram.
+- Validate diagrams work well when viewed on different devices and screen sizes.
+- Update diagrams along with documentation or code when processes change to maintain accuracy.
 
 #### Create a diagram
 
-To create a diagram:
+To create a diagram for GitLab documentation:
 
-1. Use the [Mermaid Live Editor](https://mermaid.live/) to create the diagram.
-1. Copy the content of the **Code** pane into a `mermaid` code block in the Markdown file. For more
-   details, see [Mermaid](../../../user/markdown.md#mermaid).
-1. Optional. To add GitLab font styling to your diagram, add this line between the Mermaid
-   code block declaration and the type of diagram:
+1. In the [Mermaid Live Editor](https://mermaid.live/), create the diagram.
+1. Copy the content of the **Code** pane and paste it in the Markdown file, wrapped in a `mermaid` code block. For more
+   details, see [GitLab Flavored Markdown for Mermaid](../../../user/markdown.md#mermaid).
+1. To add GitLab font styling to your diagram, between the Mermaid code block declaration
+and the type of diagram, add the following line:
 
    ```plaintext
    %%{init: { "fontFamily": "GitLab Sans" }}%%
    ```
 
-1. To improve accessibility of diagrams, add a title and description. Add these lines on the next
-   line after declaring the type of diagram, like `flowchart` or `sequenceDiagram`:
+1. On the next line after declaring the type of diagram
+  (like `flowchart` or `sequenceDiagram`), add the following lines for accessibility:
 
    ```yaml
    accTitle: your diagram title here
    accDescr: describe what your diagram does in a single sentence, with no line breaks.
    ```
+
+   Make sure the title and description follow the [alternative text guidelines](#alternative-text).
 
 For example, this flowchart contains both accessibility and font information:
 
@@ -1393,10 +1425,6 @@ flowchart TD
     A[Start here] -->|action| B[next step]
 ```
 ````
-
-The Mermaid diagram syntax can be difficult to learn. To make this a little easier, see the Mermaid
-[Beginner's Guide](https://mermaid.js.org/intro/getting-started.html) and the examples on the
-Mermaid site.
 
 ## Emoji
 

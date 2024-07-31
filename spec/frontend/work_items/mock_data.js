@@ -4286,6 +4286,10 @@ export const groupWorkItemsQueryResponse = {
             closedAt: '',
             confidential: true,
             createdAt: '2020-01-23T12:34:56Z',
+            namespace: {
+              id: 'full-path-epic-id',
+              fullPath: 'full-path',
+            },
             reference: 'javascriptjs/js#23',
             state: 'OPEN',
             title: 'a group level work item',

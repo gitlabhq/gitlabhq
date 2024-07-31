@@ -85,6 +85,10 @@ query getWorkItems(
         confidential
         createdAt
         iid
+        namespace {
+          id
+          fullPath
+        }
         reference(full: true)
         state
         title

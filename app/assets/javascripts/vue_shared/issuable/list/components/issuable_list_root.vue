@@ -330,7 +330,7 @@ export default {
       :checkbox-checked="allIssuablesChecked"
       :show-friendly-text="showFilteredSearchFriendlyText"
       terms-as-tokens
-      class="row-content-block gl-grow gl-border-t-0 max-md:gl-border-t max-md:-gl-ml-5 max-md:-gl-mt-1 max-md:gl-w-screen sm:gl-flex"
+      class="row-content-block gl-grow sm:gl-flex gl-border-t-none"
       data-testid="issuable-search-container"
       @checked-input="handleAllIssuablesCheckedInput"
       @onFilter="$emit('filter', $event)"

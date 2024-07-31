@@ -303,9 +303,10 @@ module QA
                   merge_request: merge_request
                 }.compact,
                 fields: {
-                  runtime: p[:run_time],
+                  runtime: p[:runtime],
                   job_url: ci_job_url,
-                  pipeline_url: env('CI_PIPELINE_URL')
+                  pipeline_url: env('CI_PIPELINE_URL'),
+                  filename: p[:filename]
                 }.compact
               }
             end

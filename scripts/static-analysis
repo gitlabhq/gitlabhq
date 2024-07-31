@@ -47,7 +47,7 @@ class StaticAnalysis
     Task.new(%w[bin/rake config_lint], 10),
     Task.new(%w[bin/rake gitlab:sidekiq:all_queues_yml:check], 15),
     (Gitlab.ee? ? Task.new(%w[bin/rake gitlab:sidekiq:sidekiq_queues_yml:check], 11) : nil),
-    Task.new(%w[yarn run internal:stylelint], 8),
+    Task.new(%w[yarn run internal:stylelint], 33),
     Task.new(%w[scripts/lint-conflicts.sh], 1),
     Task.new(%w[yarn run block-dependencies], 1),
     Task.new(%w[yarn run check-dependencies], 1),

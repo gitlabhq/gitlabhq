@@ -561,12 +561,12 @@ describe QA::Support::Formatters::TestMetricsFormatter do
           {
             name: "method-call-stats", time: time,
             tags: { method: "has_element?", call_arg: "element_for_has", run_type: run_type, merge_request: "false" },
-            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url }
+            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url, runtime: 1, filename: "file.rb" }
           },
           {
             name: "method-call-stats", time: time,
             tags: { method: "click", call_arg: "element_for_click", run_type: run_type, merge_request: "false" },
-            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url }
+            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url, runtime: 1, filename: "file.rb" }
           }
         ])
       end

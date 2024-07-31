@@ -219,7 +219,7 @@ module QA
             name: location.label,
             runtime: duration,
             filename: location.path,
-            call_arg: param_info
+            call_arg: param_info.is_a?(QA::Page::Element) ? param_info.name : param_info
           )
 
           if duration > kwargs.fetch(:log_slow_threshold, 0.5)

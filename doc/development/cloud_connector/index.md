@@ -234,10 +234,11 @@ As an example, the feature is delivered as a stand-alone service called `new_fea
    - `X-Gitlab-Global-User-Id`: A globally unique anonymous user ID string.
    - `X-Gitlab-Realm`: One of `saas`, `self-managed`.
    - `X-Gitlab-Version`: Version of the GitLab instance.
+   - `X-Gitlab-Host-Name`: The hostname of the current GitLab instance.
+   - `X-Gitlab-Duo-Seat-Count`: The number of either duo pro or duo enterprise seats the customer purchased. When both add-ons are present, it will take the highest number of seats.
    - `Authorization`: Contains the Base64-encoded JWT as a `Bearer` token obtained from the `access_token` method in step 1.
 
-   Some of these headers can be injected by merging the result of the `API::Helpers::CloudConnector#cloud_connector_headers`
-   method to your payload.
+   Some of these headers can be injected by merging the result of the `Gitlab::CloudConnector#headers` method to your payload.
 
 ###### Permission checks
 

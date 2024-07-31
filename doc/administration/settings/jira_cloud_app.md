@@ -60,7 +60,7 @@ either:
 - The Organization Administrators (`org-admins`) group. Newer Atlassian organizations are using
   [centralized user management](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Centralized-user-management-content),
   which contains the `org-admins` group. Existing Atlassian organizations are being migrated to centralized user management.
-  If available, you should use the `org-admins` group to indicate which Jira users can manage the GitLab for Jira app. Alternatively you can use the
+  If available, you should use the `org-admins` group to indicate which Jira users can manage the GitLab for Jira Cloud app. Alternatively you can use the
   `site-admins` group.
 - The Site Administrators (`site-admins`) group. The `site-admins` group was used under
   [original user management](https://support.atlassian.com/user-management/docs/give-users-admin-permissions/#Original-user-management-content).

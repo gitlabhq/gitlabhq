@@ -12,7 +12,6 @@ class AddSecurityPolicyManagementProjectIdToApprovalPolicyRules < Gitlab::Databa
       :security_policy_management_project,
       index: false,
       null: false,
-      unique: false,
       foreign_key: { on_delete: :cascade, to_table: :projects }
     # rubocop:enable Migration/AddReference
     # rubocop:enable Rails/NotNullColumn

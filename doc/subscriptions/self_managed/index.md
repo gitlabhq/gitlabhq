@@ -335,21 +335,19 @@ Users over subscription = 13 - 10 (Maximum users - users in license)
 
 ### Add seats to a subscription
 
-The users in license count can be increased by adding seats to a subscription any time during the
-subscription period. The cost of seats added during the subscription
-period is prorated from the date of purchase through the end of the subscription period.
+The users in license count can be increased by adding seats to a subscription any time during the subscription period. The cost of seats added during the subscription period is prorated from the date of purchase through the end of the subscription period. Even if you reach the number of users in license count, you can continue to add users. GitLab [bills you for the overage](../quarterly_reconciliation.md).
 
 To add seats to a subscription:
 
 1. Sign in to the [Customers Portal](https://customers.gitlab.com/).
-1. Go to the **Manage Purchases** page.
-1. Select **Add more seats** on the relevant subscription card.
+1. Go to the **Subscriptions & purchases** page.
+1. Select **Add seats** on the relevant subscription card.
 1. Enter the number of additional users.
 1. Review the **Purchase summary** section. The system lists the total price for all users on the system and a credit for what you've already paid. You are only charged for the net change.
 1. Enter your payment information.
 1. Select **Purchase seats**.
 
-A payment receipt is emailed to you, which you can also access in the Customers Portal under [**View invoices**](https://customers.gitlab.com/receipts).
+A payment receipt is emailed to you, which you can also access in the Customers Portal under [**Invoices**](https://customers.gitlab.com/invoices).
 
 If your subscription was activated with an activation code, the additional seats are reflected in
 your instance immediately. If you're using a license file, you receive an updated file.
@@ -392,7 +390,7 @@ You can view and download your renewal invoice on the Customers Portal [Invoices
 
 - If your credit card is expired, the email tells you how to update it.
 - If you have any outstanding overages or subscription isn't able to auto-renew for any other reason, the email tells you to contact our Sales team or [renew in Customers Portal](#renew-subscription-manually).
-- If there are no issues, the email specifies the names and quantity of the products being renewed. The email also includes the total amount you owe. If your usage increases or decreases before renewal, this amount can change.
+- If there are no issues, the email specifies the names and quantity of the products being renewed. The email also includes the total amount you owe. If your usage increases before renewal, this amount will change.
 
 #### Enable or disable automatic subscription renewal
 
@@ -426,6 +424,7 @@ The following is emailed to you:
 
 - A payment receipt. You can also access this information in the Customers Portal under
   [**Invoices**](https://customers.gitlab.com/invoices).
+- A new activation code for your license.
 
 The new tier takes effect on the next subscription sync, or you can [synchronize your subscription manually](#manually-synchronize-subscription-data)
 to upgrade right away.

@@ -10,7 +10,7 @@ PATH
   remote: .
   specs:
     gitlab-backup-cli (0.0.1)
-      activesupport (~> 7.0.8)
+      activesupport (< 7.2)
       rainbow (~> 3.0)
       thor (~> 1.3)
 

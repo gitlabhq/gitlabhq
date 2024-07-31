@@ -145,7 +145,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
         end
 
         it 'returns an array of member object' do
-          get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
+          get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type, type_id: issuable_iid }
 
           expect(members_by_username('all').symbolize_keys).to include(
             username: 'all',
@@ -175,7 +175,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
           end
 
           it 'does not return the all mention user' do
-            get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
+            get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type, type_id: issuable_iid }
 
             expect(json_response).not_to include(a_hash_including(
               { username: 'all', name: 'All Project and Group Members' }))
@@ -185,12 +185,14 @@ RSpec.describe Projects::AutocompleteSourcesController do
 
       context 'with issue' do
         let(:issuable_type) { issue.class.name }
+        let(:issuable_iid) { issue.iid }
 
         it_behaves_like 'all members are returned'
       end
 
       context 'with work item' do
         let(:issuable_type) { work_item.class.name }
+        let(:issuable_iid) { work_item.iid }
 
         it_behaves_like 'all members are returned'
       end
@@ -211,7 +213,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
         end
 
         it 'returns members including those from invited private groups' do
-          get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
+          get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type, type_id: issuable_iid }
 
           expect(members_by_username('all').symbolize_keys).to include(
             username: 'all',
@@ -235,7 +237,7 @@ RSpec.describe Projects::AutocompleteSourcesController do
           end
 
           it 'does not return the all mention user' do
-            get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type }
+            get :members, format: :json, params: { namespace_id: group.path, project_id: public_project.path, type: issuable_type, type_id: issuable_iid }
 
             expect(json_response).not_to include(a_hash_including(
               { username: 'all', name: 'All Project and Group Members' }))
@@ -246,20 +248,24 @@ RSpec.describe Projects::AutocompleteSourcesController do
       context 'with issue' do
         it_behaves_like 'private project is inaccessible' do
           let(:issuable_type) { private_issue.class.name }
+          let(:issuable_iid) { private_issue.iid }
         end
 
         it_behaves_like 'returns all members of public project' do
           let(:issuable_type) { issue.class.name }
+          let(:issuable_iid) { issue.iid }
         end
       end
 
       context 'with work item' do
         it_behaves_like 'private project is inaccessible' do
           let(:issuable_type) { private_work_item.class.name }
+          let(:issuable_iid) { private_work_item.iid }
         end
 
         it_behaves_like 'returns all members of public project' do
           let(:issuable_type) { work_item.class.name }
+          let(:issuable_iid) { work_item.iid }
         end
       end
     end
