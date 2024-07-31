@@ -1,28 +1,23 @@
-!!! 5
 - add_page_specific_style 'page_bundles/terms'
-- @hide_top_bar = true
-- @hide_top_bar_padding = true
-%html{ lang: I18n.locale, class: [user_application_theme, page_class] }
+
+!!! 5
+%html{ lang: I18n.locale, class: [user_application_color_mode, user_application_theme, page_class] }
   = render "layouts/head"
 
   %body{ data: body_data }
-    .layout-page.terms{ class: page_class }
-      .content-wrapper.gl-pb-5
-        .alert-wrapper
-          = render "layouts/broadcast"
-          = render 'layouts/header/read_only_banner'
-          = render "layouts/flash"
+    .terms{ class: page_class }
+      = render 'layouts/header/read_only_banner'
+      = render "layouts/flash"
 
-        %div{ class: "#{container_class} limit-container-width" }
-          .content{ id: "content-body" }
-            = render Pajamas::CardComponent.new do |c|
-              - c.with_header do
-                = brand_header_logo({add_gitlab_black_text: true})
-                - if current_user
-                  .gl-display-flex.gl-gap-2.gl-align-items-center
-                    .gl-text-right.gl-leading-normal
-                      .gl-font-bold= current_user.name
-                      .gl-text-gray-700 @#{current_user.username}
-                    = render Pajamas::AvatarComponent.new(current_user, size: 32, avatar_options: { data: { testid: 'user-avatar-content' } })
-              - c.with_body do
-                = yield
+      .limit-container-width.gl-my-5{ class: container_class }
+        = render Pajamas::CardComponent.new( body_options: { class: 'gl-new-card-body gl-px-0' }, header_options: { class: 'gl-flex gl-items-center gl-justify-between' }) do |c|
+          - c.with_header do
+            = brand_header_logo({add_gitlab_black_text: true})
+            - if current_user
+              .gl-flex.gl-gap-2.gl-items-center
+                .gl-text-right.gl-leading-normal
+                  .gl-font-bold= current_user.name
+                  .gl-text-gray-700 @#{current_user.username}
+                = render Pajamas::AvatarComponent.new(current_user, size: 32, avatar_options: { data: { testid: 'user-avatar-content' } })
+          - c.with_body do
+            = yield

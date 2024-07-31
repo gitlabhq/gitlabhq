@@ -1,52 +1,11 @@
 @import 'mixins_and_variables_and_functions';
 
 .terms {
-  .with-system-header &,
-  .with-system-header.with-performance-bar &,
-  .with-performance-bar & {
-    margin-top: 0;
+  .flash-container {
+    top: 0;
   }
 
   .terms-fade {
-    background: linear-gradient(rgba($white, 0), $white);
-
-    .gl-dark & {
-      background: linear-gradient(rgba($gray-900, 0), $gray-900);
-    }
-  }
-
-  .content {
-    padding-top: $gl-padding;
-  }
-
-  // stylelint-disable-next-line gitlab/no-gl-class
-  .gl-card {
-    // stylelint-disable-next-line gitlab/no-gl-class
-    .gl-card-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      line-height: $line-height-base;
-
-      .nav li {
-        float: none;
-      }
-    }
-
-    .panel-content {
-      padding: $gl-padding;
-
-      *:first-child {
-        margin-top: 0;
-      }
-
-      *:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    .footer-block {
-      margin: 0;
-    }
+    background: linear-gradient(var(--gl-color-alpha-0), var(--gl-background-color-default));
   }
 }

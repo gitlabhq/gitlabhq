@@ -89,8 +89,6 @@ The following table lists project permissions available for each role:
 | [Project operations](../operations/index.md):<br>View [Error Tracking](../operations/error_tracking.md) list                                                                                 |       | ✓        | ✓         | ✓          | ✓     |       |
 | [Project operations](../operations/index.md):<br>Manage [Feature flags](../operations/feature_flags.md)                                                                                      |       |          | ✓         | ✓          | ✓     |       |
 | [Project operations](../operations/index.md):<br>Manage [Error Tracking](../operations/error_tracking.md)                                                                                    |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Download project                                                                                                                                            | ✓     | ✓        | ✓         | ✓          | ✓     | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
-| [Projects](project/index.md):<br>Leave comments                                                                                                                                              | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Reposition comments on images (posted by any user)                                                                                                          | ✓     | ✓        | ✓         | ✓          | ✓     | Applies only to comments on [Design Management](project/issues/design_management.md) designs. |
 | [Projects](project/index.md):<br>View [Insights](project/insights/index.md)                                                                                                                  | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>View [releases](project/releases/index.md)                                                                                                                  | ✓     | ✓        | ✓         | ✓          | ✓     | Guest users can access GitLab [**Releases**](project/releases/index.md) for downloading assets but are not allowed to download the source code nor see [repository information like commits and release evidence](project/releases/index.md#view-a-release-and-download-assets). |
@@ -101,24 +99,7 @@ The following table lists project permissions available for each role:
 | [Projects](project/index.md):<br>Create, edit, delete [releases](project/releases/index.md)                                                                                                  |       |          | ✓         | ✓          | ✓     | If the [tag is protected](project/protected_tags.md), this depends on the access given to Developers and Maintainers. |
 | [Projects](project/index.md):<br>Enable [review apps](../ci/review_apps/index.md)                                                                                                            |       |          | ✓         | ✓          | ✓     |       |
 | [Projects](project/index.md):<br>Add [deploy keys](project/deploy_keys/index.md)                                                                                                             |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Add new [team members](project/members/index.md)                                                                                                            |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Manage [team members](project/members/index.md)                                                                                                             |       |          |           | ✓          | ✓     | Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests. |
-| [Projects](project/index.md):<br>Change [project features visibility](public_access.md) level                                                                                                |       |          |           | ✓          | ✓     | A Maintainer or Owner can't change project features visibility level if [project visibility](public_access.md) is set to private. |
-| [Projects](project/index.md):<br>Configure [webhooks](project/integrations/webhooks.md)                                                                                                      |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Edit comments (posted by any user)                                                                                                                          |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Edit project badges                                                                                                                                         |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Edit project settings                                                                                                                                       |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>[Export project](project/settings/import_export.md)                                                                                                         |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Manage [project access tokens](project/settings/project_access_tokens.md)                                                                                   |       |          |           | ✓          | ✓     | For self-managed GitLab, project access tokens are available in all tiers. For GitLab.com, project access tokens are supported in the Premium and Ultimate tier (excluding [trial licenses](https://about.gitlab.com/free-trial/)). |
 | [Projects](project/index.md):<br>Manage [Project Operations](../operations/index.md)                                                                                                         |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Rename project                                                                                                                                              |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Share (invite) projects with groups                                                                                                                         |       |          |           | ✓          | ✓     | When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
-| [Projects](project/index.md):<br>View 2FA status of members                                                                                                                                  |       |          |           | ✓          | ✓     |       |
-| [Projects](project/index.md):<br>Archive project                                                                                                                                             |       |          |           |            | ✓     |       |
-| [Projects](project/index.md):<br>Change project visibility level                                                                                                                             |       |          |           |            | ✓     |       |
-| [Projects](project/index.md):<br>Delete project                                                                                                                                              |       |          |           |            | ✓     |       |
-| [Projects](project/index.md):<br>Disable notification emails                                                                                                                                 |       |          |           |            | ✓     |       |
-| [Projects](project/index.md):<br>Transfer project to another namespace                                                                                                                       |       |          |           |            | ✓     |       |
 | [Projects](project/index.md): View [Usage Quotas](usage_quotas.md) page                                                                                                                      |       |          |           | ✓          | ✓     |       |
 | [Requirements Management](project/requirements/index.md):<br>Archive / reopen                                                                                                                |       | ✓        | ✓         | ✓          | ✓     | Authors and assignees can archive and re-open even if they don't have the Reporter role. |
 | [Requirements Management](project/requirements/index.md):<br>Create / edit                                                                                                                   |       | ✓        | ✓         | ✓          | ✓     | Authors and assignees can modify the title and description even if they don't have the Reporter role.|
@@ -238,6 +219,28 @@ Project permissions for [package registry](../user/packages/index.md):
 | Delete a package                        |       |          |           |     ✓      |   ✓   |       |
 | Delete a file associated with a package |       |          |           |     ✓      |   ✓   |       |
 
+### Projects
+
+Project permissions for [project features](project/organize_work_with_projects.md):
+
+| Action                                                                    | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|---------------------------------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Download project                                                          |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   | On self-managed GitLab instances, users with the Guest role are able to perform this action only on public and internal projects (not on private projects). [External users](../administration/external_users.md) must be given explicit access (at least the **Reporter** role) even if the project is internal. Users with the Guest role on GitLab.com are only able to perform this action on public projects because internal visibility is not available. |
+| Leave comments                                                            |   ✓   |    ✓     |     ✓     |     ✓      |   ✓   |       |
+| Configure [webhooks](project/integrations/webhooks.md)                    |       |          |           |     ✓      |   ✓   |       |
+| Manage [project access tokens](project/settings/project_access_tokens.md) |       |          |           |     ✓      |   ✓   | For self-managed GitLab, project access tokens are available in all tiers. For GitLab.com, project access tokens are supported in the Premium and Ultimate tier (excluding [trial licenses](https://about.gitlab.com/free-trial/)). |
+| [Export project](project/settings/import_export.md)                       |       |          |           |     ✓      |   ✓   |       |
+| Rename project                                                            |       |          |           |     ✓      |   ✓   |       |
+| Edit project badges                                                       |       |          |           |     ✓      |   ✓   |       |
+| Edit project settings                                                     |       |          |           |     ✓      |   ✓   |       |
+| Change [project features visibility](public_access.md) level              |       |          |           |     ✓      |   ✓   | A Maintainer or Owner can't change project features visibility level if [project visibility](public_access.md) is set to private. |
+| Edit comments (posted by any user)                                        |       |          |           |     ✓      |   ✓   |       |
+| Archive project                                                           |       |          |           |            |   ✓   |       |
+| Change project visibility level                                           |       |          |           |            |   ✓   |       |
+| Delete project                                                            |       |          |           |            |   ✓   |       |
+| Disable notification emails                                               |       |          |           |            |   ✓   |       |
+| Transfer project                                                          |       |          |           |            |   ✓   |       |
+
 ### Repository
 
 Project permissions for [repository](project/repository/index.md) features including source code, branches, push rules, and more:
@@ -271,6 +274,16 @@ Project permissions for [merge requests](project/merge_requests/index.md):
 | Manage [merge request settings](project/merge_requests/approvals/settings.md)                                |       |          |           |     ✓      |   ✓   |       |
 | Manage [merge request approval rules](project/merge_requests/approvals/rules.md)                             |       |          |           |     ✓      |   ✓   |       |
 | Delete merge request                                                                                         |       |          |           |            |   ✓   |       |
+
+### User management
+
+Project permissions for [user management](project/members/index.md).
+
+| Action                                          | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|-------------------------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Manage [team members](project/members/index.md) |       |          |           |     ✓      |   ✓   | Maintainers cannot create, demote, or remove Owners, and they cannot promote users to the Owner role. They also cannot approve Owner role access requests. |
+| Share (invite) projects with groups             |       |          |           |     ✓      |   ✓   | When [Share Group Lock](group/access_and_permissions.md#prevent-a-project-from-being-shared-with-groups) is enabled the project can't be shared with other groups. It does not affect group with group sharing. |
+| View 2FA status of members                      |       |          |           |     ✓      |   ✓   |       |
 
 ### GitLab CI/CD permissions
 
@@ -354,7 +367,6 @@ The following table lists group permissions available for each role:
 
 | Action                                                                                  | Guest | Reporter | Developer | Maintainer | Owner | Notes |
 |-----------------------------------------------------------------------------------------|-------|----------|-----------|------------|-------|-------|
-| Browse group                                                                            | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View [Insights](project/insights/index.md)                                              | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View [Insights](project/insights/index.md) charts                                       | ✓     | ✓        | ✓         | ✓          | ✓     |       |
 | View [Issue analytics](group/issues_analytics/index.md)                                 | ✓     | ✓        | ✓         | ✓          | ✓     |       |
@@ -363,34 +375,12 @@ The following table lists group permissions available for each role:
 | View [Group DevOps Adoption](group/devops_adoption/index.md)                            |       | ✓        | ✓         | ✓          | ✓     |       |
 | View [Productivity analytics](analytics/productivity_analytics.md)                      |       | ✓        | ✓         | ✓          | ✓     |       |
 | View metrics dashboard annotations                                                      |       | ✓        | ✓         | ✓          | ✓     |       |
-| Create project in group                                                                 |       |          | ✓         | ✓          | ✓     | Developers, Maintainers and Owners: Only if the project creation role is set at the [instance level](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or the [group level](group/index.md#specify-who-can-add-projects-to-a-group).<br><br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". |
 | Create/edit/delete metrics dashboard annotations                                        |       |          | ✓         | ✓          | ✓     |       |
 | View group audit events                                                                 |       |          | ✓         | ✓          | ✓     | Developers and Maintainers can only view events based on their individual actions. |
-| Create subgroup                                                                         |       |          |           | ✓          | ✓     | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/index.md#change-who-can-create-subgroups). |
-| Edit [epic](group/epics/index.md) comments (posted by any user)                         |       |          |           | ✓          | ✓     |       |
-| Fork project into a group                                                               |       |          |           | ✓          | ✓     |       |
 | View group runners                                                                      |       |          |           | ✓          | ✓     |       |
 | View/manage group-level Kubernetes cluster                                              |       |          |           | ✓          | ✓     |       |
-| Change group visibility level                                                           |       |          |           |            | ✓     |       |
-| Create and manage compliance frameworks                                                 |       |          |           |            | ✓     |       |
-| Create/Delete [group access tokens](group/settings/group_access_tokens.md)              |       |          |           |            | ✓     |       |
-| Delete group                                                                            |       |          |           |            | ✓     |       |
-| Disable notification emails                                                             |       |          |           |            | ✓     |       |
-| Edit [SAML SSO](group/saml_sso/index.md)                                                |       |          |           |            | ✓     | Does not apply to subgroups |
-| Edit group settings                                                                     |       |          |           |            | ✓     |       |
-| Configure project templates                                                             |       |          |           |            | ✓     |       |
-| Filter members by 2FA status                                                            |       |          |           |            | ✓     |       |
-| Manage [subscriptions, and purchase storage and compute minutes](../subscriptions/gitlab_com/index.md) |    |    |     |            | ✓     |       |
 | Manage group level CI/CD variables                                                      |       |          |           |            | ✓     |       |
-| Manage group members                                                                    |       |          |           |            | ✓     |       |
 | Manage group runners                                                                    |       |          |           |            | ✓     |       |
-| Manage group-level custom roles                                                         |       |          |           |            | ✓     |       |
-| [Migrate groups](group/import/index.md)                                                 |       |          |           |            | ✓     |       |
-| Purge the dependency proxy for a group                                                  |       |          |           |            | ✓     |       |
-| Share (invite) groups with groups                                                       |       |          |           |            | ✓     |       |
-| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription)   |       |          |           |            | ✓     | Does not apply to subgroups |
-| View 2FA status of members                                                              |       |          |           |            | ✓     |       |
-| View group [Usage Quotas](usage_quotas.md) page                                         |       |          |           |            | ✓     | Does not apply to subgroups |
 | Map or unmap workspace cluster agents to and from a group                               |       |          |           |            | ✓     |       |
 | View workspace cluster agents mapped to a group                                         |       |          |           | ✓          | ✓     |       |
 
@@ -417,6 +407,29 @@ Groups permissions for [compliance](compliance/index.md) features including comp
 | View the [compliance center](compliance/compliance_center/index.md)                   |       |          |           |            |   ✓   |       |
 | Manage [compliance frameworks](group/compliance_frameworks.md)                        |       |          |           |            |   ✓   |       |
 | Assign [compliance frameworks](group/compliance_frameworks.md) to projects            |       |          |           |            |   ✓   |       |
+
+### Groups
+
+Group permissions for [group features](../user/group/index.md):
+
+| Action                                                                                     | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|--------------------------------------------------------------------------------------------|-------|----------|-----------|------------|-------|-------|
+| Browse group                                                                               | ✓     | ✓        | ✓         | ✓          | ✓     |       |
+| Create project in group                                                                    |       |          | ✓         | ✓          | ✓     | Developers, Maintainers and Owners: Only if the project creation role is set at the [instance level](../administration/settings/visibility_and_access_controls.md#define-which-roles-can-create-projects) or the [group level](group/index.md#specify-who-can-add-projects-to-a-group).<br><br>Developers: Developers can push commits to the default branch of a new project only if the [default branch protection](group/manage.md#change-the-default-branch-protection-of-a-group) is set to "Partially protected" or "Not protected". |
+| Create subgroup                                                                            |       |          |           | ✓          | ✓     | Maintainers: Only if users with the Maintainer role [can create subgroups](group/subgroups/index.md#change-who-can-create-subgroups). |
+| Edit [epic](group/epics/index.md) comments (posted by any user)                            |       |          |           | ✓          | ✓     |       |
+| Fork project into a group                                                                  |       |          |           | ✓          | ✓     |       |
+| View [Billing](../subscriptions/gitlab_com/index.md#view-your-gitlabcom-subscription)      |       |          |           |            | ✓     | Does not apply to subgroups |
+| View group [Usage Quotas](usage_quotas.md) page                                            |       |          |           |            | ✓     | Does not apply to subgroups |
+| Manage [subscriptions, storage, and compute minutes](../subscriptions/gitlab_com/index.md) |       |          |           |            | ✓     |       |
+| Edit group settings                                                                        |       |          |           |            | ✓     |       |
+| Disable notification emails                                                                |       |          |           |            | ✓     |       |
+| Configure project templates                                                                |       |          |           |            | ✓     |       |
+| Change group visibility level                                                              |       |          |           |            | ✓     |       |
+| Manage [group access tokens](group/settings/group_access_tokens.md)                        |       |          |           |            | ✓     |       |
+| Configure [SAML SSO](group/saml_sso/index.md)                                              |       |          |           |            | ✓     | Does not apply to subgroups |
+| [Migrate groups](group/import/index.md)                                                    |       |          |           |            | ✓     |       |
+| Delete group                                                                               |       |          |           |            | ✓     |       |
 
 ### Project planning
 
@@ -480,6 +493,18 @@ Group permissions for [repository](project/repository/index.md) features includi
 | Manage [merge request settings](group/manage.md#group-merge-request-approval-settings) |       |          |           |            |   ✓   |       |
 | Manage [push rules](group/access_and_permissions.md#group-push-rules)                  |       |          |           |            |   ✓   |       |
 | Manage [deploy tokens](project/deploy_tokens/index.md)                                 |       |          |           |            |   ✓   |       |
+
+### User Managment
+
+Group permissions for user management:
+
+| Action                            | Guest | Reporter | Developer | Maintainer | Owner | Notes |
+|-----------------------------------|:-----:|:--------:|:---------:|:----------:|:-----:|-------|
+| Manage group members              |       |          |           |            |   ✓   |       |
+| View 2FA status of members        |       |          |           |            |   ✓   |       |
+| Filter members by 2FA status      |       |          |           |            |   ✓   |       |
+| Share (invite) groups with groups |       |          |           |            |   ✓   |       |
+| Manage group-level custom roles   |       |          |           |            |   ✓   |       |
 
 ### Subgroup permissions
 
