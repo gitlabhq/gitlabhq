@@ -3108,7 +3108,6 @@ Layout/LineLength:
     - 'spec/finders/personal_access_tokens_finder_spec.rb'
     - 'spec/finders/personal_projects_finder_spec.rb'
     - 'spec/finders/projects/groups_finder_spec.rb'
-    - 'spec/finders/projects/prometheus/alerts_finder_spec.rb'
     - 'spec/finders/projects_finder_spec.rb'
     - 'spec/finders/repositories/tree_finder_spec.rb'
     - 'spec/finders/security/security_jobs_finder_spec.rb'

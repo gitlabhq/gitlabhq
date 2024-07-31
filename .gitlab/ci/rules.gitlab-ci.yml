@@ -291,6 +291,7 @@
 
 .bundler-patterns: &bundler-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+  - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
 
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
@@ -301,6 +302,7 @@
 
 .dependency-patterns: &dependency-patterns
   - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
+  - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
   - '{go.sum,*/go.sum,*/*/go.sum}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
 
@@ -322,6 +324,7 @@
 .assets-compilation-patterns: &assets-compilation-patterns
   - "{package.json,yarn.lock}"
   - "{Gemfile,Gemfile.lock}"
+  - "{Gemfile.next,Gemfile.next.lock}"
   - ".browserslistrc"
   - "babel.config.js"
   - "config/webpack.config.js"
@@ -352,6 +355,7 @@
   - "**/Rakefile"
   - "**/Dangerfile"
   - "**/Gemfile"
+  - "**/Gemfile.next"
   - "**/Guardfile"
   - "**/*.rake"
   - "**/*.rb"
@@ -360,6 +364,7 @@
 # Backend patterns + .ci-patterns
 .backend-patterns: &backend-patterns
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "Rakefile"
   - "config.ru"
   - "keeps/**/*"
@@ -378,6 +383,7 @@
 
 .search-backend-patterns: &search-backend-patterns
   - "{,jh/}Gemfile.lock"
+  - "{,jh/}Gemfile.next.lock"
   - "GITLAB_ELASTICSEARCH_INDEXER_VERSION"
   # List explicitly all the app/ dirs that are backend (i.e. all except app/assets).
   - "{,ee/,jh/}{app/channels,app/components,app/controllers,app/finders,app/graphql,app/helpers,app/mailers,app/models,app/policies,app/presenters,app/serializers,app/services,app/uploaders,app/validators,app/views,app/workers}/**/*"
@@ -470,6 +476,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "lib/gitlab/redis/*"
@@ -497,6 +504,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "babel.config.js"
@@ -531,6 +539,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "babel.config.js"
@@ -560,6 +569,7 @@
   - ".stylelintrc"
   - "{,ee/,jh/}{app,bin,config,db,elastic,generator_templates,gems,haml_lint,lib,locale,public,scripts,sidekiq_cluster,storybook,symbol,vendor}/**/*"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{package.json,yarn.lock}"
   - "*_VERSION"
   - "babel.config.js"
@@ -605,6 +615,7 @@
   - ".{eslintrc.yml,eslintignore,gitattributes,nvmrc,prettierrc,stylelintrc,yamllint}"
   - "*_VERSION"
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "keeps/**/*"
   - "Rakefile"
   - "tests.yml"
@@ -653,6 +664,7 @@
   - ".rubocop_todo/**/*.yml"
   - "{,ee/,jh/}rubocop/**/*"  # We might be changing custom cops
   - "{,ee/,jh/}Gemfile.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
+  - "{,ee/,jh/}Gemfile.next.lock"  # This should include gitlab-styles, rubocop itself, and any plugins we might be using
   - "lib/gitlab_edition.rb"  # This is required in RuboCop::CodeReuseHelpers
   - ".gitlab/ci/static-analysis.gitlab-ci.yml"
   - "config/feature_categories.yml"  # Used by RSpec/FeatureCategory
@@ -664,6 +676,7 @@
 
 .core-backend-patterns: &core-backend-patterns
   - "{,jh/}Gemfile{,.lock}"
+  - "{,jh/}Gemfile.next{,.lock}"
   - "{,ee/,jh/}config/**/*.rb"
 
 .core-frontend-patterns: &core-frontend-patterns
@@ -685,6 +698,7 @@
 .gdk-component-patterns: &gdk-component-patterns
   - qa/gdk/**/*
   - Gemfile.lock
+  - Gemfile.next.lock
   - yarn.lock
   - scripts/build_gdk_image
   - scripts/frontend/postinstall.js
@@ -2737,7 +2751,7 @@
       when: never
     - <<: *if-schedule-maintenance
     - <<: *if-merge-request
-      changes: ["Gemfile.lock"]
+      changes: ["Gemfile.lock", "Gemfile.next.lock"]
 
 .reports:rules:x-ray:
   rules:

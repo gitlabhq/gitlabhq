@@ -226,6 +226,7 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
         'ee/lib/ee/gitlab/background_migration/.rubocop.yml',
         'ee/LICENSE',
         'Gemfile.checksum',
+        'Gemfile.next.checksum',
         'gems/error_tracking_open_api/.openapi-generator/FILES',
         'gems/error_tracking_open_api/.openapi-generator/VERSION',
         'gems/openbao_client/.openapi-generator/FILES',

@@ -12,7 +12,8 @@
 #
 module Namespaces
   module Groups
-    class SharedGroupsFinder < GroupsFinder
+    class SharedGroupsFinder
+      include Namespaces::GroupsFilter
       include Gitlab::Allowable
 
       attr_reader :group, :current_user, :params
@@ -35,6 +36,15 @@ module Namespaces
 
       def filter_shared_groups(groups)
         by_visibility(groups)
+          .then { |filtered_groups| skip_groups(filtered_groups) }
+          .then { |filtered_groups| by_search(filtered_groups) }
+          .then { |filtered_groups| by_min_access_level(filtered_groups) }
+      end
+
+      def by_min_access_level(groups)
+        return groups unless min_access_level?
+
+        groups.by_min_access_level(current_user, params[:min_access_level])
       end
     end
   end

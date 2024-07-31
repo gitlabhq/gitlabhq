@@ -454,7 +454,7 @@ To distinguish between a project in the group and a project shared to the group,
 
 ## List a group's shared groups
 
-Get a list of groups shared to this group. When accessed without authentication, only public shared groups are returned.
+Get a list of groups where the given group has been invited. When accessed without authentication, only public shared groups are returned.
 
 By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
 
@@ -463,10 +463,12 @@ Parameters:
 | Attribute                             | Type              | Required | Description |
 | ------------------------------------- | ----------------- | -------- | ---------- |
 | `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `skip_groups`                         | array of integers | no       | Skip the specified group IDs |
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 
 ```plaintext

@@ -1382,8 +1382,6 @@ RSpec/NamedSubject:
     - 'spec/finders/projects/members/effective_access_level_per_user_finder_spec.rb'
     - 'spec/finders/projects/ml/candidate_finder_spec.rb'
     - 'spec/finders/projects/ml/model_finder_spec.rb'
-    - 'spec/finders/projects/prometheus/alerts_finder_spec.rb'
-    - 'spec/finders/prometheus_metrics_finder_spec.rb'
     - 'spec/finders/releases/evidence_pipeline_finder_spec.rb'
     - 'spec/finders/releases_finder_spec.rb'
     - 'spec/finders/repositories/tree_finder_spec.rb'

@@ -1,0 +1,18 @@
+---
+description: Wiki template is applied to a page
+internal_events: true
+action: apply_wiki_template
+identifiers:
+- project
+- namespace
+- user
+product_group: knowledge
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161130
+distributions:
+- ce
+- ee
+tiers:
+- free
+- premium
+- ultimate

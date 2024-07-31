@@ -301,6 +301,7 @@ class Group < Namespace
   scope :order_path_asc, -> { reorder(self.arel_table['path'].asc) }
   scope :order_path_desc, -> { reorder(self.arel_table['path'].desc) }
   scope :in_organization, ->(organization) { where(organization: organization) }
+  scope :by_min_access_level, ->(user, access_level) { joins(:group_members).where(members: { user: user }).where('members.access_level >= ?', access_level) }
 
   class << self
     def sort_by_attribute(method)

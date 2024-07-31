@@ -1368,6 +1368,32 @@ RSpec.describe Group, feature_category: :groups_and_projects do
       it { is_expected.to match_array(groups) }
     end
 
+    describe '.by_min_access_level' do
+      let_it_be(:user) { create(:user) }
+      let_it_be(:group1) { create(:group) }
+      let_it_be(:group2) { create(:group) }
+
+      let(:owner_access_level) { Gitlab::Access::OWNER }
+      let(:developer_access_level) { Gitlab::Access::DEVELOPER }
+
+      before do
+        create(:group_member, user: user, group: group1, access_level: owner_access_level)
+        create(:group_member, user: user, group: group2, access_level: developer_access_level)
+      end
+
+      it 'returns groups where the user has the specified access level' do
+        result = described_class.by_min_access_level(user, owner_access_level)
+
+        expect(result).to contain_exactly(group1)
+      end
+
+      it 'returns groups if the user has greater or equal specified access level' do
+        result = described_class.by_min_access_level(user, developer_access_level)
+
+        expect(result).to contain_exactly(group1, group2)
+      end
+    end
+
     describe 'descendants_with_shared_with_groups' do
       subject { described_class.descendants_with_shared_with_groups(parent_group) }
 

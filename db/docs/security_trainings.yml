@@ -7,7 +7,7 @@ feature_categories:
 description: Stores information about the primary security training provider for a given project
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/78195
 milestone: '14.7'
-gitlab_schema: gitlab_main_cell
+gitlab_schema: gitlab_sec
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
 sharding_key:

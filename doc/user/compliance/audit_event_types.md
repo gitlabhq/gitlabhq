@@ -96,7 +96,7 @@ Audit event types belong to the following product categories.
 
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
-| [`job_artifact_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129608) | Triggered when a user download a job artifact from a project | **{dotted-circle}** No | **{check-circle}** Yes | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/250663) | Project |
+| [`job_artifact_downloaded`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129608) | Triggered when a user downloads a job artifact from a project | **{dotted-circle}** No | **{check-circle}** Yes | GitLab [16.8](https://gitlab.com/gitlab-org/gitlab/-/issues/250663) | Project |
 
 ### Code review
 
@@ -156,7 +156,7 @@ Audit event types belong to the following product categories.
 | [`member_destroyed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | Event triggered when a membership is destroyed | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
 | [`member_updated`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/109711) | Event triggered when a membership is updated | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374112) | Group, Project |
 | [`merge_request_create`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/90911) | Event triggered when a Merge Request is created | **{dotted-circle}** No | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/367239) | Project |
-| [`omniauth_login_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123080) | Event triggered when an OmniAuth login fails | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
+| [`omniauth_login_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123080) | Triggered when an OmniAuth login fails | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [16.3](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
 | [`password_reset_requested`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/114548) | Event triggered when a user requests a password reset using a registered email address | **{check-circle}** Yes | **{dotted-circle}** No | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/374107) | User |
 | [`personal_access_token_created`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108952) | Event triggered when a user creates a personal access token | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374113) | User |
 | [`personal_access_token_revoked`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/108952) | Event triggered when a personal access token is revoked | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.9](https://gitlab.com/gitlab-org/gitlab/-/issues/374113) | User |
@@ -520,7 +520,7 @@ Audit event types belong to the following product categories.
 | Name | Description | Saved to database | Streamed | Introduced in | Scope |
 |:------------|:------------|:------------------|:---------|:--------------|:--------------|
 | [`authenticated_with_group_saml`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/28575) | Triggered when successfully signing in with SAML authentication. | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [12.10](https://gitlab.com/gitlab-org/gitlab/-/issues/35710) | Group |
-| [`ban_user`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103) | Event triggered on user ban action | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/377620) | User |
+| [`ban_user`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116103) | Triggered when a user is banned, unbanned, blocked, or unblocked | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/377620) | User |
 | [`change_membership_state`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/87924) | Event triggered on a users membership is updated | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.1](https://gitlab.com/gitlab-org/gitlab/-/issues/362200) | Group |
 | [`password_reset_failed`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/129079) | Event triggered when a password reset fails for a user | **{dotted-circle}** No | **{check-circle}** Yes | GitLab [16.4](https://gitlab.com/gitlab-org/gitlab/-/issues/377762) | User |
 | [`unban_user`](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/116221) | Event triggered on user unban action | **{check-circle}** Yes | **{check-circle}** Yes | GitLab [15.11](https://gitlab.com/gitlab-org/gitlab/-/issues/377620) | User |

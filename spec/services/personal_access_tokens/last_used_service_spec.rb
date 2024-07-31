@@ -46,25 +46,6 @@ RSpec.describe PersonalAccessTokens::LastUsedService, feature_category: :system_
         end
       end
 
-      context 'when use_lease_for_pat_last_used_update flag is disabled' do
-        before do
-          stub_feature_flags(use_lease_for_pat_last_used_update: false)
-        end
-
-        it 'does not obtain an exclusive lease before updating' do
-          Gitlab::Redis::SharedState.with do |redis|
-            expect(redis).not_to receive(:set).with(
-              "#{Gitlab::ExclusiveLease::PREFIX}:pat:last_used_update_lock:#{personal_access_token.id}",
-              anything,
-              nx: true,
-              ex: described_class::LEASE_TIMEOUT
-            )
-          end
-
-          expect { subject }.to change { personal_access_token.last_used_at }
-        end
-      end
-
       context 'when database load balancing is configured' do
         let!(:service) { described_class.new(personal_access_token) }
 

@@ -1928,7 +1928,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
     it_behaves_like 'rate limited endpoint', rate_limit_key: :group_shared_groups_api do
       def request
-        get api("/groups/#{main_group.id}/groups/shared")
+        get api(path)
       end
     end
 
@@ -1940,7 +1940,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       it_behaves_like 'unthrottled endpoint'
 
       def request
-        get api("/groups/#{main_group.id}/groups/shared")
+        get api(path)
       end
     end
 
@@ -1973,8 +1973,6 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       let_it_be(:shared_group_1) { create(:group, :public, owners: user1) }
       let_it_be(:shared_group_2) { create(:group, :private, owners: user1) }
 
-      let(:path) { "/groups/#{main_group.id}/groups/shared" }
-
       before do
         create(:group_group_link, shared_group: shared_group_1, shared_with_group: main_group)
         create(:group_group_link, shared_group: shared_group_2, shared_with_group: main_group)
@@ -1991,6 +1989,70 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
     end
 
+    context "when using skip_groups in request" do
+      it "returns all shared groups excluding skipped groups", :aggregate_failures do
+        get api(path, user1), params: { skip_groups: [shared_group1.id] }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+        expect(json_response.map { |group| group['id'] }).to contain_exactly(shared_group2.id, other_group.id)
+      end
+    end
+
+    context "when search is present in request" do
+      let_it_be(:new_shared_group) { create(:group, :public, name: "new search group", owners: user1) }
+      let_it_be(:other_shared_group) { create(:group, :private, name: "other group", owners: user1) }
+
+      before do
+        create(:group_group_link, shared_group: new_shared_group, shared_with_group: main_group)
+        create(:group_group_link, shared_group: other_shared_group, shared_with_group: main_group)
+      end
+
+      it 'filters the shared projects in the group based on search params', :aggregate_failures do
+        get api(path, user1), params: { search: 'new' }
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an(Array)
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(new_shared_group.id)
+      end
+    end
+
+    context 'when using min_access_level in the request' do
+      let_it_be(:new_main_group) do
+        create(:group, :private, owners: user1)
+      end
+
+      let_it_be(:shared_group1) do
+        create(:group, :private)
+      end
+
+      let_it_be(:shared_group2) do
+        create(:group, :private)
+      end
+
+      before do
+        shared_group1.add_developer(user1)
+        shared_group2.add_reporter(user1)
+        create(:group_group_link, shared_group: shared_group1, shared_with_group: new_main_group)
+        create(:group_group_link, shared_group: shared_group2, shared_with_group: new_main_group)
+      end
+
+      context 'with min_access_level parameter' do
+        it 'returns an array of groups the user has at least reporter access', :aggregate_failures do
+          get api("/groups/#{new_main_group.id}/groups/shared", user1), params: { min_access_level: Gitlab::Access::REPORTER }
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.map { |group| group['id'] }).to contain_exactly(shared_group1.id, shared_group2.id)
+        end
+      end
+    end
+
     context "when using sorting" do
       let(:response_groups) { json_response.map { |group| group['name'] } }
       let(:response_group_paths) { json_response.map { |group| group['path'] } }
@@ -2000,7 +2062,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       let(:shared_group_ids) { [shared_group1.id, shared_group2.id, other_group.id] }
 
       it "sorts by name ascending by default", :aggregate_failures do
-        get api("/groups/#{main_group.id}/groups/shared", user1)
+        get api(path, user1)
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2010,7 +2072,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it "sorts in descending order when passed", :aggregate_failures do
-        get api("/groups/#{main_group.id}/groups/shared", user1), params: { sort: "desc" }
+        get api(path, user1), params: { sort: "desc" }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2020,7 +2082,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it "sorts by path in order_by param", :aggregate_failures do
-        get api("/groups/#{main_group.id}/groups/shared", user1), params: { order_by: "path" }
+        get api(path, user1), params: { order_by: "path" }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2029,7 +2091,7 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
       end
 
       it "sorts by id in the order_by param", :aggregate_failures do
-        get api("/groups/#{main_group.id}/groups/shared", user1), params: { order_by: "id" }
+        get api(path, user1), params: { order_by: "id" }
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
@@ -2062,8 +2124,8 @@ RSpec.describe API::Groups, feature_category: :groups_and_projects do
 
         expect(response).to have_gitlab_http_status(:ok)
         expect(response).to include_pagination_headers
-        expect(json_response.length).to eq(3)
-        expect(response_groups).to eq(['same-name shared', 'same-name shared_other', 'other-name'])
+        expect(json_response.length).to eq(2)
+        expect(response_groups).to eq(['same-name shared', 'same-name shared_other'])
       end
 
       context 'when `search` parameter is not given' do

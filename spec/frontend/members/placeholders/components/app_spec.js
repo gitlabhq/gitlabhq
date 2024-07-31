@@ -7,12 +7,18 @@ import { GlTab, GlTabs } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import setWindowLocation from 'helpers/set_window_location_helper';
 
 import PlaceholdersTabApp from '~/members/placeholders/components/app.vue';
 import PlaceholdersTable from '~/members/placeholders/components/placeholders_table.vue';
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import { MEMBERS_TAB_TYPES } from '~/members/constants';
-import { mockSourceUsersQueryResponse, mockSourceUsers, pagination } from '../mock_data';
+import {
+  mockSourceUsersQueryResponse,
+  mockSourceUsersFailedStatusResponse,
+  mockSourceUsers,
+  pagination,
+} from '../mock_data';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -140,6 +146,7 @@ describe('PlaceholdersTabApp', () => {
         before: null,
         fullPath: mockGroup.path,
         first: 20,
+        statuses: [],
       });
     });
 
@@ -205,6 +212,41 @@ describe('PlaceholdersTabApp', () => {
             first: 20,
           }),
         );
+      });
+    });
+  });
+
+  describe('correctly filters users', () => {
+    const sourceUsersFailureQueryHandler = jest
+      .fn()
+      .mockResolvedValue(mockSourceUsersFailedStatusResponse);
+
+    beforeEach(async () => {
+      setWindowLocation('?status=failed');
+
+      createComponent({ queryHandler: sourceUsersFailureQueryHandler });
+      await waitForPromises();
+    });
+
+    it('when the url includes the query param failed', () => {
+      const sourceUsersWithFailedStatus =
+        mockSourceUsersFailedStatusResponse.data.namespace.importSourceUsers;
+      const tableProps = findPlaceholdersTable().props();
+
+      expect(findPlaceholdersTable().props()).toMatchObject({
+        isLoading: false,
+        items: sourceUsersWithFailedStatus.nodes,
+        pageInfo: sourceUsersWithFailedStatus.pageInfo,
+      });
+      expect(tableProps.items.length).toBe(1);
+      expect(tableProps.items[0].status).toBe('FAILED');
+      expect(sourceUsersFailureQueryHandler).toHaveBeenCalledTimes(1);
+      expect(sourceUsersFailureQueryHandler).toHaveBeenCalledWith({
+        after: null,
+        before: null,
+        fullPath: mockGroup.path,
+        first: 20,
+        statuses: ['FAILED'],
       });
     });
   });

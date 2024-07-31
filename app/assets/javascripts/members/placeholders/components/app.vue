@@ -4,6 +4,11 @@ import { mapState } from 'vuex';
 import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
+import { getParameterByName } from '~/lib/utils/url_utility';
+import {
+  PLACEHOLDER_STATUS_FAILED,
+  QUERY_PARAM_FAILED,
+} from '~/import_entities/import_groups/constants';
 
 import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholdersTable from './placeholders_table.vue';
@@ -40,6 +45,7 @@ export default {
           fullPath: this.group.path,
           ...this.cursor,
           [this.cursor.before ? 'last' : 'first']: DEFAULT_PAGE_SIZE,
+          statuses: this.queryStatuses,
         };
       },
       update(data) {
@@ -63,6 +69,16 @@ export default {
     },
     pageInfo() {
       return this.sourceUsers?.pageInfo || {};
+    },
+    statusParamValue() {
+      return getParameterByName('status');
+    },
+    queryStatuses() {
+      if (getParameterByName('status') === QUERY_PARAM_FAILED) {
+        return [PLACEHOLDER_STATUS_FAILED];
+      }
+
+      return [];
     },
   },
 

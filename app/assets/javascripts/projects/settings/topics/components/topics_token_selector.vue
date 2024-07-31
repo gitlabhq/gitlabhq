@@ -74,7 +74,11 @@ export default {
       this.search = searchTerm;
     },
     onTokensUpdate(tokens) {
-      this.$emit('update', tokens);
+      const uniqueTokens = Array.from(new Map(tokens.map((item) => [item.name, item])).values());
+
+      this.selectedTokens = uniqueTokens;
+
+      this.$emit('update', this.selectedTokens);
     },
   },
   AVATAR_SHAPE_OPTION_RECT,
@@ -88,6 +92,7 @@ export default {
       :dropdown-items="topics"
       :loading="loading"
       allow-user-defined-tokens
+      show-add-new-always
       :placeholder="placeholderText"
       @keydown.enter="handleEnter"
       @text-input="filterTopics"

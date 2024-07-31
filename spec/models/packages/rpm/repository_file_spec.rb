@@ -17,7 +17,7 @@ RSpec.describe Packages::Rpm::RepositoryFile, type: :model, feature_category: :p
   end
 
   describe '.has_oversized_filelists?' do
-    let_it_be(:filelists) { create(:rpm_repository_file, :filelists, size: 21.megabytes) }
+    let!(:filelists) { create(:rpm_repository_file, :filelists, size: 21.megabytes) }
 
     subject { described_class.has_oversized_filelists?(project_id: filelists.project_id) }
 
