@@ -89,6 +89,18 @@ Returns [`AddOnPurchase`](#addonpurchase).
 | <a id="queryaddonpurchaseaddontype"></a>`addOnType` | [`GitlabSubscriptionsAddOnType!`](#gitlabsubscriptionsaddontype) | Type of add-on for the add-on purchase. |
 | <a id="queryaddonpurchasenamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | ID of namespace that the add-on was purchased for. |
 
+### `Query.addOnPurchases`
+
+Retrieve all active add-on purchases. This query can be used in GitLab.com and self-managed environments.
+
+Returns [`[AddOnPurchase!]`](#addonpurchase).
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="queryaddonpurchasesnamespaceid"></a>`namespaceId` | [`NamespaceID`](#namespaceid) | ID of namespace that the add-ons were purchased for. |
+
 ### `Query.aiMessages`
 
 Find GitLab Duo Chat messages.
@@ -35777,6 +35789,7 @@ State of a review of a GitLab merge request.
 | <a id="mergerequestreviewstateapproved"></a>`APPROVED` | Merge request reviewer has approved the changes. |
 | <a id="mergerequestreviewstaterequested_changes"></a>`REQUESTED_CHANGES` | Merge request reviewer has requested changes. |
 | <a id="mergerequestreviewstatereviewed"></a>`REVIEWED` | Merge request reviewer has reviewed. |
+| <a id="mergerequestreviewstatereview_started"></a>`REVIEW_STARTED` | Merge request reviewer has started a review. |
 | <a id="mergerequestreviewstateunapproved"></a>`UNAPPROVED` | Merge request reviewer removed their approval of the changes. |
 | <a id="mergerequestreviewstateunreviewed"></a>`UNREVIEWED` | Awaiting review from merge request reviewer. |
 

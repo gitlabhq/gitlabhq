@@ -125,7 +125,7 @@ describe('SearchTypeIndicator', () => {
 
   describe.each`
     searchType    | syntaxdocsLink
-    ${'advanced'} | ${'/help/user/search/advanced_search#use-the-advanced-search-syntax'}
+    ${'advanced'} | ${'/help/user/search/advanced_search#syntax'}
     ${'zoekt'}    | ${'/help/user/search/exact_code_search#syntax'}
   `('Syntax documentation $searchType', ({ searchType, syntaxdocsLink }) => {
     beforeEach(() => {

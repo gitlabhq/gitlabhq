@@ -24,6 +24,10 @@ RSpec.describe GitlabSchema.types['MergeRequestReviewState'] do
       'UNAPPROVED' => have_attributes(
         description: 'Merge request reviewer removed their approval of the changes.',
         value: 'unapproved'
+      ),
+      'REVIEW_STARTED' => have_attributes(
+        description: 'Merge request reviewer has started a review.',
+        value: 'review_started'
       )
     )
   end

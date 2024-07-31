@@ -7860,9 +7860,6 @@ msgstr ""
 msgid "Average per day: %{average}"
 msgstr ""
 
-msgid "Awaiting review"
-msgstr ""
-
 msgid "Awaiting user signup"
 msgstr ""
 
@@ -19493,6 +19490,9 @@ msgstr ""
 msgid "DuoChat|Ask a question about GitLab"
 msgstr ""
 
+msgid "DuoChat|Delete all messages in this conversation."
+msgstr ""
+
 msgid "DuoChat|For example, %{linkStart}what is a fork%{linkEnd}?"
 msgstr ""
 
@@ -19503,6 +19503,9 @@ msgid "DuoChat|Give feedback"
 msgstr ""
 
 msgid "DuoChat|How to use GitLab"
+msgstr ""
+
+msgid "DuoChat|Reset conversation and ignore the previous messages."
 msgstr ""
 
 msgid "DuoChat|The issue, epic, or code you're viewing"
@@ -33023,6 +33026,9 @@ msgstr ""
 msgid "MergeRequests|started a thread on commit %{linkStart}%{commitDisplay}%{linkEnd}"
 msgstr ""
 
+msgid "MergeRequest|Awaiting review"
+msgstr ""
+
 msgid "MergeRequest|Can't fetch the diff needed to update this view. Please reload this page."
 msgstr ""
 
@@ -33057,6 +33063,18 @@ msgid "MergeRequest|No files found"
 msgstr ""
 
 msgid "MergeRequest|Reviewed by @%{username} but not yet approved"
+msgstr ""
+
+msgid "MergeRequest|Reviewer approved changes"
+msgstr ""
+
+msgid "MergeRequest|Reviewer commented"
+msgstr ""
+
+msgid "MergeRequest|Reviewer requested changes"
+msgstr ""
+
+msgid "MergeRequest|Reviewer started review"
 msgstr ""
 
 msgid "MergeRequest|Search (e.g. *.vue) (%{MODIFIER_KEY}P)"
@@ -45054,15 +45072,6 @@ msgid "Reviewer"
 msgid_plural "%d Reviewers"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Reviewer approved changes"
-msgstr ""
-
-msgid "Reviewer commented"
-msgstr ""
-
-msgid "Reviewer requested changes"
-msgstr ""
 
 msgid "Reviewers"
 msgstr ""

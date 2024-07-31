@@ -234,7 +234,12 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           container_registry_expiration_policies_worker_capacity
           decompress_archive_file_timeout
           dependency_proxy_ttl_group_policy_worker_capacity
+          downstream_pipeline_trigger_limit_per_project_user_sha
           gitlab_shell_operation_limit
+          group_api_limit
+          group_projects_api_limit
+          group_shared_groups_api_limit
+          groups_api_limit
           inactive_projects_min_size_mb
           issues_create_limit
           jobs_per_stage_page_size
@@ -249,25 +254,19 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
           package_registry_cleanup_policies_worker_capacity
           packages_cleanup_package_file_worker_capacity
           pipeline_limit_per_project_user_sha
+          project_api_limit
+          projects_api_limit
           projects_api_rate_limit_unauthenticated
           raw_blob_request_limit
           search_rate_limit
           search_rate_limit_unauthenticated
-          session_expire_delay
           sidekiq_job_limiter_compression_threshold_bytes
           sidekiq_job_limiter_limit_bytes
           terminal_max_session_time
-          users_get_by_id_limit
-          downstream_pipeline_trigger_limit_per_project_user_sha
-          group_api_limit
-          group_projects_api_limit
-          group_shared_groups_api_limit
-          groups_api_limit
-          project_api_limit
-          projects_api_limit
           user_contributed_projects_api_limit
           user_projects_api_limit
           user_starred_projects_api_limit
+          users_get_by_id_limit
         ]
       end
 
@@ -294,40 +293,47 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     context 'for non-null integer attributes starting from 1' do
       where(:attribute) do
         %i[
-          max_attachment_size
-          max_artifacts_size
+          bulk_import_concurrent_pipeline_batch_limit
+          code_suggestions_api_rate_limit
+          concurrent_bitbucket_import_jobs_limit
+          concurrent_bitbucket_server_import_jobs_limit
+          concurrent_github_import_jobs_limit
           container_registry_token_expire_delay
           housekeeping_optimize_repository_period
-          bulk_import_concurrent_pipeline_batch_limit
-          snippet_size_limit
-          max_yaml_size_bytes
+          max_artifacts_size
+          max_attachment_size
           max_yaml_depth
+          max_yaml_size_bytes
           namespace_aggregation_schedule_lease_duration_in_seconds
-          throttle_unauthenticated_api_requests_per_period
-          throttle_unauthenticated_api_period_in_seconds
-          throttle_unauthenticated_requests_per_period
-          throttle_unauthenticated_period_in_seconds
-          throttle_unauthenticated_packages_api_requests_per_period
-          throttle_unauthenticated_packages_api_period_in_seconds
-          throttle_unauthenticated_files_api_requests_per_period
-          throttle_unauthenticated_files_api_period_in_seconds
-          throttle_unauthenticated_deprecated_api_requests_per_period
-          throttle_unauthenticated_deprecated_api_period_in_seconds
-          throttle_authenticated_api_requests_per_period
-          throttle_authenticated_api_period_in_seconds
-          throttle_authenticated_git_lfs_requests_per_period
-          throttle_authenticated_git_lfs_period_in_seconds
-          throttle_authenticated_web_requests_per_period
-          throttle_authenticated_web_period_in_seconds
-          throttle_authenticated_packages_api_requests_per_period
-          throttle_authenticated_packages_api_period_in_seconds
-          throttle_authenticated_files_api_requests_per_period
-          throttle_authenticated_files_api_period_in_seconds
-          throttle_authenticated_deprecated_api_requests_per_period
-          throttle_authenticated_deprecated_api_period_in_seconds
-          throttle_protected_paths_requests_per_period
-          throttle_protected_paths_period_in_seconds
           project_jobs_api_rate_limit
+          session_expire_delay
+          snippet_size_limit
+          throttle_authenticated_api_period_in_seconds
+          throttle_authenticated_api_requests_per_period
+          throttle_authenticated_deprecated_api_period_in_seconds
+          throttle_authenticated_deprecated_api_requests_per_period
+          throttle_authenticated_files_api_period_in_seconds
+          throttle_authenticated_files_api_requests_per_period
+          throttle_authenticated_git_lfs_period_in_seconds
+          throttle_authenticated_git_lfs_requests_per_period
+          throttle_authenticated_packages_api_period_in_seconds
+          throttle_authenticated_packages_api_requests_per_period
+          throttle_authenticated_web_period_in_seconds
+          throttle_authenticated_web_requests_per_period
+          throttle_protected_paths_period_in_seconds
+          throttle_protected_paths_requests_per_period
+          throttle_unauthenticated_api_period_in_seconds
+          throttle_unauthenticated_api_requests_per_period
+          throttle_unauthenticated_deprecated_api_period_in_seconds
+          throttle_unauthenticated_deprecated_api_requests_per_period
+          throttle_unauthenticated_files_api_period_in_seconds
+          throttle_unauthenticated_files_api_requests_per_period
+          throttle_unauthenticated_git_http_period_in_seconds
+          throttle_unauthenticated_git_http_requests_per_period
+          throttle_unauthenticated_packages_api_period_in_seconds
+          throttle_unauthenticated_packages_api_requests_per_period
+          throttle_unauthenticated_period_in_seconds
+          throttle_unauthenticated_requests_per_period
         ]
       end
 

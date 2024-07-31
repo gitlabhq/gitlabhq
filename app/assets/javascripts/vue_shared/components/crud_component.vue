@@ -70,7 +70,7 @@ export default {
             {{ title }}
             <span
               v-if="displayedCount"
-              class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-secondary"
+              class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
               data-testid="crud-count"
             >
               <gl-icon v-if="icon" :name="icon" data-testid="crud-icon" />
@@ -79,7 +79,7 @@ export default {
           </h2>
           <p
             v-if="description || $scopedSlots.description"
-            class="gl-text-sm gl-text-secondary gl-mt-1 gl-mb-0"
+            class="gl-text-sm gl-text-subtle gl-mt-1 gl-mb-0"
             data-testid="crud-description"
           >
             <slot v-if="$scopedSlots.description" name="description"></slot>

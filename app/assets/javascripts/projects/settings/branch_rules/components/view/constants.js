@@ -82,16 +82,6 @@ export const BRANCH_PARAM_NAME = 'branch';
 
 export const ALL_BRANCHES_WILDCARD = '*';
 
-export const PROTECTED_BRANCHES_HELP_PATH = 'user/project/protected_branches';
-
-export const APPROVALS_HELP_PATH = 'user/project/merge_requests/approvals/index.md';
-
-export const STATUS_CHECKS_HELP_PATH = 'user/project/merge_requests/status_checks.md';
-
-export const CODE_OWNERS_HELP_PATH = 'user/project/codeowners/index.md';
-
-export const PUSH_RULES_HELP_PATH = 'user/project/repository/push_rules.md';
-
 export const REQUIRED_ICON = 'check-circle-filled';
 export const NOT_REQUIRED_ICON = 'status-failed';
 

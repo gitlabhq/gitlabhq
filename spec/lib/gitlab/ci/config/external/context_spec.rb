@@ -63,7 +63,7 @@ RSpec.describe Gitlab::Ci::Config::External::Context, feature_category: :pipelin
     describe 'max_total_yaml_size_bytes' do
       context 'when application setting `max_total_yaml_size_bytes` is requsted and was never updated by the admin' do
         it 'returns the default value `max_total_yaml_size_bytes`' do
-          expect(subject.max_total_yaml_size_bytes).to eq(157286400)
+          expect(subject.max_total_yaml_size_bytes).to eq(314572800)
         end
       end
 

@@ -777,6 +777,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_02450faab875() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "vulnerability_occurrences"
+  WHERE "vulnerability_occurrences"."id" = NEW."occurrence_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_038fe84feff7() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -5613,7 +5629,7 @@ CREATE TABLE application_settings (
     throttle_authenticated_files_api_period_in_seconds integer DEFAULT 15 NOT NULL,
     throttle_unauthenticated_files_api_enabled boolean DEFAULT false NOT NULL,
     throttle_authenticated_files_api_enabled boolean DEFAULT false NOT NULL,
-    max_yaml_size_bytes bigint DEFAULT 1048576 NOT NULL,
+    max_yaml_size_bytes bigint DEFAULT 2097152 NOT NULL,
     max_yaml_depth integer DEFAULT 100 NOT NULL,
     throttle_authenticated_git_lfs_requests_per_period integer DEFAULT 1000 NOT NULL,
     throttle_authenticated_git_lfs_period_in_seconds integer DEFAULT 60 NOT NULL,
@@ -5784,7 +5800,7 @@ CREATE TABLE application_settings (
     max_decompressed_archive_size integer DEFAULT 25600 NOT NULL,
     sentry_clientside_traces_sample_rate double precision DEFAULT 0.0 NOT NULL,
     prometheus_alert_db_indicators_settings jsonb,
-    ci_max_total_yaml_size_bytes integer DEFAULT 157286400 NOT NULL,
+    ci_max_total_yaml_size_bytes integer DEFAULT 314572800 NOT NULL,
     decompress_archive_file_timeout integer DEFAULT 210 NOT NULL,
     search_rate_limit_allowlist text[] DEFAULT '{}'::text[] NOT NULL,
     snowplow_database_collector_hostname text,
@@ -19445,7 +19461,8 @@ CREATE TABLE vulnerability_occurrence_identifiers (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     occurrence_id bigint NOT NULL,
-    identifier_id bigint NOT NULL
+    identifier_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE vulnerability_occurrence_identifiers_id_seq
@@ -31943,6 +31960,8 @@ CREATE TRIGGER table_sync_trigger_cd362c20e2 AFTER INSERT OR DELETE OR UPDATE ON
 CREATE TRIGGER tags_loose_fk_trigger AFTER DELETE ON tags REFERENCING OLD TABLE AS old_table FOR EACH STATEMENT EXECUTE FUNCTION insert_into_loose_foreign_keys_deleted_records();
 
 CREATE TRIGGER trigger_01b3fc052119 BEFORE INSERT OR UPDATE ON approval_merge_request_rules FOR EACH ROW EXECUTE FUNCTION trigger_01b3fc052119();
+
+CREATE TRIGGER trigger_02450faab875 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_identifiers FOR EACH ROW EXECUTE FUNCTION trigger_02450faab875();
 
 CREATE TRIGGER trigger_038fe84feff7 BEFORE INSERT OR UPDATE ON approvals FOR EACH ROW EXECUTE FUNCTION trigger_038fe84feff7();
 

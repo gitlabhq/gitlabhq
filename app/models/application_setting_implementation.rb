@@ -44,7 +44,7 @@ module ApplicationSettingImplementation
         allow_possible_spam: false,
         asset_proxy_enabled: false,
         authorized_keys_enabled: true, # TODO default to false if the instance is configured to use AuthorizedKeysCommand
-        ci_max_total_yaml_size_bytes: 157286400, # max_yaml_size_bytes * ci_max_includes = 1.megabyte * 150
+        ci_max_total_yaml_size_bytes: 314572800, # max_yaml_size_bytes * ci_max_includes = 2.megabyte * 150
         commit_email_hostname: default_commit_email_hostname,
         container_expiration_policies_enable_historic_entries: false,
         container_registry_features: [],
@@ -132,7 +132,7 @@ module ApplicationSettingImplementation
         max_import_remote_file_size: 10240,
         max_login_attempts: nil,
         max_terraform_state_size_bytes: 0,
-        max_yaml_size_bytes: 1.megabyte,
+        max_yaml_size_bytes: 2.megabyte,
         max_yaml_depth: 100,
         minimum_password_length: DEFAULT_MINIMUM_PASSWORD_LENGTH,
         mirror_available: true,

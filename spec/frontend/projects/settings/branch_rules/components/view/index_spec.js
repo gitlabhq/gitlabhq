@@ -45,6 +45,7 @@ jest.mock('~/lib/utils/url_utility', () => ({
   setUrlParams: jest
     .fn()
     .mockReturnValue('/project/Project/-/settings/repository/branch_rules?branch=main'),
+  setUrlFragment: jest.fn(),
   visitUrl: jest.fn().mockName('visitUrlMock'),
 }));
 

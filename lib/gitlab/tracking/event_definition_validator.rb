@@ -5,6 +5,7 @@ module Gitlab
     class EventDefinitionValidator
       EVENT_SCHEMA_PATH = Rails.root.join('config/events/schema.json')
       SCHEMA = ::JSONSchemer.schema(EVENT_SCHEMA_PATH)
+      NOT_VALIDATED_PROPERTIES = [:value].freeze
 
       def initialize(definition)
         @attributes = definition.attributes
@@ -24,23 +25,22 @@ module Gitlab
 
         return unless additional_props.present?
 
-        extra_props = additional_props - main_additional_properties
+        extra_props = additional_props - Gitlab::InternalEvents::BASE_ADDITIONAL_PROPERTIES.keys
+        unused_props = prioritized_properties - additional_props
 
-        return unless extra_props.count == additional_props.count
-
-        # if additional properties were not used
+        return unless extra_props.present? && unused_props.present?
 
         <<~ERROR_MSG
           --------------- VALIDATION ERROR ---------------
           Definition file: #{path}
           Error type: consider using the built-in additional properties:
-          "#{main_additional_properties.join(', ')}"
+          "#{prioritized_properties.join(', ')}"
           before adding custom extra properties: #{extra_props.join(', ')}
         ERROR_MSG
       end
 
-      def main_additional_properties
-        Gitlab::InternalEvents::BASE_ADDITIONAL_PROPERTIES.keys - [:value]
+      def prioritized_properties
+        Gitlab::InternalEvents::BASE_ADDITIONAL_PROPERTIES.keys - NOT_VALIDATED_PROPERTIES
       end
 
       def validate_schema

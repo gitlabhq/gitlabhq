@@ -136,9 +136,7 @@ RSpec.shared_examples 'conan authenticate endpoint' do
           response.body, jwt_secret).first
         expect(payload['access_token']).to eq(personal_access_token.token)
         expect(payload['user_id']).to eq(personal_access_token.user_id)
-
-        duration = payload['exp'] - payload['iat']
-        expect(duration).to eq(::Gitlab::ConanToken::CONAN_TOKEN_EXPIRE_TIME)
+        expect(payload['exp']).to eq(personal_access_token.expires_at.at_beginning_of_day.to_i)
       end
     end
   end

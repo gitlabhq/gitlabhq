@@ -10,12 +10,4 @@ milestone: '10.2'
 gitlab_schema: gitlab_main_cell
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-desired_sharding_key:
-  group_id:
-    references: namespaces
-    backfill_via:
-      parent:
-        foreign_key: epic_id
-        table: epics
-        sharding_key: group_id
-        belongs_to: epic
+sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/442042

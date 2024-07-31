@@ -101,7 +101,7 @@ describe('Work item comment form component', () => {
         confidential: false,
         confidential_issues_docs_path: '/help/user/tasks.html#confidential-tasks',
         discussion_locked: false,
-        locked_discussion_docs_path: '/help/user/tasks.html#locked-tasks',
+        locked_discussion_docs_path: '/help/user/tasks.html#lock-discussion',
       },
       noteableType: 'Task',
     });

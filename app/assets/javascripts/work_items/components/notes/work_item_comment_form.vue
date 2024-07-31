@@ -10,6 +10,19 @@ import MarkdownEditor from '~/vue_shared/components/markdown/markdown_editor.vue
 import WorkItemStateToggle from '~/work_items/components/work_item_state_toggle.vue';
 import CommentFieldLayout from '~/notes/components/comment_field_layout.vue';
 
+const DOCS_WORK_ITEM_LOCKED_TASKS_PATH = helpPagePath('user/tasks.html', {
+  anchor: 'lock-discussion',
+});
+const DOCS_WORK_ITEM_CONFIDENTIAL_TASKS_PATH = helpPagePath('user/tasks.html', {
+  anchor: 'confidential-tasks',
+});
+const DOCS_WORK_ITEM_LOCKED_OKRS_PATH = helpPagePath('user/okrs.html', {
+  anchor: 'lock-discussion',
+});
+const DOCS_WORK_ITEM_CONFIDENTIAL_OKRS_PATH = helpPagePath('user/okrs.html', {
+  anchor: 'confidential-okrs',
+});
+
 export default {
   i18n: {
     internal: s__('Notes|Make this an internal note'),
@@ -128,29 +141,22 @@ export default {
     commentButtonTextComputed() {
       return this.isNoteInternal ? this.$options.i18n.addInternalNote : this.commentButtonText;
     },
-    workItemDocPath() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK ? 'user/tasks.html' : 'user/okrs.html';
-    },
-    workItemDocConfidentialAnchor() {
+    docsLinks() {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK
-        ? 'confidential-tasks'
-        : 'confidential-okrs';
-    },
-    workItemDocLockedAnchor() {
-      return this.workItemType === WORK_ITEM_TYPE_VALUE_TASK ? 'locked-tasks' : 'locked-okrs';
+        ? {
+            confidential_issues_docs_path: DOCS_WORK_ITEM_CONFIDENTIAL_TASKS_PATH,
+            locked_discussion_docs_path: DOCS_WORK_ITEM_LOCKED_TASKS_PATH,
+          }
+        : {
+            confidential_issues_docs_path: DOCS_WORK_ITEM_CONFIDENTIAL_OKRS_PATH,
+            locked_discussion_docs_path: DOCS_WORK_ITEM_LOCKED_OKRS_PATH,
+          };
     },
     getWorkItemData() {
       return {
         confidential: this.isWorkItemConfidential,
-        // eslint-disable-next-line local-rules/require-valid-help-page-path
-        confidential_issues_docs_path: helpPagePath(this.workItemDocPath, {
-          anchor: this.workItemDocConfidentialAnchor,
-        }),
         discussion_locked: this.isDiscussionLocked,
-        // eslint-disable-next-line local-rules/require-valid-help-page-path
-        locked_discussion_docs_path: helpPagePath(this.workItemDocPath, {
-          anchor: this.workItemDocLockedAnchor,
-        }),
+        ...this.docsLinks,
       };
     },
     workItemTypeKey() {

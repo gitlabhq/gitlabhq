@@ -62,23 +62,35 @@ RSpec.describe Gitlab::Tracking::EventDefinitionValidator, feature_category: :se
           distributions: %w[ce],
           milestone: "1.0",
           tiers: %w[free],
-          additional_properties: {
-            label: { description: "desc" },
-            property: { description: "desc" }
-          }
+          additional_properties: {}
         }
       end
 
-      it 'valid when extra added in addition to the built in' do
-        attributes[:additional_properties][:extra] = { description: "desc" }
-
-        expect(described_class.new(definition).validation_errors).to be_empty
+      where(:label, :property, :value, :custom, :error?) do
+        true  | true  | true  | true  | false
+        true  | true  | true  | false | false
+        true  | true  | false | false | false
+        true  | true  | false | true  | false
+        true  | false | false | false | false
+        false | true  | false | false | false
+        false | true  | true  | false | false
+        true  | false | true  | true  | true
+        true  | false | false | true  | true
+        false | true  | true  | true  | true
+        false | false | true  | true  | true
       end
 
-      it 'invalid when extra added with no built in used' do
-        attributes[:additional_properties] = { extra: { description: "desc" } }
+      with_them do
+        before do
+          attributes[:additional_properties][:label] = { description: "login button" } if label
+          attributes[:additional_properties][:property] = { description: "button state" } if property
+          attributes[:additional_properties][:value] = { description: "package version" } if value
+          attributes[:additional_properties][:custom] = { description: "custom" } if custom
+        end
 
-        expect(described_class.new(definition).validation_errors).not_to be_empty
+        subject { described_class.new(definition).validation_errors.any? }
+
+        it { is_expected.to be(error?) }
       end
     end
   end

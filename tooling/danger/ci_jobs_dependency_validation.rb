@@ -118,7 +118,7 @@ module Tooling
 
       def query_params(ref)
         ref_query_params = {
-          content_ref: ref,
+          content_ref: merged_result_commit_sha,
           dry_run_ref: ref,
           include_jobs: true,
           dry_run: true
@@ -283,6 +283,10 @@ module Tooling
 
       def source_branch
         helper.mr_source_branch
+      end
+
+      def merged_result_commit_sha
+        ENV['CI_COMMIT_SHA'] # so we validate the merged results commit
       end
 
       def target_branch

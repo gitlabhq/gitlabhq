@@ -38,7 +38,7 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
 
   let(:query) do
     {
-      content_ref: 'feature_branch',
+      content_ref: 'merged_result_commit_sha',
       dry_run_ref: 'feature_branch',
       include_jobs: true,
       dry_run: true
@@ -48,6 +48,8 @@ RSpec.describe Tooling::Danger::CiJobsDependencyValidation, feature_category: :t
   subject(:ci_jobs_dependency_validation) { fake_danger.new(helper: fake_helper) }
 
   before do
+    stub_env('CI_COMMIT_SHA', 'merged_result_commit_sha')
+
     allow(ci_jobs_dependency_validation).to receive_message_chain(:gitlab, :api, :get).with("/projects/1/ci/lint",
       query: {}) do
       { 'merged_yaml' => master_merged_yaml }

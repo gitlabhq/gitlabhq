@@ -33,19 +33,13 @@ import {
   I18N,
   ALL_BRANCHES_WILDCARD,
   BRANCH_PARAM_NAME,
-  PROTECTED_BRANCHES_HELP_PATH,
-  CODE_OWNERS_HELP_PATH,
-  PUSH_RULES_HELP_PATH,
   DELETE_RULE_MODAL_ID,
   EDIT_RULE_MODAL_ID,
 } from './constants';
 
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-const protectedBranchesHelpDocLink = helpPagePath(PROTECTED_BRANCHES_HELP_PATH);
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-const codeOwnersHelpDocLink = helpPagePath(CODE_OWNERS_HELP_PATH);
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-const pushRulesHelpDocLink = helpPagePath(PUSH_RULES_HELP_PATH);
+const protectedBranchesHelpDocLink = helpPagePath('user/project/protected_branches');
+const codeOwnersHelpDocLink = helpPagePath('user/project/codeowners/index');
+const pushRulesHelpDocLink = helpPagePath('user/project/repository/push_rules');
 
 export default {
   name: 'RuleView',

@@ -12,21 +12,26 @@ const REVIEW_STATE_ICONS = {
   APPROVED: {
     name: 'check-circle',
     class: 'gl-text-green-500',
-    title: __('Reviewer approved changes'),
+    title: s__('MergeRequest|Reviewer approved changes'),
   },
   REQUESTED_CHANGES: {
     name: 'error',
     class: 'gl-text-red-500',
-    title: __('Reviewer requested changes'),
+    title: s__('MergeRequest|Reviewer requested changes'),
   },
   REVIEWED: {
     name: 'comment-lines',
     class: 'gl-text-blue-500',
-    title: __('Reviewer commented'),
+    title: s__('MergeRequest|Reviewer commented'),
   },
   UNREVIEWED: {
     name: 'dash-circle',
-    title: __('Awaiting review'),
+    title: s__('MergeRequest|Awaiting review'),
+  },
+  REVIEW_STARTED: {
+    name: 'status_running',
+    class: 'gl-text-blue-500',
+    title: s__('MergeRequest|Reviewer started review'),
   },
 };
 

@@ -3,10 +3,10 @@ import { GlModal, GlCollapsibleListbox, GlFormGroup, GlSprintf, GlLink } from '@
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { s__ } from '~/locale';
 import getProtectableBranches from '../graphql/queries/protectable_branches.query.graphql';
-import { WILDCARDS_HELP_PATH } from '../constants';
 
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-const wildcardsHelpDocLink = helpPagePath(WILDCARDS_HELP_PATH);
+const wildcardsHelpDocLink = helpPagePath('user/project/protected_branches', {
+  anchor: 'protect-multiple-branches-with-wildcard-rules',
+});
 export default {
   name: 'BranchRuleModal',
   wildcardsHelpDocLink,
