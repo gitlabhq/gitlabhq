@@ -76,15 +76,8 @@ module BlobHelper
     )
   end
 
-  # Used for single file Web Editor, Delete and Replace UI actions.
-  # can_edit_tree checks if ref is on top of the branch.
   def can_modify_blob?(blob, project = @project, ref = @ref)
     !blob.stored_externally? && can_edit_tree?(project, ref)
-  end
-
-  # Used for WebIDE editor where editing is possible even if ref is not on top of the branch.
-  def can_modify_blob_with_web_ide?(blob, project = @project)
-    !blob.stored_externally? && can_collaborate_with_project?(project)
   end
 
   def leave_edit_message

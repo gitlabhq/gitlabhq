@@ -582,7 +582,7 @@ GitLab provides two methods of accomplishing this, each with advantages and disa
   - Scan execution enforcement is required for scanners external to GitLab.
   - Scan execution enforcement is required for custom jobs other than security scans.
 
-- [Scan execution policies](policies/scan-execution-policies.md)
+- [Scan execution policies](policies/scan_execution_policies.md)
   are recommended when:
 
   - Scan execution enforcement is required for DAST which uses a DAST site or scan profile.

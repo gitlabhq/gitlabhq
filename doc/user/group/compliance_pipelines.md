@@ -69,7 +69,7 @@ framework label, the compliance pipeline configuration is run instead of the lab
 The user running the pipeline in the labeled project must at least have the Reporter role on the compliance project.
 
 When used to enforce scan execution, this feature has some overlap with
-[scan execution policies](../application_security/policies/scan-execution-policies.md). We have not
+[scan execution policies](../application_security/policies/scan_execution_policies.md). We have not
 [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312). For details on
 the similarities and differences between these features, see [Enforce scan execution](../application_security/index.md#enforce-scan-execution).
 

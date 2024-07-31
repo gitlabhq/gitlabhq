@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 require 'spec_helper'
 
 RSpec.describe Packages::Dependency, type: :model, feature_category: :package_registry do
@@ -8,14 +9,50 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
 
   describe 'relationships' do
     it { is_expected.to have_many(:dependency_links) }
+    it { is_expected.to belong_to(:project) }
   end
 
   describe 'validations' do
-    subject { create(:packages_dependency) }
+    let_it_be(:dependency) { create(:packages_dependency) }
 
     it { is_expected.to validate_presence_of(:name) }
     it { is_expected.to validate_presence_of(:version_pattern) }
-    it { is_expected.to validate_uniqueness_of(:name).scoped_to(:version_pattern) }
+
+    context 'uniqueness' do
+      let_it_be(:project) { create(:project) }
+
+      subject(:new_record) do
+        build(
+          :packages_dependency,
+          name: dependency.name,
+          version_pattern: dependency.version_pattern,
+          project: project
+        )
+      end
+
+      context 'without project' do
+        let_it_be(:project) { nil }
+
+        it { is_expected.not_to be_valid }
+      end
+
+      context 'with project' do
+        it { is_expected.to be_valid }
+
+        context 'with another dependency in the same project' do
+          let_it_be(:dependency) do
+            create(
+              :packages_dependency,
+              name: dependency.name,
+              version_pattern: dependency.version_pattern,
+              project: project
+            )
+          end
+
+          it { is_expected.not_to be_valid }
+        end
+      end
+    end
   end
 
   describe '.ids_for_package_names_and_version_patterns' do

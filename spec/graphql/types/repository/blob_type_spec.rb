@@ -42,7 +42,6 @@ RSpec.describe Types::Repository::BlobType, feature_category: :source_code_manag
       :rich_viewer,
       :plain_data,
       :can_modify_blob,
-      :can_modify_blob_with_web_ide,
       :can_current_user_push_to_branch,
       :archived,
       :ide_edit_path,

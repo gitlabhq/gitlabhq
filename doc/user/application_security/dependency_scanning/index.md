@@ -692,7 +692,7 @@ To enable the analyzer, either:
 
 - Enable [Auto DevOps](../../../topics/autodevops/index.md), which includes dependency scanning.
 - Use a preconfigured merge request.
-- Create a [scan execution policy](../policies/scan-execution-policies.md) that enforces dependency
+- Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces dependency
   scanning.
 - Edit the `.gitlab-ci.yml` file manually.
 - [Use CI/CD components](#use-cicd-components) (Android projects only)

@@ -30851,7 +30851,6 @@ Returns [`RepositoryCodeownerValidation`](#repositorycodeownervalidation).
 | <a id="repositoryblobblamepath"></a>`blamePath` | [`String`](#string) | Web path to blob blame page. |
 | <a id="repositoryblobcancurrentuserpushtobranch"></a>`canCurrentUserPushToBranch` | [`Boolean`](#boolean) | Whether the current user can push to the branch. |
 | <a id="repositoryblobcanmodifyblob"></a>`canModifyBlob` | [`Boolean`](#boolean) | Whether the current user can modify the blob. |
-| <a id="repositoryblobcanmodifyblobwithwebide"></a>`canModifyBlobWithWebIde` | [`Boolean!`](#boolean) | Whether the current user can modify the blob with Web IDE. |
 | <a id="repositoryblobcodenavigationpath"></a>`codeNavigationPath` | [`String`](#string) | Web path for code navigation. |
 | <a id="repositoryblobcodeowners"></a>`codeOwners` | [`[UserCore!]`](#usercore) | List of code owners for the blob. |
 | <a id="repositoryblobeditblobpath"></a>`editBlobPath` | [`String`](#string) | Web path to edit the blob in the old-style editor. |

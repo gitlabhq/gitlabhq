@@ -1,4 +1,4 @@
-ARG GDK_SHA=bfc4d2394292e49f150f4a39b6ef1fe93892025a
+ARG GDK_SHA=9cfec203c9368829f22005db66f921716111d27d
 # Use tag prefix when running on 'stable' branch to make sure 'protected' image is used which is not deleted by registry cleanup
 ARG GDK_BASE_TAG_PREFIX
 

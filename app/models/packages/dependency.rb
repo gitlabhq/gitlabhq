@@ -1,12 +1,15 @@
 # frozen_string_literal: true
+
 class Packages::Dependency < ApplicationRecord
   include EachBatch
 
   has_many :dependency_links, class_name: 'Packages::DependencyLink'
+  belongs_to :project
 
   validates :name, :version_pattern, presence: true
 
-  validates :name, uniqueness: { scope: :version_pattern }
+  validates :name, uniqueness: { scope: :version_pattern }, unless: :project_id
+  validates :name, uniqueness: { scope: %i[version_pattern project_id] }, if: :project_id
 
   NAME_VERSION_PATTERN_TUPLE_MATCHING = '(name, version_pattern) = (?, ?)'
   MAX_STRING_LENGTH = 255

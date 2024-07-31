@@ -127,9 +127,6 @@ module Types
         calls_gitaly: true,
         description: 'Whether the current user can modify the blob.'
 
-      field :can_modify_blob_with_web_ide, GraphQL::Types::Boolean, null: false, method: :can_modify_blob_with_web_ide?,
-        description: 'Whether the current user can modify the blob with Web IDE.'
-
       field :can_current_user_push_to_branch, GraphQL::Types::Boolean, null: true, method: :can_current_user_push_to_branch?,
         description: 'Whether the current user can push to the branch.'
 

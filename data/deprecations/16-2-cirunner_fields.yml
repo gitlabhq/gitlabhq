@@ -6,7 +6,7 @@
   breaking_change: true  # (required) If this deprecation is a breaking change, set this value to true
   reporter: DarrenEastman  # (required) GitLab username of the person reporting the deprecation
   stage: Verify  # (required) String value of the stage that the feature was created in. e.g., Growth
-  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/41518  # (required) Link to the deprecation issue in GitLab
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/415185  # (required) Link to the deprecation issue in GitLab
   body: |  # (required) Do not modify this line, instead modify the lines below.
     These fields (`architectureName`, `ipAddress`, `platformName`, `revision`, `version`) are now deprecated from the [GraphQL `CiRunner`](https://docs.gitlab.com/ee/api/graphql/reference/#cirunner) type as they are duplicated with the introduction of runner managers grouped within a runner configuration.
   end_of_support_milestone:  # (optional) Use "XX.YY" format. The milestone when support for this feature will end.

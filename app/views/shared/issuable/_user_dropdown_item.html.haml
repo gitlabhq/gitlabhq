@@ -6,7 +6,7 @@
     .gl-shrink-0
       = user_avatar_without_link(user: user, lazy: avatar[:lazy], url: avatar[:url], size: 40, has_tooltip: false)
     .gl-flex.gl-flex-col
-      %span.gl-font-bold.gl-whitespace-normal.gl-break-all
+      %span.gl-font-bold.gl-whitespace-normal.gl-break-words
         = user.name
       %span.js-dropdown-light-content.gl-text-subtle.gl-whitespace-normal.gl-break-all
         = user.to_reference

@@ -75,15 +75,13 @@ describe('Blob Header Default Actions', () => {
       it('renders the WebIdeLink component with the correct props', async () => {
         const { ideEditPath, editBlobPath, gitpodBlobUrl, pipelineEditorPath } = Blob;
         const showForkSuggestion = false;
-        const showWebIdeForkSuggestion = false;
-        await createComponent({ propsData: { showForkSuggestion, showWebIdeForkSuggestion } });
+        await createComponent({ propsData: { showForkSuggestion } });
 
         expect(findWebIdeLink().props()).toMatchObject({
           showEditButton: true,
           editUrl: editBlobPath,
           webIdeUrl: ideEditPath,
           needsToFork: showForkSuggestion,
-          needsToForkWithWebIde: showWebIdeForkSuggestion,
           showPipelineEditorButton: Boolean(pipelineEditorPath),
           pipelineEditorUrl: pipelineEditorPath,
           gitpodUrl: gitpodBlobUrl,

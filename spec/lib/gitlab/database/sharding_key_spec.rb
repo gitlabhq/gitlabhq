@@ -16,8 +16,7 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
       'p_ci_finished_pipeline_ch_sync_events', # https://gitlab.com/gitlab-org/gitlab/-/issues/470152
       'p_ci_pipeline_variables', # https://gitlab.com/gitlab-org/gitlab/-/issues/436360
       'p_ci_stages', # https://gitlab.com/gitlab-org/gitlab/-/issues/448630
-      'sbom_occurrences_vulnerabilities', # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
-      'sbom_source_packages' # https://gitlab.com/gitlab-org/gitlab/-/issues/437718
+      'sbom_occurrences_vulnerabilities' # https://gitlab.com/gitlab-org/gitlab/-/issues/432900
     ]
   end
 

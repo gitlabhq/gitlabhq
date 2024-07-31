@@ -1236,7 +1236,7 @@ In GitLab 11.11 the Windows Batch executor, the CMD shell was deprecated in GitL
 
 - Announced in GitLab <span class="milestone">16.2</span>
 - Removal in GitLab <span class="milestone">17.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
-- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/41518).
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/415185).
 
 </div>
 
@@ -2178,7 +2178,7 @@ Required pipeline configuration will be removed in GitLab 17.0. This impacts sel
 
 You should replace required pipeline configuration with either:
 
-- [Security policies scoped to compliance frameworks](https://docs.gitlab.com/ee/user/application_security/policies/scan-execution-policies.html#security-policy-scopes), which are experimental.
+- [Security policies scoped to compliance frameworks](https://docs.gitlab.com/ee/user/application_security/policies/scan_execution_policies.html#security-policy-scopes), which are experimental.
 - [Compliance pipelines](https://docs.gitlab.com/ee/user/group/compliance_pipelines.html), which are available now.
 
 We recommend these alternative solutions because they provides greater flexibility, allowing required pipelines to be assigned to specific

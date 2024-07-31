@@ -8,4 +8,5 @@ description: Tracks Source Package of an SBOM Occurrence
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/140539
 milestone: '16.8'
 gitlab_schema: gitlab_sec
-sharding_key_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/457096
+sharding_key:
+  organization_id: organizations

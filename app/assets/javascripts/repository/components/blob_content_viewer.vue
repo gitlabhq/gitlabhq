@@ -174,23 +174,13 @@ export default {
 
       return pathLock ? pathLock.user : null;
     },
-    canFork() {
+    showForkSuggestion() {
       const { createMergeRequestIn, forkProject } = this.userPermissions;
-
-      return this.isLoggedIn && !this.isUsingLfs && createMergeRequestIn && forkProject;
-    },
-    showSingleFileEditorForkSuggestion() {
       const { canModifyBlob } = this.blobInfo;
 
-      return this.canFork && !canModifyBlob;
-    },
-    showWebIdeForkSuggestion() {
-      const { canModifyBlobWithWebIde } = this.blobInfo;
-
-      return this.canFork && !canModifyBlobWithWebIde;
-    },
-    showForkSuggestion() {
-      return this.showSingleFileEditorForkSuggestion || this.showWebIdeForkSuggestion;
+      return (
+        this.isLoggedIn && !this.isUsingLfs && !canModifyBlob && createMergeRequestIn && forkProject
+      );
     },
     forkPath() {
       const forkPaths = {
@@ -275,24 +265,14 @@ export default {
       if (this.$route?.query?.plain === plain) return;
       this.$router.push({ path: this.$route.path, query: { ...this.$route.query, plain } });
     },
-    isIdeTarget(target) {
-      return target === 'ide';
-    },
-    forkSuggestionForSelectedEditor(target) {
-      return this.isIdeTarget(target)
-        ? this.showWebIdeForkSuggestion
-        : this.showSingleFileEditorForkSuggestion;
-    },
     editBlob(target) {
-      const { ideEditPath, editBlobPath } = this.blobInfo;
-      const isIdeTarget = this.isIdeTarget(target);
-      const showForkSuggestionForSelectedEditor = this.forkSuggestionForSelectedEditor(target);
-
-      if (showForkSuggestionForSelectedEditor) {
+      if (this.showForkSuggestion) {
         this.setForkTarget(target);
-      } else {
-        visitUrl(isIdeTarget ? ideEditPath : editBlobPath);
+        return;
       }
+
+      const { ideEditPath, editBlobPath } = this.blobInfo;
+      visitUrl(target === 'ide' ? ideEditPath : editBlobPath);
     },
     setForkTarget(target) {
       this.forkTarget = target;
@@ -331,8 +311,7 @@ export default {
         :has-render-error="hasRenderError"
         :show-path="false"
         :override-copy="true"
-        :show-fork-suggestion="showSingleFileEditorForkSuggestion"
-        :show-web-ide-fork-suggestion="showWebIdeForkSuggestion"
+        :show-fork-suggestion="showForkSuggestion"
         :show-blame-toggle="true"
         :project-path="projectPath"
         :project-id="projectId"
@@ -355,7 +334,7 @@ export default {
             :project-path="projectPath"
             :is-locked="Boolean(pathLockedByUser)"
             :can-lock="canLock"
-            :show-fork-suggestion="showSingleFileEditorForkSuggestion"
+            :show-fork-suggestion="showForkSuggestion"
             :is-using-lfs="isUsingLfs"
             @fork="setForkTarget('view')"
           />

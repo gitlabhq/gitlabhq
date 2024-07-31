@@ -95,7 +95,7 @@ To enable the analyzer, either:
 
 - Enable Auto DevOps, which includes dependency scanning.
 - Use a preconfigured merge request.
-- Create a [scan execution policy](../policies/scan-execution-policies.md) that enforces container
+- Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces container
   scanning.
 - Edit the `.gitlab-ci.yml` file manually.
 
