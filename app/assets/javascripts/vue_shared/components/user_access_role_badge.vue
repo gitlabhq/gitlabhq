@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-  <gl-badge class="gl-bg-transparent! !gl-shadow-inner-1-gray-100">
+  <gl-badge class="!gl-bg-transparent !gl-shadow-inner-1-gray-100">
     <slot></slot>
   </gl-badge>
 </template>

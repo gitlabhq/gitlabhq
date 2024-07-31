@@ -177,11 +177,11 @@ export default {
       @setDateRange="onSetDateRange"
       @setPredefinedDateRange="setPredefinedDateRange"
     />
-    <div class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row">
+    <div class="gl-flex gl-flex-col md:gl-flex-row">
       <path-navigation
         v-if="displayPathNavigation"
         data-testid="vsa-path-navigation"
-        class="gl-w-full gl-mt-4"
+        class="gl-mt-4 gl-w-full"
         :loading="isLoading || isLoadingStage"
         :stages="pathNavigationData"
         :selected-stage="selectedStage"

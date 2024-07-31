@@ -105,5 +105,5 @@ Without it, those projects routinely time out requests to the endpoint. When thi
 feature was deployed to all of GitLab.com, some pushes failed, presumably due to
 exhausting resources like database connection pools.
 
-We recommend you enable this feature flag only if you are experiencing timeouts, and
+You should enable this feature flag only if you are experiencing timeouts, and
 only enable it for that specific project.

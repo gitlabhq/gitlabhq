@@ -171,4 +171,4 @@ requirements. Ensure the password you are attempting to set meets all
 
 ### Expired password
 
-You might not be able to reset a user's expired password due to the [Password Expired error on Git Fetch via SSH for LDAP users](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-via-ssh-for-ldap-user).
+You might not be able to reset a user's expired password due to the [Password Expired error on Git Fetch via SSH for LDAP users](../topics/git/troubleshooting_git.md#password-expired-error-on-git-fetch-with-ssh-for-ldap-user).

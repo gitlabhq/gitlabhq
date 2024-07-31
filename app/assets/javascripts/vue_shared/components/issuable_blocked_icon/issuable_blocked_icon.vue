@@ -164,7 +164,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-inline">
+  <div class="gl-inline">
     <gl-icon
       :id="glIconId"
       ref="icon"
@@ -179,12 +179,12 @@ export default {
       >
       <template v-if="loading">
         <gl-loading-icon size="sm" />
-        <p class="gl-mt-4 gl-mb-0 gl-font-small">{{ loadingMessage }}</p>
+        <p class="gl-mb-0 gl-mt-4">{{ loadingMessage }}</p>
       </template>
       <template v-else>
-        <ul class="gl-list-none gl-p-0 gl-mb-0">
+        <ul class="gl-mb-0 gl-list-none gl-p-0">
           <li v-for="(issuable, index) in displayedIssuables" :key="issuable.id">
-            <gl-link :href="issuable.webUrl" class="gl-text-blue-500! gl-font-sm">{{
+            <gl-link :href="issuable.webUrl" class="gl-text-sm !gl-text-blue-500">{{
               issuable.reference
             }}</gl-link>
             <p
@@ -204,7 +204,7 @@ export default {
           <gl-link
             data-testid="view-all-issues"
             :href="`${item.webUrl}#related-issues`"
-            class="gl-text-blue-500! gl-font-sm"
+            class="gl-text-sm !gl-text-blue-500"
             >{{ viewAllIssuablesText }}</gl-link
           >
         </div>

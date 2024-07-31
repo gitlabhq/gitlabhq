@@ -30,7 +30,7 @@ and support:
 
 ### Versions
 
-There are two version files relevant to GitLab Shell:
+The two version files relevant to GitLab Shell:
 
 - [Stable version](https://gitlab.com/gitlab-org/gitlab-shell/-/blob/main/VERSION)
 - [Version deployed in GitLab SaaS](https://gitlab.com/gitlab-org/gitlab/-/blob/master/GITLAB_SHELL_VERSION)
@@ -84,7 +84,7 @@ GitLab Shell modifies the `authorized_keys` file on the client machine.
 
 To contribute to GitLab Shell:
 
-1. Check if GitLab API access, and Redis via the internal API, can be reached: `make check`
+1. Check if GitLab API access, and Redis with the internal API, can be reached: `make check`
 1. Compile the `gitlab-shell` binaries, placing them into `bin/`: `make compile`
 1. Run `make install` to build the `gitlab-shell` binaries and install. them onto the file system.
    The default location is `/usr/local`. To change it, set the `PREFIX` and `DESTDIR` environment variables.

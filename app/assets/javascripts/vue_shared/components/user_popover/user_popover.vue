@@ -268,19 +268,19 @@ export default {
         <template v-if="!isBlocked">
           <div class="gl-text-gray-500">
             <div v-if="user.email" class="gl-mb-2 gl-flex">
-              <gl-icon name="mail" class="gl-flex-shrink-0" />
+              <gl-icon name="mail" class="gl-shrink-0" />
               <span ref="email" class="gl-ml-2">{{ user.email }}</span>
             </div>
             <div v-if="user.bio" class="gl-mb-2 gl-flex">
-              <gl-icon name="profile" class="gl-flex-shrink-0" />
+              <gl-icon name="profile" class="gl-shrink-0" />
               <span ref="bio" class="gl-ml-2">{{ user.bio }}</span>
             </div>
             <div v-if="user.workInformation" class="gl-mb-2 gl-flex">
-              <gl-icon name="work" class="gl-flex-shrink-0" />
+              <gl-icon name="work" class="gl-shrink-0" />
               <span ref="workInformation" class="gl-ml-2">{{ user.workInformation }}</span>
             </div>
             <div v-if="user.location" class="gl-mb-2 gl-flex">
-              <gl-icon name="location" class="gl-flex-shrink-0" />
+              <gl-icon name="location" class="gl-shrink-0" />
               <span class="gl-ml-2">{{ user.location }}</span>
             </div>
             <div
@@ -288,7 +288,7 @@ export default {
               class="gl-mb-2 gl-flex"
               data-testid="user-popover-local-time"
             >
-              <gl-icon name="clock" class="gl-flex-shrink-0" />
+              <gl-icon name="clock" class="gl-shrink-0" />
               <span class="gl-ml-2">{{ user.localTime }}</span>
             </div>
           </div>

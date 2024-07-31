@@ -12,7 +12,7 @@ DETAILS:
 
 ## Valid access levels
 
-The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` method. Currently, these levels are recognized:
+The access levels are defined in the `ProtectedRefAccess.allowed_access_levels` method. The following levels are recognized:
 
 ```plaintext
 0  => No access

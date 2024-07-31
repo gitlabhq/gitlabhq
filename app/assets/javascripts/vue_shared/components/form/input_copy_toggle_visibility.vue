@@ -96,8 +96,7 @@ export default {
     },
     formInputClass() {
       return [
-        // eslint-disable-next-line @gitlab/require-i18n-strings
-        '!gl-font-monospace gl-cursor-default!',
+        '!gl-font-monospace !gl-cursor-default',
         { 'input-copy-show-disc': !this.computedValueIsVisible },
         this.formInputGroupProps.class,
       ];

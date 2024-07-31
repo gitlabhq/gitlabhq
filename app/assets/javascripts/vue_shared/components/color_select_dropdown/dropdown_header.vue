@@ -16,13 +16,13 @@ export default {
 
 <template>
   <div>
-    <div class="dropdown-title gl-display-flex gl-align-items-center gl-pt-0 gl-pb-3!">
-      <span class="gl-flex-grow-1">{{ dropdownTitle }}</span>
+    <div class="dropdown-title gl-flex gl-items-center !gl-pb-3 gl-pt-0">
+      <span class="gl-grow">{{ dropdownTitle }}</span>
       <gl-button
         :aria-label="__('Close')"
         variant="link"
         size="small"
-        class="dropdown-header-button gl-p-0!"
+        class="dropdown-header-button !gl-p-0"
         icon="close"
         @click="$emit('closeDropdown')"
       />

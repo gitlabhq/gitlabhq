@@ -7,7 +7,6 @@ class ContainerRepository < ApplicationRecord
   include Sortable
   include AfterCommitQueue
   include Packages::Destructible
-  include IgnorableColumns
 
   WAITING_CLEANUP_STATUSES = %i[cleanup_scheduled cleanup_unfinished].freeze
   REQUIRING_CLEANUP_STATUSES = %i[cleanup_unscheduled cleanup_scheduled].freeze

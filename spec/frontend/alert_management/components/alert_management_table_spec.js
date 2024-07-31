@@ -140,8 +140,8 @@ describe('AlertManagementTable', () => {
       expect(findLoader().exists()).toBe(false);
       expect(findAlertsTable().exists()).toBe(true);
       expect(findAlerts()).toHaveLength(mockAlerts.length);
-      expect(findAlerts().at(0).classes()).toContain('gl-hover-bg-gray-50');
-      expect(findAlerts().at(0).classes()).not.toContain('gl-hover-border-blue-200');
+      expect(findAlerts().at(0).classes()).toContain('hover:gl-bg-gray-50');
+      expect(findAlerts().at(0).classes()).not.toContain('hover:gl-border-blue-200');
     });
 
     it('displays the alert ID and title as a link', () => {

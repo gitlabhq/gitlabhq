@@ -145,7 +145,7 @@ module BulkImports
     # Before logging, we truncate the context to a reasonable length and scrub
     # any non-printable characters.
     def last_chunk_context
-      @last_chunk_context.to_s.truncate(LAST_CHUNK_CONTEXT_CHAR_LIMIT).scrub
+      @last_chunk_context.to_s.truncate(LAST_CHUNK_CONTEXT_CHAR_LIMIT).force_encoding('utf-8').scrub
     end
   end
 end

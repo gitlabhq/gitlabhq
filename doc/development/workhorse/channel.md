@@ -172,7 +172,7 @@ Supporting new deployment services requires new sub-protocols to be supported.
 
 ### `channel.k8s.io`
 
-Used by Kubernetes, this sub-protocol defines a simple multiplexed channel.
+Used by Kubernetes, this sub-protocol defines a multiplexed channel.
 
 Control frames have their usual meanings. `TextMessage` frames are
 invalid. `BinaryMessage` frames represent I/O to a specific file

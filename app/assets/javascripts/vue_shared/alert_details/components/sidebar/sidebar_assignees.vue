@@ -96,7 +96,7 @@ export default {
         .sort((a, b) => (a.active === b.active ? 0 : a.active ? -1 : 1)); // eslint-disable-line no-nested-ternary
     },
     dropdownClass() {
-      return this.isDropdownShowing ? 'dropdown-menu-selectable show' : 'gl-display-none';
+      return this.isDropdownShowing ? 'dropdown-menu-selectable show' : 'gl-hidden';
     },
     dropDownTitle() {
       return this.userName ?? __('Select assignee');
@@ -193,8 +193,8 @@ export default {
 
 <template>
   <div
-    class="alert-assignees gl-py-5 gl-w-7/10"
-    :class="{ 'gl-border-b-1 gl-border-b-solid gl-border-b-gray-100': !sidebarCollapsed }"
+    class="alert-assignees gl-w-7/10 gl-py-5"
+    :class="{ 'gl-border-b-1 gl-border-b-gray-100 gl-border-b-solid': !sidebarCollapsed }"
   >
     <template v-if="sidebarCollapsed">
       <div
@@ -216,16 +216,14 @@ export default {
     </template>
 
     <div v-else>
-      <p
-        class="gl-text-gray-900 gl-mb-2 gl-leading-20 gl-display-flex gl-justify-content-space-between"
-      >
+      <p class="gl-mb-2 gl-flex gl-justify-between gl-leading-20 gl-text-default">
         {{ __('Assignee') }}
         <gl-button
           v-if="isEditable"
           ref="editButton"
           category="tertiary"
           size="small"
-          class="gl-text-black-normal!"
+          class="!gl-text-default"
           @click="toggleFormDropdown"
           @keydown.esc="hideDropdown"
         >
@@ -282,18 +280,18 @@ export default {
       class="hide-collapsed value gl-m-0"
       :class="{ 'no-value': !userName }"
     >
-      <div v-if="userName" class="gl-inline-flex gl-mt-2" data-testid="assigned-users">
+      <div v-if="userName" class="gl-mt-2 gl-inline-flex" data-testid="assigned-users">
         <span class="gl-relative gl-mr-4">
-          <img :alt="userName" :src="userImg" :width="32" class="avatar avatar-inline gl-m-0 s32" />
+          <img :alt="userName" :src="userImg" :width="32" class="avatar avatar-inline s32 gl-m-0" />
         </span>
-        <span class="gl-display-flex gl-flex-direction-column gl-overflow-hidden">
+        <span class="gl-flex gl-flex-col gl-overflow-hidden">
           <strong class="dropdown-menu-user-full-name">
             {{ userFullName }}
           </strong>
           <span class="dropdown-menu-user-username">@{{ userName }}</span>
         </span>
       </div>
-      <span v-else class="gl-display-flex gl-align-items-center gl-leading-normal">
+      <span v-else class="gl-flex gl-items-center gl-leading-normal">
         {{ __('None') }} -
         <gl-button
           class="gl-ml-2 !gl-text-inherit"

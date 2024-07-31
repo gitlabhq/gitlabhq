@@ -73,6 +73,6 @@ export default {
     v-gl-tooltip
     :class="cssClass"
     :title="tooltipText"
-    class="deployment-instance gl-flex justify-content-center gl-items-center"
+    class="deployment-instance justify-content-center gl-flex gl-items-center"
   />
 </template>

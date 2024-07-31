@@ -5,13 +5,13 @@ exports[`Metrics upload item render the metrics image component 1`] = `
   bodyclass="gl-border-1,gl-border-t-solid,gl-border-gray-100,[object Object]"
   class="border collapsible-card gl-mb-5 gl-p-0"
   footerclass=""
-  headerclass="gl-display-flex gl-align-items-center gl-border-b-0 gl-py-3"
+  headerclass="gl-flex gl-items-center gl-border-b-0 gl-py-3"
 >
   <gl-modal-stub
     actioncancel="[object Object]"
     actionprimary="[object Object]"
     arialabel=""
-    body-class="gl-pb-0! gl-min-h-6!"
+    body-class="!gl-pb-0 !gl-min-h-6"
     dismisslabel="Close"
     modalclass=""
     modalid="delete-metric-modal"
@@ -29,11 +29,11 @@ exports[`Metrics upload item render the metrics image component 1`] = `
     imageid="1"
   />
   <div
-    class="gl-display-flex gl-flex-direction-column"
+    class="gl-flex gl-flex-col"
     data-testid="metric-image-body"
   >
     <img
-      class="gl-align-self-center gl-max-w-full"
+      class="gl-max-w-full gl-self-center"
       src="test_file_path"
     />
   </div>

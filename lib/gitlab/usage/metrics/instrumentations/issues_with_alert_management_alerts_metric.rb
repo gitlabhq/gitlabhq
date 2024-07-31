@@ -5,10 +5,6 @@ module Gitlab
     module Metrics
       module Instrumentations
         class IssuesWithAlertManagementAlertsMetric < DatabaseMetric
-          # this metric is used in IssuesCreatedFromAlertsMetric
-          # do not report metric directly in service ping
-          available? { false }
-
           operation :count
 
           start { Issue.minimum(:id) }

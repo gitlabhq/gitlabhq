@@ -25,7 +25,7 @@ export default {
         </h2>
         <p
           v-if="$scopedSlots.description || description"
-          class="gl-text-subtle gl-mb-3"
+          class="gl-mb-3 gl-text-subtle"
           data-testid="settings-section-description"
         >
           <slot v-if="$scopedSlots.description" name="description"></slot>

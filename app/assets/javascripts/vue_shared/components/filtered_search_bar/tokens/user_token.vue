@@ -151,13 +151,13 @@ export default {
         :value="getUsername(user)"
       >
         <div
-          class="gl-display-flex gl-align-items-center"
+          class="gl-flex gl-items-center"
           :class="{ 'gl-pl-6': !selections.includes(getUsername(user)) }"
         >
           <gl-icon
             v-if="selections.includes(getUsername(user))"
             name="check"
-            class="gl-mr-3 gl-text-secondary gl-flex-shrink-0"
+            class="gl-mr-3 gl-shrink-0 gl-text-secondary"
           />
           <gl-avatar :size="32" :src="getAvatarUrl(user)" />
           <div>

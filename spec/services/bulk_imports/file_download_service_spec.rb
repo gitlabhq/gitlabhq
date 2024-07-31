@@ -356,24 +356,34 @@ RSpec.describe BulkImports::FileDownloadService, feature_category: :importers do
     end
 
     context 'when logging a chunk context' do
+      using RSpec::Parameterized::TableSyntax
+
       let(:file_size_limit) { 1 }
       let(:import_logger) { instance_double(BulkImports::Logger) }
-      let(:chunk_content) { "\x8d\x21\x3f\xad\x76" }
 
       before do
         allow(BulkImports::Logger).to receive(:build).and_return(import_logger)
         allow(import_logger).to receive(:warn)
       end
 
-      it 'scrubs non-utf characters from the chunk' do
-        expect(import_logger).to receive(:warn).once.with(
-          a_hash_including(last_chunk_context: "�!?�v")
-        )
+      where(:input, :output) do
+        String.new("\x8d\x21\x3f\xad\x76", encoding: 'UTF-8') | "�!?�v"
+        String.new("\x1F\x8B\b\x00\x1F", encoding: 'ASCII-8BIT') | "\u001F�\b\u0000\u001F"
+      end
 
-        expect { service.execute }.to raise_error(
-          described_class::ServiceError,
-          'File size 100 B exceeds limit of 1 B'
-        )
+      with_them do
+        let(:chunk_content) { input }
+
+        it 'scrubs non-printable characters from the chunk' do
+          expect(import_logger).to receive(:warn).once.with(
+            a_hash_including(last_chunk_context: output)
+          )
+
+          expect { service.execute }.to raise_error(
+            described_class::ServiceError,
+            'File size 100 B exceeds limit of 1 B'
+          )
+        end
       end
     end
   end

@@ -50,6 +50,8 @@ describe('Settings Block', () => {
     mountComponent();
 
     expect(findDescription().text()).toBe('Description');
-    expect(findDescription().classes()).toEqual(['gl-text-subtle', 'gl-mb-3']);
+    expect(findDescription().classes()).toEqual(
+      expect.arrayContaining(['gl-text-subtle', 'gl-mb-3']),
+    );
   });
 });

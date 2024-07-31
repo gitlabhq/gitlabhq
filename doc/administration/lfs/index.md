@@ -490,7 +490,7 @@ To delete these references:
    ls -al /var/opt/gitlab/gitlab-rails/shared/lfs-objects/00/66/22269c61b41bf14a22bbe0e43be3acf86a4a446afb4250c3794ea47541a7
    ```
 
-1. If the file is not present, remove the database records via the rails console:
+1. If the file is not present, remove the database records with the Rails console:
 
    ```ruby
    # First delete the parent records and then destroy the record itself
@@ -512,7 +512,7 @@ error: failed to fetch some objects from 'https://username:[MASKED]@gitlab.examp
 
 When using GitLab CI over a TLS v1.3 configured GitLab server, you must
 [upgrade to GitLab Runner](https://docs.gitlab.com/runner/install/index.html) 13.2.0
-or later to receive an updated Git LFS client version via
+or later to receive an updated Git LFS client version with
 the included [GitLab Runner Helper image](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#helper-image).
 
 To check an installed Git LFS client's version, run this command:

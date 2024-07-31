@@ -6,7 +6,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 
 # Application and rate limit guidelines
 
-GitLab, like most large applications, enforces limits within certain features.
+GitLab, like most large applications, enforces limits in certain features.
 The absences of limits can affect security, performance, data, or could even
 exhaust the allocated resources for the application.
 
@@ -25,4 +25,4 @@ Limits are applicable for:
 
 - Existing [GitLab application limits](../../administration/instance_limits.md)
 - Product processes: [introducing application limits](https://handbook.gitlab.com/handbook/product/product-processes/#introducing-application-limits)
-- Development docs: [guide for adding application limits](../application_limits.md)
+- Development documentation: [guide for adding application limits](../application_limits.md)

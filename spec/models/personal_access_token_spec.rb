@@ -290,6 +290,18 @@ RSpec.describe PersonalAccessToken, feature_category: :system_access do
           )
         end
       end
+
+      context 'when application settings does not enforce expiry' do
+        before do
+          stub_application_setting(require_personal_access_token_expiry: false)
+        end
+
+        it 'is valid' do
+          personal_access_token.expires_at = nil
+
+          expect(personal_access_token).to be_valid
+        end
+      end
     end
   end
 

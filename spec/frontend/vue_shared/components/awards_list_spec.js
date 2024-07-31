@@ -123,63 +123,63 @@ describe('vue_shared/components/awards_list', () => {
     it('shows awards in correct order', () => {
       expect(findAwardsData()).toEqual([
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 3,
           html: matchingEmojiTag(EMOJI_THUMBSUP),
           title: `Ada, Leonardo, and Marie reacted with :${EMOJI_THUMBSUP}:`,
           emojiName: EMOJI_THUMBSUP,
         },
         {
-          classes: [...REACTION_CONTROL_CLASSES, 'selected'],
+          classes: expect.arrayContaining([...REACTION_CONTROL_CLASSES, 'selected']),
           count: 4,
           html: matchingEmojiTag(EMOJI_THUMBSDOWN),
           title: `Ada, Marie, you, and Donatello reacted with :${EMOJI_THUMBSDOWN}:`,
           emojiName: EMOJI_THUMBSDOWN,
         },
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 1,
           html: matchingEmojiTag(EMOJI_100),
           title: `Ada reacted with :${EMOJI_100}:`,
           emojiName: EMOJI_100,
         },
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 2,
           html: matchingEmojiTag(EMOJI_SMILE),
           title: `Ada and Jane reacted with :${EMOJI_SMILE}:`,
           emojiName: EMOJI_SMILE,
         },
         {
-          classes: [...REACTION_CONTROL_CLASSES, 'selected'],
+          classes: expect.arrayContaining([...REACTION_CONTROL_CLASSES, 'selected']),
           count: 4,
           html: matchingEmojiTag(EMOJI_OK),
           title: `Ada, Jane, Leonardo, and you reacted with :${EMOJI_OK}:`,
           emojiName: EMOJI_OK,
         },
         {
-          classes: [...REACTION_CONTROL_CLASSES, 'selected'],
+          classes: expect.arrayContaining([...REACTION_CONTROL_CLASSES, 'selected']),
           count: 1,
           html: matchingEmojiTag(EMOJI_CACTUS),
           title: `You reacted with :${EMOJI_CACTUS}:`,
           emojiName: EMOJI_CACTUS,
         },
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 1,
           html: matchingEmojiTag(EMOJI_A),
           title: `Marie reacted with :${EMOJI_A}:`,
           emojiName: EMOJI_A,
         },
         {
-          classes: [...REACTION_CONTROL_CLASSES, 'selected'],
+          classes: expect.arrayContaining([...REACTION_CONTROL_CLASSES, 'selected']),
           count: 1,
           html: matchingEmojiTag(EMOJI_B),
           title: `You reacted with :${EMOJI_B}:`,
           emojiName: EMOJI_B,
         },
         {
-          classes: [...REACTION_CONTROL_CLASSES, 'selected'],
+          classes: expect.arrayContaining([...REACTION_CONTROL_CLASSES, 'selected']),
           count: 14,
           html: matchingEmojiTag(EMOJI_RACEHORSE),
           title: `Donatello, Michelangelo, Raphael, Homer, Marge, Bart, Lisa, Maggie, Bort, you, and 4 more reacted with :${EMOJI_RACEHORSE}:`,
@@ -268,14 +268,14 @@ describe('vue_shared/components/awards_list', () => {
     it('shows awards in correct order', () => {
       expect(findAwardsData()).toEqual([
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 0,
           html: matchingEmojiTag(EMOJI_THUMBSUP),
           title: '',
           emojiName: EMOJI_THUMBSUP,
         },
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 0,
           html: matchingEmojiTag(EMOJI_THUMBSDOWN),
           title: '',
@@ -283,14 +283,14 @@ describe('vue_shared/components/awards_list', () => {
         },
         // We expect the EMOJI_100 before the EMOJI_SMILE because it was given as a defaultAward
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 1,
           html: matchingEmojiTag(EMOJI_100),
           title: `Marie reacted with :${EMOJI_100}:`,
           emojiName: EMOJI_100,
         },
         {
-          classes: REACTION_CONTROL_CLASSES,
+          classes: expect.arrayContaining(REACTION_CONTROL_CLASSES),
           count: 1,
           html: matchingEmojiTag(EMOJI_SMILE),
           title: `Marie reacted with :${EMOJI_SMILE}:`,

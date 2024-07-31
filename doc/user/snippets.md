@@ -249,7 +249,7 @@ GitLab forwards the spam to Akismet.
 
 ### Snippet limitations
 
-- There are no limits as to how many snippets you can create.
+- No limits exist as to how many snippets you can create.
 - Binary files are not supported.
 - Creating or deleting branches is not supported. Only the default branch is used.
 - Git tags are not supported in snippet repositories.

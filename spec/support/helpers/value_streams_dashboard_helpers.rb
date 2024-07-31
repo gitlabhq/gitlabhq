@@ -62,6 +62,24 @@ module ValueStreamsDashboardHelpers
     end
   end
 
+  def expected_usage_overview_metrics(is_project: false)
+    supported_project_usage_metrics = [
+      ['issues', _('Issues'), '1,500'],
+      ['merge_requests', _('Merge requests'), '1,000'],
+      ['pipelines', _('Pipelines'), '2,000']
+    ]
+
+    if is_project
+      supported_project_usage_metrics
+    else
+      [
+        ['groups', _('Groups'), '5'],
+        ['projects', _('Projects'), '10'],
+        ['users', _('Users'), '100']
+      ].concat(supported_project_usage_metrics)
+    end
+  end
+
   def create_mock_dora_performers_score_metrics(group)
     [
       [nil, 'high', 'high', 'high'],

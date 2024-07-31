@@ -37,7 +37,7 @@ export default {
 <template>
   <div class="file-container">
     <div class="file-content">
-      <p class="gl-mt-3 file-info">
+      <p class="file-info gl-mt-3">
         {{ fileName }}
         <template v-if="fileSize > 0"> ({{ fileSizeReadable }}) </template>
       </p>

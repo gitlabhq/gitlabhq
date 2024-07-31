@@ -35,7 +35,7 @@ export default {
 <template>
   <gl-alert variant="danger" :dismissible="false">
     {{ $options.i18n.genericErrorMessage }}
-    <ul class="gl-mb-0!">
+    <ul class="!gl-mb-0">
       <li v-for="error in errorMessages" :key="error">
         {{ error }}
       </li>

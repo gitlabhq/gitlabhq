@@ -8,6 +8,7 @@ module ApplicationSettingsHelper
     :password_authentication_enabled_for_web?,
     :akismet_enabled?,
     :spam_check_endpoint_enabled?,
+    :require_personal_access_token_expiry?,
     to: :'Gitlab::CurrentSettings.current_application_settings'
 
   def user_oauth_applications?
@@ -526,7 +527,8 @@ module ApplicationSettingsHelper
       :downstream_pipeline_trigger_limit_per_project_user_sha,
       :asciidoc_max_includes,
       :ai_action_api_rate_limit,
-      :code_suggestions_api_rate_limit
+      :code_suggestions_api_rate_limit,
+      :require_personal_access_token_expiry
     ].tap do |settings|
       unless Gitlab.com?
         settings << :deactivate_dormant_users

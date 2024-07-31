@@ -56,7 +56,7 @@ export default {
 };
 </script>
 <template>
-  <gl-tabs class="gl-display-flex gl-w-full" nav-class="gl-border-0!">
+  <gl-tabs class="gl-flex gl-w-full" nav-class="!gl-border-0">
     <gl-tab
       v-for="(tab, i) in tabs"
       :key="i"

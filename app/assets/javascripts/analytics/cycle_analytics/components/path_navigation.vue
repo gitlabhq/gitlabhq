@@ -65,16 +65,16 @@ export default {
       >
         <template #title>{{ pathItem.title }}</template>
         <div class="gl-px-4">
-          <div class="gl-display-flex gl-justify-content-space-between">
-            <div class="gl-pr-4 gl-pb-3">
+          <div class="gl-flex gl-justify-between">
+            <div class="gl-pb-3 gl-pr-4">
               {{ s__('ValueStreamEvent|Stage time (median)') }}
             </div>
             <div class="gl-pb-3 gl-font-bold">{{ pathItem.metric }}</div>
           </div>
         </div>
         <div class="gl-px-4">
-          <div class="gl-display-flex gl-justify-content-space-between">
-            <div class="gl-pr-4 gl-pb-3">
+          <div class="gl-flex gl-justify-between">
+            <div class="gl-pb-3 gl-pr-4">
               {{ s__('ValueStreamEvent|Items in stage') }}
             </div>
             <div class="gl-pb-3 gl-font-bold">
@@ -87,29 +87,23 @@ export default {
             {{ s__('ValueStreamEvent|Only items that reached their stop event.') }}
           </div>
         </div>
-        <div class="gl-px-4 gl-pt-4 gl-border-t-1 gl-border-t-solid gl-border-gray-50">
-          <div
-            v-if="pathItem.startEventHtmlDescription"
-            class="gl-display-flex gl-flex-direction-row"
-          >
-            <div class="gl-display-flex gl-flex-direction-column gl-pr-4 gl-pb-3 metric-label">
+        <div class="gl-border-t-1 gl-border-gray-50 gl-px-4 gl-pt-4 gl-border-t-solid">
+          <div v-if="pathItem.startEventHtmlDescription" class="gl-flex gl-flex-row">
+            <div class="metric-label gl-flex gl-flex-col gl-pb-3 gl-pr-4">
               {{ s__('ValueStreamEvent|Start') }}
             </div>
             <div
               v-safe-html="pathItem.startEventHtmlDescription"
-              class="gl-display-flex gl-flex-direction-column gl-pb-3 stage-event-description"
+              class="stage-event-description gl-flex gl-flex-col gl-pb-3"
             ></div>
           </div>
-          <div
-            v-if="pathItem.endEventHtmlDescription"
-            class="gl-display-flex gl-flex-direction-row"
-          >
-            <div class="gl-display-flex gl-flex-direction-column gl-pr-4 metric-label">
+          <div v-if="pathItem.endEventHtmlDescription" class="gl-flex gl-flex-row">
+            <div class="metric-label gl-flex gl-flex-col gl-pr-4">
               {{ s__('ValueStreamEvent|Stop') }}
             </div>
             <div
               v-safe-html="pathItem.endEventHtmlDescription"
-              class="gl-display-flex gl-flex-direction-column stage-event-description"
+              class="stage-event-description gl-flex gl-flex-col"
             ></div>
           </div>
         </div>

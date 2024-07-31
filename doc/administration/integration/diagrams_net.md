@@ -34,7 +34,7 @@ After completing the integration, the diagrams.net editor opens with the URL you
 
 You can set up your own diagrams.net server to generate the diagrams.
 
-This is a required step for users on offline (or "air-gapped") self-managed GitLab installations.
+It's a required step for users on an offline environment self-managed GitLab installations.
 
 For example, to run a diagrams.net container in Docker, run the following command:
 

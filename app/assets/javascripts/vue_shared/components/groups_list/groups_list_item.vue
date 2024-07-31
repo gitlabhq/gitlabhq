@@ -144,7 +144,7 @@ export default {
   <li class="groups-list-item gl-border-b gl-flex gl-py-5">
     <div class="gl-grow md:gl-flex">
       <div class="gl-flex gl-grow gl-items-start">
-        <div v-if="showGroupIcon" class="gl-mr-3 gl-flex gl-h-9 gl-flex-shrink-0 gl-items-center">
+        <div v-if="showGroupIcon" class="gl-mr-3 gl-flex gl-h-9 gl-shrink-0 gl-items-center">
           <gl-icon class="gl-text-secondary" :name="groupIconName" />
         </div>
         <gl-avatar-labeled

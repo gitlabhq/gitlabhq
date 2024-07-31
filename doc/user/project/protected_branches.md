@@ -23,7 +23,7 @@ A protected branch controls:
 - If changes to files listed in the CODEOWNERS file can be pushed directly to the branch.
 - Which users, groups, or access levels can unprotect the branch using the
   [Protected branches API](../../api/protected_branches.md#update-a-protected-branch).
-- Which users can modify the branch via the [Commits API](../../api/commits.md).
+- Which users can modify the branch with the [Commits API](../../api/commits.md).
 
 The [default branch](repository/branches/default.md) for your repository is protected by default.
 

@@ -55,12 +55,12 @@ export default {
 
 <template>
   <section class="vue-settings-block">
-    <div class="gl-flex gl-justify-between gl-items-start">
+    <div class="gl-flex gl-items-start gl-justify-between">
       <div class="gl-grow">
         <h2
           role="button"
           tabindex="-1"
-          class="gl-heading-2 gl-cursor-pointer !gl-mb-2"
+          class="gl-heading-2 !gl-mb-2 gl-cursor-pointer"
           :aria-expanded="ariaExpanded"
           :aria-controls="collapseId"
           @click="toggleExpanded"
@@ -68,9 +68,9 @@ export default {
           <slot v-if="$scopedSlots.title" name="title"></slot>
           <template v-else>{{ title }}</template>
         </h2>
-        <p class="gl-text-subtle gl-m-0"><slot name="description"></slot></p>
+        <p class="gl-m-0 gl-text-subtle"><slot name="description"></slot></p>
       </div>
-      <div class="gl-flex-shrink-0 gl-px-2">
+      <div class="gl-shrink-0 gl-px-2">
         <gl-button
           class="gl-min-w-12 gl-shrink-0"
           :aria-expanded="ariaExpanded"

@@ -57,6 +57,7 @@ RSpec.describe API::MarkdownUploads, feature_category: :team_planning do
       post api(path, user), params: { file: file }
 
       expect(response).to have_gitlab_http_status(:created)
+      expect(json_response['id']).to eq(Upload.last.id)
       expect(json_response['alt']).to eq("dk")
       expect(json_response['url']).to start_with("/uploads/")
       expect(json_response['url']).to end_with("/dk.png")

@@ -145,26 +145,19 @@ export default {
 </script>
 <template>
   <div>
-    <div
-      class="file-content code js-syntax-highlight gl-display-flex"
-      :class="$options.userColorScheme"
-    >
+    <div class="file-content code js-syntax-highlight gl-flex" :class="$options.userColorScheme">
       <blame v-if="showBlame && blameInfoForRange.length" :blame-info="blameInfoForRange" />
-      <div class="line-numbers gl-px-0!">
-        <div
-          v-for="line in lineNumbers"
-          :key="line"
-          class="gl-display-flex diff-line-num line-links"
-        >
+      <div class="line-numbers !gl-px-0">
+        <div v-for="line in lineNumbers" :key="line" class="diff-line-num line-links gl-flex">
           <a
             v-if="showBlameLink"
-            class="gl-select-none !gl-shadow-none file-line-blame -gl-mx-2"
+            class="file-line-blame -gl-mx-2 gl-select-none !gl-shadow-none"
             :href="`${blamePath}#L${line}`"
           ></a>
           <a
             :id="`L${line}`"
             :key="line"
-            class="gl-select-none !gl-shadow-none file-line-num"
+            class="file-line-num gl-select-none !gl-shadow-none"
             :href="`#L${line}`"
             :data-line-number="line"
             @click="scrollToLine(`#LC${line}`)"
@@ -173,11 +166,9 @@ export default {
           </a>
         </div>
       </div>
-      <div
-        class="blob-content gl-display-flex gl-flex-direction-column gl-overflow-y-auto gl-w-full"
-      >
+      <div class="blob-content gl-flex gl-w-full gl-flex-col gl-overflow-y-auto">
         <pre
-          class="code highlight gl-p-0!"
+          class="code highlight !gl-p-0"
         ><code v-safe-html="content" :data-blob-hash="blobHash" ></code></pre>
       </div>
     </div>

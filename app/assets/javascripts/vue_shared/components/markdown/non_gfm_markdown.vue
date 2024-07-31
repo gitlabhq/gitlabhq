@@ -100,10 +100,10 @@ export default {
           v-if="hoverMap[`code-${index}`]"
           :title="$options.i18n.copyCodeTitle"
           :text="block.text"
-          class="gl-absolute gl-top-3 gl-right-3 gl-z-1 gl-duration-medium"
+          class="gl-absolute gl-right-3 gl-top-3 gl-z-1 gl-duration-medium"
         />
         <code-block-highlighted
-          class="gl-border gl-rounded-0! gl-p-4 gl-mb-0 gl-overflow-y-auto"
+          class="gl-border gl-mb-0 gl-overflow-y-auto !gl-rounded-none gl-p-4"
           :language="block.lang || $options.fallbackLanguage"
           :code="block.text"
         />

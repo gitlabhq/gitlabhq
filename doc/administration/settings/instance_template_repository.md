@@ -72,7 +72,7 @@ Your custom templates are displayed on the dropdown list when a new file is adde
 ![Custom template dropdown list](img/file_template_user_dropdown.png)
 
 If this feature is disabled or no templates are present,
-no **Custom** section displays in the selection dropdown.
+no **Custom** section displays in the selection dropdown list.
 
 <!-- ## Troubleshooting
 

@@ -14,7 +14,7 @@ const createStory = ({ ...options }) => {
       props: Object.keys(argTypes),
       template: `
         <div class="gl-bg-blue-50" :style="{ width }">
-          <tooltip-on-truncate :title="title" :placement="placement" class="gl-block gl-text-truncate">
+          <tooltip-on-truncate :title="title" :placement="placement" class="gl-block gl-truncate">
             {{title}}
           </tooltip-on-truncate>
         </div>
@@ -72,8 +72,8 @@ LiveUpdates.argTypes = {
 export const TruncateTarget = createStory({
   template: `
     <div class="gl-bg-black" :style="{ width }">
-      <tooltip-on-truncate class="gl-display-flex" :truncate-target="truncateTarget" :title="title">
-        <div class="gl-m-5 gl-bg-blue-50 gl-text-truncate">
+      <tooltip-on-truncate class="gl-flex" :truncate-target="truncateTarget" :title="title">
+        <div class="gl-m-5 gl-bg-blue-50 gl-truncate">
           {{ title }}
         </div>
       </tooltip-on-truncate>

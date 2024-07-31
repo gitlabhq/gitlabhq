@@ -164,8 +164,8 @@ If you mirror with Perforce Helix, mirror only protected branches. Perforce Heli
 rejects any pushes that rewrite history. Only the fewest number of branches should be mirrored
 due to the performance limitations of Git Fusion.
 
-When you configure mirroring with Perforce Helix by using Git Fusion, we recommend these Git Fusion
-settings:
+When you configure mirroring with Perforce Helix by using Git Fusion, you should use
+these Git Fusion settings:
 
 - Disable `change-pusher`. Otherwise, every commit is rewritten as being committed
   by the mirroring account, rather than mapping to existing Perforce Helix users or the `unknown_git` user.

@@ -58,13 +58,13 @@ export default {
 
 <template>
   <section>
-    <div ref="crudComponent" class="crud gl-bg-subtle gl-border gl-border-default gl-rounded-base">
+    <div ref="crudComponent" class="crud gl-border gl-rounded-base gl-border-default gl-bg-subtle">
       <header
-        class="gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-px-5 gl-py-4 gl-bg-default gl-border-b gl-border-default gl-rounded-t-base"
+        class="gl-border-b gl-flex gl-flex-wrap gl-justify-between gl-gap-x-5 gl-gap-y-2 gl-rounded-t-base gl-border-default gl-bg-default gl-px-5 gl-py-4"
       >
         <div class="gl-flex gl-flex-col gl-self-center">
           <h2
-            class="gl-text-base gl-font-bold gl-leading-24 gl-inline-flex gl-gap-3 gl-m-0"
+            class="gl-m-0 gl-inline-flex gl-gap-3 gl-text-base gl-font-bold gl-leading-24"
             data-testid="crud-title"
           >
             {{ title }}
@@ -79,14 +79,14 @@ export default {
           </h2>
           <p
             v-if="description || $scopedSlots.description"
-            class="gl-text-sm gl-text-subtle gl-mt-1 gl-mb-0"
+            class="gl-mb-0 gl-mt-1 gl-text-sm gl-text-subtle"
             data-testid="crud-description"
           >
             <slot v-if="$scopedSlots.description" name="description"></slot>
             <template v-else>{{ description }}</template>
           </p>
         </div>
-        <div class="gl-flex gl-gap-3 gl-items-baseline" data-testid="crud-actions">
+        <div class="gl-flex gl-items-baseline gl-gap-3" data-testid="crud-actions">
           <gl-button
             v-if="toggleText"
             size="small"
@@ -100,7 +100,7 @@ export default {
 
       <div
         v-if="$scopedSlots.form && isFormVisible"
-        class="gl-p-5 gl-pt-4 gl-bg-default gl-border-b gl-border-default"
+        class="gl-border-b gl-border-default gl-bg-default gl-p-5 gl-pt-4"
         data-testid="crud-form"
       >
         <slot name="form"></slot>
@@ -116,7 +116,7 @@ export default {
 
       <footer
         v-if="$scopedSlots.footer"
-        class="gl-px-5 gl-py-4 gl-bg-default gl-border-t gl-border-default gl-rounded-b-base"
+        class="gl-border-t gl-rounded-b-base gl-border-default gl-bg-default gl-px-5 gl-py-4"
         data-testid="crud-footer"
       >
         <slot name="footer"></slot>

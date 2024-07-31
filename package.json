@@ -44,6 +44,7 @@
     "lint:stylelint:staged": "scripts/frontend/execute-on-staged-files.sh stylelint '(css|scss)' -q",
     "lint:stylelint:staged:fix": "yarn run lint:stylelint:staged --fix",
     "lint:tailwind-utils": "REDIRECT_TO_STDOUT=true node scripts/frontend/compare_css_util_classes.mjs",
+    "prelint:tailwind-utils": "rm -f config/helpers/tailwind/css_in_js.js",
     "markdownlint": "markdownlint-cli2",
     "preinstall": "node ./scripts/frontend/preinstall.mjs",
     "postinstall": "node ./scripts/frontend/postinstall.js",

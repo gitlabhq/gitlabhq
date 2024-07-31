@@ -233,7 +233,7 @@ sequenceDiagram
 1. Workhorse forwards this request to Rails. If the LFS object exists
    and is associated with the project, Rails sends `ArchivePath` either
    with a path where the LFS object resides (for local disk) or a
-   pre-signed URL (when object storage is enabled) via the
+   pre-signed URL (when object storage is enabled) with the
    `Gitlab-Workhorse-Send-Data` HTTP header with a payload prefaced with
    `send-url`.
 1. Workhorse retrieves the file and send it to the `gitaly-lfs-smudge`

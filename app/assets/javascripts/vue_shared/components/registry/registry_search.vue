@@ -126,12 +126,10 @@ export default {
 </script>
 
 <template>
-  <div
-    class="gl-display-flex gl-flex-direction-column gl-md-flex-direction-row gl-gap-3 row-content-block"
-  >
+  <div class="row-content-block gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
     <gl-filtered-search
       v-model="internalFilter"
-      class="gl-flex-grow-1 gl-min-w-0"
+      class="gl-min-w-0 gl-grow"
       :placeholder="__('Filter results')"
       :available-tokens="tokens"
       @submit="submitSearch"

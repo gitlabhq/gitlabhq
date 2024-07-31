@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'renders usage overview metrics' do |has_data: true|
+RSpec.shared_examples 'renders usage overview metrics' do
   let(:usage_overview) { find_by_testid('panel-usage-overview') }
 
   it 'renders the metrics panel' do
@@ -10,14 +10,7 @@ RSpec.shared_examples 'renders usage overview metrics' do |has_data: true|
 
   it 'renders each of the available metrics' do
     within usage_overview do
-      [
-        ['groups', _('Groups'), has_data ? '5' : '-'],
-        ['projects', _('Projects'), has_data ? '10' : '-'],
-        ['users', _('Users'), has_data ? '100' : '-'],
-        ['issues', _('Issues'), has_data ? '1,500' : '-'],
-        ['merge_requests', _('Merge requests'), has_data ? '1,000' : '-'],
-        ['pipelines', _('Pipelines'), has_data ? '2,000' : '-']
-      ].each do |id, name, value|
+      usage_overview_metrics.each do |id, name, value|
         stat = find_by_testid("usage-overview-metric-#{id}")
         expect(stat).to be_visible
         expect(stat).to have_content name

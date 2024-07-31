@@ -132,7 +132,7 @@ and mirroring attempts stop. This failure is visible in either the:
 
 To resume project mirroring, [force an update](index.md#force-an-update).
 
-If many projects are affected by this problem, such as after a long network or
+If multiple projects are affected by this problem, such as after a long network or
 server outage, you can use the [Rails console](../../../../administration/operations/rails_console.md)
 to identify and update all affected projects with this command:
 

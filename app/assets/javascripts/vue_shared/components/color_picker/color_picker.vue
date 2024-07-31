@@ -17,7 +17,7 @@ import { uniqueId } from 'lodash';
 import { __ } from '~/locale';
 
 const PREVIEW_COLOR_DEFAULT_CLASSES =
-  'gl-relative gl-w-7 gl-bg-gray-10 gl-rounded-top-left-base gl-rounded-bottom-left-base';
+  'gl-relative gl-w-7 gl-bg-gray-10 gl-rounded-tl-base gl-rounded-bl-base';
 
 export default {
   name: 'ColorPicker',
@@ -105,12 +105,12 @@ export default {
       :description="description"
       :invalid-feedback="invalidFeedback"
       :state="state"
-      :class="{ 'gl-mb-3!': hasSuggestedColors }"
+      :class="{ '!gl-mb-3': hasSuggestedColors }"
     >
       <gl-form-input-group
         max-length="7"
         type="text"
-        class="gl-align-center gl-rounded-0 gl-rounded-top-right-base gl-rounded-bottom-right-base gl-max-w-26"
+        class="gl-align-center gl-max-w-26 gl-rounded-none gl-rounded-br-base gl-rounded-tr-base"
         :value="value"
         :state="state"
         @input="handleColorChange"
@@ -120,7 +120,7 @@ export default {
             <gl-form-input
               :id="id"
               type="color"
-              class="gl-absolute gl-top-0 gl-left-0 gl-h-full! gl-p-0! gl-m-0! gl-opacity-0"
+              class="gl-absolute gl-left-0 gl-top-0 !gl-m-0 !gl-h-full !gl-p-0 gl-opacity-0"
               tabindex="-1"
               :value="value"
               @input="handleColorChange"
@@ -137,7 +137,7 @@ export default {
         v-gl-tooltip
         :title="name"
         :style="{ backgroundColor: hex }"
-        class="gl-rounded-base gl-w-7 gl-h-7 gl-display-inline-block gl-mr-3 gl-mb-3 gl-text-decoration-none"
+        class="gl-mb-3 gl-mr-3 gl-inline-block gl-h-7 gl-w-7 gl-rounded-base gl-no-underline"
         @click.prevent="handleColorChange(hex)"
       />
     </div>

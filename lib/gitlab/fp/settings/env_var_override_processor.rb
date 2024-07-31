@@ -9,6 +9,8 @@ module Gitlab
         # @param [Hash] context
         # @return [Gitlab::Fp::Result]
         def self.process(context)
+          return Gitlab::Fp::Result.ok(context) if Rails.env.production?
+
           context => {
             env_var_prefix: String => env_var_prefix,
             env_var_failed_message_class: Class => env_var_failed_message_class,

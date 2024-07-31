@@ -60,8 +60,8 @@ import {
   PRIORITY_ASC,
   PRIORITY_DESC,
   RELATIVE_POSITION_ASC,
-  SPECIAL_FILTER,
-  specialFilterValues,
+  WILDCARD_FILTER,
+  wildcardFilterValues,
   TITLE_ASC,
   TITLE_DESC,
   UPDATED_ASC,
@@ -314,33 +314,29 @@ const getFilterType = ({ type, value: { data, operator } }) => {
   ) {
     return ALTERNATIVE_FILTER;
   }
-  if (specialFilterValues.includes(data)) {
-    return SPECIAL_FILTER;
+  if (wildcardFilterValues.includes(data)) {
+    return WILDCARD_FILTER;
   }
 
   return NORMAL_FILTER;
 };
 
 const wildcardTokens = [
+  TOKEN_TYPE_ASSIGNEE,
+  TOKEN_TYPE_EPIC,
+  TOKEN_TYPE_HEALTH,
   TOKEN_TYPE_ITERATION,
   TOKEN_TYPE_MILESTONE,
   TOKEN_TYPE_RELEASE,
-  TOKEN_TYPE_EPIC,
-  TOKEN_TYPE_ASSIGNEE,
   TOKEN_TYPE_REVIEWER,
   TOKEN_TYPE_WEIGHT,
 ];
 
 const isWildcardValue = (tokenType, value) =>
-  wildcardTokens.includes(tokenType) && specialFilterValues.includes(value);
-
-const isHealthStatusSpecialFilter = (tokenType, value) =>
-  tokenType === TOKEN_TYPE_HEALTH && specialFilterValues.includes(value);
+  wildcardTokens.includes(tokenType) && wildcardFilterValues.includes(value);
 
 const requiresUpperCaseValue = (tokenType, value) =>
-  tokenType === TOKEN_TYPE_TYPE ||
-  isWildcardValue(tokenType, value) ||
-  isHealthStatusSpecialFilter(tokenType, value);
+  tokenType === TOKEN_TYPE_TYPE || isWildcardValue(tokenType, value);
 
 const formatData = (token) => {
   if (requiresUpperCaseValue(token.type, token.value.data)) {
@@ -383,7 +379,7 @@ export const convertToApiParams = (filterTokens) => {
       const cadenceId = fullIterationCadenceId(cadence);
       const iterationWildCardId = iteration.toUpperCase();
       obj.set(apiField, obj.has(apiField) ? [obj.get(apiField), cadenceId].flat() : cadenceId);
-      const secondApiField = filtersMap[token.type][API_PARAM][SPECIAL_FILTER];
+      const secondApiField = filtersMap[token.type][API_PARAM][WILDCARD_FILTER];
       obj.set(
         secondApiField,
         obj.has(secondApiField)

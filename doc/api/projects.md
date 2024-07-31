@@ -2606,6 +2606,7 @@ Markdown uploads are files uploaded to a project that can be referenced in Markd
 ### Upload a file
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112450) in GitLab 15.10. Feature flag `enforce_max_attachment_size_upload_api` removed.
+> - `id` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161160) in GitLab 17.3.
 
 Uploads a file to the specified project to be used in an issue or merge request
 description, or a comment.
@@ -2633,6 +2634,7 @@ Returned object:
 
 ```json
 {
+  "id": 5,
   "alt": "dk",
   "url": "/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
   "full_path": "/namespace1/project1/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",

@@ -15,7 +15,7 @@ export default {
 </script>
 
 <template>
-  <div class="file-row-header bg-white sticky-top gl-px-2 js-file-row-header" :title="path">
+  <div class="file-row-header bg-white sticky-top js-file-row-header gl-px-2" :title="path">
     <gl-truncate :text="path" position="middle" class="gl-font-bold" />
   </div>
 </template>

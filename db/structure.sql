@@ -1442,6 +1442,22 @@ RETURN NEW;
 END
 $$;
 
+CREATE FUNCTION trigger_8ba31bddd655() RETURNS trigger
+    LANGUAGE plpgsql
+    AS $$
+BEGIN
+IF NEW."project_id" IS NULL THEN
+  SELECT "project_id"
+  INTO NEW."project_id"
+  FROM "vulnerability_occurrences"
+  WHERE "vulnerability_occurrences"."id" = NEW."occurrence_id";
+END IF;
+
+RETURN NEW;
+
+END
+$$;
+
 CREATE FUNCTION trigger_8d002f38bdef() RETURNS trigger
     LANGUAGE plpgsql
     AS $$
@@ -5849,6 +5865,7 @@ CREATE TABLE application_settings (
     code_creation jsonb DEFAULT '{}'::jsonb NOT NULL,
     code_suggestions_api_rate_limit integer DEFAULT 60 NOT NULL,
     ai_action_api_rate_limit integer DEFAULT 160 NOT NULL,
+    require_personal_access_token_expiry boolean DEFAULT true NOT NULL,
     CONSTRAINT app_settings_container_reg_cleanup_tags_max_list_size_positive CHECK ((container_registry_cleanup_tags_service_max_list_size >= 0)),
     CONSTRAINT app_settings_dep_proxy_ttl_policies_worker_capacity_positive CHECK ((dependency_proxy_ttl_group_policy_worker_capacity >= 0)),
     CONSTRAINT app_settings_ext_pipeline_validation_service_url_text_limit CHECK ((char_length(external_pipeline_validation_service_url) <= 255)),
@@ -19479,7 +19496,8 @@ CREATE TABLE vulnerability_occurrence_pipelines (
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
     occurrence_id bigint NOT NULL,
-    pipeline_id bigint NOT NULL
+    pipeline_id bigint NOT NULL,
+    project_id bigint
 );
 
 CREATE SEQUENCE vulnerability_occurrence_pipelines_id_seq
@@ -32045,6 +32063,8 @@ CREATE TRIGGER trigger_8a38ce2327de BEFORE INSERT OR UPDATE ON boards_epic_user_
 
 CREATE TRIGGER trigger_8ac78f164b2d BEFORE INSERT OR UPDATE ON design_management_repositories FOR EACH ROW EXECUTE FUNCTION trigger_8ac78f164b2d();
 
+CREATE TRIGGER trigger_8ba31bddd655 BEFORE INSERT OR UPDATE ON vulnerability_occurrence_pipelines FOR EACH ROW EXECUTE FUNCTION trigger_8ba31bddd655();
+
 CREATE TRIGGER trigger_8d002f38bdef BEFORE INSERT OR UPDATE ON packages_debian_group_components FOR EACH ROW EXECUTE FUNCTION trigger_8d002f38bdef();
 
 CREATE TRIGGER trigger_8d17725116fe BEFORE INSERT OR UPDATE ON merge_request_reviewers FOR EACH ROW EXECUTE FUNCTION trigger_8d17725116fe();
@@ -33341,9 +33361,6 @@ ALTER TABLE ONLY external_status_checks_protected_branches
 
 ALTER TABLE ONLY dast_profiles_pipelines
     ADD CONSTRAINT fk_cc206a8c13 FOREIGN KEY (dast_profile_id) REFERENCES dast_profiles(id) ON DELETE CASCADE;
-
-ALTER TABLE ONLY vulnerability_flags
-    ADD CONSTRAINT fk_cc3b7b4548 FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY todos
     ADD CONSTRAINT fk_ccf0373936 FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE;

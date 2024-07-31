@@ -27,6 +27,17 @@ RSpec.describe ::RemoteDevelopment::Settings, feature_category: :remote_developm
     end
   end
 
+  context "when there is an env var override and production env" do
+    before do
+      stub_env("GITLAB_REMOTE_DEVELOPMENT_MAX_HOURS_BEFORE_TERMINATION_LIMIT", "42")
+      allow(Rails).to receive_message_chain(:env, :production?) { true }
+    end
+
+    it "does not use the env var override value and use default value" do
+      expect(settings_module.get_single_setting(:max_hours_before_termination_limit)).to eq(120)
+    end
+  end
+
   context "when there is and ENV var override and also a ::Gitlab::CurrentSettings override" do
     let(:override_value_from_env) { "value_from_env" }
     let(:override_value_from_current_settings) { "value_from_current_settings" }

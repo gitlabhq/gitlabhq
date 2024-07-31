@@ -19,11 +19,11 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-flex-direction-column" data-testid="vsd-link">
-    <div class="gl-display-flex gl-mb-2">
+  <div class="gl-flex gl-flex-col" data-testid="vsd-link">
+    <div class="gl-mb-2 gl-flex">
       <span>{{ $options.i18n.title }}</span>
     </div>
-    <div class="gl-display-flex gl-align-items-baseline">
+    <div class="gl-flex gl-items-baseline">
       <gl-link :href="requestPath">{{ $options.i18n.linkText }}</gl-link
       >&nbsp;<gl-icon name="dashboard" />
     </div>

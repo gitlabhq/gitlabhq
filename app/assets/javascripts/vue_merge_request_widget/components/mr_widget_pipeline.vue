@@ -157,7 +157,7 @@ export default {
     coverageDeltaClass() {
       const delta = this.pipelineCoverageDelta;
       if (delta && parseFloat(delta) > 0) {
-        return 'text-success';
+        return 'gl-text-success';
       }
       if (delta && parseFloat(delta) < 0) {
         return 'gl-text-danger';

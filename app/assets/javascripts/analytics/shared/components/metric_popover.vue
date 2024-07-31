@@ -34,14 +34,12 @@ export default {
 <template>
   <gl-popover :target="target" placement="top">
     <template #title>
-      <div
-        class="gl-display-flex gl-justify-content-space-between gl-text-right gl-py-1 gl-align-items-center"
-      >
+      <div class="gl-flex gl-items-center gl-justify-between gl-py-1 gl-text-right">
         <span data-testid="metric-label">{{ metric.label }}</span>
         <gl-link
           v-if="metricLink"
           :href="metricLink.url"
-          class="gl-font-sm gl-font-normal"
+          class="gl-text-sm gl-font-normal"
           data-testid="metric-link"
           >{{ $options.metricPopoverLabel }}
           <gl-icon name="chart" />
@@ -52,7 +50,7 @@ export default {
     <gl-link
       v-if="docsLink"
       :href="docsLink.url"
-      class="gl-font-sm"
+      class="gl-text-sm"
       target="_blank"
       data-testid="metric-docs-link"
       >{{ docsLink.label }}

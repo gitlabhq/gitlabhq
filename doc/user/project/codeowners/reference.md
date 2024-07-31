@@ -36,7 +36,7 @@ Sections are groups of entries. A section begins with a section heading in squar
 #### Section headings
 
 Section headings must always have a name. They can also be made optional, or
-require a number of approvals. A list of default owners can be added to the section heading line.
+require a specific number of approvals. A list of default owners can be added to the section heading line.
 
 ```plaintext
 # Required section

@@ -111,7 +111,7 @@ To prevent this from happening, you can set a hard limit for your repositories' 
 This limit can be set globally, per group, or per project, with per project limits
 taking the highest priority.
 
-There are numerous use cases where you might set up a limit for repository size.
+Numerous use cases exist where you might set up a limit for repository size.
 For instance, consider the following workflow:
 
 1. Your team develops apps which require large files to be stored in
@@ -178,7 +178,7 @@ For details, see [cookies used for sign-in](../../user/profile/index.md#cookies-
 
 > - Ability to turn the **Remember me** setting on and off [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369133) in GitLab 16.0.
 
-Users can select the **Remember me** checkbox on sign-in, and their session will remain active for an indefinite period of time when accessed from that specific browser. You can turn off this setting if you need sessions to expire for security or compliance purposes. Turning off this setting will ensure users' sessions expire after the number of minutes of inactivity set when you [customize your session duration](#customize-the-default-session-duration).
+Users can select the **Remember me** checkbox on sign-in, and their session remains active for an indefinite period of time when accessed from that specific browser. You can turn off this setting if you need sessions to expire for security or compliance purposes. Turning off this setting ensures users' sessions expire after the number of minutes of inactivity set when you [customize your session duration](#customize-the-default-session-duration).
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
@@ -203,6 +203,40 @@ To set a limit on how long these sessions are valid:
 1. Expand the **Account and limit** section.
 1. Fill in the **Session duration for Git operations when 2FA is enabled (minutes)** field.
 1. Select **Save changes**.
+
+## Require expiration dates for new access tokens
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3.
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can require all new access tokens to have an expiration date.
+This setting is turned on by default and applies to:
+
+- Project access tokens.
+- Group access tokens.
+- Personal access tokens for non-service account users.
+
+For personal access tokens for service accounts, use the `service_access_tokens_expiration_enforced` setting in the [Application Settings API](../../api/settings.md).
+
+To require expiration dates for new access tokens:
+
+1. On the left sidebar, at the bottom, select **Admin**.
+1. Select **Settings > General**.
+1. Expand **Account and limit**.
+1. Select the **Personal / Project / Group access token expiration** checkbox.
+1. Select **Save changes**.
+
+When you require expiration dates for new access tokens:
+
+- Users must set an expiration date that does not exceed the allowed lifetime for new access tokens.
+- To control the maximum access token lifetime, use the [**Limit the lifetime of access tokens** setting](#limit-the-lifetime-of-access-tokens).
 
 ## Limit the lifetime of SSH keys
 

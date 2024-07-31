@@ -103,7 +103,7 @@ export default {
       data-testid="project-search-field"
       @input="onInput"
     />
-    <div class="gl-flex flex-column">
+    <div class="flex-column gl-flex">
       <gl-loading-icon v-if="showLoadingIndicator" size="sm" class="py-2 px-4" />
       <gl-infinite-scroll
         :max-list-height="maxListHeight"
@@ -130,18 +130,18 @@ export default {
           <span data-testid="legend-text">{{ legendText }}</span>
         </template>
       </gl-infinite-scroll>
-      <div v-if="showNoResultsMessage" class="gl-text-gray-600 gl-ml-3 js-no-results-message">
+      <div v-if="showNoResultsMessage" class="js-no-results-message gl-ml-3 gl-text-gray-600">
         {{ __('Sorry, no projects matched your search') }}
       </div>
       <div
         v-if="showMinimumSearchQueryMessage"
-        class="gl-text-gray-600 gl-ml-3 js-minimum-search-query-message"
+        class="js-minimum-search-query-message gl-ml-3 gl-text-gray-600"
       >
         {{ __('Enter at least three characters to search') }}
       </div>
       <div
         v-if="showSearchErrorMessage"
-        class="gl-text-red-500 gl-font-bold gl-ml-3 js-search-error-message"
+        class="js-search-error-message gl-ml-3 gl-font-bold gl-text-red-500"
       >
         {{ __('Something went wrong, unable to search projects') }}
       </div>

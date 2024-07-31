@@ -68,7 +68,7 @@ For example:
 docs/ @tech-writer-team
 ```
 
-All files beneath the `docs/` directory show `@tech-writer-team` as Code Owners, but the directory itself will show `@dev-team`.
+All files beneath the `docs/` directory show `@tech-writer-team` as Code Owners, but the directory itself shows `@dev-team`.
 
 This behavior occurs when viewing a directory because the [syntax rule](../../project/codeowners/reference.md#directory-paths)
 applies to all files beneath the directory, which does not include the directory itself. To resolve this, update the `CODEOWNERS` file to include the

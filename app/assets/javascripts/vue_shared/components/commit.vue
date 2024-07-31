@@ -146,7 +146,7 @@ export default {
 <template>
   <div class="branch-commit gl-text-primary">
     <template v-if="shouldShowRefInfo">
-      <div class="icon-container gl-display-inline-block">
+      <div class="icon-container gl-inline-block">
         <gl-icon v-if="tag" name="tag" />
         <gl-icon v-else-if="mergeRequestRef" name="merge-request" />
         <gl-icon v-else name="branch" />

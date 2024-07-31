@@ -42,7 +42,7 @@ export default {
       :unit="metric.unit || ''"
       :should-animate="true"
       :animation-decimal-places="decimalPlaces"
-      :class="{ 'gl-hover-cursor-pointer': hasLinks }"
+      :class="{ 'hover:gl-cursor-pointer': hasLinks }"
       tabindex="0"
       use-delimiters
       @click="clickHandler(metric)"

@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     dropdownClass() {
-      return this.isSidebar && !this.isDropdownShowing ? 'gl-display-none' : '';
+      return this.isSidebar && !this.isDropdownShowing ? 'gl-hidden' : '';
     },
     items() {
       return Object.entries(this.statuses).map(([value, text]) => ({ value, text }));

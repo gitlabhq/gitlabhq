@@ -317,7 +317,7 @@ too small, the error persists.
 Modifying the server is not always an option, and introduces more potential risk.
 Attempt local changes first.
 
-## Password expired error on Git fetch via SSH for LDAP user
+## Password expired error on Git fetch with SSH for LDAP user
 
 If `git fetch` returns this `HTTP 403 Forbidden` error on a self-managed instance of
 GitLab, the password expiration date (`users.password_expires_at`) for this user in the
@@ -359,7 +359,7 @@ refer to the [two-factor authentication troubleshooting guide](../../user/profil
 
 ## `401` errors logged during successful `git clone`
 
-When cloning a repository via HTTP, the
+When cloning a repository with HTTP, the
 [`production_json.log`](../../administration/logs/index.md#production_jsonlog) file
 may show an initial status of `401` (unauthorized), quickly followed by a `200`.
 

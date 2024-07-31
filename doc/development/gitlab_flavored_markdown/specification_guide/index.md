@@ -1099,11 +1099,11 @@ allows control over other aspects of the snapshot example generation process.
 ```yaml
 ---
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__001:
-  api_request_override_path: /groups/glfm_group/preview_markdown
+  api_request_override_path: /groups/glfm_group/-/preview_markdown
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__002:
-  api_request_override_path: /glfm_group/glfm_project/preview_markdown
+  api_request_override_path: /glfm_group/glfm_project/-/preview_markdown
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__003:
-  api_request_override_path: /glfm_group/glfm_project/preview_markdown
+  api_request_override_path: /glfm_group/glfm_project/-/preview_markdown
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__004:
   api_request_override_path: /-/snippets/preview_markdown
 08_01_00__examples_using_internal_extensions__markdown_preview_api_request_overrides__005:

@@ -340,7 +340,7 @@ If these actions are insufficient, you can also:
 
 Unfortunately, this workflow doesn't work. Deleting files in a commit doesn't actually reduce the
 size of the repository, because the earlier commits and blobs still exist. Instead, you must rewrite
-history. We recommend the open-source community-maintained tool
+history. You should use the open-source community-maintained tool
 [`git filter-repo`](https://github.com/newren/git-filter-repo).
 
 NOTE:

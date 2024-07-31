@@ -9,8 +9,8 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-my-5 gl-display-flex">
-    <div class="gl-font-bold gl-w-13 gl-text-right gl-pr-3">{{ label }}</div>
+  <div class="gl-my-5 gl-flex">
+    <div class="gl-w-13 gl-pr-3 gl-text-right gl-font-bold">{{ label }}</div>
     <div class="gl-pl-2">
       <slot></slot>
     </div>

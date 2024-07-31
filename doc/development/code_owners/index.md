@@ -123,7 +123,7 @@ This service is defined in `services/merge_requests/sync_code_owner_approval_rul
 These flowcharts should help explain the flow from the controllers down to the
 models for different features.
 
-Note that many of the Code Owners implementations exist in the `EE` variants of the classes.
+A lot of the Code Owners implementations exist in the `EE` variants of the classes.
 
 ### Push changes to a protected branch with `require_code_owner_approval` enabled, over SSH
 

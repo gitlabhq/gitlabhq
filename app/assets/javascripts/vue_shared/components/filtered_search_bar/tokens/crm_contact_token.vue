@@ -124,7 +124,7 @@ export default {
       >
         <div>
           <div>{{ getContactName(contact) }}</div>
-          <div class="gl-font-sm">{{ contact.email }}</div>
+          <div class="gl-text-sm">{{ contact.email }}</div>
         </div>
       </gl-filtered-search-suggestion>
     </template>

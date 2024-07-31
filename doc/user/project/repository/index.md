@@ -148,7 +148,7 @@ You can download the source code that's stored in a repository.
      Download the artifacts from the latest CI job.
 
 The checksums of generated archives can change even if the repository itself doesn't
-change. This can occur, for example, if Git or a third-party library that GitLab uses changes.
+change. For example, this occurs if Git or a third-party library that GitLab uses changes.
 
 ## Repository languages
 

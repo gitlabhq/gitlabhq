@@ -165,6 +165,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     user_agent_details: %w[subject_id],
     users: %w[color_mode_id color_scheme_id created_by_id theme_id managing_group_id],
     users_star_projects: %w[user_id],
+    vulnerability_occurrence_pipelines: %w[project_id],
     vulnerability_finding_links: %w[project_id],
     vulnerability_identifiers: %w[external_id],
     vulnerability_occurrence_identifiers: %w[project_id],

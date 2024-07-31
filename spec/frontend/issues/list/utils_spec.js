@@ -2,14 +2,14 @@ import setWindowLocation from 'helpers/set_window_location_helper';
 import { TEST_HOST } from 'helpers/test_constants';
 import {
   apiParams,
-  apiParamsWithSpecialValues,
+  apiParamsWithWildcardValues,
   filteredTokens,
-  filteredTokensWithSpecialValues,
+  filteredTokensWithWildcardValues,
   groupedFilteredTokens,
   locationSearch,
-  locationSearchWithSpecialValues,
+  locationSearchWithWildcardValues,
   urlParams,
-  urlParamsWithSpecialValues,
+  urlParamsWithWildcardValues,
 } from 'jest/issues/list/mock_data';
 import { STATUS_CLOSED } from '~/issues/constants';
 import { CREATED_DESC, UPDATED_DESC, urlSortParams } from '~/issues/list/constants';
@@ -132,9 +132,9 @@ describe('getFilterTokens', () => {
     expect(getFilterTokens(locationSearch)).toEqual(filteredTokens);
   });
 
-  it('returns filtered tokens given "window.location.search" with special values', () => {
-    expect(getFilterTokens(locationSearchWithSpecialValues)).toEqual(
-      filteredTokensWithSpecialValues,
+  it('returns filtered tokens given "window.location.search" with wildcard values', () => {
+    expect(getFilterTokens(locationSearchWithWildcardValues)).toEqual(
+      filteredTokensWithWildcardValues,
     );
   });
 });
@@ -148,8 +148,10 @@ describe('convertToApiParams', () => {
     expect(convertToApiParams(filteredTokens)).toEqual(apiParams);
   });
 
-  it('returns api params given filtered tokens with special values', () => {
-    expect(convertToApiParams(filteredTokensWithSpecialValues)).toEqual(apiParamsWithSpecialValues);
+  it('returns api params given filtered tokens with wildcard values', () => {
+    expect(convertToApiParams(filteredTokensWithWildcardValues)).toEqual(
+      apiParamsWithWildcardValues,
+    );
   });
 });
 
@@ -162,10 +164,12 @@ describe('convertToUrlParams', () => {
     expect(convertToUrlParams(filteredTokens)).toEqual(urlParams);
   });
 
-  it('returns url params given filtered tokens with special values', () => {
+  it('returns url params given filtered tokens with wildcard values', () => {
     setWindowLocation('?assignee_id=123');
 
-    expect(convertToUrlParams(filteredTokensWithSpecialValues)).toEqual(urlParamsWithSpecialValues);
+    expect(convertToUrlParams(filteredTokensWithWildcardValues)).toEqual(
+      urlParamsWithWildcardValues,
+    );
   });
 });
 

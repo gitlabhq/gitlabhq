@@ -103,7 +103,7 @@ DETAILS:
 ### Merge commit message generation
 
 DETAILS:
-**Tier:** Premium and Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - Helps you merge more quickly by generating meaningful commit messages.

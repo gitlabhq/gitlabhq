@@ -224,6 +224,19 @@ RSpec.describe ResourceAccessTokens::CreateService, feature_category: :system_ac
                 )
               end
             end
+
+            context 'when require_personal_access_token_expiry is set to false' do
+              before do
+                stub_application_setting(require_personal_access_token_expiry: false)
+              end
+
+              it 'returns a nil expiration date' do
+                response = subject
+                access_token = response.payload[:access_token]
+
+                expect(access_token.expires_at).to be_nil
+              end
+            end
           end
 
           context 'when user provides expiration value' do

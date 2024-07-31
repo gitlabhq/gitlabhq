@@ -39,7 +39,7 @@ One of these issues might be occurring:
 
 ## Deadline Exceeded
 
-When upgrading GitLab, a change in how usernames are represented means that you
+When you upgrade GitLab, a change in how usernames are represented means that you
 must update your mirroring username and password to ensure that `%40` characters are replaced with `@`.
 
 ## Connection blocked: server only allows public key authentication

@@ -35,7 +35,7 @@ export default {
 
 <template>
   <div>
-    <div class="gl-display-flex gl-align-items-center">
+    <div class="gl-flex gl-items-center">
       <slot name="title"></slot>
       <div class="ml-auto">
         <button

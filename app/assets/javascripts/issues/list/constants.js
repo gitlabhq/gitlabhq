@@ -81,7 +81,7 @@ export const WEIGHT_DESC = 'WEIGHT_DESC';
 export const API_PARAM = 'apiParam';
 export const URL_PARAM = 'urlParam';
 export const NORMAL_FILTER = 'normalFilter';
-export const SPECIAL_FILTER = 'specialFilter';
+export const WILDCARD_FILTER = 'wildcardFilter';
 export const ALTERNATIVE_FILTER = 'alternativeFilter';
 
 export const ISSUES_VIEW_TYPE_KEY = 'issuesViewType';
@@ -136,7 +136,7 @@ export const urlSortParams = {
   [BLOCKING_ISSUES_DESC]: 'blocking_issues_desc',
 };
 
-export const specialFilterValues = [
+export const wildcardFilterValues = [
   FILTER_NONE,
   FILTER_ANY,
   FILTER_CURRENT,
@@ -219,13 +219,13 @@ export const filtersMap = {
   [TOKEN_TYPE_ASSIGNEE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'assigneeUsernames',
-      [SPECIAL_FILTER]: 'assigneeWildcardId',
+      [WILDCARD_FILTER]: 'assigneeWildcardId',
       [ALTERNATIVE_FILTER]: 'assigneeId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'assignee_username[]',
-        [SPECIAL_FILTER]: 'assignee_id',
+        [WILDCARD_FILTER]: 'assignee_id',
         [ALTERNATIVE_FILTER]: 'assignee_username',
       },
       [OPERATOR_NOT]: {
@@ -250,13 +250,13 @@ export const filtersMap = {
   [TOKEN_TYPE_REVIEWER]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'reviewerUsername',
-      [SPECIAL_FILTER]: 'reviewerWildcardId',
+      [WILDCARD_FILTER]: 'reviewerWildcardId',
       [ALTERNATIVE_FILTER]: 'reviewerId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'reviewer_username',
-        [SPECIAL_FILTER]: 'reviewer_id',
+        [WILDCARD_FILTER]: 'reviewer_id',
         [ALTERNATIVE_FILTER]: 'reviewer_username',
       },
       [OPERATOR_NOT]: {
@@ -267,29 +267,29 @@ export const filtersMap = {
   [TOKEN_TYPE_MILESTONE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'milestoneTitle',
-      [SPECIAL_FILTER]: 'milestoneWildcardId',
+      [WILDCARD_FILTER]: 'milestoneWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'milestone_title',
-        [SPECIAL_FILTER]: 'milestone_title',
+        [WILDCARD_FILTER]: 'milestone_title',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[milestone_title]',
-        [SPECIAL_FILTER]: 'not[milestone_title]',
+        [WILDCARD_FILTER]: 'not[milestone_title]',
       },
     },
   },
   [TOKEN_TYPE_LABEL]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'labelName',
-      [SPECIAL_FILTER]: 'labelName',
+      [WILDCARD_FILTER]: 'labelName',
       [ALTERNATIVE_FILTER]: 'labelNames',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'label_name[]',
-        [SPECIAL_FILTER]: 'label_name[]',
+        [WILDCARD_FILTER]: 'label_name[]',
         [ALTERNATIVE_FILTER]: 'label_name',
       },
       [OPERATOR_NOT]: {
@@ -336,12 +336,12 @@ export const filtersMap = {
   [TOKEN_TYPE_RELEASE]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'releaseTag',
-      [SPECIAL_FILTER]: 'releaseTagWildcardId',
+      [WILDCARD_FILTER]: 'releaseTagWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'release_tag',
-        [SPECIAL_FILTER]: 'release_tag',
+        [WILDCARD_FILTER]: 'release_tag',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[release_tag]',
@@ -351,12 +351,12 @@ export const filtersMap = {
   [TOKEN_TYPE_MY_REACTION]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'myReactionEmoji',
-      [SPECIAL_FILTER]: 'myReactionEmoji',
+      [WILDCARD_FILTER]: 'myReactionEmoji',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'my_reaction_emoji',
-        [SPECIAL_FILTER]: 'my_reaction_emoji',
+        [WILDCARD_FILTER]: 'my_reaction_emoji',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[my_reaction_emoji]',
@@ -386,30 +386,30 @@ export const filtersMap = {
   [TOKEN_TYPE_ITERATION]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'iterationId',
-      [SPECIAL_FILTER]: 'iterationWildcardId',
+      [WILDCARD_FILTER]: 'iterationWildcardId',
       [ALTERNATIVE_FILTER]: 'iterationCadenceId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'iteration_id',
-        [SPECIAL_FILTER]: 'iteration_id',
+        [WILDCARD_FILTER]: 'iteration_id',
         [ALTERNATIVE_FILTER]: 'iteration_cadence_id',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[iteration_id]',
-        [SPECIAL_FILTER]: 'not[iteration_id]',
+        [WILDCARD_FILTER]: 'not[iteration_id]',
       },
     },
   },
   [TOKEN_TYPE_EPIC]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'epicId',
-      [SPECIAL_FILTER]: 'epicWildcardId',
+      [WILDCARD_FILTER]: 'epicWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'epic_id',
-        [SPECIAL_FILTER]: 'epic_id',
+        [WILDCARD_FILTER]: 'epic_id',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[epic_id]',
@@ -419,12 +419,12 @@ export const filtersMap = {
   [TOKEN_TYPE_WEIGHT]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'weight',
-      [SPECIAL_FILTER]: 'weightWildcardId',
+      [WILDCARD_FILTER]: 'weightWildcardId',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'weight',
-        [SPECIAL_FILTER]: 'weight',
+        [WILDCARD_FILTER]: 'weight',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[weight]',
@@ -434,12 +434,12 @@ export const filtersMap = {
   [TOKEN_TYPE_HEALTH]: {
     [API_PARAM]: {
       [NORMAL_FILTER]: 'healthStatusFilter',
-      [SPECIAL_FILTER]: 'healthStatusFilter',
+      [WILDCARD_FILTER]: 'healthStatusFilter',
     },
     [URL_PARAM]: {
       [OPERATOR_IS]: {
         [NORMAL_FILTER]: 'health_status',
-        [SPECIAL_FILTER]: 'health_status',
+        [WILDCARD_FILTER]: 'health_status',
       },
       [OPERATOR_NOT]: {
         [NORMAL_FILTER]: 'not[health_status]',

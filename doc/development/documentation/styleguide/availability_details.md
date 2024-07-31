@@ -65,11 +65,27 @@ Generally available features should not have a status.
 
 The add-ons belong with other subscription tiers. Document them by using the phrase `with` and the add-on.
 For example, `with GitLab Duo Pro`.
-For example:
+
+The possibilities are:
 
 ```markdown
-**Tier:** Premium or Ultimate with GitLab Duo Pro
+**Tier:** Premium with GitLab Duo Pro
+**Tier:** Premium with GitLab Duo Pro or Ultimate with GitLab Duo Pro or Enterprise
+**Tier:** Ultimate with GitLab Duo Pro
+**Tier:** Ultimate with GitLab Duo Pro or Enterprise
+**Tier:** Ultimate with GitLab Duo Enterprise
 ```
+
+Do not use a period at the end of the phrase.
+
+You might have to differentiate which add-on applies for each offering (GitLab.com, Dedicated, self-managed). If you have to differentiate, use this format:
+
+```markdown
+**Tier: GitLab.com and Self-managed:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md) **GitLab Dedicated:** GitLab Duo Pro or Enterprise
+```
+
+NOTE:
+GitLab Dedicated always includes an Ultimate subscription.
 
 ## When to add availability details
 

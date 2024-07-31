@@ -49,7 +49,7 @@ exports[`packages_list_row renders 1`] = `
         </div>
       </div>
       <div
-        class="gl-flex gl-flex-col gl-flex-shrink-0 gl-justify-between gl-text-secondary sm:gl-items-end"
+        class="gl-flex gl-flex-col gl-justify-between gl-shrink-0 gl-text-secondary sm:gl-items-end"
       >
         <div
           class="gl-flex gl-items-center gl-min-h-6 sm:gl-text-primary"

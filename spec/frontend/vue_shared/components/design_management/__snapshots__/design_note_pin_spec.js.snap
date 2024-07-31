@@ -3,7 +3,7 @@
 exports[`Design note pin component should match the snapshot of note with index 1`] = `
 <button
   aria-label="Comment '1' position"
-  class="design-note-pin gl-absolute gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center js-image-badge"
+  class="design-note-pin gl-absolute gl-flex gl-items-center gl-justify-center gl-text-sm js-image-badge"
   style="left: 10px; top: 10px;"
   type="button"
 >
@@ -14,7 +14,7 @@ exports[`Design note pin component should match the snapshot of note with index 
 exports[`Design note pin component should match the snapshot of note without index 1`] = `
 <button
   aria-label="Comment form position"
-  class="btn-transparent comment-indicator gl-absolute gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center"
+  class="btn-transparent comment-indicator gl-absolute gl-flex gl-items-center gl-justify-center gl-text-sm"
   style="left: 10px; top: 10px;"
   type="button"
 >
@@ -29,7 +29,7 @@ exports[`Design note pin component should match the snapshot of note without ind
 exports[`Design note pin component should match the snapshot when pin is resolved 1`] = `
 <button
   aria-label="Comment form position"
-  class="btn-transparent comment-indicator gl-absolute gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center resolved"
+  class="btn-transparent comment-indicator gl-absolute gl-flex gl-items-center gl-justify-center gl-text-sm resolved"
   style="left: 10px; top: 10px;"
   type="button"
 >
@@ -44,7 +44,7 @@ exports[`Design note pin component should match the snapshot when pin is resolve
 exports[`Design note pin component should match the snapshot when position is absent 1`] = `
 <button
   aria-label="Comment form position"
-  class="btn-transparent comment-indicator gl-align-items-center gl-display-flex gl-font-sm gl-justify-content-center"
+  class="btn-transparent comment-indicator gl-flex gl-items-center gl-justify-center gl-text-sm"
   type="button"
 >
   <gl-icon-stub

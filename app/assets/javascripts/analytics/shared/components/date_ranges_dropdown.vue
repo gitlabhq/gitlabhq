@@ -130,7 +130,7 @@ export default {
 </script>
 
 <template>
-  <div class="gl-display-flex gl-align-items-center gl-gap-3">
+  <div class="gl-flex gl-items-center gl-gap-3">
     <gl-collapsible-listbox v-model="selectedValue" :items="items" @select="onSelect" />
     <div v-if="showDateRangeString || showTooltip" class="gl-text-gray-500">
       <span v-if="showDateRangeString" data-testid="predefined-date-range-string">{{

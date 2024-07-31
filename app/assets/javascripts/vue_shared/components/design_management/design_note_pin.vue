@@ -81,7 +81,7 @@ export default {
       'gl-absolute': position,
       small: size === 'sm',
     }"
-    class="gl-display-flex gl-align-items-center gl-justify-content-center gl-font-sm"
+    class="gl-flex gl-items-center gl-justify-center gl-text-sm"
     type="button"
     @mousedown="$emit('mousedown', $event)"
     @mouseup="$emit('mouseup', $event)"

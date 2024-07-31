@@ -126,7 +126,7 @@ export default {
     cssClasses: {
       type: String,
       required: false,
-      default: 'gl-sm-ml-3',
+      default: 'sm:gl-ml-3',
     },
   },
   data() {
@@ -312,10 +312,8 @@ export default {
           @action="executeAction(action)"
         >
           <template #list-item>
-            <div class="gl-display-flex gl-flex-direction-column">
-              <span
-                class="gl-display-flex gl-justify-content-space-between gl-align-items-center gl-mb-2"
-              >
+            <div class="gl-flex gl-flex-col">
+              <span class="gl-mb-2 gl-flex gl-items-center gl-justify-between">
                 <span data-testid="action-primary-text" class="gl-font-bold">{{
                   action.text
                 }}</span>
@@ -323,7 +321,7 @@ export default {
                   action.shortcut
                 }}</kbd>
               </span>
-              <span data-testid="action-secondary-text" class="gl-font-sm gl-text-secondary">
+              <span data-testid="action-secondary-text" class="gl-text-sm gl-text-secondary">
                 {{ action.secondaryText }}
               </span>
             </div>

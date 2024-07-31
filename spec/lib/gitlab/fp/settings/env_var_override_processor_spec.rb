@@ -12,6 +12,7 @@ RSpec.describe Gitlab::Fp::Settings::EnvVarOverrideProcessor, feature_category: 
   let(:env_var_prefix) { "THE_PREFIX" }
   let(:env_var_failed_message_class) { Class.new(Gitlab::Fp::Message) }
   let(:env_var_name) { "#{env_var_prefix}_#{setting_name.upcase}" }
+  let(:rails_env_is_production) { false }
   let(:context) do
     {
       settings: {
@@ -32,6 +33,7 @@ RSpec.describe Gitlab::Fp::Settings::EnvVarOverrideProcessor, feature_category: 
   before do
     allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to receive(:[]).with(env_var_name) { env_var_value }
+    allow(Rails).to receive_message_chain(:env, :production?) { rails_env_is_production }
   end
 
   context "when an ENV var overrides a default setting" do
@@ -202,6 +204,14 @@ RSpec.describe Gitlab::Fp::Settings::EnvVarOverrideProcessor, feature_category: 
       expect(result).to be_err_result(
         env_var_failed_message_class.new(details: "Unsupported setting type: #{setting_type}")
       )
+    end
+  end
+
+  context "when Rails env is production" do
+    let(:rails_env_is_production) { true }
+
+    it 'does not change any context' do
+      expect(result).to eq Gitlab::Fp::Result.ok(context)
     end
   end
 end

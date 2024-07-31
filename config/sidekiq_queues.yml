@@ -695,6 +695,8 @@
   - 1
 - - sbom_process_transfer_events
   - 1
+- - sbom_process_vulnerabilities
+  - 1
 - - sbom_reports
   - 1
 - - sbom_sync_archived_status
