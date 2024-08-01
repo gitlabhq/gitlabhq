@@ -5,20 +5,69 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 description: "Extend the features of GitLab to Visual Studio Code, JetBrains IDEs, Visual Studio, and Neovim."
 ---
 
-# Editor and IDE extensions
+# Editor Extensions
 
-GitLab has plugins and extensions to extend GitLab functionality to the following editors:
+GitLab Editor Extensions bring the power of GitLab and GitLab Duo directly into your preferred
+development environments. Use GitLab features and GitLab Duo AI capabilities to handle everyday tasks
+without leaving your editor. For example:
 
-- [Visual Studio Code](visual_studio_code/index.md)
-- [JetBrains IDEs](jetbrains_ide/index.md)
-- [Visual Studio](visual_studio/index.md)
-- [Neovim](neovim/index.md)
+- Manage your projects.
+- Write and review code.
+- Track issues.
+- Optimize pipelines.
 
-GitLab also supports developers in their command-line interface with [`glab`](gitlab_cli/index.md) the GitLab CLI.
+Our extensions boost your productivity and elevate your development process by bridging the gap
+between your coding environment and GitLab.
+
+## Available extensions
+
+GitLab offers extensions for the following development environments:
+
+- [GitLab Workflow for VS Code](visual_studio_code/index.md): Bring GitLab Duo,
+  and other GitLab features, into Visual Studio Code.
+- [GitLab Duo for JetBrains IDEs](jetbrains_ide/index.md): Bring GitLab Duo AI capabilities
+  to IntelliJ IDEA, PyCharm, WebStorm, and other JetBrains IDEs.
+- [GitLab Extension for Visual Studio](visual_studio/index.md): Bring GitLab Duo Code Suggestions to Visual Studio.
+
+If you prefer a command-line interface, try:
+
+- [`glab`](gitlab_cli/index.md) the GitLab CLI.
+- [GitLab.nvim for Neovim](neovim/index.md): Bring GitLab Duo Code Suggestions directly to Neovim in your terminal window.
 
 ## Features
 
-A complete list of the features and capabilities of each extension can be found in the documentation home for each extension.
+Our editor extensions offer powerful GitLab Duo integration, with Visual Studio Code and `glab` featuring
+an integrated GitLab workflow experience.
+
+### GitLab Duo Code Suggestions
+
+[GitLab Duo Code Suggestions](../user/project/repository/code_suggestions/index.md) provide AI-assisted coding capabilities:
+
+- **Code completion**: Suggests completions to the current line you are typing.
+  Use it to complete one or a few lines of code.
+- **Code generation**: Generates code based on a natural language code comment block.
+  Write a comment, then press <kbd>Enter</kbd> to generate code based on the context of your
+  comment, and the rest of your code.
+- **Context-aware suggestions**: Uses currently open files, content before and after the cursor,
+  filename, and extension type to provide relevant suggestions.
+- **Support for multiple languages**: Works with various programming languages supported by your development environment.
+
+### GitLab Duo Chat
+
+Use [GitLab Duo Chat](../user/gitlab_duo_chat/index.md) to interact with an AI assistant directly in your development environment.
+
+- **Ask about GitLab**: Get answers about how GitLab works, concepts, and step-by-step instructions.
+- **Code-related queries**: Ask for explanations of code snippets, generate tests, or refactor selected code in your IDE.
+
+## Feedback and contributions
+
+We value your input on both the traditional and AI-powered features. If you have suggestions, encounter issues,
+or want to contribute to the development of our extensions:
+
+- Report issues in their GitLab projects.
+- Submit feature requests by creating a new issue in the
+  [Editor Extensions project](https://gitlab.com/gitlab-org/editor-extensions/product/-/issues/).
+- Submit merge requests in the respective GitLab projects.
 
 ## Related topics
 

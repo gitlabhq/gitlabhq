@@ -25,6 +25,7 @@ module GpgKeys
 
       integration.execute({ key_id: key.primary_keyid, committer_email: key.user.email })
 
+      key.externally_verified_at = Time.current
       key.externally_verified = true
     rescue ::Gitlab::BeyondIdentity::Client::ApiError => e
       key.errors.add(:base, "BeyondIdentity: #{e.message}") unless e.acceptable_error?

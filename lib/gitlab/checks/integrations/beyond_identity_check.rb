@@ -52,11 +52,11 @@ module Gitlab
             break false unless key.present?
 
             gpg_key = key.is_a?(GpgKeySubkey) ? key.gpg_key : key
-            break false unless key.externally_verified?
-            break true if gpg_key.updated_at > INTEGRATION_VERIFICATION_PERIOD.ago
+
+            break gpg_key.externally_verified? unless require_reverification?(gpg_key)
 
             verified_externally?(gpg_key).tap do |verified_externally|
-              key.update!(externally_verified: verified_externally)
+              key.update!(externally_verified: verified_externally, externally_verified_at: Time.current)
             end
           end
         end
@@ -67,6 +67,12 @@ module Gitlab
           true
         rescue ::Gitlab::BeyondIdentity::Client::ApiError => _
           false
+        end
+
+        def require_reverification?(key)
+          return true unless key.externally_verified_at.present?
+
+          key.externally_verified_at <= INTEGRATION_VERIFICATION_PERIOD.ago
         end
 
         def integration

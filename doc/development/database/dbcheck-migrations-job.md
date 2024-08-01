@@ -22,12 +22,13 @@ This job runs on the test stage of a merge request pipeline. It checks:
 
 ### False positives
 
-This job is allowed to fail, because it can throw some false positives.
+This job is not allowed to fail, but it can throw some false positives.
 
 For example, when we drop a column and then roll back, this column is always
 re-added at the end of the list of columns. If the column was previously in
 the middle of the list, the rollback can't return the schema back exactly to
-its previous state. The job fails, but it's an acceptable situation.
+its previous state. In such cases apply the `pipeline:skip-check-migrations`
+label to skip this check.
 
 For a real-life example, refer to
 [this failed job](https://gitlab.com/gitlab-org/gitlab/-/jobs/2006544972#L138).

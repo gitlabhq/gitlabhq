@@ -49,6 +49,14 @@ remote: To push your changes you must remove the identified secrets.
 
 If secret push protection does not detect any secrets in your commits, no message is displayed.
 
+## Detected secrets
+
+GitLab maintains a [set of rules](detected_secrets.md) that are used for blocking secrets from being pushed to GitLab.
+
+Scanning against low-confidence patterns can potentially lead to a timeout or the push check failing. Therefore, we chose to include only high-confidence patterns to ensure a performant experience when pushing your code, and to reduce the number of false alerts.
+
+It is currently not possible to use custom rulesets with secret push protection.
+
 ## Enable secret push protection
 
 On GitLab Dedicated and Self-managed instances, secret push protection must be enabled for the entire instance and then you must enable it per project.
