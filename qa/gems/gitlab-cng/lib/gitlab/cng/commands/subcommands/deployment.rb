@@ -28,7 +28,7 @@ module Gitlab
                 aliases: "-n"
               option :set,
                 desc: "Optional helm chart values " \
-                      "(can specify multiple or separate values with commas: key1=val1,key2=val2)",
+                  "(can specify multiple or separate values with commas: key1=val1,key2=val2)",
                 type: :string,
                 repeatable: true
               option :ci,
@@ -41,7 +41,7 @@ module Gitlab
                 type: :string
               option :chart_sha,
                 desc: "Specific sha of GitLab chart repository, latest release version is used by default. " \
-                      "Requires 'tar' executable to be installed.",
+                  "Requires 'tar' executable to be installed.",
                 type: :string
 
               super(name)
@@ -49,14 +49,14 @@ module Gitlab
           end
 
           desc "kind [NAME]", "Create CNG deployment against local kind k8s cluster where NAME is helm release name. " \
-                              "Default: #{DEFAULT_HELM_RELEASE_NAME}"
+            "Default: #{DEFAULT_HELM_RELEASE_NAME}"
           option :create_cluster,
             desc: "Create kind cluster for local deployments before creating deployment",
             type: :boolean,
             default: true
           option :docker_hostname,
             desc: "Custom docker hostname if remote docker instance is used, like docker-in-docker, " \
-                  "only applicable when --create-cluster is true",
+              "only applicable when --create-cluster is true",
             type: :string
           option :gitlab_domain,
             desc: "Domain for deployed app, default to (your host IP).nip.io",
@@ -79,7 +79,7 @@ module Gitlab
             default: 22
           option :print_deploy_args,
             desc: "Print all CI specific component helm values and deployment arguments." \
-                  "Useful for reproducing CI deployments. Only valid with --ci flag.",
+              "Useful for reproducing CI deployments. Only valid with --ci flag.",
             type: :boolean,
             default: false
           def kind(name = DEFAULT_HELM_RELEASE_NAME)

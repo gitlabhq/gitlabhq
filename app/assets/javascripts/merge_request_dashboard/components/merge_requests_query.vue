@@ -2,6 +2,8 @@
 import reviewerQuery from '../queries/reviewer.query.graphql';
 import assigneeQuery from '../queries/assignee.query.graphql';
 
+const PER_PAGE = 20;
+
 export default {
   apollo: {
     mergeRequests: {
@@ -14,8 +16,11 @@ export default {
       variables() {
         return {
           ...this.variables,
-          perPage: 3,
+          perPage: PER_PAGE,
         };
+      },
+      error() {
+        this.error = true;
       },
     },
   },
@@ -32,6 +37,7 @@ export default {
   data() {
     return {
       mergeRequests: null,
+      error: false,
     };
   },
   computed: {
@@ -47,7 +53,7 @@ export default {
       await this.$apollo.queries.mergeRequests.fetchMore({
         variables: {
           ...this.variables,
-          perPage: 10,
+          perPage: PER_PAGE,
           afterCursor: this.mergeRequests?.pageInfo?.endCursor,
         },
       });
@@ -60,6 +66,7 @@ export default {
       hasNextPage: this.hasNextPage,
       loadMore: this.loadMore,
       loading: this.isLoading,
+      error: this.error,
     });
   },
 };

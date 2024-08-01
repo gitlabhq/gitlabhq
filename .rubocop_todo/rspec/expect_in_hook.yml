@@ -313,7 +313,7 @@ RSpec/ExpectInHook:
     - 'spec/requests/projects/merge_requests/diffs_spec.rb'
     - 'spec/rubocop/cop/performance/ar_count_each_spec.rb'
     - 'spec/rubocop/cop/performance/ar_exists_and_present_blank_spec.rb'
-    - 'spec/scripts/setup/find_jh_branch_spec.rb'
+    - 'spec/scripts/setup/find-jh-branch_spec.rb'
     - 'spec/scripts/trigger-build_spec.rb'
     - 'spec/serializers/diffs_metadata_entity_spec.rb'
     - 'spec/serializers/merge_request_diff_entity_spec.rb'

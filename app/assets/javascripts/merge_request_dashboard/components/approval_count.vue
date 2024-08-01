@@ -1,10 +1,11 @@
 <script>
-import { GlBadge, GlTooltipDirective } from '@gitlab/ui';
+import { GlBadge, GlTooltipDirective, GlIcon } from '@gitlab/ui';
 import { n__ } from '~/locale';
 
 export default {
   components: {
     GlBadge,
+    GlIcon,
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -16,18 +17,19 @@ export default {
     },
   },
   computed: {
-    hasApprovers() {
+    approvalCount() {
       return this.mergeRequest.approvedBy.nodes.length;
     },
     tooltipTitle() {
-      return n__('%d approver', '%d approvers', this.mergeRequest.approvedBy.nodes.length);
+      return n__('%d approval', '%d approvals', this.approvalCount);
     },
   },
 };
 </script>
 
 <template>
-  <gl-badge v-if="hasApprovers" v-gl-tooltip="tooltipTitle" icon="approval" variant="success">
-    {{ __('Approved') }}
+  <gl-badge v-if="approvalCount" v-gl-tooltip="tooltipTitle" icon="check-circle" variant="success">
+    {{ approvalCount }}
   </gl-badge>
+  <gl-icon v-else name="dash" />
 </template>

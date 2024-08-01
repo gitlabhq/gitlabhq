@@ -28,7 +28,7 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
     it "defines kind deployment" do
       expect_command_to_include_attributes(command_name, {
         description: "Create CNG deployment against local kind k8s cluster where NAME is helm release name. " \
-                     "Default: gitlab",
+          "Default: gitlab",
         name: command_name,
         usage: "#{command_name} [NAME]"
       })

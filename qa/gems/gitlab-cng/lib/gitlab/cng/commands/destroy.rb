@@ -20,8 +20,8 @@ module Gitlab
         end
 
         desc "deployment [NAME]", "Destroy specific deployment and all it's resources, " \
-                                  "where NAME is helm relase name. " \
-                                  "Default: #{Subcommands::Deployment::DEFAULT_HELM_RELEASE_NAME}"
+          "where NAME is helm relase name. " \
+          "Default: #{Subcommands::Deployment::DEFAULT_HELM_RELEASE_NAME}"
         option :type,
           desc: "Specific deployment configuration type name",
           type: :string,

@@ -12,8 +12,9 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 GitLab Duo features that are generally available are automatically turned on for all users that have access.
 In addition:
 
-- If you have self-managed GitLab, you must
-  [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
+- If you have self-managed GitLab:
+  - You must [allow connectivity](#configure-gitlab-duo-on-a-self-managed-instance).
+  - For the best experience, you should upgrade to the [latest version of GitLab](https://about.gitlab.com/releases/categories/releases/).
 - If you have GitLab Dedicated, you must have [GitLab Duo Pro or Enterprise](../../subscriptions/subscription-add-ons.md).
 - For some generally available features, like [Code Suggestions](../project/repository/code_suggestions/index.md),
   [you must assign seats](../../subscriptions/subscription-add-ons.md#assign-gitlab-duo-pro-seats)

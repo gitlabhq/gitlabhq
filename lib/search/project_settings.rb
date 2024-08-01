@@ -65,7 +65,7 @@ module Search
         { text: _("Deploy freezes"),
           href: project_settings_ci_cd_path(project, anchor: 'js-deploy-freeze-settings') },
         { text: _("Job token permissions"), href: project_settings_ci_cd_path(project, anchor: 'js-token-access') },
-        { text: _("Secure Files"),
+        { text: _("Secure files"),
           href: project_settings_ci_cd_path(project, anchor: 'js-secure-files') }
       ]
     end

@@ -8,7 +8,7 @@ require 'gitlab/rspec/stub_env'
 # Keep this in mind and just stub anything which might touch it!
 require_relative '../../../scripts/setup/generate-as-if-foss-env'
 
-RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do
+RSpec.describe GenerateAsIfFossEnv, feature_category: :tooling do # rubocop:disable RSpec/FilePath -- We use dashes in scripts
   include StubENV
 
   subject(:generate) { described_class.new }

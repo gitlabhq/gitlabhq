@@ -2857,7 +2857,7 @@ RSpec/NamedSubject:
     - 'spec/scripts/pipeline/average_reports_spec.rb'
     - 'spec/scripts/pipeline_test_report_builder_spec.rb'
     - 'spec/scripts/review_apps/automated_cleanup_spec.rb'
-    - 'spec/scripts/setup/find_jh_branch_spec.rb'
+    - 'spec/scripts/setup/find-jh-branch_spec.rb'
     - 'spec/scripts/trigger-build_spec.rb'
     - 'spec/serializers/accessibility_error_entity_spec.rb'
     - 'spec/serializers/accessibility_reports_comparer_entity_spec.rb'

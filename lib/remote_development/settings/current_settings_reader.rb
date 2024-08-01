@@ -5,12 +5,19 @@ module RemoteDevelopment
     class CurrentSettingsReader
       include Messages
 
+      RELEVANT_SETTING_NAMES = %i[
+        default_branch_name
+      ].freeze
+
       # @param [Hash] context
       # @return [Gitlab::Fp::Result]
       def self.read(context)
         err_result = nil
+
         context[:settings].each_key do |setting_name|
-          next unless Gitlab::CurrentSettings.respond_to?(setting_name)
+          next unless RELEVANT_SETTING_NAMES.include?(setting_name)
+
+          raise "Invalid CurrentSettings entry specified" unless Gitlab::CurrentSettings.respond_to?(setting_name)
 
           current_setting_value = Gitlab::CurrentSettings.send(setting_name) # rubocop:disable GitlabSecurity/PublicSend -- No other way to programatically call dynamic class method
 

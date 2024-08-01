@@ -1,6 +1,5 @@
 ---
 Gitlab/NoFindInWorkers:
-  Details: grace period
   Exclude:
     - 'app/workers/approve_blocked_pending_approval_users_worker.rb'
     - 'app/workers/auto_devops/disable_worker.rb'

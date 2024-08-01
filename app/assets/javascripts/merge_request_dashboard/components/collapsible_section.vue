@@ -17,6 +17,11 @@ export default {
       required: false,
       default: null,
     },
+    loading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -52,23 +57,33 @@ export default {
 </script>
 
 <template>
-  <section class="gl-bg-gray-50 gl-p-4 gl-rounded-base">
-    <header class="gl-display-flex gl-align-items-center">
-      <gl-button
-        :icon="toggleButtonIcon"
-        size="small"
-        category="tertiary"
-        class="gl-mr-3"
-        :aria-label="toggleButtonLabel"
-        :disabled="count === 0"
-        data-testid="section-toggle-button"
-        @click="toggleOpen"
-      />
-      <strong>{{ title }}</strong>
-      <gl-badge class="gl-ml-3" variant="neutral">{{ count }}</gl-badge>
-    </header>
-    <div v-if="open" class="gl-mt-3" data-testid="section-content">
-      <slot></slot>
-    </div>
-  </section>
+  <div>
+    <section class="gl-border gl-rounded-base">
+      <header
+        :class="{ 'gl-rounded-base': !open }"
+        class="gl-bg-gray-10 gl-rounded-tl-base gl-rounded-tr-base gl-px-5 gl-py-4"
+      >
+        <h5 class="gl-m-0">
+          <gl-button
+            :icon="toggleButtonIcon"
+            size="small"
+            category="tertiary"
+            class="gl-mr-2"
+            :aria-label="toggleButtonLabel"
+            :disabled="count === 0"
+            data-testid="section-toggle-button"
+            @click="toggleOpen"
+          />
+          {{ title }}
+          <gl-badge v-if="!loading" class="gl-ml-1" variant="neutral" size="sm">{{
+            count
+          }}</gl-badge>
+        </h5>
+      </header>
+      <div v-if="open" data-testid="section-content">
+        <slot></slot>
+      </div>
+    </section>
+    <slot v-if="open" name="pagination"></slot>
+  </div>
 </template>

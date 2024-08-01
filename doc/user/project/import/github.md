@@ -31,6 +31,15 @@ You can change the target namespace and target repository name before you import
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For an overview of the import process, see [How to migrate from GitHub to GitLab including Actions](https://www.youtube.com/watch?v=0Id5oMl1Kqs).
 
+## Estimating import duration
+
+Every import from GitHub is different, which affects the duration of imports you perform. However, in our testing we
+imported `https://github.com/kubernetes/kubernetes` in 76 hours. When we tested, that project comprised:
+
+- 80,000 pull requests.
+- 45,000 issues.
+- Approximately 1.5 million comments.
+
 ## Prerequisites
 
 To import projects from GitHub, you must enable the

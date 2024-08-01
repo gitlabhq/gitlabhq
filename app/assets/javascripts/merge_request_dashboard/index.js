@@ -2,7 +2,6 @@ import { concatPagination } from '@apollo/client/utilities';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
-import isShowingLabelsQuery from '~/graphql_shared/client/is_showing_labels.query.graphql';
 import App from './components/app.vue';
 
 export function initMergeRequestDashboard(el) {
@@ -14,29 +13,10 @@ export function initMergeRequestDashboard(el) {
     el,
     apolloProvider: new VueApollo({
       defaultClient: createDefaultClient(
-        {
-          Mutation: {
-            setIsShowingLabels(_, { isShowingLabels }, { cache }) {
-              cache.writeQuery({
-                query: isShowingLabelsQuery,
-                data: { isShowingLabels },
-              });
-              return isShowingLabels;
-            },
-          },
-        },
+        {},
         {
           cacheConfig: {
             typePolicies: {
-              Query: {
-                fields: {
-                  isShowingLabels: {
-                    read(currentState) {
-                      return currentState ?? true;
-                    },
-                  },
-                },
-              },
               CurrentUser: {
                 merge: true,
                 fields: {
@@ -57,6 +37,11 @@ export function initMergeRequestDashboard(el) {
               MergeRequestConnection: {
                 fields: {
                   nodes: concatPagination(),
+                },
+              },
+              UserMergeRequestInteraction: {
+                merge(a) {
+                  return a;
                 },
               },
             },

@@ -4045,7 +4045,6 @@ RSpec/FeatureCategory:
     - 'spec/scripts/failed_tests_spec.rb'
     - 'spec/scripts/lib/glfm/parse_examples_spec.rb'
     - 'spec/scripts/lib/glfm/verify_all_generated_files_are_up_to_date_spec.rb'
-    - 'spec/scripts/setup/find_jh_branch_spec.rb'
     - 'spec/serializers/access_token_entity_base_spec.rb'
     - 'spec/serializers/accessibility_error_entity_spec.rb'
     - 'spec/serializers/accessibility_reports_comparer_entity_spec.rb'

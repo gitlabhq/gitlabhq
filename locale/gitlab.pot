@@ -150,8 +150,18 @@ msgid_plural "%d additional committers"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d additional reviewer"
+msgid_plural "%d additional reviewers"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d additional user"
 msgid_plural "%d additional users"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d approval"
+msgid_plural "%d approvals"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -272,6 +282,16 @@ msgstr[1] ""
 
 msgid "%d file"
 msgid_plural "%d files"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d file addition"
+msgid_plural "%d file additions"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "%d file deletion"
+msgid_plural "%d file deletions"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -605,6 +625,9 @@ msgid "%{client_name} is requesting access to your account on %{title}."
 msgstr ""
 
 msgid "%{codeStart}$%{codeEnd} will be treated as the start of a reference to another variable."
+msgstr ""
+
+msgid "%{comments}, %{fileAdditions}, %{fileDeletions}"
 msgstr ""
 
 msgid "%{commit_author_link} authored %{commit_authored_timeago}"
@@ -1279,6 +1302,21 @@ msgid "%{strongStart}%{count}%{strongEnd} commit"
 msgid_plural "%{strongStart}%{count}%{strongEnd} commits"
 msgstr[0] ""
 msgstr[1] ""
+
+msgid "%{strongStart}%{you}%{strongEnd}%{break}%{name} left feedback"
+msgstr ""
+
+msgid "%{strongStart}%{you}%{strongEnd}%{break}%{name} requested changes"
+msgstr ""
+
+msgid "%{strongStart}%{you}%{strongEnd}%{break}Approved by %{name}"
+msgstr ""
+
+msgid "%{strongStart}%{you}%{strongEnd}%{break}Assigned to %{name}."
+msgstr ""
+
+msgid "%{strongStart}%{you}%{strongEnd}%{break}Review requested from %{name}"
+msgstr ""
 
 msgid "%{strongStart}Tip:%{strongEnd} You can also %{linkStart}check out with merge request ID%{linkEnd}."
 msgstr ""
@@ -7326,9 +7364,6 @@ msgid "Assigned to %{assigneeName}"
 msgstr ""
 
 msgid "Assigned to %{assignee_name}"
-msgstr ""
-
-msgid "Assigned to %{assignee}"
 msgstr ""
 
 msgid "Assigned to me"
@@ -22572,7 +22607,7 @@ msgstr ""
 msgid "File templates"
 msgstr ""
 
-msgid "File too large. Secure Files must be less than %{limit} MB."
+msgid "File too large. Secure files must be less than %{limit} MB."
 msgstr ""
 
 msgid "File upload error."
@@ -38587,6 +38622,9 @@ msgstr ""
 msgid "Pipeline schedules"
 msgstr ""
 
+msgid "Pipeline status"
+msgstr ""
+
 msgid "Pipeline status emails"
 msgstr ""
 
@@ -45091,9 +45129,6 @@ msgstr ""
 msgid "Review changes"
 msgstr ""
 
-msgid "Review requested %{reviewer}"
-msgstr ""
-
 msgid "Review requests"
 msgstr ""
 
@@ -47447,7 +47482,7 @@ msgstr ""
 msgid "Secure Code Warrior"
 msgstr ""
 
-msgid "Secure Files"
+msgid "Secure files"
 msgstr ""
 
 msgid "Secure token that identifies an external storage request."
@@ -47480,7 +47515,7 @@ msgstr ""
 msgid "SecureFiles|Platforms"
 msgstr ""
 
-msgid "SecureFiles|Secure File %{name} will be permanently deleted. Are you sure?"
+msgid "SecureFiles|Secure file %{name} will be permanently deleted. Are you sure?"
 msgstr ""
 
 msgid "SecureFiles|Serial"
@@ -53903,6 +53938,9 @@ msgstr ""
 msgid "There was an error fetching median data for stages"
 msgstr ""
 
+msgid "There was an error fetching merge requests. Please try again."
+msgstr ""
+
 msgid "There was an error fetching projects"
 msgstr ""
 
@@ -54402,6 +54440,9 @@ msgid "This is the number of %{billable_users_link_start}billable users%{billabl
 msgstr ""
 
 msgid "This is the only time the secret is accessible. Copy the secret and store it securely."
+msgstr ""
+
+msgid "This is you."
 msgstr ""
 
 msgid "This is your current session"
@@ -56918,13 +56959,13 @@ msgstr ""
 msgid "Updated %{timeAgo}"
 msgstr ""
 
+msgid "Updated %{updatedAt}"
+msgstr ""
+
 msgid "Updated %{updated_at} by %{updated_by}"
 msgstr ""
 
 msgid "Updated Date"
-msgstr ""
-
-msgid "Updated at %{updatedAt}"
 msgstr ""
 
 msgid "Updated date"
@@ -57371,9 +57412,6 @@ msgstr ""
 msgid "Use Regular Expression"
 msgstr ""
 
-msgid "Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates."
-msgstr ""
-
 msgid "Use a one-time password authenticator on your mobile device or computer to enable two-factor authentication (2FA)."
 msgstr ""
 
@@ -57408,6 +57446,9 @@ msgid "Use one line per URI"
 msgstr ""
 
 msgid "Use primary email (%{email})"
+msgstr ""
+
+msgid "Use secure files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates."
 msgstr ""
 
 msgid "Use shortcuts"

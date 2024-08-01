@@ -16,17 +16,6 @@ module Gitlab
 
         LICENSE_SECRET = "gitlab-license"
 
-        def initialize(name, configuration:, namespace:, ci:, gitlab_domain:, timeout:, set: [], chart_sha: nil)
-          @name = name
-          @configuration = configuration
-          @namespace = namespace
-          @ci = ci
-          @gitlab_domain = gitlab_domain
-          @timeout = timeout
-          @set = set
-          @chart_sha = chart_sha
-        end
-
         # Delete installation
         #
         # @param [String] name
@@ -54,6 +43,17 @@ module Gitlab
           Helpers::Spinner.spin("removing namespace '#{namespace}'") do
             puts cleanup_configuration.kubeclient.delete_resource("namespace", namespace)
           end
+        end
+
+        def initialize(name, configuration:, namespace:, ci:, gitlab_domain:, timeout:, set: [], chart_sha: nil)
+          @name = name
+          @configuration = configuration
+          @namespace = namespace
+          @ci = ci
+          @gitlab_domain = gitlab_domain
+          @timeout = timeout
+          @set = set
+          @chart_sha = chart_sha
         end
 
         # Perform deployment with all the additional setup

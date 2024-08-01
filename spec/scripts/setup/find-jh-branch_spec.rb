@@ -7,7 +7,7 @@ require 'fast_spec_helper'
 # Keep this in mind and just stub anything which might touch it!
 require_relative '../../../scripts/setup/find-jh-branch'
 
-RSpec.describe FindJhBranch do
+RSpec.describe FindJhBranch, feature_category: :tooling do # rubocop:disable RSpec/FilePath -- We use dashes in scripts
   subject { described_class.new }
 
   describe '#run' do

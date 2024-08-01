@@ -99,11 +99,11 @@
       = render 'ci/token_access/index'
 
   - if show_secure_files_setting(@project, current_user)
-    = render ::Layouts::SettingsBlockComponent.new(_('Secure Files'),
+    = render ::Layouts::SettingsBlockComponent.new(_('Secure files'),
       id: 'js-secure-files',
       expanded: expanded) do |c|
       - c.with_description do
-        = _("Use Secure Files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
+        = _("Use secure files to store files used by your pipelines such as Android keystores, or Apple provisioning profiles and signing certificates.")
         = link_to _('Learn more'), help_page_path('ci/secure_files/index'), target: '_blank', rel: 'noopener noreferrer'
       - c.with_body do
         #js-ci-secure-files{ data: { project_id: @project.id, admin: can?(current_user, :admin_secure_files, @project).to_s, file_size_limit: Ci::SecureFile::FILE_SIZE_LIMIT.to_mb } }

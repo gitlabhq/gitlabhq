@@ -534,3 +534,21 @@ li.note {
   color: var(--gray-700, $gray-700) !important;
   background-color: var(--gray-50, $gray-50);
 }
+
+[readonly] {
+  cursor: default;
+}
+
+copy-code {
+  position: absolute;
+  @apply gl-transition-all;
+  opacity: 0;
+
+  top: 7px;
+  right: $input-horizontal-padding;
+
+  .markdown-code-block:hover &,
+  &:focus-within {
+    opacity: 1;
+  }
+}

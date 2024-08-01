@@ -1,117 +1,119 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Merge request dashboard merge request component renders template 1`] = `
-<div
-  class="gl-bg-white gl-p-5 gl-rounded-base"
+<tr
+  class="gl-border-b"
 >
-  <div
-    class="gl-display-flex"
+  <td
+    class="gl-align-top gl-pl-5 gl-pr-3 gl-py-4"
+  >
+    <gl-icon-stub
+      name="dash"
+      size="16"
+      variant="current"
+    />
+  </td>
+  <td
+    class="gl-align-top gl-px-3 gl-py-4"
+  >
+    <approval-count-stub
+      mergerequest="[object Object]"
+    />
+  </td>
+  <td
+    class="gl-align-top gl-px-3 gl-py-4"
+  >
+    <h4
+      class="gl-mb-0 gl-mt-0 gl-text-base"
+    >
+      <gl-link-stub
+        class="gl-text-primary hover:gl-text-gray-900"
+      >
+        Merge request title
+      </gl-link-stub>
+    </h4>
+    <div
+      class="gl-mb-2 gl-mt-2 gl-text-secondary gl-text-sm"
+    >
+      <gl-sprintf-stub
+        message="%{reference} %{divider} created %{createdAt} by %{author} %{milestone}"
+      />
+    </div>
+  </td>
+  <td
+    class="gl-align-top gl-px-3 gl-py-4"
+  >
+    <assigned-users-stub
+      type="ASSIGNEES"
+      users="[object Object]"
+    />
+  </td>
+  <td
+    class="gl-align-top gl-px-3 gl-py-4"
+  >
+    <assigned-users-stub
+      type="REVIEWERS"
+      users="[object Object],[object Object]"
+    />
+  </td>
+  <td
+    class="gl-align-top gl-pl-3 gl-pr-5 gl-py-4"
   >
     <div
-      class="gl-display-flex gl-flex-direction-column"
+      aria-label="5 comments, 100 file additions, 50 file deletions"
+      class="gl-flex gl-justify-end"
     >
-      <h4
-        class="gl-font-base gl-mb-0 gl-mt-0"
-      >
-        <gl-link-stub
-          class="gl-hover-text-gray-900 gl-text-body"
-        >
-          Merge request title
-        </gl-link-stub>
-      </h4>
       <div
-        class="gl-font-sm gl-mt-2 gl-text-secondary"
+        class="gl-whitespace-nowrap"
       >
-        <gl-sprintf-stub
-          message="%{reference} %{divider} created %{createdAt} by %{author} %{milestone}"
+        <gl-icon-stub
+          class="!gl-align-middle"
+          name="comments"
+          size="16"
+          variant="current"
         />
+        5
+      </div>
+      <div
+        class="gl-ml-5 gl-whitespace-nowrap"
+      >
+        <gl-icon-stub
+          name="doc-code"
+          size="16"
+          variant="current"
+        />
+        <span>
+          1
+        </span>
+      </div>
+      <div
+        class="gl-flex gl-font-bold gl-items-center gl-ml-3 gl-text-green-600"
+      >
+        <span>
+          +
+        </span>
+        <span>
+          100
+        </span>
+      </div>
+      <div
+        class="gl-flex gl-font-bold gl-items-center gl-ml-3 gl-text-red-500"
+      >
+        <span>
+          −
+        </span>
+        <span>
+          50
+        </span>
       </div>
     </div>
     <div
-      class="gl-display-flex gl-flex-direction-column gl-ml-auto"
+      class="gl-mt-1 gl-text-right gl-text-secondary gl-text-sm"
     >
-      <ul
-        class="gl-display-flex gl-justify-content-end gl-list-none gl-m-0 gl-p-0"
-      >
-        <li
-          class="gl-ml-4"
-        >
-          <user-avatar-link-stub
-            imgalt=""
-            imgcssclasses=""
-            imgcsswrapperclasses=""
-            imgsize="24"
-            imgsrc=""
-            linkhref="https://gitlab.com/root"
-            popoveruserid=""
-            popoverusername=""
-            tooltipplacement="top"
-            tooltiptext="Assigned to John Smith"
-            username=""
-          />
-        </li>
-        <li
-          class="gl-ml-4"
-        >
-          <user-avatar-link-stub
-            class="gl-mr-2"
-            imgalt=""
-            imgcssclasses=""
-            imgcsswrapperclasses=""
-            imgsize="24"
-            imgsrc=""
-            linkhref="https://gitlab.com/root"
-            popoveruserid=""
-            popoverusername=""
-            tooltipplacement="top"
-            tooltiptext="Review requested John Smith"
-            username=""
-          />
-          <user-avatar-link-stub
-            imgalt=""
-            imgcssclasses=""
-            imgcsswrapperclasses=""
-            imgsize="24"
-            imgsrc=""
-            linkhref="https://gitlab.com/root"
-            popoveruserid=""
-            popoverusername=""
-            tooltipplacement="top"
-            tooltiptext="Review requested John Smith"
-            username=""
-          />
-        </li>
-        <li
-          class="gl-align-self-center gl-ml-4"
-        >
-          <gl-icon-stub
-            class="!gl-align-middle"
-            name="comments"
-            size="16"
-            variant="current"
-          />
-          5
-        </li>
-      </ul>
-      <div
-        class="gl-font-sm gl-mt-2 gl-text-right gl-text-secondary"
-      >
-        <gl-sprintf-stub
-          message="Updated at %{updatedAt}"
-        />
-      </div>
+      <gl-sprintf-stub
+        message="Updated %{updatedAt}"
+      />
     </div>
-  </div>
-  <div>
-    <gl-label-stub
-      backgroundcolor="#428BCA"
-      class="gl-mr-2"
-      description="Label description"
-      size="sm"
-      target=""
-      title="Deliverable"
-      tooltipplacement="top"
-    />
-  </div>
-</div>
+  </td>
+</tr>
 `;

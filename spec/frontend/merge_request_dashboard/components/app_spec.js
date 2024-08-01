@@ -5,8 +5,8 @@ import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import App from '~/merge_request_dashboard/components/app.vue';
 import MergeRequestsQuery from '~/merge_request_dashboard/components/merge_requests_query.vue';
-import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
 import CollapsibleSection from '~/merge_request_dashboard/components/collapsible_section.vue';
+import MergeRequest from '~/merge_request_dashboard/components/merge_request.vue';
 import assigneeQuery from '~/merge_request_dashboard/queries/assignee.query.graphql';
 import { createMockMergeRequest } from '../mock_data';
 
