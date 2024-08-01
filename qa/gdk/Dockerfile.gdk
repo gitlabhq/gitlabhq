@@ -60,7 +60,8 @@ FROM base AS gitlab-gems
 COPY --chown=gdk:gdk Gemfile Gemfile.lock .tool-versions ./gitlab/
 COPY --chown=gdk:gdk vendor/gems/ ./gitlab/vendor/gems/
 COPY --chown=gdk:gdk gems/ ./gitlab/gems/
-RUN make .gitlab-bundle \
+RUN make gitlab-asdf-install \
+    && make .gitlab-bundle \
     && cd gitlab \
     && rm -rf /home/gdk/.asdf/installs/ruby/*/lib/ruby/gems/*/cache
 

@@ -15638,7 +15638,7 @@ CREATE VIEW postgres_sequences AS
      JOIN pg_depend ON ((seq_pg_class.oid = pg_depend.objid)))
      JOIN pg_class dep_pg_class ON ((pg_depend.refobjid = dep_pg_class.oid)))
      JOIN pg_attribute ON (((dep_pg_class.oid = pg_attribute.attrelid) AND (pg_depend.refobjsubid = pg_attribute.attnum))))
-  WHERE (seq_pg_class.relkind = 'S'::"char");
+  WHERE ((pg_depend.classid = ('pg_class'::regclass)::oid) AND (pg_depend.refclassid = ('pg_class'::regclass)::oid) AND (seq_pg_class.relkind = 'S'::"char"));
 
 CREATE TABLE programming_languages (
     id integer NOT NULL,

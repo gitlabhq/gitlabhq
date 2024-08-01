@@ -27,7 +27,7 @@ Scan execution policies are enforced for all applicable projects. For projects w
 static analysis, or other scanners that do not require a build in the project, are still able to
 run and be enforced.
 
-This feature has some overlap with [compliance framework pipelines](../../group/compliance_pipelines.md),
+This feature has some overlap with [compliance pipelines](../../group/compliance_pipelines.md),
 as we have not [unified the user experience for these two features](https://gitlab.com/groups/gitlab-org/-/epics/7312).
 For details on the similarities and differences between these features, see
 [Enforce scan execution](../index.md#enforce-scan-execution).
@@ -295,7 +295,7 @@ projects in the group.
 
 You can refine a security policy's scope to:
 
-- _Include_ only projects containing a compliance framework label.
+- _Include_ only projects applied with a [compliance framework](../../group/compliance_frameworks.md).
 - _Include_ or _exclude_ selected projects from enforcement.
 
 ### Policy scope schema

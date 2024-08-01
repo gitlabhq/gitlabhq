@@ -184,7 +184,7 @@ the Gitaly CLI is used to:
 - Validate Gitaly configuration files.
 - Verify the internal Gitaly API is accessible.
 
-For more information on the other subcommands, run `gitaly --help`.
+For more information on the other subcommands, run `/opt/gitlab/embedded/bin/gitaly --help`.
 
 ### Backing up repositories
 
