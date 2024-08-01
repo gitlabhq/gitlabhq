@@ -1,7 +1,6 @@
 import { getMutation, optimisticAwardUpdate } from '~/work_items/notes/award_utils';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import mockApollo from 'helpers/mock_apollo_helper';
-import { __ } from '~/locale';
 import groupWorkItemNotesByIidQuery from '~/work_items/graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import addAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
@@ -38,7 +37,7 @@ describe('Work item note award utils', () => {
       expect(getMutation({ note, name })).toEqual({
         mutation: removeAwardEmojiMutation,
         mutationName: 'awardEmojiRemove',
-        errorMessage: __('Failed to remove emoji. Please try again'),
+        errorMessage: 'Failed to remove emoji. Please try again',
       });
     });
 
@@ -49,7 +48,7 @@ describe('Work item note award utils', () => {
       expect(getMutation({ note, name })).toEqual({
         mutation: addAwardEmojiMutation,
         mutationName: 'awardEmojiAdd',
-        errorMessage: __('Failed to add emoji. Please try again'),
+        errorMessage: 'Failed to add emoji. Please try again',
       });
     });
   });

@@ -3,7 +3,6 @@ import { merge } from 'lodash';
 import originalRelease from 'test_fixtures/api/releases/release.json';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { __ } from '~/locale';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import ReleaseBlockHeader from '~/releases/components/release_block_header.vue';
 import { BACK_URL_PARAM } from '~/releases/constants';
@@ -92,7 +91,7 @@ describe('Release block header', () => {
     it('shows a badge that the release is upcoming', () => {
       const badge = findBadge();
 
-      expect(badge.text()).toBe(__('Upcoming Release'));
+      expect(badge.text()).toBe('Upcoming Release');
       expect(badge.props('variant')).toBe('warning');
     });
   });
@@ -105,11 +104,9 @@ describe('Release block header', () => {
     it('shows a badge that the release is historical', () => {
       const badge = findBadge();
 
-      expect(badge.text()).toBe(__('Historical release'));
+      expect(badge.text()).toBe('Historical release');
       expect(badge.attributes('title')).toBe(
-        __(
-          'This release was created with a date in the past. Evidence collection at the moment of the release is unavailable.',
-        ),
+        'This release was created with a date in the past. Evidence collection at the moment of the release is unavailable.',
       );
     });
   });

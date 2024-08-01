@@ -15,7 +15,7 @@ import NewAccessTokenApp from '~/access_tokens/components/new_access_token_app.v
 import TokensApp from '~/access_tokens/components/tokens_app.vue';
 import { FORM_SELECTOR } from '~/access_tokens/components/constants';
 import { FEED_TOKEN, INCOMING_EMAIL_TOKEN, STATIC_OBJECT_TOKEN } from '~/access_tokens/constants';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 
 describe('access tokens', () => {
   let wrapper;
@@ -52,7 +52,7 @@ describe('access tokens', () => {
         initialActiveAccessTokens,
 
         // Default values
-        noActiveTokensMessage: sprintf(__('This user has no active %{accessTokenTypePlural}.'), {
+        noActiveTokensMessage: sprintf('This user has no active %{accessTokenTypePlural}.', {
           accessTokenTypePlural,
         }),
         showRole: false,
@@ -215,7 +215,7 @@ describe('access tokens', () => {
 
         // Default values
         noInactiveTokensMessage: sprintf(
-          __('This resource has no inactive %{accessTokenTypePlural}.'),
+          'This resource has no inactive %{accessTokenTypePlural}.',
           {
             accessTokenTypePlural,
           },

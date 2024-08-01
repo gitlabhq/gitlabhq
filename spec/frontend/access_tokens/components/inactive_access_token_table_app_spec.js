@@ -2,7 +2,7 @@ import { GlPagination, GlTable } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import InactiveAccessTokenTableApp from '~/access_tokens/components/inactive_access_token_table_app.vue';
 import { PAGE_SIZE } from '~/access_tokens/components/constants';
-import { __, s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 
 describe('~/access_tokens/components/inactive_access_token_table_app', () => {
   let wrapper;
@@ -59,7 +59,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     const cells = findCells();
     expect(cells).toHaveLength(1);
     expect(cells.at(0).text()).toBe(
-      sprintf(__('This resource has no inactive %{accessTokenTypePlural}.'), {
+      sprintf('This resource has no inactive %{accessTokenTypePlural}.', {
         accessTokenTypePlural,
       }),
     );
@@ -80,12 +80,12 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
 
       const headers = findHeaders();
       expect(headers.wrappers.map((header) => header.text())).toStrictEqual([
-        __('Token name'),
-        __('Scopes'),
-        s__('AccessTokens|Created'),
+        'Token name',
+        'Scopes',
+        'Created',
         'Last Used',
-        __('Expired'),
-        __('Role'),
+        'Expired',
+        'Role',
       ]);
     });
   });
@@ -101,7 +101,7 @@ describe('~/access_tokens/components/inactive_access_token_table_app', () => {
     expect(anchor.attributes('href')).toBe(
       '/help/user/profile/personal_access_tokens.md#view-the-last-time-a-token-was-used',
     );
-    expect(assistiveElement.text()).toBe(s__('AccessTokens|The last time a token was used'));
+    expect(assistiveElement.text()).toBe('The last time a token was used');
   });
 
   it('sorts rows alphabetically', async () => {

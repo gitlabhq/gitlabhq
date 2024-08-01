@@ -5,7 +5,6 @@ import { TEST_HOST } from 'helpers/test_constants';
 import IssueDueDate from '~/boards/components/issue_due_date.vue';
 import { formatDate } from '~/lib/utils/datetime_utility';
 import { updateHistory } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
 import { stubComponent } from 'helpers/stub_component';
 import CiIcon from '~/vue_shared/components/ci_icon/ci_icon.vue';
 import RelatedIssuableItem from '~/issuable/components/related_issuable_item.vue';
@@ -100,7 +99,7 @@ describe('RelatedIssuableItem', () => {
     });
 
     it('renders confidential icon', () => {
-      expect(findIcon().attributes('title')).toBe(__('Confidential'));
+      expect(findIcon().attributes('title')).toBe('Confidential');
     });
 
     it('renders title', () => {
@@ -188,7 +187,7 @@ describe('RelatedIssuableItem', () => {
 
     it('renders if canRemove', () => {
       expect(findRemoveButton().props('icon')).toBe('close');
-      expect(findRemoveButton().attributes('aria-label')).toBe(__('Remove'));
+      expect(findRemoveButton().attributes('aria-label')).toBe('Remove');
     });
 
     it('does not render the lock icon', () => {

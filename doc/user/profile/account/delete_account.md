@@ -25,6 +25,18 @@ Deleting a user deletes all projects in that user namespace.
 FLAG:
 On self-managed GitLab, by default this feature is not available. To make it available, an administrator can [enable the feature flag](../../../administration/feature_flags.md) named `delay_delete_own_user`. On GitLab.com, this feature is available. On GitLab Dedicated, this feature is not available.
 
+On GitLab.com, it takes seven days from when you delete your own account to when your account is deleted. During this time:
+
+- That user is [blocked](../../../administration/moderate_users.md#block-a-user).
+- You cannot create a new account with the same username.
+  You can [create a new account with the same email address](#create-a-new-account-with-the-same-email-address)
+  if you remove that email address from your account first.
+
+The following are deleted within an hour:
+
+- Accounts with no issues, comments, notes, merge requests, or snippets.
+- Accounts under paid namespaces.
+
 As a user, to delete your own account:
 
 1. On the left sidebar, select your avatar.
@@ -32,11 +44,26 @@ As a user, to delete your own account:
 1. On the left sidebar, select **Account**.
 1. Select **Delete account**.
 
-NOTE:
-On GitLab.com, there is a seven day delay between a user deleting their own account and deletion of the user record. During this time, that user is [blocked](../../../administration/moderate_users.md#block-a-user) and a new account with the same email address or username cannot be created. Accounts with no issues, comments, notes, merge requests, or snippets are deleted within an hour. Accounts under paid namespaces are deleted within an hour.
-
 If you cannot delete your own account, submit a [personal data request](https://support.gitlab.io/account-deletion/)
 to ask for your account and data to be removed from GitLab.
+
+### Create a new account with the same email address
+
+On GitLab.com, during the [time between you deleting your own account and your account getting deleted](#delete-your-own-account),
+you cannot create a new account with the same email address or username.
+
+To create a new account with the same email address, before you delete your account:
+
+1. [Add a secondary email address](../index.md#add-emails-to-your-user-profile)
+   to your account.
+1. [Change your primary email](../index.md#change-your-primary-email) to this
+   new secondary email address.
+1. [Remove the now-secondary email address](../index.md#delete-emails-from-your-user-profile)
+   from your account.
+1. [Delete your own account](#delete-your-own-account).
+
+You can now [create a new account](create_accounts.md) with the same email address as your original
+primary email address.
 
 ## Delete users and user contributions
 

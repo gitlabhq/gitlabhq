@@ -2606,6 +2606,7 @@ Markdown uploads are files uploaded to a project that can be referenced in Markd
 ### Upload a file
 
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/112450) in GitLab 15.10. Feature flag `enforce_max_attachment_size_upload_api` removed.
+> - `full_path` response attribute pattern [changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/150939) in GitLab 17.1.
 > - `id` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161160) in GitLab 17.3.
 
 Uploads a file to the specified project to be used in an issue or merge request
@@ -2637,14 +2638,13 @@ Returned object:
   "id": 5,
   "alt": "dk",
   "url": "/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
-  "full_path": "/namespace1/project1/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
+  "full_path": "/-/project/1234/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png",
   "markdown": "![dk](/uploads/66dbcd21ec5d24ed6ea225176098d52b/dk.png)"
 }
 ```
 
-The returned `url` is relative to the project path. The returned `full_path` is
-the absolute path to the file. In Markdown contexts, the link is expanded when
-the format in `markdown` is used.
+The returned `full_path` is the absolute path to the file.
+The returned `url` can be used in Markdown contexts. The link is expanded when the format in `markdown` is used.
 
 ### List uploads
 

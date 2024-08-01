@@ -4,7 +4,6 @@ import VueApollo from 'vue-apollo';
 import mockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
-import { __ } from '~/locale';
 import AwardsList from '~/vue_shared/components/awards_list.vue';
 import WorkItemNoteAwardsList from '~/work_items/components/notes/work_item_note_awards_list.vue';
 import addAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
@@ -120,7 +119,7 @@ describe('Work Item Note Awards List', () => {
       findAwardsList().vm.$emit('award', EMOJI_THUMBSUP);
       await waitForPromises();
 
-      expect(wrapper.emitted('error')).toEqual([[__('Failed to add emoji. Please try again')]]);
+      expect(wrapper.emitted('error')).toEqual([['Failed to add emoji. Please try again']]);
     });
 
     it.each`
@@ -149,7 +148,7 @@ describe('Work Item Note Awards List', () => {
       findAwardsList().vm.$emit('award', EMOJI_THUMBSDOWN);
       await waitForPromises();
 
-      expect(wrapper.emitted('error')).toEqual([[__('Failed to remove emoji. Please try again')]]);
+      expect(wrapper.emitted('error')).toEqual([['Failed to remove emoji. Please try again']]);
     });
   });
 });

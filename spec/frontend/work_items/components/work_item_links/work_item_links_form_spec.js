@@ -2,7 +2,7 @@ import Vue, { nextTick } from 'vue';
 import { GlForm, GlFormGroup, GlFormInput, GlFormCheckbox, GlTooltip } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import namespaceWorkItemTypesQueryResponse from 'test_fixtures/graphql/work_items/namespace_work_item_types.query.graphql.json';
-import { sprintf, s__ } from '~/locale';
+import { sprintf } from '~/locale';
 import { stubComponent } from 'helpers/stub_component';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -447,9 +447,7 @@ describe('WorkItemLinksForm', () => {
       expect(findValidationElement().exists()).toBe(true);
       expect(findValidationElement().text().trim()).toBe(
         sprintf(
-          s__(
-            'WorkItem|%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again.',
-          ),
+          '%{invalidWorkItemsList} cannot be added: Cannot assign a non-confidential %{childWorkItemType} to a confidential parent %{parentWorkItemType}. Make the selected %{childWorkItemType} confidential and try again.',
           {
             // Only non-confidential work items are shown in the error message
             invalidWorkItemsList: availableWorkItemsResponse.data.workspace.workItems.nodes

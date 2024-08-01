@@ -217,7 +217,7 @@ export default {
       :data-testid="tableDataTestId"
     >
       <template #actions>
-        <div v-if="!isInheritedGroupVars" class="gl-new-card-actions gl-font-size-0">
+        <div v-if="!isInheritedGroupVars" class="gl-font-size-0">
           <gl-button
             v-if="!isTableEmpty"
             category="tertiary"

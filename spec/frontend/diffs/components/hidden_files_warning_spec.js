@@ -1,6 +1,5 @@
 import { mount } from '@vue/test-utils';
 import { GlButton } from '@gitlab/ui';
-import { __ } from '~/locale';
 import HiddenFilesWarning from '~/diffs/components/hidden_files_warning.vue';
 
 const propsData = {
@@ -37,9 +36,7 @@ describe('HiddenFilesWarning', () => {
 
   it('has a correct visible/total files text', () => {
     expect(wrapper.text()).toContain(
-      __(
-        'For a faster browsing experience, only 5 of 10 files are shown. Download one of the files below to see all changes',
-      ),
+      'For a faster browsing experience, only 5 of 10 files are shown. Download one of the files below to see all changes',
     );
   });
 });

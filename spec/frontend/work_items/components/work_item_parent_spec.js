@@ -4,7 +4,6 @@ import VueApollo from 'vue-apollo';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import { __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
@@ -164,11 +163,11 @@ describe('WorkItemParent component', () => {
     it('shows None when no parent is set', () => {
       createComponent({ hasParent: false });
 
-      expect(wrapper.text()).toContain(__('None'));
+      expect(wrapper.text()).toContain('None');
     });
 
     it('shows parent when parent is set', () => {
-      expect(wrapper.text()).not.toContain(__('None'));
+      expect(wrapper.text()).not.toContain('None');
       expect(wrapper.text()).toContain(mockParentWidgetResponse.title);
     });
 

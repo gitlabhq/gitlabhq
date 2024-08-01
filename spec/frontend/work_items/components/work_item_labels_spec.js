@@ -1,7 +1,6 @@
 import { GlDisclosureDropdown, GlLabel } from '@gitlab/ui';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { __ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
@@ -371,8 +370,8 @@ describe('WorkItemLabels component', () => {
     ];
 
     expect(findWorkItemSidebarDropdownWidget().props('listItems')).toEqual([
-      { options: selected, text: __('Selected') },
-      { options: unselected, text: __('All'), textSrOnly: true },
+      { options: selected, text: 'Selected' },
+      { options: unselected, text: 'All', textSrOnly: true },
     ]);
   });
 

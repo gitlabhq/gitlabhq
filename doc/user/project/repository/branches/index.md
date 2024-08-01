@@ -132,6 +132,9 @@ On this page, you can:
 - Create new branches.
 - [Compare branches](#compare-branches).
 - Delete merged branches.
+- See merge request links that point to the default branch.
+  Branches with merge requests that do not point to the default branch show the **New** button instead.
+- See latest pipeline status on the branch.
 
 ### View branch rules
 

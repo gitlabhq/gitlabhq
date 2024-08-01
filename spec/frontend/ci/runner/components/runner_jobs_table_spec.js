@@ -4,7 +4,6 @@ import {
   shallowMountExtended,
   mountExtended,
 } from 'helpers/vue_test_utils_helper';
-import { __, s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import RunnerJobsTable from '~/ci/runner/components/runner_jobs_table.vue';
 import { useFakeDate } from 'helpers/fake_date';
@@ -52,14 +51,14 @@ describe('RunnerJobsTable', () => {
       const headerLabels = findHeaders().wrappers.map((w) => w.text());
 
       expect(headerLabels).toEqual([
-        s__('Job|Status'),
-        __('Job'),
-        __('Project'),
-        __('Commit'),
-        s__('Job|Finished at'),
-        s__('Job|Duration'),
-        s__('Job|Queued'),
-        s__('Runners|Tags'),
+        'Status',
+        'Job',
+        'Project',
+        'Commit',
+        'Finished at',
+        'Duration',
+        'Queued',
+        'Tags',
       ]);
     });
 

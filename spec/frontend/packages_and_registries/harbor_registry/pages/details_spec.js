@@ -1,7 +1,6 @@
 import { shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import { GlFilteredSearchToken } from '@gitlab/ui';
-import { s__ } from '~/locale';
 import HarborDetailsPage from '~/packages_and_registries/harbor_registry/pages/details.vue';
 import TagsLoader from '~/packages_and_registries/shared/components/tags_loader.vue';
 import ArtifactsList from '~/packages_and_registries/harbor_registry/components/details/artifacts_list.vue';
@@ -130,7 +129,7 @@ describe('Harbor Details Page', () => {
           {
             type: TOKEN_TYPE_TAG_NAME,
             icon: 'tag',
-            title: s__('HarborRegistry|Tag'),
+            title: 'Tag',
             unique: true,
             token: GlFilteredSearchToken,
             operators: OPERATORS_IS,

@@ -2,7 +2,6 @@ import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlSprintf, GlSkeletonLoader } from '@gitlab/ui';
 
-import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
@@ -131,7 +130,7 @@ describe('RegistrationInstructions', () => {
     it('when runner is loading, shows default heading', () => {
       createComponent();
 
-      expect(findHeading().text()).toBe(s__('Runners|Register runner'));
+      expect(findHeading().text()).toBe('Register runner');
     });
   });
 

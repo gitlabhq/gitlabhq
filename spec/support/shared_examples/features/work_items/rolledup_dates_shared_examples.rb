@@ -169,6 +169,9 @@ RSpec.shared_examples 'work items rolled up dates' do
 
       context 'when updating child work item dates' do
         it 'rolled up child dates' do
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+
           child_title = 'A child issue'
           add_new_child(title: child_title, start_date: '2020-12-01', due_date: '2020-12-02')
 

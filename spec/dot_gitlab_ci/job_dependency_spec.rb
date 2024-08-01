@@ -234,13 +234,6 @@ RSpec.describe 'ci jobs dependency', feature_category: :tooling do
     end
 
     before do
-      sync_local_files_to_project(
-        source_project,
-        user,
-        source_branch,
-        files: ci_glob
-      )
-
       file_change_actions = changed_files.map do |file_path|
         action = source_project.repository.blob_at(source_branch, file_path).nil? ? :create : :update
         {
@@ -304,23 +297,69 @@ RSpec.describe 'ci jobs dependency', feature_category: :tooling do
 
     # Test: remove the following rules from `.frontend:rules:default-frontend-jobs`:
     # - <<: *if-merge-request-labels-run-all-rspec
-    context 'when MR labeled with `pipeline:run-all-rspec` is changing keeps/quarantine-test.rb' do
+    context 'when MR labeled with `pipeline:run-all-rspec` is changing app/models/user.rb' do
       let(:ci_merge_request_labels_string) { 'pipeline:run-all-rspec' }
-      let(:changed_files) { ['keeps/quarantine-test.rb'] }
+      let(:changed_files) { ['app/models/user.rb'] }
       let(:expected_job_name) { 'rspec-all frontend_fixture 1/7' }
 
       it_behaves_like 'merge request pipeline'
     end
 
     # code-patterns, code-backstage-patterns, backend patterns, code-qa-patterns
-    context 'when MR labeled with `pipeline:expedite pipeline::expedited` is changing keeps/quarantine-test.rb' do
+    context 'when MR labeled with `pipeline:expedite pipeline::expedited` is changing app/models/user.rb' do
       let(:ci_merge_request_labels_string) { 'pipeline:expedite pipeline::expedited' }
-      let(:changed_files) { ['keeps/quarantine-test.rb'] }
-      let(:expected_job_name) { 'rails-production-server-boot-puma-cng' }
+      let(:changed_files) { ['app/models/user.rb'] }
+      let(:expected_job_name) { 'setup-test-env' }
 
       it_behaves_like 'merge request pipeline'
 
       it_behaves_like 'merge train pipeline'
+    end
+
+    context 'when MR labeled with `pipeline::tier-1`' do
+      let(:ci_merge_request_labels_string) { 'pipeline::tier-1' }
+      let(:changed_files) { ['app/models/user.rb'] }
+      let(:expected_job_name) { 'pipeline-tier-1' }
+
+      it_behaves_like 'merge request pipeline'
+    end
+
+    context 'when MR labeled with `pipeline::tier-2` and `pipeline:mr-approved`' do
+      let(:ci_merge_request_labels_string) { 'pipeline::tier-2 pipeline:mr-approved' }
+      let(:changed_files) { ['app/models/user.rb'] }
+      let(:expected_job_name) { 'pipeline-tier-2' }
+
+      it_behaves_like 'merge request pipeline'
+    end
+
+    context 'when MR labeled with `pipeline::tier-3` and `pipeline:mr-approved`' do
+      let(:ci_merge_request_labels_string) { 'pipeline::tier-3 pipeline:mr-approved' }
+      let(:changed_files) { ['app/models/user.rb'] }
+      let(:expected_job_name) { 'pipeline-tier-3' }
+
+      it_behaves_like 'merge request pipeline'
+    end
+
+    context 'when MR labeled with `pipeline:run-as-if-foss` is changing app/models/user.rb' do
+      let(:ci_merge_request_labels_string) { 'pipeline:run-as-if-foss' }
+      let(:changed_files) { ['app/models/user.rb'] }
+      let(:expected_job_name) { 'start-as-if-foss' }
+
+      let(:mr_pipeline_variables_attributes) do
+        super() << { key: 'AS_IF_FOSS_TOKEN', value: 'foss token' }
+      end
+
+      it_behaves_like 'merge request pipeline'
+
+      it_behaves_like 'merge train pipeline'
+    end
+
+    context 'when MR is created from "release-tools/update-gitaly" source branch' do
+      let(:source_branch) { 'release-tools/update-gitaly' }
+      let(:changed_files) { ['GITALY_SERVER_VERSION'] }
+      let(:expected_job_name) { 'update-gitaly-binaries-cache' }
+
+      it_behaves_like 'merge request pipeline'
     end
 
     # Reminder, we are NOT verifying the CI config from the remote stable branch
@@ -330,9 +369,9 @@ RSpec.describe 'ci jobs dependency', feature_category: :tooling do
     # Test: remove the following rules from `.frontend:rules:default-frontend-jobs`:
     #   - <<: *if-default-refs
     #     changes: *code-backstage-patterns
-    context 'when MR targeting a stable branch is changing keeps/' do
+    context 'when MR targeting a stable branch is changing app/models/user.rb' do
       let(:target_branch)     { '16-10-stable-ee' }
-      let(:changed_files)     { ['keeps/quarantine-test.rb'] }
+      let(:changed_files)     { ['app/models/user.rb'] }
       let(:expected_job_name) { 'rspec-all frontend_fixture 1/7' }
 
       before do

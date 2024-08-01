@@ -2,7 +2,6 @@ import { trimText } from 'helpers/text_helper';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
 import NavDropdownButton from '~/ide/components/nav_dropdown_button.vue';
 import { createStore } from '~/ide/stores';
-import { __ } from '~/locale';
 
 describe('NavDropdownButton component', () => {
   const TEST_BRANCH_ID = 'lorem-ipsum-dolar';
@@ -15,8 +14,8 @@ describe('NavDropdownButton component', () => {
     wrapper = mountExtended(NavDropdownButton, { propsData: props, store });
   };
 
-  const findMRIcon = () => wrapper.findByLabelText(__('Merge request'));
-  const findBranchIcon = () => wrapper.findByLabelText(__('Current Branch'));
+  const findMRIcon = () => wrapper.findByLabelText('Merge request');
+  const findBranchIcon = () => wrapper.findByLabelText('Current Branch');
 
   describe('normal', () => {
     it('renders empty placeholders, if state is falsey', () => {

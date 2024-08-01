@@ -1,7 +1,7 @@
 import { GlAlert, GlButton, GlFormInputGroup, GlSprintf } from '@gitlab/ui';
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { sprintf, s__ } from '~/locale';
+import { sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { mockTracking } from 'helpers/tracking_helper';
 import AvailableAgentsDropdown from '~/clusters_list/components/available_agents_dropdown.vue';
@@ -187,7 +187,7 @@ describe('InstallAgentModal', () => {
         await waitForPromises();
 
         expect(findAlert().text()).toMatchInterpolatedText(
-          s__('ClusterAgents|To manage more agents, %{linkStart}use Terraform%{linkEnd}.'),
+          'To manage more agents, %{linkStart}use Terraform%{linkEnd}.',
         );
       });
 
@@ -203,9 +203,7 @@ describe('InstallAgentModal', () => {
         createWrapper(mockApolloProvider);
         await waitForPromises();
 
-        expect(findAlert().text()).toContain(
-          s__('ClusterAgents|We only support 100 agents on the UI.'),
-        );
+        expect(findAlert().text()).toContain('We only support 100 agents on the UI.');
       });
     });
 

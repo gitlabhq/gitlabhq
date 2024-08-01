@@ -36,7 +36,6 @@ These shortcuts are available in most areas of GitLab:
 | <kbd>Shift</kbd> + <kbd>l</kbd>    | Go to your **Milestones** page. |
 | <kbd>Shift</kbd> + <kbd>s</kbd>    | Go to your **Snippets** page. |
 | <kbd>s</kbd> / <kbd>/</kbd>        | Put cursor in the search bar. |
-| <kbd>f</kbd>                       | Put cursor in the filter bar. |
 | <kbd>Shift</kbd> + <kbd>i</kbd>    | Go to your **Issues** page. |
 | <kbd>Shift</kbd> + <kbd>m</kbd>    | Go to your [**Merge requests**](project/merge_requests/index.md) page. |
 | <kbd>Shift</kbd> + <kbd>r</kbd>    | Go to your **Review requests** page. |
@@ -135,95 +134,12 @@ These shortcuts are available when browsing the files in a project (go to
 
 | Keyboard shortcut | Description |
 |-------------------|-------------|
-| <kbd>↑</kbd>      | Move selection up. |
-| <kbd>↓</kbd>      | Move selection down. |
-| <kbd>Enter</kbd>  | Open selection. |
+| <kbd>↑</kbd>      | Move selection up (only while searching for files, **Code > Repository**, then select **Find File**). |
+| <kbd>↓</kbd>      | Move selection down (only while searching for files, **Code > Repository**, then select **Find File**). |
+| <kbd>Enter</kbd>  | Open selection (only while searching for files, **Code > Repository**, then select **Find File**). |
 | <kbd>Escape</kbd> | Go back to the **Find File** screen (only while searching for files, **Code > Repository**, then select **Find File**). |
 | <kbd>y</kbd>      | Go to file permalink (only while viewing a file). |
-| <kbd>Shift</kbd> + <kbd>c</kbd>  | Go to compare branches view. |
 | <kbd>.</kbd>      | Open the [Web IDE](project/web_ide/index.md). |
-
-### Web IDE
-
-These shortcuts are available when editing a file with the [Web IDE](project/web_ide/index.md):
-
-| macOS shortcut                  | Windows/Linux shortcut    | Description |
-|---------------------------------|---------------------|-------------|
-| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>↑</kbd> | <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>↑</kbd> | Add cursor above |
-| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>↓</kbd>   | <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>↓</kbd> | Add cursor below |
-| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>I</kbd>   | <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>I</kbd> | Add cursors to line ends |
-| <kbd>Command</kbd> + <kbd>K</kbd>, <kbd>Command</kbd> + <kbd>C</kbd>   | <kbd>Control</kbd> + <kbd>K</kbd>, <kbd>Control</kbd> + <kbd>C</kbd> _or_ <kbd>Control</kbd> + <kbd>/</kbd> | Add line comment |
-| <kbd>Command</kbd> + <kbd>D</kbd>   | <kbd>Control</kbd> + <kbd>D</kbd> | Add selection to next find match |
-| <kbd>Command</kbd> + <kbd>F2</kbd>   | <kbd>Control</kbd> + <kbd>F2</kbd> | Change all occurrences |
-| <kbd>F1</kbd>   | <kbd>F1</kbd> | Command palette |
-| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>↓</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>↓</kbd> | Copy line down |
-| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>↑</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>↑</kbd> | Copy line up [(Linux note)](#linux-shortcuts) |
-| <kbd>Command</kbd> + <kbd>U</kbd> | <kbd>Control</kbd> + <kbd>U</kbd> | Cursor undo |
-| <kbd>Command</kbd> + <kbd>Backspace</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Backspace</kbd> | Delete all left |
-| <kbd>Control</kbd> + <kbd>K</kbd> |  | Delete all right |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>K</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd> | Delete line |
-| | <kbd>Control</kbd> + <kbd>Backspace</kbd> | Delete word |
-| <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>→</kbd> | <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>→</kbd> | Expand selection |
-| <kbd>Command</kbd> + <kbd>P</kbd> | <kbd>Control</kbd> + <kbd>P</kbd> | File finder |
-| <kbd>Command</kbd> + <kbd>F</kbd> | <kbd>Control</kbd> + <kbd>F</kbd> | Find |
-| <kbd>Enter</kbd> | <kbd>Enter</kbd> or <kbd>F3</kbd> | Find next |
-| <kbd>Command</kbd> + <kbd>F3</kbd> | <kbd>F3</kbd> | Find next selection [(Linux note)](#linux-shortcuts) |
-| <kbd>Shift</kbd> + <kbd>Enter</kbd> + <kbd>F3</kbd> | <kbd>Shift</kbd> + <kbd>F3</kbd> | Find previous |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>F3</kbd> | <kbd>Shift</kbd> + <kbd>F3</kbd> | Find previous selection |
-| <kbd>Command</kbd> + <kbd>E</kbd> |  | Find with selection |
-| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>&#91;</kbd> | Fold |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>O</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>O</kbd> | Fold all |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>/</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>/</kbd> | Fold all block comments |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>8</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>8</kbd> | Fold all regions |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>-</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>-</kbd> | Fold all regions except selected |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>1</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>1</kbd> | Fold level 1 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>2</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>2</kbd> | Fold level 2 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>3</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>3</kbd> | Fold level 3 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>4</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>4</kbd> | Fold level 4 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>5</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>5</kbd> | Fold level 5 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>6</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>6</kbd> | Fold level 6 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>7</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>7</kbd> | Fold level 7 |
-| <kbd>Command</kbd> + <kbd>K</kbd> , then <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>K</kbd> , then <kbd>Control</kbd> + <kbd>&#91;</kbd> | Fold recursively |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>&#92;</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>&#92;</kbd> | Go to bracket |
-| <kbd>Control</kbd> + <kbd>G</kbd> | <kbd>Control</kbd> + <kbd>G</kbd> | Go to line or column |
-| <kbd>Option</kbd> + <kbd>F8</kbd> | <kbd>Alt</kbd> + <kbd>F8</kbd> | Go to next problem (error, warning, information) |
-| <kbd>F8</kbd> | <kbd>F8</kbd> | Go to next problem in files (error, warning, information) |
-| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>F8</kbd> | <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>F8</kbd> | Go to previous problem (error, warning, information) |
-| <kbd>Shift</kbd> + <kbd>F8</kbd> | <kbd>Shift</kbd> + <kbd>F8</kbd> | Go to previous problem in files (error, warning, information) |
-| <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Indent line |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Enter</kbd> |  Insert line above |
-| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> |  Insert line below |
-| <kbd>Control</kbd> + <kbd>J</kbd> | <kbd>Control</kbd> + <kbd>J</kbd> |  Join lines [(Linux note)](#linux-shortcuts) |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>D</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>D</kbd>  |  Move last selection to next find match |
-| <kbd>Option</kbd> + <kbd>↓</kbd> | <kbd>Alt</kbd> + <kbd>↓</kbd> |  Move line down |
-| <kbd>Option</kbd> + <kbd>↑</kbd> | <kbd>Alt</kbd> + <kbd>↑</kbd> |  Move line up |
-| <kbd>Command</kbd> + <kbd>&#91;</kbd> | <kbd>Control</kbd> + <kbd>&#91;</kbd> |  Outdent line |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>P</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>P</kbd> |  Preview Markdown [(Linux note)](#linux-shortcuts) |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>U</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>U</kbd> or <kbd>Control</kbd> + <kbd>/</kbd> |  Remove line comment |
-| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>F</kbd> | <kbd>Control</kbd> + <kbd>F</kbd> |  Replace |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>.</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>.</kbd> |  Replace with next value |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>,</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>,</kbd> |  Replace with previous value |
-| <kbd>Command</kbd> + <kbd>S</kbd> | <kbd>Control</kbd> + <kbd>S</kbd> | Save files |
-| <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>L</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>L</kbd> |  Select all occurrences of find match  |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>B</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>B</kbd> |  Set selection anchor  |
-| <kbd>Option</kbd> + <kbd>F1</kbd> | <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>F1</kbd> |  Show accessibility help |
-| <kbd>Shift</kbd> + <kbd>F10</kbd> | <kbd>Shift</kbd> + <kbd>F10</kbd> |  Show editor context menu |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>I</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>I</kbd> |  Show hover |
-| <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>Command</kbd> + <kbd>←</kbd> | <kbd>Shift</kbd> + <kbd>Alt</kbd> + <kbd>←</kbd> |  Shrink selection |
-| <kbd>Shift</kbd> + <kbd>Option</kbd> + <kbd>A</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>A</kbd> |  Toggle block comment |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>L</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>L</kbd> |  Toggle fold |
-| <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>M</kbd> | <kbd>Control</kbd> + <kbd>M</kbd> |  Toggle Tab key moves focus  |
-| <kbd>Command</kbd> + <kbd>/</kbd> | <kbd>Control</kbd> + <kbd>/</kbd> |  Toggle line comment |
-| <kbd>Control</kbd> + <kbd>T</kbd> |  |  Transpose letters |
-| <kbd>Control</kbd> + <kbd>Space</kbd> | <kbd>Control</kbd> + <kbd>Space</kbd> |  Trigger Suggest |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>X</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>X</kbd> |  Trim trailing whitespace |
-| <kbd>Option</kbd> + <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>Shift</kbd> + <kbd>&#93;</kbd> |  Unfold  |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>J</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>J</kbd> |  Unfold all |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>9</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>9</kbd> |  Unfold all regions |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>=</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>=</kbd> |  Unfold all regions except selected |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>&#93;</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>&#93;</kbd> |  Unfold recursively |
-| <kbd>Command</kbd> + <kbd>K</kbd>, then <kbd>Command</kbd> + <kbd>X</kbd> | <kbd>Control</kbd> + <kbd>K</kbd>, then <kbd>Control</kbd> + <kbd>X</kbd> |  Trim trailing whitespace |
-| <kbd>Command</kbd> + <kbd>Enter</kbd> | <kbd>Control</kbd> + <kbd>Enter</kbd> | Commit (when editing the commit message). |
 
 ### Repository graph
 

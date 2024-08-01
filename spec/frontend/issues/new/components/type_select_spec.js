@@ -4,7 +4,6 @@ import { mockTracking, unmockTracking } from 'helpers/tracking_helper';
 import * as urlUtility from '~/lib/utils/url_utility';
 import TypeSelect from '~/issues/new/components/type_select.vue';
 import { TYPE_ISSUE, TYPE_INCIDENT } from '~/issues/constants';
-import { __ } from '~/locale';
 
 const issuePath = 'issues/new';
 const incidentPath = 'issues/new?issuable_template=incident';
@@ -23,13 +22,13 @@ const defaultProps = {
 
 const issue = {
   value: TYPE_ISSUE,
-  text: __('Issue'),
+  text: 'Issue',
   icon: 'issue-type-issue',
   href: issuePath,
 };
 const incident = {
   value: TYPE_INCIDENT,
-  text: __('Incident'),
+  text: 'Incident',
   icon: 'issue-type-incident',
   href: incidentPath,
   tracking,

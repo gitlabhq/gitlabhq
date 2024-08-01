@@ -16,12 +16,9 @@ Use branches when you:
 - Want to add code to a project but you're not sure if it works properly.
 - Are collaborating on the project with others, and don't want your work to get mixed up.
 
-A new branch is often called **feature branch** to differentiate from the
-[default branch](../../user/project/repository/branches/default.md).
-
 ## Create a branch
 
-To create a feature branch:
+To create a branch:
 
 ```shell
 git checkout -b <name-of-branch>

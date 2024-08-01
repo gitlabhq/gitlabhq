@@ -296,6 +296,6 @@ The branch protections are now visible in the UI:
 
   ![List of protected branches and their protections](img/protections_in_place_v16_2.png)
 
-Congratulations! Your engineers can work independently in their feature branches,
+Congratulations! Your engineers can work independently in their branches,
 and all code submitted for consideration for the 1.0.0 release branch will
 be reviewed by subject matter experts.

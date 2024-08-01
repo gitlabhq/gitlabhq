@@ -1,33 +1,29 @@
-- add_form_class = 'gl-display-none' if !form_errors(@trigger)
-- hide_class = 'gl-display-none' if form_errors(@trigger)
+- hide_class = 'gl-hidden' if form_errors(@trigger)
 
 .row.gl-mt-3.gl-mb-3
   .col-lg-12
-    = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card js-toggle-container' }, header_options: { class: 'gl-new-card-header gl-flex-wrap gl-sm-flex-nowrap' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-      - c.with_header do
-        .gl-new-card-title-wrapper
-          %h5.gl-new-card-title
-            = _("Active pipeline trigger tokens")
-            .gl-new-card-count
-              = sprite_icon('token', css_class: 'gl-mr-2')
-              = @triggers.size
-        .gl-new-card-actions.gl-display-flex.gl-justify-content-end.gl-w-full.gl-sm-w-auto.gl-mt-3.gl-sm-mt-0
-          = render Pajamas::ButtonComponent.new(size: :small, category: :tertiary, button_options: { data: { testid: 'reveal-hide-values-button' } }) do
-            = _('Reveal values')
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "gl-ml-2 js-toggle-button js-toggle-content #{hide_class}" }) do
-            = _('Add new token')
+    = render ::Layouts::CrudComponent.new(_("Active pipeline trigger tokens"),
+      icon: 'token',
+      count: @triggers.size,
+      options: { class: 'js-toggle-container' },
+      form_options: { class: 'gl-hidden js-toggle-content', form_errors: form_errors(@trigger) }) do |c|
+      - c.with_actions do
+        = render Pajamas::ButtonComponent.new(size: :small, category: :tertiary, button_options: { data: { testid: 'reveal-hide-values-button' } }) do
+          = _('Reveal values')
+        = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: "js-toggle-button js-toggle-content #{hide_class}" }) do
+          = _('Add new token')
+
+      - c.with_form do
+        %h4.gl-mt-0
+          = _('Add new pipeline trigger token')
+        = render Pajamas::AlertComponent.new(variant: :danger, alert_options: { class:  'gl-mb-5 gl-pb-2' }, dismissible: false) do |c|
+          - keep_tokens_secure_link = link_to(s_('PipelineTriggerTokens|How can I keep my tokens secure?'), help_page_path('security/token_overview', anchor: 'security-considerations'), target: '_blank', rel: 'noopener noreferrer')
+          - c.with_body do
+            %p
+              = s_('PipelineTriggerTokens|It is a security risk to save tokens in plain text in your project, or store them in a way that malicious users could access them. A leaked trigger token could be used to force an unscheduled deployment, attempt to access CI/CD variables, or other malicious uses. %{keep_tokens_secure_link}').html_safe % { keep_tokens_secure_link: keep_tokens_secure_link }
+        = render 'projects/triggers/form', btn_text: s_('PipelineTriggerTokens|Create pipeline trigger token'), show_cancel_button: true
 
       - c.with_body do
-        .gl-new-card-add-form.gl-m-3.js-toggle-content{ class: add_form_class }
-          %h4.gl-mt-0
-            = _('Add new pipeline trigger token')
-          = render Pajamas::AlertComponent.new(variant: :danger, alert_options: { class:  'gl-mb-5 gl-pb-2' }, dismissible: false) do |c|
-            - keep_tokens_secure_link = link_to(s_('PipelineTriggerTokens|How can I keep my tokens secure?'), help_page_path('security/token_overview', anchor: 'security-considerations'), target: '_blank', rel: 'noopener noreferrer')
-            - c.with_body do
-              %p
-                = s_('PipelineTriggerTokens|It is a security risk to save tokens in plain text in your project, or store them in a way that malicious users could access them. A leaked trigger token could be used to force an unscheduled deployment, attempt to access CI/CD variables, or other malicious uses. %{keep_tokens_secure_link}').html_safe % { keep_tokens_secure_link: keep_tokens_secure_link }
-          = render 'projects/triggers/form', btn_text: s_('PipelineTriggerTokens|Create pipeline trigger token'), show_cancel_button: true
-
         #js-ci-pipeline-triggers-list.triggers-list{ data: { triggers: @triggers_json } }
 
     %details.gl-mt-5.gl-border.gl-rounded-base

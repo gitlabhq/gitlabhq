@@ -1,6 +1,6 @@
 import { GlAlert, GlSprintf, GlLink } from '@gitlab/ui';
 import { nextTick } from 'vue';
-import { s__, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
@@ -106,11 +106,11 @@ describe('group_settings/components/shared_runners_form', () => {
       'toggle %# is disabled',
       (findToggle) => {
         expect(findToggle().props('disabled')).toBe(true);
-        expect(findToggle().text()).toContain(s__('Runners|Instance runners are disabled.'));
+        expect(findToggle().text()).toContain('Instance runners are disabled.');
 
         if (isParentLinkExpected) {
           expect(findToggle().text()).toContain(
-            sprintf(s__('Runners|Go to %{groupLink} to enable them.'), {
+            sprintf('Go to %{groupLink} to enable them.', {
               groupLink: mockParentName,
             }),
           );

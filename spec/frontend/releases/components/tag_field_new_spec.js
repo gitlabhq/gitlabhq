@@ -3,7 +3,6 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import { nextTick } from 'vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import { __ } from '~/locale';
 import TagFieldNew from '~/releases/components/tag_field_new.vue';
 import TagSearch from '~/releases/components/tag_search.vue';
 import TagCreate from '~/releases/components/tag_create.vue';
@@ -70,8 +69,8 @@ describe('releases/components/tag_field_new', () => {
       beforeEach(() => createComponent());
 
       it('renders a label', () => {
-        expect(findTagNameFormGroup().attributes().label).toBe(__('Tag name'));
-        expect(findTagNameFormGroup().props().optionalText).toBe(__('(required)'));
+        expect(findTagNameFormGroup().attributes().label).toBe('Tag name');
+        expect(findTagNameFormGroup().props().optionalText).toBe('(required)');
       });
 
       it('flips between search and create, passing the searched value', async () => {

@@ -2,7 +2,6 @@ import { GlAlert, GlEmptyState, GlIntersectionObserver, GlLoadingIcon } from '@g
 import { mount, shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { s__ } from '~/locale';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { TEST_HOST } from 'spec/test_constants';
@@ -290,9 +289,8 @@ describe('Job table app', () => {
 
     it('shows raw text warning when user inputs raw text', async () => {
       const expectedWarning = {
-        message: s__(
-          'Jobs|Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens.',
-        ),
+        message:
+          'Raw text search is not currently supported for the jobs filtered search feature. Please use the available search tokens.',
         variant: 'warning',
       };
 

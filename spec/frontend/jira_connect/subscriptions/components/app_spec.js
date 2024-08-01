@@ -12,7 +12,6 @@ import createStore from '~/jira_connect/subscriptions/store';
 import { SET_ALERT } from '~/jira_connect/subscriptions/store/mutation_types';
 import { I18N_DEFAULT_SIGN_IN_ERROR_MESSAGE } from '~/jira_connect/subscriptions/constants';
 import { retrieveAlert } from '~/jira_connect/subscriptions/utils';
-import { __ } from '~/locale';
 import AccessorUtilities from '~/lib/utils/accessor';
 import * as api from '~/jira_connect/subscriptions/api';
 import { mockSubscription } from '../mock_data';
@@ -216,7 +215,7 @@ describe('JiraConnectApp', () => {
         createComponent();
 
         store.commit(SET_ALERT, {
-          message: __('test message %{linkStart}test link%{linkEnd}'),
+          message: 'test message %{linkStart}test link%{linkEnd}',
           linkUrl: 'https://gitlab.com',
         });
         await nextTick();

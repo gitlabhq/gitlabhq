@@ -10,7 +10,6 @@ import {
 } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
-import { s__ } from '~/locale';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { updateHistory } from '~/lib/utils/url_utility';
 
@@ -100,7 +99,7 @@ describe('AdminRunnersApp', () => {
   const findRunnerList = () => wrapper.findComponent(RunnerList);
   const findRunnerListEmptyState = () => wrapper.findComponent(RunnerListEmptyState);
   const findRunnerPagination = () => extendedWrapper(wrapper.findComponent(RunnerPagination));
-  const findRunnerPaginationNext = () => findRunnerPagination().findByText(s__('Pagination|Next'));
+  const findRunnerPaginationNext = () => findRunnerPagination().findByText('Next');
   const findRunnerFilteredSearchBar = () => wrapper.findComponent(RunnerFilteredSearchBar);
 
   const createComponent = ({

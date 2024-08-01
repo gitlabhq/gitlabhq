@@ -17,7 +17,7 @@ import {
 import { diffViewerModes } from '~/ide/constants';
 import { scrollToElement } from '~/lib/utils/common_utils';
 import { truncateSha } from '~/lib/utils/text_utility';
-import { __, sprintf } from '~/locale';
+import { sprintf } from '~/locale';
 import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
 
 import testAction from '../../__helpers__/vuex_action_helper';
@@ -500,7 +500,7 @@ describe('DiffFileHeader component', () => {
     it('displays the path', () => {
       createComponent({ props: { diffFile: { ...diffFile, deleted_file: true } } });
       expect(findTitleLink().text()).toBe(
-        sprintf(__('%{filePath} deleted'), { filePath: diffFile.file_path }, false),
+        sprintf('%{filePath} deleted', { filePath: diffFile.file_path }, false),
       );
     });
 

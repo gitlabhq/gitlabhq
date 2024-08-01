@@ -1,6 +1,5 @@
 import { GlIcon, GlLink } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import { s__ } from '~/locale';
 import PipelineScheduleTarget from '~/ci/pipeline_schedules/components/table/cells/pipeline_schedule_target.vue';
 import { mockPipelineScheduleNodes } from '../../../mock_data';
 
@@ -49,7 +48,7 @@ describe('Pipeline schedule target', () => {
     it('displays none for the target', () => {
       expect(findIcon().exists()).toBe(false);
       expect(findLink().exists()).toBe(false);
-      expect(findTarget().text()).toBe(s__('PipelineSchedules|None'));
+      expect(findTarget().text()).toBe('None');
     });
   });
 });
