@@ -11,6 +11,28 @@ RSpec.describe UsersHelper, feature_category: :user_management do
     badges.reject { |badge| badge[:text] == 'Is using seat' }
   end
 
+  describe 'has_contact_info?' do
+    subject { helper.has_contact_info?(user) }
+
+    context 'when user has skype profile' do
+      let_it_be(:user) { create(:user, bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz') }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user has public email' do
+      let_it_be(:user) { create(:user, :public_email) }
+
+      it { is_expected.to be true }
+    end
+
+    context 'when user public email is blank' do
+      let_it_be(:user) { create(:user, public_email: '') }
+
+      it { is_expected.to be false }
+    end
+  end
+
   describe 'display_public_email?' do
     let_it_be(:user) { create(:user, :public_email) }
 

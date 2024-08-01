@@ -44,8 +44,7 @@ describe('vue_merge_request_widget/widgets/security_reports/mr_widget_security_r
     it('displays the help popover', () => {
       expect(findWidget().props('helpPopover')).toEqual({
         content: {
-          learnMorePath:
-            '/help/user/application_security/index#view-security-scan-information-in-merge-requests',
+          learnMorePath: '/help/user/application_security/index#merge-request',
           text: 'New vulnerabilities are vulnerabilities that the security scan detects in the merge request that are different to existing vulnerabilities in the default branch.',
         },
         options: {

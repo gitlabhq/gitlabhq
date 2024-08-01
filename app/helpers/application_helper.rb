@@ -379,6 +379,12 @@ module ApplicationHelper
     "https://discord.com/users/#{user.discord}"
   end
 
+  def bluesky_url(user)
+    return '' if user.bluesky.blank?
+
+    external_redirect_path(url: "https://bsky.app/profile/#{user.bluesky}")
+  end
+
   def mastodon_url(user)
     return '' if user.mastodon.blank?
 

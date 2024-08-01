@@ -366,6 +366,8 @@ For GitLab instances with more than 50 GB of repository data, see [Index large i
 DETAILS:
 **Offering:** Self-managed
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/271532) in GitLab 17.3.
+
 Prerequisites:
 
 - You must have administrator access to the instance.

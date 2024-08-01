@@ -3,6 +3,7 @@ import { shallowMount } from '@vue/test-utils';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
 import BadgeList from '~/badges/components/badge_list.vue';
 import BadgeForm from '~/badges/components/badge_form.vue';
@@ -37,12 +38,11 @@ describe('BadgeSettings component', () => {
 
   it('renders a header with the badge count', () => {
     createComponent();
+    const findCrudComponent = () => wrapper.findComponent(CrudComponent);
 
-    const cardTitle = wrapper.find('.gl-new-card-title');
-    const cardCount = wrapper.find('.gl-new-card-count');
-
-    expect(cardTitle.text()).toContain('Your badges');
-    expect(cardCount.text()).toContain('1');
+    expect(findCrudComponent().props('title')).toBe('Your badges');
+    expect(findCrudComponent().props('icon')).toBe('labels');
+    expect(findCrudComponent().props('count')).toBe(1);
   });
 
   it('displays a table', () => {

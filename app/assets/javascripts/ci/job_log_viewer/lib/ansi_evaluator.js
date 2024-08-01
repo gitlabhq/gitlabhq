@@ -170,7 +170,7 @@ export class AnsiEvaluator {
 
   #disableStyle(flag) {
     // eslint-disable-next-line no-bitwise
-    this.styleMask &= STYLES_MAP[flag];
+    this.styleMask &= ~STYLES_MAP[flag];
   }
 
   #setFg(color) {

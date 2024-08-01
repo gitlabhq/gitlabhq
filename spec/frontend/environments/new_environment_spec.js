@@ -7,7 +7,6 @@ import NewEnvironment from '~/environments/components/new_environment.vue';
 import createEnvironment from '~/environments/graphql/mutations/create_environment.mutation.graphql';
 import { createAlert } from '~/alert';
 import { visitUrl } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
 import createMockApollo from '../__helpers__/mock_apollo_helper';
 
 jest.mock('~/lib/utils/url_utility');
@@ -47,9 +46,9 @@ describe('~/environments/components/new.vue', () => {
     await waitForPromises();
   };
 
-  const findNameInput = () => wrapper.findByLabelText(__('Name'));
-  const findExternalUrlInput = () => wrapper.findByLabelText(__('External URL'));
-  const findForm = () => wrapper.findByRole('form', { name: __('New environment') });
+  const findNameInput = () => wrapper.findByLabelText('Name');
+  const findExternalUrlInput = () => wrapper.findByLabelText('External URL');
+  const findForm = () => wrapper.findByRole('form', { name: 'New environment' });
   const showsLoading = () => wrapper.findComponent(GlLoadingIcon).exists();
 
   const submitForm = async () => {

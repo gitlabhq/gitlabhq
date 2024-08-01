@@ -132,12 +132,16 @@ export default {
         </template>
 
         <template #cell(actions)="{ item }">
-          <div v-if="canEditBadge(item)" class="table-action-buttons" data-testid="badge-actions">
+          <div
+            v-if="canEditBadge(item)"
+            class="table-action-buttons gl-flex gl-gap-2 gl-justify-end"
+            data-testid="badge-actions"
+          >
             <gl-button
               v-gl-modal.edit-badge-modal
               :disabled="item.isDeleting"
-              class="gl-mr-3"
               variant="default"
+              category="tertiary"
               icon="pencil"
               size="medium"
               :aria-label="__('Edit')"
@@ -147,7 +151,7 @@ export default {
             <gl-button
               v-gl-modal.delete-badge-modal
               :disabled="item.isDeleting"
-              category="secondary"
+              category="tertiary"
               variant="danger"
               icon="remove"
               size="medium"

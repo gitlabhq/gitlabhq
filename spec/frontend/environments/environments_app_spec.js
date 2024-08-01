@@ -5,7 +5,7 @@ import { mountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-import { sprintf, __, s__ } from '~/locale';
+import { sprintf } from '~/locale';
 import EnvironmentsApp from '~/environments/components/environments_app.vue';
 import EnvironmentsFolder from '~/environments/components/environment_folder.vue';
 import EnvironmentsItem from '~/environments/components/new_environment_item.vue';
@@ -163,7 +163,7 @@ describe('~/environments/components/environments_app.vue', () => {
       folder: resolvedFolder,
     });
 
-    const button = wrapper.findByRole('link', { name: s__('Environments|New environment') });
+    const button = wrapper.findByRole('link', { name: 'New environment' });
     expect(button.attributes('href')).toBe('/environments/new');
   });
 
@@ -174,7 +174,7 @@ describe('~/environments/components/environments_app.vue', () => {
       provide: { canCreateEnvironment: false, newEnvironmentPath: '' },
     });
 
-    const button = wrapper.findByRole('link', { name: s__('Environments|New environment') });
+    const button = wrapper.findByRole('link', { name: 'New environment' });
     expect(button.exists()).toBe(false);
   });
 
@@ -184,7 +184,7 @@ describe('~/environments/components/environments_app.vue', () => {
       folder: resolvedFolder,
     });
 
-    const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
+    const button = wrapper.findByRole('button', { name: 'Enable review apps' });
     expect(button.exists()).toBe(true);
   });
 
@@ -203,7 +203,7 @@ describe('~/environments/components/environments_app.vue', () => {
         folder: resolvedFolder,
       });
 
-      const button = wrapper.findByRole('button', { name: s__('Environments|Enable review apps') });
+      const button = wrapper.findByRole('button', { name: 'Enable review apps' });
       expect(button.exists()).toBe(false);
     },
   );
@@ -218,7 +218,7 @@ describe('~/environments/components/environments_app.vue', () => {
     });
 
     const button = wrapper.findByRole('button', {
-      name: s__('Environments|Clean up environments'),
+      name: 'Clean up environments',
     });
     expect(button.exists()).toBe(false);
   });
@@ -233,7 +233,7 @@ describe('~/environments/components/environments_app.vue', () => {
     });
 
     const button = wrapper.findByRole('button', {
-      name: s__('Environments|Clean up environments'),
+      name: 'Clean up environments',
     });
     expect(button.exists()).toBe(true);
   });
@@ -247,9 +247,9 @@ describe('~/environments/components/environments_app.vue', () => {
 
       const [active, stopped] = wrapper.findAllByRole('tab').wrappers;
 
-      expect(active.text()).toContain(__('Active'));
+      expect(active.text()).toContain('Active');
       expect(active.text()).toContain(resolvedEnvironmentsApp.activeCount.toString());
-      expect(stopped.text()).toContain(__('Stopped'));
+      expect(stopped.text()).toContain('Stopped');
       expect(stopped.text()).toContain(resolvedEnvironmentsApp.stoppedCount.toString());
     });
 
@@ -259,7 +259,7 @@ describe('~/environments/components/environments_app.vue', () => {
         folder: resolvedFolder,
       });
       const stopped = wrapper.findByRole('tab', {
-        name: `${__('Stopped')} ${resolvedEnvironmentsApp.stoppedCount}`,
+        name: `${'Stopped'} ${resolvedEnvironmentsApp.stoppedCount}`,
       });
 
       stopped.trigger('click');
@@ -319,7 +319,7 @@ describe('~/environments/components/environments_app.vue', () => {
         folder: resolvedFolder,
       });
       const next = wrapper.findByRole('link', {
-        name: __('Go to next page'),
+        name: 'Go to next page',
       });
 
       next.trigger('click');
@@ -341,7 +341,7 @@ describe('~/environments/components/environments_app.vue', () => {
         folder: resolvedFolder,
       });
       const prev = wrapper.findByRole('link', {
-        name: __('Go to previous page'),
+        name: 'Go to previous page',
       });
 
       prev.trigger('click');
@@ -365,7 +365,7 @@ describe('~/environments/components/environments_app.vue', () => {
 
       const page = 1;
       const pageButton = wrapper.findByRole('link', {
-        name: sprintf(__('Go to page %{page}'), { page }),
+        name: sprintf('Go to page %{page}', { page }),
       });
 
       pageButton.trigger('click');
@@ -387,7 +387,7 @@ describe('~/environments/components/environments_app.vue', () => {
         folder: resolvedFolder,
       });
       const next = wrapper.findByRole('link', {
-        name: __('Go to next page'),
+        name: 'Go to next page',
       });
 
       next.trigger('click');
@@ -411,7 +411,7 @@ describe('~/environments/components/environments_app.vue', () => {
         folder: resolvedFolder,
       });
       searchBox = wrapper.findByRole('searchbox', {
-        name: s__('Environments|Search by environment name'),
+        name: 'Search by environment name',
       });
     });
 

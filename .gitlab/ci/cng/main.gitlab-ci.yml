@@ -69,6 +69,10 @@ include:
     CACHE_BUSTER: "false"
     # link component version shas to current project instead of default CI_PIPELINE_CREATED_AT which forces rebuilds on each pipeline run
     CONTAINER_VERSION_SUFFIX: "${CI_PROJECT_NAME}"
+    # skip no-op final-list pipeline stage
+    SKIP_STAGES: final-list
+    # disable buildx cluster while it's not supported on mirrors
+    DISABLE_BUILDX_CLUSTER: "true"
   trigger:
     project: '${CI_PROJECT_NAMESPACE}/$[[ inputs.cng_path ]]'
     branch: $TRIGGER_BRANCH

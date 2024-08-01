@@ -849,6 +849,8 @@
   - 1
 - - wikis_git_garbage_collect
   - 1
+- - work_items_copy_timelogs
+  - 1
 - - work_items_import_work_items_csv
   - 1
 - - work_items_rolledup_dates_bulk_update_handler

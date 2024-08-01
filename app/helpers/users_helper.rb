@@ -195,6 +195,12 @@ module UsersHelper
     }
   end
 
+  def has_contact_info?(user)
+    contact_fields = %i[bluesky discord linkedin mastodon skype twitter website_url]
+    has_contact = contact_fields.any? { |field| user.public_send(field).present? }  # rubocop:disable GitlabSecurity/PublicSend -- fields are controlled, it is safe.
+    has_contact || display_public_email?(user)
+  end
+
   def display_public_email?(user)
     user.public_email.present?
   end

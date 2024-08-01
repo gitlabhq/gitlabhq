@@ -159,6 +159,50 @@ RSpec.describe UserDetail, feature_category: :system_access do
       end
     end
 
+    describe '#bluesky' do
+      context 'when bluesky is set' do
+        let_it_be(:user_detail) { build(:user_detail) }
+
+        let(:value) { 'did:plc:ewvi7nxzyoun6zhxrhs64oiz' }
+
+        before do
+          user_detail.bluesky = value
+        end
+
+        it 'accepts a valid bluesky did id' do
+          expect(user_detail).to be_valid
+        end
+
+        shared_examples 'throws an error' do
+          it do
+            expect(user_detail).not_to be_valid
+            expect(user_detail.errors.full_messages)
+              .to match_array([_('Bluesky must contain only a bluesky did:plc identifier.')])
+          end
+        end
+
+        context 'when bluesky is set to a wrong format' do
+          context 'when bluesky did:plc is too long' do
+            let(:value) { 'a' * 33 }
+
+            it_behaves_like 'throws an error'
+          end
+
+          context 'when bluesky did:plc is wrong' do
+            let(:value) { 'did:plc:ewvi7nxzyoun6zhxrhs64OIZ' }
+
+            it_behaves_like 'throws an error'
+          end
+
+          context 'when bluesky other bluesky did: formats are used' do
+            let(:value) { 'did:web:example.com' }
+
+            it_behaves_like 'throws an error'
+          end
+        end
+      end
+    end
+
     describe '#mastodon' do
       it { is_expected.to validate_length_of(:mastodon).is_at_most(500) }
 
@@ -219,6 +263,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
         discord: '1234567890123456789',
         linkedin: 'linkedin',
         location: 'location',
+        bluesky: 'did:plc:ewvi7nxzyoun6zhxrhs64oiz',
         mastodon: '@robin@example.com',
         organization: 'organization',
         skype: 'skype',
@@ -240,6 +285,7 @@ RSpec.describe UserDetail, feature_category: :system_access do
     it_behaves_like 'prevents `nil` value', :discord
     it_behaves_like 'prevents `nil` value', :linkedin
     it_behaves_like 'prevents `nil` value', :location
+    it_behaves_like 'prevents `nil` value', :bluesky
     it_behaves_like 'prevents `nil` value', :mastodon
     it_behaves_like 'prevents `nil` value', :organization
     it_behaves_like 'prevents `nil` value', :skype

@@ -7,7 +7,6 @@ import IssuableLabelSelector from '~/vue_shared/issuable/create/components/issua
 import LabelsSelect from '~/sidebar/components/labels/labels_select_widget/labels_select_root.vue';
 import { VARIANT_EMBEDDED } from '~/sidebar/components/labels/labels_select_widget/constants';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
-import { __ } from '~/locale';
 
 const allowLabelRemove = true;
 const attrWorkspacePath = '/workspace-path';
@@ -59,17 +58,17 @@ describe('IssuableLabelSelector', () => {
         fullPath,
         attrWorkspacePath,
         labelsFilterBasePath,
-        dropdownButtonText: __('Select label'),
-        labelsListTitle: __('Select label'),
-        footerCreateLabelTitle: __('Create project label'),
-        footerManageLabelTitle: __('Manage project labels'),
+        dropdownButtonText: 'Select label',
+        labelsListTitle: 'Select label',
+        footerCreateLabelTitle: 'Create project label',
+        footerManageLabelTitle: 'Manage project labels',
         variant,
         workspaceType,
         labelCreateType: labelType,
         selectedLabels: initialLabels,
       });
 
-      expect(findLabelSelector().text()).toBe(__('None'));
+      expect(findLabelSelector().text()).toBe('None');
     });
   });
 

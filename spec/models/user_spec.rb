@@ -129,6 +129,9 @@ RSpec.describe User, feature_category: :user_profile do
     it { is_expected.to delegate_method(:linkedin).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:linkedin=).to(:user_detail).with_arguments(:args).allow_nil }
 
+    it { is_expected.to delegate_method(:bluesky).to(:user_detail).allow_nil }
+    it { is_expected.to delegate_method(:bluesky=).to(:user_detail).with_arguments(:args).allow_nil }
+
     it { is_expected.to delegate_method(:mastodon).to(:user_detail).allow_nil }
     it { is_expected.to delegate_method(:mastodon=).to(:user_detail).with_arguments(:args).allow_nil }
 

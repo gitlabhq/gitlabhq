@@ -99,6 +99,9 @@ build-cng:
   stage: .pre
   extends: .build-cng
   needs: [build-cng-env]
+  variables:
+    # use larger runner for complex rails build jobs
+    RAILS_BUILD_RUNNER_TAG: e2e
   # quality specific fork, see: https://gitlab.com/gitlab-org/quality/quality-engineering/team-tasks/-/issues/2839
   trigger:
     project: ${CI_PROJECT_NAMESPACE}/quality/quality-engineering/CNG-mirror

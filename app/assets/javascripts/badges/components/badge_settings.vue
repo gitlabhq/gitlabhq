@@ -1,9 +1,10 @@
 <script>
-import { GlButton, GlCard, GlModal, GlIcon, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { __, s__ } from '~/locale';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Badge from './badge.vue';
 import BadgeForm from './badge_form.vue';
 import BadgeList from './badge_list.vue';
@@ -15,10 +16,9 @@ export default {
     BadgeForm,
     BadgeList,
     GlButton,
-    GlCard,
     GlModal,
-    GlIcon,
     GlSprintf,
+    CrudComponent,
   },
   i18n: {
     title: s__('Badges|Your badges'),
@@ -84,38 +84,26 @@ export default {
 </script>
 
 <template>
-  <div class="badge-settings">
-    <gl-card
-      class="gl-new-card"
-      header-class="gl-new-card-header"
-      body-class="gl-new-card-body gl-px-0"
-    >
-      <template #header>
-        <div class="gl-new-card-title-wrapper">
-          <h3 class="gl-new-card-title">{{ $options.i18n.title }}</h3>
-          <span class="gl-new-card-count">
-            <gl-icon name="labels" class="gl-mr-2" />
-            {{ badges.length }}
-          </span>
-        </div>
-        <div class="gl-new-card-actions">
-          <gl-button
-            v-if="!addFormVisible"
-            size="small"
-            data-testid="show-badge-add-form"
-            @click="showAddForm"
-            >{{ $options.i18n.addButton }}</gl-button
-          >
-        </div>
-      </template>
+  <crud-component
+    :title="$options.i18n.title"
+    icon="labels"
+    :count="badges.length"
+    class="badge-settings"
+  >
+    <template #actions>
+      <gl-button
+        v-if="!addFormVisible"
+        size="small"
+        data-testid="show-badge-add-form"
+        @click="showAddForm"
+        >{{ $options.i18n.addButton }}</gl-button
+      >
+    </template>
 
-      <div v-if="addFormVisible" class="gl-new-card-add-form gl-m-5">
-        <h4 class="gl-mt-0">{{ $options.i18n.addFormTitle }}</h4>
-        <badge-form :is-editing="false" @close-add-form="closeAddForm" />
-      </div>
-
-      <badge-list />
-    </gl-card>
+    <div v-if="addFormVisible" class="gl-new-card-add-form gl-m-5">
+      <h4 class="gl-mt-0">{{ $options.i18n.addFormTitle }}</h4>
+      <badge-form :is-editing="false" @close-add-form="closeAddForm" />
+    </div>
 
     <gl-modal
       modal-id="edit-badge-modal"
@@ -148,5 +136,6 @@ export default {
         </gl-sprintf>
       </p>
     </gl-modal>
-  </div>
+    <badge-list />
+  </crud-component>
 </template>

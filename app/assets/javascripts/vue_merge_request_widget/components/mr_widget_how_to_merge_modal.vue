@@ -76,9 +76,8 @@ export default {
   },
   data() {
     return {
-      // eslint-disable-next-line local-rules/require-valid-help-page-path
       resolveConflictsFromCli: helpPagePath('user/project/merge_requests/conflicts', {
-        anchor: 'resolve-conflicts-from-the-command-line',
+        anchor: 'from-the-command-line',
       }),
     };
   },

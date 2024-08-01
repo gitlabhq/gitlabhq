@@ -16,7 +16,7 @@ export default {
 </script>
 
 <template>
-  <section class="settings-section">
+  <section class="settings-section js-search-settings-section">
     <div class="settings-sticky-header">
       <div class="settings-sticky-header-inner">
         <h2 class="gl-heading-2 !gl-mb-2" data-testid="settings-section-heading">

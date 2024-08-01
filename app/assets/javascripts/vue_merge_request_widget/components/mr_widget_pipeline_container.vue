@@ -112,6 +112,7 @@ export default {
         :merge-train-index="mr.mergeTrainIndex"
         :merge-trains-count="mr.mergeTrainsCount"
         :merge-trains-path="mr.mergeTrainsPath"
+        :merge-train-car="mr.mergeTrainCar"
       />
     </template>
   </mr-widget-container>

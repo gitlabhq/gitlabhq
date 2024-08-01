@@ -668,6 +668,21 @@ RSpec.describe ApplicationHelper do
       end
     end
 
+    context 'when bluesky is set' do
+      let_it_be(:user) { build(:user) }
+      let(:bluesky) { bluesky_url(user) }
+
+      it 'returns an empty string if bluesky did id is not set' do
+        expect(bluesky).to eq('')
+      end
+
+      it 'returns bluesky url when bluesky did id is set' do
+        user.bluesky = 'did:plc:ewvi7nxzyoun6zhxrhs64oiz'
+
+        expect(bluesky).to eq(external_redirect_path(url: 'https://bsky.app/profile/did:plc:ewvi7nxzyoun6zhxrhs64oiz'))
+      end
+    end
+
     context 'when mastodon is set' do
       let_it_be(:user) { build(:user) }
       let(:mastodon) { mastodon_url(user) }

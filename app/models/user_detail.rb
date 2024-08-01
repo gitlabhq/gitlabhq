@@ -17,6 +17,14 @@ class UserDetail < MainClusterwide::ApplicationRecord
 
   DEFAULT_FIELD_LENGTH = 500
 
+  # specification for bluesky identifier https://web.plc.directory/spec/v0.1/did-plc
+  BLUESKY_VALIDATION_REGEX = /
+    \A            # beginning of string
+    did:plc:      # beginning of bluesky id
+    [a-z0-9]{24}  # 24 characters of word or digit
+    \z            # end of string
+  /x
+
   MASTODON_VALIDATION_REGEX = /
     \A            # beginning of string
     @?\b          # optional leading at
@@ -33,6 +41,10 @@ class UserDetail < MainClusterwide::ApplicationRecord
   validate :discord_format
   validates :linkedin, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validates :location, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
+  validates :bluesky,
+    allow_blank: true,
+    format: { with: UserDetail::BLUESKY_VALIDATION_REGEX,
+              message: proc { s_('Profiles|must contain only a bluesky did:plc identifier.') } }
   validates :mastodon, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
   validate :mastodon_format
   validates :organization, length: { maximum: DEFAULT_FIELD_LENGTH }, allow_blank: true
@@ -47,7 +59,7 @@ class UserDetail < MainClusterwide::ApplicationRecord
   enum registration_objective: REGISTRATION_OBJECTIVE_PAIRS, _suffix: true
 
   def sanitize_attrs
-    %i[discord linkedin mastodon skype twitter website_url].each do |attr|
+    %i[bluesky discord linkedin mastodon skype twitter website_url].each do |attr|
       value = self[attr]
       self[attr] = Sanitize.clean(value) if value.present?
     end
@@ -60,6 +72,7 @@ class UserDetail < MainClusterwide::ApplicationRecord
   private
 
   def prevent_nil_fields
+    self.bluesky = '' if bluesky.nil?
     self.bio = '' if bio.nil?
     self.discord = '' if discord.nil?
     self.linkedin = '' if linkedin.nil?
