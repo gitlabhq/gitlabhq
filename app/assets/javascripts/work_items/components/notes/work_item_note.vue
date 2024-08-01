@@ -91,6 +91,21 @@ export default {
       required: false,
       default: false,
     },
+    isDiscussionResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDiscussionResolvable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolving: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -125,6 +140,9 @@ export default {
     },
     showReply() {
       return this.note.userPermissions.createNote && this.isFirstNote;
+    },
+    canResolve() {
+      return this.note.userPermissions.resolveNote && this.isFirstNote && this.hasReplies;
     },
     noteHeaderClass() {
       return {
@@ -173,6 +191,9 @@ export default {
     },
     isWorkItemConfidential() {
       return this.workItem.confidential;
+    },
+    discussionResolvedBy() {
+      return this.note.discussion.resolvedBy;
     },
   },
   apollo: {
@@ -326,9 +347,13 @@ export default {
         :work-item-id="workItemId"
         :autofocus="isEditing"
         :is-work-item-confidential="isWorkItemConfidential"
+        :is-discussion-resolved="isDiscussionResolved"
+        :is-discussion-resolvable="isDiscussionResolvable"
+        :has-replies="hasReplies"
         :full-path="fullPath"
         class="gl-pl-3 gl-mt-3"
         @cancelEditing="isEditing = false"
+        @toggleResolveDiscussion="$emit('resolve')"
         @submitForm="updateNote"
       />
       <div v-else data-testid="note-wrapper">
@@ -360,8 +385,14 @@ export default {
               :is-author-contributor="note.authorIsContributor"
               :max-access-level-of-author="note.maxAccessLevelOfAuthor"
               :project-name="projectName"
+              :can-resolve="canResolve"
+              :resolvable="isDiscussionResolvable"
+              :is-resolved="isDiscussionResolved"
+              :is-resolving="isResolving"
+              :resolved-by="discussionResolvedBy"
               @startReplying="showReplyForm"
               @startEditing="startEditing"
+              @resolve="$emit('resolve')"
               @error="($event) => $emit('error', $event)"
               @notifyCopyDone="notifyCopyDone"
               @deleteNote="$emit('deleteNote')"

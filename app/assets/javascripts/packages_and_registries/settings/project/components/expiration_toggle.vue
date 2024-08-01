@@ -45,21 +45,19 @@ export default {
 
 <template>
   <gl-form-group id="expiration-policy-toggle-group" label-for="expiration-policy-toggle">
-    <div class="gl-display-flex">
-      <gl-toggle
-        id="expiration-policy-toggle"
-        v-model="enabled"
-        :label="$options.i18n.toggleLabel"
-        label-position="hidden"
-        :disabled="disabled"
-      />
-      <span class="gl-ml-5 gl-leading-24" data-testid="description">
-        <gl-sprintf :message="toggleText">
-          <template #strong="{ content }">
-            <strong>{{ content }}</strong>
-          </template>
-        </gl-sprintf>
-      </span>
+    <gl-toggle
+      id="expiration-policy-toggle"
+      v-model="enabled"
+      :label="$options.i18n.toggleLabel"
+      label-position="left"
+      :disabled="disabled"
+    />
+    <div class="gl-text-subtle gl-mt-2" data-testid="description">
+      <gl-sprintf :message="toggleText">
+        <template #strong="{ content }">
+          {{ content }}
+        </template>
+      </gl-sprintf>
     </div>
   </gl-form-group>
 </template>

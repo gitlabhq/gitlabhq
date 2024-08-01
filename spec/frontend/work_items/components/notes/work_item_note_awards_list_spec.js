@@ -11,8 +11,8 @@ import removeAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_
 import groupWorkItemNotesByIidQuery from '~/work_items/graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import {
-  mockWorkItemNotesResponseWithComments,
   mockAwardEmojiThumbsUp,
+  mockWorkItemNotesResponseWithComments,
 } from 'jest/work_items/mock_data';
 import { EMOJI_THUMBSUP, EMOJI_THUMBSDOWN } from '~/work_items/constants';
 

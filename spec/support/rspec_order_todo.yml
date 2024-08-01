@@ -8075,7 +8075,6 @@
 - './spec/services/projects/overwrite_project_service_spec.rb'
 - './spec/services/projects/participants_service_spec.rb'
 - './spec/services/projects/prometheus/alerts/notify_service_spec.rb'
-- './spec/services/projects/prometheus/metrics/destroy_service_spec.rb'
 - './spec/services/projects/protect_default_branch_service_spec.rb'
 - './spec/services/projects/readme_renderer_service_spec.rb'
 - './spec/services/projects/record_target_platforms_service_spec.rb'

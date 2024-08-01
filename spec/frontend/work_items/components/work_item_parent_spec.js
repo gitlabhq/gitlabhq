@@ -187,11 +187,11 @@ describe('WorkItemParent component', () => {
       expect(findSidebarDropdownWidget().exists()).toBe(true);
       expect(findSidebarDropdownWidget().props()).toMatchObject({
         listItems: [],
-        headerText: 'Assign parent',
+        headerText: 'Select parent',
         loading: false,
         searchable: true,
         infiniteScroll: false,
-        resetButtonLabel: 'Unassign',
+        resetButtonLabel: 'Clear',
       });
     });
 

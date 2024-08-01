@@ -289,10 +289,6 @@
   - "tooling/docs/**/*"
   - "lib/tasks/gitlab/docs/compile_deprecations.rake"
 
-.bundler-patterns: &bundler-patterns
-  - '{Gemfile.lock,*/Gemfile.lock,*/*/Gemfile.lock}'
-  - '{Gemfile.next.lock,*/Gemfile.next.lock,*/*/Gemfile.next.lock}'
-
 .nodejs-patterns: &nodejs-patterns
   - '{package.json,*/package.json,*/*/package.json}'
   - '{yarn.lock,*/yarn.lock,*/*/yarn.lock}'
@@ -462,12 +458,6 @@
 # for the reasons why we only match those patterns.
 .frontend-predictive-patterns: &frontend-predictive-patterns
   - "{,ee/,jh/}{app/assets/javascripts,spec/frontend}/**/*"
-
-# Frontend view patterns + .qa-patterns
-.frontend-qa-patterns: &frontend-qa-patterns
-  - "{,ee/,jh/}{app/assets,app/components,app/helpers,app/presenters,app/views}/**/*"
-  # QA changes
-  - "{,jh/}qa/**/*"
 
 # Code patterns + .ci-patterns
 .code-patterns: &code-patterns
@@ -678,13 +668,6 @@
   - "{,jh/}Gemfile{,.lock}"
   - "{,jh/}Gemfile.next{,.lock}"
   - "{,ee/,jh/}config/**/*.rb"
-
-.core-frontend-patterns: &core-frontend-patterns
-  - "{package.json,yarn.lock}"
-  - "babel.config.js"
-  - "jest.config.{base,integration,unit}.js"
-  - "config/helpers/**/*.js"
-  - "vendor/assets/javascripts/**/*"
 
 .feature-flag-development-config-patterns: &feature-flag-development-config-patterns
   - "{,ee/,jh/}config/feature_flags/**/*.yml"

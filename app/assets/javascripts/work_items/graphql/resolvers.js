@@ -10,6 +10,7 @@ import {
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
   CLEAR_VALUE,
 } from '../constants';
@@ -64,6 +65,7 @@ export const updateNewWorkItemCache = (input, cache) => {
     confidential,
     labels,
     rolledUpDates,
+    crmContacts,
   } = input;
 
   const query = workItemByIidQuery;
@@ -94,6 +96,11 @@ export const updateNewWorkItemCache = (input, cache) => {
           widgetType: WIDGET_TYPE_DESCRIPTION,
           newData: description,
           nodePath: 'description',
+        },
+        {
+          widgetType: WIDGET_TYPE_CRM_CONTACTS,
+          newData: crmContacts,
+          nodePath: 'contacts.nodes',
         },
       ];
 

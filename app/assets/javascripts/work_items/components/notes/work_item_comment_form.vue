@@ -121,12 +121,28 @@ export default {
       required: false,
       default: null,
     },
+    isDiscussionResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDiscussionResolvable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasReplies: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       commentText: getDraft(this.autosaveKey) || this.initialValue || '',
       updateInProgress: false,
       isNoteInternal: false,
+      toggleResolveChecked: this.isDiscussionResolved,
     };
   },
   computed: {
@@ -162,6 +178,12 @@ export default {
     workItemTypeKey() {
       return capitalizeFirstCharacter(this.workItemType).replace(' ', '');
     },
+    showResolveDiscussionToggle() {
+      return !this.isNewDiscussion && this.isDiscussionResolvable && this.hasReplies;
+    },
+    resolveCheckboxLabel() {
+      return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
+    },
   },
   methods: {
     setCommentText(newText) {
@@ -194,6 +216,15 @@ export default {
       this.$emit('cancelEditing');
       clearDraft(this.autosaveKey);
     },
+    submitForm() {
+      if (this.toggleResolveChecked) {
+        this.$emit('toggleResolveDiscussion');
+      }
+      this.$emit('submitForm', {
+        commentText: this.commentText,
+        isNoteInternal: this.isNoteInternal,
+      });
+    },
   },
 };
 </script>
@@ -218,12 +249,22 @@ export default {
             supports-quick-actions
             :autofocus="autofocus"
             @input="setCommentText"
-            @keydown.meta.enter="$emit('submitForm', { commentText, isNoteInternal })"
-            @keydown.ctrl.enter="$emit('submitForm', { commentText, isNoteInternal })"
+            @keydown.meta.enter="submitForm"
+            @keydown.ctrl.enter="submitForm"
             @keydown.esc.stop="cancelEditing"
           />
         </comment-field-layout>
         <div class="note-form-actions" data-testid="work-item-comment-form-actions">
+          <div v-if="showResolveDiscussionToggle">
+            <label>
+              <gl-form-checkbox
+                v-model="toggleResolveChecked"
+                data-testid="toggle-resolve-checkbox"
+              >
+                {{ resolveCheckboxLabel }}
+              </gl-form-checkbox>
+            </label>
+          </div>
           <gl-form-checkbox
             v-if="isNewDiscussion"
             v-model="isNoteInternal"
@@ -245,7 +286,7 @@ export default {
             data-testid="confirm-button"
             :disabled="!commentText.length"
             :loading="isSubmitting"
-            @click="$emit('submitForm', { commentText, isNoteInternal })"
+            @click="submitForm"
             >{{ commentButtonTextComputed }}
           </gl-button>
           <work-item-state-toggle
@@ -258,7 +299,7 @@ export default {
             :full-path="fullPath"
             :has-comment="Boolean(commentText.length)"
             can-update
-            @submit-comment="$emit('submitForm', { commentText, isNoteInternal })"
+            @submit-comment="submitForm"
             @error="$emit('error', $event)"
           />
           <gl-button

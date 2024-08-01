@@ -150,4 +150,20 @@ fragment WorkItemWidgets on WorkItemWidget {
       }
     }
   }
+  ... on WorkItemWidgetCrmContacts {
+    contacts {
+      nodes {
+        id
+        email
+        firstName
+        lastName
+        phone
+        description
+        organization {
+          id
+          name
+        }
+      }
+    }
+  }
 }

@@ -80,6 +80,7 @@ issues:
 - email
 - issuable_resource_links
 - synced_epic
+- observability_metrics
 work_item_type:
 - issues
 - namespace

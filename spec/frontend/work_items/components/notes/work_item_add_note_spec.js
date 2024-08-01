@@ -12,6 +12,7 @@ import createNoteMutation from '~/work_items/graphql/notes/create_work_item_note
 import { TRACKING_CATEGORY_SHOW } from '~/work_items/constants';
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import {
   createWorkItemNoteResponse,
   workItemByIidResponseFactory,
@@ -34,6 +35,7 @@ describe('Work item add note', () => {
   const findCommentForm = () => wrapper.findComponent(WorkItemCommentForm);
   const findReplyPlaceholder = () => wrapper.findComponent(DiscussionReplyPlaceholder);
   const findWorkItemLockedComponent = () => wrapper.findComponent(WorkItemCommentLocked);
+  const findResolveDiscussionButton = () => wrapper.findComponent(ResolveDiscussionButton);
 
   const createComponent = async ({
     mutationHandler = mutationSuccessHandler,
@@ -46,6 +48,11 @@ describe('Work item add note', () => {
     isGroup = false,
     workItemType = 'Task',
     isInternalThread = false,
+    isNewDiscussion = false,
+    isDiscussionResolved = false,
+    isDiscussionResolvable = false,
+    isResolving = false,
+    hasReplies = false,
   } = {}) => {
     workItemResponseHandler = jest.fn().mockResolvedValue(workItemResponse);
     if (signedIn) {
@@ -70,6 +77,11 @@ describe('Work item add note', () => {
         markdownPreviewPath: '/group/project/preview_markdown?target_type=WorkItem',
         autocompleteDataSources: {},
         isInternalThread,
+        isNewDiscussion,
+        isDiscussionResolved,
+        isDiscussionResolvable,
+        isResolving,
+        hasReplies,
       },
       stubs: {
         WorkItemCommentLocked,
@@ -295,6 +307,60 @@ describe('Work item add note', () => {
 
       expect(findWorkItemLockedComponent().exists()).toBe(true);
       expect(findCommentForm().exists()).toBe(false);
+    });
+  });
+
+  describe('Resolve Discussion button', () => {
+    it('renders resolve discussion button when discussion is resolvable', async () => {
+      await createComponent({
+        isDiscussionResolvable: true,
+        isEditing: false,
+      });
+
+      expect(findResolveDiscussionButton().exists()).toBe(true);
+    });
+
+    it('does not render resolve discussion button when discussion is not resolvable', async () => {
+      await createComponent({
+        isDiscussionResolvable: false,
+        isEditing: false,
+      });
+
+      expect(findResolveDiscussionButton().exists()).toBe(false);
+    });
+
+    it('does not render resolve discussion button when it is a new discussion', async () => {
+      await createComponent({
+        isDiscussionResolvable: false,
+        isEditing: false,
+        isNewDiscussion: true,
+      });
+
+      expect(findResolveDiscussionButton().exists()).toBe(false);
+    });
+
+    it('emits `resolve` event when resolve discussion button is clicked', async () => {
+      await createComponent({
+        isDiscussionResolvable: true,
+        isEditing: false,
+      });
+
+      findResolveDiscussionButton().vm.$emit('onClick');
+
+      expect(wrapper.emitted('resolve')).toHaveLength(1);
+    });
+
+    it('passes correct props to resolve discussion button', async () => {
+      await createComponent({
+        isDiscussionResolvable: true,
+        isDiscussionResolved: false,
+        isResolving: true,
+        isEditing: false,
+      });
+
+      const resolveButton = findResolveDiscussionButton();
+      expect(resolveButton.props('isResolving')).toBe(true);
+      expect(resolveButton.props('buttonTitle')).toBe('Resolve thread');
     });
   });
 });

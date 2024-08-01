@@ -30,6 +30,7 @@ import {
   NEW_WORK_ITEM_GID,
   WIDGET_TYPE_LABELS,
   WIDGET_TYPE_ROLLEDUP_DATES,
+  WIDGET_TYPE_CRM_CONTACTS,
 } from '../constants';
 import createWorkItemMutation from '../graphql/create_work_item.mutation.graphql';
 import namespaceWorkItemTypesQuery from '../graphql/namespace_work_item_types.query.graphql';
@@ -41,6 +42,7 @@ import WorkItemDescription from './work_item_description.vue';
 import WorkItemAssignees from './work_item_assignees.vue';
 import WorkItemLabels from './work_item_labels.vue';
 import WorkItemLoading from './work_item_loading.vue';
+import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
 export default {
   components: {
@@ -55,6 +57,7 @@ export default {
     WorkItemAssignees,
     WorkItemLabels,
     WorkItemLoading,
+    WorkItemCrmContacts,
     WorkItemHealthStatus: () =>
       import('ee_component/work_items/components/work_item_health_status.vue'),
     WorkItemColor: () => import('ee_component/work_items/components/work_item_color.vue'),
@@ -165,6 +168,9 @@ export default {
     workItemColor() {
       return findWidget(WIDGET_TYPE_COLOR, this.workItem);
     },
+    workItemCrmContacts() {
+      return findWidget(WIDGET_TYPE_CRM_CONTACTS, this.workItem);
+    },
     workItemTypesForSelect() {
       return this.workItemTypes
         ? this.workItemTypes.map((node) => ({
@@ -218,6 +224,9 @@ export default {
     workItemLabelIds() {
       const labelsWidget = findWidget(WIDGET_TYPE_LABELS, this.workItem);
       return labelsWidget?.labels?.nodes?.map((label) => label.id) || [];
+    },
+    workItemCrmContactIds() {
+      return this.workItemCrmContacts?.contacts?.nodes?.map((item) => item.id) || [];
     },
     workItemColorValue() {
       const colorWidget = findWidget(WIDGET_TYPE_COLOR, this.workItem);
@@ -335,6 +344,12 @@ export default {
           startDateIsFixed: this.workItemStartDateIsFixed,
           startDateFixed: this.workItemStartDateFixed,
           dueDateFixed: this.workItemDueDateFixed,
+        };
+      }
+
+      if (this.isWidgetSupported(WIDGET_TYPE_CRM_CONTACTS)) {
+        workItemCreateInput.crmContactsWidget = {
+          contactIds: this.workItemCrmContactIds,
         };
       }
 
@@ -461,6 +476,16 @@ export default {
                 :allows-multiple-assignees="workItemAssignees.allowsMultipleAssignees"
                 :work-item-type="selectedWorkItemTypeName"
                 :can-invite-members="workItemAssignees.canInviteMembers"
+                @error="$emit('error', $event)"
+              />
+            </template>
+            <template v-if="workItemCrmContacts">
+              <work-item-crm-contacts
+                class="gl-mb-5"
+                :full-path="fullPath"
+                :work-item-id="workItem.id"
+                :work-item-iid="workItem.iid"
+                :work-item-type="selectedWorkItemTypeName"
                 @error="$emit('error', $event)"
               />
             </template>

@@ -24,10 +24,10 @@ import {
   workItemQueryResponse,
   mockWorkItemNotesByIidResponse,
   mockMoreWorkItemNotesResponse,
-  mockWorkItemNotesResponseWithComments,
   workItemNotesCreateSubscriptionResponse,
   workItemNotesUpdateSubscriptionResponse,
   workItemNotesDeleteSubscriptionResponse,
+  mockWorkItemNotesResponseWithComments,
 } from '../mock_data';
 
 const mockWorkItemId = workItemQueryResponse.data.workItem.id;

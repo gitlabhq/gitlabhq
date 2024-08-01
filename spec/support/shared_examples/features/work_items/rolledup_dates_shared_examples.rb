@@ -170,7 +170,7 @@ RSpec.shared_examples 'work items rolled up dates' do
       context 'when updating child work item dates' do
         it 'rolled up child dates' do
           # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
-          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(102)
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(105)
 
           child_title = 'A child issue'
           add_new_child(title: child_title, start_date: '2020-12-01', due_date: '2020-12-02')
@@ -192,7 +192,7 @@ RSpec.shared_examples 'work items rolled up dates' do
       context 'when removing all children' do
         it 'rolled up child dates' do
           # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
-          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(108)
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(114)
 
           add_new_child(title: 'child issue 1', start_date: '2020-11-01', due_date: '2020-12-02')
           add_new_child(title: 'child issue 2', start_date: '2020-12-01', due_date: '2021-01-02')
@@ -249,6 +249,9 @@ RSpec.shared_examples 'work items rolled up dates' do
         end
 
         it 'rolled up child dates' do
+          # https://gitlab.com/gitlab-org/gitlab/-/issues/473408
+          allow(Gitlab::QueryLimiting::Transaction).to receive(:threshold).and_return(101)
+
           add_existing_child(child_work_item)
 
           within work_item_rolledup_dates_selector do

@@ -2053,7 +2053,7 @@ In this example:
 
 **Additional details**:
 
-- You can find parse examples in [Code Coverage](../testing/code_coverage.md#test-coverage-examples).
+- You can find regex examples in [Code Coverage](../testing/code_coverage.md#test-coverage-examples).
 - If there is more than one matched line in the job output, the last line is used
   (the first result of reverse search).
 - If there are multiple matches in a single line, the last match is searched

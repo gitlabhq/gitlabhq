@@ -5,6 +5,7 @@ import { ASC } from '~/notes/constants';
 import { __ } from '~/locale';
 import { clearDraft } from '~/lib/utils/autosave';
 import DiscussionReplyPlaceholder from '~/notes/components/discussion_reply_placeholder.vue';
+import ResolveDiscussionButton from '~/notes/components/discussion_resolve_button.vue';
 import createNoteMutation from '../../graphql/notes/create_work_item_note.mutation.graphql';
 import workItemByIidQuery from '../../graphql/work_item_by_iid.query.graphql';
 import { TRACKING_CATEGORY_SHOW, i18n } from '../../constants';
@@ -21,6 +22,7 @@ export default {
     WorkItemNoteSignedOut,
     WorkItemCommentLocked,
     WorkItemCommentForm,
+    ResolveDiscussionButton,
   },
   mixins: [Tracking.mixin()],
   props: {
@@ -85,6 +87,26 @@ export default {
       default: false,
     },
     isWorkItemConfidential: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDiscussionResolved: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isDiscussionResolvable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isResolving: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    hasReplies: {
       type: Boolean,
       required: false,
       default: false,
@@ -173,6 +195,9 @@ export default {
         'gl-pt-0! is-replying': this.isEditing,
         'internal-note': this.isInternalThread,
       };
+    },
+    resolveDiscussionTitle() {
+      return this.isDiscussionResolved ? __('Unresolve thread') : __('Resolve thread');
     },
   },
   watch: {
@@ -283,8 +308,12 @@ export default {
             :comment-button-text="commentButtonText"
             :is-discussion-locked="isDiscussionLocked"
             :is-work-item-confidential="isWorkItemConfidential"
+            :is-discussion-resolved="isDiscussionResolved"
+            :is-discussion-resolvable="isDiscussionResolvable"
             :full-path="fullPath"
+            :has-replies="hasReplies"
             :work-item-iid="workItemIid"
+            @toggleResolveDiscussion="$emit('resolve')"
             @submitForm="updateWorkItem"
             @cancelEditing="cancelEditing"
             @error="$emit('error', $event)"
@@ -294,6 +323,16 @@ export default {
             data-testid="note-reply-textarea"
             @focus="showReplyForm"
           />
+
+          <div v-if="!isNewDiscussion && !isEditing" class="discussion-actions">
+            <resolve-discussion-button
+              v-if="isDiscussionResolvable"
+              data-testid="resolve-discussion-button"
+              :is-resolving="isResolving"
+              :button-title="resolveDiscussionTitle"
+              @onClick="$emit('resolve')"
+            />
+          </div>
         </div>
       </div>
     </div>

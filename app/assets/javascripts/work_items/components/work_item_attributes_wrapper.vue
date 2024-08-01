@@ -17,6 +17,7 @@ import {
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
   WIDGET_TYPE_DEVELOPMENT,
+  WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
 import WorkItemAssignees from './work_item_assignees.vue';
@@ -26,6 +27,7 @@ import WorkItemMilestone from './work_item_milestone.vue';
 import WorkItemParent from './work_item_parent.vue';
 import WorkItemTimeTracking from './work_item_time_tracking.vue';
 import WorkItemDevelopment from './work_item_development/work_item_development.vue';
+import WorkItemCrmContacts from './work_item_crm_contacts.vue';
 
 export default {
   ListType,
@@ -38,6 +40,7 @@ export default {
     WorkItemParent,
     WorkItemTimeTracking,
     WorkItemDevelopment,
+    WorkItemCrmContacts,
     WorkItemWeight: () => import('ee_component/work_items/components/work_item_weight.vue'),
     WorkItemProgress: () => import('ee_component/work_items/components/work_item_progress.vue'),
     WorkItemIteration: () => import('ee_component/work_items/components/work_item_iteration.vue'),
@@ -139,6 +142,9 @@ export default {
     hasParent() {
       return this.workItemHierarchy?.hasParent;
     },
+    workItemCrmContacts() {
+      return this.isWidgetPresent(WIDGET_TYPE_CRM_CONTACTS) && this.glFeatures.workItemsAlpha;
+    },
   },
   methods: {
     isWidgetPresent(type) {
@@ -166,6 +172,15 @@ export default {
         @assigneesUpdated="
           $emit('attributesUpdated', { type: $options.ListType.assignee, ids: $event })
         "
+      />
+    </template>
+    <template v-if="workItemCrmContacts">
+      <work-item-crm-contacts
+        class="gl-mb-5"
+        :full-path="fullPath"
+        :work-item-id="workItem.id"
+        :work-item-iid="workItem.iid"
+        :work-item-type="workItemType"
       />
     </template>
     <template v-if="workItemLabels">

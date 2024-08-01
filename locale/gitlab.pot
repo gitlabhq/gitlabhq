@@ -235,6 +235,11 @@ msgid_plural "%d completed issues"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d contact"
+msgid_plural "%d contacts"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d contribution"
 msgid_plural "%d contributions"
 msgstr[0] ""
@@ -14241,12 +14246,6 @@ msgid_plural "ContainerRegistry|%{count} tags"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "ContainerRegistry|%{strongStart}Disabled%{strongEnd} - Tags will not be automatically deleted."
-msgstr ""
-
-msgid "ContainerRegistry|%{strongStart}Enabled%{strongEnd} - Tags that match the rules on this page are automatically scheduled for deletion."
-msgstr ""
-
 msgid "ContainerRegistry|%{title} was successfully scheduled for deletion"
 msgstr ""
 
@@ -14382,6 +14381,9 @@ msgstr ""
 msgid "ContainerRegistry|Digest: %{imageId}"
 msgstr ""
 
+msgid "ContainerRegistry|Disabled - tags will not be automatically deleted."
+msgstr ""
+
 msgid "ContainerRegistry|Docker connection error"
 msgstr ""
 
@@ -14389,6 +14391,9 @@ msgid "ContainerRegistry|Edit cleanup rules"
 msgstr ""
 
 msgid "ContainerRegistry|Enable cleanup policy"
+msgstr ""
+
+msgid "ContainerRegistry|Enabled - tags that match the rules on this page are automatically scheduled for deletion."
 msgstr ""
 
 msgid "ContainerRegistry|GitLab is unable to validate this signature automatically. Validate the signature manually before trusting it."
@@ -16017,6 +16022,9 @@ msgid "Crm|Organization has been updated."
 msgstr ""
 
 msgid "Crm|Organizations"
+msgstr ""
+
+msgid "Crm|Select contacts"
 msgstr ""
 
 msgid "Cron time zone"
@@ -39305,6 +39313,9 @@ msgstr ""
 msgid "Pipelines|Validating GitLab CI configuration…"
 msgstr ""
 
+msgid "Pipelines|View merge train details"
+msgstr ""
+
 msgid "Pipelines|Visualize"
 msgstr ""
 
@@ -44928,6 +44939,9 @@ msgid "Resolved all discussions."
 msgstr ""
 
 msgid "Resolved by"
+msgstr ""
+
+msgid "Resolved by "
 msgstr ""
 
 msgid "Resolved by %{name}"
@@ -52378,6 +52392,9 @@ msgstr ""
 msgid "Table of contents"
 msgstr ""
 
+msgid "Tables containing block elements (like multiple paragraphs, lists or blockquotes) are not supported in Markdown and will be converted to HTML."
+msgstr ""
+
 msgid "Tag"
 msgstr ""
 
@@ -53109,9 +53126,6 @@ msgid "The connection will time out after %{timeout}. For repositories that take
 msgstr ""
 
 msgid "The contact does not belong to the issue group's root ancestor"
-msgstr ""
-
-msgid "The content editor may change the markdown formatting style of the document, which may not match your original markdown style."
 msgstr ""
 
 msgid "The content for this wiki page failed to load. To fix this error, reload the page."
@@ -60255,9 +60269,6 @@ msgstr ""
 msgid "WorkItem|Are you sure you want to delete the %{workItemType}? This action cannot be reversed."
 msgstr ""
 
-msgid "WorkItem|Assign parent"
-msgstr ""
-
 msgid "WorkItem|Blocked by"
 msgstr ""
 
@@ -60277,6 +60288,9 @@ msgid "WorkItem|Child removal reverted"
 msgstr ""
 
 msgid "WorkItem|Child removed"
+msgstr ""
+
+msgid "WorkItem|Clear"
 msgstr ""
 
 msgid "WorkItem|Close %{workItemType}"
@@ -60495,6 +60509,9 @@ msgstr ""
 msgid "WorkItem|Select a project"
 msgstr ""
 
+msgid "WorkItem|Select parent"
+msgstr ""
+
 msgid "WorkItem|Select type"
 msgstr ""
 
@@ -60514,6 +60531,9 @@ msgid "WorkItem|Something went wrong when deleting the %{workItemType}. Please t
 msgstr ""
 
 msgid "WorkItem|Something went wrong when deleting the task. Please try again."
+msgstr ""
+
+msgid "WorkItem|Something went wrong when fetching CRM contacts. Please try again."
 msgstr ""
 
 msgid "WorkItem|Something went wrong when fetching child items. Please refresh this page."
@@ -60637,9 +60657,6 @@ msgid "WorkItem|Turn off confidentiality"
 msgstr ""
 
 msgid "WorkItem|Turn on confidentiality"
-msgstr ""
-
-msgid "WorkItem|Unassign"
 msgstr ""
 
 msgid "WorkItem|Undo"

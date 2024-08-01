@@ -39,8 +39,13 @@ averaged.
 
 #### Add test coverage results using `coverage` keyword
 
-To add test coverage results to a merge request using the project's `.gitlab-ci.yml` file, provide a regular expression
-using the [`coverage`](../yaml/index.md#coverage) keyword.
+You can display test coverage results in a merge request by adding the
+[`coverage`](../yaml/index.md#coverage) keyword to your project's `.gitlab-ci.yml` file.
+
+To aggregate multiple test coverage values:
+
+- For each job you want to include in the aggregate value,
+  add the `coverage` keyword followed by a regular expression.
 
 #### Test coverage examples
 
@@ -114,7 +119,7 @@ You can require specific users or a group to approve merge requests that would r
 
 To add a `Coverage-Check` approval rule:
 
-1. Set up a [`coverage`](../yaml/index.md#coverage) regular expression for all jobs you want to include in the overall coverage value.
+1. [Add test coverage results to a merge request](#add-test-coverage-results-using-coverage-keyword).
 1. Go to your project and select **Settings > Merge requests**.
 1. Under **Merge request approvals**, select **Enable** next to the `Coverage-Check` approval rule.
 1. Select the **Target branch**.

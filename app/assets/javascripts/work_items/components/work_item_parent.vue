@@ -21,10 +21,10 @@ export default {
   inputId: 'work-item-parent-listbox-value',
   noWorkItemId: 'no-work-item-id',
   i18n: {
-    assignParentLabel: s__('WorkItem|Assign parent'),
+    assignParentLabel: s__('WorkItem|Select parent'),
     parentLabel: s__('WorkItem|Parent'),
     none: s__('WorkItem|None'),
-    unAssign: s__('WorkItem|Unassign'),
+    unAssign: s__('WorkItem|Clear'),
     workItemsFetchError: s__(
       'WorkItem|Something went wrong while fetching items. Please try again.',
     ),
@@ -232,7 +232,7 @@ export default {
       <gl-link
         v-if="localSelectedItem"
         data-testid="work-item-parent-link"
-        class="gl-link gl-text-gray-900 gl-display-inline-block gl-max-w-full gl-whitespace-nowrap gl-text-overflow-ellipsis gl-overflow-hidden"
+        class="gl-inline-block gl-align-top gl-text-gray-900 gl-max-w-full gl-whitespace-nowrap gl-text-overflow-ellipsis gl-overflow-hidden"
         :href="parentWebUrl"
         >{{ listboxText }}</gl-link
       >

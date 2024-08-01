@@ -31,6 +31,13 @@ input LocalLabelInput {
   title: String
 }
 
+input LocalCrmContactsInput {
+  firstName: String
+  lastName: String
+  organizationName: String
+  id: ID!
+}
+
 input LocalUpdateWorkItemInput {
   id: WorkItemID!
   assignees: [LocalUserInput!]
@@ -63,6 +70,7 @@ input LocalUpdateNewWorkItemInput {
   confidential: Boolean
   labels: [LocalLabelInput]
   rolledUpDates: [LocalRolledUpDatesInput]
+  crmContacts: [LocalCrmContactsInput]
 }
 
 extend type Mutation {

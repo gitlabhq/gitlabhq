@@ -3287,7 +3287,6 @@ RSpec/NamedSubject:
     - 'spec/services/projects/operations/update_service_spec.rb'
     - 'spec/services/projects/overwrite_project_service_spec.rb'
     - 'spec/services/projects/prometheus/alerts/notify_service_spec.rb'
-    - 'spec/services/projects/prometheus/metrics/destroy_service_spec.rb'
     - 'spec/services/projects/readme_renderer_service_spec.rb'
     - 'spec/services/projects/transfer_service_spec.rb'
     - 'spec/services/projects/unlink_fork_service_spec.rb'

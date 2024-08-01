@@ -30,6 +30,7 @@ export const WIDGET_TYPE_LINKED_ITEMS = 'LINKED_ITEMS';
 export const WIDGET_TYPE_COLOR = 'COLOR';
 export const WIDGET_TYPE_DESIGNS = 'DESIGNS';
 export const WIDGET_TYPE_DEVELOPMENT = 'DEVELOPMENT';
+export const WIDGET_TYPE_CRM_CONTACTS = 'CRM_CONTACTS';
 
 export const WORK_ITEM_TYPE_ENUM_INCIDENT = 'INCIDENT';
 export const WORK_ITEM_TYPE_ENUM_ISSUE = 'ISSUE';
@@ -66,6 +67,9 @@ export const i18n = {
 
 export const I18N_WORK_ITEM_ERROR_FETCHING_LABELS = s__(
   'WorkItem|Something went wrong when fetching labels. Please try again.',
+);
+export const I18N_WORK_ITEM_ERROR_FETCHING_CRM_CONTACTS = s__(
+  'WorkItem|Something went wrong when fetching CRM contacts. Please try again.',
 );
 export const I18N_WORK_ITEM_ERROR_FETCHING_TYPES = s__(
   'WorkItem|Something went wrong when fetching work item types. Please try again',

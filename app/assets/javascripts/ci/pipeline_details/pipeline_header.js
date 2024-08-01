@@ -18,6 +18,9 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
     pipelinesPath,
     identityVerificationPath,
     identityVerificationRequired,
+    mergeTrainsAvailable,
+    canReadMergeTrain,
+    mergeTrainsPath,
   } = el.dataset;
 
   // eslint-disable-next-line no-new
@@ -34,6 +37,9 @@ export const createPipelineHeaderApp = (elSelector, apolloProvider, graphqlResou
       pipelineIid,
       identityVerificationPath,
       identityVerificationRequired: parseBoolean(identityVerificationRequired),
+      mergeTrainsAvailable: parseBoolean(mergeTrainsAvailable),
+      canReadMergeTrain: parseBoolean(canReadMergeTrain),
+      mergeTrainsPath,
     },
     render(createElement) {
       return createElement(PipelineHeader);

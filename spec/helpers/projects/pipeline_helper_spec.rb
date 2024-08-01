@@ -36,6 +36,10 @@ RSpec.describe Projects::PipelineHelper do
   end
 
   describe '#js_pipeline_header_data' do
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
     subject(:pipeline_header_data) { helper.js_pipeline_header_data(project, pipeline) }
 
     it 'returns pipeline header data' do

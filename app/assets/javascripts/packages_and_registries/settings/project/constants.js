@@ -48,10 +48,10 @@ export const NAME_REGEX_DESCRIPTION = s__(
 );
 
 export const ENABLED_TOGGLE_DESCRIPTION = s__(
-  'ContainerRegistry|%{strongStart}Enabled%{strongEnd} - Tags that match the rules on this page are automatically scheduled for deletion.',
+  'ContainerRegistry|Enabled - tags that match the rules on this page are automatically scheduled for deletion.',
 );
 export const DISABLED_TOGGLE_DESCRIPTION = s__(
-  'ContainerRegistry|%{strongStart}Disabled%{strongEnd} - Tags will not be automatically deleted.',
+  'ContainerRegistry|Disabled - tags will not be automatically deleted.',
 );
 
 export const CADENCE_LABEL = s__('ContainerRegistry|Run cleanup:');

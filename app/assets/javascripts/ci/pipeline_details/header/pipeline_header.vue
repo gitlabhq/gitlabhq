@@ -16,6 +16,7 @@ import deletePipelineMutation from '../graphql/mutations/delete_pipeline.mutatio
 import retryPipelineMutation from '../graphql/mutations/retry_pipeline.mutation.graphql';
 import { getQueryHeaders } from '../graph/utils';
 import { POLL_INTERVAL } from '../graph/constants';
+import { MERGE_TRAIN_EVENT_TYPE } from './constants';
 import HeaderActions from './components/header_actions.vue';
 import HeaderBadges from './components/header_badges.vue';
 import getPipelineQuery from './graphql/queries/get_pipeline_header_data.query.graphql';
@@ -40,6 +41,8 @@ export default {
     TimeAgoTooltip,
     PipelineAccountVerificationAlert: () =>
       import('ee_component/vue_shared/components/pipeline_account_verification_alert.vue'),
+    HeaderMergeTrainsLink: () =>
+      import('ee_component/ci/pipeline_details/header/components/header_merge_trains_link.vue'),
   },
   directives: {
     GlTooltip: GlTooltipDirective,
@@ -218,6 +221,9 @@ export default {
     },
     refText() {
       return this.pipeline?.refText;
+    },
+    isMergeTrainPipeline() {
+      return this.pipeline.mergeRequestEventType === MERGE_TRAIN_EVENT_TYPE;
     },
   },
   methods: {
@@ -405,6 +411,9 @@ export default {
               {{ durationText }}
             </span>
           </div>
+        </div>
+        <div v-if="isMergeTrainPipeline" class="gl-mt-2">
+          <header-merge-trains-link />
         </div>
       </div>
 

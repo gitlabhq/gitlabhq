@@ -8,6 +8,7 @@ import WorkItemMilestone from '~/work_items/components/work_item_milestone.vue';
 import WorkItemParent from '~/work_items/components/work_item_parent.vue';
 import WorkItemTimeTracking from '~/work_items/components/work_item_time_tracking.vue';
 import WorkItemDevelopment from '~/work_items/components/work_item_development/work_item_development.vue';
+import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import waitForPromises from 'helpers/wait_for_promises';
 import WorkItemAttributesWrapper from '~/work_items/components/work_item_attributes_wrapper.vue';
 import { workItemResponseFactory } from '../mock_data';
@@ -25,6 +26,7 @@ describe('WorkItemAttributesWrapper component', () => {
   const findWorkItemTimeTracking = () => wrapper.findComponent(WorkItemTimeTracking);
   const findWorkItemParticipants = () => wrapper.findComponent(Participants);
   const findWorkItemDevelopment = () => wrapper.findComponent(WorkItemDevelopment);
+  const findWorkItemCrmContacts = () => wrapper.findComponent(WorkItemCrmContacts);
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
@@ -181,6 +183,34 @@ describe('WorkItemAttributesWrapper component', () => {
       createComponent({ workItem: response.data.workItem });
 
       expect(findWorkItemTimeTracking().exists()).toBe(exists);
+    });
+  });
+
+  describe('CRM contacts widget', () => {
+    describe('when workItemsAlpha FF is disabled', () => {
+      it.each`
+        description                                               | crmContactsWidgetPresent | exists
+        ${'renders when widget is returned from API'}             | ${true}                  | ${false}
+        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+      `('$description', ({ crmContactsWidgetPresent, exists }) => {
+        const response = workItemResponseFactory({ crmContactsWidgetPresent });
+        createComponent({ workItem: response.data.workItem });
+
+        expect(findWorkItemCrmContacts().exists()).toBe(exists);
+      });
+    });
+
+    describe('when workItemsAlpha FF is enabled', () => {
+      it.each`
+        description                                               | crmContactsWidgetPresent | exists
+        ${'renders when widget is returned from API'}             | ${true}                  | ${true}
+        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
+      `('$description', ({ crmContactsWidgetPresent, exists }) => {
+        const response = workItemResponseFactory({ crmContactsWidgetPresent });
+        createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
+
+        expect(findWorkItemCrmContacts().exists()).toBe(exists);
+      });
     });
   });
 

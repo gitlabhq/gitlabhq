@@ -6,9 +6,9 @@ import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_
 import addAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_add_award_emoji.mutation.graphql';
 import removeAwardEmojiMutation from '~/work_items/graphql/notes/work_item_note_remove_award_emoji.mutation.graphql';
 import {
-  mockWorkItemNotesResponseWithComments,
   mockAwardEmojiThumbsUp,
   mockAwardEmojiThumbsDown,
+  mockWorkItemNotesResponseWithComments,
 } from '../mock_data';
 
 function getWorkItem(data) {

@@ -98,7 +98,7 @@ RSpec.describe 'Project > Settings > Packages and registries > Container registr
 
         within_testid 'container-expiration-policy-project-settings' do
           expect(find_by_testid('enable-toggle'))
-            .to have_content('Disabled - Tags will not be automatically deleted.')
+            .to have_content('Disabled - tags will not be automatically deleted.')
         end
       end
     end

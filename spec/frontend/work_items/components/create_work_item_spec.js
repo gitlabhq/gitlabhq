@@ -10,6 +10,7 @@ import WorkItemTitle from '~/work_items/components/work_item_title.vue';
 import WorkItemDescription from '~/work_items/components/work_item_description.vue';
 import WorkItemAssignees from '~/work_items/components/work_item_assignees.vue';
 import WorkItemLabels from '~/work_items/components/work_item_labels.vue';
+import WorkItemCrmContacts from '~/work_items/components/work_item_crm_contacts.vue';
 import { WORK_ITEM_TYPE_ENUM_EPIC } from '~/work_items/constants';
 import namespaceWorkItemTypesQuery from '~/work_items/graphql/namespace_work_item_types.query.graphql';
 import createWorkItemMutation from '~/work_items/graphql/create_work_item.mutation.graphql';
@@ -51,6 +52,7 @@ describe('Create work item component', () => {
   const findDescriptionWidget = () => wrapper.findComponent(WorkItemDescription);
   const findAssigneesWidget = () => wrapper.findComponent(WorkItemAssignees);
   const findLabelsWidget = () => wrapper.findComponent(WorkItemLabels);
+  const findCrmContactsWidget = () => wrapper.findComponent(WorkItemCrmContacts);
   const findSelect = () => wrapper.findComponent(GlFormSelect);
   const findConfidentialCheckbox = () => wrapper.find('[data-testid="confidential-checkbox"]');
   const findCreateWorkItemView = () => wrapper.find('[data-testid="create-work-item-view"]');
@@ -295,6 +297,10 @@ describe('Create work item component', () => {
 
     it('renders the work item labels widget', () => {
       expect(findLabelsWidget().exists()).toBe(true);
+    });
+
+    it('renders the work item CRM contacts widget', () => {
+      expect(findCrmContactsWidget().exists()).toBe(true);
     });
   });
 });

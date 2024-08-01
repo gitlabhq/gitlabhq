@@ -277,7 +277,8 @@ pages:
 Some other examples of mixing [variables](../../../ci/variables/index.md) with strings for dynamic prefixes:
 
 - `pages.path_prefix: 'mr-$CI_COMMIT_REF_SLUG'`: Branch or tag name prefixed with `mr-`, like `mr-branch-name`.
-- `pages.path_prefix: '-${CI_MERGE_REQUEST_IID}-'`: Merge request number prefixed and suffixed with `-`, like `-123-`.
+- `pages.path_prefix: '_${CI_MERGE_REQUEST_IID}_'`: Merge request number
+  prefixed ans suffixed with `_`, like `_123_`.
 
 ### Use multiple deployments to create pages environments
 
@@ -302,7 +303,7 @@ pages:
   rules:
     - if: $CI_COMMIT_BRANCH == "staging" # ensure to run on master (with default PAGES_PREFIX)
       variables:
-        PAGES_PREFIX: '-stg' # prefix with _stg for the staging branch
+        PAGES_PREFIX: '_stg' # prefix with _stg for the staging branch
     - if: $CI_PIPELINE_SOURCE == "merge_request_event" # conditionally change the prefix on Merge Requests
       when: manual # run pages manually on Merge Requests
       variables:

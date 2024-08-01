@@ -524,7 +524,7 @@ RSpec.shared_examples 'work items parent' do |type|
 
     find_and_click_edit(work_item_parent_selector)
 
-    find_and_click_clear(work_item_parent_selector, 'Unassign')
+    find_and_click_clear(work_item_parent_selector, 'Clear')
 
     expect(find(work_item_parent_selector)).to have_content('None')
   end

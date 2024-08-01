@@ -280,6 +280,9 @@ export default {
     reportAbuse(isOpen, reply = {}) {
       this.$emit('openReportAbuse', reply);
     },
+    isDiscussionResolved(discussion) {
+      return discussion.notes.nodes[0]?.discussion?.resolved;
+    },
     async fetchMoreNotes() {
       this.isLoadingMore = true;
       await this.$apollo.queries.workItemNotes
@@ -393,6 +396,7 @@ export default {
                 :can-set-work-item-metadata="canSetWorkItemMetadata"
                 :is-discussion-locked="isDiscussionLocked"
                 :is-work-item-confidential="isWorkItemConfidential"
+                :is-expanded-on-load="!isDiscussionResolved(discussion)"
                 @deleteNote="showDeleteNoteModal($event, discussion)"
                 @reportAbuse="reportAbuse(true, $event)"
                 @error="$emit('error', $event)"

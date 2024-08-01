@@ -34,7 +34,7 @@ require 'rspec-parameterized'
 require 'shoulda/matchers'
 require 'test_prof/recipes/rspec/let_it_be'
 require 'test_prof/factory_default'
-require 'test_prof/factory_prof/nate_heckler'
+require 'test_prof/factory_prof/nate_heckler' if ENV.fetch('ENABLE_FACTORY_PROF', 'true') == 'true'
 require 'parslet/rig/rspec'
 require 'axe-rspec'
 

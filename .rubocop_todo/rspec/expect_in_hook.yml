@@ -73,7 +73,6 @@ RSpec/ExpectInHook:
     - 'ee/spec/tasks/gitlab/license_rake_spec.rb'
     - 'ee/spec/tasks/gitlab/spdx_rake_spec.rb'
     - 'ee/spec/workers/analytics/cycle_analytics/consistency_worker_spec.rb'
-    - 'ee/spec/workers/concerns/elastic/indexing_control_spec.rb'
     - 'ee/spec/workers/elastic_index_bulk_cron_worker_spec.rb'
     - 'ee/spec/workers/elastic_indexing_control_worker_spec.rb'
     - 'ee/spec/workers/geo/secondary/registry_consistency_worker_spec.rb'

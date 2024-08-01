@@ -27,6 +27,7 @@ import {
   WIDGET_TYPE_ITERATION,
   WIDGET_TYPE_HEALTH_STATUS,
   WIDGET_TYPE_DESCRIPTION,
+  WIDGET_TYPE_CRM_CONTACTS,
   NEW_WORK_ITEM_IID,
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
@@ -240,6 +241,7 @@ export const setNewWorkItemCache = async (
     WIDGET_TYPE_HIERARCHY,
     WIDGET_TYPE_TIME_TRACKING,
     WIDGET_TYPE_PARTICIPANTS,
+    WIDGET_TYPE_CRM_CONTACTS,
   ];
 
   if (!widgetDefinitions) {
@@ -297,6 +299,17 @@ export const setNewWorkItemCache = async (
             __typename: 'UserCoreConnection',
           },
           __typename: 'WorkItemWidgetAssignees',
+        });
+      }
+
+      if (widgetName === WIDGET_TYPE_CRM_CONTACTS) {
+        widgets.push({
+          type: 'CRM_CONTACTS',
+          contacts: {
+            nodes: [],
+            __typename: 'CustomerRelationsContactConnection',
+          },
+          __typename: 'WorkItemWidgetCrmContacts',
         });
       }
 
