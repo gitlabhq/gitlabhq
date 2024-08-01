@@ -18,6 +18,7 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/config"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/dependencyproxy"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/git"
+	gobpkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/gob"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/imageresizer"
 	proxypkg "gitlab.com/gitlab-org/gitlab/workhorse/internal/proxy"
@@ -246,6 +247,8 @@ func configureRoutes(u *upstream) {
 	probeUpstream := static.ErrorPagesUnless(u.DevelopmentMode, staticpages.ErrorFormatJSON, proxy)
 	healthUpstream := static.ErrorPagesUnless(u.DevelopmentMode, staticpages.ErrorFormatText, proxy)
 
+	gob := gobpkg.NewProxy(api, u.Version, u.ProxyHeadersTimeout, u.Config)
+
 	u.Routes = []routeEntry{
 		// Git Clone
 		u.route("GET", gitProjectPattern+`info/refs\z`, git.GetInfoRefsHandler(api)),
@@ -359,6 +362,18 @@ func configureRoutes(u *upstream) {
 		u.route("PUT", apiPattern+`v4/user/avatar\z`, tempfileMultipartProxy),
 		u.route("POST", apiPattern+`v4/users\z`, tempfileMultipartProxy),
 		u.route("PUT", apiPattern+`v4/users/[0-9]+\z`, tempfileMultipartProxy),
+
+		// GitLab Observability Backend (GOB). Write paths are versioned with v1 to align with
+		// OpenTelemetry compatibility, where SDKs POST to /v1/traces, /v1/logs and /v1/metrics.
+		u.route("POST", apiProjectPattern+`/observability/v1/traces`, gob.WithProjectAuth("/write/traces")),
+		u.route("POST", apiProjectPattern+`/observability/v1/logs`, gob.WithProjectAuth("/write/logs")),
+		u.route("POST", apiProjectPattern+`/observability/v1/metrics`, gob.WithProjectAuth("/write/metrics")),
+
+		u.route("GET", apiProjectPattern+`/observability/v1/analytics`, gob.WithProjectAuth("/read/analytics")),
+		u.route("GET", apiProjectPattern+`/observability/v1/traces`, gob.WithProjectAuth("/read/traces")),
+		u.route("GET", apiProjectPattern+`/observability/v1/logs`, gob.WithProjectAuth("/read/logs")),
+		u.route("GET", apiProjectPattern+`/observability/v1/metrics`, gob.WithProjectAuth("/read/metrics")),
+		u.route("GET", apiProjectPattern+`/observability/v1/services`, gob.WithProjectAuth("/read/services")),
 
 		// Explicitly proxy API requests
 		u.route("", apiPattern, proxy),

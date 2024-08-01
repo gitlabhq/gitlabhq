@@ -53,13 +53,13 @@ module QA
         def check_element(name, click_by_js = false, **kwargs)
           log_by_js("checking", name, click_by_js, **kwargs)
 
-          super
+          log_slow_code(name, **kwargs) { super }
         end
 
         def uncheck_element(name, click_by_js = false, **kwargs)
           log_by_js("unchecking", name, click_by_js, **kwargs)
 
-          super
+          log_slow_code(name, **kwargs) { super }
         end
 
         def log_by_js(action, name, click_by_js, **kwargs)
@@ -72,7 +72,7 @@ module QA
         def click_element_coordinates(name, **kwargs)
           log(%(clicking the coordinates of :#{highlight_element(name)}), :info)
 
-          super
+          log_slow_code(name, **kwargs) { super }
         end
 
         # @param name [Symbol, String] name of the data_qa_selector or data-testid element
@@ -98,7 +98,7 @@ module QA
 
           log(%(filling :#{highlight_element(name)} with "#{masked_content}"), :info)
 
-          super
+          log_slow_code(name) { super }
         end
 
         def select_element(name, value)
@@ -147,7 +147,7 @@ module QA
         def wait_for_animated_element(name)
           log("waiting for animated element: #{name}")
 
-          super
+          log_slow_code(name) { super }
         end
 
         def within_element(name, **kwargs)
