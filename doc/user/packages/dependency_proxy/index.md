@@ -106,6 +106,10 @@ When [SSO enforcement](../../group/saml_sso/index.md#sso-enforcement)
 is enabled, users must be signed-in through SSO before they can pull images through the Dependency
 Proxy.
 
+SSO enforcement also affects [auto-merge](../../project/merge_requests/auto_merge.md).
+If an SSO session expires before the auto-merge triggers, the merge pipeline fails
+to pull images through the Dependency Proxy.
+
 #### Authenticate within CI/CD
 
 Runners sign in to the Dependency Proxy automatically. To pull through

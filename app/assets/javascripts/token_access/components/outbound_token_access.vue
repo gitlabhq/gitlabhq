@@ -44,9 +44,8 @@ export default {
     ),
     disableToggleWarning: s__('CICD|Disabling this feature is a permanent change.'),
   },
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
   deprecationDocumentationLink: helpPagePath('ci/jobs/ci_job_token', {
-    anchor: 'limit-your-projects-job-token-access',
+    anchor: 'limit-your-projects-job-token-access-deprecated',
   }),
   components: {
     GlAlert,
@@ -110,8 +109,7 @@ export default {
       return this.targetProjectPath === '';
     },
     ciJobTokenHelpPage() {
-      // eslint-disable-next-line local-rules/require-valid-help-page-path
-      return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access');
+      return helpPagePath('ci/jobs/ci_job_token#limit-your-projects-job-token-access-deprecated');
     },
     disableTokenToggle() {
       return !this.jobTokenScopeEnabled;

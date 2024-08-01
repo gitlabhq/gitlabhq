@@ -28,7 +28,7 @@
 '{event_counters}_create_snippet_note': USAGE_NOTE_CREATE_SNIPPET
 '{event_counters}_create_wiki_page': USAGE_WIKI_PAGES_CREATE
 '{event_counters}_delete_design_management_design': USAGE_DESIGN_MANAGEMENT_DESIGNS_DELETE
-'{event_counters}_delete_package_from_registry-filter': USAGE_PACKAGE_EVENTS_I_PACKAGE_DELETE_PACKAGE
+'{event_counters}_delete_package_from_registry': USAGE_PACKAGE_EVENTS_I_PACKAGE_DELETE_PACKAGE
 '{event_counters}_delete_package_from_registry-filter:[label:conan]': USAGE_PACKAGE_EVENTS_I_PACKAGE_CONAN_DELETE_PACKAGE
 '{event_counters}_delete_package_from_registry-filter:[label:nuget]': USAGE_PACKAGE_EVENTS_I_PACKAGE_NUGET_DELETE_PACKAGE
 '{event_counters}_delete_package_from_registry-filter:[property:deploy_token]': USAGE_PACKAGE_EVENTS_I_PACKAGE_DELETE_PACKAGE_BY_DEPLOY_TOKEN

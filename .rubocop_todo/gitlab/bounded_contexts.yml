@@ -3734,7 +3734,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/workers/licenses/reset_submit_license_usage_data_banner_worker.rb'
     - 'ee/app/workers/llm/completion_worker.rb'
     - 'ee/app/workers/llm/namespace_access_cache_reset_worker.rb'
-    - 'ee/app/workers/llm/vertex_ai_access_token_refresh_worker.rb'
     - 'ee/app/workers/members_destroyer/clean_up_group_protected_branch_rules_worker.rb'
     - 'ee/app/workers/merge_request_reset_approvals_worker.rb'
     - 'ee/app/workers/new_epic_worker.rb'

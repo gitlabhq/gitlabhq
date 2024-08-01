@@ -170,7 +170,8 @@ export default class UserTabs {
     new ActivityCalendar({
       container: '#js-legacy-tabs-container .js-contrib-calendar',
       activitiesContainer: '#js-legacy-tabs-container .user-calendar-activities',
-      recentActivitiesContainer: '#js-legacy-tabs-container .overview-content-list',
+      recentActivitiesContainer:
+        '#js-legacy-tabs-container .activities-block .user-activity-content',
       timestamps: data,
       calendarActivitiesPath,
       utcOffset,

@@ -59,7 +59,8 @@ func TestRouting(t *testing.T) {
 		handler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 			io.WriteString(w, regex)
 		})
-		return u.route("", regex, handler)
+		metadata := routeMetadata{regex, "", ""}
+		return u.route("", metadata, handler)
 	}
 
 	const (

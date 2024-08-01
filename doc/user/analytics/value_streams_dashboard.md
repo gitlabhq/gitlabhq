@@ -172,6 +172,8 @@ The month-over-month comparison of the AI Usage unique users rate gives a more a
 
 The baseline for the AI Usage trend is the total number of code contributors, not just users with GitLab Duo seats. This baseline gives a more accurate representation of AI usage by team members. To learn more about AI Impact analytics, see the blog post [Developing GitLab Duo: AI Impact analytics dashboard measures the ROI of AI](https://about.gitlab.com/blog/2024/05/15/developing-gitlab-duo-ai-impact-analytics-dashboard-measures-the-roi-of-ai/).
 
+To analyze the performance of teams that use AI versus teams that don't, you can create a custom [Value Streams Dashboard Scheduled Report](https://gitlab.com/explore/catalog/components/vsd-reports-generator) based on the AI Impact view of projects and groups with and without GitLab Duo.
+
 NOTE:
 Usage rate for Code Suggestions is calculated with data starting from GitLab 16.11.
 For more information, see [epic 12978](https://gitlab.com/groups/gitlab-org/-/epics/12978).
@@ -383,9 +385,17 @@ Filters for the `dora_performers_score` visualization.
 
 Filters for the `usage_overview` visualization.
 
+##### Group and subgroup namespaces
+
 |Filter|Description|Supported values|
 |---|---|---|
 |`include`|Limits the metrics returned, by default displays all available| `groups`, `projects`, `issues`, `merge_requests`, `pipelines`, `users`|
+
+##### Project namespaces
+
+|Filter|Description|Supported values|
+|---|---|---|
+|`include`|Limits the metrics returned, by default displays all available| `issues`, `merge_requests`, `pipelines`|
 
 ## Dashboard metrics and drill-down reports
 

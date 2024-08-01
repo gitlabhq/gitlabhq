@@ -298,7 +298,7 @@ Prerequisites:
 
 - You must be an administrator.
 
-To set the maximum job timeout:
+To control the jobs that an instance runner can run:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **CI/CD > Runners**.
@@ -314,7 +314,7 @@ Prerequisites:
 
 - You must have the Owner role for the group.
 
-To set the maximum job timeout:
+To control the jobs that a group runner can run:
 
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Build > Runners**.
@@ -330,7 +330,7 @@ Prerequisites:
 
 - You must have the Owner role for the project.
 
-To set a runner to run tagged jobs:
+To control the jobs that a project runner can run:
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > CI/CD**.
