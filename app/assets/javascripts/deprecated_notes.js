@@ -1360,8 +1360,8 @@ export default class Notes {
     const $svgChevronUpElement = $element.find('svg.js-chevron-up');
     const $svgChevronDownElement = $element.find('svg.js-chevron-down');
 
-    $svgChevronUpElement.toggleClass('gl-display-none');
-    $svgChevronDownElement.toggleClass('gl-display-none');
+    $svgChevronUpElement.toggleClass('gl-hidden');
+    $svgChevronDownElement.toggleClass('gl-hidden');
 
     $closestSystemCommitList.toggleClass('hide-shade');
   }

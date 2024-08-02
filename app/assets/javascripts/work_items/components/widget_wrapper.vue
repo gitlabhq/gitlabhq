@@ -69,7 +69,7 @@ export default {
           <div aria-hidden="true">
             <gl-link
               :id="anchorLinkId"
-              class="gl-text-decoration-none gl-display-none"
+              class="gl-text-decoration-none gl-hidden"
               :href="anchorLink"
             />
           </div>

@@ -11,6 +11,7 @@ import {
   TAB_QUERY_PARAM_VALUES,
   ACTIVE_TAB_QUERY_PARAM_NAME,
   FILTERED_SEARCH_TOKEN_GROUPS_WITH_INHERITED_PERMISSIONS,
+  CONTEXT_TYPE,
 } from '~/members/constants';
 import { pagination } from '../mock_data';
 
@@ -86,6 +87,7 @@ describe('MembersTabs', () => {
         canManageAccessRequests: true,
         canExportMembers: true,
         exportCsvPath: '',
+        context: CONTEXT_TYPE.GROUP,
         ...provide,
       },
     });

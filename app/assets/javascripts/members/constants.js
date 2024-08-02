@@ -227,3 +227,8 @@ export const I18N_USER_BOT = __('Bot');
 export const I188N_USER_2FA = __('2FA');
 export const I18N_ROLE_SAVE_SUCCESS = s__('Members|Role was successfully updated.');
 export const I18N_ROLE_SAVE_ERROR = s__('MemberRole|Could not update role.');
+
+export const CONTEXT_TYPE = Object.freeze({
+  PROJECT: 'PROJECT',
+  GROUP: 'GROUP',
+});

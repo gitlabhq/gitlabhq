@@ -24,10 +24,10 @@ describe('~/projects/commit_box/info/init_details_button', () => {
       expect(findContent().classList).not.toContain('hide');
     });
 
-    it('hides the expand button by adding the `gl-display-none` class', () => {
-      expect(findExpandButton().classList).not.toContain('gl-display-none');
+    it('hides the expand button by adding the `gl-hidden` class', () => {
+      expect(findExpandButton().classList).not.toContain('gl-hidden');
       findExpandButton().click();
-      expect(findExpandButton().classList).toContain('gl-display-none');
+      expect(findExpandButton().classList).toContain('gl-hidden');
     });
   });
 
@@ -38,10 +38,10 @@ describe('~/projects/commit_box/info/init_details_button', () => {
       expect(findContent().classList).not.toContain('hide');
     });
 
-    it('hides the expand button by adding the `gl-display-none` class', () => {
-      expect(findExpandButton().classList).not.toContain('gl-display-none');
+    it('hides the expand button by adding the `gl-hidden` class', () => {
+      expect(findExpandButton().classList).not.toContain('gl-hidden');
       findExpandSubElement().click();
-      expect(findExpandButton().classList).toContain('gl-display-none');
+      expect(findExpandButton().classList).toContain('gl-hidden');
     });
   });
 });

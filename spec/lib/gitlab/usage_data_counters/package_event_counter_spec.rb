@@ -20,8 +20,8 @@ RSpec.describe Gitlab::UsageDataCounters::PackageEventCounter, :clean_gitlab_red
   describe '.fetch_supported_event' do
     subject { described_class.fetch_supported_event(event_name) }
 
-    let(:event_name) { 'package_events_i_package_conan_push_package' }
+    let(:event_name) { 'package_events_i_package_pull_symbol_package' }
 
-    it { is_expected.to eq 'i_package_conan_push_package' }
+    it { is_expected.to eq 'i_package_pull_symbol_package' }
   end
 end

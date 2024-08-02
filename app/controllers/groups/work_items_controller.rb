@@ -6,6 +6,7 @@ module Groups
 
     before_action :handle_new_work_item_path, only: [:show]
     before_action do
+      push_frontend_feature_flag(:comment_tooltips)
       push_frontend_feature_flag(:notifications_todos_buttons)
       push_force_frontend_feature_flag(:work_items, group&.work_items_feature_flag_enabled?)
       push_force_frontend_feature_flag(:work_items_beta, group&.work_items_beta_feature_flag_enabled?)

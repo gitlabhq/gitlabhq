@@ -34,6 +34,7 @@ RSpec.describe Gitlab::Patch::RedisStoreFactory, feature_category: :redis do
     where(:url, :scheme, :username, :password, :port, :path, :db) do
       "redis://localhost" | 'redis' | nil | nil | 6379 | nil | nil
       "rediss://localhost" | 'rediss' | nil | nil | 6379 | nil | nil
+      "rediss://:password@localhost" | 'rediss' | nil | 'password' | 6379 | nil | nil
       "rediss://redis-user:password@localhost:6380?db=5" | 'rediss' | 'redis-user' | 'password' | 6380 | nil | "5"
       "unix://test-user:secret@/var/run/redis.sock?db=6" | nil | 'test-user' | 'secret' | nil | '/var/run/redis.sock' | "6"
     end

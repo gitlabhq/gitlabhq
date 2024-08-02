@@ -574,6 +574,9 @@ msgstr ""
 msgid "%{authorsName}'s thread"
 msgstr ""
 
+msgid "%{author} commented %{time}"
+msgstr ""
+
 msgid "%{author} has added you as an approver."
 msgstr ""
 
@@ -17771,6 +17774,9 @@ msgstr ""
 msgid "Dependencies|Error exporting the dependency list. Please reload the page."
 msgstr ""
 
+msgid "Dependencies|Error parsing SBOM reports"
+msgstr ""
+
 msgid "Dependencies|Export as CSV"
 msgstr ""
 
@@ -17819,6 +17825,9 @@ msgstr ""
 msgid "Dependencies|The component dependency path is based on the lock file. There may be several paths. In these cases, the longest path is displayed."
 msgstr ""
 
+msgid "Dependencies|The following SBOM reports could not be parsed, and the list of components may be incomplete. Please investigate the provided reports and ensure they conform to %{helpPageLinkStart}the requirements for SBOM documents%{helpPageLinkEnd}."
+msgstr ""
+
 msgid "Dependencies|There may be multiple paths"
 msgstr ""
 
@@ -17853,6 +17862,9 @@ msgid "Dependencies|Unsupported file(s) detected"
 msgstr ""
 
 msgid "Dependencies|Vulnerable components"
+msgstr ""
+
+msgid "Dependencies|report-%{index} (%{length})"
 msgstr ""
 
 msgid "Dependencies|unknown"
@@ -42648,6 +42660,9 @@ msgid "Promotion is not supported."
 msgstr ""
 
 msgid "PromotionRequests|An error occured while loading the role promotion requests. Refresh the page to try again"
+msgstr ""
+
+msgid "PromotionRequests|An error occurred while loading promotion requests. Reload the page to try again."
 msgstr ""
 
 msgid "PromotionRequests|An error occurred while processing the request"

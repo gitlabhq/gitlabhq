@@ -1,20 +1,23 @@
 <script>
 import { GlLink, GlIcon, GlPopover } from '@gitlab/ui';
-import * as Sentry from '~/sentry/sentry_browser_wrapper';
 
+import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { s__ } from '~/locale';
 import WorkItemSidebarDropdownWidget from '~/work_items/components/shared/work_item_sidebar_dropdown_widget.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
+import { isValidURL } from '~/lib/utils/url_utility';
 
 import { updateParent } from '../graphql/cache_utils';
 import groupWorkItemsQuery from '../graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '../graphql/project_work_items.query.graphql';
+import workItemsByReferencesQuery from '../graphql/work_items_by_references.query.graphql';
 import {
   I18N_WORK_ITEM_ERROR_UPDATING,
   sprintfWorkItem,
   SUPPORTED_PARENT_TYPE_MAP,
   WORK_ITEM_TYPE_VALUE_ISSUE,
 } from '../constants';
+import { isReference } from '../utils';
 
 export default {
   name: 'WorkItemParent',
@@ -69,10 +72,9 @@ export default {
   },
   data() {
     return {
-      search: '',
+      searchTerm: '',
       updateInProgress: false,
       searchStarted: false,
-      availableWorkItems: [],
       localSelectedItem: this.parent?.id,
       oldParent: this.parent,
     };
@@ -82,7 +84,13 @@ export default {
       return this.workItemType === WORK_ITEM_TYPE_VALUE_ISSUE;
     },
     isLoading() {
-      return this.$apollo.queries.availableWorkItems.loading;
+      return (
+        this.$apollo.queries.workspaceWorkItems.loading ||
+        this.$apollo.queries.workItemsByReference.loading
+      );
+    },
+    availableWorkItems() {
+      return this.isSearchingByReference ? this.workItemsByReference : this.workspaceWorkItems;
     },
     listboxText() {
       return (
@@ -92,7 +100,7 @@ export default {
       );
     },
     workItems() {
-      return this.availableWorkItems.map(({ id, title }) => ({ text: title, value: id }));
+      return this.availableWorkItems?.map(({ id, title }) => ({ text: title, value: id })) || [];
     },
     parentType() {
       return SUPPORTED_PARENT_TYPE_MAP[this.workItemType];
@@ -103,6 +111,9 @@ export default {
     showCustomNoneValue() {
       return this.hasParent && this.parent === null;
     },
+    isSearchingByReference() {
+      return isReference(this.searchTerm) || isValidURL(this.searchTerm);
+    },
   },
   watch: {
     parent: {
@@ -112,7 +123,7 @@ export default {
     },
   },
   apollo: {
-    availableWorkItems: {
+    workspaceWorkItems: {
       query() {
         // TODO: Remove the this.isIssue check once issues are migrated to work items
         return this.isGroup || this.isIssue ? groupWorkItemsQuery : projectWorkItemsQuery;
@@ -121,9 +132,9 @@ export default {
         // TODO: Remove the this.isIssue check once issues are migrated to work items
         return {
           fullPath: this.isIssue ? this.groupPath : this.fullPath,
-          searchTerm: this.search,
+          searchTerm: this.searchTerm,
           types: this.parentType,
-          in: this.search ? 'TITLE' : undefined,
+          in: this.searchTerm ? 'TITLE' : undefined,
           iid: null,
           isNumber: false,
           includeAncestors: true,
@@ -139,10 +150,28 @@ export default {
         this.$emit('error', this.$options.i18n.workItemsFetchError);
       },
     },
+    workItemsByReference: {
+      query: workItemsByReferencesQuery,
+      variables() {
+        return {
+          contextNamespacePath: this.fullPath,
+          refs: [this.searchTerm],
+        };
+      },
+      skip() {
+        return !this.isSearchingByReference;
+      },
+      update(data) {
+        return data?.workItemsByReference?.nodes || [];
+      },
+      error() {
+        this.$emit('error', this.$options.i18n.workItemsFetchError);
+      },
+    },
   },
   methods: {
-    searchWorkItems(searchTerm) {
-      this.search = searchTerm;
+    searchWorkItems(value) {
+      this.searchTerm = value;
       this.searchStarted = true;
     },
     async updateParent() {
@@ -191,7 +220,7 @@ export default {
     handleItemClick(item) {
       this.localSelectedItem = item;
       this.searchStarted = false;
-      this.search = '';
+      this.searchTerm = '';
       this.updateParent();
     },
     unassignParent() {
@@ -203,7 +232,7 @@ export default {
     },
     onListboxHide() {
       this.searchStarted = false;
-      this.search = '';
+      this.searchTerm = '';
     },
   },
 };

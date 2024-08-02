@@ -30,6 +30,7 @@ module Projects::ProjectMembersHelper
       can_manage_access_requests: Ability.allowed?(current_user, :admin_member_access_request, project),
       group_name: project.group&.name,
       group_path: project.group&.full_path,
+      project_path: project.full_path,
       can_approve_access_requests: true, # true for CE, overridden in EE
       available_roles: available_project_roles(project)
     }

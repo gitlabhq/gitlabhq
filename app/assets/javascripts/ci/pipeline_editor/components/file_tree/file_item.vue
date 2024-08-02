@@ -40,6 +40,6 @@ export default {
       <file-icon class="file-row-icon" :file-name="fileName" />
       <span>{{ fileName }}</span>
     </span>
-    <gl-icon class="gl-display-none gl-relative gl-text-gray-500" name="external-link" />
+    <gl-icon class="gl-hidden gl-relative gl-text-gray-500" name="external-link" />
   </gl-link>
 </template>

@@ -49,6 +49,7 @@ RSpec.describe Projects::ProjectMembersHelper do
           can_manage_access_requests: true,
           group_name: project.group.name,
           group_path: project.group.path,
+          project_path: project.full_path,
           can_approve_access_requests: true,
           available_roles: available_roles
         }.as_json

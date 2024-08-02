@@ -191,7 +191,7 @@ DETAILS:
 **Status:** Experiment
 
 - Help resolve a vulnerability by generating a merge request that addresses it.
-- LLM: Anthropic [Claude 3.5 Sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet).
 - [View documentation](../application_security/vulnerabilities/index.md#vulnerability-resolution).
 
 ### Product Analytics

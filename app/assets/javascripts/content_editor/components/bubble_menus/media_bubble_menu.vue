@@ -237,7 +237,7 @@ export default {
           type="file"
           name="content_editor_image"
           :accept="$options.acceptedMimes[mediaType]"
-          class="gl-display-none"
+          class="gl-hidden"
           @change="onFileSelect"
         />
         <gl-link

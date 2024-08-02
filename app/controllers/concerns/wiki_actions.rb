@@ -422,8 +422,6 @@ module WikiActions
   end
 
   def find_redirection(path, redirect_limit = 50)
-    return unless Feature.enabled?(:wiki_redirection, container)
-
     seen = Set[]
     current_path = path
 

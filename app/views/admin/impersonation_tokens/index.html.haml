@@ -22,7 +22,7 @@
       = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
         = _('Add new token')
   - c.with_body do
-    .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
+    .gl-new-card-add-form.gl-mt-3.gl-hidden.js-toggle-content.js-add-new-token-form
       = render 'shared/access_tokens/form',
         ajax: true,
         type: type,

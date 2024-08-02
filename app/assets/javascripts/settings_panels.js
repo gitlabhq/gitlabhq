@@ -71,11 +71,11 @@ function initGlobalProtectionOptions() {
   globalProtectionProtectedOption.forEach((option) => {
     const isProtected = parseBoolean(option.value);
     option.addEventListener('change', () => {
-      protectionSettingsSection.classList.toggle('gl-display-none', !isProtected);
+      protectionSettingsSection.classList.toggle('gl-hidden', !isProtected);
     });
 
     if (option.checked) {
-      protectionSettingsSection.classList.toggle('gl-display-none', !isProtected);
+      protectionSettingsSection.classList.toggle('gl-hidden', !isProtected);
     }
   });
 }

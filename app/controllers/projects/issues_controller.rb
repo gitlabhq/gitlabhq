@@ -49,6 +49,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:service_desk_ticket)
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
+    push_frontend_feature_flag(:comment_tooltips, current_user)
   end
 
   before_action only: [:index, :show] do

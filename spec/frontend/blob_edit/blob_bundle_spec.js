@@ -93,14 +93,14 @@ describe('BlobBundle', () => {
       setHTMLFixture(
         `<div class="js-edit-blob-form">
           <button class="js-commit-button"></button>
-          <button class="js-commit-button-loading gl-display-none"></button>
+          <button class="js-commit-button-loading gl-hidden"></button>
         </div>`,
       );
       blobBundle();
       findCommitButton().click();
 
-      expect(findCommitButton().classList).toContain('gl-display-none');
-      expect(findCommitLoadingButton().classList).not.toContain('gl-display-none');
+      expect(findCommitButton().classList).toContain('gl-hidden');
+      expect(findCommitLoadingButton().classList).not.toContain('gl-hidden');
     });
   });
 });

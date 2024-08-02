@@ -143,6 +143,10 @@ class WorkItem < Issue
     hierarchy.ancestors(hierarchy_order: :asc)
   end
 
+  def descendants
+    hierarchy.descendants
+  end
+
   def same_type_base_and_ancestors
     hierarchy(same_type: true).base_and_ancestors(hierarchy_order: :asc)
   end

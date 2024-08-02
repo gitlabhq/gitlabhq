@@ -64,7 +64,7 @@ describe('PackageTags', () => {
   });
 
   describe('tagBadgeStyle', () => {
-    const defaultStyle = ['badge', 'badge-info', 'gl-display-none'];
+    const defaultStyle = ['badge', 'badge-info', 'gl-hidden'];
 
     it('shows tag badge when there is only one', () => {
       createComponent([mockTags[0]]);

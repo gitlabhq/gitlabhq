@@ -29,8 +29,8 @@ const REVIEW_STATE_ICONS = {
     title: s__('MergeRequest|Awaiting review'),
   },
   REVIEW_STARTED: {
-    name: 'status_running',
-    class: 'gl-text-blue-500',
+    name: 'comment-dots',
+    class: 'gl-text-gray-500',
     title: s__('MergeRequest|Reviewer started review'),
   },
 };

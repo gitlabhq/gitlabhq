@@ -39,7 +39,7 @@
             = _('Add new token')
     - c.with_body do
       - if current_user.can?(:create_resource_access_tokens, @project)
-        .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
+        .gl-new-card-add-form.gl-mt-3.gl-hidden.js-toggle-content.js-add-new-token-form
           = render_if_exists 'projects/settings/access_tokens/form', type: type
 
   #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json, no_active_tokens_message: _('This project has no active access tokens.'), show_role: true } }

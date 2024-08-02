@@ -284,7 +284,7 @@ export default {
       :key="shortcutLink.href"
       :href="shortcutLink.href"
       :class="shortcutLink.css_class"
-      class="gl-display-none"
+      class="gl-hidden"
     >
       {{ shortcutLink.title }}
     </a>

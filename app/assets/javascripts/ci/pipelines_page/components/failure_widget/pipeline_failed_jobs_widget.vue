@@ -45,7 +45,7 @@ export default {
   },
   computed: {
     bodyClasses() {
-      return this.isExpanded ? '' : 'gl-display-none';
+      return this.isExpanded ? '' : 'gl-hidden';
     },
     failedJobsCountText() {
       return sprintf(this.$options.i18n.failedJobsLabel, { count: this.currentFailedJobsCount });

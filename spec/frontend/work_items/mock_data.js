@@ -378,6 +378,23 @@ export const updateWorkItemMutationErrorResponse = {
   },
 };
 
+export const mockworkItemReferenceQueryResponse = {
+  data: {
+    workItemsByReference: {
+      nodes: [
+        {
+          id: 'gid://gitlab/WorkItem/705',
+          iid: '111',
+          title: 'Objective linked items 104',
+          confidential: false,
+          __typename: 'WorkItem',
+        },
+      ],
+      __typename: 'WorkItemConnection',
+    },
+  },
+};
+
 export const convertWorkItemMutationErrorResponse = {
   data: {
     workItemConvert: {

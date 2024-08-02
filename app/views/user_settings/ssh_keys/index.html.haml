@@ -1,8 +1,8 @@
 - page_title _('SSH Keys')
 - add_page_specific_style 'page_bundles/profile'
 - @force_desktop_expanded_sidebar = true
-- add_form_class = 'gl-display-none' if !form_errors(@key)
-- hide_class = 'gl-display-none' if form_errors(@key)
+- add_form_class = 'gl-hidden' if !form_errors(@key)
+- hide_class = 'gl-hidden' if form_errors(@key)
 
 .settings-section.js-search-settings-section
   .settings-sticky-header

@@ -51,13 +51,13 @@ export default class PayloadPreviewer {
 
   hidePayload() {
     this.isVisible = false;
-    this.getContainer().classList.add('gl-display-none');
+    this.getContainer().classList.add('gl-hidden');
     this.text.textContent = __('Preview payload');
   }
 
   showPayload() {
     this.isVisible = true;
-    this.getContainer().classList.remove('gl-display-none');
+    this.getContainer().classList.remove('gl-hidden');
     this.text.textContent = __('Hide payload');
   }
 

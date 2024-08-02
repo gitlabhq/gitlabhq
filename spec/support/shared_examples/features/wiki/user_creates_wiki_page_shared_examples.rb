@@ -276,33 +276,6 @@ RSpec.shared_examples 'User creates wiki page' do
         expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("---\nbaz: doe\n")
       end
 
-      context 'when wiki_redirection feature flag is disabled' do
-        before do
-          stub_feature_flags(wiki_redirection: false)
-        end
-
-        it 'does not modify the redirects.yml file' do
-          wiki.repository.update_file(
-            user, '.gitlab/redirects.yml',
-            "foo: bar\nbaz: doe",
-            message: 'Add redirect', branch_name: 'master'
-          )
-
-          find_by_testid('wiki-more-dropdown').click
-          click_link('New page')
-
-          page.within('.wiki-form') do
-            fill_in(:wiki_title, with: 'foo')
-            fill_in(:wiki_content, with: 'testing redirects')
-            click_button('Create page')
-          end
-
-          expect(page).to have_content('foo')
-
-          expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("foo: bar\nbaz: doe")
-        end
-      end
-
       context 'when a server side validation error is returned' do
         it "still displays edit form", :js do
           find_by_testid('wiki-more-dropdown').click

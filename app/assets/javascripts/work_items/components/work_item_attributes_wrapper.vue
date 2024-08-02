@@ -137,7 +137,7 @@ export default {
       return this.workItem?.author;
     },
     workItemDevelopment() {
-      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsAlpha;
+      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsBeta;
     },
     hasParent() {
       return this.workItemHierarchy?.hasParent;

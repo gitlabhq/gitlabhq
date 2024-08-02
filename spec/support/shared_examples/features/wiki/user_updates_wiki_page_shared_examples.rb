@@ -96,29 +96,6 @@ RSpec.shared_examples 'User updates wiki page' do
       expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("---\nfoo: bar\nhome: home2\n")
     end
 
-    context 'when wiki_redirection feature flag is disabled' do
-      before do
-        stub_feature_flags(wiki_redirection: false)
-      end
-
-      it 'does not modify the redirects.yml file' do
-        wiki.repository.update_file(
-          user, '.gitlab/redirects.yml',
-          "home2: home\nfoo: bar",
-          message: 'Add redirect', branch_name: 'master'
-        )
-
-        fill_in(:wiki_title, with: 'home2')
-        fill_in(:wiki_content, with: 'My awesome wiki!')
-        click_button('Save changes')
-
-        expect(page).to have_content('Home')
-        expect(page).to have_content('My awesome wiki!')
-
-        expect(wiki.repository.blob_at('master', '.gitlab/redirects.yml').data).to eq("home2: home\nfoo: bar")
-      end
-    end
-
     it 'saves page content in local storage if the user navigates away', :js do
       fill_in(:wiki_title, with: "Test title")
       fill_in(:wiki_content, with: "This is a test")

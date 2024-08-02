@@ -174,7 +174,7 @@ export default {
       await updateRepositorySize(this.projectPath);
 
       this.loadingRecalculateSize = false;
-      alertEl?.classList.remove('gl-display-none');
+      alertEl?.classList.remove('gl-hidden');
     },
   },
   usageQuotasHelpPaths,

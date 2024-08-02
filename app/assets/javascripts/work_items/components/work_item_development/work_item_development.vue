@@ -1,5 +1,6 @@
 <script>
 import { GlLoadingIcon, GlIcon, GlButton, GlTooltipDirective, GlModalDirective } from '@gitlab/ui';
+import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { s__, __ } from '~/locale';
 
@@ -19,6 +20,7 @@ export default {
     GlTooltip: GlTooltipDirective,
     GlModal: GlModalDirective,
   },
+  mixins: [glFeatureFlagMixin()],
   props: {
     canUpdate: {
       type: Boolean,
@@ -79,6 +81,9 @@ export default {
     linkedMergeRequests() {
       return this.workItemDevelopment?.closingMergeRequests?.nodes || [];
     },
+    shouldShowDevWidget() {
+      return this.glFeatures.workItemsAlpha ? true : !this.isEmptyRelatedWorkItems;
+    },
     isEmptyRelatedWorkItems() {
       return !this.error && this.linkedMergeRequests.length === 0;
     },
@@ -121,7 +126,7 @@ export default {
 };
 </script>
 <template>
-  <div>
+  <div v-if="shouldShowDevWidget">
     <div class="gl-flex gl-items-center gl-gap-3 gl-justify-between">
       <h3
         class="gl-mb-0! gl-heading-5 gl-flex gl-items-center gl-gap-2"

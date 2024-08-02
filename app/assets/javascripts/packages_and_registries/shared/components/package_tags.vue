@@ -56,7 +56,7 @@ export default {
   methods: {
     tagBadgeClass(index) {
       return {
-        'gl-display-none': true,
+        'gl-hidden': true,
         'gl-display-flex': this.tagCount === 1,
         'md:!gl-flex': this.tagCount > 1,
         'gl-mr-2': index !== this.tagsToRender.length - 1,

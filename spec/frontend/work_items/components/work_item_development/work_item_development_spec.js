@@ -122,6 +122,7 @@ describe('WorkItemDevelopment CE', () => {
     workItemIid = '1',
     workItemFullPath = 'full-path',
     workItemQueryHandler = successQueryHandler,
+    workItemsAlphaEnabled = true,
   } = {}) => {
     mockApollo = createMockApollo([[workItemByIidQuery, workItemQueryHandler]]);
 
@@ -138,6 +139,9 @@ describe('WorkItemDevelopment CE', () => {
       },
       provide: {
         isGroup,
+        glFeatures: {
+          workItemsAlpha: workItemsAlphaEnabled,
+        },
       },
     });
   };
@@ -180,20 +184,30 @@ describe('WorkItemDevelopment CE', () => {
   });
 
   describe('when the response is successful', () => {
-    describe('when there are no MR`s linked', () => {
-      beforeEach(async () => {
-        createComponent({ workItemQueryHandler: successQueryHandlerWithEmptyMRList });
-        await waitForPromises();
-      });
+    describe.each`
+      workItemsAlphaFFEnabled | shouldShowActionCtaButtons
+      ${true}                 | ${true}
+      ${false}                | ${false}
+    `(
+      'when the list of MRs is empty and workItemsAlpha is `$workItemsAlphaFFEnabled`',
+      ({ workItemsAlphaFFEnabled, shouldShowActionCtaButtons }) => {
+        beforeEach(async () => {
+          createComponent({
+            workItemQueryHandler: successQueryHandlerWithEmptyMRList,
+            workItemsAlphaEnabled: workItemsAlphaFFEnabled,
+          });
+          await waitForPromises();
+        });
 
-      it('should show the `Create MR` button', () => {
-        expect(findCreateMRButton().exists()).toBe(true);
-      });
+        it(`should ${shouldShowActionCtaButtons ? '' : 'not '} show the 'Create MR' button`, () => {
+          expect(findCreateMRButton().exists()).toBe(shouldShowActionCtaButtons);
+        });
 
-      it('should show the `Create branch` button', () => {
-        expect(findCreateBranchButton().exists()).toBe(true);
-      });
-    });
+        it(`should ${shouldShowActionCtaButtons ? '' : 'not '} show the 'Create branch' button`, () => {
+          expect(findCreateBranchButton().exists()).toBe(shouldShowActionCtaButtons);
+        });
+      },
+    );
 
     describe('when there is a list of MR`s', () => {
       beforeEach(async () => {

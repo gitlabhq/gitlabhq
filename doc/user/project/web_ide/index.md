@@ -25,6 +25,8 @@ For a more basic implementation, see [Web Editor](../repository/web_editor.md).
 
 To pair the Web IDE with a remote development environment, see [Remote development](../remote_development/index.md).
 
+Support for improvements to Markdown preview when using GitLab Flavored Markdown in the Web IDE is proposed in [issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
+
 ## Open the Web IDE
 
 To open the Web IDE:

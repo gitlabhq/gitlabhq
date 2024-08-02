@@ -463,6 +463,12 @@ RSpec.describe WorkItem, feature_category: :portfolio_management do
       end
     end
 
+    describe '#descendants' do
+      it 'returns all descendants' do
+        expect(item1.descendants).to match_array([item2_1, item2_2, item3_1, item3_2, item4])
+      end
+    end
+
     describe '#same_type_base_and_ancestors' do
       it 'returns self and all ancestors of the same type in ascending order' do
         expect(item3_2.same_type_base_and_ancestors).to eq([item3_2, item3_1])

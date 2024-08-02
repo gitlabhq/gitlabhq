@@ -24,7 +24,16 @@ For an overview, see [Project Dependency](https://www.youtube.com/watch?v=ckqkn9
 
 ## Prerequisites
 
-To view your project's dependencies, ensure you meet the following requirements:
+To list your project's dependencies the SBOM document must:
+
+- Comply with [the CycloneDX specification](https://github.com/CycloneDX/specification) version `1.4` or `1.5`.
+- Be uploaded as [a CI/CD artifact report](../../../ci/yaml/artifacts_reports.md#artifactsreportscyclonedx) from a successful pipeline on the default branch.
+
+NOTE:
+Although this is not mandatory for the dependency list, some security features also require the
+document to include and comply with the [GitLab CycloneDX property taxonomy](../../../development/sec/cyclonedx_property_taxonomy.md).
+
+GitLab already generates this document when the following requirements are met:
 
 - The [Dependency Scanning](../dependency_scanning/index.md)
   or [Container Scanning](../container_scanning/index.md)

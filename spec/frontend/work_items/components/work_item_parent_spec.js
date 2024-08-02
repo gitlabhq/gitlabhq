@@ -11,6 +11,7 @@ import { updateParent } from '~/work_items/graphql/cache_utils';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
+import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
 import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
 
 import {
@@ -19,6 +20,7 @@ import {
   updateWorkItemMutationResponseFactory,
   searchedObjectiveResponse,
   updateWorkItemMutationErrorResponse,
+  mockworkItemReferenceQueryResponse,
 } from '../mock_data';
 
 jest.mock('~/sentry/sentry_browser_wrapper');
@@ -38,6 +40,10 @@ describe('WorkItemParent component', () => {
   const groupWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsSuccessHandler = jest.fn().mockResolvedValue(availableObjectivesResponse);
   const availableWorkItemsFailureHandler = jest.fn().mockRejectedValue(new Error());
+
+  const workItemReferencesSuccessHandler = jest
+    .fn()
+    .mockResolvedValue(mockworkItemReferenceQueryResponse);
 
   const findSidebarDropdownWidget = () => wrapper.findComponent(WorkItemSidebarDropdownWidget);
   const findAncestorUnavailable = () => wrapper.findByTestId('ancestor-not-available');
@@ -64,6 +70,7 @@ describe('WorkItemParent component', () => {
         [projectWorkItemsQuery, searchQueryHandler],
         [groupWorkItemsQuery, groupWorkItemsSuccessHandler],
         [updateWorkItemMutation, mutationHandler],
+        [workItemsByReferencesQuery, workItemReferencesSuccessHandler],
       ]),
       provide: {
         fullPath: mockFullPath,
@@ -206,6 +213,10 @@ describe('WorkItemParent component', () => {
   });
 
   describe('work items query', () => {
+    const mockText = 'Objective 101';
+    const mockURL = 'http://localhost/gitlab-org/test-project-path/-/work_items/111';
+    const mockReference = 'gitlab-org/test-project-path#111';
+
     it('loads work items in the listbox', async () => {
       createComponent();
       showDropdown();
@@ -257,13 +268,13 @@ describe('WorkItemParent component', () => {
         includeAncestors: true,
       });
 
-      findSidebarDropdownWidget().vm.$emit('searchStarted', 'Objective 101');
+      findSidebarDropdownWidget().vm.$emit('searchStarted', mockText);
 
       await waitForPromises();
 
       expect(searchedItemQueryHandler).toHaveBeenCalledWith({
         fullPath: 'full-path',
-        searchTerm: 'Objective 101',
+        searchTerm: mockText,
         types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
         in: 'TITLE',
         iid: null,
@@ -272,11 +283,51 @@ describe('WorkItemParent component', () => {
         searchByText: true,
         includeAncestors: true,
       });
+      expect(workItemReferencesSuccessHandler).not.toHaveBeenCalled();
 
       await nextTick();
 
       expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
-        { text: 'Objective 101', value: 'gid://gitlab/WorkItem/716' },
+        { text: mockText, value: 'gid://gitlab/WorkItem/716' },
+      ]);
+    });
+
+    it.each`
+      inputType      | input            | refs
+      ${'url'}       | ${mockURL}       | ${[mockURL]}
+      ${'reference'} | ${mockReference} | ${[mockReference]}
+    `('lists work item when valid $inputType is pasted', async ({ input, refs }) => {
+      createComponent();
+
+      showDropdown();
+
+      await waitForPromises();
+
+      expect(availableWorkItemsSuccessHandler).toHaveBeenCalledWith({
+        fullPath: mockFullPath,
+        searchTerm: '',
+        types: [WORK_ITEM_TYPE_ENUM_OBJECTIVE],
+        in: undefined,
+        iid: null,
+        isNumber: false,
+        searchByIid: false,
+        searchByText: true,
+        includeAncestors: true,
+      });
+
+      findSidebarDropdownWidget().vm.$emit('searchStarted', input);
+
+      await waitForPromises();
+
+      expect(workItemReferencesSuccessHandler).toHaveBeenCalledWith({
+        contextNamespacePath: mockFullPath,
+        refs,
+      });
+
+      await nextTick();
+
+      expect(findSidebarDropdownWidget().props('listItems')).toStrictEqual([
+        { text: 'Objective linked items 104', value: 'gid://gitlab/WorkItem/705' },
       ]);
     });
   });

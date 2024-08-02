@@ -2,7 +2,7 @@
 export const EXCLUDED_NODES = ['OPTION'];
 
 // Used to hide the sections that do not match * the search term
-export const HIDE_CLASS = 'gl-display-none';
+export const HIDE_CLASS = 'gl-hidden';
 
 // used to highlight the text that matches the * search term
 export const HIGHLIGHT_CLASS = 'gl-bg-orange-100';

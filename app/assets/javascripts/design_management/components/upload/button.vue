@@ -52,7 +52,7 @@ export default {
       type="file"
       name="design_file"
       :accept="$options.VALID_DESIGN_FILE_MIMETYPE.mimetype"
-      class="gl-display-none"
+      class="gl-hidden"
       multiple
       @change="onFileUploadChange"
     />

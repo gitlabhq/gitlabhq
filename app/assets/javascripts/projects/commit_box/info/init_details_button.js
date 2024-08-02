@@ -11,7 +11,7 @@ export const initDetailsButton = () => {
 
     if (contentEl) {
       contentEl.classList.remove('hide');
-      btn.classList.add('gl-display-none');
+      btn.classList.add('gl-hidden');
     }
   });
 };

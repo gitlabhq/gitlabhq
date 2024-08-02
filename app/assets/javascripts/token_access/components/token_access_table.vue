@@ -52,7 +52,7 @@ export default {
     :items="items"
     :fields="$options.fields"
     :tbody-tr-attr="{ 'data-testid': 'token-access-table-row' }"
-    thead-class="gl-display-none"
+    thead-class="gl-hidden"
     class="gl-mb-0"
     fixed
   >

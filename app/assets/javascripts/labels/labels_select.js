@@ -41,7 +41,7 @@ export default class LabelsSelect {
       const $form = $dropdown.closest('form, .js-issuable-update');
       const $sidebarCollapsedValue = $block.find('.sidebar-collapsed-icon span');
       const $value = $block.find('.value');
-      const $loading = $block.find('.block-loading').addClass('gl-display-none');
+      const $loading = $block.find('.block-loading').addClass('gl-hidden');
       const fieldName = $dropdown.data('fieldName');
       let initialSelected = $selectbox
         .find(`input[name="${$dropdown.data('fieldName')}"]`)
@@ -78,13 +78,13 @@ export default class LabelsSelect {
         if (!selected.length) {
           data[abilityName].label_ids = [''];
         }
-        $loading.removeClass('gl-display-none');
+        $loading.removeClass('gl-hidden');
         $dropdown.trigger('loading.gl.dropdown');
         axios
           .put(issueUpdateURL, data)
           .then(({ data }) => {
             let template;
-            $loading.addClass('gl-display-none');
+            $loading.addClass('gl-hidden');
             $dropdown.trigger('loaded.gl.dropdown');
             $selectbox.hide();
             data.issueUpdateURL = issueUpdateURL;

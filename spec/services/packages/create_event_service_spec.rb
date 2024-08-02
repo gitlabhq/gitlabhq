@@ -96,7 +96,9 @@ RSpec.describe Packages::CreateEventService, feature_category: :package_registry
     end
 
     context 'when using non-internal events' do
-      let(:event_name) { 'push_package' }
+      let(:event_name) { 'push_symbol_package' }
+      let(:scope) { 'nuget' }
+      let(:label) { 'nuget' }
 
       shared_examples 'redis package unique event creation' do
         it 'tracks the event' do
@@ -135,7 +137,7 @@ RSpec.describe Packages::CreateEventService, feature_category: :package_registry
       end
 
       context 'with a package as scope' do
-        let(:scope) { create(:npm_package) }
+        let(:scope) { create(:nuget_package) }
 
         context 'as guest' do
           let(:user) { nil }

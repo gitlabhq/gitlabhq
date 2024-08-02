@@ -50,6 +50,8 @@ You can use GitLab Flavored Markdown in the following areas:
 You can also use other rich text files in GitLab. You might have to install a dependency
 to do so. For more information, see the [`gitlab-markup` gem project](https://gitlab.com/gitlab-org/gitlab-markup).
 
+Support for improvements to Markdown preview when using GitLab Flavored Markdown in the Web IDE is proposed in [issue 645](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/645).
+
 ### Differences between GitLab Flavored Markdown and standard Markdown
 
 <!--
@@ -2076,6 +2078,21 @@ To update the rendered references if the assignee, milestone, or health status c
 
 Issue [420807](https://gitlab.com/gitlab-org/gitlab/-/issues/420807) tracks improving how these
 references refresh.
+
+### Show comment preview when hovering on a link
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/29663) in GitLab 17.3 [with a flag](../administration/feature_flags.md) named `comment_tooltips`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+When this feature is enabled, hovering over a link to a comment shows the author and
+part of the comment.
+
+When this feature is disabled, hovering over a link to a comment shows information about the item,
+such as issue or epic.
 
 ### Embedding Observability dashboards
 

@@ -233,7 +233,7 @@ export default {
         :count-scope="$options.INSTANCE_TYPE"
         :count-variables="countVariables"
         class="gl-w-full"
-        content-class="gl-display-none"
+        content-class="gl-hidden"
         nav-class="gl-border-none!"
       />
     </div>

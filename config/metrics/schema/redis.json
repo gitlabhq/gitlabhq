@@ -7,7 +7,7 @@
     }
   },
   "then": {
-    "oneOf": [
+    "anyOf": [
       {
         "properties": {
           "instrumentation_class": {
@@ -43,23 +43,9 @@
       },
       {
         "properties": {
-          "key_path": {
+          "status": {
             "description": "Legacy metrics that do not match with the schema",
-            "enum": [
-              "counts.dependency_list_usages_total",
-              "counts.network_policy_forwards",
-              "counts.network_policy_drops",
-              "counts.static_site_editor_views",
-              "counts.static_site_editor_commits",
-              "counts.static_site_editor_merge_requests",
-              "counts.package_events_i_package_container_delete_package",
-              "counts.package_events_i_package_container_pull_package",
-              "counts.package_events_i_package_container_push_package",
-              "counts.package_events_i_package_debian_push_package",
-              "counts.package_events_i_package_tag_delete_package",
-              "counts.package_events_i_package_tag_pull_package",
-              "counts.package_events_i_package_tag_push_package"
-            ]
+            "const": "removed"
           }
         }
       }

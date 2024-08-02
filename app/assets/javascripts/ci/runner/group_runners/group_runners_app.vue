@@ -248,7 +248,7 @@ export default {
         :count-variables="countVariables"
         :runner-types="$options.TABS_RUNNER_TYPES"
         class="gl-w-full"
-        content-class="gl-display-none"
+        content-class="gl-hidden"
         nav-class="gl-border-none!"
       />
     </div>

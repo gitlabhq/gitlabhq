@@ -72,9 +72,8 @@ export default {
         fields.push({
           key: 'updated_at',
           label: this.showUpdatedAt ? __('Last updated') : '',
-          thClass: 'gl-display-none d-sm-table-cell gl-text-right',
-          tdClass:
-            'gl-border-bottom-0! gl-text-right gl-display-none d-sm-table-cell !gl-align-middle',
+          thClass: 'gl-hidden d-sm-table-cell gl-text-right',
+          tdClass: 'gl-border-bottom-0! gl-text-right gl-hidden d-sm-table-cell !gl-align-middle',
         });
       }
 

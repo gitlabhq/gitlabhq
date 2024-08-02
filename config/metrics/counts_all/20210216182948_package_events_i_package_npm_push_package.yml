@@ -6,11 +6,11 @@ product_group: package_registry
 value_type: number
 status: active
 time_frame: all
-data_source: redis
-instrumentation_class: RedisMetric
-options:
-  prefix: package_events
-  event: i_package_npm_push_package
+data_source: internal_events
+events:
+  - name: push_package_to_registry
+    filter:
+      label: npm
 distribution:
 - ee
 - ce

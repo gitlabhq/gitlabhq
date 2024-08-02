@@ -40,7 +40,7 @@
             = _('Add new token')
     - c.with_body do
       - if current_user.can?(:create_resource_access_tokens, @group)
-        .gl-new-card-add-form.gl-mt-3.gl-display-none.js-toggle-content.js-add-new-token-form
+        .gl-new-card-add-form.gl-mt-3.gl-hidden.js-toggle-content.js-add-new-token-form
           = render 'shared/access_tokens/form',
             ajax: true,
             type: type,

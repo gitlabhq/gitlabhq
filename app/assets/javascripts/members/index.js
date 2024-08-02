@@ -9,7 +9,12 @@ import { TABS } from 'ee_else_ce/members/tabs_metadata';
 import MembersTabs from './components/members_tabs.vue';
 import membersStore from './store';
 
-export const initMembersApp = (el, options) => {
+/**
+ * @param {HTMLElement} el
+ * @param {string} context as defined in CONTEXT_TYPE in ./constants.js
+ * @param {Object} options
+ */
+export const initMembersApp = (el, context, options) => {
   if (!el) {
     return () => {};
   }
@@ -27,6 +32,7 @@ export const initMembersApp = (el, options) => {
     exportCsvPath,
     groupName,
     groupPath,
+    projectPath,
     manageMemberRolesPath,
     canApproveAccessRequests,
     namespaceUserLimit,
@@ -69,9 +75,13 @@ export const initMembersApp = (el, options) => {
       canApproveAccessRequests,
       namespaceUserLimit,
       availableRoles,
+      context,
       group: {
         name: groupName,
         path: groupPath,
+      },
+      project: {
+        path: projectPath,
       },
     },
     render: (createElement) => createElement('members-tabs'),

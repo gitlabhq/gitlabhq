@@ -9,7 +9,7 @@ import { WORK_ITEM_TYPE_ENUM_TASK } from '~/work_items/constants';
 import groupWorkItemsQuery from '~/work_items/graphql/group_work_items.query.graphql';
 import projectWorkItemsQuery from '~/work_items/graphql/project_work_items.query.graphql';
 import workItemsByReferencesQuery from '~/work_items/graphql/work_items_by_references.query.graphql';
-import { searchWorkItemsResponse } from '../../mock_data';
+import { searchWorkItemsResponse, mockworkItemReferenceQueryResponse } from '../../mock_data';
 
 Vue.use(VueApollo);
 
@@ -61,22 +61,7 @@ describe('WorkItemTokenInput', () => {
       workItems: [mockWorkItem],
     }),
   );
-  const mockworkItemReferenceQueryResponse = {
-    data: {
-      workItemsByReference: {
-        nodes: [
-          {
-            id: 'gid://gitlab/WorkItem/705',
-            iid: '111',
-            title: 'Objective linked items 104',
-            confidential: false,
-            __typename: 'WorkItem',
-          },
-        ],
-        __typename: 'WorkItemConnection',
-      },
-    },
-  };
+
   const workItemReferencesQueryResolver = jest
     .fn()
     .mockResolvedValue(mockworkItemReferenceQueryResponse);

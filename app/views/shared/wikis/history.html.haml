@@ -17,39 +17,33 @@
 
       = wiki_sidebar_toggle_button
 
-.prepend-top-default.gl-mb-3
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-mt-0 gl-mb-5' }, header_options: { class: 'gl-new-card-header gl-border-b-0' }, body_options: { class: 'gl-new-card-body gl-px-0' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper.gl-flex-col
-        %h3.gl-new-card-title
-          = _('Versions')
-          .gl-new-card-count
-            = sprite_icon('history', css_class: 'gl-mr-2')
-            = @commits_count
-    - c.with_body do
-      .table-holder{ data: { testid: 'wiki-history-table' } }
-        %table.table.wiki-history{ class: '!gl-mb-0' }
-          %thead
+= render ::Layouts::CrudComponent.new(_('Versions'),
+  icon: 'history',
+  count: @commits_count) do |c|
+  - c.with_body do
+    .table-holder{ data: { testid: 'wiki-history-table' } }
+      %table.table.b-table.gl-table.b-table-stacked-sm.-gl-mt-1.-gl-mb-2.wiki-history
+        %thead.gl-hidden.md:gl-table-header-group
+          %tr
+            %th= _('Version')
+            %th= _('Author')
+            %th= _('Diff')
+            %th= _('Last updated')
+        %tbody
+          - @commits.each_with_index do |commit, i|
             %tr
-              %th= _('Version')
-              %th= _('Author')
-              %th= _('Diff')
-              %th= _('Last updated')
-          %tbody
-            - @commits.each_with_index do |commit, i|
-              %tr
-                %td
-                  = link_to wiki_page_path(@wiki, @page, version_id: commit.id) do
-                    v#{@commits_count - i}
-                %td
-                  = commit.author_name
-                %td
-                  .commit-content
-                    = link_to wiki_page_path(@wiki, @page, action: :diff, version_id: commit.id), { title: commit.message } do
-                      = commit.message
-                %td
-                  = time_ago_with_tooltip(commit.authored_date)
-
-  = paginate @commits, theme: 'gitlab'
+              %td{ data: { label: _('Version') } }
+                = link_to wiki_page_path(@wiki, @page, version_id: commit.id) do
+                  v#{@commits_count - i}
+              %td{ data: { label: _('Author') } }
+                = commit.author_name
+              %td{ data: { label: _('Diff') } }
+                .commit-content
+                  = link_to wiki_page_path(@wiki, @page, action: :diff, version_id: commit.id), { title: commit.message } do
+                    = commit.message
+              %td{ data: { label: _('Last updated') } }
+                = time_ago_with_tooltip(commit.authored_date)
+  - c.with_pagination do
+    = paginate @commits, theme: 'gitlab'
 
 = render 'shared/wikis/sidebar'

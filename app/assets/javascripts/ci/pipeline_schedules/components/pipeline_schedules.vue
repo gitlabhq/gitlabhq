@@ -15,11 +15,17 @@ import { s__, sprintf } from '~/locale';
 import { limitedCounterWithDelimiter } from '~/lib/utils/text_utility';
 import { queryToObject } from '~/lib/utils/url_utility';
 import { reportToSentry } from '~/ci/utils';
+import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import deletePipelineScheduleMutation from '../graphql/mutations/delete_pipeline_schedule.mutation.graphql';
 import playPipelineScheduleMutation from '../graphql/mutations/play_pipeline_schedule.mutation.graphql';
 import takeOwnershipMutation from '../graphql/mutations/take_ownership.mutation.graphql';
 import getPipelineSchedulesQuery from '../graphql/queries/get_pipeline_schedules.query.graphql';
-import { ALL_SCOPE, SCHEDULES_PER_PAGE, DEFAULT_SORT_VALUE } from '../constants';
+import {
+  ALL_SCOPE,
+  SCHEDULES_PER_PAGE,
+  DEFAULT_SORT_VALUE,
+  TABLE_SORT_STORAGE_KEY,
+} from '../constants';
 import PipelineSchedulesTable from './table/pipeline_schedules_table.vue';
 import TakeOwnershipModal from './take_ownership_modal.vue';
 import DeletePipelineScheduleModal from './delete_pipeline_schedule_modal.vue';
@@ -54,6 +60,7 @@ export default {
     ),
     planLimitReachedBtnText: s__('PipelineSchedules|Explore plan limits'),
   },
+  sortStorageKey: TABLE_SORT_STORAGE_KEY,
   docsLink: helpPagePath('administration/instance_limits', {
     anchor: 'number-of-pipeline-schedules',
   }),
@@ -68,6 +75,7 @@ export default {
     GlTab,
     GlSprintf,
     GlLink,
+    LocalStorageSync,
     PipelineSchedulesTable,
     TakeOwnershipModal,
     PipelineScheduleEmptyState,
@@ -206,6 +214,16 @@ export default {
     },
     shouldDisableNewScheduleBtn() {
       return (this.hasReachedPlanLimit || this.hasNoAccess) && !this.hasUnlimitedSchedules;
+    },
+    sortingState: {
+      get() {
+        return { sortValue: this.sortValue, sortBy: this.sortBy, sortDesc: this.sortDesc };
+      },
+      set(values) {
+        this.sortValue = values.sortValue;
+        this.sortBy = values.sortBy;
+        this.sortDesc = values.sortDesc;
+      },
     },
   },
   watch: {
@@ -379,6 +397,8 @@ export default {
         {{ $options.i18n.planLimitReachedBtnText }}
       </gl-button>
     </gl-alert>
+
+    <local-storage-sync v-model="sortingState" :storage-key="$options.sortStorageKey" />
 
     <pipeline-schedule-empty-state v-if="showEmptyState" />
 

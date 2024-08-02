@@ -30,6 +30,7 @@ describe('WorkItemAttributesWrapper component', () => {
 
   const createComponent = ({
     workItem = workItemQueryResponse.data.workItem,
+    workItemsBeta = false,
     workItemsAlpha = false,
     groupPath = '',
   } = {}) => {
@@ -47,6 +48,7 @@ describe('WorkItemAttributesWrapper component', () => {
         projectNamespace: 'namespace',
         hasSubepicsFeature: true,
         glFeatures: {
+          workItemsBeta,
           workItemsAlpha,
         },
       },
@@ -228,27 +230,27 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('development widget', () => {
-    describe('when `workItesMvc2` FF is off', () => {
+    describe('when `workItemsBeta` FF is off', () => {
       it.each`
         description                                               | developmentWidgetPresent | exists
         ${'does not render when widget is returned from API'}     | ${true}                  | ${false}
         ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
       `('$description', ({ developmentWidgetPresent, exists }) => {
         const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsAlpha: false });
+        createComponent({ workItem: response.data.workItem, workItemsBeta: false });
 
         expect(findWorkItemDevelopment().exists()).toBe(exists);
       });
     });
 
-    describe('when `workItesMvc2` FF is on', () => {
+    describe('when `workItemsBeta` FF is on', () => {
       it.each`
         description                                               | developmentWidgetPresent | exists
         ${'renders when widget is returned from API'}             | ${true}                  | ${true}
         ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
       `('$description', ({ developmentWidgetPresent, exists }) => {
         const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsAlpha: true });
+        createComponent({ workItem: response.data.workItem, workItemsBeta: true });
 
         expect(findWorkItemDevelopment().exists()).toBe(exists);
       });
