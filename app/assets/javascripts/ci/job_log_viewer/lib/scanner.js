@@ -8,6 +8,25 @@ const SECTION_SEPARATOR = ':';
 const ANSI_CSI = '\u001b[';
 const CR_LINE_ENDING = '\r';
 
+/**
+ * Runner timestamped log lines have a header in the format of:
+ *
+ * - RFC3339Nano UTC timestamp (27 chars)
+ * - A space (1 char)
+ * - 2-digit hex encoded stream ID (2 chars)
+ * - A flag (O and E) representing stdout and stderr (1 char)
+ * - Append flag '+' (plus) if the line was a continuation of the last and ' ' (blank space) if not (1 char)
+ *
+ * Example:
+ *
+ * 2024-06-12T10:27:13.765080Z 00O Line content
+ */
+const RUNNER_LOG_LINE_HEADER_REGEX =
+  /(\d{4}-[01][0-9]-[0-3][0-9]T[0-2][0-9]:[0-5][0-9]:[0-5][0-9]\.[0-9]{6}Z) [0-9a-f]{2}[EO][+ ]/;
+const RFC3339_DATETIME_LENGTH = 27;
+const RUNNER_LOG_LINE_METADATA_LENGTH = 5;
+const RUNNER_LOG_LINE_HEADER_LENGTH = RFC3339_DATETIME_LENGTH + RUNNER_LOG_LINE_METADATA_LENGTH;
+
 const parseSection = (input, offset) => {
   const from = offset;
   let to = offset;
@@ -77,15 +96,70 @@ export default class {
     this.ansi = new AnsiEvaluator();
     this.content = [];
     this.sections = [];
+    this.timestamped = null;
   }
 
-  scan(input) {
+  scan(rawLine) {
+    let input = rawLine;
+    let append = false;
+    let timestamp;
+
+    // Only checks for timestamped logs once
+    // Runners are guaranteed to provide timestamp on each line or none at all
+    if (this.timestamped === null) {
+      this.timestamped = Boolean(rawLine.match(RUNNER_LOG_LINE_HEADER_REGEX));
+    }
+
+    if (this.timestamped) {
+      timestamp = rawLine.slice(0, RFC3339_DATETIME_LENGTH);
+      append = rawLine[RUNNER_LOG_LINE_HEADER_LENGTH - 1] === '+';
+      input = rawLine.slice(RUNNER_LOG_LINE_HEADER_LENGTH);
+    }
+
+    this.addLine(input);
+
+    const { content } = this;
+    this.content = [];
+
+    const section = this.sections[this.sections.length - 1];
+
+    if (section?.start) {
+      section.start = false;
+      return {
+        timestamp,
+        header: section.name,
+        options: section.options,
+        content,
+        sections: this.sections.map(({ name }) => name).slice(0, -1),
+      };
+    }
+
+    if (content.length) {
+      if (append) {
+        return {
+          timestamp, // timestamp is updated by most recent content
+          content,
+          append: true,
+        };
+      }
+
+      return {
+        timestamp,
+        content,
+        sections: this.sections.map(({ name }) => name),
+      };
+    }
+
+    return null;
+  }
+
+  addLine(input) {
     let start = 0;
     let offset = 0;
 
     while (offset < input.length) {
       if (input.startsWith(ANSI_CSI, offset)) {
-        this.append(input.slice(start, offset));
+        this.addLineContent(input.slice(start, offset));
 
         let op;
         [op, offset] = parseAnsi(input, offset + ANSI_CSI.length);
@@ -94,7 +168,7 @@ export default class {
 
         start = offset;
       } else if (input.startsWith(SECTION_PREFIX, offset)) {
-        this.append(input.slice(start, offset));
+        this.addLineContent(input.slice(start, offset));
 
         let section;
         [section, offset] = parseSection(input, offset + SECTION_PREFIX.length);
@@ -109,31 +183,10 @@ export default class {
       }
     }
 
-    this.append(input.slice(start, offset));
-
-    const { content } = this;
-    this.content = [];
-
-    const section = this.sections[this.sections.length - 1];
-
-    if (section?.start) {
-      section.start = false;
-      // returns a header line, which can toggle other lines
-      return {
-        header: section.name,
-        options: section.options,
-        sections: this.sections.map(({ name }) => name).slice(0, -1),
-        content,
-      };
-    }
-
-    return {
-      sections: this.sections.map(({ name }) => name),
-      content,
-    };
+    this.addLineContent(input.slice(start, offset));
   }
 
-  append(line) {
+  addLineContent(line) {
     const parts = line.split(CR_LINE_ENDING).filter(Boolean);
     const text = parts[parts.length - 1];
 
@@ -170,8 +223,6 @@ export default class {
 
         const section = this.sections[this.sections.length - 1];
         if (section.name === name) {
-          const duration = time - section.time;
-          this.content.push({ section: name, duration });
           this.sections.pop();
         }
         break;

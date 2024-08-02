@@ -15,11 +15,12 @@ describe('LogViewer', () => {
   };
 
   const findLogLineAt = (i) => wrapper.findAll('.log-line').at(i);
+  const normalize = (text) => text.replace(/\s+/g, ' ').trim();
   const getShownLines = () => {
     return wrapper
       .findAll('.log-line')
       .wrappers.filter((w) => w.isVisible())
-      .map((w) => w.text());
+      .map((w) => normalize(w.text()));
   };
 
   it('displays an empty log', () => {
@@ -39,7 +40,7 @@ describe('LogViewer', () => {
       },
     });
 
-    expect(wrapper.text()).toBe('1 line');
+    expect(normalize(wrapper.text())).toBe('1 line');
   });
 
   it('displays log with style', () => {
@@ -56,7 +57,7 @@ describe('LogViewer', () => {
       },
     });
 
-    expect(wrapper.text()).toBe('1 key:value');
+    expect(normalize(wrapper.text())).toBe('1 key:value');
 
     expect(wrapper.find('.class-a').text()).toBe('key:');
     expect(wrapper.find('.class-b').text()).toBe('value');

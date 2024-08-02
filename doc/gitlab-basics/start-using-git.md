@@ -88,6 +88,29 @@ Use `git commit --amend` to modify the most recent commit.
 git commit --amend
 ```
 
+## `git diff`
+
+You can display the difference (or diff) between your local changes and the most recent version of a branch. View a
+diff to understand your local changes before you commit them to the branch.
+
+To view the differences between your local unstaged changes and the latest version that you cloned or
+pulled, use `git diff`.
+
+```shell
+git diff
+```
+
+To compare your changes against a specific branch, run:
+
+```shell
+git diff <branch>
+```
+
+In the output:
+
+- Lines with additions begin with a plus (`+`) and are displayed in green.
+- Lines with removals or changes begin with a minus (`-`) and are displayed in red.
+
 ## `git init`
 
 Use `git init` to initialize a directory so Git tracks it as a repository.
@@ -194,7 +217,8 @@ git reset
 
 ## `git status`
 
-Use `git status` to show the status of working directory and staged files.
+When you add, change, or delete files, Git can identify the changes. Use `git status` to show the status of the working
+directory and staged files.
 
 ```shell
 git status

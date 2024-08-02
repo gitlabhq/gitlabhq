@@ -29337,6 +29337,8 @@ CREATE INDEX index_sbom_occurrences_vulnerabilities_on_project_id ON sbom_occurr
 
 CREATE INDEX index_sbom_occurrences_vulnerabilities_on_vulnerability_id ON sbom_occurrences_vulnerabilities USING btree (vulnerability_id);
 
+CREATE UNIQUE INDEX index_sbom_source_packages_on_name_and_purl_type_and_org_id ON sbom_source_packages USING btree (name, purl_type, organization_id);
+
 CREATE INDEX index_sbom_source_packages_on_organization_id ON sbom_source_packages USING btree (organization_id);
 
 CREATE INDEX index_sbom_source_packages_on_source_package_id_and_id ON sbom_occurrences USING btree (source_package_id, id);
@@ -29344,8 +29346,6 @@ CREATE INDEX index_sbom_source_packages_on_source_package_id_and_id ON sbom_occu
 CREATE INDEX index_sbom_sources_on_organization_id ON sbom_sources USING btree (organization_id);
 
 CREATE UNIQUE INDEX index_sbom_sources_on_source_type_and_source_and_org_id ON sbom_sources USING btree (source_type, source, organization_id);
-
-CREATE UNIQUE INDEX index_sbom_source_packages_on_name_and_purl_type_and_org_id ON sbom_source_packages USING btree (name, purl_type, organization_id);
 
 CREATE INDEX index_scan_execution_policy_rules_on_policy_mgmt_project_id ON scan_execution_policy_rules USING btree (security_policy_management_project_id);
 

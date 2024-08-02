@@ -7,7 +7,7 @@ description: "Add, commit, and push a file to your Git repository using the comm
 
 # Add files to your branch
 
-You can use the Git command line to add files, make changes to existing files, and stash changes you don't need yet.
+You can use Git to add files, make changes to existing files, and stash changes you don't need yet.
 
 ## Add files to a Git repository
 
@@ -106,39 +106,6 @@ When you make changes to files in a repository, Git tracks the changes
 against the most recent version of the checked out branch. You can use
 Git commands to review and commit your changes to the branch, and push
 your work to GitLab.
-
-### View repository status
-
-When you add, change, or delete files or folders, Git knows about the
-changes. To check which files have been changed:
-
-- From your repository, run `git status`.
-
-The branch name, most recent commit, and any new or changed files are displayed.
-New files are displayed in green. Changed files are displayed in red.
-
-### View differences
-
-You can display the difference (or diff) between your local
-changes and the most recent version of a branch. View a diff to
-understand your local changes before you commit them to the branch.
-
-To view the differences between your local unstaged changes and the
-latest version that you cloned or pulled:
-
-- From your repository, run `git diff`.
-
-  To compare your changes against a specific branch, run
-  `git diff <branch>`.
-
-The diff is displayed:
-
-- Lines with additions begin with a plus (`+`) and are displayed in green.
-- Lines with removals or changes begin with a minus (`-`) and are displayed in red.
-
-If the diff is large, by default only a portion of the diff is
-displayed. You can advance the diff with <kbd>Enter</kbd>, and quit
-back to your terminal with <kbd>Q</kbd>.
 
 ### Add and commit local changes
 
@@ -300,7 +267,7 @@ new merge request, targets a branch (`my-target-branch`), and sets auto-merge:
 git push -o merge_request.create -o merge_request.target=my-target-branch -o merge_request.merge_when_pipeline_succeeds
 ```
 
-### Create Git aliases for common commands
+### Create Git aliases for pushing
 
 Adding push options to Git commands can create very long commands. If
 you use the same push options frequently, create Git aliases for them.
@@ -321,40 +288,6 @@ To create and use a Git alias for the
    ```shell
    git mwps origin <local-branch-name>
    ```
-
-## Feature branch workflow
-
-To merge changes from a local branch to a feature branch, follow this workflow.
-
-1. Clone the project if you haven't already:
-
-   ```shell
-   git clone git@example.com:project-name.git
-   ```
-
-1. Change directories so you are in the project directory.
-1. Create a branch for your feature:
-
-   ```shell
-   git checkout -b feature_name
-   ```
-
-1. Write code for the feature.
-1. Add the code to the staging area and add a commit message for your changes:
-
-   ```shell
-   git commit -am "My feature is ready"
-   ```
-
-1. Push your branch to GitLab:
-
-   ```shell
-   git push origin feature_name
-   ```
-
-1. Review your code: On the left sidebar, go to **Code > Commits**.
-1. [Create a merge request](../user/project/merge_requests/creating_merge_requests.md).
-1. Your team lead reviews the code and merges it to the main branch.
 
 ## Related topics
 

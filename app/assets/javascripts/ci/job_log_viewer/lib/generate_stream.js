@@ -35,15 +35,11 @@ async function* getLogStreamLines(stream) {
     chunkRemainder = lines.pop() || '';
 
     for (const line of lines) {
-      if (line.trim() !== '') {
-        yield line;
-      }
+      yield line;
     }
   }
 
-  if (chunkRemainder.trim() !== '') {
-    yield chunkRemainder;
-  }
+  yield chunkRemainder;
 }
 
 /**
@@ -59,7 +55,19 @@ export async function fetchLogLines(path) {
 
   for await (const line of lines) {
     const scanned = scanner.scan(line);
-    res.push(scanned);
+
+    if (scanned) {
+      if (scanned.append) {
+        const last = res[res.length - 1];
+
+        last.content = [...last.content, ...scanned.content];
+        last.timestamp = scanned.timestamp; // time is updated by most recent line
+
+        res[res.length - 1] = last;
+      } else {
+        res.push(scanned);
+      }
+    }
   }
 
   return res;

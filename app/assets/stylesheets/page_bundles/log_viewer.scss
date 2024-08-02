@@ -11,6 +11,7 @@
   .log-line {
     display: flex;
     position: relative;
+    gap: $gl-spacing-scale-5;
   }
 
   .log-line-header {
@@ -27,8 +28,6 @@
     flex-basis: $gl-spacing-scale-9;
     text-align: right;
     user-select: none;
-    margin-right: $gl-spacing-scale-3;
-    margin-left: $gl-spacing-scale-3;
 
     // stylelint-disable-next-line gitlab/no-gl-class
     .gl-icon {
@@ -46,6 +45,13 @@
         color: $gray-500;
       }
     }
+  }
+
+  // line timestamp
+  .log-line time {
+    flex-shrink: 0;
+    color: $gray-500;
+    user-select: none;
   }
 
   // line text

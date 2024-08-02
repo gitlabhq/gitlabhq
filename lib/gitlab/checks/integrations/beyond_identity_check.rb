@@ -28,9 +28,19 @@ module Gitlab
 
             commits.each do |commit|
               signature = commit.signature
-              if !signature.verified?
+              unless signature.verified?
                 raise ::Gitlab::GitAccess::ForbiddenError, "Signature of the commit #{commit.sha} is not verified"
-              elsif !reverified_with_integration?(signature.gpg_key)
+              end
+
+              key = signature.gpg_key
+              unless key
+                gpg_commit = commit.gpg_commit
+                gpg_commit.update_signature!(signature)
+
+                key = gpg_commit.signature.gpg_key
+              end
+
+              unless reverified_with_integration?(key)
                 raise ::Gitlab::GitAccess::ForbiddenError, "GPG Key used to sign commit #{commit.sha} is not verified"
               end
             end

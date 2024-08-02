@@ -149,6 +149,7 @@ Prerequisites:
 
 - You must have an active paid Premium or Ultimate subscription. GitLab Duo Pro trials are not available to free users of self-managed at this time.
 - You must have GitLab 16.8 or later and your instance must be able to [synchronize your subscription data](self_managed/index.md#subscription-data-synchronization) with GitLab.
+- For the best GitLab Duo experience, upgrade to the [latest version](https://about.gitlab.com/releases/categories/releases/) of GitLab.
 
 1. Go to the [GitLab Duo Pro trial page](https://about.gitlab.com/solutions/gitlab-duo-pro/self-managed-and-gitlab-dedicated-trial/).
 1. Complete the fields.

@@ -35,6 +35,7 @@ With GitLab Duo Code Suggestions, you get:
   - A larger LLM is used.
   - Additional context is sent in the request, for example,
     the libraries used by the project.
+  - User instruction is passed to the LLM.
 
   Code generation is used when the:
 
@@ -81,6 +82,9 @@ To get the best results from code generation:
 - Add additional information, like the framework or library you want to use.
 - Add a space or new line after each comment.
   This space tells the code generator that you have completed your instructions.
+- In GitLab 17.2 and later, when the `advanced_context_resolver` and `code_suggestions_context`
+  feature flags are enabled, open related files in other tabs to expand the
+  [inference window context](#inference-window-context).
 
 For example, to create a Python web service with some specific requirements,
 you might write something like:
@@ -97,6 +101,60 @@ To generate quality code, write clear, descriptive, specific tasks.
 ### Best practice examples
 
 For use cases and best practices, follow the [GitLab Duo examples documentation](../../../gitlab_duo_examples.md).
+
+#### Use open tabs as context
+
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/276) in GitLab VS Code Extension 4.20.0.
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-jetbrains-plugin/-/issues/462) in GitLab Duo for JetBrains 2.7.0.
+> - [Added](https://gitlab.com/gitlab-org/editor-extensions/gitlab.vim/-/merge_requests/152) to the GitLab Neovim plugin on July 16, 2024.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+
+For better results from GitLab Duo Code Suggestions, ensure that Open Tabs Context is enabled in your IDE settings.
+This feature uses the contents of the files currently open in your IDE to get more
+accurate and relevant results from Code Suggestions. Like prompt engineering, these files
+give GitLab Duo more information about the standards and practices in your code project.
+
+To get the most benefit from using your open tabs as context, open the files relevant to the code
+you want to create, including configuration files. When you start work in a new file,
+Code Suggestions offers you suggestions in the new file.
+
+Prerequisites:
+
+- Requires GitLab 17.2 and later. Earlier GitLab versions that support Code Suggestions
+  cannot weight the content of open tabs more heavily than other files in your project.
+- Requires a [supported code language](#advanced-context-supported-languages).
+
+1. Open the files you want to provide for context. Advanced Context uses the most recently
+   opened or changed files for context. If you don’t want a file sent as additional context, close it.
+1. To fine-tune your Code Generation results, add code comments to your file that explain
+   what you want to build. Code Generation treats your code comments like chat. Your code comments
+   update the `user_instruction`, and then improve the next results you receive.
+
+As you work, GitLab Duo provides code suggestions that use your other open files
+(within [truncation limits](#truncation-of-file-content))
+as extra context.
+
+To learn about the code that builds the prompt, see these files:
+
+- **Code Generation**:
+  [`ee/lib/api/code_suggestions.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/lib/api/code_suggestions.rb#L76)
+  in the `gitlab` repository.
+- **Code Completion**:
+  [`ai_gateway/code_suggestions/processing/completions.py`](https://gitlab.com/gitlab-org/modelops/applied-ml/code-suggestions/ai-assist/-/blob/fcb3f485a8f047a86a8166aad81f93b6d82106a7/ai_gateway/code_suggestions/processing/completions.py#L273)
+  in the `modelops` repository.
+
+We'd love your feedback about the Advanced Context feature in
+[issue 258](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/258).
+
+### Advanced Context supported languages
+
+The Advanced Context feature supports these languages:
+
+- Code Completion: all configured languages.
+- Code Generation: Go, Java, JavaScript, Kotlin, Python, Ruby, Rust, TypeScript (`.ts` and `.tsx` files), Vue, and YAML.
 
 ## Response time
 
@@ -133,7 +191,19 @@ To disable direct connections to the gateway:
 
 ## Inference window context
 
-Code Suggestions inferences against the currently opened file, the content before and after the cursor, the filename, and the extension type. For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/435271) in GitLab 16.8.
+> - [Introduced](https://gitlab.com/gitlab-org/editor-extensions/gitlab-lsp/-/issues/206) open tabs context in GitLab 17.2 [with flags](../../../../administration/feature_flags.md) named `advanced_context_resolver` and `code_suggestions_context`. Disabled by default.
+
+Code Suggestions inferences against:
+
+- The currently opened file
+- The content before and after the cursor
+- The filename and extension.
+- In GitLab 17.2 and later when the `advanced_context_resolver` and `code_suggestions_context` feature flags are enabled.
+  - Files opened in other tabs.
+  - User instructions
+
+For more information on possible future context expansion to improve the quality of suggestions, see [epic 11669](https://gitlab.com/groups/gitlab-org/-/epics/11669).
 
 ## Truncation of file content
 
