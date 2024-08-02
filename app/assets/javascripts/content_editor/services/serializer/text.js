@@ -1,5 +1,5 @@
-import { defaultMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
-
-const { text } = defaultMarkdownSerializer.nodes;
+const text = (state, node) => {
+  state.text(node.text, !state.inAutolink);
+};
 
 export default text;

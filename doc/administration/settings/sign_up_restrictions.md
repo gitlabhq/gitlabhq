@@ -76,7 +76,7 @@ To enforce confirmation of the email address used for new sign ups:
 
 The following settings are available:
 
-- **Hard** - Send a confirmation email during sign up. New users must confirm their email address before they can log in.
+- **Hard** - Send a confirmation email during sign up. New users must confirm their email address before they can sign in.
 - **Soft** - Send a confirmation email during sign up. New users can sign in immediately, but must confirm their email in three days. After three days, the user is not able to sign in until they confirm their email.
 - **Off** - New users can sign up without confirming their email address.
 

@@ -9,7 +9,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 You can generate test vulnerabilities for the [Vulnerability Report](../../user/application_security/vulnerability_report/index.md) to test GitLab
 vulnerability management features without running a pipeline.
 
-1. Log in to GitLab.
+1. Sign in to GitLab.
 1. Go to `/-/user_settings/personal_access_tokens` and generate a personal access token with `api` permissions.
 1. Go to your project page and find the project ID. You can find the project ID below the project title.
 1. Clone the GitLab repository to your local machine.

@@ -39,7 +39,7 @@ Failed to contact primary https://primary.domain.com/namespace/push_test.git\\nE
 
 ### Repair OAuth authorization between Geo sites
 
-When upgrading a Geo site, you might not be able to log in into a secondary site that only uses OAuth for authentication. In that case, start a [Rails console](../../../operations/rails_console.md) session on your primary site and perform the following steps:
+When upgrading a Geo site, you might not be able to sign into a secondary site that only uses OAuth for authentication. In that case, start a [Rails console](../../../operations/rails_console.md) session on your primary site and perform the following steps:
 
 1. To find the affected node, first list all the Geo Nodes you have:
 

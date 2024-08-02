@@ -39,7 +39,7 @@ Instances running on Community Edition (CE) require a migration to Enterprise Ed
 NOTE:
 Because any given GitLab upgrade might involve data disk updates or database schema upgrades, swapping out the AMI is not sufficient for taking upgrades.
 
-1. Log in to the AWS Web Console, so that selecting the links in the following step take you directly to the AMI list.
+1. Sign in to the AWS Web Console, so that selecting the links in the following step take you directly to the AMI list.
 1. Pick the edition you want:
 
    - [GitLab Enterprise Edition](https://console.aws.amazon.com/ec2/v2/home?region=us-east-1#Images:visibility=public-images;owner=782774275127;search=GitLab%20EE;sort=desc:name): If you want to unlock the enterprise features, a license is needed.

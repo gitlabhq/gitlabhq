@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::Redis::Cache do
+RSpec.describe Gitlab::Redis::Cache, feature_category: :shared do
   let(:instance_specific_config_file) { "config/redis.cache.yml" }
 
   include_examples "redis_shared_examples"

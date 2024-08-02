@@ -38,6 +38,8 @@ swap:
   installation from source: self-compiled installation
   installations from source: self-compiled installations
   it is recommended: "you should"
+  log in: "sign in"
+  log-in: "sign in"
   logged in user: "authenticated user"
   logged-in user: "authenticated user"
   machine-learning: "machine learning"

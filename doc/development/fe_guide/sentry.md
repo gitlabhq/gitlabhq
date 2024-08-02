@@ -22,7 +22,7 @@ The [Frontend Observability Working Group](https://handbook.gitlab.com/handbook/
 Our Sentry instance is located at [https://new-sentry.gitlab.net/](https://new-sentry.gitlab.net/).
 Only GitLab team members can access Sentry.
 
-After your first log-in you can join the `#gitlab` team by selecting **Join a team**. Confirm that
+After your first sign in you can join the `#gitlab` team by selecting **Join a team**. Confirm that
 `#gitlab` appears under `YOUR TEAMS` in the [teams page](https://new-sentry.gitlab.net/settings/gitlab/teams/).
 
 ## Error reporting

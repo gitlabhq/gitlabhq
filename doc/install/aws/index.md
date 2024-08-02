@@ -744,7 +744,7 @@ If Proxy protocol is enabled in the [load balancer](#load-balancer) we created e
    sudo gitlab-ctl reconfigure
    ```
 
-### Log in for the first time
+### Sign in for the first time
 
 Using the domain name you used when setting up [DNS for the load balancer](#configure-dns-for-load-balancer), you should now be able to visit GitLab in your browser.
 
@@ -753,7 +753,7 @@ Depending on how you installed GitLab and if you did not change the password by 
 - Your instance ID if you used the official GitLab AMI.
 - A randomly generated password stored for 24 hours in `/etc/gitlab/initial_root_password`.
 
-To change the default password, log in as the `root` user with the default password and [change it in the user profile](../../user/profile/user_passwords.md#change-your-password).
+To change the default password, sign in as the `root` user with the default password and [change it in the user profile](../../user/profile/user_passwords.md#change-your-password).
 
 When our [auto scaling group](#create-an-auto-scaling-group) spins up new instances, we are able to sign in with username `root` and the newly created password.
 

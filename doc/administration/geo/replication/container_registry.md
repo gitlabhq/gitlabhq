@@ -80,7 +80,7 @@ To be able to replicate new container images, the container registry must send n
 **primary** site for every push. The token shared between the container registry and the web nodes on the
 **primary** is used to make communication more secure.
 
-1. SSH into your GitLab **primary** server and log in as root (for GitLab HA, you only need a Registry node):
+1. SSH into your GitLab **primary** server and sign in as root (for GitLab HA, you only need a Registry node):
 
    ```shell
    sudo -i
@@ -141,7 +141,7 @@ generate a short-lived JWT that is pull-only-capable to access the
 
 For each application and Sidekiq node on the **secondary** site:
 
-1. SSH into the node and log in as the `root` user:
+1. SSH into the node and sign in as the `root` user:
 
    ```shell
    sudo -i

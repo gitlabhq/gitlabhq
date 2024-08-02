@@ -4,11 +4,11 @@ group: Import and Integrate
 info: To determine the technical writer assigned to the Stage/Group associated with this page, see https://handbook.gitlab.com/handbook/product/ux/technical-writing/#assignments
 ---
 
-## Troubleshooting importing a project from GitHub to GitLab
+# Troubleshooting importing a project from GitHub to GitLab
 
 When importing a project from GitHub to GitLab, you might encounter the following issues.
 
-### Manually continue a previously failed import process
+## Manually continue a previously failed import process
 
 In some cases, the GitHub import process can fail to import the repository. This causes GitLab to abort the project import process and requires the
 repository to be imported manually. Administrators can manually import the repository for a failed import process:
@@ -55,7 +55,7 @@ repository to be imported manually. Administrators can manually import the repos
    Gitlab::GithubImport::Stage::ImportRepositoryWorker.perform_async(project.id)
    ```
 
-### Import fails due to missing prefix
+## Import fails due to missing prefix
 
 In GitLab 16.5 and later, you might get an error that states `Import failed due to a GitHub error: (HTTP 406)`.
 
@@ -63,11 +63,11 @@ This issue occurs because, in GitLab 16.5, the path prefix `api/v3` was removed 
 
 To work around this error, [add the `api/v3` prefix](https://gitlab.com/gitlab-org/gitlab/-/issues/438358#note_1978902725) when importing from a GitHub Enterprise URL.
 
-### Errors when importing large projects
+## Errors when importing large projects
 
 The GitHub importer might encounter some errors when importing large projects.
 
-#### Missing comments
+### Missing comments
 
 The GitHub API has a limit that prevents more than approximately 30,000 notes or diff notes from being imported.
 When this limit is reached, the GitHub API instead returns the following error:
@@ -80,7 +80,7 @@ When importing GitHub projects with a large number of comments, select the **Use
 [additional item to import](github.md#select-additional-items-to-import) checkbox. This setting makes the import process take longer because it increases the number of network requests
 required to perform the import.
 
-#### Reduce GitHub API request objects per page
+### Reduce GitHub API request objects per page
 
 Some GitHub API endpoints might return a `500` or `502` error for project imports from large repositories.
 To reduce the chance of these errors, in the group project importing the data, enable the
@@ -106,7 +106,7 @@ To disable the feature flag, run this command:
 Feature.disable(:github_importer_lower_per_page_limit, group)
 ```
 
-### GitLab instance cannot connect to GitHub
+## GitLab instance cannot connect to GitHub
 
 Self-managed instances that run GitLab 15.10 or earlier, and are behind proxies, cannot resolve DNS for `github.com` or `api.github.com`.
 The GitLab instance fails to connect to GitHub during the import and you must add `github.com` and `api.github.com`

@@ -8,7 +8,7 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/storage/azblob v1.4.0
 	github.com/BurntSushi/toml v1.4.0
 	github.com/alecthomas/chroma/v2 v2.14.0
-	github.com/aws/aws-sdk-go v1.55.2
+	github.com/aws/aws-sdk-go v1.55.3
 	github.com/disintegration/imaging v1.6.2
 	github.com/dlclark/regexp2 v1.11.2
 	github.com/getsentry/raven-go v0.2.0

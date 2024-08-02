@@ -26,7 +26,7 @@ Ensure that you have:
 
 To generate a new secret in Fortanix DSM and use it with GitLab:
 
-1. Log in to your Fortanix DSM account.
+1. Sign in to your Fortanix DSM account.
 1. In Fortanix DSM, [create a new group and an application](https://support.fortanix.com/hc/en-us/articles/360015809372-User-s-Guide-Getting-Started-with-Fortanix-Data-Security-Manager-UI).
 1. Configure the [API Key as the authentication method for the application](https://support.fortanix.com/hc/en-us/articles/360033272171-User-s-Guide-Authentication).
 1. Use the following code to generate a new plugin in Fortanix DSM:
@@ -178,7 +178,7 @@ To use a secret that already exists in Fortanix DSM with GitLab:
 
 To set up code signing securely in your GitLab environment:
 
-1. Log in to your Fortanix DSM account.
+1. Sign in to your Fortanix DSM account.
 1. Import `keystore_password` and `key_password` as secrets in Fortanix DSM. Ensure that they are marked as exportable.
 
    ![dsm_secret_import_2](img/dsm_secret_import_2.png)

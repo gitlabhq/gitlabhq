@@ -46,7 +46,7 @@ Set aside about 15 minutes to launch the GDK in Gitpod.
 
    Select the `http://127.0.0.1:3000` to open the GitLab development environment in a new browser tab.
 
-1. After the environment loads, log in as the default `root` user and
+1. After the environment loads, sign in as the default `root` user and
    follow the prompts to change the default password:
 
    - Username: `root`

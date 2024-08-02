@@ -90,8 +90,8 @@ For example, to create a Python web service with some specific requirements,
 you might write something like:
 
 ```plaintext
-# Create a web service using Tornado that allows a user to log in, run a security scan, and review the scan results.
-# Each action (log in, run a scan, and review results) should be its own resource in the web service
+# Create a web service using Tornado that allows a user to sign in, run a security scan, and review the scan results.
+# Each action (sign in, run a scan, and review results) should be its own resource in the web service
 ...
 ```
 

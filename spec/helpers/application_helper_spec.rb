@@ -778,21 +778,7 @@ RSpec.describe ApplicationHelper do
     end
 
     describe 'with-top-bar' do
-      context 'when @hide_top_bar_padding is false' do
-        before do
-          helper.instance_variable_set(:@hide_top_bar_padding, false)
-        end
-
-        it { is_expected.to include('with-top-bar') }
-      end
-
-      context 'when @hide_top_bar_padding is true' do
-        before do
-          helper.instance_variable_set(:@hide_top_bar_padding, true)
-        end
-
-        it { is_expected.not_to include('with-top-bar') }
-      end
+      it { is_expected.to include('with-top-bar') }
     end
   end
 

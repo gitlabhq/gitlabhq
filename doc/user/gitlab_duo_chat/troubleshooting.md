@@ -50,7 +50,7 @@ This error occurs when:
 - You ask GitLab Duo Chat about items (like issues, epics, and merge requests) you don't have access to, or about items that don't exist.
 - Your session has expired.
 
-Try again, asking about items you have access to. If you continue to experience issues, it might be due to an expired session. To continue using GitLab Duo Chat, log in again. For more information, see [Control GitLab Duo availability](../gitlab_duo/turn_on_off.md).
+Try again, asking about items you have access to. If you continue to experience issues, it might be due to an expired session. To continue using GitLab Duo Chat, sign in again. For more information, see [Control GitLab Duo availability](../gitlab_duo/turn_on_off.md).
 
 ## `Error M3004`
 

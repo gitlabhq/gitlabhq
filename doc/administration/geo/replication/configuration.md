@@ -107,7 +107,7 @@ The SSH host key path depends on the used software:
 
 In the following steps, replace `<ssh_host_key_path>` with the one you're using:
 
-1. SSH into **each Rails node on your secondary** site and log in as the `root` user:
+1. SSH into **each Rails node on your secondary** site and sign in as the `root` user:
 
    ```shell
    sudo -i

@@ -166,7 +166,7 @@ method as the default:
 
 ## Link a GitLab.com account
 
-Follow this guideline if you have a legacy Customers Portal profile to log in.
+Follow this guideline if you have a legacy Customers Portal profile to sign in.
 
 To link a GitLab.com account to your Customers Portal profile:
 
@@ -208,5 +208,5 @@ Resellers do not have access to the Customers Portal, or their customers' accoun
 
 After your subscription order is processed, you will receive several emails:
 
-- A "Welcome to the Customers Portal" email, including instructions on how to log in.
+- A "Welcome to the Customers Portal" email, including instructions on how to sign in.
 - A purchase confirmation email with instructions on how to provision access.

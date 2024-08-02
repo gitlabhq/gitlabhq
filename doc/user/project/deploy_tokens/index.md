@@ -70,7 +70,7 @@ use in a CI/CD pipeline:
 - `CI_DEPLOY_USER`: Username
 - `CI_DEPLOY_PASSWORD`: Token
 
-For example, to use a GitLab token to log in to your GitLab container registry:
+For example, to use a GitLab token to sign in to your GitLab container registry:
 
 ```shell
 echo "$CI_DEPLOY_PASSWORD" | docker login $CI_REGISTRY -u $CI_DEPLOY_USER --password-stdin

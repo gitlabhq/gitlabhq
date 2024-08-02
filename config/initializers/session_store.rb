@@ -32,6 +32,7 @@ cookie_key = if Rails.env.development?
              end
 
 ::Redis::Store::Factory.prepend(Gitlab::Patch::RedisStoreFactory)
+::Redis::Store::Factory.singleton_class.prepend(Gitlab::Patch::RedisStoreFactoryClassMethods)
 
 Rails.application.configure do
   config.session_store(

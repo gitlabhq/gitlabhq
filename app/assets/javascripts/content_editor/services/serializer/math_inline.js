@@ -1,9 +1,9 @@
-import { defaultMarkdownSerializer } from '~/lib/prosemirror_markdown_serializer';
-
 const mathInline = {
-  open: (...args) => `$${defaultMarkdownSerializer.marks.code.open(...args)}`,
-  close: (...args) => `${defaultMarkdownSerializer.marks.code.close(...args)}$`,
+  open: '$`',
+  close: '`$',
+  mixable: true,
   escape: false,
+  expelEnclosingWhitespace: true,
 };
 
 export default mathInline;
