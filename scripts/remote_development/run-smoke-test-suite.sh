@@ -8,74 +8,89 @@ BGreen='\033[1;32m'
 BBlue='\033[1;34m'
 Color_Off='\033[0m'
 
+set -o errexit
+set -o pipefail
+trap onexit_err ERR
+
 # Exit handling
 function onexit_err() {
   local exit_status=${1:-$?}
   printf "\n❌❌❌ ${BRed}Remote Development smoke test failed!${Color_Off} ❌❌❌\n"
   if [ "${REVEAL_RUBOCOP_TODO}" -ne 0 ]; then
-    printf "\n(If the failure was due to rubocop, set REVEAL_RUBOCOP_TODO=0 to ignore TODOs)\n"
+    printf "\n${BRed}- If the failure was due to rubocop, try setting REVEAL_RUBOCOP_TODO=0 to ignore TODOs${Color_Off}\n"
   fi
+
+  printf "\n${BRed}- If the failure was in a feature spec, those sometimes are flaky, try running it focused${Color_Off}\n"
+
   exit "${exit_status}"
 }
-trap onexit_err ERR
-set -o errexit
 
 function print_start_message {
+  trap onexit_err ERR
+
   printf "${BCyan}\nStarting Remote Development smoke test...${Color_Off}\n\n"
 }
 
 function run_rubocop {
+  trap onexit_err ERR
+
   printf "${BBlue}Running RuboCop${Color_Off}\n\n"
+
   files_for_rubocop=()
-  while IFS= read -r -d '' file; do
+
+  while IFS='' read -r file; do
     files_for_rubocop+=("$file")
-  done < <(find app lib spec ee/app ee/lib ee/spec \( -path '**/remote_development/*.rb' -o -path '**/gitlab/fp/*.rb' \) -print0)
-  files_for_rubocop+=(
-      "spec/support/matchers/invoke_rop_steps.rb"
-      "spec/support/railway_oriented_programming.rb"
-      "spec/support_specs/matchers/result_matchers_spec.rb"
-  )
+  done < <(git ls-files -- '**/remote_development/*.rb' '**/gitlab/fp/*.rb' '*_rop_*.rb' '*railway_oriented_programming*.rb' '*_result_matchers*.rb')
+
   REVEAL_RUBOCOP_TODO=${REVEAL_RUBOCOP_TODO:-1} bundle exec rubocop --parallel --force-exclusion --no-server "${files_for_rubocop[@]}"
 }
 
 function run_fp {
+  trap onexit_err ERR
+
   printf "\n\n${BBlue}Running backend RSpec FP specs${Color_Off}\n\n"
 
   files_for_fp=()
 
-  while IFS= read -r file; do
+  while IFS='' read -r file; do
       files_for_fp+=("$file")
-  done < <(find spec/lib/gitlab/fp -path '**/*_spec.rb')
+  done < <(git ls-files -- '**/gitlab/fp/*_spec.rb')
+
 
   bin/rspec "${files_for_fp[@]}"
 }
 
 function run_rspec_fast {
-  printf "\n\n${BBlue}Running backend RSpec fast specs${Color_Off}\n\n"
+  trap onexit_err ERR
 
-  # NOTE: We do not use `--tag rd_fast` here, because `rd_fast_spec_helper` has a check to ensure that all the
-  #       files which require it are tagged with `rd_fast`.
+  printf "\n\n${BBlue}Running backend RSpec fast specs${Color_Off}\n\n"
 
   files_for_fast=()
 
-  while IFS= read -r file; do
+  while IFS='' read -r file; do
       files_for_fast+=("$file")
-  done < <(find spec ee/spec -path '**/remote_development/*_spec.rb' -exec grep -lE 'require_relative.*rd_fast_spec_helper' {} +)
+  done < <(git grep -l -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb')
 
   bin/rspec "${files_for_fast[@]}"
 }
 
 function run_jest {
+  trap onexit_err ERR
+
   printf "\n\n${BBlue}Running Remote Development frontend Jest specs${Color_Off}\n\n"
   yarn jest ee/spec/frontend/workspaces
 }
 
-function run_rspec_rails {
+function run_rspec_rails_non_fast {
+  trap onexit_err ERR
+
   printf "\n\n${BBlue}Running backend RSpec non-fast specs${Color_Off}\n\n"
+
   files_for_rails=()
-  while IFS= read -r file; do
+
+  while IFS='' read -r file; do
       files_for_rails+=("$file")
-  done < <(find spec ee/spec -path '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
+  done < <(git grep -L -E '^require .fast_spec_helper' -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep -v '/features/')
 
   files_for_rails+=(
       "ee/spec/graphql/types/query_type_spec.rb"
@@ -85,15 +100,17 @@ function run_rspec_rails {
       "spec/support_specs/matchers/result_matchers_spec.rb"
   )
 
-  bin/rspec -r spec_helper --tag ~rd_fast "${files_for_rails[@]}"
+  bin/rspec "${files_for_rails[@]}"
 }
 
 function run_rspec_feature {
-  printf "\n\n${BBlue}Running backend RSpec feature specs${Color_Off}\n\n"
+  trap onexit_err ERR
+
+  printf "\n\n${BBlue}Running backend RSpec feature specs (NOTE: These sometimes are flaky! If one fails, try running it focused)...${Color_Off}\n\n"
   files_for_feature=()
-  while IFS= read -r file; do
+  while IFS='' read -r file; do
       files_for_feature+=("$file")
-  done < <(find ee/spec -path '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
+  done < <(git ls-files -- '**/remote_development/*_spec.rb' | grep -v 'qa/qa' | grep '/features/')
 
   bin/rspec -r spec_helper "${files_for_feature[@]}"
 }
@@ -103,6 +120,8 @@ function print_success_message {
 }
 
 function main {
+  trap onexit_err ERR
+
   # cd to gitlab root directory
   cd "$(dirname "${BASH_SOURCE[0]}")"/../..
 
@@ -115,7 +134,7 @@ function main {
   [ -z "${SKIP_FP}" ] && run_fp
   [ -z "${SKIP_FAST}" ] && run_rspec_fast
   [ -z "${SKIP_JEST}" ] && run_jest
-  [ -z "${SKIP_RAILS}" ] && run_rspec_rails
+  [ -z "${SKIP_RAILS}" ] && run_rspec_rails_non_fast
   [ -z "${SKIP_FEATURE}" ] && run_rspec_feature
 
   print_success_message

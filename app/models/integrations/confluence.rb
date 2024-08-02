@@ -37,12 +37,12 @@ module Integrations
       if activated?
         wiki_url = project.wiki.web_url
 
-        s_(
-          'ConfluenceService|Your GitLab wiki is still available at %{wiki_link}. To re-enable the link to the GitLab wiki, disable this integration.' %
-          { wiki_link: ActionController::Base.helpers.link_to(wiki_url, wiki_url) }
-        ).html_safe
+        docs_link = ActionController::Base.helpers.link_to('', wiki_url, target: '_blank', rel: 'noopener noreferrer')
+        tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
+
+        safe_format(s_("'ConfluenceService|Your GitLab wiki is still available at %{link_start}#{wiki_url}%{link_end}. To re-enable the link to the GitLab wiki, disable this integration."), tag_pair_docs_link)
       else
-        s_('ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces the "Wiki" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at the original URL.').html_safe
+        s_('ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces the "Wiki" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at the original URL.')
       end
     end
 

@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'json_schemer'
-
 module WebIde
   module Settings
     class ExtensionsGalleryValidator

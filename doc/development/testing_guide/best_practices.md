@@ -844,6 +844,9 @@ really fast because:
 - GitLab Shell and Gitaly setup are skipped
 - Test repositories setup are skipped
 
+It takes around one second to load tests that are using `fast_spec_helper`
+instead of 30+ seconds in case of a regular `spec_helper`.
+
 `fast_spec_helper` also support autoloading classes that are located inside the
 `lib/` directory. If your class or module is using only
 code from the `lib/` directory, you don't need to explicitly load any
@@ -861,10 +864,15 @@ should either:
 - Add `require_dependency 're2'` to files in your library that need `re2` gem,
   to make this requirement explicit. This approach is preferred.
 - Add it to the spec itself.
-- Use `rubocop_spec_helper` for RuboCop related specs.
 
-It takes around one second to load tests that are using `fast_spec_helper`
-instead of 30+ seconds in case of a regular `spec_helper`.
+Alternately, if it is a dependency which is required by many different `fast_spec_helper`
+specs in your domain, and you don't want to have to manually add the dependency many
+times, you can add it to be called directly from `fast_spec_helper` itself. To do
+this, you can create a `spec/support/fast_spec/YOUR_DOMAIN/fast_spec_helper_support.rb`
+file, and require it from `fast_spec_helper`. There are existing examples of this
+you can follow.
+
+Use `rubocop_spec_helper` for RuboCop related specs.
 
 WARNING:
 To verify that code and its specs are well-isolated from Rails, run the spec

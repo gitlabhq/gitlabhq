@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../web_ide_fast_spec_helper"
+require "fast_spec_helper"
 
 RSpec.describe WebIde::Settings::SettingsInitializer, :web_ide_fast, feature_category: :web_ide do
   let(:all_possible_requested_setting_names) { WebIde::Settings::DefaultSettings.default_settings.keys }

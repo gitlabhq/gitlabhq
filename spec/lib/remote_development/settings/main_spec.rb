@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require_relative "../rd_fast_spec_helper"
+require "fast_spec_helper"
 
-RSpec.describe RemoteDevelopment::Settings::Main, :rd_fast, feature_category: :remote_development do
+RSpec.describe RemoteDevelopment::Settings::Main, feature_category: :remote_development do
   let(:settings) { 'some settings' }
   let(:context_passed_along_steps) { { settings: settings } }
 

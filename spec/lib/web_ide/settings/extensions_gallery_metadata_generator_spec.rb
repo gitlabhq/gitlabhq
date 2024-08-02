@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative "../web_ide_fast_spec_helper"
+require "fast_spec_helper"
 
 RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, :web_ide_fast, feature_category: :web_ide do
   using RSpec::Parameterized::TableSyntax

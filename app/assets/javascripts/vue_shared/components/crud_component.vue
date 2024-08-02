@@ -17,9 +17,9 @@ export default {
       default: null,
     },
     count: {
-      type: Number,
+      type: [String, Number],
       required: false,
-      default: null,
+      default: '',
     },
     icon: {
       type: String,

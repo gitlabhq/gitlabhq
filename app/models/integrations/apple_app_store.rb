@@ -57,22 +57,28 @@ module Integrations
 
     def self.help
       variable_list = [
-        '<code>APP_STORE_CONNECT_API_KEY_ISSUER_ID</code>',
-        '<code>APP_STORE_CONNECT_API_KEY_KEY_ID</code>',
-        '<code>APP_STORE_CONNECT_API_KEY_KEY</code>',
-        '<code>APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64</code>'
+        ActionController::Base.helpers.content_tag(:code, 'APP_STORE_CONNECT_API_KEY_ISSUER_ID'),
+        ActionController::Base.helpers.content_tag(:code, 'APP_STORE_CONNECT_API_KEY_KEY_ID'),
+        ActionController::Base.helpers.content_tag(:code, 'APP_STORE_CONNECT_API_KEY_KEY'),
+        ActionController::Base.helpers.content_tag(:code, 'APP_STORE_CONNECT_API_KEY_IS_KEY_CONTENT_BASE64')
       ]
 
-      # rubocop:disable Layout/LineLength
+      docs_link = ActionController::Base.helpers.link_to(
+        '',
+        Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'),
+        target: '_blank',
+        rel: 'noopener noreferrer'
+      )
+      tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
+
       texts = [
         s_("Use this integration to connect to the Apple App Store with fastlane in CI/CD pipelines."),
         s_("After you enable the integration, the following protected variables are created for CI/CD use:"),
-        variable_list.join('<br>'),
-        s_(format("For more information, see the <a href='%{url}' target='_blank'>documentation</a>.", url: Rails.application.routes.url_helpers.help_page_url('user/project/integrations/apple_app_store'))).html_safe
+        ActionController::Base.helpers.safe_join(variable_list, ActionController::Base.helpers.tag(:br)),
+        safe_format(s_("For more information, see the %{link_start}documentation%{link_end}."), tag_pair_docs_link)
       ]
-      # rubocop:enable Layout/LineLength
 
-      texts.join('<br><br>'.html_safe)
+      ActionController::Base.helpers.safe_join(texts, ActionController::Base.helpers.tag(:br) * 2)
     end
 
     def self.to_param

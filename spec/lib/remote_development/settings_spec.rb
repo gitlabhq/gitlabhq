@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe RemoteDevelopment::Settings, :rd_fast, feature_category: :remote_development do
+RSpec.describe RemoteDevelopment::Settings, feature_category: :remote_development do
   let(:response_hash) { { settings: { some_setting: 42 }, status: :success } }
   let(:get_settings_args) { { requested_setting_names: [:some_setting], options: { some_option: 42 } } }
 

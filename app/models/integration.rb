@@ -747,7 +747,7 @@ class Integration < ApplicationRecord
 
   private
 
-  def self.build_help_page_url(url_path, help_text, options = {})
+  def self.build_help_page_url(url_path, help_text, link_text = _("Learn More"), options = {})
     docs_link = ActionController::Base.helpers.link_to(
       '',
       Rails.application.routes.url_helpers.help_page_url(url_path, **options),
@@ -756,7 +756,7 @@ class Integration < ApplicationRecord
     )
     tag_pair_docs_link = tag_pair(docs_link, :link_start, :link_end)
 
-    safe_format(help_text + s_(" %{link_start}Learn More%{link_end}."), tag_pair_docs_link)
+    safe_format(help_text + " %{link_start}#{link_text}%{link_end}.", tag_pair_docs_link)
   end
 
   # Ancestors sorted by hierarchy depth in bottom-top order.

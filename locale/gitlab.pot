@@ -16,9 +16,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
 
-msgid " %{link_start}Learn More%{link_end}."
-msgstr ""
-
 msgid " %{start} to %{end}"
 msgstr ""
 
@@ -8197,9 +8194,6 @@ msgstr ""
 msgid "Because you enabled auto-banning, we have also automatically banned this user from %{scope}. If this is a mistake, you can unban them: %{url}."
 msgstr ""
 
-msgid "Before enabling this integration, create a webhook for the space in Google Chat where you want to receive notifications from this project. %{docs_link}"
-msgstr ""
-
 msgid "Before inserting code, be sure to read the comment that separated each code group."
 msgstr ""
 
@@ -14208,9 +14202,6 @@ msgstr ""
 msgid "ConfluenceService|Link to a Confluence Workspace from the sidebar. Enabling this integration replaces the \"Wiki\" sidebar link with a link to the Confluence Workspace. The GitLab wiki is still available at the original URL."
 msgstr ""
 
-msgid "ConfluenceService|Your GitLab wiki is still available at %{wiki_link}. To re-enable the link to the GitLab wiki, disable this integration."
-msgstr ""
-
 msgid "Congratulations, your free trial is activated."
 msgstr ""
 
@@ -17203,7 +17194,7 @@ msgstr ""
 msgid "Database update failed"
 msgstr ""
 
-msgid "DatadogIntegration|%{linkOpen}API key%{linkClose} used for authentication with Datadog."
+msgid "DatadogIntegration|%{link_start}API key%{link_end} used for authentication with Datadog."
 msgstr ""
 
 msgid "DatadogIntegration|(Advanced) The full URL for your Datadog site."
@@ -17221,10 +17212,7 @@ msgstr ""
 msgid "DatadogIntegration|For self-managed deployments, set the %{codeOpen}env%{codeClose} tag for all the data sent to Datadog. %{linkOpen}How do I use tags?%{linkClose}"
 msgstr ""
 
-msgid "DatadogIntegration|How do I set up this integration?"
-msgstr ""
-
-msgid "DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues. %{docs_link}"
+msgid "DatadogIntegration|Send CI/CD pipeline information to Datadog to monitor for job failures and troubleshoot performance issues."
 msgstr ""
 
 msgid "DatadogIntegration|Service"
@@ -22892,6 +22880,9 @@ msgstr ""
 msgid "For more information, go to the "
 msgstr ""
 
+msgid "For more information, see the %{link_start}documentation%{link_end}."
+msgstr ""
+
 msgid "For more information, see the developer console. Try to reload the page or sign out and in again. If the issue persists, %{reportIssueStart}report a problem%{reportIssueEnd}."
 msgstr ""
 
@@ -26577,6 +26568,9 @@ msgid "How do I rename an environment?"
 msgstr ""
 
 msgid "How do I set up a Google Chat webhook?"
+msgstr ""
+
+msgid "How do I set up this integration?"
 msgstr ""
 
 msgid "How do I set up this service?"
@@ -46568,9 +46562,6 @@ msgstr ""
 msgid "Scan pushed document contents for policy breaks. %{docs_link}"
 msgstr ""
 
-msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} %{actionType}"
-msgstr ""
-
 msgid "ScanExecutionPolicy|%{boldStart}Run%{boldEnd} %{typeSelector} from the project %{projectSelector} with ref %{refSelector}"
 msgstr ""
 
@@ -46638,9 +46629,6 @@ msgid "ScanExecutionPolicy|DAST site profiles"
 msgstr ""
 
 msgid "ScanExecutionPolicy|File reference (Optional) %{refSelector}"
-msgstr ""
-
-msgid "ScanExecutionPolicy|If there are any conflicting variables with the local pipeline configuration (Ex, gitlab-ci.yml) then variables defined here will take precedence. %{linkStart}Learn more%{linkEnd}."
 msgstr ""
 
 msgid "ScanExecutionPolicy|Inject"
@@ -46898,13 +46886,19 @@ msgstr ""
 msgid "ScanResultPolicy|Pre-existing"
 msgstr ""
 
+msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection}"
+msgstr ""
+
+msgid "ScanResultPolicy|Prevent %{linkStart}group branch%{linkEnd} modification %{exceptSelection} matching the wildcard pattern: %{projectSelection}"
+msgstr ""
+
 msgid "ScanResultPolicy|Prevent approval by commit author"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent approval by merge request's author"
 msgstr ""
 
-msgid "ScanResultPolicy|Prevent branch modification"
+msgid "ScanResultPolicy|Prevent project branch modification"
 msgstr ""
 
 msgid "ScanResultPolicy|Prevent pushing and force pushing"
@@ -46970,7 +46964,10 @@ msgstr ""
 msgid "ScanResultPolicy|When enabled, merge request authors cannot approve their own MRs."
 msgstr ""
 
-msgid "ScanResultPolicy|When enabled, prevents a user from removing a branch from the protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy."
+msgid "ScanResultPolicy|When enabled, prevents a user from removing a branch from the group protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy."
+msgstr ""
+
+msgid "ScanResultPolicy|When enabled, prevents a user from removing a branch from the project protected branches list, deleting a protected branch, or changing the default branch if that branch is included in the security policy."
 msgstr ""
 
 msgid "ScanResultPolicy|When enabled, prevents pushing and force pushing to a protected branch if that branch is included in the security policy."
@@ -47973,9 +47970,6 @@ msgstr ""
 msgid "SecurityOrchestration|Enforce %{linkStart}security policies%{linkEnd} for this project."
 msgstr ""
 
-msgid "SecurityOrchestration|Enforce custom CI with pipeline execution action for scan execution policies. %{linkStart}How do I implement this feature?%{linkEnd}"
-msgstr ""
-
 msgid "SecurityOrchestration|Enforce policy on all groups, subgroups, and projects linked to the security policy project. %{linkStart}How does scoping work?%{linkEnd}"
 msgstr ""
 
@@ -47983,6 +47977,9 @@ msgid "SecurityOrchestration|Enforce the following pipeline execution policy:"
 msgstr ""
 
 msgid "SecurityOrchestration|Every time a pipeline runs for %{branches}%{branchExceptionsString}"
+msgstr ""
+
+msgid "SecurityOrchestration|Ex: development/*"
 msgstr ""
 
 msgid "SecurityOrchestration|Exception branches"
@@ -48049,9 +48046,6 @@ msgid "SecurityOrchestration|Inherited"
 msgstr ""
 
 msgid "SecurityOrchestration|Inherited from %{namespace}"
-msgstr ""
-
-msgid "SecurityOrchestration|Introducing Pipeline Execution Policy Action experimental feature"
 msgstr ""
 
 msgid "SecurityOrchestration|Invalid Compliance Framework ID(s)"
@@ -48305,9 +48299,6 @@ msgstr ""
 msgid "SecurityOrchestration|Severity is %{severity}."
 msgstr ""
 
-msgid "SecurityOrchestration|Share feedback"
-msgstr ""
-
 msgid "SecurityOrchestration|Show all included projects"
 msgstr ""
 
@@ -48558,6 +48549,9 @@ msgid "SecurityOrchestration|compliance frameworks"
 msgstr ""
 
 msgid "SecurityOrchestration|default"
+msgstr ""
+
+msgid "SecurityOrchestration|except branches"
 msgstr ""
 
 msgid "SecurityOrchestration|except projects"
@@ -49379,9 +49373,6 @@ msgid "Send message"
 msgstr ""
 
 msgid "Send notifications about project events to Mattermost channels."
-msgstr ""
-
-msgid "Send notifications about project events to a Discord channel. %{docs_link}"
 msgstr ""
 
 msgid "Send notifications for broken pipelines."

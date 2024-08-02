@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Fp::MessageSupport, :rd_fast, feature_category: :shared do
+RSpec.describe Gitlab::Fp::MessageSupport, feature_category: :shared do
   let(:extending_class) do
     Class.new do
       extend Gitlab::Fp::MessageSupport

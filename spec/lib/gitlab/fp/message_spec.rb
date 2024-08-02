@@ -2,7 +2,7 @@
 
 require 'fast_spec_helper'
 
-RSpec.describe Gitlab::Fp::Message, :rd_fast, feature_category: :shared do
+RSpec.describe Gitlab::Fp::Message, feature_category: :shared do
   describe '#==' do
     it 'implements equality' do
       expect(described_class.new({ a: 1 })).to eq(described_class.new(a: 1))

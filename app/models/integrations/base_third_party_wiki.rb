@@ -2,6 +2,8 @@
 
 module Integrations
   class BaseThirdPartyWiki < Integration
+    include SafeFormatHelper
+
     attribute :category, default: 'third_party_wiki'
 
     validate :only_one_third_party_wiki, if: :activated?, on: :manual_change
