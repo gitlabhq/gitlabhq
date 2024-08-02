@@ -6,6 +6,6 @@
     = gl_tab_link_to _('Inactive'), explore_projects_path({ archived: 'only' }), { item_active: current_page?(explore_projects_path) && params['archived'] == 'only', data: { event_tracking: 'click_tab_projects_explore', event_label: 'Inactive' } }
     = gl_tab_link_to _('All'), explore_projects_path({ archived: true }), { item_active: current_page?(explore_projects_path) && params['archived'] == 'true', data: { event_tracking: 'click_tab_projects_explore', event_label: 'All' } }
 
-#js-projects-explore-filtered-search-and-sort.gl-py-5.gl-border-t.gl-border-b{ data: { app_data: projects_explore_filtered_search_and_sort_app_data } }
+#js-projects-filtered-search-and-sort.gl-py-5.gl-border-t.gl-border-b{ data: { app_data: projects_filtered_search_and_sort_app_data } }
   -# This element takes up space while Vue is rendering to avoid page jump
   .gl-h-7

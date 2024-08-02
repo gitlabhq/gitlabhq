@@ -1,10 +1,10 @@
 <script>
-import { GlPopover, GlSprintf, GlLink } from '@gitlab/ui';
+import { GlTooltip, GlSprintf, GlLink } from '@gitlab/ui';
 
 export default {
-  name: 'LockPopover',
+  name: 'LockTooltip',
   components: {
-    GlPopover,
+    GlTooltip,
     GlSprintf,
     GlLink,
   },
@@ -24,8 +24,8 @@ export default {
       required: true,
     },
     targetElement: {
-      required: true,
       type: Element,
+      required: true,
     },
   },
   computed: {
@@ -37,9 +37,9 @@ export default {
 </script>
 
 <template>
-  <gl-popover v-if="isLocked" :target="targetElement" placement="top">
+  <gl-tooltip v-if="isLocked" :target="targetElement" placement="top">
     <template #title>{{ s__('CascadingSettings|Setting cannot be changed') }}</template>
-    <span data-testid="cascading-settings-lock-popover">
+    <span data-testid="cascading-settings-lock-tooltip">
       <template v-if="isLockedByAdmin">{{
         s__(
           'CascadingSettings|An administrator selected this setting for the instance and you cannot change it.',
@@ -61,5 +61,5 @@ export default {
         }}
       </template>
     </span>
-  </gl-popover>
+  </gl-tooltip>
 </template>

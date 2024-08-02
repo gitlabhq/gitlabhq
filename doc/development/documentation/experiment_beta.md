@@ -42,7 +42,9 @@ the list of users testing this feature, do this thing. If you find a bug,
 [open an issue](https://link).
 ```
 
-When the feature is ready for production, remove:
+## When features become generally available
+
+When the feature changes from experiment or beta to generally available, remove:
 
 - The **Status** from the availability details.
 - Any language about the feature not being ready for production in the body
@@ -50,3 +52,14 @@ When the feature is ready for production, remove:
 - The feature flag information if available.
 
 Ensure the history is up-to-date by adding a note about the production release.
+
+### GitLab Duo features
+
+When a GitLab Duo feature becomes generally available:
+
+- In the [top-level GitLab Duo page](../../user/gitlab_duo/index.md), move the topic from the
+ `Beta features` or `Experimental features` section to the `Generally available features` section.
+- If the feature is documented in [GitLab Duo experiments](../../user/gitlab_duo/experiments.md),
+  move the content somewhere more appropriate (to other related features).
+- Make sure you update the history and status values, including any
+  [add-on information](styleguide/availability_details.md#gitlab-duo-pro-or-enterprise-add-on).

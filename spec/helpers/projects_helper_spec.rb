@@ -434,6 +434,10 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     it 'returns false when there are no projects and there is no name' do
       expect(helper.show_projects?(Project.none, {})).to eq(false)
     end
+
+    it 'returns true when there are no projects but archived param is "only"' do
+      expect(helper.show_projects?(Project.none, archived: 'only')).to eq(true)
+    end
   end
 
   describe '#push_to_create_project_command' do
@@ -1893,14 +1897,13 @@ RSpec.describe ProjectsHelper, feature_category: :source_code_management do
     end
   end
 
-  describe '#projects_explore_filtered_search_and_sort_app_data' do
+  describe '#projects_filtered_search_and_sort_app_data' do
     it 'returns expected json' do
-      expect(Gitlab::Json.parse(helper.projects_explore_filtered_search_and_sort_app_data)).to eq(
+      expect(Gitlab::Json.parse(helper.projects_filtered_search_and_sort_app_data)).to eq(
         {
           'initial_sort' => 'created_desc',
           'programming_languages' => ProgrammingLanguage.most_popular,
-          'starred_explore_projects_path' => starred_explore_projects_path,
-          'explore_root_path' => explore_root_path
+          'paths_to_exclude_sort_on' => [starred_explore_projects_path, explore_root_path]
         }
       )
     end

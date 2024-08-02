@@ -1,8 +1,8 @@
-import { GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlLink, GlTooltip, GlSprintf } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
-import LockPopover from '~/namespaces/cascading_settings/components/lock_popover.vue';
+import LockTooltip from '~/namespaces/cascading_settings/components/lock_tooltip.vue';
 
-describe('LockPopover', () => {
+describe('LockTooltip', () => {
   const mockNamespace = {
     fullName: 'GitLab Org / GitLab',
     path: '/gitlab-org/gitlab/-/edit',
@@ -12,15 +12,15 @@ describe('LockPopover', () => {
     'An administrator selected this setting for the instance and you cannot change it.';
 
   let wrapper;
-  const popoverMountEl = document.createElement('div');
+  const tooltipMountEl = document.createElement('div');
 
   const createWrapper = (props = {}) => {
-    wrapper = shallowMount(LockPopover, {
+    wrapper = shallowMount(LockTooltip, {
       propsData: {
         ancestorNamespace: mockNamespace,
         isLockedByAdmin: false,
-        isLockedByGroupAncestor: true,
-        targetElement: popoverMountEl,
+        isLockedByGroupAncestor: false,
+        targetElement: tooltipMountEl,
         ...props,
       },
       stubs: {
@@ -30,30 +30,33 @@ describe('LockPopover', () => {
   };
 
   const findLink = () => wrapper.findComponent(GlLink);
-  const findPopover = () => wrapper.findComponent(GlPopover);
+  const findTooltip = () => wrapper.findComponent(GlTooltip);
 
   describe('when setting is locked by an admin setting', () => {
     beforeEach(() => {
       createWrapper({ isLockedByAdmin: true });
     });
 
-    it('displays correct popover message', () => {
-      expect(findPopover().text()).toBe(applicationSettingMessage);
+    it('displays correct tooltip message', () => {
+      expect(findTooltip().text()).toBe(applicationSettingMessage);
     });
 
     it('sets `target` prop correctly', () => {
-      expect(findPopover().props().target).toBe(popoverMountEl);
+      expect(findTooltip().props().target).toBe(tooltipMountEl);
     });
   });
 
   describe('when setting is locked by an ancestor namespace', () => {
     describe('and ancestorNamespace is set', () => {
       beforeEach(() => {
-        createWrapper({ isLockedByGroupAncestor: true, ancestorNamespace: mockNamespace });
+        createWrapper({
+          isLockedByGroupAncestor: true,
+          ancestorNamespace: mockNamespace,
+        });
       });
 
-      it('displays correct popover message', () => {
-        expect(findPopover().text()).toBe(
+      it('displays correct tooltip message', () => {
+        expect(findTooltip().text()).toBe(
           `This setting has been enforced by an owner of ${mockNamespace.fullName}.`,
         );
       });
@@ -63,7 +66,7 @@ describe('LockPopover', () => {
       });
 
       it('sets `target` prop correctly', () => {
-        expect(findPopover().props().target).toBe(popoverMountEl);
+        expect(findTooltip().props().target).toBe(tooltipMountEl);
       });
     });
 
@@ -73,7 +76,7 @@ describe('LockPopover', () => {
       });
 
       it('displays a generic message', () => {
-        expect(findPopover().text()).toBe(
+        expect(findTooltip().text()).toBe(
           `This setting has been enforced by an owner and cannot be changed.`,
         );
       });
@@ -82,15 +85,18 @@ describe('LockPopover', () => {
 
   describe('when setting is locked by an application setting and an ancestor namespace', () => {
     beforeEach(() => {
-      createWrapper({ isLockedByAdmin: true, isLockedByGroupAncestor: true });
+      createWrapper({
+        isLockedByAdmin: true,
+        isLockedByGroupAncestor: true,
+      });
     });
 
-    it('displays correct popover message', () => {
-      expect(findPopover().text()).toBe(applicationSettingMessage);
+    it('displays correct tooltip message', () => {
+      expect(findTooltip().text()).toBe(applicationSettingMessage);
     });
 
     it('sets `target` prop correctly', () => {
-      expect(findPopover().props().target).toBe(popoverMountEl);
+      expect(findTooltip().props().target).toBe(tooltipMountEl);
     });
   });
 
@@ -99,8 +105,8 @@ describe('LockPopover', () => {
       createWrapper({ isLockedByAdmin: false, isLockedByGroupAncestor: false });
     });
 
-    it('does not render popover', () => {
-      expect(findPopover().exists()).toBe(false);
+    it('does not render tooltip', () => {
+      expect(findTooltip().exists()).toBe(false);
     });
   });
 });

@@ -19,7 +19,7 @@ import {
 const trackingMixin = InternalEvents.mixin();
 
 export default {
-  name: 'ProjectsExploreFilteredSearchAndSort',
+  name: 'ProjectsFilteredSearchAndSort',
   filteredSearch: {
     namespace: FILTERED_SEARCH_NAMESPACE,
     recentSearchesStorageKey: RECENT_SEARCHES_STORAGE_KEY_PROJECTS,
@@ -29,7 +29,13 @@ export default {
     FilteredSearchAndSort,
   },
   mixins: [trackingMixin],
-  inject: ['initialSort', 'programmingLanguages', 'starredExploreProjectsPath', 'exploreRootPath'],
+  inject: [
+    'initialSort',
+    'programmingLanguages',
+    'pathsToExcludeSortOn',
+    'sortEventName',
+    'filterEventName',
+  ],
   computed: {
     filteredSearchTokens() {
       return [
@@ -85,8 +91,7 @@ export default {
       return this.queryAsObject?.[FILTERED_SEARCH_TERM_KEY] || '';
     },
     sortOptions() {
-      const mostStarredPathnames = [this.starredExploreProjectsPath, this.exploreRootPath];
-      if (mostStarredPathnames.includes(window.location.pathname)) {
+      if (this.pathsToExcludeSortOn.includes(window.location.pathname)) {
         return [];
       }
 
@@ -114,7 +119,7 @@ export default {
         isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC
       }`;
 
-      this.trackEvent('use_sort_projects_explore', {
+      this.trackEvent(this.sortEventName, {
         label: sort,
       });
 
@@ -126,7 +131,7 @@ export default {
     onSortByChange(sortBy) {
       const sort = `${sortBy}_${this.isAscending ? SORT_DIRECTION_ASC : SORT_DIRECTION_DESC}`;
 
-      this.trackEvent('use_sort_projects_explore', {
+      this.trackEvent(this.sortEventName, {
         label: sort,
       });
 
@@ -141,6 +146,10 @@ export default {
 
       if (this.queryAsObject.archived) {
         queryObject.archived = this.queryAsObject.archived;
+      }
+
+      if (this.queryAsObject.personal) {
+        queryObject.personal = this.queryAsObject.personal;
       }
 
       const trackingProperty = Object.entries(filtersQuery).reduce(
@@ -160,7 +169,7 @@ export default {
         {},
       );
 
-      this.trackEvent('use_filter_bar_projects_explore', {
+      this.trackEvent(this.filterEventName, {
         label: JSON.stringify(trackingProperty),
       });
 
@@ -172,6 +181,7 @@ export default {
 
 <template>
   <filtered-search-and-sort
+    class="gl-w-full"
     :filtered-search-namespace="$options.filteredSearch.namespace"
     :filtered-search-tokens="filteredSearchTokens"
     :filtered-search-term-key="$options.filteredSearch.searchTermKey"

@@ -4317,7 +4317,6 @@ RSpec/FeatureCategory:
     - 'spec/views/dashboard/milestones/index.html.haml_spec.rb'
     - 'spec/views/dashboard/projects/_blank_state_admin_welcome.haml_spec.rb'
     - 'spec/views/dashboard/projects/_blank_state_welcome.html.haml_spec.rb'
-    - 'spec/views/dashboard/projects/_nav.html.haml_spec.rb'
     - 'spec/views/devise/confirmations/almost_there.html.haml_spec.rb'
     - 'spec/views/errors/access_denied.html.haml_spec.rb'
     - 'spec/views/errors/omniauth_error.html.haml_spec.rb'

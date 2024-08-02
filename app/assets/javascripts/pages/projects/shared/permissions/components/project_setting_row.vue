@@ -16,17 +16,25 @@ export default {
       required: false,
       default: null,
     },
+    locked: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 };
 </script>
 
 <template>
   <div class="project-feature-row">
-    <label v-if="label" class="label-bold">
-      {{ label }}
-    </label>
+    <div class="gl-flex">
+      <label v-if="label" class="label-bold" :class="{ 'gl-text-gray-400': locked }">
+        {{ label }}
+      </label>
+      <slot name="label-icon"></slot>
+    </div>
     <div>
-      <span v-if="helpText" class="text-muted"> {{ helpText }} </span>
+      <span v-if="helpText" class="gl-text-gray-400"> {{ helpText }} </span>
       <span v-if="helpPath"
         ><a :href="helpPath" target="_blank">{{ __('Learn more') }}</a
         >.</span

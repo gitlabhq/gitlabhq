@@ -29,7 +29,7 @@ See also:
 
 These styles are not backed by a RuboCop rule.
 
-For every style added to this section, link the discussion from the section's [history note](../documentation/versions.md#add-a-history-item) to provide context and serve as a reference.
+For every style added to this section, link the discussion from the section's [history note](../documentation/styleguide/availability_details.md#history) to provide context and serve as a reference.
 
 ### Instance variable access using `attr_reader`
 

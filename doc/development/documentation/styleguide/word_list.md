@@ -2286,7 +2286,7 @@ Sometimes you might need to use **yet** when writing a task. If you use
 **yet**, ensure the surrounding phrases are written
 in present tense, active voice.
 
-[View guidance about how to write about future features](../versions.md#promising-features-in-future-versions).
+[View guidance about how to write about future features](index.md#promising-features-in-future-versions).
 
 ## you, your, yours
 

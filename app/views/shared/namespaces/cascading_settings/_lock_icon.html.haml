@@ -1,3 +1,3 @@
 - class_list = local_assigns.fetch(:class_list, '')
 
-= render Pajamas::ButtonComponent.new(category: 'tertiary', icon: 'lock', button_options: { class: "gl-absolute gl-top-3 gl-right-0 -gl-translate-y-1/2 gl-p-1! gl-bg-transparent! gl-cursor-default! js-cascading-settings-lock-popover-target #{class_list}", data: cascading_namespace_settings_popover_data(attribute, group, settings_path_helper) })
+= render Pajamas::ButtonComponent.new(category: 'tertiary', icon: 'lock', button_options: { class: "gl-absolute gl-top-3 gl-right-0 -gl-translate-y-1/2 !gl-p-1 !gl-bg-transparent !gl-cursor-default js-cascading-settings-lock-tooltip-target #{class_list}", data: cascading_namespace_settings_tooltip_data(attribute, group, settings_path_helper) })

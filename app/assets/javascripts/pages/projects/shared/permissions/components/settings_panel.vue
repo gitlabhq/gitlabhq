@@ -114,7 +114,6 @@ export default {
       ),
   },
   mixins: [settingsMixin, glFeatureFlagMixin()],
-
   props: {
     requestCveAvailable: {
       type: Boolean,
@@ -1056,6 +1055,7 @@ export default {
         :label="$options.i18n.duoLabel"
         :help-text="$options.i18n.duoHelpText"
         :help-path="$options.duoHelpPath"
+        :locked="duoFeaturesLocked"
       >
         <gl-toggle
           v-model="duoFeaturesEnabled"

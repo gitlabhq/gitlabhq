@@ -9,12 +9,4 @@
       = render Pajamas::ButtonComponent.new(href: new_project_path, variant: :confirm, button_options: { data: { testid: 'new-project-button' } }) do
         = _("New project")
 
-.top-area
-  .scrolling-tabs-container.inner-page-scroll-tabs.gl-grow.gl-basis-0.gl-min-w-0
-    %button.fade-left{ type: 'button', title: _('Scroll left'), 'aria-label': _('Scroll left') }
-      = sprite_icon('chevron-lg-left', size: 12)
-    %button.fade-right{ type: 'button', title: _('Scroll right'), 'aria-label': _('Scroll right') }
-      = sprite_icon('chevron-lg-right', size: 12)
-    = render 'dashboard/projects_nav'
-  .nav-controls
-    = render 'shared/projects/search_form'
+= render 'dashboard/projects_nav'

@@ -8,10 +8,10 @@ import {
   SORT_OPTIONS,
   SORT_DIRECTION_ASC,
   SORT_DIRECTION_DESC,
-} from '~/projects/explore/constants';
+} from '~/projects/filtered_search_and_sort/constants';
 import { RECENT_SEARCHES_STORAGE_KEY_PROJECTS } from '~/filtered_search/recent_searches_storage_keys';
 import FilteredSearchAndSort from '~/groups_projects/components/filtered_search_and_sort.vue';
-import ProjectsExploreFilteredSearchAndSort from '~/projects/explore/components/filtered_search_and_sort.vue';
+import ProjectsExploreFilteredSearchAndSort from '~/projects/filtered_search_and_sort/components/filtered_search_and_sort.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import setWindowLocation from 'helpers/set_window_location_helper';
 import { visitUrl } from '~/lib/utils/url_utility';
@@ -37,8 +37,9 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
       { id: 6, name: 'Ruby', color: '#701516', created_at: '2023-09-19T14:42:01.493Z' },
       { id: 11, name: 'Shell', color: '#89e051', created_at: '2023-09-19T14:42:11.923Z' },
     ],
-    starredExploreProjectsPath: '/explore/projects/starred',
-    exploreRootPath: '/explore',
+    pathsToExcludeSortOn: ['/explore/projects/starred', '/explore'],
+    sortEventName: 'use_sort_projects_explore',
+    filterEventName: 'use_filter_bar_projects_explore',
   };
 
   const createComponent = ({
@@ -124,7 +125,7 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
-        'use_filter_bar_projects_explore',
+        defaultProvide.filterEventName,
         {
           label: JSON.stringify({ search: searchTerm, language: 'CSS' }),
         },
@@ -152,7 +153,7 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
-        'use_sort_projects_explore',
+        defaultProvide.sortEventName,
         {
           label: `${SORT_OPTION_UPDATED.value}_${SORT_DIRECTION_ASC}`,
         },
@@ -180,7 +181,7 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
       const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
 
       expect(trackEventSpy).toHaveBeenCalledWith(
-        'use_sort_projects_explore',
+        defaultProvide.sortEventName,
         {
           label: `${SORT_OPTION_CREATED.value}_${SORT_DIRECTION_DESC}`,
         },
@@ -190,13 +191,10 @@ describe('ProjectsExploreFilteredSearchAndSort', () => {
   });
 
   describe('when on the "Most starred" tab', () => {
-    it.each([defaultProvide.starredExploreProjectsPath, defaultProvide.exploreRootPath])(
-      'does not show sort dropdown',
-      (pathname) => {
-        createComponent({ pathname });
+    it.each(defaultProvide.pathsToExcludeSortOn)('does not show sort dropdown', (pathname) => {
+      createComponent({ pathname });
 
-        expect(findFilteredSearchAndSort().props('sortOptions')).toEqual([]);
-      },
-    );
+      expect(findFilteredSearchAndSort().props('sortOptions')).toEqual([]);
+    });
   });
 });

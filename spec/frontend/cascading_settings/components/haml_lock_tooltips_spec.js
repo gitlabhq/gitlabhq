@@ -1,44 +1,44 @@
-import { GlPopover } from '@gitlab/ui';
+import { GlTooltip } from '@gitlab/ui';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
-import HamlLockPopover from '~/namespaces/cascading_settings/components/haml_lock_popovers.vue';
-import LockPopover from '~/namespaces/cascading_settings/components/lock_popover.vue';
+import HamlLockTooltips from '~/namespaces/cascading_settings/components/haml_lock_tooltips.vue';
+import LockTooltip from '~/namespaces/cascading_settings/components/lock_tooltip.vue';
 
-describe('HamlLockPopover', () => {
+describe('HamlLockTooltips', () => {
   const mockNamespace = {
     fullName: 'GitLab Org / GitLab',
     path: '/gitlab-org/gitlab/-/edit',
   };
 
-  const createPopoverMountEl = ({
+  const createTooltipMountEl = ({
     lockedByApplicationSetting = false,
     lockedByAncestor = false,
   }) => {
-    const popoverMountEl = document.createElement('div');
-    popoverMountEl.classList.add('js-cascading-settings-lock-popover-target');
+    const tooltipMountEl = document.createElement('div');
+    tooltipMountEl.classList.add('js-cascading-settings-lock-tooltip-target');
 
-    const popoverData = {
+    const tooltipData = {
       locked_by_application_setting: lockedByApplicationSetting,
       locked_by_ancestor: lockedByAncestor,
     };
 
-    popoverMountEl.dataset.popoverData = JSON.stringify(popoverData);
-    popoverMountEl.dataset.popoverData = JSON.stringify({
-      ...popoverData,
+    tooltipMountEl.dataset.tooltipData = JSON.stringify(tooltipData);
+    tooltipMountEl.dataset.tooltipData = JSON.stringify({
+      ...tooltipData,
       ancestor_namespace: lockedByAncestor && !lockedByApplicationSetting ? mockNamespace : null,
     });
 
-    document.body.appendChild(popoverMountEl);
+    document.body.appendChild(tooltipMountEl);
 
-    return popoverMountEl;
+    return tooltipMountEl;
   };
 
   let wrapper;
 
   const createWrapper = () => {
-    wrapper = mountExtended(HamlLockPopover);
+    wrapper = mountExtended(HamlLockTooltips);
   };
 
-  const findLockPopovers = () => wrapper.findAllComponents(LockPopover);
+  const findLockTooltips = () => wrapper.findAllComponents(LockTooltip);
 
   afterEach(() => {
     document.body.innerHTML = '';
@@ -57,7 +57,7 @@ describe('HamlLockPopover', () => {
       'when locked_by_application_setting is $lockedByApplicationSetting and locked_by_ancestor is $lockedByAncestor and ancestor_namespace is $ancestorNamespace',
       ({ ancestorNamespace, lockedByAncestor, lockedByApplicationSetting }) => {
         beforeEach(() => {
-          domElement = createPopoverMountEl({
+          domElement = createTooltipMountEl({
             ancestorNamespace,
             lockedByApplicationSetting,
             lockedByAncestor,
@@ -66,40 +66,40 @@ describe('HamlLockPopover', () => {
         });
 
         it('locked_by_application_setting attribute', () => {
-          expect(findLockPopovers().at(0).props().isLockedByAdmin).toBe(lockedByApplicationSetting);
+          expect(findLockTooltips().at(0).props().isLockedByAdmin).toBe(lockedByApplicationSetting);
         });
 
         it('locked_by_ancestor attribute', () => {
-          expect(findLockPopovers().at(0).props().isLockedByGroupAncestor).toBe(lockedByAncestor);
+          expect(findLockTooltips().at(0).props().isLockedByGroupAncestor).toBe(lockedByAncestor);
         });
 
         it('ancestor_namespace attribute', () => {
-          expect(findLockPopovers().at(0).props().ancestorNamespace).toEqual(ancestorNamespace);
+          expect(findLockTooltips().at(0).props().ancestorNamespace).toEqual(ancestorNamespace);
         });
 
         it('target element', () => {
-          expect(findLockPopovers().at(0).props().targetElement).toBe(domElement);
+          expect(findLockTooltips().at(0).props().targetElement).toBe(domElement);
         });
       },
     );
   });
 
   describe('when there are multiple mount elements', () => {
-    let popoverMountEl1;
-    let popoverMountEl2;
+    let tooltipMountEl1;
+    let tooltipMountEl2;
 
     beforeEach(() => {
-      popoverMountEl1 = createPopoverMountEl({ lockedByApplicationSetting: true });
-      popoverMountEl2 = createPopoverMountEl({ lockedByAncestor: true });
+      tooltipMountEl1 = createTooltipMountEl({ lockedByApplicationSetting: true });
+      tooltipMountEl2 = createTooltipMountEl({ lockedByAncestor: true });
       createWrapper();
     });
 
-    it('mounts multiple popovers', () => {
-      const popovers = wrapper.findAllComponents(GlPopover).wrappers;
+    it('mounts multiple tooltips', () => {
+      const tooltips = wrapper.findAllComponents(GlTooltip).wrappers;
 
-      expect(popovers).toHaveLength(2);
-      expect(popovers[0].props('target')).toBe(popoverMountEl1);
-      expect(popovers[1].props('target')).toBe(popoverMountEl2);
+      expect(tooltips).toHaveLength(2);
+      expect(tooltips[0].props('target')).toBe(tooltipMountEl1);
+      expect(tooltips[1].props('target')).toBe(tooltipMountEl2);
     });
   });
 });

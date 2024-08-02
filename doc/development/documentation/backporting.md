@@ -141,3 +141,16 @@ in the `gitlab-docs-archives` repository.
 
 1. After the pipeline finishes, go to `https://archives.docs.gitlab.com` and verify
    that the changes are available for the correct version.
+
+## View older documentation versions
+
+Previous versions of the documentation are available on `docs.gitlab.com`.
+To view a previous version, in the upper-right corner, select the version
+number from the dropdown list.
+
+To view versions that are not available on `docs.gitlab.com`:
+
+- View the [documentation archives](https://docs.gitlab.com/archives/).
+- Go to the GitLab repository and select the version-specific branch. For example,
+  the [13.2 branch](https://gitlab.com/gitlab-org/gitlab/-/tree/13-2-stable-ee/doc) has the
+  documentation for GitLab 13.2.

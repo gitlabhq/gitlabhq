@@ -308,7 +308,13 @@ module ProjectsHelper
   end
 
   def show_projects?(projects, params)
-    !!(params[:personal] || params[:name] || params[:language] || any_projects?(projects))
+    !!(
+      params[:personal] ||
+      params[:name] ||
+      params[:language] ||
+      params[:archived] == 'only' ||
+      any_projects?(projects)
+    )
   end
 
   def push_to_create_project_command(user = current_user)
@@ -640,12 +646,11 @@ module ProjectsHelper
     'manual-ordering'
   end
 
-  def projects_explore_filtered_search_and_sort_app_data
+  def projects_filtered_search_and_sort_app_data
     {
       initial_sort: project_list_sort_by,
       programming_languages: programming_languages,
-      starred_explore_projects_path: starred_explore_projects_path,
-      explore_root_path: explore_root_path
+      paths_to_exclude_sort_on: [starred_explore_projects_path, explore_root_path]
     }.to_json
   end
 

@@ -11,3 +11,5 @@ analytics_instrumentation.check_usage_data_insertions!
 analytics_instrumentation.check_deprecated_data_sources!
 
 analytics_instrumentation.check_removed_metric_fields!
+
+analytics_instrumentation.warn_about_migrated_redis_keys_specs!

@@ -1,17 +1,17 @@
 <script>
 /**
  * This component is a utility that can be used in a HAML settings pages
- * It will get all popover targets and create a popover for each one.
+ * It will get all tooltip targets and create a tooltip for each one.
  * This should not be used in Vue Apps as we we are breaking component isolation.
- * Instead, use `lock_popover.vue` and provide a list of vue $refs to loop through.
+ * Instead, use `lock_tooltip.vue` and provide a list of vue $refs to loop through.
  */
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import LockPopover from './lock_popover.vue';
+import LockTooltip from './lock_tooltip.vue';
 
 export default {
-  name: 'HamlLockPopovers',
+  name: 'HamlLockTooltips',
   components: {
-    LockPopover,
+    LockTooltip,
   },
   data() {
     return {
@@ -19,14 +19,14 @@ export default {
     };
   },
   mounted() {
-    this.targets = [...document.querySelectorAll('.js-cascading-settings-lock-popover-target')].map(
+    this.targets = [...document.querySelectorAll('.js-cascading-settings-lock-tooltip-target')].map(
       (el) => {
         const {
-          dataset: { popoverData },
+          dataset: { tooltipData },
         } = el;
 
         const { lockedByAncestor, lockedByApplicationSetting, ancestorNamespace } =
-          convertObjectPropsToCamelCase(JSON.parse(popoverData || '{}'), { deep: true });
+          convertObjectPropsToCamelCase(JSON.parse(tooltipData || '{}'), { deep: true });
 
         return {
           el,
@@ -42,7 +42,7 @@ export default {
 
 <template>
   <div>
-    <lock-popover
+    <lock-tooltip
       v-for="(
         { el, lockedByApplicationSetting, lockedByAncestor, ancestorNamespace }, index
       ) in targets"

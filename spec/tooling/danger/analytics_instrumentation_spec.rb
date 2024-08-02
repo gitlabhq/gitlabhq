@@ -443,4 +443,38 @@ RSpec.describe Tooling::Danger::AnalyticsInstrumentation, feature_category: :ser
       end
     end
   end
+
+  describe '#warn_about_migrated_redis_keys_specs!' do
+    let(:redis_hll_file) { 'lib/gitlab/usage_data_counters/hll_redis_key_overrides.yml' }
+    let(:total_counter_file) { 'lib/gitlab/usage_data_counters/total_counter_redis_key_overrides.yml' }
+
+    subject(:check_redis_keys_files_overrides) { analytics_instrumentation.warn_about_migrated_redis_keys_specs! }
+
+    before do
+      allow(fake_helper).to receive(:changed_lines).with(redis_hll_file).and_return([file_diff_hll])
+      allow(fake_helper).to receive(:changed_lines).with(total_counter_file).and_return([file_diff_total])
+    end
+
+    context 'when new keys added to overrides files' do
+      let(:file_diff_hll) { "+user_viewed_cluster_configuration-user: user_viewed_cluster_configuration" }
+      let(:file_diff_total) { "+user_viewed_cluster_configuration-user: USER_VIEWED_CLUSTER_CONFIGURATION" }
+
+      it 'adds suggestion to add specs' do
+        expect(analytics_instrumentation).to receive(:warn)
+
+        check_redis_keys_files_overrides
+      end
+    end
+
+    context 'when no new keys added to overrides files' do
+      let(:file_diff_hll) { "-user_viewed_cluster_configuration-user: user_viewed_cluster_configuration" }
+      let(:file_diff_total) { "-user_viewed_cluster_configuration-user: USER_VIEWED_CLUSTER_CONFIGURATION" }
+
+      it 'adds suggestion to add specs' do
+        expect(analytics_instrumentation).not_to receive(:warn)
+
+        check_redis_keys_files_overrides
+      end
+    end
+  end
 end

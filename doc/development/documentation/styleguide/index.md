@@ -1626,8 +1626,31 @@ This is something to be warned about.
 
 ### Disclaimer
 
-Use to describe future functionality only.
-For more information, see [Legal disclaimer for future features](../versions.md#legal-disclaimer-for-future-features).
+If you **must** write about features we have not yet delivered, put this exact disclaimer about forward-looking statements near the content it applies to.
+
+```markdown
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
+sole discretion of GitLab Inc.
+```
+
+It renders on the GitLab documentation site as:
+
+DISCLAIMER:
+This page contains information related to upcoming products, features, and functionality.
+It is important to note that the information presented is for informational purposes only.
+Please do not rely on this information for purchasing or planning purposes.
+The development, release, and timing of any products, features, or functionality may be subject to change or delay and remain at the
+sole discretion of GitLab Inc.
+
+If all of the content on the page is not available, use the disclaimer about forward-looking statements once at the top of the page.
+
+If the content in a topic is not ready, use the disclaimer in the topic.
+
+For more information, see [Promising features in future versions](#promising-features-in-future-versions).
 
 ### Details
 
@@ -1720,6 +1743,22 @@ details on tabs.
 Do not copy and paste content from other sources unless it is a limited
 quotation with the source cited. Typically it is better to rephrase
 relevant information in your own words or link out to the other source.
+
+## Promising features in future versions
+
+Do not promise to deliver features in a future release. For example, avoid phrases like,
+"Support for this feature is planned."
+
+We cannot guarantee future feature work, and promises
+like these can raise legal issues. Instead, say that an issue exists.
+For example:
+
+- Support for improvements is proposed in `[issue <issue_number>](https://link-to-issue)`.
+- You cannot do this thing, but `[issue 12345](https://link-to-issue)` proposes to change this behavior.
+
+You can say that we plan to remove a feature.
+
+If you must document a future feature, use the [disclaimer](#disclaimer).
 
 ## Products and features
 

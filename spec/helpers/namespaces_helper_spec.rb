@@ -42,11 +42,11 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
     user_group.add_owner(user)
   end
 
-  describe '#cascading_namespace_settings_popover_data' do
+  describe '#cascading_namespace_settings_tooltip_data' do
     attribute = :math_rendering_limits_enabled
 
     subject do
-      helper.cascading_namespace_settings_popover_data(
+      helper.cascading_namespace_settings_tooltip_data(
         attribute,
         subgroup1,
         ->(locked_ancestor) { edit_group_path(locked_ancestor, anchor: 'js-permissions-settings') }
@@ -61,7 +61,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
       it 'returns expected hash' do
         expect(subject).to match({
-          popover_data: {
+          tooltip_data: {
             locked_by_application_setting: true,
             locked_by_ancestor: false
           }.to_json,
@@ -79,7 +79,7 @@ RSpec.describe NamespacesHelper, feature_category: :groups_and_projects do
 
       it 'returns expected hash' do
         expect(subject).to match({
-          popover_data: {
+          tooltip_data: {
             locked_by_application_setting: false,
             locked_by_ancestor: true,
             ancestor_namespace: {

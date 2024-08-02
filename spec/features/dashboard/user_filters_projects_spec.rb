@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Dashboard > User filters projects', feature_category: :groups_and_projects do
+RSpec.describe 'Dashboard > User filters projects', :js, feature_category: :groups_and_projects do
   let(:user) { create(:user) }
   let(:project) { create(:project, name: 'Victorialand', namespace: user.namespace, created_at: 2.seconds.ago, updated_at: 2.seconds.ago) }
   let(:user2) { create(:user) }
@@ -14,51 +14,58 @@ RSpec.describe 'Dashboard > User filters projects', feature_category: :groups_an
     sign_in(user)
   end
 
-  describe 'filtering personal projects' do
-    before do
-      project2.add_developer(user)
+  it 'allows viewing personal projects' do
+    project2.add_developer(user)
+    visit dashboard_projects_path
 
-      visit dashboard_projects_path
-    end
+    click_link 'Personal'
 
-    it 'filters by projects "Owned by me"' do
-      click_link 'Owned by me'
-
-      expect(page).to have_css('.is-active', text: 'Owned by me')
-      expect(page).to have_content('Victorialand')
-      expect(page).not_to have_content('Treasure')
-    end
+    expect(page).to have_content(project.name)
+    expect(page).not_to have_content(project2.name)
   end
 
-  describe 'filtering starred projects', :js do
+  describe 'starred projects', :js do
     before do
       user.toggle_star(project)
 
       visit dashboard_projects_path
     end
 
-    it 'returns message when starred projects filter returns no results' do
-      fill_in 'project-filter-form-field', with: 'Beta\n'
+    it 'allows viewing starred projects' do
+      project2.add_developer(user)
+      visit dashboard_projects_path
 
-      expect(page).to have_content('There are no projects available to be displayed here')
-      expect(page).not_to have_content('You don\'t have starred projects yet')
+      click_link 'Starred'
+
+      expect(page).to have_content(project.name)
+      expect(page).not_to have_content(project2.name)
+    end
+
+    it 'shows empty state when starred projects filter returns no results' do
+      search('foo')
+
+      expect(page).not_to have_content("You don't have starred projects yet.")
     end
   end
 
-  describe 'without search bar', :js do
-    before do
-      project2.add_developer(user)
-      visit dashboard_projects_path
-    end
+  it 'searches for projects' do
+    project2.add_developer(user)
+    visit dashboard_projects_path
 
-    it 'autocompletes searches upon typing', :js do
-      expect(page).to have_content 'Victorialand'
-      expect(page).to have_content 'Treasure'
+    expect(page).to have_content(project.name)
+    expect(page).to have_content(project2.name)
 
-      fill_in 'project-filter-form-field', with: 'Lord beerus\n'
+    search(project.name)
 
-      expect(page).not_to have_content 'Victorialand'
-      expect(page).not_to have_content 'Treasure'
-    end
+    expect(page).to have_content(project.name)
+    expect(page).not_to have_content(project2.name)
+  end
+
+  def search(term)
+    filter_input = find_by_testid('filtered-search-term-input')
+    filter_input.click
+    filter_input.set(term)
+    click_button 'Search'
+    wait_for_requests
   end
 end
