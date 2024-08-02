@@ -433,4 +433,10 @@
       color: $color;
     }
   }
+
+  @each $i, $color in $xterm-colors {
+    .xterm-bg-#{$i} {
+      background-color: $color;
+    }
+  }
 }

@@ -29046,8 +29046,6 @@ CREATE INDEX index_projects_on_description_trigram ON projects USING gin (descri
 
 CREATE INDEX index_projects_on_id_and_archived_and_pending_delete ON projects USING btree (id) WHERE ((archived = false) AND (pending_delete = false));
 
-CREATE INDEX index_projects_on_id_and_namespace_id ON projects USING btree (id, namespace_id);
-
 CREATE UNIQUE INDEX index_projects_on_id_partial_for_visibility ON projects USING btree (id) WHERE (visibility_level = ANY (ARRAY[10, 20]));
 
 CREATE INDEX index_projects_on_id_service_desk_enabled ON projects USING btree (id) WHERE (service_desk_enabled = true);
@@ -30319,6 +30317,8 @@ CREATE INDEX tmp_index_on_vulnerabilities_non_dismissed ON vulnerabilities USING
 CREATE INDEX tmp_index_project_statistics_cont_registry_size ON project_statistics USING btree (project_id) WHERE (container_registry_size = 0);
 
 CREATE INDEX tmp_index_vulnerability_overlong_title_html ON vulnerabilities USING btree (id) WHERE (length(title_html) > 800);
+
+CREATE INDEX tmp_index_vulnerability_reads_where_state_is_detected ON vulnerability_reads USING btree (id) WHERE (state = 1);
 
 CREATE UNIQUE INDEX u_project_compliance_standards_adherence_for_reporting ON project_compliance_standards_adherence USING btree (project_id, check_name, standard);
 

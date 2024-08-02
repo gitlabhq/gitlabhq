@@ -4951,6 +4951,9 @@ msgstr ""
 msgid "AiAnalytics|the ClickHouse data store is not available"
 msgstr ""
 
+msgid "AiImpactAnalytics|Code Suggestions acceptance usage"
+msgstr ""
+
 msgid "AiImpactAnalytics|Code Suggestions usage"
 msgstr ""
 
