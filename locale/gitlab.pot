@@ -6321,9 +6321,6 @@ msgstr ""
 msgid "Analytics|Visualization title"
 msgstr ""
 
-msgid "Analytics|Visualization type"
-msgstr ""
-
 msgid "Analytics|Visualization was saved successfully"
 msgstr ""
 
@@ -9146,9 +9143,6 @@ msgid "Branch %{branchName} was not found in this project's repository."
 msgstr ""
 
 msgid "Branch %{branch_name} was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
-msgstr ""
-
-msgid "Branch Rules"
 msgstr ""
 
 msgid "Branch already exists"
@@ -26131,6 +26125,9 @@ msgstr ""
 msgid "HAR file path or URL"
 msgstr ""
 
+msgid "HMAC enabled"
+msgstr ""
+
 msgid "HTTP Archive (HAR)"
 msgstr ""
 
@@ -35077,6 +35074,9 @@ msgid "No group provided"
 msgstr ""
 
 msgid "No groups found"
+msgstr ""
+
+msgid "No groups or projects found"
 msgstr ""
 
 msgid "No issues found"
@@ -50044,6 +50044,9 @@ msgstr ""
 msgid "Shared runners enabled cannot be enabled until identity verification is completed"
 msgstr ""
 
+msgid "Shared secret"
+msgstr ""
+
 msgid "SharedRunnersMinutesSettings|Reset compute usage"
 msgstr ""
 
@@ -51533,10 +51536,16 @@ msgstr ""
 msgid "StatusCheck|Failed to load status checks"
 msgstr ""
 
+msgid "StatusCheck|HMAC Shared Secret"
+msgstr ""
+
 msgid "StatusCheck|Invoke an external API as part of the pipeline process."
 msgstr ""
 
 msgid "StatusCheck|No status checks are defined yet."
+msgstr ""
+
+msgid "StatusCheck|Provide a shared secret to be used when sending a request for a status check to authenticate request using HMAC."
 msgstr ""
 
 msgid "StatusCheck|Service name"
@@ -51561,6 +51570,9 @@ msgid "StatusCheck|Status to check"
 msgstr ""
 
 msgid "StatusCheck|Target branch"
+msgstr ""
+
+msgid "StatusCheck|There is currently a secret configured for this status check."
 msgstr ""
 
 msgid "StatusCheck|URL parameters are hidden for security reasons. For details of URL parameters, see the configuration for the status check service."
@@ -53698,10 +53710,10 @@ msgstr ""
 msgid "There are no GPG keys with access to your account."
 msgstr ""
 
-msgid "There are no SSH keys associated with this account."
+msgid "There are no SSH keys associated with this account"
 msgstr ""
 
-msgid "There are no SSH keys with access to your account."
+msgid "There are no SSH keys with access to your account"
 msgstr ""
 
 msgid "There are no approval rules for the given `represent_as` parameter. Use a valid User/Group/Role name instead."
@@ -54772,9 +54784,6 @@ msgid "This user has no active %{accessTokenTypePlural}."
 msgstr ""
 
 msgid "This user has no identities"
-msgstr ""
-
-msgid "This user has no personal projects."
 msgstr ""
 
 msgid "This user has previously committed to the %{name} project."

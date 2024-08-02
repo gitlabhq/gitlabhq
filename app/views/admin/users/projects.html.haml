@@ -2,49 +2,51 @@
 - add_to_breadcrumbs _("Users"), admin_users_path
 - breadcrumb_title @user.name
 - page_title _("Groups and projects"), @user.name, _("Users")
+- show_empty_state = !@user.groups.any? && !@personal_projects.present? && !@joined_projects.present?
+
 = render 'admin/users/head'
 
-- if @user.groups.any?
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
-    - c.with_header do
-      = _('Groups')
-    - c.with_body do
-      %ul.hover-list
-        - @user.group_members.includes(:source).find_each do |group_member|
-          - group = group_member.group
-          %li.group_member.gl-flex.gl-items-baseline
-            %strong= link_to group.name, admin_group_path(group)
-            &ndash; access to
-            #{pluralize(group.projects.count, 'project')}
-            %span.light.gl-ml-auto= group_member.human_access
-            = render_if_exists 'admin/users/custom_role_badge', member: group_member, css_class: 'gl-ml-3'
-            - unless group_member.owner?
-              = link_button_to nil, group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member), confirm_btn_variant: 'danger', testid: 'remove-user' }, aria: { label: _('Remove') }, method: :delete, remote: true, class: 'gl-ml-3 gl-self-end', title: _('Remove user from group'), variant: :danger, size: :small, icon: 'remove'
-
-.row
-  .col-md-6
-    - if @personal_projects.present?
-      = render 'admin/users/projects', projects: @personal_projects
-    - else
-      .nothing-here-block= _('This user has no personal projects.')
-
-
-  .col-md-6
+- if show_empty_state
+  = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-groups-md.svg',
+    title: _('No groups or projects found'))
+- else
+  - if @user.groups.any?
     = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
       - c.with_header do
-        = _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
+        = _('Groups')
       - c.with_body do
         %ul.hover-list
-          - @joined_projects.sort_by(&:full_name).each do |project|
-            - member = project.team.find_member(@user.id)
-            %li.project_member.gl-flex.gl-items-baseline
-              = link_to admin_project_path(project), class: dom_class(project) do
-                = project.full_name
+          - @user.group_members.includes(:source).find_each do |group_member|
+            - group = group_member.group
+            %li.group_member.gl-flex.gl-items-baseline
+              %strong= link_to group.name, admin_group_path(group)
+              &ndash; access to
+              #{pluralize(group.projects.count, 'project')}
+              %span.light.gl-ml-auto= group_member.human_access
+              = render_if_exists 'admin/users/custom_role_badge', member: group_member, css_class: 'gl-ml-3'
+              - unless group_member.owner?
+                = link_button_to nil, group_group_member_path(group, group_member), data: { confirm: remove_member_message(group_member), confirm_btn_variant: 'danger', testid: 'remove-user' }, aria: { label: _('Remove') }, method: :delete, remote: true, class: 'gl-ml-3 gl-self-end', title: _('Remove user from group'), variant: :danger, size: :small, icon: 'remove'
 
-              - if member
-                %span.light.gl-ml-auto= member.human_access
-                = render_if_exists 'admin/users/custom_role_badge', member: member, css_class: 'gl-ml-3'
+  .gl-grid.sm:gl-grid-cols-2.gl-gap-5
+    - if @personal_projects.present?
+      = render 'admin/users/projects', projects: @personal_projects
+    - if @joined_projects.present?
+      = render Pajamas::CardComponent.new(card_options: { class: 'gl-mb-5' }, body_options: { class: 'gl-py-0 gl-px-0'}) do |c|
+        - c.with_header do
+          = _('Joined projects (%{projects_count})') % { projects_count: @joined_projects.count }
+        - c.with_body do
+          %ul.hover-list
+            - @joined_projects.sort_by(&:full_name).each do |project|
+              - member = project.team.find_member(@user.id)
+              %li.project_member.gl-flex.gl-items-baseline
+                .list-item-name
+                  = link_to admin_project_path(project), class: dom_class(project) do
+                    = project.full_name
 
-                - if member.respond_to? :project
-                  = link_button_to nil, project_project_member_path(project, member), data: { confirm: remove_member_message(member), confirm_btn_variant: 'danger' }, aria: { label: _('Remove') }, remote: true, method: :delete, class: 'gl-ml-3 gl-self-end', title: _('Remove user from project'), variant: :danger, size: :small, icon: 'remove'
+                - if member
+                  %span.light.gl-ml-auto= member.human_access
+                  = render_if_exists 'admin/users/custom_role_badge', member: member, css_class: 'gl-ml-3'
+
+                  - if member.respond_to? :project
+                    = link_button_to nil, project_project_member_path(project, member), data: { confirm: remove_member_message(member), confirm_btn_variant: 'danger' }, aria: { label: _('Remove') }, remote: true, method: :delete, class: 'gl-ml-3', title: _('Remove user from project'), variant: :danger, size: :small, icon: 'remove'
 -# rubocop: enable CodeReuse/ActiveRecord

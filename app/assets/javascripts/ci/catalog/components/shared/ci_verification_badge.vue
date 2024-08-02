@@ -1,5 +1,6 @@
 <script>
 import { GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlBreakpointInstance } from '@gitlab/ui/dist/utils';
 import { s__ } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import {
@@ -38,10 +39,16 @@ export default {
     },
   },
   computed: {
+    isMobile() {
+      return ['sm', 'xs'].includes(GlBreakpointInstance.getBreakpointSize());
+    },
     popoverLink() {
       return this.verificationLevel === VERIFICATION_LEVEL_VERIFIED_CREATOR_MAINTAINED
         ? this.$options.i18n.verifiedCreatorPopoverLink
         : this.$options.i18n.verificationLevelPopoverLink;
+    },
+    popoverPlacement() {
+      return this.isMobile ? 'bottom' : 'right';
     },
     popoverTarget() {
       return `${this.resourceId}-verification-icon`;
@@ -65,7 +72,7 @@ export default {
         {{ $options.verificationLevelOptions[verificationLevel].badgeText }}
       </span>
     </span>
-    <gl-popover :target="popoverTarget" triggers="hover focus">
+    <gl-popover :target="popoverTarget" triggers="hover focus" :placement="popoverPlacement">
       <div class="gl-display-flex gl-flex-direction-column gl-gap-4">
         <span>
           <gl-sprintf :message="$options.verificationLevelOptions[verificationLevel].popoverText">

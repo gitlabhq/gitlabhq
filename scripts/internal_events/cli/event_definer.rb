@@ -203,7 +203,11 @@ module InternalEventsCli
 
         #{divider}
 
-          Want to have data reported in Snowflake/Tableau/ServicePing? Add a new metric for your event!
+          Do you need to create a metric? Probably!
+
+          Metrics are required to pull any usage data from self-managed instances or GitLab-Dedicated through Service Ping. Collected metric data can viewed in Tableau. Individual event details from GitLab.com can also be accessed through Snowflake.
+
+          Typical flow: Define event > Define metric > Instrument app code > Merge/Deploy MR > Verify data in Tableau/Snowflake
 
       TEXT
     end

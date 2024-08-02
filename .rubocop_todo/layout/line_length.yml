@@ -2270,7 +2270,6 @@ Layout/LineLength:
     - 'lib/api/resource_milestone_events.rb'
     - 'lib/api/resource_state_events.rb'
     - 'lib/api/rubygem_packages.rb'
-    - 'lib/api/search.rb'
     - 'lib/api/settings.rb'
     - 'lib/api/snippet_repository_storage_moves.rb'
     - 'lib/api/snippets.rb'

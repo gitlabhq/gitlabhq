@@ -112,6 +112,14 @@ export default {
         data-testid="crud-body"
       >
         <slot></slot>
+
+        <div
+          v-if="$scopedSlots.pagination"
+          class="gl-flex gl-justify-center gl-p-5 gl-border-t"
+          data-testid="crud-pagination"
+        >
+          <slot name="pagination"></slot>
+        </div>
       </div>
 
       <footer
@@ -121,9 +129,6 @@ export default {
       >
         <slot name="footer"></slot>
       </footer>
-    </div>
-    <div v-if="$scopedSlots.pagination" class="gl-mt-5" data-testid="crud-pagination">
-      <slot name="pagination"></slot>
     </div>
   </section>
 </template>

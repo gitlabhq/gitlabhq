@@ -656,9 +656,9 @@ module Gitlab
         end
       end
 
-      def rm_branch(branch_name, user:)
+      def rm_branch(branch_name, user:, target_sha: nil)
         wrapped_gitaly_errors do
-          gitaly_operation_client.user_delete_branch(branch_name, user)
+          gitaly_operation_client.user_delete_branch(branch_name, user, target_sha: target_sha)
         end
       end
 

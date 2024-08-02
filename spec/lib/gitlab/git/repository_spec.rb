@@ -2141,6 +2141,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     let(:project) { create(:project, :repository) }
     let(:repository) { project.repository.raw }
     let(:branch_name) { "to-be-deleted-soon" }
+    let(:target_sha) { repository.commit(branch_name).sha }
 
     before do
       project.add_developer(user)
@@ -2148,7 +2149,7 @@ RSpec.describe Gitlab::Git::Repository, feature_category: :source_code_managemen
     end
 
     it "removes the branch from the repo" do
-      repository.rm_branch(branch_name, user: user)
+      repository.rm_branch(branch_name, user: user, target_sha: target_sha)
 
       expect(repository.find_branch(branch_name)).to be_nil
     end

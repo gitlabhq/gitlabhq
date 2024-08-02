@@ -15,11 +15,9 @@ RSpec.describe Members::ActivityService, :clean_gitlab_redis_shared_state, featu
   describe '#execute' do
     subject(:execute) { instance.execute }
 
-    shared_examples 'does not update last_activity_on' do
+    shared_examples 'does not attempt to update Members' do
       it do
-        expect_next_found_instance_of(Member) do |member|
-          expect(member).not_to receive(:touch).with(:last_activity_on)
-        end
+        expect(instance).not_to receive(:find_members)
 
         expect(execute).to be_success
       end
@@ -55,14 +53,35 @@ RSpec.describe Members::ActivityService, :clean_gitlab_redis_shared_state, featu
         end
 
         it_behaves_like 'updates last_activity_on'
+
+        context 'with multiple memberships in the hierarchy' do
+          let_it_be(:sub_group) { create(:group, parent: namespace) }
+          let_it_be(:sub_group_member) { sub_group.add_developer(user) }
+
+          it 'updates all matching memberships' do
+            expect(execute).to be_success
+
+            expect(member.reload.last_activity_on).to eq Date.today
+            expect(sub_group_member.reload.last_activity_on).to eq Date.today
+          end
+
+          it 'does not update other memberships' do
+            other_namespace = create(:group)
+            other_membership = create(:group_member, :developer, user: user, group: other_namespace,
+              last_activity_on: Date.yesterday)
+
+            expect(execute).to be_success
+            expect(other_membership.reload.last_activity_on).to eq Date.yesterday
+          end
+        end
       end
 
-      context 'when last activity was today' do
-        let_it_be(:member) do
-          create(:group_member, :developer, user: user, group: namespace, last_activity_on: Date.today)
+      context 'when last activity was already tracked' do
+        before do
+          stub_exclusive_lease_taken(lease_key)
         end
 
-        it_behaves_like 'does not update last_activity_on'
+        it_behaves_like 'does not attempt to update Members'
       end
     end
 
@@ -73,14 +92,26 @@ RSpec.describe Members::ActivityService, :clean_gitlab_redis_shared_state, featu
         end
 
         it_behaves_like 'updates last_activity_on'
+
+        context 'with multiple memberships in the hierarchy' do
+          let_it_be(:project_2) { create(:project, namespace: namespace) }
+          let_it_be(:project_2_member) { project_2.add_developer(user) }
+
+          it 'updates all matching memberships' do
+            expect(execute).to be_success
+
+            expect(member.reload.last_activity_on).to eq Date.today
+            expect(project_2_member.reload.last_activity_on).to eq Date.today
+          end
+        end
       end
 
-      context 'when last activity was today' do
-        let_it_be(:member) do
-          create(:project_member, :developer, user: user, project: project, last_activity_on: Date.today)
+      context 'when last activity was already tracked' do
+        before do
+          stub_exclusive_lease_taken(lease_key)
         end
 
-        it_behaves_like 'does not update last_activity_on'
+        it_behaves_like 'does not attempt to update Members'
       end
     end
 

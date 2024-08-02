@@ -20219,7 +20219,7 @@ CREATE TABLE zoekt_indices (
     updated_at timestamp with time zone NOT NULL,
     state smallint DEFAULT 0 NOT NULL,
     zoekt_replica_id bigint,
-    reserved_storage_bytes bigint
+    reserved_storage_bytes bigint DEFAULT '10737418240'::bigint
 );
 
 CREATE SEQUENCE zoekt_indices_id_seq

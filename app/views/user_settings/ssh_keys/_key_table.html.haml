@@ -1,5 +1,4 @@
 - is_admin = local_assigns.fetch(:admin, false)
-- hide_class = local_assigns.fetch(:hide_class, false)
 
 - if @keys.any?
   .table-holder
@@ -15,8 +14,9 @@
           %th= _('Actions')
       = render partial: 'user_settings/ssh_keys/key', collection: @keys, locals: { is_admin: is_admin }
 - else
-  %p.gl-new-card-empty.gl-px-5.gl-py-4.js-toggle-content{ class: hide_class }
-    - if is_admin
-      = _('There are no SSH keys associated with this account.')
-    - else
-      = _('There are no SSH keys with access to your account.')
+  - if is_admin
+    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-access-token-md.svg',
+      title: _('There are no SSH keys associated with this account'))
+  - else
+    = render Pajamas::EmptyStateComponent.new(svg_path: 'illustrations/empty-state/empty-access-md.svg',
+      title: _('There are no SSH keys with access to your account'))

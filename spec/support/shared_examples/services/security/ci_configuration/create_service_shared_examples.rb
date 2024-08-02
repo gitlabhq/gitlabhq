@@ -41,6 +41,8 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
 
       context 'when exception is raised' do
         let_it_be(:project) { create(:project, :repository) }
+        let(:mock_sha) { '123456' }
+        let(:commit_instance) { instance_double(Gitlab::Git::Commit, sha: mock_sha) }
 
         before do
           allow(project.repository).to receive(:add_branch).and_raise(StandardError, "The unexpected happened!")
@@ -49,10 +51,11 @@ RSpec.shared_examples_for 'services security ci configuration create service' do
         context 'when branch was created' do
           before do
             allow(project.repository).to receive(:branch_exists?).and_return(true)
+            allow(project.repository).to receive(:commit).with(branch_name).and_return(commit_instance)
           end
 
           it 'tries to rm branch' do
-            expect(project.repository).to receive(:rm_branch).with(user, branch_name)
+            expect(project.repository).to receive(:rm_branch).with(user, branch_name, target_sha: mock_sha)
             expect { subject }.to raise_error(StandardError)
           end
         end

@@ -199,17 +199,20 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
   describe '#user_delete_branch' do
     let(:branch_name) { 'my-branch' }
+    let(:start_point) { 'master' }
+    let(:target_sha) { 'sha_for_branch_name' }
     let(:request) do
       Gitaly::UserDeleteBranchRequest.new(
         repository: repository.gitaly_repository,
         branch_name: branch_name,
-        user: gitaly_user
+        user: gitaly_user,
+        expected_old_oid: target_sha
       )
     end
 
     let(:response) { Gitaly::UserDeleteBranchResponse.new }
 
-    subject { client.user_delete_branch(branch_name, user) }
+    subject { client.user_delete_branch(branch_name, user, target_sha: target_sha) }
 
     it 'sends a user_delete_branch message' do
       expect_any_instance_of(Gitaly::OperationService::Stub)
@@ -217,6 +220,30 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
         .and_return(response)
 
       subject
+    end
+
+    context 'when target_sha is not provided' do
+      let(:target_sha) { nil }
+
+      it 'sends a user_delete_branch message without target_sha' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_delete_branch).with(request, kind_of(Hash))
+          .and_return(response)
+
+        subject
+      end
+    end
+
+    context 'with an invalid target_sha' do
+      let(:target_sha) { 'invalid-target-sha' }
+
+      it 'raises a CommandError' do
+        expect_any_instance_of(Gitaly::OperationService::Stub)
+          .to receive(:user_delete_branch).with(request, kind_of(Hash))
+          .and_raise(GRPC::InvalidArgument.new('Invalid argument'))
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError)
+      end
     end
 
     context 'with a custom hook error' do

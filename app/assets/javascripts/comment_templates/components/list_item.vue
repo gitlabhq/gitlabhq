@@ -46,7 +46,7 @@ export default {
           action: () => this.$refs['delete-modal'].show(),
           extraAttrs: {
             'data-testid': 'comment-template-delete-btn',
-            class: 'gl-text-red-500!',
+            class: '!gl-text-red-500',
           },
         },
       ];
@@ -74,8 +74,8 @@ export default {
 </script>
 
 <template>
-  <li class="gl-px-5! gl-py-4!">
-    <div class="gl-display-flex">
+  <li>
+    <div class="gl-flex">
       <h6 class="gl-mr-3 gl-my-0" data-testid="comment-template-name">{{ template.name }}</h6>
       <div class="gl-ml-auto">
         <gl-disclosure-dropdown
@@ -94,7 +94,7 @@ export default {
         </gl-tooltip>
       </div>
     </div>
-    <div class="gl-font-monospace gl-whitespace-pre-line gl-font-sm -gl-mt-5">
+    <div class="gl-line-clamp-6 gl-font-monospace gl-whitespace-pre-line gl-text-sm -gl-mt-6">
       {{ template.content }}
     </div>
     <gl-modal

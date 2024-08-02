@@ -266,6 +266,21 @@ RSpec.describe DesignManagement::CopyDesignCollection::CopyService, :clean_gitla
           def commits_on_master(limit: 10)
             target_repository.commits(target_repository.root_ref, limit: limit).map(&:id)
           end
+
+          context 'with an invalid target_sha' do
+            before do
+              allow_next_instance_of(Gitlab::GitalyClient::OperationService) do |instance|
+                allow(instance).to receive(:user_delete_branch).and_raise(Gitlab::Git::CommandError, 'Invalid target_sha')
+              end
+            end
+
+            it 'returns a service error with the correct message' do
+              result = subject
+
+              expect(result).to be_error
+              expect(result.message).to eq({ message: "Invalid target_sha" })
+            end
+          end
         end
       end
     end

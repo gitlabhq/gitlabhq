@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import VueApollo from 'vue-apollo';
 import createDefaultClient from '~/lib/graphql';
 import routes from './routes';
-import App from './components/app.vue';
+import CommentTemplatesApp from './components/app.vue';
 
 export const initCommentTemplates = ({
   savedReplyType,
@@ -43,7 +43,7 @@ export const initCommentTemplates = ({
       updateMutation,
     },
     render(h) {
-      return h(App);
+      return h(CommentTemplatesApp);
     },
   });
 };

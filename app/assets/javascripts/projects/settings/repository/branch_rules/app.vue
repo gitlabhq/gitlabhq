@@ -1,12 +1,6 @@
 <script>
-import {
-  GlButton,
-  GlModal,
-  GlModalDirective,
-  GlCard,
-  GlIcon,
-  GlDisclosureDropdown,
-} from '@gitlab/ui';
+import { GlButton, GlModal, GlModalDirective, GlDisclosureDropdown } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
 import branchRulesQuery from 'ee_else_ce/projects/settings/repository/branch_rules/graphql/queries/branch_rules.query.graphql';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
@@ -26,9 +20,8 @@ export default {
     BranchRuleModal,
     GlButton,
     GlModal,
-    GlCard,
-    GlIcon,
     GlDisclosureDropdown,
+    CrudComponent,
   },
   directives: {
     GlModal: GlModalDirective,
@@ -156,21 +149,13 @@ export default {
 </script>
 
 <template>
-  <gl-card
-    class="gl-new-card"
-    header-class="gl-new-card-header"
-    body-class="gl-new-card-body gl-px-0"
+  <crud-component
+    :title="__('Branch rules')"
+    icon="branch"
+    :count="branchRules.length"
+    class="gl-mb-5"
   >
-    <template #header>
-      <div class="gl-new-card-title-wrapper" data-testid="title">
-        <h3 class="gl-new-card-title">
-          {{ __('Branch Rules') }}
-        </h3>
-        <div class="gl-new-card-count">
-          <gl-icon name="branch" class="gl-mr-2" />
-          {{ branchRules.length }}
-        </div>
-      </div>
+    <template #actions>
       <gl-disclosure-dropdown
         v-if="glFeatures.editBranchRules"
         :toggle-text="$options.i18n.addBranchRule"
@@ -218,5 +203,5 @@ export default {
       <p>{{ $options.i18n.branchRuleModalDescription }}</p>
       <p>{{ $options.i18n.branchRuleModalContent }}</p>
     </gl-modal>
-  </gl-card>
+  </crud-component>
 </template>

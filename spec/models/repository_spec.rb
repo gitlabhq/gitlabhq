@@ -2758,12 +2758,33 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
   describe '#rm_branch' do
     let(:project) { create(:project, :repository) }
+    let(:branch_name) { 'feature' }
+    let(:target_sha) { repository.commit(branch_name).sha }
 
     it 'removes a branch' do
       expect(repository).to receive(:before_remove_branch)
       expect(repository).to receive(:after_remove_branch)
 
-      repository.rm_branch(user, 'feature')
+      repository.rm_branch(user, branch_name, target_sha: target_sha)
+    end
+
+    context 'when target_sha is not set' do
+      it 'removes a branch without target_sha' do
+        expect(repository).to receive(:before_remove_branch)
+        expect(repository).to receive(:after_remove_branch)
+
+        repository.rm_branch(user, branch_name)
+      end
+    end
+
+    context 'when target_sha is invalid' do
+      let(:invalid_sha) { 'invalidsha1234567890' }
+
+      it 'raises an error for invalid target_sha' do
+        expect do
+          repository.rm_branch(user, branch_name, target_sha: invalid_sha)
+        end.to raise_error(Gitlab::Git::CommandError)
+      end
     end
 
     context 'when pre hooks failed' do
@@ -2774,10 +2795,10 @@ RSpec.describe Repository, feature_category: :source_code_management do
 
       it 'gets an error and does not delete the branch' do
         expect do
-          repository.rm_branch(user, 'feature')
+          repository.rm_branch(user, branch_name, target_sha: target_sha)
         end.to raise_error(Gitlab::Git::PreReceiveError)
 
-        expect(repository.find_branch('feature')).not_to be_nil
+        expect(repository.find_branch(branch_name)).not_to be_nil
       end
     end
   end

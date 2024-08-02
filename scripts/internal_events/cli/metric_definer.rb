@@ -305,6 +305,11 @@ module InternalEventsCli
         #{outcome}
 
         #{divider}
+
+          Have you instrumented the application code to trigger the event yet? View usage examples to easily copy/paste implementation!
+
+          Typical flow: Define event > Define metric > Instrument app code > Merge/Deploy MR > Verify data in Tableau/Snowflake
+
       TEXT
 
       actions = selected_events.map(&:action).join(', ')
