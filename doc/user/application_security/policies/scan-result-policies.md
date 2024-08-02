@@ -460,14 +460,23 @@ Lock file tampering, for example, is outside of the scope of security policy man
 
 ![Evaluating scan result findings](img/scan_results_evaluation_white-bg.png)
 
-### Known issues
+### Filter out policy violations with the attributes "Fix Available" or "False Positive"
 
-We have identified in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) common areas of confusion in scan result findings that need to be addressed. Below are a few of the known issues:
+To avoid unnecessary approval requirements, these additional filters help ensure you only block MRs on the most actionable findings. 
 
-- When using `new_needs_triage` and `new_dismissed`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency)
-- Findings or errors that cause approval to be required on a merge request approval policy may not be evident in the Security MR widget. With `merge base` introduced in [issue 428518](https://gitlab.com/gitlab-org/gitlab/-/issues/428518) some cases were addressed. Support for displaying more granular details about what caused security policy violations is proposed in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
-- Security policy violations are distinct compared to findings displayed in the MR widgets. Some violations may not be present in the MR widget. We are working to harmonize our features in [epic 11020](https://gitlab.com/groups/gitlab-org/-/epics/11020) and to display policy violations explicitly in merge requests in [epic 11185](https://gitlab.com/groups/gitlab-org/-/epics/11185).
-- When merged results pipelines are enabled for the project, along with branch pipelines for created MRs, the comparison between source and target branches depends on the order in which the source branch's pipeline finishes. This can create race conditions, a resolution of which is proposed in [issue 384927](https://gitlab.com/gitlab-org/gitlab/-/issues/384927). The approvals may behave differently, depending on which target branch pipeline is selected.
+By setting `fix_available` to `false` in YAML, or **is not** and **Fix Available** in the policy editor, the finding is not considered a policy violation when the finding has a solution or remediation available. Solutions appear at the bottom of the vulnerability object under the heading **Solution**. Remediations appear as a **Resolve with Merge Request** button within the vulnerability object.
+
+The **Resolve with Merge Request** button only appears when one of the following criteria is met:
+
+1. A SAST vulnerability is found in a project that is on the Ultimate Tier with GitLab Duo Enterprise.
+1. A container scanning vulnerability is found in a project that is on the Ultimate Tier in a job where `GIT_STRATEGY: fetch` has been set. Additionally, the vulnerability must have a package containing a fix that is available for the repositories enabled for the container image.
+1. A dependency scanning vulnerability is found in a Node.js project that is managed by yarn and a fix is available. Additionally, the project must be on the Ultimate Tier and FIPS mode must be disabled for the instance.
+
+**Fix Available** only applies to dependency scanning and container scanning.
+
+By using the **False Positive** attribute, similarly, you can ignore findings detected by a policy by setting `false_positive` to `false` (or set attribute to **Is not** and **False Positive** in the policy editor).
+
+The **False Positive** attribute only applies to findings detected by our Vulnerability Extraction Tool for SAST results.
 
 ## Troubleshooting
 
@@ -500,16 +509,20 @@ end.each do |project, configuration_ids|
 end
 ```
 
+### Newly detected CVEs
+
+When using `new_needs_triage` and `new_dismissed`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). These findings will not be present within the MR widget, but will be highlighted in the policy bot comment and pipeline report.
+
 ### Support request for debugging of merge request approval policy
 
-GitLab SaaS users may submit a [support ticket](https://about.gitlab.com/support/) titled "Merge request approval policy debugging". Provide the following details:
+GitLab.com users may submit a [support ticket](https://about.gitlab.com/support/) titled "Merge request approval policy debugging". Provide the following details:
 
 - Group path, project path and optionally merge request ID
 - Severity
 - Current behavior
 - Expected behavior
 
-### GitLab SaaS
+#### GitLab.com
 
 Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sidekiq-inf-gprd*`) to identify the failure `reason`. Below is an example response snippet from logs. You can use this query to find logs related to approvals: `json.event.keyword: "update_approvals"` and `json.project_path: "group-path/project-path"`. Optionally, you can further filter by the merge request identifier using `json.merge_request_iid`:
 
@@ -525,7 +538,7 @@ Support teams will investigate [logs](https://log.gprd.gitlab.net/) (`pubsub-sid
 }
 ```
 
-### GitLab self-managed
+#### GitLab self-managed
 
 Search for keywords such as the `project-path`, `api_fuzzing`, and `merge_request`. Example: `grep group-path/project-path`, and `grep merge_request`. If you know the correlation ID you can search by correlation ID. For example, if the value of `correlation_id` is 01HWN2NFABCEDFG, search for `01HWN2NFABCEDFG`.
 Search in the following files:

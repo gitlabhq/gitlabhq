@@ -164,6 +164,24 @@ License scanning is supported for the following languages and package managers:
 The supported files and versions are the ones supported by
 [Dependency Scanning](../../application_security/dependency_scanning/index.md#supported-languages-and-package-managers).
 
+## Data sources
+
+License information for supported packages is obtained from the sources below. GitLab does
+additional processing on the original data, which includes mapping variations to the canonical
+license names.
+
+| Package manager | Source                                                           |
+|-----------------|------------------------------------------------------------------|
+| Cargo           | <https://deps.dev/>                                              |
+| Conan           | <https://github.com/conan-io/conan-center-index>                 |
+| Go              | <https://index.golang.org/>                                      |
+| Maven           | <https://storage.googleapis.com/maven-central>                   |
+| npm             | <https://deps.dev/>                                              |
+| NuGet           | <https://api.nuget.org/v3/catalog0/index.json>                   |
+| Packagist       | <https://packagist.org/packages/list.json>                       |
+| PyPI            | <https://warehouse.pypa.io/api-reference/bigquery-datasets.html> |
+| Rubygems        | <https://rubygems.org/versions>                                  |
+
 ## License expressions
 
 The License Scanning of CycloneDX files does not support [composite licenses](https://spdx.github.io/spdx-spec/v2-draft/SPDX-license-expressions/).

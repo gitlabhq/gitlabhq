@@ -282,23 +282,30 @@ In GitLab 16.9 and earlier:
 - If the CI/CD variables suffixed `_EXCLUDED_ANALYZERS` were declared in a policy, their values were
   ignored, regardless of where they were defined: policy, group, or project.
 
-## Security policy scopes
+## Scope security policies to projects
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/135398) in GitLab 16.7 [with a flag](../../../administration/feature_flags.md) named `security_policies_policy_scope`. Enabled by default.
 > - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/443594) in GitLab 16.11. Feature flag `security_policies_policy_scope` removed.
 
-Security policy enforcement depends first on establishing a link between the group, subgroup, or
-project on which you want to enforce policies, and the security policy project that contains the
-policies. For example, if you are linking policies to a group, a group owner must create the link to
+Security policy enforcement depends first on establishing a link between:
+
+- The group, subgroup, or project on which you want to enforce policies
+- The security policy project that contains the policies.
+
+For example, if you are linking policies to a group, a group owner must create the link to
 the security policy project. Then, all policies in the security policy project are inherited by all
 projects in the group.
 
-You can refine a security policy's scope to:
+You scope security policies to projects by setting the scopes in the `policy.yml` file to:
 
-- _Include_ only projects applied with a [compliance framework](../../group/compliance_frameworks.md).
-- _Include_ or _exclude_ selected projects from enforcement.
+- _Include_ only projects with an applied [compliance framework](../../group/compliance_frameworks.md) by using
+  the compliance framework's ID. To include projects, use `policy_scope.compliance_frameworks.id` to specify IDs of
+  compliance frameworks that are applied to the projects.
+- _Include_ or _exclude_ selected projects from enforcement by using the project's ID.
 
 ### Policy scope schema
+
+A policy scope must conform to this schema.
 
 | Field | Type | Required | Possible values | Description |
 |-------|------|----------|-----------------|-------------|
@@ -306,12 +313,19 @@ You can refine a security policy's scope to:
 
 #### `policy_scope` scope type
 
+Policy scopes are one of two types.
+
 | Field | Type | Possible values | Description |
 |-------|------|-----------------|-------------|
 | `compliance_frameworks` | `array` |  | List of IDs of the compliance frameworks in scope of enforcement, in an array of objects with key `id`. |
 | `projects` | `object` |  `including`, `excluding` | Use `excluding:` or `including:` then list the IDs of the projects you wish to include or exclude, in an array of objects with key `id`. |
 
 #### Example `policy.yml` with security policy scopes
+
+In this example, the security policy:
+
+- Includes any project with compliance frameworks with an ID of either `2` or `11` applied to them.
+- Excludes projects with an ID of either `24` or `27`.
 
 ```yaml
 ---

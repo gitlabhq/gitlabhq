@@ -2305,7 +2305,6 @@ RSpec/NamedSubject:
     - 'spec/lib/gitlab/usage/metrics/instrumentations/redis_metric_spec.rb'
     - 'spec/lib/gitlab/usage_data/topology_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/hll_redis_counter_spec.rb'
-    - 'spec/lib/gitlab/usage_data_counters/kubernetes_agent_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters/redis_counter_spec.rb'
     - 'spec/lib/gitlab/usage_data_counters_spec.rb'
     - 'spec/lib/gitlab/usage_data_metrics_spec.rb'

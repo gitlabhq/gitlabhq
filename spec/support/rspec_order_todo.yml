@@ -5898,7 +5898,6 @@
 - './spec/lib/gitlab/usage_data_counters/ipynb_diff_activity_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/issue_activity_unique_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/jetbrains_plugin_activity_unique_counter_spec.rb'
-- './spec/lib/gitlab/usage_data_counters/kubernetes_agent_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/merge_request_activity_unique_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/merge_request_widget_extension_counter_spec.rb'
 - './spec/lib/gitlab/usage_data_counters/package_event_counter_spec.rb'

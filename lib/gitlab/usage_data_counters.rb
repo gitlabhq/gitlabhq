@@ -5,7 +5,6 @@ module Gitlab
     COUNTERS = [
       PackageEventCounter,
       DiffsCounter,
-      KubernetesAgentCounter,
       WebIdeCounter,
       MergeRequestWidgetExtensionCounter
     ].freeze

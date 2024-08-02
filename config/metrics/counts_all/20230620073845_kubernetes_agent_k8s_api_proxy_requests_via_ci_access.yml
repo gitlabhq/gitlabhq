@@ -7,13 +7,11 @@ status: active
 milestone: "16.2"
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/124147
 time_frame: all
-data_source: redis
+data_source: internal_events
 data_category: optional
-instrumentation_class: RedisMetric
 performance_indicator_type: []
-options:
-  prefix: kubernetes_agent
-  event: k8s_api_proxy_requests_via_ci_access
+events:
+  - name: request_api_proxy_access_via_ci
 distribution:
 - ce
 - ee

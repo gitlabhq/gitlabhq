@@ -224,7 +224,6 @@ RSpec/ExpectChange:
     - 'spec/lib/gitlab/legacy_github_import/label_formatter_spec.rb'
     - 'spec/lib/gitlab/legacy_github_import/project_creator_spec.rb'
     - 'spec/lib/gitlab/query_limiting/transaction_spec.rb'
-    - 'spec/lib/gitlab/usage_data_counters/kubernetes_agent_counter_spec.rb'
     - 'spec/models/ci/build_metadata_spec.rb'
     - 'spec/models/ci/build_spec.rb'
     - 'spec/models/ci/job_artifact_spec.rb'

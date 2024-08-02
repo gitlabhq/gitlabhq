@@ -6,6 +6,14 @@ module API
       module AgentHelpers
         include Gitlab::Utils::StrongMemoize
 
+        COUNTERS_EVENTS_MAPPING = {
+          'flux_git_push_notifications_total' => 'create_flux_git_push_notification',
+          'k8s_api_proxy_request' => 'request_api_proxy_access',
+          'k8s_api_proxy_requests_via_ci_access' => 'request_api_proxy_access_via_ci',
+          'k8s_api_proxy_requests_via_user_access' => 'request_api_proxy_access_via_user',
+          'k8s_api_proxy_requests_via_pat_access' => 'request_api_proxy_access_via_pat'
+        }.freeze
+
         def authenticate_gitlab_kas_request!
           render_api_error!('KAS JWT authentication invalid', 401) unless Gitlab::Kas.verify_api_request(headers)
         end
@@ -94,13 +102,16 @@ module API
         end
 
         def increment_count_events
-          events = params[:counters]&.slice(
-            :k8s_api_proxy_request, :flux_git_push_notifications_total,
-            :k8s_api_proxy_requests_via_ci_access, :k8s_api_proxy_requests_via_user_access,
-            :k8s_api_proxy_requests_via_pat_access
-          )
+          counters = params[:counters]&.slice(*COUNTERS_EVENTS_MAPPING.keys)
 
-          Gitlab::UsageDataCounters::KubernetesAgentCounter.increment_event_counts(events)
+          return unless counters.present?
+
+          counters.each do |counter, incr|
+            next if incr == 0
+
+            event = COUNTERS_EVENTS_MAPPING[counter]
+            incr.times { Gitlab::InternalEvents.track_event(event) }
+          end
         end
 
         def update_configuration(agent:, config:)

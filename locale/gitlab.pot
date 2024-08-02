@@ -1449,6 +1449,9 @@ msgstr ""
 msgid "%{type} only supports %{name} name"
 msgstr ""
 
+msgid "%{type} was closed by %{name}"
+msgstr ""
+
 msgid "%{url} (optional)"
 msgstr ""
 
@@ -29005,9 +29008,6 @@ msgid "Issue types"
 msgstr ""
 
 msgid "Issue update failed"
-msgstr ""
-
-msgid "Issue was closed by %{name}"
 msgstr ""
 
 msgid "Issue was closed by %{name} with %{closed_via}"

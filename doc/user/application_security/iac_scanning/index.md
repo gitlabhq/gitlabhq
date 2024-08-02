@@ -183,6 +183,61 @@ In the following example `sast-ruleset.toml` file, rules are matched by the `typ
       severity = "Info"
 ```
 
+### Offline configuration
+
+DETAILS:
+**Tier:** PREMIUM
+**Offering:** Self-managed
+
+An offline environment has limited, restricted, or intermittent access to external resources through
+the internet. For self-managed GitLab instances in such an environment, IaC requires
+some configuration changes. The instructions in this section must be completed together with the
+instructions detailed in [offline environments](../offline_deployments/index.md).
+
+#### Configure GitLab Runner
+
+By default, a runner tries to pull Docker images from the GitLab container registry even if a local
+copy is available. You should use this default setting, to ensure Docker images remain current.
+However, if no network connectivity is available, you must change the default GitLab Runner
+`pull_policy` variable.
+
+Configure the GitLab Runner CI/CD variable `pull_policy` to
+[`if-not-present`](https://docs.gitlab.com/runner/executors/docker.html#using-the-if-not-present-pull-policy).
+
+#### Use local IaC analyzer image
+
+Use a local IaC analyzer image if you want to obtain the image from a local Docker
+registry instead of the GitLab container registry.
+
+Prerequisites:
+
+- Importing Docker images into a local offline Docker registry depends on your
+  network security policy. Consult your IT staff to find an accepted and approved process
+  to import or temporarily access external resources.
+
+1. Import the default IaC analyzer image from `registry.gitlab.com` into your
+   [local Docker container registry](../../packages/container_registry/index.md):
+
+   ```plaintext
+   registry.gitlab.com/security-products/kics:5
+   ```
+
+   The IaC analyzer's image is [periodically updated](../index.md#vulnerability-scanner-maintenance)
+   so you should periodically update the local copy.
+
+1. Set the CI/CD variable `SECURE_ANALYZERS_PREFIX` to the local Docker container registry.
+
+   ```yaml
+   include:
+     - template: Jobs/SAST-IaC.gitlab-ci.yml
+
+   variables:
+     SECURE_ANALYZERS_PREFIX: "localhost:5000/analyzers"
+   ```
+
+The IaC job should now use the local copy of the analyzer Docker image,
+without requiring internet access.
+
 ## Use a specific analyzer version
 
 The GitLab-managed CI/CD template specifies a major version and automatically pulls the latest
