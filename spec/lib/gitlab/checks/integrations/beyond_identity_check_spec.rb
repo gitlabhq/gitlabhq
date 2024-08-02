@@ -96,64 +96,96 @@ RSpec.describe Gitlab::Checks::Integrations::BeyondIdentityCheck, feature_catego
         end
       end
 
-      context 'when key verification by integrations is stale' do
-        let!(:gpg_key) do
-          create :gpg_key, externally_verified: externally_verified,
-            updated_at: (described_class::INTEGRATION_VERIFICATION_PERIOD + 1.day).ago
+      context 'when the signature is verified' do
+        let!(:verified_signature) do
+          create(
+            :gpg_signature,
+            commit_sha: 'f0a5ed60d24c98ec6d00ac010c1f3f01ee0a8373',
+            project: project,
+            gpg_key: gpg_key,
+            gpg_key_primary_keyid: gpg_key.keyid,
+            verification_status: :verified
+          )
         end
+
+        let(:verified_gpg_key) { build(:gpg_key, externally_verified: true, externally_verified_at: Time.current) }
 
         before do
           allow(Integrations::BeyondIdentity).to receive(:for_instance).and_return([beyond_identity_integration])
+          allow_next_instances_of(CommitSignatures::GpgSignature, 2) do |signature|
+            allow(signature).to receive(:verified?).and_return(true)
+            allow(signature).to receive(:gpg_key).and_return(verified_gpg_key)
+          end
         end
 
-        context 'and the signature is verified' do
+        context 'and key was deleted' do
           before do
-            allow_next_instances_of(CommitSignatures::GpgSignature, 3) do |signature|
-              allow(signature).to receive(:verified?).and_return(true)
-              allow(signature).to receive(:gpg_key).and_return(gpg_key)
-            end
+            gpg_key.destroy!
           end
 
-          let(:externally_verified) { true }
-
-          context 'and the key is not verified' do
-            let(:externally_verified) { false }
-
-            it 'raises an error without calling integrations' do
-              expect(GpgKeys::ValidateIntegrationsService).not_to receive(:new)
-              expect { check.validate! }
-              .to raise_error(::Gitlab::GitAccess::ForbiddenError,
-                'GPG Key used to sign commit f0a5ed60d24c98ec6d00ac010c1f3f01ee0a8373 is not verified')
-            end
+          it 'raises an error without calling integrations' do
+            expect(GpgKeys::ValidateIntegrationsService).not_to receive(:new)
+            expect { check.validate! }
+            .to raise_error(::Gitlab::GitAccess::ForbiddenError,
+              'GPG Key used to sign commit f0a5ed60d24c98ec6d00ac010c1f3f01ee0a8373 is not verified')
           end
 
-          context 'when not verified by integrations' do
+          context 'and the key is added again' do
+            let(:new_gpg_key) { create :gpg_key, externally_verified: true, externally_verified_at: Time.current }
+
             before do
-              allow(beyond_identity_integration).to receive(:execute).and_raise(
-                ::Gitlab::BeyondIdentity::Client::ApiError.new('error', 403)
-              )
-            end
-
-            it 'raises an error' do
-              expect { check.validate! }
-              .to raise_error(::Gitlab::GitAccess::ForbiddenError,
-                'GPG Key used to sign commit f0a5ed60d24c98ec6d00ac010c1f3f01ee0a8373 is not verified')
-              expect(gpg_key.reload.externally_verified).to eq(false)
-            end
-          end
-
-          context 'when verified by integrations' do
-            before do
+              new_gpg_key.update_column(:fingerprint, 'A328467F793DBC6033FEA1B9EDD30D2BEB691AC9')
               allow(beyond_identity_integration).to receive(:execute)
             end
 
             it 'does not raise an error' do
               expect { check.validate! }.not_to raise_error
+              expect(verified_signature.reload.gpg_key).to eq(new_gpg_key)
             end
+          end
+        end
 
-            it 'updates updated_at' do
-              freeze_time do
-                expect { check.validate! }.to change { gpg_key.reload.updated_at }.to(Time.current)
+        context 'when key verification by integrations is stale' do
+          let!(:gpg_key) do
+            create :gpg_key, externally_verified: externally_verified,
+              externally_verified_at: (described_class::INTEGRATION_VERIFICATION_PERIOD + 1.day).ago
+          end
+
+          context 'and the key is verified' do
+            let(:externally_verified) { true }
+
+            context 'when not verified by integrations' do
+              before do
+                allow(beyond_identity_integration).to receive(:execute).and_raise(
+                  ::Gitlab::BeyondIdentity::Client::ApiError.new('error', 403)
+                )
+              end
+
+              it 'raises an error' do
+                expect { check.validate! }
+                .to raise_error(::Gitlab::GitAccess::ForbiddenError,
+                  'GPG Key used to sign commit f0a5ed60d24c98ec6d00ac010c1f3f01ee0a8373 is not verified')
+                expect(gpg_key.reload.externally_verified).to eq(false)
+              end
+            end
+          end
+
+          context 'and the key is not verified' do
+            let(:externally_verified) { false }
+
+            context 'when verified by integrations' do
+              before do
+                allow(beyond_identity_integration).to receive(:execute)
+              end
+
+              it 'does not raise an error' do
+                expect { check.validate! }.not_to raise_error
+              end
+
+              it 'updates externally_verified_at' do
+                freeze_time do
+                  expect { check.validate! }.to change { gpg_key.reload.externally_verified_at }.to(Time.current)
+                end
               end
             end
           end

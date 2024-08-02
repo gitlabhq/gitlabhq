@@ -10391,7 +10391,8 @@ CREATE TABLE gpg_keys (
     primary_keyid bytea,
     fingerprint bytea,
     key text,
-    externally_verified boolean DEFAULT false NOT NULL
+    externally_verified boolean DEFAULT false NOT NULL,
+    externally_verified_at timestamp with time zone
 );
 
 CREATE SEQUENCE gpg_keys_id_seq
