@@ -359,6 +359,16 @@ class Repository
     @branch_names_include = nil
   end
 
+  def expire_branch_names_cache
+    expire_method_caches(%i[branch_names branch_count])
+    @local_branches = nil
+  end
+
+  def expire_tag_names_cache
+    expire_method_caches(%i[tag_names tag_count])
+    @tags = nil
+  end
+
   def expire_protected_branches_cache
     ProtectedBranches::CacheService.new(project).refresh if project # rubocop:disable CodeReuse/ServiceClass
   end

@@ -9,6 +9,7 @@ class PostReceive
 
   sidekiq_options retry: 3
   include Gitlab::Experiment::Dsl
+  include ::Gitlab::ExclusiveLeaseHelpers
 
   feature_category :source_code_management
   urgency :high
@@ -18,6 +19,8 @@ class PostReceive
 
   def perform(gl_repository, identifier, changes, push_options = {})
     container, project, repo_type = Gitlab::GlRepository.parse(gl_repository)
+    @project = project
+    @gl_repository = gl_repository
 
     if container.nil? || (container.is_a?(ProjectSnippet) && project.nil?)
       log("Triggered hook for non-existing gl_repository \"#{gl_repository}\"")
@@ -111,8 +114,49 @@ class PostReceive
   # Expire the repository status, branch, and tag cache once per push.
   def expire_caches(post_received, repository)
     repository.expire_status_cache if repository.empty?
-    repository.expire_branches_cache if post_received.includes_branches?
-    repository.expire_caches_for_tags if post_received.includes_tags?
+    expire_branch_cache(repository) if post_received.includes_branches?
+    expire_tag_cache(repository) if post_received.includes_tags?
+  end
+
+  def expire_branch_cache(repository)
+    repository.expire_branches_cache
+
+    # Consider the scenario where multiple pushes happen in close succession:
+    #
+    # 1. Job 1 expires cache.
+    # 2. Job 1 starts computing branch list.
+    # 3. Job 2 starts.
+    # 4. Job 2 expires cache (no-op because nothing is there).
+    # 5. Job 1 finishes computing branch list, persists cache.
+    # 6. Job 2 reads from stale cache instead of loading a fresh branch list.
+    #
+    # To avoid this, atomically expire and refresh the branch name cache
+    # so that tasks such as pipeline creation will find the branch.
+    if Feature.enabled?(:post_receive_sync_refresh_cache, @project)
+      in_lock(lease_key(:branch), ttl: cache_ttl) do
+        repository.expire_branch_names_cache
+        repository.branch_names
+      end
+    end
+  rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+    log("Failed to obtain lease for expiring branch name cache")
+  end
+
+  def expire_tag_cache(repository)
+    repository.expire_caches_for_tags
+
+    if Feature.enabled?(:post_receive_sync_refresh_cache, @project)
+      in_lock(lease_key(:tag), ttl: cache_ttl) do
+        repository.expire_tag_names_cache
+        repository.tag_names
+      end
+    end
+  rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
+    log("Failed to obtain lease for expiring tag name cache")
+  end
+
+  def lease_key(ref_type)
+    "post_receive:#{@gl_repository}:#{ref_type}"
   end
 
   # Schedule an update for the repository size and commit count if necessary.
@@ -151,6 +195,10 @@ class PostReceive
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
+  end
+
+  def cache_ttl
+    ::Gitlab::GitalyClient.fast_timeout * 2
   end
 end
 

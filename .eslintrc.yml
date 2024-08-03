@@ -200,6 +200,20 @@ overrides:
       no-unsanitized/method: off
       no-unsanitized/property: off
       local-rules/require-valid-help-page-path: off
+      no-restricted-imports:
+        - error
+        - paths:
+          - name: mousetrap
+            message: 'Import { Mousetrap } from ~/lib/mousetrap instead.'
+          - name: vuex
+            message: 'See our documentation on "Migrating from VueX" for tips on how to avoid adding new VueX stores.'
+          - name: '@sentry/browser'
+            message: Use "import * as Sentry from '~/sentry/sentry_browser_wrapper';" instead
+          - name: ~/locale
+            importNames:
+              - __
+              - s__
+            message: 'Do not externalize strings in specs: https://docs.gitlab.com/ee/development/i18n/externalization.html#test-files-jest'
   - files:
       - 'config/**/*'
       - 'scripts/**/*'

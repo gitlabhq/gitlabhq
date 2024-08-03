@@ -1,4 +1,10 @@
-import { serialize, builders } from '../../serialization_utils';
+import {
+  serialize,
+  serializeWithOptions,
+  builders,
+  source,
+  sourceTag,
+} from '../../serialization_utils';
 
 const { paragraph, strike } = builders;
 
@@ -7,11 +13,36 @@ it('correctly serializes strikethrough', () => {
 });
 
 it.each`
-  strikeTag
-  ${'s'}
-  ${'strike'}
-`('correctly serializes strikethrough with "$strikeTag" tag', ({ strikeTag }) => {
-  expect(serialize(paragraph(strike({ htmlTag: strikeTag }, 'deleted content')))).toBe(
-    `<${strikeTag}>deleted content</${strikeTag}>`,
+  attrs                    | tagName
+  ${sourceTag('s')}        | ${'s'}
+  ${sourceTag('strike')}   | ${'strike'}
+  ${sourceTag('del')}      | ${'del'}
+  ${{ htmlTag: 's' }}      | ${'s'}
+  ${{ htmlTag: 'strike' }} | ${'strike'}
+`('correctly serializes strikethrough with a attrs $attrs', ({ attrs, tagName }) => {
+  expect(serialize(paragraph(strike(attrs, 'deleted content')))).toBe(
+    `<${tagName}>deleted content</${tagName}>`,
   );
+
+  expect(
+    serializeWithOptions(
+      { pristineDoc: paragraph(strike(attrs, 'deleted content')) },
+      paragraph(strike(attrs, 'new content')),
+    ),
+  ).toBe(`<${tagName}>new content</${tagName}>`);
+});
+
+it('correctly serializes strikethrough with sourcemap', () => {
+  const sourceMarkdown = source('~~deleted\ncontent~~');
+
+  expect(serialize(paragraph(strike(sourceMarkdown, 'deleted content')))).toBe(
+    '~~deleted\ncontent~~',
+  );
+
+  expect(
+    serializeWithOptions(
+      { pristineDoc: paragraph(strike(sourceMarkdown, 'deleted content')) },
+      paragraph(strike(sourceMarkdown, 'new content')),
+    ),
+  ).toBe('~~new content~~');
 });

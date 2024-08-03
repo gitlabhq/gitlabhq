@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe PostReceive, feature_category: :source_code_management do
+RSpec.describe PostReceive, :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
   include AfterNextHelpers
 
   let(:changes) do
@@ -448,6 +448,37 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
 
             perform
           end
+
+          context 'with post_receive_sync_refresh_cache feature flag enabled' do
+            it 'refreshes branch names cache' do
+              expect(snippet.repository).to receive(:expire_branch_names_cache).and_call_original
+              expect(snippet.repository).to receive(:branch_names).and_call_original
+
+              perform
+            end
+
+            context 'when exclusive lease fails' do
+              it 'logs a message' do
+                expect(snippet.repository).to receive(:branch_names).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+                expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: Failed to obtain lease for expiring branch name cache")
+
+                perform
+              end
+            end
+          end
+
+          context 'with post_receive_sync_refresh_cache feature flag disabled' do
+            before do
+              stub_feature_flags(post_receive_sync_refresh_cache: false)
+            end
+
+            it 'does not expire branch names cache' do
+              expect(snippet.repository).not_to receive(:expire_tag_names_cache)
+              expect(snippet.repository).not_to receive(:tag_names)
+
+              perform
+            end
+          end
         end
 
         context 'tags' do
@@ -468,6 +499,37 @@ RSpec.describe PostReceive, feature_category: :source_code_management do
           it 'only invalidates tags once' do
             expect(snippet.repository).to receive(:expire_caches_for_tags).once.and_call_original
             expect(snippet.repository).to receive(:expire_tags_cache).once.and_call_original
+
+            perform
+          end
+        end
+
+        context 'with post_receive_sync_refresh_cache feature flag enabled' do
+          it 'refreshes the tag names cache' do
+            expect(snippet.repository).to receive(:expire_tag_names_cache).and_call_original
+            expect(snippet.repository).to receive(:tag_names).and_call_original
+
+            perform
+          end
+
+          context 'when exclusive lease fails' do
+            it 'logs a message' do
+              expect(snippet.repository).to receive(:tag_names).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+              expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: Failed to obtain lease for expiring tag name cache")
+
+              perform
+            end
+          end
+        end
+
+        context 'with post_receive_sync_refresh_cache feature flag disabled' do
+          before do
+            stub_feature_flags(post_receive_sync_refresh_cache: false)
+          end
+
+          it 'does not expire tag names cache' do
+            expect(snippet.repository).not_to receive(:expire_tag_names_cache)
+            expect(snippet.repository).not_to receive(:tag_names)
 
             perform
           end

@@ -84,12 +84,17 @@ docker buildx build \
   --cache-from="$QA_IMAGE_BRANCH" \
   --cache-from="$QA_IMAGE_MASTER" \
   --platform=${ARCH:-amd64} \
+  --build-arg=BUILD_OS="${BUILD_OS}" \
   --build-arg=CHROME_VERSION="${CHROME_VERSION}" \
   --build-arg=DOCKER_VERSION="${DOCKER_VERSION}" \
-  --build-arg=RUBY_VERSION="${RUBY_VERSION}" \
-  --build-arg=BUILD_OS="${BUILD_OS}" \
+  --build-arg=GCLOUD_VERSION="${GCLOUD_VERSION}" \
+  --build-arg=GIT_VERSION="${GIT_VERSION}" \
+  --build-arg=HELM_VERSION="${HELM_VERSION}" \
+  --build-arg=KUBECTL_VERSION="${KUBECTL_VERSION}" \
+  --build-arg=LFS_VERSION="${LFS_VERSION}" \
   --build-arg=OS_VERSION="${OS_VERSION}" \
   --build-arg=QA_BUILD_TARGET="${QA_BUILD_TARGET}" \
+  --build-arg=RUBY_VERSION="${RUBY_VERSION}" \
   --file="${CI_PROJECT_DIR}/qa/Dockerfile" \
   --push \
   --provenance=false \

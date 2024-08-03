@@ -148,7 +148,7 @@ RSpec.configure do |config|
     metadata[:type] = :feature
   end
 
-  config.define_derived_metadata(file_path: %r{spec/dot_gitlab_ci/}) do |metadata|
+  config.define_derived_metadata(file_path: %r{spec/dot_gitlab_ci/job_dependency_spec.rb}) do |metadata|
     metadata[:ci_config_validation] = true
   end
 

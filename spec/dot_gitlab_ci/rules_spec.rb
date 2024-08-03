@@ -282,7 +282,14 @@ RSpec.describe '.gitlab/ci/rules.gitlab-ci.yml', feature_category: :tooling do
       next unless name.end_with?('patterns')
 
       # Ignore EE-only patterns list when in FOSS context
-      relevant_patterns = foss_context ? patterns.reject { |pattern| pattern =~ %r|^{?ee/| } : patterns
+      relevant_patterns = if foss_context
+                            patterns.reject do |pattern|
+                              pattern =~ %r|^{?ee/| || pattern == '.tool-versions'
+                            end
+                          else
+                            patterns
+                          end
+
       next if relevant_patterns.empty?
       next if foss_context && name == '.custom-roles-patterns'
 

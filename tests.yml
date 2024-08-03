@@ -37,6 +37,10 @@ mapping:
   - source: 'rubocop/(?<rest>.+)\.rb'
     test: 'spec/rubocop/%{rest}_spec.rb'
 
+  # .gitlab/ci related specs
+  - source: '.gitlab/ci/(?<rest>.+)\.gitlab-ci\.yml'
+    test: 'spec/dot_gitlab_ci/rules_spec.rb'
+
   # Map config to respective specs
   - source: 'config/(?<rest>.+)\..*'
     test: 'spec/config/%{rest}_spec.rb'

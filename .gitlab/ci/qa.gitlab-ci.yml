@@ -44,13 +44,19 @@
     QA_EXPORT_TEST_METRICS: "true" # Export test metrics directly to influxdb by default
   inherit:
     variables:
+      - BUILD_OS
       - CHROME_VERSION
+      - DOCKER_VERSION
+      - GCLOUD_VERSION
+      - GIT_VERSION
+      - GO_VERSION
+      - HELM_VERSION
+      - KUBECTL_VERSION
+      - LFS_VERSION
+      - OS_VERSION
       - RUBY_VERSION_DEFAULT
       - RUBY_VERSION_NEXT
-      - RUBY_VERSION
-      - DOCKER_VERSION
-      - BUILD_OS
-      - OS_VERSION
+      - RUBYGEMS_VERSION
       - REGISTRY_GROUP
       - REGISTRY_HOST
       - OMNIBUS_GITLAB_CACHE_UPDATE

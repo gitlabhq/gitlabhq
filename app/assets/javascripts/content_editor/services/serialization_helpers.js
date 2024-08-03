@@ -138,6 +138,49 @@ export function preserveUnchanged(configOrRender) {
   };
 }
 
+export function preserveUnchangedMark({ open, close, ...restConfig }) {
+  // use a buffer to replace the content of the serialized mark with the sourceMarkdown
+  // when the mark is unchanged
+  let bufferStartPos = -1;
+
+  function startBuffer(state) {
+    bufferStartPos = state.out.length;
+  }
+
+  function bufferStarted() {
+    return bufferStartPos !== -1;
+  }
+
+  function endBuffer(state, replace) {
+    state.out = state.out.substring(0, bufferStartPos) + replace;
+    bufferStartPos = -1;
+  }
+
+  return {
+    ...restConfig,
+    open: (state, mark, parent, index) => {
+      const same = state.options.changeTracker.get(mark);
+
+      if (same) {
+        startBuffer(state);
+        return '';
+      }
+
+      return open(state, mark, parent, index);
+    },
+    close: (state, mark, parent, index) => {
+      const { sourceMarkdown } = mark.attrs;
+
+      if (bufferStarted()) {
+        endBuffer(state, sourceMarkdown);
+        return '';
+      }
+
+      return close(state, mark, parent, index);
+    },
+  };
+}
+
 export const findChildWithMark = (mark, parent) => {
   let child;
   let offset;

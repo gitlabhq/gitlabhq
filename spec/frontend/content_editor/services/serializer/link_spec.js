@@ -1,4 +1,10 @@
-import { serialize, builders } from '../../serialization_utils';
+import {
+  serialize,
+  serializeWithOptions,
+  builders,
+  source,
+  sourceTag,
+} from '../../serialization_utils';
 
 const { paragraph, link } = builders;
 
@@ -95,3 +101,42 @@ it.each`
     ).toBe(serialized);
   },
 );
+
+it('correctly serializes links with sourcemap', () => {
+  const sourceMarkdown = source('[link\nwith\nwhitespace](https://link.url   "title")');
+  const linkAttrs = {
+    ...sourceMarkdown,
+    href: 'https://link.url',
+    title: 'title',
+  };
+
+  expect(serialize(paragraph(link(linkAttrs, 'link with whitespace')))).toBe(
+    '[link\nwith\nwhitespace](https://link.url   "title")',
+  );
+
+  expect(
+    serializeWithOptions(
+      { pristineDoc: paragraph(link(linkAttrs, 'link with whitespace')) },
+      paragraph(link(linkAttrs, 'new content')),
+    ),
+  ).toBe('[new content](https://link.url "title")');
+});
+
+it('correctly serializes links as an HTML tag', () => {
+  const linkAttrs = {
+    href: 'https://example.com',
+    title: 'example',
+    ...sourceTag('a'),
+  };
+
+  expect(serialize(paragraph(link(linkAttrs, 'example url')))).toBe(
+    '<a href="https://example.com" title="example">example url</a>',
+  );
+
+  expect(
+    serializeWithOptions(
+      { pristineDoc: paragraph(link(linkAttrs, 'example url')) },
+      paragraph(link(linkAttrs, 'new content')),
+    ),
+  ).toBe('<a href="https://example.com" title="example">new content</a>');
+});

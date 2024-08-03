@@ -120,7 +120,17 @@ const createChangeTracker = (doc, pristineDoc) => {
       if (node.attrs.sourceMapKey) {
         pristineSourceMarkdownMap.set(`${node.attrs.sourceMapKey}${node.type.name}`, node);
       }
+
+      node.marks?.forEach((mark) => {
+        if (mark.attrs.sourceMapKey) {
+          pristineSourceMarkdownMap.set(`${mark.attrs.sourceMapKey}${mark.type.name}`, {
+            mark,
+            node,
+          });
+        }
+      });
     });
+
     doc.descendants((node) => {
       const pristineNode = pristineSourceMarkdownMap.get(
         `${node.attrs.sourceMapKey}${node.type.name}`,
@@ -129,6 +139,15 @@ const createChangeTracker = (doc, pristineDoc) => {
       if (pristineNode) {
         changeTracker.set(node, node.eq(pristineNode));
       }
+
+      node.marks?.forEach((mark) => {
+        const { node: pristineNodeForMark, mark: pristineMark } =
+          pristineSourceMarkdownMap.get(`${mark.attrs.sourceMapKey}${mark.type.name}`) || {};
+
+        if (pristineMark) {
+          changeTracker.set(mark, mark.eq(pristineMark) && node.eq(pristineNodeForMark));
+        }
+      });
     });
   }
 

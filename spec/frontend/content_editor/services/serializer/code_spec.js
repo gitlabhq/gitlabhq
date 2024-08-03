@@ -1,4 +1,10 @@
-import { serialize, builders } from '../../serialization_utils';
+import {
+  serialize,
+  source,
+  serializeWithOptions,
+  builders,
+  sourceTag,
+} from '../../serialization_utils';
 
 const { paragraph, code, italic, bold, strike } = builders;
 
@@ -22,4 +28,26 @@ it('correctly serializes inline code wrapped by italics and bold marks', () => {
   expect(serialize(paragraph(code(bold(content))))).toBe(`**\`${content}\`**`);
   expect(serialize(paragraph(strike(code(content))))).toBe(`~~\`${content}\`~~`);
   expect(serialize(paragraph(code(strike(content))))).toBe(`~~\`${content}\`~~`);
+});
+
+it('correctly serializes code with sourcemap including `', () => {
+  const sourceMarkdown = source('`code content`', 'code');
+
+  expect(
+    serializeWithOptions(
+      { pristineDoc: paragraph(code(sourceMarkdown, 'code content')) },
+      paragraph(code(sourceMarkdown, 'new content')),
+    ),
+  ).toBe(`\`new content\``);
+});
+
+it('correctly preserves code with a html tag <code>', () => {
+  expect(serialize(paragraph(code(sourceTag('code'), 'code')))).toBe(`<code>code</code>`);
+
+  expect(
+    serializeWithOptions(
+      { pristineDoc: paragraph(code(sourceTag('code'), 'code content')) },
+      paragraph(code(sourceTag('code'), 'new content')),
+    ),
+  ).toBe(`<code>new content</code>`);
 });
