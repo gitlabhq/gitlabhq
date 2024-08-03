@@ -2550,7 +2550,8 @@ CREATE TABLE merge_request_diff_files_99208b8fac (
     external_diff_size integer,
     generated boolean,
     merge_request_diff_id bigint NOT NULL,
-    relative_order integer NOT NULL
+    relative_order integer NOT NULL,
+    project_id bigint
 )
 PARTITION BY RANGE (merge_request_diff_id);
 
