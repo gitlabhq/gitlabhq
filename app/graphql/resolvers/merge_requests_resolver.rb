@@ -135,6 +135,9 @@ module Resolvers
       argument :milestone_title, GraphQL::Types::String,
         required: false,
         description: 'Title of the milestone.'
+      argument :reviewer_username, GraphQL::Types::String,
+        required: false,
+        description: 'Username of the reviewer.'
     end
 
     validates mutually_exclusive: [:assignee_username, :assignee_wildcard_id]

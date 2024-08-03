@@ -3,19 +3,16 @@
 require 'spec_helper'
 
 RSpec.describe CloudConnector::ServiceAccessToken, type: :model, feature_category: :cloud_connector do
-  describe '.expired', :freeze_time do
-    let_it_be(:expired_token) { create(:service_access_token, :expired) }
-    let_it_be(:active_token) {  create(:service_access_token, :active) }
+  let_it_be(:expired_token) { create(:service_access_token, :expired) }
+  let_it_be(:active_token) {  create(:service_access_token, :active) }
 
+  describe '.expired', :freeze_time do
     it 'selects all expired tokens' do
       expect(described_class.expired).to match_array([expired_token])
     end
   end
 
   describe '.active', :freeze_time do
-    let_it_be(:expired_token) { create(:service_access_token, :expired) }
-    let_it_be(:active_token) {  create(:service_access_token, :active) }
-
     it 'selects all active tokens' do
       expect(described_class.active).to match_array([active_token])
     end
@@ -40,6 +37,16 @@ RSpec.describe CloudConnector::ServiceAccessToken, type: :model, feature_categor
     describe 'validations' do
       it { is_expected.to validate_presence_of(:token) }
       it { is_expected.to validate_presence_of(:expires_at) }
+    end
+  end
+
+  describe '#expired?' do
+    it 'returns false for active token' do
+      expect(active_token).not_to be_expired
+    end
+
+    it 'returns true for expired token' do
+      expect(expired_token).to be_expired
     end
   end
 end

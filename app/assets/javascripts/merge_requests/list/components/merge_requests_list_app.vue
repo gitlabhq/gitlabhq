@@ -206,7 +206,7 @@ export default {
           icon: 'user',
           token: UserToken,
           dataType: 'user',
-          operators: OPERATORS_IS,
+          operators: OPERATORS_IS_NOT,
           fullPath: this.fullPath,
           isProject: true,
           recentSuggestionsStorageKey: `${this.fullPath}-merge-requests-recent-tokens-reviewer`,

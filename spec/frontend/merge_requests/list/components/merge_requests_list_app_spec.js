@@ -208,11 +208,18 @@ describe('Merge requests list app', () => {
             type: 'assignee',
             value: { data: ['root'], operator: OPERATOR_IS },
           },
+          {
+            type: 'reviewer',
+            value: { data: 'root', operator: OPERATOR_IS },
+          },
         ]);
         await nextTick();
 
         expect(router.push).toHaveBeenCalledWith({
-          query: expect.objectContaining({ 'assignee_username[]': ['root'] }),
+          query: expect.objectContaining({
+            'assignee_username[]': ['root'],
+            reviewer_username: 'root',
+          }),
         });
       });
 
@@ -224,19 +231,23 @@ describe('Merge requests list app', () => {
             type: 'assignee',
             value: { data: ['root'], operator: OPERATOR_NOT },
           },
+          {
+            type: 'reviewer',
+            value: { data: 'root', operator: OPERATOR_NOT },
+          },
         ]);
 
         await nextTick();
 
         expect(getQueryResponseMock).toHaveBeenCalledWith(
           expect.objectContaining({
-            not: { assigneeUsernames: ['root'] },
+            not: { assigneeUsernames: ['root'], reviewerUsername: 'root' },
           }),
         );
 
         expect(getCountsQueryResponseMock).toHaveBeenCalledWith(
           expect.objectContaining({
-            not: { assigneeUsernames: ['root'] },
+            not: { assigneeUsernames: ['root'], reviewerUsername: 'root' },
           }),
         );
       });
@@ -249,12 +260,19 @@ describe('Merge requests list app', () => {
             type: 'assignee',
             value: { data: ['root'], operator: OPERATOR_NOT },
           },
+          {
+            type: 'reviewer',
+            value: { data: 'root', operator: OPERATOR_NOT },
+          },
         ]);
 
         await nextTick();
 
         expect(router.push).toHaveBeenCalledWith({
-          query: expect.objectContaining({ 'not[assignee_username][]': ['root'] }),
+          query: expect.objectContaining({
+            'not[assignee_username][]': ['root'],
+            'not[reviewer_username]': 'root',
+          }),
         });
       });
     });
