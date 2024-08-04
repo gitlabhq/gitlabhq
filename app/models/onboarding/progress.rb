@@ -76,7 +76,7 @@ module Onboarding
         return if nil_actions.empty?
 
         updates = nil_actions.inject({}) { |sum, action| sum.merge!({ column_name(action) => now }) }
-        onboarding_progress.update!(updates)
+        onboarding_progress.update(updates)
       end
 
       def completed?(namespace, action)
