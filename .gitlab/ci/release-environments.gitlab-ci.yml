@@ -26,6 +26,7 @@ start-release-environments-pipeline:
       - project: 'gitlab-org/gitlab'
         ref: 'master'
         file: '.gitlab/ci/release-environments/main.gitlab-ci.yml'
+  resource_group: release-environment-${CI_COMMIT_REF_SLUG}
 
 start-release-environments-security-pipeline:
   allow_failure: true
@@ -54,3 +55,4 @@ start-release-environments-security-pipeline:
       - project: 'gitlab-org/security/gitlab'
         ref: 'master'
         file: '.gitlab/ci/release-environments/security.gitlab-ci.yml'
+  resource_group: release-environment-${CI_COMMIT_REF_SLUG}
