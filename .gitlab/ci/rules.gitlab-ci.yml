@@ -1559,6 +1559,10 @@
 
 .qa:rules:gitlab-cng:
   rules:
+    - <<: *if-merge-request
+      changes: *cng-orchestrator-patterns
+    - <<: *if-merge-request
+      changes: *rubocop-patterns
     - <<: *if-default-refs
       changes: *cng-orchestrator-patterns
 
