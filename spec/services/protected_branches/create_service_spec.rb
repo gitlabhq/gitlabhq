@@ -3,20 +3,19 @@
 require 'spec_helper'
 
 RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_management do
+  let(:name) { 'master' }
+  let(:params) do
+    {
+      name: name,
+      merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
+      push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }]
+    }
+  end
+
+  subject(:service) { described_class.new(entity, user, params) }
+
   shared_examples 'execute with entity' do
-    let(:params) do
-      {
-        name: name,
-        merge_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }],
-        push_access_levels_attributes: [{ access_level: Gitlab::Access::MAINTAINER }]
-      }
-    end
-
-    subject(:service) { described_class.new(entity, user, params) }
-
     describe '#execute' do
-      let(:name) { 'master' }
-
       it 'creates a new protected branch' do
         expect { service.execute }.to change(ProtectedBranch, :count).by(1)
         expect(entity.protected_branches.last.push_access_levels.map(&:access_level)).to match_array([Gitlab::Access::MAINTAINER])
@@ -61,6 +60,12 @@ RSpec.describe ProtectedBranches::CreateService, feature_category: :compliance_m
     let(:user) { entity.first_owner }
 
     it_behaves_like 'execute with entity'
+
+    it 'refreshes all_protected_branches' do
+      expect(entity).to receive_message_chain(:all_protected_branches, :reset)
+
+      service.execute
+    end
   end
 
   context 'with entity group' do
