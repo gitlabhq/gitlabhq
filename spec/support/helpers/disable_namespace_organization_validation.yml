@@ -46,7 +46,6 @@
 - spec/features/admin/admin_groups_spec.rb
 - spec/features/dashboard/group_spec.rb
 - spec/features/file_uploads/group_import_spec.rb
-- spec/features/groups/import_export/import_file_spec.rb
 - spec/features/groups_spec.rb
 - spec/frontend/fixtures/groups.rb
 - spec/graphql/types/group_type_spec.rb
@@ -59,7 +58,6 @@
 - spec/lib/gitlab/import/source_user_mapper_spec.rb
 - spec/models/hooks/system_hook_spec.rb
 - spec/requests/api/groups_spec.rb
-- spec/requests/import/gitlab_groups_controller_spec.rb
 - spec/services/users/create_service_spec.rb
 - spec/services/users/registrations_build_service_spec.rb
 - spec/services/groups/create_service_spec.rb

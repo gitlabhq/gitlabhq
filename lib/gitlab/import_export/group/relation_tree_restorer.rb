@@ -178,7 +178,7 @@ module Gitlab
 
           modify_attributes
 
-          Namespace.with_disabled_organization_validation { @importable.save!(touch: false) }
+          @importable.save!(touch: false)
         end
 
         def filter_attributes(params)

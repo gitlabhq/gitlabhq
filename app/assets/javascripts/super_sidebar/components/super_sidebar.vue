@@ -229,15 +229,15 @@ export default {
         {{ $options.i18n.primaryNavigation }}
       </h2>
       <user-bar ref="userBar" :has-collapse-button="!showOverlay" :sidebar-data="sidebarData" />
-      <div v-if="showTrialStatusWidget" class="gl-px-2 gl-py-2">
+      <div v-if="showTrialStatusWidget" class="gl-p-2">
         <trial-status-widget
-          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-leading-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
+          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-p-3 gl-leading-normal gl-text-black-normal! gl-text-decoration-none!"
         />
         <trial-status-popover />
       </div>
-      <div v-else-if="showDuoProTrialStatusWidget" class="gl-px-2 gl-py-2">
+      <div v-else-if="showDuoProTrialStatusWidget" class="gl-p-2">
         <duo-pro-trial-status-widget
-          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-px-3 gl-leading-normal gl-text-black-normal! gl-text-decoration-none! gl-py-3"
+          class="super-sidebar-nav-item gl-rounded-base gl-relative gl-display-flex gl-align-items-center gl-mb-1 gl-p-3 gl-leading-normal gl-text-black-normal! gl-text-decoration-none!"
         />
         <duo-pro-trial-status-popover />
       </div>

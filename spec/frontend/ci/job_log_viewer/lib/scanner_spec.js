@@ -225,4 +225,17 @@ describe('Log scanner', () => {
       null,
     ]);
   });
+
+  describe('scans malformed sections as regular text', () => {
+    it.each([
+      'section_start:not_a_number:my_section',
+      'section_start:100:',
+      'section_wrong:100:my_section',
+    ])('scans "%s"', (text) => {
+      expect(scanner.scan(text)).toEqual({
+        content: [{ style: [], text }],
+        sections: [],
+      });
+    });
+  });
 });

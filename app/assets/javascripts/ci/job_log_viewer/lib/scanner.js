@@ -27,6 +27,16 @@ const RFC3339_DATETIME_LENGTH = 27;
 const RUNNER_LOG_LINE_METADATA_LENGTH = 5;
 const RUNNER_LOG_LINE_HEADER_LENGTH = RFC3339_DATETIME_LENGTH + RUNNER_LOG_LINE_METADATA_LENGTH;
 
+/**
+ * Parses section delimiters in the shape:
+ *
+ * section_start:1234567890:my_section_name[options]
+ * section_end:1234567890:my_section_name
+ *
+ * @param {string} input
+ * @param {number} offset
+ * @returns Each part of the section delimiter in an array as well as a new char offset
+ */
 const parseSection = (input, offset) => {
   const from = offset;
   let to = offset;
@@ -45,7 +55,14 @@ const parseSection = (input, offset) => {
     .slice(from, to)
     .split(SECTION_SEPARATOR)
     .map((s) => s.trim());
-  if (section.length === 3) {
+
+  // Validate section is correctly formed
+  if (
+    section.length === 3 &&
+    (section[0] === SECTION_START || section[0] === SECTION_END) &&
+    !Number.isNaN(Number(section[1])) &&
+    section[2]
+  ) {
     return [section, to];
   }
 
@@ -175,9 +192,8 @@ export default class {
 
         if (section !== null) {
           this.handleSection(section[0], section[1], section[2]);
+          start = offset;
         }
-
-        start = offset;
       } else {
         offset += 1;
       }

@@ -3820,6 +3820,9 @@ msgstr ""
 msgid "AdminProjects|Delete Project %{projectName}?"
 msgstr ""
 
+msgid "AdminSelfHostedModels|API Key (optional)"
+msgstr ""
+
 msgid "AdminSelfHostedModels|API token (if needed)"
 msgstr ""
 
@@ -3844,10 +3847,16 @@ msgstr ""
 msgid "AdminSelfHostedModels|Create model"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Create self-hosted model"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Define your set of self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Delete model"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Deployment name"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Edit self-hosted model"
@@ -3857,6 +3866,9 @@ msgid "AdminSelfHostedModels|Enable self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Endpoint"
+msgstr ""
+
+msgid "AdminSelfHostedModels|Model"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Model does not have API key"
@@ -3874,6 +3886,24 @@ msgstr ""
 msgid "AdminSelfHostedModels|New self-hosted model"
 msgstr ""
 
+msgid "AdminSelfHostedModels|Please add a valid endpoint."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Please enter a deployment name."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Please enter a unique deployment name."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Please enter an endpoint."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Please select a model."
+msgstr ""
+
+msgid "AdminSelfHostedModels|Select model"
+msgstr ""
+
 msgid "AdminSelfHostedModels|Self-hosted AI models can be used to power GitLab AI features."
 msgstr ""
 
@@ -3881,6 +3911,9 @@ msgid "AdminSelfHostedModels|Self-hosted models"
 msgstr ""
 
 msgid "AdminSelfHostedModels|Self-hosted models are an experimental feature."
+msgstr ""
+
+msgid "AdminSelfHostedModels|There was an error creating the self-hosted model. Please try again."
 msgstr ""
 
 msgid "AdminSettings|%{generate_manually_link_start}Generate%{generate_manually_link_end} Service Ping to preview and download service usage data payload."
@@ -40357,6 +40390,9 @@ msgid "ProductAnalytics|An analytics provider has been successfully created, but
 msgstr ""
 
 msgid "ProductAnalytics|An error occurred while fetching data. Refresh the page to try again."
+msgstr ""
+
+msgid "ProductAnalytics|An error occurred while fetching project settings. Refresh the page to try again."
 msgstr ""
 
 msgid "ProductAnalytics|Analytics events by month"

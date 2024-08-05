@@ -4,7 +4,7 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
   include RepositorySettingsRedirect
 
   # Authorize
-  before_action :authorize_admin_project!
+  before_action :authorize_admin_protected_refs!
   before_action :load_protected_ref, only: [:show, :update, :destroy]
 
   layout "project_settings"
@@ -65,6 +65,10 @@ class Projects::ProtectedRefsController < Projects::ApplicationController
 
   def access_level_attributes
     %i[access_level id _destroy deploy_key_id]
+  end
+
+  def authorize_admin_protected_refs!
+    authorize_admin_project!
   end
 end
 

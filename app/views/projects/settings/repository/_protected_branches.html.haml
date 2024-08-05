@@ -1,2 +1,5 @@
-= render "protected_branches/index", protected_branch_entity: protected_branch_entity
-= render "projects/protected_tags/index"
+- if can?(current_user, :admin_protected_branch, @project)
+  = render "protected_branches/index", protected_branch_entity: protected_branch_entity
+
+- if can?(current_user, :admin_project, @project)
+  = render "projects/protected_tags/index"

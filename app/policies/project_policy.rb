@@ -624,6 +624,8 @@ class ProjectPolicy < BasePolicy
     enable :manage_deploy_tokens
     enable :manage_merge_request_settings
     enable :change_restrict_user_defined_variables
+    enable :create_protected_branch
+    enable :admin_protected_branch
   end
 
   rule { can?(:admin_build) }.enable :manage_trigger

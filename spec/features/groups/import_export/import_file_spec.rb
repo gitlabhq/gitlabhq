@@ -2,9 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Import/Export - Group Import', :js, feature_category: :importers do
+RSpec.describe 'Import/Export - Group Import', :with_current_organization, :js, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:import_path) { "#{Dir.tmpdir}/group_import_spec" }
+
+  before_all do
+    current_organization.users << user
+  end
 
   before do
     allow_next_instance_of(Gitlab::ImportExport) do |import_export|
