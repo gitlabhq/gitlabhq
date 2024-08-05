@@ -72,6 +72,16 @@ RSpec.describe PersonalAccessTokens::CreateService, feature_category: :system_ac
       let(:service) { described_class.new(current_user: user, target_user: user, params: params) }
 
       it { expect(subject.payload[:personal_access_token].expires_at).to eq PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now.to_date }
+
+      context 'when require_personal_access_token_expiry is set to false' do
+        before do
+          stub_application_setting(require_personal_access_token_expiry: false)
+        end
+
+        it 'returns a nil expiration date' do
+          expect(subject.payload[:personal_access_token].expires_at).to be_nil
+        end
+      end
     end
 
     context 'when invalid scope' do

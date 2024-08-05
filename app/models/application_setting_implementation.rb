@@ -289,7 +289,8 @@ module ApplicationSettingImplementation
         user_starred_projects_api_limit: 100,
         nuget_skip_metadata_url_validation: false,
         ai_action_api_rate_limit: 160,
-        code_suggestions_api_rate_limit: 60
+        code_suggestions_api_rate_limit: 60,
+        require_personal_access_token_expiry: true
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

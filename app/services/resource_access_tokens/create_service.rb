@@ -117,7 +117,13 @@ module ResourceAccessTokens
     end
 
     def pat_expiration
-      params[:expires_at].presence || PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      return params[:expires_at] if params[:expires_at].present?
+
+      if Gitlab::CurrentSettings.require_personal_access_token_expiry?
+        return PersonalAccessToken::MAX_PERSONAL_ACCESS_TOKEN_LIFETIME_IN_DAYS.days.from_now
+      end
+
+      nil
     end
 
     def log_event(token)

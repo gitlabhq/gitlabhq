@@ -473,6 +473,22 @@ RSpec.describe API::PersonalAccessTokens, :aggregate_failures, feature_category:
       end
     end
 
+    context 'when require_token_expiry is false' do
+      before do
+        stub_application_setting(require_personal_access_token_expiry: false)
+      end
+
+      context 'when expiry is not defined' do
+        it "rotates user's own token with no expiration", :freeze_time do
+          post(api(path, token.user))
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(json_response['token']).not_to eq(token.token)
+          expect(json_response['expires_at']).to be_nil
+        end
+      end
+    end
+
     context 'without permission' do
       it 'returns an error message' do
         another_user = create(:user)

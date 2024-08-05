@@ -2,7 +2,7 @@
 
 require "spec_helper"
 
-RSpec.describe AccessTokensHelper do
+RSpec.describe AccessTokensHelper, feature_category: :system_access do
   describe "#scope_description" do
     using RSpec::Parameterized::TableSyntax
 
@@ -71,6 +71,16 @@ RSpec.describe AccessTokensHelper do
       expect(helper.expires_at_field_data).to eq({
         min_date: 1.day.from_now.iso8601
       })
+    end
+
+    context 'when require_personal_access_token_expiry is true' do
+      before do
+        stub_application_setting(require_personal_access_token_expiry: false)
+      end
+
+      it 'returns an empty hash' do
+        expect(helper.expires_at_field_data).to eq({})
+      end
     end
   end
 end

@@ -130,6 +130,7 @@ module API
       optional :performance_bar_allowed_group_path, type: String, desc: 'Path of the group that is allowed to toggle the performance bar.'
       optional :performance_bar_enabled, type: String, desc: 'Deprecated: Pass `performance_bar_allowed_group_path: nil` instead. Allow enabling the performance.' # support legacy names, can be removed in v6
       optional :personal_access_token_prefix, type: String, desc: 'Prefix to prepend to all personal access tokens'
+      optional :require_personal_access_token_expiry, type: Boolean, desc: 'Flag indicating if Personal / Group / Project access token expiry is required'
       optional :kroki_enabled, type: Boolean, desc: 'Enable Kroki'
       given kroki_enabled: ->(val) { val } do
         requires :kroki_url, type: String, desc: 'The Kroki server URL'
