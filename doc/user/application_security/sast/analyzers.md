@@ -30,6 +30,7 @@ For each scanner, an analyzer:
 
 SAST supports the following official analyzers:
 
+- [Advanced SAST](gitlab_advanced_sast.md)
 - [`kubesec`](https://gitlab.com/gitlab-org/security-products/analyzers/kubesec) (Kubesec)
 - [`pmd-apex`](https://gitlab.com/gitlab-org/security-products/analyzers/pmd-apex) (PMD (Apex only))
 - [`semgrep`](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) (Semgrep)
@@ -57,7 +58,7 @@ DETAILS:
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
-The GitLab Advanced SAST analyzer offers a broader and more accurate static analysis for Python,
+The GitLab Advanced SAST analyzer offers a broader and more accurate static analysis for Python, Go, Java, JavaScript and C#
 particularly by providing cross-function and cross-file taint analysis.
 
 It is not enabled by default. To enable it, please follow the instructions on the [GitLab Advanced SAST page](gitlab_advanced_sast.md).
@@ -89,13 +90,14 @@ content directly. Instead, it enhances the results with additional properties, i
 
 ## Transition to Semgrep-based scanning
 
-SAST includes a [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that covers [multiple languages](index.md#supported-languages-and-frameworks).
+In addition to the [GitLab Advanced SAST analyzer](gitlab_advanced_sast.md), GitLab also provides a [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep) that covers [multiple languages](index.md#supported-languages-and-frameworks).
 GitLab maintains the analyzer and writes [detection rules](rules.md) for it.
 These rules replace language-specific analyzers that were used in previous releases.
 
 ### Vulnerability translation
 
-The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible.
+The Vulnerability Management system automatically moves vulnerabilities from the old analyzer to a new Semgrep-based finding when possible. For translation to the Advanced SAST, please refer to the [Advanced SAST documentation](gitlab_advanced_sast.md).
+
 When this happens, the system combines the vulnerabilities from each analyzer into a single record.
 
 But, vulnerabilities may not match up if:

@@ -21,6 +21,8 @@ repository being scanned. There are two kinds of customization:
 - Replacing predefined rules by [building a custom configuration](#build-a-custom-configuration)
   using **passthroughs**. Available only for the [Semgrep-based analyzer](https://gitlab.com/gitlab-org/security-products/analyzers/semgrep).
 
+Advanced SAST supports only modifying the behavior of **predefined rules**, not replacing predefined rules.
+
 ## Disable predefined rules
 
 You can disable predefined rules for any SAST analyzer.
