@@ -104,7 +104,7 @@ class PersonalAccessToken < ApplicationRecord
   end
 
   def allow_expires_at_to_be_empty?
-    false
+    !Gitlab::CurrentSettings.require_personal_access_token_expiry?
   end
 
   def expires_at_before_instance_max_expiry_date
