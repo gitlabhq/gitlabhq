@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 16.11.8 (2024-08-05)
+
+### Changed (1 change)
+
+- [Put groups_direct field in CI JWT tokens behind feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/d0a48169310c947607259d20046bdaadabcebaee) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161239))
+
 ## 16.11.7 (2024-07-23)
 
 ### Added (1 change)
