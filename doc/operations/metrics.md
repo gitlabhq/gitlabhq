@@ -39,7 +39,7 @@ You must have at least the Maintainer role for the project.
 
 1. Create an access token and enable metrics:
    1. On the left sidebar, select **Search or go to** and find your project.
-   1. Select **Settings > Access Tokens**.
+   1. Select **Settings > Access tokens**.
    1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`. Be sure to save the access token value for later.
    1. Select **Monitor > Metrics**, and then select **Enable**.
 1. To configure your application to send GitLab metrics, set the following environment variables:

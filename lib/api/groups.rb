@@ -596,9 +596,9 @@ The following criteria must be met:
 - The group must be a top-level group.
 - You must have Owner permission in the group.
 - The token type is one of:
-  - Personal Access Token
-  - Group Access Token
-  - Project Access Token
+  - Personal access token
+  - Group access token
+  - Project access token
   - Group Deploy Token
 
 This feature is gated by the :group_agnostic_token_revocation feature flag.

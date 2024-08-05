@@ -16,7 +16,7 @@ RSpec.describe UserPolicy do
     it { is_expected.to be_allowed(:read_user) }
   end
 
-  describe "reading a different user's Personal Access Tokens" do
+  describe "reading a different user's Personal access tokens" do
     let(:token) { create(:personal_access_token, user: user) }
 
     context 'when user is admin' do
@@ -44,7 +44,7 @@ RSpec.describe UserPolicy do
     end
   end
 
-  describe "creating a different user's Personal Access Tokens" do
+  describe "creating a different user's Personal access tokens" do
     context 'when current_user is admin' do
       let(:current_user) { admin }
 

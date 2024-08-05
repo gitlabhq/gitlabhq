@@ -52,7 +52,7 @@ Next, we'll run the application to ensure that it works.
 
 ## Add the OpenTelemetry dependencies
 
-Use auto-instrumentation to instrument the application: 
+Use auto-instrumentation to instrument the application:
 
 1. In the `pom.xml` file, add the required dependencies:
 

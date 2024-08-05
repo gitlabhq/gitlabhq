@@ -2914,6 +2914,12 @@ entry.
 - [Migrate self-managed custom roles to the instance-level roles](gitlab-org/gitlab@46ab664a1877f8b761c2b25e13e01561d56cf6fd) ([merge request](gitlab-org/gitlab!147829))
 - [Feature cleanup flag wiki_content_background_job](gitlab-org/gitlab@c39a37db4a6112456052c11bf5fd1afa9c23bd6d) by @ivantedja ([merge request](gitlab-org/gitlab!148820))
 
+## 16.11.8 (2024-08-05)
+
+### Changed (1 change)
+
+- [Put groups_direct field in CI JWT tokens behind feature flag](https://gitlab.com/gitlab-org/gitlab/-/commit/d0a48169310c947607259d20046bdaadabcebaee) ([merge request](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161239))
+
 ## 16.11.7 (2024-07-23)
 
 ### Added (1 change)

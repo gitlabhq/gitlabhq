@@ -31,8 +31,8 @@ See also the [Asana integration API documentation](../../../api/integrations.md#
 
 ## Setup
 
-In Asana, create a Personal Access Token.
-[Learn about Personal Access Tokens in Asana](https://developers.asana.com/docs/personal-access-token).
+In Asana, create a personal access token.
+[Learn about personal access tokens in Asana](https://developers.asana.com/docs/personal-access-token).
 
 Complete these steps in GitLab:
 

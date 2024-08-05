@@ -208,6 +208,7 @@ module Types
     mount_mutation Mutations::WorkItems::LinkedItems::Add, alpha: { milestone: '16.3' }
     mount_mutation Mutations::WorkItems::LinkedItems::Remove, alpha: { milestone: '16.3' }
     mount_mutation Mutations::WorkItems::AddClosingMergeRequest, alpha: { milestone: '17.1' }
+    mount_mutation Mutations::WorkItems::Hierarchy::Reorder, alpha: { milestone: '17.3' }
     mount_mutation Mutations::Users::SavedReplies::Create
     mount_mutation Mutations::Users::SavedReplies::Update
     mount_mutation Mutations::Users::SavedReplies::Destroy

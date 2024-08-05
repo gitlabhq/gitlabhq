@@ -410,7 +410,7 @@ module Ci
     # A Ci::Bridge may transition to `canceling` as a result of strategy: :depend
     # but only a Ci::Build will transition to `canceling`` via `.cancel`
     def supports_canceling?
-      Feature.enabled?(:ci_canceling_status, project) && cancel_gracefully?
+      cancel_gracefully?
     end
 
     def build_matcher

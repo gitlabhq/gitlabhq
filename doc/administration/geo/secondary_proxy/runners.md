@@ -64,7 +64,7 @@ You must have administrator access to use any of the following methods:
   1. Select the `pause` button next to each runner you would like to pause.
   1. After the failover is complete, unpause the runners you paused in the previous step.
 - Use the [Runners API](../../../api/runners.md):
-  1. Fetch or create a [Personal Access Token](../../../user/profile/personal_access_tokens.md) with administrator access.
+  1. Fetch or create a [personal access token](../../../user/profile/personal_access_tokens.md) with administrator access.
   1. Get the list of runners. You can filter the list [using the API](../../../api/runners.md#list-all-runners).
   1. Identify the runners you would like to pause, and make note of their `id`.
   1. [Follow the API documentation](../../../api/runners.md#pause-a-runner) to pause each runner.

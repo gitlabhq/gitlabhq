@@ -232,7 +232,7 @@ as WebAuthN, must be used (IA-2).
 
 - Keys should be configured to meet applicable strength and complexity requirements, such as using FIPS 140-2 and FIPS 140-3 validated ciphers . Administrators can [restrict minimum key technologies and key lengths](ssh_keys_restrictions.md). Additionally, administrators can [block or ban compromised keys](ssh_keys_restrictions.md#block-banned-or-compromised-keys).
 
-**Personal Access Tokens**
+**Personal access tokens**
 
 Personal access tokens for user access are disabled by default in FIPS
 enabled instances.

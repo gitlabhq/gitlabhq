@@ -146,7 +146,7 @@ There are two levels of access control when making requests into backend service
    This token has a more limited lifespan and access than an instance token. To get a user token
    the user will first have to go through the respective GitLab instance to request the token.
    Therefore, user-level authentication and authorization is handled as with any REST or GraphQL API request, that is,
-   either using OAuth or Personal Access Tokens.
+   either using OAuth or personal access tokens.
 
 The JWT issued for instance access carries the following claims (not exhaustive, subject to change):
 

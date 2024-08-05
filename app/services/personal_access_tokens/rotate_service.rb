@@ -65,8 +65,8 @@ module PersonalAccessTokens
         # - retain the membership when this token does eventually expire
         #   or get revoked.
         #
-        # Applies only to Resource (Group and Project) Access Tokens
-        # not Personal Access Tokens.
+        # Applies only to resource (group and project) access tokens
+        # not personal access tokens.
         expires_at = nil
       end
 

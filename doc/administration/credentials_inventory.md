@@ -55,7 +55,7 @@ When a PAT is revoked from the credentials inventory, the instance notifies the 
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Credentials**.
-1. Select the **Project Access Tokens** tab.
+1. Select the **Project access tokens** tab.
 1. By the project access token, select **Revoke**.
 
 The project access token is revoked and a background worker is queued to delete the project bot user.

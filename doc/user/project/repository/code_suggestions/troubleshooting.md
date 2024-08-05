@@ -92,7 +92,7 @@ with status `401` when the token has expired:
 
 ```plaintext
 Token validation failed in Language Server:
-(Failed to check token: Error: Fetching Information about Personal Access Token
+(Failed to check token: Error: Fetching Information about personal access token
 ```
 
 If GitLab has access to the [cloud server](../../../ai_features.md), try

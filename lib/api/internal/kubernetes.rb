@@ -130,8 +130,8 @@ module API
               optional :k8s_api_proxy_requests_unique_agents_via_ci_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `ci_access`'
               optional :k8s_api_proxy_requests_unique_users_via_user_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via `user_access`'
               optional :k8s_api_proxy_requests_unique_agents_via_user_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via `user_access`'
-              optional :k8s_api_proxy_requests_unique_users_via_pat_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via Personal Access Token'
-              optional :k8s_api_proxy_requests_unique_agents_via_pat_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via Personal Access Token'
+              optional :k8s_api_proxy_requests_unique_users_via_pat_access, type: Array[Integer], desc: 'An array of users that have interacted with the CI tunnel via personal access token'
+              optional :k8s_api_proxy_requests_unique_agents_via_pat_access, type: Array[Integer], desc: 'An array of agents that have interacted with the CI tunnel via personal access token'
               optional :flux_git_push_notified_unique_projects, type: Array[Integer], desc: 'An array of projects that have been notified to reconcile their Flux workloads'
             end
           end

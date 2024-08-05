@@ -42,7 +42,7 @@ module Gitlab
           config.metrics.enable_code_locations = false
           config.propagate_traces = false
           config.trace_propagation_targets = []
-          config.enabled_patches = []
+          config.enabled_patches = [:sidekiq_cron]
           config.enable_tracing = false
 
           yield config if block_given?

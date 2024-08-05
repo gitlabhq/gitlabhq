@@ -99,10 +99,7 @@ job2:
 ## Skip `after_script` commands if a job is cancelled
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10158) in GitLab 17.0 [with a flag](../../administration/feature_flags.md) named `ci_canceling_status`. Enabled by default. Requires GitLab Runner version 16.11.1.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/460285) in GitLab 17.3. Feature flag `ci_canceling_status` removed.
 
 [`after_script`](index.md) commands run if a job is canceled while the `before_script`
 or `script` section of that job are running.

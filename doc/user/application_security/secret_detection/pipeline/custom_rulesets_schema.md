@@ -111,8 +111,8 @@ provide in this section.
     {
       "id": "fccb407005c0fb58ad6cfcae01bea86093953ed1ae9f9623ecc3e4117675c91a",
       "category": "secret_detection",
-      "name": "GitLab Personal Access Token",
-      "description": "GitLab Personal Access Token has been found in commit 5c124166",
+      "name": "GitLab personal access token",
+      "description": "GitLab personal access token has been found in commit 5c124166",
       ...
       "identifiers": [
         {

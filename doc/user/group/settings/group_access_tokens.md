@@ -52,7 +52,7 @@ The ability to create group access tokens without an expiry date was [deprecated
 To create a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Select **Add new token**.
 1. Enter a name. The token name is visible to any user with permissions to view the group.
 1. Enter an expiry date for the token:
@@ -138,7 +138,7 @@ the active tokens. The inactive group access tokens table:
 To revoke a group access token:
 
 1. On the left sidebar, select **Search or go to** and find your group.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Next to the group access token to revoke, select **Revoke** (**{remove}**).
 
 ### Use the Rails console

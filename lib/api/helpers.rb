@@ -828,7 +828,7 @@ module API
       end
 
       unless access_token
-        forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
+        forbidden!('Must be authenticated using an OAuth or personal access token to use sudo')
       end
 
       validate_and_save_access_token!(scopes: [:sudo])

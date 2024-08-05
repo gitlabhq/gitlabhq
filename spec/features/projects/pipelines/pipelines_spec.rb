@@ -110,10 +110,6 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
         end
 
         context 'when canceling support is disabled' do
-          before do
-            stub_feature_flags(ci_canceling_status: false)
-          end
-
           it 'indicates that pipeline can be canceled' do
             expect(page).to have_selector('.js-pipelines-cancel-button')
             expect(page).to have_selector('[data-testid="ci-icon"]', text: 'Running')

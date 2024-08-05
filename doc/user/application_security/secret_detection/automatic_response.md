@@ -22,7 +22,7 @@ GitLab supports automatic response for the following types of secrets:
 
 | Secret type | Action taken | Supported on GitLab.com | Supported in self-managed |
 | ----- | --- | --- | --- |
-| GitLab [Personal access tokens](../../profile/personal_access_tokens.md) | Immediately revoke token, send email to owner | ✅ | ✅ [15.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) |
+| GitLab [personal access tokens](../../profile/personal_access_tokens.md) | Immediately revoke token, send email to owner | ✅ | ✅ [15.9 and later](https://gitlab.com/gitlab-org/gitlab/-/issues/371658) |
 | Amazon Web Services (AWS) [IAM access keys](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html) | Notify AWS | ✅ | ⚙ |
 | Google Cloud [service account keys](https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys), [API keys](https://cloud.google.com/docs/authentication/api-keys), and [OAuth client secrets](https://support.google.com/cloud/answer/6158849#rotate-client-secret) | Notify Google Cloud | ✅ | ⚙ |
 | Postman [API keys](https://learning.postman.com/docs/developer/postman-api/authentication/) | Notify Postman; Postman [notifies the key owner](https://learning.postman.com/docs/administration/managing-your-team/secret-scanner/#protect-postman-api-keys-in-gitlab) | ✅ | ⚙ |

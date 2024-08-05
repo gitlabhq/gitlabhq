@@ -27,7 +27,7 @@ You can restrict the password authentication for web interface and Git over HTTP
 - **Web interface**: When this feature is disabled, the **Standard** sign-in tab
   is removed and an [external authentication provider](../auth/index.md)
   must be used.
-- **Git over HTTP(S)**: When this feature is disabled, a [Personal Access Token](../../user/profile/personal_access_tokens.md)
+- **Git over HTTP(S)**: When this feature is disabled, a [personal access token](../../user/profile/personal_access_tokens.md)
   or LDAP password must be used to authenticate.
 
 In the event of an external authentication provider outage, use the [GitLab Rails console](../operations/rails_console.md) to [re-enable the standard web sign-in form](#re-enable-standard-web-sign-in-form-in-rails-console). This configuration can also be changed over the [Application settings REST API](../../api/settings.md#change-application-settings) while authenticating with an administrator account's personal access token.
@@ -128,7 +128,7 @@ Admin Mode times out after six hours, and you cannot change this timeout limit.
 
 The following access methods are **not** protected by Admin Mode:
 
-- Git client access (SSH using public keys or HTTPS using Personal Access Tokens).
+- Git client access (SSH using public keys or HTTPS using Personal access tokens).
 
 In other words, administrators who are otherwise limited by Admin Mode can still use
 Git clients without additional authentication steps.

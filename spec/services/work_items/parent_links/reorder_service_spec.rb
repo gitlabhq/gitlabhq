@@ -16,7 +16,7 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
     let(:params) { { target_issuable: work_item } }
     let(:relative_range) { [top_adjacent, last_adjacent].map(&:parent_link).map(&:relative_position) }
 
-    subject { described_class.new(parent, user, params).execute }
+    subject(:reorder) { described_class.new(parent, user, params).execute }
 
     before do
       project.add_guest(guest)
@@ -164,6 +164,22 @@ RSpec.describe WorkItems::ParentLinks::ReorderService, feature_category: :portfo
 
             it_behaves_like 'updates hierarchy order and creates notes'
           end
+        end
+      end
+
+      context 'when no adjacent item or relative position is provided' do
+        let(:params) { { target_issuable: work_item } }
+
+        it 'returns success status and processed links', :aggregate_failures do
+          expect(reorder.keys).to match_array([:status, :created_references])
+          expect(reorder[:status]).to eq(:success)
+          expect(reorder[:created_references].map(&:work_item_id)).to match_array([work_item.id])
+        end
+
+        it 'places the item at the top of the list' do
+          reorder
+
+          expect(work_item.parent_link.relative_position).to be < top_adjacent.parent_link.relative_position
         end
       end
     end

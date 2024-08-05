@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Project > Settings > Access Tokens', :js, feature_category: :user_management do
+RSpec.describe 'Project > Settings > access tokens', :js, feature_category: :user_management do
   include Spec::Support::Helpers::ModalHelpers
 
   let_it_be(:user) { create(:user) }

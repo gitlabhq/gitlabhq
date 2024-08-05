@@ -52,10 +52,6 @@ RSpec.describe 'PipelineCancel', feature_category: :continuous_integration do
     end
 
     context 'when supports canceling is false' do
-      before do
-        stub_feature_flags(ci_canceling_status: false)
-      end
-
       it 'cancels all running jobs to canceled', :sidekiq_inline do
         post_graphql_mutation(mutation, current_user: user)
 

@@ -18,7 +18,7 @@ To manipulate links as a release asset, see [Release Links API](links.md).
 
 For authentication, the Releases API accepts either:
 
-- A [Personal Access Token](../../user/profile/personal_access_tokens.md) using the
+- A [personal access token](../../user/profile/personal_access_tokens.md) using the
   `PRIVATE-TOKEN` header.
 - The [GitLab CI/CD job token](../../ci/jobs/ci_job_token.md) `$CI_JOB_TOKEN` using
   the `JOB-TOKEN` header.

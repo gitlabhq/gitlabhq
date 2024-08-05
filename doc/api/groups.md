@@ -1635,7 +1635,7 @@ Supported attributes:
 | `id`          | integer | yes      | ID of a service account user.                            |
 | `hard_delete` | boolean | no       | If true, contributions that would usually be [moved to a Ghost User](../user/profile/account/delete_account.md#associated-records) are deleted instead, as well as groups owned solely by this service account user. |
 
-### Create Personal Access Token for Service Account User
+### Create personal access token for Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
@@ -1672,7 +1672,7 @@ Example response:
 | `scopes`     | array   | yes      | Array of scopes of the personal access token. See [personal access token scopes](../user/profile/personal_access_tokens.md#personal-access-token-scopes) for possible values. |
 | `expires_at`      | date | no      | Personal access token expiry date. When left blank, the token follows the [standard rule of expiry for personal access tokens](../user/profile/personal_access_tokens.md#when-personal-access-tokens-expire). |
 
-### Rotate a Personal Access Token for Service Account User
+### Rotate a personal access token for Service Account User
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/406781) in GitLab 16.1.
 
@@ -2809,9 +2809,9 @@ The following criteria must be met:
 - The group must be a top-level group.
 - You must have the Owner role in the group.
 - The token type is one of:
-  - Personal Access Token
-  - Group Access Token
-  - Project Access Token
+  - Personal access token
+  - Group access token
+  - Project access token
   - Group Deploy Token
 
 Additional token types may be supported at a later date.

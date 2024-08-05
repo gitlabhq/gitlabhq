@@ -39,7 +39,7 @@ Prerequisites:
 To enable tracing in a project, you must first create an access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Create an access token with the following scopes: `read_api`, `read_observability`, `write_observability`.
 1. Copy the value of the access token.
 

@@ -301,7 +301,7 @@ Geo requires an EE license. To visit the Geo sites in your browser, you need a r
 
 - You can find the full image address from a pipeline by [following these instructions](https://handbook.gitlab.com/handbook/engineering/infrastructure/test-platform/tips-and-tricks/#running-gitlab-qa-pipeline-against-a-specific-gitlab-release). You might be prompted to set the `GITLAB_QA_ACCESS_TOKEN` variable if you specify the full image address.
 - You can increase the wait time for replication by setting `GEO_MAX_FILE_REPLICATION_TIME` and `GEO_MAX_DB_REPLICATION_TIME`. The default is 120 seconds.
-- To save time during tests, create a Personal Access Token with API access on the Geo primary node, and pass that value in as `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN`.
+- To save time during tests, create a personal access token with API access on the Geo primary node, and pass that value in as `GITLAB_QA_ACCESS_TOKEN` and `GITLAB_QA_ADMIN_ACCESS_TOKEN`.
 
 ## Group SAML Tests
 

@@ -62,7 +62,7 @@ RSpec.describe Sidebars::Groups::Menus::SettingsMenu, :with_license, feature_cat
       it_behaves_like 'access rights checks'
     end
 
-    describe 'Access Tokens' do
+    describe 'Access tokens' do
       let(:item_id) { :access_tokens }
 
       it_behaves_like 'access rights checks'

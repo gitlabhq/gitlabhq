@@ -819,6 +819,15 @@
               ],
               "additionalProperties": false
             },
+            "akeyless": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false
+            },
             "file": {
               "type": "boolean",
               "default": true,
@@ -843,6 +852,11 @@
             {
               "required": [
                 "gcp_secret_manager"
+              ]
+            },
+            {
+              "required": [
+                "akeyless"
               ]
             }
           ],

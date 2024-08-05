@@ -49,7 +49,7 @@ The ability to create project access tokens without an expiry date was [deprecat
 To create a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Select **Add new token**.
 1. Enter a name. The token name is visible to any user with permissions to view the project.
 1. Enter an expiry date for the token.
@@ -75,7 +75,7 @@ all projects that have visibility level set to [Internal](../../public_access.md
 To revoke a project access token:
 
 1. On the left sidebar, select **Search or go to** and find your project.
-1. Select **Settings > Access Tokens**.
+1. Select **Settings > Access tokens**.
 1. Next to the project access token to revoke, select **Revoke** (**{remove}**).
 
 In GitLab 17.3 and later, if you enable the `retain_resource_access_token_user_after_revoke`

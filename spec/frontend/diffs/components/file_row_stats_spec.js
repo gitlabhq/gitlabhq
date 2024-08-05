@@ -20,7 +20,7 @@ describe('Diff file row stats', () => {
   });
 
   it('renders added lines count', () => {
-    expect(wrapper.find('.cgreen').text()).toContain('+20');
+    expect(wrapper.find('[data-testid="file-added-lines"]').text()).toContain('+20');
   });
 
   it('renders removed lines count', () => {

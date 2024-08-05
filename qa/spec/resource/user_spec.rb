@@ -146,7 +146,7 @@ RSpec.describe QA::Resource::User do
   end
 
   describe '#fabricate_or_use' do
-    # Signup Disabled, Personal Access Tokens disabled, method used, method that is not used
+    # Signup disabled, personal access tokens disabled, method used, method that is not used
     [
       [true,  false, :fabricate_via_api!, :fabricate!],
       [false, false, :fabricate!, :fabricate_via_api!],

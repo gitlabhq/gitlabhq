@@ -5,6 +5,6 @@
   = safe_format(_('Your %{resource_type} access token %{codeOpen}%{token_name}%{codeClose} for %{codeOpen}%{resource_path}%{codeClose} will expire in %{days_to_expire} or less.'), code_tag_pair, days_to_expire: pluralize(@days_to_expire, _('day')), token_name: @token_name, resource_path: @resource.full_path, resource_type: @resource.class.name)
 %p
   - link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: @target_url }
-  = html_escape(_('You can create a new one or check them in your %{link_start}Access Tokens%{link_end} settings.')) % { link_start: link_start, link_end: '</a>'.html_safe }
+  = html_escape(_('You can create a new one or check them in your %{link_start}access tokens%{link_end} settings.')) % { link_start: link_start, link_end: '</a>'.html_safe }
 %p
   = @reason_text

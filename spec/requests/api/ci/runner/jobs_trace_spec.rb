@@ -159,10 +159,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
           end
 
           context 'when canceling is not supported' do
-            before do
-              stub_feature_flags(ci_canceling_status: false)
-            end
-
             context 'when job is canceled' do
               before do
                 job.cancel
@@ -233,10 +229,6 @@ RSpec.describe API::Ci::Runner, :clean_gitlab_redis_trace_chunks, feature_catego
         end
 
         context 'when canceling is not supported' do
-          before do
-            stub_feature_flags(ci_canceling_status: false)
-          end
-
           it 'receives status in header' do
             job.cancel
             patch_the_trace

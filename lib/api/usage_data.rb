@@ -17,7 +17,7 @@ module API
         end
 
         desc 'Get the latest ServicePing payload' do
-          detail 'Introduces in Gitlab 16.9. Requires Personal Access Token with read_service_ping scope.'
+          detail 'Introduces in Gitlab 16.9. Requires personal access token with read_service_ping scope.'
           success code: 200
           failure [
             { code: 401, message: '401 Unauthorized' },

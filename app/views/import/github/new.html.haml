@@ -27,7 +27,7 @@
 
 = form_tag personal_access_token_import_github_path, method: :post, class: 'gl-mt-3' do
   .form-group.gl-form-group
-    %label.col-form-label{ for: 'personal_access_token' }= _('Personal Access Token')
+    %label.col-form-label{ for: 'personal_access_token' }= _('Personal access token')
     = hidden_field_tag(:namespace_id, params[:namespace_id])
     = password_field_tag :personal_access_token, '', class: 'form-control gl-form-input', placeholder: _('e.g. %{token}') % { token: '8d3f016698e...' }, data: { testid: 'personal-access-token-field' }
     %span.form-text.gl-text-gray-600

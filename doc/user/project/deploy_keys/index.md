@@ -66,7 +66,7 @@ In addition:
 - When a deploy key is specified in a protected branch rule, the creator of the deploy key gains access to the protected branch, as well as to the deploy key itself.
 
 As with all sensitive information, you should ensure only those who need access to the secret can read it.
-For human interactions, use credentials tied to users such as Personal Access Tokens.
+For human interactions, use credentials tied to users such as Personal access tokens.
 
 To help detect a potential secret leak, you can use the
 [audit event](../../compliance/audit_event_schema.md#example-audit-event-payloads-for-git-over-ssh-events-with-deploy-key) feature.

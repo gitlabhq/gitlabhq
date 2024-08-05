@@ -80,7 +80,7 @@ export const sensitiveMessages = [
 export const secretDetectionFindings = [
   {
     message: 'Hello world! glpat-mGYFaXBmNLvLmrEb7xdf',
-    type: 'GitLab Personal Access Token',
+    type: 'GitLab personal access token',
     redactedString: 'glpat*****************7xdf',
   },
 

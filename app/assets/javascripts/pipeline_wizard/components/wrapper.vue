@@ -227,7 +227,7 @@ export default {
             data-testid="placeholder-overlay"
           >
             <div
-              class="gl-absolute gl-top-0 gl-right-0 gl-bottom-0 gl-left-0 bg-white gl-opacity-5 gl-z-2"
+              class="gl-absolute gl-top-0 gl-right-0 gl-bottom-0 gl-left-0 gl-bg-white gl-opacity-5 gl-z-2"
             ></div>
             <div
               class="gl-relative gl-h-full gl-display-flex gl-align-items-center gl-justify-content-center gl-z-3"

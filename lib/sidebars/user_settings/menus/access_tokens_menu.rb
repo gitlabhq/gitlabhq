@@ -11,7 +11,7 @@ module Sidebars
 
         override :title
         def title
-          _('Access Tokens')
+          _('Access tokens')
         end
 
         override :sprite_icon

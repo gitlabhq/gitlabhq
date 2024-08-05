@@ -49,7 +49,7 @@ module QA
           'using docker:24.0.1 and a personal access token' => {
             docker_client_version: 'docker:24.0.1',
             authentication_token_type: :personal_access_token,
-            token_name: 'Personal Access Token',
+            token_name: 'Personal access token',
             testcase: 'https://gitlab.com/gitlab-org/gitlab/-/quality/test_cases/412820'
           },
           'using docker:24.0.1 and a group deploy token' => {

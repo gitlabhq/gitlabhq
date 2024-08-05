@@ -255,7 +255,7 @@ You can use a GitLab-managed Terraform state backend as a
    ```plaintext
    example_remote_state_address = "https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>"
    example_username = "<GitLab username>"
-   example_access_token = "<GitLab Personal Access Token>"
+   example_access_token = "<GitLab personal access token>"
    ```
 
 1. In a `.tf` file, define the data source by using [Terraform input variables](https://www.terraform.io/language/values/variables):
@@ -275,9 +275,9 @@ You can use a GitLab-managed Terraform state backend as a
    - **address**: The URL of the remote state backend you want to use as a data source.
      For example, `https://gitlab.com/api/v4/projects/<TARGET-PROJECT-ID>/terraform/state/<TARGET-STATE-NAME>`.
    - **username**: The username to authenticate with the data source. If you are using
-     a [Personal Access Token](../../profile/personal_access_tokens.md) for
+     a [personal access token](../../profile/personal_access_tokens.md) for
      authentication, this value is your GitLab username. If you are using GitLab CI/CD, this value is `'gitlab-ci-token'`.
-   - **password**: The password to authenticate with the data source. If you are using a Personal Access Token for
+   - **password**: The password to authenticate with the data source. If you are using a personal access token for
      authentication, this value is the token value (the token must have the **API** scope).
      If you are using GitLab CI/CD, this value is the contents of the `${CI_JOB_TOKEN}` CI/CD variable.
 

@@ -2750,9 +2750,6 @@ msgstr ""
 msgid "Access Token"
 msgstr ""
 
-msgid "Access Tokens"
-msgstr ""
-
 msgid "Access denied"
 msgstr ""
 
@@ -2777,6 +2774,9 @@ msgstr ""
 msgid "Access to '%{classification_label}' not allowed"
 msgstr ""
 
+msgid "Access tokens"
+msgstr ""
+
 msgid "AccessDropdown|Deploy keys"
 msgstr ""
 
@@ -2795,10 +2795,10 @@ msgstr ""
 msgid "AccessDropdown|Users"
 msgstr ""
 
-msgid "AccessTokens|Access Tokens"
+msgid "AccessTokens|Access token limit reached"
 msgstr ""
 
-msgid "AccessTokens|Access token limit reached"
+msgid "AccessTokens|Access tokens"
 msgstr ""
 
 msgid "AccessTokens|Add a %{type}"
@@ -2858,7 +2858,7 @@ msgstr ""
 msgid "AccessTokens|Personal / project / group access token expiration"
 msgstr ""
 
-msgid "AccessTokens|Personal Access Tokens"
+msgid "AccessTokens|Personal access tokens"
 msgstr ""
 
 msgid "AccessTokens|Scopes set the permission levels granted to the token."
@@ -7336,7 +7336,7 @@ msgstr ""
 msgid "AsanaService|Comma-separated list of branches to be automatically inspected. Leave blank to include all branches."
 msgstr ""
 
-msgid "AsanaService|User Personal Access Token. User must have access to the task. All comments are attributed to this user."
+msgid "AsanaService|User personal access token. User must have access to the task. All comments are attributed to this user."
 msgstr ""
 
 msgid "Ask GitLab Duo"
@@ -9173,6 +9173,9 @@ msgid "Bot"
 msgstr ""
 
 msgid "Both SSH and HTTP(S)"
+msgstr ""
+
+msgid "Both adjacentWorkItemId and relativePosition are required."
 msgstr ""
 
 msgid "Branch"
@@ -14494,7 +14497,7 @@ msgstr ""
 msgid "ContainerRegistry|GitLab is unable to validate this signature automatically. Validate the signature manually before trusting it."
 msgstr ""
 
-msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}Personal Access Token%{personalAccessTokensDocLinkEnd} instead of a password."
+msgid "ContainerRegistry|If you are not already logged in, you need to authenticate to the Container Registry by using your GitLab username and password. If you have %{twofaDocLinkStart}Two-Factor Authentication%{twofaDocLinkEnd} enabled, use a %{personalAccessTokensDocLinkStart}personal access token%{personalAccessTokensDocLinkEnd} instead of a password."
 msgstr ""
 
 msgid "ContainerRegistry|Image repository deletion failed"
@@ -16038,10 +16041,10 @@ msgstr ""
 msgid "CredentialsInventory|No credentials found"
 msgstr ""
 
-msgid "CredentialsInventory|Personal Access Tokens"
+msgid "CredentialsInventory|Personal access tokens"
 msgstr ""
 
-msgid "CredentialsInventory|Project and Group Access Tokens"
+msgid "CredentialsInventory|Project and group access tokens"
 msgstr ""
 
 msgid "CredentialsInventory|SSH Keys"
@@ -19734,13 +19737,13 @@ msgstr ""
 msgid "DuoProTrial|To regain access to features like Code Suggestions and Chat, purchase the subscription add-on for GitLab Duo Pro."
 msgstr ""
 
-msgid "DuoProTrial|To register for a trial of GitLab Duo Pro, you must be an Owner of a top-level group that has an active paid subscription or is on an Ultimate trial."
+msgid "DuoProTrial|To start a GitLab Duo trial, you must have the Owner role of a top-level group that has an active subscription or trial."
 msgstr ""
 
 msgid "DuoProTrial|We just need some additional information to activate your trial."
 msgstr ""
 
-msgid "DuoProTrial|You do not have access to the GitLab Duo Pro trial"
+msgid "DuoProTrial|You do not have access to trial GitLab Duo"
 msgstr ""
 
 msgid "DuoProTrial|You no longer have access to GitLab Duo Pro features"
@@ -22760,6 +22763,9 @@ msgstr ""
 msgid "Find file"
 msgstr ""
 
+msgid "Find the activation code for a purchased or renewed subscription in the Customers Portal or purchase confirmation email."
+msgstr ""
+
 msgid "FindFile|Switch branch/tag"
 msgstr ""
 
@@ -25207,9 +25213,6 @@ msgstr ""
 msgid "Group '%{group_name}' was successfully updated."
 msgstr ""
 
-msgid "Group Access Tokens"
-msgstr ""
-
 msgid "Group Git LFS status:"
 msgstr ""
 
@@ -25223,6 +25226,9 @@ msgid "Group URL"
 msgstr ""
 
 msgid "Group access token creation is disabled in this group."
+msgstr ""
+
+msgid "Group access tokens"
 msgstr ""
 
 msgid "Group application: %{name}"
@@ -27167,9 +27173,6 @@ msgid "If you want to remove this email address, visit %{profile_link}"
 msgstr ""
 
 msgid "If you want to remove this email address, visit the %{settings_link_to} page."
-msgstr ""
-
-msgid "If you've purchased or renewed your subscription and have an activation code, please enter it below to start the activation process."
 msgstr ""
 
 msgid "If your HTTP repository is not publicly accessible, add your credentials."
@@ -35432,10 +35435,10 @@ msgstr ""
 msgid "Note parameters are invalid: %{errors}"
 msgstr ""
 
-msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
+msgid "Note: As an administrator you may like to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a personal access token."
 msgstr ""
 
-msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a Personal Access Token."
+msgid "Note: Consider asking your GitLab administrator to configure %{github_integration_link}, which will allow login via GitHub and allow importing repositories without generating a personal access token."
 msgstr ""
 
 msgid "Note: current forks will keep their visibility level."
@@ -38553,13 +38556,10 @@ msgstr ""
 msgid "Personal"
 msgstr ""
 
-msgid "Personal Access Token"
-msgstr ""
-
-msgid "Personal Access Token prefix"
-msgstr ""
-
 msgid "Personal access token"
+msgstr ""
+
+msgid "Personal access token prefix"
 msgstr ""
 
 msgid "Personal access tokens"
@@ -41226,9 +41226,6 @@ msgstr ""
 msgid "Project '%{project_name}' will be deleted on %{date}"
 msgstr ""
 
-msgid "Project Access Tokens"
-msgstr ""
-
 msgid "Project Badges"
 msgstr ""
 
@@ -41245,6 +41242,9 @@ msgid "Project URL"
 msgstr ""
 
 msgid "Project access token creation is disabled in this group."
+msgstr ""
+
+msgid "Project access tokens"
 msgstr ""
 
 msgid "Project already deleted"
@@ -52268,7 +52268,7 @@ msgstr ""
 msgid "SuperSonics|Add activation code"
 msgstr ""
 
-msgid "SuperSonics|An error occurred while adding your subscription"
+msgid "SuperSonics|An error occurred during activation"
 msgstr ""
 
 msgid "SuperSonics|Buy subscription"
@@ -52278,6 +52278,9 @@ msgid "SuperSonics|Cannot activate instance due to a connectivity issue"
 msgstr ""
 
 msgid "SuperSonics|Customers Portal"
+msgstr ""
+
+msgid "SuperSonics|Enter activation code"
 msgstr ""
 
 msgid "SuperSonics|Export license usage file"
@@ -52307,13 +52310,10 @@ msgstr ""
 msgid "SuperSonics|Online license"
 msgstr ""
 
-msgid "SuperSonics|Paste your activation code"
-msgstr ""
-
-msgid "SuperSonics|Please agree to the Subscription Agreement"
-msgstr ""
-
 msgid "SuperSonics|Ready to get started? A GitLab plan is ideal for scaling organizations and for multi team usage."
+msgstr ""
+
+msgid "SuperSonics|Select that you agree before activating the subscription."
 msgstr ""
 
 msgid "SuperSonics|Start free trial"
@@ -53211,6 +53211,9 @@ msgstr ""
 msgid "The `/merge` quick action requires the SHA of the head of the branch."
 msgstr ""
 
+msgid "The adjacent work item's parent must match the moving work item's parent."
+msgstr ""
+
 msgid "The application will be used where the client secret can be kept confidential. Native mobile apps and Single Page Apps are considered non-confidential."
 msgstr ""
 
@@ -53379,9 +53382,6 @@ msgstr ""
 msgid "The following %{user} can also push to this branch: %{branch}"
 msgstr ""
 
-msgid "The following Personal Access Token was revoked by an administrator, %{username}."
-msgstr ""
-
 msgid "The following SSH key was deleted by an administrator, %{username}."
 msgstr ""
 
@@ -53392,6 +53392,9 @@ msgid "The following items will NOT be exported:"
 msgstr ""
 
 msgid "The following items will be exported:"
+msgstr ""
+
+msgid "The following personal access token was revoked by an administrator, %{username}."
 msgstr ""
 
 msgid "The following personal access token: %{token_names} was revoked, because a new policy to expire personal access tokens were set."
@@ -55731,7 +55734,7 @@ msgstr ""
 msgid "Token valid until revoked"
 msgstr ""
 
-msgid "TokenRevocation|This Personal Access Token has been automatically revoked on detection. Consider investigating and rotating before marking this vulnerability as resolved."
+msgid "TokenRevocation|This personal access token has been automatically revoked on detection. Consider investigating and rotating before marking this vulnerability as resolved."
 msgstr ""
 
 msgid "Tomorrow"
@@ -61290,13 +61293,10 @@ msgstr ""
 msgid "You can create a new %{name} inside this project by sending an email to the following email address:"
 msgstr ""
 
-msgid "You can create a new Personal Access Token by visiting %{link}"
-msgstr ""
-
 msgid "You can create a new SSH key by visiting %{link}"
 msgstr ""
 
-msgid "You can create a new one or check them in your %{link_start}Access Tokens%{link_end} settings."
+msgid "You can create a new one or check them in your %{link_start}access tokens%{link_end} settings."
 msgstr ""
 
 msgid "You can create a new one or check them in your %{pat_link_start}personal access tokens%{pat_link_end} settings."
@@ -61314,10 +61314,13 @@ msgstr ""
 msgid "You can create a new one or check them in your personal access tokens settings %{pat_link}."
 msgstr ""
 
-msgid "You can create new ones at your %{pat_link_start}Personal Access Tokens%{pat_link_end} settings"
+msgid "You can create a new personal access token by visiting %{link}"
 msgstr ""
 
-msgid "You can create new ones at your Personal Access Tokens settings %{pat_link}"
+msgid "You can create new ones at your %{pat_link_start}personal access tokens%{pat_link_end} settings"
+msgstr ""
+
+msgid "You can create new ones at your personal access tokens settings %{pat_link}"
 msgstr ""
 
 msgid "You can enable group access token creation in %{link_start}group settings%{link_end}."
@@ -61731,7 +61734,7 @@ msgstr ""
 msgid "You need to set terms to be enforced"
 msgstr ""
 
-msgid "You need to specify both an Access Token and a Host URL."
+msgid "You need to specify both an access token and a Host URL."
 msgstr ""
 
 msgid "You need to upload a GitLab project export archive (ending in .gz)."
@@ -62018,10 +62021,10 @@ msgstr ""
 msgid "Your account has been deactivated. You will not be able to: "
 msgstr ""
 
-msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
+msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_password_link_start}set a password%{link_end} or %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
 msgstr ""
 
-msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a Personal Access Token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
+msgid "Your account is authenticated with SSO or SAML. To %{push_pull_link_start}push and pull%{link_end} over %{protocol} with Git using this account, you must %{set_up_pat_link_start}set up a personal access token%{link_end} to use instead of a password. For more information, see %{clone_with_https_link_start}Clone with HTTPS%{link_end}."
 msgstr ""
 
 msgid "Your account is locked."

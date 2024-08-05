@@ -83,10 +83,6 @@ RSpec.describe 'User browses jobs', feature_category: :continuous_integration do
         end
 
         context 'when supports canceling is false' do
-          before do
-            stub_feature_flags(ci_canceling_status: false)
-          end
-
           it 'cancels a job successfully' do
             find_by_testid('cancel-button').click
 

@@ -93,7 +93,7 @@ To change the default global prefix:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.
 1. Expand the **Account and limit** section.
-1. Fill in the **Personal Access Token prefix** field.
+1. Fill in the **Personal access token prefix** field.
 1. Select **Save changes**.
 
 You can also configure the prefix by using the

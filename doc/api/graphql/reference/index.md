@@ -10496,6 +10496,36 @@ Input type: `WorkItemUpdateInput`
 | <a id="mutationworkitemupdateerrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
 | <a id="mutationworkitemupdateworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Updated work item. |
 
+### `Mutation.workItemsHierarchyReorder`
+
+Reorder a work item in the hierarchy tree.
+
+DETAILS:
+**Introduced** in GitLab 17.3.
+**Status**: Experiment.
+
+Input type: `workItemsHierarchyReorderInput`
+
+#### Arguments
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemshierarchyreorderadjacentworkitemid"></a>`adjacentWorkItemId` | [`WorkItemID`](#workitemid) | ID of the work item to be switched with. |
+| <a id="mutationworkitemshierarchyreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemshierarchyreorderid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item to be reordered. |
+| <a id="mutationworkitemshierarchyreorderparentid"></a>`parentId` | [`WorkItemID`](#workitemid) | Global ID of the new parent work item. |
+| <a id="mutationworkitemshierarchyreorderrelativeposition"></a>`relativePosition` | [`RelativePositionType`](#relativepositiontype) | Type of switch. Valid values are `BEFORE` or `AFTER`. |
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="mutationworkitemshierarchyreorderadjacentworkitem"></a>`adjacentWorkItem` | [`WorkItem`](#workitem) | Adjacent work item after mutation. |
+| <a id="mutationworkitemshierarchyreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
+| <a id="mutationworkitemshierarchyreordererrors"></a>`errors` | [`[String!]!`](#string) | Errors encountered during execution of the mutation. |
+| <a id="mutationworkitemshierarchyreorderparentworkitem"></a>`parentWorkItem` | [`WorkItem`](#workitem) | Work item's parent after mutation. |
+| <a id="mutationworkitemshierarchyreorderworkitem"></a>`workItem` | [`WorkItem`](#workitem) | Work item after mutation. |
+
 ### `Mutation.workspaceCreate`
 
 Input type: `WorkspaceCreateInput`

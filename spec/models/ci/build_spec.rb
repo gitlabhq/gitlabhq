@@ -5716,16 +5716,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
     context 'when the builds runner does not support canceling' do
       specify { expect(job.supports_canceling?).to be false }
-
-      context 'when the ci_canceling_status flag is disabled' do
-        before do
-          stub_feature_flags(ci_canceling_status: false)
-        end
-
-        it 'returns false' do
-          expect(job.supports_canceling?).to be false
-        end
-      end
     end
 
     context 'when the builds runner supports canceling' do
@@ -5733,16 +5723,6 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       it 'returns true' do
         expect(job.supports_canceling?).to be true
-      end
-
-      context 'when the ci_canceling_status flag is disabled' do
-        before do
-          stub_feature_flags(ci_canceling_status: false)
-        end
-
-        it 'returns false' do
-          expect(job.supports_canceling?).to be false
-        end
       end
     end
   end
