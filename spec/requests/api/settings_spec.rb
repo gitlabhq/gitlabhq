@@ -99,6 +99,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
       expect(json_response['concurrent_github_import_jobs_limit']).to eq(1000)
       expect(json_response['concurrent_bitbucket_import_jobs_limit']).to eq(100)
       expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to eq(100)
+      expect(json_response['require_personal_access_token_expiry']).to eq(true)
     end
   end
 
@@ -224,7 +225,8 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
             downstream_pipeline_trigger_limit_per_project_user_sha: 300,
             concurrent_github_import_jobs_limit: 2,
             concurrent_bitbucket_import_jobs_limit: 2,
-            concurrent_bitbucket_server_import_jobs_limit: 2
+            concurrent_bitbucket_server_import_jobs_limit: 2,
+            require_personal_access_token_expiry: false
           }
 
         expect(response).to have_gitlab_http_status(:ok)
@@ -314,6 +316,7 @@ RSpec.describe API::Settings, 'Settings', :do_not_mock_admin_mode_setting, featu
         expect(json_response['concurrent_github_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_import_jobs_limit']).to be(2)
         expect(json_response['concurrent_bitbucket_server_import_jobs_limit']).to be(2)
+        expect(json_response['require_personal_access_token_expiry']).to be(false)
       end
     end
 

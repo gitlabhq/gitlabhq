@@ -41,7 +41,11 @@ module PersonalAccessTokens
     end
 
     def pat_expiration
-      params[:expires_at].presence || max_expiry_date
+      return params[:expires_at] if params[:expires_at].present?
+
+      return max_expiry_date if Gitlab::CurrentSettings.require_personal_access_token_expiry?
+
+      nil
     end
 
     def max_expiry_date

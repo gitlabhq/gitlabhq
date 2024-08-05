@@ -285,7 +285,8 @@ module ApplicationSettingImplementation
         user_contributed_projects_api_limit: 100,
         user_projects_api_limit: 300,
         user_starred_projects_api_limit: 100,
-        nuget_skip_metadata_url_validation: false
+        nuget_skip_metadata_url_validation: false,
+        require_personal_access_token_expiry: true
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end
