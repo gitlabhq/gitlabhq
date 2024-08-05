@@ -1,3 +1,18 @@
+GIT
+  remote: https://gitlab.com/gitlab-org/gitlab-qa.git
+  revision: c13294d5664fe70567eb6d83003b76faaaa37fd1
+  branch: 17-0-stable
+  specs:
+    gitlab-qa (14.10.0)
+      activesupport (>= 6.1, < 7.2)
+      gitlab (~> 4.19)
+      http (~> 5.0)
+      nokogiri (~> 1.10)
+      parallel (>= 1, < 2)
+      rainbow (>= 3, < 4)
+      table_print (= 1.5.7)
+      zeitwerk (>= 2, < 3)
+
 PATH
   remote: ../gems/gitlab-cng
   specs:
@@ -131,15 +146,6 @@ GEM
     gitlab (4.19.0)
       httparty (~> 0.20)
       terminal-table (>= 1.5.1)
-    gitlab-qa (14.10.0)
-      activesupport (>= 6.1, < 7.2)
-      gitlab (~> 4.19)
-      http (~> 5.0)
-      nokogiri (~> 1.10)
-      parallel (>= 1, < 2)
-      rainbow (>= 3, < 4)
-      table_print (= 1.5.7)
-      zeitwerk (>= 2, < 3)
     gitlab_quality-test_tooling (1.28.0)
       activesupport (>= 7.0, < 7.2)
       amatch (~> 0.4.1)
@@ -390,7 +396,7 @@ DEPENDENCIES
   fog-core (= 2.1.0)
   fog-google (~> 1.19)
   gitlab-cng!
-  gitlab-qa (~> 14, >= 14.10.0)
+  gitlab-qa (~> 14, >= 14.10.0)!
   gitlab-utils!
   gitlab_quality-test_tooling (~> 1.28.0)
   influxdb-client (~> 3.1)
