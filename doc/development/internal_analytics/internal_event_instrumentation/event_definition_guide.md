@@ -34,6 +34,7 @@ Each event is defined in a separate YAML file consisting of the following fields
 | `introduced_by_url` | no       | The URL to the merge request that introduced the event.                                                                                                                                                                                                                                                                          |
 | `distributions`     | yes      | The [distributions](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/#definitions) where the tracked feature is available. Can be set to one or more of `ce` or `ee`.                                                                                             |
 | `tiers`             | yes      | The [tiers](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/tiers/) where the tracked feature is available. Can be set to one or more of `free`, `premium`, or `ultimate`.                                                                                             |
+| `additional_properties` | no | A list of additional properties that are sent with the event. Each record must have `description` field. Built-in properties are: `label` (string), `property` (string) and `value` (numeric). [Custom](quick_start.md#additional-properties) properties can be added if the built-in options are not sufficient.                |
 
 ### Example event definition
 

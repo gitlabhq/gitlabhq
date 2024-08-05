@@ -131,6 +131,7 @@ export const CONTRIBUTOR_METRICS = {
 export const AI_METRICS = {
   CODE_SUGGESTIONS_USAGE_RATE: 'code_suggestions_usage_rate',
   CODE_SUGGESTIONS_ACCEPTANCE_RATE: 'code_suggestions_acceptance_rate',
+  DUO_PRO_USAGE_RATE: 'duo_pro_usage_rate',
 };
 
 export const METRIC_TOOLTIPS = {

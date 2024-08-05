@@ -76,7 +76,10 @@ track_internal_event(
 
 #### Additional properties
 
-Additional properties can be passed when tracking events. They can be used to save additional data related to given event. It is possible to send a maximum of three additional properties with keys `label` (string), `property` (string) and `value`(numeric).
+Additional properties can be passed when tracking events. They can be used to save additional data related to given event.
+
+Tracking classes have built-in properties with keys `label` (string), `property` (string) and `value`(numeric). It's recommended
+to use these properties first.
 
 Additional properties are passed by including the `additional_properties` hash in the `#track_event` call:
 
@@ -90,6 +93,26 @@ track_internal_event(
   }
 )
 ```
+
+If you need to pass more than three additional properties, you can use the `additional_properties` hash with your custom keys:
+
+```ruby
+track_internal_event(
+  "code_suggestion_accepted",
+  user: user,
+  additional_properties: {
+    label: 'vsc',
+    property: 'automatic',
+    value: 200,
+    lang: 'ruby',
+    custom_key: 'custom_value'
+  }
+)
+```
+
+Please add custom properties only in addition to the built-in properties.
+
+Custom rules can not be used as [metric filters](metric_definition_guide.md#filters).
 
 #### Controller and API helpers
 

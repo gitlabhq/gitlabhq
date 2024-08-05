@@ -9816,6 +9816,7 @@ CREATE TABLE deployment_approvals (
     comment text,
     approval_rule_id bigint,
     project_id bigint,
+    CONSTRAINT check_692c1d1b90 CHECK ((project_id IS NOT NULL)),
     CONSTRAINT check_e2eb6a17d8 CHECK ((char_length(comment) <= 255))
 );
 

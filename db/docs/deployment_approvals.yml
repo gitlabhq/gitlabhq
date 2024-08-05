@@ -4,21 +4,13 @@ classes:
 - Deployments::Approval
 feature_categories:
 - continuous_delivery
-description: >-
-  Stores the user that approved/rejected a deployment and which approval rule was used. See https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html
+description: Stores the user that approved/rejected a deployment and which approval
+  rule was used. See https://docs.gitlab.com/ee/ci/environments/deployment_approvals.html
   for more details.
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/74932
 milestone: '14.6'
 gitlab_schema: gitlab_main_cell
 allow_cross_foreign_keys:
 - gitlab_main_clusterwide
-desired_sharding_key:
-  project_id:
-    references: projects
-    backfill_via:
-      parent:
-        foreign_key: deployment_id
-        table: deployments
-        sharding_key: project_id
-        belongs_to: deployment
-desired_sharding_key_migration_job_name: BackfillDeploymentApprovalsProjectId
+sharding_key:
+  project_id: projects

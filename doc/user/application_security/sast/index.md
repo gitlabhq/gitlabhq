@@ -292,6 +292,18 @@ The results are saved as a
 that you can later download and analyze.
 When downloading, you always receive the most recent SAST artifact available.
 
+### Stable vs latest SAST templates
+
+SAST provides two templates for incorporating security testing into your CI/CD pipelines:
+
+- [`SAST.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.gitlab-ci.yml) (recommended)
+
+  The stable template offers a reliable and consistent SAST experience. You should use the stable template for most users and projects that require stability and predictable behavior in their CI/CD pipelines.
+
+- [`SAST.latest.gitlab-ci.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml)
+
+  This template is for those who want to access and test cutting-edge features. It is not considered stable and may include breaking changes that are planned for the next major release. This template allows you to try new features and updates before they become part of the stable release, making it ideal for those comfortable with potential instability and eager to provide feedback on new functionality.
+
 ### Configure SAST by using the UI
 
 You can enable and configure SAST by using the UI, either with the default settings or with customizations.
