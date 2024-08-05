@@ -152,9 +152,6 @@ To use private runners:
      --docker-image="docker:latest" \
      --url "https://gitlab.com/" \
      --description "cq-sans-dind" \
-     --tag-list "cq-sans-dind" \
-     --locked="false" \
-     --access-level="not_protected" \
      --docker-volumes "/cache"\
      --docker-volumes "/builds:/builds"\
      --docker-volumes "/var/run/docker.sock:/var/run/docker.sock" \
