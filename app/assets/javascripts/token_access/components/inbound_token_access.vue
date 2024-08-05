@@ -2,7 +2,6 @@
 import {
   GlAlert,
   GlButton,
-  GlCard,
   GlForm,
   GlFormGroup,
   GlLink,
@@ -16,6 +15,7 @@ import { createAlert } from '~/alert';
 import { __, s__, n__, sprintf } from '~/locale';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { TYPENAME_GROUP } from '~/graphql_shared/constants';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import inboundAddGroupOrProjectCIJobTokenScope from '../graphql/mutations/inbound_add_group_or_project_ci_job_token_scope.mutation.graphql';
 import inboundRemoveProjectCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_project_ci_job_token_scope.mutation.graphql';
 import inboundRemoveGroupCIJobTokenScopeMutation from '../graphql/mutations/inbound_remove_group_ci_job_token_scope.mutation.graphql';
@@ -60,13 +60,13 @@ export default {
   components: {
     GlAlert,
     GlButton,
-    GlCard,
     GlForm,
     GlFormGroup,
     GlLink,
     GlIcon,
     GlLoadingIcon,
     GlSprintf,
+    CrudComponent,
     GroupsAndProjectsListbox,
     TokenAccessTable,
     GlFormRadioGroup,
@@ -262,19 +262,21 @@ export default {
     clearGroupOrProjectPath() {
       this.groupOrProjectPath = '';
       this.isAddFormVisible = false;
+      this.$refs.jobTokenCrud.hideForm();
     },
     getGroupsAndProjects() {
       this.$apollo.queries.groupsAndProjectsWithAccess.refetch();
     },
     showAddForm() {
       this.isAddFormVisible = true;
+      this.$refs.jobTokenCrud.showForm();
     },
   },
 };
 </script>
 <template>
   <div class="gl-mt-5">
-    <gl-loading-icon v-if="$apollo.loading" size="lg" />
+    <gl-loading-icon v-if="$apollo.loading" size="md" />
     <template v-else>
       <gl-form-radio-group
         v-model="inboundJobTokenScopeEnabled"
@@ -318,48 +320,42 @@ export default {
       </gl-button>
 
       <div>
-        <gl-card
-          class="gl-new-card"
-          header-class="gl-new-card-header gl-border-bottom-0 gl-flex-wrap gl-md-flex-nowrap"
-          body-class="gl-new-card-body gl-px-0"
+        <crud-component
+          ref="jobTokenCrud"
+          :title="$options.i18n.cardHeaderTitle"
+          :description="$options.i18n.cardHeaderDescription"
+          class="gl-mt-5"
         >
-          <template #header>
-            <div class="gl-new-card-title-wrapper gl-flex-direction-column gl-flex-wrap">
-              <div class="gl-new-card-title gl-items-center">
-                <h5 class="gl-my-0">{{ $options.i18n.cardHeaderTitle }}</h5>
-                <span
-                  v-gl-tooltip
-                  :title="groupCountTooltip"
-                  class="gl-new-card-count"
-                  data-testid="group-count"
-                >
-                  <gl-icon name="group" class="gl-mr-2" />
-                  {{ groupCount }}
-                </span>
-                <span
-                  v-gl-tooltip
-                  :title="projectCountTooltip"
-                  class="gl-new-card-count"
-                  data-testid="project-count"
-                >
-                  <gl-icon name="project" class="gl-mr-2" />
-                  {{ projectCount }}
-                </span>
-              </div>
-              <p class="gl-text-secondary">{{ $options.i18n.cardHeaderDescription }}</p>
-            </div>
-            <div class="gl-new-card-actions gl-w-full gl-md-w-auto gl-text-right">
-              <gl-button
-                v-if="!isAddFormVisible"
-                size="small"
-                data-testid="toggle-form-btn"
-                @click="showAddForm"
-                >{{ $options.i18n.addGroupOrProject }}</gl-button
+          <template #count>
+            <span class="gl-inline-flex gl-gap-3">
+              <span
+                v-gl-tooltip
+                :title="groupCountTooltip"
+                class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+                data-testid="group-count"
               >
-            </div>
+                <gl-icon name="group" />
+                {{ groupCount }}
+              </span>
+              <span
+                v-gl-tooltip
+                :title="projectCountTooltip"
+                class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
+                data-testid="project-count"
+              >
+                <gl-icon name="project" />
+                {{ projectCount }}
+              </span>
+            </span>
           </template>
 
-          <div v-if="isAddFormVisible" class="gl-new-card-add-form gl-m-3">
+          <template v-if="!isAddFormVisible" #actions>
+            <gl-button size="small" data-testid="toggle-form-btn" @click="showAddForm">{{
+              $options.i18n.addGroupOrProject
+            }}</gl-button>
+          </template>
+
+          <template v-if="isAddFormVisible" #form>
             <strong>{{ $options.i18n.addGroupOrProject }}</strong>
             <gl-form @submit.prevent="addGroupOrProject">
               <gl-form-group
@@ -374,11 +370,10 @@ export default {
                   @select="setGroupOrProjectPath"
                 />
               </gl-form-group>
-              <div class="gl-display-flex gl-mt-5">
+              <div class="gl-flex gl-gap-3 gl-mt-5">
                 <gl-button
                   variant="confirm"
                   :disabled="isGroupOrProjectPathEmpty || isGroupOrProjectPathInScope"
-                  class="gl-mr-3"
                   data-testid="add-project-btn"
                   @click="addGroupOrProject"
                 >
@@ -387,10 +382,10 @@ export default {
                 <gl-button @click="clearGroupOrProjectPath">{{ $options.i18n.cancel }}</gl-button>
               </div>
             </gl-form>
-          </div>
+          </template>
 
           <token-access-table :items="groupsAndProjectsWithAccess" @removeItem="removeItem" />
-        </gl-card>
+        </crud-component>
       </div>
     </template>
   </div>

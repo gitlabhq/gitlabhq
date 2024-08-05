@@ -338,8 +338,7 @@
   }
 
   // todo: remove this block after all primary/info buttons have been migrated to gl-button
-  .btn-primary:not(.gl-button),
-  .btn-info:not(.gl-button) {
+  .btn-primary:not(.gl-button) {
     background-color: var(--ide-btn-primary-background, $blue-500);
     border-color: var(--ide-btn-primary-border, $blue-600) !important;
 
@@ -393,13 +392,13 @@
     }
   }
 
+  //gl-button is listed twice to overcome CSS specificity for the Bootstrap styles
   .btn-default.gl-button.gl-button {
     color: var(--ide-input-color, $gl-text-color);
 
     @include ide-gl-button(default, $white, $gray-50, $gray-100, $gray-200, $gray-300, $gray-300, $gray-400);
   }
 
-  .btn-info.gl-button.gl-button,
   .btn-primary.gl-button.gl-button {
     @include ide-gl-button(primary, $blue-500, $blue-600, $blue-800, $blue-600, $blue-800, $blue-800, $blue-900);
   }

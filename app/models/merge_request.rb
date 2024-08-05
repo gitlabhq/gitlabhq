@@ -1455,9 +1455,13 @@ class MergeRequest < ApplicationRecord
   def cache_merge_request_closes_issues!(current_user = self.author)
     return if closed? || merged?
 
+    issue_ids_existing = merge_requests_closing_issues
+      .from_mr_description
+      .pluck(:issue_id)
+    issues_to_close_ids = closes_issues(current_user).reject { |issue| issue.is_a?(ExternalIssue) }.map(&:id)
+
     transaction do
       merge_requests_closing_issues.from_mr_description.delete_all
-      issues_to_close_ids = closes_issues(current_user).reject { |issue| issue.is_a?(ExternalIssue) }.map(&:id)
 
       # These might have been created manually from the work item interface
       issue_ids_to_update = merge_requests_closing_issues
@@ -1469,23 +1473,29 @@ class MergeRequest < ApplicationRecord
       end
 
       issue_ids_to_create = issues_to_close_ids - issue_ids_to_update
-      next if issue_ids_to_create.empty?
 
-      now = Time.zone.now
-      new_associations = issue_ids_to_create.map do |issue_id|
-        MergeRequestsClosingIssues.new(
-          issue_id: issue_id,
-          merge_request_id: id,
-          from_mr_description: true,
-          created_at: now,
-          updated_at: now
-        )
+      if issue_ids_to_create.any?
+        now = Time.zone.now
+        new_associations = issue_ids_to_create.map do |issue_id|
+          MergeRequestsClosingIssues.new(
+            issue_id: issue_id,
+            merge_request_id: id,
+            from_mr_description: true,
+            created_at: now,
+            updated_at: now
+          )
+        end
+
+        # We can't skip validations here in bulk insert as we don't have a unique constraint on the DB.
+        # We can skip validations once we have validated the unique constraint
+        # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456965
+        MergeRequestsClosingIssues.bulk_insert!(new_associations, batch_size: 100)
       end
+    end
 
-      # We can't skip validations here in bulk insert as we don't have a unique constraint on the DB.
-      # We can skip validations once we have validated the unique constraint
-      # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/456965
-      MergeRequestsClosingIssues.bulk_insert!(new_associations, batch_size: 100)
+    ids_for_trigger = (issue_ids_existing + issues_to_close_ids).uniq
+    WorkItem.id_in(ids_for_trigger).find_each(batch_size: 100) do |work_item|
+      GraphqlTriggers.work_item_updated(work_item)
     end
   end
 

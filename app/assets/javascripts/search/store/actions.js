@@ -1,11 +1,11 @@
 import Api from '~/api';
 import { createAlert } from '~/alert';
 import axios from '~/lib/utils/axios_utils';
-import { visitUrl, setUrlParams, getNormalizedURL } from '~/lib/utils/url_utility';
+import { visitUrl, setUrlParams, getNormalizedURL, updateHistory } from '~/lib/utils/url_utility';
 import { logError } from '~/lib/logger';
 import { __ } from '~/locale';
 import { LABEL_FILTER_PARAM } from '~/search/sidebar/components/label_filter/data';
-import { SCOPE_BLOB } from '~/search/sidebar/constants';
+import { SCOPE_BLOB, SEARCH_TYPE_ZOEKT } from '~/search/sidebar/constants';
 import {
   GROUPS_LOCAL_STORAGE_KEY,
   PROJECTS_LOCAL_STORAGE_KEY,
@@ -102,7 +102,7 @@ export const setFrequentProject = ({ state, commit }, item) => {
   commit(types.LOAD_FREQUENT_ITEMS, { key: PROJECTS_LOCAL_STORAGE_KEY, data: frequentItems });
 };
 
-export const setQuery = ({ state, commit }, { key, value }) => {
+export const setQuery = ({ state, commit, getters }, { key, value }) => {
   commit(types.SET_QUERY, { key, value });
   if (SIDEBAR_PARAMS.includes(key)) {
     commit(types.SET_SIDEBAR_DIRTY, isSidebarDirty(state.query, state.urlQuery));
@@ -110,6 +110,15 @@ export const setQuery = ({ state, commit }, { key, value }) => {
 
   if (key === REGEX_PARAM) {
     setDataToLS(LS_REGEX_HANDLE, value);
+  }
+
+  if (
+    state.searchType === SEARCH_TYPE_ZOEKT &&
+    getters.currentScope === SCOPE_BLOB &&
+    gon.features.zoektMultimatchFrontend
+  ) {
+    const newUrl = setUrlParams({ ...state.query, page: null }, window.location.href, false, true);
+    updateHistory({ state: state.query, url: newUrl, replace: true });
   }
 };
 

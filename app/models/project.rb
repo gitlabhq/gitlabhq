@@ -564,6 +564,7 @@ class Project < ApplicationRecord
       delegate :inbound_job_token_scope_enabled, :inbound_job_token_scope_enabled=
       delegate :allow_fork_pipelines_to_run_in_parent_project, :allow_fork_pipelines_to_run_in_parent_project=
       delegate :separated_caches, :separated_caches=
+      delegate :id_token_sub_claim_components, :id_token_sub_claim_components=
     end
   end
 

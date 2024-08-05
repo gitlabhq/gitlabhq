@@ -21,6 +21,11 @@ You can specify a maximum job timeout for each runner to prevent projects
 with longer job timeouts from using the runner. The maximum job timeout is
 used if it is shorter than the job timeout defined in the project.
 
+You can set a runner's maximum timeout with one of the following methods:
+
+- The REST API endpoint [`PUT /runners/:id`](../../api/runners.md#update-runners-details) by setting `maximum_timeout`
+- The GitLab Helm chart by setting `maximumTimeout`
+
 ### For an instance runner
 
 Prerequisites:

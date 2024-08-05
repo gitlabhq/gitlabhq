@@ -62,6 +62,12 @@ describe('CRUD Component', () => {
     expect(findIcon().props('name')).toBe('rocket');
   });
 
+  it('renders `count` slot', () => {
+    createComponent({}, { count: '<p>Count slot</p>' });
+
+    expect(findCount().text()).toBe('Count slot');
+  });
+
   it('renders `actions` slot', () => {
     createComponent({}, { actions: '<p>Actions slot</p>' });
 

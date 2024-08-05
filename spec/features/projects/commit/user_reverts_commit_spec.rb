@@ -40,7 +40,7 @@ RSpec.describe 'User reverts a commit', :js, feature_category: :source_code_mana
         expect(page).to have_content('The commit has been successfully reverted.')
       end
 
-      it 'does not revert a previously reverted commit', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/446063' do
+      it 'does not revert a previously reverted commit' do
         revert_commit
         # Visit the comment again once it was reverted.
         visit project_commit_path(project, sample_commit.id)

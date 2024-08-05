@@ -117,7 +117,8 @@ is inside `_()` so it can be translated:
   the rest of the page layout:
 
   ```haml
-  = link_to _('Learn more.'), help_page_path('user/permissions'),  class: 'btn btn-info', target: '_blank', rel: 'noopener noreferrer'
+  = render Pajamas::ButtonComponent.new(variant: :default, href: help_page_path('user/group/import/index'), target: '_blank') do
+      = _('Learn more')
   ```
 
 ### Linking to `/help` in JavaScript

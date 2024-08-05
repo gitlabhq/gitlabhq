@@ -11,6 +11,8 @@ class ProjectCiCdSetting < ApplicationRecord
   MAINTAINER_ROLE = 3
   OWNER_ROLE = 4
 
+  ALLOWED_SUB_CLAIM_COMPONENTS = %w[project_path ref_type ref].freeze
+
   enum pipeline_variables_minimum_override_role: {
     no_one_allowed: NO_ONE_ALLOWED_ROLE,
     developer: DEVELOPER_ROLE,
@@ -20,6 +22,10 @@ class ProjectCiCdSetting < ApplicationRecord
 
   before_create :set_default_git_depth
 
+  validates :id_token_sub_claim_components, length: {
+    minimum: 1
+  }, allow_nil: false
+  validate :validate_sub_claim_components
   validates :default_git_depth,
     numericality: {
       only_integer: true,
@@ -63,6 +69,19 @@ class ProjectCiCdSetting < ApplicationRecord
 
   def set_default_git_depth
     self.default_git_depth ||= DEFAULT_GIT_DEPTH
+  end
+
+  def validate_sub_claim_components
+    if id_token_sub_claim_components[0] != 'project_path'
+      errors.add(:id_token_sub_claim_components, _('project_path must be the first element of the sub claim'))
+    end
+
+    id_token_sub_claim_components.each do |component|
+      unless ALLOWED_SUB_CLAIM_COMPONENTS.include?(component)
+        errors.add(:id_token_sub_claim_components,
+          format(_("%{component} is not an allowed sub claim component"), component: component))
+      end
+    end
   end
 end
 

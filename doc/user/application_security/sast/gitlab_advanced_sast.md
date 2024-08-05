@@ -77,19 +77,19 @@ To enable the Advanced SAST analyzer:
 1. Select **Build > Pipeline editor**.
 1. If no `.gitlab-ci.yml` file exists, select **Configure pipeline**, then delete the example
    content.
-1. Include the latest SAST template `Jobs/SAST.latest.gitlab-ci.yml` (if not already done).
+1. Include a SAST template (if not already done), either `Jobs/SAST.gitlab-ci.yml` or `Jobs/SAST.latest.gitlab-ci.yml`.
    **Note:** The `latest` templates can receive breaking changes in any release.
 1. Set the CI/CD variable `GITLAB_ADVANCED_SAST_ENABLED` to `true`.
 
 Here is a minimal YAML file for enabling GitLab Advanced SAST:
 
-  ```yaml
-  include:
-    - template: Jobs/SAST.latest.gitlab-ci.yml
+```yaml
+include:
+  - template: Jobs/SAST.gitlab-ci.yml
 
-  variables:
-    GITLAB_ADVANCED_SAST_ENABLED: 'true'
-  ```
+variables:
+  GITLAB_ADVANCED_SAST_ENABLED: 'true'
+```
 
 1. Select the **Validate** tab, then select **Validate pipeline**.
 

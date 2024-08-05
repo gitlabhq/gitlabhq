@@ -116,6 +116,7 @@ module API
         expose(:ci_job_token_scope_enabled, documentation: { type: 'boolean' }) { |p, _| p.ci_outbound_job_token_scope_enabled? }
         expose :ci_separated_caches, documentation: { type: 'boolean' }
         expose :ci_allow_fork_pipelines_to_run_in_parent_project, documentation: { type: 'boolean' }
+        expose :ci_id_token_sub_claim_components, documentation: { is_array: true, type: 'string' }
         expose :build_git_strategy, documentation: { type: 'string', example: 'fetch' } do |project, options|
           project.build_allow_git_fetch ? 'fetch' : 'clone'
         end

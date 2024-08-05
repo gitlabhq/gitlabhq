@@ -12,7 +12,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   let_it_be(:namespace) { create_default(:namespace).freeze }
   let_it_be(:project, refind: true) { create_default(:project, :repository).freeze }
 
-  subject { create(:merge_request) }
+  subject { create(:merge_request, source_project: project) }
 
   describe 'associations' do
     subject { build_stubbed(:merge_request) }
@@ -1266,11 +1266,11 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#cache_merge_request_closes_issues!' do
-    let(:issue) { create(:issue, project: subject.project) }
+  describe '#cache_merge_request_closes_issues!', :aggregate_failures do
+    let_it_be_with_reload(:issue) { create(:issue, project: project) }
 
     before do
-      subject.project.add_developer(subject.author)
+      project.add_developer(subject.author)
       subject.target_branch = subject.project.default_branch
     end
 
@@ -1315,6 +1315,55 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end.to not_change { subject.merge_requests_closing_issues.count }.from(1).and(
         change { existing_association.reload.from_mr_description }.from(false).to(true)
       )
+    end
+
+    context 'when merge request closing issues exist' do
+      let_it_be(:issue2) { create(:issue, project: project) }
+
+      before do
+        create(
+          :merge_requests_closing_issues,
+          issue: issue,
+          merge_request: subject,
+          from_mr_description: false
+        )
+        create(
+          :merge_requests_closing_issues,
+          issue: issue2,
+          merge_request: subject,
+          from_mr_description: true
+        )
+      end
+
+      context 'when new merge request closing issue records are created' do
+        it 'triggers a workItemUpdated subscription for all affected work items (added/removed/updated)' do
+          issue3 = create(:issue, project: project)
+
+          # issue is updated, issue 2 is removed, issue 3 is added
+          WorkItem.where(id: [issue, issue2, issue3]).find_each do |work_item|
+            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
+          end
+
+          expect do
+            subject.update_columns(description: "Fixes #{issue.to_reference} Closes #{issue3.to_reference}")
+            subject.cache_merge_request_closes_issues!(subject.author)
+          end.to not_change { subject.merge_requests_closing_issues.count }.from(2)
+        end
+      end
+
+      context 'when new merge request closing issue records are not created' do
+        it 'triggers a workItemUpdated subscription for all affected work items (removed/updated)' do
+          # issue is updated, issue 2 is removed
+          WorkItem.where(id: [issue, issue2]).find_each do |work_item|
+            expect(GraphqlTriggers).to receive(:work_item_updated).with(work_item).once.and_call_original
+          end
+
+          expect do
+            subject.update_columns(description: "Fixes #{issue.to_reference}")
+            subject.cache_merge_request_closes_issues!(subject.author)
+          end.to change { subject.merge_requests_closing_issues.count }.from(2).to(1)
+        end
+      end
     end
 
     it 'does not cache closed issues when merge request is closed' do
@@ -5423,7 +5472,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
     describe 'transition to closed' do
       context 'with merge error' do
-        subject { create(:merge_request, merge_error: 'merge error') }
+        subject { create(:merge_request, source_project: project, merge_error: 'merge error') }
 
         it 'clears merge error' do
           subject.close!
@@ -5457,7 +5506,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
         end
 
         it "doesn't set first_contribution not first contribution" do
-          create(:merged_merge_request, author: new_user)
+          create(:merged_merge_request, source_project: project, author: new_user)
 
           subject.mark_as_merged
 

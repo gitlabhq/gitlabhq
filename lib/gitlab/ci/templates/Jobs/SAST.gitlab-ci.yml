@@ -10,7 +10,8 @@ variables:
   SAST_IMAGE_SUFFIX: ""
 
   SAST_EXCLUDED_ANALYZERS: ""
-  SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  DEFAULT_SAST_EXCLUDED_PATHS: "spec, test, tests, tmp"
+  SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS"
   SCAN_KUBERNETES_MANIFESTS: "false"
 
 sast:
@@ -43,6 +44,36 @@ sast:
     - exit 1
   rules:
     - when: never
+
+
+gitlab-advanced-sast:
+  extends: .sast-analyzer
+  image:
+    name: "$SAST_ANALYZER_IMAGE"
+  variables:
+    SEARCH_MAX_DEPTH: 20
+    SAST_ANALYZER_IMAGE_TAG: '1'
+    SAST_ANALYZER_IMAGE: "$SECURE_ANALYZERS_PREFIX/gitlab-advanced-sast:$SAST_ANALYZER_IMAGE_TAG$SAST_IMAGE_SUFFIX"
+  rules:
+    - if: $SAST_DISABLED == 'true' || $SAST_DISABLED == '1'
+      when: never
+    - if: $SAST_EXCLUDED_ANALYZERS =~ /gitlab-advanced-sast/
+      when: never
+    - if: $GITLAB_ADVANCED_SAST_ENABLED != 'true' && $GITLAB_ADVANCED_SAST_ENABLED != '1'
+      when: never
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/
+      exists:
+        - '**/*.py'
+        - '**/*.go'
+        - '**/*.java'
+        - '**/*.js'
+        - '**/*.jsx'
+        - '**/*.ts'
+        - '**/*.tsx'
+        - '**/*.cjs'
+        - '**/*.mjs'
+        - '**/*.cs'
 
 bandit-sast:
   extends: .sast-analyzer
@@ -142,6 +173,35 @@ semgrep-sast:
       when: never
     - if: $SAST_EXCLUDED_ANALYZERS =~ /semgrep/
       when: never
+    # In case gitlab-advanced-sast also runs, exclude files already scanned by gitlab-advanced-sast
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
+          $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
+          ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
+      variables:
+        SAST_EXCLUDED_PATHS: "$DEFAULT_SAST_EXCLUDED_PATHS, **/*.py, **/*.go, **/*.java, **/*.js, **/*.jsx, **/*.ts, **/*.tsx, **/*.cjs, **/*.mjs, **/*.cs"
+      exists:
+        - '**/*.c'
+        - '**/*.cc'
+        - '**/*.cpp'
+        - '**/*.c++'
+        - '**/*.cp'
+        - '**/*.cxx'
+        - '**/*.h'
+        - '**/*.hpp'
+        - '**/*.scala'
+        - '**/*.sc'
+        - '**/*.php'
+        - '**/*.swift'
+        - '**/*.m'
+        - '**/*.rb'
+        - '**/*.kt'
+    ## In case gitlab-advanced-sast already covers all the files that semgrep-sast would have scanned
+    - if: $CI_COMMIT_BRANCH &&
+          $GITLAB_FEATURES =~ /\bsast_advanced\b/ &&
+          $SAST_EXCLUDED_ANALYZERS !~ /gitlab-advanced-sast/ &&
+          ($GITLAB_ADVANCED_SAST_ENABLED == 'true' || $GITLAB_ADVANCED_SAST_ENABLED == '1')
+      when: never
     - if: $CI_COMMIT_BRANCH
       exists:
         - '**/*.py'
@@ -149,6 +209,8 @@ semgrep-sast:
         - '**/*.jsx'
         - '**/*.ts'
         - '**/*.tsx'
+        - '**/*.cjs'
+        - '**/*.mjs'
         - '**/*.c'
         - '**/*.cc'
         - '**/*.cpp'
@@ -167,8 +229,6 @@ semgrep-sast:
         - '**/*.m'
         - '**/*.rb'
         - '**/*.kt'
-        - '**/*.cjs'
-        - '**/*.mjs'
 
 sobelow-sast:
   extends: .sast-analyzer

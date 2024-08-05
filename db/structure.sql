@@ -15788,7 +15788,8 @@ CREATE TABLE project_ci_cd_settings (
     merge_trains_skip_train_allowed boolean DEFAULT false NOT NULL,
     restrict_pipeline_cancellation_role smallint DEFAULT 0 NOT NULL,
     pipeline_variables_minimum_override_role smallint DEFAULT 3 NOT NULL,
-    push_repository_for_job_token_allowed boolean DEFAULT false NOT NULL
+    push_repository_for_job_token_allowed boolean DEFAULT false NOT NULL,
+    id_token_sub_claim_components character varying[] DEFAULT '{project_path,ref_type,ref}'::character varying[] NOT NULL
 );
 
 CREATE SEQUENCE project_ci_cd_settings_id_seq

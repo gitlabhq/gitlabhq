@@ -1,0 +1,7 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ZoektBlobResults when component loads normally renders component properly 1`] = `
+<div
+  class="gl-flex gl-flex-col gl-justify-center"
+/>
+`;

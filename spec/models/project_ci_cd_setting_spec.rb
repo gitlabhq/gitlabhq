@@ -13,11 +13,37 @@ RSpec.describe ProjectCiCdSetting, feature_category: :continuous_integration do
         .is_less_than_or_equal_to(1000)
         .allow_nil
     end
+
+    it 'validates id_token_sub_claim_components with minimum length 1' do
+      subject.id_token_sub_claim_components = []
+      expect(subject).not_to be_valid
+      expect(subject.errors[:id_token_sub_claim_components]).to include("is too short (minimum is 1 character)")
+    end
+
+    it 'validates id_token_sub_claim_components with project_path in the beginning' do
+      subject.id_token_sub_claim_components = ['ref']
+      expect(subject).not_to be_valid
+      expect(subject.errors[:id_token_sub_claim_components])
+        .to include("project_path must be the first element of the sub claim")
+    end
+
+    it 'validates invalid claim name' do
+      subject.id_token_sub_claim_components = %w[project_path not_existing_claim]
+      expect(subject).not_to be_valid
+      expect(subject.errors[:id_token_sub_claim_components])
+        .to include("not_existing_claim is not an allowed sub claim component")
+    end
   end
 
   describe '#pipeline_variables_minimum_override_role' do
     it 'is maintainer by default' do
       expect(described_class.new.pipeline_variables_minimum_override_role).to eq('maintainer')
+    end
+  end
+
+  describe '#id_token_sub_claim_components' do
+    it 'is project_path, ref_type, ref by default' do
+      expect(described_class.new.id_token_sub_claim_components).to eq(%w[project_path ref_type ref])
     end
   end
 

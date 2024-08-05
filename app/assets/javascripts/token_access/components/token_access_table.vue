@@ -69,6 +69,7 @@ export default {
           :project-id="item.id"
           :project-name="item.name"
           class="gl-mr-3"
+          :size="24"
           :data-testid="`token-access-${itemType(item)}-avatar`"
         />
         <gl-link

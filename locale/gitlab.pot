@@ -653,6 +653,9 @@ msgstr ""
 msgid "%{completed} of %{total} weight completed"
 msgstr ""
 
+msgid "%{component} is not an allowed sub claim component"
+msgstr ""
+
 msgid "%{cores} cores"
 msgstr ""
 
@@ -24383,6 +24386,9 @@ msgstr ""
 msgid "GlobalSearch|Commands %{superKey} %{link2Start}k%{link2End}"
 msgstr ""
 
+msgid "GlobalSearch|Could not load search results. Please refresh the page to try again."
+msgstr ""
+
 msgid "GlobalSearch|Explore"
 msgstr ""
 
@@ -31364,7 +31370,7 @@ msgstr ""
 msgid "Licenses|Acceptable license to be used in the project"
 msgstr ""
 
-msgid "Licenses|Drag your license file here or %{linkStart}click to upload%{linkEnd}."
+msgid "Licenses|Drag your license file here or %{linkStart}select a file to upload%{linkEnd}."
 msgstr ""
 
 msgid "Licenses|Drop your license file to start the upload."
@@ -64172,6 +64178,9 @@ msgid "project namespace cannot be the parent of another namespace"
 msgstr ""
 
 msgid "project's path"
+msgstr ""
+
+msgid "project_path must be the first element of the sub claim"
 msgstr ""
 
 msgid "projects"

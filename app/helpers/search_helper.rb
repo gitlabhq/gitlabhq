@@ -248,6 +248,10 @@ module SearchHelper
     end
   end
 
+  def should_show_zoekt_results?(_scope, _search_type)
+    false
+  end
+
   private
 
   # Autocomplete results for various settings pages

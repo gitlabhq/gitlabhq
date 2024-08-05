@@ -1,0 +1,39 @@
+query getBlobSearchQuery(
+  $search: String!
+  $groupId: GroupID
+  $projectId: ProjectID
+  $page: Int
+  $chunkCount: Int
+  $regex: Boolean
+) {
+  blobSearch(
+    search: $search
+    groupId: $groupId
+    projectId: $projectId
+    page: $page
+    chunkCount: $chunkCount
+    regex: $regex
+  ) {
+    fileCount
+    files {
+      blameUrl
+      chunks {
+        lines {
+          lineNumber
+          richText
+          text
+        }
+        matchCountInChunk
+      }
+      fileUrl
+      matchCount
+      matchCountTotal
+      path
+      projectPath
+    }
+    matchCount
+    perPage
+    searchLevel
+    searchType
+  }
+}

@@ -3,6 +3,8 @@
  *
  */
 .md {
+  position: relative;
+  z-index: 1;
   color: $gl-text-color;
   word-wrap: break-word;
 
@@ -92,6 +94,15 @@
     word-wrap: break-word;
     overflow-wrap: break-word;
     word-break: keep-all;
+  }
+
+  mark {
+    background-color: var(--orange-100);
+    box-shadow: 0 0 0 $gl-spacing-scale-1 var(--orange-100);
+    color: var(--gl-text-color-default);
+    padding: 0;
+    position: relative;
+    z-index: -1;
   }
 
   h1 {

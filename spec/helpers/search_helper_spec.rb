@@ -1187,4 +1187,10 @@ RSpec.describe SearchHelper, feature_category: :global_search do
 
     it { expect(wiki_blob_link(wiki_blob)).to eq("/#{project.namespace.path}/#{project.path}/-/wikis/#{wiki_blob.path}") }
   end
+
+  describe '#should_show_zoekt_results?' do
+    it 'returns false for any scope and search type' do
+      expect(should_show_zoekt_results?(:any_scope, :any_type)).to be false
+    end
+  end
 end

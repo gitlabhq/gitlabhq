@@ -69,12 +69,15 @@ export default {
           >
             {{ title }}
             <span
-              v-if="displayedCount"
+              v-if="displayedCount || $scopedSlots.count"
               class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"
               data-testid="crud-count"
             >
-              <gl-icon v-if="icon" :name="icon" data-testid="crud-icon" />
-              {{ displayedCount }}
+              <slot v-if="$scopedSlots.count" name="count"></slot>
+              <template v-else>
+                <gl-icon v-if="icon" :name="icon" data-testid="crud-icon" />
+                {{ displayedCount }}
+              </template>
             </span>
           </h2>
           <p
