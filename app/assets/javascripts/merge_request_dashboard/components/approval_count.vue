@@ -28,7 +28,12 @@ export default {
 </script>
 
 <template>
-  <gl-badge v-if="approvalCount" v-gl-tooltip="tooltipTitle" icon="check-circle" variant="success">
+  <gl-badge
+    v-if="approvalCount"
+    v-gl-tooltip.viewport.top="tooltipTitle"
+    icon="check-circle"
+    variant="success"
+  >
     {{ approvalCount }}
   </gl-badge>
   <gl-icon v-else name="dash" />

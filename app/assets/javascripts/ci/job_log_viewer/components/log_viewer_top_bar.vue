@@ -14,7 +14,7 @@ export default {
   <div
     class="job-log-viewer-top-bar gl-display-flex gl-align-items-center gl-justify-content-space-between"
   >
-    <div>{{ s__('Job|Full log viewer') }} <experiment-badge class="gl-display-inline" /></div>
+    <div>{{ s__('Job|Full log viewer') }} <experiment-badge class="gl-inline" /></div>
     <div>
       <gl-link href="https://gitlab.com/gitlab-org/gitlab/-/issues/454817" target="_blank">{{
         s__('Job|Feedback issue')

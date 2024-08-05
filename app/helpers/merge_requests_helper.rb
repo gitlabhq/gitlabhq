@@ -370,7 +370,7 @@ module MergeRequestsHelper
           title: _('Reviews requested'),
           query: 'reviewRequestedMergeRequests',
           variables: {
-            reviewState: 'UNREVIEWED'
+            reviewStates: %w[UNREVIEWED REVIEW_STARTED]
           }
         },
         {
@@ -384,7 +384,7 @@ module MergeRequestsHelper
           title: _('Waiting for reviewers'),
           query: 'assignedMergeRequests',
           variables: {
-            reviewStates: %w[UNREVIEWED UNAPPROVED]
+            reviewStates: %w[UNREVIEWED UNAPPROVED REVIEW_STARTED]
           }
         },
         {

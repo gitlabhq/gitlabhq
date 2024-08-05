@@ -71,6 +71,18 @@ RSpec.describe Gitlab::Cng::Commands::Subcommands::Deployment do
       expect(cluster_instance).to have_received(:create)
     end
 
+    it "passes extra environment options" do
+      invoke_command(command_name, [], {
+        namespace: "gitlab",
+        env: ["env1=val1", "env2=val2"]
+      })
+
+      expect(Gitlab::Cng::Deployment::Installation).to have_received(:new).with(
+        "gitlab",
+        hash_including(env: ["env1=val1", "env2=val2"])
+      )
+    end
+
     it "only print arguments with --print-deploy-args option" do
       chart_sha = "356a1ab41be2"
       extra_opt = "opt=val"

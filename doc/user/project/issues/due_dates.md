@@ -53,7 +53,7 @@ server's time zone.
 
 Issues with due dates can also be exported as an iCalendar feed. The URL of the
 feed can be added to calendar applications. The feed is accessible by selecting
-the **Subscribe to calendar** option in the  **Actions** (**{ellipsis_v}**) dropdown
+the **Subscribe to calendar** option in the **Actions** (**{ellipsis_v}**) dropdown
 list on the following pages:
 
 - The **Assigned Issues** page linked on the right side of the GitLab header

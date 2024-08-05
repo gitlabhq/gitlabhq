@@ -73,7 +73,7 @@ flowchart TD
     Issues .->|Visible in| Lists
     Issues .->|Assigned to| Iterations
     Issues .->|Assigned to| Milestones
-    Tasks  .->|Child of| Issues
+    Tasks .->|Child of| Issues
     Tasks .->|Assigned to| Iterations
     Tasks .->|Assigned to| Milestones
     Epics .->|Visible in| Boards

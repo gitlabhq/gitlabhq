@@ -143,6 +143,6 @@ The `default_branch_protection` field will be removed in v5 of the GitLab REST A
 ## `require_password_to_approve` API field
 
 The `require_password_to_approve` was deprecated in GitLab 16.9. Use the `require_reauthentication_to_approve` field
-instead. If you supply values to both fields, the  `require_reauthentication_to_approve` field takes precedence.
+instead. If you supply values to both fields, the `require_reauthentication_to_approve` field takes precedence.
 
 The `require_password_to_approve` field will be removed in v5 of the GitLab REST API.

@@ -43,6 +43,12 @@ module Gitlab
                 desc: "Specific sha of GitLab chart repository, latest release version is used by default. " \
                   "Requires 'tar' executable to be installed.",
                 type: :string
+              option :env,
+                desc: "Extra environment variables to set for rails containers " \
+                  "(can specify multiple or separate values with commas: env1=val1,env2=val2)",
+                type: :string,
+                repeatable: true,
+                aliases: "-e"
 
               super(name)
             end
@@ -114,7 +120,7 @@ module Gitlab
           def installation(name, configuration)
             Cng::Deployment::Installation.new(
               name, configuration: configuration,
-              **symbolized_options.slice(:namespace, :set, :ci, :gitlab_domain, :timeout, :chart_sha)
+              **symbolized_options.slice(:namespace, :set, :ci, :gitlab_domain, :timeout, :chart_sha, :env)
             )
           end
 
@@ -128,6 +134,7 @@ module Gitlab
             end
             cmd = ["cng", "create", "deployment", configuration, *ci_components]
             cmd.push(*options[:set].flat_map { |opt| ["--set", opt] }) if options[:set]
+            cmd.push(*options[:env].flat_map { |opt| ["--env", opt] }) if options[:env]
             cmd.push("--chart-sha", options[:chart_sha]) if options[:chart_sha]
 
             log("Received --print-deploy-args option, printing example of all deployment arguments!", :warn)

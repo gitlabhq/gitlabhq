@@ -19,13 +19,18 @@ const REVIEW_STATE_ICONS = {
     name: 'comment-lines',
     class: 'gl-bg-blue-100 gl-text-blue-500',
   },
+  REVIEW_STARTED: {
+    name: 'comment-dots',
+    class: 'gl-bg-gray-100 gl-text-gray-500',
+  },
 };
 const USER_TOOLTIP_TITLES = {
-  ASSIGNEES: __('%{strongStart}%{you}%{strongEnd}%{break}Assigned to %{name}.'),
+  ASSIGNEES: __('%{strongStart}%{you}%{strongEnd}%{break}Assigned to %{name}'),
   REQUESTED_CHANGES: __('%{strongStart}%{you}%{strongEnd}%{break}%{name} requested changes'),
   REVIEWED: __('%{strongStart}%{you}%{strongEnd}%{break}%{name} left feedback'),
   APPROVED: __('%{strongStart}%{you}%{strongEnd}%{break}Approved by %{name}'),
   UNREVIEWED: __('%{strongStart}%{you}%{strongEnd}%{break}Review requested from %{name}'),
+  REVIEW_STARTED: __('%{strongStart}%{you}%{strongEnd}%{break}%{name} started a review'),
   default: __('%{strongStart}%{you}%{strongEnd}%{break}Review requested from %{name}'),
 };
 

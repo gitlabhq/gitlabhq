@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'spec_helper'
-require 'rainbow/ext/string'
 
 RSpec.describe 'seed production settings' do
   let(:settings_file) { Rails.root.join('db/fixtures/production/010_settings.rb') }

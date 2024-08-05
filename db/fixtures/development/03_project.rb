@@ -104,54 +104,10 @@ class Gitlab::Seeder::Projects
     SQL
   end
 
-  private
-
-  def create_real_projects!
-    # You can specify how many projects you need during seed execution
-    size = ENV['SIZE'].present? ? ENV['SIZE'].to_i : 8
-
-    PROJECT_URLS.first(size).each_with_index do |url, i|
-      create_real_project!(url, force_latest_storage: i.even?)
+  def self.create_real_project!(url: nil, force_latest_storage: false, project_path: nil, group_path: nil)
+    if url
+      group_path, project_path = url.split('/')[-2..-1]
     end
-  end
-
-  def create_large_projects!
-    return unless ENV['LARGE_PROJECTS'].present?
-
-    LARGE_PROJECT_URLS.each(&method(:create_real_project!))
-
-    if ENV['FORK'].present?
-      puts "\nGenerating forks"
-
-      project_name = ENV['FORK'] == 'true' ? 'torvalds/linux' : ENV['FORK']
-
-      project = Project.find_by_full_path(project_name)
-
-      User.offset(1).first(5).each do |user|
-        response = ::Projects::ForkService.new(project, user).execute
-
-        if response.error?
-          print 'F'
-          puts response.errors
-          next
-        end
-
-        new_project = response[:project]
-
-        if new_project.valid? && (new_project.valid_repo? || new_project.import_state.scheduled?)
-          print '.'
-        else
-          new_project.errors.full_messages.each do |error|
-            puts "#{new_project.full_path}: #{error}"
-          end
-          print 'F'
-        end
-      end
-    end
-  end
-
-  def create_real_project!(url, force_latest_storage: false)
-    group_path, project_path = url.split('/')[-2..-1]
 
     group = Group.find_by(path: group_path)
 
@@ -197,7 +153,7 @@ class Gitlab::Seeder::Projects
         # since the Sidekiq::Testing block has already exited. Force clearing
         # the `after_commit` queue to ensure the job is run now.
         project.send(:_run_after_commit_queue)
-        project.import_state.send(:_run_after_commit_queue)
+        project.import_state&.send(:_run_after_commit_queue)
 
         # Expire repository cache after import to ensure
         # valid_repo? call below returns a correct answer
@@ -210,6 +166,54 @@ class Gitlab::Seeder::Projects
     else
       puts project.errors.full_messages
       print 'F'
+    end
+  end
+
+  private
+
+  def create_real_projects!
+    # You can specify how many projects you need during seed execution
+    size = ENV['SIZE'].present? ? ENV['SIZE'].to_i : 8
+
+    PROJECT_URLS.first(size).each_with_index do |url, i|
+      self.class.create_real_project!(url: url, force_latest_storage: i.even?)
+    end
+  end
+
+  def create_large_projects!
+    return unless ENV['LARGE_PROJECTS'].present?
+
+    LARGE_PROJECT_URLS.each do |url|
+      self.class.create_real_project!(url: url)
+    end
+
+    if ENV['FORK'].present?
+      puts "\nGenerating forks"
+
+      project_name = ENV['FORK'] == 'true' ? 'torvalds/linux' : ENV['FORK']
+
+      project = Project.find_by_full_path(project_name)
+
+      User.offset(1).first(5).each do |user|
+        response = ::Projects::ForkService.new(project, user).execute
+
+        if response.error?
+          print 'F'
+          puts response.errors
+          next
+        end
+
+        new_project = response[:project]
+
+        if new_project.valid? && (new_project.valid_repo? || new_project.import_state.scheduled?)
+          print '.'
+        else
+          new_project.errors.full_messages.each do |error|
+            puts "#{new_project.full_path}: #{error}"
+          end
+          print 'F'
+        end
+      end
     end
   end
 

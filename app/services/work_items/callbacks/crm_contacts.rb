@@ -27,6 +27,7 @@ module WorkItems
         contact_ids = params[:contact_ids]
         return if contact_ids.nil?
         return if operation_mode_attribute.nil?
+        return if work_item.customer_relations_contact_ids.sort == contact_ids.sort
 
         raise_error(unsupported_work_item_message) if group.nil?
         raise_error(feature_disabled_message) unless feature_enabled?

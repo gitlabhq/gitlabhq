@@ -25,10 +25,10 @@
       - if @service_ping_data.present?
         = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-preview-trigger gl-mr-2', data: { payload_selector: ".#{payload_class}" } }) do
           = gl_loading_icon(css_class: 'js-spinner gl-hidden', inline: true)
-          %span.js-text.gl-display-inline= s_('AdminSettings|Preview payload')
+          %span.js-text.gl-inline= s_('AdminSettings|Preview payload')
         = render Pajamas::ButtonComponent.new(button_options: { class: 'js-payload-download-trigger gl-mr-2', data: { endpoint: usage_data_admin_application_settings_path(format: :json) } }) do
           = gl_loading_icon(css_class: 'js-spinner gl-hidden', inline: true)
-          %span.js-text.gl-display-inline= s_('AdminSettings|Download payload')
+          %span.js-text.gl-inline= s_('AdminSettings|Download payload')
         %pre.js-syntax-highlight.code.highlight.gl-mt-2.gl-hidden{ class: payload_class, data: { endpoint: usage_data_admin_application_settings_path(format: :html) } }
       - else
         = render Pajamas::AlertComponent.new(variant: :warning,

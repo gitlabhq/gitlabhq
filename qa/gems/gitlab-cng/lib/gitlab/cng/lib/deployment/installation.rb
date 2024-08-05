@@ -45,15 +45,16 @@ module Gitlab
           end
         end
 
-        def initialize(name, configuration:, namespace:, ci:, gitlab_domain:, timeout:, set: [], chart_sha: nil)
+        def initialize(name, configuration:, namespace:, ci:, gitlab_domain:, timeout:, **args)
           @name = name
           @configuration = configuration
           @namespace = namespace
           @ci = ci
           @gitlab_domain = gitlab_domain
           @timeout = timeout
-          @set = set
-          @chart_sha = chart_sha
+          @set = args[:set] || []
+          @extra_env = args[:env] || []
+          @chart_sha = args[:chart_sha]
         end
 
         # Perform deployment with all the additional setup
@@ -85,7 +86,8 @@ module Gitlab
           :set,
           :gitlab_domain,
           :timeout,
-          :chart_sha
+          :chart_sha,
+          :extra_env
 
         alias_method :cli_values, :set
 
@@ -131,6 +133,22 @@ module Gitlab
           }
         end
 
+        # Additional environment variables for deployment
+        #
+        # @return [Hash]
+        def env_values
+          return {} if extra_env.empty?
+
+          env = extra_env.map { |e| e.split("=") }.reject { |e| e.size != 2 }.to_h
+          return {} if env.empty?
+
+          {
+            global: {
+              extraEnv: env
+            }
+          }
+        end
+
         # Execute pre-deployment setup which consists of:
         #   * chart setup
         #   * namespace and license creation
@@ -159,6 +177,7 @@ module Gitlab
           args.push("--set", cli_values.join(",")) unless cli_values.empty?
           values = DefaultValues.common_values(gitlab_domain)
             .deep_merge(license_values)
+            .deep_merge(env_values)
             .deep_merge(configuration.values)
             .deep_stringify_keys
             .to_yaml

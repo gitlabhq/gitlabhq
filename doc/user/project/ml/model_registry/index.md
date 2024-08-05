@@ -159,7 +159,7 @@ if a new version can be deployed without changes to the application:
   model does not change the feature set or how the application consumes the
   model version. Auto updating to a new patch is a safe update.
 
-- **Prerelease (text):**  Represents a version that is not yet ready for production use.
+- **Prerelease (text):** Represents a version that is not yet ready for production use.
   Used to identify alpha, beta, or release candidate versions of the model.
 
 ### Model version examples

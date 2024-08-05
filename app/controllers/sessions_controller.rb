@@ -90,12 +90,19 @@ class SessionsController < Devise::SessionsController
   end
 
   def destroy
-    headers['Clear-Site-Data'] = '"*"'
-
+    headers['Clear-Site-Data'] = '"cache", "storage", "executionContexts", "clientHints"'
     Gitlab::AppLogger.info("User Logout: username=#{current_user.username} ip=#{request.remote_ip}")
+
     super
+
     # hide the signed_out notice
     flash[:notice] = nil
+
+    # cookies must be deleted after super call
+    # Warden sets some cookies for deletion, this will not override those settings
+    cookies.each do |cookie|
+      cookies.delete(cookie[0])
+    end
   end
 
   private

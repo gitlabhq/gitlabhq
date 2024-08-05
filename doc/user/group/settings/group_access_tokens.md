@@ -62,7 +62,7 @@ To create a group access token:
    - An instance-wide [maximum lifetime](../../../administration/settings/account_and_limit_settings.md#limit-the-lifetime-of-access-tokens) setting can limit the maximum allowable lifetime in self-managed instances.
 1. Select a role for the token.
 1. Select the [desired scopes](#scopes-for-a-group-access-token).
-1. Select  **Create group access token**.
+1. Select **Create group access token**.
 
 A group access token is displayed. Save the group access token somewhere safe. After you leave or refresh the page, you can't view it again.
 

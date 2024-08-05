@@ -103,6 +103,27 @@ A dashboard displays one of the following status badges:
 | **Unknown** | The sync status of the deployment couldn't be retrieved. |
 | **Unavailable** | The `Kustomization` or `HelmRelease` resource couldn't be retrieved. |
 
+## Delete a pod
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467653) in GitLab 17.3.
+
+You can delete a pod from the Kubernetes dashboard to restart a failed pod.
+
+To delete a pod:
+
+::Tabs
+
+:::TabTitle From the pods list
+
+- Select **Actions** (**{ellipsis_v}**), then **Delete pod**.
+
+:::TabTitle From the pods details view
+
+1. Select a pod from the pod list to view its details.
+1. Select **Actions > Delete pod** (**{remove}**).
+
+::EndTabs
+
 ## View pod logs
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13793) in GitLab 17.2.

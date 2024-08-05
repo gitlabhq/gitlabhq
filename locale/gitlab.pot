@@ -1312,10 +1312,13 @@ msgstr ""
 msgid "%{strongStart}%{you}%{strongEnd}%{break}%{name} requested changes"
 msgstr ""
 
+msgid "%{strongStart}%{you}%{strongEnd}%{break}%{name} started a review"
+msgstr ""
+
 msgid "%{strongStart}%{you}%{strongEnd}%{break}Approved by %{name}"
 msgstr ""
 
-msgid "%{strongStart}%{you}%{strongEnd}%{break}Assigned to %{name}."
+msgid "%{strongStart}%{you}%{strongEnd}%{break}Assigned to %{name}"
 msgstr ""
 
 msgid "%{strongStart}%{you}%{strongEnd}%{break}Review requested from %{name}"
@@ -43978,6 +43981,9 @@ msgstr ""
 msgid "Release|Create tag %{tag}"
 msgstr ""
 
+msgid "Release|Edit release"
+msgstr ""
+
 msgid "Release|Getting started with releases"
 msgstr ""
 
@@ -43991,6 +43997,9 @@ msgid "Release|Leave blank to use the tag name as the release title."
 msgstr ""
 
 msgid "Release|More information"
+msgstr ""
+
+msgid "Release|New release"
 msgstr ""
 
 msgid "Release|Or type a new tag name"
@@ -60886,10 +60895,10 @@ msgstr ""
 msgid "Workspaces|Creating"
 msgstr ""
 
-msgid "Workspaces|Develop anywhere"
+msgid "Workspaces|Devfile location"
 msgstr ""
 
-msgid "Workspaces|Devfile location"
+msgid "Workspaces|Each workspace is a secure cloud environment for your GitLab project. Quickly switch between projects, live preview, and compile code on any device."
 msgstr ""
 
 msgid "Workspaces|Error"
@@ -60907,9 +60916,6 @@ msgstr ""
 msgid "Workspaces|Git reference"
 msgstr ""
 
-msgid "Workspaces|GitLab Workspaces is a powerful collaborative platform that provides a comprehensive set of tools for software development teams to manage their entire development lifecycle."
-msgstr ""
-
 msgid "Workspaces|Group agents"
 msgstr ""
 
@@ -60920,6 +60926,9 @@ msgid "Workspaces|Group members can't create a workspace with a blocked agent. E
 msgstr ""
 
 msgid "Workspaces|If your devfile is not in the root directory of your project, specify a relative path."
+msgstr ""
+
+msgid "Workspaces|Instant development environments"
 msgstr ""
 
 msgid "Workspaces|Learn more."

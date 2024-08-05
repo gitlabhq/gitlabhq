@@ -266,7 +266,7 @@ sudo gitlab-rake gitlab:geo:check
   ```
 
   Verify the correct password is set for `gitlab_rails['db_password']` that was
-  used when creating the hash in  `postgresql['sql_user_password']` by running
+  used when creating the hash in `postgresql['sql_user_password']` by running
   `gitlab-ctl pg-password-md5 gitlab` and entering the password.
 
 - Check returns `not a secondary node`.

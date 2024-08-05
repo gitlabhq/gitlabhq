@@ -787,7 +787,7 @@ messages can be maintained where we call `setupConsoleWatcher`. Example:
 setupConsoleWatcher({
   ignores: [
     ...,
-    // Any call to `console.error('Foo bar')`  or `console.warn('Foo bar')` will be ignored by our console watcher.
+    // Any call to `console.error('Foo bar')` or `console.warn('Foo bar')` will be ignored by our console watcher.
     'Foo bar',
     // Use regex to allow for flexible message matching.
     /Lorem ipsum/,

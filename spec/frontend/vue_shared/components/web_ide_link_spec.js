@@ -64,8 +64,8 @@ const ACTION_WEB_IDE_CONFIRM_FORK = {
 };
 const ACTION_WEB_IDE_EDIT_FORK = { ...ACTION_WEB_IDE, text: 'Edit fork in Web IDE' };
 const ACTION_GITPOD = {
-  href: TEST_GITPOD_URL,
-  handle: undefined,
+  href: undefined,
+  handle: expect.any(Function),
   secondaryText: 'Launch a ready-to-code development environment for your project.',
   text: 'Gitpod',
   attrs: {
@@ -83,6 +83,7 @@ const ACTION_PIPELINE_EDITOR = {
   attrs: {
     'data-testid': 'pipeline_editor-menu-item',
   },
+  handle: undefined,
   tracking: {
     action: 'click_consolidated_edit',
     label: 'pipeline_editor',
@@ -269,6 +270,27 @@ describe('vue_shared/components/web_ide_link', () => {
       findDisclosureDropdownItems().at(1).props().item.handle();
       await nextTick();
       expect(visitUrl).toHaveBeenCalledWith(TEST_WEB_IDE_URL, true);
+    });
+  });
+
+  describe('when gitpod editor action is available', () => {
+    const GITPOD_URL = '/gitpod';
+
+    beforeEach(() => {
+      createComponent({
+        showEditButton: false,
+        showWebIdeButton: false,
+        showGitpodButton: true,
+        showPipelineEditorButton: false,
+        gitpodEnabled: true,
+        gitpodUrl: GITPOD_URL,
+      });
+    });
+
+    it('visits GitPod URL when gitpod option is clicked', async () => {
+      expect(visitUrl).not.toHaveBeenCalled();
+      await wrapper.findByTestId('gitpod-menu-item').find('button').trigger('click');
+      expect(visitUrl).toHaveBeenCalledWith(GITPOD_URL, true);
     });
   });
 

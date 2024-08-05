@@ -339,7 +339,7 @@ export default {
             data-testid="update-fork-button"
             @click="checkIfSyncIsPossible"
           >
-            <gl-loading-icon v-if="forkDetails.isSyncing" class="gl-display-inline" size="sm" />
+            <gl-loading-icon v-if="forkDetails.isSyncing" class="gl-inline" size="sm" />
             <span>{{ $options.i18n.updateFork }}</span>
           </gl-button>
         </div>

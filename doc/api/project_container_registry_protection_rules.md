@@ -89,7 +89,7 @@ Supported attributes:
 | `id`                              | integer/string | Yes      | ID or [URL-encoded path of the project](rest/index.md#namespaced-path-encoding) owned by the authenticated user. |
 | `repository_path_pattern`         | string         | Yes      | Container repository path pattern protected by the protection rule. For example `flight/flight-*`. Wildcard character `*` allowed. |
 | `minimum_access_level_for_push`   | string         | No       | Minimum GitLab access level to allow to push container images to the container registry. For example `maintainer`, `owner` or `admin`. Must be provided when `minimum_access_level_for_delete` is not set. |
-| `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level to allow to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when  `minimum_access_level_for_push` is not set. |
+| `minimum_access_level_for_delete` | string         | No       | Minimum GitLab access level to allow to delete container images in the container registry. For example `maintainer`, `owner`, `admin`. Must be provided when `minimum_access_level_for_push` is not set. |
 
 If successful, returns [`201`](rest/index.md#status-codes) and the created container registry protection rule.
 

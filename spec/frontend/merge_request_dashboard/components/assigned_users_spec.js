@@ -67,7 +67,7 @@ describe('Merge request dashboard assigned users component', () => {
       createComponent();
 
       expect(glTooltipDirectiveMock.mock.calls[1][1].value).toBe(
-        '<strong>This is you.</strong><br />Assigned to Admin.',
+        '<strong>This is you.</strong><br />Assigned to Admin',
       );
     });
 

@@ -21,8 +21,8 @@ For code search, GitLab uses these types in this order:
   or when you search against a non-default branch.
   This type does not support group or global search.
 
-You can search in all GitLab or in a specific project and filter the results.
-Autocomplete suggestions are displayed as you type.
+When exact code search or advanced search is enabled, you can still use
+basic search by specifying the `basic_search=true` URL parameter.
 
 ## Global search scopes
 

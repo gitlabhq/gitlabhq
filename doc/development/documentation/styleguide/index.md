@@ -42,7 +42,7 @@ Topic types help users digest information more quickly. They also help address t
 - **Content is hard to find.** The GitLab docs are comprehensive and include a large amount of
   useful information. Topic types create repeatable patterns that make the content easier
   to scan and parse.
-- **Content is often written from the contributor's point of view.**  The GitLab docs
+- **Content is often written from the contributor's point of view.** The GitLab docs
   are written by a variety of contributors. Topic types (tasks, specifically) help put
   information into a format that is geared toward helping others, rather than
   documenting how a feature was implemented.

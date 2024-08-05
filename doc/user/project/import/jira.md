@@ -49,7 +49,7 @@ Importing large projects may take several minutes depending on the size of the i
 
 To import Jira issues to a GitLab project:
 
-1. On the **{issues}** **Issues** page, select  **Actions** (**{ellipsis_v}**) **> Import from Jira**.
+1. On the **{issues}** **Issues** page, select **Actions** (**{ellipsis_v}**) **> Import from Jira**.
 
    ![Import issues from Jira button](img/jira/import_issues_from_jira_button_v16_3.png)
 

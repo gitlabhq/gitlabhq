@@ -104,7 +104,7 @@ In GitLab 15.1, you can optionally allow GitLab to manage replication of Object 
 
 ### Review the configuration of each **secondary** site
 
-Database settings are automatically replicated to the **secondary**  site, but the
+Database settings are automatically replicated to the **secondary** site, but the
 `/etc/gitlab/gitlab.rb` file must be set up manually, and differs between
 sites. If features such as Mattermost, OAuth or LDAP integration are enabled
 on the **primary** site but not the **secondary** site, they are lost during failover.

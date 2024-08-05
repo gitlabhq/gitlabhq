@@ -420,7 +420,7 @@ persistence and is used to store session data, temporary cache information, and 
    Redis cluster.
 1. Under **Deployment option** select **Design your own cache**.
 1. Under **Creation method** select **Cluster cache**.
-1. Under **Cluster mode**  select **Disabled** as it is [not supported](../../administration/redis/replication_and_failover_external.md#requirements). Even without cluster mode on, you still get the
+1. Under **Cluster mode** select **Disabled** as it is [not supported](../../administration/redis/replication_and_failover_external.md#requirements). Even without cluster mode on, you still get the
    chance to deploy Redis in multiple availability zones.
 1. Under **Cluster info** give the cluster a name (`gitlab-redis`) and a description.
 1. Under **Location** select **AWS Cloud** and enable **Multi-AZ** option.

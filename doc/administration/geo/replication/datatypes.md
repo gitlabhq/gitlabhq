@@ -62,8 +62,8 @@ verification methods:
 | Blobs    | Pages _(object storage)_                        | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | CI Secure Files _(file system)_                 | Geo with API                                 | SHA256 checksum               |
 | Blobs    | CI Secure Files _(object storage)_              | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
-| Blobs    | Incident Metric Images  _(file system)_         | Geo with API/Managed                         | SHA256 checksum               |
-| Blobs    | Incident Metric Images  _(object storage)_      | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
+| Blobs    | Incident Metric Images _(file system)_          | Geo with API/Managed                         | SHA256 checksum               |
+| Blobs    | Incident Metric Images _(object storage)_       | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Alert Metric Images _(file system)_             | Geo with API                                 | SHA256 checksum               |
 | Blobs    | Alert Metric Images _(object storage)_          | Geo with API/Managed <sup>2</sup>            | SHA256 checksum <sup>3</sup>  |
 | Blobs    | Dependency Proxy Images_(file system)_          | Geo with API                                 | SHA256 checksum               |

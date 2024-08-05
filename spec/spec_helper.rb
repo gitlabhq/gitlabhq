@@ -51,8 +51,6 @@ if rspec_profiling_is_configured && (!ENV.key?('CI') || branch_can_be_profiled)
   require 'rspec_profiling/rspec'
 end
 
-# require rainbow gem String monkeypatch, so we can test SystemChecks
-require 'rainbow/ext/string'
 Rainbow.enabled = false
 
 # Enable zero monkey patching mode before loading any other RSpec code.

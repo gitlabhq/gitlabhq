@@ -149,7 +149,7 @@ To enable or disable Service Ping:
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > Metrics and profiling**.
 1. Expand **Usage statistics**.
-1. Select or clear the  **Enable Service Ping** checkbox.
+1. Select or clear the **Enable Service Ping** checkbox.
 1. Select **Save changes**.
 
 ### Through the configuration file

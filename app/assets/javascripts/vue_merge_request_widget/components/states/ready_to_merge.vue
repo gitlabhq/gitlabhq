@@ -678,7 +678,7 @@ export default {
                     :show-assign-to-me="false"
                     :diverged-commits-count="mr.divergedCommitsCount"
                     :target-branch-path="mr.targetBranchPath"
-                    class="mr-ready-merge-related-links gl-display-inline"
+                    class="mr-ready-merge-related-links gl-inline"
                   />
                 </template>
               </div>
@@ -809,7 +809,7 @@ export default {
                     :state="mr.state"
                     :related-links="mr.relatedLinks"
                     :show-assign-to-me="false"
-                    class="mr-ready-merge-related-links gl-display-inline"
+                    class="mr-ready-merge-related-links gl-inline"
                   />
                 </li>
                 <li v-if="state.autoMergeEnabled" class="gl-leading-normal">

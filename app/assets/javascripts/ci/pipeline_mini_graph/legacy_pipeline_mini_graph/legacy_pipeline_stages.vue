@@ -26,7 +26,7 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-inline gl-align-middle">
+  <div class="gl-inline gl-align-middle">
     <div
       v-for="stage in stages"
       :key="stage.name"

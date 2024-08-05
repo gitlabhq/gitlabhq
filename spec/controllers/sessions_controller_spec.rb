@@ -782,5 +782,30 @@ RSpec.describe SessionsController, feature_category: :system_access do
         expect(controller.current_user).to be_nil
       end
     end
+
+    context 'clearing browser data' do
+      let(:user) { create(:user) }
+
+      before do
+        cookies[:test_cookie] = 'test-value'
+        cookies.encrypted[:test_encrypted_cookie] = 'test-value'
+        cookies.signed[:test_signed_cookie] = 'test-value'
+      end
+
+      it 'clears all cookies known by Rails' do
+        delete :destroy
+
+        %w[test_cookie test_encrypted_cookie test_signed_cookie].each do |key|
+          expect(response.cookies).to have_key(key)
+          expect(response.cookies[key]).to be_nil
+        end
+      end
+
+      it 'sends Clear-Site-Data header for all non-cookie data' do
+        delete :destroy
+
+        expect(response.headers['Clear-Site-Data']).to eq('"cache", "storage", "executionContexts", "clientHints"')
+      end
+    end
   end
 end

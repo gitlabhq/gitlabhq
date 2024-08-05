@@ -108,7 +108,7 @@ or, just for a current session:
 export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=1 && gdk restart
 ```
 
-Make sure you run  `gitlab:duo:setup` Rake task `/gitlab` directory:
+Make sure you run `gitlab:duo:setup` Rake task `/gitlab` directory:
 
 ```shell
 GITLAB_SIMULATE_SAAS=1 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup[<test-group-name>]'
@@ -145,7 +145,7 @@ or, just for a current session:
 export CLOUD_CONNECTOR_SELF_SIGN_TOKENS=0 && gdk restart
 ```
 
-Make sure you executed  `gitlab:duo:setup` Rake task in `/gitlab` directory:
+Make sure you executed `gitlab:duo:setup` Rake task in `/gitlab` directory:
 
 ```shell
 GITLAB_SIMULATE_SAAS=0 RAILS_ENV=development bundle exec rake 'gitlab:duo:setup'

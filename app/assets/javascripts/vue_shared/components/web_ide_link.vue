@@ -18,6 +18,7 @@ export const i18n = {
     'WebIDE|Quickly and easily edit multiple files in your project. Press . to open',
   ),
   toggleText: __('Edit'),
+  gitpodText: __('Launch a ready-to-code development environment for your project.'),
 };
 
 const TRACKING_ACTION_NAME = 'click_consolidated_edit';
@@ -253,17 +254,18 @@ export default {
       };
     },
     gitpodAction() {
-      if (!this.computedShowGitpodButton) {
-        return null;
-      }
-      const handleOptions = { href: this.gitpodUrl };
+      if (!this.computedShowGitpodButton) return null;
 
-      const secondaryText = __('Launch a ready-to-code development environment for your project.');
+      const handleOptions = {
+        handle: () => {
+          visitUrl(this.gitpodUrl, true);
+        },
+      };
 
       return {
         key: KEY_GITPOD,
         text: this.gitpodActionText,
-        secondaryText,
+        secondaryText: this.$options.i18n.gitpodText,
         tracking: {
           action: TRACKING_ACTION_NAME,
           label: 'gitpod',

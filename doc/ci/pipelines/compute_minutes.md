@@ -181,8 +181,12 @@ so be sure to select the correct group.
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select **Pipelines**.
-1. Select **Buy additional compute minutes**.
-1. Complete the details of the transaction.
+1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
+1. Enter the desired quantity of compute minute packs.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select a payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
+1. Select **Buy compute minutes**.
 
 After your payment is processed, the additional compute minutes are added to your group
 namespace.
@@ -202,9 +206,13 @@ To purchase additional compute minutes for your personal namespace:
 1. On the left sidebar, select your avatar.
 1. Select **Edit profile**.
 1. On the left sidebar, select **Usage Quotas**.
-1. Select **Buy additional compute minutes**. GitLab redirects you to the Customers Portal.
-1. Locate the subscription card that's linked to your personal namespace on GitLab.com, select **Buy more compute minutes**,
-   and complete the details of the transaction.
+1. Select **Buy additional compute minutes**. You are taken to the Customers Portal.
+1. In the **Subscription details** section, select the name of the user from the dropdown list.
+1. Enter the desired quantity of compute minute packs.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select a payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
+1. Select **Buy compute minutes**.
 
 After your payment is processed, the additional compute minutes are added to your personal
 namespace.

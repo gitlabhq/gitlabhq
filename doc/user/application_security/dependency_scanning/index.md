@@ -229,6 +229,20 @@ The following languages and dependency managers are supported by Dependency Scan
       <td><code>build.sbt</code></td>
       <td>N</td>
     </tr>
+    <tr>
+      <td>Swift</td>
+      <td>All versions</td>
+      <td><a href="https://swift.org/package-manager/">Swift Package Manager</a></td>
+      <td><code>Package.resolved</code></td>
+      <td>N</td>
+    </tr>
+    <tr>
+      <td>Cocoapods</td>
+      <td>All versions</td>
+      <td><a href="https://cocoapods.org/">CocoaPods</a></td>
+      <td><code>Podfile.lock</code></td>
+      <td>N</td>
+    </tr>
   </tbody>
 </table>
 
@@ -1251,3 +1265,190 @@ In these cases, the analyzer skips the dependency and outputs a message to the l
 
 The GitLab analyzers do not make assumptions as they could result in a false positive or false
 negative. For a discussion, see [issue 442027](https://gitlab.com/gitlab-org/gitlab/-/issues/442027).
+
+## Build Swift projects
+
+Swift Package Manager (SPM) is the official tool for managing the distribution of Swift code.
+It's integrated with the Swift build system to automate the process of downloading, compiling, and linking dependencies.
+
+Follow these best practices when you build a Swift project with SPM.
+
+1. Include a `Package.resolved` file.
+
+   The `Package.resolved` file locks your dependencies to specific versions.
+   Always commit this file to your repository to ensure consistency across
+   different environments.
+
+   ```shell
+   git add Package.resolved
+   git commit -m "Add Package.resolved to lock dependencies"
+   ```
+
+1. To build your Swift project, use the following commands:
+
+   ```shell
+   # Update dependencies
+   swift package update
+
+   # Build the project
+   swift build
+   ```
+
+1. To configure CI/CD, add these steps to your `.gitlab-ci.yml` file:
+
+   ```yaml
+   swift-build:
+     stage: build
+     script:
+       - swift package update
+       - swift build
+   ```
+
+1. Optional. If you use private Swift package repositories with self-signed certificates,
+   you might need to add the certificate to your project and configure Swift to trust it:
+
+   1. Fetch the certificate:
+
+      ```shell
+      echo | openssl s_client -servername your.repo.url -connect your.repo.url:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END
+      CERTIFICATE-/p' > repo-cert.crt
+      ```
+
+   1. Add these lines to your Swift package manifest (`Package.swift`):
+
+      ```swift
+      import Foundation
+
+      #if canImport(Security)
+      import Security
+      #endif
+
+      extension Package {
+          public static func addCustomCertificate() {
+              guard let certPath = Bundle.module.path(forResource: "repo-cert", ofType: "crt") else {
+                  fatalError("Certificate not found")
+              }
+              SecCertificateAddToSystemStore(SecCertificateCreateWithData(nil, try! Data(contentsOf: URL(fileURLWithPath: certPath)) as CFData)!)
+          }
+      }
+
+      // Call this before defining your package
+      Package.addCustomCertificate()
+      ```
+
+Always test your build process in a clean environment to ensure your
+dependencies are correctly specified and resolve automatically.
+
+## Build CocoaPods projects
+
+CocoaPods is a popular dependency manager for Swift and Objective-C Cocoa projects. It provides a standard format for managing external libraries in iOS, macOS, watchOS, and tvOS projects.
+
+Follow these best practices when you build projects that use CocoaPods for dependency management.
+
+1. Include a `Podfile.lock` file.
+
+   The `Podfile.lock` file is crucial for locking your dependencies to specific versions. Always commit this file to your repository to ensure consistency across different environments.
+
+   ```shell
+   git add Podfile.lock
+   git commit -m "Add Podfile.lock to lock CocoaPods dependencies"
+   ```
+
+1. You can build your project with one of the following:
+
+   - The `xcodebuild` command-line tool:
+
+     ```shell
+     # Install CocoaPods dependencies
+     pod install
+
+     # Build the project
+     xcodebuild -workspace YourWorkspace.xcworkspace -scheme YourScheme build
+     ```
+
+   - The Xcode IDE:
+
+     1. Open your `.xcworkspace` file in Xcode.
+     1. Select your target scheme.
+     1. Select **Product > Build**. You can also press <kbd>⌘</kbd>+<kbd>B</kbd>.
+
+   - [fastlane](https://fastlane.tools/), a tool for automating builds and releases for iOS and Android apps:
+
+     1. Install `fastlane`:
+
+        ```shell
+        sudo gem install fastlane
+        ```
+
+     1. In your project, configure `fastlane`:
+
+        ```shell
+        fastlane init
+        ```
+
+     1. Add a lane to your `fastfile`:
+
+        ```ruby
+        lane :build do
+          cocoapods
+          gym(scheme: "YourScheme")
+        end
+        ```
+
+     1. Run the build:
+
+        ```shell
+        fastlane build
+        ```
+
+   - If your project uses both CocoaPods and Carthage, you can use Carthage to build your dependencies:
+
+     1. Create a `Cartfile` that includes your CocoaPods dependencies.
+     1. Run the following:
+
+        ```shell
+        carthage update --platform iOS
+        ```
+
+1. Configure CI/CD to build the project according to your preferred method.
+
+   For example, using `xcodebuild`:
+
+   ```yaml
+   cocoapods-build:
+     stage: build
+     script:
+       - pod install
+       - xcodebuild -workspace YourWorkspace.xcworkspace -scheme YourScheme build
+   ```
+
+1. Optional. If you use private CocoaPods repositories,
+   you might need to configure your project to access them:
+
+   1. Add the private spec repo:
+
+      ```shell
+      pod repo add REPO_NAME SOURCE_URL
+      ```
+
+   1. In your Podfile, specify the source:
+
+      ```ruby
+      source 'https://github.com/CocoaPods/Specs.git'
+      source 'SOURCE_URL'
+      ```
+
+1. Optional. If your private CocoaPods repository uses SSL, ensure the SSL certificate is properly configured:
+
+   - If you use a self-signed certificate, add it to your system's trusted certificates.
+     You can also specify the SSL configuration in your `.netrc` file:
+
+     ```netrc
+     machine your.private.repo.url
+       login your_username
+       password your_password
+     ```
+
+1. After you update your Podfile, run `pod install` to install dependencies and update your workspace.
+
+Remember to always run `pod install` after updating your Podfile to ensure all dependencies are properly installed and the workspace is updated.

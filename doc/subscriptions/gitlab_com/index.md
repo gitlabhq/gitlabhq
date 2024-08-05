@@ -44,7 +44,7 @@ To subscribe to GitLab.com:
 1. Create additional users and
    [add them to the group](../../user/group/index.md#add-users-to-a-group). The users in this group, its subgroups, and projects can use
    the features of your subscription tier, and they consume a seat in your subscription.
-1. On the left sidebar, select **Settings > Billing** and choose a tier.
+1. On the left sidebar, select **Settings > Billing** and choose a tier. You are taken to the Customers Portal.
 1. Fill out the form to complete your purchase.
 
 ## View your GitLab.com subscription
@@ -441,13 +441,13 @@ You can [cancel the subscription](#enable-or-disable-automatic-subscription-rene
 1. Select **Storage** tab.
 1. For each read-only project, total by how much its **Usage** exceeds the free quota and purchased
    storage. You must purchase the storage increment that exceeds this total.
-1. Select **Buy storage** and you are taken to the Customers Portal.
-1. In the **Subscription details** section select the name of the user or group from the dropdown list.
+1. Select **Buy storage**. You are taken to the Customers Portal.
+1. In the **Subscription details** section, select the name of the user from the dropdown list.
 1. Enter the desired quantity of storage packs.
-1. In the **Billing information** section select the payment method from the dropdown list.
-1. Select the **Privacy Statement** and **Terms of Service** checkbox.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select the payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
 1. Select **Buy storage**.
-1. Switch back to the GitLab.com tab and refresh the page.
 
 The **Purchased storage available** total is incremented by the amount purchased. The read-only
 state for all projects is removed, and their excess usage is deducted from the additional storage.
@@ -464,8 +464,12 @@ To purchase additional storage for your group on GitLab.com:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > Usage Quotas**.
 1. Select **Storage** tab.
+1. Select **Buy storage**. You are taken to the Customers Portal.
+1. In the **Subscription details** section, enter the desired quantity of storage packs.
+1. In the **Customer information** section, verify your address.
+1. In the **Billing information** section, select a payment method from the dropdown list.
+1. Select the **Privacy Statement** and **Terms of Service** checkboxes.
 1. Select **Buy storage**.
-1. Complete the details.
 
 After your payment is processed, the extra storage is available for your group namespace.
 
