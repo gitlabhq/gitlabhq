@@ -378,6 +378,8 @@ To manage this risk, when you upgrade to GitLab 16.0 and later, any
 token that does not have an expiration date automatically has an expiration
 date set at one year from the date of upgrade.
 
+In GitLab 17.3 and later, this automatic setting of expiry on existing tokens has been reverted, and you can [disable expiration date enforcement for new access tokens](../administration/settings/account_and_limit_settings.md#require-expiration-dates-for-new-access-tokens).
+
 If you are not aware of when your tokens expire because the dates have changed,
 you might have unexpected authentication failures when trying to sign into GitLab
 on that date.

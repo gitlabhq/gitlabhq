@@ -129,6 +129,7 @@ Example response:
   "raw_blob_request_limit": 300,
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
+  "require_personal_access_token_expiry": true,
   "personal_access_token_prefix": "glpat-",
   "rate_limiting_response_text": null,
   "keep_latest_artifact": true,
@@ -298,6 +299,7 @@ Example response:
   "raw_blob_request_limit": 300,
   "wiki_page_max_content_bytes": 52428800,
   "require_admin_approval_after_user_signup": false,
+  "require_personal_access_token_expiry": true,
   "personal_access_token_prefix": "glpat-",
   "rate_limiting_response_text": null,
   "keep_latest_artifact": true,
@@ -356,9 +358,11 @@ Example responses:
 
 ## List of settings that can be accessed via API calls
 
-> - Fields `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
-> - Parameter `allow_account_deletion` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412411) in GitLab 16.1.
-> - Parameter `silent_admin_exports_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148918) in GitLab 17.0.
+> - `housekeeping_full_repack_period`, `housekeeping_gc_period`, and `housekeeping_incremental_repack_period` [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/106963) in GitLab 15.8. Use `housekeeping_optimize_repository_period` instead.
+> - `allow_account_deletion` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/412411) in GitLab 16.1.
+> - `allow_project_creation_for_guest_and_below` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/134625) in GitLab 16.8.
+> - `silent_admin_exports_enabled` [introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/148918) in GitLab 17.0.
+> - `require_personal_access_token_expiry` [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/470192) in GitLab 17.3 and backported to GitLab 17.2.2, 17.1.4, 17.0.6, and 16.11.8.
 
 In general, all settings are optional. Certain settings though, if enabled,
 require other settings to be set to function properly. These requirements are
@@ -606,6 +610,7 @@ listed in the descriptions of the relevant settings.
 | `repository_size_limit`                  | integer          | no                                   | Size limit per repository (MB). Premium and Ultimate only. |
 | `repository_storages_weighted`           | hash of strings to integers | no                        | Hash of names of taken from `gitlab.yml` to [weights](../administration/repository_storage_paths.md#configure-where-new-repositories-are-stored). New projects are created in one of these stores, chosen by a weighted random selection. |
 | `require_admin_approval_after_user_signup` | boolean        | no                                   | When enabled, any user that signs up for an account using the registration form is placed under a **Pending approval** state and has to be explicitly [approved](../administration/moderate_users.md) by an administrator. |
+| `require_personal_access_token_expiry`   | boolean          | no                                   | When enabled, users must set an expiration date when creating a group or project access token, or a personal access token owned by a non-service account. |
 | `require_two_factor_authentication`      | boolean          | no                                   | (**If enabled, requires:** `two_factor_grace_period`) Require all users to set up two-factor authentication. |
 | `restricted_visibility_levels`           | array of strings | no                                   | Selected levels cannot be used by non-Administrator users for groups, projects or snippets. Can take `private`, `internal` and `public` as a parameter. Default is `null` which means there is no restriction.[Changed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/131203) in GitLab 16.4: cannot select levels that are set as `default_project_visibility` and `default_group_visibility`. |
 | `rsa_key_restriction`                    | integer          | no                                   | The minimum allowed bit length of an uploaded RSA key. Default is `0` (no restriction). `-1` disables RSA keys. |

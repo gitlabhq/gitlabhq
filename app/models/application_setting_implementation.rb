@@ -277,7 +277,8 @@ module ApplicationSettingImplementation
         downstream_pipeline_trigger_limit_per_project_user_sha: 0,
         asciidoc_max_includes: 32,
         use_clickhouse_for_analytics: false,
-        nuget_skip_metadata_url_validation: false
+        nuget_skip_metadata_url_validation: false,
+        require_personal_access_token_expiry: true
       }.tap do |hsh|
         hsh.merge!(non_production_defaults) unless Rails.env.production?
       end

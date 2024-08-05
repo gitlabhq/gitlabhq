@@ -35,7 +35,7 @@ module API
       end
 
       def rotate_token(token, params)
-        service = ::PersonalAccessTokens::RotateService.new(current_user, token).execute(params)
+        service = ::PersonalAccessTokens::RotateService.new(current_user, token, nil, params).execute
 
         if service.success?
           status :ok

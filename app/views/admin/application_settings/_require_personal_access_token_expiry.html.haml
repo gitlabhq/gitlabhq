@@ -1,0 +1,7 @@
+- help_link = help_page_path('user/profile/personal_access_tokens', anchor: 'create-a-service-account-personal-access-token-with-no-expiry-date')
+- help_link_start = '<a href="%{url}" target="_blank" rel="noopener noreferrer">'.html_safe % { url: help_link }
+- help_text = s_('AccessTokens|When enabled, a user will be required to enter in an expiration date when creating an access token. Changes will not affect existing token expiration dates. This setting overrides the group-level %{link_start}service account token expiration%{link_end} setting.').html_safe % { link_start: help_link_start, link_end: '</a>'.html_safe }
+
+.form-group
+  = form.label :require_personal_access_token_expiry, s_('AccessTokens|Personal / project / group access token expiration'), class: 'label-light'
+  = form.gitlab_ui_checkbox_component :require_personal_access_token_expiry, _('Require expiration date'), help_text: help_text
