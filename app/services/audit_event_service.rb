@@ -2,6 +2,7 @@
 
 class AuditEventService
   include AuditEventSaveType
+  include ::Gitlab::Audit::Logging
 
   # Instantiates a new service
   #
@@ -123,6 +124,7 @@ class AuditEventService
 
     event = build_event
     save_or_track event
+    log_to_new_tables([event], event.class.to_s) if should_save_database?(@save_type)
     event
   end
 

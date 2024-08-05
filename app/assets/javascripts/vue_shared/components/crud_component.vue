@@ -88,7 +88,7 @@ export default {
         </div>
         <div class="gl-flex gl-items-baseline gl-gap-3" data-testid="crud-actions">
           <gl-button
-            v-if="toggleText"
+            v-if="toggleText && !isFormVisible"
             size="small"
             data-testid="crud-form-toggle"
             @click="toggleForm"

@@ -18,14 +18,14 @@ We rely on different sources to present diffs. These include:
 
 ## Deep Dive
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 In January 2019, Oswaldo Ferreira hosted a Deep Dive (GitLab team members only:
 `https://gitlab.com/gitlab-org/create-stage/-/issues/1`) on GitLab Diffs and Commenting on Diffs
 functionality to share domain-specific knowledge with anyone who works in this part of the
 codebase in the future:
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
   [Recording on YouTube](https://www.youtube.com/watch?v=K6G3gMcFyek)

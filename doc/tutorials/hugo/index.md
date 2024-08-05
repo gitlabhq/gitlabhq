@@ -6,7 +6,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Build, test, and deploy your Hugo site with GitLab
 
-<!-- vale gitlab.FutureTense = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 
 This tutorial walks you through creating a CI/CD pipeline to build, test, and deploy a Hugo site.
 

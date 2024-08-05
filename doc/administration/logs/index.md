@@ -1157,13 +1157,13 @@ For Linux package installations, Redis logs are in `/var/log/gitlab/redis/curren
 
 For Linux package installations, Alertmanager logs are in `/var/log/gitlab/alertmanager/current`.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 ## crond logs
 
 For Linux package installations, crond logs are in `/var/log/gitlab/crond/`.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ## Grafana logs
 

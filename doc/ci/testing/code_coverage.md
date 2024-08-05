@@ -54,7 +54,7 @@ If the tooling has changed after these samples were created, or if the tooling w
 the regex might not work. Test the regex carefully to make sure it correctly finds the
 coverage in the tool's output:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 <!-- markdownlint-disable MD056 -->
 
 | Name         | Language     | Command      | Example      |
@@ -77,7 +77,7 @@ coverage in the tool's output:
 | tarpaulin | Rust | None | `/^\d+.\d+% coverage/` |
 | Pester | PowerShell | None | `/Covered (\d+\.\d+%)/` |
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 <!-- markdownlint-enable MD056 -->
 
 ### View history of project code coverage

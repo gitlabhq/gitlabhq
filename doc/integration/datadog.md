@@ -40,11 +40,11 @@ or for a specific project or group:
    Used only in advanced scenarios.
 1. Optional. If you use more than one GitLab instance, provide a unique **Service** name
    to differentiate between your GitLab instances.
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 1. Optional. If you use groups of GitLab instances (such as staging and production
    environments), provide an **Env** name. This value is attached to each span
    the integration generates.
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 1. Optional. To define any custom tags for all spans at which the integration is being configured,
    enter one tag per line in **Tags**. Each line must be in the format `key:value`.
 1. Optional. Select **Test settings**.

@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 description: "Specification guide for GitLab Flavored Markdown (GLFM)."
 ---
 
-<!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
+<!-- vale gitlab_base.GitLabFlavoredMarkdown = NO -->
 
 # GitLab Flavored Markdown (GLFM) Specification Guide
 
@@ -252,7 +252,7 @@ because of this comprehensive style.
 
 Regarding the terminology used for Markdown snapshot testing:
 
-<!-- vale gitlab.InclusiveLanguage = NO -->
+<!-- vale gitlab_base.InclusiveLanguage = NO -->
 
 1. The Markdown snapshot tests can be considered a form of the
    [Golden Master Testing approach](https://www.google.com/search?q=golden+master+testing),
@@ -286,7 +286,7 @@ Regarding the terminology used for Markdown snapshot testing:
    it simpler and more understandable to have everything under the `glfm_specification` directory
    rather than splitting these files into the `spec/fixtures` directory.
 
-<!-- vale gitlab.InclusiveLanguage = YES -->
+<!-- vale gitlab_base.InclusiveLanguage = YES -->
 
 See also the section on [normalization](#normalization) below, which is an important concept used
 in the Markdown snapshot testing.

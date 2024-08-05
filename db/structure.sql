@@ -2531,7 +2531,8 @@ CREATE TABLE merge_request_diff_commits_b5377a7a34 (
     commit_author_id bigint,
     committer_id bigint,
     merge_request_diff_id bigint NOT NULL,
-    relative_order integer NOT NULL
+    relative_order integer NOT NULL,
+    project_id bigint
 )
 PARTITION BY RANGE (merge_request_diff_id);
 

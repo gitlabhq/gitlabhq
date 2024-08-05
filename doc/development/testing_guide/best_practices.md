@@ -1468,14 +1468,14 @@ NoMethodError:
 
 That indicates that you need to include the line `using RSpec::Parameterized::TableSyntax` in the spec file.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 WARNING:
 Only use simple values as input in the `where` block. Using procs, stateful
 objects, FactoryBot-created objects, and similar items can lead to
 [unexpected results](https://github.com/tomykaira/rspec-parameterized/issues/8).
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Prometheus tests
 

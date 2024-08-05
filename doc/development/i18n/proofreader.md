@@ -11,7 +11,7 @@ are very appreciative of the work done by translators and proofreaders!
 
 ## Proofreaders
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 - Albanian
   - Proofreaders needed.
@@ -112,7 +112,7 @@ are very appreciative of the work done by translators and proofreaders!
   - Andrew Vityuk - [GitLab](https://gitlab.com/3_1_3_u), [Crowdin](https://crowdin.com/profile/andruwa13)
 - Welsh
   - Proofreaders needed.
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ## Become a proofreader
 

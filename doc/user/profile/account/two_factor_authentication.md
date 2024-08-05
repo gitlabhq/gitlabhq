@@ -63,8 +63,6 @@ Your account email must be confirmed to enable 2FA.
 
 To enable 2FA with a one-time password:
 
-<!-- vale gitlab.Substitutions = NO -->
-
 1. **In GitLab:**
    1. Access your [**User settings**](../index.md#access-your-user-settings).
    1. Select **Account**.
@@ -87,8 +85,6 @@ To enable 2FA with a one-time password:
    1. Enter the six-digit pin number from the entry on your device into **Pin code**.
    1. Enter your current password.
    1. Select **Submit**.
-
-<!-- vale gitlab.Substitutions = YES -->
 
 If you entered the correct pin, GitLab displays a list of [recovery codes](#recovery-codes). Download them and keep them
 in a safe place.
@@ -154,8 +150,6 @@ Configure FortiAuthenticator in GitLab. On your GitLab server:
    (Linux package installations) or [restart](../../../administration/restart_gitlab.md#self-compiled-installations)
    (self-compiled installations).
 
-<!-- vale gitlab.Substitutions = NO -->
-
 ### Enable one-time password using Cisco Duo
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/15760) in GitLab 15.10.
@@ -179,8 +173,6 @@ For more information, see the [Cisco Duo API documentation](https://duo.com/docs
 GitLab 15.10 has been tested with Cisco Duo version D261.14
 
 #### Configure Cisco Duo in GitLab
-
-<!-- vale gitlab.Substitutions = YES -->
 
 On your GitLab server:
 

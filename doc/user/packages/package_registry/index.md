@@ -186,7 +186,7 @@ This table lists unsupported package manager formats that we are accepting contr
 Consider contributing to GitLab. This [development documentation](../../../development/packages/index.md)
 guides you through the process.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 | Format    | Status                                                        |
 | --------- | ------------------------------------------------------------- |
@@ -202,4 +202,4 @@ guides you through the process.
 | Swift     | [#12233](https://gitlab.com/gitlab-org/gitlab/-/issues/12233) |
 | Vagrant   | [#36899](https://gitlab.com/gitlab-org/gitlab/-/issues/36899) |
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->

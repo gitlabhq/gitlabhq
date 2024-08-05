@@ -37,7 +37,7 @@ Autocomplete characters are useful when combined with [Quick Actions](quick_acti
 
 Assume your GitLab instance includes the following users:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 | Username        | Name |
 | :-------------- | :--- |
@@ -47,7 +47,7 @@ Assume your GitLab instance includes the following users:
 | logan_gutkowski | Lee Wuckert |
 | shelba          | Josefine Haley |
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 User autocompletion sorts by the users whose username or name start with your query first.
 For example, typing `@lea` shows `leanna` first and typing `@ros` shows `Rosemarie Rogahn` and `Rosy Grant` first.

@@ -12,7 +12,7 @@ with milestones and track your team's time. Learn how to save time with
 quick actions, see how GitLab renders Markdown text, and learn how to
 use Git to interact with GitLab.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 For a thorough demo of Plan features, see
@@ -20,7 +20,7 @@ For a thorough demo of Plan features, see
 In this video, Gabe describes a use case of a multi-team organization that uses GitLab
 with [Scaled Agile Framework (SAFe)](https://handbook.gitlab.com/handbook/marketing/brand-and-product-marketing/product-and-solution-marketing/demo/executive-demo/#scaled-agile-framework-safe).
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 - [Tutorial: Use GitLab to facilitate scrum](../tutorials/scrum_events/index.md)
 - [Labels](../user/project/labels.md)

@@ -208,7 +208,7 @@ export default {
   <form
     ref="form"
     :class="{ 'was-validated': wasValidated }"
-    class="gl-mt-3 gl-mb-3 needs-validation"
+    class="needs-validation"
     novalidate
     @submit.prevent.stop="onSubmit"
   >
@@ -264,14 +264,13 @@ export default {
       </p>
     </div>
 
-    <div v-if="!inModal" class="form-group" data-testid="action-buttons">
+    <div v-if="!inModal" class="gl-flex gl-gap-3" data-testid="action-buttons">
       <gl-button
         :loading="isSaving"
         type="submit"
         variant="confirm"
         category="primary"
         data-testid="add-badge-button"
-        class="gl-mr-3"
       >
         {{ saveText }}
       </gl-button>

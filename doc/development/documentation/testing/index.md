@@ -217,8 +217,18 @@ synchronized to the other projects. In each of the [supported projects](#support
    ```shell
    # Copy markdownlint configuration file
    cp ../gitlab/.markdownlint-cli2.yaml .
-   # Copy Vale configuration files for a project with documentation stored in 'docs' directory
-   cp -r ../gitlab/doc/.vale docs
+   # Remove existing Vale configuration in case some rules have been removed from the GitLab project
+   rm -r docs/.vale/gitlab
+   # Copy gitlab_base Vale configuration files for a project with documentation stored in 'docs' directory
+   cp -r ../gitlab/doc/.vale/gitlab_base docs/.vale
+   ```
+
+1. If updating `gitlab-runner`, `gitlab-omnibus`, `charts/gitlab`, or `gitlab-operator`, also copy the `gitlab-docs`
+   Vale configuration from the `gitlab` project. For example, in the root directory of the project, run:
+
+   ```shell
+   # Copy gitlab-docs Vale configuration files for a project with documentation stored in 'docs' directory
+   cp -r ../gitlab/doc/.vale/gitlab_docs docs/.vale
    ```
 
 1. Review the diff created for `.markdownlint-cli2.yaml`. For example, run:

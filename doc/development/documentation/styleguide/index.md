@@ -301,7 +301,7 @@ especially in tutorials, instructional documentation, and
 
 Some contractions, however, should be avoided:
 
-<!-- vale gitlab.Possessive = NO -->
+<!-- vale gitlab_base.Possessive = NO -->
 
 | Do not use a contraction      | Example                                          | Use instead                                                      |
 |-------------------------------|--------------------------------------------------|------------------------------------------------------------------|
@@ -310,7 +310,7 @@ Some contractions, however, should be avoided:
 | In reference documentation    | **Don't** set a limit.                           | **Do not** set a limit.                                          |
 | In error messages             | Requests to localhost **aren't** allowed.        | Requests to localhost **are not** allowed.                       |
 
-<!-- vale gitlab.Possessive = YES -->
+<!-- vale gitlab_base.Possessive = YES -->
 
 ### Possessives
 
@@ -382,11 +382,11 @@ when published. Example:
 
 ### Emphasis
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 Use **bold** rather than italic to provide emphasis. GitLab uses a sans-serif font and italic text does not stand out as much as it would in a serif font. For details, see [Butterick's Practical Typography guide on bold or italic](https://practicaltypography.com/bold-or-italic.html).
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 You can use italics when you are introducing a term for the first time. Otherwise, use bold.
 
@@ -398,12 +398,12 @@ You can use italics when you are introducing a term for the first time. Otherwis
 
 Follow these guidelines for punctuation.
 
-<!-- vale gitlab.Repetition = NO -->
+<!-- vale gitlab_base.Repetition = NO -->
 
 - End full sentences with a period, including full sentences in tables.
 - Use serial (Oxford) commas before the final **and** or **or** in a list of three or more items. (Tested in [`OxfordComma.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/OxfordComma.yml).)
 
-<!-- vale gitlab.Repetition = YES -->
+<!-- vale gitlab_base.Repetition = YES -->
 
 When spacing content:
 
@@ -411,7 +411,7 @@ When spacing content:
 - Do not use non-breaking spaces. Use standard spaces instead. (Tested in [`lint-doc.sh`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/scripts/lint-doc.sh).)
 - Do not use tabs for indentation. Use spaces instead. You can configure your code editor to output spaces instead of tabs when pressing the <kbd>Tab</kbd> key.
 
-<!-- vale gitlab.NonStandardQuotes = NO -->
+<!-- vale gitlab_base.NonStandardQuotes = NO -->
 
 Do not use these punctuation characters:
 
@@ -419,7 +419,7 @@ Do not use these punctuation characters:
 - `–` (en dash) or `—` (em dash): Use separate sentences, or commas, instead.
 - `“` `”` `‘` `’`: Double or single typographer's ("curly") quotation marks. Use straight quotes instead. (Tested in [`NonStandardQuotes.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/NonStandardQuotes.yml).)
 
-<!-- vale gitlab.NonStandardQuotes = YES -->
+<!-- vale gitlab_base.NonStandardQuotes = YES -->
 
 ### Placeholder text
 

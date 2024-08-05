@@ -19,7 +19,7 @@ This section contains a journal of validation tests and links to the relevant is
 
 The following are GitLab upgrade validation tests we performed.
 
-<!-- vale gitlab.OutdatedVersions = NO -->
+<!-- vale gitlab_base.OutdatedVersions = NO -->
 
 ### July 2020
 

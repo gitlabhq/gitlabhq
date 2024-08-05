@@ -7,10 +7,6 @@ require "spec_helper"
 #
 # rubocop: disable Gitlab/Json
 RSpec.describe Gitlab::Json do
-  before do
-    stub_feature_flags(json_wrapper_legacy_mode: true)
-  end
-
   describe ".parse" do
     it "is aliased" do
       [:parse!, :load, :decode].each do |method|
@@ -61,32 +57,6 @@ RSpec.describe Gitlab::Json do
         expect { subject.parse("false", legacy_mode: true) }.to raise_error(JSON::ParserError)
       end
     end
-
-    context "feature flag is disabled" do
-      before do
-        stub_feature_flags(json_wrapper_legacy_mode: false)
-      end
-
-      it "parses an object" do
-        expect(subject.parse('{ "foo": "bar" }', legacy_mode: true)).to eq({ "foo" => "bar" })
-      end
-
-      it "parses an array" do
-        expect(subject.parse('[{ "foo": "bar" }]', legacy_mode: true)).to eq([{ "foo" => "bar" }])
-      end
-
-      it "parses a string" do
-        expect(subject.parse('"foo"', legacy_mode: true)).to eq("foo")
-      end
-
-      it "parses a true bool" do
-        expect(subject.parse("true", legacy_mode: true)).to be(true)
-      end
-
-      it "parses a false bool" do
-        expect(subject.parse("false", legacy_mode: true)).to be(false)
-      end
-    end
   end
 
   describe ".parse!" do
@@ -131,32 +101,6 @@ RSpec.describe Gitlab::Json do
 
       it "raises an error on a false bool" do
         expect { subject.parse!("false", legacy_mode: true) }.to raise_error(JSON::ParserError)
-      end
-    end
-
-    context "feature flag is disabled" do
-      before do
-        stub_feature_flags(json_wrapper_legacy_mode: false)
-      end
-
-      it "parses an object" do
-        expect(subject.parse!('{ "foo": "bar" }', legacy_mode: true)).to eq({ "foo" => "bar" })
-      end
-
-      it "parses an array" do
-        expect(subject.parse!('[{ "foo": "bar" }]', legacy_mode: true)).to eq([{ "foo" => "bar" }])
-      end
-
-      it "parses a string" do
-        expect(subject.parse!('"foo"', legacy_mode: true)).to eq("foo")
-      end
-
-      it "parses a true bool" do
-        expect(subject.parse!("true", legacy_mode: true)).to be(true)
-      end
-
-      it "parses a false bool" do
-        expect(subject.parse!("false", legacy_mode: true)).to be(false)
       end
     end
   end
@@ -295,18 +239,6 @@ RSpec.describe Gitlab::Json do
       STR
 
       expect(json).to eq(expected_string)
-    end
-  end
-
-  context "the feature table is missing" do
-    before do
-      allow(Feature::FlipperFeature).to receive(:table_exists?).and_return(false)
-    end
-
-    it "skips legacy mode handling" do
-      expect(Feature).not_to receive(:enabled?).with(:json_wrapper_legacy_mode)
-
-      subject.send(:handle_legacy_mode!, {})
     end
   end
 

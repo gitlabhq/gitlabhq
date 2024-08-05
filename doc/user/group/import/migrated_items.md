@@ -33,7 +33,7 @@ Any other group items are **not** migrated.
 
 Group items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab.OutdatedVersions = NO -->
+<!-- vale gitlab_base.OutdatedVersions = NO -->
 
 | Group item           | Introduced in                                                               |
 |:---------------------|:----------------------------------------------------------------------------|
@@ -61,7 +61,7 @@ Group items that are migrated to the destination GitLab instance include:
    once the relevant Project is migrated to the destination instance.
 1. See [Memberships](index.md#memberships).
 
-<!-- vale gitlab.OutdatedVersions = YES -->
+<!-- vale gitlab_base.OutdatedVersions = YES -->
 
 ### Excluded items
 
@@ -104,7 +104,7 @@ initiate project-only migrations using the [API](../../../api/bulk_imports.md).
 
 Project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab.OutdatedVersions = NO -->
+<!-- vale gitlab_base.OutdatedVersions = NO -->
 
 | Project item                            | Introduced in                                                              |
 |:----------------------------------------|:---------------------------------------------------------------------------|
@@ -135,7 +135,7 @@ Project items that are migrated to the destination GitLab instance include:
 | Uploads                                 | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339401)        |
 | Wikis                                   | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/issues/345923)        |
 
-<!-- vale gitlab.OutdatedVersions = YES -->
+<!-- vale gitlab_base.OutdatedVersions = YES -->
 
 **Footnotes:**
 
@@ -147,7 +147,7 @@ Project items that are migrated to the destination GitLab instance include:
 
 Issue-related project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab.OutdatedVersions = NO -->
+<!-- vale gitlab_base.OutdatedVersions = NO -->
 
 | Issue-related project item      | Introduced in                                                              |
 |:--------------------------------|:---------------------------------------------------------------------------|
@@ -158,13 +158,13 @@ Issue-related project items that are migrated to the destination GitLab instance
 | Merge request URL references    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947)        |
 | Time tracking                   | [GitLab 14.4](https://gitlab.com/gitlab-org/gitlab/-/issues/267946)        |
 
-<!-- vale gitlab.OutdatedVersions = YES -->
+<!-- vale gitlab_base.OutdatedVersions = YES -->
 
 ### Merge request-related items
 
 Merge request-related project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab.OutdatedVersions = NO -->
+<!-- vale gitlab_base.OutdatedVersions = NO -->
 
 | Merge request-related project item      | Introduced in                                                       |
 |:----------------------------------------|:--------------------------------------------------------------------|
@@ -176,7 +176,7 @@ Merge request-related project items that are migrated to the destination GitLab 
 | Issue URL references                    | [GitLab 15.6](https://gitlab.com/gitlab-org/gitlab/-/issues/267947) |
 | Time tracking                           | [GitLab 14.5](https://gitlab.com/gitlab-org/gitlab/-/issues/339403) |
 
-<!-- vale gitlab.OutdatedVersions = YES -->
+<!-- vale gitlab_base.OutdatedVersions = YES -->
 
 **Footnotes:**
 
@@ -191,7 +191,7 @@ Merge request-related project items that are migrated to the destination GitLab 
 
 Setting-related project items that are migrated to the destination GitLab instance include:
 
-<!-- vale gitlab.OutdatedVersions = NO -->
+<!-- vale gitlab_base.OutdatedVersions = NO -->
 
 | Setting-related project item | Introduced in                                                              |
 |:-----------------------------|:---------------------------------------------------------------------------|
@@ -200,7 +200,7 @@ Setting-related project items that are migrated to the destination GitLab instan
 | Project properties           | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75898) |
 | Service Desk                 | [GitLab 14.6](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/75653) |
 
-<!-- vale gitlab.OutdatedVersions = YES -->
+<!-- vale gitlab_base.OutdatedVersions = YES -->
 
 ### Excluded items
 

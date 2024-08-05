@@ -5,7 +5,7 @@ info: Any user with at least the Maintainer role can merge updates to this conte
 description: "Development guidelines for GitLab Flavored Markdown (GLFM)."
 ---
 
-<!-- vale gitlab.GitLabFlavoredMarkdown = NO -->
+<!-- vale gitlab_base.GitLabFlavoredMarkdown = NO -->
 
 # GitLab Flavored Markdown (GLFM) development guidelines
 

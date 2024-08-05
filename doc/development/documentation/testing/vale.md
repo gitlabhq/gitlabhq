@@ -174,10 +174,9 @@ vale --no-wrap --filter='.Name=="gitlab.OutdatedVersions"' doc/**/*.md
 You can disable a specific Vale linting rule or all Vale linting rules for any portion of a
 document:
 
-- To disable a specific rule, add a `<!-- vale gitlab.rulename = NO -->` tag before the text, and a
-  `<!-- vale gitlab.rulename = YES -->` tag after the text, replacing `rulename` with the filename of a test in the
-  [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.linting/vale/styles/gitlab)
-  directory.
+- To disable a specific rule, add a `<!-- vale gitlab_<type>.rulename = NO -->` tag before the text, and a
+  `<!-- vale gitlab_<type>.rulename = YES -->` tag after the text, replacing `rulename` with the filename of a test in the
+  directory of one of the [GitLab styles](https://gitlab.com/gitlab-org/gitlab/-/tree/master/doc/.vale).
 - To disable all Vale linting rules, add a `<!-- vale off -->` tag before the text, and a
   `<!-- vale on -->` tag after the text.
 

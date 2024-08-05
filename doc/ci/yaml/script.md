@@ -200,13 +200,13 @@ Second command line.
 When you omit the `>` or `|` block scalar indicators, GitLab concatenates non-empty
 lines to form the command. Make sure the lines can run when concatenated.
 
-<!-- vale gitlab.MeaningfulLinkWords = NO -->
+<!-- vale gitlab_base.MeaningfulLinkWords = NO -->
 
 [Shell here documents](https://en.wikipedia.org/wiki/Here_document) work with the
 `|` and `>` operators as well. The example below transliterates lower case letters
 to upper case:
 
-<!-- vale gitlab.MeaningfulLinkWords = YES -->
+<!-- vale gitlab_base.MeaningfulLinkWords = YES -->
 
 ```yaml
 job:
@@ -463,8 +463,6 @@ script:
 
 This fails as the indentation causes the line breaks to be preserved:
 
-<!-- vale gitlab.CurlStringsQuoted = NO -->
-
 ```plaintext
 $ RESULT=$(curl --silent # collapsed multi-line command
 curl: no URL specified!
@@ -472,8 +470,6 @@ curl: try 'curl --help' or 'curl --manual' for more information
 /bin/bash: line 149: --header: command not found
 /bin/bash: line 150: https://gitlab.example.com/api/v4/job: No such file or directory
 ```
-
-<!-- vale gitlab.CurlStringsQuoted = YES -->
 
 Resolve this by either:
 

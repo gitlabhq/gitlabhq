@@ -11,7 +11,7 @@
           %th= s_('Profiles|Created')
           %th= s_('Profiles|Last used')
           %th= s_('Profiles|Expires')
-          %th= _('Actions')
+          %th.gl-text-right= _('Actions')
       = render partial: 'user_settings/ssh_keys/key', collection: @keys, locals: { is_admin: is_admin }
 - else
   - if is_admin

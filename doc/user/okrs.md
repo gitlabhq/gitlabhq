@@ -50,9 +50,9 @@ By achieving a specific outcome (key result), you create progress for the linked
 
 To know if your OKR makes sense, you can use this sentence:
 
-<!-- vale gitlab.FutureTense = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 > I/we will accomplish (objective) by (date) through attaining and achieving the following metrics (key results).
-<!-- vale gitlab.FutureTense = YES -->
+<!-- vale gitlab_base.FutureTense = YES -->
 
 To learn how to create better OKRs and how we use them at GitLab, see the
 [Objectives and Key Results handbook page](https://handbook.gitlab.com/handbook/company/okrs/).

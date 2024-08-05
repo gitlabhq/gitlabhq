@@ -15,12 +15,12 @@ You can export issues from GitLab to a plain-text CSV
 file. The CSV file is attached to an email, and sent to your default
 notification email address.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 CSV files can be used with any plotter or spreadsheet-based program, like
 Microsoft Excel, OpenOffice Calc, or Google Sheets. Use a CSV list of issues to:
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 - Create a snapshot of issues for offline analysis, or to share with other
   teams who might not be in GitLab.

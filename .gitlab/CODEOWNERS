@@ -1153,6 +1153,7 @@ lib/gitlab/checks/**
 /app/views/groups/settings/_resource_access_token_creation.html.haml
 /app/views/groups/settings/_two_factor_auth.html.haml
 /app/views/groups/settings/access_tokens/
+/app/views/layouts/devise*.haml
 /app/views/layouts/oauth_error.html.haml
 /app/views/notify/access_token_about_to_expire_email.html.haml
 /app/views/notify/access_token_about_to_expire_email.text.erb
@@ -1236,7 +1237,6 @@ lib/gitlab/checks/**
 /ee/app/views/admin/application_settings/_personal_access_token_expiration_policy.html.haml
 /ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.html.haml
 /ee/app/views/credentials_inventory_mailer/personal_access_token_revoked_email.text.haml
-/app/views/devise/**/
 /ee/app/views/groups/_personal_access_token_expiration_policy.html.haml
 /ee/app/views/groups/sso/_authorize_pane.html.haml
 /ee/app/views/notify/policy_revoked_personal_access_tokens_email.html.haml

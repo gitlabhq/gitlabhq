@@ -344,8 +344,6 @@ which shows an overview of all the security vulnerabilities in your groups, proj
 Selecting the vulnerability opens a modal that provides additional information about the
 vulnerability:
 
-<!-- vale gitlab.Acronyms = NO -->
-
 - Status: The vulnerability's status. As with any type of vulnerability, a coverage fuzzing
   vulnerability can be Detected, Confirmed, Dismissed, or Resolved.
 - Project: The project in which the vulnerability exists.
@@ -359,8 +357,6 @@ vulnerability:
 - Scanner: The scanner that detected the vulnerability (for example, Coverage Fuzzing).
 - Scanner Provider: The engine that did the scan. For Coverage Fuzzing, this can be any of the
   engines listed in [Supported fuzzing engines and languages](#supported-fuzzing-engines-and-languages).
-
-<!-- vale gitlab.Acronyms = YES -->
 
 ## Troubleshooting
 

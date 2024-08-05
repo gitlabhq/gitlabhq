@@ -305,7 +305,7 @@ DETAILS:
 
 To create group links via CN:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 1. Select the **LDAP Server** for the link.
 1. As the **Sync method**, select `LDAP Group cn`.
@@ -313,7 +313,7 @@ To create group links via CN:
 1. In the **LDAP Access** section, select the [permission level](../permissions.md) for users synced in this group.
 1. Select **Add Synchronization**.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Create group links via filter
 

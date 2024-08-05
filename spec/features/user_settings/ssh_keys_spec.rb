@@ -90,7 +90,7 @@ RSpec.describe 'User Settings > SSH Keys', feature_category: :source_code_manage
     end
 
     expect(page).to have_content('Your SSH keys')
-    page.within('.gl-new-card-count') do
+    within_testid('crud-count') do
       expect(page).to have_content('0')
     end
   end

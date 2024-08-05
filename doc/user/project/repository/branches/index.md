@@ -331,7 +331,7 @@ To compare branches in a repository:
    - You can combine operators: `^chore/*migration$` matches `chore/user-data-migration`.
 1. Select the **Target** repository and branch. Exact matches are shown first.
 1. Below **Show changes**, select the method to compare branches:
-   <!-- vale gitlab.SubstitutionWarning = NO -->
+   <!-- vale gitlab_base.SubstitutionWarning = NO -->
    <!-- Disable Vale so it doesn't flag "since" -->
    - **Only incoming changes from source** (default) shows differences from the source branch since
      the latest common commit on both branches.
@@ -344,7 +344,7 @@ To compare branches in a repository:
      branches.
      This method uses the `git diff <from> <to>`
      [Git command](https://git-scm.com/docs/git-diff#Documentation/git-diff.txt-emgitdiffemltoptionsgt--merge-baseltcommitgtltcommitgt--ltpathgt82308203).
-   <!-- vale gitlab.SubstitutionWarning = YES -->
+   <!-- vale gitlab_base.SubstitutionWarning = YES -->
 1. Select **Compare** to show the list of commits, and changed files.
 1. Optional. To reverse the **Source** and **Target**, select **Swap revisions** (**{substitute}**).
 

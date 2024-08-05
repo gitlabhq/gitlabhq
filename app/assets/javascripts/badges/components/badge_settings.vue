@@ -1,5 +1,5 @@
 <script>
-import { GlButton, GlModal, GlSprintf } from '@gitlab/ui';
+import { GlModal, GlSprintf } from '@gitlab/ui';
 // eslint-disable-next-line no-restricted-imports
 import { mapState, mapActions } from 'vuex';
 import { createAlert, VARIANT_INFO } from '~/alert';
@@ -12,13 +12,12 @@ import BadgeList from './badge_list.vue';
 export default {
   name: 'BadgeSettings',
   components: {
+    CrudComponent,
     Badge,
     BadgeForm,
     BadgeList,
-    GlButton,
     GlModal,
     GlSprintf,
-    CrudComponent,
   },
   i18n: {
     title: s__('Badges|Your badges'),
@@ -27,11 +26,6 @@ export default {
     deleteModalText: s__(
       'Badges|If you delete this badge, you %{strongStart}cannot%{strongEnd} restore it.',
     ),
-  },
-  data() {
-    return {
-      addFormVisible: false,
-    };
   },
   computed: {
     ...mapState(['badges', 'badgeInModal', 'isEditing']),
@@ -55,11 +49,8 @@ export default {
   },
   methods: {
     ...mapActions(['deleteBadge']),
-    showAddForm() {
-      this.addFormVisible = !this.addFormVisible;
-    },
     closeAddForm() {
-      this.addFormVisible = false;
+      this.$refs.badgesCrud.hideForm();
     },
     onSubmitEditModal() {
       this.$refs.editForm.onSubmit();
@@ -85,25 +76,19 @@ export default {
 
 <template>
   <crud-component
+    ref="badgesCrud"
     :title="$options.i18n.title"
     icon="labels"
     :count="badges.length"
-    class="badge-settings"
+    :toggle-text="$options.i18n.addFormTitle"
+    data-testid="badge-settings"
   >
-    <template #actions>
-      <gl-button
-        v-if="!addFormVisible"
-        size="small"
-        data-testid="show-badge-add-form"
-        @click="showAddForm"
-        >{{ $options.i18n.addButton }}</gl-button
-      >
-    </template>
-
-    <div v-if="addFormVisible" class="gl-new-card-add-form gl-m-5">
+    <template #form>
       <h4 class="gl-mt-0">{{ $options.i18n.addFormTitle }}</h4>
       <badge-form :is-editing="false" @close-add-form="closeAddForm" />
-    </div>
+    </template>
+
+    <badge-list />
 
     <gl-modal
       modal-id="edit-badge-modal"
@@ -136,6 +121,5 @@ export default {
         </gl-sprintf>
       </p>
     </gl-modal>
-    <badge-list />
   </crud-component>
 </template>

@@ -46,7 +46,7 @@ types out of the box. For a complete list, see the [Kroki installation docs](htt
 
 Supported diagram types include:
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 - [Bytefield](https://bytefield-svg.deepsymmetry.org/bytefield-svg/intro.html)
 - [D2](https://d2lang.com/tour/intro/)
@@ -64,7 +64,7 @@ Supported diagram types include:
 - [Vega-Lite](https://github.com/vega/vega-lite)
 - [WaveDrom](https://wavedrom.com/)
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 If you want to use additional diagram libraries,
 read the [Kroki installation](https://docs.kroki.io/kroki/setup/install/#_images) to learn how to start Kroki companion containers.
@@ -172,11 +172,11 @@ Rel(banking_system, mainframe, "Uses")
 
 ![C4 PlantUML diagram](../img/kroki_c4_diagram.png)
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 **Nomnoml**
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ```plaintext
 [nomnoml]

@@ -89,7 +89,6 @@ Prerequisites:
 
 To turn off GitLab Duo for a group:
 
-<!-- vale gitlab.Substitutions = NO -->
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
@@ -98,7 +97,6 @@ To turn off GitLab Duo for a group:
    all subgroups.
 
    ![Cascading setting](img/disable_duo_features_v17_1.png)
-<!-- vale gitlab.Substitutions = YES -->
 
 ### Turn off for a project
 
@@ -130,14 +128,12 @@ Prerequisites:
 
 To turn off GitLab Duo for an instance:
 
-<!-- vale gitlab.Substitutions = NO -->
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**
 1. Expand **AI-powered features**.
 1. Clear the **Use Duo features** checkbox.
 1. Optional. Select the **Enforce for all subgroups** checkbox to cascade
    the setting to all groups in the instance.
-<!-- vale gitlab.Substitutions = YES -->
 
 NOTE:
 An [issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/441532) to allow administrators

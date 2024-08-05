@@ -5,7 +5,7 @@ info: "To determine the technical writer assigned to the Stage/Group associated 
 description: "Use this tutorial to build a protected workflow for your GitLab project."
 ---
 
-<!-- vale gitlab.FutureTense = NO -->
+<!-- vale gitlab_base.FutureTense = NO -->
 
 # Tutorial: Build a protected workflow for your project
 

@@ -668,7 +668,7 @@ and is maintained by users verified by GitLab:
 
   GitLab partners can contact a member of the GitLab Partner Alliance to have their
   namespace flagged as GitLab-verified. Then any CI/CD components located in the
-  namespace are badged as GitLab Parner components. The Partner Alliance member
+  namespace are badged as GitLab Partner components. The Partner Alliance member
   creates an internal request issue on behalf of the verified partner:
   `https://gitlab.com/gitlab-com/support/internal-requests/-/issues/new?issuable_template=CI%20Catalog%20Badge%20Request`.
 

@@ -74,11 +74,11 @@ If CAPTCHA is enabled in these areas, you must solve the CAPTCHA popup modal bef
 - **Admin -> Settings -> Reporting -> Spam**
 - **Anti-bot Protection -> Enable reCAPTCHA**
 
-<!-- vale gitlab.Substitutions = NO -->
+<!-- vale gitlab_base.Substitutions = NO -->
 
 ### Testing with CAPTCHA disabled ("DISALLOW" verdict)
 
-<!-- vale gitlab.Substitutions = YES -->
+<!-- vale gitlab_base.Substitutions = YES -->
 
 If CAPTCHA is disabled in **Admin -> Settings -> Reporting -> Spam** and **Anti-bot Protection -> Enable reCAPTCHA**,
 no CAPTCHA popup displays. You are prevented from submitting the form at all.

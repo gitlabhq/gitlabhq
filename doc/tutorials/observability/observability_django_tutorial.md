@@ -17,7 +17,7 @@ For more information, see the history of the [**Distributed tracing** feature](.
 
 In this tutorial, we'll show you how to create, configure, instrument, and monitor a Django application using GitLab observability features.
 
-<!-- vale gitlab.SentenceSpacing = NO -->
+<!-- vale gitlab_base.SentenceSpacing = NO -->
 
 ## Before you begin
 
@@ -190,4 +190,4 @@ To create an application:
 
   ![Django metrics](img/django_metrics.png)
 
-<!-- vale gitlab.SentenceSpacing = YES -->
+<!-- vale gitlab_base.SentenceSpacing = YES -->

@@ -227,7 +227,7 @@ When writing code for real-time features we have to keep a couple of things in m
 Thus, we must strike a balance between sending requests and the feeling of real-time.
 Use the following rules when creating real-time solutions.
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 1. The server tells you how much to poll by sending `Poll-Interval` in the header.
    Use that as your polling interval. This enables system administrators to change the
@@ -241,7 +241,7 @@ Use the following rules when creating real-time solutions.
 1. The backend code is likely to be using ETags. You do not and should not check for status
    `304 Not Modified`. The browser transforms it for you.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ### Lazy Loading Images
 

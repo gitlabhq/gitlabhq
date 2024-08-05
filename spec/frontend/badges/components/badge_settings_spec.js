@@ -1,8 +1,8 @@
-import { GlCard, GlTable } from '@gitlab/ui';
-import { shallowMount } from '@vue/test-utils';
+import { GlTable } from '@gitlab/ui';
 import Vue from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
+import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import BadgeSettings from '~/badges/components/badge_settings.vue';
 import BadgeList from '~/badges/components/badge_list.vue';
@@ -21,10 +21,10 @@ describe('BadgeSettings component', () => {
     store.state.kind = 'project';
     store.state.isEditing = isEditing;
 
-    wrapper = shallowMount(BadgeSettings, {
+    wrapper = shallowMountExtended(BadgeSettings, {
       store,
       stubs: {
-        GlCard,
+        CrudComponent,
         GlTable,
         'badge-list': BadgeList,
         'badge-form': BadgeForm,
@@ -38,11 +38,11 @@ describe('BadgeSettings component', () => {
 
   it('renders a header with the badge count', () => {
     createComponent();
-    const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+    const cardTitle = wrapper.findByTestId('crud-title');
+    const cardCount = wrapper.findByTestId('crud-count');
 
-    expect(findCrudComponent().props('title')).toBe('Your badges');
-    expect(findCrudComponent().props('icon')).toBe('labels');
-    expect(findCrudComponent().props('count')).toBe(1);
+    expect(cardTitle.text()).toContain('Your badges');
+    expect(cardCount.text()).toContain('1');
   });
 
   it('displays a table', () => {

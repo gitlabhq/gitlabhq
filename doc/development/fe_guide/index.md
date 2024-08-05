@@ -13,11 +13,11 @@ across the GitLab frontend team.
 
 GitLab is built on top of [Ruby on Rails](https://rubyonrails.org). It uses [Haml](https://haml.info/) and a JavaScript-based frontend with [Vue.js](https://vuejs.org). If you are not sure when to use Vue on top of Haml-page, read [this explanation](vue.md#when-to-add-vue-application).
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 Be wary of [the limitations that come with using Hamlit](https://github.com/k0kubun/hamlit/blob/master/REFERENCE.md#limitations).
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 When it comes to CSS, we use a utils-based CSS approach. GitLab has its own CSS utils which are packaged inside the `gitlab-ui` project and can be seen [in the repository](https://gitlab.com/gitlab-org/gitlab-ui/-/tree/main/src/scss/utility-mixins) or on [UNPKG](https://unpkg.com/browse/@gitlab/ui@latest/src/scss/utility-mixins/). Favor using these before adding or using any SCSS classes.
 

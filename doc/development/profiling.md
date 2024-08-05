@@ -131,7 +131,7 @@ Find more information about different sampling modes in the [Stackprof docs](htt
 
 This is enabled for all users that can access the performance bar.
 
-<!-- vale gitlab.SubstitutionWarning = NO -->
+<!-- vale gitlab_base.SubstitutionWarning = NO -->
 <!-- Here, "bullet" is a false positive -->
 
 ## Bullet
@@ -163,7 +163,7 @@ because Bullet logging is noisy. To configure Bullet and its logging:
 As a follow-up to finding `N+1` queries with Bullet, consider writing a
 [QueryRecoder test](database/query_recorder.md) to prevent a regression.
 
-<!-- vale gitlab.SubstitutionWarning = YES -->
+<!-- vale gitlab_base.SubstitutionWarning = YES -->
 
 ## System stats
 

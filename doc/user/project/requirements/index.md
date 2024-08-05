@@ -312,12 +312,12 @@ To export requirements:
 
 ### Exported CSV file format
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 You can preview the exported CSV file in a spreadsheet editor, such as Microsoft Excel,
 OpenOffice Calc, or Google Sheets.
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 The exported CSV file contains the following headers:
 

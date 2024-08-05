@@ -267,7 +267,7 @@ decrypted, you can pass a `VERBOSE` environment variable:
 
 **Example verbose output**
 
-<!-- vale gitlab.SentenceSpacing = NO -->
+<!-- vale gitlab_base.SentenceSpacing = NO -->
 
 ```plaintext
 I, [2020-06-11T17:17:54.951815 #27148]  INFO -- : Checking encrypted values in the database
@@ -283,7 +283,7 @@ I, [2020-06-11T17:18:15.575678 #27148]  INFO -- : Total: 1 row(s) affected
 I, [2020-06-11T17:18:15.575711 #27148]  INFO -- : Done!
 ```
 
-<!-- vale gitlab.SentenceSpacing = YES -->
+<!-- vale gitlab_base.SentenceSpacing = YES -->
 
 ## Reset encrypted tokens when they can't be recovered
 

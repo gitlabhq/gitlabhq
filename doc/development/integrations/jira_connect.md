@@ -26,12 +26,12 @@ The following are required to install the app:
   - [GDK in Gitpod](https://www.loom.com/share/9c9711d4876a40869b9294eecb24c54d)
     video.
 
-  <!-- vale gitlab.Spelling = NO -->
+  <!-- vale gitlab_base.Spelling = NO -->
 
   GitLab team members **must not** use tunneling tools such as Serveo or `ngrok`. These are
   security risks, and must not be run on GitLab developer laptops.
 
-  <!-- vale gitlab.Spelling = YES -->
+  <!-- vale gitlab_base.Spelling = YES -->
 
   Jira requires all connections to the app host to be over SSL. If you set up
   your own environment, remember to enable SSL and an appropriate certificate.

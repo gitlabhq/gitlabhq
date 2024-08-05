@@ -1798,7 +1798,15 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
 
       let_it_be(:contact) { create(:contact, group: project.group) }
 
-      shared_examples 'mutation updating work item contacts' do
+      context 'when adding contacts' do
+        let(:input) do
+          {
+            'crmContactsWidget' => {
+              'contactIds' => [global_id_of(contact)]
+            }
+          }
+        end
+
         it 'updates contacts' do
           expect do
             post_graphql_mutation(mutation, current_user: current_user)
@@ -1811,8 +1819,8 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
             'contacts' => {
               'nodes' => [
                 {
-                  'id' => expected_result[:id],
-                  'firstName' => expected_result[:first_name]
+                  'id' => global_id_of(contact).to_s,
+                  'firstName' => contact.first_name
                 }
               ]
             },
@@ -1821,24 +1829,31 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
         end
       end
 
-      context 'when updating the contacts' do
-        context 'when mutating the work item' do
-          let(:input) do
-            {
-              'crmContactsWidget' => {
-                'contactIds' => [global_id_of(contact)]
-              }
-            }
-          end
+      context 'when clearing contacts' do
+        before do
+          mutation_work_item.issue_customer_relations_contacts.create!(contact: contact)
+        end
 
-          let(:expected_result) do
-            {
-              id: global_id_of(contact).to_s,
-              first_name: contact.first_name
+        let(:input) do
+          {
+            'crmContactsWidget' => {
+              'contactIds' => []
             }
-          end
+          }
+        end
 
-          it_behaves_like 'mutation updating work item contacts'
+        it 'updates contacts' do
+          expect do
+            post_graphql_mutation(mutation, current_user: current_user)
+            mutation_work_item.reload
+          end.to change { mutation_work_item.customer_relations_contacts.to_a }.from([contact]).to([])
+
+          expect(mutation_response['workItem']['widgets']).to include(
+            'contacts' => {
+              'nodes' => []
+            },
+            'type' => 'CRM_CONTACTS'
+          )
         end
       end
     end

@@ -40,10 +40,10 @@
       = _('Never')
 
   %td{ data: { label: _('Actions'), testid: 'actions' } }
-    %div{ class: 'gl-display-flex! gl-pl-0!' }
+    .gl-flex.gl-items-center.gl-justify-end.gl-gap-3.-gl-m-3
       - if key.can_delete?
         - if key.signing? && !is_admin
-          = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-confirm-modal-button', 'aria-label' => _('Revoke'), data: ssh_key_revoke_modal_data(key, revoke_user_settings_ssh_key_path(key)) }) do
+          = render Pajamas::ButtonComponent.new(size: :small, category: :secondary, variant: :danger, button_options: { class: 'js-confirm-modal-button', 'aria-label' => _('Revoke'), data: ssh_key_revoke_modal_data(key, revoke_user_settings_ssh_key_path(key)) }) do
             = _('Revoke')
-        .gl-pl-3
-          = render Pajamas::ButtonComponent.new(size: :small, icon: 'remove', button_options: { title: _('Remove'), 'aria-label' => _('Remove'), class: 'js-confirm-modal-button', data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin)) })
+
+        = render Pajamas::ButtonComponent.new(icon: 'remove', category: :tertiary, button_options: { title: _('Remove'), 'aria-label' => _('Remove'), class: 'js-confirm-modal-button', data: ssh_key_delete_modal_data(key, path_to_key(key, is_admin)) })

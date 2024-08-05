@@ -31,6 +31,8 @@ export default {
     GlTooltip: GlTooltipDirective,
   },
   i18n: {
+    edit: __('Edit'),
+    delete: __('Delete'),
     emptyGroupMessage: s__('Badges|This group has no badges. Add an existing badge or create one.'),
     emptyProjectMessage: s__('Badges|This project has no badges. Start by adding a new badge.'),
   },
@@ -138,24 +140,26 @@ export default {
             data-testid="badge-actions"
           >
             <gl-button
+              v-gl-tooltip
               v-gl-modal.edit-badge-modal
               :disabled="item.isDeleting"
-              variant="default"
               category="tertiary"
               icon="pencil"
               size="medium"
-              :aria-label="__('Edit')"
+              :title="$options.i18n.edit"
+              :aria-label="$options.i18n.edit"
               data-testid="edit-badge-button"
               @click="editBadge(item)"
             />
             <gl-button
+              v-gl-tooltip
               v-gl-modal.delete-badge-modal
               :disabled="item.isDeleting"
               category="tertiary"
-              variant="danger"
               icon="remove"
               size="medium"
-              :aria-label="__('Delete')"
+              :title="$options.i18n.delete"
+              :aria-label="$options.i18n.delete"
               data-testid="delete-badge"
               @click="updateBadgeInModal(item)"
             />

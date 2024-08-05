@@ -77,6 +77,7 @@ describe('CRUD Component', () => {
     findFormToggle().vm.$emit('click');
     await nextTick();
 
+    expect(findFormToggle().exists()).toBe(false);
     expect(findForm().text()).toBe('Form slot');
   });
 

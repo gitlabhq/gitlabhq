@@ -158,11 +158,11 @@ See the dedicated [Shell scripting standards and style guidelines](../shell_scri
 
 ## Markdown
 
-<!-- vale gitlab.Spelling = NO -->
+<!-- vale gitlab_base.Spelling = NO -->
 
 We're following [Ciro Santilli's Markdown Style Guide](https://cirosantilli.com/markdown-style-guide/).
 
-<!-- vale gitlab.Spelling = YES -->
+<!-- vale gitlab_base.Spelling = YES -->
 
 ## Documentation
 
