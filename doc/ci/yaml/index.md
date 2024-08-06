@@ -1108,6 +1108,10 @@ Scripts you specify in `after_script` execute in a new shell, separate from any
   In GitLab 16.3 and earlier, the timeout is hard-coded to 5 minutes.
 - Don't affect the job's exit code. If the `script` section succeeds and the
   `after_script` times out or fails, the job exits with code `0` (`Job Succeeded`).
+- There is a known issue with using [CI/CD job tokens](../jobs/ci_job_token.md) with `after_script`.
+  You can use a job token for authentication in `after_script` commands, but the token
+  immediately becomes invalid if the job is cancelled. See [issue](https://gitlab.com/gitlab-org/gitlab/-/issues/473376)
+  for more details.
 
 If a job times out, the `after_script` commands do not execute.
 [An issue exists](https://gitlab.com/gitlab-org/gitlab/-/issues/15603) to add support for executing `after_script` commands for timed-out jobs.

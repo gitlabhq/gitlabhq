@@ -186,6 +186,8 @@ The following metrics are available:
 | `dependency_linker_usage` | Counter | 16.8 | The number of times dependency linker is used | `used_on` |
 | `gitlab_keeparound_refs_requested_total` | Counter | 16.10 | Counts the number of keep-around refs requested to be created | `source` |
 | `gitlab_keeparound_refs_created_total` | Counter | 16.10 | Counts the number of keep-around refs actually created | `source` |
+| `search_advanced_index_repair_total` | Counter | 17.3 | Counts the number of index repair operations | `document_type` |
+| `search_advanced_boolean_settings` | Gauge | 17.3 | Current state of Advanced search boolean settings | `name` |
 
 ## Metrics controlled by a feature flag
 

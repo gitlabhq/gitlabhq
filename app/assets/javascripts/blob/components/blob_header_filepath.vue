@@ -53,7 +53,7 @@ export default {
     <template v-if="fileName">
       <file-icon :file-name="fileName" :size="16" aria-hidden="true" css-classes="gl-mr-3" />
       <strong
-        class="file-title-name mr-1 js-blob-header-filepath"
+        class="file-title-name mr-1 js-blob-header-filepath gl-break-all gl-text-decoration-none!"
         data-testid="file-title-content"
         >{{ fileName }}</strong
       >

@@ -96,15 +96,15 @@ export default {
   <div>
     <form-errors-alert v-model="errors" />
     <gl-card
-      class="gl-new-card gl-mt-0"
-      header-class="gl-new-card-header gl-flex-col"
-      body-class="gl-new-card-body gl-px-5 gl-py-4"
+      class="gl-mt-0"
+      header-class="gl-px-5 gl-py-4 gl-border-b-1 gl-border-b-solid gl-border-gray-100"
+      body-class="gl-px-5 gl-py-4"
     >
       <template #header>
-        <div class="gl-new-card-title-wrapper">
-          <h4 class="gl-new-card-title">{{ $options.i18n.cardHeaderTitle }}</h4>
+        <div class="gl-flex gl-grow">
+          <h4 class="gl-text-base gl-leading-24 gl-m-0">{{ $options.i18n.cardHeaderTitle }}</h4>
         </div>
-        <p class="gl-new-card-description">{{ $options.i18n.cardHeaderDescription }}</p>
+        <p class="gl-text-subtle gl-text-sm gl-m-0">{{ $options.i18n.cardHeaderDescription }}</p>
       </template>
       <gl-form :id="$options.formId">
         <gl-form-fields

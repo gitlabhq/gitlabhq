@@ -1,9 +1,28 @@
 @import 'framework/variables';
 
 .build-page {
-  // color codes are based on http://en.wikipedia.org/wiki/File:Xterm_256color_chart.svg
-  // see also: https://gist.github.com/jasonm23/2868981
+  .term-bold {
+    font-weight: $gl-font-weight-bold;
+  }
 
+  .term-italic {
+    font-style: italic;
+  }
+
+  .term-conceal {
+    visibility: hidden;
+  }
+
+  .term-underline {
+    text-decoration: underline;
+  }
+
+  .term-cross {
+    text-decoration: line-through;
+  }
+
+  // logs color palette
+  // see: https://en.wikipedia.org/wiki/ANSI_escape_code#Colors
   $black: #000;
   $red: #ea1010;
   $green: #090;
@@ -21,24 +40,52 @@
   $l-cyan: #00bdbd;
   $l-white: #fff;
 
+  $colors: "black" $black $l-black,
+    "red" $red $l-red,
+    "green" $green $l-green,
+    "yellow" $yellow $l-yellow,
+    "blue" $blue $l-blue,
+    "magenta" $magenta $l-magenta,
+    "cyan" $cyan $l-cyan,
+    "white" $white $l-white;
+
+  @each $name, $color, $brightColor in $colors {
+    .term-fg-#{$name} {
+      color: $color;
+    }
+    .term-bg-#{$name} {
+      background-color: $color;
+    }
+
+    .term-fg-l-#{$name} {
+      color: $brightColor;
+    }
+    .term-bg-l-#{$name} {
+      background-color: $brightColor;
+    }
+  }
+
+  // 8-bit colors
+  // color codes are based on http://en.wikipedia.org/wiki/File:Xterm_256color_chart.svg
   $xterm-colors: (
     "0": $black,
-    "1": #800000,
-    "2": #008000,
-    "3": #808000,
-    "4": #000080,
-    "5": #800080,
-    "6": #008080,
-    "7": #c0c0c0,
-    "8": #808080,
-    "9": #f00,
-    "10": #0f0,
-    "11": #ff0,
-    "12": #00f,
-    "13": #f0f,
-    "14": #0ff,
-    "15": $white,
-    "16": $black,
+    "1": $red,
+    "2": $green,
+    "3": $yellow,
+    "4": $blue,
+    "5": $magenta,
+    "6": $cyan,
+    "7": $white,
+    "8": $l-black,
+    "9": $l-red,
+    "10": $l-green,
+    "11": $l-yellow,
+    "12": $l-blue,
+    "13": $l-magenta,
+    "14": $l-cyan,
+    "15": $l-white,
+
+    "16": #000,
     "17": #00005f,
     "18": #000087,
     "19": #0000af,
@@ -253,7 +300,7 @@
     "228": #ffff87,
     "229": #ffffaf,
     "230": #ffffd7,
-    "231": $white,
+    "231": #fff,
     "232": #080808,
     "233": #121212,
     "234": #1c1c1c,
@@ -280,161 +327,11 @@
     "255": #eee
   );
 
-  .term-bold {
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .term-italic {
-    font-style: italic;
-  }
-
-  .term-conceal {
-    visibility: hidden;
-  }
-
-  .term-underline {
-    text-decoration: underline;
-  }
-
-  .term-cross {
-    text-decoration: line-through;
-  }
-
-  .term-fg-black {
-    color: $black;
-  }
-
-  .term-fg-red {
-    color: $red;
-  }
-
-  .term-fg-green {
-    color: $green;
-  }
-
-  .term-fg-yellow {
-    color: $yellow;
-  }
-
-  .term-fg-blue {
-    color: $blue;
-  }
-
-  .term-fg-magenta {
-    color: $magenta;
-  }
-
-  .term-fg-cyan {
-    color: $cyan;
-  }
-
-  .term-fg-white {
-    color: $white;
-  }
-
-  .term-fg-l-black {
-    color: $l-black;
-  }
-
-  .term-fg-l-red {
-    color: $l-red;
-  }
-
-  .term-fg-l-green {
-    color: $l-green;
-  }
-
-  .term-fg-l-yellow {
-    color: $l-yellow;
-  }
-
-  .term-fg-l-blue {
-    color: $l-blue;
-  }
-
-  .term-fg-l-magenta {
-    color: $l-magenta;
-  }
-
-  .term-fg-l-cyan {
-    color: $l-cyan;
-  }
-
-  .term-fg-l-white {
-    color: $l-white;
-  }
-
-  .term-bg-black {
-    background-color: $black;
-  }
-
-  .term-bg-red {
-    background-color: $red;
-  }
-
-  .term-bg-green {
-    background-color: $green;
-  }
-
-  .term-bg-yellow {
-    background-color: $yellow;
-  }
-
-  .term-bg-blue {
-    background-color: $blue;
-  }
-
-  .term-bg-magenta {
-    background-color: $magenta;
-  }
-
-  .term-bg-cyan {
-    background-color: $cyan;
-  }
-
-  .term-bg-white {
-    background-color: $white;
-  }
-
-  .term-bg-l-black {
-    background-color: $l-black;
-  }
-
-  .term-bg-l-red {
-    background-color: $l-red;
-  }
-
-  .term-bg-l-green {
-    background-color: $l-green;
-  }
-
-  .term-bg-l-yellow {
-    background-color: $l-yellow;
-  }
-
-  .term-bg-l-blue {
-    background-color: $l-blue;
-  }
-
-  .term-bg-l-magenta {
-    background-color: $l-magenta;
-  }
-
-  .term-bg-l-cyan {
-    background-color: $l-cyan;
-  }
-
-  .term-bg-l-white {
-    background-color: $l-white;
-  }
-
   @each $i, $color in $xterm-colors {
     .xterm-fg-#{$i} {
       color: $color;
     }
-  }
 
-  @each $i, $color in $xterm-colors {
     .xterm-bg-#{$i} {
       background-color: $color;
     }

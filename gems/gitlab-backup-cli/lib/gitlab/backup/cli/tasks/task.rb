@@ -68,11 +68,34 @@ module Gitlab
             enabled
           end
 
+          def config
+            Gitlab::Backup::Cli::SourceContext.new.config(id)
+          end
+
+          def object_storage?
+            return false unless config
+            return false unless config.respond_to?(:object_store) && config.object_store.enabled
+
+            return false unless Gitlab::Backup::Cli::Targets::ObjectStorage::SUPPORTED_PROVIDERS.include?(
+              config.object_store.connection.provider
+            )
+
+            true
+          end
+
           private
 
           # The target factory method
           def target
             raise NotImplementedError
+          end
+
+          def check_object_storage(file_target)
+            if object_storage?
+              ::Gitlab::Backup::Cli::Targets::ObjectStorage.find_task(id, options, config)
+            else
+              file_target
+            end
           end
         end
       end

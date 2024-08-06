@@ -97,8 +97,7 @@ process, store and query your analytics data.
 DETAILS:
 **Offering:** GitLab.com
 
-On GitLab.com, if you signed up for beta, you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`.
-To sign up, contact the GitLab [sales team](https://about.gitlab.com/sales/).
+On GitLab.com you can use a GitLab-managed provider offered only in the Google Cloud Platform zone `us-central-1`. This service is offered only in beta.
 
 If GitLab manages your product analytics provider, then your analytics data is retained for one year.
 You can request to delete your data at any time by [contacting support](https://about.gitlab.com/support/#contact-support).

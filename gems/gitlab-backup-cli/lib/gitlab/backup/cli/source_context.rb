@@ -102,6 +102,10 @@ module Gitlab
           absolute_path(path).join('uploads')
         end
 
+        def config(object_type)
+          Gitlab.config[object_type]
+        end
+
         def env
           @env ||= ActiveSupport::EnvironmentInquirer.new(
             ENV["RAILS_ENV"].presence || ENV["RACK_ENV"].presence || "development")

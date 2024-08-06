@@ -12,7 +12,7 @@ exports[`Blob Header Filepath rendering matches the snapshot 1`] = `
     size="16"
   />
   <strong
-    class="file-title-name js-blob-header-filepath mr-1"
+    class="file-title-name gl-break-all gl-text-decoration-none! js-blob-header-filepath mr-1"
     data-testid="file-title-content"
   >
     foo/bar/dummy.md

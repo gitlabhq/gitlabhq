@@ -185,16 +185,6 @@ RSpec.describe Repositories::ChangelogService, feature_category: :source_code_ma
       it 'raises an exception' do
         expect { service.execute(commit_to_changelog: false) }.to raise_error(Gitlab::Changelog::Error)
       end
-
-      context 'when feature flag is off' do
-        before do
-          stub_feature_flags(changelog_commits_limitation: false)
-        end
-
-        it 'returns the changelog' do
-          expect(service.execute(commit_to_changelog: false)).to include('Title 1', 'Title 2', 'Title 3')
-        end
-      end
     end
 
     context 'with specified changelog config file path' do

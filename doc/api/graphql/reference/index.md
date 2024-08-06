@@ -7862,6 +7862,10 @@ Input type: `ProjectSetComplianceFrameworkInput`
 
 Enable/disable Continuous Vulnerability Scanning for the given project.
 
+DETAILS:
+**Deprecated** in GitLab 17.3.
+CVS has been enabled permanently. See [this epic](https://gitlab.com/groups/gitlab-org/-/epics/11474) for more information.
+
 Input type: `ProjectSetContinuousVulnerabilityScanningInput`
 
 #### Arguments

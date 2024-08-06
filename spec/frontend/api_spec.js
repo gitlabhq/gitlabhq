@@ -951,6 +951,52 @@ describe('Api', () => {
     });
   });
 
+  describe('postMergeRequestPipeline', () => {
+    const dummyProjectId = 5;
+    const dummyMergeRequestIid = 123;
+    const expectedUrl = `${dummyUrlRoot}/api/${dummyApiVersion}/projects/5/merge_requests/123/pipelines`;
+    const features = { asyncMergeRequestPipelineCreation: true };
+
+    beforeEach(() => {
+      mock = new MockAdapter(axios);
+      window.gon.features = features;
+    });
+
+    it('creates a merge request pipeline async', () => {
+      jest.spyOn(axios, 'post');
+
+      mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, {
+        id: 456,
+      });
+
+      return Api.postMergeRequestPipeline(dummyProjectId, {
+        mergeRequestId: dummyMergeRequestIid,
+      }).then(({ data }) => {
+        expect(data.id).toBe(456);
+        expect(axios.post).toHaveBeenCalledWith(expectedUrl, { async: true });
+      });
+    });
+
+    describe('when asyncMergeRequestPipelineCreation is disabled', () => {
+      it('creates a merge request pipeline synchronously', () => {
+        window.gon.features.asyncMergeRequestPipelineCreation = false;
+
+        jest.spyOn(axios, 'post');
+
+        mock.onPost(expectedUrl).replyOnce(HTTP_STATUS_OK, {
+          id: 456,
+        });
+
+        return Api.postMergeRequestPipeline(dummyProjectId, {
+          mergeRequestId: dummyMergeRequestIid,
+        }).then(({ data }) => {
+          expect(data.id).toBe(456);
+          expect(axios.post).toHaveBeenCalledWith(expectedUrl, {});
+        });
+      });
+    });
+  });
+
   describe('projectForks', () => {
     it('gets forked projects', () => {
       const dummyProjectPath = 'gitlab-org/gitlab-ce';

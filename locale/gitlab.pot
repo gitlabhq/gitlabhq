@@ -35420,6 +35420,9 @@ msgstr ""
 msgid "Not permitted to destroy framework"
 msgstr ""
 
+msgid "Not permitted to reset user feed token"
+msgstr ""
+
 msgid "Not ready yet. Try again later."
 msgstr ""
 
@@ -40909,6 +40912,9 @@ msgid "Profiles|Expired"
 msgstr ""
 
 msgid "Profiles|Expires"
+msgstr ""
+
+msgid "Profiles|Feed token could not be reset"
 msgstr ""
 
 msgid "Profiles|Feed token was successfully reset"
@@ -48758,7 +48764,7 @@ msgstr ""
 msgid "SecurityReports|All tools"
 msgstr ""
 
-msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your settings to make sure you've set up your dashboard correctly."
+msgid "SecurityReports|Although it's rare to have no vulnerabilities, it can happen. Check your project's security configuration to make sure you've set up your security scans correctly."
 msgstr ""
 
 msgid "SecurityReports|Change status"
@@ -48914,16 +48920,19 @@ msgstr ""
 msgid "SecurityReports|Jira Issue Created"
 msgstr ""
 
+msgid "SecurityReports|Learn more about security configuration"
+msgstr ""
+
 msgid "SecurityReports|Learn more about setting up your dashboard"
 msgstr ""
 
-msgid "SecurityReports|Manage and track vulnerabilities identified in projects within your group. Vulnerabilities in projects are shown here when security testing is configured."
+msgid "SecurityReports|Manage and track vulnerabilities identified in projects within your group. Vulnerabilities in projects are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
-msgid "SecurityReports|Manage and track vulnerabilities identified in your project. Vulnerabilities are shown here when security testing is configured."
+msgid "SecurityReports|Manage and track vulnerabilities identified in your project. Vulnerabilities are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
-msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects with security testing configured are shown here."
+msgid "SecurityReports|Manage and track vulnerabilities identified in your selected projects. Vulnerabilities for selected projects are shown here when security testing is configured and a pipeline has been run on the default branch."
 msgstr ""
 
 msgid "SecurityReports|Maximum selected projects limit reached"

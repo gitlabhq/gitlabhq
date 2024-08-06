@@ -24,11 +24,13 @@ class ProfilesController < Profiles::ApplicationController
   end
 
   def reset_feed_token
-    Users::UpdateService.new(current_user, user: @user).execute! do |user|
-      user.reset_feed_token!
-    end
+    service = Users::ResetFeedTokenService.new(current_user, user: @user).execute
 
-    flash[:notice] = s_('Profiles|Feed token was successfully reset')
+    if service.success?
+      flash[:notice] = service.message
+    else
+      flash[:alert] = service.message
+    end
 
     redirect_to user_settings_personal_access_tokens_path
   end

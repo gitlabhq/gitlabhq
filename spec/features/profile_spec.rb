@@ -65,23 +65,59 @@ RSpec.describe 'Profile account page', :js, feature_category: :user_profile do
     end
   end
 
-  it 'allows resetting of feed token' do
-    visit user_settings_personal_access_tokens_path
+  describe 'when I reset my feed token' do
+    context 'when resetting succeeds' do
+      it 'allows resetting of feed token' do
+        visit user_settings_personal_access_tokens_path
 
-    previous_token = ''
+        previous_token = ''
 
-    within_testid('feed-token-container') do
-      previous_token = find_field('Feed token').value
+        within_testid('feed-token-container') do
+          previous_token = find_field('Feed token').value
 
-      click_link('reset this token')
+          click_link('reset this token')
+        end
+
+        accept_gl_confirm
+
+        expect(page).to have_content('Feed token was successfully reset')
+
+        within_testid('feed-token-container') do
+          click_button('Click to reveal')
+
+          expect(find_field('Feed token').value).not_to eq(previous_token)
+        end
+      end
     end
 
-    accept_gl_confirm
+    context 'when resetting fails' do
+      before do
+        allow_next_instance_of(Users::UpdateService) do |service|
+          allow(service).to receive(:execute).and_return({ status: :error })
+        end
+      end
 
-    within_testid('feed-token-container') do
-      click_button('Click to reveal')
+      it 'shows an error and the old feed token' do
+        visit user_settings_personal_access_tokens_path
 
-      expect(find_field('Feed token').value).not_to eq(previous_token)
+        previous_token = ''
+
+        within_testid('feed-token-container') do
+          previous_token = find_field('Feed token').value
+
+          click_link('reset this token')
+        end
+
+        accept_gl_confirm
+
+        expect(page).to have_content('Feed token could not be reset')
+
+        within_testid('feed-token-container') do
+          click_button('Click to reveal')
+
+          expect(find_field('Feed token').value).to eq(previous_token)
+        end
+      end
     end
   end
 

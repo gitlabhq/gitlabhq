@@ -53,7 +53,10 @@ RSpec.describe Gitlab::BackgroundMigration::BackfillUserDetails, schema: 2024071
       end
     end
 
-    context 'when upsert raises an error' do
+    context 'when upsert raises an error', quarantine: {
+      type: :flaky,
+      issue: 'https://gitlab.com/gitlab-org/gitlab/-/issues/477109'
+    } do
       before do
         allow(described_class::UserDetail).to receive(:upsert_all).and_raise(Exception, '_error_')
       end
