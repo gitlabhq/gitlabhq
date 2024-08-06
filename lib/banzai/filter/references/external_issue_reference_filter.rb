@@ -26,11 +26,11 @@ module Banzai
         def references_in(text, pattern = object_reference_pattern)
           case pattern
           when Regexp
-            text.gsub(pattern) do |match|
-              yield match, $~[:issue]
+            Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
+              yield match_data[0], match_data[:issue]
             end
           when Gitlab::UntrustedRegexp
-            pattern.replace_gsub(text) do |match|
+            pattern.replace_gsub(text, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match|
               yield match, match[:issue]
             end
           end
