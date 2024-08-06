@@ -14,11 +14,11 @@
           = " - #{milestone_type}"
 
       - if milestone.due_date || milestone.start_date
-        .text-tertiary.gl-mb-2
+        .gl-text-subtle.gl-mb-2
           = milestone_date_range(milestone)
       - recent_releases, total_count, more_count = recent_releases_with_counts(milestone, current_user)
       - unless total_count == 0
-        .text-tertiary.gl-mb-2.milestone-release-links
+        .gl-text-subtle.gl-mb-2.milestone-release-links
           = sprite_icon("rocket", size: 12)
           = n_('Release', 'Releases', total_count)
           - recent_releases.each do |release|

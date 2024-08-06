@@ -143,7 +143,7 @@ DETAILS:
 **Status:** Experiment
 
 - Helps populate an issue more quickly by generating a more in-depth description, based on a short summary you provide.
-- LLM: Anthropic [Claude 2.1](https://docs.anthropic.com/en/docs/about-claude/models#legacy-models)
+- LLM: Anthropic [Claude Instant 1.2](https://docs.anthropic.com/en/docs/about-claude/models#legacy-models)
 - [View documentation](experiments.md#summarize-an-issue-with-issue-description-generation).
 
 ### Discussion summary
@@ -154,7 +154,7 @@ DETAILS:
 **Status:** Experiment
 
 - Helps everyone get up to speed by summarizing the lengthy conversations in an issue.
-- LLM: Anthropic [Claude 2.1](https://docs.anthropic.com/en/docs/about-claude/models#legacy-models)
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=IcdxLfTIUgc)
 - [View documentation](experiments.md#summarize-issue-discussions-with-discussion-summary).
 

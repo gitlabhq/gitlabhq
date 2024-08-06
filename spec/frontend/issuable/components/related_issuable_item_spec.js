@@ -114,7 +114,7 @@ describe('RelatedIssuableItem', () => {
       const formattedCreateDate = formatDate(defaultProps.createdAt);
 
       expect(stateTitle).toContain('Created');
-      expect(stateTitle).toContain(`<span class="text-tertiary">${formattedCreateDate}</span>`);
+      expect(stateTitle).toContain(`<span class="gl-text-tertiary">${formattedCreateDate}</span>`);
     });
 
     it('renders aria label', () => {

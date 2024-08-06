@@ -71,7 +71,7 @@ export default {
   computed: {
     stateTitle() {
       return sprintf(
-        '<span class="gl-font-bold">%{state}</span> %{timeInWords}<br/><span class="text-tertiary">%{timestamp}</span>',
+        '<span class="gl-font-bold">%{state}</span> %{timeInWords}<br/><span class="gl-text-tertiary">%{timestamp}</span>',
         {
           state: this.stateText,
           timeInWords: this.stateTimeInWords,

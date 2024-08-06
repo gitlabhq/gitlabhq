@@ -1,6 +1,6 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
-import { timeFor, parsePikadayDate, dateInWords } from '~/lib/utils/datetime_utility';
+import { localeDateFormat, parsePikadayDate, timeFor } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -41,10 +41,10 @@ export default {
     },
     milestoneDatesAbsolute() {
       if (this.milestoneDue) {
-        return `(${dateInWords(this.milestoneDue)})`;
+        return `(${localeDateFormat.asDate.format(this.milestoneDue)})`;
       }
       if (this.milestoneStart) {
-        return `(${dateInWords(this.milestoneStart)})`;
+        return `(${localeDateFormat.asDate.format(this.milestoneStart)})`;
       }
       return '';
     },
@@ -72,23 +72,22 @@ export default {
 };
 </script>
 <template>
-  <div ref="milestoneDetails" class="issue-milestone-details">
-    <gl-icon :size="16" class="gl-mr-2 flex-shrink-0" name="milestone" />
-    <span class="milestone-title gl-display-inline-block gl-text-truncate">{{
-      milestone.title
-    }}</span>
+  <div ref="milestoneDetails">
+    <gl-icon :size="16" class="gl-shrink-0 gl-mr-2" name="milestone" />
+    <span class="milestone-title gl-text-truncate">{{ milestone.title }}</span>
     <gl-tooltip :target="() => $refs.milestoneDetails" placement="bottom" class="js-item-milestone">
-      <span class="gl-font-bold">{{ __('Milestone') }}</span> <br />
-      <span>{{ milestone.title }}</span> <br />
-      <span
+      <div class="gl-font-bold">{{ __('Milestone') }}</div>
+      <div>{{ milestone.title }}</div>
+      <div
         v-if="milestoneStart || milestoneDue"
         :class="{
           'gl-text-red-300': isMilestonePastDue,
-          'text-tertiary': !isMilestonePastDue,
+          'gl-text-tertiary': !isMilestonePastDue,
         }"
-        ><span>{{ milestoneDatesHuman }}</span
-        ><br /><span>{{ milestoneDatesAbsolute }}</span>
-      </span>
+      >
+        <div>{{ milestoneDatesHuman }}</div>
+        <div>{{ milestoneDatesAbsolute }}</div>
+      </div>
     </gl-tooltip>
   </div>
 </template>

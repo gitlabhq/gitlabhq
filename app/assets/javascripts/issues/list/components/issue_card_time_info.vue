@@ -2,12 +2,12 @@
 import { GlLink, GlIcon, GlTooltipDirective } from '@gitlab/ui';
 import { STATUS_CLOSED } from '~/issues/constants';
 import {
-  dateInWords,
   getTimeRemainingInWords,
   humanTimeframe,
   isInFuture,
   isInPast,
   isToday,
+  localeDateFormat,
   newDateAsLocaleTime,
 } from '~/lib/utils/datetime_utility';
 import { __ } from '~/locale';
@@ -35,7 +35,7 @@ export default {
     milestoneDate() {
       if (this.milestone.dueDate) {
         const { dueDate, startDate } = this.milestone;
-        const date = dateInWords(newDateAsLocaleTime(dueDate), true);
+        const date = localeDateFormat.asDate.format(newDateAsLocaleTime(dueDate));
         const remainingTime = this.milestoneRemainingTime(dueDate, startDate);
         return `${date} (${remainingTime})`;
       }
@@ -52,7 +52,7 @@ export default {
         return humanTimeframe(this.startDate, this.dueDate);
       }
       if (this.dueDate) {
-        return dateInWords(newDateAsLocaleTime(this.dueDate), true);
+        return localeDateFormat.asDate.format(newDateAsLocaleTime(this.dueDate));
       }
       return null;
     },

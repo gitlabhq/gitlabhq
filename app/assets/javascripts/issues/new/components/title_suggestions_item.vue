@@ -91,7 +91,7 @@ export default {
           <span class="gl-font-bold"> {{ stateTitle }} </span>
           {{ timeFormatted(closedOrCreatedDate) }}
         </span>
-        <span class="text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
+        <span class="gl-text-tertiary">{{ tooltipTitle(closedOrCreatedDate) }}</span>
       </gl-tooltip>
       #{{ suggestion.iid }} &bull;
       <timeago-tooltip
@@ -109,7 +109,7 @@ export default {
           class="gl-inline-block"
         >
           <span class="gl-font-bold gl-block">{{ __('Author') }}</span> {{ suggestion.author.name }}
-          <span class="text-tertiary">@{{ suggestion.author.username }}</span>
+          <span class="gl-text-tertiary">@{{ suggestion.author.username }}</span>
         </user-avatar-image>
       </gl-link>
       <template v-if="hasUpdated">
@@ -126,7 +126,7 @@ export default {
           :key="id"
           v-gl-tooltip.bottom
           :title="tooltipTitle"
-          class="gl-cursor-help gl-ml-3 text-tertiary"
+          class="gl-cursor-help gl-ml-3 gl-text-subtle"
         >
           <gl-icon :name="icon" /> {{ count }}
         </span>

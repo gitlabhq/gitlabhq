@@ -48099,6 +48099,9 @@ msgstr ""
 msgid "SecurityOrchestration|Hide extra projects"
 msgstr ""
 
+msgid "SecurityOrchestration|If %{scanners} of the default branch finds %{severity_level} vulnerabilities are no longer detected."
+msgstr ""
+
 msgid "SecurityOrchestration|If any scanner finds a newly detected critical vulnerability in an open merge request targeting the main branch, then require two approvals from any two members of the application security team."
 msgstr ""
 

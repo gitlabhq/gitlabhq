@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'Group issues page', feature_category: :groups_and_projects do
+RSpec.describe 'Group issues page', feature_category: :team_planning do
   include Features::SortingHelpers
   include FilteredSearchHelpers
   include DragTo
