@@ -22,6 +22,11 @@ module Gitlab
           }
         end
 
+        # Rubocop requires this be public
+        def self.parameter_filter
+          @parameter_filter ||= ActiveSupport::ParameterFilter.new(Rails.application.config.filter_parameters)
+        end
+
         def safelist(event)
           req = event.payload[:request]
           Gitlab::Instrumentation::Throttle.safelist = req.env['rack.attack.matched']
@@ -41,14 +46,23 @@ module Gitlab
 
         private
 
+        def parameter_filter
+          self.class.parameter_filter
+        end
+
         def log_into_auth_logger(event, status:)
+          # req here is a Rack::Attack::Request, inherits from Rack::Request
+          # https://rubydoc.info/gems/rack/2.2.9/Rack/Request
           req = event.payload[:request]
+          filtered_params = parameter_filter.filter(req.GET)
+          req_path = filtered_params.any? ? "#{req.path}?#{filtered_params.to_query}" : req.path
+
           rack_attack_info = {
             message: 'Rack_Attack',
             env: req.env['rack.attack.match_type'],
             remote_ip: req.ip,
             request_method: req.request_method,
-            path: req.fullpath,
+            path: req_path,
             matched: req.env['rack.attack.matched']
           }
 
