@@ -131,6 +131,16 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       expect(page).to have_css('[data-testid="crud-footer"]', text: footer)
     end
 
+    it 'renders footer custom attributes' do
+      render_inline described_class.new(title,
+        form_options: { class: 'footer-class', data: { testid: 'crud-custom-footer-id' } }) do |c|
+        c.with_footer { footer }
+      end
+
+      expect(page).to have_css('.footer-class', text: footer)
+      expect(page).to have_css('[data-testid="crud-custom-footer-id"]', text: footer)
+    end
+
     it 'renders pagination slot' do
       render_inline component_title do |c|
         c.with_pagination { pagination }

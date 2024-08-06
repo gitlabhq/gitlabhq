@@ -2,12 +2,13 @@
 - breadcrumb_title domain_presenter.domain
 - page_title domain_presenter.domain
 
-%h1.page-title.gl-font-size-h-display
-  = _('Pages Domain')
-= render 'projects/pages_domains/helper_text'
+= render ::Layouts::PageHeadingComponent.new(_('Pages Domain')) do |c|
+  - c.with_description do
+    = render 'projects/pages_domains/helper_text'
+
 %div
   = gitlab_ui_form_for [@project, domain_presenter], html: { class: 'fieldset-form' } do |f|
     = render 'form', { f: f }
-    .gl-flex.gl-gap-3.gl-mt-6
+    .gl-flex.gl-gap-3
       = f.submit _('Save changes'), pajamas_button: true
       = link_button_to _('Cancel'), project_pages_path(@project)

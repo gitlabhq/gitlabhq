@@ -134,6 +134,24 @@ The following data is shared with third-party AI APIs:
 - Code block.
 - File name.
 
+## Vulnerability code flow
+
+DETAILS:
+**Tier:** Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+For some vulnerabilities detected by Advanced SAST, a **Code flow** tab is available. A
+vulnerability's code flow is the path the data takes from the user input (source) to the vulnerable
+line of code (sink), through all assignments, manipulation, and sanitization. This information helps
+you understand and evaluate the vulnerability's context, impact, and risk.
+
+The **Code flow** tab shows:
+
+- The steps from source to sink.
+- The relevant files, including code snippets.
+
+![A code flow of a Python application across two files](img/example_code_flow_of_python_applications_v17_3.png)
+
 ## Vulnerability status values
 
 A vulnerability's status can be:

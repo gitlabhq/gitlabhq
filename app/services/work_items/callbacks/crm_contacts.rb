@@ -18,6 +18,8 @@ module WorkItems
       private
 
       def clear_contacts
+        return unless work_item.customer_relations_contact_ids.present?
+
         call_service({ replace_ids: [] })
       end
 

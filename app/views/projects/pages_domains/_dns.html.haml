@@ -10,7 +10,7 @@
         = text_field_tag :domain_dns, dns_record , class: "monospace js-select-on-focus form-control", readonly: true
         .input-group-append
           = clipboard_button(target: '#domain_dns', category: :primary, size: :medium)
-      %p.form-text.gl-text-secondary
+      %p.form-text.gl-text-subtle
         = _("To access this domain create a new DNS record")
 - if verification_enabled
   .form-group
@@ -27,6 +27,6 @@
           = text_field_tag :domain_verification, domain_presenter.verification_record, class: "monospace js-select-on-focus form-control", readonly: true
           .input-group-append
             = clipboard_button(target: '#domain_verification', category: :primary, size: :medium)
-        %p.form-text.gl-text-secondary
+        %p.form-text.gl-text-subtle
           - link_to_help = link_to(_('verify ownership'), help_page_path('user/project/pages/custom_domains_ssl_tls_certification/index', anchor: '4-verify-the-domains-ownership'))
           = _("To %{link_to_help} of your domain, add the above key to a TXT record within your DNS configuration within seven days.").html_safe % { link_to_help: link_to_help }

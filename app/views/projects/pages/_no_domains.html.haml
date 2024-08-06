@@ -1,13 +1,11 @@
 - can_add_new_domain = can_create_pages_custom_domains?(current_user, @project)
 
 - if can?(current_user, :update_pages, @project)
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card'}, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body gl-text-center nothing-here-block gl-p-5' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        %h4.gl-new-card-title
-          = s_('GitLabPages|Domains')
+  = render ::Layouts::CrudComponent.new(s_('GitLabPages|Domains')) do |c|
+    - c.with_actions do
       - if can_add_new_domain
         = render Pajamas::ButtonComponent.new(variant: :confirm, href: new_project_pages_domain_path(@project)) do
           = s_('GitLabPages|New domain')
+
     - c.with_body do
-      %span.gl-text-secondary= s_("GitLabPages|Support for domains and certificates is disabled. Ask your GitLab administrator to enable it.")
+      %span.gl-text-subtle= s_("GitLabPages|Support for domains and certificates is disabled. Ask your GitLab administrator to enable it.")

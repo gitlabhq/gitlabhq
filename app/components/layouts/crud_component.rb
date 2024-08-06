@@ -11,10 +11,11 @@ module Layouts
     # @param [Hash] body_options
     # @param [Hash] form_options
     # @param [Hash] toggle_options
+    # @param [Hash] footer_options
     def initialize(
       title, description: nil, count: nil, count_class: nil, icon: nil,
       toggle_text: nil, options: {}, body_options: {}, form_options: {},
-      toggle_options: {}
+      toggle_options: {}, footer_options: {}
     )
       @title = title
       @description = description
@@ -26,6 +27,7 @@ module Layouts
       @body_options = body_options
       @form_options = form_options
       @toggle_options = toggle_options
+      @footer_options = footer_options
     end
 
     renders_one :description
@@ -51,6 +53,15 @@ module Layouts
 
     def form_options_attrs
       default_testid = 'crud-form'
+      default_classes = [
+        ('js-toggle-content' if @toggle_text),
+        ('gl-hidden' if @toggle_text && !@form_options[:form_errors])
+      ]
+      @form_options.merge(default_attrs(@form_options, default_testid, default_classes))
+    end
+
+    def footer_options_attrs
+      default_testid = 'crud-footer'
       default_classes = [
         ('js-toggle-content' if @toggle_text),
         ('gl-hidden' if @toggle_text && !@form_options[:form_errors])
