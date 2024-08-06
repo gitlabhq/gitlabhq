@@ -50389,6 +50389,9 @@ msgstr ""
 msgid "Some common domains are not allowed. %{learn_more_link}."
 msgstr ""
 
+msgid "Some files cannot be displayed due to their file path encoding."
+msgstr ""
+
 msgid "Some friendly information"
 msgstr ""
 
