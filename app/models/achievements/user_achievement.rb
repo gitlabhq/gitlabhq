@@ -15,6 +15,7 @@ module Achievements
       optional: true
 
     scope :not_revoked, -> { where(revoked_by_user_id: nil) }
+    scope :shown_on_profile, -> { where(show_on_profile: true) }
     scope :order_by_priority_asc, -> {
       keyset_order = Gitlab::Pagination::Keyset::Order.build([
         Gitlab::Pagination::Keyset::ColumnOrderDefinition.new(
@@ -31,6 +32,8 @@ module Achievements
       reorder(keyset_order)
     }
     scope :order_by_id_asc, -> { order(id: :asc) }
+
+    validates :show_on_profile, inclusion: { in: [false, true] }
 
     def revoked?
       revoked_by_user_id.present?

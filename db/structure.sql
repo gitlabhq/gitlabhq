@@ -18616,7 +18616,8 @@ CREATE TABLE user_achievements (
     updated_at timestamp with time zone NOT NULL,
     revoked_at timestamp with time zone,
     priority integer,
-    namespace_id bigint
+    namespace_id bigint,
+    show_on_profile boolean DEFAULT true NOT NULL
 );
 
 CREATE SEQUENCE user_achievements_id_seq

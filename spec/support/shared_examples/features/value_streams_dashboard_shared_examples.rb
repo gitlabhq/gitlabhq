@@ -8,7 +8,7 @@ RSpec.shared_examples 'renders usage overview metrics' do
     expect(usage_overview).to have_content format(_("Usage overview for %{title}"), title: panel_title)
   end
 
-  it 'renders each of the available metrics' do
+  it 'renders each of the available metrics with the correct values' do
     within usage_overview do
       usage_overview_metrics.each do |id, name, value|
         stat = find_by_testid("usage-overview-metric-#{id}")
@@ -20,11 +20,39 @@ RSpec.shared_examples 'renders usage overview metrics' do
   end
 end
 
+RSpec.shared_examples 'renders usage overview metrics with zero values' do
+  it_behaves_like 'renders usage overview metrics'
+end
+
+RSpec.shared_examples 'renders usage overview metrics with empty values' do
+  it_behaves_like 'renders usage overview metrics'
+end
+
 RSpec.shared_examples 'does not render usage overview metrics' do
   let(:usage_overview_testid) { "[data-testid='panel-usage-overview']" }
 
   it 'does not render the usage overview panel' do
     expect(page).not_to have_selector usage_overview_testid
+  end
+end
+
+RSpec.shared_examples 'renders usage overview background aggregation not enabled alert' do
+  let(:vsd_background_aggregation_disabled_alert) { find_by_testid('vsd-background-aggregation-disabled-warning') }
+
+  it 'renders background aggregation not enabled alert' do
+    expect(vsd_background_aggregation_disabled_alert).to be_visible
+
+    expect(vsd_background_aggregation_disabled_alert).to have_content _('Background aggregation not enabled')
+    expect(vsd_background_aggregation_disabled_alert).to have_content _("To see usage overview, you must enable " \
+    "background aggregation.")
+  end
+end
+
+RSpec.shared_examples 'does not render usage overview background aggregation not enabled alert' do
+  let(:vsd_background_aggregation_disabled_alert) { "[data-testid='vsd-background-aggregation-disabled-warning']" }
+
+  it 'does not render background aggregation not enabled alert' do
+    expect(page).not_to have_selector vsd_background_aggregation_disabled_alert
   end
 end
 

@@ -30,11 +30,23 @@ RSpec.describe Achievements::UserAchievement, type: :model, feature_category: :u
   describe 'scopes' do
     let_it_be(:user_achievement) { create(:user_achievement) }
     let_it_be(:revoked_user_achievement) { create(:user_achievement, :revoked) }
+    let_it_be(:hidden_user_achievement) { create(:user_achievement, show_on_profile: false) }
 
     describe '.not_revoked' do
       it 'only returns user achievements which have not been revoked' do
-        expect(described_class.not_revoked).to contain_exactly(user_achievement)
+        expect(described_class.not_revoked).to contain_exactly(user_achievement, hidden_user_achievement)
       end
     end
+
+    describe '.shown_on_profile' do
+      it 'only returns user achievements which are shown on profiles' do
+        expect(described_class.shown_on_profile).to contain_exactly(user_achievement, revoked_user_achievement)
+      end
+    end
+  end
+
+  describe 'validations' do
+    it { is_expected.to allow_values([false, true]).for(:show_on_profile) }
+    it { is_expected.not_to allow_value(nil).for(:show_on_profile) }
   end
 end

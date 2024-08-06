@@ -53,6 +53,11 @@ module Types
         GraphQL::Types::Int,
         null: true,
         description: 'Priority of the user achievement.'
+
+      field :show_on_profile,
+        GraphQL::Types::Boolean,
+        null: false,
+        description: 'Indicates whether or not the achievement is shown on the profile.'
     end
   end
 end

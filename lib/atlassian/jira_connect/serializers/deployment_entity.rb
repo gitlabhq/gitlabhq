@@ -58,7 +58,7 @@ module Atlassian
              #{environment.name}"
           end
 
-          "Deployment #{deployment.iid} of #{project.name} (project-#{project.id})
+          "Deployment #{deployment.iid} (deployment-#{deployment.id}) of #{project.name} (project-#{project.id})
           at #{short_sha} (#{build&.name}) to #{environment.name}"
         end
 

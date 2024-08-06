@@ -80,6 +80,42 @@ module ValueStreamsDashboardHelpers
     end
   end
 
+  def expected_usage_overview_metrics_zero_values(is_project: false)
+    supported_project_usage_metrics = [
+      ['issues', _('Issues'), '0'],
+      ['merge_requests', _('Merge requests'), '0'],
+      ['pipelines', _('Pipelines'), '0']
+    ]
+
+    if is_project
+      supported_project_usage_metrics
+    else
+      [
+        ['groups', _('Groups'), '0'],
+        ['projects', _('Projects'), '0'],
+        ['users', _('Users'), '0']
+      ].concat(supported_project_usage_metrics)
+    end
+  end
+
+  def expected_usage_overview_metrics_empty_values(is_project: false)
+    supported_project_usage_metrics = [
+      ['issues', _('Issues'), '-'],
+      ['merge_requests', _('Merge requests'), '-'],
+      ['pipelines', _('Pipelines'), '-']
+    ]
+
+    if is_project
+      supported_project_usage_metrics
+    else
+      [
+        ['groups', _('Groups'), '-'],
+        ['projects', _('Projects'), '-'],
+        ['users', _('Users'), '-']
+      ].concat(supported_project_usage_metrics)
+    end
+  end
+
   def create_mock_dora_performers_score_metrics(group)
     [
       [nil, 'high', 'high', 'high'],
