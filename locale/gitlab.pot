@@ -47183,6 +47183,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security policy bot cannot be added as a group member"
+msgstr ""
+
 msgid "Security policy project is already assigned."
 msgstr ""
 
