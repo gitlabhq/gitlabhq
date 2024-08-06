@@ -1108,6 +1108,34 @@ Example response:
 
 - CustomersDot
 
+### Update Credit Card Validation (internal API)
+
+Use a PUT command to update the User's credit card validation
+
+```plaintext
+PUT /internal/gitlab_subscriptions/users/:user_id/credit_card_validation
+```
+
+Example request:
+
+```shell
+curl --request PUT --header "PRIVATE-TOKEN: <admin_access_token>" \
+     --data '{"credit_card_validated_at": "2020-01-01 00:00:00 UTC", "credit_card_expiration_year": "2010", "credit_card_expiration_month": "12", "credit_card_holder_name": "John Smith", "credit_card_type": "American Express", "credit_card_mask_number": "1111", "zuora_payment_method_xid": "abc123", "stripe_setup_intent_xid": "seti_abc123", "stripe_payment_method_xid": "pm_abc123", "stripe_card_fingerprint": "card123"}' \
+     "https://gitlab.com/api/v4/internal/gitlab_subscriptions/users/:user_id/credit_card_validation"
+```
+
+Example response:
+
+```json
+{
+  "success": {}
+}
+```
+
+#### Known consumers
+
+- CustomersDot
+
 ## Storage limit exclusions
 
 The namespace storage limit exclusion endpoints manage storage limit exclusions on top-level namespaces on GitLab.com.

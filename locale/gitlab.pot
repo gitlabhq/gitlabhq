@@ -5383,6 +5383,9 @@ msgstr ""
 msgid "All GitLab"
 msgstr ""
 
+msgid "All LFS files must be unlocked."
+msgstr ""
+
 msgid "All Members"
 msgstr ""
 

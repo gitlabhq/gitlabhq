@@ -31,7 +31,10 @@ export function initMrPage() {
 
     if (changesCountBadge.textContent === '-') {
       changesCountBadge.textContent = fileCount;
-      Vue.set(tabData.tabs[tabData.tabs.length - 1], 3, fileCount);
+
+      const DIFF_TAB_INDEX = 3;
+      const diffTab = tabData.tabs[tabData.tabs.length - 1];
+      diffTab[DIFF_TAB_INDEX] = fileCount;
     }
   });
 }

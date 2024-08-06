@@ -57,6 +57,9 @@ module Types
       value 'APPROVALS_SYNCING',
         value: :approvals_syncing,
         description: 'Merge request approvals currently syncing.'
+      value 'LOCKED_LFS_FILES',
+        value: :locked_lfs_files,
+        description: 'Merge request includes locked LFS files.'
     end
   end
 end

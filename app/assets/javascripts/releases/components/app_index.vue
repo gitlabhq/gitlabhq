@@ -328,7 +328,7 @@ export default {
       :key="getReleaseKey(release, index)"
       :release="release"
       :sort="sort"
-      :class="{ 'linked-card': releases.length > 1 && index !== releases.length - 1 }"
+      :class="{ 'gl-relative linked-card': releases.length > 1 && index !== releases.length - 1 }"
     />
 
     <release-skeleton-loader v-if="shouldRenderLoadingIndicator" class="gl-mt-5" />

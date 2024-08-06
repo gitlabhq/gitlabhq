@@ -1,0 +1,9 @@
+---
+name: locked_lfs_files_mergeability_check
+feature_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/428247
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/158773
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474485
+milestone: '17.3'
+group: group::source code
+type: beta
+default_enabled: false

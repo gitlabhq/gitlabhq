@@ -11037,7 +11037,8 @@ CREATE TABLE group_crm_settings (
     group_id bigint NOT NULL,
     created_at timestamp with time zone NOT NULL,
     updated_at timestamp with time zone NOT NULL,
-    enabled boolean DEFAULT true NOT NULL
+    enabled boolean DEFAULT true NOT NULL,
+    source_group_id bigint
 );
 
 CREATE SEQUENCE group_crm_settings_group_id_seq
@@ -27701,6 +27702,8 @@ CREATE INDEX index_grafana_integrations_on_project_id ON grafana_integrations US
 
 CREATE INDEX index_group_crm_settings_on_group_id ON group_crm_settings USING btree (group_id);
 
+CREATE INDEX index_group_crm_settings_on_source_group_id ON group_crm_settings USING btree (source_group_id);
+
 CREATE UNIQUE INDEX index_group_custom_attributes_on_group_id_and_key ON group_custom_attributes USING btree (group_id, key);
 
 CREATE INDEX index_group_custom_attributes_on_key_and_value ON group_custom_attributes USING btree (key, value);
@@ -32713,6 +32716,9 @@ ALTER TABLE ONLY path_locks
 
 ALTER TABLE ONLY agent_user_access_group_authorizations
     ADD CONSTRAINT fk_53fd98ccbf FOREIGN KEY (group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY group_crm_settings
+    ADD CONSTRAINT fk_54592e5f57 FOREIGN KEY (source_group_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY terraform_states
     ADD CONSTRAINT fk_558901b030 FOREIGN KEY (locked_by_user_id) REFERENCES users(id) ON DELETE SET NULL;

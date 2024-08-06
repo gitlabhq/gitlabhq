@@ -462,7 +462,7 @@ Lock file tampering, for example, is outside of the scope of security policy man
 
 ### Filter out policy violations with the attributes "Fix Available" or "False Positive"
 
-To avoid unnecessary approval requirements, these additional filters help ensure you only block MRs on the most actionable findings. 
+To avoid unnecessary approval requirements, these additional filters help ensure you only block MRs on the most actionable findings.
 
 By setting `fix_available` to `false` in YAML, or **is not** and **Fix Available** in the policy editor, the finding is not considered a policy violation when the finding has a solution or remediation available. Solutions appear at the bottom of the vulnerability object under the heading **Solution**. Remediations appear as a **Resolve with Merge Request** button within the vulnerability object.
 
@@ -512,6 +512,23 @@ end
 ### Newly detected CVEs
 
 When using `new_needs_triage` and `new_dismissed`, some findings may require approval when they are not introduced by the merge request (such as a new CVE on a related dependency). These findings will not be present within the MR widget, but will be highlighted in the policy bot comment and pipeline report.
+
+### Policies still have effect after `policy.yml` was manually invalidated
+
+In GitLab 17.2 and earlier, you may find that policies defined in a `policy.yml` file are enforced,
+even though the file was manually edited and no longer validates
+against the [policy schema](#merge-request-approval-policies-schema). This issue occurs because of
+a bug in the policy synchronization logic.
+
+Potential symptoms include:
+
+- `approval_settings` still block the removal of branch protections, block force-pushes or otherwise affect open merge requests.
+- `any_merge_request` policies still apply to open merge requests.
+
+To resolve this you can:
+
+- Manually edit the `policy.yml` file that defines the policy so that it becomes valid again.
+- Unassign and re-assign the security policy projects where the `policy.yml` file is stored.
 
 ### Support request for debugging of merge request approval policy
 

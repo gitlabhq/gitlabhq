@@ -24,4 +24,5 @@ export const FAILURE_REASONS = {
   jira_association_missing: __('Either the title or description must reference a Jira issue.'),
   requested_changes: __('The change requests must be completed or resolved.'),
   approvals_syncing: __('The merge request approvals are currently syncing.'),
+  locked_lfs_files: __('All LFS files must be unlocked.'),
 };

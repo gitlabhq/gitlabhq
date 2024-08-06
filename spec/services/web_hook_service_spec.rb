@@ -330,7 +330,7 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
     it 'handles exceptions' do
       exceptions = Gitlab::HTTP::HTTP_ERRORS + [
-        Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError
+        Gitlab::Json::LimitedEncoder::LimitExceeded, URI::InvalidURIError, Zlib::DataError
       ]
 
       allow(Gitlab::WebHooks::RecursionDetection).to receive(:block?).and_return(false)
@@ -341,8 +341,10 @@ RSpec.describe WebHookService, :request_store, :clean_gitlab_redis_shared_state,
 
         stub_full_request(project_hook.url, method: :post).to_raise(exception)
 
+        expect(WebHooks::LogExecutionWorker).to receive(:perform_async)
+          .with(project_hook.id, kind_of(Hash), 'error', '')
+
         expect(service_instance.execute).to have_attributes(status: :error, message: exception.to_s)
-        expect { service_instance.execute }.not_to raise_error
       end
     end
 

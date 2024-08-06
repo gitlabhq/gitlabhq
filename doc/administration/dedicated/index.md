@@ -12,11 +12,15 @@ DETAILS:
 **Offering:** GitLab Dedicated
 
 GitLab Dedicated is a single-tenant SaaS solution, fully managed and hosted by GitLab.
-GitLab Dedicated operators and tenant administrators use the Switchboard UI to configure and maintain their tenant environments.
+GitLab Dedicated operators and tenant administrators can use Switchboard to provision, configure, and maintain their tenant environments.
 
 For more information about this offering, see the [subscription page](../../subscriptions/gitlab_dedicated/index.md).
 
 ## Architecture
+
+This page collects a set of architectural documents and diagrams for GitLab Dedicated.
+
+### High-level overview
 
 This diagram shows a high-level overview of the architecture for GitLab Dedicated.
 
@@ -62,9 +66,18 @@ Both [inbound](../../administration/dedicated/configure_instance.md#inbound-priv
 
 GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/cff1ce90-f146-457f-9630-d9b2eecdee99/edit?viewport_loc=553%2C-1872%2C2903%2C1277%2C0_0&invitationId=inv_1bf96b4a-8cc0-4a34-844d-a8780f32862a) files for the diagram in Lucidchart.
 
+### Hosted runners for GitLab Dedicated
+
+![Hosted Runners architecture diagram for GitLab Dedicated](img/hosted-runners-architecture_v17_3.png)
+
+For more information on how runners authenticate and execute the job payload, see [Runner execution flow](https://docs.gitlab.com/runner#runner-execution-flow).
+
+GitLab team members with edit access can update the [source](https://lucid.app/lucidchart/5dd152c0-53da-48a9-95b3-80fde0afad6d/edit?viewport_loc=534%2C-238%2C2942%2C1600%2Clp8eoEUK3HcI&invitationId=inv_45c946dd-74b7-4446-acbd-0df242bd6140) files for the diagram in Lucidchart.
+
 ## Get started
 
 To get started with GitLab Dedicated, use Switchboard to:
 
 1. [Create your GitLab Dedicated instance](../../administration/dedicated/create_instance.md).
 1. [Configure your GitLab Dedicated instance](../../administration/dedicated/configure_instance.md).
+1. [Create a hosted runner](../../administration/dedicated/hosted_runners.md).

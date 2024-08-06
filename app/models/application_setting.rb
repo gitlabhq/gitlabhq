@@ -16,6 +16,7 @@ class ApplicationSetting < MainClusterwide::ApplicationRecord
   ignore_columns %i[repository_storages], remove_with: '16.8', remove_after: '2023-12-21'
   ignore_column :required_instance_ci_template, remove_with: '17.1', remove_after: '2024-05-10'
   ignore_column %i[sign_in_text help_text], remove_with: '17.3', remove_after: '2024-08-15'
+  ignore_column :sign_in_text_html, remove_with: '17.5', remove_after: '2024-10-17'
   ignore_columns %i[openai_api_key anthropic_api_key vertex_ai_credentials vertex_ai_access_token], remove_with: '17.3', remove_after: '2024-08-15'
   ignore_columns %i[arkose_labs_verify_api_url], remove_with: '17.4', remove_after: '2024-08-09'
 

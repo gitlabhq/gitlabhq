@@ -3947,10 +3947,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
 
       where(:auto_merge_strategy, :skip_approved_check, :skip_draft_check, :skip_blocked_check,
-        :skip_discussions_check, :skip_external_status_check, :skip_requested_changes_check, :skip_jira_check) do
-        ''                                                      | false | false | false | false | false | false | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | false | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true | true
+        :skip_discussions_check, :skip_external_status_check, :skip_requested_changes_check, :skip_jira_check, :skip_locked_lfs_files_check) do
+        ''                                                      | false | false | false | false | false | false | false | false
+        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | false | false | false
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true | true | true
       end
 
       with_them do

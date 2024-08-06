@@ -9,7 +9,8 @@ export default {
   props: {
     title: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     description: {
       type: String,
@@ -67,7 +68,8 @@ export default {
             class="gl-m-0 gl-inline-flex gl-gap-3 gl-text-base gl-font-bold gl-leading-24"
             data-testid="crud-title"
           >
-            {{ title }}
+            <slot v-if="$scopedSlots.title" name="title"></slot>
+            <template v-else>{{ title }}</template>
             <span
               v-if="displayedCount || $scopedSlots.count"
               class="gl-inline-flex gl-items-center gl-gap-2 gl-text-sm gl-text-subtle"

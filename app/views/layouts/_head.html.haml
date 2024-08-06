@@ -63,14 +63,14 @@
     = webpack_bundle_tag 'sentry'
   = webpack_bundle_tag 'performance_bar' if performance_bar_enabled?
 
-  = yield :page_specific_javascripts
-
   = webpack_bundle_tag 'super_sidebar'
 
   - if vite_enabled?
     = render 'layouts/vite_main'
   - else
     = webpack_controller_bundle_tags
+
+  = yield :page_specific_javascripts
 
   - unless omit_og
     -# Open Graph - http://ogp.me/

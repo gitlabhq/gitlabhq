@@ -1,22 +1,20 @@
-import { GlCard, GlLink, GlBadge } from '@gitlab/ui';
+import { GlLink, GlBadge } from '@gitlab/ui';
 import { merge } from 'lodash';
 import originalRelease from 'test_fixtures/api/releases/release.json';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import ReleaseBlockHeader from '~/releases/components/release_block_header.vue';
-import { BACK_URL_PARAM } from '~/releases/constants';
+import ReleaseBlockTitle from '~/releases/components/release_block_title.vue';
 
 describe('Release block header', () => {
   let wrapper;
   let release;
 
   const factory = (releaseUpdates = {}) => {
-    wrapper = shallowMountExtended(ReleaseBlockHeader, {
+    wrapper = shallowMountExtended(ReleaseBlockTitle, {
       propsData: {
         release: merge({}, release, releaseUpdates),
       },
-      stubs: { GlCard, GlBadge },
+      stubs: { GlBadge },
     });
   };
 
@@ -24,9 +22,8 @@ describe('Release block header', () => {
     release = convertObjectPropsToCamelCase(originalRelease, { deep: true });
   });
 
-  const findHeader = () => wrapper.findByTestId('release-block-title');
-  const findHeaderLink = () => findHeader().findComponent(GlLink);
-  const findEditButton = () => wrapper.find('.js-edit-button');
+  const findPlainHeader = () => wrapper.findByTestId('release-block-title');
+  const findHeaderLink = () => wrapper.findComponent(GlLink);
   const findBadge = () => wrapper.findComponent(GlBadge);
 
   describe('when _links.self is provided', () => {
@@ -40,6 +37,10 @@ describe('Release block header', () => {
       expect(link.text()).toBe(release.name);
       expect(link.attributes('href')).toBe(release._links.self);
     });
+
+    it('does not show plain header', () => {
+      expect(findPlainHeader().exists()).toBe(false);
+    });
   });
 
   describe('when _links.self is missing', () => {
@@ -47,39 +48,9 @@ describe('Release block header', () => {
       factory({ _links: { self: null } });
     });
 
-    it('renders the title as text', () => {
-      expect(findHeader().text()).toContain(release.name);
+    it('renders a plain header', () => {
+      expect(findPlainHeader().text()).toBe(release.name);
       expect(findHeaderLink().exists()).toBe(false);
-    });
-  });
-
-  describe('when _links.edit_url is provided', () => {
-    const currentUrl = 'https://example.gitlab.com/path';
-
-    beforeEach(() => {
-      setWindowLocation(currentUrl);
-
-      factory();
-    });
-
-    it('renders an edit button', () => {
-      expect(findEditButton().exists()).toBe(true);
-    });
-
-    it('renders the edit button with the correct href', () => {
-      const expectedQueryParam = `${BACK_URL_PARAM}=${encodeURIComponent(currentUrl)}`;
-      const expectedUrl = `${release._links.editUrl}?${expectedQueryParam}`;
-      expect(findEditButton().attributes().href).toBe(expectedUrl);
-    });
-  });
-
-  describe('when _links.edit is missing', () => {
-    beforeEach(() => {
-      factory({ _links: { editUrl: null } });
-    });
-
-    it('does not render an edit button', () => {
-      expect(findEditButton().exists()).toBe(false);
     });
   });
 

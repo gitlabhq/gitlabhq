@@ -1155,6 +1155,7 @@ lib/gitlab/checks/**
 /app/views/groups/settings/_two_factor_auth.html.haml
 /app/views/groups/settings/access_tokens/
 /app/views/layouts/devise*.haml
+/app/views/layouts/terms.html.haml
 /app/views/layouts/oauth_error.html.haml
 /app/views/notify/access_token_about_to_expire_email.html.haml
 /app/views/notify/access_token_about_to_expire_email.text.erb

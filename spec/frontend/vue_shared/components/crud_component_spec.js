@@ -36,6 +36,12 @@ describe('CRUD Component', () => {
     expect(findTitle().text()).toBe('CRUD Component title');
   });
 
+  it('renders `title` slot', () => {
+    createComponent({}, { title: '<p>Title slot</p>' });
+
+    expect(findTitle().text()).toBe('Title slot');
+  });
+
   it('renders description', () => {
     createComponent({ description: 'Description' });
 

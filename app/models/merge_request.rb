@@ -1273,7 +1273,8 @@ class MergeRequest < ApplicationRecord
       skip_discussions_check: merge_when_checks_pass_strat,
       skip_external_status_check: merge_when_checks_pass_strat,
       skip_requested_changes_check: merge_when_checks_pass_strat,
-      skip_jira_check: merge_when_checks_pass_strat
+      skip_jira_check: merge_when_checks_pass_strat,
+      skip_locked_lfs_files_check: merge_when_checks_pass_strat
     }
   end
 
@@ -1286,6 +1287,7 @@ class MergeRequest < ApplicationRecord
   # skip_external_status_check
   # skip_requested_changes_check
   # skip_jira_check
+  # skip_locked_lfs_files_check
   def mergeable?(check_mergeability_retry_lease: false, skip_rebase_check: false, **mergeable_state_check_params)
     return false unless mergeable_state?(**mergeable_state_check_params)
 
@@ -1302,7 +1304,8 @@ class MergeRequest < ApplicationRecord
       ::MergeRequests::Mergeability::CheckDraftStatusService,
       ::MergeRequests::Mergeability::CheckCommitsStatusService,
       ::MergeRequests::Mergeability::CheckDiscussionsStatusService,
-      ::MergeRequests::Mergeability::CheckCiStatusService
+      ::MergeRequests::Mergeability::CheckCiStatusService,
+      ::MergeRequests::Mergeability::CheckLfsFileLocksService
     ]
   end
 
