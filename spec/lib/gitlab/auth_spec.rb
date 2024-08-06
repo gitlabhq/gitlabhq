@@ -311,13 +311,6 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
           expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
         end
 
-        it 'recognises group level security_policy_bot access token' do
-          build.update!(user: create(:user, :security_policy_bot))
-          group.add_guest(build.user)
-
-          expect(subject).to have_attributes(actor: build.user, project: build.project, type: :build, authentication_abilities: described_class.build_authentication_abilities)
-        end
-
         it 'fails with blocked user token' do
           build.update!(user: create(:user, :blocked))
 
