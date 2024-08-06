@@ -25,6 +25,7 @@ class Issue < ApplicationRecord
   include EachBatch
   include PgFullTextSearchable
   include IgnorableColumns
+  include Gitlab::DueAtFilterable
 
   extend ::Gitlab::Utils::Override
 

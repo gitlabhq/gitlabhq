@@ -404,6 +404,30 @@ RSpec.describe Issue, feature_category: :team_planning do
     end
   end
 
+  describe '.due_before' do
+    subject { described_class.due_before(Date.today) }
+
+    let!(:issue) { create(:issue, due_date: 1.day.ago) }
+    let!(:issue2) { create(:issue, due_date: 1.day.from_now) }
+
+    it 'returns issues which are over due' do
+      expect(subject).to contain_exactly(issue)
+      expect(subject).not_to include(issue2)
+    end
+  end
+
+  describe '.due_after' do
+    subject { described_class.due_after(Date.today) }
+
+    let!(:issue) { create(:issue, due_date: 1.day.ago) }
+    let!(:issue2) { create(:issue, due_date: 1.day.from_now) }
+
+    it 'returns issues which are due in the future' do
+      expect(subject).to contain_exactly(issue2)
+      expect(subject).not_to include(issue)
+    end
+  end
+
   describe '.simple_sorts' do
     it 'includes all keys' do
       expect(described_class.simple_sorts.keys).to include(

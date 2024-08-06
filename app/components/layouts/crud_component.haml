@@ -7,7 +7,7 @@
           - if @count
             %span.gl-inline-flex.gl-items-center.gl-gap-2.gl-text-sm.gl-text-subtle{ data: { testid: 'crud-count' } }
               - if @icon
-                = sprite_icon(@icon)
+                = sprite_icon(@icon, css_class: @icon_class)
               %span{ class: @count_class }
                 = @count
         - if description? || @description

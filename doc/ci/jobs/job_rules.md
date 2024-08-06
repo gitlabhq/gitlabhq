@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Specify when jobs run with `rules`
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 Use [`rules`](../yaml/index.md#rules) to include or exclude jobs in pipelines.
 
 Rules are evaluated in order until the first match. When a match is found, the job

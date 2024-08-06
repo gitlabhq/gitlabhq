@@ -45,6 +45,12 @@ module Resolvers
       argument :crm_organization_id, GraphQL::Types::String,
         required: false,
         description: 'ID of an organization assigned to the issues.'
+      argument :due_after, Types::TimeType,
+        required: false,
+        description: 'Return issues due on or after the given time.'
+      argument :due_before, Types::TimeType,
+        required: false,
+        description: 'Return issues due on or before the given time.'
       argument :iid, GraphQL::Types::String,
         required: false,
         description: 'IID of the issue. For example, "1".'

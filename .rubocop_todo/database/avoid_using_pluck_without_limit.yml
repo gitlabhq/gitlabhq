@@ -85,7 +85,6 @@ Database/AvoidUsingPluckWithoutLimit:
     - 'app/services/labels/transfer_service.rb'
     - 'app/services/merge_requests/push_options_handler_service.rb'
     - 'app/services/merge_requests/pushed_branches_service.rb'
-    - 'app/services/packages/cleanup/execute_policy_service.rb'
     - 'app/services/projects/unlink_fork_service.rb'
     - 'ee/app/finders/ee/issuables/label_filter.rb'
     - 'ee/app/finders/ee/merge_requests_finder.rb'

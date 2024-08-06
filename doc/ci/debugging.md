@@ -17,6 +17,27 @@ If you are unable to resolve pipeline issues, you can get help from:
 - The [GitLab community forum](https://forum.gitlab.com/)
 - GitLab [Support](https://about.gitlab.com/support/)
 
+If you are having issues with a specific CI/CD feature, see the related troubleshooting section
+for that feature:
+
+- [Caching](caching/index.md#troubleshooting).
+- [CI/CD job tokens](jobs/ci_job_token.md#troubleshooting).
+- [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
+- [Docker](docker/using_docker_build.md#troubleshooting).
+- [Downstream pipelines](pipelines/downstream_pipelines_troubleshooting.md).
+- [Environments](environments/index.md#troubleshooting).
+- [GitLab Runner](https://docs.gitlab.com/runner/faq/).
+- [ID tokens](secrets/id_token_authentication.md#troubleshooting).
+- [Jobs](jobs/index.md#troubleshooting).
+- [Job artifacts](jobs/job_artifacts_troubleshooting.md).
+- [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md),
+  [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
+  and [merge trains](pipelines/merge_trains.md#troubleshooting).
+- [Pipeline editor](pipeline_editor/index.md#troubleshooting).
+- [Variables](variables/index.md#troubleshooting).
+- [YAML `includes` keyword](yaml/includes.md#troubleshooting).
+- [YAML `script` keyword](yaml/script.md#troubleshooting).
+
 ## Debugging techniques
 
 ### Verify syntax
@@ -331,31 +352,7 @@ To [prevent duplicate pipelines](jobs/job_rules.md#avoid-duplicate-pipelines), u
 [`workflow: rules`](yaml/index.md#workflow) or rewrite your rules to control
 which pipelines can run.
 
-## Troubleshooting
-
-For help with a specific area, see:
-
-- [Caching](caching/index.md#troubleshooting).
-- [CI/CD job tokens](jobs/ci_job_token.md).
-- [Container registry](../user/packages/container_registry/troubleshoot_container_registry.md).
-- [Docker](docker/using_docker_build.md#troubleshooting).
-- [Downstream pipelines](pipelines/downstream_pipelines_troubleshooting.md).
-- [Environments](environments/deployment_safety.md#ensure-only-one-deployment-job-runs-at-a-time).
-- [GitLab Runner](https://docs.gitlab.com/runner/faq/).
-- [ID tokens](secrets/id_token_authentication.md#troubleshooting).
-- [Jobs](jobs/index.md#troubleshooting).
-- [Job control](jobs/job_control.md).
-- [Job artifacts](jobs/job_artifacts_troubleshooting.md).
-- [Merge request pipelines](pipelines/mr_pipeline_troubleshooting.md),
-  [merged results pipelines](pipelines/merged_results_pipelines.md#troubleshooting),
-  and [Merge trains](pipelines/merge_trains.md#troubleshooting).
-- [Pipeline editor](pipeline_editor/index.md#troubleshooting).
-- [Variables](variables/index.md#troubleshooting).
-- [YAML `includes` keyword](yaml/includes.md#troubleshooting).
-- [YAML `script` keyword](yaml/script.md#troubleshooting).
-
-Otherwise, review the following troubleshooting sections for known status messages
-and error messages.
+## Pipeline errors
 
 ### `A CI/CD pipeline must run and be successful before merge` message
 

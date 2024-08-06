@@ -1,5 +1,6 @@
 import { detectAndConfirmSensitiveTokens } from '~/lib/utils/secret_detection';
 import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal';
+import { InternalEvents } from '~/tracking';
 import { sensitiveMessages, nonSensitiveMessages, secretDetectionFindings } from './mock_data';
 
 jest.mock('~/lib/utils/confirm_via_gl_modal/confirm_via_gl_modal');
@@ -8,7 +9,21 @@ const mockConfirmAction = ({ confirmed }) => {
   confirmAction.mockResolvedValueOnce(confirmed);
 };
 
+const trackingEventName = 'show_client_side_secret_detection_warning';
+const trackingEventPayload = {
+  label: 'comment',
+  property: 'GitLab personal access token',
+  value: 0,
+};
+
 describe('detectAndConfirmSensitiveTokens', () => {
+  beforeEach(() => {
+    jest.spyOn(InternalEvents, 'trackEvent');
+  });
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   describe('content without sensitive tokens', () => {
     it.each(nonSensitiveMessages)(
       'returns true and does not show warning for message: %s',
@@ -18,6 +33,11 @@ describe('detectAndConfirmSensitiveTokens', () => {
         expect(confirmAction).not.toHaveBeenCalled();
       },
     );
+    it('does not trigger event tracking', () => {
+      const message = 'This is a test message';
+      detectAndConfirmSensitiveTokens({ content: message });
+      expect(InternalEvents.trackEvent).not.toHaveBeenCalled();
+    });
   });
 
   describe('content with sensitive tokens', () => {
@@ -39,6 +59,29 @@ describe('detectAndConfirmSensitiveTokens', () => {
 
         const result = await detectAndConfirmSensitiveTokens({ content: message });
         expect(result).toBe(false);
+      });
+    });
+
+    describe('event tracking', () => {
+      const [message] = sensitiveMessages;
+
+      it('should track correct event when warning is dismissed', async () => {
+        mockConfirmAction({ confirmed: false });
+
+        await detectAndConfirmSensitiveTokens({ content: message });
+        expect(InternalEvents.trackEvent).toHaveBeenCalledWith(trackingEventName, {
+          ...trackingEventPayload,
+          value: 0,
+        });
+      });
+      it('should track correct event when warning is accepted', async () => {
+        mockConfirmAction({ confirmed: true });
+
+        await detectAndConfirmSensitiveTokens({ content: message });
+        expect(InternalEvents.trackEvent).toHaveBeenCalledWith(trackingEventName, {
+          ...trackingEventPayload,
+          value: 1,
+        });
       });
     });
   });
@@ -118,6 +161,10 @@ describe('detectAndConfirmSensitiveTokens', () => {
 
         const confirmActionArgs = confirmAction.mock.calls[0][1];
         expect(confirmActionArgs.modalHtmlMessage).toContain(expectedMessage);
+        expect(InternalEvents.trackEvent).toHaveBeenCalledWith(trackingEventName, {
+          ...trackingEventPayload,
+          label: contentType,
+        });
       });
     });
   });

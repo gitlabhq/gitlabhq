@@ -7,6 +7,8 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 # Mobile DevOps
 
 DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 **Status:** Experiment
 
 Use GitLab Mobile DevOps to quickly build, sign, and release native and cross-platform mobile apps

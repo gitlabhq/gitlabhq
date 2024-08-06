@@ -67,4 +67,25 @@ RSpec.describe Gitlab::Utils::Email, feature_category: :service_desk do
       it { expect(described_class.obfuscate_emails_in_text(input)).to eq(output) }
     end
   end
+
+  describe "#normalize_email" do
+    subject { described_class.normalize_email(raw_email) }
+
+    using RSpec::Parameterized::TableSyntax
+
+    where(:raw_email, :expected_result) do
+      nil                            | nil
+      'notanemail@'                  | nil
+      '@notanemail.com'              | nil
+      'notanemail'                   | nil
+      'user@includeddomain.com'      | 'user@includeddomain.com'
+      'u.s.e.r@includeddomain.com'   | 'user@includeddomain.com'
+      'user+123@includeddomain.com'  | 'user@includeddomain.com'
+      'us.er+123@includeddomain.com' | 'user@includeddomain.com'
+    end
+
+    with_them do
+      it { is_expected.to eq expected_result }
+    end
+  end
 end

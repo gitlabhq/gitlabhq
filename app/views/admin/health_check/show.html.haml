@@ -25,18 +25,17 @@
     %code= metrics_url(token: Gitlab::CurrentSettings.health_check_access_token)
   = render_if_exists 'admin/health_check/health_check_url'
 
-= render Pajamas::CardComponent.new do |c|
-  - c.with_header do
-    Current Status:
-    - if no_errors
-      = sprite_icon('check', css_class: 'gl-text-success')
-      #{ s_('HealthCheck|Healthy') }
-    - else
-      = sprite_icon('warning-solid', css_class: 'gl-text-danger')
-      #{ s_('HealthCheck|Unhealthy') }
+- status_icon = no_errors ? 'check' : 'warning-solid'
+- status_text = no_errors ? s_('HealthCheck|Healthy') : s_('HealthCheck|Unhealthy')
+- status_class = no_errors ? 'gl-text-success' : 'gl-text-danger'
+
+= render ::Layouts::CrudComponent.new(s_('HealthCheck|Current status'),
+  icon: status_icon,
+  count: status_text,
+  icon_class: status_class) do |c|
   - c.with_body do
     - if no_errors
-      %p.gl-new-card-empty
+      %p.gl-text-subtle
         = s_('HealthCheck|No health problems detected')
     - else
       = @errors

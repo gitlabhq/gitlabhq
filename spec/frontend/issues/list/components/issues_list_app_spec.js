@@ -1017,6 +1017,21 @@ describe('CE IssuesListApp component', () => {
           query: expect.objectContaining({ first_page_size: 50 }),
         });
       });
+
+      it('calls the query with correct variables', async () => {
+        wrapper = mountComponent();
+
+        findIssuableList().vm.$emit('page-size-change', 50);
+        await nextTick();
+
+        expect(mockIssuesQueryResponse).toHaveBeenCalledWith(
+          expect.objectContaining({
+            afterCursor: undefined,
+            beforeCursor: undefined,
+            firstPageSize: 50,
+          }),
+        );
+      });
     });
   });
 

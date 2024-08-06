@@ -182,30 +182,6 @@ class Clusters::ClustersController < ::Clusters::BaseController
       )
   end
 
-  def proxyable
-    cluster.cluster
-  end
-
-  # During first iteration of dashboard variables implementation
-  # cluster health case was omitted. Existing service for now is tied to
-  # environment, which is not always present for cluster health dashboard.
-  # It is planned to break coupling to environment https://gitlab.com/gitlab-org/gitlab/-/issues/213833.
-  # It is also planned to move cluster health to metrics dashboard section https://gitlab.com/gitlab-org/gitlab/-/issues/220214
-  # but for now I've used dummy class to stub variable substitution service, as there are no variables
-  # in cluster health dashboard
-  def proxy_variable_substitution_service
-    @empty_service ||= Class.new(BaseService) do
-      def initialize(proxyable, params)
-        @proxyable = proxyable
-        @params = params
-      end
-
-      def execute
-        success(params: @params)
-      end
-    end
-  end
-
   def user_cluster
     cluster = Clusters::BuildService.new(clusterable.__subject__).execute
     cluster.build_platform_kubernetes

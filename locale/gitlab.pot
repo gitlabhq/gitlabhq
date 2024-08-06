@@ -12984,6 +12984,9 @@ msgstr ""
 msgid "CodeSuggestions|Manage seat assignments for %{addOnName} across your instance."
 msgstr ""
 
+msgid "CodeSuggestions|Run health check"
+msgstr ""
+
 msgid "CodeSuggestions|trial"
 msgstr ""
 
@@ -26343,6 +26346,9 @@ msgid "Health status"
 msgstr ""
 
 msgid "HealthCheck|Access token"
+msgstr ""
+
+msgid "HealthCheck|Current status"
 msgstr ""
 
 msgid "HealthCheck|Health information can be retrieved from the following endpoints. More information is available in the %{linkStart}health check documentation%{linkEnd}."
@@ -56536,6 +56542,9 @@ msgstr ""
 msgid "Unable to collect memory information"
 msgstr ""
 
+msgid "Unable to complete your request. Please enter a different email address and try again."
+msgstr ""
+
 msgid "Unable to connect to server: %{error}"
 msgstr ""
 
@@ -57125,6 +57134,12 @@ msgid "UsageQuotas|An error occurred loading the transfer data. Please refresh t
 msgstr ""
 
 msgid "UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
+msgstr ""
+
+msgid "UsageQuotas|Health check failed"
+msgstr ""
+
+msgid "UsageQuotas|Health check succeeded"
 msgstr ""
 
 msgid "UsageQuotas|Namespace transfer data used"

@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Troubleshooting jobs
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 When working with jobs, you might encounter the following issues.
 
 ## Jobs or pipelines run unexpectedly when using `changes:`

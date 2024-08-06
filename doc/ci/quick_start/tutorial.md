@@ -6,6 +6,10 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 # Tutorial: Create a complex pipeline
 
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
 This tutorial walks you through configuring a progressively more complex CI/CD pipeline
 through small, iterative steps. The pipeline is always fully functional,
 but it gains more functionality with each step. The goal is to build, test, and deploy

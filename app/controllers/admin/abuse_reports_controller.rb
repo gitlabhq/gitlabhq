@@ -11,7 +11,7 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   end
 
   def index
-    @abuse_reports = AbuseReportsFinder.new(params).execute
+    @abuse_reports = AbuseReportsFinder.new(permitted_index_params).execute
   end
 
   def show; end
@@ -37,7 +37,7 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   end
 
   def destroy
-    @abuse_report.remove_user(deleted_by: current_user) if params[:remove_user]
+    @abuse_report.remove_user(deleted_by: current_user) if params.permit(:remove_user)[:remove_user]
     @abuse_report.destroy
 
     head :ok
@@ -46,14 +46,18 @@ class Admin::AbuseReportsController < Admin::ApplicationController
   private
 
   def find_abuse_report
-    @abuse_report = AbuseReport.find(params[:id])
+    @abuse_report = AbuseReport.find(params.permit(:id)[:id])
   end
 
   def set_status_param
-    params[:status] ||= 'open'
+    params[:status] ||= 'open' # rubocop:disable Rails/StrongParams -- This is setting a default value if none is present
   end
 
   def permitted_params
     params.permit(:user_action, :close, :reason, :comment, { label_ids: [] })
+  end
+
+  def permitted_index_params
+    params.permit(:page, :status, :category, :user, :reporter, :sort)
   end
 end

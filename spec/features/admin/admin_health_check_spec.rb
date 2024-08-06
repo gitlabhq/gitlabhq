@@ -46,7 +46,7 @@ RSpec.describe "Admin health check", :js, feature_category: :error_budgets do
     end
 
     it 'shows healthy status' do
-      expect(page).to have_content('Current Status: Healthy')
+      expect(page).to have_content('Current status Healthy')
     end
   end
 
@@ -57,7 +57,7 @@ RSpec.describe "Admin health check", :js, feature_category: :error_budgets do
     end
 
     it 'shows unhealthy status' do
-      expect(page).to have_content('Current Status: Unhealthy')
+      expect(page).to have_content('Current status Unhealthy')
       expect(page).to have_content('The server is on fire')
     end
   end

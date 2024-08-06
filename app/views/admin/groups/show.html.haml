@@ -68,7 +68,7 @@
                 %span.gl-font-monospace.gl-text-secondary.gl-text-sm
                   = project.full_path + '.git'
         - else
-          %p.gl-new-card-empty.gl-text-center= _('No projects')
+          %p.gl-text-center= _('No projects')
       - unless @projects.size < Kaminari.config.default_per_page
         - c.with_footer do
           = paginate @projects, param_name: 'projects_page', theme: 'gitlab'

@@ -643,6 +643,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="queryissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="queryissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="queryissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
+| <a id="queryissuesdueafter"></a>`dueAfter` | [`Time`](#time) | Return issues due on or after the given time. |
+| <a id="queryissuesduebefore"></a>`dueBefore` | [`Time`](#time) | Return issues due on or before the given time. |
 | <a id="queryissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="queryissuesepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="queryissueshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
@@ -22968,6 +22970,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="groupissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="groupissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="groupissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
+| <a id="groupissuesdueafter"></a>`dueAfter` | [`Time`](#time) | Return issues due on or after the given time. |
+| <a id="groupissuesduebefore"></a>`dueBefore` | [`Time`](#time) | Return issues due on or before the given time. |
 | <a id="groupissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="groupissuesepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="groupissueshealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in GitLab 15.4. Use `healthStatusFilter`. |
@@ -29248,6 +29252,8 @@ Returns [`Issue`](#issue).
 | <a id="projectissuecreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="projectissuecrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="projectissuecrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
+| <a id="projectissuedueafter"></a>`dueAfter` | [`Time`](#time) | Return issues due on or after the given time. |
+| <a id="projectissueduebefore"></a>`dueBefore` | [`Time`](#time) | Return issues due on or before the given time. |
 | <a id="projectissueepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="projectissueepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="projectissuehealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in GitLab 15.4. Use `healthStatusFilter`. |
@@ -29299,6 +29305,8 @@ Returns [`IssueStatusCountsType`](#issuestatuscountstype).
 | <a id="projectissuestatuscountscreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="projectissuestatuscountscrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="projectissuestatuscountscrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
+| <a id="projectissuestatuscountsdueafter"></a>`dueAfter` | [`Time`](#time) | Return issues due on or after the given time. |
+| <a id="projectissuestatuscountsduebefore"></a>`dueBefore` | [`Time`](#time) | Return issues due on or before the given time. |
 | <a id="projectissuestatuscountsepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="projectissuestatuscountsepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="projectissuestatuscountshealthstatusfilter"></a>`healthStatusFilter` | [`HealthStatusFilter`](#healthstatusfilter) | Health status of the issue, "none" and "any" values are supported. |
@@ -29351,6 +29359,8 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="projectissuescreatedbefore"></a>`createdBefore` | [`Time`](#time) | Issues created before the date. |
 | <a id="projectissuescrmcontactid"></a>`crmContactId` | [`String`](#string) | ID of a contact assigned to the issues. |
 | <a id="projectissuescrmorganizationid"></a>`crmOrganizationId` | [`String`](#string) | ID of an organization assigned to the issues. |
+| <a id="projectissuesdueafter"></a>`dueAfter` | [`Time`](#time) | Return issues due on or after the given time. |
+| <a id="projectissuesduebefore"></a>`dueBefore` | [`Time`](#time) | Return issues due on or before the given time. |
 | <a id="projectissuesepicid"></a>`epicId` | [`String`](#string) | ID of an epic associated with the issues, "none" and "any" values are supported. |
 | <a id="projectissuesepicwildcardid"></a>`epicWildcardId` | [`EpicWildcardId`](#epicwildcardid) | Filter by epic ID wildcard. Incompatible with epicId. |
 | <a id="projectissueshealthstatus"></a>`healthStatus` **{warning-solid}** | [`HealthStatus`](#healthstatus) | **Deprecated** in GitLab 15.4. Use `healthStatusFilter`. |

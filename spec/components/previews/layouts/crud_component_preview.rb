@@ -13,6 +13,7 @@ module Layouts
       description: 'Description',
       count: 99,
       icon: 'rocket',
+      icon_class: 'gl-text-success',
       toggle_text: 'Add action',
       actions: 'Custom actions',
       body: 'Body slot',
@@ -25,6 +26,7 @@ module Layouts
         description: description,
         count: count,
         icon: icon,
+        icon_class: icon_class,
         toggle_text: toggle_text)) do |c|
         c.with_description { description }
         c.with_actions { actions }

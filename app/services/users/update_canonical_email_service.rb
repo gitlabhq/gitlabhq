@@ -16,9 +16,9 @@ module Users
       return unless user.email
       return unless user.email.match? Devise.email_regexp
 
-      canonical_email = canonicalize_email
+      canonical_email = ::Gitlab::Utils::Email.normalize_email(user.email)
 
-      unless canonical_email
+      unless Regexp.union(INCLUDED_DOMAINS_PATTERN).match?(canonical_email)
         # the canonical email doesn't exist, probably because the domain doesn't match
         # destroy any UserCanonicalEmail record associated with this user
         user.user_canonical_email&.delete
@@ -37,20 +37,5 @@ module Users
     private
 
     attr_reader :user
-
-    def canonicalize_email
-      email = user.email
-
-      portions = email.split('@')
-      username = portions.shift
-      rest = portions.join
-
-      regex = Regexp.union(INCLUDED_DOMAINS_PATTERN)
-      return unless regex.match?(rest)
-
-      no_dots = username.tr('.', '')
-      before_plus = no_dots.split('+')[0]
-      "#{before_plus}@#{rest}"
-    end
   end
 end

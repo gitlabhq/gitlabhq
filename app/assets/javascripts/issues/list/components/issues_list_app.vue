@@ -805,8 +805,8 @@ export default {
         this.pageSize,
         isPositiveInteger(firstPageSize) ? parseInt(firstPageSize, 10) : undefined,
         isPositiveInteger(lastPageSize) ? parseInt(lastPageSize, 10) : undefined,
-        getParameterByName(PARAM_PAGE_AFTER),
-        getParameterByName(PARAM_PAGE_BEFORE),
+        getParameterByName(PARAM_PAGE_AFTER) ?? undefined,
+        getParameterByName(PARAM_PAGE_BEFORE) ?? undefined,
       );
       this.sortKey = sortKey;
       this.state = state || STATUS_OPEN;

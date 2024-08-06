@@ -657,7 +657,6 @@ flow of how we construct a Chat prompt:
 ## Interpreting GitLab Duo Chat error codes
 
 GitLab Duo Chat has error codes with specified meanings to assist in debugging.
-Currently, they are only logged, but in the future, they will be displayed on the UI.
 
 See the [GitLab Duo Chat troubleshooting documentation](../../user/gitlab_duo_chat/troubleshooting.md) for a list of all GitLab Duo Chat error codes.
 

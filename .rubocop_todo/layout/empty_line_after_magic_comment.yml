@@ -609,7 +609,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/services/labels/available_labels_service_spec.rb'
     - 'spec/services/merge_requests/build_service_spec.rb'
     - 'spec/services/milestones/update_service_spec.rb'
-    - 'spec/services/packages/cleanup/execute_policy_service_spec.rb'
     - 'spec/services/packages/cleanup/update_policy_service_spec.rb'
     - 'spec/services/packages/composer/composer_json_service_spec.rb'
     - 'spec/services/packages/composer/create_package_service_spec.rb'

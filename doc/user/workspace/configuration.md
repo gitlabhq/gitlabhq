@@ -46,7 +46,7 @@ To set up infrastructure for workspaces:
 Prerequisites:
 
 - Ensure your [workspace infrastructure](#set-up-workspace-infrastructure) is already set up.
-- You must have at least the Developer role in the root group.
+- You must have at least the Developer role in the workspace or agent project.
 - In each project where you want to create a workspace, create a [devfile](index.md#devfile):
   1. On the left sidebar, select **Search or go to** and find your project.
   1. In the root directory of your project, create a file named `devfile`.
@@ -150,6 +150,8 @@ USER gitlab-workspaces
 
 ## Troubleshooting
 
+When working with workspaces, you might encounter the following issues.
+
 ### `Failed to renew lease` when creating a workspace
 
 You might not be able to create a workspace due to a known issue in the GitLab agent for Kubernetes.
@@ -163,16 +165,18 @@ This issue occurs when an agent instance cannot renew its leadership lease, whic
 in the shutdown of leader-only modules including the `remote_development` module.
 To resolve this issue, restart the agent instance.
 
-### No cluster agents available when creating workspaces
+### Error: `No agents available to create workspaces`
 
-When creating a workspace in a project, one of the following errors might occur:
+When you create a workspace in a project, you might get the following error:
 
-- `You can't create a workspace for this project` when you attempt to create the workspace from **Workspaces** on the left sidebar.
-- `To set up this feature, contact your administrator.` when you attempt to create the workspace in a specific project using the `Edit` function.
-- An expected agent is not be present in the list of available agents.
+```plaintext
+No agents available to create workspaces. Please consult Workspaces documentation for troubleshooting.
+```
 
-Possible reasons for this error are:
+To resolve this issue:
 
-- The user does not have at least Developer role for the workspace project and/or the agent project. To resolve this issue, ask the respective group or project owner to grant you access.
-- The parent groups of the workspace project may not have any allowed agents. To resolve this issue, verify that the expected agents are allowed under the Workspace settings for any of the parent groups. To verify, you must have the Maintainer or Owner role for the group. If the agents are not allowed, you must [allow a cluster agent for Workspaces in a group](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group).
-- The remote development module in the agent is disabled. To resolve this issue, please enable workspaces for this agent. Please refer to the [remote development module settings](gitlab_agent_configuration.md#enabled) on how this can be done.
+- If you do not have at least the Developer role in the workspace or agent project, contact your administrator.
+- If the ancestor groups of the project do not have an allowed agent,
+  [allow an agent](gitlab_agent_configuration.md#allow-a-cluster-agent-for-workspaces-in-a-group) for any of these groups.
+- If the `remote_development` module is disabled for the GitLab agent,
+  set [`enabled`](gitlab_agent_configuration.md#enabled) to `true`.

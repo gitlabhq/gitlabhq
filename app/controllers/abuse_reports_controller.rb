@@ -55,7 +55,7 @@ class AbuseReportsController < ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def set_user
-    @user = User.find_by(id: params[:user_id])
+    @user = User.find_by(id: params.permit(:user_id)[:user_id])
 
     if @user.nil?
       redirect_to root_path, alert: _("Cannot create the abuse report. The user has been deleted.")

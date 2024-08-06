@@ -33,28 +33,12 @@ DETAILS:
   and quickly learn about GitLab by answering your questions in a chat window.
 - LLMs: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet),
   Anthropic [Claude 3 Haiku](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-haiku),
-  and [Vertex AI Search](https://cloud.google.com/enterprise-search).
+  and [Vertex AI Search](https://cloud.google.com/enterprise-search). The LLM depends on the question asked.
+  For more information, see the [Duo Chat examples](../gitlab_duo_chat_examples.md).
+  For self-managed, the models also depend on your GitLab version.
+  For the most benefit, use the latest GitLab version whenever possible.
 - <i class="fa fa-youtube-play youtube" aria-hidden="true"></i> [Watch overview](https://www.youtube.com/watch?v=ZQBAuf-CTAY&list=PLFGfElNsQthYDx0A_FaNNfUm9NHsK6zED)
 - [View documentation](../gitlab_duo_chat/index.md).
-
-NOTE:
-The LLM for GitLab Duo Chat depends on the question asked. For more information, see
-the [Duo Chat examples](../gitlab_duo_chat_examples.md).
-For self-managed, the models also depend on your GitLab version.
-For the most benefit, use the latest GitLab version whenever possible.
-
-### Root cause analysis
-
-DETAILS:
-**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
-**Offering:** GitLab.com, Self-managed, GitLab Dedicated
-
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment) on GitLab.com.
-> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
-
-- Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
-- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
-- [View documentation](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ### Code Suggestions
 
@@ -109,6 +93,19 @@ DETAILS:
 - Helps you merge more quickly by generating meaningful commit messages.
 - LLM: Vertex AI Codey [`text-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/text-bison).
 - [View documentation](../project/merge_requests/duo_in_merge_requests.md#generate-a-merge-commit-message).
+
+### Root cause analysis
+
+DETAILS:
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/123692) in GitLab 16.2 as an [experiment](../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/441681) and moved to GitLab Duo Chat in GitLab 17.3.
+
+- Helps you determine the root cause for a CI/CD job failure by analyzing the logs.
+- LLM: Anthropic [Claude 3.5 Sonnet](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet)
+- [View documentation](../gitlab_duo_chat/examples.md#troubleshoot-failed-cicd-jobs-with-root-cause-analysis).
 
 ### Vulnerability explanation
 

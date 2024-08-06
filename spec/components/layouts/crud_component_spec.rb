@@ -43,6 +43,12 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
       expect(page).to have_css('[data-testid="crud-count"] svg[data-testid="rocket-icon"]')
     end
 
+    it 'renders icon class' do
+      render_inline described_class.new(title, count: count, icon: icon, icon_class: 'test-icon-class')
+
+      expect(page).to have_css('[data-testid="crud-count"] svg[data-testid="rocket-icon"].test-icon-class')
+    end
+
     it 'renders action toggle' do
       render_inline described_class.new(title, toggle_text: toggle_text)
 

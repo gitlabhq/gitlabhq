@@ -14,14 +14,15 @@ module Layouts
     # @param [Hash] footer_options
     def initialize(
       title, description: nil, count: nil, count_class: nil, icon: nil,
-      toggle_text: nil, options: {}, body_options: {}, form_options: {},
-      toggle_options: {}, footer_options: {}
+      icon_class: nil, toggle_text: nil, options: {}, body_options: {},
+      form_options: {}, toggle_options: {}, footer_options: {}
     )
       @title = title
       @description = description
       @count = count
       @count_class = count_class
       @icon = icon
+      @icon_class = icon_class
       @toggle_text = toggle_text
       @options = options
       @body_options = body_options

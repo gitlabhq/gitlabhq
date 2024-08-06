@@ -2,10 +2,8 @@
 # Cop supports --autocorrect.
 Rails/StrongParams:
   Exclude:
-    - 'app/controllers/abuse_reports_controller.rb'
     - 'app/controllers/acme_challenges_controller.rb'
     - 'app/controllers/activity_pub/projects/application_controller.rb'
-    - 'app/controllers/admin/abuse_reports_controller.rb'
     - 'app/controllers/admin/application_settings_controller.rb'
     - 'app/controllers/admin/applications_controller.rb'
     - 'app/controllers/admin/background_migrations_controller.rb'

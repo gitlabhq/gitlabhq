@@ -1138,6 +1138,7 @@ lib/gitlab/checks/**
 /app/validators/json_schemas/cluster_agent_authorization_configuration.json
 /app/views/admin/application_settings/_external_authorization_service_form.html.haml
 /app/views/admin/impersonation_tokens/
+/app/views/admin/sessions/
 /app/views/authentication/
 /app/views/dashboard/projects/_zero_authorized_projects.html.haml
 /app/views/devise/mailer/password_change.html.haml
