@@ -44,12 +44,6 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :team_planni
     expect(doc.css('gl-emoji').size).to be 0
   end
 
-  it 'does not match an unknown emoji' do
-    doc = filter(':tanuki: :tanooki:')
-
-    expect(doc.css('gl-emoji').size).to be 1
-  end
-
   it 'does not do N+1 query' do
     create(:custom_emoji, name: 'party-parrot', group: group)
 
@@ -89,10 +83,5 @@ RSpec.describe Banzai::Filter::CustomEmojiFilter, feature_category: :team_planni
   it_behaves_like 'pipeline timing check'
   it_behaves_like 'a filter timeout' do
     let(:text) { 'text' }
-  end
-
-  it_behaves_like 'limits the number of filtered items' do
-    let(:text) { ':tanuki: :tanuki: :tanuki:' }
-    let(:ends_with) { '</gl-emoji> :tanuki:' }
   end
 end

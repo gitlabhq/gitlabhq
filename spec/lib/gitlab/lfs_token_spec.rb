@@ -2,13 +2,13 @@
 
 require 'spec_helper'
 
-RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_category: :source_code_management do
+RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state do
   let_it_be(:user)       { create(:user) }
   let_it_be(:project)    { create(:project) }
   let_it_be(:deploy_key) { create(:deploy_key) }
 
   let(:actor)     { user }
-  let(:lfs_token) { described_class.new(actor, project) }
+  let(:lfs_token) { described_class.new(actor) }
 
   describe '#token' do
     shared_examples 'a valid LFS token' do
@@ -17,7 +17,7 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
 
         expect(token).not_to be_nil
         expect(token).to be_a String
-        expect(described_class.new(actor, project).token_valid?(token)).to be true
+        expect(described_class.new(actor).token_valid?(token)).to be true
       end
     end
 
@@ -30,10 +30,6 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
 
       it 'returns the correct token type' do
         expect(lfs_token.type).to eq(:lfs_token)
-      end
-
-      it 'returns a container_gid' do
-        expect(lfs_token.container_gid).to eq(Gitlab::GlobalId.build(project).to_s)
       end
     end
 
@@ -48,10 +44,6 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
 
       it 'returns the correct token type' do
         expect(lfs_token.type).to eq(:lfs_token)
-      end
-
-      it 'returns a container_gid' do
-        expect(lfs_token.container_gid).to eq(Gitlab::GlobalId.build(project).to_s)
       end
     end
 
@@ -72,25 +64,11 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
       it 'returns the correct token type' do
         expect(lfs_token.type).to eq(:lfs_deploy_token)
       end
-
-      it 'returns a container_gid' do
-        expect(lfs_token.container_gid).to eq(Gitlab::GlobalId.build(project).to_s)
-      end
     end
 
     context 'when the actor is invalid' do
       it 'raises an exception' do
-        expect { described_class.new('invalid', project) }.to raise_error('Bad Actor')
-      end
-    end
-
-    context 'when container is missing' do
-      let(:project) { nil }
-
-      it_behaves_like 'a valid LFS token'
-
-      it 'returns an empty container_gid' do
-        expect(lfs_token.container_gid).to eq(nil)
+        expect { described_class.new('invalid') }.to raise_error('Bad Actor')
       end
     end
   end
@@ -114,7 +92,7 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
       context 'because it was generated with a different secret' do
         it 'returns false' do
           different_actor = create(:user, username: 'test_user_lfs_2')
-          different_secret_token = described_class.new(different_actor, project).token
+          different_secret_token = described_class.new(different_actor).token
 
           expect(lfs_token.token_valid?(different_secret_token)).to be false
         end
@@ -129,14 +107,6 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
           travel_to(Time.now + described_class::DEFAULT_EXPIRE_TIME + 60) do
             expect(lfs_token.token_valid?(expired_token)).to be false
           end
-        end
-      end
-
-      context 'because it was generated for a different project' do
-        it 'returns false' do
-          different_secret_token = described_class.new(actor, create(:project)).token
-
-          expect(lfs_token.token_valid?(different_secret_token)).to be false
         end
       end
 
@@ -184,24 +154,6 @@ RSpec.describe Gitlab::LfsToken, :clean_gitlab_redis_shared_state, feature_categ
 
           it 'returns true' do
             expect(lfs_token.token_valid?(lfs_token.token)).to be true
-          end
-        end
-
-        context 'when token was generated without project' do
-          let(:project) { nil }
-
-          it 'returns true (for backward compatibility)' do
-            token_without_project = lfs_token.token
-
-            expect(described_class.new(actor, create(:project)).token_valid?(token_without_project)).to be true
-          end
-        end
-
-        context 'when token validation does not request a project' do
-          it 'returns true' do
-            token_with_project = lfs_token.token
-
-            expect(described_class.new(actor, nil).token_valid?(token_with_project)).to be true
           end
         end
       end

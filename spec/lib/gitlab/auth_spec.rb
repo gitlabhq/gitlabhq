@@ -362,21 +362,21 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
     context 'while using LFS authenticate' do
       it 'recognizes user lfs tokens' do
         user = create(:user)
-        token = Gitlab::LfsToken.new(user, project).token
+        token = Gitlab::LfsToken.new(user).token
 
         expect(gl_auth.find_for_git_client(user.username, token, project: nil, request: request)).to have_attributes(actor: user, project: nil, type: :lfs_token, authentication_abilities: described_class.read_write_project_authentication_abilities)
       end
 
       it 'recognizes deploy key lfs tokens' do
         key = create(:deploy_key)
-        token = Gitlab::LfsToken.new(key, project).token
+        token = Gitlab::LfsToken.new(key).token
 
         expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: nil, request: request)).to have_attributes(actor: key, project: nil, type: :lfs_deploy_token, authentication_abilities: described_class.read_only_authentication_abilities)
       end
 
       it 'does not try password auth before oauth' do
         user = create(:user)
-        token = Gitlab::LfsToken.new(user, project).token
+        token = Gitlab::LfsToken.new(user).token
 
         expect(gl_auth).not_to receive(:find_with_user_password)
 
@@ -386,41 +386,20 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
       it 'grants deploy key write permissions' do
         key = create(:deploy_key)
         create(:deploy_keys_project, :write_access, deploy_key: key, project: project)
-        token = Gitlab::LfsToken.new(key, project).token
+        token = Gitlab::LfsToken.new(key).token
 
         expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: project, request: request)).to have_attributes(actor: key, project: nil, type: :lfs_deploy_token, authentication_abilities: described_class.read_write_authentication_abilities)
       end
 
       it 'does not grant deploy key write permissions' do
         key = create(:deploy_key)
-        token = Gitlab::LfsToken.new(key, project).token
+        token = Gitlab::LfsToken.new(key).token
 
         expect(gl_auth.find_for_git_client("lfs+deploy-key-#{key.id}", token, project: project, request: request)).to have_attributes(actor: key, project: nil, type: :lfs_deploy_token, authentication_abilities: described_class.read_only_authentication_abilities)
       end
 
       it 'does fail if the user and token are nil' do
         expect(gl_auth.find_for_git_client(nil, nil, project: project, request: request)).to have_attributes(auth_failure)
-      end
-
-      context 'when lfs token belongs to a different project' do
-        let_it_be(:actor) { create(:user) }
-        let_it_be(:another_project) { create(:project) }
-
-        context 'when project is provided' do
-          it 'returns an auth failure' do
-            token = Gitlab::LfsToken.new(actor, another_project).token
-
-            expect(gl_auth.find_for_git_client(actor.username, token, project: project, request: request)).to have_attributes(auth_failure)
-          end
-        end
-
-        context 'without project' do
-          it 'grants permissions' do
-            token = Gitlab::LfsToken.new(actor, another_project).token
-
-            expect(gl_auth.find_for_git_client(actor.username, token, project: nil, request: request)).to have_attributes(actor: actor, project: nil, type: :lfs_token, authentication_abilities: described_class.read_write_project_authentication_abilities)
-          end
-        end
       end
     end
 

@@ -30,8 +30,8 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
     let(:regex_str) { '(?P<scheme>(ftp))' }
     let(:regex) { create_regex(regex_str, multiline: true) }
 
-    def result(text, regex, limit: 0)
-      regex.replace_gsub(text, limit: limit) do |match|
+    def result(regex, text)
+      regex.replace_gsub(text) do |match|
         if match[:scheme]
           "http|#{match[:scheme]}|rss"
         else
@@ -41,27 +41,21 @@ RSpec.describe Gitlab::UntrustedRegexp, feature_category: :shared do
     end
 
     it 'replaces all instances of the match in a string' do
-      text = 'Use only https instead of ftp or sftp'
+      text = 'Use only https instead of ftp'
 
-      expect(result(text, regex)).to eq('Use only https instead of http|ftp|rss or shttp|ftp|rss')
-    end
-
-    it 'limits the number of replacements' do
-      text = 'Use only https instead of ftp or sftp'
-
-      expect(result(text, regex, limit: 1)).to eq('Use only https instead of http|ftp|rss or sftp')
+      expect(result(regex, text)).to eq('Use only https instead of http|ftp|rss')
     end
 
     it 'replaces nothing when no match' do
       text = 'Use only https instead of gopher'
 
-      expect(result(text, regex)).to eq(text)
+      expect(result(regex, text)).to eq(text)
     end
 
     it 'handles empty text' do
       text = ''
 
-      expect(result(text, regex)).to eq('')
+      expect(result(regex, text)).to eq('')
     end
   end
 

@@ -22,8 +22,8 @@ module Banzai
         #
         # Returns a String replaced with the return of the block.
         def references_in(text, pattern = object_reference_pattern)
-          Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
-            yield match_data[0], match_data['user']
+          text.gsub(pattern) do |match|
+            yield match, $~[:user]
           end
         end
 

@@ -115,11 +115,6 @@ RSpec.describe Banzai::Filter::References::ExternalIssueReferenceFilter, feature
         expect(cached[:output].css('a').first[:href]).to eq(not_cached[:output].css('a').first[:href])
       end
     end
-
-    it_behaves_like 'limits the number of filtered items' do
-      let(:text) { "#{reference} #{reference} #{reference}" }
-      let(:ends_with) { "</a> #{reference}" }
-    end
   end
 
   context "redmine project" do

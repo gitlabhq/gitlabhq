@@ -318,7 +318,7 @@ module Gitlab
 
         return unless actor
 
-        token_handler = Gitlab::LfsToken.new(actor, project)
+        token_handler = Gitlab::LfsToken.new(actor)
 
         authentication_abilities =
           if token_handler.user?

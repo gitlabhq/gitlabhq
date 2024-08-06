@@ -39,10 +39,9 @@ module Gitlab
 
     # There is no built-in replace with block support (like `gsub`).  We can accomplish
     # the same thing by parsing and rebuilding the string with the substitutions.
-    def replace_gsub(text, limit: 0)
+    def replace_gsub(text)
       new_text = +''
       remainder = text
-      count = 0
 
       matched = match(remainder)
 
@@ -52,11 +51,6 @@ module Gitlab
         remainder = partitioned.last
 
         new_text << yield(matched)
-
-        if limit > 0
-          count += 1
-          break if count >= limit
-        end
 
         matched = match(remainder)
       end

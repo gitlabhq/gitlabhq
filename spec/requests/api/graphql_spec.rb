@@ -339,7 +339,7 @@ RSpec.describe 'GraphQL', feature_category: :shared do
         let(:query) { 'query { currentUser { id, username } }' }
 
         describe 'with git-lfs token' do
-          let(:lfs_token) { Gitlab::LfsToken.new(user, nil).token }
+          let(:lfs_token) { Gitlab::LfsToken.new(user).token }
           let(:header_token) { Base64.encode64("#{user.username}:#{lfs_token}") }
           let(:headers) do
             { 'Authorization' => "Basic #{header_token}" }

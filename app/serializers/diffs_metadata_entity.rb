@@ -33,17 +33,6 @@ class DiffsMetadataEntity < DiffsEntity
   expose :username
   expose :user_full_name
 
-  expose :has_encoded_file_paths do |_, options|
-    diff =
-      if options[:only_context_commits]
-        options[:merge_request].context_commits_diff
-      else
-        options[:merge_request_diff].presence || options[:commit]
-      end
-
-    diff&.has_encoded_file_paths?
-  end
-
   private
 
   def project_path

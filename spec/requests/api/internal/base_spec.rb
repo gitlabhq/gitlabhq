@@ -263,7 +263,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         expect(json_response['username']).to eq(user.username)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
         expect(json_response['expires_in']).to eq(Gitlab::LfsToken::DEFAULT_EXPIRE_TIME)
-        expect(Gitlab::LfsToken.new(key, project).token_valid?(json_response['lfs_token'])).to be_truthy
+        expect(Gitlab::LfsToken.new(key).token_valid?(json_response['lfs_token'])).to be_truthy
       end
 
       it 'returns the correct information about the user' do
@@ -272,7 +272,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['username']).to eq(user.username)
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
-        expect(Gitlab::LfsToken.new(user, project).token_valid?(json_response['lfs_token'])).to be_truthy
+        expect(Gitlab::LfsToken.new(user).token_valid?(json_response['lfs_token'])).to be_truthy
       end
 
       it 'returns a 404 when no key or user is provided' do
@@ -309,7 +309,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
           expect(json_response['username']).to eq(user.username)
           expect(json_response['repository_http_path']).to eq(wiki.http_url_to_repo)
           expect(json_response['expires_in']).to eq(Gitlab::LfsToken::DEFAULT_EXPIRE_TIME)
-          expect(Gitlab::LfsToken.new(user, wiki).token_valid?(json_response['lfs_token'])).to be_truthy
+          expect(Gitlab::LfsToken.new(user).token_valid?(json_response['lfs_token'])).to be_truthy
         end
 
         it 'returns a 404 when the container does not support LFS' do
@@ -330,7 +330,7 @@ RSpec.describe API::Internal::Base, feature_category: :system_access do
         expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['username']).to eq("lfs+deploy-key-#{key.id}")
         expect(json_response['repository_http_path']).to eq(project.http_url_to_repo)
-        expect(Gitlab::LfsToken.new(key, project).token_valid?(json_response['lfs_token'])).to be_truthy
+        expect(Gitlab::LfsToken.new(key).token_valid?(json_response['lfs_token'])).to be_truthy
       end
     end
   end
