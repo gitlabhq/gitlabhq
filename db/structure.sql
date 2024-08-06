@@ -11165,7 +11165,8 @@ CREATE TABLE merge_request_context_commit_diff_files (
     diff text,
     "binary" boolean,
     merge_request_context_commit_id bigint NOT NULL,
-    generated boolean
+    generated boolean,
+    encoded_file_path boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE merge_request_context_commits (
@@ -11258,7 +11259,8 @@ CREATE TABLE merge_request_diff_files (
     "binary" boolean,
     external_diff_offset integer,
     external_diff_size integer,
-    generated boolean
+    generated boolean,
+    encoded_file_path boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE merge_request_diffs (

@@ -452,6 +452,7 @@ included_attributes:
     - :b_mode
     - :too_large
     - :binary
+    - :encoded_file_path
   metrics:
     - :created_at
     - :updated_at

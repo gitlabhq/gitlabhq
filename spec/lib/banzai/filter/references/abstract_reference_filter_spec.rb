@@ -25,6 +25,13 @@ RSpec.describe Banzai::Filter::References::AbstractReferenceFilter, feature_cate
     filter.call
   end
 
+  it 'uses gsub_with_limit' do
+    allow(described_class).to receive(:object_class).and_return(Issue)
+    expect(Gitlab::Utils::Gsub).to receive(:gsub_with_limit).with(anything, anything, limit: Banzai::Filter::FILTER_ITEM_LIMIT).and_call_original
+
+    filter.references_in('text')
+  end
+
   context 'abstract methods' do
     describe '#find_object' do
       it 'raises NotImplementedError' do

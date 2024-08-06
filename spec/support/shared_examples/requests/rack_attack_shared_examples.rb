@@ -160,7 +160,7 @@ RSpec.shared_examples 'rate-limited token requests' do
         env: :throttle,
         remote_ip: '127.0.0.1',
         request_method: request_method,
-        path: request_args.first,
+        path: a_string_including(request_args.first.split('?').first),
         matched: matched
       }.merge(log_data))
 
