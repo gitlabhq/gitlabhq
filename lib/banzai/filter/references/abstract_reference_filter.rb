@@ -39,11 +39,12 @@ module Banzai
         #
         # Returns a String replaced with the return of the block.
         def references_in(text, pattern = object_class.reference_pattern)
-          text.gsub(pattern) do |match|
-            if ident = identifier($~)
-              yield match, ident, $~.named_captures['project'], $~.named_captures['namespace'], $~
+          Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
+            if ident = identifier(match_data)
+              yield match_data[0], ident, match_data.named_captures['project'], match_data.named_captures['namespace'],
+                match_data
             else
-              match
+              match_data[0]
             end
           end
         end
