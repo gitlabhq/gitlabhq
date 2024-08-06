@@ -82,7 +82,6 @@ release-environments-deploy:
     branch: main
     strategy: depend
   needs: ["release-environments-deploy-env"]
-  resource_group: release-environment-${CI_COMMIT_REF_SLUG}
 
 release-environments-qa:
   stage: qa
