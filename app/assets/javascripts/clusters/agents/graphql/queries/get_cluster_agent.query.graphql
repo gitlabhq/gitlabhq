@@ -15,6 +15,10 @@ query getClusterAgent(
       id
       createdAt
 
+      userAccessAuthorizations {
+        config
+      }
+
       createdByUser {
         id
         name

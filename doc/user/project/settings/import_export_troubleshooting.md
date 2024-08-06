@@ -220,6 +220,15 @@ Validation failed: User project bots cannot be added to other groups / projects
 To use [Import REST API](../../../api/project_import_export.md),
 pass regular user account credentials such as [personal access tokens](../../profile/personal_access_tokens.md).
 
+## Error: `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`
+
+Some migrations can time out with the error: `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`.
+One way to avoid this problem is to have the migration batch size reduced. This makes a migration less likely to time
+out, but makes migrations slower.
+
+To have the batch sized reduced, you must have a feature flag enabled. For more information, see
+[issue 456948](https://gitlab.com/gitlab-org/gitlab/-/issues/456948).
+
 ## Troubleshooting performance issues
 
 Read through the current performance problems using the Import/Export below.

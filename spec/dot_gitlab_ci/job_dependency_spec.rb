@@ -4,16 +4,48 @@ require 'spec_helper'
 
 # ***********************************************************************************************************
 # The tests in this file are recommended to run locally to test ci configuration changes
-# The test runs quite slowly because our configuration logic is very complex and it takes time to process
+# The tests are slow because pipeline simuation takes time given our current pipeline yaml size
 # ***********************************************************************************************************
+# TEST COVERAGE
 #
-# HOW TO CONTRIBUTE
+# GitLab.com gitlab-org/gitlab-foss Project
+#    Master Pipeline Triggered by Push
+#    Scheduled Master Pipeline
+#
+# GitLab.com gitlab-org/gitlab Master Pipeline
+#   Default Master Pipeline Triggered by Push
+#   Scheduled pipeline - Nightly
+#   Scheduled pipeline - Maintenance
+#
+# Merge Request Pipeline (and merge train pipeline under the same contexts)
+#   Unlabeled MR Changing GITALY_SERVER_VERSION
+#   Unlabeled MR Changing Dangerfile, .gitlab/ci/frontend.gitlab-ci.yml
+#
+#   MR Labeled with pipeline:run-all-rspec Changing app/models/user.rb
+#   MR Labeled with pipeline:expedite pipeline::expedited Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-1 Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-2 and pipeline:mr-approved Changing app/models/user.rb
+#   MR Labeled with pipeline::tier-3 and pipeline:mr-approved Changing app/models/user.rb
+#   MR Labeled with pipeline:run-as-if-foss Changing app/models/user.rb
+#
+# Automated MR
+#   MR Created from release-tools/update-gitaly Source Branch Changing GITALY_SERVER_VERSION
+#
+# Stable Branch
+#   MR Targeting a Stable Branch Changing app/models/user.rb
+#
+# Fork Project MRs
+#   MR Created from a Fork Project Master Branch Changing package.json
+#   MR Created from a Fork Project Feature Branch Changing package.json
+# ***********************************************************************************************************
+# CONTRIBUTE
+#
+# If you think we are missing coverage for an important pipeline type, please add them.
 #
 # For example, ci rule changes could break gitlab-foss pipelines, as seen in
 # https://gitlab.com/gitlab-org/quality/engineering-productivity/master-broken-incidents/-/issues/7356
 # we then added test cases by simulating pipeline for gitlab-org/gitlab-foss
 # See `with gitlab.com gitlab-org gitlab-foss project` context below for details.
-# If you think we are missing important test cases for a pipeline type, please add them following this exmaple.
 # ***********************************************************************************************************
 RSpec.describe 'ci jobs dependency', feature_category: :tooling do
   include ProjectForksHelper

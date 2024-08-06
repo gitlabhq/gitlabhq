@@ -2699,16 +2699,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
     end
   end
 
-  describe '#expire_branch_names_cache' do
-    it 'expires the cache' do
-      expect(repository).to receive(:expire_method_caches)
-        .with(%i[branch_names branch_count])
-        .and_call_original
-
-      repository.expire_branch_names_cache
-    end
-  end
-
   describe '#expire_protected_branches_cache' do
     it 'expires the cache' do
       expect_next_instance_of(ProtectedBranches::CacheService) do |cache_service|
@@ -2736,16 +2726,6 @@ RSpec.describe Repository, feature_category: :source_code_management do
         .and_call_original
 
       repository.expire_tags_cache
-    end
-  end
-
-  describe '#expire_tag_names_cache' do
-    it 'expires the cache' do
-      expect(repository).to receive(:expire_method_caches)
-        .with(%i[tag_names tag_count])
-        .and_call_original
-
-      repository.expire_tag_names_cache
     end
   end
 

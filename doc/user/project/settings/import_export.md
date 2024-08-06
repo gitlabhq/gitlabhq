@@ -13,6 +13,11 @@ DETAILS:
 Migrating groups and projects by using [direct transfer](../../group/import/index.md) is recommended. However, in some
 situations, you might need to migrate groups and project by using file exports.
 
+## Known issue
+
+Because of a known issue, you might see error `PG::QueryCanceled: ERROR: canceling statement due to statement timeout`.
+For more information, see [troubleshooting information](import_export_troubleshooting.md#error-pgquerycanceled-error-canceling-statement-due-to-statement-timeout).
+
 ## Migrate projects by uploading an export file
 
 Existing projects on any self-managed GitLab instance or GitLab.com can be exported to a file and

@@ -102,6 +102,11 @@ msgid_plural "%d Approvals"
 msgstr[0] ""
 msgstr[1] ""
 
+msgid "%d Custom role"
+msgid_plural "%d Custom roles"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%d Module"
 msgid_plural "%d Modules"
 msgstr[0] ""
@@ -661,11 +666,6 @@ msgstr ""
 
 msgid "%{count} %{scope} for term '%{term}'"
 msgstr ""
-
-msgid "%{count} Custom role"
-msgid_plural "%{count} Custom roles"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "%{count} LOC/commit"
 msgstr ""
@@ -12253,6 +12253,15 @@ msgstr ""
 msgid "ClusterAgents|Connect a cluster (deprecated)"
 msgstr ""
 
+msgid "ClusterAgents|Connect to %{agentName}"
+msgstr ""
+
+msgid "ClusterAgents|Connect to a cluster"
+msgstr ""
+
+msgid "ClusterAgents|Connect to agent"
+msgstr ""
+
 msgid "ClusterAgents|Connected"
 msgstr ""
 
@@ -12344,6 +12353,9 @@ msgid "ClusterAgents|Last contact"
 msgstr ""
 
 msgid "ClusterAgents|Learn how to troubleshoot"
+msgstr ""
+
+msgid "ClusterAgents|Learn more about user access."
 msgstr ""
 
 msgid "ClusterAgents|Make sure you are using a valid token."
@@ -12469,6 +12481,12 @@ msgid "ClusterAgents|What is agent activity?"
 msgstr ""
 
 msgid "ClusterAgents|What is default configuration?"
+msgstr ""
+
+msgid "ClusterAgents|You can connect to your cluster from the command line. Configure %{linkStart}kubectl%{linkEnd} command-line access by running the following command:"
+msgstr ""
+
+msgid "ClusterAgents|You can connect to your cluster from the command line. To use this feature, configure %{monotypeStart}user_access%{monotypeEnd} in the agent configuration project."
 msgstr ""
 
 msgid "ClusterAgents|You cannot see this token again after you close this window."
@@ -32416,7 +32434,7 @@ msgstr ""
 msgid "MemberRole|Actions"
 msgstr ""
 
-msgid "MemberRole|Are you sure you want to delete this custom role? Before you delete this custom role, make sure no group member has this role."
+msgid "MemberRole|Are you sure you want to delete this custom role?"
 msgstr ""
 
 msgid "MemberRole|Base role"

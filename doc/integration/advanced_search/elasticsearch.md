@@ -1262,9 +1262,35 @@ search" behaves as though you don't have advanced search enabled at all for
 your instance and search using other data sources (such as PostgreSQL data and Git
 data).
 
-## Data recovery: Elasticsearch is a secondary data store only
+## Disaster recovery
 
-The use of Elasticsearch in GitLab is only ever as a secondary data store.
-This means that all of the data stored in Elasticsearch can always be derived
-again from other data sources, specifically PostgreSQL and Gitaly. Therefore, if
-the Elasticsearch data store is ever corrupted for whatever reason, you can reindex everything from scratch.
+Elasticsearch is a secondary data store for GitLab.
+All of the data stored in Elasticsearch can be derived again
+from other data sources, specifically PostgreSQL and Gitaly.
+If the Elasticsearch data store gets corrupted,
+you can reindex everything from scratch.
+
+If your Elasticsearch index is too large, it might cause
+too much downtime to reindex everything from scratch.
+You cannot automatically find discrepancies and resync an Elasticsearch index,
+but you can inspect the logs for any missing updates.
+To recover data more quickly, you can replay:
+
+1. All synced non-repository updates by searching in
+   [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog)
+   for [`track_items`](https://gitlab.com/gitlab-org/gitlab/-/blob/1e60ea99bd8110a97d8fc481e2f41cab14e63d31/ee/app/services/elastic/process_bookkeeping_service.rb#L25).
+   You must send these items again through
+   `::Elastic::ProcessBookkeepingService.track!`.
+1. All repository updates by searching in
+   [`elasticsearch.log`](../../administration/logs/index.md#elasticsearchlog)
+   for [`indexing_commit_range`](https://gitlab.com/gitlab-org/gitlab/-/blob/6f9d75dd3898536b9ec2fb206e0bd677ab59bd6d/ee/lib/gitlab/elastic/indexer.rb#L41).
+   You must set [`IndexStatus#last_commit/last_wiki_commit`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/models/index_status.rb)
+   to the oldest `from_sha` in the logs and then trigger another index of
+   the project with [`ElasticCommitIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_commit_indexer_worker.rb) and [`ElasticWikiIndexerWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_wiki_indexer_worker.rb).
+1. All project deletes by searching in
+   [`sidekiq.log`](../../administration/logs/index.md#sidekiqlog) for
+   [`ElasticDeleteProjectWorker`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/ee/app/workers/elastic_delete_project_worker.rb).
+   You must trigger another `ElasticDeleteProjectWorker`.
+
+You can also take regular
+[Elasticsearch snapshots](https://www.elastic.co/guide/en/elasticsearch/reference/current/snapshot-restore.html) to reduce the time it takes to recover from data loss without reindexing everything from scratch.

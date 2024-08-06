@@ -26,6 +26,11 @@ export const clusterAgents = [
     webPath: '/agent-1',
     status: 'unused',
     lastContact: null,
+    userAccessAuthorizations: {
+      config: {
+        access_as: { agent: {} },
+      },
+    },
     tokens: null,
   },
   {
@@ -34,6 +39,7 @@ export const clusterAgents = [
     webPath: '/agent-2',
     status: 'active',
     lastContact: connectedTimeNow.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -58,6 +64,7 @@ export const clusterAgents = [
     webPath: '/agent-3',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -79,6 +86,7 @@ export const clusterAgents = [
     webPath: '/agent-4',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -103,6 +111,7 @@ export const clusterAgents = [
     webPath: '/agent-5',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -127,6 +136,7 @@ export const clusterAgents = [
     webPath: '/agent-6',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -148,6 +158,7 @@ export const clusterAgents = [
     webPath: '/agent-7',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -169,6 +180,7 @@ export const clusterAgents = [
     webPath: '/agent-8',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -190,6 +202,7 @@ export const clusterAgents = [
     webPath: '/agent-9',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     connections: {
       nodes: [
         {
@@ -211,6 +224,7 @@ export const clusterAgents = [
     webPath: 'shared-project/agent-1',
     status: 'inactive',
     lastContact: connectedTimeInactive.getTime(),
+    userAccessAuthorizations: null,
     isShared: true,
     connections: null,
     tokens: null,

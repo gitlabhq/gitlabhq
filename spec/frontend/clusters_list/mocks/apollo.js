@@ -4,6 +4,7 @@ const agent = {
   name: 'agent-name',
   webPath: 'agent-webPath',
   createdAt: new Date(),
+  userAccessAuthorizations: null,
 };
 const token = {
   id: 'token-id',

@@ -103,7 +103,7 @@ export const truncate = (string, maxLength) => {
  * @param  {String} options.chars string of chars to use as a basis for calculating average width
  * @return {Number}
  */
-const getAverageCharWidth = memoize(function getAverageCharWidth(options = {}) {
+const getAverageCharWidth = memoize((options = {}) => {
   const {
     fontSize = 12,
     fontFamily = 'sans-serif',

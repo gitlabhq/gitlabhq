@@ -169,7 +169,7 @@ export default {
       <div class="blob-content gl-flex gl-w-full gl-flex-col gl-overflow-y-auto">
         <pre
           class="code highlight !gl-p-0"
-        ><code v-safe-html="content" :data-blob-hash="blobHash" ></code></pre>
+        ><code v-safe-html="content" :data-blob-hash="blobHash"></code></pre>
       </div>
     </div>
   </div>

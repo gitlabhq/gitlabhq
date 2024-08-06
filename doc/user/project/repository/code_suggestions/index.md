@@ -22,26 +22,31 @@ GitLab Duo Code Suggestions requires [GitLab 16.8](https://about.gitlab.com/rele
 
 Write code more efficiently by using generative AI to suggest code while you're developing.
 
-With GitLab Duo Code Suggestions, you get:
+With GitLab Duo Code Suggestions, you get code completion and code generation.
 
-- Code completion, which suggests completions to the current line you are
-  typing. Code completion is used in most situations to quickly complete one
-  or a few lines of code.
-- Code generation, which generates code based on a natural language code
-  comment block. Write a comment like `# check if code suggestions are
-  enabled for current user`, then press <kbd>Enter</kbd> to generate code based
-  on the context of your comment and the rest of your code. Code generation requests
-  are slower than code completion requests, but provide more accurate responses because:
-  - A larger LLM is used.
-  - Additional context is sent in the request, for example,
-    the libraries used by the project.
-  - User instruction is passed to the LLM.
+## Code completion
 
-  Code generation is used when the:
+Code completion suggests completions to the line you are typing.
+Code completion is used in most situations to quickly complete one
+or a few lines of code.
 
-  - User writes a comment and hits <kbd>Enter</kbd>.
-  - File being edited is less than five lines of code.
-  - User enters an empty function or method.
+## Code generation
+
+Code generation generates code based on a natural language code
+comment block. Write a comment like `# check if code suggestions are
+enabled for current user`, then press <kbd>Enter</kbd> to generate code based
+on the context of your comment and the rest of your code.
+
+Code generation is used when:
+
+- You write a comment and press <kbd>Enter</kbd>.
+- You enter an empty function or method.
+- The file you're editing has fewer than five lines of code.
+Code generation requests take longer than code completion requests, but provide more accurate responses because:
+
+- A larger LLM is used.
+- Additional context is sent in the request, for example, the libraries used by the project.
+- Your instructions are passed to the LLM.
 
 <i class="fa fa-youtube-play youtube" aria-hidden="true"></i>
 [View a click-through demo](https://gitlab.navattic.com/code-suggestions).

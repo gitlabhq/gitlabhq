@@ -479,16 +479,6 @@ RSpec.describe Gitlab::ContentSecurityPolicy::ConfigLoader, feature_category: :s
         it 'adds Snowplow Micro URL with trailing slash to connect-src' do
           expect(connect_src).to match(Regexp.new(snowplow_micro_url))
         end
-
-        context 'when not enabled using config' do
-          before do
-            stub_config(snowplow_micro: { enabled: false })
-          end
-
-          it 'does not add Snowplow Micro URL to connect-src' do
-            expect(connect_src).not_to include(snowplow_micro_url)
-          end
-        end
       end
     end
 

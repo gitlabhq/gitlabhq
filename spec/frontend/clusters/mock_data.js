@@ -202,6 +202,7 @@ export const getTokenResponse = {
       clusterAgent: {
         id: 'cluster-agent-id',
         createdAt: '2022-03-13T18:42:44Z',
+        userAccessAuthorizations: null,
         createdByUser: {
           ...user,
         },

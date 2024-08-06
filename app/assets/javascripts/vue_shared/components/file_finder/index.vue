@@ -139,7 +139,7 @@ export default {
       this.toggle(!this.visible);
     });
 
-    addStopCallback(function fileFinderStopCallback(e, el, combo) {
+    addStopCallback((e, el, combo) => {
       if (
         (combo === 't' && el.classList.contains('dropdown-input-field')) ||
         el.classList.contains('inputarea')

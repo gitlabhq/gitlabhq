@@ -546,7 +546,7 @@ scripts/my-script.rb
 
 ## CI Configuration Testing
 
-We now have RSpec tests to verify changes to the CI configuration by simulating pipeline creation with the updated YAML files. You can find these tests in the `spec/dot_gitlab_ci/` directory.
+We now have RSpec tests to verify changes to the CI configuration by simulating pipeline creation with the updated YAML files. You can find these tests and a documentation of the current test coverage in [`spec/dot_gitlab_ci/job_dependency_spec.rb`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/spec/dot_gitlab_ci/job_dependency_spec.rb).
 
 ### How Do the Tests Work
 

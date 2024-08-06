@@ -3,6 +3,9 @@ fragment ClusterAgentFragment on ClusterAgent {
   name
   webPath
   createdAt
+  userAccessAuthorizations {
+    config
+  }
   connections {
     nodes {
       metadata {

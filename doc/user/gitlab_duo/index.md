@@ -117,6 +117,18 @@ DETAILS:
 - LLM: Anthropic [Claude 3 Haiku](https://docs.anthropic.com/en/docs/about-claude/models#claude-3-a-new-generation-of-ai).
 - [View documentation](../application_security/vulnerabilities/index.md#explaining-a-vulnerability).
 
+### AI Impact dashboard
+
+DETAILS:
+**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com, Self-managed
+
+- Measure the AI effectiveness and impact on SDLC metrics.
+- Visualize which metrics improved as a result of investments in AI.
+- Compare the performance of teams that are using AI against teams that are not using AI.
+- Track the progress of AI adoption.
+- [View documentation](../analytics/value_streams_dashboard.md#ai-impact-analytics).
+
 ## Beta features
 
 ### Merge request summary
@@ -201,18 +213,6 @@ DETAILS:
 - Processes and responds to your questions about your application's usage data.
 - LLM: Vertex AI Codey [`codechat-bison`](https://cloud.google.com/vertex-ai/generative-ai/docs/model-reference/code-chat)
 - [View documentation](../analytics/analytics_dashboards.md#generate-a-custom-visualization-with-gitlab-duo).
-
-### AI Impact Dashboard
-
-DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com, Self-managed
-
-- Measure the AI effectiveness and impact on SDLC metrics.
-- Visualize which metrics improved as a result of investments in AI.
-- Compare the performance of teams that are using AI against teams that are not using AI.
-- Track the progress of AI adoption.
-- [View documentation](../analytics/value_streams_dashboard.md#ai-impact-analytics).
 
 ## Disable GitLab Duo features for specific groups or projects or an entire instance
 

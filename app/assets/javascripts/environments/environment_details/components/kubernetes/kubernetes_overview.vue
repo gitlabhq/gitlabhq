@@ -1,9 +1,18 @@
 <script>
-import { GlEmptyState, GlSprintf, GlLink, GlAlert, GlDrawer } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlSprintf,
+  GlLink,
+  GlAlert,
+  GlDrawer,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+  GlModalDirective,
+} from '@gitlab/ui';
 import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty-state-clusters.svg?url';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
-import { s__ } from '~/locale';
+import { s__, __ } from '~/locale';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -20,8 +29,10 @@ import {
   HELM_RELEASES_RESOURCE_TYPE,
   KUSTOMIZATIONS_RESOURCE_TYPE,
 } from '~/environments/constants';
+import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import eventHub from '~/environments/event_hub';
+import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
@@ -38,9 +49,15 @@ export default {
     GlLink,
     GlAlert,
     GlDrawer,
+    GlDisclosureDropdown,
+    GlDisclosureDropdownItem,
     DeletePodModal,
+    ConnectToAgentModal,
   },
-  inject: ['kasTunnelUrl'],
+  directives: {
+    GlModalDirective,
+  },
+  inject: ['kasTunnelUrl', 'projectPath'],
   props: {
     environmentName: {
       type: String,
@@ -205,11 +222,14 @@ export default {
       'Environment|There are no Kubernetes cluster connections configured for this environment. Connect a cluster to add the status of your workloads, resources, and the Flux reconciliation state to the dashboard. %{linkStart}Learn more about Kubernetes integration.%{linkEnd}',
     ),
     emptyButton: s__('Environment|Get started'),
+    connectButtonText: s__('ClusterAgents|Connect to agent'),
+    actions: __('Actions'),
   },
   learnMoreLink: helpPagePath('user/clusters/agent/index'),
   getStartedLink: helpPagePath('ci/environments/kubernetes_dashboard'),
   CLUSTER_EMPTY_SVG,
   DRAWER_Z_INDEX,
+  CONNECT_MODAL_ID,
 };
 </script>
 <template>
@@ -217,7 +237,7 @@ export default {
     <div
       class="gl-display-flex gl-flex-wrap gl-justify-content-space-between gl-align-items-center"
     >
-      <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-2 gl-mr-5" />
+      <kubernetes-agent-info :cluster-agent="clusterAgent" class="gl-mb-2 gl-mr-5 gl-grow" />
       <kubernetes-status-bar
         ref="status_bar"
         :cluster-health-status="clusterHealthStatus"
@@ -230,6 +250,26 @@ export default {
         :flux-api-error="fluxApiError"
         @error="handleError"
         @show-flux-resource-details="showFluxResourceDetails"
+      />
+
+      <gl-disclosure-dropdown
+        :title="$options.i18n.actions"
+        category="tertiary"
+        icon="ellipsis_v"
+        text-sr-only
+        no-caret
+      >
+        <gl-disclosure-dropdown-item v-gl-modal-directive="$options.CONNECT_MODAL_ID">
+          <template #list-item>
+            {{ $options.i18n.connectButtonText }}
+          </template>
+        </gl-disclosure-dropdown-item>
+      </gl-disclosure-dropdown>
+
+      <connect-to-agent-modal
+        :agent-id="clusterAgent.id"
+        :project-path="projectPath"
+        :is-configured="true"
       />
     </div>
 

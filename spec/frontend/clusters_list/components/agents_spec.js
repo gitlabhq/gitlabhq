@@ -98,6 +98,7 @@ describe('Agents', () => {
         name: 'agent-1',
         webPath: '/agent-1',
         createdAt: testDate,
+        userAccessAuthorizations: null,
         connections: null,
         tokens: null,
       },
@@ -107,6 +108,7 @@ describe('Agents', () => {
         name: 'agent-2',
         webPath: '/agent-2',
         createdAt: testDate,
+        userAccessAuthorizations: null,
         connections: null,
         tokens: {
           nodes: [
@@ -126,6 +128,7 @@ describe('Agents', () => {
           name: 'ci-agent-1',
           webPath: 'shared-project/agent-1',
           createdAt: testDate,
+          userAccessAuthorizations: null,
           connections: null,
           tokens: null,
         },

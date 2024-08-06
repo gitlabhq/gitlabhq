@@ -42,9 +42,7 @@ module Gitlab
       end
 
       def snowplow_micro_enabled?
-        (Rails.env.development? || micro_verification_enabled?) && Gitlab.config.snowplow_micro.enabled
-      rescue GitlabSettings::MissingSetting
-        false
+        Rails.env.development? || micro_verification_enabled?
       end
 
       def tracker

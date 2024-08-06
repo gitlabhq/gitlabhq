@@ -1,10 +1,18 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlEmptyState, GlAlert, GlDrawer } from '@gitlab/ui';
+import {
+  GlEmptyState,
+  GlAlert,
+  GlDrawer,
+  GlSprintf,
+  GlDisclosureDropdown,
+  GlDisclosureDropdownItem,
+} from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import KubernetesOverview from '~/environments/environment_details/components/kubernetes/kubernetes_overview.vue';
 import KubernetesStatusBar from '~/environments/environment_details/components/kubernetes/kubernetes_status_bar.vue';
@@ -12,8 +20,10 @@ import KubernetesAgentInfo from '~/environments/environment_details/components/k
 import KubernetesTabs from '~/environments/environment_details/components/kubernetes/kubernetes_tabs.vue';
 import DeletePodModal from '~/environments/environment_details/components/kubernetes/delete_pod_modal.vue';
 import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/constants';
+import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import { mockPodsTableItems } from 'jest/kubernetes_dashboard/graphql/mock_data';
 import eventHub from '~/environments/event_hub';
+import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import { agent, kubernetesNamespace } from '../../../graphql/mock_data';
 import { mockKasTunnelUrl, fluxResourceStatus, fluxKustomization } from '../../../mock_data';
 
@@ -30,6 +40,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
 
   const provide = {
     kasTunnelUrl: mockKasTunnelUrl,
+    projectPath: 'path/to/project',
   };
 
   const configuration = {
@@ -72,6 +83,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         fluxResourcePath,
       },
       apolloProvider,
+      stubs: { GlSprintf },
+      directives: {
+        GlModalDirective: createMockDirective('gl-modal-directive'),
+      },
     });
   };
 
@@ -83,6 +98,9 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
   const findDrawer = () => wrapper.findComponent(GlDrawer);
   const findWorkloadDetails = () => wrapper.findComponent(WorkloadDetails);
   const findDeletePodModal = () => wrapper.findComponent(DeletePodModal);
+  const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
+  const findConnectModal = () => wrapper.findComponent(ConnectToAgentModal);
 
   describe('when the agent data is present', () => {
     it('renders kubernetes agent info', () => {
@@ -114,6 +132,34 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         resourceType: k8sResourceType.k8sPods,
         fluxApiError: '',
         fluxResourceStatus: [],
+      });
+    });
+
+    describe('actions menu', () => {
+      beforeEach(() => {
+        wrapper = createWrapper();
+      });
+
+      it('renders dropdown for the actions', () => {
+        expect(findDisclosureDropdown().attributes('title')).toBe('Actions');
+      });
+
+      it('renders dropdown item for connecting to cluster action', () => {
+        expect(findDisclosureDropdownItem().text()).toBe('Connect to agent');
+      });
+
+      it('binds dropdown item to the proper modal', () => {
+        const binding = getBinding(findDisclosureDropdownItem().element, 'gl-modal-directive');
+
+        expect(binding.value).toBe(CONNECT_MODAL_ID);
+      });
+
+      it('renders connect to agent modal', () => {
+        expect(findConnectModal().props()).toEqual({
+          agentId: 'gid://gitlab/ClusterAgent/1',
+          projectPath: 'path/to/project',
+          isConfigured: true,
+        });
       });
     });
 

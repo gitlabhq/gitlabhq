@@ -119,7 +119,10 @@ class PostReceive
   end
 
   def expire_branch_cache(repository)
-    repository.expire_branches_cache
+    unless Feature.enabled?(:post_receive_sync_refresh_cache, @project)
+      repository.expire_branches_cache
+      return
+    end
 
     # Consider the scenario where multiple pushes happen in close succession:
     #
@@ -132,24 +135,23 @@ class PostReceive
     #
     # To avoid this, atomically expire and refresh the branch name cache
     # so that tasks such as pipeline creation will find the branch.
-    if Feature.enabled?(:post_receive_sync_refresh_cache, @project)
-      in_lock(lease_key(:branch), ttl: cache_ttl) do
-        repository.expire_branch_names_cache
-        repository.branch_names
-      end
+    in_lock(lease_key(:branch), ttl: cache_ttl) do
+      repository.expire_branches_cache
+      repository.branch_names
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     log("Failed to obtain lease for expiring branch name cache")
   end
 
   def expire_tag_cache(repository)
-    repository.expire_caches_for_tags
+    unless Feature.enabled?(:post_receive_sync_refresh_cache, @project)
+      repository.expire_caches_for_tags
+      return
+    end
 
-    if Feature.enabled?(:post_receive_sync_refresh_cache, @project)
-      in_lock(lease_key(:tag), ttl: cache_ttl) do
-        repository.expire_tag_names_cache
-        repository.tag_names
-      end
+    in_lock(lease_key(:tag), ttl: cache_ttl) do
+      repository.expire_caches_for_tags
+      repository.tag_names
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     log("Failed to obtain lease for expiring tag name cache")

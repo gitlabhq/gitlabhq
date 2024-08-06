@@ -47,7 +47,7 @@ export default {
     <pre
       class="gl-w-full"
       :style="{ maxHeight: '300px' }"
-    ><span v-if="prompt" class="gl-select-none">{{ prompt }} </span><template v-for="line in lines">{{ line }}<br class="gl-select-none"/></template></pre>
+    ><span v-if="prompt" class="gl-select-none">{{ prompt }} </span><template v-for="line in lines">{{ line }}<br class="gl-select-none" /></template></pre>
     <!-- eslint-enable vue/require-v-for-key-->
 
     <modal-copy-button :text="clipboard" :modal-id="modalId" :title="buttonTitle" />

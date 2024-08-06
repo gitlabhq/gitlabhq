@@ -8,9 +8,13 @@ import {
   GlSprintf,
   GlTab,
   GlTabs,
+  GlButton,
+  GlModalDirective,
 } from '@gitlab/ui';
 import { s__, __ } from '~/locale';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
+import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
+import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import { MAX_LIST_COUNT } from '../constants';
 import getClusterAgentQuery from '../graphql/queries/get_cluster_agent.query.graphql';
 import TokenTable from './token_table.vue';
@@ -24,7 +28,9 @@ export default {
     tokens: s__('ClusterAgents|Access tokens'),
     unknownUser: s__('ClusterAgents|Unknown user'),
     activity: __('Activity'),
+    connectButtonText: s__('ClusterAgents|Connect to %{agentName}'),
   },
+  connectModalId: CONNECT_MODAL_ID,
   apollo: {
     clusterAgent: {
       query: getClusterAgentQuery,
@@ -49,10 +55,15 @@ export default {
     GlSprintf,
     GlTab,
     GlTabs,
+    GlButton,
     TimeAgoTooltip,
     TokenTable,
     ActivityEvents,
     IntegrationStatus,
+    ConnectToAgentModal,
+  },
+  directives: {
+    GlModalDirective,
   },
   inject: ['agentName', 'projectPath'],
   data() {
@@ -85,6 +96,9 @@ export default {
     tokens() {
       return this.clusterAgent?.tokens?.nodes || [];
     },
+    isUserAccessConfigured() {
+      return Boolean(this.clusterAgent?.userAccessAuthorizations);
+    },
   },
   methods: {
     nextPage() {
@@ -107,7 +121,19 @@ export default {
 
 <template>
   <section>
-    <h1>{{ agentName }}</h1>
+    <header class="gl-flex gl-flex-wrap gl-justify-between gl-items-center">
+      <h1>{{ agentName }}</h1>
+      <gl-button
+        v-gl-modal-directive="$options.connectModalId"
+        :disabled="!clusterAgent"
+        category="secondary"
+        variant="confirm"
+      >
+        <gl-sprintf :message="$options.i18n.connectButtonText"
+          ><template #agentName>{{ agentName }}</template></gl-sprintf
+        >
+      </gl-button>
+    </header>
 
     <gl-loading-icon v-if="isLoading && clusterAgent == null" size="lg" class="gl-m-3" />
 
@@ -162,6 +188,12 @@ export default {
 
         <slot name="ee-workspaces-tab" :agent-name="agentName" :project-path="projectPath"></slot>
       </gl-tabs>
+
+      <connect-to-agent-modal
+        :agent-id="clusterAgent.id"
+        :project-path="projectPath"
+        :is-configured="isUserAccessConfigured"
+      />
     </template>
 
     <gl-alert v-else variant="danger" :dismissible="false">

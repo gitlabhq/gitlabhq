@@ -1,18 +1,21 @@
-import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlSprintf, GlTab } from '@gitlab/ui';
+import { GlAlert, GlKeysetPagination, GlLoadingIcon, GlSprintf, GlTab, GlButton } from '@gitlab/ui';
 import { createLocalVue, shallowMount } from '@vue/test-utils';
 import { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
 import { extendedWrapper } from 'helpers/vue_test_utils_helper';
+import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import ClusterAgentShow from '~/clusters/agents/components/show.vue';
 import TokenTable from '~/clusters/agents/components/token_table.vue';
 import ActivityEvents from '~/clusters/agents/components/activity_events_list.vue';
 import IntegrationStatus from '~/clusters/agents/components/integration_status.vue';
 import getAgentQuery from '~/clusters/agents/graphql/queries/get_cluster_agent.query.graphql';
+import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
 import { useFakeDate } from 'helpers/fake_date';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import TimeAgoTooltip from '~/vue_shared/components/time_ago_tooltip.vue';
 import { MAX_LIST_COUNT } from '~/clusters/agents/constants';
+import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 
 const localVue = createLocalVue();
 localVue.use(VueApollo);
@@ -34,11 +37,16 @@ describe('ClusterAgentShow', () => {
       id: 'user-1',
       name: 'user-1',
     },
-    name: 'token-1',
+    name: 'cluster-agent',
     tokens: {
       count: 1,
       nodes: [],
       pageInfo: null,
+    },
+    userAccessAuthorizations: {
+      config: {
+        access_as: { agent: {} },
+      },
     },
   };
 
@@ -54,6 +62,9 @@ describe('ClusterAgentShow', () => {
         apolloProvider,
         provide,
         stubs: { GlSprintf, TimeAgoTooltip, GlTab },
+        directives: {
+          GlModalDirective: createMockDirective('gl-modal-directive'),
+        },
       }),
     );
   };
@@ -79,8 +90,10 @@ describe('ClusterAgentShow', () => {
   const findEEWorkspacesTabSlot = () => wrapper.findByTestId('ee-workspaces-tab');
   const findActivity = () => wrapper.findComponent(ActivityEvents);
   const findIntegrationStatus = () => wrapper.findComponent(IntegrationStatus);
+  const findConnectButton = () => wrapper.findComponent(GlButton);
+  const findConnectModal = () => wrapper.findComponent(ConnectToAgentModal);
 
-  describe('default behaviour', () => {
+  describe('default behavior', () => {
     beforeEach(async () => {
       createWrapper({ clusterAgent: defaultClusterAgent });
       await waitForPromises();
@@ -125,6 +138,24 @@ describe('ClusterAgentShow', () => {
 
     it('renders activity events list', () => {
       expect(findActivity().exists()).toBe(true);
+    });
+
+    it('renders connect to agent button', () => {
+      expect(findConnectButton().text()).toBe('Connect to cluster-agent');
+    });
+
+    it('renders connect to agent modal', () => {
+      expect(findConnectModal().props()).toEqual({
+        agentId: '1',
+        projectPath: 'path/to/project',
+        isConfigured: true,
+      });
+    });
+
+    it('binds connect to agent button to the proper modal', () => {
+      const binding = getBinding(findConnectButton().element, 'gl-modal-directive');
+
+      expect(binding.value).toBe(CONNECT_MODAL_ID);
     });
   });
 
