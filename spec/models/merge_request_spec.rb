@@ -3946,19 +3946,18 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     context 'when auto_merge_requested is true' do
       let(:options) { { auto_merge_requested: true, auto_merge_strategy: auto_merge_strategy } }
 
-      where(:auto_merge_strategy, :skip_approved_check, :skip_draft_check, :skip_blocked_check,
-        :skip_discussions_check, :skip_external_status_check, :skip_requested_changes_check, :skip_jira_check, :skip_locked_lfs_files_check) do
-        ''                                                      | false | false | false | false | false | false | false | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false | false | false | false | false | false | false | false
-        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true | true | true | true | true | true | true | true
+      where(:auto_merge_strategy, :skip_checks) do
+        ''                                                      | false
+        AutoMergeService::STRATEGY_MERGE_WHEN_PIPELINE_SUCCEEDS | false
+        AutoMergeService::STRATEGY_MERGE_WHEN_CHECKS_PASS       | true
       end
 
       with_them do
         it do
-          is_expected.to include(skip_approved_check: skip_approved_check, skip_draft_check: skip_draft_check,
-            skip_blocked_check: skip_blocked_check, skip_discussions_check: skip_discussions_check,
-            skip_external_status_check: skip_external_status_check, skip_requested_changes_check: skip_requested_changes_check,
-            skip_jira_check: skip_jira_check)
+          is_expected.to include(skip_approved_check: skip_checks, skip_draft_check: skip_checks,
+            skip_blocked_check: skip_checks, skip_discussions_check: skip_checks,
+            skip_external_status_check: skip_checks, skip_requested_changes_check: skip_checks,
+            skip_jira_check: skip_checks, skip_security_policy_check: skip_checks)
         end
       end
     end

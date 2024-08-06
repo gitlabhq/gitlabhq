@@ -95,12 +95,23 @@ Prerequisites:
 
 - You must be an administrator.
 
-In GitLab 15.7 and later, you can [use the application settings API to disable personal access tokens](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls).
+Depending on your GitLab version, you can use either the application settings API
+or the Admin UI to disable personal access tokens.
+
+### Use the application settings API
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/384201) in GitLab 15.7.
+
+In GitLab 15.7 and later, you can use the [`disable_personal_access_tokens` attribute in the application settings API](../../api/settings.md#list-of-settings-that-can-be-accessed-via-api-calls) to disable personal access tokens.
 
 NOTE:
 After you have used the API to disable personal access tokens, those tokens cannot be used in subsequent API calls to manage this setting. To re-enable personal access tokens, you must use the [GitLab Rails console](../../administration/operations/rails_console.md). You can also upgrade to GitLab 17.3 or later so you can use the Admin UI instead.
 
-In GitLab 17.3 and later, you can disable personal access tokens in the Admin UI:
+### Use the Admin UI
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/436991) in GitLab 17.3.
+
+In GitLab 17.3 and later, you can use the Admin UI to disable personal access tokens:
 
 1. On the left sidebar, at the bottom, select **Admin**.
 1. Select **Settings > General**.

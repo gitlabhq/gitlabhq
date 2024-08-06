@@ -20,7 +20,7 @@ import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDetailModal from '~/work_items/components/work_item_detail_modal.vue';
 import WorkItemStickyHeader from '~/work_items/components/work_item_sticky_header.vue';
 import WorkItemTitle from '~/work_items/components/work_item_title.vue';
-import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
+import WorkItemAbuseModal from '~/work_items/components/work_item_abuse_modal.vue';
 import WorkItemTodos from '~/work_items/components/work_item_todos.vue';
 import DesignWidget from '~/work_items/components/design_management/design_management_widget.vue';
 import { i18n } from '~/work_items/constants';
@@ -83,7 +83,7 @@ describe('WorkItemDetail component', () => {
   const findWorkItemRelationships = () => wrapper.findComponent(WorkItemRelationships);
   const findNotesWidget = () => wrapper.findComponent(WorkItemNotes);
   const findModal = () => wrapper.findComponent(WorkItemDetailModal);
-  const findAbuseCategorySelector = () => wrapper.findComponent(AbuseCategorySelector);
+  const findWorkItemAbuseModal = () => wrapper.findComponent(WorkItemAbuseModal);
   const findWorkItemTodos = () => wrapper.findComponent(WorkItemTodos);
   const findStickyHeader = () => wrapper.findComponent(WorkItemStickyHeader);
   const findWorkItemTwoColumnViewContainer = () => wrapper.findByTestId('work-item-overview');
@@ -696,7 +696,7 @@ describe('WorkItemDetail component', () => {
     });
 
     it('should not be visible by default', () => {
-      expect(findAbuseCategorySelector().exists()).toBe(false);
+      expect(findWorkItemAbuseModal().exists()).toBe(false);
     });
 
     it('should be visible when the work item modal emits `openReportAbuse` event', async () => {
@@ -704,13 +704,25 @@ describe('WorkItemDetail component', () => {
 
       await nextTick();
 
-      expect(findAbuseCategorySelector().exists()).toBe(true);
+      expect(findWorkItemAbuseModal().exists()).toBe(true);
 
-      findAbuseCategorySelector().vm.$emit('close-drawer');
+      findWorkItemAbuseModal().vm.$emit('close-modal');
 
       await nextTick();
 
-      expect(findAbuseCategorySelector().exists()).toBe(false);
+      expect(findWorkItemAbuseModal().exists()).toBe(false);
+    });
+
+    it('should be visible when the work item actions button emits `toggleReportAbuseModal` event', async () => {
+      findWorkItemActions().vm.$emit('toggleReportAbuseModal', true);
+      await nextTick();
+
+      expect(findWorkItemAbuseModal().exists()).toBe(true);
+
+      findWorkItemAbuseModal().vm.$emit('close-modal');
+      await nextTick();
+
+      expect(findWorkItemAbuseModal().exists()).toBe(false);
     });
   });
 

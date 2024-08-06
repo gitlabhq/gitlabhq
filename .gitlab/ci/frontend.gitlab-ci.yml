@@ -162,9 +162,7 @@ retrieve-frontend-fixtures:
         echoinfo "INFO: Reusing frontend fixtures from 'retrieve-frontend-fixtures'."
         exit 0
       fi
-    - run_timed_command "gem install knapsack --no-document"
-    - section_start "gitaly-test-spawn" "Spawning Gitaly"; scripts/gitaly-test-spawn; section_end "gitaly-test-spawn";  # Do not use 'bundle exec' here
-    - source ./scripts/rspec_helpers.sh
+    - !reference [.base-script, script]
     - rspec_parallelized_job
   artifacts:
     name: frontend-fixtures

@@ -240,12 +240,14 @@
   - ".gitlab/ci/review-apps/qa.gitlab-ci.yml"
   - ".gitlab/ci/review-apps/rules.gitlab-ci.yml"
   - ".gitlab/ci/test-on-gdk/*.yml"
+  - ".gitlab/ci/version.yml"
 
 .gitaly-patterns: &gitaly-patterns
   - "GITALY_SERVER_VERSION"
   - "lib/gitlab/setup_helper.rb"
 
 .workhorse-patterns: &workhorse-patterns
+  - ".gitlab/ci/version.yml"
   - ".gitlab/ci/workhorse.gitlab-ci.yml"
   - "GITLAB_WORKHORSE_VERSION"
   - "workhorse/**/*"
@@ -713,7 +715,8 @@
   - "ee/{lib/,spec/}tasks/gitlab/custom_roles/*"
 
 .cng-orchestrator-patterns: &cng-orchestrator-patterns
-  - qa/gems/gitlab-cng/**/*.rb
+  - "qa/gems/gitlab-cng/**/*.rb"
+  - "qa/gems/gitlab-cng/{Gemfile,Gemfile.lock}"
 
 ##################
 # Conditions set #

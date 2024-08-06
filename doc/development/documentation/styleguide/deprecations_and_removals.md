@@ -5,7 +5,7 @@ group: unassigned
 description: 'Guidelines for deprecations and page removals'
 ---
 
-## Deprecations and removals
+# Deprecations and removals
 
 When GitLab deprecates or removes a feature, use the following process to update the documentation.
 This process requires temporarily changing content to be "deprecated" or "removed" before it's deleted.
@@ -16,7 +16,7 @@ NOTE:
 A separate process exists for [GraphQL docs](../../api_graphql_styleguide.md#deprecating-schema-items)
 and [REST API docs](../restful_api_styleguide.md#deprecations).
 
-### Deprecate a page or topic
+## Deprecate a page or topic
 
 To deprecate a page or topic:
 
@@ -67,7 +67,7 @@ To deprecate a page or topic:
 
 1. Open a merge request to add the word `(deprecated)` to the left nav, after the page title.
 
-### Remove a page
+## Remove a page
 
 Mark content as removed during the release the feature was removed.
 The title and a removed indicator remains until three months after the removal.
@@ -107,7 +107,7 @@ To remove a page:
 This content is removed from the documentation as part of the Technical Writing team's
 [regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
-### Remove a topic
+## Remove a topic
 
 To remove a topic:
 
@@ -136,7 +136,7 @@ To remove a topic:
 This content is removed from the documentation as part of the Technical Writing team's
 [regularly scheduled tasks](https://handbook.gitlab.com/handbook/product/ux/technical-writing/#regularly-scheduled-tasks).
 
-### Removing version-specific upgrade pages
+## Removing version-specific upgrade pages
 
 Version-specific upgrade pages are in the `doc/update/versions/` directory.
 

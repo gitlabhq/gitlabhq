@@ -1274,7 +1274,8 @@ class MergeRequest < ApplicationRecord
       skip_external_status_check: merge_when_checks_pass_strat,
       skip_requested_changes_check: merge_when_checks_pass_strat,
       skip_jira_check: merge_when_checks_pass_strat,
-      skip_locked_lfs_files_check: merge_when_checks_pass_strat
+      skip_locked_lfs_files_check: merge_when_checks_pass_strat,
+      skip_security_policy_check: merge_when_checks_pass_strat
     }
   end
 

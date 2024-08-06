@@ -1716,9 +1716,6 @@ msgstr ""
 msgid "- Push code to the repository."
 msgstr ""
 
-msgid "- Select -"
-msgstr ""
-
 msgid "- User"
 msgid_plural "- Users"
 msgstr[0] ""
@@ -5447,6 +5444,9 @@ msgid "All protected branches"
 msgstr ""
 
 msgid "All required approvals must be given."
+msgstr ""
+
+msgid "All security policies must be evaluated."
 msgstr ""
 
 msgid "All threads resolved!"
@@ -13375,7 +13375,7 @@ msgstr ""
 msgid "Company"
 msgstr ""
 
-msgid "Company Name"
+msgid "Company name"
 msgstr ""
 
 msgid "Compare"
@@ -15525,7 +15525,7 @@ msgstr ""
 msgid "Couldn't reorder child due to an internal error."
 msgstr ""
 
-msgid "Country / Region"
+msgid "Country or region"
 msgstr ""
 
 msgid "Counts"
@@ -19665,6 +19665,18 @@ msgstr ""
 msgid "DuoCodeReview|I have encountered some issues while I was reviewing. Please try again later."
 msgstr ""
 
+msgid "DuoEnterpriseTrial|Start your free Duo Enterprise trial"
+msgstr ""
+
+msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial"
+msgstr ""
+
+msgid "DuoEnterpriseTrial|Start your free GitLab Duo Enterprise trial on %{group_name}"
+msgstr ""
+
+msgid "DuoEnterpriseTrial|We just need some additional information to activate your trial."
+msgstr ""
+
 msgid "DuoProDiscover|Accelerate your path to market"
 msgstr ""
 
@@ -22826,9 +22838,6 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
-msgid "First Name"
-msgstr ""
-
 msgid "First Seen"
 msgstr ""
 
@@ -24392,10 +24401,16 @@ msgstr ""
 msgid "GlobalSearch|%{count} default results provided. Use the up and down arrow keys to navigate search results list."
 msgstr ""
 
+msgid "GlobalSearch|%{lessButtonStart}Show less%{lessButtonEnd} - Too many matches found. Showing %{showingMatches} chunks out of %{fileMatches} results. %{fileLinkStart}Open the file to view all.%{fileLinkEnd}"
+msgstr ""
+
 msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is disabled since %{ref_elem} is not the default branch. %{docs_link}"
 msgstr ""
 
 msgid "GlobalSearch|%{linkStart}Exact code search (powered by Zoekt)%{linkEnd} is enabled."
+msgstr ""
+
+msgid "GlobalSearch|'Epics"
 msgstr ""
 
 msgid "GlobalSearch|Aggregations load error."
@@ -24410,10 +24425,19 @@ msgstr ""
 msgid "GlobalSearch|Change context %{kbdStart}↵%{kbdEnd}"
 msgstr ""
 
+msgid "GlobalSearch|Code"
+msgstr ""
+
 msgid "GlobalSearch|Command palette"
 msgstr ""
 
 msgid "GlobalSearch|Commands %{superKey} %{link2Start}k%{link2End}"
+msgstr ""
+
+msgid "GlobalSearch|Comments"
+msgstr ""
+
+msgid "GlobalSearch|Commits"
 msgstr ""
 
 msgid "GlobalSearch|Could not load search results. Please refresh the page to try again."
@@ -24500,6 +24524,9 @@ msgstr ""
 msgid "GlobalSearch|Merge Requests"
 msgstr ""
 
+msgid "GlobalSearch|Merge request"
+msgstr ""
+
 msgid "GlobalSearch|Merge requests I've created"
 msgstr ""
 
@@ -24509,7 +24536,13 @@ msgstr ""
 msgid "GlobalSearch|Merge requests that I'm a reviewer"
 msgstr ""
 
+msgid "GlobalSearch|Milestones"
+msgstr ""
+
 msgid "GlobalSearch|No labels found"
+msgstr ""
+
+msgid "GlobalSearch|No results found"
 msgstr ""
 
 msgid "GlobalSearch|No results found. Edit your search and try again."
@@ -24519,6 +24552,9 @@ msgid "GlobalSearch|Nothing found…"
 msgstr ""
 
 msgid "GlobalSearch|Only first %{max_shown} of not indexed projects is shown"
+msgstr ""
+
+msgid "GlobalSearch|Open file in repository"
 msgstr ""
 
 msgid "GlobalSearch|Pages or actions"
@@ -24587,10 +24623,19 @@ msgstr ""
 msgid "GlobalSearch|Settings"
 msgstr ""
 
+msgid "GlobalSearch|Show %{matches} more matches"
+msgstr ""
+
+msgid "GlobalSearch|Show less"
+msgstr ""
+
 msgid "GlobalSearch|Show more"
 msgstr ""
 
 msgid "GlobalSearch|Showing top %{maxItems}"
+msgstr ""
+
+msgid "GlobalSearch|Snippets"
 msgstr ""
 
 msgid "GlobalSearch|The search term must be at least 3 characters long."
@@ -24629,7 +24674,19 @@ msgstr ""
 msgid "GlobalSearch|View syntax options."
 msgstr ""
 
+msgid "GlobalSearch|We couldn't find any %{scope} matching %{term}"
+msgstr ""
+
+msgid "GlobalSearch|We couldn't find any %{scope} matching %{term} in group %{group}"
+msgstr ""
+
+msgid "GlobalSearch|We couldn't find any %{scope} matching %{term} in project %{project}"
+msgstr ""
+
 msgid "GlobalSearch|What are you searching for?"
+msgstr ""
+
+msgid "GlobalSearch|Wiki"
 msgstr ""
 
 msgid "GlobalSearch|Your work"
@@ -26750,13 +26807,13 @@ msgstr ""
 msgid "IDE|Contact your administrator or try to open the Web IDE again with another domain."
 msgstr ""
 
+msgid "IDE|Could not find a callback URL entry for %{expectedCallbackUrl}."
+msgstr ""
+
 msgid "IDE|Edit"
 msgstr ""
 
 msgid "IDE|Editing this application might affect the functionality of the Web IDE. Ensure the configuration meets the following conditions:"
-msgstr ""
-
-msgid "IDE|Error reloading page"
 msgstr ""
 
 msgid "IDE|GitLab logo"
@@ -30874,9 +30931,6 @@ msgid "Last Accessed On"
 msgstr ""
 
 msgid "Last GitLab activity"
-msgstr ""
-
-msgid "Last Name"
 msgstr ""
 
 msgid "Last Seen"
@@ -39886,9 +39940,6 @@ msgid "Please review the updated escalation policies for %{project}. It is recom
 msgstr ""
 
 msgid "Please select a Jira project"
-msgstr ""
-
-msgid "Please select a country / region"
 msgstr ""
 
 msgid "Please select a group"
@@ -49240,6 +49291,9 @@ msgstr ""
 msgid "Select a comment template"
 msgstr ""
 
+msgid "Select a country or region"
+msgstr ""
+
 msgid "Select a file from the left sidebar to begin editing. Afterwards, you'll be able to commit your changes."
 msgstr ""
 
@@ -56302,10 +56356,13 @@ msgstr ""
 msgid "Trials|Your trial ends on %{boldStart}%{trialEndDate}%{boldEnd}. We hope you’re enjoying the features of GitLab %{planName}. To keep those features after your trial ends, you’ll need to buy a subscription. (You can also choose GitLab Premium if it meets your needs.)"
 msgstr ""
 
-msgid "Trial| By selecting Continue or registering through a third party, you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
+msgid "Trial|Activate my trial"
 msgstr ""
 
 msgid "Trial|Allowed characters: +, 0-9, -, and spaces."
+msgstr ""
+
+msgid "Trial|By clicking \"%{buttonText}\" you accept the %{gitlabSubscriptionAgreement} and acknowledge the %{privacyStatement} and %{cookiePolicy}"
 msgstr ""
 
 msgid "Trial|Continue"
@@ -56317,16 +56374,19 @@ msgstr ""
 msgid "Trial|GitLab Subscription Agreement"
 msgstr ""
 
-msgid "Trial|Please select"
+msgid "Trial|Privacy Statement"
 msgstr ""
 
-msgid "Trial|Privacy Statement"
+msgid "Trial|Select number of employees"
+msgstr ""
+
+msgid "Trial|Select state or province"
 msgstr ""
 
 msgid "Trial|Start free GitLab Ultimate trial"
 msgstr ""
 
-msgid "Trial|State/Province"
+msgid "Trial|State or province"
 msgstr ""
 
 msgid "Trial|To activate your trial, we need additional details from you."
@@ -58668,6 +58728,9 @@ msgstr ""
 msgid "View File Metadata"
 msgstr ""
 
+msgid "View Line in repository"
+msgstr ""
+
 msgid "View Stage: %{title}"
 msgstr ""
 
@@ -59525,6 +59588,9 @@ msgid "We'll use this to help surface the right features and information to you.
 msgstr ""
 
 msgid "We're experiencing difficulties and this tab content is currently unavailable."
+msgstr ""
+
+msgid "We're sorry, your GitLab Duo Enterprise trial could not be created because our system did not respond successfully."
 msgstr ""
 
 msgid "We're sorry, your GitLab Duo Pro trial could not be created because our system did not respond successfully."

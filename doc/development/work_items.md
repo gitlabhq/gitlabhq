@@ -4,7 +4,7 @@ group: Project Management
 info: Any user with at least the Maintainer role can merge updates to this content. For details, see https://docs.gitlab.com/ee/development/development_processes.html#development-guidelines-review.
 ---
 
-## Work items development
+# Work items development
 
 - Work item lists are only available at group level `http://gdk.test:3000/groups/flightjs/-/work_items`,
   they are enabled with feature flags: `namespace_level_work_items` and `work_item_epics_rollout`.

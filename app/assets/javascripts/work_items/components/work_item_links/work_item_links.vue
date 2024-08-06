@@ -14,7 +14,6 @@ import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { TYPENAME_ISSUE, TYPENAME_WORK_ITEM } from '~/graphql_shared/constants';
 import getIssueDetailsQuery from 'ee_else_ce/work_items/graphql/get_issue_details.query.graphql';
 import { getParameterByName, setUrlParams, updateHistory } from '~/lib/utils/url_utility';
-import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 
 import {
   FORM_TYPES,
@@ -30,6 +29,7 @@ import getWorkItemTreeQuery from '../../graphql/work_item_tree.query.graphql';
 import WorkItemChildrenLoadMore from '../shared/work_item_children_load_more.vue';
 import WidgetWrapper from '../widget_wrapper.vue';
 import WorkItemDetailModal from '../work_item_detail_modal.vue';
+import WorkItemAbuseModal from '../work_item_abuse_modal.vue';
 import WorkItemLinksForm from './work_item_links_form.vue';
 import WorkItemChildrenWrapper from './work_item_children_wrapper.vue';
 
@@ -42,7 +42,7 @@ export default {
     WidgetWrapper,
     WorkItemLinksForm,
     WorkItemDetailModal,
-    AbuseCategorySelector,
+    WorkItemAbuseModal,
     WorkItemChildrenWrapper,
     WorkItemChildrenLoadMore,
     GlToggle,
@@ -109,7 +109,7 @@ export default {
       parentIssue: null,
       formType: null,
       workItem: null,
-      isReportDrawerOpen: false,
+      isReportModalOpen: false,
       reportedUserId: 0,
       reportedUrl: '',
       widgetName: TASKS_ANCHOR,
@@ -206,13 +206,13 @@ export default {
     updateWorkItemIdUrlQuery({ iid } = {}) {
       updateHistory({ url: setUrlParams({ work_item_iid: iid }), replace: true });
     },
-    toggleReportAbuseDrawer(isOpen, reply = {}) {
-      this.isReportDrawerOpen = isOpen;
+    toggleReportAbuseModal(isOpen, reply = {}) {
+      this.isReportModalOpen = isOpen;
       this.reportedUrl = reply.url;
       this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
     },
-    openReportAbuseDrawer(reply) {
-      this.toggleReportAbuseDrawer(true, reply);
+    openReportAbuseModal(reply) {
+      this.toggleReportAbuseModal(true, reply);
     },
     async fetchNextPage() {
       if (this.hasNextPage && !this.fetchNextPageInProgress) {
@@ -355,14 +355,14 @@ export default {
             :work-item-full-path="activeChildNamespaceFullPath"
             @close="closeModal"
             @workItemDeleted="handleWorkItemDeleted(activeChild)"
-            @openReportAbuse="openReportAbuseDrawer"
+            @openReportAbuse="openReportAbuseModal"
           />
-          <abuse-category-selector
-            v-if="isReportDrawerOpen && reportAbusePath"
+          <work-item-abuse-modal
+            v-if="isReportModalOpen && reportAbusePath"
+            :show-modal="isReportModalOpen"
             :reported-user-id="reportedUserId"
             :reported-from-url="reportedUrl"
-            :show-drawer="isReportDrawerOpen"
-            @close-drawer="toggleReportAbuseDrawer(false)"
+            @close-modal="toggleReportAbuseModal(false)"
           />
         </template>
       </div>

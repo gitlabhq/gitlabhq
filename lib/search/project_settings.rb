@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Search
+  # Generates a list of all available setting sections of a project.
+  # This list is used by the command palette's search functionality.
   class ProjectSettings
     include Rails.application.routes.url_helpers
 

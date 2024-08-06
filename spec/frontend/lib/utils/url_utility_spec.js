@@ -1304,4 +1304,21 @@ describe('URL utility', () => {
       expect(urlUtils.buildURLwithRefType({ base, path, refType })).toBe(output);
     });
   });
+
+  describe('stripRelativeUrlRootFromPath', () => {
+    it.each`
+      relativeUrlRoot | path                   | expectation
+      ${''}           | ${'/foo/bar'}          | ${'/foo/bar'}
+      ${'/'}          | ${'/foo/bar'}          | ${'/foo/bar'}
+      ${'/foo'}       | ${'/foo/bar'}          | ${'/bar'}
+      ${'/gitlab/'}   | ${'/gitlab/-/ide/foo'} | ${'/-/ide/foo'}
+    `(
+      'with relative_url_root="$relativeUrlRoot", "$path" should return "$expectation"',
+      ({ relativeUrlRoot, path, expectation }) => {
+        window.gon.relative_url_root = relativeUrlRoot;
+
+        expect(urlUtils.stripRelativeUrlRootFromPath(path)).toBe(expectation);
+      },
+    );
+  });
 });

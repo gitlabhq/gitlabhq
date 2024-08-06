@@ -62,6 +62,11 @@ export default {
       required: false,
       default: () => [],
     },
+    workItemAuthorId: {
+      type: Number,
+      required: false,
+      default: 0,
+    },
   },
   computed: {
     canUpdate() {
@@ -153,6 +158,7 @@ export default {
             :work-item-create-note-email="workItem.createNoteEmail"
             :work-item-state="workItem.state"
             :is-modal="isModal"
+            :work-item-author-id="workItemAuthorId"
             @deleteWorkItem="$emit('deleteWorkItem')"
             @toggleWorkItemConfidentiality="
               $emit('toggleWorkItemConfidentiality', !workItem.confidential)
@@ -160,6 +166,7 @@ export default {
             @error="$emit('error')"
             @promotedToObjective="$emit('promotedToObjective')"
             @workItemStateUpdated="$emit('workItemStateUpdated')"
+            @toggleReportAbuseModal="$emit('toggleReportAbuseModal', true)"
           />
         </div>
       </div>

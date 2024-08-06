@@ -8,7 +8,6 @@ import { getParameterByName, updateHistory, setUrlParams } from '~/lib/utils/url
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { isLoggedIn } from '~/lib/utils/common_utils';
-import AbuseCategorySelector from '~/abuse_reports/components/abuse_category_selector.vue';
 import { WORKSPACE_PROJECT } from '~/issues/constants';
 import {
   i18n,
@@ -50,6 +49,7 @@ import WorkItemStickyHeader from './work_item_sticky_header.vue';
 import WorkItemAncestors from './work_item_ancestors/work_item_ancestors.vue';
 import WorkItemTitle from './work_item_title.vue';
 import WorkItemLoading from './work_item_loading.vue';
+import WorkItemAbuseModal from './work_item_abuse_modal.vue';
 import DesignWidget from './design_management/design_management_widget.vue';
 
 export default {
@@ -74,12 +74,12 @@ export default {
     WorkItemTree,
     WorkItemNotes,
     WorkItemDetailModal,
-    AbuseCategorySelector,
     WorkItemRelationships,
     WorkItemStickyHeader,
     WorkItemAncestors,
     WorkItemTitle,
     WorkItemLoading,
+    WorkItemAbuseModal,
   },
   mixins: [glFeatureFlagMixin()],
   inject: ['fullPath', 'reportAbusePath', 'groupPath', 'hasSubepicsFeature'],
@@ -114,7 +114,7 @@ export default {
       modalWorkItemId: undefined,
       modalWorkItemIid: getParameterByName('work_item_iid'),
       modalWorkItemNamespaceFullPath: '',
-      isReportDrawerOpen: false,
+      isReportModalOpen: false,
       reportedUrl: '',
       reportedUserId: 0,
       isStickyHeaderShowing: false,
@@ -200,6 +200,9 @@ export default {
     },
     workItemTypeId() {
       return this.workItem.workItemType?.id;
+    },
+    workItemAuthorId() {
+      return getIdFromGraphQLId(this.workItem.author?.id);
     },
     canUpdate() {
       return this.workItem.userPermissions?.updateWorkItem;
@@ -422,17 +425,17 @@ export default {
       );
       this.$refs.modal.show();
     },
-    openReportAbuseDrawer(reply) {
+    openReportAbuseModal(reply) {
       if (this.isModal) {
         this.$emit('openReportAbuse', reply);
       } else {
-        this.toggleReportAbuseDrawer(true, reply);
+        this.toggleReportAbuseModal(true, reply);
       }
     },
-    toggleReportAbuseDrawer(isOpen, reply = {}) {
-      this.isReportDrawerOpen = isOpen;
-      this.reportedUrl = reply.url || {};
-      this.reportedUserId = reply.author ? getIdFromGraphQLId(reply.author.id) : 0;
+    toggleReportAbuseModal(isOpen, workItem = this.workItem) {
+      this.isReportModalOpen = isOpen;
+      this.reportedUrl = workItem.webUrl || workItem.url || {};
+      this.reportedUserId = workItem.author ? getIdFromGraphQLId(workItem.author.id) : 0;
     },
     hideStickyHeader() {
       this.isStickyHeaderShowing = false;
@@ -499,6 +502,7 @@ export default {
       :work-item="workItem"
       :is-sticky-header-showing="isStickyHeaderShowing"
       :work-item-notifications-subscribed="workItemNotificationsSubscribed"
+      :work-item-author-id="workItemAuthorId"
       @hideStickyHeader="hideStickyHeader"
       @showStickyHeader="showStickyHeader"
       @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
@@ -507,6 +511,7 @@ export default {
       @promotedToObjective="$emit('promotedToObjective', workItemIid)"
       @toggleEditMode="enableEditMode"
       @workItemStateUpdated="$emit('workItemStateUpdated')"
+      @toggleReportAbuseModal="toggleReportAbuseModal"
     />
     <section class="work-item-view">
       <section v-if="updateError" class="flash-container flash-container-page sticky">
@@ -592,11 +597,13 @@ export default {
                 :is-modal="isModal"
                 :work-item-state="workItem.state"
                 :has-children="hasChildren"
+                :work-item-author-id="workItemAuthorId"
                 @deleteWorkItem="$emit('deleteWorkItem', { workItemType, workItemId: workItem.id })"
                 @toggleWorkItemConfidentiality="toggleConfidentiality"
                 @error="updateError = $event"
                 @promotedToObjective="$emit('promotedToObjective', workItemIid)"
                 @workItemStateUpdated="$emit('workItemStateUpdated')"
+                @toggleReportAbuseModal="toggleReportAbuseModal"
               />
             </div>
             <gl-button
@@ -714,7 +721,7 @@ export default {
               :use-h2="!isModal"
               @error="updateError = $event"
               @has-notes="updateHasNotes"
-              @openReportAbuse="openReportAbuseDrawer"
+              @openReportAbuse="openReportAbuseModal"
             />
           </div>
         </div>
@@ -728,14 +735,14 @@ export default {
       :work-item-full-path="modalWorkItemNamespaceFullPath"
       :show="true"
       @close="updateUrl"
-      @openReportAbuse="toggleReportAbuseDrawer(true, $event)"
+      @openReportAbuse="toggleReportAbuseModal(true, $event)"
     />
-    <abuse-category-selector
-      v-if="isReportDrawerOpen"
+    <work-item-abuse-modal
+      v-if="isReportModalOpen"
+      :show-modal="isReportModalOpen"
       :reported-user-id="reportedUserId"
       :reported-from-url="reportedUrl"
-      :show-drawer="true"
-      @close-drawer="toggleReportAbuseDrawer(false)"
+      @close-modal="toggleReportAbuseModal(false)"
     />
   </div>
 </template>

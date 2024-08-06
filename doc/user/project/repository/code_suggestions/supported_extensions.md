@@ -121,7 +121,7 @@ When you're ready to start coding:
 1. Open relevant files, including configuration files, to provide better context.
 1. Close any files you don't want to be used as context.
 
-## View Multiple Code Suggestions
+## View multiple code suggestions
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab-vscode-extension/-/issues/1325) in GitLab 17.1.
 
@@ -130,10 +130,14 @@ might be available. To view all available suggestions:
 
 1. Hover over the code completion suggestion.
 1. Scroll through the alternatives. Either:
-   - Use keyboard shortcuts. Press <kbd>Option</kbd> + <kbd>`]`</kbd> to view the
-     next suggestion, and <kbd>Option</kbd> + <kbd>`[`</kbd> to view the previous
-     suggestions.
-   - Select the right or left arrow to see next or previous options.
+   - Use keyboard shortcuts:
+     - On a Mac, press <kbd>Option</kbd> + <kbd>]</kbd> to view the
+       next suggestion, and <kbd>Option</kbd> + <kbd>&#91;</kbd> to view the previous
+       suggestions.
+     - On Windows, press <kbd>Alt</kbd> + <kbd>]</kbd> to view the
+       next suggestion, and <kbd>Alt</kbd> + <kbd>&#91;</kbd> to view the previous
+       suggestions.
+   - On the dialog that's displayed, select the right or left arrow to see next or previous options.
 1. Press <kbd>Tab</kbd> to apply the suggestion you prefer.
 
 ## Add additional languages for Code Suggestions

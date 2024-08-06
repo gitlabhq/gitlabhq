@@ -10,6 +10,7 @@ import ZoektBlobResults from '~/search/results/components/zoekt_blob_results.vue
 import waitForPromises from 'helpers/wait_for_promises';
 import { createAlert } from '~/alert';
 
+import EmptyResult from '~/search/results/components/result_empty.vue';
 import { MOCK_QUERY, mockGetBlobSearchQuery } from '../../mock_data';
 
 jest.mock('~/alert');
@@ -26,6 +27,7 @@ describe('ZoektBlobResults', () => {
 
   const blobSearchHandler = jest.fn().mockResolvedValue(mockGetBlobSearchQuery);
   const mockQueryLoading = jest.fn().mockReturnValue(new Promise(() => {}));
+  const mockQueryEmpty = jest.fn().mockReturnValue({});
   const mockQueryError = jest.fn().mockRejectedValue(new Error('Network error'));
 
   const createComponent = ({
@@ -42,7 +44,7 @@ describe('ZoektBlobResults', () => {
       },
       getters: getterSpies,
     });
-
+    // apolloMock = createMockApollo([[getBlobSearchQuery, blobSearchHandler]]);
     wrapper = shallowMountExtended(ZoektBlobResults, {
       apolloProvider,
       store,
@@ -53,6 +55,7 @@ describe('ZoektBlobResults', () => {
   };
 
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
+  const findEmptyResult = () => wrapper.findComponent(EmptyResult);
 
   describe('when loading results', () => {
     beforeEach(async () => {
@@ -78,6 +81,21 @@ describe('ZoektBlobResults', () => {
     it(`renders component properly`, async () => {
       await nextTick();
       expect(wrapper.element).toMatchSnapshot();
+    });
+  });
+
+  describe('when component has no results', () => {
+    beforeEach(async () => {
+      createComponent({
+        queryHandler: mockQueryEmpty,
+      });
+      jest.advanceTimersByTime(500);
+      await waitForPromises();
+    });
+
+    it(`renders component properly`, async () => {
+      await nextTick();
+      expect(findEmptyResult().exists()).toBe(true);
     });
   });
 

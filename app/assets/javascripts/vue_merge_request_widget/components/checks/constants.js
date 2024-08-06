@@ -25,4 +25,5 @@ export const FAILURE_REASONS = {
   requested_changes: __('The change requests must be completed or resolved.'),
   approvals_syncing: __('The merge request approvals are currently syncing.'),
   locked_lfs_files: __('All LFS files must be unlocked.'),
+  security_policy_evaluation: __('All security policies must be evaluated.'),
 };

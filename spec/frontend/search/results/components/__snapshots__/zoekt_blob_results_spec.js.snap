@@ -3,5 +3,89 @@
 exports[`ZoektBlobResults when component loads normally renders component properly 1`] = `
 <div
   class="gl-flex gl-flex-col gl-justify-center"
-/>
+>
+  <div
+    class="gl-relative"
+  >
+    <div
+      class="file-holder file-result-holder gl-card gl-my-5"
+    >
+      <div
+        class="file-title gl-card-header gl-new-card-header"
+      >
+        <blob-header-stub
+          filepath="test/test-main.js"
+          fileurl="http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/test-main.js"
+          projectpath="flightjs/Flight"
+        />
+      </div>
+      <div
+        class="gl-card-body gl-p-0"
+      >
+        <blob-body-stub
+          file="[object Object]"
+        />
+      </div>
+    </div>
+    <div
+      class="file-holder file-result-holder gl-card gl-my-5"
+    >
+      <div
+        class="file-title gl-card-header gl-new-card-header"
+      >
+        <blob-header-stub
+          filepath="test/spec/fn_spec.js"
+          fileurl="http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/spec/fn_spec.js"
+          projectpath="flightjs/Flight"
+        />
+      </div>
+      <div
+        class="gl-card-body gl-p-0"
+      >
+        <blob-body-stub
+          file="[object Object]"
+        />
+      </div>
+      <div
+        class="gl-card-footer gl-new-card-footer"
+      >
+        <blob-footer-stub
+          file="[object Object]"
+        />
+      </div>
+    </div>
+    <div
+      class="file-holder file-result-holder gl-card gl-my-5"
+    >
+      <div
+        class="file-title gl-border-b-0! gl-card-header gl-new-card-header"
+      >
+        <blob-header-stub
+          filepath="test/spec/test_utils_spec.js"
+          fileurl="http://127.0.0.1:3000/flightjs/Flight/-/blob/master/test/spec/utils_spec.js"
+          projectpath="flightjs/Flight"
+        />
+      </div>
+      <div
+        class="gl-card-body gl-p-0"
+      />
+    </div>
+  </div>
+  <gl-pagination-stub
+    align="left"
+    class="gl-mx-auto"
+    ellipsistext="…"
+    labelfirstpage="Go to first page"
+    labellastpage="Go to last page"
+    labelnextpage="Go to next page"
+    labelpage="Go to page %{page}"
+    labelprevpage="Go to previous page"
+    limits="[object Object]"
+    nexttext="Next"
+    perpage="20"
+    prevtext="Previous"
+    totalitems="3"
+    value="1"
+  />
+</div>
 `;

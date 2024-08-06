@@ -60,6 +60,9 @@ module Types
       value 'LOCKED_LFS_FILES',
         value: :locked_lfs_files,
         description: 'Merge request includes locked LFS files.'
+      value 'SECURITY_POLICIES_EVALUATING',
+        value: :security_policy_evaluation,
+        description: 'All security policies must be evaluated.'
     end
   end
 end
