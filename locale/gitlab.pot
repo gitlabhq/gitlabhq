@@ -49419,6 +49419,9 @@ msgstr ""
 msgid "Some common domains are not allowed. %{learn_more_link}."
 msgstr ""
 
+msgid "Some files cannot be displayed due to their file path encoding."
+msgstr ""
+
 msgid "Someone edited the %{issuableType} at the same time you did. Review %{linkStart}the %{issuableType}%{linkEnd} and make sure you don't unintentionally overwrite their changes."
 msgstr ""
 

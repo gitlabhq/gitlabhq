@@ -1375,7 +1375,7 @@ RSpec.describe 'Rack Attack global throttles', :use_clean_rails_memory_store_cac
 
     context 'authenticated with lfs token' do
       let(:lfs_url) { '/namespace/repo.git/info/lfs/objects/batch' }
-      let(:lfs_token) { Gitlab::LfsToken.new(user) }
+      let(:lfs_token) { Gitlab::LfsToken.new(user, nil) }
       let(:encoded_login) { ["#{user.username}:#{lfs_token.token}"].pack('m0') }
       let(:headers) { { 'AUTHORIZATION' => "Basic #{encoded_login}" } }
 
