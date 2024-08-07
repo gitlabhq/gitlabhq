@@ -1211,9 +1211,11 @@ than GitLab to prevent XSS attacks.
 
 ### Rate limits
 
+> - [Changed](https://gitlab.com/groups/gitlab-org/-/epics/14653) in GitLab 17.3: You can exclude subnets from Pages rate limits.
+
 You can enforce rate limits to help minimize the risk of a Denial of Service (DoS) attack. GitLab Pages
 uses a [token bucket algorithm](https://en.wikipedia.org/wiki/Token_bucket) to enforce rate limiting. By default,
-requests or TLS connections that exceed the specified limits are reported but not rejected.
+requests or TLS connections that exceed the specified limits are reported and rejected.
 
 GitLab Pages supports the following types of rate limiting:
 
@@ -1222,19 +1224,24 @@ GitLab Pages supports the following types of rate limiting:
 
 HTTP request-based rate limits are enforced using the following:
 
-- `rate_limit_source_ip`: Set the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
+- `rate_limit_source_ip`: Sets the maximum threshold in number of requests per client IP per second. Set to 0 to disable this feature.
 - `rate_limit_source_ip_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per client IP.
   For example, when you load a web page that loads a number of resources at the same time.
-- `rate_limit_domain`: Set the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
+- `rate_limit_domain`: Sets the maximum threshold in number of requests per hosted pages domain per second. Set to 0 to disable this feature.
 - `rate_limit_domain_burst`: Sets the maximum threshold of number of requests allowed in an initial outburst of requests per hosted pages domain.
 
 TLS connection-based rate limits are enforced using the following:
 
-- `rate_limit_tls_source_ip`: Set the maximum threshold in number of TLS connections per client IP per second. Set to 0 to disable this feature.
+- `rate_limit_tls_source_ip`: Sets the maximum threshold in number of TLS connections per client IP per second. Set to 0 to disable this feature.
 - `rate_limit_tls_source_ip_burst`: Sets the maximum threshold of number of TLS connections allowed in an initial outburst of TLS connections per client IP.
   For example, when you load a web page from different web browsers at the same time.
-- `rate_limit_tls_domain`: Set the maximum threshold in number of TLS connections per hosted pages domain per second. Set to 0 to disable this feature.
+- `rate_limit_tls_domain`: Sets the maximum threshold in number of TLS connections per hosted pages domain per second. Set to 0 to disable this feature.
 - `rate_limit_tls_domain_burst`: Sets the maximum threshold of number of TLS connections allowed in an initial outburst of TLS connections per hosted pages domain.
+
+To allow certain IP ranges (subnets) to bypass all rate limits:
+
+- `rate_limit_subnets_allow_list`: Sets the allow list with the IP ranges (subnets) that should bypass all rate limits.
+  For example, `['1.2.3.4/24', '2001:db8::1/32']`.
 
 An IPv6 address receives a large prefix in the 128-bit address space. The prefix is typically at least size /64. Because of the large number of possible addresses, if the client's IP address is IPv6, the limit is applied to the IPv6 prefix with a length of 64, rather than the entire IPv6 address.
 

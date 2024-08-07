@@ -391,6 +391,7 @@ module API
       mount ::API::Ml::Mlflow::Entrypoint
     end
 
+    mount ::API::Internal::Autoflow
     mount ::API::Internal::Base
     mount ::API::Internal::Coverage if Gitlab::Utils.to_boolean(ENV['COVERBAND_ENABLED'], default: false)
     mount ::API::Internal::Lfs

@@ -293,6 +293,7 @@ export default {
           } else {
             this.unsetError();
             this.workItemsToAdd = [];
+            this.closeForm();
           }
         })
         .catch(() => {
@@ -328,6 +329,7 @@ export default {
           } else {
             this.unsetError();
             this.$emit('addChild');
+            this.closeForm();
           }
         })
         .catch(() => {
@@ -339,6 +341,9 @@ export default {
           this.childToCreateTitle = null;
           this.submitInProgress = false;
         });
+    },
+    closeForm() {
+      this.$emit('cancel');
     },
   },
   i18n: {
@@ -446,7 +451,7 @@ export default {
     >
       {{ addOrCreateButtonLabel }}
     </gl-button>
-    <gl-button category="secondary" size="small" @click="$emit('cancel')">
+    <gl-button category="secondary" size="small" @click="closeForm">
       {{ s__('WorkItem|Cancel') }}
     </gl-button>
   </gl-form>

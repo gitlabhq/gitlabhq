@@ -2,15 +2,16 @@ import Vue, { nextTick } from 'vue';
 // eslint-disable-next-line no-restricted-imports
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
-import { shallowMount } from '@vue/test-utils';
-import { GlTab, GlTabs } from '@gitlab/ui';
+import { GlTab, GlTabs, GlModal } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
 import waitForPromises from 'helpers/wait_for_promises';
 import setWindowLocation from 'helpers/set_window_location_helper';
-
+import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import PlaceholdersTabApp from '~/members/placeholders/components/app.vue';
 import PlaceholdersTable from '~/members/placeholders/components/placeholders_table.vue';
+import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import { MEMBERS_TAB_TYPES } from '~/members/constants';
 import {
@@ -38,7 +39,10 @@ describe('PlaceholdersTabApp', () => {
     show: jest.fn(),
   };
 
-  const createComponent = ({ queryHandler = sourceUsersQueryHandler } = {}) => {
+  const createComponent = ({
+    queryHandler = sourceUsersQueryHandler,
+    mountFn = shallowMountExtended,
+  } = {}) => {
     store = new Vuex.Store({
       modules: {
         [MEMBERS_TAB_TYPES.placeholder]: {
@@ -52,20 +56,31 @@ describe('PlaceholdersTabApp', () => {
 
     mockApollo = createMockApollo([[importSourceUsersQuery, queryHandler]]);
 
-    wrapper = shallowMount(PlaceholdersTabApp, {
+    wrapper = mountFn(PlaceholdersTabApp, {
       apolloProvider: mockApollo,
       store,
       provide: {
         group: mockGroup,
+        reassignmentCsvDownloadPath: 'foo/bar',
       },
       mocks: { $toast },
-      stubs: { GlTab },
+      stubs: {
+        GlTabs: stubComponent(GlTabs, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
+        GlTab,
+        GlModal: stubComponent(GlModal, {
+          template: RENDER_ALL_SLOTS_TEMPLATE,
+        }),
+      },
     });
   };
 
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findTabAt = (index) => wrapper.findAllComponents(GlTab).at(index);
   const findPlaceholdersTable = () => wrapper.findComponent(PlaceholdersTable);
+  const findReassignCsvButton = () => wrapper.findByTestId('reassign-csv-button');
+  const findCsvModal = () => wrapper.findComponent(CsvUploadModal);
 
   it('renders tabs', () => {
     createComponent();
@@ -248,6 +263,25 @@ describe('PlaceholdersTabApp', () => {
         first: 20,
         statuses: ['FAILED'],
       });
+    });
+  });
+
+  describe('reassign CSV button', () => {
+    it('renders the button and the modal', () => {
+      createComponent();
+
+      expect(findReassignCsvButton().exists()).toBe(true);
+      expect(findCsvModal().exists()).toBe(true);
+    });
+
+    it('shows modal when button is clicked', async () => {
+      createComponent({ mountFn: mountExtended });
+
+      findReassignCsvButton().trigger('click');
+
+      await nextTick();
+
+      expect(findCsvModal().findComponent(GlModal).isVisible()).toBe(true);
     });
   });
 });

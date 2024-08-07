@@ -269,7 +269,7 @@ After you save a visualization, you can add it to a new or existing custom dashb
 ### Generate a custom visualization with GitLab Duo
 
 DETAILS:
-**Tier:** Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

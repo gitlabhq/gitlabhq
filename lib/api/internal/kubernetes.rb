@@ -8,6 +8,7 @@ module API
         authenticate_gitlab_kas_request!
       end
 
+      helpers ::API::Helpers::KasHelpers
       helpers ::API::Helpers::Kubernetes::AgentHelpers
 
       namespace 'internal' do

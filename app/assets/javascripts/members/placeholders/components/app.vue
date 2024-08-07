@@ -1,7 +1,7 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
-import { GlBadge, GlTab, GlTabs } from '@gitlab/ui';
+import { GlBadge, GlTab, GlTabs, GlButton, GlModalDirective } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
@@ -12,6 +12,9 @@ import {
 
 import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholdersTable from './placeholders_table.vue';
+import CsvUploadModal from './csv_upload_modal.vue';
+
+const UPLOAD_CSV_PLACEHOLDERS_MODAL_ID = 'upload-placeholders-csv-modal';
 
 const DEFAULT_PAGE_SIZE = 20;
 
@@ -21,10 +24,14 @@ export default {
     GlBadge,
     GlTab,
     GlTabs,
+    GlButton,
     PlaceholdersTable,
+    CsvUploadModal,
+  },
+  directives: {
+    GlModal: GlModalDirective,
   },
   inject: ['group'],
-
   data() {
     return {
       selectedTabIndex: 0,
@@ -36,7 +43,6 @@ export default {
       },
     };
   },
-
   apollo: {
     sourceUsers: {
       query: importSourceUsersQuery,
@@ -58,7 +64,6 @@ export default {
       },
     },
   },
-
   computed: {
     ...mapState('placeholder', ['pagination']),
     isLoading() {
@@ -86,7 +91,6 @@ export default {
     this.unassignedCount = this.pagination.awaitingReassignmentItems;
     this.reassignedCount = this.pagination.reassignedItems;
   },
-
   methods: {
     onConfirm(item) {
       this.$toast.show(
@@ -98,14 +102,12 @@ export default {
       this.reassignedCount += 1;
       this.unassignedCount -= 1;
     },
-
     onPrevPage() {
       this.cursor = {
         before: this.sourceUsers.pageInfo.startCursor,
         after: null,
       };
     },
-
     onNextPage() {
       this.cursor = {
         after: this.sourceUsers.pageInfo.endCursor,
@@ -113,11 +115,12 @@ export default {
       };
     },
   },
+  uploadCsvModalId: UPLOAD_CSV_PLACEHOLDERS_MODAL_ID,
 };
 </script>
 
 <template>
-  <gl-tabs v-model="selectedTabIndex" class="gl-mt-3">
+  <gl-tabs v-model="selectedTabIndex" nav-class="gl-grow gl-items-center gl-mt-3">
     <gl-tab>
       <template #title>
         <span>{{ s__('UserMapping|Awaiting reassignment') }}</span>
@@ -151,5 +154,18 @@ export default {
         @next="onNextPage"
       />
     </gl-tab>
+
+    <template #tabs-end>
+      <gl-button
+        v-gl-modal="$options.uploadCsvModalId"
+        variant="link"
+        icon="media"
+        class="gl-ml-auto"
+        data-testid="reassign-csv-button"
+      >
+        {{ s__('UserMapping|Reassign with CSV file') }}
+      </gl-button>
+      <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
+    </template>
   </gl-tabs>
 </template>

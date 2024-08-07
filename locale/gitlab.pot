@@ -15825,6 +15825,9 @@ msgstr ""
 msgid "CreateValueStreamForm|'%{name}' Value Stream created"
 msgstr ""
 
+msgid "CreateValueStreamForm|'%{name}' Value Stream has been successfully created."
+msgstr ""
+
 msgid "CreateValueStreamForm|'%{name}' Value Stream saved"
 msgstr ""
 
@@ -57953,6 +57956,9 @@ msgstr ""
 msgid "UserMapping|Don't reassign"
 msgstr ""
 
+msgid "UserMapping|Download the pre-filled CSV template."
+msgstr ""
+
 msgid "UserMapping|Import details:"
 msgstr ""
 
@@ -57972,6 +57978,9 @@ msgid "UserMapping|Notification email sent."
 msgstr ""
 
 msgid "UserMapping|Notify again"
+msgstr ""
+
+msgid "UserMapping|Once you select \"Reassign\", the processing will start and users will receive and email to accept the contribution reassignment. Once a users has accepted the reassignment, it cannot be undone. Check all data is correct before continuing."
 msgstr ""
 
 msgid "UserMapping|Original user: %{source_name} (%{source_username})"
@@ -57999,6 +58008,9 @@ msgid "UserMapping|Reassign"
 msgstr ""
 
 msgid "UserMapping|Reassign placeholder to"
+msgstr ""
+
+msgid "UserMapping|Reassign with CSV file"
 msgstr ""
 
 msgid "UserMapping|Reassigned"
@@ -58058,6 +58070,9 @@ msgstr ""
 msgid "UserMapping|Rejected"
 msgstr ""
 
+msgid "UserMapping|Review and complete filling out the CSV file."
+msgstr ""
+
 msgid "UserMapping|Review reassignment details"
 msgstr ""
 
@@ -58092,6 +58107,12 @@ msgid "UserMapping|To learn more about reassignments, %{link_start}visit the doc
 msgstr ""
 
 msgid "UserMapping|To learn more about reassignments, visit the docs (%{help_link}). If you don't recognize this request, report abuse (%{report_link})."
+msgstr ""
+
+msgid "UserMapping|Upload reviewed and completed CSV file."
+msgstr ""
+
+msgid "UserMapping|Use a CSV file to reassign contributions from placeholder users to existing group members. This can be done in a few steps. %{linkStart}Learn more about matching users by CSV%{linkEnd}."
 msgstr ""
 
 msgid "UserMapping|You have approved the reassignment of contributions from %{strong_open}%{source_user_name} (@%{source_username})%{strong_close} on %{strong_open}%{source_hostname}%{strong_close} to yourself on the group %{strong_open}%{destination_group}%{strong_close}. Reassignment processing is in progress. You&#39;ll have access to the group soon."

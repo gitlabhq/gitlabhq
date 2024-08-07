@@ -82,7 +82,7 @@ If you are not authenticated, then the list shows public projects only.
 To view projects you are a member of:
 
 1. On the left sidebar, select **Search or go to**.
-1. Select **Your work**.
+1. Select **View all my projects**.
 
 On the left sidebar, **Projects** is selected. On the list, on the **Yours** tab,
 all the projects you are a member of are displayed.
@@ -96,12 +96,24 @@ called `my-project` under your username, the project is created at `https://gitl
 
 To view your personal projects:
 
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
+1. Select the **Personal** tab.
+
+Or
+
 1. On the left sidebar, select your avatar and then your username.
 1. On the left sidebar, select **Personal projects**.
 
 ## View starred projects
 
 To view projects you have [starred](#star-a-project):
+
+1. On the left sidebar, select **Search or go to**.
+1. Select **View all my projects**.
+1. Select the **Starred** tab.
+
+Or
 
 1. On the left sidebar, select your avatar and then your username.
 1. On the left sidebar, select **Starred projects**.
@@ -259,8 +271,7 @@ Active pipeline schedules of archived projects don't become read-only.
 Archived projects are:
 
 - Labeled with an `archived` badge on the project page.
-- Listed on the group page in the **Inactive** tab.
-- Hidden from project lists in **Your Work** and **Explore**.
+- Listed in the **Inactive** tab on the group page, **Your work** page, and **Explore** page.
 - Read-only.
 
 Prerequisites:
@@ -328,9 +339,7 @@ You can sort projects by:
 - Name
 - Created date
 - Updated date
-- Owner
-
-You can also choose to hide or show archived projects.
+- Stars
 
 ### Filter projects by language
 
@@ -343,9 +352,21 @@ You can filter projects by the programming language they use. To do this:
 1. Select either:
    - **View all your projects**, to filter your projects.
    - **Explore**, to filter all projects you can access.
+1. Above the list of projects, select **Search or filter results**.
 1. From the **Language** dropdown list, select the language you want to filter projects by.
 
 A list of projects that use the selected language is displayed.
+
+### View only projects you own
+
+To view only the projects you are the owner of:
+
+1. On the left sidebar, select **Search or go to**.
+1. Select either:
+   - **View all your projects**, to filter your projects.
+   - **Explore**, to filter all projects you can access.
+1. Above the list of projects, select **Search or filter results**.
+1. From the **Role** dropdown list, select **Owner**.
 
 ## Rename a repository
 

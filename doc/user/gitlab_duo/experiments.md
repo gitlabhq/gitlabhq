@@ -12,7 +12,7 @@ The following GitLab Duo features are
 ## Summarize issue discussions with Discussion summary
 
 DETAILS:
-**Tier:** Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 
@@ -76,7 +76,7 @@ Provide feedback on this experimental feature in [issue 416833](https://gitlab.c
 ## Summarize an issue with Issue description generation
 
 DETAILS:
-**Tier:** Ultimate for a limited time. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
 **Offering:** GitLab.com
 **Status:** Experiment
 

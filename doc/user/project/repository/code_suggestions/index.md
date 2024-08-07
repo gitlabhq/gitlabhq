@@ -42,6 +42,7 @@ Code generation is used when:
 - You write a comment and press <kbd>Enter</kbd>.
 - You enter an empty function or method.
 - The file you're editing has fewer than five lines of code.
+
 Code generation requests take longer than code completion requests, but provide more accurate responses because:
 
 - A larger LLM is used.

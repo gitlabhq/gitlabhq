@@ -52,6 +52,12 @@ Users are considered inactive in LDAP when they:
 - Are marked as disabled or deactivated in Active Directory through the user account control attribute. This means attribute
   `userAccountControl:1.2.840.113556.1.4.803` has bit 2 set.
 
+To check if a user is active or inactive in LDAP, use the following PowerShell command and the [Active Directory Module](https://learn.microsoft.com/en-us/powershell/module/activedirectory/?view=windowsserver2022-ps) to check the Active Directory:
+
+```powershell
+Get-ADUser -Identity <username> -Properties userAccountControl | Select-Object Name, userAccountControl
+```
+
 GitLab checks LDAP users' status:
 
 - When signing in using any authentication provider.
