@@ -602,6 +602,10 @@ class Commit
     refs - excluded
   end
 
+  def has_encoded_file_paths?
+    raw_diffs.any?(&:encoded_file_path)
+  end
+
   private
 
   def tipping_refs(ref_prefix, limit: 0)

@@ -46249,6 +46249,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security policy bot cannot be added as a group member"
+msgstr ""
+
 msgid "Security reports last updated"
 msgstr ""
 
@@ -49417,6 +49420,9 @@ msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
 msgid "Some common domains are not allowed. %{learn_more_link}."
+msgstr ""
+
+msgid "Some files cannot be displayed due to their file path encoding."
 msgstr ""
 
 msgid "Someone edited the %{issuableType} at the same time you did. Review %{linkStart}the %{issuableType}%{linkEnd} and make sure you don't unintentionally overwrite their changes."
