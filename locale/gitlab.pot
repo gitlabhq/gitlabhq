@@ -4993,7 +4993,7 @@ msgstr ""
 msgid "AiImpactAnalytics|Code Suggestions usage"
 msgstr ""
 
-msgid "AiImpactAnalytics|Duo Pro seats: Assigned and used"
+msgid "AiImpactAnalytics|Duo seats: Assigned and used"
 msgstr ""
 
 msgid "AiImpactAnalytics|Monthly user engagement with AI Code Suggestions. Percentage ratio calculated as monthly unique Code Suggestions users / total monthly unique code contributors."

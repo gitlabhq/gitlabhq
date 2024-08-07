@@ -3273,6 +3273,10 @@ class Project < ApplicationRecord
     group&.work_items_alpha_feature_flag_enabled? || Feature.enabled?(:work_items_alpha)
   end
 
+  def glql_integration_feature_flag_enabled?
+    group&.glql_integration_feature_flag_enabled? || Feature.enabled?(:glql_integration, self)
+  end
+
   def enqueue_record_project_target_platforms
     return unless Gitlab.com?
 

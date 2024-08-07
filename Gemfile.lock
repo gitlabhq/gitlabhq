@@ -146,6 +146,12 @@ PATH
     diff_match_patch (0.1.0)
 
 PATH
+  remote: vendor/gems/gitlab-duo-workflow-service-client
+  specs:
+    gitlab-duo-workflow-service-client (0.1)
+      grpc
+
+PATH
   remote: vendor/gems/gitlab-topology-service-client
   specs:
     gitlab-topology-service-client (0.1)
@@ -368,7 +374,7 @@ GEM
     bindata (2.4.11)
     binding_of_caller (1.0.0)
       debug_inspector (>= 0.0.1)
-    bootsnap (1.18.3)
+    bootsnap (1.18.4)
       msgpack (~> 1.2)
     browser (5.3.1)
     builder (3.2.4)
@@ -2047,6 +2053,7 @@ DEPENDENCIES
   gitlab-backup-cli!
   gitlab-chronic (~> 0.10.5)
   gitlab-dangerfiles (~> 4.8.0)
+  gitlab-duo-workflow-service-client (~> 0.1)!
   gitlab-experiment (~> 0.9.1)
   gitlab-fog-azure-rm (~> 2.0.1)
   gitlab-glfm-markdown (~> 0.0.17)
@@ -2099,7 +2106,7 @@ DEPENDENCIES
   graphlyte (~> 1.0.0)
   graphql (~> 2.3.5)
   graphql-docs (~> 5.0.0)
-  grpc (~> 1.63)
+  grpc (= 1.63.0)
   gssapi (~> 1.3.1)
   guard-rspec
   haml_lint (~> 0.58)

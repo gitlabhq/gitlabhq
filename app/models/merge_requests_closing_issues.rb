@@ -33,6 +33,10 @@ class MergeRequestsClosingIssues < ApplicationRecord
       preload(merge_request: [:target_project, :author])
     end
 
+    def preload_issue
+      preload(:issue)
+    end
+
     def count_for_collection(ids, current_user)
       closing_merge_requests(ids, current_user).group(:issue_id).pluck('issue_id', Arel.sql('COUNT(*) as count'))
     end

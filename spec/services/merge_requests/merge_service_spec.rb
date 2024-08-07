@@ -250,7 +250,11 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
       end
     end
 
-    context 'closes related issues' do
+    context 'closes related issues', :sidekiq_inline do
+      let_it_be_with_refind(:group) { create(:group) }
+      let_it_be_with_refind(:other_project) { create(:project, group: group) }
+      let_it_be(:other_issue) { create(:issue, project: other_project) }
+      let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
       let(:issue1) { create(:issue, project: project) }
       let(:issue2) { create(:issue, project: project) }
       let(:commit) do
@@ -268,7 +272,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         )
       end
 
-      it 'closes GitLab issue tracker issues', :sidekiq_inline do
+      it 'closes GitLab issue tracker issues' do
         merge_request.cache_merge_request_closes_issues!
 
         expect do
@@ -278,21 +282,74 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
         )
       end
 
-      context 'when issue project has auto close disabled', :sidekiq_inline do
-        let_it_be(:group) { create(:group) }
-        let_it_be(:other_project) { create(:project, autoclose_referenced_issues: false, group: group) }
-        let_it_be(:no_close_issue) { create(:issue, project: other_project) }
-        let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
+      context 'when closing issues exist in a namespace the merging user doesn\'t have access to' do
+        context 'when the closing work item was created in the merge request description' do
+          before do
+            create(
+              :merge_requests_closing_issues,
+              issue: other_issue,
+              merge_request: merge_request,
+              from_mr_description: true
+            )
+            create(
+              :merge_requests_closing_issues,
+              issue: group_issue,
+              merge_request: merge_request,
+              from_mr_description: true
+            )
+          end
 
+          it 'does not close the related issues' do
+            merge_request.cache_merge_request_closes_issues!
+
+            expect do
+              service.execute(merge_request)
+            end.to not_change { other_issue.reload.opened? }.from(true).and(
+              not_change { group_issue.reload.opened? }.from(true)
+            )
+          end
+        end
+
+        context 'when the closing work item was not created in the merge request description' do
+          before do
+            create(
+              :merge_requests_closing_issues,
+              issue: other_issue,
+              merge_request: merge_request,
+              from_mr_description: false
+            )
+            create(
+              :merge_requests_closing_issues,
+              issue: group_issue,
+              merge_request: merge_request,
+              from_mr_description: false
+            )
+          end
+
+          it 'closes the related issues' do
+            merge_request.cache_merge_request_closes_issues!
+
+            expect do
+              service.execute(merge_request)
+            end.to change { other_issue.reload.opened? }.from(true).to(false).and(
+              # Autoclose is disabled for group level issues until we introduce a setting at the grouo level
+              # TODO: https://gitlab.com/gitlab-org/gitlab/-/issues/472907
+              not_change { group_issue.reload.opened? }.from(true)
+            )
+          end
+        end
+      end
+
+      context 'when issue project has auto close disabled' do
         before_all do
-          other_project.add_developer(user)
+          other_project.update!(autoclose_referenced_issues: false)
           group.add_developer(user)
         end
 
         before do
           create(
             :merge_requests_closing_issues,
-            issue: no_close_issue,
+            issue: other_issue,
             merge_request: merge_request,
             from_mr_description: false
           )
@@ -312,7 +369,7 @@ RSpec.describe MergeRequests::MergeService, feature_category: :code_review_workf
           end.to change { issue1.reload.closed? }.from(false).to(true).and(
             change { issue2.reload.closed? }.from(false).to(true)
           ).and(
-            not_change { no_close_issue.reload.opened? }.from(true)
+            not_change { other_issue.reload.opened? }.from(true)
           ).and(
             not_change { group_issue.reload.opened? }.from(true)
           )

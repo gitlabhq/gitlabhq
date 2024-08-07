@@ -88,9 +88,25 @@ RSpec.describe Gitlab::Auth, :use_clean_rails_memory_store_caching, feature_cate
 
     it 'optional_scopes contains all non-default scopes' do
       expect(subject.optional_scopes).to match_array %i[
-        read_user read_api read_repository write_repository read_registry read_service_ping
-        write_registry sudo admin_mode openid profile email read_observability write_observability
-        create_runner manage_runner k8s_proxy ai_features
+        admin_mode
+        ai_features
+        ai_workflows
+        create_runner
+        email
+        k8s_proxy
+        manage_runner
+        openid
+        profile
+        read_api
+        read_observability
+        read_registry
+        read_repository
+        read_service_ping
+        read_user
+        sudo
+        write_observability
+        write_registry
+        write_repository
       ]
     end
 

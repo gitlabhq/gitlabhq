@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Duo Workflow application settings",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "duo_workflow_oauth_application_id": {
+      "type": "integer",
+      "description": "oauth application id for duo workflow"
+    }
+  }
+}

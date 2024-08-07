@@ -13,6 +13,7 @@ module Groups
       push_force_frontend_feature_flag(:namespace_level_work_items, namespace_work_items_enabled?)
       push_force_frontend_feature_flag(:create_group_level_work_items,
         group&.create_group_level_work_items_feature_flag_enabled?)
+      push_force_frontend_feature_flag(:glql_integration, group&.glql_integration_feature_flag_enabled?)
     end
     before_action :handle_new_work_item_path, only: [:show]
 

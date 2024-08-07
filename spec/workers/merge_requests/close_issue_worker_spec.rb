@@ -13,7 +13,7 @@ RSpec.describe MergeRequests::CloseIssueWorker, feature_category: :code_review_w
 
     it 'calls the close issue service' do
       expect_next_instance_of(Issues::CloseService, container: project, current_user: user) do |service|
-        expect(service).to receive(:execute).with(issue, commit: merge_request)
+        expect(service).to receive(:execute).with(issue, commit: merge_request, skip_authorization: false)
       end
 
       subject.perform(project.id, user.id, issue.id, merge_request.id)

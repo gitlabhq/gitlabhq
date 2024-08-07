@@ -62,7 +62,7 @@
 {"name":"bigdecimal","version":"3.1.7","platform":"ruby","checksum":"e799b369a0005fc6d62eed7ef19139ac9bc319cc51470c637b9dcdf593600133"},
 {"name":"bindata","version":"2.4.11","platform":"ruby","checksum":"c38e0c99ffcd80c10a0a7ae6c8586d2fe26bf245cbefac90bec8764523220f6a"},
 {"name":"binding_of_caller","version":"1.0.0","platform":"ruby","checksum":"3aad25d1d538fc6e7972978f9bf512ccd992784009947c81633bea776713161d"},
-{"name":"bootsnap","version":"1.18.3","platform":"ruby","checksum":"d7b70de761e2fb1d63d21dd941b393c881c5cab5575211369cede788dfc034eb"},
+{"name":"bootsnap","version":"1.18.4","platform":"ruby","checksum":"ac4c42af397f7ee15521820198daeff545e4c360d2772c601fbdc2c07d92af55"},
 {"name":"browser","version":"5.3.1","platform":"ruby","checksum":"62745301701ff2c6c5d32d077bb12532b20be261929dcb52c6781ed0d5658b3c"},
 {"name":"builder","version":"3.2.4","platform":"ruby","checksum":"99caf08af60c8d7f3a6b004029c4c3c0bdaebced6c949165fe98f1db27fbbc10"},
 {"name":"bullet","version":"7.1.2","platform":"ruby","checksum":"429725c174cb74ca0ae99b9720bf22cab80be59ee9401805f7ecc9ac62cbb3bb"},

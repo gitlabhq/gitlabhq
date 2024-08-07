@@ -1,0 +1,9 @@
+---
+name: glql_integration
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161942
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/476990
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/14767
+milestone: '17.3'
+type: development
+group: group::knowledge
+default_enabled: false

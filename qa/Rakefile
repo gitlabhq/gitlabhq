@@ -57,8 +57,9 @@ task :delete_projects, [:dry_run] do |_, args|
 end
 
 desc "Deletes test users"
-task :delete_test_users, [:delete_before, :dry_run, :exclude_users] do |_, args|
-  QA::Tools::DeleteTestUsers.new(args).run
+task :delete_test_users, [:dry_run, :exclude_users] do |_, args|
+  args.with_defaults(dry_run: false, exclude_users: nil)
+  QA::Tools::DeleteTestUsers.new(dry_run: args[:dry_run], exclude_users: args[:exclude_users]).run
 end
 
 desc "Deletes snippets"

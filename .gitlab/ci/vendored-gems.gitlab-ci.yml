@@ -49,5 +49,9 @@ include:
       gem_path_prefix: "vendor/gems/"
   - local: .gitlab/ci/templates/gem.gitlab-ci.yml
     inputs:
+      gem_name: "gitlab-duo-workflow-service-client"
+      gem_path_prefix: "vendor/gems/"
+  - local: .gitlab/ci/templates/gem.gitlab-ci.yml
+    inputs:
       gem_name: "sidekiq-7.1.6"
       gem_path_prefix: "vendor/gems/"

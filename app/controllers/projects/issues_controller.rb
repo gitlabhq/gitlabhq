@@ -50,6 +50,7 @@ class Projects::IssuesController < Projects::ApplicationController
     push_frontend_feature_flag(:issues_list_drawer, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:comment_tooltips, current_user)
+    push_force_frontend_feature_flag(:glql_integration, project&.glql_integration_feature_flag_enabled?)
   end
 
   before_action only: [:index, :show] do

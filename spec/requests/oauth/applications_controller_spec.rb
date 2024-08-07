@@ -14,5 +14,7 @@ RSpec.describe Oauth::ApplicationsController, feature_category: :system_access d
 
   include_examples 'applications controller - GET #show'
 
+  include_examples 'applications controller - GET #new'
+
   include_examples 'applications controller - POST #create'
 end

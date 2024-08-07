@@ -8939,30 +8939,20 @@ RSpec.describe Project, factory_default: :keep, feature_category: :groups_and_pr
   describe '#work_items_feature_flag_enabled?' do
     let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-    it_behaves_like 'checks parent group feature flag' do
+    it_behaves_like 'checks parent group and self feature flag' do
       let(:feature_flag_method) { :work_items_feature_flag_enabled? }
       let(:feature_flag) { :work_items }
       let(:subject_project) { group_project }
     end
+  end
 
-    context 'when feature flag is enabled for the project' do
-      subject { subject_project.work_items_feature_flag_enabled? }
+  describe '#glql_integration_feature_flag_enabled?' do
+    let_it_be(:group_project) { create(:project, :in_subgroup) }
 
-      before do
-        stub_feature_flags(work_items: subject_project)
-      end
-
-      context 'when project belongs to a group' do
-        let(:subject_project) { group_project }
-
-        it { is_expected.to be_truthy }
-      end
-
-      context 'when project does not belong to a group' do
-        let(:subject_project) { create(:project, namespace: create(:namespace)) }
-
-        it { is_expected.to be_truthy }
-      end
+    it_behaves_like 'checks parent group and self feature flag' do
+      let(:feature_flag_method) { :glql_integration_feature_flag_enabled? }
+      let(:feature_flag) { :glql_integration }
+      let(:subject_project) { group_project }
     end
   end
 
