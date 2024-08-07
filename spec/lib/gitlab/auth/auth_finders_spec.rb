@@ -906,14 +906,23 @@ RSpec.describe Gitlab::Auth::AuthFinders, feature_category: :system_access do
     end
 
     it 'returns user with correct user and correct token' do
-      lfs_token = Gitlab::LfsToken.new(user).token
+      lfs_token = Gitlab::LfsToken.new(user, nil).token
+      set_basic_auth_header(user.username, lfs_token)
+
+      is_expected.to eq(user)
+    end
+
+    it 'returns user even if the project does not belong to the user' do
+      another_project = create(:project)
+
+      lfs_token = Gitlab::LfsToken.new(user, another_project).token
       set_basic_auth_header(user.username, lfs_token)
 
       is_expected.to eq(user)
     end
 
     it 'returns nil with wrong user and correct token' do
-      lfs_token = Gitlab::LfsToken.new(user).token
+      lfs_token = Gitlab::LfsToken.new(user, nil).token
       other_user = create(:user)
       set_basic_auth_header(other_user.username, lfs_token)
 

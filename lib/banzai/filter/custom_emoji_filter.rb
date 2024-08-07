@@ -35,14 +35,15 @@ module Banzai
       end
 
       def custom_emoji_name_element_filter(text)
-        text.gsub(custom_emoji_pattern) do |match|
-          name = Regexp.last_match[1]
+        Gitlab::Utils::Gsub
+          .gsub_with_limit(text, custom_emoji_pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
+          name = match_data[1]
           custom_emoji = all_custom_emoji[name]
 
           if custom_emoji
             Gitlab::Emoji.custom_emoji_tag(custom_emoji.name, custom_emoji.url)
           else
-            match
+            match_data[0]
           end
         end
       end
