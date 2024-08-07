@@ -2228,9 +2228,6 @@ msgstr ""
 msgid "AI|Description is required"
 msgstr ""
 
-msgid "AI|Experiment"
-msgstr ""
-
 msgid "AI|Explain or Resolve with AI"
 msgstr ""
 
@@ -17858,9 +17855,6 @@ msgstr ""
 msgid "Dependencies|Filtering unavailable"
 msgstr ""
 
-msgid "Dependencies|Job failed to generate the dependency list"
-msgstr ""
-
 msgid "Dependencies|Learn more about dependency paths"
 msgstr ""
 
@@ -17889,9 +17883,6 @@ msgid "Dependencies|Software Bill of Materials (SBOM) based on the %{linkStart}l
 msgstr ""
 
 msgid "Dependencies|Software Bill of Materials (SBOM) based on the latest successful scan of each project."
-msgstr ""
-
-msgid "Dependencies|The %{codeStartTag}dependency_scanning%{codeEndTag} job has failed and cannot generate the list. Please ensure the job is running properly and run the pipeline again."
 msgstr ""
 
 msgid "Dependencies|The component dependency path is based on the lock file. There may be several paths. In these cases, the longest path is displayed."
@@ -17928,9 +17919,6 @@ msgid "Dependencies|Toggle vulnerability list"
 msgstr ""
 
 msgid "Dependencies|Unknown path"
-msgstr ""
-
-msgid "Dependencies|Unsupported file(s) detected"
 msgstr ""
 
 msgid "Dependencies|Vulnerable components"
@@ -21850,30 +21838,6 @@ msgid "Experiment"
 msgstr ""
 
 msgid "Experiment features' settings not allowed."
-msgstr ""
-
-msgid "ExperimentBadge|An experiment is not yet production-ready, but is released for initial testing and feedback during development."
-msgstr ""
-
-msgid "ExperimentBadge|Are not supported and might not be documented."
-msgstr ""
-
-msgid "ExperimentBadge|Are subject to the GitLab Testing Agreement."
-msgstr ""
-
-msgid "ExperimentBadge|Could be changed or removed at any time."
-msgstr ""
-
-msgid "ExperimentBadge|Experiment"
-msgstr ""
-
-msgid "ExperimentBadge|Experiments:"
-msgstr ""
-
-msgid "ExperimentBadge|Might be unstable or cause data loss."
-msgstr ""
-
-msgid "ExperimentBadge|What's an experiment?"
 msgstr ""
 
 msgid "Experiments"
@@ -30314,9 +30278,6 @@ msgstr ""
 msgid "Job|Failed"
 msgstr ""
 
-msgid "Job|Feedback issue"
-msgstr ""
-
 msgid "Job|Finished at"
 msgstr ""
 
@@ -30324,6 +30285,9 @@ msgid "Job|Full log viewer"
 msgstr ""
 
 msgid "Job|Full screen mode is not available"
+msgstr ""
+
+msgid "Job|Give feedback"
 msgstr ""
 
 msgid "Job|Job artifacts"
@@ -36412,12 +36376,6 @@ msgstr ""
 msgid "Observability|Enable tracing, metrics, or logs on your project."
 msgstr ""
 
-msgid "Observability|Error: Failed to enable GitLab Observability. Please retry later."
-msgstr ""
-
-msgid "Observability|Error: Failed to load page. Try reloading the page."
-msgstr ""
-
 msgid "Observability|Failed to load observability usage data."
 msgstr ""
 
@@ -36936,9 +36894,6 @@ msgid "One or more of you personal access tokens were revoked"
 msgstr ""
 
 msgid "One or more of your %{provider} projects cannot be imported into GitLab directly because they use Subversion or Mercurial for version control, rather than Git."
-msgstr ""
-
-msgid "One or more of your dependency files are not supported, and the dependency list may be incomplete. Below is a list of supported file types."
 msgstr ""
 
 msgid "One or more of your personal access tokens has expired."
@@ -40675,9 +40630,6 @@ msgid "ProductAnalytics|The system is creating your analytics provider. In the m
 msgstr ""
 
 msgid "ProductAnalytics|Then, return to this page and continue with the setup."
-msgstr ""
-
-msgid "ProductAnalytics|This feature is in Beta and requires purchasing a quota of events, which you receive on each billing period."
 msgstr ""
 
 msgid "ProductAnalytics|This group has no projects with product analytics onboarded in the current period."
@@ -47716,6 +47668,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security policy bot cannot be added as a group member"
+msgstr ""
+
 msgid "Security policy project is already assigned."
 msgstr ""
 
@@ -50884,6 +50839,9 @@ msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
 msgid "Some common domains are not allowed. %{learn_more_link}."
+msgstr ""
+
+msgid "Some files cannot be displayed due to their file path encoding."
 msgstr ""
 
 msgid "Some friendly information"
@@ -58854,9 +58812,6 @@ msgid "View issues"
 msgstr ""
 
 msgid "View it on GitLab"
-msgstr ""
-
-msgid "View job"
 msgstr ""
 
 msgid "View job currently using resource"

@@ -13,7 +13,7 @@ RSpec.describe 'ActiveRecord::GitlabPatches::Partitioning::Associations::SingleM
 
     result = QueryRecorder.log do
       Job.create!(pipeline_id: pipeline.id, partition_id: pipeline.partition_id)
-    end
+    end.join
 
     expect(result).to include(create_statement)
   end

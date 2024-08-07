@@ -4,9 +4,7 @@ module SynchronizeBroadcastMessageDismissals
   extend ActiveSupport::Concern
 
   def synchronize_broadcast_message_dismissals
-    message_ids = System::BroadcastMessage.current.map(&:id)
-
-    Users::BroadcastMessageDismissalFinder.new(current_user, message_ids: message_ids).execute
+    Users::BroadcastMessageDismissalFinder.new(current_user).execute
       .find_each do |dismissal|
       create_dismissal_cookie(dismissal) if cookies[dismissal.cookie_key].blank?
     end
@@ -15,13 +13,6 @@ module SynchronizeBroadcastMessageDismissals
   private
 
   def create_dismissal_cookie(dismissal)
-    Gitlab::AppLogger.info(
-      "Creating cookie for broadcast message dismissal: " \
-        "user_id=#{dismissal.user_id} " \
-        "broadcast_message_id=#{dismissal.broadcast_message_id} " \
-        "expires_at=#{dismissal.expires_at}"
-    )
-
     cookies[dismissal.cookie_key] = { value: true, expires: dismissal.expires_at }
   end
 end

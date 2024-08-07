@@ -105,7 +105,7 @@ To troubleshoot a failed CI/CD job:
 1. Select the failed CI/CD job.
 1. From the job log page, do one of the following:
 
-   - Above the job log, select **Troubleshoot**.
+   - Below the job log, select **Troubleshoot**.
    - Open GitLab Duo Chat and type `/troubleshoot`.
 
 An analysis of the reasons for the failure and an example fix is displayed.

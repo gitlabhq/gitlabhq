@@ -26,8 +26,16 @@ module Gitlab
 
           context = change_context(context) if @project_path
 
-          paths = worktree_paths(context)
-          exact_globs, extension_globs, pattern_globs = separate_globs(context)
+          if Feature.enabled?(:rules_exist_expand_globs_early, context.project)
+            expanded_globs = expand_globs(context)
+            top_level_only = expanded_globs.all?(&method(:top_level_glob?))
+
+            paths = worktree_paths(context, top_level_only)
+            exact_globs, extension_globs, pattern_globs = separate_globs(expanded_globs)
+          else
+            paths = worktree_paths_old(context)
+            exact_globs, extension_globs, pattern_globs = separate_globs_old(context)
+          end
 
           exact_matches?(paths, exact_globs) ||
             matches_extension?(paths, extension_globs) ||
@@ -36,7 +44,12 @@ module Gitlab
 
         private
 
-        def separate_globs(context)
+        def separate_globs(expanded_globs)
+          grouped = expanded_globs.group_by { |glob| glob_type(glob) }
+          grouped.values_at(:exact, :extension, :pattern).map { |globs| Array(globs) }
+        end
+
+        def separate_globs_old(context)
           expanded_globs = expand_globs(context)
 
           grouped = expanded_globs.group_by { |glob| glob_type(glob) }
@@ -49,7 +62,17 @@ module Gitlab
           end
         end
 
-        def worktree_paths(context)
+        def worktree_paths(context, top_level_only)
+          return [] unless context.project
+
+          if top_level_only
+            context.top_level_worktree_paths
+          else
+            context.all_worktree_paths
+          end
+        end
+
+        def worktree_paths_old(context)
           return [] unless context.project
 
           if @top_level_only

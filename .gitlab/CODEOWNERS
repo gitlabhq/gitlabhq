@@ -9,6 +9,9 @@
 ## Allows release tooling and Gitaly team members to update the Gitaly Version
 /GITALY_SERVER_VERSION @project_278964_bot6 @gitlab-org/maintainers/rails-backend @gitlab-org/delivery @gl-gitaly
 
+## Allows release tooling, KAS version maintainers and the delivery team to update the KAS version
+/GITLAB_KAS_VERSION @project_278964_bot6 @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
+
 ## Files that are excluded from required approval
 ## These rules override the * rule above, so that changes to docs and templates
 ## can be merged by any user who has maintainer rights, but is not included in
@@ -1564,9 +1567,6 @@ ee/lib/ee/api/entities/project.rb
 /ee/config/routes/identity_verification.rb
 /ee/lib/arkose/
 /ee/lib/telesign/
-
-[Deploy:Environments - KAS Version Maintainers] @project_278964_bot6 @gitlab-org/maintainers/kas-version-maintainers @gitlab-org/maintainers/rails-backend @gitlab-org/delivery
-/GITLAB_KAS_VERSION
 
 ^[DiffMatchPatch gem]
 /vendor/gems/diff_match_patch @garyh

@@ -1,6 +1,5 @@
-import { GlLink } from '@gitlab/ui';
+import { GlLink, GlExperimentBadge } from '@gitlab/ui';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
-import ExperimentBadge from '~/vue_shared/components/badges/experiment_badge.vue';
 
 import LogViewerTopBar from '~/ci/job_log_viewer/components/log_viewer_top_bar.vue';
 
@@ -15,7 +14,7 @@ describe('LogViewerTopBar', () => {
     });
   };
 
-  const findExperimentBadge = () => wrapper.findComponent(ExperimentBadge);
+  const findExperimentBadge = () => wrapper.findComponent(GlExperimentBadge);
   const findLink = () => wrapper.findComponent(GlLink);
 
   it('renders help experiment badge with link', () => {

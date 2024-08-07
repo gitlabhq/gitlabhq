@@ -2,13 +2,12 @@
 
 module Users
   class BroadcastMessageDismissalFinder
-    def initialize(user, message_ids:)
+    def initialize(user)
       @user = user
-      @message_ids = message_ids
     end
 
     def execute
-      Users::BroadcastMessageDismissal.valid_dismissals.for_user_and_broadcast_message(user, message_ids)
+      Users::BroadcastMessageDismissal.valid_dismissals.for_user(user)
     end
 
     private

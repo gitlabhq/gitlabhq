@@ -10,7 +10,7 @@ DETAILS:
 **Tier:** Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default.
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/13266) in GitLab 17.2 [with a flag](../../../administration/feature_flags.md) named `pipeline_execution_policy_type`. Enabled by default. [Feature flag removed in GitLab 17.3](https://gitlab.com/gitlab-org/gitlab/-/issues/454278).
 
 FLAG:
 The availability of this feature is controlled by a feature flag.

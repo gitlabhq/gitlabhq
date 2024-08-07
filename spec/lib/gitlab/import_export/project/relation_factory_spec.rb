@@ -79,10 +79,6 @@ RSpec.describe Gitlab::ImportExport::Project::RelationFactory, :use_clean_rails_
       expect(created_object.integration_id).not_to eq(integration_id)
     end
 
-    it 'does not have the original project_id' do
-      expect(created_object.project_id).not_to eq(original_project_id)
-    end
-
     it 'has the new project_id' do
       expect(created_object.project_id).to eql(project.id)
     end

@@ -11,8 +11,8 @@ module Users
     self.table_name = 'user_broadcast_message_dismissals'
 
     scope :valid_dismissals, -> { where('expires_at > :now', now: Time.current) }
-    scope :for_user_and_broadcast_message, ->(user, message_ids) do
-      where(user: user, broadcast_message_id: message_ids)
+    scope :for_user, ->(user) do
+      where(user: user)
     end
 
     BROADCAST_MESSAGE_DISMISSAL_COOKIE_KEY = 'hide_broadcast_message_'

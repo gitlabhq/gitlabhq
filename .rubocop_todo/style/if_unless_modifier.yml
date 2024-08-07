@@ -781,7 +781,6 @@ Style/IfUnlessModifier:
     - 'scripts/setup/find-jh-branch.rb'
     - 'scripts/static-analysis'
     - 'spec/components/previews/pajamas/alert_component_preview.rb'
-    - 'spec/components/previews/pajamas/card_component_preview.rb'
     - 'spec/factories/ci/runners.rb'
     - 'spec/factories/container_repositories.rb'
     - 'spec/factories/deployments.rb'

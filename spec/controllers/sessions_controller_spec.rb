@@ -265,12 +265,6 @@ RSpec.describe SessionsController, feature_category: :system_access do
         end
 
         context 'when new_broadcast_message_dismissal feature flag is enabled' do
-          def expect_logging_cookie_creat(message)
-            expect(Gitlab::AppLogger).to have_received(:info).with(a_string_starting_with(
-              "Creating cookie for broadcast message dismissal: user_id=#{user.id} broadcast_message_id=#{message.id}"
-            ))
-          end
-
           before do
             allow(Gitlab::AppLogger).to receive(:info).and_call_original
             stub_feature_flags(new_broadcast_message_dismissal: true)
@@ -286,8 +280,6 @@ RSpec.describe SessionsController, feature_category: :system_access do
             expect(cookies["hide_broadcast_message_#{message_banner.id}"]).to be(true)
             expect(cookies["hide_broadcast_message_#{message_notification.id}"]).to be(true)
             expect(cookies["hide_broadcast_message_#{other_message.id}"]).to be_nil
-            expect_logging_cookie_creat(message_banner)
-            expect_logging_cookie_creat(message_notification)
           end
 
           context 'when dismissal is expired' do

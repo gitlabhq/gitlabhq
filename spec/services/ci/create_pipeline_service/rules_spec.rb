@@ -193,6 +193,74 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness, f
       end
     end
 
+    context 'exists with variables' do
+      let(:config) do
+        <<-YAML
+        variables:
+          VAR_DIRECTORY: "config"
+          VAR_FILE: "app.rb"
+          VAR_COMBINED: "config/app.rb"
+          VAR_COMBINED_NO_MATCH: "temp/app.rb"
+          VAR_NESTED: $VAR_DIRECTORY/$VAR_FILE
+
+        job1:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - $VAR_DIRECTORY/$VAR_FILE # matches
+
+        job2:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - $VAR_COMBINED # matches with FF rules_exist_expand_globs_early enabled
+
+        job3:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - $VAR_COMBINED_NO_MATCH # does not match
+
+        job4:
+          script: echo Hello, World!
+          rules:
+            - exists:
+              - $VAR_NESTED # does not match because of https://gitlab.com/gitlab-org/gitlab/-/issues/411344
+        YAML
+      end
+
+      context 'with matches' do
+        let_it_be(:project_files) do
+          {
+            'config/app.rb' => '',
+            'some_file.rb' => ''
+          }
+        end
+
+        let_it_be(:project) do
+          create(:project, :custom_repo, files: project_files)
+        end
+
+        let_it_be(:number_of_project_files) { project_files.size }
+
+        it 'creates all relevant jobs' do
+          expect(pipeline).to be_persisted
+          expect(build_names).to contain_exactly('job1', 'job2')
+        end
+
+        context 'when rules_exist_expand_globs_early is disabled' do
+          before do
+            stub_feature_flags(rules_exist_expand_globs_early: false)
+          end
+
+          it 'creates all relevant jobs' do
+            expect(pipeline).to be_persisted
+            expect(build_names).to contain_exactly('job1')
+          end
+        end
+      end
+    end
+
     context 'with allow_failure and exit_codes', :aggregate_failures do
       let(:config) do
         <<-EOY

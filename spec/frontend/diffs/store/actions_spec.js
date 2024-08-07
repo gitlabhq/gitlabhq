@@ -12,7 +12,12 @@ import {
   PARALLEL_DIFF_VIEW_TYPE,
   EVT_MR_PREPARED,
 } from '~/diffs/constants';
-import { BUILDING_YOUR_MR, SOMETHING_WENT_WRONG } from '~/diffs/i18n';
+import {
+  BUILDING_YOUR_MR,
+  SOMETHING_WENT_WRONG,
+  ENCODED_FILE_PATHS_TITLE,
+  ENCODED_FILE_PATHS_MESSAGE,
+} from '~/diffs/i18n';
 import * as diffActions from '~/diffs/store/actions';
 import * as types from '~/diffs/store/mutation_types';
 import * as utils from '~/diffs/store/utils';
@@ -574,6 +579,44 @@ describe('DiffsStoreActions', () => {
         ],
         [],
       );
+    });
+
+    describe('when diff metadata returns has_encoded_file_paths as true', () => {
+      beforeEach(() => {
+        mock
+          .onGet(endpointMetadata)
+          .reply(HTTP_STATUS_OK, { ...diffMetadata, has_encoded_file_paths: true });
+      });
+
+      it('should show a non-dismissible alert', async () => {
+        await testAction(
+          diffActions.fetchDiffFilesMeta,
+          {},
+          { endpointMetadata, diffViewType: 'inline', showWhitespace: true },
+          [
+            { type: types.SET_LOADING, payload: true },
+            { type: types.SET_LOADING, payload: false },
+            { type: types.SET_MERGE_REQUEST_DIFFS, payload: diffMetadata.merge_request_diffs },
+            {
+              type: types.SET_DIFF_METADATA,
+              payload: { ...noFilesData, has_encoded_file_paths: true },
+            },
+            // Workers are synchronous in Jest environment (see https://gitlab.com/gitlab-org/gitlab/-/merge_requests/58805)
+            {
+              type: types.SET_TREE_DATA,
+              payload: treeWorkerUtils.generateTreeList(diffMetadata.diff_files),
+            },
+          ],
+          [],
+        );
+
+        expect(createAlert).toHaveBeenCalledTimes(1);
+        expect(createAlert).toHaveBeenCalledWith({
+          title: ENCODED_FILE_PATHS_TITLE,
+          message: ENCODED_FILE_PATHS_MESSAGE,
+          dismissible: false,
+        });
+      });
     });
 
     describe('on a 404 response', () => {

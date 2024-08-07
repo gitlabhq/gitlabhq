@@ -64,18 +64,6 @@ RSpec.describe Environments::EnvironmentsFinder do
 
         expect(result).to contain_exactly(environment_available_b)
       end
-
-      context 'when enable_environments_search_within_folder FF is disabled' do
-        before do
-          stub_feature_flags(enable_environments_search_within_folder: false)
-        end
-
-        it 'ignores name inside folder' do
-          result = described_class.new(project, user, search: 'folder', states: :available).execute
-
-          expect(result).to be_empty
-        end
-      end
     end
 
     context 'with id' do

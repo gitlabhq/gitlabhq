@@ -383,6 +383,8 @@ RSpec.describe Gitlab, feature_category: :shared do
 
   describe '.next_rails?' do
     around do |example|
+      described_class.instance_variable_set(:@next_bundle_gemfile, nil)
+
       example.run
     ensure
       described_class.instance_variable_set(:@next_bundle_gemfile, nil)

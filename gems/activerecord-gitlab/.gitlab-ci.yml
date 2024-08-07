@@ -2,3 +2,4 @@ include:
   - local: gems/gem.gitlab-ci.yml
     inputs:
       gem_name: "activerecord-gitlab"
+      bundle_gemfiles: ['Gemfile', 'Gemfile.next']

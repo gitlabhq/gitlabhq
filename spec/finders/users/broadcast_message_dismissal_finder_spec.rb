@@ -19,7 +19,7 @@ RSpec.describe Users::BroadcastMessageDismissalFinder, '#execute', feature_categ
     create(:broadcast_message_dismissal, broadcast_message: other_message, user: build(:user))
   end
 
-  subject(:execute) { described_class.new(user, message_ids: message_ids).execute }
+  subject(:execute) { described_class.new(user).execute }
 
   it 'provides valid user dismissals' do
     expect(execute).to match_array([banner_dismissal, notification_dismissal])
@@ -28,10 +28,6 @@ RSpec.describe Users::BroadcastMessageDismissalFinder, '#execute', feature_categ
   context 'when dismissal is expired' do
     let_it_be(:expired_banner_dismissal) do
       create(:broadcast_message_dismissal, :expired, user: user)
-    end
-
-    let(:message_ids) do
-      [message_banner.id, message_notification.id, other_message.id, expired_banner_dismissal.broadcast_message.id]
     end
 
     it 'does not include the expired dismissal' do

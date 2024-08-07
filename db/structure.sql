@@ -12648,7 +12648,8 @@ CREATE TABLE merge_request_context_commit_diff_files (
     diff text,
     "binary" boolean,
     merge_request_context_commit_id bigint NOT NULL,
-    generated boolean
+    generated boolean,
+    encoded_file_path boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE merge_request_context_commits (
@@ -12743,7 +12744,8 @@ CREATE TABLE merge_request_diff_files (
     "binary" boolean,
     external_diff_offset integer,
     external_diff_size integer,
-    generated boolean
+    generated boolean,
+    encoded_file_path boolean DEFAULT false NOT NULL
 );
 
 CREATE TABLE merge_request_diffs (
@@ -33003,6 +33005,9 @@ ALTER TABLE ONLY packages_package_files
 
 ALTER TABLE p_ci_builds
     ADD CONSTRAINT fk_87f4cefcda FOREIGN KEY (upstream_pipeline_id) REFERENCES ci_pipelines(id) ON DELETE CASCADE;
+
+ALTER TABLE ONLY ci_builds
+    ADD CONSTRAINT fk_87f4cefcda_p FOREIGN KEY (upstream_pipeline_partition_id, upstream_pipeline_id) REFERENCES ci_pipelines(partition_id, id) ON UPDATE CASCADE ON DELETE CASCADE NOT VALID;
 
 ALTER TABLE ONLY approval_group_rules_users
     ADD CONSTRAINT fk_888a0df3b7 FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE;
