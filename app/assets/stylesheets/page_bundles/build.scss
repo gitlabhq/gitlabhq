@@ -186,8 +186,7 @@
 
 .job-log-line {
   display: flex;
-  padding: 1px $gl-padding-8 1px $gl-padding-8;
-  min-height: $gl-line-height-20;
+  padding: 0 $gl-padding-8;
 }
 
 .job-log-line-number {
@@ -217,6 +216,11 @@
   @include media-breakpoint-up(sm) {
     display: block;
   }
+}
+
+.job-log-line-content {
+  flex-grow: 1;
+  white-space: pre-wrap;
 }
 
 .job-log-line-header {

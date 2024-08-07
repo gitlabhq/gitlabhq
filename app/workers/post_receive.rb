@@ -141,6 +141,7 @@ class PostReceive
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     log("Failed to obtain lease for expiring branch name cache")
+    repository.expire_branches_cache
   end
 
   def expire_tag_cache(repository)
@@ -155,6 +156,7 @@ class PostReceive
     end
   rescue Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError
     log("Failed to obtain lease for expiring tag name cache")
+    repository.expire_caches_for_tags
   end
 
   def lease_key(ref_type)

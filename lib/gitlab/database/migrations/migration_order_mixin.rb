@@ -9,13 +9,13 @@
 #
 # It overrides the new behavior that removes the constant first:
 #
-# https://github.com/rails/rails/blob/v7.0.5/activerecord/lib/active_record/migration.rb#L1054
+# https://github.com/rails/rails/blob/v7.1.3.4/activerecord/lib/active_record/migration.rb#L1186
 
-# The following is a reminder for when we upgrade to Rails 7.1. In particular,
+# The following is a reminder for when we upgrade to Rails 7.2. In particular,
 # we need to pay special attention to ensure that our ActiveRecord overrides are
 # compatible.
 
-if ::ActiveRecord::VERSION::STRING >= "7.1"
+if ::ActiveRecord::VERSION::STRING >= "7.2"
   raise 'New version of active-record detected, please remove or update this patch'
 end
 

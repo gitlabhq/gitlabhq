@@ -1024,7 +1024,7 @@ can be used.
 
 DETAILS:
 **Tier:** Ultimate
-**Offering:** GitLab.com
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/120506) in GitLab 16.0.
 

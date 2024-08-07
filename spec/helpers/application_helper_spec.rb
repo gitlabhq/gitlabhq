@@ -654,7 +654,7 @@ RSpec.describe ApplicationHelper do
 
   describe '#profile_social_links' do
     context 'when discord is set' do
-      let_it_be(:user) { build(:user) }
+      let(:user) { build(:user) }
       let(:discord) { discord_url(user) }
 
       it 'returns an empty string if discord is not set' do
@@ -669,7 +669,7 @@ RSpec.describe ApplicationHelper do
     end
 
     context 'when bluesky is set' do
-      let_it_be(:user) { build(:user) }
+      let(:user) { build(:user) }
       let(:bluesky) { bluesky_url(user) }
 
       it 'returns an empty string if bluesky did id is not set' do
@@ -684,7 +684,7 @@ RSpec.describe ApplicationHelper do
     end
 
     context 'when mastodon is set' do
-      let_it_be(:user) { build(:user) }
+      let(:user) { build(:user) }
       let(:mastodon) { mastodon_url(user) }
 
       it 'returns an empty string if mastodon username is not set' do

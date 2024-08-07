@@ -3215,37 +3215,22 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
 
       let(:pipeline) { create(:ci_pipeline, project: project, ref: 'feature') }
 
-      context 'when feature flag remove_shared_jwts is enabled' do
-        context 'and id_tokens are not present in the build' do
-          it 'does not return id_token variables' do
-            expect(build.variables)
-              .not_to include(key: 'ID_TOKEN_1', value: 'feature', public: true, masked: false)
-          end
-        end
-
-        context 'and id_tokens are present in the build' do
-          before do
-            build.id_tokens = {
-              'ID_TOKEN_1' => { aud: 'developers' },
-              'ID_TOKEN_2' => { aud: 'maintainers' }
-            }
-          end
-
-          it 'returns static predefined variables' do
-            expect(build.variables)
-              .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
-            expect(build).not_to be_persisted
-          end
+      context 'and id_tokens are not present in the build' do
+        it 'does not return id_token variables' do
+          expect(build.variables)
+            .not_to include(key: 'ID_TOKEN_1', value: 'feature', public: true, masked: false)
         end
       end
 
-      context 'when feature flag remove_shared_jwts is disabled' do
+      context 'and id_tokens are present in the build' do
         before do
-          stub_feature_flags(remove_shared_jwts: false)
+          build.id_tokens = {
+            'ID_TOKEN_1' => { aud: 'developers' },
+            'ID_TOKEN_2' => { aud: 'maintainers' }
+          }
         end
 
         it 'returns static predefined variables' do
-          expect(build.variables.size).to be >= 28
           expect(build.variables)
             .to include(key: 'CI_COMMIT_REF_NAME', value: 'feature', public: true, masked: false)
           expect(build).not_to be_persisted

@@ -20293,6 +20293,8 @@ CREATE TABLE zoekt_repositories (
     updated_at timestamp with time zone NOT NULL,
     indexed_at timestamp with time zone,
     state smallint DEFAULT 0 NOT NULL,
+    size_bytes bigint DEFAULT 0 NOT NULL,
+    index_file_count integer DEFAULT 0 NOT NULL,
     CONSTRAINT c_zoekt_repositories_on_project_id_and_project_identifier CHECK (((project_id IS NULL) OR (project_identifier = project_id)))
 );
 

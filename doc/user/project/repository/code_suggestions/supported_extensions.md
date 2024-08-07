@@ -148,7 +148,7 @@ you can add support for it locally.
 Prerequisites:
 
 - You have installed and enabled the
-  [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/index.md#download-the-extension).
+  [GitLab Workflow extension for VS Code](../../../../editor_extensions/visual_studio_code/index.md).
 - You have completed the [extension setup](https://gitlab.com/gitlab-org/gitlab-vscode-extension/#setup)
   instructions, and authorized the extension to access your GitLab account.
 

@@ -119,7 +119,13 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
-    foss_eager_load_paths = config.eager_load_paths.dup.freeze
+    foss_eager_load_paths =
+      if Gitlab.next_rails?
+        config.all_eager_load_paths.dup.freeze
+      else
+        config.eager_load_paths.dup.freeze
+      end
+
     load_paths = ->(dir:) do
       ext_paths = foss_eager_load_paths.each_with_object([]) do |path, memo|
         ext_path = config.root.join(dir, Pathname.new(path).relative_path_from(config.root))

@@ -44,6 +44,25 @@ export const periodToDate = (timePeriod) => {
 };
 
 /**
+ * Converts a time period string to a date range object.
+ *
+ * @param {string} timePeriod - The time period string (e.g., '5m', '3h', '7d').
+ * @returns {{value: string, startDate: Date, endDate: Date}} An object containing the date range.
+ *   - value: Always set to CUSTOM_DATE_RANGE_OPTION.
+ *   - startDate: The start date of the range.
+ *   - endDate: The end date of the range (current time).
+ */
+
+export const periodToDateRange = (timePeriod) => {
+  const { min, max } = periodToDate(timePeriod);
+  return {
+    startDate: min,
+    endDate: max,
+    value: CUSTOM_DATE_RANGE_OPTION,
+  };
+};
+
+/**
  * Validates the date range query parameters and returns an object with the validated date range.
  *
  * @param {string} dateRangeValue - The value of the date range query parameter.

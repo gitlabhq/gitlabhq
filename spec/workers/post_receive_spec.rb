@@ -464,7 +464,8 @@ RSpec.describe PostReceive, :clean_gitlab_redis_shared_state, feature_category: 
 
             context 'when exclusive lease fails' do
               it 'logs a message' do
-                expect(snippet.repository).to receive(:branch_names).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+                expect(worker).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+                expect(snippet.repository).to receive(:expire_branches_cache).and_call_original
                 expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: Failed to obtain lease for expiring branch name cache")
 
                 perform
@@ -522,7 +523,8 @@ RSpec.describe PostReceive, :clean_gitlab_redis_shared_state, feature_category: 
 
             context 'when exclusive lease fails' do
               it 'logs a message' do
-                expect(snippet.repository).to receive(:tag_names).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+                expect(worker).to receive(:in_lock).and_raise(Gitlab::ExclusiveLeaseHelpers::FailedToObtainLockError)
+                expect(snippet.repository).to receive(:expire_tags_cache).and_call_original
                 expect(Gitlab::GitLogger).to receive(:error).with("POST-RECEIVE: Failed to obtain lease for expiring tag name cache")
 
                 perform

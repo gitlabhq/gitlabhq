@@ -187,10 +187,24 @@ terms.md @legal-team
 
 The Code Owner for `terms.md` would be `@legal-team`.
 
-If you use sections, the last pattern matching the file or directory for each section is used.
-For example, in a `CODEOWNERS` file using sections:
+### Organize Code Owners by putting them into sections
+
+In a Code Owners file, _sections_ are named areas of the file that are analyzed separately,
+and always enforced. Until you define a section, GitLab treats your entire Code Owners file
+as a single section. Adding more sections
+[changes how GitLab evaluates your Code Owners file](#use-regular-entries-and-sections-together):
+
+- GitLab treats [entries without sections](#use-regular-entries-and-sections-together), including rules defined
+  before the first section header, as if they were another, unnamed section.
+- Each section enforces its rules separately.
+- Only one CODEOWNERS pattern per section is matched to a file path.
+- In a section, GitLab uses the _last_ pattern matching the file or directory for each section.
+
+For example, in a `CODEOWNERS` file using sections, let's look at the ownership of a `README` file:
 
 ```plaintext
+* @admin
+
 [README Owners]
 README.md @user1 @user2
 internal/README.md @user4
@@ -199,17 +213,15 @@ internal/README.md @user4
 README.md @user3
 ```
 
-The Code Owners for the `README.md` in the root directory are `@user1`, `@user2`,
-and `@user3`. The Code Owners for `internal/README.md` are `@user4` and `@user3`.
-
-Only one CODEOWNERS pattern per section is matched to a file path.
-
-### Organize Code Owners by putting them into sections
-
-You can organize Code Owners by putting them into named sections.
-
-You can use sections for shared directories, so that multiple
-teams can be reviewers.
+- The Code Owners for the `README.md` in the _root_ directory are:
+  - `@admin`, from the unnamed section.
+  - `@user1` and `@user2`, from `[README Owners]`.
+  - `@user3`, from `[README other owners]`.
+- The Code Owners for `internal/README.md` are:
+  - `@admin`, from the unnamed section.
+  - `@user4`, from the last entry in `[README Owners]`.
+  - `@user3` from `[README other owners]`. (Both lines in `[README Owners]` match this file's name,
+    but only the last line in the section is kept.)
 
 To add a section to the `CODEOWNERS` file, enter a section name in square brackets,
 followed by the files or directories, and users, groups, or subgroups:
