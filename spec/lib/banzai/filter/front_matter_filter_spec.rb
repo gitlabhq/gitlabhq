@@ -216,4 +216,24 @@ RSpec.describe Banzai::Filter::FrontMatterFilter, feature_category: :team_planni
   end
 
   it_behaves_like 'pipeline timing check'
+
+  it_behaves_like 'limits the number of filtered items' do
+    let(:text) do
+      <<~MD
+        ---
+        foo: :foo_symbol
+        ---
+
+        ---
+        bar: :bar_symbol
+        ---
+
+        ---
+        fubar: :fubar_symbol
+        ---
+      MD
+    end
+
+    let(:ends_with) { "```\n\n---\nfubar: :fubar_symbol\n---\n" }
+  end
 end

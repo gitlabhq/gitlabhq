@@ -100,6 +100,10 @@ module Banzai
           @nodes ||= each_node.to_a
         end
 
+        def nodes?
+          @nodes.present?
+        end
+
         def object_class
           self.class.object_class
         end
@@ -296,6 +300,9 @@ module Banzai
 
         # Once Filter completes replacing nodes, we update nodes with @new_nodes
         def update_nodes!
+          # if we haven't loaded `nodes` yet, don't do it here
+          return unless nodes?
+
           @new_nodes.sort_by { |index, _new_nodes| -index }.each do |index, new_nodes|
             nodes[index, 1] = new_nodes
           end

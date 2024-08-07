@@ -56,6 +56,8 @@ import {
   SOMETHING_WENT_WRONG,
   ERROR_LOADING_FULL_DIFF,
   ERROR_DISMISSING_SUGESTION_POPOVER,
+  ENCODED_FILE_PATHS_TITLE,
+  ENCODED_FILE_PATHS_MESSAGE,
 } from '../i18n';
 import eventHub from '../event_hub';
 import { markFileReview, setReviewsForMergeRequest } from '../utils/file_reviews';
@@ -330,6 +332,14 @@ export const fetchDiffFilesMeta = ({ commit, state }) => {
     .then(({ data }) => {
       const strippedData = { ...data };
       delete strippedData.diff_files;
+
+      if (strippedData.has_encoded_file_paths) {
+        createAlert({
+          title: ENCODED_FILE_PATHS_TITLE,
+          message: ENCODED_FILE_PATHS_MESSAGE,
+          dismissible: false,
+        });
+      }
 
       commit(types.SET_LOADING, false);
       commit(types.SET_MERGE_REQUEST_DIFFS, data.merge_request_diffs || []);
