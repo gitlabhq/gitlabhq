@@ -5,7 +5,7 @@
   = render ::Layouts::CrudComponent.new(s_('GitLabPages|Domains'),
     icon: 'earth',
     count: @domains.size,
-    count_class: 'js-admin-labels-count',
+    count_options: { class: 'js-admin-labels-count' },
     options: { class: 'gl-mt-5' }) do |c|
     - c.with_actions do
       - if can_add_new_domain

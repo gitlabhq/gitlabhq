@@ -16,27 +16,24 @@
 
   #js-new-access-token-app{ data: { access_token_type: type } }
 
-  = render Pajamas::CardComponent.new(card_options: { class: 'gl-new-card gl-border-b-0 gl-rounded-bottom-left-none gl-rounded-bottom-right-none js-toggle-container js-token-card' }, header_options: { class: 'gl-new-card-header' }, body_options: { class: 'gl-new-card-body' }) do |c|
-    - c.with_header do
-      .gl-new-card-title-wrapper
-        %h3.gl-new-card-title
-          = _('Active personal access tokens')
-        .gl-new-card-count
-          = sprite_icon('token', css_class: 'gl-mr-2')
-          %span.js-token-count= @active_access_tokens.size
-      .gl-new-card-actions
-        = render Pajamas::ButtonComponent.new(size: :small, button_options: { class: 'js-toggle-button js-toggle-content', data: { testid: 'add-new-token-button' } }) do
-          = _('Add new token')
-    - c.with_body do
-      .gl-new-card-add-form.gl-mt-3.gl-hidden.js-toggle-content.js-add-new-token-form
-        = render 'shared/access_tokens/form',
-            ajax: true,
-            type: type,
-            path: user_settings_personal_access_tokens_path,
-            token: @personal_access_token,
-            scopes: @scopes,
-            help_path: help_page_path('user/profile/personal_access_tokens', anchor: 'personal-access-token-scopes')
+  = render ::Layouts::CrudComponent.new(_('Active personal access tokens'),
+    icon: 'token',
+    count: @active_access_tokens.size,
+    count_options: { class: 'js-token-count' },
+    toggle_text: _('Add new token'),
+    toggle_options: { data: { testid: 'add-new-token-button' } },
+    form_options: { class: 'js-add-new-token-form' },
+    options: { class: 'gl-mt-5 js-token-card' }) do |c|
+    - c.with_form do
+      = render 'shared/access_tokens/form',
+        ajax: true,
+        type: type,
+        path: user_settings_personal_access_tokens_path,
+        token: @personal_access_token,
+        scopes: @scopes,
+        help_path: help_page_path('user/profile/personal_access_tokens', anchor: 'personal-access-token-scopes')
 
-  #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json } }
+    - c.with_body do
+      #js-access-token-table-app{ data: { access_token_type: type, access_token_type_plural: type_plural, initial_active_access_tokens: @active_access_tokens.to_json } }
 
 #js-tokens-app{ data: { tokens_data: tokens_app_data } }

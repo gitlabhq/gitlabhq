@@ -2877,6 +2877,10 @@ export const mockWorkItemNotesResponse = {
     workItem: {
       id: 'gid://gitlab/WorkItem/1',
       iid: '60',
+      namespace: {
+        id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+        __typename: 'Namespace',
+      },
       widgets: [
         {
           __typename: 'WorkItemWidgetIteration',
@@ -3093,6 +3097,10 @@ export const mockWorkItemNotesByIidResponse = {
       workItem: {
         id: 'gid://gitlab/WorkItem/600',
         iid: '51',
+        namespace: {
+          id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+          __typename: 'Namespace',
+        },
         widgets: [
           {
             __typename: 'WorkItemWidgetIteration',
@@ -3327,6 +3335,10 @@ export const mockMoreWorkItemNotesResponse = {
       workItem: {
         id: 'gid://gitlab/WorkItem/600',
         iid: '60',
+        namespace: {
+          id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+          __typename: 'Namespace',
+        },
         widgets: [
           {
             __typename: 'WorkItemWidgetIteration',
@@ -3679,6 +3691,10 @@ export const mockWorkItemNotesResponseWithComments = {
       workItem: {
         id: 'gid://gitlab/WorkItem/600',
         iid: '60',
+        namespace: {
+          id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+          __typename: 'Namespace',
+        },
         widgets: [
           {
             __typename: 'WorkItemWidgetIteration',
@@ -4106,6 +4122,10 @@ export const workItemNotesWithSystemNotesWithChangedDescription = {
       workItem: {
         id: 'gid://gitlab/WorkItem/733',
         iid: '79',
+        namespace: {
+          id: 'gid://gitlab/Namespaces::ProjectNamespace/34',
+          __typename: 'Namespace',
+        },
         widgets: [
           {
             __typename: 'WorkItemWidgetAssignees',

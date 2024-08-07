@@ -5894,7 +5894,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     end
   end
 
-  describe '#in_locked_state' do
+  describe '#in_locked_state', :clean_gitlab_redis_shared_state do
     let(:merge_request) { create(:merge_request, :opened) }
 
     context 'when the merge request does not change state' do
@@ -5903,10 +5903,12 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         merge_request.in_locked_state do
           expect(merge_request.locked?).to eq(true)
+          expect(Gitlab::MergeRequests::LockedSet.all).to eq([merge_request.id.to_s])
         end
 
         expect(merge_request.opened?).to eq(true)
         expect(merge_request.errors).to be_empty
+        expect(Gitlab::MergeRequests::LockedSet.all).to be_empty
       end
     end
 
@@ -5916,11 +5918,32 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
         merge_request.in_locked_state do
           expect(merge_request.locked?).to eq(true)
+          expect(Gitlab::MergeRequests::LockedSet.all).to eq([merge_request.id.to_s])
           merge_request.mark_as_merged!
         end
 
         expect(merge_request.merged?).to eq(true)
         expect(merge_request.errors).to be_empty
+        expect(Gitlab::MergeRequests::LockedSet.all).to be_empty
+      end
+    end
+
+    context 'when adding to locked set fails' do
+      before do
+        allow(merge_request)
+          .to receive(:add_to_locked_set)
+          .and_raise(Redis::BaseConnectionError)
+      end
+
+      it 'does not lock MR' do
+        expect do
+          merge_request.in_locked_state do
+            # Do nothing
+          end
+        end.to raise_error(Redis::BaseConnectionError)
+
+        expect(merge_request).not_to be_locked
+        expect(Gitlab::MergeRequests::LockedSet.all).to be_empty
       end
     end
   end
@@ -6974,6 +6997,120 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
 
       it 'returns diffs from HEAD diff' do
         expect(merge_request.diffs_for_streaming).to eq(['HEAD diff'])
+      end
+    end
+  end
+
+  describe '#merge_exclusive_lease' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    it 'returns a Gitlab::ExclusiveLease instance' do
+      expect(merge_request.merge_exclusive_lease).to be_a(Gitlab::ExclusiveLease)
+    end
+  end
+
+  describe '#source_and_target_branches_exist?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    before do
+      allow(merge_request).to receive(:source_branch_sha).and_return(source_branch_sha)
+      allow(merge_request).to receive(:target_branch_sha).and_return(target_branch_sha)
+    end
+
+    context 'when both source_branch_sha and target_branch_sha are present' do
+      let(:source_branch_sha) { 'abc123' }
+      let(:target_branch_sha) { 'def456' }
+
+      it 'returns true' do
+        expect(merge_request.source_and_target_branches_exist?).to eq(true)
+      end
+    end
+
+    context 'when source_branch_sha is nil' do
+      let(:source_branch_sha) { nil }
+      let(:target_branch_sha) { 'def456' }
+
+      it 'returns false' do
+        expect(merge_request.source_and_target_branches_exist?).to eq(false)
+      end
+    end
+
+    context 'when target_branch_sha is nil' do
+      let(:source_branch_sha) { 'abc123' }
+      let(:target_branch_sha) { nil }
+
+      it 'returns false' do
+        expect(merge_request.source_and_target_branches_exist?).to eq(false)
+      end
+    end
+  end
+
+  describe '#has_diffs?' do
+    let(:merge_request) { build_stubbed(:merge_request) }
+
+    before do
+      allow_next_instance_of(Gitlab::Git::Compare) do |compare|
+        allow(compare).to receive(:diffs).and_return(diff_collection)
+      end
+    end
+
+    context 'when Gitlab::Git::Compare#diffs returns `true` as `any?`' do
+      let(:diff_collection) { instance_double(Gitlab::Git::DiffCollection, any?: true) }
+
+      it 'returns true' do
+        expect(merge_request.has_diffs?).to eq(true)
+      end
+    end
+
+    context 'when Gitlab::Git::Compare#diffs returns `false` as `any?`' do
+      let(:diff_collection) { instance_double(Gitlab::Git::DiffCollection, any?: false) }
+
+      it 'returns false' do
+        expect(merge_request.has_diffs?).to eq(false)
+      end
+    end
+  end
+
+  describe '#add_to_locked_set' do
+    it 'calls Gitlab::MergeRequests::LockedSet.add' do
+      expect(Gitlab::MergeRequests::LockedSet)
+        .to receive(:add)
+        .with(subject.id, rescue_connection_error: false)
+
+      subject.add_to_locked_set
+    end
+
+    context 'when unstick_locked_merge_requests_redis is disabled' do
+      before do
+        stub_feature_flags(unstick_locked_merge_requests_redis: false)
+      end
+
+      it 'does not call Gitlab::MergeRequests::LockedSet.add' do
+        expect(Gitlab::MergeRequests::LockedSet).not_to receive(:add)
+
+        subject.add_to_locked_set
+      end
+    end
+  end
+
+  describe '#remove_from_locked_set' do
+    it 'calls Gitlab::MergeRequests::LockedSet.remove' do
+      expect(Gitlab::MergeRequests::LockedSet)
+        .to receive(:remove)
+        .with(subject.id)
+
+      subject.remove_from_locked_set
+    end
+
+    context 'when unstick_locked_merge_requests_redis is disabled' do
+      before do
+        stub_feature_flags(unstick_locked_merge_requests_redis: false)
+      end
+
+      it 'does not call Gitlab::MergeRequests::LockedSet.remove' do
+        expect(Gitlab::MergeRequests::LockedSet).not_to receive(:remove)
+
+        subject.remove_from_locked_set
       end
     end
   end

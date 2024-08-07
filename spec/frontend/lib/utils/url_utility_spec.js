@@ -76,10 +76,12 @@ describe('URL utility', () => {
         gon.relative_url_root = '/gitlab';
       });
 
-      it('returns IDE path with route', () => {
-        expect(urlUtils.webIDEUrl('/gitlab/gitlab-org/gitlab-foss/merge_requests/1')).toBe(
-          '/gitlab/-/ide/project/gitlab-org/gitlab-foss/merge_requests/1',
-        );
+      it.each`
+        route                                                | result
+        ${'/gitlab/gitlab-org/gitlab-foss/merge_requests/1'} | ${'/gitlab/-/ide/project/gitlab-org/gitlab-foss/merge_requests/1'}
+        ${'/gitlab-org/gitlab-foss/edit/main/-/'}            | ${'/gitlab/-/ide/project/gitlab-org/gitlab-foss/edit/main/-/'}
+      `('returns $result for $route', ({ route, result }) => {
+        expect(urlUtils.webIDEUrl(route)).toBe(result);
       });
     });
   });

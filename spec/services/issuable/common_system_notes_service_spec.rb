@@ -9,33 +9,61 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
   let(:issuable) { create(:issue, project: project) }
 
   shared_examples 'system note for issuable date changes' do
-    it 'creates a system note for due_date set' do
-      issuable.update!(due_date: Date.today)
-
-      expect { subject }.to change(issuable.notes, :count).from(0).to(1)
-      expect(issuable.notes.last.note).to match('changed due date to')
-    end
-
-    it 'creates a system note for start_date set' do
-      issuable.update!(start_date: Date.today)
-
-      expect { subject }.to change(issuable.notes, :count).from(0).to(1)
-      expect(issuable.notes.last.note).to match('changed start date to')
-    end
-
-    it 'creates a note when both start and due date are changed' do
-      issuable.update!(start_date: Date.today, due_date: 1.week.from_now)
-
-      expect { subject }.to change { issuable.notes.count }.from(0).to(1)
-      expect(issuable.notes.last.note).to match(/changed start date to.+and changed due date to/)
-    end
-
     it 'does not call SystemNoteService if no dates are changed' do
       issuable.update!(title: 'new title')
 
       expect(SystemNoteService).not_to receive(:change_start_date_or_due_date)
 
-      subject
+      execute_notes_service
+    end
+
+    context 'and issuable is an Issue' do
+      it 'creates a system note for due_date set' do
+        issuable.update!(due_date: Date.today)
+
+        expect { execute_notes_service }.to change { issuable.notes.count }.from(0).to(1)
+        expect(issuable.notes.last.note).to match('changed due date to')
+      end
+
+      it 'creates a system note for start_date set' do
+        issuable.update!(start_date: Date.today)
+
+        expect { execute_notes_service }.to change { issuable.notes.count }.from(0).to(1)
+        expect(issuable.notes.last.note).to match('changed start date to')
+      end
+
+      it 'creates a note when both start and due date are changed' do
+        issuable.update!(start_date: Date.today, due_date: 1.week.from_now)
+
+        expect { execute_notes_service }.to change { issuable.notes.count }.from(0).to(1)
+        expect(issuable.notes.last.note).to match(/changed start date to.+and changed due date to/)
+      end
+    end
+
+    context 'and issuable is a WorkItem' do
+      let_it_be_with_reload(:issuable) { create(:work_item, :issue, project: project) }
+      let(:dates_source) { create(:work_items_dates_source, work_item: issuable) }
+
+      it 'creates a system note for due_date set' do
+        dates_source.update!(due_date: Date.today)
+
+        expect { execute_notes_service }.to change { issuable.notes.count }.from(0).to(1)
+        expect(issuable.notes.last.note).to match('changed due date to')
+      end
+
+      it 'creates a system note for start_date set' do
+        dates_source.update!(start_date: Date.today)
+
+        expect { execute_notes_service }.to change { issuable.notes.count }.from(0).to(1)
+        expect(issuable.notes.last.note).to match('changed start date to')
+      end
+
+      it 'creates a note when both start and due date are changed' do
+        dates_source.update!(start_date: Date.today, due_date: 1.week.from_now)
+
+        expect { execute_notes_service }.to change { issuable.notes.count }.from(0).to(1)
+        expect(issuable.notes.last.note).to match(/changed start date to.+and changed due date to/)
+      end
     end
   end
 
@@ -64,10 +92,12 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
     end
 
     context 'with merge requests Draft note' do
-      context 'adding Draft note' do
+      context 'and adding Draft note' do
         let(:issuable) { create(:merge_request, title: "merge request") }
 
-        it_behaves_like 'system note creation', { title: "Draft: merge request" }, 'marked this merge request as **draft**'
+        it_behaves_like 'system note creation',
+          { title: "Draft: merge request" },
+          'marked this merge request as **draft**'
 
         context 'and changing title' do
           before do
@@ -78,7 +108,7 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
         end
       end
 
-      context 'removing Draft note' do
+      context 'and removing Draft note' do
         let(:issuable) { create(:merge_request, title: "Draft: merge request") }
 
         it_behaves_like 'system note creation', { title: "merge request" }, 'marked this merge request as **ready**'
@@ -95,7 +125,11 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
 
     context 'when changing dates' do
       it_behaves_like 'system note for issuable date changes' do
-        subject { described_class.new(project: project, current_user: user).execute(issuable) }
+        subject(:execute_notes_service) do
+          described_class
+            .new(project: project, current_user: user)
+            .execute(issuable)
+        end
       end
     end
   end
@@ -103,7 +137,11 @@ RSpec.describe Issuable::CommonSystemNotesService, feature_category: :team_plann
   context 'on issuable create' do
     let(:issuable) { build(:issue, project: project) }
 
-    subject { described_class.new(project: project, current_user: user).execute(issuable, old_labels: [], is_update: false) }
+    subject(:execute_notes_service) do
+      described_class
+        .new(project: project, current_user: user)
+        .execute(issuable, old_labels: [], is_update: false)
+    end
 
     it 'does not create system note for title and description' do
       issuable.save!

@@ -98,6 +98,47 @@ describe('WorkItemDescription', () => {
       });
     });
 
+    it('passes correct autocompletion data sources when it is a group work item', async () => {
+      const {
+        iid,
+        namespace: { fullPath },
+      } = workItemQueryResponse.data.workItem;
+
+      const workItemResponse = workItemByIidResponseFactory();
+
+      const groupWorkItem = {
+        data: {
+          workspace: {
+            __typename: 'Group',
+            id: 'gid://gitlab/Group/24',
+            workItem: {
+              ...workItemResponse.data.workspace.workItem,
+              namespace: {
+                id: 'gid://gitlab/Group/24',
+                fullPath: 'gitlab-org',
+                name: 'Gitlab Org',
+                __typename: 'Namespace',
+              },
+            },
+          },
+        },
+      };
+
+      createComponent({ isEditing: true, workItemResponse: groupWorkItem, isGroup: true });
+
+      await waitForPromises();
+
+      expect(findMarkdownEditor().props()).toMatchObject({
+        supportsQuickActions: true,
+        renderMarkdownPath: markdownPreviewPath({ fullPath, iid, isGroup: true }),
+        autocompleteDataSources: autocompleteDataSources({
+          fullPath,
+          iid,
+          isGroup: true,
+        }),
+      });
+    });
+
     it('shows edited by text', async () => {
       const lastEditedAt = '2022-09-21T06:18:42Z';
       const lastEditedBy = {

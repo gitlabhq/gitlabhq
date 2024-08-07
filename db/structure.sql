@@ -13519,6 +13519,7 @@ CREATE TABLE namespace_settings (
     early_access_program_joined_by_id bigint,
     seat_control smallint DEFAULT 0 NOT NULL,
     last_dormant_member_review_at timestamp with time zone,
+    enterprise_users_extensions_marketplace_opt_in_status smallint DEFAULT 0 NOT NULL,
     CONSTRAINT check_0ba93c78c7 CHECK ((char_length(default_branch_name) <= 255)),
     CONSTRAINT namespace_settings_unique_project_download_limit_alertlist_size CHECK ((cardinality(unique_project_download_limit_alertlist) <= 100)),
     CONSTRAINT namespace_settings_unique_project_download_limit_allowlist_size CHECK ((cardinality(unique_project_download_limit_allowlist) <= 100))

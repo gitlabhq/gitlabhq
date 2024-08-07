@@ -34,6 +34,7 @@
   variables:
     # This is needed by `trigger-omnibus-env` (`.gitlab/ci/package-and-test/main.gitlab-ci.yml`).
     PARENT_PIPELINE_ID: $CI_PIPELINE_ID
+    PARENT_PIPELINE_SOURCE: $CI_PIPELINE_SOURCE
     SKIP_MESSAGE: Skipping package-and-test due to mr containing only quarantine changes!
     GITLAB_QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"  # This is used for the CI job image from https://gitlab.com/gitlab-org/quality/pipeline-common/-/blob/8.4.4/ci/base.gitlab-ci.yml
     QA_IMAGE: "${CI_REGISTRY_IMAGE}/gitlab-ee-qa:${CI_COMMIT_SHA}"  # This is used for the gitlab-qa image pulled from the E2E tests. If this is not defined, it'll be inferred from RELEASE_IMAGE_TAG below which is wrong because it should not contain the RUBY_VERSION suffix

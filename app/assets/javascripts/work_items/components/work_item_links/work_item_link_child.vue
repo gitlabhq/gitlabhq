@@ -209,7 +209,6 @@ export default {
     },
     async removeChild({ id }) {
       this.cloneChildren();
-      this.isLoadingChildren = true;
 
       try {
         const { data } = await this.updateWorkItem(id, null);
@@ -227,12 +226,9 @@ export default {
         this.showAlert(s__('WorkItem|Something went wrong while removing child.'), error);
         Sentry.captureException(error);
         this.restoreChildren();
-      } finally {
-        this.isLoadingChildren = false;
       }
     },
     async undoChildRemoval(childId) {
-      this.isLoadingChildren = true;
       try {
         const { data } = await this.updateWorkItem(childId, this.childItem.id);
         if (!data?.workItemUpdate?.errors?.length) {
@@ -245,7 +241,6 @@ export default {
       } finally {
         this.activeToast?.hide();
         this.childrenBeforeRemoval = [];
-        this.isLoadingChildren = false;
       }
     },
     async updateWorkItem(childId, parentId) {

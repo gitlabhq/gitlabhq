@@ -7,6 +7,9 @@ query groupWorkItemNotesByIid($fullPath: ID!, $iid: String!, $after: String, $pa
     workItem(iid: $iid) {
       id
       iid
+      namespace {
+        id
+      }
       widgets {
         ... on WorkItemWidgetNotes {
           type

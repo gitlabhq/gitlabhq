@@ -15,16 +15,24 @@ class StuckMergeJobsWorker # rubocop:disable Scalability/IdempotentWorker
 
   # rubocop: disable CodeReuse/ActiveRecord
   def perform
-    stuck_merge_requests.find_in_batches(batch_size: 100) do |group|
-      jids = group.map(&:merge_jid)
+    if MergeRequest.use_locked_set?
+      MergeRequests::UnstickLockedMergeRequestsService.new.execute
+    else
+      stuck_merge_requests.find_in_batches(batch_size: 100) do |group|
+        # The logic in this block also exists in `MergeRequests::UnstickLockedMergeRequestsService`
+        # since that is intended to replace this once the feature flag is fully rolled out.
+        #
+        # Any changes that needs to be applied here should be applied to the service as well.
+        jids = group.map(&:merge_jid)
 
-      # Find the jobs that aren't currently running or that exceeded the threshold.
-      completed_jids = Gitlab::SidekiqStatus.completed_jids(jids)
+        # Find the jobs that aren't currently running or that exceeded the threshold.
+        completed_jids = Gitlab::SidekiqStatus.completed_jids(jids)
 
-      if completed_jids.any?
-        completed_ids = group.select { |merge_request| completed_jids.include?(merge_request.merge_jid) }.map(&:id)
+        if completed_jids.any?
+          completed_ids = group.select { |merge_request| completed_jids.include?(merge_request.merge_jid) }.map(&:id)
 
-        apply_current_state!(completed_jids, completed_ids)
+          apply_current_state!(completed_jids, completed_ids)
+        end
       end
     end
   end

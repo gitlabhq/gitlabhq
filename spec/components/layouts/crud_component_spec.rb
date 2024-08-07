@@ -139,7 +139,7 @@ RSpec.describe Layouts::CrudComponent, type: :component, feature_category: :shar
 
     it 'renders footer custom attributes' do
       render_inline described_class.new(title,
-        form_options: { class: 'footer-class', data: { testid: 'crud-custom-footer-id' } }) do |c|
+        footer_options: { class: 'footer-class', data: { testid: 'crud-custom-footer-id' } }) do |c|
         c.with_footer { footer }
       end
 

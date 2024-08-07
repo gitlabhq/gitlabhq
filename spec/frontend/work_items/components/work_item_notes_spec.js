@@ -65,6 +65,7 @@ describe('WorkItemNotes component', () => {
   const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
   const findWorkItemCommentNoteAtIndex = (index) => findAllWorkItemCommentNotes().at(index);
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
+  const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
 
   const groupWorkItemNotesQueryHandler = jest
     .fn()
@@ -92,6 +93,7 @@ describe('WorkItemNotes component', () => {
     workItemId = mockWorkItemId,
     workItemIid = mockWorkItemIid,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
+    groupWorkItemNotesHandler = groupWorkItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
     isGroup = false,
     isModal = false,
@@ -100,7 +102,7 @@ describe('WorkItemNotes component', () => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
         [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
-        [groupWorkItemNotesByIidQuery, groupWorkItemNotesQueryHandler],
+        [groupWorkItemNotesByIidQuery, groupWorkItemNotesHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
         [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
         [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
@@ -387,6 +389,36 @@ describe('WorkItemNotes component', () => {
       await waitForPromises();
 
       expect(groupWorkItemNotesQueryHandler).toHaveBeenCalled();
+    });
+
+    it('should pass the correct `autoCompleteDataSources` to group work item comment note', async () => {
+      const groupWorkItemNotes = {
+        data: {
+          workspace: {
+            id: 'gid://gitlab/Group/24',
+            workItem: {
+              ...mockWorkItemNotesResponseWithComments.data.workspace.workItem,
+              namespace: {
+                id: 'gid://gitlab/Group/24',
+                __typename: 'Namespace',
+              },
+            },
+          },
+        },
+      };
+      createComponent({
+        isGroup: true,
+        groupWorkItemNotesHandler: jest.fn().mockResolvedValue(groupWorkItemNotes),
+      });
+      await waitForPromises();
+
+      expect(findWorkItemAddNote().props('autocompleteDataSources')).toEqual(
+        autocompleteDataSources({
+          fullPath: 'test-path',
+          iid: mockWorkItemIid,
+          isGroup: true,
+        }),
+      );
     });
   });
 });

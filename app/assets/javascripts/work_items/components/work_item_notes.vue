@@ -13,6 +13,7 @@ import {
   WORK_ITEM_NOTES_FILTER_ALL_NOTES,
   WORK_ITEM_NOTES_FILTER_ONLY_COMMENTS,
   WORK_ITEM_NOTES_FILTER_ONLY_HISTORY,
+  NEW_WORK_ITEM_IID,
 } from '~/work_items/constants';
 import { ASC, DESC } from '~/notes/constants';
 import { autocompleteDataSources, markdownPreviewPath } from '~/work_items/utils';
@@ -107,6 +108,7 @@ export default {
       noteToDelete: null,
       discussionFilter: WORK_ITEM_NOTES_FILTER_ALL_NOTES,
       addNoteKey: uniqueId(`work-item-add-note-${this.workItemId}`),
+      workItemNamespace: '',
     };
   },
   computed: {
@@ -132,9 +134,17 @@ export default {
       const { fullPath, isGroup, workItemIid: iid } = this;
       return markdownPreviewPath({ fullPath, iid, isGroup });
     },
+    isGroupWorkItem() {
+      return this.workItemNamespace?.id.includes('Group');
+    },
     autocompleteDataSources() {
-      const { fullPath, isGroup, workItemIid: iid } = this;
-      return autocompleteDataSources({ fullPath, iid, isGroup });
+      const { fullPath, workItemIid: iid } = this;
+      const isNewWorkItemInGroup = this.isGroup && iid === NEW_WORK_ITEM_IID;
+      return autocompleteDataSources({
+        fullPath,
+        iid,
+        isGroup: this.isGroupWorkItem || isNewWorkItemInGroup,
+      });
     },
     workItemCommentFormProps() {
       return {
@@ -205,7 +215,8 @@ export default {
       error() {
         this.$emit('error', i18n.fetchError);
       },
-      result() {
+      result({ data }) {
+        this.workItemNamespace = data.workspace?.workItem?.namespace;
         if (this.hasNextPage) {
           this.fetchMoreNotes();
         } else if (this.targetNoteHash) {
