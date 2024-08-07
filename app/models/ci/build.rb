@@ -187,6 +187,17 @@ module Ci
       joins(:pipeline).where(Ci::Pipeline.arel_table[:merge_request_id].eq(merge_request))
     end
 
+    scope :with_job_artifacts, -> { joins(:job_artifacts) }
+    # the queries in the scope below are for the following cases,
+    # 1. builds may not have artifacts, still a valid dependency
+    # 2. build's artifacts belong to the same project, a valid dependency
+    # 3. build's artifacts from other projects, a valid dependency only if the artifact's accessibility is public
+    scope :builds_with_accessible_artifacts, ->(project_id) do
+      with_job_artifacts.where(job_artifacts: { job_id: nil })
+      .or(with_job_artifacts.where(job_artifacts: { file_type: 'dotenv', accessibility: 'public' }))
+      .or(with_job_artifacts.where(project_id: project_id, job_artifacts: { file_type: 'dotenv' })).distinct
+    end
+
     acts_as_taggable
 
     add_authentication_token_field :token,
