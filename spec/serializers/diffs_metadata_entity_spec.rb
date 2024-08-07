@@ -37,7 +37,6 @@ RSpec.describe DiffsMetadataEntity, feature_category: :code_review_workflow do
         :definition_path_prefix, :source_branch_exists,
         :can_merge, :conflict_resolution_path, :has_conflicts,
         :project_name, :project_path, :user_full_name, :username,
-        :has_encoded_file_paths,
         # Attributes
         :diff_files
       )
@@ -85,50 +84,6 @@ RSpec.describe DiffsMetadataEntity, feature_category: :code_review_workflow do
             )
 
           subject[:diff_files]
-        end
-      end
-    end
-
-    describe 'has_encoded_file_paths' do
-      context 'when only_context_commits is true' do
-        let(:context_commits_diff) do
-          instance_double(
-            ContextCommitsDiff,
-            commits_count: 1,
-            merge_request: merge_request
-          )
-        end
-
-        let(:options) { { only_context_commits: true } }
-
-        it 'calls ContextCommitsDiff#has_encoded_file_paths?' do
-          allow(merge_request)
-            .to receive(:context_commits_diff)
-            .and_return(context_commits_diff)
-
-          expect(context_commits_diff).to receive(:has_encoded_file_paths?).and_return(true)
-          expect(subject[:has_encoded_file_paths]).to eq(true)
-        end
-      end
-
-      context 'when only_context_commits is not set' do
-        context 'when merge_request_diff is present' do
-          let(:options) { { merge_request_diff: merge_request_diff } }
-
-          it 'calls MergeRequestDiff#has_encoded_file_paths?' do
-            expect(merge_request_diff).to receive(:has_encoded_file_paths?).and_return(true)
-            expect(subject[:has_encoded_file_paths]).to eq(true)
-          end
-        end
-
-        context 'when commit is present' do
-          let(:commit) { project.repository.commit }
-          let(:options) { { commit: commit } }
-
-          it 'calls Commit#has_encoded_file_paths?' do
-            expect(commit).to receive(:has_encoded_file_paths?).and_return(true)
-            expect(subject[:has_encoded_file_paths]).to eq(true)
-          end
         end
       end
     end

@@ -23,8 +23,10 @@ class Projects::BlobController < Projects::ApplicationController
 
   # We need to assign the blob vars before `authorize_edit_tree!` so we can
   # validate access to a specific ref.
-  before_action :assign_blob_vars, except: [:show]
-  before_action :assign_ref_vars, only: [:show]
+  before_action :assign_blob_vars
+
+  # Since BlobController doesn't use assign_ref_vars, we have to call this explicitly
+  before_action :rectify_renamed_default_branch!, only: [:show]
 
   before_action :authorize_edit_tree!, only: [:new, :create, :update, :destroy]
 

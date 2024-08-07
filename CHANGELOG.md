@@ -2,28 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 17.0.6 (2024-08-06)
-
-### Changed (1 change)
-
-- [Put groups_direct field in CI JWT tokens behind feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/106d8bbe3b70f99f52963ac363764f4eb6abd5c1)
-
-### Security (13 changes)
-
-- [Show correct file content](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a1fa5a60d3f8b4d420e65baaf9eb631e2fa9bdf0) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4336))
-- [Fix Possible asciidoctor include:: directive DOS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/8d03c5769e39605f00c930d0fb7b9baab2b6ae5c) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4331))
-- [Filter parameters in Rack::Attack logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9ee1310ad76bceb5f45cb04ea4534c71efa90255) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4274))
-- [Update audit payload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/6e11e37c02cf10887a49e2ee494fec7efe37d944) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4327))
-- [Limit access to project accessed by Security Policy Bot](https://gitlab.com/gitlab-org/security/gitlab/-/commit/3c4c9a4adf772993f42b4788303180d36fb8642d) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4345))
-- [Show alert about not rendering files due to path encoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d939235f3042ff0924e4a794cf0481bc28e08ae3) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4339))
-- [Fix the catastrophic backtracking](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7397896f34a4d0319a7750ae7f0a32aa2dad72c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4291))
-- [Security fixes for banzai pipeline part 2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/40cf9d179ad038363b59eb0accfd1fa2e6bef34b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4281))
-- [Remove xhtml extensions from snippets blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/4952960acf3b3b133c29454375fcbb1e3850ee44) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4332))
-- [Add a project scope to LfsTokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/cbe4a50b5844d452f12e58dab80143c7e548d273) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4321))
-- [Fix ReDoS when parsing git push options](https://gitlab.com/gitlab-org/security/gitlab/-/commit/14b95bf425bf27746f73ec813753355919346b82) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4314))
-- [Fix ReDoS in RefMatcher](https://gitlab.com/gitlab-org/security/gitlab/-/commit/fdab3bdb907212a736b961ed58f5ad4d52135108) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4317))
-- [Enforce `require_password_to_approve` MR approval policy property](https://gitlab.com/gitlab-org/security/gitlab/-/commit/2d7c6114a6915143751f40e44ef2630647cf615a) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4261))
-
 ## 17.0.5 (2024-07-24)
 
 ### Added (1 change)

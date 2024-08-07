@@ -67,8 +67,7 @@ module Banzai
           next if has_ancestor?(node, IGNORED_ANCESTOR_TAGS)
           next unless TAGS_PATTERN_UNTRUSTED_REGEX.match?(node.content)
 
-          html = TAGS_PATTERN_UNTRUSTED_REGEX
-            .replace_gsub(CGI.escapeHTML(node.content), limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match|
+          html = TAGS_PATTERN_UNTRUSTED_REGEX.replace_gsub(CGI.escapeHTML(node.content)) do |match|
             process_tag(CGI.unescapeHTML(match[1]))&.to_s || match[0]
           end
 

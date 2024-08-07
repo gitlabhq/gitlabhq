@@ -870,26 +870,6 @@ module Gitlab
           end
         end
 
-        describe 'the effect of max-include-depth' do
-          before do
-            create_file 'a.adoc', "include::b.adoc[]\n a-document"
-            create_file 'b.adoc', "include::c.adoc[]\n b-document"
-            create_file 'c.adoc', "include::d.adoc[]\n c-document"
-            create_file 'd.adoc', "d-document"
-          end
-
-          let(:include_path) { 'a.adoc' }
-
-          it 'does not include more than the MAX_INCLUDE_DEPTH class constant of 3' do
-            expect(output.gsub(/<[^>]+>/, '').gsub(/\n\s*/, "\n").strip).to eq <<~ADOC.strip
-              Include this:
-              c-document
-              b-document
-              a-document
-            ADOC
-          end
-        end
-
         context 'recursive includes with relative paths' do
           let(:input) do
             <<~ADOC
@@ -968,28 +948,6 @@ module Gitlab
           repository.create_file(project.creator, path, content,
             message: "Add #{path}", branch_name: 'asciidoc')
         end
-      end
-    end
-
-    context 'with timeout' do
-      let_it_be(:project) { create(:project, :repository) }
-      let_it_be(:context) { { project: project } }
-
-      before do
-        stub_const("#{described_class}::RENDER_TIMEOUT", 0.1)
-        allow(::Asciidoctor).to receive(:convert) do
-          sleep(0.2)
-        end
-      end
-
-      it 'times out when rendering takes too long' do
-        expect(Gitlab::RenderTimeout).to receive(:timeout).and_call_original
-        expect(Gitlab::ErrorTracking).to receive(:track_exception).with(
-          instance_of(Timeout::Error),
-          project_id: context[:project].id, class_name: described_class.name.demodulize
-        )
-
-        render('<b>ascii</b>', context)
       end
     end
 

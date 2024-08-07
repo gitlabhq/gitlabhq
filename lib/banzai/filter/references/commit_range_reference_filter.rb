@@ -11,9 +11,8 @@ module Banzai
         self.object_class   = CommitRange
 
         def references_in(text, pattern = object_reference_pattern)
-          Gitlab::Utils::Gsub.gsub_with_limit(text, pattern, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match_data|
-            yield match_data[0], match_data[:commit_range], match_data[:project], match_data[:namespace],
-              match_data
+          text.gsub(pattern) do |match|
+            yield match, $~[:commit_range], $~[:project], $~[:namespace], $~
           end
         end
 

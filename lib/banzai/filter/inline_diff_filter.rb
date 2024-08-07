@@ -31,13 +31,11 @@ module Banzai
       end
 
       def inline_diff_filter(text)
-        html_content = INLINE_DIFF_DELETION_UNTRUSTED_REGEX
-          .replace_gsub(text, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match|
+        html_content = INLINE_DIFF_DELETION_UNTRUSTED_REGEX.replace_gsub(text) do |match|
           %(<span class="idiff left right deletion">#{match[1]}#{match[2]}</span>)
         end
 
-        INLINE_DIFF_ADDITION_UNTRUSTED_REGEX
-          .replace_gsub(html_content, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match|
+        INLINE_DIFF_ADDITION_UNTRUSTED_REGEX.replace_gsub(html_content) do |match|
           %(<span class="idiff left right addition">#{match[1]}#{match[2]}</span>)
         end
       end

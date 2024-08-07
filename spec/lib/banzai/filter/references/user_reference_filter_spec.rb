@@ -244,9 +244,4 @@ RSpec.describe Banzai::Filter::References::UserReferenceFilter, feature_category
       end.to issue_same_number_of_queries_as(control_count)
     end
   end
-
-  it_behaves_like 'limits the number of filtered items' do
-    let(:text) { "#{reference} #{reference} #{reference}" }
-    let(:ends_with) { "</a> #{reference}" }
-  end
 end

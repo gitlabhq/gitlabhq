@@ -1533,36 +1533,4 @@ RSpec.describe MergeRequestDiff, feature_category: :code_review_workflow do
       end
     end
   end
-
-  describe '#has_encoded_file_paths?' do
-    context 'when there are diff files with encoded_file_path as true' do
-      let(:merge_request_diff) do
-        create(:merge_request_diff).tap do |diff|
-          create(:merge_request_diff_file, :new_file, merge_request_diff: diff, encoded_file_path: true)
-          create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff, encoded_file_path: false)
-
-          diff.merge_request_diff_files.reset
-        end
-      end
-
-      it 'returns true' do
-        expect(merge_request_diff.has_encoded_file_paths?).to eq(true)
-      end
-    end
-
-    context 'when there are no diff files with encoded_file_path as true' do
-      let(:merge_request_diff) do
-        create(:merge_request_diff).tap do |diff|
-          create(:merge_request_diff_file, :new_file, merge_request_diff: diff, encoded_file_path: false)
-          create(:merge_request_diff_file, :renamed_file, merge_request_diff: diff, encoded_file_path: false)
-
-          diff.merge_request_diff_files.reset
-        end
-      end
-
-      it 'returns false' do
-        expect(merge_request_diff.has_encoded_file_paths?).to eq(false)
-      end
-    end
-  end
 end

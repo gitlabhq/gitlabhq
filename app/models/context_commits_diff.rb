@@ -38,10 +38,6 @@ class ContextCommitsDiff
     )
   end
 
-  def has_encoded_file_paths?
-    merge_request.merge_request_context_commit_diff_files.where(encoded_file_path: true).any?
-  end
-
   private
 
   def compare

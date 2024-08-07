@@ -8,8 +8,7 @@ module Banzai
       def call
         lang_mapping = Gitlab::FrontMatter::DELIM_LANG
 
-        Gitlab::FrontMatter::PATTERN_UNTRUSTED_REGEX
-          .replace_gsub(html, limit: Banzai::Filter::FILTER_ITEM_LIMIT) do |match|
+        Gitlab::FrontMatter::PATTERN_UNTRUSTED_REGEX.replace_gsub(html) do |match|
           lang = match[:lang].presence || lang_mapping[match[:delim]]
 
           before = match[:before]

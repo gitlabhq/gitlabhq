@@ -29,16 +29,6 @@ RSpec.describe Gitlab::PushOptions do
         target: 'value'
       })
     end
-
-    it 'protects against malicious backtracking' do
-      option = "#{'=' * 1_000_000}."
-
-      expect do
-        Timeout.timeout(10.seconds) do
-          described_class.new([option])
-        end
-      end.not_to raise_error
-    end
   end
 
   describe '#get' do

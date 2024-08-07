@@ -217,7 +217,7 @@ RSpec.describe 'Git LFS API and storage', feature_category: :source_code_managem
                 username, token = ::Base64.decode64(response_authorization.split(' ', 2).last).split(':', 2)
 
                 expect(username).to eq(user.username)
-                expect(Gitlab::LfsToken.new(user, project).token_valid?(token)).to be_truthy
+                expect(Gitlab::LfsToken.new(user).token_valid?(token)).to be_truthy
               end
 
               it 'generates only one new token per each request' do

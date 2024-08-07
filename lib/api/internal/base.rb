@@ -149,7 +149,7 @@ module API
           actor.update_last_used_at!
 
           Gitlab::LfsToken
-            .new(actor.key_or_user, container)
+            .new(actor.key_or_user)
             .authentication_payload(lfs_authentication_url(container))
         end
 
