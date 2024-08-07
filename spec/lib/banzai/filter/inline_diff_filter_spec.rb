@@ -77,4 +77,9 @@ RSpec.describe Banzai::Filter::InlineDiffFilter, feature_category: :source_code_
   end
 
   it_behaves_like 'pipeline timing check'
+
+  it_behaves_like 'limits the number of filtered items' do
+    let(:text) { '[+added+] [+added+] [+added+]' }
+    let(:ends_with) { '</span> [+added+]' }
+  end
 end

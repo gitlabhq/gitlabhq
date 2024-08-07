@@ -47183,6 +47183,9 @@ msgstr ""
 msgid "Security dashboard"
 msgstr ""
 
+msgid "Security policy bot cannot be added as a group member"
+msgstr ""
+
 msgid "Security policy project is already assigned."
 msgstr ""
 
@@ -50387,6 +50390,9 @@ msgid "Some child epics may be hidden due to applied filters"
 msgstr ""
 
 msgid "Some common domains are not allowed. %{learn_more_link}."
+msgstr ""
+
+msgid "Some files cannot be displayed due to their file path encoding."
 msgstr ""
 
 msgid "Some friendly information"

@@ -128,4 +128,9 @@ RSpec.describe Banzai::Filter::References::ProjectReferenceFilter, feature_categ
       end.not_to exceed_all_query_limit(control)
     end
   end
+
+  it_behaves_like 'limits the number of filtered items' do
+    let(:text) { "#{reference} #{reference} #{reference}" }
+    let(:ends_with) { "</a> #{CGI.escapeHTML(reference)}" }
+  end
 end
