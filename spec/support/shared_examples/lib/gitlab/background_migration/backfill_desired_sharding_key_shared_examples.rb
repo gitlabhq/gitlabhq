@@ -9,6 +9,9 @@ RSpec.shared_examples 'desired sharding key backfill job' do
       vulnerability_finding_evidences: {
         vulnerability_occurrences: 'https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins'
       },
+      vulnerability_finding_links: {
+        vulnerability_occurrences: 'https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins'
+      },
       vulnerability_finding_signatures: {
         vulnerability_occurrences: 'https://gitlab.com/groups/gitlab-org/-/epics/14116#identified-cross-joins'
       },

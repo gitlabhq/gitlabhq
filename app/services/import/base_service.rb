@@ -19,7 +19,11 @@ module Import
 
       return current_user.namespace if namespace == owner
 
-      group = Groups::NestedCreateService.new(current_user, group_path: namespace).execute
+      group = Groups::NestedCreateService.new(
+        current_user,
+        organization_id: params[:organization_id],
+        group_path: namespace
+      ).execute
 
       group.errors.any? ? current_user.namespace : group
     rescue StandardError => e

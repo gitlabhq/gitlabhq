@@ -22,6 +22,7 @@ module RemoteDevelopment
             #       to easily overrideany settings for local or temporary testing, but still before all validators.
             .and_then(Gitlab::Fp::Settings::EnvVarOverrideProcessor.method(:process))
             .and_then(RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidator.method(:validate))
+            .and_then(RemoteDevelopment::Settings::NetworkPolicyEgressValidator.method(:validate))
             .map(
               # As the final step, return the settings in a SettingsGetSuccessful message
               ->(context) do
@@ -37,6 +38,8 @@ module RemoteDevelopment
         in { err: SettingsFullReconciliationIntervalSecondsValidationFailed => message }
           generate_error_response_from_message(message: message, reason: :internal_server_error)
         in { err: SettingsPartialReconciliationIntervalSecondsValidationFailed => message }
+          generate_error_response_from_message(message: message, reason: :internal_server_error)
+        in { err: SettingsNetworkPolicyEgressValidationFailed => message }
           generate_error_response_from_message(message: message, reason: :internal_server_error)
         in { ok: SettingsGetSuccessful => message }
           { settings: message.content.fetch(:settings), status: :success }

@@ -102,7 +102,7 @@ prompted to open Xcode.
 ### Clone and open in Visual Studio Code
 
 All projects can be cloned into Visual Studio Code from the GitLab user interface, but you
-can also install the [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md) to clone from
+can also install the [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/index.md) to clone from
 Visual Studio Code:
 
 - From the GitLab interface:
@@ -240,7 +240,7 @@ because they can't follow redirects:
 
 ## Related topics
 
-- [GitLab Workflow VS Code extension](../../../editor_extensions/visual_studio_code/index.md)
+- [GitLab Workflow extension for VS Code](../../../editor_extensions/visual_studio_code/index.md)
 - [Lock files and prevent change conflicts](../file_lock.md)
 - [Repository API](../../../api/repositories.md)
 - [Files](files/index.md)

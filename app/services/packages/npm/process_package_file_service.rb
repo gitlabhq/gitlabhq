@@ -4,7 +4,6 @@ module Packages
   module Npm
     class ProcessPackageFileService
       ExtractionError = Class.new(StandardError)
-      PACKAGE_JSON_ENTRY_PATH = 'package/package.json'
       PACKAGE_JSON_ENTRY_REGEX = %r{^[^/]+/package.json$}
       MAX_FILE_SIZE = 4.megabytes
 
@@ -44,15 +43,11 @@ module Packages
           Zlib::GzipReader.open(open_file.file_path) do |gz|
             tar_reader = Gem::Package::TarReader.new(gz)
 
-            if Feature.disabled?(:allow_custom_root_folder_name_in_npm_upload, package.project)
-              entry = tar_reader.find { |e| File.fnmatch(PACKAGE_JSON_ENTRY_PATH, e.full_name) }
-            else
-              entry_path = entry_full_name(tar_reader)
-              yield unless entry_path.is_a?(String)
+            entry_path = entry_full_name(tar_reader)
+            yield unless entry_path.is_a?(String)
 
-              tar_reader.rewind
-              entry = tar_reader.find { |e| e.full_name == entry_path }
-            end
+            tar_reader.rewind
+            entry = tar_reader.find { |e| e.full_name == entry_path }
 
             yield entry
           end

@@ -373,6 +373,12 @@ class NotifyPreview < ActionMailer::Preview
     Notify.import_source_user_reassign(source_user.id)
   end
 
+  def import_source_user_rejected
+    source_user = Import::SourceUser.last
+
+    Notify.import_source_user_rejected(source_user.id)
+  end
+
   private
 
   def project

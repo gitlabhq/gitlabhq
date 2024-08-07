@@ -2,7 +2,7 @@
 - hide_class = 'gl-hidden' if form_errors(@application)
 
 = render ::Layouts::SettingsSectionComponent.new(page_title,
-  options: { class: 'js-search-settings-section' }) do |c|
+  options: { class: 'gl-mt-5 js-search-settings-section' }) do |c|
   - c.with_description do
     - if oauth_applications_enabled
       - if oauth_authorized_applications_enabled

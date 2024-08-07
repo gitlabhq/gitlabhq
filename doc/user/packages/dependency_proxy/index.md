@@ -76,6 +76,9 @@ you must authenticate against the Dependency Proxy.
 Follow the [instructions for using images from a private registry](../../../ci/docker/using_docker_images.md#access-an-image-from-a-private-container-registry),
 but instead of using `registry.example.com:5000`, use your GitLab domain with no port `gitlab.example.com`.
 
+NOTE:
+[Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode) does not apply during authentication with the dependency proxy. If you are an administrator with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope, that token works even though Admin Mode is enabled.
+
 For example, to manually sign in:
 
 ```shell

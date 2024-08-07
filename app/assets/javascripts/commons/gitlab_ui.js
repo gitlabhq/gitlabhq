@@ -30,4 +30,5 @@ applyGitLabUIConfig({
 
     'GlCollapsibleListbox.srOnlyResultsLabel': (count) => n__('%d result', '%d results', count),
   },
+  useImprovedHideHeuristics: Boolean(gon?.features?.improvedHideHeuristics),
 });

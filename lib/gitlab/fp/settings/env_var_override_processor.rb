@@ -56,10 +56,16 @@ module Gitlab
           elsif setting_type == Integer
             # NOTE: The following line works because String#to_i does not raise exceptions for non-integer values
             unless env_var_value_string.to_i.to_s == env_var_value_string
-              raise "ENV var '#{env_var_name}' value could not be cast to #{setting_type} type."
+              raise "ENV var '#{env_var_name}' value could not be cast to Integer type."
             end
 
             env_var_value_string.to_i
+          elsif setting_type == :Boolean
+            unless env_var_value_string == 'true' || env_var_value_string == 'false'
+              raise "ENV var '#{env_var_name}' value could not be cast to boolean type, value must be 'true' or 'false'"
+            end
+
+            env_var_value_string == "true"
           elsif setting_type == Hash
             # NOTE: A Hash type is expected to be represented in an ENV var as a valid JSON string
             parsed_value = parse_json(env_var_name: env_var_name, value: env_var_value_string.to_s)

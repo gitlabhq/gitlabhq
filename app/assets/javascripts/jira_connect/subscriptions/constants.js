@@ -34,10 +34,7 @@ export const I18N_OAUTH_FAILED_MESSAGE = s__(
   'JiraConnect|Ensure your instance URL is correct and your instance is configured correctly. %{linkStart}Learn more%{linkEnd}.',
 );
 
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-export const INTEGRATIONS_DOC_LINK = helpPagePath('integration/jira/development_panel', {
-  anchor: 'use-the-integration',
-});
+export const INTEGRATIONS_DOC_LINK = helpPagePath('integration/jira/configure');
 export const PREREQUISITES_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
   anchor: 'prerequisites',
 });
@@ -53,10 +50,12 @@ export const JIRA_USER_REQUIREMENTS_DOC_LINK = helpPagePath(
     anchor: 'jira-user-requirements',
   },
 );
-// eslint-disable-next-line local-rules/require-valid-help-page-path
-export const FAILED_TO_UPDATE_DOC_LINK = helpPagePath('administration/settings/jira_cloud_app', {
-  anchor: 'failed-to-update-the-gitlab-instance',
-});
+export const FAILED_TO_UPDATE_DOC_LINK = helpPagePath(
+  'administration/settings/jira_cloud_app_troubleshooting',
+  {
+    anchor: 'failed-to-update-the-gitlab-instance',
+  },
+);
 
 export const GITLAB_COM_BASE_PATH = 'https://gitlab.com';
 

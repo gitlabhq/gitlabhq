@@ -69,6 +69,40 @@ RSpec.describe Gitlab::Fp::Settings::EnvVarOverrideProcessor, feature_category: 
       end
     end
 
+    context "when setting_type is :Boolean" do
+      let(:setting_type) { :Boolean }
+
+      context "for true value" do
+        let(:env_var_value) { "true" }
+
+        it "uses the casted type of the overridden ENV var value" do
+          expect(result).to eq(Gitlab::Fp::Result.ok(
+            {
+              settings: { the_setting: true },
+              setting_types: { the_setting: setting_type },
+              env_var_prefix: env_var_prefix,
+              env_var_failed_message_class: env_var_failed_message_class
+            }
+          ))
+        end
+      end
+
+      context "for false value" do
+        let(:env_var_value) { "false" }
+
+        it "uses the casted type of the overridden ENV var value" do
+          expect(result).to eq(Gitlab::Fp::Result.ok(
+            {
+              settings: { the_setting: false },
+              setting_types: { the_setting: setting_type },
+              env_var_prefix: env_var_prefix,
+              env_var_failed_message_class: env_var_failed_message_class
+            }
+          ))
+        end
+      end
+    end
+
     context "when setting_type is Hash" do
       let(:env_var_value) { '{"a": 1}' }
       let(:setting_type) { Hash }
@@ -121,11 +155,26 @@ RSpec.describe Gitlab::Fp::Settings::EnvVarOverrideProcessor, feature_category: 
   context "when ENV var contains an incorrect type" do
     context "for Integer type setting" do
       let(:env_var_value) { "not an Integer type" }
+      let(:setting_type) { Integer }
 
       it "returns an err Result containing a settings environment variable failed message with details" do
         expect(result).to be_err_result(
           env_var_failed_message_class.new(
             details: "ENV var '#{env_var_name}' value could not be cast to #{setting_type} type."
+          )
+        )
+      end
+    end
+
+    context "for :Boolean type setting" do
+      let(:env_var_value) { "not a :Boolean type" }
+      let(:setting_type) { :Boolean }
+
+      it "returns an err Result containing a settings environment variable failed message with details" do
+        expect(result).to be_err_result(
+          env_var_failed_message_class.new(
+            details: "ENV var '#{env_var_name}' value could not be cast to boolean type, " \
+              "value must be 'true' or 'false'"
           )
         )
       end

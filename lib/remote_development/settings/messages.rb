@@ -14,7 +14,7 @@ module RemoteDevelopment
       SettingsEnvironmentVariableOverrideFailed = Class.new(Gitlab::Fp::Message)
       SettingsFullReconciliationIntervalSecondsValidationFailed = Class.new(Gitlab::Fp::Message)
       SettingsPartialReconciliationIntervalSecondsValidationFailed = Class.new(Gitlab::Fp::Message)
-
+      SettingsNetworkPolicyEgressValidationFailed = Class.new(Gitlab::Fp::Message)
       #---------------------------------------------------------
       # Domain Events - message name should describe the outcome
       #---------------------------------------------------------

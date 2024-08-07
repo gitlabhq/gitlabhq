@@ -77,8 +77,7 @@ DETAILS:
 
 DETAILS:
 **Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment, Self-managed, GitLab Dedicated
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 - `glab duo ask` helps you discover or recall `git` commands when and where you need them.
 - LLM: Vertex AI Codey [`codechat-bison`](https://console.cloud.google.com/vertex-ai/publishers/google/model-garden/codechat-bison)

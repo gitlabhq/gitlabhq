@@ -22,6 +22,9 @@ All of these authentication methods require the minimum scope:
 - For read (pull) access, to be `read_registry`.
 - For write (push) access, to be `write_registry` and `read_registry`.
 
+NOTE:
+[Admin Mode](../../../administration/settings/sign_in_restrictions.md#admin-mode) does not apply during authentication with the container registry. If you are an administrator with Admin Mode enabled, and you create a personal access token without the `admin_mode` scope, that token works even though Admin Mode is enabled.
+
 To authenticate, run the `docker login` command. For example:
 
 ```shell

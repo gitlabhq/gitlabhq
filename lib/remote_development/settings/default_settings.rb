@@ -21,7 +21,17 @@ module RemoteDevelopment
             "registry.gitlab.com/gitlab-org/remote-development/gitlab-workspaces-tools:2.0.0", String
           ],
           full_reconciliation_interval_seconds: [3600, Integer],
-          partial_reconciliation_interval_seconds: [10, Integer]
+          partial_reconciliation_interval_seconds: [10, Integer],
+          workspaces_quota: [-1, Integer],
+          workspaces_per_user_quota: [-1, Integer],
+          network_policy_egress: [[{
+            allow: "0.0.0.0/0",
+            except: %w[10.0.0.0/8 172.16.0.0/12 192.168.0.0/16]
+          }], Array],
+          default_resources_per_workspace_container: [{}, Hash],
+          max_resources_per_workspace: [{}, Hash],
+          gitlab_workspaces_proxy_namespace: [{}, Hash],
+          network_policy_enabled: [true, :Boolean]
         }
       end
     end

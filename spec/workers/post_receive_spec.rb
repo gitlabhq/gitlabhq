@@ -452,7 +452,7 @@ RSpec.describe PostReceive, :clean_gitlab_redis_shared_state, feature_category: 
 
           context 'with post_receive_sync_refresh_cache feature flag enabled' do
             it 'refreshes branch names cache in a lock' do
-              expect(worker).to receive(:in_lock).and_wrap_original do |method, *args, **_kwargs, &block|
+              expect(worker).to receive(:in_lock).with("post_receive:#{gl_repository}:branch", ttl: 20, retries: 50, sleep_sec: 0.4).and_wrap_original do |method, *args, **_kwargs, &block|
                 expect(snippet.repository).to receive(:expire_branches_cache).and_call_original
                 expect(snippet.repository).to receive(:branch_names).and_call_original
 
@@ -510,7 +510,7 @@ RSpec.describe PostReceive, :clean_gitlab_redis_shared_state, feature_category: 
 
           context 'with post_receive_sync_refresh_cache feature flag enabled' do
             it 'refreshes the tag names cache' do
-              expect(worker).to receive(:in_lock).and_wrap_original do |method, *args, **_kwargs, &block|
+              expect(worker).to receive(:in_lock).with("post_receive:#{gl_repository}:tag", ttl: 20, retries: 50, sleep_sec: 0.4).and_wrap_original do |method, *args, **_kwargs, &block|
                 expect(snippet.repository).to receive(:expire_tags_cache).and_call_original
                 expect(snippet.repository).to receive(:tag_names).and_call_original
 

@@ -11,7 +11,8 @@ RSpec.describe RemoteDevelopment::Settings::Main, feature_category: :remote_deve
       [RemoteDevelopment::Settings::SettingsInitializer, :map],
       [RemoteDevelopment::Settings::CurrentSettingsReader, :and_then],
       [Gitlab::Fp::Settings::EnvVarOverrideProcessor, :and_then],
-      [RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidator, :and_then]
+      [RemoteDevelopment::Settings::ReconciliationIntervalSecondsValidator, :and_then],
+      [RemoteDevelopment::Settings::NetworkPolicyEgressValidator, :and_then]
     ]
   end
 
@@ -120,6 +121,18 @@ RSpec.describe RemoteDevelopment::Settings::Main, feature_category: :remote_deve
           {
             status: :error,
             message: lazy { "Settings partial reconciliation interval seconds validation failed: #{error_details}" },
+            reason: :internal_server_error
+          },
+        ],
+        [
+          "when NetworkPolicyEgressValidator returns SettingsNetworkPolicyEgressValidationFailed",
+          {
+            step_class: RemoteDevelopment::Settings::NetworkPolicyEgressValidator,
+            returned_message: lazy { RemoteDevelopment::Settings::Messages::SettingsNetworkPolicyEgressValidationFailed.new(err_message_content) }
+          },
+          {
+            status: :error,
+            message: lazy { "Settings network policy egress validation failed: #{error_details}" },
             reason: :internal_server_error
           },
         ],

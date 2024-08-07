@@ -92,7 +92,7 @@ class Import::BaseController < ApplicationController
 
     return current_user.namespace if names == owner
 
-    group = Groups::NestedCreateService.new(current_user, group_path: names).execute
+    group = Groups::NestedCreateService.new(current_user, organization_id: Current.organization_id, group_path: names).execute
 
     group.errors.any? ? current_user.namespace : group
   rescue StandardError => e

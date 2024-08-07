@@ -101,7 +101,7 @@ RSpec.describe Emails::Imports, feature_category: :importers do
     end
 
     it 'sends reassign email' do
-      is_expected.to have_subject("Reassignments on #{group.full_path} waiting for review.")
+      is_expected.to have_subject("Reassignments on #{group.full_path} waiting for review")
       is_expected.to have_content("Imported from: #{source_user.source_hostname}")
       is_expected.to have_content("Original user: #{source_user.source_name} (@#{source_user.source_username})")
       is_expected.to have_content("Imported to: #{group.name}")
@@ -110,6 +110,32 @@ RSpec.describe Emails::Imports, feature_category: :importers do
         "Reassigned by: #{source_user.reassigned_by_user.name} (@#{source_user.reassigned_by_user.username})"
       )
       is_expected.to have_body_text(import_source_user_url(source_user))
+    end
+
+    it_behaves_like 'appearance header and footer enabled'
+    it_behaves_like 'appearance header and footer not enabled'
+  end
+
+  describe '#import_source_user_rejected' do
+    let(:user) { build_stubbed(:user) }
+    let(:owner) { build_stubbed(:owner) }
+    let(:group) { build_stubbed(:group) }
+    let(:source_user) do
+      build_stubbed(:import_source_user, namespace: group, reassign_to_user: user, reassigned_by_user: owner)
+    end
+
+    subject { Notify.import_source_user_rejected('user_id') }
+
+    before do
+      allow(Import::SourceUser).to receive(:find).and_return(source_user)
+    end
+
+    it 'sends rejected email' do
+      is_expected.to deliver_to(owner.email)
+      is_expected.to have_subject("Reassignments on #{group.full_path} rejected")
+      is_expected.to have_content('Reassignment rejected')
+      is_expected.to have_content("#{user.name} (@#{user.username}) has declined your request")
+      is_expected.to have_body_text(group_group_members_url(group, tab: 'placeholders'))
     end
 
     it_behaves_like 'appearance header and footer enabled'

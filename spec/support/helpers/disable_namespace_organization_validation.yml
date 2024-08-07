@@ -6,7 +6,6 @@
 - ee/spec/controllers/ldap/omniauth_callbacks_controller_spec.rb
 - ee/spec/controllers/registrations/groups_controller_spec.rb
 - ee/spec/features/groups_spec.rb
-- ee/spec/features/projects/settings/merge_requests_settings_spec.rb
 - ee/spec/features/registrations/combined_registration_spec.rb
 - ee/spec/features/registrations/saas/sso_signin_standard_flow_company_creating_project_spec.rb
 - ee/spec/features/registrations/saas/standard_flow_company_creating_project_spec.rb
@@ -20,10 +19,7 @@
 - ee/spec/features/registrations/saas/trial_flow_just_me_importing_project_spec.rb
 - ee/spec/features/registrations/sign_up_with_trial_from_external_site_without_confirmation_spec.rb
 - ee/spec/features/registrations/start_trial_from_external_site_without_confirmation_spec.rb
-- ee/spec/features/subscriptions/subscription_flow_for_existing_user_with_eligible_group_spec.rb
-- ee/spec/features/trials/saas/creation_with_multiple_existing_namespace_flow_spec.rb
 - ee/spec/features/trials/saas/creation_with_no_existing_namespace_flow_spec.rb
-- ee/spec/features/trials/saas/creation_with_one_existing_namespace_flow_spec.rb
 - ee/spec/lib/gitlab/auth/group_saml/user_spec.rb
 - ee/spec/lib/gitlab/auth/ldap/user_spec.rb
 - ee/spec/lib/gitlab/auth/oidc/user_spec.rb
@@ -40,7 +36,6 @@
 - spec/controllers/admin/groups_controller_spec.rb
 - spec/controllers/admin/users_controller_spec.rb
 - spec/controllers/groups_controller_spec.rb
-- spec/controllers/import/bitbucket_controller_spec.rb
 - spec/controllers/omniauth_callbacks_controller_spec.rb
 - spec/controllers/registrations_controller_spec.rb
 - spec/features/admin/admin_groups_spec.rb
@@ -48,7 +43,6 @@
 - spec/features/file_uploads/group_import_spec.rb
 - spec/features/groups_spec.rb
 - spec/frontend/fixtures/groups.rb
-- spec/graphql/types/group_type_spec.rb
 - spec/graphql/types/project_type_spec.rb
 - spec/lib/gitlab/auth/atlassian/user_spec.rb
 - spec/lib/gitlab/auth/ldap/user_spec.rb
@@ -61,5 +55,4 @@
 - spec/services/users/create_service_spec.rb
 - spec/services/users/registrations_build_service_spec.rb
 - spec/services/groups/create_service_spec.rb
-- spec/services/groups/nested_create_service_spec.rb
 - spec/services/resource_access_tokens/create_service_spec.rb

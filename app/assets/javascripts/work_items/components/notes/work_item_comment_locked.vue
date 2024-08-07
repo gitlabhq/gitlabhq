@@ -23,8 +23,7 @@ export default {
     },
   },
   constantOptions: {
-    // eslint-disable-next-line local-rules/require-valid-help-page-path
-    archivedProjectDocsPath: helpPagePath('user/project/settings/index.md', {
+    archivedProjectDocsPath: helpPagePath('user/project/working_with_projects', {
       anchor: 'archive-a-project',
     }),
     lockedIssueDocsPath: helpPagePath('user/discussions/index.md', {

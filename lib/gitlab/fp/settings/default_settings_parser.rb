@@ -29,17 +29,12 @@ module Gitlab
 
             setting_value, setting_type = setting_value_and_type
 
-            unless setting_type.is_a?(Class)
+            unless setting_type.is_a?(Class) || setting_type == :Boolean
               raise "#{module_name} Setting type for '#{setting_name}' " \
-                "must be a class, but it was a #{setting_type.class}."
+                "must be a class or :Boolean, but it was a #{setting_type.class}."
             end
 
-            if !setting_value.nil? && !setting_value.is_a?(setting_type)
-              # NOTE: We are raising an exception here instead of returning a Result.err, because this is
-              # a coding syntax error in the 'default_settings', not a user or data error.
-              raise "#{module_name} Setting '#{setting_name}' has a type of '#{setting_value.class}', " \
-                "which does not match declared type of '#{setting_type}'."
-            end
+            validate_setting_type(setting_value, setting_type, setting_name, module_name) unless setting_value.nil?
 
             settings[setting_name] = setting_value
             setting_types[setting_name] = setting_type
@@ -86,7 +81,25 @@ module Gitlab
             "are mutually dependent and must always be specified together"
         end
 
-        private_class_method :validate_mutually_dependent_settings
+        # @param [Object] setting_value
+        # @param [Class, Symbol] setting_type
+        # @param [Symbol] setting_name
+        # @param [String] module_name
+        # @return boolean
+        # @raise [RuntimeError]
+        def self.validate_setting_type(setting_value, setting_type, setting_name, module_name)
+          return true if setting_type == :Boolean && (setting_value == true || setting_value == false)
+
+          # noinspection RubyMismatchedArgumentType -- RubyMine type checker doesn't recognize guard clause above
+          return true if setting_type != :Boolean && setting_value.is_a?(setting_type)
+
+          # NOTE: We are raising an exception here instead of returning a Result.err, because this is
+          # a coding syntax error in the 'default_settings', not a user or data error.
+          raise "#{module_name} Setting '#{setting_name}' has a type of '#{setting_value.class}', " \
+            "which does not match declared type of '#{setting_type}'."
+        end
+
+        private_class_method :validate_mutually_dependent_settings, :validate_setting_type
       end
     end
   end

@@ -145,7 +145,7 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
     end
   end
 
-  describe 'POST create' do
+  describe 'POST create', :with_current_organization do
     let(:repo_id) { 'FOGBUGZ_REPO_ID' }
     let(:project) { create(:project) }
     let(:client) { instance_double(Gitlab::FogbugzImport::Client, user_map: {}) }
@@ -155,7 +155,7 @@ RSpec.describe Import::FogbugzController, feature_category: :importers do
     end
 
     it 'returns the new project' do
-      expect(Import::FogbugzService).to receive(:new).and_return(
+      expect(Import::FogbugzService).to receive(:new).with(client, user, hash_including(organization_id: current_organization.id)).and_return(
         instance_double(Import::FogbugzService, execute: ServiceResponse.success)
       )
 

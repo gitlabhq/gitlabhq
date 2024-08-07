@@ -43,9 +43,8 @@ const i18n = {
   ),
 };
 
-// eslint-disable-next-line local-rules/require-valid-help-page-path
 const ciCatalogHelpPath = helpPagePath('ci/components/index', {
-  anchor: 'components-catalog',
+  anchor: 'cicd-catalog',
 });
 
 const releasesHelpPath = helpPagePath('user/project/releases/release_cicd_examples');

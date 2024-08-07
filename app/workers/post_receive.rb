@@ -135,7 +135,7 @@ class PostReceive
     #
     # To avoid this, atomically expire and refresh the branch name cache
     # so that tasks such as pipeline creation will find the branch.
-    in_lock(lease_key(:branch), ttl: cache_ttl) do
+    with_lock(:branch) do
       repository.expire_branches_cache
       repository.branch_names
     end
@@ -149,7 +149,7 @@ class PostReceive
       return
     end
 
-    in_lock(lease_key(:tag), ttl: cache_ttl) do
+    with_lock(:tag) do
       repository.expire_caches_for_tags
       repository.tag_names
     end
@@ -159,6 +159,15 @@ class PostReceive
 
   def lease_key(ref_type)
     "post_receive:#{@gl_repository}:#{ref_type}"
+  end
+
+  def with_lock(ref_type)
+    retries = 50
+    sleep_interval = cache_ttl.to_f / retries
+
+    in_lock(lease_key(ref_type), ttl: cache_ttl, retries: retries, sleep_sec: sleep_interval) do
+      yield
+    end
   end
 
   # Schedule an update for the repository size and commit count if necessary.

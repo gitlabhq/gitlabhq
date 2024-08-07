@@ -167,10 +167,6 @@ export const IMAGE_STATUS_ALERT_TYPE = {
   [DELETE_FAILED]: 'warning',
 };
 
-// eslint-disable-next-line local-rules/require-valid-help-page-path
 export const PACKAGE_DELETE_HELP_PAGE_PATH = helpPagePath(
-  'user/packages/container_registry/index',
-  {
-    anchor: 'delete-images',
-  },
+  'user/packages/container_registry/delete_container_registry_images',
 );

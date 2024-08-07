@@ -190,7 +190,7 @@ describe('EmptyStateWithoutAnyIssues component', () => {
 
       it('renders Jira integration docs link', () => {
         expect(findJiraDocsLink().attributes('href')).toBe(
-          '/help/integration/jira/issues#view-jira-issues',
+          '/help/integration/jira/configure#view-jira-issues',
         );
       });
     });

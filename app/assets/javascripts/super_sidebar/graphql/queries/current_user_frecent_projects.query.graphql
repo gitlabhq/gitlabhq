@@ -3,7 +3,7 @@ query CurrentUserFrecentProjects {
     id
     name
     namespace: nameWithNamespace
-    webUrl
     avatarUrl
+    fullPath
   }
 }

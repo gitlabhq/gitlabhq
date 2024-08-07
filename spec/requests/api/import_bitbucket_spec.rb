@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe API::ImportBitbucket, feature_category: :importers do
+RSpec.describe API::ImportBitbucket, :with_current_organization, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:project) { create(:project) }
   let(:params) do
@@ -10,21 +10,30 @@ RSpec.describe API::ImportBitbucket, feature_category: :importers do
       bitbucket_username: 'foo',
       bitbucket_app_password: 'bar',
       repo_path: 'path/to/repo',
-      target_namespace: user.namespace_path
+      target_namespace: user.namespace_path,
+      organization_id: current_organization.id
     }
   end
 
   describe 'POST /import/bitbucket' do
     context 'when authenticated' do
+      before do
+        allow_next_instance_of(Import::BitbucketService) do |service|
+          allow(service).to receive(:execute).and_return(
+            status: :success,
+            project: project
+          )
+        end
+      end
+
+      it 'calls Import::BitbucketService with correct params' do
+        expect(Import::BitbucketService).to receive(:new).with(user, hash_including(params))
+
+        post api('/import/bitbucket', user), params: params
+      end
+
       context 'when successful' do
         it 'returns project entity response' do
-          allow_next_instance_of(Import::BitbucketService) do |service|
-            allow(service).to receive(:execute).and_return(
-              status: :success,
-              project: project
-            )
-          end
-
           post api('/import/bitbucket', user), params: params
 
           expect(response).to have_gitlab_http_status(:created)

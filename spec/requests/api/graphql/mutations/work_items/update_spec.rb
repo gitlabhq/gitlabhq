@@ -452,7 +452,7 @@ RSpec.describe 'Update a work item', feature_category: :team_planning do
       context 'when dates were already set for the work item' do
         before do
           (work_item.dates_source || work_item.build_dates_source)
-            .update!(start_date: start_date, due_date: due_date)
+            .update!(start_date: start_date, start_date_fixed: start_date, due_date: due_date, due_date_fixed: due_date)
         end
 
         context 'when updating only start date' do

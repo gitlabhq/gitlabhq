@@ -867,6 +867,12 @@ msgstr ""
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
+msgid "%{host} could not be reached. %{cta}"
+msgstr ""
+
+msgid "%{host} reachable."
+msgstr ""
+
 msgid "%{host} sign-in from new location"
 msgstr ""
 
@@ -2742,6 +2748,12 @@ msgid "Access Git repositories or the API."
 msgstr ""
 
 msgid "Access Token"
+msgstr ""
+
+msgid "Access credentials expired. %{cta}"
+msgstr ""
+
+msgid "Access credentials not found. %{cta}"
 msgstr ""
 
 msgid "Access denied"
@@ -7784,6 +7796,12 @@ msgid "Authentication method updated"
 msgstr ""
 
 msgid "Authentication via WebAuthn device failed."
+msgstr ""
+
+msgid "Authentication with GitLab Cloud services failed: %{error}"
+msgstr ""
+
+msgid "Authentication with GitLab Cloud services succeeded."
 msgstr ""
 
 msgid "Author"
@@ -27218,6 +27236,9 @@ msgid "If you recently signed in and recognize the IP address, you may disregard
 msgstr ""
 
 msgid "If you recently tried to sign in, but mistakenly entered an incorrect verification code, you can ignore this email."
+msgstr ""
+
+msgid "If you use firewalls or proxy servers, they must allow traffic to this host."
 msgstr ""
 
 msgid "If you want to re-enable two-factor authentication, visit %{two_factor_link}"
@@ -51932,6 +51953,18 @@ msgstr ""
 msgid "Subscription for %{subscription} will be removed. Do you want to continue?"
 msgstr ""
 
+msgid "Subscription for this instance cannot be synchronized. Contact GitLab customer support to obtain a license."
+msgstr ""
+
+msgid "Subscription for this instance cannot be synchronized. Contact GitLab customer support to upgrade your license."
+msgstr ""
+
+msgid "Subscription has not been synchronized recently. %{cta}"
+msgstr ""
+
+msgid "Subscription has not yet been synchronized. %{cta}"
+msgstr ""
+
 msgid "Subscription service outage"
 msgstr ""
 
@@ -51945,6 +51978,9 @@ msgid "Subscription successfully created."
 msgstr ""
 
 msgid "Subscription successfully deleted."
+msgstr ""
+
+msgid "Subscription synchronized successfully."
 msgstr ""
 
 msgid "SubscriptionBanner|Add new license"
@@ -52527,6 +52563,9 @@ msgid "Synced"
 msgstr ""
 
 msgid "Synchronize LDAP"
+msgstr ""
+
+msgid "Synchronize your subscription."
 msgstr ""
 
 msgid "Syncing…"
@@ -57899,6 +57938,9 @@ msgstr ""
 msgid "UserList|created %{timeago}"
 msgstr ""
 
+msgid "UserMapping|%{reassign_to_name} (%{reassign_to_username}) has declined your request to reassign contributions of %{source_name} (%{source_username}) on %{source_hostname} to them on %{destination_group}. To reassign these contributions to another user, visit the Members page of %{destination_group}."
+msgstr ""
+
 msgid "UserMapping|%{reassigned_by_name} (%{reassigned_by_username}) wants to reassign contributions made by %{source_name} (%{source_username}) on %{source_hostname} to you in %{destination_group}."
 msgstr ""
 
@@ -58019,7 +58061,10 @@ msgstr ""
 msgid "UserMapping|Reassignment was rejected by user."
 msgstr ""
 
-msgid "UserMapping|Reassignments on %{group} waiting for review."
+msgid "UserMapping|Reassignments on %{group} rejected"
+msgstr ""
+
+msgid "UserMapping|Reassignments on %{group} waiting for review"
 msgstr ""
 
 msgid "UserMapping|Reject"
@@ -60956,6 +61001,9 @@ msgid "Workspaces|A workspace is a virtual sandbox environment for your code in 
 msgstr ""
 
 msgid "Workspaces|Active"
+msgstr ""
+
+msgid "Workspaces|Agents"
 msgstr ""
 
 msgid "Workspaces|Agents connect workspaces to your Kubernetes cluster. To create a workspace with an allowed agent, group members must have at least the Developer role."

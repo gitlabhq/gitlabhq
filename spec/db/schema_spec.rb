@@ -24,6 +24,7 @@ RSpec.describe 'Database schema', feature_category: :database do
     ci_builds: [%w[partition_id stage_id], %w[partition_id execution_config_id], %w[auto_canceled_by_partition_id auto_canceled_by_id], %w[upstream_pipeline_partition_id upstream_pipeline_id], %w[partition_id commit_id]], # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/142804#note_1745483081
     ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     p_ci_pipeline_variables: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
+    ci_pipelines: [%w[auto_canceled_by_partition_id auto_canceled_by_id]], # index on auto_canceled_by_id is sufficient
     ci_pipelines_config: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipeline_metadata: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient
     ci_pipeline_messages: [%w[partition_id pipeline_id]], # index on pipeline_id is sufficient

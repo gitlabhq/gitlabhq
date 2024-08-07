@@ -11,8 +11,7 @@ export default {
     GlLink,
   },
   i18n: timelineEventTagsPopover,
-  // eslint-disable-next-line local-rules/require-valid-help-page-path
-  learnMoreLink: helpPagePath('ee/operations/incident_management/incident_timeline_events', {
+  learnMoreLink: helpPagePath('operations/incident_management/incident_timeline_events', {
     anchor: 'incident-tags',
   }),
 };
