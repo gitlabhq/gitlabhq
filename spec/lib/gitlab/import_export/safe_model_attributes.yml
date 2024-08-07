@@ -270,7 +270,6 @@ MergeRequestDiffFile:
 - b_mode
 - too_large
 - binary
-- encoded_file_path
 MergeRequestContextCommit:
 - id
 - authored_date

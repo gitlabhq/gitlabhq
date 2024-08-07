@@ -32,7 +32,7 @@ class RefMatcher
   def wildcard_match?(ref_name)
     return false unless wildcard?
 
-    wildcard_regex.match?(ref_name)
+    wildcard_regex === ref_name
   end
 
   def wildcard_regex
@@ -40,7 +40,7 @@ class RefMatcher
       name = @ref_name_or_pattern.gsub('*', 'STAR_DONT_ESCAPE')
       quoted_name = Regexp.quote(name)
       regex_string = quoted_name.gsub('STAR_DONT_ESCAPE', '.*?')
-      Gitlab::UntrustedRegexp.new("\\A#{regex_string}\\z")
+      /\A#{regex_string}\z/
     end
   end
 end

@@ -827,14 +827,6 @@ RSpec.describe API::Helpers, feature_category: :shared do
         it 'returns disposition with the blob name' do
           expect(send_git_blob['Content-Disposition']).to eq %q(inline; filename="foobar"; filename*=UTF-8''foobar)
         end
-
-        context 'when blob name ends with an xhtml extension' do
-          let(:blob) { instance_double(Gitlab::Git::Blob, name: 'foo.bar.xhtml') }
-
-          it 'returns the name without extension' do
-            expect(send_git_blob['Content-Disposition']).to eq %q(inline; filename="foo"; filename*=UTF-8''foo)
-          end
-        end
       end
     end
   end

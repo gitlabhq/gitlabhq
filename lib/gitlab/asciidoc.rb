@@ -13,11 +13,7 @@ module Gitlab
   # Parser/renderer for the AsciiDoc format that uses Asciidoctor and filters
   # the resulting HTML through HTML pipeline filters.
   module Asciidoc
-    # This value ensures a safe depth limit on the number of included files when using include
-    # directives in Asciidoc. By considering the exponential growth effect that comes with
-    # depth, a lower number results in a controlled number of included files.
-    MAX_INCLUDE_DEPTH = 3
-    RENDER_TIMEOUT = 10.seconds
+    MAX_INCLUDE_DEPTH = 5
     DEFAULT_ADOC_ATTRS = {
         'showtitle' => true,
         'sectanchors' => true,
@@ -83,14 +79,9 @@ module Gitlab
 
       Gitlab::Plantuml.configure
 
-      Gitlab::RenderTimeout.timeout(foreground: RENDER_TIMEOUT) do
-        html = ::Asciidoctor.convert(input, asciidoc_opts)
-        html = Banzai.render(html, context)
-        html.html_safe
-      end
-    rescue Timeout::Error => e
-      class_name = name.demodulize
-      Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name)
+      html = ::Asciidoctor.convert(input, asciidoc_opts)
+      html = Banzai.render(html, context)
+      html.html_safe
     end
   end
 end

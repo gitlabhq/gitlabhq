@@ -10,10 +10,6 @@ module Gitlab
       def actor_name
         user? ? actor.username : "lfs+deploy-key-#{actor.id}"
       end
-
-      def container_gid
-        container ? container.to_gid.to_s : nil
-      end
     end
 
     include LfsTokenHelper
@@ -22,7 +18,7 @@ module Gitlab
 
     attr_accessor :actor
 
-    def initialize(actor, container)
+    def initialize(actor)
       @actor =
         case actor
         when DeployKey, User
@@ -32,19 +28,17 @@ module Gitlab
         else
           raise 'Bad Actor'
         end
-
-      @container = container
     end
 
     def token
-      HMACToken.new(actor, container).token(DEFAULT_EXPIRE_TIME)
+      HMACToken.new(actor).token(DEFAULT_EXPIRE_TIME)
     end
 
     # When the token is an lfs one and the actor
     # is blocked or the password has been changed,
     # the token is no longer valid
     def token_valid?(token_to_check)
-      HMACToken.new(actor, container).token_valid?(token_to_check) && valid_user?
+      HMACToken.new(actor).token_valid?(token_to_check) && valid_user?
     end
 
     def deploy_key_pushable?(project)
@@ -76,40 +70,30 @@ module Gitlab
 
     private # rubocop:disable Lint/UselessAccessModifier
 
-    attr_reader :container
-
     class HMACToken
       include LfsTokenHelper
 
-      def initialize(actor, container)
+      def initialize(actor)
         @actor = actor
-        @container = container
       end
 
       def token(expire_time)
         hmac_token = JSONWebToken::HMACToken.new(secret)
         hmac_token.expire_time = Time.now + expire_time
         hmac_token[:data] = { actor: actor_name }
-        hmac_token[:data][:container_gid] = container_gid if container
-
         hmac_token.encoded
       end
 
       def token_valid?(token_to_check)
         decoded_token = JSONWebToken::HMACToken.decode(token_to_check, secret).first
-        return false if decoded_token.dig('data', 'actor') != actor_name
-
-        token_container = decoded_token.dig('data', 'container_gid')
-        return true if token_container.blank? || container.blank?
-
-        token_container == container_gid
+        decoded_token.dig('data', 'actor') == actor_name
       rescue JWT::DecodeError
         false
       end
 
       private
 
-      attr_reader :actor, :container
+      attr_reader :actor
 
       def secret
         case actor

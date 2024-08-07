@@ -26,7 +26,6 @@ export const diffMetadata = {
   render_overflow_warning: false,
   email_patch_path: '/gitlab-org/gitlab-test/-/merge_requests/4.patch',
   plain_diff_path: '/gitlab-org/gitlab-test/-/merge_requests/4.diff',
-  has_encoded_file_paths: false,
   merge_request_diffs: [
     {
       version_index: null,

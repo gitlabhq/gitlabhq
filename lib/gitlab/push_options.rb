@@ -47,7 +47,7 @@ module Gitlab
       mr: :merge_request
     }).freeze
 
-    OPTION_MATCHER = Gitlab::UntrustedRegexp.new('(?<namespace>[^\.]+)\.(?<key>[^=]+)=?(?<value>.*)')
+    OPTION_MATCHER = /(?<namespace>[^\.]+)\.(?<key>[^=]+)=?(?<value>.*)/
 
     CI_SKIP = 'ci.skip'
 
@@ -101,20 +101,13 @@ module Gitlab
       parts = OPTION_MATCHER.match(option)
       return unless parts
 
-      namespace = extract_match(parts, :namespace)
-      key = extract_match(parts, :key)
-      value = extract_match(parts, :value)
-
+      namespace, key, value = parts.values_at(:namespace, :key, :value).map(&:strip)
       namespace = NAMESPACE_ALIASES[namespace] if NAMESPACE_ALIASES[namespace]
       value = value.presence || true
 
       return unless valid_option?(namespace, key)
 
       [namespace, key, value]
-    end
-
-    def extract_match(parts, key)
-      parts[key].to_s.strip
     end
 
     def valid_option?(namespace, key)

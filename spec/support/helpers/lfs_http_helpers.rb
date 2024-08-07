@@ -13,11 +13,11 @@ module LfsHttpHelpers
   end
 
   def authorize_deploy_key
-    Gitlab::LfsToken.new(key, nil).basic_encoding
+    Gitlab::LfsToken.new(key).basic_encoding
   end
 
   def authorize_user_key
-    Gitlab::LfsToken.new(user, nil).basic_encoding
+    Gitlab::LfsToken.new(user).basic_encoding
   end
 
   def authorize_deploy_token

@@ -2,38 +2,6 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 17.2.2 (2024-08-06)
-
-### Fixed (2 changes)
-
-- [bug: Fix template error due to divided by zero](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a09aab977c287262a07bec5a267d611c56bf4f9c)
-- [Ignore unknown sequences in sequence fix migration](https://gitlab.com/gitlab-org/security/gitlab/-/commit/7aa835983a46af9edd1ac4699593017e66979e1d)
-
-### Changed (2 changes)
-
-- [Reverify externally verified gpg keys](https://gitlab.com/gitlab-org/security/gitlab/-/commit/a390e0347e8bd5565d6c324c82221a0f7cccedfc)
-- [Put groups_direct field in CI JWT tokens behind feature flag](https://gitlab.com/gitlab-org/security/gitlab/-/commit/59f2133beed57e99c0f8ebab31ea77bb892fef36)
-
-### Security (13 changes)
-
-- [Show correct file content](https://gitlab.com/gitlab-org/security/gitlab/-/commit/1357224fea289ba708f30f528c04e213b29e0b23) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4334))
-- [Fix Possible asciidoctor include:: directive DOS](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9762e4636b3dd69edac8b235b4706db515e65e79) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4329))
-- [Filter parameters in Rack::Attack logs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/401bdc5202d7b083f750361a2f1ef57466bc919f) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4272))
-- [Update audit payload](https://gitlab.com/gitlab-org/security/gitlab/-/commit/864194bebe8a5b2e2187d04a65e0e2b530c7b779) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4325))
-- [Limit access to project accessed by Security Policy Bot](https://gitlab.com/gitlab-org/security/gitlab/-/commit/100a915754d858cd18cfb7851c80944c8fda640b) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4343))
-- [Show alert about not rendering files due to path encoding](https://gitlab.com/gitlab-org/security/gitlab/-/commit/d8533d727a1c036560df59282bf62ab561258a13) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4337))
-- [Fix the catastrophic backtracking](https://gitlab.com/gitlab-org/security/gitlab/-/commit/001aab470cfc14b4c1655de2382d0aa4c39a4fac) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4289))
-- [Security fixes for banzai pipeline part 2](https://gitlab.com/gitlab-org/security/gitlab/-/commit/266c315f6e825881c36aa78f0203bf6a2c36a132) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4283))
-- [Remove xhtml extensions from snippets blobs](https://gitlab.com/gitlab-org/security/gitlab/-/commit/73b5fc95468dcc35d796737ebb1a6c11d88ebf64) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4300))
-- [Add a project scope to LfsTokens](https://gitlab.com/gitlab-org/security/gitlab/-/commit/943c7867ce0d9dc98929af322ecd422438c9f9c6) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4319))
-- [Fix ReDoS when parsing git push options](https://gitlab.com/gitlab-org/security/gitlab/-/commit/798466f7574554358d770d28df036f60eff31e41) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4312))
-- [Fix ReDoS in RefMatcher](https://gitlab.com/gitlab-org/security/gitlab/-/commit/87d308caed2a1ec7f5ae7ddc1131f5c7abbffdbd) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4315))
-- [Enforce `require_password_to_approve` MR approval policy property](https://gitlab.com/gitlab-org/security/gitlab/-/commit/129139c6eebd257bc5eae142c52267bb83a71307) ([merge request](https://gitlab.com/gitlab-org/security/gitlab/-/merge_requests/4277))
-
-### Other (1 change)
-
-- [Introduce lock-free rescheduling for duplicate job](https://gitlab.com/gitlab-org/security/gitlab/-/commit/9a15c696b06e4240b02bc54b0c36ed10450c7244)
-
 ## 17.2.1 (2024-07-24)
 
 ### Fixed (1 change)

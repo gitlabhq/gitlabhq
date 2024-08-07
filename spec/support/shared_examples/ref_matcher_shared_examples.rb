@@ -78,19 +78,6 @@ RSpec.shared_examples 'RefMatcher#matches?' do
 
     it { is_expected.to be_falsey }
   end
-
-  context 'when ref_pattern with ReDoS' do
-    let(:ref_pattern) { '**************a' }
-    let(:ref_name) { 'aaaaaaaaaaaaaaaaaaaaa' }
-
-    it 'does not cause catastrophic backtracking' do
-      expect do
-        Timeout.timeout(10.seconds) do
-          is_expected.to be_truthy
-        end
-      end.not_to raise_error
-    end
-  end
 end
 
 RSpec.shared_examples 'RefMatcher#wildcard?' do

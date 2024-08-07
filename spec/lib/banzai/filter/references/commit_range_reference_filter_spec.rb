@@ -252,9 +252,4 @@ RSpec.describe Banzai::Filter::References::CommitRangeReferenceFilter, feature_c
       expect(reference_filter("See #{reference}", context).css('a').first.text).to eql(reference)
     end
   end
-
-  it_behaves_like 'limits the number of filtered items' do
-    let(:text) { "#{range.to_reference} #{range.to_reference} #{range.to_reference}" }
-    let(:ends_with) { "</a> #{range.to_reference}" }
-  end
 end

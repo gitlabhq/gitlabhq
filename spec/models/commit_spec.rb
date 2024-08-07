@@ -997,36 +997,4 @@ EOS
       it_behaves_like 'containing ref names'
     end
   end
-
-  describe '#has_encoded_file_paths?' do
-    before do
-      allow(commit).to receive(:raw_diffs).and_return(raw_diffs)
-    end
-
-    context 'when there are diffs with encoded_file_path as true' do
-      let(:raw_diffs) do
-        [
-          instance_double(Gitlab::Git::Diff, encoded_file_path: true),
-          instance_double(Gitlab::Git::Diff, encoded_file_path: false)
-        ]
-      end
-
-      it 'returns true' do
-        expect(commit.has_encoded_file_paths?).to eq(true)
-      end
-    end
-
-    context 'when there are no diffs with encoded_file_path as true' do
-      let(:raw_diffs) do
-        [
-          instance_double(Gitlab::Git::Diff, encoded_file_path: false),
-          instance_double(Gitlab::Git::Diff, encoded_file_path: false)
-        ]
-      end
-
-      it 'returns false' do
-        expect(commit.has_encoded_file_paths?).to eq(false)
-      end
-    end
-  end
 end

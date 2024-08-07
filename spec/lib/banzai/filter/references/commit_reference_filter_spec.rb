@@ -329,9 +329,4 @@ RSpec.describe Banzai::Filter::References::CommitReferenceFilter, feature_catego
       end.not_to exceed_all_query_limit(control).with_threshold(5)
     end
   end
-
-  it_behaves_like 'limits the number of filtered items' do
-    let(:text) { "#{commit.id} #{commit.id} #{commit.id}" }
-    let(:ends_with) { "</a> #{commit.id}" }
-  end
 end

@@ -221,27 +221,11 @@ RSpec.describe Banzai::Filter::References::ReferenceFilter, feature_category: :t
         expect(filter).to receive(:with_update_nodes).and_call_original
         expect(filter).to receive(:call) { filter.instance_variable_set(:@new_nodes, new_nodes) }
         expect(filter).to receive(:update_nodes!).and_call_original
-        expect(filter).to receive(:nodes?).and_call_original
       end
 
       described_class.call(document, { project: project }, result)
 
       expect(result[:reference_filter_nodes]).to eq(expected_nodes)
-    end
-  end
-
-  describe '.nodes?' do
-    let_it_be(:document) { Nokogiri::HTML.fragment('<a href="foo">foo</a>') }
-    let(:filter) { described_class.new(document, project: project) }
-
-    it 'returns false when nodes are not loaded' do
-      expect(filter.nodes?).to be_falsey
-    end
-
-    it 'returns true when nodes are loaded' do
-      filter.nodes
-
-      expect(filter.nodes?).to be_truthy
     end
   end
 

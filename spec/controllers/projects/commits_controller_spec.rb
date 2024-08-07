@@ -27,34 +27,11 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
     end
 
     describe "GET show" do
-      let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
-      let(:ref_type) { nil }
-      let(:request) do
-        get(:show, params: params)
-      end
-
       render_views
 
       context 'with file path' do
-        include_context 'with ambiguous refs for controllers'
-
         before do
-          request
-        end
-
-        context 'when the ref is ambiguous' do
-          let(:ref) { 'ambiguous_ref' }
-          let(:ref_type) { 'tags' }
-          let(:path) { 'README.md' }
-          let(:id) { "#{ref}/#{path}" }
-
-          it_behaves_like '#set_is_ambiguous_ref when ref is ambiguous'
-        end
-
-        describe '#set_is_ambiguous_ref with no ambiguous ref' do
-          let(:id) { 'master/README.md' }
-
-          it_behaves_like '#set_is_ambiguous_ref when ref is not ambiguous'
+          get :show, params: { namespace_id: project.namespace, project_id: project, id: id }
         end
 
         context "valid branch, valid file" do
@@ -196,16 +173,14 @@ RSpec.describe Projects::CommitsController, feature_category: :source_code_manag
         end
       end
 
-      describe 'loading tags' do
-        it 'loads tags for commits' do
-          expect_next_instance_of(CommitCollection) do |collection|
-            expect(collection).to receive(:load_tags)
-          end
-
-          get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' }
-
-          expect(response).to have_gitlab_http_status(:ok)
+      it 'loads tags for commits' do
+        expect_next_instance_of(CommitCollection) do |collection|
+          expect(collection).to receive(:load_tags)
         end
+
+        get :show, params: { namespace_id: project.namespace, project_id: project, id: 'master/README.md' }
+
+        expect(response).to have_gitlab_http_status(:ok)
       end
 
       context 'when tag has a non-ASCII encoding' do

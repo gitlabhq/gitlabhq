@@ -35,14 +35,8 @@ module Banzai
       CSS_WIKILINK_STYLE = 'a[href][data-wikilink]'
       XPATH_WIKILINK_STYLE = Gitlab::Utils::Nokogiri.css_to_xpath(CSS_WIKILINK_STYLE).freeze
 
-      IMAGE_LINK_LIMIT = 100
-
       def call
-        @image_link_count = 0
-
-        doc.xpath(XPATH_WIKILINK_STYLE).each_with_index do |node, index|
-          break if Banzai::Filter.filter_item_limit_exceeded?(index)
-
+        doc.xpath(XPATH_WIKILINK_STYLE).each do |node|
           process_image_link(node) || process_page_link(node)
         end
 
@@ -55,14 +49,10 @@ module Banzai
       def process_image_link(node)
         return unless image?(node[:href])
 
-        # checking for the existence of an image file tends to be slow. So limit it.
-        return if image_link_limit_exceeded?
-
         path =
           if url?(node[:href])
             node[:href]
           elsif wiki
-            @image_link_count += 1
             wiki.find_file(node[:href], load_content: false)&.path
           end
 
@@ -115,10 +105,6 @@ module Banzai
 
       def url?(path)
         path.start_with?(*%w[http https])
-      end
-
-      def image_link_limit_exceeded?
-        @image_link_count >= Banzai::Filter::WikiLinkGollumFilter::IMAGE_LINK_LIMIT
       end
     end
   end

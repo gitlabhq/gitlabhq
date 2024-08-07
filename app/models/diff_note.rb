@@ -53,7 +53,7 @@ class DiffNote < Note
     end
 
     creation_params = diff_file.diff.to_hash
-      .except(:too_large, :generated, :encoded_file_path)
+      .except(:too_large, :generated)
       .merge(diff: diff_file.diff_hunk(diff_line))
 
     create_note_diff_file(creation_params)

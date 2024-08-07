@@ -195,7 +195,7 @@ module Repositories
     def lfs_auth_header
       return unless user
 
-      Gitlab::LfsToken.new(user, project).basic_encoding
+      Gitlab::LfsToken.new(user).basic_encoding
     end
 
     def should_auto_link?

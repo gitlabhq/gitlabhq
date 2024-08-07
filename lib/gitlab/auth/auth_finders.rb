@@ -99,7 +99,7 @@ module Gitlab
         login, token = user_name_and_password(current_request)
         user = User.find_by_login(login.to_s)
 
-        user if user && Gitlab::LfsToken.new(user, nil).token_valid?(token.to_s)
+        user if user && Gitlab::LfsToken.new(user).token_valid?(token.to_s)
       end
 
       def find_user_from_personal_access_token

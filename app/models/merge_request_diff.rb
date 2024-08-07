@@ -646,10 +646,6 @@ class MergeRequestDiff < ApplicationRecord
     FileUtils.rm_rf(external_diff_cache_dir)
   end
 
-  def has_encoded_file_paths?
-    merge_request_diff_files.where(encoded_file_path: true).any?
-  end
-
   private
 
   def convert_external_diffs_to_database

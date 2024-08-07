@@ -75,7 +75,3 @@ export const ERROR_LOADING_FULL_DIFF = s__(
 export const ERROR_DISMISSING_SUGESTION_POPOVER = s__(
   'MergeRequest|Error dismissing suggestion popover. Please try again.',
 );
-export const ENCODED_FILE_PATHS_TITLE = __('Some changes are not shown.');
-export const ENCODED_FILE_PATHS_MESSAGE = __(
-  'Some files cannot be displayed due to their file path encoding.',
-);

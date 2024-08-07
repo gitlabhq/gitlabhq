@@ -202,33 +202,6 @@ RSpec.describe Banzai::Filter::WikiLinkGollumFilter, feature_category: :wiki do
 
   it_behaves_like 'pipeline timing check'
 
-  describe 'limits the number of filtered image items' do
-    before do
-      stub_const('Banzai::Filter::WikiLinkGollumFilter::IMAGE_LINK_LIMIT', 2)
-    end
-
-    it 'enforces image limits' do
-      blob = instance_double('Gitlab::Git::Blob', mime_type: 'image/jpeg',
-        name: 'images/image.jpg', path: 'images/image.jpg', data: '')
-      wiki_file = Gitlab::Git::WikiFile.new(blob)
-      expect(wiki).to receive(:find_file).with('images/image.jpg', load_content: false).twice.and_return(wiki_file)
-
-      text = '[[images/image.jpg]] [[images/image.jpg]] [[images/image.jpg]]'
-      ends_with = '>images/image.jpg</a></p>'
-      result = pipeline_filter(text, wiki: wiki)
-
-      expect(result.to_html).to end_with ends_with
-    end
-  end
-
-  it_behaves_like 'limits the number of filtered items' do
-    let(:text) { '[[http://example.com]] [[http://example.com]] [[http://example.com]]' }
-    let(:filter_result) { pipeline_filter(text, wiki: wiki) }
-    let(:ends_with) do
-      '<a href="http://example.com" data-wikilink="true" rel="nofollow noreferrer noopener" target="_blank">http://example.com</a></p>'
-    end
-  end
-
   def pipeline_filter(text, context = {})
     context = { project: project, no_sourcepos: true }.merge(context)
 
