@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class PhoneNumberValidation < MainClusterwide::ApplicationRecord
+  class PhoneNumberValidation < ApplicationRecord
     include IgnorableColumns
 
     # SMS send attempts subsequent to the first one will have wait times of 1

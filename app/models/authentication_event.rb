@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AuthenticationEvent < MainClusterwide::ApplicationRecord
+class AuthenticationEvent < ApplicationRecord
   include UsageStatistics
 
   TWO_FACTOR = 'two-factor'

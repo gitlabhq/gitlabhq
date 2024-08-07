@@ -25,10 +25,11 @@ describe QA::Support::Formatters::TestMetricsFormatter do
   let(:gcs_client) { double("Fog::Storage::GoogleJSON::Real", put_object: nil) } # rubocop:disable RSpec/VerifiedDoubles -- instance_double complains put_object is not implemented but it is
   let(:ci_timestamp) { '2021-02-23T20:58:41Z' }
   let(:ci_job_name) { 'test-job 1/5' }
-  let(:ci_job_url) { 'url' }
-  let(:ci_pipeline_url) { 'url' }
+  let(:ci_job_url) { 'job-url' }
+  let(:ci_pipeline_url) { 'pipeline-url' }
   let(:ci_pipeline_id) { '123' }
   let(:ci_job_id) { '321' }
+  let(:branch) { 'master' }
   let(:run_type) { 'staging-full' }
   let(:smoke) { 'false' }
   let(:blocking) { 'false' }
@@ -71,7 +72,8 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         merge_request: 'false',
         run_type: run_type,
         stage: 'manage',
-        testcase: testcase
+        testcase: testcase,
+        branch: branch
       },
       fields: {
         id: './spec/support/formatters/test_metrics_formatter_spec.rb[1:1]',
@@ -186,6 +188,7 @@ describe QA::Support::Formatters::TestMetricsFormatter do
       stub_env('CI_PIPELINE_ID', ci_pipeline_id)
       stub_env('CI_JOB_ID', ci_job_id)
       stub_env('CI_MERGE_REQUEST_IID', nil)
+      stub_env('CI_COMMIT_REF_NAME', branch)
       stub_env('TOP_UPSTREAM_MERGE_REQUEST_IID', nil)
       stub_env('QA_EXPORT_TEST_METRICS', "true")
       stub_env('QA_RSPEC_RETRIED', "false")
@@ -422,12 +425,14 @@ describe QA::Support::Formatters::TestMetricsFormatter do
             fabrication_method: :api,
             http_method: :post,
             run_type: run_type,
-            merge_request: "false"
+            merge_request: "false",
+            branch: branch
           },
           fields: {
             fabrication_time: 1,
             info: "with id '1'",
             job_url: ci_job_url,
+            pipeline_url: ci_pipeline_url,
             timestamp: Time.now.to_s
           }
         }
@@ -506,12 +511,14 @@ describe QA::Support::Formatters::TestMetricsFormatter do
             fabrication_method: :api,
             http_method: :post,
             run_type: run_type,
-            merge_request: "false"
+            merge_request: "false",
+            branch: branch
           },
           fields: {
             fabrication_time: 1,
             info: "with id '1'",
             job_url: ci_job_url,
+            pipeline_url: ci_pipeline_url,
             timestamp: Time.now.to_s
           }
         }
@@ -547,11 +554,20 @@ describe QA::Support::Formatters::TestMetricsFormatter do
 
     context "with code runtime metrics" do
       let(:time) { DateTime.strptime(ci_timestamp).to_time }
+
       let(:method_call_data) do
         {
           "has_element?" => [{ runtime: 1, filename: "file.rb", call_arg: "element_for_has" }],
           "click" => [{ runtime: 1, filename: "file.rb", call_arg: "element_for_click" }]
         }
+      end
+
+      let(:expected_fields) do
+        { job_url: ci_job_url, pipeline_url: ci_pipeline_url, runtime: 1000, filename: "file.rb" }
+      end
+
+      let(:expected_tags) do
+        { run_type: run_type, merge_request: "false", branch: branch }
       end
 
       it "exports code runtime metrics to influxdb" do
@@ -560,13 +576,13 @@ describe QA::Support::Formatters::TestMetricsFormatter do
         expect(influx_write_api).to have_received(:write).with(data: [
           {
             name: "method-call-stats", time: time,
-            tags: { method: "has_element?", call_arg: "element_for_has", run_type: run_type, merge_request: "false" },
-            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url, runtime: 1000, filename: "file.rb" }
+            tags: { method: "has_element?", call_arg: "element_for_has", **expected_tags },
+            fields: expected_fields
           },
           {
             name: "method-call-stats", time: time,
-            tags: { method: "click", call_arg: "element_for_click", run_type: run_type, merge_request: "false" },
-            fields: { job_url: ci_job_url, pipeline_url: ci_pipeline_url, runtime: 1000, filename: "file.rb" }
+            tags: { method: "click", call_arg: "element_for_click", **expected_tags },
+            fields: expected_fields
           }
         ])
       end

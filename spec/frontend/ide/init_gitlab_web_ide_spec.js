@@ -135,7 +135,7 @@ describe('ide/init_gitlab_web_ide', () => {
         mrTargetProject: '',
         forkInfo: null,
         username: gon.current_username,
-        gitlabUrl: `${TEST_HOST}/`,
+        gitlabUrl: TEST_HOST,
         nonce: TEST_NONCE,
         httpHeaders: {
           'mock-csrf-header': 'mock-csrf-token',

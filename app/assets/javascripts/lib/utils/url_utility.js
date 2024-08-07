@@ -790,14 +790,3 @@ export function buildURLwithRefType({ base = window.location.origin, path, refTy
   }
   return url.pathname + url.search;
 }
-
-export function stripRelativeUrlRootFromPath(path) {
-  const relativeUrlRoot = joinPaths(window.gon.relative_url_root, '/');
-
-  // If we have no relative url root or path doesn't start with it, just return the path
-  if (relativeUrlRoot === '/' || !path.startsWith(relativeUrlRoot)) {
-    return path;
-  }
-
-  return joinPaths('/', path.substring(relativeUrlRoot.length));
-}

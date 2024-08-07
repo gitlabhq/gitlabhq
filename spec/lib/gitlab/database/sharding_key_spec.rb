@@ -166,6 +166,60 @@ RSpec.describe 'new tables missing sharding_key', feature_category: :cell do
     end
   end
 
+  it 'ensures all organization_id columns are not nullable, have no default, and have a foreign key' do
+    sql = <<~SQL
+      SELECT c.table_name,
+        CASE WHEN c.column_default IS NOT NULL THEN 'has default' ELSE NULL END,
+        CASE WHEN c.is_nullable::boolean THEN 'nullable' ELSE NULL END,
+        CASE WHEN fk.name IS NULL THEN 'no foreign key' ELSE NULL END
+      FROM information_schema.columns c
+      LEFT JOIN postgres_foreign_keys fk
+      ON fk.constrained_table_name = c.table_name AND fk.constrained_columns = '{organization_id}' and fk.referenced_columns = '{id}'
+      WHERE c.column_name = 'organization_id' AND (c.column_default IS NOT NULL OR c.is_nullable::boolean OR fk.name IS NULL)
+      ORDER BY c.table_name;
+    SQL
+
+    # To add a table to this list, create an issue under https://gitlab.com/groups/gitlab-org/-/epics/11670.
+    # Use https://gitlab.com/gitlab-org/gitlab/-/issues/476206 as an example.
+    work_in_progress = {
+      "customer_relations_contacts" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476206',
+      "dependency_list_export_parts" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476207',
+      "dependency_list_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476208',
+      "namespaces" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476209',
+      "organization_users" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476210',
+      "projects" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476211',
+      "push_rules" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476212',
+      "raw_usage_data" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476213',
+      "sbom_source_packages" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476214',
+      "sbom_sources" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476215',
+      "snippets" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476216',
+      "upcoming_reconciliations" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476217',
+      "vulnerability_export_parts" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476218',
+      "vulnerability_exports" => 'https://gitlab.com/gitlab-org/gitlab/-/issues/476219'
+    }
+
+    organization_id_columns = ApplicationRecord.connection.select_rows(sql)
+    violations = organization_id_columns.reject { |column| work_in_progress[column[0]] }
+    messages = violations.filter_map do |violation|
+      if violation[2]
+        if has_null_check_constraint?(violation[0], 'organization_id')
+          violation.delete_at(2)
+        else
+          violation[2].concat(' / not null constraint missing')
+        end
+      end
+
+      "  #{violation[0]} - #{violation[1..].compact.join(', ')}" if violation[1..].any?
+    end
+
+    expect(messages).to be_empty, "Expected all organization_id columns to be not nullable, have no default, " \
+      "and have a foreign key, but the following tables do not meet this criteria:" \
+      "\n#{messages.join("\n")}\n\n" \
+      "If this is a work in progress, please create an issue under " \
+      "https://gitlab.com/groups/gitlab-org/-/epics/11670, " \
+      "and add the table to the work in progress list in this test."
+  end
+
   it 'only allows `allowed_to_be_missing_sharding_key` to include tables that are missing a sharding_key',
     :aggregate_failures do
     allowed_to_be_missing_sharding_key.each do |exempted_table|

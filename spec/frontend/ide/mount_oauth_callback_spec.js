@@ -46,7 +46,7 @@ describe('~/ide/mount_oauth_callback', () => {
         clientId: TEST_OAUTH_CLIENT_ID,
         protectRefreshToken: true,
       },
-      gitlabUrl: `${TEST_HOST}/`,
+      gitlabUrl: TEST_HOST,
       baseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
       username: TEST_USERNAME,
     });

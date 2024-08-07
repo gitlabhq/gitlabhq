@@ -6,11 +6,12 @@ gitlab_schemas:
   - gitlab_main
   - gitlab_main_cell
   - gitlab_pm
+  - gitlab_main_clusterwide
 lock_gitlab_schemas:
   - gitlab_ci
   - gitlab_sec
 # Note that we use ActiveRecord::Base here and not ApplicationRecord.
-# This is deliberate, as: 
+# This is deliberate, as:
 # - the load balancer must be enabled for _all_ models
 # - other models outside of Rails that are using `ActiveRecord::Base`
 #   needs to use `main:`

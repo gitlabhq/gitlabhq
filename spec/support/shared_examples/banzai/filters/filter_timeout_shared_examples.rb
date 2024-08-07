@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+# This is an excessive timeout, however it's meant to ensure that we don't
+# have flaky timeouts in CI, which can be slow.
+# See https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161969
+BANZAI_FILTER_TIMEOUT_MAX = 30.seconds
+
 # These shared_examples require the following variables:
 # - text: The text to be run through the filter
 #

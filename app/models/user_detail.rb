@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserDetail < MainClusterwide::ApplicationRecord
+class UserDetail < ApplicationRecord
   include IgnorableColumns
   extend ::Gitlab::Utils::Override
 

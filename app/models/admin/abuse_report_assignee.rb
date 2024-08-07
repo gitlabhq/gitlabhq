@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  class AbuseReportAssignee < MainClusterwide::ApplicationRecord
+  class AbuseReportAssignee < ApplicationRecord
     self.table_name = 'abuse_report_assignees'
 
     belongs_to :abuse_report, touch: true

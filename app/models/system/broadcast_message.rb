@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module System
-  class BroadcastMessage < MainClusterwide::ApplicationRecord
+  class BroadcastMessage < ApplicationRecord
     include CacheMarkdownField
     include Sortable
 

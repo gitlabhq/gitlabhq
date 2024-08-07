@@ -6111,9 +6111,6 @@ msgstr ""
 msgid "Analytics|An error occurred while loading data"
 msgstr ""
 
-msgid "Analytics|An error occurred while loading the %{visualizationTitle} visualization."
-msgstr ""
-
 msgid "Analytics|Analytics dashboards"
 msgstr ""
 
@@ -6310,9 +6307,6 @@ msgid "Analytics|Something went wrong."
 msgstr ""
 
 msgid "Analytics|Start by choosing a measure"
-msgstr ""
-
-msgid "Analytics|Start by choosing a metric"
 msgstr ""
 
 msgid "Analytics|Statistics on namespace usage. Usage data is a cumulative count, and updated monthly."
@@ -17337,6 +17331,9 @@ msgstr ""
 msgid "Dates"
 msgstr ""
 
+msgid "Day"
+msgstr ""
+
 msgid "Day of month"
 msgstr ""
 
@@ -26819,13 +26816,13 @@ msgstr ""
 msgid "IDE|Contact your administrator or try to open the Web IDE again with another domain."
 msgstr ""
 
-msgid "IDE|Could not find a callback URL entry for %{expectedCallbackUrl}."
-msgstr ""
-
 msgid "IDE|Edit"
 msgstr ""
 
 msgid "IDE|Editing this application might affect the functionality of the Web IDE. Ensure the configuration meets the following conditions:"
+msgstr ""
+
+msgid "IDE|Error reloading page"
 msgstr ""
 
 msgid "IDE|GitLab logo"
@@ -33648,6 +33645,9 @@ msgid "Minimum capacity to be available before we schedule more mirrors preempti
 msgstr ""
 
 msgid "Minimum role required to cancel a pipeline or job"
+msgstr ""
+
+msgid "Minute"
 msgstr ""
 
 msgid "Minutes"
@@ -43680,6 +43680,9 @@ msgstr ""
 msgid "QualitySummary|Project quality"
 msgstr ""
 
+msgid "Quarter"
+msgstr ""
+
 msgid "Queued"
 msgstr ""
 
@@ -47488,6 +47491,9 @@ msgid "Seats"
 msgstr ""
 
 msgid "Seats owed"
+msgstr ""
+
+msgid "Second"
 msgstr ""
 
 msgid "Secondary email:"
@@ -59968,6 +59974,9 @@ msgstr ""
 msgid "Wednesday"
 msgstr ""
 
+msgid "Week"
+msgstr ""
+
 msgid "Weekday"
 msgstr ""
 
@@ -61205,6 +61214,9 @@ msgid "Xcode"
 msgstr ""
 
 msgid "YYYY-MM-DD"
+msgstr ""
+
+msgid "Year"
 msgstr ""
 
 msgid "Yes"

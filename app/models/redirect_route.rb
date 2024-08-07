@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class RedirectRoute < MainClusterwide::ApplicationRecord
+class RedirectRoute < ApplicationRecord
   include CaseSensitivity
 
   belongs_to :source, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations

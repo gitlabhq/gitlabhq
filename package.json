@@ -63,7 +63,6 @@
     "@babel/preset-env": "^7.23.7",
     "@csstools/postcss-global-data": "^2.1.1",
     "@cubejs-client/core": "^0.35.23",
-    "@cubejs-client/vue": "^0.35.23",
     "@floating-ui/dom": "^1.2.9",
     "@gitlab/application-sdk-browser": "^0.3.3",
     "@gitlab/at.js": "1.5.7",

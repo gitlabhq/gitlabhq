@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Organizations
-  class Organization < MainClusterwide::ApplicationRecord
+  class Organization < ApplicationRecord
     include Gitlab::Utils::StrongMemoize
     include Gitlab::SQL::Pattern
     include Gitlab::VisibilityLevel

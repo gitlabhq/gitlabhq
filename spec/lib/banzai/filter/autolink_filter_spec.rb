@@ -253,7 +253,7 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning 
     doc = "http://#{'&' * 1_000_000}x"
 
     expect do
-      Timeout.timeout(30.seconds) { filter(doc, context) }
+      Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter(doc, context) }
     end.not_to raise_error
   end
 
@@ -261,7 +261,7 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning 
     doc = "#{'h' * 1_000_000}://example.com"
 
     expect do
-      Timeout.timeout(30.seconds) { filter(doc, context) }
+      Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter(doc, context) }
     end.not_to raise_error
   end
 
@@ -269,7 +269,7 @@ RSpec.describe Banzai::Filter::AutolinkFilter, feature_category: :team_planning 
     doc = "#{'h' * 1_000_000}://"
 
     expect do
-      Timeout.timeout(30.seconds) { filter(doc) }
+      Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) { filter(doc) }
     end.not_to raise_error
   end
 

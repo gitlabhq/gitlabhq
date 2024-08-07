@@ -64,7 +64,7 @@ RSpec.describe Banzai::Filter::SpacedLinkFilter, feature_category: :team_plannin
   end
 
   it 'does not process malicious input' do
-    Timeout.timeout(10) do
+    Timeout.timeout(BANZAI_FILTER_TIMEOUT_MAX) do
       doc = filter('[ (](' * 60_000)
 
       found_links = doc.css('a')

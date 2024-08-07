@@ -1,111 +1,87 @@
-import { GlButton, GlDisclosureDropdown } from '@gitlab/ui';
+import { GlButton, GlCollapsibleListbox, GlListboxItem } from '@gitlab/ui';
 import { mount } from '@vue/test-utils';
-import setWindowLocation from 'helpers/set_window_location_helper';
-import { TEST_HOST } from 'helpers/test_constants';
+import { nextTick } from 'vue';
+import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
 import OAuthDomainMismatchError from '~/ide/components/oauth_domain_mismatch_error.vue';
 
-const MOCK_CALLBACK_URLS = [
-  {
-    base: 'https://example1.com/',
-  },
-  {
-    base: 'https://example2.com/',
-  },
-  {
-    base: 'https://example3.com/relative-path/',
-  },
-];
-const MOCK_CALLBACK_URL = 'https://example.com';
-const MOCK_PATH_NAME = 'path/to/ide';
-
-const EXPECTED_DROPDOWN_ITEMS = MOCK_CALLBACK_URLS.map(({ base }) => ({
-  text: base,
-  href: `${base}${MOCK_PATH_NAME}`,
-}));
+const MOCK_CALLBACK_URL_ORIGIN = 'https://example1.com';
+const MOCK_PATH_NAME = '/path/to/ide';
 
 describe('OAuthDomainMismatchError', () => {
+  useMockLocationHelper();
+
   let wrapper;
+  let originalLocation;
 
   const findButton = () => wrapper.findComponent(GlButton);
-  const findDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
+  const findDropdown = () => wrapper.findComponent(GlCollapsibleListbox);
+  const findDropdownItems = () => wrapper.findAllComponents(GlListboxItem);
 
   const createWrapper = (props = {}) => {
     wrapper = mount(OAuthDomainMismatchError, {
       propsData: {
-        expectedCallbackUrl: MOCK_CALLBACK_URL,
-        callbackUrls: MOCK_CALLBACK_URLS,
+        callbackUrlOrigins: [MOCK_CALLBACK_URL_ORIGIN],
         ...props,
       },
     });
   };
 
   beforeEach(() => {
-    setWindowLocation(`/${MOCK_PATH_NAME}`);
+    originalLocation = window.location;
+    window.location.pathname = MOCK_PATH_NAME;
+  });
+
+  afterEach(() => {
+    window.location = originalLocation;
   });
 
   describe('single callback URL domain passed', () => {
     beforeEach(() => {
-      createWrapper({
-        callbackUrls: MOCK_CALLBACK_URLS.slice(0, 1),
-      });
-    });
-
-    it('renders expected callback URL message', () => {
-      expect(wrapper.text()).toContain(
-        `Could not find a callback URL entry for ${MOCK_CALLBACK_URL}.`,
-      );
+      createWrapper();
     });
 
     it('does not render dropdown', () => {
       expect(findDropdown().exists()).toBe(false);
     });
 
-    it('renders button with correct attributes', () => {
-      const button = findButton();
-      expect(button.exists()).toBe(true);
-      const baseUrl = MOCK_CALLBACK_URLS[0].base;
-      expect(button.text()).toContain(baseUrl);
-      expect(button.attributes('href')).toBe(`${baseUrl}${MOCK_PATH_NAME}`);
+    it('reloads page with correct url on button click', async () => {
+      findButton().vm.$emit('click');
+      await nextTick();
+
+      expect(window.location.replace).toHaveBeenCalledTimes(1);
+      expect(window.location.replace).toHaveBeenCalledWith(
+        new URL(MOCK_CALLBACK_URL_ORIGIN + MOCK_PATH_NAME).toString(),
+      );
     });
   });
 
   describe('multiple callback URL domains passed', () => {
+    const MOCK_CALLBACK_URL_ORIGINS = [MOCK_CALLBACK_URL_ORIGIN, 'https://example2.com'];
+
     beforeEach(() => {
-      createWrapper();
+      createWrapper({ callbackUrlOrigins: MOCK_CALLBACK_URL_ORIGINS });
     });
 
-    it('renders dropdown with correct items', () => {
-      const dropdown = findDropdown();
-
-      expect(dropdown.exists()).toBe(true);
-      expect(dropdown.props('items')).toStrictEqual(EXPECTED_DROPDOWN_ITEMS);
-    });
-  });
-
-  describe('with erroneous callback from current origin', () => {
-    beforeEach(() => {
-      createWrapper({
-        callbackUrls: MOCK_CALLBACK_URLS.concat({
-          base: `${TEST_HOST}/foo`,
-        }),
-      });
+    it('renders dropdown', () => {
+      expect(findDropdown().exists()).toBe(true);
     });
 
-    it('filters out item with current origin', () => {
-      expect(findDropdown().props('items')).toStrictEqual(EXPECTED_DROPDOWN_ITEMS);
-    });
-  });
-
-  describe('when no callback URL passed', () => {
-    beforeEach(() => {
-      createWrapper({
-        callbackUrls: [],
-      });
+    it('renders dropdown items', () => {
+      const dropdownItems = findDropdownItems();
+      expect(dropdownItems.length).toBe(MOCK_CALLBACK_URL_ORIGINS.length);
+      expect(dropdownItems.at(0).text()).toBe(MOCK_CALLBACK_URL_ORIGINS[0]);
+      expect(dropdownItems.at(1).text()).toBe(MOCK_CALLBACK_URL_ORIGINS[1]);
     });
 
-    it('does not render dropdown or button', () => {
-      expect(findDropdown().exists()).toBe(false);
-      expect(findButton().exists()).toBe(false);
+    it('reloads page with correct url on dropdown item click', async () => {
+      const dropdownItem = findDropdownItems().at(0);
+      dropdownItem.vm.$emit('select', MOCK_CALLBACK_URL_ORIGIN);
+      await nextTick();
+
+      expect(window.location.replace).toHaveBeenCalledTimes(1);
+      expect(window.location.replace).toHaveBeenCalledWith(
+        new URL(MOCK_CALLBACK_URL_ORIGIN + MOCK_PATH_NAME).toString(),
+      );
     });
   });
 });

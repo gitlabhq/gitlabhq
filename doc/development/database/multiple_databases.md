@@ -42,7 +42,6 @@ More schemas to be introduced with additional decomposed databases
 The usage of schema enforces the base class to be used:
 
 - `ApplicationRecord` for `gitlab_main`/`gitlab_main_cell.`
-- `MainClusterwide::ApplicationRecord` for `gitlab_main_clusterwide`.
 - `Ci::ApplicationRecord` for `gitlab_ci`
 - `Geo::TrackingBase` for `gitlab_geo`
 - `Gitlab::Database::SharedModel` for `gitlab_shared`

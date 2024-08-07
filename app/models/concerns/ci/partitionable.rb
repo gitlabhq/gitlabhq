@@ -25,8 +25,8 @@ module Ci
       before_validation :set_partition_id, on: :create
       validates :partition_id, presence: true
 
-      scope :in_partition, ->(id) do
-        where(partition_id: (id.respond_to?(:partition_id) ? id.partition_id : id))
+      scope :in_partition, ->(id, partition_foreign_key: :partition_id) do
+        where(partition_id: (id.respond_to?(partition_foreign_key) ? id.try(partition_foreign_key) : id))
       end
 
       def set_partition_id

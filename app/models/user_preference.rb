@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class UserPreference < MainClusterwide::ApplicationRecord
+class UserPreference < ApplicationRecord
   include IgnorableColumns
 
   ignore_column :use_web_ide_extension_marketplace, remove_with: '17.4', remove_after: '2024-08-15'

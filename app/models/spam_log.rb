@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class SpamLog < MainClusterwide::ApplicationRecord
+class SpamLog < ApplicationRecord
   belongs_to :user
 
   validates :user, presence: true

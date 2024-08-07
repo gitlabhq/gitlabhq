@@ -16,7 +16,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
 
     expect(actual).toEqual({
       baseUrl: `${TEST_HOST}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
-      gitlabUrl: `${TEST_HOST}/`,
+      gitlabUrl: TEST_HOST,
     });
   });
 
@@ -27,7 +27,7 @@ describe('~/ide/lib/gitlab_web_ide/get_base_config', () => {
 
     expect(actual).toEqual({
       baseUrl: `${TEST_HOST}${TEST_RELATIVE_URL_ROOT}/${TEST_GITLAB_WEB_IDE_PUBLIC_PATH}`,
-      gitlabUrl: `${TEST_HOST}${TEST_RELATIVE_URL_ROOT}/`,
+      gitlabUrl: `${TEST_HOST}${TEST_RELATIVE_URL_ROOT}`,
     });
   });
 });

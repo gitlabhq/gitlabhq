@@ -155,8 +155,6 @@ RSpec/FactoryBot/AvoidCreate:
     - 'ee/spec/serializers/issues/linked_issue_feature_flag_entity_spec.rb'
     - 'ee/spec/serializers/license_compliance/collapsed_comparer_entity_spec.rb'
     - 'ee/spec/serializers/license_compliance/comparer_entity_spec.rb'
-    - 'ee/spec/serializers/licenses_list_entity_spec.rb'
-    - 'ee/spec/serializers/licenses_list_serializer_spec.rb'
     - 'ee/spec/serializers/linked_feature_flag_issue_entity_spec.rb'
     - 'ee/spec/serializers/member_entity_spec.rb'
     - 'ee/spec/serializers/member_user_entity_spec.rb'

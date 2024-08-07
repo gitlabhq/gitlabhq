@@ -24,20 +24,24 @@ export async function startIde(options) {
     return;
   }
 
+  const oAuthCallbackDomainMismatchApp = new OAuthCallbackDomainMismatchErrorApp(
+    ideElement,
+    ideElement.dataset.callbackUrls,
+  );
+
+  if (oAuthCallbackDomainMismatchApp.isVisitingFromNonRegisteredOrigin()) {
+    oAuthCallbackDomainMismatchApp.renderError();
+    return;
+  }
+
   const useNewWebIde = parseBoolean(ideElement.dataset.useNewWebIde);
 
-  if (!useNewWebIde) {
+  if (useNewWebIde) {
+    const { initGitlabWebIDE } = await import('./init_gitlab_web_ide');
+    initGitlabWebIDE(ideElement);
+  } else {
     resetServiceWorkersPublicPath();
     const { initLegacyWebIDE } = await import('./init_legacy_web_ide');
     initLegacyWebIDE(ideElement, options);
   }
-
-  const oAuthCallbackDomainMismatchApp = new OAuthCallbackDomainMismatchErrorApp(ideElement);
-
-  if (oAuthCallbackDomainMismatchApp.shouldRenderError()) {
-    oAuthCallbackDomainMismatchApp.renderError();
-    return;
-  }
-  const { initGitlabWebIDE } = await import('./init_gitlab_web_ide');
-  initGitlabWebIDE(ideElement);
 }

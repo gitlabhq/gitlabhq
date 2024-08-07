@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Users
-  class BroadcastMessageDismissal < MainClusterwide::ApplicationRecord
+  class BroadcastMessageDismissal < ApplicationRecord
     belongs_to :user
     belongs_to :broadcast_message, class_name: 'System::BroadcastMessage'
 

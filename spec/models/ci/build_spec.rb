@@ -75,6 +75,19 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   it { is_expected.to delegate_method(:merge_request_ref?).to(:pipeline) }
   it { is_expected.to delegate_method(:legacy_detached_merge_request_pipeline?).to(:pipeline) }
 
+  describe 'partition query' do
+    subject { build.reload }
+
+    it_behaves_like 'including partition key for relation', :trace_chunks
+    it_behaves_like 'including partition key for relation', :build_source
+    it_behaves_like 'including partition key for relation', :job_artifacts
+    it_behaves_like 'including partition key for relation', :job_annotations
+    it_behaves_like 'including partition key for relation', :runner_manager_build
+    Ci::JobArtifact.file_types.each_key do |key|
+      it_behaves_like 'including partition key for relation', :"job_artifacts_#{key}"
+    end
+  end
+
   describe 'associations' do
     it { is_expected.to belong_to(:project_mirror).with_foreign_key('project_id') }
 

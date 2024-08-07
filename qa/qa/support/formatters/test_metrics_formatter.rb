@@ -228,6 +228,7 @@ module QA
             product_group: example.metadata[:product_group],
             testcase: example.metadata[:testcase],
             exception_class: example.execution_result.exception&.class&.to_s,
+            branch: branch,
             **custom_metrics_tags(example.metadata)
           }.compact
         end
@@ -247,7 +248,7 @@ module QA
             ui_fabrication: ui_fabrication,
             total_fabrication: api_fabrication + ui_fabrication,
             job_url: ci_job_url,
-            pipeline_url: env('CI_PIPELINE_URL'),
+            pipeline_url: ci_pipeline_url,
             pipeline_id: env('CI_PIPELINE_ID'),
             job_id: env('CI_JOB_ID'),
             merge_request_iid: merge_request_iid,
@@ -276,14 +277,16 @@ module QA
               fabrication_method: fabrication_method,
               http_method: http_method,
               run_type: run_type,
-              merge_request: merge_request
-            },
+              merge_request: merge_request,
+              branch: branch
+            }.compact,
             fields: {
               fabrication_time: fabrication_time,
               info: info,
               job_url: ci_job_url,
+              pipeline_url: ci_pipeline_url,
               timestamp: timestamp
-            }
+            }.compact
           }
         end
 
@@ -300,12 +303,13 @@ module QA
                   method: name,
                   call_arg: p[:call_arg],
                   run_type: run_type,
-                  merge_request: merge_request
+                  merge_request: merge_request,
+                  branch: branch
                 }.compact,
                 fields: {
                   runtime: (p[:runtime] * 1000).round,
                   job_url: ci_job_url,
-                  pipeline_url: env('CI_PIPELINE_URL'),
+                  pipeline_url: ci_pipeline_url,
                   filename: p[:filename]
                 }.compact
               }
@@ -332,6 +336,20 @@ module QA
         # @return [String]
         def merge_request
           (!!merge_request_iid).to_s
+        end
+
+        # Pipeline url
+        #
+        # @return [String]
+        def ci_pipeline_url
+          @ci_pipeline_url ||= env('CI_PIPELINE_URL')
+        end
+
+        # Branch name
+        #
+        # @return [String]
+        def branch
+          @branch ||= env('CI_COMMIT_REF_NAME')
         end
 
         # Is spec quarantined

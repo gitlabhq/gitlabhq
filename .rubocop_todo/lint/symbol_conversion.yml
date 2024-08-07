@@ -40,7 +40,6 @@ Lint/SymbolConversion:
     - 'ee/app/models/geo_node_status.rb'
     - 'ee/app/policies/ee/group_policy.rb'
     - 'ee/app/policies/ee/project_policy.rb'
-    - 'ee/app/serializers/report_list_entity.rb'
     - 'ee/app/services/security/security_orchestration_policies/ci_action/base.rb'
     - 'ee/app/services/vulnerabilities/manually_create_service.rb'
     - 'ee/app/workers/security/store_scans_worker.rb'
