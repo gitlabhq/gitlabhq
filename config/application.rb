@@ -355,7 +355,6 @@ module Gitlab
     config.assets.precompile << "page_bundles/runners.css"
     config.assets.precompile << "page_bundles/search.css"
     config.assets.precompile << "page_bundles/security_dashboard.css"
-    config.assets.precompile << "page_bundles/security_discover.css"
     config.assets.precompile << "page_bundles/settings.css"
     config.assets.precompile << "page_bundles/signup.css"
     config.assets.precompile << "page_bundles/terminal.css"

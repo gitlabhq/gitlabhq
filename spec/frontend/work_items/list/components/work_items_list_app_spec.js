@@ -197,7 +197,7 @@ describe('WorkItemsListApp component', () => {
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(1);
 
-        await wrapper.setProps({ eeCreatedWorkItemsCount: 1 });
+        await wrapper.setProps({ eeWorkItemUpdateCount: 1 });
 
         expect(defaultQueryHandler).toHaveBeenCalledTimes(2);
       });

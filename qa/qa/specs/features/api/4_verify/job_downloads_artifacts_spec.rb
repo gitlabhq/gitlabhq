@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module QA
-  RSpec.describe 'Verify', product_group: :pipeline_security do
+  RSpec.describe 'Verify', product_group: :pipeline_execution do
     describe 'Job artifacts' do
       let(:executor) { "qa-runner-#{Faker::Alphanumeric.alphanumeric(number: 8)}" }
       let(:project) { create(:project, name: 'project-for-job-artifacts-fetching') }

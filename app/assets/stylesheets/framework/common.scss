@@ -533,8 +533,8 @@ copy-code {
   @apply gl-transition-all;
   opacity: 0;
 
-  top: 7px;
-  right: $input-horizontal-padding;
+  top: $gl-spacing-scale-3;
+  right: $gl-spacing-scale-3;
 
   .markdown-code-block:hover &,
   &:focus-within {

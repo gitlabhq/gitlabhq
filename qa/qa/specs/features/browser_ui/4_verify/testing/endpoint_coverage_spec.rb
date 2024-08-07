@@ -9,7 +9,7 @@ module QA
   # pipeline created (Sidekiq read/write) ->
   # runner picks up pipeline (API read/write) ->
   # User views pipeline succeeds (Web read)
-  RSpec.describe 'Verify', :runner, product_group: :pipeline_security do
+  RSpec.describe 'Verify', :runner, product_group: :pipeline_authoring do
     context 'Endpoint Coverage' do
       let!(:project) { create(:project, name: 'endpoint-coverage') }
       let!(:runner) { create(:project_runner, project: project, name: project.name, tags: [project.name]) }

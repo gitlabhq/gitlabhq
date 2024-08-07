@@ -264,6 +264,9 @@ export default {
         }
       },
     },
+    showBulkEditSidebar() {
+      this.checkedIssuableIds = [];
+    },
   },
   methods: {
     isIssuableChecked(issuable) {

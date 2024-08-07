@@ -82,7 +82,7 @@ Within each project's settings, you can see a list of status check services adde
 
 ![Status checks list](img/status_checks_list_view_v14_0.png)
 
-This list shows the service name, API URL, and targeted branch.
+This list shows the service name, API URL, targeted branch, and HMAC authentication status.
 It also provides actions to allow you to create, edit, or remove status checks.
 
 ## Add or update a status check service
@@ -103,6 +103,9 @@ next to the status check you want to edit.
 The **Update status check** form is then shown.
 
 ![Status checks update form](img/status_checks_update_form_v14_0.png)
+
+NOTE:
+You cannot see or modify the value of the HMAC shared secret. To change the shared secret, delete and recreate the external status check with a new value for the shared secret.
 
 Changing the values in the form and selecting the **Update status check** button updates the status check.
 
@@ -138,6 +141,11 @@ for doesn't appear immediately. The search box requires
 
 If you want the status check to be applied to **all** merge requests,
 you can select the **All branches** option.
+
+#### HMAC shared secret
+
+HMAC authentication prevents tampering with requests
+and ensures they come from a legitimate source.
 
 ## Delete a status check service
 

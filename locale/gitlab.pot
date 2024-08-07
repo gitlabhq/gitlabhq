@@ -13567,6 +13567,12 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Associated Projects"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Compliance framework ID"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Copy ID"
+msgstr ""
+
 msgid "ComplianceFrameworksReport|Default"
 msgstr ""
 
@@ -13574,6 +13580,9 @@ msgid "ComplianceFrameworksReport|Description"
 msgstr ""
 
 msgid "ComplianceFrameworksReport|Edit framework"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Framework ID copied to clipboard."
 msgstr ""
 
 msgid "ComplianceFrameworksReport|Policies"
@@ -19254,6 +19263,9 @@ msgid "Discover Duo Pro"
 msgstr ""
 
 msgid "Discover GitLab Geo"
+msgstr ""
+
+msgid "Discover|An example of GitLab's Dependency list feature"
 msgstr ""
 
 msgid "Discover|Check your application for security vulnerabilities that may lead to unauthorized access, data leaks, and denial of services."

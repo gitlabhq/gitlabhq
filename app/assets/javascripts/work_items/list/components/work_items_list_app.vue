@@ -83,10 +83,15 @@ export default {
     'workItemType',
   ],
   props: {
-    eeCreatedWorkItemsCount: {
+    eeWorkItemUpdateCount: {
       type: Number,
       required: false,
       default: 0,
+    },
+    showBulkEditSidebar: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data() {
@@ -296,7 +301,7 @@ export default {
     },
   },
   watch: {
-    eeCreatedWorkItemsCount() {
+    eeWorkItemUpdateCount() {
       // Only reset isInitialAllCountSet when there's no issues to minimize unmounting IssuableList
       if (!this.hasAnyIssues) {
         this.isInitialAllCountSet = false;
@@ -414,6 +419,7 @@ export default {
     :initial-sort-by="sortKey"
     :issuables="workItems"
     :issuables-loading="isLoading"
+    :show-bulk-edit-sidebar="showBulkEditSidebar"
     namespace="work-items"
     recent-searches-storage-key="issues"
     :search-tokens="searchTokens"
@@ -455,6 +461,14 @@ export default {
 
     <template #list-body>
       <slot name="list-body"></slot>
+    </template>
+
+    <template #bulk-edit-actions="{ checkedIssuables }">
+      <slot name="bulk-edit-actions" :checked-issuables="checkedIssuables"></slot>
+    </template>
+
+    <template #sidebar-items="{ checkedIssuables }">
+      <slot name="sidebar-items" :checked-issuables="checkedIssuables"></slot>
     </template>
   </issuable-list>
 
