@@ -356,9 +356,7 @@ gem 'loofah', '~> 2.22.0' # rubocop:todo Gemfile/MissingFeatureCategory
 gem 'licensee', '~> 9.16' # rubocop:todo Gemfile/MissingFeatureCategory
 
 # Detect and convert string character encoding
-# We forked charlock_holmes at https://gitlab.com/gitlab-org/ruby/gems/charlock_holmes
-# but changed it's name to 'static_holmes' in the gemspec file.
-gem 'static_holmes', '~> 0.7.11', require: 'charlock_holmes', feature_category: :shared
+gem 'charlock_holmes', '~> 0.7.9', feature_category: :shared
 
 # Detect mime content type from content
 gem 'ruby-magic', '~> 0.6' # rubocop:todo Gemfile/MissingFeatureCategory

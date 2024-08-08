@@ -344,6 +344,7 @@ $system-note-icon-m-left: $avatar-m-left + $icon-size-diff / $avatar-m-ratio;
 
       .suggestions {
         margin-top: 4px;
+        z-index: auto;
       }
     }
 

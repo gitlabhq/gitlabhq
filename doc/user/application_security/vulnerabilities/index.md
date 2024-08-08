@@ -79,7 +79,7 @@ On GitLab.com this feature is available. By default, it is powered by Anthropic'
 model. We cannot guarantee that the large language model produces results that are correct. Use the
 explanation with caution.
 
-### Data shared with third-party AI APIs
+### Data shared with third-party AI APIs for vulnerability explanation
 
 The following data is shared with third-party AI APIs:
 
@@ -90,11 +90,12 @@ The following data is shared with third-party AI APIs:
 ## Vulnerability resolution
 
 DETAILS:
-**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md).
-**Offering:** GitLab.com
-**Status:** Experiment
+**Tier:** Ultimate with [GitLab Duo Enterprise](../../../subscriptions/subscription-add-ons.md)
+**Offering:** GitLab.com, Self-managed, GitLab Dedicated
+**Status:** Beta
 
 > - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10779) in GitLab 16.7 as an [experiment](../../../policy/experiment-beta-support.md#experiment) on GitLab.com.
+> - Changed to beta in GitLab 17.3.
 
 Use GitLab Duo Vulnerability resolution to automatically create a merge request that
 resolves the vulnerability. By default, it is powered by Anthropic's [`claude-3.5-sonnet`](https://console.cloud.google.com/vertex-ai/publishers/anthropic/model-garden/claude-3-5-sonnet) model.
@@ -106,7 +107,9 @@ Prerequisites:
 
 - You must have the GitLab Ultimate subscription tier and GitLab Duo Enterprise..
 - You must be a member of the project.
-- The vulnerability must be a SAST finding.
+- The vulnerability must be a SAST finding by a supported analyzer:
+  - [GitLab supported analyzer](../sast/analyzers.md)
+  - Properly integrated [3rd party SAST scanner](../../../development/integrations/secure.md) which includes reporting both [vulnerability location](../../../development/integrations/secure.md#sast) and [CWE Identifier](../../../development/integrations/secure.md#identifiers) for each vulnerability.
 
 Learn more about [how to enable all GitLab Duo features](../../ai_features_enable.md).
 
@@ -119,20 +122,86 @@ To resolve the vulnerability:
 1. In the dropdown list that appears, select **Tool**, then select all the values in the **SAST** category.
 1. Select outside the filter field. The vulnerability severity totals and list of matching vulnerabilities are updated.
 1. Select the SAST vulnerability you want resolved.
-1. In the upper-right corner,
-   select **Resolve with merge request**.
+1. In the upper-right corner, select **Resolve with AI**.
 
 A merge request containing the AI remediation suggestions is opened. Review the suggested changes,
 then process the merge request according to your standard workflow.
 
-### Data shared with third-party AI APIs
+### Availability
+
+Vulnerability Resolution is available for a subset of the SAST rules that we cover. We are continually testing and adding more rules to this feature.
+
+<details><summary>Select to see the complete list of supported CWEs for Vulnerability Resolution</summary>
+
+<ul>
+  <li>CWE-23: Relative Path Traversal</li>
+  <li>CWE-73: External Control of File Name or Path</li>
+  <li>CWE-80: Improper Neutralization of Script-Related HTML Tags in a Web Page (Basic XSS)</li>
+  <li>CWE-116: Improper Encoding or Escaping of Output</li>
+  <li>CWE-118: Incorrect Access of Indexable Resource ('Range Error')</li>
+  <li>CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer</li>
+  <li>CWE-120: Buffer Copy without Checking Size of Input ('Classic Buffer Overflow')</li>
+  <li>CWE-126: Buffer Over-read</li>
+  <li>CWE-190: Integer Overflow or Wraparound</li>
+  <li>CWE-200: Exposure of Sensitive Information to an Unauthorized Actor</li>
+  <li>CWE-208: Observable Timing Discrepancy</li>
+  <li>CWE-209: Generation of Error Message Containing Sensitive Information</li>
+  <li>CWE-272: Least Privilege Violation</li>
+  <li>CWE-287: Improper Authentication</li>
+  <li>CWE-295: Improper Certificate Validation</li>
+  <li>CWE-297: Improper Validation of Certificate with Host Mismatch</li>
+  <li>CWE-305: Authentication Bypass by Primary Weakness</li>
+  <li>CWE-310: Cryptographic Issues</li>
+  <li>CWE-311: Missing Encryption of Sensitive Data</li>
+  <li>CWE-323: Reusing a Nonce, Key Pair in Encryption</li>
+  <li>CWE-327: Use of a Broken or Risky Cryptographic Algorithm</li>
+  <li>CWE-328: Use of Weak Hash</li>
+  <li>CWE-330: Use of Insufficiently Random Values</li>
+  <li>CWE-338: Use of Cryptographically Weak Pseudo-Random Number Generator (PRNG)</li>
+  <li>CWE-345: Insufficient Verification of Data Authenticity</li>
+  <li>CWE-346: Origin Validation Error</li>
+  <li>CWE-352: Cross-Site Request Forgery</li>
+  <li>CWE-362: Concurrent Execution using Shared Resource with Improper Synchronization ('Race Condition')</li>
+  <li>CWE-369: Divide By Zero</li>
+  <li>CWE-377: Insecure Temporary File</li>
+  <li>CWE-378: Creation of Temporary File With Insecure Permissions</li>
+  <li>CWE-400: Uncontrolled Resource Consumption</li>
+  <li>CWE-489: Active Debug Code</li>
+  <li>CWE-521: Weak Password Requirements</li>
+  <li>CWE-539: Use of Persistent Cookies Containing Sensitive Information</li>
+  <li>CWE-599: Missing Validation of OpenSSL Certificate</li>
+  <li>CWE-611: Improper Restriction of XML External Entity Reference</li>
+  <li>CWE-676: Use of potentially dangerous function</li>
+  <li>CWE-704: Incorrect Type Conversion or Cast</li>
+  <li>CWE-754: Improper Check for Unusual or Exceptional Conditions</li>
+  <li>CWE-770: Allocation of Resources Without Limits or Throttling</li>
+  <li>CWE-1004: Sensitive Cookie Without 'HttpOnly' Flag</li>
+  <li>CWE-1275: Sensitive Cookie with Improper SameSite Attribute</li>
+</ul>
+</details>
+
+### Troubleshooting
+
+Occasionally the Vulnerability Resolution may not work as expected. Please use the following
+resources to troubleshoot:
+
+- You may be presented with a message indicating that the AI model has determined that the
+  vulnerability is a false positive. Use this feature with caution and always verify the AI model's
+  response.
+- "Upstream" errors - this may indicate an issue with our third-party AI. Please try again, and
+  report to GitLab if the error continues.
+- General errors, such as "an unexpected error has occurred" - this may indicate an issue within
+  GitLab Duo. Please try again, and report to GitLab if the error continues.
+
+### Data shared with third-party AI APIs for vulnerability resolution
 
 The following data is shared with third-party AI APIs:
 
-- Vulnerability title (which might contain the filename, depending on which scanner is used).
-- Vulnerability identifiers.
-- Code block.
-- File name.
+- Vulnerability name
+- Vulnerability description
+- Identifiers (CWE, OWASP)
+- Entire file that contains the vulnerable lines of code
+- Vulnerable lines of code (line numbers)
 
 ## Vulnerability code flow
 
