@@ -1025,6 +1025,8 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
+    - !reference [".release-environments:rules:start-release-environments-pipeline", rules]
+    - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
     - !reference [".frontend:rules:assets-shared", rules]
 
 .build-images:rules:build-assets-image-as-if-foss:
