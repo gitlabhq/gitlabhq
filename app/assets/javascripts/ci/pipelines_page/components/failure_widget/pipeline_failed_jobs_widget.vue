@@ -1,17 +1,18 @@
 <script>
-import { GlButton, GlCard, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import { GlButton, GlIcon, GlLink, GlPopover, GlSprintf } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { __, s__, sprintf } from '~/locale';
 import FailedJobsList from './failed_jobs_list.vue';
 
 export default {
   components: {
     GlButton,
-    GlCard,
     GlIcon,
     GlLink,
     GlPopover,
     GlSprintf,
     FailedJobsList,
+    CrudComponent,
   },
   inject: ['fullPath'],
   props: {
@@ -84,23 +85,21 @@ export default {
 };
 </script>
 <template>
-  <gl-card
+  <crud-component
     :id="$options.ariaControlsId"
-    class="gl-new-card"
+    class="expandable-card"
     :class="{ 'gl-border-white hover:gl-border-gray-100 is-collapsed': !isExpanded }"
-    header-class="gl-new-card-header gl-px-3 gl-py-3"
-    body-class="gl-new-card-body"
     data-testid="failed-jobs-card"
   >
-    <template #header>
+    <template #title>
       <gl-button
         variant="link"
-        class="gl-text-gray-500! gl-font-semibold"
+        class="!gl-text-subtle"
         :aria-expanded="isExpanded.toString()"
         :aria-controls="$options.ariaControlsId"
         @click="toggleWidget"
       >
-        <gl-icon :name="iconName" />{{ failedJobsCountText
+        <gl-icon :name="iconName" class="gl-mr-2" />{{ failedJobsCountText
         }}<gl-icon v-if="maximumJobs" :id="popoverId" name="information-o" class="gl-ml-2" />
         <gl-popover :target="popoverId" placement="top">
           <template #title> {{ $options.i18n.additionalInfoTitle }} </template>
@@ -122,5 +121,5 @@ export default {
       :project-path="projectPath"
       @failed-jobs-count="setFailedJobsCount"
     />
-  </gl-card>
+  </crud-component>
 </template>

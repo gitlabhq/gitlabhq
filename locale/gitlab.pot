@@ -25990,9 +25990,6 @@ msgstr ""
 msgid "Groups"
 msgstr ""
 
-msgid "Groups (%{count})"
-msgstr ""
-
 msgid "Groups API rate limits"
 msgstr ""
 
@@ -26415,6 +26412,12 @@ msgid "Heading 3"
 msgstr ""
 
 msgid "Heading 4"
+msgstr ""
+
+msgid "Heading 5"
+msgstr ""
+
+msgid "Heading 6"
 msgstr ""
 
 msgid "Health"
@@ -32594,9 +32597,6 @@ msgid "MemberRole|Overridden"
 msgstr ""
 
 msgid "MemberRole|Permission"
-msgstr ""
-
-msgid "MemberRole|Permissions"
 msgstr ""
 
 msgid "MemberRole|Reverted to LDAP group sync settings. The role will be updated after the next LDAP sync."
@@ -42490,9 +42490,6 @@ msgid "ProjectView|Wiki"
 msgstr ""
 
 msgid "Projects"
-msgstr ""
-
-msgid "Projects (%{count})"
 msgstr ""
 
 msgid "Projects API"

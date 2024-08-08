@@ -59,8 +59,8 @@ RSpec.describe Gitlab::Ci::Pipeline::Seed::Build, feature_category: :pipeline_co
         {
           name: 'rspec',
           ref: 'master',
-          options: {
-            run: run_value
+          execution_config: {
+            run_steps: run_value
           }
         }
       end

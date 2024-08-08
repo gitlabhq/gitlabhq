@@ -71,3 +71,18 @@
   }
 }
 
+.crud-pagination {
+  margin-top: -1px;
+
+  &:not(:has(> .gl-pagination)) {
+    display: none;
+  }
+
+  .gl-pagination {
+    margin-top: 0;
+  }
+
+  .pagination {
+    margin-bottom: 0;
+  }
+}

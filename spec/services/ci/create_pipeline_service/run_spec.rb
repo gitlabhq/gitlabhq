@@ -141,4 +141,48 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness,
       )
     end
   end
+
+  context 'when multiple jobs have the same run configuration' do
+    let(:config) do
+      <<-CI_CONFIG
+      job1:
+        run:
+          - name: step1
+            script: echo 'hello step1'
+          - name: step2
+            step: some_predefined_step
+            env:
+              VAR1: 'value1'
+            inputs:
+              input1: 'value1'
+      job2:
+        run:
+          - name: step1
+            script: echo 'hello step1'
+          - name: step2
+            step: some_predefined_step
+            env:
+              VAR1: 'value1'
+            inputs:
+              input1: 'value1'
+      job3:
+        run:
+          - name: step1
+            script: echo 'hello step1 from job 3'
+      CI_CONFIG
+    end
+
+    it 'creates one execution config for each unique execution config' do
+      expect(pipeline).to be_created_successfully
+
+      job1 = pipeline.builds.find_by(name: 'job1')
+      job2 = pipeline.builds.find_by(name: 'job2')
+      job3 = pipeline.builds.find_by(name: 'job3')
+
+      expect(Ci::BuildExecutionConfig.count).to eq(2)
+      expect(job1.execution_config).to eq(job2.execution_config)
+      expect(job1.execution_config.builds).to contain_exactly(job1, job2)
+      expect(job3.execution_config.builds).to contain_exactly(job3)
+    end
+  end
 end

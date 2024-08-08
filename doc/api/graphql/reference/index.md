@@ -16440,8 +16440,9 @@ Represents the access level of a relationship between a User and object that it 
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="accesslevelintegervalue"></a>`integerValue` | [`Int`](#int) | Integer representation of access level. |
-| <a id="accesslevelstringvalue"></a>`stringValue` | [`AccessLevelEnum`](#accesslevelenum) | String representation of access level. |
+| <a id="accesslevelhumanaccess"></a>`humanAccess` | [`String`](#string) | Human-readable display name for the access level. |
+| <a id="accesslevelintegervalue"></a>`integerValue` | [`Int`](#int) | Integer number of the access level. |
+| <a id="accesslevelstringvalue"></a>`stringValue` | [`AccessLevelEnum`](#accesslevelenum) | Enum string of the the access level. |
 
 ### `AccessLevelDeployKey`
 
@@ -24882,6 +24883,7 @@ Represents a member role.
 | Name | Type | Description |
 | ---- | ---- | ----------- |
 | <a id="memberrolebaseaccesslevel"></a>`baseAccessLevel` **{warning-solid}** | [`AccessLevel!`](#accesslevel) | **Introduced** in GitLab 16.5. **Status**: Experiment. Base access level for the custom role. |
+| <a id="memberrolecreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the member role was created. |
 | <a id="memberroledescription"></a>`description` | [`String`](#string) | Description of the member role. |
 | <a id="memberroleeditpath"></a>`editPath` **{warning-solid}** | [`String!`](#string) | **Introduced** in GitLab 16.11. **Status**: Experiment. Web UI path to edit the custom role. |
 | <a id="memberroleenabledpermissions"></a>`enabledPermissions` **{warning-solid}** | [`CustomizablePermissionConnection!`](#customizablepermissionconnection) | **Introduced** in GitLab 16.5. **Status**: Experiment. Array of all permissions enabled for the custom role. |

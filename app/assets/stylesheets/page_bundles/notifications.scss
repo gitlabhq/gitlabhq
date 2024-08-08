@@ -1,7 +1,0 @@
-@import 'mixins_and_variables_and_functions';
-
-.notification-list-item {
-  &:not(:last-of-type) {
-    border-bottom: 1px solid $gray-100;
-  }
-}

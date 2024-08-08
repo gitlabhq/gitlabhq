@@ -458,6 +458,16 @@ module Ci
       true
     end
 
+    def degenerated?
+      super && execution_config_id.nil?
+    end
+
+    def degenerate!
+      super do
+        execution_config&.destroy
+      end
+    end
+
     def archived?
       return true if degenerated?
 

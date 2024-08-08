@@ -1,6 +1,5 @@
 import axios from '~/lib/utils/axios_utils';
 import { numberToHumanSize } from '~/lib/utils/number_utils';
-import { contentTypeMultipartFormData } from '~/lib/utils/headers';
 import { joinPaths } from '~/lib/utils/url_utility';
 import { s__, sprintf } from '~/locale';
 
@@ -37,14 +36,6 @@ export const uploadModel = ({
     return Promise.reject(new Error(errorMessage));
   }
 
-  const formData = new FormData();
   const importUrl = joinPaths(importPath, subfolder, encodeURIComponent(file.name));
-  formData.append('file', file);
-
-  return axios.put(importUrl, formData, {
-    headers: {
-      ...contentTypeMultipartFormData,
-    },
-    onUploadProgress,
-  });
+  return axios.put(importUrl, file, { onUploadProgress });
 };

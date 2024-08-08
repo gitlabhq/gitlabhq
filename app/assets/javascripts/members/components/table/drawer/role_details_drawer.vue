@@ -139,7 +139,7 @@ export default {
           </dd>
 
           <dt class="gl-mt-6 gl-mb-3" data-testid="permissions-header">
-            {{ s__('MemberRole|Permissions') }}
+            {{ __('Permissions') }}
           </dt>
           <dd class="gl-display-flex gl-mb-5">
             <span v-if="selectedRole.memberRoleId" class="gl-mr-3" data-testid="base-role">

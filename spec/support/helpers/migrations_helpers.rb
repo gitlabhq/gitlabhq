@@ -1,21 +1,6 @@
 # frozen_string_literal: true
 
 module MigrationsHelpers
-  def migration_out_of_test_window?(migration_class)
-    milestone = migration_class.try(:milestone)
-
-    # Missing milestone indicates that the migration is pre-16.7,
-    # which is old enough not to execute its tests
-    return true unless milestone
-
-    migration_milestone = Gitlab::VersionInfo.parse_from_milestone(milestone)
-    min_milestone = Gitlab::VersionInfo.parse_from_milestone(
-      ::Gitlab::Database::MIN_SCHEMA_GITLAB_VERSION
-    )
-
-    migration_milestone < min_milestone
-  end
-
   def active_record_base(database: nil)
     database_name = database || self.class.metadata[:database] || :main
 
