@@ -1,4 +1,5 @@
-import { GlCard, GlLink } from '@gitlab/ui';
+import { GlLink } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
@@ -16,22 +17,22 @@ describe('Branch rule protection', () => {
         emptyStateCopy: 'Nothing to show',
         ...props,
       },
-      stubs: { GlCard },
+      stubs: { CrudComponent },
       provide: { glFeatures },
     });
   };
 
   beforeEach(() => createComponent());
 
-  const findCard = () => wrapper.findComponent(GlCard);
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
   const findHeader = () => wrapper.findByText(protectionPropsMock.header);
   const findLink = () => wrapper.findComponent(GlLink);
   const findProtectionRows = () => wrapper.findAllComponents(ProtectionRow);
   const findEmptyState = () => wrapper.findByTestId('protection-empty-state');
   const findEditButton = () => wrapper.findByTestId('edit-rule-button');
 
-  it('renders a card component', () => {
-    expect(findCard().exists()).toBe(true);
+  it('renders a crud component', () => {
+    expect(findCrudComponent().exists()).toBe(true);
   });
 
   it('renders a header', () => {
@@ -47,7 +48,7 @@ describe('Branch rule protection', () => {
   it('renders a help text when provided', () => {
     createComponent({ editBranchRules: true }, { helpText: 'Help text' });
 
-    expect(findCard().text()).toContain('Help text');
+    expect(findCrudComponent().text()).toContain('Help text');
   });
 
   it('renders a protection row for roles', () => {

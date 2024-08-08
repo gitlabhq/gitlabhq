@@ -1351,7 +1351,6 @@ RSpec/FeatureCategory:
     - 'spec/finders/alert_management/alerts_finder_spec.rb'
     - 'spec/finders/analytics/cycle_analytics/stage_finder_spec.rb'
     - 'spec/finders/applications_finder_spec.rb'
-    - 'spec/finders/autocomplete/acts_as_taggable_on/tags_finder_spec.rb'
     - 'spec/finders/autocomplete/group_finder_spec.rb'
     - 'spec/finders/autocomplete/move_to_project_finder_spec.rb'
     - 'spec/finders/autocomplete/project_finder_spec.rb'

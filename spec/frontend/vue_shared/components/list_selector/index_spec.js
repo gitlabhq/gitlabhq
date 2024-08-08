@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
+import { GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Api from '~/api';
 import RestApi from '~/rest_api';
 import { createAlert } from '~/alert';
@@ -63,13 +64,14 @@ describe('List Selector spec', () => {
       propsData: {
         ...props,
       },
+      stubs: { CrudComponent },
     });
 
     await waitForPromises();
   };
 
-  const findCard = () => wrapper.findComponent(GlCard);
-  const findTitle = () => findCard().find('[data-testid="list-selector-title"]');
+  const findCrudComponent = () => wrapper.findComponent(CrudComponent);
+  const findTitle = () => findCrudComponent().props('title');
   const findIcon = () => wrapper.findComponent(GlIcon);
   const findAllListBoxComponents = () => wrapper.findAllComponents(GlCollapsibleListbox);
   const findSearchResultsDropdown = () => findAllListBoxComponents().at(0);
@@ -96,13 +98,12 @@ describe('List Selector spec', () => {
   describe('Users type', () => {
     beforeEach(() => createComponent(USERS_MOCK_PROPS));
 
-    it('renders a Card component', () => {
-      expect(findCard().exists()).toBe(true);
+    it('renders a crud component', () => {
+      expect(findCrudComponent().exists()).toBe(true);
     });
 
     it('renders a correct title', () => {
-      expect(findTitle().exists()).toBe(true);
-      expect(findTitle().text()).toContain('Users');
+      expect(findTitle()).toContain('Users');
     });
 
     it('renders the correct icon', () => {
@@ -132,8 +133,8 @@ describe('List Selector spec', () => {
       beforeEach(() => createComponent({ ...USERS_MOCK_PROPS, selectedItems }));
 
       it('renders a heading with the total selected items', () => {
-        expect(findTitle().text()).toContain('Users');
-        expect(findTitle().text()).toContain('1');
+        expect(findTitle()).toContain('Users');
+        expect(findCrudComponent().props('count')).toBe(1);
       });
 
       it('renders a user component for each selected item', () => {
@@ -158,8 +159,7 @@ describe('List Selector spec', () => {
     const search = 'foo';
 
     it('renders a correct title', () => {
-      expect(findTitle().exists()).toBe(true);
-      expect(findTitle().text()).toContain('Groups');
+      expect(findTitle()).toContain('Groups');
     });
 
     it('renders the correct icon', () => {
@@ -296,8 +296,8 @@ describe('List Selector spec', () => {
       beforeEach(() => createComponent({ ...GROUPS_MOCK_PROPS, selectedItems }));
 
       it('renders a heading with the total selected items', () => {
-        expect(findTitle().text()).toContain('Groups');
-        expect(findTitle().text()).toContain('1');
+        expect(findTitle()).toContain('Groups');
+        expect(findCrudComponent().props('count')).toBe(1);
       });
 
       it('renders a group component for each selected item', () => {
@@ -321,8 +321,7 @@ describe('List Selector spec', () => {
     beforeEach(() => createComponent(DEPLOY_KEYS_MOCK_PROPS));
 
     it('renders a correct title', () => {
-      expect(findTitle().exists()).toBe(true);
-      expect(findTitle().text()).toContain('Deploy keys');
+      expect(findTitle()).toContain('Deploy keys');
     });
 
     it('renders the correct icon', () => {
@@ -335,8 +334,8 @@ describe('List Selector spec', () => {
       beforeEach(() => createComponent({ ...DEPLOY_KEYS_MOCK_PROPS, selectedItems }));
 
       it('renders a heading with the total selected items', () => {
-        expect(findTitle().text()).toContain('Deploy keys');
-        expect(findTitle().text()).toContain('1');
+        expect(findTitle()).toContain('Deploy keys');
+        expect(findCrudComponent().props('count')).toBe(1);
       });
 
       it('renders a deploy key component for each selected item', () => {
@@ -363,7 +362,7 @@ describe('List Selector spec', () => {
     beforeEach(() => createComponent(PROJECTS_MOCK_PROPS));
 
     it('renders a correct title', () => {
-      expect(findTitle().text()).toContain('Projects');
+      expect(findTitle()).toContain('Projects');
     });
 
     it('renders the correct icon', () => {
@@ -405,8 +404,8 @@ describe('List Selector spec', () => {
       beforeEach(() => createComponent({ ...GROUPS_MOCK_PROPS, selectedItems }));
 
       it('renders a heading with the total selected items', () => {
-        expect(findTitle().text()).toContain('Groups');
-        expect(findTitle().text()).toContain('1');
+        expect(findTitle()).toContain('Groups');
+        expect(findCrudComponent().props('count')).toBe(1);
       });
 
       it('renders a group component for each selected item', () => {

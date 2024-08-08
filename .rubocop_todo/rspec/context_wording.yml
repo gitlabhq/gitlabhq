@@ -1206,7 +1206,6 @@ RSpec/ContextWording:
     - 'spec/finders/alert_management/alerts_finder_spec.rb'
     - 'spec/finders/alert_management/http_integrations_finder_spec.rb'
     - 'spec/finders/applications_finder_spec.rb'
-    - 'spec/finders/autocomplete/acts_as_taggable_on/tags_finder_spec.rb'
     - 'spec/finders/autocomplete/move_to_project_finder_spec.rb'
     - 'spec/finders/autocomplete/users_finder_spec.rb'
     - 'spec/finders/branches_finder_spec.rb'

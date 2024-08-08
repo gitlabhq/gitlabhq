@@ -1,17 +1,11 @@
 <script>
 // eslint-disable-next-line no-restricted-imports
 import { mapActions } from 'vuex';
-import {
-  GlSprintf,
-  GlLink,
-  GlLoadingIcon,
-  GlCard,
-  GlButton,
-  GlModal,
-  GlModalDirective,
-} from '@gitlab/ui';
+import { GlSprintf, GlLink, GlLoadingIcon, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, n__, s__ } from '~/locale';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import {
   getParameterByName,
   mergeUrlParams,
@@ -58,11 +52,12 @@ export default {
     GlSprintf,
     GlLink,
     GlLoadingIcon,
-    GlCard,
     GlModal,
     GlButton,
     BranchRuleModal,
     RuleDrawer,
+    PageHeading,
+    CrudComponent,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -343,29 +338,28 @@ export default {
 
 <template>
   <div>
-    <div class="gl-flex gl-items-center gl-justify-between">
-      <h1 class="h3 gl-mb-5">{{ $options.i18n.pageTitle }}</h1>
-      <gl-button
-        v-if="glFeatures.editBranchRules && branchRule"
-        v-gl-modal="$options.deleteModalId"
-        data-testid="delete-rule-button"
-        category="secondary"
-        variant="danger"
-        :disabled="$apollo.loading"
-        >{{ $options.i18n.deleteRule }}
-      </gl-button>
-    </div>
+    <page-heading :heading="$options.i18n.pageTitle">
+      <template #actions>
+        <gl-button
+          v-if="glFeatures.editBranchRules && branchRule"
+          v-gl-modal="$options.deleteModalId"
+          data-testid="delete-rule-button"
+          category="secondary"
+          variant="danger"
+          :disabled="$apollo.loading"
+          >{{ $options.i18n.deleteRule }}
+        </gl-button>
+      </template>
+    </page-heading>
     <gl-loading-icon v-if="$apollo.loading" size="lg" />
     <div v-else-if="!branchRule && !isPredefinedRule">{{ $options.i18n.noData }}</div>
     <div v-else>
-      <gl-card
-        class="gl-new-card"
-        header-class="gl-new-card-header"
-        body-class="gl-new-card-body gl-p-5"
+      <crud-component
+        :title="$options.i18n.ruleTarget"
+        class="gl-mt-3"
         data-testid="rule-target-card"
       >
-        <template #header>
-          <strong>{{ $options.i18n.ruleTarget }}</strong>
+        <template #actions>
           <gl-button
             v-if="glFeatures.editBranchRules && !isPredefinedRule"
             v-gl-modal="$options.editModalId"
@@ -383,10 +377,10 @@ export default {
         <p v-if="matchingBranchesCount" class="gl-mb-0 gl-mt-3">
           <gl-link :href="matchingBranchesLinkHref">{{ matchingBranchesLinkTitle }}</gl-link>
         </p>
-      </gl-card>
+      </crud-component>
 
       <section v-if="!isPredefinedRule">
-        <h2 class="h4 gl-mb-1 gl-mt-5">{{ $options.i18n.protectBranchTitle }}</h2>
+        <h2 class="h4 gl-mb-1 gl-mt-6">{{ $options.i18n.protectBranchTitle }}</h2>
         <gl-sprintf :message="$options.i18n.protectBranchDescription">
           <template #link="{ content }">
             <gl-link :href="$options.protectedBranchesHelpDocLink">
@@ -440,6 +434,7 @@ export default {
         <!-- Force push -->
         <protection-toggle
           v-if="hasPushAccessLevelSet"
+          class="gl-mt-6"
           data-testid="force-push-content"
           data-test-id-prefix="force-push"
           :is-protected="branchProtection.allowForcePush"
@@ -469,7 +464,7 @@ export default {
 
       <!-- Approvals -->
       <template v-if="showApprovers">
-        <h2 class="h4 gl-mb-1 gl-mt-5">{{ $options.i18n.approvalsTitle }}</h2>
+        <h2 class="h4 gl-mb-1 gl-mt-6">{{ $options.i18n.approvalsTitle }}</h2>
         <gl-sprintf :message="$options.i18n.approvalsDescription">
           <template #link="{ content }">
             <gl-link :href="$options.approvalsHelpDocLink">
@@ -493,7 +488,7 @@ export default {
 
       <!-- Status checks -->
       <template v-if="showStatusChecks">
-        <h2 class="h4 gl-mb-1 gl-mt-5">{{ $options.i18n.statusChecksTitle }}</h2>
+        <h2 class="h4 gl-mb-1 gl-mt-6">{{ $options.i18n.statusChecksTitle }}</h2>
         <gl-sprintf :message="$options.i18n.statusChecksDescription">
           <template #link="{ content }">
             <gl-link :href="$options.statusChecksHelpDocLink">

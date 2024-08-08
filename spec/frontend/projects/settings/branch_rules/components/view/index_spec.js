@@ -16,6 +16,8 @@ import Protection from '~/projects/settings/branch_rules/components/view/protect
 import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
 import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';
 import getProtectableBranches from '~/projects/settings/graphql/queries/protectable_branches.query.graphql';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import {
   I18N,
@@ -101,6 +103,7 @@ describe('View branch rules', () => {
         RuleDrawer,
         GlCard: stubComponent(GlCard, { template: RENDER_ALL_SLOTS_TEMPLATE }),
         GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+        CrudComponent,
       },
       mocks: {
         $toast: {
@@ -127,7 +130,6 @@ describe('View branch rules', () => {
   const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
   const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
   const findApprovalsTitle = () => wrapper.findByText(I18N.approvalsTitle);
-  const findpageTitle = () => wrapper.findByText(I18N.pageTitle);
   const findStatusChecksTitle = () => wrapper.findByText(I18N.statusChecksTitle);
   const findDeleteRuleButton = () => wrapper.findByTestId('delete-rule-button');
   const findEditRuleNameButton = () => wrapper.findByTestId('edit-rule-name-button');
@@ -146,7 +148,9 @@ describe('View branch rules', () => {
     );
 
   it('renders page title', () => {
-    expect(findpageTitle().exists()).toBe(true);
+    const pageTitle = wrapper.findComponent(PageHeading).props('heading');
+
+    expect(pageTitle).toBe('Branch rule details');
   });
 
   it('gets the branch param from url and renders it in the view', () => {

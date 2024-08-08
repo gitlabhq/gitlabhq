@@ -1,6 +1,7 @@
 <script>
-import { GlCard, GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
+import { GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
 import { parseBoolean, convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { createAlert } from '~/alert';
 import { __, sprintf } from '~/locale';
 import {
@@ -21,10 +22,9 @@ export default {
   name: 'ListSelector',
   i18n: I18N,
   components: {
-    GlCard,
-    GlIcon,
     GlSearchBoxByType,
     GlCollapsibleListbox,
+    CrudComponent,
   },
   props: {
     type: {
@@ -174,16 +174,7 @@ export default {
 </script>
 
 <template>
-  <gl-card header-class="gl-new-card-header gl-border-none" body-class="gl-card-footer">
-    <template #header
-      ><strong data-testid="list-selector-title"
-        >{{ config.title }}
-        <span class="gl-ml-3 gl-text-gray-700"
-          ><gl-icon :name="config.icon" /> {{ selectedItems.length }}</span
-        ></strong
-      ></template
-    >
-
+  <crud-component :title="config.title" :count="selectedItems.length" :icon="config.icon">
     <div class="gl-flex gl-gap-3" :class="{ 'gl-mb-4': selectedItems.length }">
       <gl-collapsible-listbox
         ref="results"
@@ -232,6 +223,6 @@ export default {
       />
     </div>
 
-    <div v-else class="gl-mt-5 gl-text-secondary">{{ emptyPlaceholder }}</div>
-  </gl-card>
+    <div v-else class="gl-mt-5 gl-text-subtle">{{ emptyPlaceholder }}</div>
+  </crud-component>
 </template>

@@ -112,7 +112,6 @@ Style/InlineDisableAnnotation:
     - 'app/finders/admin/plans_finder.rb'
     - 'app/finders/admin/projects_finder.rb'
     - 'app/finders/applications_finder.rb'
-    - 'app/finders/autocomplete/acts_as_taggable_on/tags_finder.rb'
     - 'app/finders/autocomplete/group_users_finder.rb'
     - 'app/finders/autocomplete/move_to_project_finder.rb'
     - 'app/finders/autocomplete/routes_finder.rb'

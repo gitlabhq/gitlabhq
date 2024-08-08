@@ -16,7 +16,6 @@ Lint/RedundantCopDisableDirective:
     - 'app/controllers/profiles/notifications_controller.rb'
     - 'app/controllers/projects/merge_requests/diffs_controller.rb'
     - 'app/controllers/projects/tags_controller.rb'
-    - 'app/finders/autocomplete/acts_as_taggable_on/tags_finder.rb'
     - 'app/finders/autocomplete/move_to_project_finder.rb'
     - 'app/finders/autocomplete/routes_finder.rb'
     - 'app/finders/autocomplete/users_finder.rb'

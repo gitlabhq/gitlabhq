@@ -56866,7 +56866,7 @@ msgstr ""
 msgid "Unknown user"
 msgstr ""
 
-msgid "Unless otherwise agreed to in writing with GitLab, by clicking \"Add License\" you agree that your use of GitLab Software is subject to the %{eula_link_start}Terms of Service%{eula_link_end}."
+msgid "Unless otherwise agreed to in writing with GitLab, by selecting \"Add License\" you agree that your use of GitLab Software is subject to the %{eula_link_start}Terms of Service%{eula_link_end}."
 msgstr ""
 
 msgid "Unlimited"

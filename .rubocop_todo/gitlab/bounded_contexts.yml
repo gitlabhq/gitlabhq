@@ -21,7 +21,6 @@ Gitlab/BoundedContexts:
     - 'app/finders/alert_management/alerts_finder.rb'
     - 'app/finders/alert_management/http_integrations_finder.rb'
     - 'app/finders/applications_finder.rb'
-    - 'app/finders/autocomplete/acts_as_taggable_on/tags_finder.rb'
     - 'app/finders/autocomplete/deploy_keys_with_write_access_finder.rb'
     - 'app/finders/autocomplete/group_finder.rb'
     - 'app/finders/autocomplete/group_users_finder.rb'

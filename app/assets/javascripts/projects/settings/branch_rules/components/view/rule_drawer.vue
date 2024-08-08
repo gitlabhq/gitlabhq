@@ -148,18 +148,20 @@ export default {
     </template>
 
     <template #header>
-      <gl-button
-        variant="confirm"
-        :disabled="!isRuleUpdated"
-        :loading="isLoading"
-        data-testid="save-allowed-to-merge"
-        @click="editRule()"
-      >
-        {{ __('Save changes') }}
-      </gl-button>
-      <gl-button variant="confirm" category="secondary" @click="$emit('close')">
-        {{ __('Cancel') }}
-      </gl-button>
+      <div class="gl-flex gl-gap-3">
+        <gl-button
+          variant="confirm"
+          :disabled="!isRuleUpdated"
+          :loading="isLoading"
+          data-testid="save-allowed-to-merge"
+          @click="editRule()"
+        >
+          {{ __('Save changes') }}
+        </gl-button>
+        <gl-button variant="confirm" category="secondary" @click="$emit('close')">
+          {{ __('Cancel') }}
+        </gl-button>
+      </div>
     </template>
     <template #default>
       <gl-form-group class="gl-border-none">
