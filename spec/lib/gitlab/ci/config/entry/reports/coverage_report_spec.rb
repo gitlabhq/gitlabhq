@@ -25,11 +25,19 @@ RSpec.describe Gitlab::Ci::Config::Entry::Reports::CoverageReport, feature_categ
     end
 
     context 'with unsupported coverage format' do
-      let(:config) { { coverage_format: 'jacoco', path: 'jacoco.xml' } }
+      let(:config) { { coverage_format: 'anotherformat', path: 'anotherformat.xml' } }
 
       it { expect(entry).not_to be_valid }
 
       it { expect(entry.errors).to include(/format must be one of supported formats/) }
+    end
+
+    context 'with jacoco coverage format' do
+      let(:config) { { coverage_format: 'jacoco', path: 'jacoco.xml' } }
+
+      it { expect(entry).to be_valid }
+
+      it { expect(entry.value).to eq(config) }
     end
 
     context 'without coverage format' do

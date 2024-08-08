@@ -176,7 +176,13 @@ describe('MrWidgetOptions', () => {
           ${'shaMismatch'} | ${'ShaMismatch'} | ${ShaMismatch}
         `('should translate $state into $componentName component', async ({ state, component }) => {
           await createComponent();
-          Vue.set(wrapper.vm.mr, 'state', state);
+
+          wrapper.vm.mr = {
+            ...wrapper.vm.mr,
+            setGraphqlData: jest.fn(),
+            state,
+          };
+
           await nextTick();
           expect(wrapper.findComponent(component).exists()).toBe(true);
         });
@@ -249,7 +255,12 @@ describe('MrWidgetOptions', () => {
             },
           });
           await nextTick();
-          Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
+          wrapper.vm.mt = {
+            ...wrapper.vm.mr,
+            setGraphqlData: jest.fn(),
+            mergePipelinesEnabled: true,
+          };
+
           await nextTick();
           expect(findMergePipelineForkAlert().exists()).toBe(false);
         });
@@ -273,7 +284,13 @@ describe('MrWidgetOptions', () => {
             },
           });
           await nextTick();
-          Vue.set(wrapper.vm.mr, 'mergePipelinesEnabled', true);
+
+          wrapper.vm.mr = {
+            ...wrapper.vm.mr,
+            setGraphqlData: jest.fn(),
+            mergePipelinesEnabled: true,
+          };
+
           await nextTick();
           expect(findMergePipelineForkAlert().exists()).toBe(true);
         });

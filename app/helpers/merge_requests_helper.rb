@@ -231,6 +231,7 @@ module MergeRequestsHelper
 
   def project_merge_requests_list_data(project, current_user)
     {
+      autocomplete_award_emojis_path: autocomplete_award_emojis_path,
       full_path: project.full_path,
       has_any_merge_requests: project_merge_requests(project).exists?.to_s,
       initial_sort: current_user&.user_preference&.issues_sort,

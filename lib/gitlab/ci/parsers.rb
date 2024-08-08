@@ -11,6 +11,7 @@ module Gitlab
           cobertura: ::Gitlab::Ci::Parsers::Coverage::Cobertura,
           terraform: ::Gitlab::Ci::Parsers::Terraform::Tfplan,
           accessibility: ::Gitlab::Ci::Parsers::Accessibility::Pa11y,
+          jacoco: ::Gitlab::Ci::Parsers::Coverage::Jacoco,
           codequality: ::Gitlab::Ci::Parsers::Codequality::CodeClimate,
           sast: ::Gitlab::Ci::Parsers::Security::Sast,
           secret_detection: ::Gitlab::Ci::Parsers::Security::SecretDetection,

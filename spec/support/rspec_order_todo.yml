@@ -2496,7 +2496,6 @@
 - './ee/spec/services/security/orchestration/assign_service_spec.rb'
 - './ee/spec/services/security/orchestration/unassign_service_spec.rb'
 - './ee/spec/services/security/override_uuids_service_spec.rb'
-- './ee/spec/services/security/report_fetch_service_spec.rb'
 - './ee/spec/services/security/report_summary_service_spec.rb'
 - './ee/spec/services/security/scanned_resources_counting_service_spec.rb'
 - './ee/spec/services/security/scanned_resources_service_spec.rb'

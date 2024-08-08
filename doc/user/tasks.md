@@ -612,3 +612,30 @@ Prerequisites:
    ellipsis (**{ellipsis_v}**) and then select **Remove**.
 
 Due to the bi-directional relationship, the relationship no longer appears in either item.
+
+### Add a merge request and automatically close tasks
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/440851) in GitLab 17.3.
+
+You can set a task to close when a merge request merges.
+
+Prerequisites:
+
+- You must have at least a Developer role for the project containing the merge request.
+- You must have at least a Reporter role for the project containing the task.
+
+1. Edit your merge request.
+1. In the **Description** box, find and add the task.
+   - Use the [closing pattern](project/issues/managing_issues.md#closing-issues-automatically) that you would for adding a merge request to an issue.
+   - If your task is in the same project as your merge request, you can search for your task by typing <kbd>#</kbd> followed by the task's ID or title. 
+   - If your task is in a different project, with a task open, copy the URL from the browser or
+     copy the task's reference by selecting the vertical ellipsis (**{ellipsis_v}**) in the upper-right corner, then **Copy Reference**. 
+
+The merge requests are now visible on the right sidebar, in the **Development** section. 
+
+You must use the exact closing pattern to add the merge request to the task. Other text will not work.
+
+If [automatic issue closing](project/issues/managing_issues.md#disable-automatic-issue-closing) is enabled in your project settings, the task will be automatically closed when either:
+
+- The added merge request is merged.
+- A commit referencing a task with the closing pattern is committed to your project's default branch.

@@ -2,7 +2,6 @@ package config
 
 import (
 	"context"
-	"crypto/tls"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -25,15 +24,6 @@ import (
 )
 
 const Megabyte = 1 << 20
-
-// TLSVersions contains a mapping of textual TLS versions to tls.Version* constants
-var TLSVersions = map[string]uint16{
-	"":       0, // Default value in tls.Config
-	"tls1.0": tls.VersionTLS10,
-	"tls1.1": tls.VersionTLS11,
-	"tls1.2": tls.VersionTLS12,
-	"tls1.3": tls.VersionTLS13,
-}
 
 type TomlURL struct {
 	url.URL
@@ -118,11 +108,6 @@ type RedisConfig struct {
 	MaxActive        *int
 }
 
-// SentinelConfig contains configuration options specifically for Sentinel
-type SentinelConfig struct {
-	TLS *TLSConfig `toml:"tls" json:"tls"`
-}
-
 type ImageResizerConfig struct {
 	MaxScalerProcs uint32 `toml:"max_scaler_procs" json:"max_scaler_procs"`
 	MaxScalerMem   uint64 `toml:"max_scaler_mem" json:"max_scaler_mem"`
@@ -134,11 +119,10 @@ type MetadataConfig struct {
 }
 
 type TLSConfig struct {
-	Certificate   string `toml:"certificate" json:"certificate"`
-	Key           string `toml:"key" json:"key"`
-	CACertificate string `toml:"ca_certificate" json:"ca_certificate"`
-	MinVersion    string `toml:"min_version" json:"min_version"`
-	MaxVersion    string `toml:"max_version" json:"max_version"`
+	Certificate string `toml:"certificate" json:"certificate"`
+	Key         string `toml:"key" json:"key"`
+	MinVersion  string `toml:"min_version" json:"min_version"`
+	MaxVersion  string `toml:"max_version" json:"max_version"`
 }
 
 type ListenerConfig struct {
@@ -173,7 +157,6 @@ type Config struct {
 	TrustedCIDRsForPropagation   []string                 `toml:"trusted_cidrs_for_propagation" json:"trusted_cidrs_for_propagation"`
 	Listeners                    []ListenerConfig         `toml:"listeners" json:"listeners"`
 	MetricsListener              *ListenerConfig          `toml:"metrics_listener" json:"metrics_listener"`
-	Sentinel                     *SentinelConfig          `toml:"Sentinel" json:"Sentinel"`
 }
 
 var DefaultImageResizerConfig = ImageResizerConfig{

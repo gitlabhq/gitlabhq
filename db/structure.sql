@@ -15298,6 +15298,24 @@ CREATE SEQUENCE pm_checkpoints_id_seq
 
 ALTER SEQUENCE pm_checkpoints_id_seq OWNED BY pm_checkpoints.id;
 
+CREATE TABLE pm_epss (
+    id bigint NOT NULL,
+    score double precision NOT NULL,
+    created_at timestamp with time zone NOT NULL,
+    updated_at timestamp with time zone NOT NULL,
+    cve text NOT NULL,
+    CONSTRAINT check_33a7364ae2 CHECK ((char_length(cve) <= 24))
+);
+
+CREATE SEQUENCE pm_epss_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+ALTER SEQUENCE pm_epss_id_seq OWNED BY pm_epss.id;
+
 CREATE TABLE pm_licenses (
     id bigint NOT NULL,
     spdx_identifier text NOT NULL,
@@ -21574,6 +21592,8 @@ ALTER TABLE ONLY pm_affected_packages ALTER COLUMN id SET DEFAULT nextval('pm_af
 
 ALTER TABLE ONLY pm_checkpoints ALTER COLUMN id SET DEFAULT nextval('pm_checkpoints_id_seq'::regclass);
 
+ALTER TABLE ONLY pm_epss ALTER COLUMN id SET DEFAULT nextval('pm_epss_id_seq'::regclass);
+
 ALTER TABLE ONLY pm_licenses ALTER COLUMN id SET DEFAULT nextval('pm_licenses_id_seq'::regclass);
 
 ALTER TABLE ONLY pm_package_version_licenses ALTER COLUMN id SET DEFAULT nextval('pm_package_version_licenses_id_seq'::regclass);
@@ -24057,6 +24077,9 @@ ALTER TABLE ONLY pm_affected_packages
 
 ALTER TABLE ONLY pm_checkpoints
     ADD CONSTRAINT pm_checkpoints_pkey PRIMARY KEY (id);
+
+ALTER TABLE ONLY pm_epss
+    ADD CONSTRAINT pm_epss_pkey PRIMARY KEY (id);
 
 ALTER TABLE ONLY pm_licenses
     ADD CONSTRAINT pm_licenses_pkey PRIMARY KEY (id);
@@ -28933,6 +28956,8 @@ CREATE UNIQUE INDEX index_pm_advisories_on_advisory_xid_and_source_xid ON pm_adv
 CREATE INDEX index_pm_affected_packages_on_pm_advisory_id ON pm_affected_packages USING btree (pm_advisory_id);
 
 CREATE INDEX index_pm_affected_packages_on_purl_type_and_package_name ON pm_affected_packages USING btree (purl_type, package_name);
+
+CREATE UNIQUE INDEX index_pm_epss_on_cve ON pm_epss USING btree (cve);
 
 CREATE INDEX index_pm_package_version_licenses_on_pm_license_id ON pm_package_version_licenses USING btree (pm_license_id);
 

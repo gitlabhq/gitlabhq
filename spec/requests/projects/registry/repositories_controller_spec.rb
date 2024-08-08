@@ -45,6 +45,8 @@ RSpec.describe Projects::Registry::RepositoriesController, feature_category: :co
     end
 
     it { is_expected.to have_gitlab_http_status(:ok) }
+
+    it_behaves_like 'having the feature flag "containerRegistryProtectedContainers"'
   end
 
   describe 'GET #show' do

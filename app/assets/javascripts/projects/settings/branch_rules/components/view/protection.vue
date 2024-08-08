@@ -133,6 +133,7 @@ export default {
       :show-divider="index !== 0"
       :title="statusCheck.name"
       :status-check-url="statusCheck.externalUrl"
+      :hmac="statusCheck.hmac"
     />
   </gl-card>
 </template>

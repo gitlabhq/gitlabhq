@@ -286,4 +286,6 @@ export const allowedToMergeDrawerProps = {
 
 export const editRuleData = [{ accessLevel: 60 }, { accessLevel: 40 }, { accessLevel: 30 }];
 
+export const editRuleDataNoAccessLevels = [];
+
 export const editRuleDataNoOne = [{ accessLevel: 0 }];

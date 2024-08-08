@@ -3006,6 +3006,7 @@ Gitlab/BoundedContexts:
     - 'ee/app/models/package_metadata/advisory.rb'
     - 'ee/app/models/package_metadata/affected_package.rb'
     - 'ee/app/models/package_metadata/checkpoint.rb'
+    - 'ee/app/models/package_metadata/epss.rb'
     - 'ee/app/models/package_metadata/license.rb'
     - 'ee/app/models/package_metadata/package.rb'
     - 'ee/app/models/package_metadata/package_version.rb'

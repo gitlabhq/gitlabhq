@@ -7,12 +7,12 @@ module Banzai
     #
     # Based on HTML::Pipeline::EmojiFilter
     class EmojiFilter < HTML::Pipeline::Filter
-      include Concerns::TimeoutFilterHandler
+      prepend Concerns::TimeoutFilterHandler
       prepend Concerns::PipelineTimingCheck
 
       IGNORED_ANCESTOR_TAGS = %w[pre code tt].to_set
 
-      def call_with_timeout
+      def call
         @emoji_count = 0
 
         doc.xpath('descendant-or-self::text()').each do |node|

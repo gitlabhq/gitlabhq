@@ -10,7 +10,7 @@ module Enums
         secret_detection: %w[secret_detection],
         test: %w[junit],
         accessibility: %w[accessibility],
-        coverage: %w[cobertura],
+        coverage: %w[cobertura jacoco],
         codequality: %w[codequality],
         terraform: %w[terraform]
       }.freeze
@@ -38,6 +38,7 @@ module Enums
         lsif: 'lsif.json',
         dotenv: '.env',
         cobertura: 'cobertura-coverage.xml',
+        jacoco: 'jacoco-coverage.xml',
         terraform: 'tfplan.json',
         cluster_applications: 'gl-cluster-applications.json', # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
         requirements: 'requirements.json', # Will be DEPRECATED soon: https://gitlab.com/groups/gitlab-org/-/epics/9203
@@ -62,6 +63,7 @@ module Enums
         network_referee: :gzip,
         dotenv: :gzip,
         cobertura: :gzip,
+        jacoco: :gzip,
         cluster_applications: :gzip, # DEPRECATED: https://gitlab.com/gitlab-org/gitlab/-/issues/361094
         lsif: :zip,
         cyclonedx: :gzip,
@@ -98,6 +100,7 @@ module Enums
         api_fuzzing
         archive
         cobertura
+        jacoco
         codequality
         container_scanning
         dast
@@ -180,7 +183,8 @@ module Enums
           cyclonedx: 28, ## EE-specific
           requirements_v2: 29, ## EE-specific
           annotations: 30,
-          repository_xray: 31 ## EE-specific
+          repository_xray: 31, ## EE-specific
+          jacoco: 32
         }
       end
 

@@ -65,6 +65,49 @@ A user is not counted as a billable user if:
 
 The amount of **Billable users** is reported once a day in the **Admin** area.
 
+#### Check daily and historical billable users
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can get a list of daily and historical billable users in your GitLab instance:
+
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Count the number of users in the instance:
+
+   ```ruby
+   User.billable.count
+   ```
+
+1. Get the historical maximum number of users on the instance from the past year:
+
+   ```ruby
+   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
+   ```
+
+#### Update daily and hitorical billable users
+
+Prerequisites:
+
+- You must be an administrator.
+
+You can trigger a manual update of the daily and historical billable users in your GitLab instance.
+
+1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
+1. Force an update of the daily billable users:
+
+   ```ruby
+   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
+   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
+   ```
+
+1. Force an update of the historical max billable users:
+
+   ```ruby
+   ::HistoricalDataWorker.new.perform
+   ```
+
 ### Maximum users
 
 The number of _maximum users_ reflects the highest peak of billable users for the current license period.
@@ -505,38 +548,3 @@ You might get the error `Attempt_Exceed_Limitation - Attempt exceed the limitati
 This issue occurs when the credit card form is re-submitted too quickly within a specific time frame (three submissions within one minute or six submissions within one hour).
 
 To resolve this issue, wait a few minutes and try the purchase process again.
-
-### Check daily and historical billable users
-
-Administrators can get a list of daily and historical billable users in your GitLab instance.
-
-1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Count the number of users in the instance:
-
-   ```ruby
-   User.billable.count
-   ```
-
-1. Get the historical maximum number of users on the instance from the past year:
-
-   ```ruby
-   ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
-   ```
-
-### Update daily billable and historical users
-
-Administrators can trigger a manual update of the daily and historical billable users in your GitLab instance.
-
-1. [Start a Rails console session](../../administration/operations/rails_console.md#starting-a-rails-console-session).
-1. Force an update of the daily billable users:
-
-   ```ruby
-   identifier = Analytics::UsageTrends::Measurement.identifiers[:billable_users]
-   ::Analytics::UsageTrends::CounterJobWorker.new.perform(identifier, User.minimum(:id), User.maximum(:id), Time.zone.now)
-   ```
-
-1. Force an update of the historical max billable users:
-
-   ```ruby
-   ::HistoricalDataWorker.new.perform
-   ```

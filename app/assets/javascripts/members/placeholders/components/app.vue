@@ -2,21 +2,18 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { GlBadge, GlTab, GlTabs, GlButton, GlModalDirective } from '@gitlab/ui';
-import { createAlert } from '~/alert';
 import { s__, sprintf } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import {
   PLACEHOLDER_STATUS_FAILED,
   QUERY_PARAM_FAILED,
+  PLACEHOLDER_USER_STATUS,
 } from '~/import_entities/import_groups/constants';
 
-import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholdersTable from './placeholders_table.vue';
 import CsvUploadModal from './csv_upload_modal.vue';
 
 const UPLOAD_CSV_PLACEHOLDERS_MODAL_ID = 'upload-placeholders-csv-modal';
-
-const DEFAULT_PAGE_SIZE = 20;
 
 export default {
   name: 'PlaceholdersTabApp',
@@ -31,59 +28,24 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
-  inject: ['group'],
   data() {
     return {
       selectedTabIndex: 0,
       unassignedCount: null,
       reassignedCount: null,
-      cursor: {
-        before: null,
-        after: null,
-      },
     };
-  },
-  apollo: {
-    sourceUsers: {
-      query: importSourceUsersQuery,
-      variables() {
-        return {
-          fullPath: this.group.path,
-          ...this.cursor,
-          [this.cursor.before ? 'last' : 'first']: DEFAULT_PAGE_SIZE,
-          statuses: this.queryStatuses,
-        };
-      },
-      update(data) {
-        return data.namespace?.importSourceUsers;
-      },
-      error() {
-        createAlert({
-          message: s__('UserMapping|There was a problem fetching placeholder users.'),
-        });
-      },
-    },
   },
   computed: {
     ...mapState('placeholder', ['pagination']),
-    isLoading() {
-      return Boolean(this.$apollo.queries.sourceUsers.loading);
-    },
-    nodes() {
-      return this.sourceUsers?.nodes || [];
-    },
-    pageInfo() {
-      return this.sourceUsers?.pageInfo || {};
-    },
-    statusParamValue() {
-      return getParameterByName('status');
-    },
-    queryStatuses() {
+    unassignedUserStatuses() {
       if (getParameterByName('status') === QUERY_PARAM_FAILED) {
         return [PLACEHOLDER_STATUS_FAILED];
       }
 
-      return [];
+      return PLACEHOLDER_USER_STATUS.UNASSIGNED;
+    },
+    reassignedUserStatuses() {
+      return PLACEHOLDER_USER_STATUS.REASSIGNED;
     },
   },
 
@@ -129,12 +91,9 @@ export default {
 
       <placeholders-table
         key="unassigned"
-        :items="nodes"
-        :page-info="pageInfo"
-        :is-loading="isLoading"
+        data-testid="placeholders-table-unassigned"
+        :query-statuses="unassignedUserStatuses"
         @confirm="onConfirm"
-        @prev="onPrevPage"
-        @next="onNextPage"
       />
     </gl-tab>
 
@@ -146,12 +105,9 @@ export default {
 
       <placeholders-table
         key="reassigned"
+        data-testid="placeholders-table-reassigned"
+        :query-statuses="reassignedUserStatuses"
         reassigned
-        :items="nodes"
-        :page-info="pageInfo"
-        :is-loading="isLoading"
-        @prev="onPrevPage"
-        @next="onNextPage"
       />
     </gl-tab>
 

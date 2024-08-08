@@ -214,5 +214,6 @@ RSpec.describe Banzai::Filter::ExternalLinkFilter, feature_category: :team_plann
   it_behaves_like 'a filter timeout' do
     let(:text) { 'text' }
     let(:expected_result) { described_class::COMPLEX_MARKDOWN_MESSAGE }
+    let(:expected_timeout) { described_class::SANITIZATION_RENDER_TIMEOUT }
   end
 end

@@ -7,13 +7,17 @@ import {
   GlTable,
   GlTooltipDirective,
 } from '@gitlab/ui';
+import { createAlert } from '~/alert';
 import { s__ } from '~/locale';
+
+import { DEFAULT_PAGE_SIZE } from '~/members/constants';
 
 import {
   PLACEHOLDER_STATUS_KEPT_AS_PLACEHOLDER,
   PLACEHOLDER_STATUS_COMPLETED,
   placeholderUserBadges,
 } from '~/import_entities/import_groups/constants';
+import importSourceUsersQuery from '../graphql/queries/import_source_users.query.graphql';
 import PlaceholderActions from './placeholder_actions.vue';
 
 export default {
@@ -29,25 +33,46 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
+  inject: ['group'],
   props: {
-    isLoading: {
-      type: Boolean,
-      required: true,
-    },
-    items: {
+    queryStatuses: {
       type: Array,
-      required: false,
-      default: () => [],
-    },
-    pageInfo: {
-      type: Object,
-      required: false,
-      default: () => ({}),
+      required: true,
     },
     reassigned: {
       type: Boolean,
       required: false,
       default: false,
+    },
+  },
+  data() {
+    return {
+      cursor: {
+        before: null,
+        after: null,
+      },
+    };
+  },
+  apollo: {
+    sourceUsers: {
+      query: importSourceUsersQuery,
+      variables() {
+        return {
+          fullPath: this.group.path,
+          ...this.cursor,
+          [this.cursor.before ? 'last' : 'first']: DEFAULT_PAGE_SIZE,
+          statuses: this.queryStatuses,
+        };
+      },
+
+      update(data) {
+        return data.namespace?.importSourceUsers;
+      },
+      error() {
+        createAlert({
+          message: s__('UserMapping|There was a problem fetching placeholder users.'),
+        });
+      },
     },
   },
 
@@ -75,6 +100,15 @@ export default {
         },
       ];
     },
+    isLoading() {
+      return this.$apollo.queries.sourceUsers.loading;
+    },
+    nodes() {
+      return this.sourceUsers?.nodes || [];
+    },
+    pageInfo() {
+      return this.sourceUsers?.pageInfo || {};
+    },
   },
 
   methods: {
@@ -98,6 +132,19 @@ export default {
 
       return {};
     },
+    onPrevPage() {
+      this.cursor = {
+        before: this.sourceUsers.pageInfo.startCursor,
+        after: null,
+      };
+    },
+
+    onNextPage() {
+      this.cursor = {
+        after: this.sourceUsers.pageInfo.endCursor,
+        before: null,
+      };
+    },
 
     onConfirm(item) {
       this.$emit('confirm', item);
@@ -108,7 +155,7 @@ export default {
 
 <template>
   <div>
-    <gl-table :items="items" :fields="fields" :busy="isLoading">
+    <gl-table :items="nodes" :fields="fields" :busy="isLoading">
       <template #table-busy>
         <gl-loading-icon size="lg" class="gl-my-5" />
       </template>
@@ -155,8 +202,8 @@ export default {
         v-bind="pageInfo"
         :prev-text="__('Prev')"
         :next-text="__('Next')"
-        @prev="$emit('prev')"
-        @next="$emit('next')"
+        @prev="onPrevPage"
+        @next="onNextPage"
       />
     </div>
   </div>

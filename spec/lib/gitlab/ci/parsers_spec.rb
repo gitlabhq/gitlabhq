@@ -22,6 +22,14 @@ RSpec.describe Gitlab::Ci::Parsers do
       end
     end
 
+    context 'when file_type is jacoco' do
+      let(:file_type) { 'jacoco' }
+
+      it 'fabricates the class' do
+        is_expected.to be_a(described_class::Coverage::Jacoco)
+      end
+    end
+
     context 'when file_type is accessibility' do
       let(:file_type) { 'accessibility' }
 

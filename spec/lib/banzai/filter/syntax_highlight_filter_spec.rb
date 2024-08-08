@@ -147,7 +147,7 @@ RSpec.describe Banzai::Filter::SyntaxHighlightFilter, feature_category: :team_pl
     include_examples "XSS prevention", "ruby"
   end
 
-  it_behaves_like "html filter timeout" do
+  it_behaves_like 'a filter timeout' do
     let(:text) { '<pre data-canonical-lang="ruby"><code>def fun end</code></pre>' }
   end
 

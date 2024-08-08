@@ -9,7 +9,8 @@ module Banzai
   module Filter
     # HTML Filter to highlight fenced code blocks
     #
-    class SyntaxHighlightFilter < TimeoutHtmlPipelineFilter
+    class SyntaxHighlightFilter < HTML::Pipeline::Filter
+      prepend Concerns::TimeoutFilterHandler
       prepend Concerns::PipelineTimingCheck
       include Concerns::OutputSafety
 
@@ -18,7 +19,7 @@ module Banzai
       CSS   = 'pre:not([data-kroki-style]) > code:only-child'
       XPATH = Gitlab::Utils::Nokogiri.css_to_xpath(CSS).freeze
 
-      def call_with_timeout
+      def call
         doc.xpath(XPATH).each do |node|
           highlight_node(node)
         end

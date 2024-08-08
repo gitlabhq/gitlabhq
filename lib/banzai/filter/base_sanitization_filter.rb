@@ -11,13 +11,15 @@ module Banzai
     #
     # Extends HTML::Pipeline::SanitizationFilter with common rules.
     class BaseSanitizationFilter < HTML::Pipeline::SanitizationFilter
-      include Concerns::TimeoutFilterHandler
+      prepend Concerns::TimeoutFilterHandler
       include Gitlab::Utils::StrongMemoize
       extend Gitlab::Utils::SanitizeNodeLink
 
+      RENDER_TIMEOUT = 5.seconds
+
       UNSAFE_PROTOCOLS = %w[data javascript vbscript].freeze
 
-      def call_with_timeout
+      def call
         Sanitize.clean_node!(doc, allowlist)
       end
 

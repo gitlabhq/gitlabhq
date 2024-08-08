@@ -434,6 +434,7 @@ builds:
 - job_artifacts_lsif
 - job_artifacts_dotenv
 - job_artifacts_cobertura
+- job_artifacts_jacoco
 - job_artifacts_terraform
 - job_artifacts_accessibility
 - job_artifacts_cluster_applications

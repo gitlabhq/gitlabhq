@@ -63,14 +63,14 @@ export const mockSourceUsers = [
   }),
 ];
 
-export const mockSourceUsersQueryResponse = ({ pageInfo = {} } = {}) => ({
+export const mockSourceUsersQueryResponse = ({ nodes = mockSourceUsers, pageInfo = {} } = {}) => ({
   data: {
     namespace: {
       __typename: 'Namespace',
       id: 'gid://gitlab/Group/1',
       importSourceUsers: {
         __typename: 'ImportSourceUserConnection',
-        nodes: mockSourceUsers,
+        nodes,
         pageInfo: {
           __typename: 'PageInfo',
           hasNextPage: false,
@@ -83,26 +83,6 @@ export const mockSourceUsersQueryResponse = ({ pageInfo = {} } = {}) => ({
     },
   },
 });
-
-export const mockSourceUsersFailedStatusResponse = {
-  data: {
-    namespace: {
-      __typename: 'Namespace',
-      id: 'gid://gitlab/Group/1',
-      importSourceUsers: {
-        __typename: 'ImportSourceUserConnection',
-        nodes: [mockSourceUsers[4]],
-        pageInfo: {
-          __typename: 'PageInfo',
-          hasNextPage: false,
-          hasPreviousPage: false,
-          startCursor: '',
-          endCursor: '',
-        },
-      },
-    },
-  },
-};
 
 export const mockReassignMutationResponse = {
   data: {

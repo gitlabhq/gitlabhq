@@ -32,29 +32,30 @@ module Banzai
           HTML
 
         def call
-          return call_with_timeout if Gitlab::RenderTimeout.banzai_timeout_disabled?
+          return super if Gitlab::RenderTimeout.banzai_timeout_disabled?
 
-          Gitlab::RenderTimeout.timeout(foreground: render_timeout, background: render_timeout) { call_with_timeout }
+          Gitlab::RenderTimeout.timeout(foreground: render_timeout, background: render_timeout) { super }
         rescue Timeout::Error => e
           class_name = self.class.name.demodulize
-          Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, class_name: class_name)
+          Gitlab::ErrorTracking.track_exception(e, project_id: context[:project]&.id, group_id: context[:group]&.id,
+            class_name: class_name)
 
           # we've timed out, but some work may have already been completed,
           # so return what we can
           returned_timeout_value
         end
 
-        def call_with_timeout
-          raise NotImplementedError
-        end
-
         private
 
         def render_timeout
+          return super if defined?(super)
+
           RENDER_TIMEOUT
         end
 
         def returned_timeout_value
+          return super if defined?(super)
+
           if is_a?(HTML::Pipeline::TextFilter)
             text
           else

@@ -2770,7 +2770,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
         let(:current_user) { developer }
         let(:project) { public_project }
         let(:job) { build_stubbed(:ci_build, project: scope_project, user: current_user) }
-        let_it_be(:scope_project) { create(:project, :private) }
+        let(:scope_project) { create(:project, :private) }
 
         before do
           current_user.set_ci_job_token_scope!(job)
@@ -3049,7 +3049,7 @@ RSpec.describe ProjectPolicy, feature_category: :system_access do
 
         before do
           project.project_feature.update!(container_registry_access_level: access_level)
-          current_user.update_column(:external, true)
+          allow(current_user).to receive(:external).and_return(true)
         end
 
         it 'allows/disallows the abilities based on the container_registry feature access level' do

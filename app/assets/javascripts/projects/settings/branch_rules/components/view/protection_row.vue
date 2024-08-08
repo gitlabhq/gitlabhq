@@ -1,6 +1,6 @@
 <script>
 import { GlAvatarsInline, GlAvatar, GlAvatarLink, GlTooltipDirective, GlBadge } from '@gitlab/ui';
-import { n__ } from '~/locale';
+import { n__, __ } from '~/locale';
 import { accessLevelsConfig } from './constants';
 
 const AVATAR_TOOLTIP_MAX_CHARS = 100;
@@ -8,6 +8,9 @@ export const MAX_VISIBLE_AVATARS = 4;
 export const AVATAR_SIZE = 24;
 
 export default {
+  i18n: {
+    sharedSecret: __('HMAC enabled'),
+  },
   name: 'ProtectionRow',
   AVATAR_TOOLTIP_MAX_CHARS,
   MAX_VISIBLE_AVATARS,
@@ -47,6 +50,11 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    hmac: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   computed: {
@@ -103,6 +111,10 @@ export default {
           </gl-avatar-link>
         </template>
       </gl-avatars-inline>
+
+      <gl-badge v-if="hmac" data-testid="shared-secret" class="gl-mr-2">{{
+        $options.i18n.sharedSecret
+      }}</gl-badge>
 
       <gl-badge
         v-for="(item, index) in accessLevels"

@@ -12,7 +12,7 @@ module Groups
         push_frontend_feature_flag(:show_container_registry_tag_signatures, group)
       end
 
-      before_action only: [:show] do
+      before_action only: [:index, :show] do
         push_frontend_feature_flag(:container_registry_protected_containers, group)
       end
 

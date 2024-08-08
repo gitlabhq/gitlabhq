@@ -37,8 +37,4 @@ RSpec.describe Banzai::Filter::BlockquoteFenceLegacyFilter, feature_category: :t
       end.not_to raise_error
     end
   end
-
-  it_behaves_like 'text filter timeout' do
-    let(:text) { ">>>\ntest\n>>>" }
-  end
 end

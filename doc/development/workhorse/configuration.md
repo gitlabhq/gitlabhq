@@ -98,6 +98,8 @@ For example, the `[redis]` section in the configuration file could contain:
 [redis]
 URL = "unix:///var/run/gitlab/redis.sock"
 Password = "my_awesome_password"
+Sentinel = [ "tcp://sentinel1:23456", "tcp://sentinel2:23456" ]
+SentinelMaster = "mymaster"
 ```
 
 - `URL` - A string in the format `unix://path/to/redis.sock` or `tcp://host:port`.
@@ -158,28 +160,6 @@ addr = "localhost:9229"
   key = "/path/to/private/key"
   min_version = "tls1.2"
   max_version = "tls1.3"
-```
-
-## Sentinel support
-
-```plaintext
-[redis]
-Sentinel = [ "tcp://sentinel1:23456", "tcp://sentinel2:23456" ]
-SentinelMaster = "mymaster"
-```
-
-## Sentinel TLS support
-
-```plaintext
-[redis]
-Sentinel = [ "tcp://sentinel1:23456", "tcp://sentinel2:23456" ]
-SentinelMaster = "mymaster"
-[Sentinel.tls]
-  certificate = "/path/to/certificate"
-  key = "/path/to/private/key"
-  ca_certificate = "/path/to/ca_certificate" # optional
-  min_version = "tls1.2"                     # optional
-  max_version = "tls1.3"                     # optional
 ```
 
 ## Interaction of `authBackend` and `authSocket`

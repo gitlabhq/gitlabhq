@@ -480,6 +480,18 @@ because it only deletes untagged images.
 Implement cleanup policies to remove unneeded tags, which eventually causes images
 to be removed through garbage collection and storage space being recovered.
 
+## Backup with metadata database
+
+When the metadata database is enabled, backups must capture both the object storage
+used by the registry, as before, but also the database. Backups of object storage
+and the database should be coordinated to capture the state of the registry as close as possible
+to each other. To restore the registry, you must apply both backups together.
+
+## Downgrade a registry
+
+To downgrade the registry to a previous version after the migration is complete,
+you must restore to a backup of the desired version in order to downgrade.
+
 ## Troubleshooting
 
 ### `there are pending database migrations` error

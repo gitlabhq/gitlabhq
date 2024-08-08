@@ -22,6 +22,7 @@ export const imagesListResponse = [
       path: 'GITLAB-TEST',
       webUrl: 'http://localhost:3000/gitlab-org/gitlab-test',
     },
+    protectionRuleExists: false,
     ...userPermissionsData,
   },
   {
@@ -41,6 +42,7 @@ export const imagesListResponse = [
       path: 'GITLAB-TEST',
       webUrl: 'http://localhost:3000/gitlab-org/gitlab-test',
     },
+    protectionRuleExists: false,
     ...userPermissionsData,
   },
 ];

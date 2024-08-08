@@ -12,12 +12,6 @@ import (
 	"gitlab.com/gitlab-org/gitlab/workhorse/internal/helper"
 )
 
-const (
-	caCert   = "../../testdata/localhost.crt"
-	certFile = "../../testdata/localhost.crt"
-	keyFile  = "../../testdata/localhost.key"
-)
-
 func mockRedisServer(t *testing.T, connectReceived *atomic.Value) string {
 	ln, err := net.Listen("tcp", "127.0.0.1:0")
 
@@ -61,8 +55,7 @@ func TestConfigureValidConfigX(t *testing.T) {
 			a := mockRedisServer(t, &connectReceived)
 
 			parsedURL := helper.URLMustParse(tc.scheme + "://" + a)
-			redisCfg := &config.RedisConfig{URL: config.TomlURL{URL: *parsedURL}}
-			cfg := &config.Config{Redis: redisCfg}
+			cfg := &config.RedisConfig{URL: config.TomlURL{URL: *parsedURL}}
 
 			rdb, err := Configure(cfg)
 			require.NoError(t, err)
@@ -102,8 +95,7 @@ func TestConnectToSentinel(t *testing.T) {
 				sentinelUrls = append(sentinelUrls, config.TomlURL{URL: *parsedURL})
 			}
 
-			redisCfg := &config.RedisConfig{Sentinel: sentinelUrls}
-			cfg := &config.Config{Redis: redisCfg}
+			cfg := &config.RedisConfig{Sentinel: sentinelUrls}
 			rdb, err := Configure(cfg)
 			require.NoError(t, err)
 			defer rdb.Close()
@@ -126,7 +118,6 @@ func TestSentinelOptions(t *testing.T) {
 		username              string
 		password              string
 		sentinels             []string
-		sentinelTLSConfig     *config.TLSConfig
 	}{
 		{
 			description:   "no sentinel passwords",
@@ -185,12 +176,6 @@ func TestSentinelOptions(t *testing.T) {
 			username:      "someuser3",
 			password:      "password3",
 		},
-		{
-			description:       "tls defined",
-			inputSentinel:     []string{"tcp://localhost:26480", "tcp://localhost:26481"},
-			sentinels:         []string{"localhost:26480", "localhost:26481"},
-			sentinelTLSConfig: &config.TLSConfig{Certificate: certFile, Key: keyFile},
-		},
 	}
 
 	for _, tc := range testCases {
@@ -202,69 +187,15 @@ func TestSentinelOptions(t *testing.T) {
 				sentinelUrls[i] = config.TomlURL{URL: *parsedURL}
 			}
 
-			redisCfg := &config.RedisConfig{
+			options := sentinelOptions(&config.RedisConfig{
 				Sentinel:         sentinelUrls,
 				SentinelUsername: tc.inputSentinelUsername,
 				SentinelPassword: tc.inputSentinelPassword,
-			}
-
-			sentinelCfg := &config.SentinelConfig{
-				TLS: tc.sentinelTLSConfig,
-			}
-
-			options, err := sentinelOptions(&config.Config{
-				Redis:    redisCfg,
-				Sentinel: sentinelCfg,
 			})
 
-			require.NoError(t, err)
 			require.Equal(t, tc.username, options.SentinelUsername)
 			require.Equal(t, tc.password, options.SentinelPassword)
 			require.Equal(t, tc.sentinels, options.Sentinels)
-
-			if tc.sentinelTLSConfig != nil {
-				require.Len(t, options.SentinelTLSConfig.Certificates, 1)
-			}
-		})
-	}
-}
-
-func TestSentinelTLSOptions(t *testing.T) {
-	testCases := []struct {
-		description    string
-		sentinelConfig *config.SentinelConfig
-		expectedError  *error
-	}{
-		{
-			description:    "no tls defined",
-			sentinelConfig: &config.SentinelConfig{},
-			expectedError:  &errSentinelTLSNotDefined,
-		},
-		{
-			description:    "certificate missing",
-			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{Key: keyFile}},
-			expectedError:  &errSentinelTLSCertificateNotDefined,
-		},
-		{
-			description:    "key missing",
-			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{Certificate: certFile}},
-			expectedError:  &errSentinelTLSKeyNotDefined,
-		},
-		{
-			description:    "tls defined",
-			sentinelConfig: &config.SentinelConfig{TLS: &config.TLSConfig{Certificate: certFile, Key: keyFile, CACertificate: caCert}},
-		},
-	}
-
-	for _, tc := range testCases {
-		t.Run(tc.description, func(t *testing.T) {
-			tlsConfig, err := sentinelTLSOptions(tc.sentinelConfig)
-
-			if tc.expectedError != nil {
-				require.ErrorIs(t, *tc.expectedError, err)
-			} else {
-				require.Len(t, tlsConfig.Certificates, 1)
-			}
 		})
 	}
 }

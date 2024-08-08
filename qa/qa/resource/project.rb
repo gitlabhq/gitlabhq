@@ -30,7 +30,8 @@ module QA
         :import,
         :import_status,
         :import_error,
-        :description
+        :description,
+        :created_at
 
       attribute :group do
         Group.fabricate! do |group|
@@ -577,7 +578,8 @@ module QA
           :snippets_enabled,
           :shared_runners_enabled,
           :request_access_enabled,
-          :avatar_url
+          :avatar_url,
+          :created_at
         )
       end
 

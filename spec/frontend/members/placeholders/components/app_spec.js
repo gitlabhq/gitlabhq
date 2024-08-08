@@ -3,23 +3,20 @@ import Vue, { nextTick } from 'vue';
 import Vuex from 'vuex';
 import VueApollo from 'vue-apollo';
 import { GlTab, GlTabs, GlModal } from '@gitlab/ui';
-import { createAlert } from '~/alert';
 import createMockApollo from 'helpers/mock_apollo_helper';
-import waitForPromises from 'helpers/wait_for_promises';
-import setWindowLocation from 'helpers/set_window_location_helper';
 import { mountExtended, shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
 import PlaceholdersTabApp from '~/members/placeholders/components/app.vue';
-import PlaceholdersTable from '~/members/placeholders/components/placeholders_table.vue';
 import CsvUploadModal from '~/members/placeholders/components/csv_upload_modal.vue';
 import importSourceUsersQuery from '~/members/placeholders/graphql/queries/import_source_users.query.graphql';
 import { MEMBERS_TAB_TYPES } from '~/members/constants';
+import setWindowLocation from 'helpers/set_window_location_helper';
 import {
-  mockSourceUsersQueryResponse,
-  mockSourceUsersFailedStatusResponse,
-  mockSourceUsers,
-  pagination,
-} from '../mock_data';
+  PLACEHOLDER_STATUS_FAILED,
+  QUERY_PARAM_FAILED,
+  PLACEHOLDER_USER_STATUS,
+} from '~/import_entities/import_groups/constants';
+import { mockSourceUsersQueryResponse, mockSourceUsers, pagination } from '../mock_data';
 
 Vue.use(Vuex);
 Vue.use(VueApollo);
@@ -30,13 +27,14 @@ describe('PlaceholdersTabApp', () => {
   let store;
   let mockApollo;
 
-  const mockGroup = {
-    path: 'imported-group',
-    name: 'Imported group',
-  };
   const sourceUsersQueryHandler = jest.fn().mockResolvedValue(mockSourceUsersQueryResponse());
   const $toast = {
     show: jest.fn(),
+  };
+
+  const mockGroup = {
+    path: 'imported-group',
+    name: 'Imported group',
   };
 
   const createComponent = ({
@@ -60,8 +58,8 @@ describe('PlaceholdersTabApp', () => {
       apolloProvider: mockApollo,
       store,
       provide: {
-        group: mockGroup,
         reassignmentCsvDownloadPath: 'foo/bar',
+        group: mockGroup,
       },
       mocks: { $toast },
       stubs: {
@@ -78,7 +76,8 @@ describe('PlaceholdersTabApp', () => {
 
   const findTabs = () => wrapper.findComponent(GlTabs);
   const findTabAt = (index) => wrapper.findAllComponents(GlTab).at(index);
-  const findPlaceholdersTable = () => wrapper.findComponent(PlaceholdersTable);
+  const findUnassignedTable = () => wrapper.findByTestId('placeholders-table-unassigned');
+  const findReassignedTable = () => wrapper.findByTestId('placeholders-table-reassigned');
   const findReassignCsvButton = () => wrapper.findByTestId('reassign-csv-button');
   const findCsvModal = () => wrapper.findComponent(CsvUploadModal);
 
@@ -105,7 +104,7 @@ describe('PlaceholdersTabApp', () => {
       createComponent();
       await nextTick();
 
-      findPlaceholdersTable().vm.$emit('confirm', mockSourceUser);
+      findUnassignedTable().vm.$emit('confirm', mockSourceUser);
       await nextTick();
     });
 
@@ -123,152 +122,40 @@ describe('PlaceholdersTabApp', () => {
     });
   });
 
-  describe('when sourceUsers query is loading', () => {
-    it('renders placeholders table as loading', () => {
+  describe('passes the correct queryStatuses to PlaceholdersTable', () => {
+    it('awaiting Reassignment - when the url includes the query param failed', () => {
+      setWindowLocation(`?status=${QUERY_PARAM_FAILED}`);
       createComponent();
 
-      expect(findPlaceholdersTable().props('isLoading')).toBe(true);
-    });
-  });
-
-  describe('when sourceUsers query fails', () => {
-    beforeEach(async () => {
-      const sourceUsersFailedQueryHandler = jest.fn().mockRejectedValue(new Error('GraphQL error'));
-
-      createComponent({
-        queryHandler: sourceUsersFailedQueryHandler,
-      });
-      await waitForPromises();
-    });
-
-    it('creates an alert', () => {
-      expect(createAlert).toHaveBeenCalledWith({
-        message: 'There was a problem fetching placeholder users.',
+      const placeholdersTable = findUnassignedTable();
+      expect(placeholdersTable.props()).toMatchObject({
+        queryStatuses: [PLACEHOLDER_STATUS_FAILED],
       });
     });
-  });
 
-  describe('when sourceUsers query succeeds', () => {
-    beforeEach(async () => {
+    it('awaiting Reassignment - when the url does not include query param', () => {
       createComponent();
-      await waitForPromises();
-    });
 
-    it('fetches sourceUsers', () => {
-      expect(sourceUsersQueryHandler).toHaveBeenCalledTimes(1);
-      expect(sourceUsersQueryHandler).toHaveBeenCalledWith({
-        after: null,
-        before: null,
-        fullPath: mockGroup.path,
-        first: 20,
-        statuses: [],
+      const placeholdersTable = findUnassignedTable();
+      expect(placeholdersTable.props()).toMatchObject({
+        queryStatuses: PLACEHOLDER_USER_STATUS.UNASSIGNED,
       });
     });
 
-    it('renders placeholders table', () => {
-      const sourceUsers = mockSourceUsersQueryResponse().data.namespace.importSourceUsers;
+    it('reassigned', () => {
+      createComponent();
 
-      expect(findPlaceholdersTable().props()).toMatchObject({
-        isLoading: false,
-        items: sourceUsers.nodes,
-        pageInfo: sourceUsers.pageInfo,
-      });
-    });
-  });
-
-  describe('when sourceUsers query succeeds and has pagination', () => {
-    const sourceUsersPaginatedQueryHandler = jest.fn();
-    const mockPageInfo = {
-      endCursor: 'end834',
-      hasNextPage: true,
-      hasPreviousPage: true,
-      startCursor: 'start971',
-    };
-
-    beforeEach(async () => {
-      sourceUsersPaginatedQueryHandler
-        .mockResolvedValueOnce(mockSourceUsersQueryResponse({ pageInfo: mockPageInfo }))
-        .mockResolvedValueOnce(mockSourceUsersQueryResponse());
-
-      createComponent({
-        queryHandler: sourceUsersPaginatedQueryHandler,
-      });
-      await waitForPromises();
-    });
-
-    describe('when "prev" event is emitted', () => {
-      beforeEach(() => {
-        findPlaceholdersTable().vm.$emit('prev');
-      });
-
-      it('fetches sourceUsers with previous results', () => {
-        expect(sourceUsersPaginatedQueryHandler).toHaveBeenCalledTimes(2);
-        expect(sourceUsersPaginatedQueryHandler).toHaveBeenCalledWith(
-          expect.objectContaining({
-            after: null,
-            before: mockPageInfo.startCursor,
-            last: 20,
-          }),
-        );
-      });
-    });
-
-    describe('when "next" event is emitted', () => {
-      beforeEach(() => {
-        findPlaceholdersTable().vm.$emit('next');
-      });
-
-      it('fetches sourceUsers with next results', () => {
-        expect(sourceUsersPaginatedQueryHandler).toHaveBeenCalledTimes(2);
-        expect(sourceUsersPaginatedQueryHandler).toHaveBeenCalledWith(
-          expect.objectContaining({
-            after: mockPageInfo.endCursor,
-            before: null,
-            first: 20,
-          }),
-        );
-      });
-    });
-  });
-
-  describe('correctly filters users', () => {
-    const sourceUsersFailureQueryHandler = jest
-      .fn()
-      .mockResolvedValue(mockSourceUsersFailedStatusResponse);
-
-    beforeEach(async () => {
-      setWindowLocation('?status=failed');
-
-      createComponent({ queryHandler: sourceUsersFailureQueryHandler });
-      await waitForPromises();
-    });
-
-    it('when the url includes the query param failed', () => {
-      const sourceUsersWithFailedStatus =
-        mockSourceUsersFailedStatusResponse.data.namespace.importSourceUsers;
-      const tableProps = findPlaceholdersTable().props();
-
-      expect(findPlaceholdersTable().props()).toMatchObject({
-        isLoading: false,
-        items: sourceUsersWithFailedStatus.nodes,
-        pageInfo: sourceUsersWithFailedStatus.pageInfo,
-      });
-      expect(tableProps.items.length).toBe(1);
-      expect(tableProps.items[0].status).toBe('FAILED');
-      expect(sourceUsersFailureQueryHandler).toHaveBeenCalledTimes(1);
-      expect(sourceUsersFailureQueryHandler).toHaveBeenCalledWith({
-        after: null,
-        before: null,
-        fullPath: mockGroup.path,
-        first: 20,
-        statuses: ['FAILED'],
+      const placeholdersTable = findReassignedTable();
+      expect(placeholdersTable.props()).toMatchObject({
+        reassigned: true,
+        queryStatuses: PLACEHOLDER_USER_STATUS.REASSIGNED,
       });
     });
   });
 
   describe('reassign CSV button', () => {
     it('renders the button and the modal', () => {
-      createComponent();
+      createComponent({ mountFn: mountExtended });
 
       expect(findReassignCsvButton().exists()).toBe(true);
       expect(findCsvModal().exists()).toBe(true);
@@ -276,7 +163,6 @@ describe('PlaceholdersTabApp', () => {
 
     it('shows modal when button is clicked', async () => {
       createComponent({ mountFn: mountExtended });
-
       findReassignCsvButton().trigger('click');
 
       await nextTick();

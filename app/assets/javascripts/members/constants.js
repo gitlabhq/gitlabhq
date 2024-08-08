@@ -171,6 +171,8 @@ export const AVAILABLE_FILTERED_SEARCH_TOKENS = [
 
 export const AVATAR_SIZE = 48;
 
+export const DEFAULT_PAGE_SIZE = 20;
+
 export const MEMBERS_TAB_TYPES = Object.freeze({
   user: 'user',
   group: 'group',

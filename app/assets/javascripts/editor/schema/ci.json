@@ -290,7 +290,7 @@
                 "coverage_format": {
                   "description": "Code coverage format used by the test framework.",
                   "enum": [
-                    "cobertura"
+                    "cobertura", "jacoco"
                   ]
                 },
                 "path": {

@@ -39,6 +39,15 @@ RSpec.describe Groups::Registry::RepositoriesController, feature_category: :cont
   end
 
   describe 'GET groups/:group_id/-/container_registries.json' do
+    subject do
+      get group_container_registries_path(group_id: group)
+      response
+    end
+
+    it { is_expected.to have_gitlab_http_status(:ok) }
+
+    it_behaves_like 'having the feature flag "containerRegistryProtectedContainers"'
+
     it 'avoids N+1 queries' do
       project = create(:project, group: group)
       create(:container_repository, project: project)

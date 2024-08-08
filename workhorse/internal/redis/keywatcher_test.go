@@ -25,7 +25,7 @@ func initRdb(t *testing.T) *redis.Client {
 	require.NoError(t, err)
 	cfg, err := config.LoadConfig(string(buf))
 	require.NoError(t, err)
-	rdb, err := Configure(cfg)
+	rdb, err := Configure(cfg.Redis)
 	require.NoError(t, err)
 	t.Cleanup(func() {
 		assert.NoError(t, rdb.Close())

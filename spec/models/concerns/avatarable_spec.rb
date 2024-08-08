@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe Avatarable do
+RSpec.describe Avatarable, feature_category: :shared do
   let(:project) { create(:project, :with_avatar) }
 
   let(:gitlab_host) { "https://gitlab.example.com" }

@@ -17,6 +17,8 @@ import {
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_LABEL,
   I18N_WORK_ITEM_CONFIDENTIALITY_CHECKBOX_TOOLTIP,
   WORK_ITEM_TYPE_VALUE_EPIC,
+  I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
+  MAX_WORK_ITEMS,
   sprintfWorkItem,
 } from '../../constants';
 import WorkItemProjectsListbox from './work_item_projects_listbox.vue';
@@ -240,10 +242,10 @@ export default {
         : [];
     },
     areWorkItemsToAddValid() {
-      return this.invalidWorkItemsToAdd.length === 0;
+      return this.invalidWorkItemsToAdd.length === 0 && this.areWorkItemsToAddWithinLimit;
     },
     showWorkItemsToAddInvalidMessage() {
-      return !this.isCreateForm && !this.areWorkItemsToAddValid;
+      return !this.isCreateForm && this.invalidWorkItemsToAdd.length > 0;
     },
     workItemsToAddInvalidMessage() {
       return sprintf(
@@ -256,6 +258,9 @@ export default {
           parentWorkItemType: this.parentWorkItemType,
         },
       );
+    },
+    areWorkItemsToAddWithinLimit() {
+      return this.workItemsToAdd.length <= MAX_WORK_ITEMS;
     },
   },
   watch: {
@@ -358,6 +363,7 @@ export default {
     titleInputPlaceholder: s__('WorkItem|Add a title'),
     projectInputPlaceholder: s__('WorkItem|Select a project'),
     titleInputValidationMessage: __('Maximum of 255 characters'),
+    maxItemsErrorMessage: I18N_MAX_WORK_ITEMS_ERROR_MESSAGE,
   },
 };
 </script>
@@ -437,6 +443,13 @@ export default {
       </div>
       <div v-if="error" class="gl-text-red-500 gl-mt-3" data-testid="work-items-error">
         {{ error }}
+      </div>
+      <div
+        v-if="!areWorkItemsToAddWithinLimit"
+        class="gl-mb-2 gl-text-red-500"
+        data-testid="work-items-limit-error"
+      >
+        {{ $options.i18n.maxItemsErrorMessage }}
       </div>
     </div>
     <gl-button
