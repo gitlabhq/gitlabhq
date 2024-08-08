@@ -18,4 +18,4 @@ variables:
   # Retry failed specs in separate process
   QA_RETRY_FAILED_SPECS: "true"
   # helm chart ref used by test-on-cng pipeline
-  GITLAB_HELM_CHART_REF: "6797f385430cbdfae71b4ec9f3620f329c5feb3a"
+  GITLAB_HELM_CHART_REF: "c8e9ac56ccda4640e8979c7896ffe9cca9e626ad"
