@@ -1,0 +1,37 @@
+---
+key_path: redis_hll_counters.count_distinct_user_id_from_branch_rules_settings_monthly
+description: Monthly count of unique users who edited branch rules from project settings.
+product_group: source_code
+performance_indicator_type: []
+value_type: number
+status: active
+milestone: '17.3'
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160591
+time_frame: 28d
+data_source: internal_events
+data_category: optional
+distribution:
+- ce
+tier:
+- free
+events:
+- name: protect_branch
+  unique: user.id
+  filter:
+    label: repository_settings
+- name: change_allow_force_push
+  unique: user.id
+  filter:
+    label: repository_settings
+- name: change_allowed_to_merge
+  unique: user.id
+  filter:
+    label: repository_settings
+- name: change_allowed_to_push_and_merge
+  unique: user.id
+  filter:
+    label: repository_settings
+- name: unprotect_branch
+  unique: user.id
+  filter:
+    label: repository_settings

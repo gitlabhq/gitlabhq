@@ -12,7 +12,8 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be_with_reload(:user) { create(:user) }
   let_it_be_with_reload(:user2) { create(:user, name: 'John') }
 
-  let_it_be(:project) { create(:project, :public) }
+  let_it_be(:group) { create(:group) }
+  let_it_be(:project) { create(:project, :public, group: group) }
   let_it_be(:work_item) { create(:work_item, project: project) }
   let_it_be(:task) { create(:work_item, :task, project: project) }
   let_it_be(:emoji_upvote) { create(:award_emoji, :upvote, awardable: work_item, user: user2) }
@@ -21,12 +22,14 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
   let_it_be(:note) { create(:note, noteable: work_item, project: work_item.project) }
   let(:work_items_path) { project_work_item_path(project, work_item.iid) }
   let_it_be(:label) { create(:label, project: work_item.project, title: "testing-label") }
+  let_it_be(:contact) { create(:contact, group: group) }
+  let(:contact_name) { "#{contact.first_name} #{contact.last_name}" }
 
   context 'for signed in user' do
     before do
       stub_feature_flags(notifications_todos_buttons: false)
       stub_const("AutocompleteSources::ExpiresIn::AUTOCOMPLETE_EXPIRES_IN", 0)
-      project.add_developer(user)
+      group.add_developer(user)
       sign_in(user)
       visit work_items_path
     end
@@ -90,6 +93,7 @@ RSpec.describe 'Work item', :js, feature_category: :team_planning do
     it_behaves_like 'work items todos'
     it_behaves_like 'work items award emoji'
     it_behaves_like 'work items time tracking'
+    it_behaves_like 'work items crm contacts'
   end
 
   context 'for signed in owner' do

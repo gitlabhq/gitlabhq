@@ -147,14 +147,6 @@
     &.btn-danger {
       @include btn-outline($white, $red-500, $red-500, $red-100, $red-700, $red-500, $red-200, $red-600, $red-800);
     }
-
-    &.btn-primary {
-      @include btn-outline($white, $blue-500, $blue-500, $blue-100, $blue-700, $blue-500, $blue-200, $blue-600, $blue-800);
-    }
-  }
-
-  &.btn-primary {
-    @include btn-blue;
   }
 
   &.btn-danger {

@@ -1054,11 +1054,6 @@ Example response:
 
 Reset the runner's authentication token by using the current token's value as an input.
 
-Prerequisites:
-
-- You must be an administrator of or have the Owner role in the target namespace or project.
-- For `instance_type`, you must be an administrator of the GitLab instance.
-
 ```plaintext
 POST /runners/reset_authentication_token
 ```

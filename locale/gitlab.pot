@@ -14772,6 +14772,12 @@ msgstr ""
 msgid "ContainerRegistry|This project's cleanup policy for tags is not enabled."
 msgstr ""
 
+msgid "ContainerRegistry|This tag points to a Docker manifest list, which references multiple container images"
+msgstr ""
+
+msgid "ContainerRegistry|This tag points to a OCI index, which references multiple container images"
+msgstr ""
+
 msgid "ContainerRegistry|To widen your search, change or remove the filters above."
 msgstr ""
 

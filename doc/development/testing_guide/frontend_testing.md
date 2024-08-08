@@ -228,7 +228,7 @@ it('exists', () => {
   // Bad
   wrapper.find({ ref: 'foo'});
   wrapper.find('.js-foo');
-  wrapper.find('.btn-primary');
+  wrapper.find('.gl-button');
 });
 ```
 

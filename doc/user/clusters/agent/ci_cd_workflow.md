@@ -332,6 +332,55 @@ In this example:
   - `*` is a wildcard, so `review/*` matches all environments under `review`.
 - CI/CD jobs for projects under `group-1` with `production` environments can access the agent.
 
+## Restrict access to the agent to protected branches
+
+DETAILS:
+**Tier:** Free, Premium, Ultimate
+**Offering:** Self-managed, GitLab Dedicated
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/388323) in GitLab 17.3.
+
+To restrict access to the agent to only jobs run on [protected branches](../../project/protected_branches.md):
+
+- Add `protected_branches_only: true` to `ci_access.projects` or `ci_access.groups`.
+  For example:
+
+  ```yaml
+  ci_access:
+    projects:
+      - id: path/to/project-1
+        protected_branches_only: true
+    groups:
+      - id: path/to/group-1
+        protected_branches_only: true
+        environments:
+          - production
+  ```
+
+By default, `protected_branches_only` is set to `false`, and the agent can be accessed from unprotected and protected branches.
+
+For additional security, you can combine this feature with [environment restrictions](#restrict-project-and-group-access-to-specific-environments).
+
+If a project has multiple configurations, only the most specific configuration is used.
+For example, the following configuration grants access to unprotected branches in `example/my-project`, even though the `example` group is configured to grant access to only protected branches:
+
+```yaml
+# .gitlab/agents/my-agent/config.yaml
+ci_access:
+  project:
+    - id: example/my-project # Project of the group below
+      protected_branches_only: false # This configuration supercedes the group configuration
+      environments:
+        - dev
+  groups:
+    - id: example
+      protected_branches_only: true
+      environments:
+        - dev
+```
+
+For more details, see [Access to Kubernetes from CI](https://gitlab.com/gitlab-org/cluster-integration/gitlab-agent/-/blob/b601fa21cac24f0cdedc8b8eb59ebcba0b70f459/doc/kubernetes_ci_access.md#apiv4joballowed_agents-api).
+
 ## Related topics
 
 - [Self-paced classroom workshop](https://gitlab-for-eks.awsworkshop.io) (Uses AWS EKS, but you can use for other Kubernetes clusters)

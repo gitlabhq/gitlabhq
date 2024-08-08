@@ -111,12 +111,12 @@ With direct upload enabled, Workhorse:
 
 1. Authorizes the request with Rails.
 1. Establishes a connection with the object store itself to transfer the file to a temporary location.
-1. When the transfer is complete, Workhorse finalizes the request with Rails. Rails issues an object store copy operation to put the file in its final location.
+1. When the transfer is complete, Workhorse finalizes the request with Rails.
 1. Completes the upload by deleting the temporary file in object storage.
 
 This strategy is a different form of [Workhorse assistance](#workhorse-assisted-uploads). It does not rely on shared storage that is accessible by both Workhorse and Puma.
 
-Of all existing upload strategies, direct upload is best able to handle large (gigabyte) uploads. However, because Puma still does an object storage copy operation, which takes time proportional to the size of the upload, there remains a possibility of hitting Puma timeouts.
+Of all existing upload strategies, direct upload is best able to handle large (gigabyte) uploads.
 
 ## Workhorse assisted uploads
 

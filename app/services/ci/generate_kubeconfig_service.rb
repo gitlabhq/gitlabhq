@@ -43,7 +43,9 @@ module Ci
     def agent_authorizations
       ::Clusters::Agents::Authorizations::CiAccess::FilterService.new(
         pipeline.cluster_agent_authorizations,
-        environment: environment
+        { environment: environment,
+          protected_ref: pipeline.protected_ref? },
+        pipeline.project
       ).execute
     end
 

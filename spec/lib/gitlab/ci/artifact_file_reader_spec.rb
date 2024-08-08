@@ -4,10 +4,13 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_composition do
   let(:job) { create(:ci_build) }
+  let(:max_archive_size) { 5.megabytes }
+  let(:max_file_size) { 5.megabytes }
+
   let(:path) { 'generated.yml' } # included in the ci_build_artifacts.zip
 
   describe '#read' do
-    subject { described_class.new(job).read(path) }
+    subject { described_class.new(job, max_archive_size: max_archive_size).read(path, max_size: max_file_size) }
 
     context 'when job has artifacts and metadata' do
       shared_examples 'extracting job artifact archive' do
@@ -48,32 +51,36 @@ RSpec.describe Gitlab::Ci::ArtifactFileReader, feature_category: :pipeline_compo
         end
 
         context 'when artifact archive size is greater than the limit' do
-          let(:expected_error) do
-            "Artifacts archive for job `#{job.name}` is too large: max 1 KiB"
-          end
+          context "when limits are given to the invocation of the reader" do
+            let(:max_archive_size) { 1.kilobytes }
+            let(:expected_error) do
+              "Artifacts archive for job `#{job.name}` is too large: " \
+                "#{ActiveSupport::NumberHelper.number_to_human_size(105.kilobytes)} exceeds maximum of 1 KiB"
+            end
 
-          before do
-            stub_const("#{described_class}::MAX_ARCHIVE_SIZE", 1.kilobyte)
-          end
-
-          it 'raises an error' do
-            expect { subject }.to raise_error(described_class::Error, expected_error)
+            it 'raises an error' do
+              expect { subject }.to raise_error(described_class::Error, expected_error)
+            end
           end
         end
 
         context 'when metadata entry shows size greater than the limit' do
-          let(:expected_error) do
-            "Artifacts archive for job `#{job.name}` is too large: max 5 MiB"
-          end
-
-          before do
-            expect_next_instance_of(Gitlab::Ci::Build::Artifacts::Metadata::Entry) do |entry|
-              expect(entry).to receive(:total_size).and_return(10.megabytes)
+          context 'when the limit is set by the value given to the invocation' do
+            let(:max_file_size) { 20.megabytes }
+            let(:expected_error) do
+              "The file `generated.yml` in job `#{job.name}` is too large: " \
+                "#{ActiveSupport::NumberHelper.number_to_human_size(21.megabytes)} exceeds maximum of 20 MiB"
             end
-          end
 
-          it 'raises an error' do
-            expect { subject }.to raise_error(described_class::Error, expected_error)
+            before do
+              expect_next_instance_of(Gitlab::Ci::Build::Artifacts::Metadata::Entry) do |entry|
+                expect(entry).to receive(:total_size).and_return(21.megabytes)
+              end
+            end
+
+            it 'raises an error' do
+              expect { subject }.to raise_error(described_class::Error, expected_error)
+            end
           end
         end
       end

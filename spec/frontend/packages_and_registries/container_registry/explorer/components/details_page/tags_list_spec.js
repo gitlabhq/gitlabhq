@@ -117,7 +117,7 @@ describe('Tags List', () => {
 
     it('binds the correct props', () => {
       expect(findRegistryList().props()).toMatchObject({
-        title: '2 tags',
+        title: '4 tags',
         items: tags,
         idProperty: 'name',
         hiddenDelete: false,

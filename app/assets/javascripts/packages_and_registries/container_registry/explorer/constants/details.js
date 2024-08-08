@@ -65,6 +65,14 @@ export const MISSING_MANIFEST_WARNING_TOOLTIP = s__(
   'ContainerRegistry|Invalid tag: missing manifest digest',
 );
 
+export const OCI_INDEX_TOOLTIP = s__(
+  'ContainerRegistry|This tag points to a OCI index, which references multiple container images',
+);
+
+export const DOCKER_MANIFEST_LIST_TOOLTIP = s__(
+  'ContainerRegistry|This tag points to a Docker manifest list, which references multiple container images',
+);
+
 export const CREATED_AT = s__('ContainerRegistry|Created %{time}');
 export const LAST_PUBLISHED_AT = s__('ContainerRegistry|Last published at %{time}');
 
@@ -170,3 +178,6 @@ export const IMAGE_STATUS_ALERT_TYPE = {
 export const PACKAGE_DELETE_HELP_PAGE_PATH = helpPagePath(
   'user/packages/container_registry/delete_container_registry_images',
 );
+
+export const DOCKER_MEDIA_TYPE = 'application/vnd.docker.distribution.manifest.list.v2+json';
+export const OCI_MEDIA_TYPE = 'application/vnd.oci.image.index.v1+json';

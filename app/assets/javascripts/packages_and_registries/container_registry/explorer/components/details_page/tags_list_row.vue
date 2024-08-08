@@ -28,6 +28,10 @@ import {
   MORE_ACTIONS_TEXT,
   COPY_IMAGE_PATH_TITLE,
   SIGNATURE_BADGE_TOOLTIP,
+  DOCKER_MEDIA_TYPE,
+  OCI_MEDIA_TYPE,
+  DOCKER_MANIFEST_LIST_TOOLTIP,
+  OCI_INDEX_TOOLTIP,
 } from '../../constants/index';
 import SignatureDetailsModal from './signature_details_modal.vue';
 
@@ -80,6 +84,8 @@ export default {
     MORE_ACTIONS_TEXT,
     COPY_IMAGE_PATH_TITLE,
     SIGNATURE_BADGE_TOOLTIP,
+    DOCKER_MANIFEST_LIST_TOOLTIP,
+    OCI_INDEX_TOOLTIP,
   },
   data() {
     return {
@@ -147,6 +153,14 @@ export default {
         ({ artifactType }) => artifactType === 'application/vnd.dev.cosign.artifact.sig.v1+json',
       );
     },
+    shouldDisplayLabelsIcon() {
+      return this.tag.mediaType === DOCKER_MEDIA_TYPE || this.tag.mediaType === OCI_MEDIA_TYPE;
+    },
+    labelsIconTooltipText() {
+      return this.tag.mediaType === DOCKER_MEDIA_TYPE
+        ? this.$options.i18n.DOCKER_MANIFEST_LIST_TOOLTIP
+        : this.$options.i18n.OCI_INDEX_TOOLTIP;
+    },
   },
 };
 </script>
@@ -188,6 +202,14 @@ export default {
           v-gl-tooltip.d0="$options.i18n.MISSING_MANIFEST_WARNING_TOOLTIP"
           name="warning"
           class="gl-text-orange-500 gl-mr-2"
+        />
+
+        <gl-icon
+          v-if="shouldDisplayLabelsIcon"
+          v-gl-tooltip.d0="labelsIconTooltipText"
+          name="labels"
+          class="gl-mr-2"
+          data-testid="labels-icon"
         />
       </div>
     </template>

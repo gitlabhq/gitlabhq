@@ -7,11 +7,13 @@ FactoryBot.define do
 
     transient do
       environments { nil }
+      protected_branches_only { false }
     end
 
     config do
       { default_namespace: 'production' }.tap do |c|
         c[:environments] = environments if environments
+        c[:protected_branches_only] = protected_branches_only
       end
     end
   end

@@ -35,6 +35,7 @@ query getContainerRepositoryTags(
         createdAt
         publishedAt
         totalSize
+        mediaType
         userPermissions {
           destroyContainerRepositoryTag
         }

@@ -697,3 +697,35 @@ RSpec.shared_examples 'work items time tracking' do
     expect(page).to have_button '1d'
   end
 end
+
+RSpec.shared_examples 'work items crm contacts' do
+  it 'searches for, adds and removes a contact' do
+    within_testid 'work-item-crm-contacts' do
+      expect(page).not_to have_css '.gl-link', text: contact_name
+
+      click_button 'Edit'
+      send_keys(contact.first_name)
+      wait_for_requests
+
+      select_listbox_item(contact_name)
+      click_button 'Apply'
+
+      expect(page).to have_css '.gl-link', text: contact_name
+
+      click_button 'Edit'
+      click_button 'Clear'
+
+      expect(page).not_to have_css '.gl-link', text: contact_name
+    end
+  end
+
+  it 'passes axe automated accessibility testing' do
+    within_testid 'work-item-crm-contacts' do
+      click_button _('Edit')
+
+      wait_for_requests
+
+      expect(page).to be_axe_clean.within('[data-testid="work-item-crm-contacts"]')
+    end
+  end
+end

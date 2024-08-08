@@ -12,7 +12,6 @@ module Gitlab
 
       def log_to_new_tables(events, audit_operation)
         return if events.blank?
-        return unless Feature.enabled?(:sync_audit_events_to_new_tables, Feature.current_request)
 
         events.each { |event| log_event(event) }
       rescue ActiveRecord::RecordInvalid => e
