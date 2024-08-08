@@ -30,6 +30,10 @@ module Packages
           size: [FILELISTS_SIZE_LIMITATION..]
         ).exists?
       end
+
+      def self.installable_statuses
+        INSTALLABLE_STATUSES
+      end
     end
   end
 end

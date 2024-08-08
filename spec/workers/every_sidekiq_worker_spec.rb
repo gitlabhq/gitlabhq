@@ -467,6 +467,7 @@ RSpec.describe 'Every Sidekiq worker', feature_category: :shared do
         'UpdateMergeRequestsWorker' => 3,
         'UpdateProjectStatisticsWorker' => 3,
         'UploadChecksumWorker' => 3,
+        'Import::ReassignPlaceholderUserRecordsWorker' => 5,
         'Vulnerabilities::Statistics::AdjustmentWorker' => 3,
         'VulnerabilityExports::ExportDeletionWorker' => 3,
         'VulnerabilityExports::ExportWorker' => 3,

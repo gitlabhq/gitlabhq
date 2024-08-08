@@ -12,9 +12,9 @@ module Import
     feature_category :importers
 
     def accept
-      if source_user.accept
-        # TODO: This is where we enqueue the job to assign the contributions.
+      result = ::Import::SourceUsers::AcceptReassignmentService.new(source_user, current_user: current_user).execute
 
+      if result.status == :success
         flash[:raw] = banner('accept_invite')
         redirect_to(dashboard_groups_path)
       else

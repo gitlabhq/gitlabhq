@@ -3,8 +3,6 @@
 module Packages
   module Debian
     class Package < Packages::Package
-      INSTALLABLE_STATUSES = [:default, :hidden].freeze
-
       self.allow_legacy_sti_class = true
 
       has_one :publication, inverse_of: :package, class_name: 'Packages::Debian::Publication'

@@ -61,7 +61,7 @@ export default {
   configHelpLink: helpPagePath('user/clusters/agent/install/index', {
     anchor: 'create-an-agent-configuration-file',
   }),
-  inject: ['kasCheckVersion', 'projectPath'],
+  inject: ['kasCheckVersion'],
   props: {
     agents: {
       required: true,
@@ -426,7 +426,7 @@ export default {
     <connect-to-agent-modal
       v-if="selectedAgent"
       :agent-id="selectedAgent.id"
-      :project-path="projectPath"
+      :project-path="selectedAgent.project.fullPath"
       :is-configured="isUserAccessConfigured"
     />
   </div>

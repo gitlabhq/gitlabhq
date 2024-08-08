@@ -3261,6 +3261,15 @@
   :weight: 1
   :idempotent: true
   :tags: []
+- :name: import_reassign_placeholder_user_records
+  :worker_name: Import::ReassignPlaceholderUserRecordsWorker
+  :feature_category: :importers
+  :has_external_dependencies: false
+  :urgency: :low
+  :resource_boundary: :unknown
+  :weight: 1
+  :idempotent: true
+  :tags: []
 - :name: import_refresh_import_jid
   :worker_name: Gitlab::Import::RefreshImportJidWorker
   :feature_category: :importers

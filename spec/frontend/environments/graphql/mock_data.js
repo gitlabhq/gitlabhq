@@ -806,6 +806,7 @@ export const agent = {
   name: 'agent-name',
   webPath: 'path/to/agent-page',
   tokens: { nodes: [] },
+  project: { id: '1', fullPath: 'path/to/agent/project' },
 };
 
 export const kubernetesNamespace = 'agent-namespace';

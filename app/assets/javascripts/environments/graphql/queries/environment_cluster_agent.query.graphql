@@ -10,6 +10,10 @@ query getEnvironmentClusterAgent($projectFullPath: ID!, $environmentName: String
         id
         name
         webPath
+        project {
+          id
+          fullPath
+        }
         tokens {
           nodes {
             id

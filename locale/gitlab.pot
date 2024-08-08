@@ -53668,6 +53668,12 @@ msgstr ""
 msgid "The pipeline has been deleted"
 msgstr ""
 
+msgid "The policy is disabled"
+msgstr ""
+
+msgid "The policy is enabled"
+msgstr ""
+
 msgid "The project has already been added to your dashboard."
 msgstr ""
 
@@ -57214,13 +57220,25 @@ msgstr ""
 msgid "UsageQuotas|Container Registry storage statistics are not used to calculate the total project storage. Total project storage is calculated after namespace container deduplication, where the total of all unique containers is added to the namespace storage total."
 msgstr ""
 
-msgid "UsageQuotas|Health check failed"
+msgid "UsageQuotas|Failed"
 msgstr ""
 
-msgid "UsageQuotas|Health check succeeded"
+msgid "UsageQuotas|GitLab Duo should be operational."
+msgstr ""
+
+msgid "UsageQuotas|Health check results"
 msgstr ""
 
 msgid "UsageQuotas|Namespace transfer data used"
+msgstr ""
+
+msgid "UsageQuotas|Not operational. Resolve issues to use GitLab Duo."
+msgstr ""
+
+msgid "UsageQuotas|Passed"
+msgstr ""
+
+msgid "UsageQuotas|Tests are running..."
 msgstr ""
 
 msgid "UsageQuota|%{linkTitle} help link"

@@ -57,7 +57,7 @@ export default {
   directives: {
     GlModalDirective,
   },
-  inject: ['kasTunnelUrl', 'projectPath'],
+  inject: ['kasTunnelUrl'],
   props: {
     environmentName: {
       type: String,
@@ -268,7 +268,7 @@ export default {
 
       <connect-to-agent-modal
         :agent-id="clusterAgent.id"
-        :project-path="projectPath"
+        :project-path="clusterAgent.project.fullPath"
         :is-configured="true"
       />
     </div>

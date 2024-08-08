@@ -157,7 +157,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
       it('renders connect to agent modal', () => {
         expect(findConnectModal().props()).toEqual({
           agentId: 'gid://gitlab/ClusterAgent/1',
-          projectPath: 'path/to/project',
+          projectPath: 'path/to/agent/project',
           isConfigured: true,
         });
       });

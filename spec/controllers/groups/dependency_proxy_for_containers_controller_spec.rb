@@ -181,10 +181,22 @@ RSpec.describe Groups::DependencyProxyForContainersController, feature_category:
       group.add_guest(user)
     end
 
-    # When authenticating with a job token, the encoded token is the same as
-    # that built when authenticating with a user
+    # When authenticating with a job token, the encoded token has the same structure
+    # as the token built when authenticating with a user
     context 'with a valid user or a job token' do
       it_behaves_like 'sends Workhorse instructions'
+
+      context 'with a job token triggered by a group access token user' do
+        let_it_be(:user) { create(:user, :project_bot) }
+
+        it_behaves_like 'sends Workhorse instructions'
+      end
+
+      context 'with a job token triggered by a service account user' do
+        let_it_be(:user) { create(:user, :service_account) }
+
+        it_behaves_like 'sends Workhorse instructions'
+      end
     end
 
     context 'with a valid group access token' do

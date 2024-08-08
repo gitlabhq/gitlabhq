@@ -52,6 +52,12 @@ RSpec.describe Import::SourceUsersController, feature_category: :importers do
 
       it { expect { accept_invite }.to change { source_user.reload.reassignment_in_progress? }.from(false).to(true) }
 
+      it 'enqueues the job to reassign contributions' do
+        expect(Import::ReassignPlaceholderUserRecordsWorker).to receive(:perform_async).with(source_user.id)
+
+        accept_invite
+      end
+
       it 'redirects with a notice when accepted' do
         accept_invite
 

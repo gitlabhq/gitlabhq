@@ -99,5 +99,9 @@ RSpec.describe Packages::Conan::Package, type: :model, feature_category: :packag
         expect(packages.first.association(:conan_metadatum)).to be_loaded
       end
     end
+
+    describe '.installable' do
+      it_behaves_like 'installable packages', :conan_package
+    end
   end
 end

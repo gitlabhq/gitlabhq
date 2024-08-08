@@ -19,6 +19,13 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
 
       it { is_expected.not_to validate_presence_of(:placeholder_user_id) }
     end
+
+    it 'validates reassign_to_user_id if status is reassignment_in_progress' do
+      import_source_user = build(:import_source_user, :reassignment_in_progress, reassign_to_user: nil)
+
+      expect(import_source_user).to be_invalid
+      expect(import_source_user.errors[:reassign_to_user_id]).to eq(["can't be blank"])
+    end
   end
 
   describe 'scopes' do
@@ -62,9 +69,15 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
     it 'begins in pending state' do
       expect(described_class.new.pending_reassignment?).to eq(true)
     end
+
+    it 'does not transition to reassignment_in_progress without a reassign_to_user' do
+      import_source_user = create(:import_source_user, :awaiting_approval, reassign_to_user: nil)
+
+      expect { import_source_user.accept! }.to raise_error(StateMachines::InvalidTransition)
+    end
   end
 
-  describe 'after_transition callback' do
+  describe 'after_transition callbacks' do
     subject(:source_user) { create(:import_source_user, :awaiting_approval, :with_reassign_to_user) }
 
     it 'does not unset reassign_to_user on other transitions' do
@@ -163,9 +176,11 @@ RSpec.describe Import::SourceUser, type: :model, feature_category: :importers do
   describe '.sort_by_attribute' do
     let_it_be(:namespace) { create(:namespace) }
     let_it_be(:source_user_1) { create(:import_source_user, namespace: namespace, status: 4, source_name: 'd') }
-    let_it_be(:source_user_2) { create(:import_source_user, namespace: namespace, status: 2, source_name: 'b') }
+    let_it_be(:source_user_2) { create(:import_source_user, namespace: namespace, status: 3, source_name: 'c') }
     let_it_be(:source_user_3) { create(:import_source_user, namespace: namespace, status: 1, source_name: 'a') }
-    let_it_be(:source_user_4) { create(:import_source_user, namespace: namespace, status: 3, source_name: 'c') }
+    let_it_be(:source_user_4) do
+      create(:import_source_user, :with_reassign_to_user, namespace: namespace, status: 2, source_name: 'b')
+    end
 
     let(:sort_by_attribute) { described_class.sort_by_attribute(method).pluck(attribute) }
 

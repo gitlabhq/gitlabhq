@@ -59,7 +59,6 @@ export default {
     },
     getAgentsQueryVariables() {
       return {
-        defaultBranchName: this.defaultBranchName,
         projectPath: this.projectPath,
       };
     },

@@ -762,17 +762,7 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
       end
 
       describe '.installable' do
-        subject { described_class.installable }
-
-        it 'does not include non-installable packages', :aggregate_failures do
-          is_expected.not_to include(error_package)
-          is_expected.not_to include(processing_package)
-        end
-
-        it 'includes installable packages', :aggregate_failures do
-          is_expected.to include(default_package)
-          is_expected.to include(hidden_package)
-        end
+        it_behaves_like 'installable packages', :maven_package
       end
 
       describe '.with_status' do
@@ -852,6 +842,10 @@ RSpec.describe Packages::Package, type: :model, feature_category: :package_regis
     it 'preloads tags' do
       expect(subject.first.association(:tags)).to be_loaded
     end
+  end
+
+  describe '.installable_statuses' do
+    it_behaves_like 'installable statuses'
   end
 
   describe '#versions' do

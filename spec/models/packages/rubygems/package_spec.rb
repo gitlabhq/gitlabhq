@@ -8,4 +8,8 @@ RSpec.describe Packages::Rubygems::Package, type: :model, feature_category: :pac
   describe 'associations' do
     it { is_expected.to have_one(:rubygems_metadatum).inverse_of(:package).class_name('Packages::Rubygems::Metadatum') }
   end
+
+  describe '.installable' do
+    it_behaves_like 'installable packages', :rubygems_package
+  end
 end

@@ -24,7 +24,6 @@ const defaultConfigHelpUrl =
 
 const provideData = {
   kasCheckVersion: '14.8.0',
-  projectPath: 'path/to/project',
 };
 const defaultProps = {
   agents: clusterAgents,

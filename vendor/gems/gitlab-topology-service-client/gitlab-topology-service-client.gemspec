@@ -13,7 +13,7 @@ Gem::Specification.new do |spec|
   spec.license = "MIT"
   spec.required_ruby_version = ">= 2.6.0"
 
-  spec.files = Dir['lib/**/*.rb']
+  spec.files = Dir["lib/**/*.rb"]
   spec.require_paths = ["lib"]
 
   spec.add_dependency "grpc"

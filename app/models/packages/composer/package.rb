@@ -5,8 +5,6 @@ module Packages
     class Package < ::Packages::Package
       self.allow_legacy_sti_class = true
 
-      INSTALLABLE_STATUSES = ::Packages::Package::INSTALLABLE_STATUSES
-
       has_one :composer_metadatum, inverse_of: :package, class_name: 'Packages::Composer::Metadatum'
 
       delegate :target_sha, to: :composer_metadatum

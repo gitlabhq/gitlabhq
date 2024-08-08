@@ -34,7 +34,12 @@ module Support
 
       return if without_factory_defaults.empty? && with_factory_defaults.empty?
 
-      RSpec.describe "Lint factories for #{described_class}", feature_category: :shared do
+      # Pass model spec location as a caller to top-level example group.
+      # This enables the use of the correct model spec location as opposed to
+      # this very shared examples file path when specs are retry.
+      model_location = example_group.metadata.values_at(:absolute_file_path, :line_number).join(':')
+
+      RSpec.describe "Lint factories for #{described_class}", feature_category: :shared, caller: [model_location] do
         include_examples 'Lint factories', with_factory_defaults, without_factory_defaults
       end
     end
@@ -76,7 +81,6 @@ module Support
         [:ci_job_artifact, :gzip],
         [:ci_job_artifact, :correct_checksum],
         [:dependency_proxy_blob, :remote_store],
-        [:discussion_note_on_personal_snippet, Any],
         [:environment, :non_playable],
         [:issue_customer_relations_contact, :for_contact],
         [:issue_customer_relations_contact, :for_issue],

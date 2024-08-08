@@ -6,3 +6,7 @@ repository https://gitlab.com/gitlab-org/cells/topology-service
 
 For more information about the Topology Service:
 https://handbook.gitlab.com/handbook/engineering/architecture/design-documents/cells/topology_service/
+
+## Update the Ruby Gem
+
+Please refer to [Cells - Topology Service Development](/doc/development/cells/topology_service.md)

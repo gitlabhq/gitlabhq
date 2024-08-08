@@ -252,6 +252,10 @@ class Packages::Package < ApplicationRecord
     end
   end
 
+  def self.installable_statuses
+    INSTALLABLE_STATUSES
+  end
+
   def versions
     project.packages
            .preload_pipelines
