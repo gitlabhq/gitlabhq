@@ -48,7 +48,7 @@ export default {
 };
 </script>
 <template>
-  <gl-disclosure-dropdown-item :item="item">
+  <gl-disclosure-dropdown-item :item="item" class="ci-job-component">
     <template #list-item>
       <div class="gl-flex -gl-my-2 gl-h-6">
         <job-name-component

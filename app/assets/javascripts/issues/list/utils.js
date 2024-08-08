@@ -3,7 +3,7 @@ import { TYPENAME_ITERATIONS_CADENCE } from '~/graphql_shared/constants';
 import { getIdFromGraphQLId, convertToGraphQLId } from '~/graphql_shared/utils';
 import { isPositiveInteger } from '~/lib/utils/number_utils';
 import { getParameterByName } from '~/lib/utils/url_utility';
-import { __ } from '~/locale';
+import { __, s__ } from '~/locale';
 import {
   FILTERED_SEARCH_TERM,
   OPERATOR_NOT,
@@ -33,6 +33,9 @@ import {
   EMOJI_THUMBSDOWN,
   WIDGET_TYPE_ASSIGNEES,
   WIDGET_TYPE_LABELS,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_TASK,
 } from '~/work_items/constants';
 import { STATUS_CLOSED, STATUS_OPEN } from '../constants';
 import {
@@ -71,6 +74,24 @@ import {
   WEIGHT_ASC,
   WEIGHT_DESC,
 } from './constants';
+
+/**
+ * Get the types of work items that should be displayed on issues lists.
+ * This should be consistent with `Issue::TYPES_FOR_LIST` in the backend.
+ *
+ * @returns {Array<string>}
+ */
+export const getDefaultWorkItemTypes = () => [
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_TASK,
+];
+
+export const getTypeTokenOptions = () => [
+  { icon: 'issue-type-issue', title: s__('WorkItem|Issue'), value: 'issue' },
+  { icon: 'issue-type-incident', title: s__('WorkItem|Incident'), value: 'incident' },
+  { icon: 'issue-type-task', title: s__('WorkItem|Task'), value: 'task' },
+];
 
 export const getInitialPageParams = (
   pageSize,

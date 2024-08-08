@@ -1,4 +1,4 @@
-import { __, s__ } from '~/locale';
+import { __ } from '~/locale';
 import {
   FILTER_ANY,
   FILTER_CURRENT,
@@ -34,12 +34,6 @@ import {
   TOKEN_TYPE_CREATED,
   TOKEN_TYPE_CLOSED,
 } from '~/vue_shared/components/filtered_search_bar/constants';
-import {
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_TEST_CASE,
-  WORK_ITEM_TYPE_ENUM_TASK,
-} from '~/work_items/constants';
 
 export const ISSUE_REFERENCE = /^#\d+$/;
 export const MAX_LIST_SIZE = 10;
@@ -142,40 +136,6 @@ export const wildcardFilterValues = [
   FILTER_CURRENT,
   FILTER_UPCOMING,
   FILTER_STARTED,
-];
-
-export const TYPE_TOKEN_EPIC_OPTION = {
-  icon: 'epic',
-  title: __('Epic'),
-  value: 'epic',
-};
-
-export const TYPE_TOKEN_OBJECTIVE_OPTION = {
-  icon: 'issue-type-objective',
-  title: s__('WorkItem|Objective'),
-  value: 'objective',
-};
-
-export const TYPE_TOKEN_KEY_RESULT_OPTION = {
-  icon: 'issue-type-keyresult',
-  title: s__('WorkItem|Key Result'),
-  value: 'key_result',
-};
-
-// This should be consistent with Issue::TYPES_FOR_LIST in the backend
-// https://gitlab.com/gitlab-org/gitlab/-/blob/1379c2d7bffe2a8d809f23ac5ef9b4114f789c07/app/models/issue.rb#L48
-export const defaultWorkItemTypes = [
-  WORK_ITEM_TYPE_ENUM_ISSUE,
-  WORK_ITEM_TYPE_ENUM_INCIDENT,
-  WORK_ITEM_TYPE_ENUM_TEST_CASE,
-  WORK_ITEM_TYPE_ENUM_TASK,
-];
-
-export const defaultTypeTokenOptions = [
-  { icon: 'issue-type-issue', title: s__('WorkItem|Issue'), value: 'issue' },
-  { icon: 'issue-type-incident', title: s__('WorkItem|Incident'), value: 'incident' },
-  { icon: 'issue-type-test-case', title: s__('WorkItem|Test case'), value: 'test_case' },
-  { icon: 'issue-type-task', title: s__('WorkItem|Task'), value: 'task' },
 ];
 
 export const filtersMap = {

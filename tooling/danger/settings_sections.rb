@@ -9,7 +9,7 @@ module Tooling
         changed_code_files = helper.changed_files(/\.(haml|vue)$/)
         return if changed_code_files.empty?
 
-        vc_regexp = /(SettingsBlockComponent|settings-block)/
+        vc_regexp = /(SettingsBlockComponent|settings-block|SettingsSectionComponent|settings-section)/
         lines_with_matches = filter_changed_lines(changed_code_files, vc_regexp)
         return if lines_with_matches.empty?
 
@@ -22,6 +22,7 @@ module Tooling
             - If you removed a section, make sure to also remove it from the files above.
             - If you changed a section's id, please update it also in the files above.
             - If you just moved code around within the same page, there is nothing to do.
+            - If you are unsure what to do, please reach out to ~"group::personal productivity".
 
         MARKDOWN
 
@@ -40,7 +41,9 @@ module Tooling
       def filter_changed_lines(files, pattern)
         files_with_lines = {}
         files.each do |file|
-          next if file.start_with?('spec/', 'ee/spec/', 'qa/')
+          next if file.start_with?('spec/', 'ee/spec/', 'qa/',
+            'app/views/admin', 'ee/app/views/admin',
+            'app/views/profiles', 'ee/app/views/profiles')
 
           matching_changed_lines = helper.changed_lines(file).select { |line| line =~ pattern }
           next unless matching_changed_lines.any?

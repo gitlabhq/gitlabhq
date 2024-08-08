@@ -7,6 +7,7 @@
 
     window.gl.mrWidgetData.artifacts_endpoint = '#{downloadable_artifacts_project_pipeline_path(@project, artifacts_endpoint_placeholder, format: :json)}';
     window.gl.mrWidgetData.artifacts_endpoint_placeholder = '#{artifacts_endpoint_placeholder}';
+    window.gl.mrWidgetData.pipeline_etag = '#{graphql_etag_pipeline_sha_path(@merge_request.diff_head_sha)}';
     window.gl.mrWidgetData.squash_before_merge_help_path = '#{help_page_path("user/project/merge_requests/squash_and_merge")}';
     window.gl.mrWidgetData.ci_troubleshooting_docs_path = '#{help_page_path('ci/debugging.md')}';
     window.gl.mrWidgetData.mr_troubleshooting_docs_path = '#{help_page_path('user/project/merge_requests/reviews/index.md', anchor: 'troubleshooting')}';

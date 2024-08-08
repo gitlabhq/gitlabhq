@@ -45,7 +45,9 @@ class MigrationSchemaValidator
 
     git_command = "git diff #{diff_target} -- #{FILENAME}"
     base_message = "rollback of added migrations does not revert #{FILENAME} to previous state, " \
-      "please investigate. Apply the '#{SKIP_VALIDATION_LABEL}' label to skip this check if needed"
+      "please investigate. Apply the '#{SKIP_VALIDATION_LABEL}' label to skip this check if needed." \
+      "If you are unsure why this job is failing for your MR, then please refer to this page: " \
+      "https://docs.gitlab.com/ee/development/database/dbcheck-migrations-job.html#false-positives"
 
     validate_clean_output!(git_command, base_message)
   end

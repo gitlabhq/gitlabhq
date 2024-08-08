@@ -101,7 +101,7 @@ describeSkipVue3(skipReason, () => {
   const findRunPipelineButton = () => wrapper.findByTestId('run-pipeline-button');
   const findCleanCacheButton = () => wrapper.findByTestId('clear-cache-button');
   const findStagesDropdownToggle = () =>
-    wrapper.find('.mini-pipeline-graph-dropdown [data-testid="base-dropdown-toggle"]');
+    wrapper.find('[data-testid="pipeline-mini-graph-dropdown-toggle"]');
   const findPipelineUrlLinks = () => wrapper.findAll('[data-testid="pipeline-url-link"]');
 
   const createComponent = ({ props = {}, withPermissions = true } = {}) => {

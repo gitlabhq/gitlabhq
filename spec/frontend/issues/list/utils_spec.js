@@ -18,12 +18,51 @@ import {
   convertToSearchQuery,
   convertToUrlParams,
   deriveSortKey,
+  getDefaultWorkItemTypes,
   getFilterTokens,
   getInitialPageParams,
   getSortOptions,
+  getTypeTokenOptions,
   groupMultiSelectFilterTokens,
 } from '~/issues/list/utils';
 import { DEFAULT_PAGE_SIZE } from '~/vue_shared/issuable/list/constants';
+import {
+  WORK_ITEM_TYPE_ENUM_INCIDENT,
+  WORK_ITEM_TYPE_ENUM_ISSUE,
+  WORK_ITEM_TYPE_ENUM_TASK,
+} from '~/work_items/constants';
+
+describe('getDefaultWorkItemTypes', () => {
+  it('returns default work item types', () => {
+    const types = getDefaultWorkItemTypes({
+      hasEpicsFeature: true,
+      hasOkrsFeature: true,
+      hasQualityManagementFeature: true,
+    });
+
+    expect(types).toEqual([
+      WORK_ITEM_TYPE_ENUM_ISSUE,
+      WORK_ITEM_TYPE_ENUM_INCIDENT,
+      WORK_ITEM_TYPE_ENUM_TASK,
+    ]);
+  });
+});
+
+describe('getTypeTokenOptions', () => {
+  it('returns options for the Type token', () => {
+    const options = getTypeTokenOptions({
+      hasEpicsFeature: true,
+      hasOkrsFeature: true,
+      hasQualityManagementFeature: true,
+    });
+
+    expect(options).toEqual([
+      { icon: 'issue-type-issue', title: 'Issue', value: 'issue' },
+      { icon: 'issue-type-incident', title: 'Incident', value: 'incident' },
+      { icon: 'issue-type-task', title: 'Task', value: 'task' },
+    ]);
+  });
+});
 
 describe('getInitialPageParams', () => {
   it('returns page params with a default page size when no arguments are given', () => {

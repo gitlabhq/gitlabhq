@@ -59,7 +59,6 @@ import {
   WORK_ITEM_TYPE_ENUM_INCIDENT,
   WORK_ITEM_TYPE_ENUM_ISSUE,
   WORK_ITEM_TYPE_ENUM_TASK,
-  WORK_ITEM_TYPE_ENUM_TEST_CASE,
 } from '~/work_items/constants';
 import {
   TOKEN_TYPE_ASSIGNEE,
@@ -117,6 +116,8 @@ describe('CE IssuesListApp component', () => {
     hasIssuableHealthStatusFeature: true,
     hasIssueWeightsFeature: true,
     hasIterationsFeature: true,
+    hasOkrsFeature: false,
+    hasQualityManagementFeature: false,
     hasScopedLabelsFeature: true,
     initialEmail: 'email@example.com',
     initialSort: CREATED_DESC,
@@ -1059,11 +1060,10 @@ describe('CE IssuesListApp component', () => {
       wrapper = mountComponent();
     });
 
-    it('fetches issue, incident, test case, and task types', () => {
+    it('fetches default work item types', () => {
       const types = [
         WORK_ITEM_TYPE_ENUM_ISSUE,
         WORK_ITEM_TYPE_ENUM_INCIDENT,
-        WORK_ITEM_TYPE_ENUM_TEST_CASE,
         WORK_ITEM_TYPE_ENUM_TASK,
       ];
 

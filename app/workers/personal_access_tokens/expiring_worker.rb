@@ -123,15 +123,6 @@ module PersonalAccessTokens
 
     def deliver_user_notifications(user, token_names)
       notification_service.access_token_about_to_expire(user, token_names)
-      log_info("Notifying User about expiring tokens", user)
-    end
-
-    def log_info(message_text, user)
-      Gitlab::AppLogger.info(
-        message: message_text,
-        class: self.class,
-        user_id: user.id
-      )
     end
 
     def log_exception(ex, user)

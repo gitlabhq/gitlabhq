@@ -1,11 +1,12 @@
 <script>
-import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { uniqueId } from 'lodash';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { __ } from '~/locale';
 import { scrollToTargetOnResize } from '~/lib/utils/resize_observer';
 import { TYPENAME_DISCUSSION, TYPENAME_NOTE } from '~/graphql_shared/constants';
 import SystemNote from '~/work_items/components/notes/system_note.vue';
+import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import {
   i18n,
@@ -34,19 +35,14 @@ import workItemNotesByIidQuery from '../graphql/notes/work_item_notes_by_iid.que
 import WorkItemAddNote from './notes/work_item_add_note.vue';
 
 export default {
-  loader: {
-    repeat: 10,
-    width: 1000,
-    height: 40,
-  },
   components: {
-    GlSkeletonLoader,
     GlModal,
     SystemNote,
     WorkItemAddNote,
     WorkItemDiscussion,
     WorkItemNotesActivityHeader,
     WorkItemHistoryOnlyFilterNote,
+    WorkItemNotesLoading,
   },
   inject: ['isGroup'],
   props: {
@@ -361,18 +357,7 @@ export default {
       @changeSort="changeNotesSortOrder"
       @changeFilter="filterDiscussions"
     />
-    <div v-if="initialLoading" class="gl-mt-5">
-      <gl-skeleton-loader
-        v-for="i in $options.loader.repeat"
-        :key="i"
-        :width="1000"
-        :height="$options.loader.height"
-        preserve-aspect-ratio="xMinYMax meet"
-      >
-        <circle cx="20" cy="20" r="16" />
-        <rect width="950" x="45" y="15" height="10" rx="4" />
-      </gl-skeleton-loader>
-    </div>
+    <work-item-notes-loading v-if="initialLoading" class="gl-mt-5" />
     <div v-else class="issuable-discussion gl-mb-5 gl-clearfix!">
       <template v-if="!initialLoading">
         <div v-if="formAtTop && !commentsDisabled" class="js-comment-form">
@@ -385,6 +370,7 @@ export default {
             />
           </ul>
         </div>
+        <work-item-notes-loading v-if="formAtTop && isLoadingMore" />
         <ul class="notes main-notes-list timeline">
           <template v-for="discussion in notesArray">
             <system-note
@@ -414,12 +400,12 @@ export default {
               />
             </template>
           </template>
-
           <work-item-history-only-filter-note
             v-if="commentsDisabled"
             @changeFilter="filterDiscussions"
           />
         </ul>
+        <work-item-notes-loading v-if="!formAtTop && isLoadingMore" />
         <div v-if="!formAtTop && !commentsDisabled" class="js-comment-form">
           <ul class="notes notes-form timeline">
             <work-item-add-note
@@ -430,19 +416,6 @@ export default {
             />
           </ul>
         </div>
-      </template>
-
-      <template v-if="isLoadingMore">
-        <gl-skeleton-loader
-          v-for="index in $options.loader.repeat"
-          :key="index"
-          :width="$options.loader.width"
-          :height="$options.loader.height"
-          preserve-aspect-ratio="xMinYMax meet"
-        >
-          <circle cx="20" cy="20" r="16" />
-          <rect width="500" x="45" y="15" height="10" rx="4" />
-        </gl-skeleton-loader>
       </template>
     </div>
     <gl-modal

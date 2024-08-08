@@ -1,4 +1,4 @@
-import { GlSkeletonLoader, GlModal } from '@gitlab/ui';
+import { GlModal } from '@gitlab/ui';
 import { shallowMount } from '@vue/test-utils';
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
@@ -10,6 +10,7 @@ import WorkItemNotes from '~/work_items/components/work_item_notes.vue';
 import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussion.vue';
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
+import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
 import groupWorkItemNotesByIidQuery from '~/work_items/graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
@@ -59,7 +60,7 @@ describe('WorkItemNotes component', () => {
 
   const findAllSystemNotes = () => wrapper.findAllComponents(SystemNote);
   const findAllListItems = () => wrapper.findAll('ul.timeline > *');
-  const findSkeletonLoader = () => wrapper.findComponent(GlSkeletonLoader);
+  const findNotesLoading = () => wrapper.findComponent(WorkItemNotesLoading);
   const findActivityHeader = () => wrapper.findComponent(WorkItemNotesActivityHeader);
   const findSystemNoteAtIndex = (index) => findAllSystemNotes().at(index);
   const findAllWorkItemCommentNotes = () => wrapper.findAllComponents(WorkItemDiscussion);
@@ -136,7 +137,7 @@ describe('WorkItemNotes component', () => {
 
   describe('when notes are loading', () => {
     it('renders skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findNotesLoading().exists()).toBe(true);
     });
 
     it('does not render system notes', () => {
@@ -146,7 +147,7 @@ describe('WorkItemNotes component', () => {
 
   describe('when notes have been loaded', () => {
     it('does not render skeleton loader', () => {
-      expect(findSkeletonLoader().exists()).toBe(true);
+      expect(findNotesLoading().exists()).toBe(true);
     });
 
     it('renders system notes to the length of the response', async () => {

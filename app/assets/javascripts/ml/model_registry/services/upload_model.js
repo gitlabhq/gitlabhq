@@ -16,11 +16,11 @@ export const uploadModel = ({
   }
 
   if (subfolder && subfolder.includes(' ')) {
-    return Promise.reject(new Error(s__('Mlmodelregistry|Subfolder cannot contain spaces')));
+    return Promise.reject(new Error(s__('MlModelRegistry|Subfolder cannot contain spaces')));
   }
 
   if (!maxAllowedFileSize) {
-    return Promise.resolve(s__('Mlmodelregistry|Provide the max allowed file size'));
+    return Promise.resolve(s__('MlModelRegistry|Provide the max allowed file size'));
   }
 
   if (file.size > maxAllowedFileSize) {

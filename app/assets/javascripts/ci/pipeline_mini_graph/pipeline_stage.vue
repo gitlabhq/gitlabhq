@@ -113,7 +113,7 @@ export default {
 
 <template>
   <gl-disclosure-dropdown
-    data-testid="pipeline-stage"
+    data-testid="pipeline-mini-graph-dropdown"
     :aria-label="stageAriaLabel(stage.name)"
     @hidden="onHideDropdown"
     @shown="onShowDropdown"
@@ -121,6 +121,7 @@ export default {
     <template #toggle>
       <gl-button
         v-gl-tooltip.hover="dropdownTooltipTitle"
+        data-testid="pipeline-mini-graph-dropdown-toggle"
         :title="dropdownTooltipTitle"
         class="gl-rounded-full!"
         variant="link"
@@ -144,8 +145,8 @@ export default {
     </div>
     <ul
       v-else
-      class="gl-overflow-y-auto gl-p-0"
-      data-testid="pipeline-stage-dropdown-menu-list"
+      class="gl-overflow-y-auto gl-m-0 gl-p-0"
+      data-testid="pipeline-mini-graph-dropdown-menu-list"
       @click.stop
     >
       <job-item

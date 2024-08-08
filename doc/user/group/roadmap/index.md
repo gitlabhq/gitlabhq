@@ -172,7 +172,7 @@ DETAILS:
 
 If an epic is [blocked by another epic](../epics/linked_epics.md#blocking-epics), an icon appears next to its title to indicate its blocked status.
 
-When you hover over the blocked icon (**{issue-block}**), a detailed information popover is displayed.
+When you hover over the blocked icon (**{entity-blocked}**), a detailed information popover is displayed.
 
 ![Blocked epics](img/roadmap_blocked_icon_v15_5.png)
 

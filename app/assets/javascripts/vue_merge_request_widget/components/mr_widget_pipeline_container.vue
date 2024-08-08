@@ -81,6 +81,8 @@ export default {
     <mr-widget-pipeline
       :pipeline="pipeline"
       :pipeline-coverage-delta="mr.pipelineCoverageDelta"
+      :pipeline-etag="mr.pipelineEtag"
+      :pipeline-iid="mr.securityReportsPipelineIid"
       :builds-with-coverage="mr.buildsWithCoverage"
       :ci-status="ciStatus"
       :has-ci="mr.hasCI"

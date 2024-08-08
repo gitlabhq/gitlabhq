@@ -65,6 +65,9 @@ describe('WorkItemsListApp component', () => {
       provide: {
         autocompleteAwardEmojisPath: 'autocomplete/award/emojis/path',
         fullPath: 'full/path',
+        hasEpicsFeature: false,
+        hasOkrsFeature: false,
+        hasQualityManagementFeature: false,
         initialSort: CREATED_DESC,
         isGroup: true,
         isSignedIn: true,
@@ -128,7 +131,7 @@ describe('WorkItemsListApp component', () => {
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
-        types: [null],
+        types: ['ISSUE', 'INCIDENT', 'TASK'],
       });
     });
   });
@@ -163,7 +166,7 @@ describe('WorkItemsListApp component', () => {
         sort: CREATED_DESC,
         state: STATUS_OPEN,
         firstPageSize: 20,
-        types: [type],
+        types: type,
       });
     });
   });
@@ -295,7 +298,7 @@ describe('WorkItemsListApp component', () => {
           authorUsername: 'homer',
           in: 'TITLE',
           firstPageSize: 20,
-          types: [null],
+          types: ['ISSUE', 'INCIDENT', 'TASK'],
         });
       });
     });

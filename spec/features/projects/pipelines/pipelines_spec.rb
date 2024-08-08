@@ -546,7 +546,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           create(:ci_build, :pending, pipeline: pipeline, stage: 'build', name: 'build')
         end
 
-        dropdown_selector = '[data-testid="mini-pipeline-graph-dropdown"]'
+        dropdown_selector = '[data-testid="pipeline-mini-graph-dropdown"]'
 
         before do
           visit_project_pipelines
@@ -559,7 +559,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
 
         context 'when clicking a stage badge', :js do
           it 'opens a dropdown' do
-            find_by_testid('mini-pipeline-graph-dropdown-toggle').click
+            find_by_testid('pipeline-mini-graph-dropdown-toggle').click
 
             wait_for_requests
 
@@ -567,7 +567,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'is possible to cancel pending build' do
-            find_by_testid('mini-pipeline-graph-dropdown-toggle').click
+            find_by_testid('pipeline-mini-graph-dropdown-toggle').click
 
             wait_for_requests
 
@@ -583,7 +583,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
             end
 
             it 'is possible to play manual build' do
-              find_by_testid('mini-pipeline-graph-dropdown-toggle').click
+              find_by_testid('pipeline-mini-graph-dropdown-toggle').click
 
               wait_for_requests
 
@@ -594,7 +594,7 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
               find_by_testid('ci-action-button').click
               wait_for_requests
 
-              element = find_by_testid('mini-pipeline-graph-dropdown-toggle')
+              element = find_by_testid('pipeline-mini-graph-dropdown-toggle')
               expect(element['aria-expanded']).to eq "true"
               expect(element).to be_visible
             end
@@ -607,11 +607,11 @@ RSpec.describe 'Pipelines', :js, feature_category: :continuous_integration do
           end
 
           it 'displays the failure reason' do
-            find_by_testid('mini-pipeline-graph-dropdown-toggle').click
+            find_by_testid('pipeline-mini-graph-dropdown-toggle').click
 
             wait_for_requests
 
-            within_testid('mini-pipeline-graph-dropdown') do
+            within_testid('pipeline-mini-graph-dropdown') do
               build_element = page.find('.ci-job-component [data-testid="job-name"]')
               expect(build_element['title']).to eq('Failed - (unknown failure)')
             end

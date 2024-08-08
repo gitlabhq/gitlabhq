@@ -116,7 +116,7 @@ describe('IssuableBlockedIcon', () => {
 
   it.each`
     mockIssuable | issuableType  | expectedIcon
-    ${mockIssue} | ${TYPE_ISSUE} | ${'issue-block'}
+    ${mockIssue} | ${TYPE_ISSUE} | ${'entity-blocked'}
     ${mockEpic}  | ${TYPE_EPIC}  | ${'entity-blocked'}
   `(
     'should render blocked icon for $issuableType',

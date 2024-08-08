@@ -12,7 +12,7 @@ RSpec.describe Tooling::Danger::SettingsSections, feature_category: :tooling do
 
   let(:fake_danger) { DangerSpecHelper.fake_danger.include(described_class) }
   let(:matching_changed_files) { ['app/views/foo/bar.html.haml', 'app/assets/js/foo/bar.vue'] }
-  let(:changed_lines) { ['-render SettingsBlockComponent.new(id: "foo") do', '<settings-block id="foo">'] }
+  let(:changed_lines) { ['-render SettingsBlockComponent.new(id: "foo") do', '<settings-section id="foo">'] }
   let(:stable_branch?) { false }
 
   before do
@@ -48,10 +48,19 @@ RSpec.describe Tooling::Danger::SettingsSections, feature_category: :tooling do
     end
   end
 
+  context 'when some files match the pattern but in ignored folders' do
+    let(:matching_changed_files) { ['app/views/admin/foo/bar.html.haml', 'ee/app/views/profiles/foo/bar.html.haml'] }
+
+    it 'does not write any markdown' do
+      expect(settings_section_check).not_to receive(:markdown)
+      settings_section_check.check!
+    end
+  end
+
   it 'adds a new markdown section listing every matching line' do
     expect(settings_section_check).to receive(:markdown).with(/Searchable setting sections/)
     expect(settings_section_check).to receive(:markdown).with(/SettingsBlock/)
-    expect(settings_section_check).to receive(:markdown).with(/settings-block/)
+    expect(settings_section_check).to receive(:markdown).with(/settings-section/)
     settings_section_check.check!
   end
 end

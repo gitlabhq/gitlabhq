@@ -119,7 +119,7 @@ export default {
       );
     },
     blockIcon() {
-      return this.issuableType === TYPE_ISSUE ? 'issue-block' : 'entity-blocked';
+      return this.issuableType === TYPE_ISSUE ? 'entity-blocked' : 'entity-blocked';
     },
     glIconId() {
       return `blocked-icon-${this.uniqueId}`;

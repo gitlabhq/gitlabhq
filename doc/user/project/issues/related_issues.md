@@ -79,7 +79,7 @@ DETAILS:
 When you [add a linked issue](#add-a-linked-issue), you can show that it **blocks** or
 **is blocked by** another issue.
 
-Issues blocked by other issues have an icon (**{issue-block}**) next to their title, shown in the
+Issues blocked by other issues have an icon (**{entity-blocked}**) next to their title, shown in the
 issue lists and [boards](../issue_board.md).
 The icon disappears when the blocking issue is closed or their relationship is changed or
 [removed](#remove-a-linked-issue).

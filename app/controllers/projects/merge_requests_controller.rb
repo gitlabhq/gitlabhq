@@ -42,6 +42,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     push_frontend_feature_flag(:mr_experience_survey, project)
     push_frontend_feature_flag(:ci_job_failures_in_mr, project)
     push_frontend_feature_flag(:mr_pipelines_graphql, project)
+    push_frontend_feature_flag(:ci_graphql_pipeline_mini_graph, project)
     push_frontend_feature_flag(:notifications_todos_buttons, current_user)
     push_frontend_feature_flag(:pinned_file, project)
     push_frontend_feature_flag(:reviewer_assign_drawer, current_user)

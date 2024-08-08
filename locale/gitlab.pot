@@ -34065,6 +34065,9 @@ msgstr ""
 msgid "MlModelRegistry|Provide a subfolder name to organize your artifacts. Entering an existing subfolder's name will place artifacts in the existing folder"
 msgstr ""
 
+msgid "MlModelRegistry|Provide the max allowed file size"
+msgstr ""
+
 msgid "MlModelRegistry|Setting up the client"
 msgstr ""
 
@@ -34123,12 +34126,6 @@ msgid "MlModelRegistry|· %d version"
 msgid_plural "MlModelRegistry|· %d versions"
 msgstr[0] ""
 msgstr[1] ""
-
-msgid "Mlmodelregistry|Provide the max allowed file size"
-msgstr ""
-
-msgid "Mlmodelregistry|Subfolder cannot contain spaces"
-msgstr ""
 
 msgid "Mock an external CI integration."
 msgstr ""

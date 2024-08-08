@@ -387,7 +387,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let_it_be(:group) { create(:group, parent: parent_group) }
 
       subject(:notification_service) do
-        notification.bot_resource_access_token_about_to_expire(project_bot, [expiring_token])
+        notification.bot_resource_access_token_about_to_expire(project_bot, expiring_token)
       end
 
       context 'when the resource is a group' do
@@ -403,17 +403,35 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             have_enqueued_email(
               owner1,
               project_bot.resource_bot_resource,
-              [expiring_token],
+              expiring_token,
               mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
                 owner2,
                 project_bot.resource_bot_resource,
-                [expiring_token],
+                expiring_token,
                 mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
           )
+        end
+
+        it "logs notication sent message" do
+          expect(Gitlab::AppLogger).to(
+            receive(:info)
+              .with({ message: "Notifying resource access token owner about expiring tokens",
+                      class: described_class,
+                      user_id: owner1.id })
+          )
+
+          expect(Gitlab::AppLogger).to(
+            receive(:info)
+            .with({ message: "Notifying resource access token owner about expiring tokens",
+              class: described_class,
+              user_id: owner2.id })
+          )
+
+          notification_service
         end
 
         it 'does not send an email to group maintainer' do
@@ -421,7 +439,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             have_enqueued_email(
               maintainer,
               project_bot.resource_bot_resource,
-              [expiring_token],
+              expiring_token,
               mail: "bot_resource_access_token_about_to_expire_email"
             )
           )
@@ -477,13 +495,13 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
             have_enqueued_email(
               maintainer,
               project_bot.resource_bot_resource,
-              [expiring_token],
+              expiring_token,
               mail: "bot_resource_access_token_about_to_expire_email"
             ).and(
               have_enqueued_email(
                 project.owner,
                 project_bot.resource_bot_resource,
-                [expiring_token],
+                expiring_token,
                 mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
@@ -501,7 +519,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               have_enqueued_email(
                 maintainer,
                 project_bot.resource_bot_resource,
-                [expiring_token],
+                expiring_token,
                 mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
@@ -510,7 +528,7 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
               have_enqueued_email(
                 project.owner,
                 project_bot.resource_bot_resource,
-                [expiring_token],
+                expiring_token,
                 mail: "bot_resource_access_token_about_to_expire_email"
               )
             )
@@ -523,10 +541,21 @@ RSpec.describe NotificationService, :mailer, feature_category: :team_planning do
       let_it_be(:user) { create(:user) }
       let_it_be(:pat) { create(:personal_access_token, user: user, expires_at: 5.days.from_now) }
 
-      subject { notification.access_token_about_to_expire(user, [pat.name]) }
+      subject(:notification_service) { notification.access_token_about_to_expire(user, [pat.name]) }
 
       it 'sends email to the token owner' do
-        expect { subject }.to have_enqueued_email(user, [pat.name], mail: "access_token_about_to_expire_email")
+        expect { notification_service }.to have_enqueued_email(user, [pat.name], mail: "access_token_about_to_expire_email")
+      end
+
+      it "logs notication sent message" do
+        expect(Gitlab::AppLogger).to(
+          receive(:info)
+            .with({ message: "Notifying User about expiring tokens",
+                    class: described_class,
+                    user_id: user.id })
+        )
+
+        notification_service
       end
     end
 

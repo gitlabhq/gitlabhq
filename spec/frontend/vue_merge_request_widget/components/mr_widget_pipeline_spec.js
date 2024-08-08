@@ -13,6 +13,7 @@ import { createAlert } from '~/alert';
 import { HTTP_STATUS_OK } from '~/lib/utils/http_status';
 import MRWidgetPipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline.vue';
 import LegacyPipelineMiniGraph from '~/ci/pipeline_mini_graph/legacy_pipeline_mini_graph/legacy_pipeline_mini_graph.vue';
+import PipelineMiniGraph from '~/ci/pipeline_mini_graph/pipeline_mini_graph.vue';
 import { SUCCESS } from '~/vue_merge_request_widget/constants';
 import { localeDateFormat } from '~/lib/utils/datetime/locale_dateformat';
 import mergeRequestEventTypeQuery from '~/vue_merge_request_widget/queries/merge_request_event_type.query.graphql';
@@ -29,6 +30,8 @@ describe('MRWidgetPipeline', () => {
 
   const defaultProps = {
     pipeline: mockData.pipeline,
+    pipelineEtag: '/api/graphql:pipelines/sha/a3cf305c10be3fafdd89b12cb1c389e6bde45875',
+    pipelineIid: '12',
     ciStatus: SUCCESS,
     hasCi: true,
     mrTroubleshootingDocsPath: 'help',
@@ -55,6 +58,7 @@ describe('MRWidgetPipeline', () => {
   const findPipelineCoverageDeltaTooltipText = () =>
     wrapper.findByTestId('pipeline-coverage-delta-tooltip').text();
   const findLegacyPipelineMiniGraph = () => wrapper.findComponent(LegacyPipelineMiniGraph);
+  const findPipelineMiniGraph = () => wrapper.findComponent(PipelineMiniGraph);
   const findMonitoringPipelineMessage = () => wrapper.findByTestId('monitoring-pipeline-message');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
   const findRetargetedMessage = () => wrapper.findByTestId('retargeted-message');
@@ -62,7 +66,11 @@ describe('MRWidgetPipeline', () => {
 
   const mockArtifactsRequest = () => new MockAdapter(axios).onGet().reply(HTTP_STATUS_OK, []);
 
-  const createWrapper = (props = {}, mountFn = shallowMount) => {
+  const createWrapper = (
+    props = {},
+    mountFn = shallowMount,
+    ciGraphqlPipelineMiniGraph = false,
+  ) => {
     const apolloProvider = createMockApollo([
       [mergeRequestEventTypeQuery, mergeRequestEventTypeQueryMock],
     ]);
@@ -72,6 +80,11 @@ describe('MRWidgetPipeline', () => {
         propsData: {
           ...defaultProps,
           ...props,
+        },
+        provide: {
+          glFeatures: {
+            ciGraphqlPipelineMiniGraph,
+          },
         },
         apolloProvider,
       }),
@@ -188,6 +201,13 @@ describe('MRWidgetPipeline', () => {
           });
         },
       );
+    });
+
+    describe('feature flag behavior', () => {
+      it('should render the graphql pipeline mini graph', () => {
+        createWrapper({}, shallowMount, true);
+        expect(findPipelineMiniGraph().exists()).toBe(true);
+      });
     });
   });
 

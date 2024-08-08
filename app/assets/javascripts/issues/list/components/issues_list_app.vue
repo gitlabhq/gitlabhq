@@ -16,6 +16,20 @@ import IssueCardStatistics from 'ee_else_ce/issues/list/components/issue_card_st
 import IssueCardTimeInfo from 'ee_else_ce/issues/list/components/issue_card_time_info.vue';
 import getIssuesQuery from 'ee_else_ce/issues/list/queries/get_issues.query.graphql';
 import getIssuesCountsQuery from 'ee_else_ce/issues/list/queries/get_issues_counts.query.graphql';
+import {
+  convertToApiParams,
+  convertToSearchQuery,
+  convertToUrlParams,
+  deriveSortKey,
+  getDefaultWorkItemTypes,
+  getFilterTokens,
+  getInitialPageParams,
+  getSortOptions,
+  getTypeTokenOptions,
+  groupMultiSelectFilterTokens,
+  mapWorkItemWidgetsToIssueFields,
+  updateUpvotesCount,
+} from 'ee_else_ce/issues/list/utils';
 import LocalStorageSync from '~/vue_shared/components/local_storage_sync.vue';
 import { createAlert, VARIANT_INFO } from '~/alert';
 import { TYPENAME_USER } from '~/graphql_shared/constants';
@@ -74,8 +88,6 @@ import { WORK_ITEM_TYPE_ENUM_OBJECTIVE } from '~/work_items/constants';
 import WorkItemDrawer from '~/work_items/components/work_item_drawer.vue';
 import {
   CREATED_DESC,
-  defaultTypeTokenOptions,
-  defaultWorkItemTypes,
   i18n,
   ISSUE_REFERENCE,
   ISSUES_GRID_VIEW_KEY,
@@ -96,18 +108,6 @@ import eventHub from '../eventhub';
 import reorderIssuesMutation from '../queries/reorder_issues.mutation.graphql';
 import searchLabelsQuery from '../queries/search_labels.query.graphql';
 import setSortPreferenceMutation from '../queries/set_sort_preference.mutation.graphql';
-import {
-  convertToApiParams,
-  convertToSearchQuery,
-  convertToUrlParams,
-  deriveSortKey,
-  getFilterTokens,
-  getInitialPageParams,
-  getSortOptions,
-  groupMultiSelectFilterTokens,
-  mapWorkItemWidgetsToIssueFields,
-  updateUpvotesCount,
-} from '../utils';
 import { hasNewIssueDropdown } from '../has_new_issue_dropdown_mixin';
 import EmptyStateWithAnyIssues from './empty_state_with_any_issues.vue';
 import EmptyStateWithoutAnyIssues from './empty_state_without_any_issues.vue';
@@ -169,6 +169,8 @@ export default {
     'hasIssuableHealthStatusFeature',
     'hasIssueDateFilterFeature',
     'hasIssueWeightsFeature',
+    'hasOkrsFeature',
+    'hasQualityManagementFeature',
     'hasScopedLabelsFeature',
     'initialEmail',
     'initialSort',
@@ -184,16 +186,6 @@ export default {
   ],
   props: {
     eeSearchTokens: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    eeTypeTokenOptions: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
-    eeWorkItemTypes: {
       type: Array,
       required: false,
       default: () => [],
@@ -297,10 +289,10 @@ export default {
       return this.isProject ? WORKSPACE_PROJECT : WORKSPACE_GROUP;
     },
     defaultWorkItemTypes() {
-      return [...defaultWorkItemTypes, ...this.eeWorkItemTypes];
-    },
-    typeTokenOptions() {
-      return [...defaultTypeTokenOptions, ...this.eeTypeTokenOptions];
+      return getDefaultWorkItemTypes({
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
     },
     hasSearch() {
       return Boolean(
@@ -533,6 +525,12 @@ export default {
         [STATUS_CLOSED]: closedIssues?.count,
         [STATUS_ALL]: allIssues?.count,
       };
+    },
+    typeTokenOptions() {
+      return getTypeTokenOptions({
+        hasOkrsFeature: this.hasOkrsFeature,
+        hasQualityManagementFeature: this.hasQualityManagementFeature,
+      });
     },
     currentTabCount() {
       return this.tabCounts[this.state] ?? 0;
