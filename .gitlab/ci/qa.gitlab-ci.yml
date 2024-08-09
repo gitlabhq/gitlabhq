@@ -152,6 +152,7 @@ e2e:package-and-test-ee:
   variables:
     RELEASE: "${REGISTRY_HOST}/${REGISTRY_GROUP}/build/omnibus-gitlab-mirror/gitlab-ee:${RELEASE_IMAGE_TAG}"
     QA_RUN_TYPE: e2e-package-and-test
+    # If renaming the child pipeline, please update any references to it in the triage-ops project.
     PIPELINE_NAME: E2E Omnibus GitLab EE
 
 # Same as e2e:package-and-test-ee but runs automatically after manual:e2e-test-pipeline-generate

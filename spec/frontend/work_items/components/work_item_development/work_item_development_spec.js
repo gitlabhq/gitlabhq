@@ -23,7 +23,11 @@ describe('WorkItemDevelopment CE', () => {
   let wrapper;
   let mockApollo;
 
-  const workItem = workItemResponseFactory({ developmentWidgetPresent: true });
+  const workItem = workItemResponseFactory({ developmentWidgetPresent: true, canUpdate: true });
+  const noUpdateWorkItem = workItemResponseFactory({
+    developmentWidgetPresent: true,
+    canUpdate: false,
+  });
   const workItemWithOneMR = workItemResponseFactory({
     developmentWidgetPresent: true,
     developmentItems: workItemDevelopmentFragmentResponse([workItemDevelopmentNodes[0]], true),
@@ -39,6 +43,16 @@ describe('WorkItemDevelopment CE', () => {
         __typename: 'Project',
         id: 'gid://gitlab/Project/1',
         workItem: workItem.data.workItem,
+      },
+    },
+  };
+
+  const noUpdateProjectWorkItemResponseWithMRList = {
+    data: {
+      workspace: {
+        __typename: 'Project',
+        id: 'gid://gitlab/Project/1',
+        workItem: noUpdateWorkItem.data.workItem,
       },
     },
   };
@@ -78,6 +92,7 @@ describe('WorkItemDevelopment CE', () => {
 
   const successQueryHandler = jest.fn().mockResolvedValue(projectWorkItemResponseWithMRList);
   const workItemWithEmptyMRList = workItemResponseFactory({
+    canUpdate: true,
     developmentWidgetPresent: true,
     developmentItems: workItemDevelopmentFragmentResponse([]),
   });
@@ -118,7 +133,7 @@ describe('WorkItemDevelopment CE', () => {
 
   const createComponent = ({
     isGroup = false,
-    canUpdate = true,
+    workItemId = 'gid://gitlab/WorkItem/1',
     workItemIid = '1',
     workItemFullPath = 'full-path',
     workItemQueryHandler = successQueryHandler,
@@ -133,7 +148,7 @@ describe('WorkItemDevelopment CE', () => {
         GlTooltip: createMockDirective('gl-tooltip'),
       },
       propsData: {
-        canUpdate,
+        workItemId,
         workItemIid,
         workItemFullPath,
       },
@@ -156,21 +171,35 @@ describe('WorkItemDevelopment CE', () => {
   const findRelationshipList = () => wrapper.findComponent(WorkItemDevelopmentRelationshipList);
 
   describe('Default', () => {
-    beforeEach(() => {
+    it('should show the widget label', async () => {
       createComponent();
-    });
+      await waitForPromises();
 
-    it('should show the widget label', () => {
       expect(findLabel().exists()).toBe(true);
     });
 
-    it('should render the add button when `canUpdate` is true', () => {
+    it('should render the add button when `canUpdate` is true and `workItemsAlpha` is on', async () => {
+      createComponent({ workItemsAlphaEnabled: true });
+      await waitForPromises();
+
       expect(findAddButton().exists()).toBe(true);
       expect(findAddMoreIcon().exists()).toBe(true);
     });
 
-    it('should not render the add button when `canUpdate` is false', () => {
-      createComponent({ canUpdate: false });
+    it('should not render the add button when `canUpdate` is true and `workItemsAlpha` is off', async () => {
+      createComponent({ workItemsAlphaEnabled: false });
+      await waitForPromises();
+
+      expect(findAddButton().exists()).toBe(false);
+      expect(findAddMoreIcon().exists()).toBe(false);
+    });
+
+    it('should not render the add button when `canUpdate` is false and `workItemsAlpha` is off', async () => {
+      const handlerWithCanUpdateFalse = jest
+        .fn()
+        .mockResolvedValue(noUpdateProjectWorkItemResponseWithMRList);
+      createComponent({ workItemsAlphaEnabled: false, queryHandler: handlerWithCanUpdateFalse });
+      await waitForPromises();
 
       expect(findAddButton().exists()).toBe(false);
     });

@@ -3,11 +3,12 @@
 module Gitlab
   module Import
     class PlaceholderUserCreator
-      def initialize(import_type:, source_hostname:, source_name:, source_username:)
+      def initialize(import_type:, source_hostname:, source_name:, source_username:, organization:)
         @import_type = import_type
         @source_hostname = source_hostname
         @source_name = source_name
         @source_username = source_username
+        @organization = organization
       end
 
       def execute
@@ -18,16 +19,15 @@ module Gitlab
           email: placeholder_email
         )
 
-        user.assign_personal_namespace(Organizations::Organization.default_organization)
-        Namespace.with_disabled_organization_validation do
-          user.save!
-        end
+        user.assign_personal_namespace(organization)
+        user.save!
+
         user
       end
 
       private
 
-      attr_reader :import_type, :source_hostname, :source_name, :source_username
+      attr_reader :import_type, :source_hostname, :source_name, :source_username, :organization
 
       def placeholder_name
         # Some APIs don't expose users' names, so set a default if it's nil

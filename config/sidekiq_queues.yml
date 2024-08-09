@@ -477,6 +477,10 @@
   - 1
 - - members_expiring_email_notification
   - 1
+- - members_groups_base_memberships_export
+  - 1
+- - members_groups_export_detailed_memberships
+  - 1
 - - merge
   - 5
 - - merge_request_cleanup_refs

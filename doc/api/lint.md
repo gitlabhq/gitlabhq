@@ -10,10 +10,13 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
-## Validate the CI/CD configuration for a namespace
+## Validate sample CI/CD configuration
 
-Checks if CI/CD YAML configuration is valid. This endpoint has namespace
-specific context.
+Checks if a sample CI/CD YAML configuration is valid. This endpoint validates the
+CI/CD configuration in the context of the project, including:
+
+- Using the project's CI/CD variables.
+- Searching the project's files for `include:local` entries.
 
 ```plaintext
 POST /projects/:id/ci/lint
@@ -58,15 +61,17 @@ Example responses:
   }
   ```
 
-## Validate a project's CI configuration
+## Validate a project's CI/CD configuration
 
 > - `sha` attribute [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/369212) in GitLab 16.5.
 > - `sha` and `ref` [renamed](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/143098) to `content_ref` and `dry_run_ref` in GitLab 16.10.
 
 Checks if a project's `.gitlab-ci.yml` configuration in a given ref (the
 `content_ref` parameter, by default `HEAD` of the project's default branch) is valid.
-This endpoint uses all namespace specific data available, including variables
-and local includes.
+This endpoint validates the CI/CD configuration, including:
+
+- Using the project's CI/CD variables.
+- Searching the project's files for `include:local` entries.
 
 ```plaintext
 GET /projects/:id/ci/lint

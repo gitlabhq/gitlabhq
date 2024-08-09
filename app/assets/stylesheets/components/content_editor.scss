@@ -79,6 +79,15 @@
     height: 8px;
     background: $blue-200;
     outline: 1px solid $white;
+
+    &::before {
+      content: '';
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      top: -8px;
+      left: -8px;
+    }
   }
 
   .image-resize-nw {

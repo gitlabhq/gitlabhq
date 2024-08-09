@@ -126,6 +126,9 @@
 .if-merge-request-labels-pipeline-expedite: &if-merge-request-labels-pipeline-expedite
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && ($CI_MERGE_REQUEST_LABELS =~ /pipeline::expedited/ || $CI_MERGE_REQUEST_LABELS =~ /pipeline:expedite/)'
 
+.if-merge-request-not-labels-pipeline-run-e2e-omnibus-once: &if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
+  if: '($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && ($CI_MERGE_REQUEST_LABELS !~ /pipeline:run-e2e-omnibus-once/)'
+
 .if-merge-request-labels-frontend-and-feature-flag: &if-merge-request-labels-frontend-and-feature-flag
   if: '($CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_EVENT_TYPE != "merge_train") && $CI_MERGE_REQUEST_LABELS =~ /frontend/ && $CI_MERGE_REQUEST_LABELS =~ /feature flag/'
 
@@ -1654,6 +1657,8 @@
       changes: *qa-patterns
     - <<: *if-merge-request-targeting-stable-branch
       changes: *setup-test-env-patterns
+    - <<: *if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
+      when: never
     # Otherwise, only run tests in pipeline::tier-3 and above
     - !reference [".prevent-tier-2-and-below", rules]
     - <<: *if-merge-request
@@ -1865,6 +1870,8 @@
   rules:
     # From .qa:rules:package-and-test-common
     - !reference [".qa:rules:package-and-test-never-run", rules]
+    - <<: *if-merge-request-not-labels-pipeline-run-e2e-omnibus-once
+      when: never
     - <<: *if-ruby-branch
       when: never
     - <<: *if-merge-request-labels-run-all-e2e

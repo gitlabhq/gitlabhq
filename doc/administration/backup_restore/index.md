@@ -10,132 +10,76 @@ DETAILS:
 **Tier:** Free, Premium, Ultimate
 **Offering:** Self-managed
 
-Your software or organization depends on the data in your GitLab instance. You need to ensure this data is protected from adverse events such as:
+Your GitLab instance contains critical data for your software development or organization.
+It is important to have a disaster recovery plan that includes regular backups for:
 
-- Corrupted data
-- Accidental deletion of data
-- Ransomware attacks
-- Unexpected cloud provider downtime
+- **Data protection**: Safeguard against data loss due to hardware failures, software bugs, or accidental deletions.
+- **Disaster recovery**: In case of adverse events, backups allow restoration of GitLab instances and their data.
+- **Version control**: Provide historical snapshots that enable rollbacks to previous states.
+- **Compliance**: Some industries require data backups to meet regulatory requirements.
+- **Migration**: Facilitate moving GitLab to new servers or environments.
+- **Testing and development**: Create copies for testing upgrades or new features without risk to production data.
 
-You can mitigate all of these risks with a disaster recovery plan that includes backups.
+NOTE:
+This documentation applies to GitLab Community and Enterprise Edition.
+While we ensure data security for GitLab.com, you can't use these methods to export or back up your data from GitLab.com.
 
 ## Back up GitLab
 
-For detailed information on backing up GitLab, see [Back up GitLab](backup_gitlab.md).
+The procedures to back up your GitLab instance vary based on your
+deployment's specific configuration and usage patterns.
+Factors such as data types, storage locations, and volume influence the backup method,
+storage options, and restoration process. For more information, see [Back up GitLab](backup_gitlab.md).
 
-## Restore GitLab
+## Backup archive creation process
 
-For detailed information on restoring GitLab, see [Restore GitLab](restore_gitlab.md).
+When GitLab creates a backup archive, it follows these steps:
 
-## Migrate to a new server
-
-For detailed information on using back up and restore to migrate to a new server, see
-[Migrate to a new server](migrate_to_new_server.md).
-
-## Additional notes
-
-This documentation is for GitLab Community and Enterprise Edition. We back up
-GitLab.com and ensure your data is secure. You can't, however, use these
-methods to export or back up your data yourself from GitLab.com.
-
-Issues are stored in the database, and can't be stored in Git itself.
-
-## GitLab backup archive creation process
-
-When working with GitLab backups, you might need to know how GitLab creates backup archives. To create backup archives, GitLab:
-
-1. If creating an incremental backup, extracts the previous backup archive and read its `backup_information.yml` file.
-1. Updates or generates the `backup_information.yml` file.
+1. For incremental backups, extracts the previous backup archive and reads the `backup_information.yml` file.
+1. Updates or generates the [`backup_information.yml` file](#backup_informationyml-file).
 1. Runs all backup sub-tasks:
-   - `db` to backup the GitLab PostgreSQL database (not Gitaly Cluster).
-   - `repositories` to back up Git repositories.
-   - `uploads` to back up attachments.
-   - `builds` to back up CI job output logs.
-   - `artifacts` to back up CI job artifacts.
-   - `pages` to back up page content.
-   - `lfs` to back up LFS objects.
-   - `terraform_state` to back up Terraform states.
-   - `registry` to back up container registry images.
-   - `packages` to back up packages.
-   - `ci_secure_files` to back up project-level secure files.
-   - `external_diffs` to back up external merge request diffs.
-1. Archives the backup staging area into a tar file.
-1. Optional. Uploads the new backup archive to object-storage.
-1. Cleans up backup staging directory files that are now archived.
+   - [Database backups](#database-backups).
+   - [Repository backups](#repository-backups).
+   - [File backups](#file-backups).
+   - External merge request diffs: `external_diffs`
+1. Archives the backup staging area into a `tar` file.
+1. **Optional**: Uploads the new backup archive to object storage.
+1. Cleans up archived [backup staging directory](#backup-staging-directory) files.
 
-## Backup ID
+### `backup_information.yml` file
 
-Backup IDs identify individual backup archives. You need the backup ID of a backup archive if you need to restore GitLab and multiple backup archives are available.
+The `backup_information.yml` file saves all backup inputs that are not included in the backup itself.
+It is saved in the [backup staging directory](#backup-staging-directory).
 
-Backup archives are saved in a directory set in `backup_path`, which is specified in the `config/gitlab.yml` file.
-
-- By default, backup archives are stored in `/var/opt/gitlab/backups`.
-- By default, backup archive filenames are `<backup-id>_gitlab_backup.tar` where `<backup-id>` identifies the time when the
-  backup archive was created, the GitLab version, and the GitLab edition.
-
-For example, if the archive filename is `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
-the backup ID is `1493107454_2018_04_25_10.6.4-ce`.
-
-## Backup staging directory
-
-The backup staging directory is a place to temporarily:
-
-- Store backup artifacts on disk before the GitLab backup archive is created.
-- Extract backup archives on disk before restoring a backup or creating an incremental backup.
-
-This directory is the same directory where completed GitLab backup archives are created. When creating an untarred backup, the backup artifacts are left in this directory and no
-archive is created.
-
-Example backup staging directory with untarred backup:
-
-```plaintext
-backups/
-├── 1701728344_2023_12_04_16.7.0-pre_gitlab_backup.tar
-├── 1701728447_2023_12_04_16.7.0-pre_gitlab_backup.tar
-├── artifacts.tar.gz
-├── backup_information.yml
-├── builds.tar.gz
-├── ci_secure_files.tar.gz
-├── db
-│   ├── ci_database.sql.gz
-│   └── database.sql.gz
-├── lfs.tar.gz
-├── packages.tar.gz
-├── pages.tar.gz
-├── repositories
-│   ├── manifests/
-│   ├── @hashed/
-│   └── @snippets/
-├── terraform_state.tar.gz
-└── uploads.tar.gz
-```
-
-## `backup_information.yml` file
-
-The `backup_information.yml` file saves all backup inputs that are not included in the backup itself. It includes information such as:
+The file is used by sub-tasks to determine how to restore and link data in the backup with external services like
+[server-side repository backups](#server-side-repository-backups).
+It includes information such as:
 
 - The time the backup was created.
-- The version of GitLab that generated the backup.
-- Any options that were specified, such as skipped sub-tasks.
+- The GitLab version that generated the backup.
+- Other specified options. For example, skipped sub-tasks.
 
-This information is used by some sub-tasks to determine how:
+### Database backups
 
-- To restore.
-- To link data in the backup with external services (such as server-side repository backups).
+Database backups are created and restored by a GitLab backup sub-task called `db`.
+The database sub-task uses `pg_dump` to create a[SQL dump](https://www.postgresql.org/docs/14/backup-dump.html).
+The output of `pg_dump` is piped through `gzip` to create a compressed SQL file.
+This file is saved to the [backup staging directory](#backup-staging-directory).
 
-This file is saved into the backup staging directory.
+### Repository backups
 
-## Database backups
+Repository backups are managed by a GitLab backup sub-task called `repositories`.
+This sub-task uses a Gitaly command, [`gitaly-backup`](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/gitaly-backup.md),
+to create repository backups.
 
-Database backups are created and restored by a GitLab backup sub-task called `db`. The database sub-task uses `pg_dump` to create [a SQL dump](https://www.postgresql.org/docs/14/backup-dump.html). The output of `pg_dump` is piped through `gzip` in order to create a compressed SQL file. This file is saved to the backup staging directory.
+The backup process follows these steps:
 
-## Repository backups
+1. GitLab uses its database to inform `gitaly-backup` which repositories to back up.
+1. `gitaly-backup` calls a series of Remote Procedure Calls (RPCs) on Gitaly to collect
+    the backup data for each repository.
+1. The collected data is streamed into a directory structure in the GitLab backup staging directory.
 
-Repository backups are created and restored by a GitLab backup sub-task called `repositories`. The repositories sub-task uses a Gitaly command
-[`gitaly-backup`](https://gitlab.com/gitlab-org/gitaly/-/blob/master/doc/gitaly-backup.md) to create Git repository backups:
-
-- GitLab uses its database to tell `gitaly-backup` which repositories to back up.
-- `gitaly-backup` then calls a series of RPCs on Gitaly to collect the repository backup data for each repository. This data is streamed into a directory structure in the GitLab backup staging directory.
+The following diagram illustrates the backup process:
 
 ```mermaid
 sequenceDiagram
@@ -160,16 +104,26 @@ sequenceDiagram
     gitaly-backup->>-Repositories sub-task: Success/failure
 ```
 
-Storages configured to Gitaly Cluster are backed up the same as standalone Gitaly. When Gitaly Cluster receives the RPC calls from `gitaly-backup`, it is responsible for
-rebuilding its own database. This means that there is no need to backup the Gitaly Cluster database separately. Because backups operate through RPCs, each repository is only backed
-up once no matter the replication factor.
+Storages configured to use Gitaly Cluster are backed up in the same way as standalone Gitaly instances.
 
-### Server-side repository backups
+- When Gitaly Cluster receives the RPC calls from `gitaly-backup`, it rebuilds its own database.
+  - There is no need to backup the Gitaly Cluster database separately.
+- Each repository is backed up only once, regardless of the replication factor, because backups operate through RPCs.
 
-You can configure repository backups as server-side repository backups. When specified, `gitaly-backup` makes a single RPC call for each repository to create the backup. This RPC
-does not transmit any repository data. Instead, the RPC triggers the Gitaly node that stores that physical repository to upload the backup data directly to object-storage. Because
-the data is no longer transmitted through RPCs from Gitaly, server-side backups require much less network transfer and require no disk storage on the machine that is running the
-backup Rake task. The backups stored on object-storage are linked to the created backup archive by [the backup ID](#backup-id).
+#### Server-side repository backups
+
+Server-side repository backups are an efficient way to back up your repositories.
+This method reduces network transfer, and eliminates the need for disk storage on the backup task machine.
+
+1. When specified, `gitaly-backup` makes a single RPC call for each repository to create the backup.
+    - The RPC doesn't transmit any repository data.
+1. The RPC triggers the Gitaly node storing the physical repository to upload backup data to object storage.
+    - The data is not transmitted through RPCs from Gitaly.
+    - The server-side backups require less network transfer.
+    - Disk storage on the machine running the backup Rake task is not required.
+1. The backups stored on object-storage are linked to the created backup archive using a [backup ID](#backup-id).
+
+The following diagram illustrates the server-side backup process:
 
 ```mermaid
 sequenceDiagram
@@ -201,28 +155,112 @@ sequenceDiagram
     gitaly-backup->>-Repositories sub-task: Success/failure
 ```
 
-## File backups
+### File backups
 
-The following GitLab backup sub-tasks back up files:
+Backups include several sub-tasks that focus on backing up files.
+The following sub-tasks are responsible for file backups:
 
-- `uploads`
-- `builds`
-- `artifacts`
-- `pages`
-- `lfs`
-- `terraform_state`
-- `registry`
-- `packages`
-- `ci_secure_files`
+- `uploads`: Attachments
+- `builds`: CI job output logs
+- `artifacts`: CI job artifacts
+- `pages`: Page content
+- `lfs`: LFS objects
+- `terraform_state`: Terraform states
+- `registry`: Container registry images
+- `packages`: Packages
+- `ci_secure_files`: Project-level secure files
 
-These file sub-tasks determine a set of files within a directory specific to the task. This set of files is then passed to `tar`
-to create an archive. This archive is piped (not saved to disk) through `gzip` to save a compressed tar file to the backup staging directory.
+Each file sub-task identifies a set of files in a task-specific directory. These files are then processed as follows:
 
-Because backups are created from live instances, the files that tar is trying to archive can sometimes be modified while creating the backup. In this case, an alternate "copy"
-strategy can be used. When this strategy is used, `rsync` is first used to create a copy of the files to back up. Then, these copies are passed to `tar` as usual. In this case,
-the machine running the backup Rake task must have enough storage for the copied files and the compressed archive.
+1. The `tar` utility creates an archive of the identified files.
+1. The archive is piped through `gzip` for compression, without saving to disk.
+1. The compressed tar file is saved to the backup staging directory.
 
-## Related features
+As backups are created from live instances, files might be modified during the backup process.
+In such cases, an alternate "copy" strategy can be used:
+
+1. The `rsync` utility creates a copy of the files to back up.
+1. These copies are passed to `tar` for archiving.
+
+NOTE:
+If you are using this strategy, the machine running the backup Rake task must have
+sufficient storage for both the copied files and the compressed archive.
+
+### Backup staging directory
+
+The backup staging directory is a temporary storage location used during GitLab backup and restore processes.
+This directory:
+
+- Stores backup artifacts before creating the GitLab backup archive.
+- Extracts backup archives before restoring a backup or creating an incremental backup.
+
+The backup staging directory is the same directory where completed GitLab backup archives are created.
+When creating an untarred backup, the backup artifacts remain in this directory, and no archive is created.
+
+The following is an example of a backup staging directory containing an untarred backup:
+
+```plaintext
+backups/
+├── 1701728344_2023_12_04_16.7.0-pre_gitlab_backup.tar
+├── 1701728447_2023_12_04_16.7.0-pre_gitlab_backup.tar
+├── artifacts.tar.gz
+├── backup_information.yml
+├── builds.tar.gz
+├── ci_secure_files.tar.gz
+├── db
+│   ├── ci_database.sql.gz
+│   └── database.sql.gz
+├── lfs.tar.gz
+├── packages.tar.gz
+├── pages.tar.gz
+├── repositories
+│   ├── manifests/
+│   ├── @hashed/
+│   └── @snippets/
+├── terraform_state.tar.gz
+└── uploads.tar.gz
+```
+
+### Backup ID
+
+Backup IDs are unique identifiers for backup archives. These IDs are crucial when you need to restore
+GitLab, and multiple backup archives are available.
+
+Backup archives are saved in a directory specified by the `backup_path` setting in the `config/gitlab.yml` file.
+The default location is `/var/opt/gitlab/backups`.
+
+By default, backup archive filenames follow the `<backup-id>_gitlab_backup.tar` structure, where `<backup-id>` identifies:
+
+- Timestamp of backup creation
+- Date (YYYY_MM_DD)
+- GitLab version
+- GitLab edition
+
+For example:
+
+- Backup archive filename: `1493107454_2018_04_25_10.6.4-ce_gitlab_backup.tar`,
+- Backup ID: `1493107454_2018_04_25_10.6.4-ce`.
+
+## Restore GitLab
+
+GitLab provides a command-line interface (CLI) to restore your entire installation. This may be required in the following scenarios:
+
+- **Data loss**: If critical data is accidentally deleted or corrupted.
+- **System failure**: When hardware issues or software crashes cause data corruption.
+- **Security incidents**: After a breach or malware attack.
+- **Failed upgrades**: If an upgrade goes wrong or does not complete successfully.
+- **Disaster recovery**: Following an adverse incident like a natural disaster or infrastructure failure.
+- **Migration**: When moving GitLab to new servers or cloud environments.
+
+For more information, see [Restore GitLab](restore_gitlab.md).
+
+## Migrate to a new server
+
+Use the GitLab backup and restore features to migrate your instance to a new server. For GitLab Geo deployments,
+consider [Geo disaster recovery for planned failover](../geo/disaster_recovery/planned_failover.md).
+For more information, see [Migrate to a new server](migrate_to_new_server.md).
+
+## Related topics
 
 - [Geo](../geo/index.md)
 - [Disaster Recovery (Geo)](../geo/disaster_recovery/index.md)

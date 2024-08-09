@@ -230,30 +230,11 @@ describe('WorkItemAttributesWrapper component', () => {
   });
 
   describe('development widget', () => {
-    describe('when `workItemsBeta` FF is off', () => {
-      it.each`
-        description                                               | developmentWidgetPresent | exists
-        ${'does not render when widget is returned from API'}     | ${true}                  | ${false}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ developmentWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsBeta: false });
+    it('renders work item development widget', () => {
+      const response = workItemResponseFactory({ developmentWidgetPresent: true });
+      createComponent({ workItem: response.data.workItem });
 
-        expect(findWorkItemDevelopment().exists()).toBe(exists);
-      });
-    });
-
-    describe('when `workItemsBeta` FF is on', () => {
-      it.each`
-        description                                               | developmentWidgetPresent | exists
-        ${'renders when widget is returned from API'}             | ${true}                  | ${true}
-        ${'does not render when widget is not returned from API'} | ${false}                 | ${false}
-      `('$description', ({ developmentWidgetPresent, exists }) => {
-        const response = workItemResponseFactory({ developmentWidgetPresent });
-        createComponent({ workItem: response.data.workItem, workItemsBeta: true });
-
-        expect(findWorkItemDevelopment().exists()).toBe(exists);
-      });
+      expect(findWorkItemDevelopment().exists()).toBe(true);
     });
   });
 });

@@ -4,6 +4,8 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :importers do
   describe '#execute' do
+    let_it_be(:organization) { create(:organization) }
+
     let(:import_type) { 'github' }
     let(:source_hostname) { 'github.com' }
     let(:source_name) { 'Pry Contributor' }
@@ -14,7 +16,8 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
         import_type: import_type,
         source_hostname: source_hostname,
         source_name: source_name,
-        source_username: source_username
+        source_username: source_username,
+        organization: organization
       )
     end
 
@@ -26,6 +29,7 @@ RSpec.describe Gitlab::Import::PlaceholderUserCreator, feature_category: :import
       expect(new_placeholder_user.name).to eq("Placeholder #{source_name}")
       expect(new_placeholder_user.username).to match(/^aprycontributor_placeholder_user_\d+$/)
       expect(new_placeholder_user.email).to match(/^aprycontributor_placeholder_user_\d+@#{Settings.gitlab.host}$/)
+      expect(new_placeholder_user.namespace.organization).to eq(organization)
     end
 
     context 'when there are non-unique usernames on the same import source' do

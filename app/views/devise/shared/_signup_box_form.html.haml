@@ -69,7 +69,7 @@
       autocomplete: 'new-password',
       name: "#{form_resource_name}[password]" } }
     %p.gl-field-hint-valid.text-secondary= s_('SignUp|Minimum length is %{minimum_password_length} characters.') % { minimum_password_length: @minimum_password_length }
-    = render_if_exists 'shared/password_requirements_list'
+    = render_if_exists 'shared/password_requirements_list', show_basic_requirements: true
   = render_if_exists 'devise/shared/phone_verification', form: f
 
   .form-group

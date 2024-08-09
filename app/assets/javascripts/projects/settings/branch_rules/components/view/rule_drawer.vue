@@ -1,5 +1,6 @@
 <script>
 import { GlDrawer, GlButton, GlFormGroup, GlFormCheckbox } from '@gitlab/ui';
+import { __ } from '~/locale';
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { convertToGraphQLId, getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -19,6 +20,10 @@ export default {
   ACCESS_LEVEL_MAINTAINER_INTEGER,
   ACCESS_LEVEL_ADMIN_INTEGER,
   ACCESS_LEVEL_NO_ACCESS_INTEGER,
+  i18n: {
+    saveChanges: __('Save changes'),
+    cancel: __('Cancel'),
+  },
   components: {
     GlDrawer,
     GlButton,
@@ -44,7 +49,8 @@ export default {
     },
     roles: {
       type: Array,
-      required: true,
+      required: false,
+      default: () => [],
     },
     title: {
       type: String,
@@ -156,10 +162,10 @@ export default {
           data-testid="save-allowed-to-merge"
           @click="editRule()"
         >
-          {{ __('Save changes') }}
+          {{ $options.i18n.saveChanges }}
         </gl-button>
         <gl-button variant="confirm" category="secondary" @click="$emit('close')">
-          {{ __('Cancel') }}
+          {{ $options.i18n.cancel }}
         </gl-button>
       </div>
     </template>

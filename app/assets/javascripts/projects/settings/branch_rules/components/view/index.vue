@@ -332,6 +332,9 @@ export default {
           this.isCodeOwnersLoading = false;
         });
     },
+    saveStatusChecksChanges() {
+      // TODO: add mutations to save status check changes
+    },
   },
 };
 </script>
@@ -497,7 +500,16 @@ export default {
           </template>
         </gl-sprintf>
 
+        <!-- eslint-disable-next-line vue/no-undef-components -->
+        <status-checks
+          v-if="glFeatures.editBranchRules"
+          :status-checks="statusChecks"
+          class="gl-mt-3"
+          @saveChanges="saveStatusChecksChanges"
+        />
+
         <protection
+          v-else
           data-testid="status-checks-content"
           class="gl-mt-3"
           :header="statusChecksHeader"

@@ -6,6 +6,28 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
   let(:import_source) { Import::SOURCE_DIRECT_TRANSFER }
   let(:import_uid) { 1 }
 
+  shared_examples 'raises error' do
+    it 'raises Import::PlaceholderReferences::InvalidReferenceError error' do
+      expect { result }.to raise_error(
+        Import::PlaceholderReferences::InvalidReferenceError, "Invalid placeholder user reference"
+      )
+    end
+  end
+
+  shared_examples 'does not push data to Redis' do |model|
+    it 'does not push data to Redis' do
+      expect(Gitlab::ErrorTracking).to receive(:track_and_raise_for_dev_exception).with(
+        an_instance_of(Import::PlaceholderReferences::InvalidReferenceError),
+        model: model,
+        errors: 'numeric_key or composite_key must be present'
+      )
+
+      expect(result).to be_error
+      expect(result.message).to include('numeric_key or composite_key must be present')
+      expect(set).to be_empty
+    end
+  end
+
   describe '#execute' do
     let(:composite_key) { nil }
     let(:numeric_key) { 9 }
@@ -49,10 +71,14 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
     context 'when is invalid' do
       let(:composite_key) { { 'foo' => 1 } }
 
-      it 'does not push data to Redis' do
-        expect(result).to be_error
-        expect(result.message).to include('numeric_key or composite_key must be present')
-        expect(set).to be_empty
+      it_behaves_like 'raises error'
+
+      context 'when in production environment' do
+        before do
+          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+        end
+
+        it_behaves_like 'does not push data to Redis', 'MergeRequest'
       end
     end
   end
@@ -78,6 +104,50 @@ RSpec.describe Import::PlaceholderReferences::PushService, :aggregate_failures, 
       expect(result.payload).to eq(serialized_reference: expected_result)
       expect(set).to contain_exactly(expected_result)
     end
+
+    context 'when record is an IssueAssignee' do
+      let(:record) { IssueAssignee.new(issue_id: 1, user_id: 2) }
+
+      it 'pushes a composition key' do
+        expected_result = [
+          { issue_id: 1, user_id: 2 }, 'IssueAssignee', source_user.namespace_id, nil, source_user.id, 'author_id'
+        ].to_json
+
+        expect(result).to be_success
+        expect(result.payload).to eq(serialized_reference: expected_result)
+        expect(set).to contain_exactly(expected_result)
+      end
+    end
+
+    # rubocop:disable RSpec/VerifiedDoubles -- Custom object
+    context 'when record does not respond to :id' do
+      let(:record) { double(:record) }
+
+      it_behaves_like 'raises error'
+
+      context 'when in production environment' do
+        before do
+          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+        end
+
+        it_behaves_like 'does not push data to Redis', 'RSpec::Mocks::Double'
+      end
+    end
+
+    context 'when record id is an string' do
+      let(:record) { double(:record, id: 'string') }
+
+      it_behaves_like 'raises error'
+
+      context 'when in production environment' do
+        before do
+          allow(Gitlab).to receive(:dev_or_test_env?).and_return(false)
+        end
+
+        it_behaves_like 'does not push data to Redis', 'RSpec::Mocks::Double'
+      end
+    end
+    # rubocop:enable RSpec/VerifiedDoubles
   end
 
   def set

@@ -13,7 +13,7 @@ import {
   WIDGET_TYPE_HIERARCHY,
 } from '~/work_items/constants';
 import activeBoardItemQuery from 'ee_else_ce/boards/graphql/client/active_board_item.query.graphql';
-import { updateNewWorkItemCache } from '~/work_items/graphql/resolvers';
+import { updateNewWorkItemCache, workItemBulkEdit } from '~/work_items/graphql/resolvers';
 
 export const config = {
   typeDefs,
@@ -249,6 +249,9 @@ export const resolvers = {
     },
     updateNewWorkItem(_, { input }, { cache }) {
       updateNewWorkItemCache(input, cache);
+    },
+    workItemBulkUpdate(_, { input }) {
+      return workItemBulkEdit(input);
     },
   },
 };

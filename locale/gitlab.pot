@@ -2771,9 +2771,6 @@ msgstr ""
 msgid "Access granted"
 msgstr ""
 
-msgid "Access permission"
-msgstr ""
-
 msgid "Access requests"
 msgstr ""
 
@@ -6022,6 +6019,9 @@ msgstr ""
 msgid "An error occurred while validating group path"
 msgstr ""
 
+msgid "An error occurred while validating password"
+msgstr ""
+
 msgid "An error occurred while validating username"
 msgstr ""
 
@@ -9260,6 +9260,9 @@ msgid "BranchRules|%{total} status %{subject}"
 msgstr ""
 
 msgid "BranchRules|Add branch rule"
+msgstr ""
+
+msgid "BranchRules|Add status check"
 msgstr ""
 
 msgid "BranchRules|Administrators"
@@ -17794,9 +17797,6 @@ msgstr ""
 msgid "Deleting this group also deletes all child projects, including archived projects, and their resources."
 msgstr ""
 
-msgid "Deletion pending. This project will be deleted on %{date}. Repository and other project resources are read-only."
-msgstr ""
-
 msgid "DeletionSettings|Deletion protection"
 msgstr ""
 
@@ -20505,6 +20505,9 @@ msgid "Enter URL"
 msgstr ""
 
 msgid "Enter a URL for your custom emoji"
+msgstr ""
+
+msgid "Enter a name"
 msgstr ""
 
 msgid "Enter a name for your comment template"
@@ -24738,9 +24741,6 @@ msgid "Go back (while searching for files)"
 msgstr ""
 
 msgid "Go back to configuration"
-msgstr ""
-
-msgid "Go back to edit"
 msgstr ""
 
 msgid "Go full screen"
@@ -38394,6 +38394,9 @@ msgstr ""
 msgid "Password|To be satisfied"
 msgstr ""
 
+msgid "Password|cannot use common phrases (e.g. \"password\")"
+msgstr ""
+
 msgid "Password|requires at least one lowercase letter"
 msgstr ""
 
@@ -47539,13 +47542,19 @@ msgstr ""
 msgid "Secrets|Delete"
 msgstr ""
 
+msgid "Secrets|Description must be 200 characters or less."
+msgstr ""
+
 msgid "Secrets|Edit %{id}"
 msgstr ""
 
 msgid "Secrets|Edit secret"
 msgstr ""
 
-msgid "Secrets|Enter a key name"
+msgid "Secrets|Enter a value for the secret"
+msgstr ""
+
+msgid "Secrets|Environments"
 msgstr ""
 
 msgid "Secrets|Expires"
@@ -47560,13 +47569,13 @@ msgstr ""
 msgid "Secrets|Last used"
 msgstr ""
 
+msgid "Secrets|Maximum 200 characters."
+msgstr ""
+
 msgid "Secrets|Name"
 msgstr ""
 
 msgid "Secrets|New secret"
-msgstr ""
-
-msgid "Secrets|Preview for %{secretKey}"
 msgstr ""
 
 msgid "Secrets|Revoke"
@@ -47575,7 +47584,7 @@ msgstr ""
 msgid "Secrets|Rotation period"
 msgstr ""
 
-msgid "Secrets|Secret key"
+msgid "Secrets|Rotation reminder"
 msgstr ""
 
 msgid "Secrets|Secrets"
@@ -47584,13 +47593,7 @@ msgstr ""
 msgid "Secrets|Secrets represent sensitive information your CI job needs to complete work. This sensitive information can be items like API tokens, database credentials, or private keys. Unlike CI/CD variables, which are always presented to a job, secrets must be explicitly required by a job."
 msgstr ""
 
-msgid "Secrets|Select a rotation interval"
-msgstr ""
-
-msgid "Secrets|Select environment"
-msgstr ""
-
-msgid "Secrets|Set expiration"
+msgid "Secrets|Select a reminder interval"
 msgstr ""
 
 msgid "Secrets|Status"
@@ -47599,10 +47602,7 @@ msgstr ""
 msgid "Secrets|Stored secrets"
 msgstr ""
 
-msgid "Secrets|Value"
-msgstr ""
-
-msgid "Secrets|Value for the key"
+msgid "Secrets|The name should be unique within this project."
 msgstr ""
 
 msgid "Secure Code Warrior"
@@ -49342,6 +49342,9 @@ msgstr ""
 msgid "Select due date"
 msgstr ""
 
+msgid "Select environment or create wildcard"
+msgstr ""
+
 msgid "Select epic"
 msgstr ""
 
@@ -49375,9 +49378,6 @@ msgstr ""
 msgid "Select milestone"
 msgstr ""
 
-msgid "Select permission"
-msgstr ""
-
 msgid "Select private project"
 msgstr ""
 
@@ -49403,9 +49403,6 @@ msgid "Select reviewer"
 msgstr ""
 
 msgid "Select reviewers"
-msgstr ""
-
-msgid "Select roles or users"
 msgstr ""
 
 msgid "Select severity (optional)"
@@ -51623,6 +51620,18 @@ msgstr ""
 msgid "Status: %{title}"
 msgstr ""
 
+msgid "StatusChecks|API to check"
+msgstr ""
+
+msgid "StatusChecks|Examples: QA, Security, Performance."
+msgstr ""
+
+msgid "StatusChecks|Invoke an external API as part of the pipeline process."
+msgstr ""
+
+msgid "StatusChecks|Service name"
+msgstr ""
+
 msgid "StatusCheck|%{failed} failed"
 msgstr ""
 
@@ -53665,6 +53674,9 @@ msgstr ""
 msgid "The parent epic is confidential and can only contain confidential epics and issues"
 msgstr ""
 
+msgid "The parent group of this %{context} is pending deletion, so this %{context} will also be deleted on %{date}."
+msgstr ""
+
 msgid "The password for the Jenkins server."
 msgstr ""
 
@@ -54496,6 +54508,9 @@ msgstr ""
 msgid "This group"
 msgstr ""
 
+msgid "This group and its subgroups and projects are pending deletion, and will be deleted on %{date}."
+msgstr ""
+
 msgid "This group and its subgroups and projects will be placed in a 'pending deletion' state for %{deletion_delayed_period} days, then permanently deleted on %{date}. The group can be fully restored before that date."
 msgstr ""
 
@@ -54536,12 +54551,6 @@ msgid "This group is not permitted to create compliance violations"
 msgstr ""
 
 msgid "This group is scheduled to be deleted on %{date}. You are about to delete this group, including its subgroups and projects, immediately. This action cannot be undone."
-msgstr ""
-
-msgid "This group, its subgroups and projects has been scheduled for removal on %{date}."
-msgstr ""
-
-msgid "This group, its subgroups and projects will be removed on %{date} since its parent group '%{parent_group_name}' has been scheduled for removal."
 msgstr ""
 
 msgid "This incident is already escalated with '%{escalation_policy_name}'."
@@ -54849,6 +54858,9 @@ msgstr ""
 msgid "This project is not subscribed to any project pipelines."
 msgstr ""
 
+msgid "This project is pending deletion, and will be deleted on %{date}. Repository and other project resources are read-only."
+msgstr ""
+
 msgid "This project is public. Non-members can guess the Service Desk email address, because it contains the group and project name. %{linkStart}How do I create a custom email address?%{linkEnd}"
 msgstr ""
 
@@ -54865,9 +54877,6 @@ msgid "This project was scheduled for deletion, but failed with the following me
 msgstr ""
 
 msgid "This project will be deleted on %{date}"
-msgstr ""
-
-msgid "This project will be deleted on %{date} since its parent group '%{parent_group_name}' has been scheduled for deletion."
 msgstr ""
 
 msgid "This project's pipeline configuration is located outside this repository"

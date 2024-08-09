@@ -34,14 +34,18 @@ export default {
   data() {
     return {
       dragData: {},
-      width: this.node.attrs.width,
-      height: this.node.attrs.height,
     };
   },
   computed: {
     isStaleUploadedImage() {
       const { uploading } = this.node.attrs;
       return uploading && uploadingStates[uploading];
+    },
+    imageWidth() {
+      return this.dragData.width || this.node.attrs.width || 'auto';
+    },
+    imageHeight() {
+      return this.dragData.height || this.node.attrs.height || 'auto';
     },
   },
   mounted() {
@@ -54,37 +58,45 @@ export default {
   },
   methods: {
     onDragStart(handle, event) {
+      const { image } = this.$refs;
+      const computedStyle = window.getComputedStyle(image);
+      const width = parseInt(image.getAttribute('width') || computedStyle.width, 10);
+      const height = parseInt(image.getAttribute('height') || computedStyle.height, 10);
+
       this.dragData = {
         handle,
         startX: event.screenX,
         startY: event.screenY,
-        width: Number(this.width) || this.$refs.image.width,
-        height: Number(this.height) || this.$refs.image.height,
+        startWidth: width,
+        startHeight: height,
+        width,
+        height,
       };
     },
     onDrag(event) {
-      const { handle, startX, width, height } = this.dragData;
+      const { handle, startX, startWidth, startHeight } = this.dragData;
       if (!handle) return;
 
       const deltaX = event.screenX - startX;
-      const newWidth = handle.includes('w') ? width - deltaX : width + deltaX;
-      const newHeight = (height / width) * newWidth;
+      const isLeftHandle = handle.includes('w');
+      const newWidth = isLeftHandle ? startWidth - deltaX : startWidth + deltaX;
+      const newHeight = Math.floor((startHeight / startWidth) * newWidth);
 
-      this.width = Math.max(newWidth, 0);
-      this.height = Math.max(newHeight, 0);
+      this.dragData = {
+        ...this.dragData,
+        width: Math.max(newWidth, 0),
+        height: Math.max(newHeight, 0),
+      };
     },
     onDragEnd() {
       const { handle } = this.dragData;
       if (!handle) return;
 
+      const { width, height } = this.dragData;
+
       this.dragData = {};
-
-      const { width, height } = this.$refs.image;
-
-      this.width = width;
-      this.height = height;
-
       this.updateAttributes({ width, height });
+      this.editor.chain().focus().setNodeSelection(this.getPos()).run();
     },
   },
   resizeHandles: ['ne', 'nw', 'se', 'sw'],
@@ -112,8 +124,8 @@ export default {
       :src="node.attrs.src"
       :alt="node.attrs.alt"
       :title="node.attrs.title"
-      :width="width || 'auto'"
-      :height="height || 'auto'"
+      :width="imageWidth"
+      :height="imageHeight"
       :class="{ 'ProseMirror-selectednode': selected }"
     />
   </node-view-wrapper>

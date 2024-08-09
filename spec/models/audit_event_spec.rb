@@ -14,16 +14,27 @@ RSpec.describe AuditEvent do
     end
   end
 
+  # Do not update this spec, We are migrating audit events to new tables and want to ensure no columns are added or removed
+  # issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/454174
+  describe '.columns' do
+    it 'does not change' do
+      expect(described_class.columns.map(&:name).map(&:to_sym)).to match_array(
+        [:id, :created_at, :author_id, :target_id, :details, :ip_address,
+          :author_name, :entity_path, :target_details, :target_type,
+          :entity_id, :entity_type])
+    end
+  end
+
   describe 'callbacks' do
     describe '#parallel_persist' do
       shared_examples 'a parallel persisted field' do
         using RSpec::Parameterized::TableSyntax
 
         where(:column, :details, :expected_value) do
-          :value | nil            | :value
-          nil    | :value         | :value
+          :value | nil | :value
+          nil | :value | :value
           :value | :another_value | :value
-          nil    | nil            | nil
+          nil | nil | nil
         end
 
         with_them do
@@ -106,8 +117,8 @@ RSpec.describe AuditEvent do
 
       it 'returns a NullAuthor' do
         expect(::Gitlab::Audit::NullAuthor).to receive(:for)
-          .and_call_original
-          .once
+                                                 .and_call_original
+                                                 .once
 
         is_expected.to be_a_kind_of(::Gitlab::Audit::NullAuthor)
       end
@@ -118,9 +129,9 @@ RSpec.describe AuditEvent do
 
       it 'returns a CiRunnerTokenAuthor' do
         expect(::Gitlab::Audit::CiRunnerTokenAuthor).to receive(:new)
-          .with(audit_event)
-          .and_call_original
-          .once
+                                                          .with(audit_event)
+                                                          .and_call_original
+                                                          .once
 
         is_expected.to be_an_instance_of(::Gitlab::Audit::CiRunnerTokenAuthor)
       end

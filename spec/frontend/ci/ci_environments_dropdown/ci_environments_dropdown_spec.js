@@ -117,6 +117,16 @@ describe('Ci environments dropdown', () => {
     });
   });
 
+  describe('when no environment is selected', () => {
+    beforeEach(() => {
+      createComponent({ props: { selectedEnvironmentScope: '' } });
+    });
+
+    it('shows the placeholder text', () => {
+      expect(findListboxText()).toContain('Select environment or create wildcard');
+    });
+  });
+
   describe('when fetching environments', () => {
     const currentEnv = envs[2];
 

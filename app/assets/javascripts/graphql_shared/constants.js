@@ -18,6 +18,7 @@ export const TYPENAME_GROUP = 'Group';
 export const TYPENAME_ISSUE = 'Issue';
 export const TYPENAME_ITERATION = 'Iteration';
 export const TYPENAME_ITERATIONS_CADENCE = 'Iterations::Cadence';
+export const TYPENAME_LABEL = 'Label';
 export const TYPENAME_MEMBER_ROLE = 'MemberRole';
 export const TYPENAME_MERGE_REQUEST = 'MergeRequest';
 export const TYPENAME_MILESTONE = 'Milestone';

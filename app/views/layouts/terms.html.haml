@@ -10,7 +10,7 @@
       = render "layouts/flash"
 
       .limit-container-width.gl-my-5{ class: container_class }
-        = render Pajamas::CardComponent.new( body_options: { class: 'gl-new-card-body gl-px-0' }, header_options: { class: 'gl-flex gl-items-center gl-justify-between' }) do |c|
+        = render Pajamas::CardComponent.new( body_options: { class: 'gl-p-0' }, header_options: { class: 'gl-flex gl-items-center gl-justify-between' }) do |c|
           - c.with_header do
             = brand_header_logo({add_gitlab_black_text: true})
             - if current_user

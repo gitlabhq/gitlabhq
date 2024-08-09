@@ -412,12 +412,45 @@ This version is different than the larger, more monolithic **Linux package** tha
 
 You can also use **cloud-native GitLab** for short. It should be hyphenated and lowercase.
 
+## code completion
+
+Code Suggestions has evolved to include two primary features:
+
+- **code completion**
+- **code generation**
+
+Use lowercase for **code completion**. Do not use **GitLab Duo Code Completion**.
+GitLab Duo is reserved for Code Suggestions only.
+
+**Code completion** must always be singular.
+
+Example:
+
+- Use code completion to populate the file.
+
 ## Code explanation
 
 Use sentence case for **Code explanation**.
 
 On first mention on a page, use **GitLab Duo Code explanation**.
 Thereafter, use **Code explanation** by itself.
+
+## Code Generation
+
+Code Suggestions has evolved to include two primary features:
+
+- **code completion**
+- **code generation**
+
+Use lowercase for **code generation**. Do not use **GitLab Duo Code Generation**.
+GitLab Duo is reserved for Code Suggestions only.
+
+**Code generation** must always be singular.
+
+Examples:
+
+- Use code generation to create code based on your comments.
+- Adjust your code generation results by adding code comments to your file.
 
 ## Code review summary
 
@@ -427,6 +460,11 @@ On first mention on a page, use **GitLab Duo Code review summary**.
 Thereafter, use **Code review summary** by itself.
 
 ## Code Suggestions
+
+**Code Suggestions** has evolved to include two primary features:
+
+- [**code completion**](#code-completion)
+- [**code generation**](#code-generation)
 
 Use title case for **Code Suggestions**. On first mention on a page, use **GitLab Duo Code Suggestions**.
 

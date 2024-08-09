@@ -116,3 +116,9 @@ export const updateNewWorkItemCache = (input, cache) => {
     }),
   );
 };
+
+export const workItemBulkEdit = (input) => {
+  return {
+    updatedIssueCount: input.ids.length,
+  };
+};

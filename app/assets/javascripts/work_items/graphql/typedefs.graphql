@@ -50,13 +50,11 @@ input LocalRolledUpDatesInput {
   startDateFixed: String
 }
 
+scalar WorkItemsParentID
+
 type LocalWorkItemPayload {
   workItem: WorkItem!
   errors: [String!]
-}
-
-extend type Mutation {
-  localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
 }
 
 input LocalUpdateNewWorkItemInput {
@@ -73,6 +71,21 @@ input LocalUpdateNewWorkItemInput {
   crmContacts: [LocalCrmContactsInput]
 }
 
+input LocalWorkItemBulkUpdateInput {
+  clientMutationId: String
+  ids: [WorkItemID!]!
+  labelsWidget: WorkItemWidgetLabelsUpdateInput
+  parentId: WorkItemsParentID!
+}
+
+type LocalWorkItemBulkUpdatePayload {
+  clientMutationId: String
+  updatedIssueCount: Int
+  errors: [String!]
+}
+
 extend type Mutation {
+  workItemBulkUpdate(input: LocalWorkItemBulkUpdateInput!): LocalWorkItemBulkUpdatePayload
   updateNewWorkItem(input: LocalUpdateNewWorkItemInput!): LocalWorkItemPayload
+  localUpdateWorkItem(input: LocalUpdateWorkItemInput!): LocalWorkItemPayload
 }

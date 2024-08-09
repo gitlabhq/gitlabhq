@@ -16,7 +16,6 @@ import {
   WIDGET_TYPE_ROLLEDUP_DATES,
   WIDGET_TYPE_WEIGHT,
   WIDGET_TYPE_COLOR,
-  WIDGET_TYPE_DEVELOPMENT,
   WIDGET_TYPE_CRM_CONTACTS,
   WORK_ITEM_TYPE_VALUE_EPIC,
 } from '../constants';
@@ -135,9 +134,6 @@ export default {
     },
     workItemAuthor() {
       return this.workItem?.author;
-    },
-    workItemDevelopment() {
-      return this.isWidgetPresent(WIDGET_TYPE_DEVELOPMENT) && this.glFeatures.workItemsBeta;
     },
     hasParent() {
       return this.workItemHierarchy?.hasParent;
@@ -303,10 +299,8 @@ export default {
       />
     </template>
     <work-item-development
-      v-if="workItemDevelopment"
-      class="gl-mb-5 gl-pt-5 gl-border-t gl-border-gray-50"
-      :can-update="canUpdate"
       :work-item-iid="workItem.iid"
+      :work-item-id="workItem.id"
       :work-item-full-path="fullPath"
       @error="$emit('error', $event)"
     />

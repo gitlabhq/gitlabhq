@@ -23,8 +23,6 @@
 
 = render 'groups/home_panel'
 
-= render_if_exists 'groups/self_or_ancestor_marked_for_deletion_notice', group: @group
-
 = render_if_exists 'groups/group_activity_analytics', group: @group
 
 #js-group-overview-tabs{ data: group_overview_tabs_app_data(@group) }

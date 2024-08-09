@@ -509,16 +509,9 @@ describe('CE IssuesListApp component', () => {
     describe('filter tokens', () => {
       it('groups url params of assignee and author', () => {
         setWindowLocation(locationSearch);
-        wrapper = mountComponent({ provide: { glFeatures: { groupMultiSelectTokens: true } } });
-
-        expect(findIssuableList().props('initialFilterValue')).toEqual(groupedFilteredTokens);
-      });
-
-      it('is set from the url params', () => {
-        setWindowLocation(locationSearch);
         wrapper = mountComponent();
 
-        expect(findIssuableList().props('initialFilterValue')).toEqual(filteredTokens);
+        expect(findIssuableList().props('initialFilterValue')).toEqual(groupedFilteredTokens);
       });
     });
   });

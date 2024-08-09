@@ -3,6 +3,7 @@ import { GlLoadingIcon, GlIcon, GlButton, GlTooltipDirective, GlModalDirective }
 import glFeatureFlagMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 
 import { s__, __ } from '~/locale';
+import { findWidget } from '~/issues/list/utils';
 
 import workItemByIidQuery from '~/work_items/graphql/work_item_by_iid.query.graphql';
 import { sprintfWorkItem, WIDGET_TYPE_DEVELOPMENT, STATE_OPEN } from '~/work_items/constants';
@@ -22,16 +23,15 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   props: {
-    canUpdate: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
     workItemIid: {
       type: String,
       required: true,
     },
     workItemFullPath: {
+      type: String,
+      required: true,
+    },
+    workItemId: {
       type: String,
       required: true,
     },
@@ -63,6 +63,9 @@ export default {
     };
   },
   computed: {
+    canUpdate() {
+      return this.workItem?.userPermissions?.updateWorkItem;
+    },
     workItemState() {
       return this.workItem?.state;
     },
@@ -70,7 +73,7 @@ export default {
       return this.workItem?.workItemType?.name;
     },
     workItemDevelopment() {
-      return this.workItem?.widgets?.find(({ type }) => type === WIDGET_TYPE_DEVELOPMENT);
+      return findWidget(WIDGET_TYPE_DEVELOPMENT, this.workItem);
     },
     isLoading() {
       return this.$apollo.queries.workItem.loading;
@@ -81,10 +84,13 @@ export default {
     linkedMergeRequests() {
       return this.workItemDevelopment?.closingMergeRequests?.nodes || [];
     },
-    shouldShowDevWidget() {
-      return this.glFeatures.workItemsAlpha ? true : !this.isEmptyRelatedWorkItems;
+    shouldShowEmptyState() {
+      return this.isRelatedDevelopmentListEmpty ? this.workItemsAlphaEnabled : true;
     },
-    isEmptyRelatedWorkItems() {
+    shouldShowDevWidget() {
+      return this.workItemDevelopment && this.shouldShowEmptyState;
+    },
+    isRelatedDevelopmentListEmpty() {
       return !this.error && this.linkedMergeRequests.length === 0;
     },
     showAutoCloseInformation() {
@@ -106,6 +112,12 @@ export default {
     tooltipText() {
       return this.workItemState === STATE_OPEN ? this.openStateText : this.closedStateText;
     },
+    workItemsAlphaEnabled() {
+      return this.glFeatures.workItemsAlpha;
+    },
+    showAddButton() {
+      return this.workItemsAlphaEnabled && this.canUpdate;
+    },
   },
   createMRModalId: 'create-merge-request-modal',
   i18n: {
@@ -126,50 +138,52 @@ export default {
 };
 </script>
 <template>
-  <div v-if="shouldShowDevWidget">
-    <div class="gl-flex gl-items-center gl-gap-3 gl-justify-between">
-      <h3
-        class="gl-mb-0! gl-heading-5 gl-flex gl-items-center gl-gap-2"
-        data-testid="dev-widget-label"
-      >
-        {{ $options.i18n.development }}
-        <gl-button
-          v-if="showAutoCloseInformation"
-          v-gl-tooltip
-          class="hover:!gl-bg-transparent !gl-p-0"
-          category="tertiary"
-          :title="tooltipText"
-          :aria-label="tooltipText"
-          data-testid="more-information"
-        >
-          <gl-icon name="information-o" class="!gl-text-blue-500" />
-        </gl-button>
-      </h3>
-      <gl-button
-        v-if="canUpdate"
-        v-gl-modal="$options.createMRModalId"
-        v-gl-tooltip.top
-        category="tertiary"
-        size="small"
-        data-testid="add-item"
-        :title="__('Add branch or merge request')"
-        :aria-label="__('Add branch or merge request')"
-      >
-        <gl-icon name="plus" class="gl-text-gray-900!" />
-      </gl-button>
-    </div>
+  <div>
     <gl-loading-icon v-if="isLoading" class="gl-my-2" />
-    <template v-else-if="isEmptyRelatedWorkItems">
-      <span v-if="!canUpdate" class="gl-text-secondary">{{ __('None') }}</span>
-      <template v-else>
-        <gl-button category="secondary" size="small" data-testid="create-mr-button">{{
-          $options.i18n.createMergeRequest
-        }}</gl-button>
-        <gl-button category="tertiary" size="small" data-testid="create-branch-button">{{
-          $options.i18n.createBranch
-        }}</gl-button>
+    <div v-if="shouldShowDevWidget" class="gl-border-t gl-border-gray-50 gl-mb-5 gl-pt-5">
+      <div class="gl-flex gl-items-center gl-gap-3 gl-justify-between">
+        <h3
+          class="!gl-mb-0 gl-heading-5 gl-flex gl-items-center gl-gap-2"
+          data-testid="dev-widget-label"
+        >
+          {{ $options.i18n.development }}
+          <gl-button
+            v-if="showAutoCloseInformation"
+            v-gl-tooltip
+            class="hover:!gl-bg-transparent !gl-p-0"
+            category="tertiary"
+            :title="tooltipText"
+            :aria-label="tooltipText"
+            data-testid="more-information"
+          >
+            <gl-icon name="information-o" class="!gl-text-blue-500" />
+          </gl-button>
+        </h3>
+        <gl-button
+          v-if="showAddButton"
+          v-gl-modal="$options.createMRModalId"
+          v-gl-tooltip.top
+          category="tertiary"
+          size="small"
+          data-testid="add-item"
+          :title="__('Add branch or merge request')"
+          :aria-label="__('Add branch or merge request')"
+        >
+          <gl-icon name="plus" class="!gl-text-gray-900" />
+        </gl-button>
+      </div>
+      <template v-if="isRelatedDevelopmentListEmpty">
+        <span v-if="!canUpdate" class="gl-text-secondary">{{ __('None') }}</span>
+        <template v-else>
+          <gl-button category="secondary" size="small" data-testid="create-mr-button">{{
+            $options.i18n.createMergeRequest
+          }}</gl-button>
+          <gl-button category="tertiary" size="small" data-testid="create-branch-button">{{
+            $options.i18n.createBranch
+          }}</gl-button>
+        </template>
       </template>
-    </template>
-    <work-item-development-relationship-list v-else :work-item-dev-widget="workItemDevelopment" />
+      <work-item-development-relationship-list v-else :work-item-dev-widget="workItemDevelopment" />
+    </div>
   </div>
 </template>

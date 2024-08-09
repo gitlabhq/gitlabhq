@@ -24,8 +24,6 @@
     - if can?(current_user, :read_code, @project) && @project.repository_languages.present?
       - add_page_startup_graphql_call('repository/path_last_commit', { projectPath: @project.full_path, ref: current_ref, path: current_route_path || "" })
 
-    = render_if_exists "projects/ancestor_group_marked_for_deletion_notice", project: @project
-
     - view_path = @project.default_view
 
     %div{ class: project_child_container_class(view_path) }

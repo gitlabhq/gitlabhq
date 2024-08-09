@@ -37,7 +37,6 @@
 - spec/controllers/registrations_controller_spec.rb
 - spec/features/admin/admin_groups_spec.rb
 - spec/features/dashboard/group_spec.rb
-- spec/features/file_uploads/group_import_spec.rb
 - spec/features/groups_spec.rb
 - spec/frontend/fixtures/groups.rb
 - spec/graphql/types/project_type_spec.rb
@@ -45,8 +44,6 @@
 - spec/lib/gitlab/auth/ldap/user_spec.rb
 - spec/lib/gitlab/auth/o_auth/user_spec.rb
 - spec/lib/gitlab/auth/saml/user_spec.rb
-- spec/lib/gitlab/import/placeholder_user_creator_spec.rb
-- spec/lib/gitlab/import/source_user_mapper_spec.rb
 - spec/models/hooks/system_hook_spec.rb
 - spec/requests/api/groups_spec.rb
 - spec/services/users/create_service_spec.rb

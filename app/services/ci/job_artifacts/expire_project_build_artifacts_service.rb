@@ -12,7 +12,7 @@ module Ci
 
       # rubocop:disable CodeReuse/ActiveRecord
       def execute
-        scope = Ci::JobArtifact.for_project(project_id).order(:id)
+        scope = Ci::JobArtifact.select(:id).for_project(project_id).order(:id)
         file_type_values = Ci::JobArtifact.erasable_file_types.map { |file_type| [Ci::JobArtifact.file_types[file_type]] }
         from_sql = Arel::Nodes::Grouping.new(Arel::Nodes::ValuesList.new(file_type_values)).as('file_types (file_type)').to_sql
         array_scope = Ci::JobArtifact.from(from_sql).select(:file_type)
@@ -21,7 +21,7 @@ module Ci
         Gitlab::Pagination::Keyset::Iterator
           .new(scope: scope, in_operator_optimization_options: { array_scope: array_scope, array_mapping_scope: array_mapping_scope })
           .each_batch(of: BATCH_SIZE) do |batch|
-          ids = batch.reselect!(:id).to_a.map(&:id)
+          ids = batch.to_a.map(&:id)
           Ci::JobArtifact.unlocked.where(id: ids).update_all(locked: Ci::JobArtifact.lockeds[:unlocked], expire_at: expiry_time)
         end
       end
