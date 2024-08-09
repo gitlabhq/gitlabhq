@@ -235,6 +235,7 @@
   "WorkItemWidgetDefinition": [
     "WorkItemWidgetDefinitionAssignees",
     "WorkItemWidgetDefinitionGeneric",
+    "WorkItemWidgetDefinitionHealthStatus",
     "WorkItemWidgetDefinitionHierarchy",
     "WorkItemWidgetDefinitionLabels",
     "WorkItemWidgetDefinitionWeight"

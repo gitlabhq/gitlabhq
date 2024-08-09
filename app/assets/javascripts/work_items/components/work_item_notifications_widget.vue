@@ -29,7 +29,6 @@ export default {
   },
   mixins: [glFeatureFlagMixin()],
   isLoggedIn: isLoggedIn(),
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,

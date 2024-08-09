@@ -13,7 +13,7 @@ DETAILS:
 WARNING:
 This feature was [deprecated](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159841) in GitLab 17.3
 and is planned for removal in 18.0. Use [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) instead.
-This change is a breaking change.
+This change is a breaking change. For more information, see the [migration guide](#migrate-to-pipeline-execution-policies).
 
 Group owners can configure a compliance pipeline in a project separate to other projects. By default, the compliance
 pipeline configuration (for example, `.compliance-gitlab-ci.yml`) is run instead of the pipeline configuration (for example, `.gitlab-ci.yml`) of labeled
@@ -347,3 +347,22 @@ include:
     file: '$CI_CONFIG_PATH'
     ref: '$CI_COMMIT_SHA'
 ```
+
+## Migrate to pipeline execution policies
+
+To consolidate and simplify scan and pipeline enforcement, we have introduced pipeline execution policies. We have deprecated compliance pipelines in GitLab 17.3 and will remove compliance pipelines in GitLab 18.0.
+Customers should migrate from compliance pipelines to the new [pipeline execution policy type](../application_security/policies/pipeline_execution_policies.md) as soon as possible.
+
+Pipeline execution policies extend a project's `.gitlab-ci.yml` file with the configuration provided in separate YAML file (for example, `pipeline-execution.yml`) linked in
+the pipeline execution policy.
+
+### Troubleshooting
+
+#### Job names must be unique
+
+To configure a compliance pipeline, the [example configuration](#example-configuration) recommends including the individual project configuration with `include.project`.
+
+This can lead to an error when running the projects pipeline: `Pipeline execution policy error: Job names must be unique`. This error occurs because the pipeline execution
+policy includes the project's `.gitlab-ci.yml` and tries to insert the jobs when the jobs have already been declared in the pipeline.
+
+To resolve this error, remove `include.project` from the separate YAML file linked in the pipeline execution policy.

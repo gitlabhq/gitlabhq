@@ -49,7 +49,6 @@ describe('WorkItemLinks', () => {
     fetchHandler = responseWithAddChildPermission,
     issueDetailsQueryHandler = jest.fn().mockResolvedValue(getIssueDetailsResponse()),
     hasIterationsFeature = false,
-    isGroup = false,
   } = {}) => {
     mockApollo = createMockApollo(
       [
@@ -63,7 +62,6 @@ describe('WorkItemLinks', () => {
       provide: {
         fullPath: 'project/path',
         hasIterationsFeature,
-        isGroup,
         reportAbusePath: '/report/abuse/path',
       },
       propsData: {

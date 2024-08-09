@@ -353,6 +353,13 @@ To migrate back to local storage:
 released support for using SSH as the transfer protocol instead of HTTP.
 SSH is handled transparently by the `git-lfs` command line tool.
 
+When pure SSH protocol support is enabled and `git` is configured to use SSH,
+all LFS operations happen over SSH. For example, when the Git remote is
+`git@gitlab.com:gitlab-org/gitlab.git`. You can't configure `git` and `git-lfs`
+to use different protocols. From version 3.0, `git-lfs` attempts to use the pure
+SSH protocol initially and, if support is not enabled or available, it falls back
+to using HTTP.
+
 Prerequisites:
 
 - The `git-lfs` version must be [v3.5.1](https://github.com/git-lfs/git-lfs/releases/tag/v3.5.1) or higher.

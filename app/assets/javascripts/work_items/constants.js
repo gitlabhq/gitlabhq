@@ -129,11 +129,6 @@ export const I18N_WORK_ITEM_ERROR_COPY_EMAIL = s__(
   'WorkItem|Something went wrong while copying the %{workItemType} email address. Please try again.',
 );
 
-export const I18N_MAX_CHARS_IN_WORK_ITEM_TITLE_MESSAGE = sprintf(
-  s__('WorkItem|Title cannot have more than %{WORK_ITEM_TITLE_MAX_LENGTH} characters.'),
-  { WORK_ITEM_TITLE_MAX_LENGTH },
-);
-
 export const I18N_WORK_ITEM_COPY_CREATE_NOTE_EMAIL = s__(
   'WorkItem|Copy %{workItemType} email address',
 );
@@ -236,7 +231,6 @@ export const FORM_TYPES = {
   },
 };
 
-export const DEFAULT_PAGE_SIZE_ASSIGNEES = 10;
 export const DEFAULT_PAGE_SIZE_NOTES = 30;
 export const DEFAULT_PAGE_SIZE_EMOJIS = 100;
 export const DEFAULT_PAGE_SIZE_CHILD_ITEMS = 20;

@@ -13600,6 +13600,12 @@ msgstr ""
 msgid "ComplianceFrameworksReport|Policies"
 msgstr ""
 
+msgid "ComplianceFrameworksReport|Use the compliance framework ID in configuration or API requests. %{linkStart}Learn more.%{linkEnd}"
+msgstr ""
+
+msgid "ComplianceFrameworksReport|Using the ID"
+msgstr ""
+
 msgid "ComplianceFrameworks| Frameworks export"
 msgstr ""
 
@@ -60920,9 +60926,6 @@ msgid "WorkItem|This %{workItemType} will be closed when the following is merged
 msgstr ""
 
 msgid "WorkItem|This work item is not available. It either doesn't exist or you don't have permission to view it."
-msgstr ""
-
-msgid "WorkItem|Title cannot have more than %{WORK_ITEM_TITLE_MAX_LENGTH} characters."
 msgstr ""
 
 msgid "WorkItem|Turn off confidentiality"

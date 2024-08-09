@@ -65,7 +65,6 @@ describe('WorkItemActions component', () => {
         workItemReference,
       },
       provide: {
-        isGroup: false,
         glFeatures: { workItemsBeta: true, workItemsAlpha: true },
       },
       mocks: {

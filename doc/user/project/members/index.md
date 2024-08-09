@@ -354,6 +354,7 @@ You can prevent users from requesting access to a project.
 Prerequisites:
 
 - You must have the Owner role for the project.
+- The project must be public.
 
 1. On the left sidebar, select **Search or go to** and find your project.
 1. Select **Settings > General**.

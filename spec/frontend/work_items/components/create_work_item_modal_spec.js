@@ -69,7 +69,6 @@ describe('CreateWorkItemModal', () => {
       apolloProvider,
       provide: {
         fullPath: 'full-path',
-        isGroup: false,
       },
       mocks: {
         $toast: {

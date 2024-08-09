@@ -20,7 +20,7 @@ export default {
     GlModal,
     GlDisclosureDropdownItem,
   },
-  inject: ['fullPath', 'isGroup'],
+  inject: ['fullPath'],
   props: {
     workItemTypeName: {
       type: String,

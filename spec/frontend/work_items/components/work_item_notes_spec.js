@@ -11,7 +11,6 @@ import WorkItemDiscussion from '~/work_items/components/notes/work_item_discussi
 import WorkItemAddNote from '~/work_items/components/notes/work_item_add_note.vue';
 import WorkItemNotesActivityHeader from '~/work_items/components/notes/work_item_notes_activity_header.vue';
 import WorkItemNotesLoading from '~/work_items/components/notes/work_item_notes_loading.vue';
-import groupWorkItemNotesByIidQuery from '~/work_items/graphql/notes/group_work_item_notes_by_iid.query.graphql';
 import workItemNotesByIidQuery from '~/work_items/graphql/notes/work_item_notes_by_iid.query.graphql';
 import deleteWorkItemNoteMutation from '~/work_items/graphql/notes/delete_work_item_notes.mutation.graphql';
 import workItemNoteCreatedSubscription from '~/work_items/graphql/notes/work_item_note_created.subscription.graphql';
@@ -68,9 +67,6 @@ describe('WorkItemNotes component', () => {
   const findDeleteNoteModal = () => wrapper.findComponent(GlModal);
   const findWorkItemAddNote = () => wrapper.findComponent(WorkItemAddNote);
 
-  const groupWorkItemNotesQueryHandler = jest
-    .fn()
-    .mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemNotesQueryHandler = jest.fn().mockResolvedValue(mockWorkItemNotesByIidResponse);
   const workItemMoreNotesQueryHandler = jest.fn().mockResolvedValue(mockMoreWorkItemNotesResponse);
   const workItemNotesWithCommentsQueryHandler = jest
@@ -94,7 +90,6 @@ describe('WorkItemNotes component', () => {
     workItemId = mockWorkItemId,
     workItemIid = mockWorkItemIid,
     defaultWorkItemNotesQueryHandler = workItemNotesQueryHandler,
-    groupWorkItemNotesHandler = groupWorkItemNotesQueryHandler,
     deleteWINoteMutationHandler = deleteWorkItemNoteMutationSuccessHandler,
     isGroup = false,
     isModal = false,
@@ -103,7 +98,6 @@ describe('WorkItemNotes component', () => {
     wrapper = shallowMount(WorkItemNotes, {
       apolloProvider: createMockApollo([
         [workItemNotesByIidQuery, defaultWorkItemNotesQueryHandler],
-        [groupWorkItemNotesByIidQuery, groupWorkItemNotesHandler],
         [deleteWorkItemNoteMutation, deleteWINoteMutationHandler],
         [workItemNoteCreatedSubscription, notesCreateSubscriptionHandler],
         [workItemNoteUpdatedSubscription, notesUpdateSubscriptionHandler],
@@ -385,13 +379,6 @@ describe('WorkItemNotes component', () => {
   });
 
   describe('when group context', () => {
-    it('calls the group work item query', async () => {
-      createComponent({ isGroup: true });
-      await waitForPromises();
-
-      expect(groupWorkItemNotesQueryHandler).toHaveBeenCalled();
-    });
-
     it('should pass the correct `autoCompleteDataSources` to group work item comment note', async () => {
       const groupWorkItemNotes = {
         data: {
@@ -409,7 +396,7 @@ describe('WorkItemNotes component', () => {
       };
       createComponent({
         isGroup: true,
-        groupWorkItemNotesHandler: jest.fn().mockResolvedValue(groupWorkItemNotes),
+        defaultWorkItemNotesQueryHandler: jest.fn().mockResolvedValue(groupWorkItemNotes),
       });
       await waitForPromises();
 

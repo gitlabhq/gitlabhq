@@ -50,7 +50,7 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['fullPath', 'isGroup', 'reportAbusePath'],
+  inject: ['fullPath', 'reportAbusePath'],
   props: {
     issuableId: {
       type: Number,
@@ -198,7 +198,6 @@ export default {
         cache,
         fullPath: this.fullPath,
         iid: this.iid,
-        isGroup: this.isGroup,
         workItem: child,
       });
       this.$toast.show(s__('WorkItem|Task deleted'));

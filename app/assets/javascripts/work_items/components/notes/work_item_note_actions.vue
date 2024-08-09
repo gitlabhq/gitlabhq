@@ -34,7 +34,6 @@ export default {
   directives: {
     GlTooltip: GlTooltipDirective,
   },
-  inject: ['isGroup'],
   props: {
     fullPath: {
       type: String,
@@ -192,7 +191,6 @@ export default {
             note: this.note,
             name,
             fullPath: this.fullPath,
-            isGroup: this.isGroup,
             workItemIid: this.workItemIid,
           }),
         });

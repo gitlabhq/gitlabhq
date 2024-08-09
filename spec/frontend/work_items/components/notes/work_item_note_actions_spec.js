@@ -64,7 +64,6 @@ describe('Work Item Note Actions', () => {
         projectName,
       },
       provide: {
-        isGroup: false,
         glFeatures: {
           workItemsAlpha: true,
         },

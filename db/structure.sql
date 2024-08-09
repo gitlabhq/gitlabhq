@@ -33202,7 +33202,7 @@ ALTER TABLE ONLY audit_events_streaming_group_namespace_filters
     ADD CONSTRAINT fk_8ed182d7da FOREIGN KEY (external_streaming_destination_id) REFERENCES audit_events_group_external_streaming_destinations(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY compliance_requirements
-    ADD CONSTRAINT fk_8f5fb77fc7 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_8f5fb77fc7 FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY vulnerability_exports
     ADD CONSTRAINT fk_90e75ccdf8 FOREIGN KEY (organization_id) REFERENCES organizations(id) ON DELETE CASCADE;
@@ -33565,7 +33565,7 @@ ALTER TABLE ONLY personal_access_tokens
     ADD CONSTRAINT fk_c951fbf57e FOREIGN KEY (previous_personal_access_token_id) REFERENCES personal_access_tokens(id) ON DELETE SET NULL;
 
 ALTER TABLE ONLY compliance_checks
-    ADD CONSTRAINT fk_c9683a794f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE SET NULL;
+    ADD CONSTRAINT fk_c9683a794f FOREIGN KEY (namespace_id) REFERENCES namespaces(id) ON DELETE CASCADE;
 
 ALTER TABLE ONLY jira_tracker_data
     ADD CONSTRAINT fk_c98abcd54c FOREIGN KEY (integration_id) REFERENCES integrations(id) ON DELETE CASCADE;
