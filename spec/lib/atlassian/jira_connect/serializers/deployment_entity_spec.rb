@@ -119,7 +119,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
       end
     end
 
-    context 'when the project has Jira Cloud app, deployment gating configured and deployment status is blocked' do
+    context 'when the project has Jira Cloud app, deployment gating configured and state is pending' do
       before do
         deployment.update!(status: 'blocked')
       end
@@ -168,7 +168,7 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
           integration.update!(jira_cloud_app_deployment_gating_environments: "")
         end
 
-        it 'does not includes initiate_deployment_gating in the commands' do
+        it 'does not include initiate_deployment_gating in the commands' do
           expect(commands).to be(nil)
         end
       end
@@ -178,18 +178,30 @@ RSpec.describe Atlassian::JiraConnect::Serializers::DeploymentEntity, feature_ca
           integration.update!(jira_cloud_app_deployment_gating_environments: "development")
         end
 
-        it 'does not includes initiate_deployment_gating in the commands' do
+        it 'does not include initiate_deployment_gating in the commands' do
           expect(commands).to be(nil)
         end
       end
 
-      context 'when the integration jira_cloud_app_deployment_gating_environments deployment status is not blocked' do
+      context 'when the integration jira_cloud_app_deployment_gating_environments state is not pending' do
+        before do
+          deployment.update!(status: 'running')
+        end
+
+        it 'does not include initiate_deployment_gating in the commands' do
+          expect(commands).to be(nil)
+        end
+      end
+
+      context 'when the deployment status is created' do
         before do
           deployment.update!(status: 'created')
         end
 
-        it 'does not includes initiate_deployment_gating in the commands' do
-          expect(commands).to be(nil)
+        it 'does include initiate_deployment_gating in the commands' do
+          expect(commands).to include(
+            { 'command' => 'initiate_deployment_gating' }
+          )
         end
       end
 

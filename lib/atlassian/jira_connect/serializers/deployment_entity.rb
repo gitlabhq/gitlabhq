@@ -154,7 +154,8 @@ module Atlassian
           environments = jira_cloud_app_integration.jira_cloud_app_deployment_gating_environments.split(',')
           current_environment = environment.tier
 
-          return unless environments.include?(current_environment) && deployment.status == "blocked"
+          return unless environments.include?(current_environment)
+          return unless state == "pending"
 
           [{ command: 'initiate_deployment_gating' }]
         end

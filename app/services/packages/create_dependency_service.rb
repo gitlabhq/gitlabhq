@@ -1,8 +1,11 @@
 # frozen_string_literal: true
+
 module Packages
   # rubocop: disable Gitlab/BulkInsert
   class CreateDependencyService < BaseService
     attr_reader :package, :dependencies
+
+    delegate :project_id, to: :package, private: true
 
     def initialize(package, dependencies)
       @package = package
@@ -35,7 +38,7 @@ module Packages
     end
 
     def find_existing_ids_and_names(names_and_version_patterns)
-      ids_and_names = Packages::Dependency.for_package_names_and_version_patterns(names_and_version_patterns)
+      ids_and_names = Packages::Dependency.for_package_project_id_names_and_version_patterns(project_id, names_and_version_patterns)
                                           .pluck_ids_and_names
       ids = ids_and_names.map(&:first) || []
       names = ids_and_names.map(&:second) || []
@@ -48,7 +51,8 @@ module Packages
       rows = names_and_version_patterns.map do |name, version_pattern|
         {
           name: name,
-          version_pattern: version_pattern
+          version_pattern: version_pattern,
+          project_id: project_id
         }
       end
 
@@ -60,7 +64,7 @@ module Packages
         # sure that the results are fresh from the database and not from a stalled
         # and potentially wrong cache, this query has to be done with the query
         # cache disabled.
-        Packages::Dependency.ids_for_package_names_and_version_patterns(names_and_version_patterns)
+        Packages::Dependency.ids_for_package_project_id_names_and_version_patterns(project_id, names_and_version_patterns)
       end
     end
 

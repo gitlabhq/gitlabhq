@@ -688,7 +688,7 @@ RSpec.describe 'previousStageJobs', feature_category: :pipeline_composition do
 
     expect do
       post_graphql(query, current_user: user2)
-    end.to issue_same_number_of_queries_as(control)
+    end.not_to exceed_query_limit(control)
 
     expect(graphql_data_previous_stage_jobs).to eq(
       'build_build' => [],

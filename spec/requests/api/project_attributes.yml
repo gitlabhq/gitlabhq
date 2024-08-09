@@ -79,6 +79,7 @@ itself: # project
     - web_url
     - description_html
     - repository_object_format
+    - pre_receive_secret_detection_enabled
 
 build_auto_devops: # auto_devops
   unexposed_attributes:

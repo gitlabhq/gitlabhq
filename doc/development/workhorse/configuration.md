@@ -100,7 +100,7 @@ URL = "unix:///var/run/gitlab/redis.sock"
 Password = "my_awesome_password"
 ```
 
-- `URL` - A string in the format `unix://path/to/redis.sock` or `tcp://host:port`.
+- `URL` - A string in the format `unix://path/to/redis.sock` or `redis://host:port`.
 - `Password` - Required only if your Redis instance is password-protected.
 - `Sentinel` - Required if you use Sentinel.
 
@@ -164,7 +164,7 @@ addr = "localhost:9229"
 
 ```plaintext
 [redis]
-Sentinel = [ "tcp://sentinel1:23456", "tcp://sentinel2:23456" ]
+Sentinel = [ "redis://sentinel1:23456", "redis://sentinel2:23456" ]
 SentinelMaster = "mymaster"
 ```
 
@@ -172,7 +172,7 @@ SentinelMaster = "mymaster"
 
 ```plaintext
 [redis]
-Sentinel = [ "tcp://sentinel1:23456", "tcp://sentinel2:23456" ]
+Sentinel = [ "rediss://sentinel1:23456", "rediss://sentinel2:23456" ]
 SentinelMaster = "mymaster"
 [Sentinel.tls]
   certificate = "/path/to/certificate"

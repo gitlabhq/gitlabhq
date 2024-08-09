@@ -613,7 +613,6 @@ Layout/EmptyLineAfterMagicComment:
     - 'spec/services/packages/composer/version_parser_service_spec.rb'
     - 'spec/services/packages/conan/create_package_file_service_spec.rb'
     - 'spec/services/packages/conan/create_package_service_spec.rb'
-    - 'spec/services/packages/create_dependency_service_spec.rb'
     - 'spec/services/packages/create_event_service_spec.rb'
     - 'spec/services/packages/create_package_file_service_spec.rb'
     - 'spec/services/packages/debian/extract_deb_metadata_service_spec.rb'

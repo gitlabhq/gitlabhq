@@ -3,6 +3,9 @@
 require 'spec_helper'
 
 RSpec.describe Packages::Dependency, type: :model, feature_category: :package_registry do
+  let_it_be(:project) { create(:project) }
+  let_it_be(:project2) { create(:project) }
+
   describe 'included modules' do
     it { is_expected.to include_module(EachBatch) }
   end
@@ -55,16 +58,33 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
     end
   end
 
-  describe '.ids_for_package_names_and_version_patterns' do
-    let_it_be(:package_dependency1) { create(:packages_dependency, name: 'foo', version_pattern: '~1.0.0') }
-    let_it_be(:package_dependency2) { create(:packages_dependency, name: 'bar', version_pattern: '~2.5.0') }
+  describe '.ids_for_package_project_id_names_and_version_patterns' do
+    let_it_be(:package_dependency1) do
+      create(:packages_dependency, name: 'foo', version_pattern: '~1.0.0', project: project)
+    end
+
+    let_it_be(:package_dependency2) do
+      create(:packages_dependency, name: 'bar', version_pattern: '~2.5.0', project: nil)
+    end
+
+    let_it_be(:package_dependency_diff_project) do
+      create(:packages_dependency, name: 'bar', version_pattern: '~2.5.0', project: project2)
+    end
+
     let_it_be(:expected_ids) { [package_dependency1.id, package_dependency2.id] }
 
     let(:names_and_version_patterns) { build_names_and_version_patterns(package_dependency1, package_dependency2) }
     let(:chunk_size) { 50 }
     let(:rows_limit) { 50 }
 
-    subject { described_class.ids_for_package_names_and_version_patterns(names_and_version_patterns, chunk_size, rows_limit) }
+    subject do
+      described_class.ids_for_package_project_id_names_and_version_patterns(
+        project.id,
+        names_and_version_patterns,
+        chunk_size,
+        rows_limit
+      )
+    end
 
     it { is_expected.to match_array(expected_ids) }
 
@@ -104,11 +124,25 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
     end
 
     context 'with parameters size' do
-      let_it_be(:package_dependency3) { create(:packages_dependency, name: 'foo3', version_pattern: '~1.5.3') }
-      let_it_be(:package_dependency4) { create(:packages_dependency, name: 'foo4', version_pattern: '~1.5.4') }
-      let_it_be(:package_dependency5) { create(:packages_dependency, name: 'foo5', version_pattern: '~1.5.5') }
-      let_it_be(:package_dependency6) { create(:packages_dependency, name: 'foo6', version_pattern: '~1.5.6') }
-      let_it_be(:package_dependency7) { create(:packages_dependency, name: 'foo7', version_pattern: '~1.5.7') }
+      let_it_be(:package_dependency3) do
+        create(:packages_dependency, name: 'foo3', version_pattern: '~1.5.3', project: project)
+      end
+
+      let_it_be(:package_dependency4) do
+        create(:packages_dependency, name: 'foo4', version_pattern: '~1.5.4', project: project)
+      end
+
+      let_it_be(:package_dependency5) do
+        create(:packages_dependency, name: 'foo5', version_pattern: '~1.5.5', project: project)
+      end
+
+      let_it_be(:package_dependency6) do
+        create(:packages_dependency, name: 'foo6', version_pattern: '~1.5.6', project: project)
+      end
+
+      let_it_be(:package_dependency7) do
+        create(:packages_dependency, name: 'foo7', version_pattern: '~1.5.7', project: project)
+      end
 
       let(:expected_ids) { [package_dependency1.id, package_dependency2.id, package_dependency3.id, package_dependency4.id, package_dependency5.id, package_dependency6.id, package_dependency7.id] }
       let(:names_and_version_patterns) { build_names_and_version_patterns(package_dependency1, package_dependency2, package_dependency3, package_dependency4, package_dependency5, package_dependency6, package_dependency7) }
@@ -127,14 +161,26 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
     end
   end
 
-  describe '.for_package_names_and_version_patterns' do
-    let_it_be(:package_dependency1) { create(:packages_dependency, name: 'foo', version_pattern: '~1.0.0') }
-    let_it_be(:package_dependency2) { create(:packages_dependency, name: 'bar', version_pattern: '~2.5.0') }
+  describe '.for_package_project_id_names_and_version_patterns' do
+    let_it_be(:package_dependency1) do
+      create(:packages_dependency, name: 'foo', version_pattern: '~1.0.0', project: project)
+    end
+
+    let_it_be(:package_dependency2) do
+      create(:packages_dependency, name: 'bar', version_pattern: '~2.5.0', project: nil)
+    end
+
+    let_it_be(:package_dependency_diff_project) do
+      create(:packages_dependency, name: 'bar', version_pattern: '~2.5.0', project: project2)
+    end
+
     let_it_be(:expected_array) { [package_dependency1, package_dependency2] }
 
     let(:names_and_version_patterns) { build_names_and_version_patterns(package_dependency1, package_dependency2) }
 
-    subject { described_class.for_package_names_and_version_patterns(names_and_version_patterns) }
+    subject do
+      described_class.for_package_project_id_names_and_version_patterns(project.id, names_and_version_patterns)
+    end
 
     it { is_expected.to match_array(expected_array) }
 
@@ -152,7 +198,7 @@ RSpec.describe Packages::Dependency, type: :model, feature_category: :package_re
   end
 
   describe '.orphaned' do
-    let_it_be(:orphaned_dependencies) { create_list(:packages_dependency, 2) }
+    let_it_be(:orphaned_dependencies) { create_list(:packages_dependency, 2, project: project) }
     let_it_be(:linked_dependency) do
       create(:packages_dependency).tap do |dependency|
         create(:packages_dependency_link, dependency: dependency)
