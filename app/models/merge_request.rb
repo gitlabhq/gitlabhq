@@ -1512,12 +1512,21 @@ class MergeRequest < ApplicationRecord
 
   def visible_closing_issues_for(current_user = self.author)
     strong_memoize(:visible_closing_issues_for) do
-      if self.target_project.has_external_issue_tracker?
-        closes_issues(current_user)
-      else
-        cached_closes_issues.select do |issue|
-          Ability.allowed?(current_user, :read_issue, issue)
-        end
+      visible_issues = if self.target_project.has_external_issue_tracker?
+                         closes_issues(current_user)
+                       else
+                         cached_closes_issues.select do |issue|
+                           Ability.allowed?(current_user, :read_issue, issue)
+                         end
+                       end
+
+      ActiveRecord::Associations::Preloader.new(
+        records: visible_issues.select { |issue| issue.is_a?(Issue) },
+        associations: :project
+      ).call
+      # Exclude isues that have been cached but their project setting has been disabled, or they belong to a group
+      visible_issues.select do |issue|
+        !issue.is_a?(Issue) || issue.autoclose_by_merged_closing_merge_request?
       end
     end
   end

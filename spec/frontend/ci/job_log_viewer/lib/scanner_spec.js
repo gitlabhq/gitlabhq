@@ -26,7 +26,7 @@ describe('Log scanner', () => {
       content: [
         {
           text: 'line 2',
-          style: ['xterm-bg-9', 'term-bold'],
+          style: ['xterm-bg-1', 'term-bold'],
         },
       ],
       sections: [],
@@ -38,7 +38,7 @@ describe('Log scanner', () => {
       content: [
         {
           text: 'line 1',
-          style: ['xterm-fg-10', 'term-bold'],
+          style: ['term-fg-green', 'term-bold'],
         },
       ],
       sections: [],

@@ -30,12 +30,6 @@ FactoryBot.define do
       after(:build) { |group_member, _| group_member.user.block! }
     end
 
-    trait :banned do
-      after(:create) do |member|
-        create(:namespace_ban, namespace: member.member_namespace.root_ancestor, user: member.user) unless member.owner?
-      end
-    end
-
     trait :minimal_access do
       to_create { |instance| instance.save!(validate: false) }
 

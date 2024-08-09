@@ -11,6 +11,9 @@ module Gitlab
         MAX_IDENTIFIER_NAME_LENGTH = 63
 
         def self.check_constraint_exists?(table, constraint_name, connection:)
+          table_name, schema_name = table.to_s.split('.').reverse
+          schema_name ||= connection.current_schema
+
           # Constraint names are unique per table in Postgres, not per schema
           # Two tables can have constraints with the same name, so we filter by
           # the table name in addition to using the constraint_name
@@ -24,8 +27,8 @@ module Gitlab
                 ON nsp.oid = con.connamespace
             WHERE con.contype = 'c'
             AND con.conname = #{connection.quote(constraint_name)}
-            AND nsp.nspname = #{connection.quote(connection.current_schema)}
-            AND rel.relname = #{connection.quote(table)}
+            AND nsp.nspname = #{connection.quote(schema_name)}
+            AND rel.relname = #{connection.quote(table_name)}
           SQL
 
           connection.select_value(check_sql.squish) > 0

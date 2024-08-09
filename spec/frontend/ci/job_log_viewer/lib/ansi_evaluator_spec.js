@@ -28,19 +28,19 @@ describe('AnsiEvaluator', () => {
   it('parses cyan', () => {
     ansi.evaluate('36m');
 
-    expect(ansi.getClasses()).toEqual(['xterm-fg-14']);
+    expect(ansi.getClasses()).toEqual(['term-fg-cyan']);
   });
 
   it('parses cyan + bold', () => {
     ansi.evaluate('36;1m');
 
-    expect(ansi.getClasses()).toEqual(['xterm-fg-14', 'term-bold']);
+    expect(ansi.getClasses()).toEqual(['term-fg-cyan', 'term-bold']);
   });
 
   it('parses green + bold', () => {
     ansi.evaluate('32;1m');
 
-    expect(ansi.getClasses()).toEqual(['xterm-fg-10', 'term-bold']);
+    expect(ansi.getClasses()).toEqual(['term-fg-green', 'term-bold']);
   });
 
   it('parses "set foreground color"', () => {

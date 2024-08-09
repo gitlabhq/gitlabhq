@@ -10554,11 +10554,11 @@ Input type: `workItemsHierarchyReorderInput`
 
 | Name | Type | Description |
 | ---- | ---- | ----------- |
-| <a id="mutationworkitemshierarchyreorderadjacentworkitemid"></a>`adjacentWorkItemId` | [`WorkItemID`](#workitemid) | ID of the work item to be switched with. |
+| <a id="mutationworkitemshierarchyreorderadjacentworkitemid"></a>`adjacentWorkItemId` | [`WorkItemID`](#workitemid) | ID of the work item to move next to. For example, the item above or below. |
 | <a id="mutationworkitemshierarchyreorderclientmutationid"></a>`clientMutationId` | [`String`](#string) | A unique identifier for the client performing the mutation. |
 | <a id="mutationworkitemshierarchyreorderid"></a>`id` | [`WorkItemID!`](#workitemid) | Global ID of the work item to be reordered. |
 | <a id="mutationworkitemshierarchyreorderparentid"></a>`parentId` | [`WorkItemID`](#workitemid) | Global ID of the new parent work item. |
-| <a id="mutationworkitemshierarchyreorderrelativeposition"></a>`relativePosition` | [`RelativePositionType`](#relativepositiontype) | Type of switch. Valid values are `BEFORE` or `AFTER`. |
+| <a id="mutationworkitemshierarchyreorderrelativeposition"></a>`relativePosition` | [`RelativePositionType`](#relativepositiontype) | Position relative to the adjacent work item. Valid values are `BEFORE` or `AFTER`. |
 
 #### Fields
 

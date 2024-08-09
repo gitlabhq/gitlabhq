@@ -13,7 +13,7 @@ module Mutations
         argument :adjacent_work_item_id,
           ::Types::GlobalIDType[::WorkItem],
           required: false,
-          description: 'ID of the work item to be switched with.'
+          description: 'ID of the work item to move next to. For example, the item above or below.'
 
         argument :parent_id, ::Types::GlobalIDType[::WorkItem],
           required: false,
@@ -22,7 +22,7 @@ module Mutations
         argument :relative_position,
           Types::RelativePositionTypeEnum,
           required: false,
-          description: 'Type of switch. Valid values are `BEFORE` or `AFTER`.'
+          description: 'Position relative to the adjacent work item. Valid values are `BEFORE` or `AFTER`.'
 
         field :work_item, Types::WorkItemType,
           null: true, description: 'Work item after mutation.'

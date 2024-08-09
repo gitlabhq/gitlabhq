@@ -1163,6 +1163,10 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
   end
 
   describe '#visible_closing_issues_for' do
+    let_it_be(:group) { create(:group, :public) }
+    let_it_be(:project_without_auto_close) { create(:project, :public, group: group, autoclose_referenced_issues: false) }
+    let_it_be(:group_issue) { create(:issue, :group_level, namespace: group) }
+    let_it_be(:no_close_issue) { create(:issue, project: project_without_auto_close) }
     let(:guest) { create(:user) }
     let(:developer) { create(:user) }
     let(:issue_1) { create(:issue, project: subject.source_project) }
@@ -1170,9 +1174,14 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
     let(:confidential_issue) { create(:issue, :confidential, project: subject.source_project) }
 
     before do
+      group.add_developer(subject.author) # rubocop:disable RSpec/BeforeAllRoleAssignment -- Subject can't be referenced in a before context
       subject.project.add_developer(subject.author)
       subject.target_branch = subject.project.default_branch
-      commit = double('commit1', safe_message: "Fixes #{issue_1.to_reference} #{issue_2.to_reference} #{confidential_issue.to_reference}")
+      commit = double(
+        'commit1',
+        safe_message: "Fixes #{issue_1.to_reference} #{issue_2.to_reference} #{confidential_issue.to_reference} " \
+          "Closes #{group_issue.to_reference(full: true)} Closes #{no_close_issue.to_reference(full: true)}"
+      )
       allow(subject).to receive(:commits).and_return([commit])
     end
 
@@ -1203,7 +1212,7 @@ RSpec.describe MergeRequest, factory_default: :keep, feature_category: :code_rev
       end
 
       it 'calls non #closes_issues to retrieve data' do
-        expect(subject).to receive(:closes_issues)
+        expect(subject).to receive(:closes_issues).and_call_original
         expect(subject).not_to receive(:cached_closes_issues)
 
         subject.visible_closing_issues_for

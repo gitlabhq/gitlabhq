@@ -14,13 +14,11 @@ You can deploy your application internally or to the public.
 Preview a release in a review app, and use feature flags to
 release features incrementally.
 
-- [Getting started](../user/get_started/get_started_deploy_release.md)
-- [Packages and registries](../user/packages/index.md)
-- [Environments and deployments](../ci/environments/index.md)
-- [Releases](../user/project/releases/index.md)
-- [Roll out an application incrementally](../ci/environments/incremental_rollouts.md)
-- [Feature flags](../operations/feature_flags.md)
-- [GitLab Pages](../user/project/pages/index.md)
+| | | |
+|--|--|--|
+| [**Getting started**](../user/get_started/get_started_deploy_release.md) **{chevron-right}** | [**Packages and registries**](../user/packages/index.md) **{chevron-right}** | [**Environments and deployments**](../ci/environments/index.md) **{chevron-right}** |
+| [**Releases**](../user/project/releases/index.md) **{chevron-right}** | [**Roll out an application incrementally**](../ci/environments/incremental_rollouts.md) **{chevron-right}** | [**Feature flags**](../operations/feature_flags.md) **{chevron-right}** |
+| [**GitLab Pages**](../user/project/pages/index.md) **{chevron-right}** | | |
 
 ## Related topics
 

@@ -34,18 +34,4 @@ RSpec.describe Packages::Event, feature_category: :package_registry do
       it { is_expected.to eq([]) }
     end
   end
-
-  describe '.counters_for' do
-    subject { described_class.counters_for(event_scope, event_type, originator_type) }
-
-    it do
-      is_expected.to contain_exactly(
-        'i_package_push_package',
-        'i_package_push_package_by_deploy_token',
-        'i_package_npm_push_package'
-      )
-    end
-
-    it_behaves_like 'handle forbidden event type'
-  end
 end

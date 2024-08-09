@@ -40668,7 +40668,10 @@ msgstr ""
 msgid "ProductAnalytics|This might take a while, feel free to navigate away from this page and come back later."
 msgstr ""
 
-msgid "ProductAnalytics|This project has analytics provider settings configured. If you continue, these project-level settings will be reset so that GitLab-managed provider settings can be used."
+msgid "ProductAnalytics|This project has analytics provider settings configured. If you continue, the settings for projects will be reset so that GitLab-managed provider settings can be used."
+msgstr ""
+
+msgid "ProductAnalytics|This project has analytics provider settings configured. If you continue, the settings for projects will be reset so that provider settings for the instance can be used."
 msgstr ""
 
 msgid "ProductAnalytics|This table excludes projects that do not have product analytics onboarded."
@@ -40710,7 +40713,7 @@ msgstr ""
 msgid "ProductAnalytics|Use a GitLab-managed infrastructure to process, store, and query analytics events data."
 msgstr ""
 
-msgid "ProductAnalytics|Use instance-level settings"
+msgid "ProductAnalytics|Use instance provider settings"
 msgstr ""
 
 msgid "ProductAnalytics|Used to retrieve dashboard data from the Cube instance."

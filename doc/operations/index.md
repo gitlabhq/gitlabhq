@@ -9,13 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Visualize and analyze errors, traces, metrics and logs collected from your application and its infrastructure. Monitor, identify and resolve performance issues and incidents collaboratively.
 
-- [Getting started](../user/get_started/get_started_monitoring.md)
-- [Error Tracking](error_tracking.md)
-- [Distributed tracing](tracing.md)
-- [Metrics](metrics.md)
-- [Logs](logs.md)
-- [Incident Management](incident_management/index.md)
-  - [Alerts](incident_management/alerts.md)
-  - [Incidents](incident_management/incidents.md)
-  - [On-call schedules](incident_management/oncall_schedules.md)
-  - [Status pages](incident_management/status_page.md)
+| | | |
+|--|--|--|
+| [**Getting started**](../user/get_started/get_started_monitoring.md) **{chevron-right}** | [**Error tracking**](error_tracking.md) **{chevron-right}** | [**Distributed tracing**](tracing.md) **{chevron-right}** |
+| [**Metrics**](metrics.md) **{chevron-right}** | [**Logs**](logs.md) **{chevron-right}** | [**Incident management**](incident_management/index.md) **{chevron-right}** |

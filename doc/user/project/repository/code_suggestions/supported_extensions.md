@@ -8,7 +8,7 @@ description: "Code Suggestions supports multiple editors and languages."
 # Supported extensions and languages
 
 DETAILS:
-**Tier:** Premium or Ultimate with [GitLab Duo Pro](../../../../subscriptions/subscription-add-ons.md)
+**Tier:** Premium with GitLab Duo Pro or Ultimate with [GitLab Duo Pro or Enterprise](../../../../subscriptions/subscription-add-ons.md)
 **Offering:** GitLab.com, Self-managed, GitLab Dedicated
 
 Code Suggestions is available in the following editor extensions and

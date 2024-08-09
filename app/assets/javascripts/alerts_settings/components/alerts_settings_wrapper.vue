@@ -1,5 +1,5 @@
 <script>
-import { GlAlert, GlButton, GlTabs, GlTab } from '@gitlab/ui';
+import { GlAlert, GlTabs, GlTab } from '@gitlab/ui';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import createHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/create_http_integration.mutation.graphql';
 import updateHttpIntegrationMutation from 'ee_else_ce/alerts_settings/graphql/mutations/update_http_integration.mutation.graphql';
@@ -43,7 +43,6 @@ export default {
     AlertsForm,
     AlertSettingsForm,
     GlAlert,
-    GlButton,
     GlTabs,
     GlTab,
     CrudComponent,
@@ -91,7 +90,6 @@ export default {
       currentIntegration: null,
       currentHttpIntegration: null,
       newIntegration: null,
-      formVisible: false,
       showSuccessfulCreateAlert: false,
       tabIndex: tabIndices.configureDetails,
     };
@@ -341,7 +339,11 @@ export default {
       });
     },
     setFormVisibility(visible) {
-      this.formVisible = visible;
+      if (visible) {
+        this.$refs.alertsCrud.showForm();
+      } else {
+        this.$refs.alertsCrud.hideForm();
+      }
     },
     viewCreatedIntegration() {
       this.viewIntegration(this.newIntegration, tabIndices.viewCredentials);
@@ -366,31 +368,27 @@ export default {
         {{ $options.i18n.integrationCreated.successMsg }}
       </gl-alert>
 
-      <crud-component :title="$options.i18n.card.title" :count="integrations.length" icon="warning">
-        <template #actions>
-          <gl-button
-            v-if="canAddIntegration && !formVisible"
-            size="small"
-            data-testid="add-integration-button"
-            @click="setFormVisibility(true)"
-          >
-            {{ $options.i18n.addNewIntegration }}
-          </gl-button>
+      <crud-component
+        ref="alertsCrud"
+        :title="$options.i18n.card.title"
+        :count="integrations.length"
+        :toggle-text="canAddIntegration ? $options.i18n.addNewIntegration : ''"
+        icon="warning"
+      >
+        <template #form>
+          <alert-settings-form
+            :loading="isUpdating"
+            :can-add-integration="canAddIntegration"
+            :alert-fields="alertFields"
+            :tab-index="tabIndex"
+            @create-new-integration="createNewIntegration"
+            @update-integration="updateIntegration"
+            @reset-token="resetToken"
+            @clear-current-integration="clearCurrentIntegration"
+            @test-alert-payload="testAlertPayload"
+            @save-and-test-alert-payload="saveAndTestAlertPayload"
+          />
         </template>
-
-        <alert-settings-form
-          v-if="formVisible"
-          :loading="isUpdating"
-          :can-add-integration="canAddIntegration"
-          :alert-fields="alertFields"
-          :tab-index="tabIndex"
-          @create-new-integration="createNewIntegration"
-          @update-integration="updateIntegration"
-          @reset-token="resetToken"
-          @clear-current-integration="clearCurrentIntegration"
-          @test-alert-payload="testAlertPayload"
-          @save-and-test-alert-payload="saveAndTestAlertPayload"
-        />
 
         <integrations-list
           :integrations="integrations"

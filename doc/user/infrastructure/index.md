@@ -9,8 +9,7 @@ info: To determine the technical writer assigned to the Stage/Group associated w
 
 Use GitLab to speed up and simplify your infrastructure management practices.
 
-- [Getting started](../get_started/get_started_managing_infrastructure.md)
-- [Infrastructure as Code](iac/index.md)
-- [Create Kubernetes clusters](../clusters/create/index.md)
-- [Connect Kubernetes clusters](../clusters/agent/index.md)
-- [Runbooks](../project/clusters/runbooks/index.md)
+| | | |
+|--|--|--|
+| [**Getting started**](../get_started/get_started_managing_infrastructure.md) **{chevron-right}** | [**Infrastructure as Code**](iac/index.md) **{chevron-right}** | [**Create Kubernetes clusters**](../clusters/create/index.md) **{chevron-right}** |
+| [**Connect Kubernetes clusters**](../clusters/agent/index.md) **{chevron-right}** | [**Runbooks**](../project/clusters/runbooks/index.md) **{chevron-right}** | |

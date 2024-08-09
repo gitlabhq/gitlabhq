@@ -23,6 +23,9 @@ You can report a user through their:
 - [Profile](#report-abuse-from-the-users-profile-page)
 - [Comments](#report-abuse-from-a-users-comment)
 - [Issues](#report-abuse-from-an-issue)
+- [Tasks](#report-abuse-from-a-task)
+- [Objective](#report-abuse-from-an-objective)
+- [Key result](#report-abuse-from-a-key-result)
 - [Merge requests](#report-abuse-from-a-merge-request)
 - [Snippets](snippets.md#mark-snippet-as-spam)
 
@@ -59,6 +62,30 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 ## Report abuse from an issue
 
 1. On the issue, in the upper-right corner, select **Issue actions** (**{ellipsis_v}**).
+1. Select **Report abuse**.
+1. Select a reason for reporting the user.
+1. Complete an abuse report.
+1. Select **Send report**.
+
+## Report abuse from a task
+
+1. On the task, in the upper-right corner, select  **More actions** (**{ellipsis_v}**).
+1. Select **Report abuse**.
+1. Select a reason for reporting the user.
+1. Complete an abuse report.
+1. Select **Send report**.
+
+## Report abuse from an objective
+
+1. On the objective, in the upper-right corner, select  **More actions** (**{ellipsis_v}**).
+1. Select **Report abuse**.
+1. Select a reason for reporting the user.
+1. Complete an abuse report.
+1. Select **Send report**.
+
+## Report abuse from a key result
+
+1. On the key result, in the upper-right corner, select  **More actions** (**{ellipsis_v}**).
 1. Select **Report abuse**.
 1. Select a reason for reporting the user.
 1. Complete an abuse report.

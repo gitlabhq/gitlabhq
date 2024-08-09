@@ -53,6 +53,11 @@
     .term-fg-#{$name} {
       color: $color;
     }
+    .term-bold.term-fg-#{$name} {
+      // Most terminals show bold colored text in the bright color variant
+      // only 3 and 4-bit foreground colors are modified.
+      color: $brightColor;
+    }
     .term-bg-#{$name} {
       background-color: $color;
     }

@@ -78,12 +78,6 @@ module Gitlab
         end
 
         def update_formats
-          # Most terminals show bold colored text in the light color variant
-          # Let's mimic that here
-          if @fg.present? && Gitlab::Ci::Ansi2json::Parser.bold?(@mask)
-            @fg = @fg.sub(/fg-([a-z]{2,}+)/, 'fg-l-\1')
-          end
-
           @formats = Gitlab::Ci::Ansi2json::Parser.matching_formats(@mask)
         end
       end

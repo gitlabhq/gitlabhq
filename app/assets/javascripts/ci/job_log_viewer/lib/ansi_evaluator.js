@@ -48,8 +48,10 @@ export class AnsiEvaluator {
   getClasses() {
     const classes = [];
 
-    if (this.fgColor !== null) {
+    if (typeof this.fgColor === 'number') {
       classes.push(`xterm-fg-${this.fgColor}`);
+    } else if (typeof this.fgColor === 'string') {
+      classes.push(`term-fg-${this.fgColor}`);
     }
 
     if (this.bgColor !== null) {
@@ -122,24 +124,26 @@ export class AnsiEvaluator {
     28: () => this.#disableStyle('conceal'),
     29: () => this.#disableStyle('cross'),
 
-    30: () => this.#setFg(0),
-    31: () => this.#setFg(9),
-    32: () => this.#setFg(10),
-    33: () => this.#setFg(11),
-    34: () => this.#setFg(12),
-    35: () => this.#setFg(13),
-    36: () => this.#setFg(14),
-    37: () => this.#setFg(15),
+    // Most terminals show bold colored text in the bright color variant
+    // only 3 and 4-bit foreground colors are modified.
+    30: () => this.#setFg('black'),
+    31: () => this.#setFg('red'),
+    32: () => this.#setFg('green'),
+    33: () => this.#setFg('yellow'),
+    34: () => this.#setFg('blue'),
+    35: () => this.#setFg('magenta'),
+    36: () => this.#setFg('cyan'),
+    37: () => this.#setFg('white'),
     39: () => this.#setFg(null),
 
     40: () => this.#setBg(0),
-    41: () => this.#setBg(9),
-    42: () => this.#setBg(10),
-    43: () => this.#setBg(11),
-    44: () => this.#setBg(12),
-    45: () => this.#setBg(13),
-    46: () => this.#setBg(14),
-    47: () => this.#setBg(15),
+    41: () => this.#setBg(1),
+    42: () => this.#setBg(2),
+    43: () => this.#setBg(3),
+    44: () => this.#setBg(4),
+    45: () => this.#setBg(5),
+    46: () => this.#setBg(6),
+    47: () => this.#setBg(7),
     49: () => this.#setBg(null),
 
     90: () => this.#setFg(8),
