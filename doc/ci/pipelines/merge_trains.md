@@ -118,15 +118,37 @@ Prerequisites:
 
 To start a merge train:
 
-1. Visit a merge request.
+1. Go to a merge request.
 1. Select:
    - When no pipeline is running, **Merge**.
    - When a pipeline is running, [**Set to auto-merge**](../../user/project/merge_requests/auto_merge.md).
 
 The merge request's merge train status displays under the pipeline widget with a
-message similar to `A new merge train has started and this merge request is the first of the queue.`
+message similar to `A new merge train has started and this merge request is the first of the queue. View merge train details.`
+You can select the link to view the merge train.
 
 Other merge requests can now be added to the train.
+
+## View a merge train
+
+> - Merge train visualization [introduced](https://gitlab.com/groups/gitlab-org/-/epics/13705) in GitLab 17.3.
+
+You can view the merge train to gain better insight into the order and status of merge requests in the queue.
+The merge train details page shows active merge requests in the queue and merged merge requests that were part of the train.
+
+To access the merge train details from the list of merge requests:
+
+1. On the left sidebar, select **Search or go to** and find your project.
+1. Select **Code > Merge requests**.
+1. Above the list of merge requests, select **Merge trains**.
+1. Optional. Filter the merge trains by target branch.
+
+You also access this view by selecting **View merge train details** from:
+
+- The pipeline widget and system notes on a merge request added to a merge train.
+- The pipeline details page for a merge train pipeline.
+
+You can also remove (**{close}**) a merge request from the merge train details view.
 
 ## Add a merge request to a merge train
 
@@ -154,13 +176,17 @@ waiting to join the merge train.
 
 ## Remove a merge request from a merge train
 
-To remove a merge request from a merge train, select **Cancel auto-merge**.
-You can add the merge request to a merge train again later.
-
 When you remove a merge request from a merge train:
 
 - All pipelines for merge requests queued after the removed merge request restart.
 - Redundant pipelines [are cancelled](#automatic-pipeline-cancellation).
+
+You can add the merge request to a merge train again later.
+
+To remove a merge request from a merge train:
+
+- From a merge request, select **Cancel auto-merge**.
+- From the [merge train details](#view-a-merge-train), next to the merge request, select **{close}**.
 
 ## Skip the merge train and merge immediately
 

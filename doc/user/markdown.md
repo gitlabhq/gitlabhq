@@ -1587,14 +1587,16 @@ When rendered, the escaped characters look like this:
 
 Exceptions:
 
-A backslash doesn't always escape the following character. The backslash appears as regular text in the following cases:
+A backslash doesn't always escape the character that follows it. The backslash appears as regular text in the following cases:
 
 - When the backslash appears before a non-reserved character, such as `A`, `3`, or a space.
 - When the backslash appears inside of these Markdown elements:
   - Code blocks
   - Code spans
   - Auto-links
-  - Inline HTML
+  - Inline HTML, such as `<kbd>`
+
+In these instances you might need to use the equivalent HTML entity, such as `&#93;` for `]`.
 
 ## Footnotes
 

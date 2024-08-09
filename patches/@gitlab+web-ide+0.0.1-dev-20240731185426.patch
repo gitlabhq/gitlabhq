@@ -301,10 +301,10 @@ index 960d118..0000000
 -</html>
 diff --git a/node_modules/@gitlab/web-ide/dist/public/vscode/out/vs/workbench/contrib/webview/browser/pre/index-no-csp.html b/node_modules/@gitlab/web-ide/dist/public/vscode/out/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
 deleted file mode 100644
-index 70c8500..0000000
+index 6eb5b28..0000000
 --- a/node_modules/@gitlab/web-ide/dist/public/vscode/out/vs/workbench/contrib/webview/browser/pre/index-no-csp.html
 +++ /dev/null
-@@ -1,1256 +0,0 @@
+@@ -1,1309 +0,0 @@
 -<!DOCTYPE html>
 -<html lang="en" style="width: 100%; height: 100%;">
 -
@@ -319,6 +319,32 @@ index 70c8500..0000000
 -<body style="margin: 0; overflow: hidden; width: 100%; height: 100%; overscroll-behavior-x: none;" role="document">
 -	<!-- TODO: Remove additional script tag once Firefox is fixed https://bugzilla.mozilla.org/show_bug.cgi?id=1737882 -->
 -	<script></script>
+-	<!-- gl_mod START lock down environment to protect against XSS -->
+-	<script>
+-		Object.freeze(MessagePort.prototype);
+-		Object.freeze(MessageChannel.prototype);
+-
+-		function glEnsureCSP(docElement) {
+-			const existingCsp = docElement.querySelector('meta[http-equiv="Content-Security-Policy"]');
+-
+-			if (existingCsp) {
+-				return;
+-			}
+-
+-			const href = new URL(window.location.href);
+-			const parentOrigin = (href.searchParams.get('parentOrigin')
+-				?.replaceAll(';', '%3B')
+-				?.replaceAll(',', '%2C')
+-				?.replace(/\s+/g, ''));
+-			const metaPolicy = document.createElement('meta');
+-
+-			metaPolicy.setAttribute('http-equiv', 'Content-Security-Policy');
+-			metaPolicy.setAttribute('content', `default-src 'self' ${parentOrigin} 'unsafe-inline'; script-src-attr 'none'`);
+-
+-			docElement.head.prepend(metaPolicy);
+-		}
+-	</script>
+-	<!-- gl_mod END -->
 -	<script async type="module">
 -		// @ts-check
 -		/// <reference lib="dom" />
@@ -353,7 +379,8 @@ index 70c8500..0000000
 -			const interval = 250;
 -			let isFocused = document.hasFocus();
 -			setInterval(() => {
--				const isCurrentlyFocused = document.hasFocus();
+-				const target = getActiveFrame();
+-				const isCurrentlyFocused = document.hasFocus() || !!(target && target.contentDocument && target.contentDocument.body.classList.contains('vscode-context-menu-visible'));
 -				if (isCurrentlyFocused === isFocused) {
 -					return;
 -				}
@@ -433,6 +460,10 @@ index 70c8500..0000000
 -				background-color: var(--vscode-textPreformat-background);
 -				padding: 1px 3px;
 -				border-radius: 4px;
+-			}
+-
+-			pre code {
+-				padding: 0;
 -			}
 -
 -			blockquote {
@@ -903,7 +934,7 @@ index 70c8500..0000000
 -				} else {
 -					return; // let the browser handle this
 -				}
--			} else if (!onElectron && (isCloseTab(e) || isNewWindow(e))) {
+-			} else if (!onElectron && (isCloseTab(e) || isNewWindow(e) || isHelp(e) || isRefresh(e))) {
 -				// Prevent Ctrl+W closing window / Ctrl+N opening new window in PWA.
 -				// (No effect in a regular browser tab.)
 -				e.preventDefault();
@@ -1006,6 +1037,24 @@ index 70c8500..0000000
 -			const hasMeta = e.ctrlKey || e.metaKey;
 -			// 78: keyCode of "N"
 -			return hasMeta && e.keyCode === 78;
+-		}
+-
+-		/**
+-		 * @param {KeyboardEvent} e
+-		 * @return {boolean}
+-		 */
+-		function isHelp(e) {
+-			// 112: keyCode of "F1"
+-			return e.keyCode === 112;
+-		}
+-
+-		/**
+-		 * @param {KeyboardEvent} e
+-		 * @return {boolean}
+-		 */
+-		function isRefresh(e) {
+-			// 116: keyCode of "F5"
+-			return e.keyCode === 116;
 -		}
 -
 -		let isHandlingScroll = false;
@@ -1154,6 +1203,10 @@ index 70c8500..0000000
 -					console.error(`Could not rewrite csp: ${e}`);
 -				}
 -			}
+-
+-			// gl_mod START ensure CSP for security
+-			glEnsureCSP(newDocument);
+-			// gl_mod END
 -
 -			// set DOCTYPE for newDocument explicitly as DOMParser.parseFromString strips it off
 -			// and DOCTYPE is needed in the iframe to ensure that the user agent stylesheet is correctly overridden
@@ -1563,10 +1616,10 @@ index 70c8500..0000000
 -</html>
 diff --git a/node_modules/@gitlab/web-ide/dist/public/vscode/out/vs/workbench/contrib/webview/browser/pre/index.html b/node_modules/@gitlab/web-ide/dist/public/vscode/out/vs/workbench/contrib/webview/browser/pre/index.html
 deleted file mode 100644
-index 3d4b240..0000000
+index a6608a7..0000000
 --- a/node_modules/@gitlab/web-ide/dist/public/vscode/out/vs/workbench/contrib/webview/browser/pre/index.html
 +++ /dev/null
-@@ -1,1257 +0,0 @@
+@@ -1,1310 +0,0 @@
 -<!DOCTYPE html>
 -<html lang="en" style="width: 100%; height: 100%;">
 -
@@ -1574,7 +1627,7 @@ index 3d4b240..0000000
 -	<meta charset="UTF-8">
 -
 -	<meta http-equiv="Content-Security-Policy"
--		content="default-src 'none'; script-src 'sha256-frEVWVmmI4TWHGHXZaCTWqGQI9jv+i8hv+sOa87Gqlc=' 'self'; frame-src 'self'; style-src 'unsafe-inline';">
+-		content="default-src 'none'; script-src 'sha256-CTdLRLjkBx1mUyaqdpJrgqxAB10sHD3H+Qc5oSqNItg=' 'sha256-lmxNTfL/Rmu0AtK7TIcvzf+U3JkxdJ8dZU1PetSGT0Y=' 'self'; frame-src 'self'; style-src 'unsafe-inline';">
 -
 -	<!-- Disable pinch zooming -->
 -	<meta name="viewport"
@@ -1582,6 +1635,32 @@ index 3d4b240..0000000
 -</head>
 -
 -<body style="margin: 0; overflow: hidden; width: 100%; height: 100%; overscroll-behavior-x: none;" role="document">
+-	<!-- gl_mod START lock down environment to protect against XSS -->
+-	<script>
+-		Object.freeze(MessagePort.prototype);
+-		Object.freeze(MessageChannel.prototype);
+-
+-		function glEnsureCSP(docElement) {
+-			const existingCsp = docElement.querySelector('meta[http-equiv="Content-Security-Policy"]');
+-
+-			if (existingCsp) {
+-				return;
+-			}
+-
+-			const href = new URL(window.location.href);
+-			const parentOrigin = (href.searchParams.get('parentOrigin')
+-				?.replaceAll(';', '%3B')
+-				?.replaceAll(',', '%2C')
+-				?.replace(/\s+/g, ''));
+-			const metaPolicy = document.createElement('meta');
+-
+-			metaPolicy.setAttribute('http-equiv', 'Content-Security-Policy');
+-			metaPolicy.setAttribute('content', `default-src 'self' ${parentOrigin} 'unsafe-inline'; script-src-attr 'none'`);
+-
+-			docElement.head.prepend(metaPolicy);
+-		}
+-	</script>
+-	<!-- gl_mod END -->
 -	<script async type="module">
 -		// @ts-check
 -		/// <reference lib="dom" />
@@ -1616,7 +1695,8 @@ index 3d4b240..0000000
 -			const interval = 250;
 -			let isFocused = document.hasFocus();
 -			setInterval(() => {
--				const isCurrentlyFocused = document.hasFocus();
+-				const target = getActiveFrame();
+-				const isCurrentlyFocused = document.hasFocus() || !!(target && target.contentDocument && target.contentDocument.body.classList.contains('vscode-context-menu-visible'));
 -				if (isCurrentlyFocused === isFocused) {
 -					return;
 -				}
@@ -1696,6 +1776,10 @@ index 3d4b240..0000000
 -				background-color: var(--vscode-textPreformat-background);
 -				padding: 1px 3px;
 -				border-radius: 4px;
+-			}
+-
+-			pre code {
+-				padding: 0;
 -			}
 -
 -			blockquote {
@@ -2166,7 +2250,7 @@ index 3d4b240..0000000
 -				} else {
 -					return; // let the browser handle this
 -				}
--			} else if (!onElectron && (isCloseTab(e) || isNewWindow(e))) {
+-			} else if (!onElectron && (isCloseTab(e) || isNewWindow(e) || isHelp(e) || isRefresh(e))) {
 -				// Prevent Ctrl+W closing window / Ctrl+N opening new window in PWA.
 -				// (No effect in a regular browser tab.)
 -				e.preventDefault();
@@ -2269,6 +2353,24 @@ index 3d4b240..0000000
 -			const hasMeta = e.ctrlKey || e.metaKey;
 -			// 78: keyCode of "N"
 -			return hasMeta && e.keyCode === 78;
+-		}
+-
+-		/**
+-		 * @param {KeyboardEvent} e
+-		 * @return {boolean}
+-		 */
+-		function isHelp(e) {
+-			// 112: keyCode of "F1"
+-			return e.keyCode === 112;
+-		}
+-
+-		/**
+-		 * @param {KeyboardEvent} e
+-		 * @return {boolean}
+-		 */
+-		function isRefresh(e) {
+-			// 116: keyCode of "F5"
+-			return e.keyCode === 116;
 -		}
 -
 -		let isHandlingScroll = false;
@@ -2417,6 +2519,10 @@ index 3d4b240..0000000
 -					console.error(`Could not rewrite csp: ${e}`);
 -				}
 -			}
+-
+-			// gl_mod START ensure CSP for security
+-			glEnsureCSP(newDocument);
+-			// gl_mod END
 -
 -			// set DOCTYPE for newDocument explicitly as DOMParser.parseFromString strips it off
 -			// and DOCTYPE is needed in the iframe to ensure that the user agent stylesheet is correctly overridden

@@ -82,8 +82,6 @@ module IdeHelper
     {
       'project-path' => project&.path_with_namespace,
       'csp-nonce' => content_security_policy_nonce,
-      # We will replace these placeholders in the FE
-      'ide-remote-path' => ide_remote_path(remote_host: ':remote_host', remote_path: ':remote_path'),
       'editor-font' => new_ide_fonts.to_json,
       'extensions-gallery-settings' => extensions_gallery_settings
     }.merge(new_ide_code_suggestions_data).merge(new_ide_oauth_data)

@@ -67,15 +67,12 @@ DETAILS:
 **Tier:** Premium, Ultimate
 **Status:** Beta
 
-> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `cloud_connector_status`. Enabled by default.
-
-FLAG:
-The availability of this feature is controlled by a feature flag.
-For more information, see the history.
-This feature is available for testing, but not ready for production use.
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/161997) in GitLab 17.3.
 
 Run a health check to test if your instance meets the requirements to use GitLab Duo.
 When the health check completes, it displays a pass or fail result and the types of issues.
+
+This is a [beta](../../policy/experiment-beta-support.md) feature.
 
 Prerequisites:
 

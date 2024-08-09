@@ -93,13 +93,13 @@ To enable secret push protection in a project:
 
 ## Coverage
 
-Secret push protection checks the content of each commit when it is pushed to GitLab.
+Secret push protection checks the content of each commit diff when it is pushed to GitLab.
 However, the following exclusions apply.
 
 Secret push protection does not check a file in a commit when:
 
 - The file is a binary file.
-- The file is larger than 1 MiB.
+- The diff patch for the file is larger than 1 MiB.
 - The file was renamed, deleted, or moved without changes to the content.
 - The content of the file is identical to the content of another file in the source code.
 - The file is contained in the initial push that created the repository.
@@ -186,20 +186,3 @@ To skip secret push protection when using any Git client:
   For example, you are using the GitLab Web IDE and have several commits that are blocked from being
   pushed because one of them contains a secret. To skip secret push protection, edit the latest
   commit message and add `[skip secret push protection]`, then push the commits.
-
-## Troubleshooting
-
-When working with secret push protection, you may encounter the following situations.
-
-### Push blocked unexpectedly
-
-Secret Push Protection scans all contents of modified files. This can cause a push to be
-unexpectedly blocked if a modified file contains a secret, even if the secret is not part of the diff.
-
-To push a change to a file that contains a secret, you need to [skip secret push protection](#skip-secret-push-protection).
-
-[Issue 469161](https://gitlab.com/gitlab-org/gitlab/-/issues/469161) proposes to change the scanning logic to scan only diffs.
-
-### File was not scanned
-
-Some files are excluded from scanning. For a list of exclusions, see [coverage](#coverage).

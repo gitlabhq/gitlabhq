@@ -13062,6 +13062,29 @@ The edge type for [`ForecastDatapoint`](#forecastdatapoint).
 | <a id="forecastdatapointedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
 | <a id="forecastdatapointedgenode"></a>`node` | [`ForecastDatapoint`](#forecastdatapoint) | The item at the end of the edge. |
 
+#### `GitlabSubscriptionHistoryConnection`
+
+The connection type for [`GitlabSubscriptionHistory`](#gitlabsubscriptionhistory).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionhistoryconnectionedges"></a>`edges` | [`[GitlabSubscriptionHistoryEdge]`](#gitlabsubscriptionhistoryedge) | A list of edges. |
+| <a id="gitlabsubscriptionhistoryconnectionnodes"></a>`nodes` | [`[GitlabSubscriptionHistory]`](#gitlabsubscriptionhistory) | A list of nodes. |
+| <a id="gitlabsubscriptionhistoryconnectionpageinfo"></a>`pageInfo` | [`PageInfo!`](#pageinfo) | Information to aid in pagination. |
+
+#### `GitlabSubscriptionHistoryEdge`
+
+The edge type for [`GitlabSubscriptionHistory`](#gitlabsubscriptionhistory).
+
+##### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionhistoryedgecursor"></a>`cursor` | [`String!`](#string) | A cursor for use in pagination. |
+| <a id="gitlabsubscriptionhistoryedgenode"></a>`node` | [`GitlabSubscriptionHistory`](#gitlabsubscriptionhistory) | The item at the end of the edge. |
+
 #### `GoogleCloudArtifactRegistryArtifactConnection`
 
 The connection type for [`GoogleCloudArtifactRegistryArtifact`](#googlecloudartifactregistryartifact).
@@ -22278,6 +22301,22 @@ four standard [pagination arguments](#pagination-arguments):
 | <a id="geonodeuploadregistriesreplicationstate"></a>`replicationState` | [`ReplicationStateEnum`](#replicationstateenum) | Filters registries by their replication state. |
 | <a id="geonodeuploadregistriesverificationstate"></a>`verificationState` | [`VerificationStateEnum`](#verificationstateenum) | Filters registries by their verification state. |
 
+### `GitlabSubscriptionHistory`
+
+Describes the subscription history of a given namespace.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="gitlabsubscriptionhistorychangetype"></a>`changeType` | [`SubscriptionHistoryChangeType`](#subscriptionhistorychangetype) | Indicates what type of change in the subscription has happened. |
+| <a id="gitlabsubscriptionhistorycreatedat"></a>`createdAt` | [`Time`](#time) | Timestamp of the subscription history entry creation. |
+| <a id="gitlabsubscriptionhistoryenddate"></a>`endDate` | [`Time`](#time) | Subscription end date. |
+| <a id="gitlabsubscriptionhistorymaxseatsused"></a>`maxSeatsUsed` | [`Int`](#int) | Maximum seats used in subscription. |
+| <a id="gitlabsubscriptionhistoryseats"></a>`seats` | [`Int`](#int) | Seats purchased in subscription. |
+| <a id="gitlabsubscriptionhistoryseatsinuse"></a>`seatsInUse` | [`Int`](#int) | Seats being used in subscription. |
+| <a id="gitlabsubscriptionhistorystartdate"></a>`startDate` | [`Time`](#time) | Subscription start date. |
+
 ### `GoogleCloudArtifactRegistryDockerImage`
 
 Represents a docker artifact of Google Artifact Registry.
@@ -22467,6 +22506,7 @@ GPG signature for a signed commit.
 | <a id="groupstats"></a>`stats` | [`GroupStats`](#groupstats) | Group statistics. |
 | <a id="groupstoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
 | <a id="groupsubgroupcreationlevel"></a>`subgroupCreationLevel` | [`String`](#string) | Permission level required to create subgroups within the group. |
+| <a id="groupsubscriptionhistory"></a>`subscriptionHistory` **{warning-solid}** | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
 | <a id="grouptimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="grouptotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="grouptotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
@@ -27089,6 +27129,7 @@ Product analytics events for a specific month and year.
 | <a id="namespacesecuritypolicyproject"></a>`securityPolicyProject` | [`Project`](#project) | Security policy project assigned to the namespace. |
 | <a id="namespacesharedrunnerssetting"></a>`sharedRunnersSetting` | [`SharedRunnersSetting`](#sharedrunnerssetting) | Shared runners availability for the namespace and its descendants. |
 | <a id="namespacestoragesizelimit"></a>`storageSizeLimit` | [`Float`](#float) | The storage limit (in bytes) included with the root namespace plan. This limit only applies to namespaces under namespace limit enforcement. |
+| <a id="namespacesubscriptionhistory"></a>`subscriptionHistory` **{warning-solid}** | [`GitlabSubscriptionHistoryConnection`](#gitlabsubscriptionhistoryconnection) | **Introduced** in GitLab 17.3. **Status**: Experiment. Find subscription history records. |
 | <a id="namespacetimelogcategories"></a>`timelogCategories` **{warning-solid}** | [`TimeTrackingTimelogCategoryConnection`](#timetrackingtimelogcategoryconnection) | **Introduced** in GitLab 15.3. **Status**: Experiment. Timelog categories for the namespace. |
 | <a id="namespacetotalrepositorysize"></a>`totalRepositorySize` | [`Float`](#float) | Total repository size of all projects in the root namespace in bytes. |
 | <a id="namespacetotalrepositorysizeexcess"></a>`totalRepositorySizeExcess` | [`Float`](#float) | Total excess repository size of all projects in the root namespace in bytes. This only applies to namespaces under Project limit enforcement. |
@@ -37145,6 +37186,15 @@ Values for sorting the mapping of users on source instance to users on destinati
 | <a id="sourceusersortsource_name_desc"></a>`SOURCE_NAME_DESC` | Instance source name by descending order. |
 | <a id="sourceusersortstatus_asc"></a>`STATUS_ASC` | Status of the mapping by ascending order. |
 | <a id="sourceusersortstatus_desc"></a>`STATUS_DESC` | Status of the mapping by descending order. |
+
+### `SubscriptionHistoryChangeType`
+
+Types of change for a subscription history record.
+
+| Value | Description |
+| ----- | ----------- |
+| <a id="subscriptionhistorychangetypegitlab_subscription_destroyed"></a>`GITLAB_SUBSCRIPTION_DESTROYED` | This was the previous state before the subscription was destroyed. |
+| <a id="subscriptionhistorychangetypegitlab_subscription_updated"></a>`GITLAB_SUBSCRIPTION_UPDATED` | This was the previous state before the subscription was updated. |
 
 ### `TestCaseStatus`
 

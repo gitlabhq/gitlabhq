@@ -7155,9 +7155,6 @@ msgid_plural "Are you sure you want to import %d repositories?"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Are you sure you want to leave the Web IDE? All unsaved changes will be lost."
-msgstr ""
-
 msgid "Are you sure you want to lock %{path}?"
 msgstr ""
 
@@ -14335,9 +14332,6 @@ msgid "Connecting"
 msgstr ""
 
 msgid "Connecting to terminal sync service"
-msgstr ""
-
-msgid "Connecting to the remote environment..."
 msgstr ""
 
 msgid "Connecting..."
@@ -51525,9 +51519,6 @@ msgid "Start merge train"
 msgstr ""
 
 msgid "Start merge train..."
-msgstr ""
-
-msgid "Start remote connection"
 msgstr ""
 
 msgid "Start search"

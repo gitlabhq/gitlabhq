@@ -1,9 +1,5 @@
 import { start } from '@gitlab/web-ide';
-import { __ } from '~/locale';
-import { cleanLeadingSeparator } from '~/lib/utils/url_utility';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
-import { confirmAction } from '~/lib/utils/confirm_via_gl_modal/confirm_action';
-import { createAndSubmitForm } from '~/lib/utils/create_and_submit_form';
 import csrf from '~/lib/utils/csrf';
 import Tracking from '~/tracking';
 import {
@@ -14,20 +10,6 @@ import {
 } from './lib/gitlab_web_ide';
 import { GITLAB_WEB_IDE_FEEDBACK_ISSUE } from './constants';
 import { renderWebIdeError } from './render_web_ide_error';
-
-const buildRemoteIdeURL = (ideRemotePath, remoteHost, remotePathArg) => {
-  const remotePath = cleanLeadingSeparator(remotePathArg);
-
-  const replacers = {
-    ':remote_host': encodeURIComponent(remoteHost),
-    ':remote_path': encodeURIComponent(remotePath).replaceAll('%2F', '/'),
-  };
-
-  // why: Use the function callback of "replace" so we replace both keys at once
-  return ideRemotePath.replace(/(:remote_host|:remote_path)/g, (key) => {
-    return replacers[key];
-  });
-};
 
 const getMRTargetProject = () => {
   const url = new URL(window.location.href);
@@ -49,7 +31,6 @@ export const initGitlabWebIDE = async (el) => {
     cspNonce: nonce,
     branchName: ref,
     projectPath,
-    ideRemotePath,
     filePath,
     mergeRequest: mrId,
     forkInfo: forkInfoJSON,
@@ -106,27 +87,6 @@ export const initGitlabWebIDE = async (el) => {
       handleTracking,
       // See https://gitlab.com/gitlab-org/gitlab-web-ide/-/blob/main/packages/web-ide-types/src/config.ts#L86
       telemetryEnabled: Tracking.enabled(),
-      async handleStartRemote({ remoteHost, remotePath, connectionToken }) {
-        const confirmed = await confirmAction(
-          __('Are you sure you want to leave the Web IDE? All unsaved changes will be lost.'),
-          {
-            primaryBtnText: __('Start remote connection'),
-            cancelBtnText: __('Continue editing'),
-          },
-        );
-
-        if (!confirmed) {
-          return;
-        }
-
-        createAndSubmitForm({
-          url: buildRemoteIdeURL(ideRemotePath, remoteHost, remotePath),
-          data: {
-            connection_token: connectionToken,
-            return_url: window.location.href,
-          },
-        });
-      },
     });
   } catch (error) {
     renderWebIdeError({ error, signOutPath });

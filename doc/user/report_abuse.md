@@ -69,6 +69,8 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Report abuse from a task
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461848) in GitLab 17.3.
+
 1. On the task, in the upper-right corner, select  **More actions** (**{ellipsis_v}**).
 1. Select **Report abuse**.
 1. Select a reason for reporting the user.
@@ -77,6 +79,8 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 
 ## Report abuse from an objective
 
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461848) in GitLab 17.3.
+
 1. On the objective, in the upper-right corner, select  **More actions** (**{ellipsis_v}**).
 1. Select **Report abuse**.
 1. Select a reason for reporting the user.
@@ -84,6 +88,8 @@ A URL to the reported user's comment is pre-filled in the abuse report's
 1. Select **Send report**.
 
 ## Report abuse from a key result
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/461848) in GitLab 17.3.
 
 1. On the key result, in the upper-right corner, select  **More actions** (**{ellipsis_v}**).
 1. Select **Report abuse**.

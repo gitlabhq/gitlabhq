@@ -159,12 +159,6 @@ InitializerConnections.raise_if_new_database_connection do
           get '/', to: 'ide#index'
         end
 
-        # Remote host can contain "." characters so it needs a constraint
-        post 'remote/:remote_host(/*remote_path)',
-          as: :remote,
-          to: 'web_ide/remote_ide#index',
-          constraints: { remote_host: %r{[^/?]+} }
-
         post '/reset_oauth_application_settings' => 'admin/applications#reset_web_ide_oauth_application_settings'
       end
 
