@@ -105,6 +105,7 @@ func TestRegularProjectsAPI(t *testing.T) {
 		"/api/v3/projects/foo%2Fbar%2Fbaz%2Fqux/repository/not/special",
 	} {
 		resp, body := httpGet(t, ws.URL+resource, nil)
+		defer resp.Body.Close()
 
 		require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
 		require.Equal(t, apiResponse, body, "GET %q: response body", resource)
@@ -141,6 +142,7 @@ func TestAllowedStaticFile(t *testing.T) {
 		"/static file.txt",
 	} {
 		resp, body := httpGet(t, ws.URL+resource, nil)
+		defer resp.Body.Close()
 
 		require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
 		require.Equal(t, content, body, "GET %q: response body", resource)
@@ -161,6 +163,7 @@ func TestStaticFileRelativeURL(t *testing.T) {
 
 	resource := "/my-relative-url/static.txt"
 	resp, body := httpGet(t, ws.URL+resource, nil)
+	defer resp.Body.Close()
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
 	require.Equal(t, content, body, "GET %q: response body", resource)
@@ -184,6 +187,7 @@ func TestAllowedPublicUploadsFile(t *testing.T) {
 		"/uploads/static file.txt",
 	} {
 		resp, body := httpGet(t, ws.URL+resource, nil)
+		defer resp.Body.Close()
 
 		require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
 		require.Equal(t, content, body, "GET %q: response body", resource)
@@ -210,6 +214,7 @@ func TestDeniedPublicUploadsFile(t *testing.T) {
 	} {
 		t.Run(resource, func(t *testing.T) {
 			resp, body := httpGet(t, ws.URL+resource, nil)
+			defer resp.Body.Close()
 
 			require.Equal(t, 404, resp.StatusCode, "GET %q: status code", resource)
 			require.Equal(t, "", body, "GET %q: response body", resource)
@@ -241,6 +246,7 @@ This is a static error page for code 499
 
 	resourcePath := "/error-499"
 	resp, body := httpGet(t, ws.URL+resourcePath, nil)
+	defer resp.Body.Close()
 
 	require.Equal(t, 499, resp.StatusCode, "GET %q: status code", resourcePath)
 	require.Equal(t, string(errorPageBody), body, "GET %q: response body", resourcePath)
@@ -415,6 +421,7 @@ func TestArtifactsGetSingleFile(t *testing.T) {
 
 	resp, body, err := doSendDataRequest(t, resourcePath, "artifacts-entry", jsonParams)
 	require.NoError(t, err)
+	defer resp.Body.Close()
 
 	require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resourcePath)
 	require.Equal(t, fileContents, string(body), "GET %q: response body", resourcePath)
@@ -429,7 +436,10 @@ func TestImageResizing(t *testing.T) {
 	resourcePath := "/uploads/-/system/user/avatar/123/avatar.png?width=40"
 
 	resp, body, err := doSendDataRequest(t, resourcePath, "send-scaled-img", jsonParams)
+
 	require.NoError(t, err, "send resize request")
+	defer resp.Body.Close()
+
 	require.Equal(t, 200, resp.StatusCode, "GET %q: body: %s", resourcePath, body)
 
 	img, err := png.Decode(bytes.NewReader(body))
@@ -485,6 +495,8 @@ func TestSendURLForArtifacts(t *testing.T) {
 			resp, body, err := doSendDataRequest(t, resourcePath, "send-url", jsonParams)
 			require.NoError(t, err)
 
+			defer resp.Body.Close()
+
 			require.Equal(t, http.StatusOK, resp.StatusCode, "GET %q: status code", resourcePath)
 			require.Equal(t, int64(tc.contentLength), resp.ContentLength, "GET %q: Content-Length", resourcePath)
 			require.Equal(t, tc.transferEncoding, resp.TransferEncoding, "GET %q: Transfer-Encoding", resourcePath)
@@ -507,6 +519,7 @@ func TestApiContentTypeBlock(t *testing.T) {
 
 	resourcePath := "/something"
 	resp, body := httpGet(t, ws.URL+resourcePath, nil)
+	defer resp.Body.Close()
 
 	require.Equal(t, 500, resp.StatusCode, "GET %q: status code", resourcePath)
 	require.NotContains(t, wrongResponse, body, "GET %q: response body", resourcePath)
@@ -573,6 +586,7 @@ func TestCorrelationIdHeader(t *testing.T) {
 		"/api/v3/projects/123/repository/not/special",
 	} {
 		resp, _ := httpGet(t, ws.URL+resource, nil)
+		defer resp.Body.Close()
 
 		require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
 		requestIds := resp.Header["X-Request-Id"]
@@ -656,6 +670,7 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 			}
 
 			resp, _ := httpGet(t, ws.URL+resource, headers)
+			defer resp.Body.Close()
 			requestIds := resp.Header["X-Request-Id"]
 
 			require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
@@ -869,6 +884,7 @@ This is a static error page for code 503
 	} {
 		t.Run(resource, func(t *testing.T) {
 			resp, body := httpGet(t, ws.URL+resource, nil)
+			defer resp.Body.Close()
 
 			require.Equal(t, 503, resp.StatusCode, "status code")
 			require.Equal(t, apiResponse, body, "response body")
@@ -894,6 +910,7 @@ func TestHealthChecksUnreachable(t *testing.T) {
 	for _, tc := range testCases {
 		t.Run(tc.path, func(t *testing.T) {
 			resp, body := httpGet(t, ws.URL+tc.path, nil)
+			defer resp.Body.Close()
 
 			require.Equal(t, 502, resp.StatusCode, "status code")
 			require.Equal(t, tc.responseType, resp.Header.Get("Content-Type"), "content-type")

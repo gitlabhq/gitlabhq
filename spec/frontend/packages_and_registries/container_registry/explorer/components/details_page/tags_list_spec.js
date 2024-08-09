@@ -16,6 +16,7 @@ import deleteContainerRepositoryTagsMutation from '~/packages_and_registries/con
 
 import {
   GRAPHQL_PAGE_SIZE,
+  GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
   NO_TAGS_TITLE,
   NO_TAGS_MESSAGE,
   NO_TAGS_MATCHING_FILTERS_TITLE,
@@ -228,6 +229,65 @@ describe('Tags List', () => {
               orderBy: 'NAME',
             },
           ],
+        });
+      });
+
+      it('increases page size when paginating next', async () => {
+        findPersistedPagination().vm.$emit('next');
+
+        await waitForPromises();
+
+        expect(resolver).toHaveBeenCalledWith({
+          ...queryData,
+          first: GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
+          after: tagsPageInfo.endCursor,
+        });
+      });
+
+      it('increases page size when paginating prev', async () => {
+        findPersistedPagination().vm.$emit('prev');
+
+        await waitForPromises();
+
+        expect(resolver).toHaveBeenCalledWith({
+          ...queryData,
+          first: null,
+          last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
+          before: tagsPageInfo.startCursor,
+        });
+      });
+
+      it('with before calls resolver with pagination params', async () => {
+        findPersistedSearch().vm.$emit('update', {
+          sort: 'NAME_ASC',
+          filters: [],
+          pageInfo: { before: tagsPageInfo.startCursor },
+        });
+
+        await waitForPromises();
+
+        expect(resolver).toHaveBeenLastCalledWith({
+          ...queryData,
+          first: null,
+          before: tagsPageInfo.startCursor,
+          last: GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
+        });
+      });
+
+      it('with after calls resolver with pagination params', async () => {
+        findPersistedSearch().vm.$emit('update', {
+          ...queryData,
+          sort: 'NAME_ASC',
+          filters: [],
+          pageInfo: { after: tagsPageInfo.endCursor },
+        });
+
+        await waitForPromises();
+
+        expect(resolver).toHaveBeenLastCalledWith({
+          ...queryData,
+          first: GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
+          after: tagsPageInfo.endCursor,
         });
       });
     });

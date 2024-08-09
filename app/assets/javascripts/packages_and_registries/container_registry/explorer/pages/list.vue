@@ -29,6 +29,7 @@ import {
   EMPTY_RESULT_TITLE,
   EMPTY_RESULT_MESSAGE,
   GRAPHQL_PAGE_SIZE,
+  GRAPHQL_PAGE_SIZE_METADATA_ENABLED,
   FETCH_IMAGES_LIST_ERROR_MESSAGE,
   SORT_FIELDS,
   SETTINGS_TEXT,
@@ -159,13 +160,18 @@ export default {
     graphqlResource() {
       return this.config.isGroupPage ? WORKSPACE_GROUP : WORKSPACE_PROJECT;
     },
+    pageSize() {
+      return this.config.isMetadataDatabaseEnabled
+        ? GRAPHQL_PAGE_SIZE_METADATA_ENABLED
+        : GRAPHQL_PAGE_SIZE;
+    },
     queryVariables() {
       return {
         name: this.name,
         sort: this.sorting,
         fullPath: this.config.isGroupPage ? this.config.groupPath : this.config.projectPath,
         isGroupPage: this.config.isGroupPage,
-        first: GRAPHQL_PAGE_SIZE,
+        first: this.pageSize,
         ...this.pageParams,
       };
     },
@@ -203,17 +209,17 @@ export default {
       this.itemToDelete = {};
     },
     fetchNextPage() {
-      this.pageParams = getNextPageParams(this.pageInfo?.endCursor);
+      this.pageParams = getNextPageParams(this.pageInfo?.endCursor, this.pageSize);
     },
     fetchPreviousPage() {
-      this.pageParams = getPreviousPageParams(this.pageInfo?.startCursor);
+      this.pageParams = getPreviousPageParams(this.pageInfo?.startCursor, this.pageSize);
     },
     startDelete() {
       this.track('confirm_delete');
       this.mutationLoading = true;
     },
     handleSearchUpdate({ sort, filters, pageInfo }) {
-      this.pageParams = getPageParams(pageInfo);
+      this.pageParams = getPageParams(pageInfo, this.pageSize);
       this.sorting = sort;
 
       const search = filters.find((i) => i.type === FILTERED_SEARCH_TERM);

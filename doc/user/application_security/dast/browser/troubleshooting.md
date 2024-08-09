@@ -153,6 +153,7 @@ The modules that can be configured for logging are as follows:
 | `STAT`     | Used for general statistics while running the scan.                                               |
 | `VLDFN`    | Used for loading and parsing vulnerability definitions.                                           |
 | `WEBGW`    | Used to log messages sent to the target application when running active checks.                   |
+| `SCOPE`    | Used to log messages related to [scope management](configuration/customize_settings.md#managing-scope). |
 
 ### Example - log crawled paths
 

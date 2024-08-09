@@ -87,9 +87,16 @@ component can have two indicators:
 
 The calculation of the ratio happens as follows:
 
+![error budget calculation](img/error_budget_calculation_v17_2.png)
+
+<!--
+To update this calculation, paste the following math block in a GitLab comment, update it,
+and take a screenshot:
+
 ```math
 \frac {operations\_meeting\_apdex + (total\_operations - operations\_with\_errors)} {total\_apdex\_measurements + total\_operations}
 ```
+-->
 
 ## Check where budget is being spent
 

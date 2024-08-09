@@ -1039,21 +1039,7 @@ a^2+b^2=c^2
 $$
 ````
 
-This math is inline: $`a^2+b^2=c^2`$.
-
-This math is on a separate line using a ```` ```math ```` block:
-
-```math
-a^2+b^2=c^2
-```
-
-This math is on a separate line using inline `$$`: $$a^2+b^2=c^2$$
-
-This math is on a separate line using a `$$...$$` block:
-
-$$
-a^2+b^2=c^2
-$$
+![Example of math in GitLab](img/markdown_math_v17_2.png)
 
 ## Tables
 

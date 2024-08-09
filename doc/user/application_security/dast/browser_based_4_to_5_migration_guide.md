@@ -79,6 +79,7 @@ See [configuration](browser/configuration/index.md) for more information on conf
 | DAST version 4 CI/CD variable               | Required action    | Notes                                         |
 |:--------------------------------------------|:-------------------|:----------------------------------------------|
 | `DAST_ADVERTISE_SCAN`                       | Rename             | To `DAST_REQUEST_ADVERTISE_SCAN`              |
+| `DAST_AFTER_LOGIN_ACTIONS`                  | Rename             | To `DAST_AUTH_AFTER_LOGIN_ACTIONS`            |
 | `DAST_AUTH_COOKIES`                         | Rename             | To `DAST_AUTH_COOKIE_NAMES`                   |
 | `DAST_AUTH_DISABLE_CLEAR_FIELDS`            | Rename             | To `DAST_AUTH_CLEAR_INPUT_FIELDS`             |
 | `DAST_AUTH_REPORT`                          | No action required |                                               |

@@ -27,3 +27,6 @@ desired_sharding_key:
         table: security_orchestration_policy_configurations
         sharding_key: namespace_id
         belongs_to: policy_configuration
+desired_sharding_key_migration_job_name:
+- BackfillComplianceFrameworkSecurityPoliciesProjectId
+- BackfillComplianceFrameworkSecurityPoliciesNamespaceId

@@ -36,13 +36,13 @@
             = _('You can also upload existing files from your computer using the instructions below.')
           .git-empty.js-git-empty
             %h5= _('Git global setup')
-            %pre.code.js-syntax-highlight
+            %pre.js-syntax-highlight
               :preserve
                 git config --global user.name "#{h git_user_name}"
                 git config --global user.email "#{h git_user_email}"
 
             %h5= _('Create a new repository')
-            %pre.code.js-syntax-highlight
+            %pre.js-syntax-highlight
               :preserve
                 git clone #{ content_tag(:span, default_url_to_repo, class: 'js-clone')}
                 cd #{h @project.path}
@@ -55,7 +55,7 @@
                   git push --set-upstream origin #{h escaped_default_branch_name }
 
             %h5= _('Push an existing folder')
-            %pre.code.js-syntax-highlight
+            %pre.js-syntax-highlight
               :preserve
                 cd existing_folder
                 git init --initial-branch=#{h escaped_default_branch_name}
@@ -67,7 +67,7 @@
                   git push --set-upstream origin #{h escaped_default_branch_name }
 
             %h5= _('Push an existing Git repository')
-            %pre.code.js-syntax-highlight
+            %pre.js-syntax-highlight
               :preserve
                 cd existing_repo
                 git remote rename origin old-origin

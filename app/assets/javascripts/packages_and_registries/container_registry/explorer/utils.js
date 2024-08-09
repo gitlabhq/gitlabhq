@@ -12,24 +12,24 @@ export const timeTilRun = (time) => {
   return approximateDuration(difference / 1000);
 };
 
-export const getNextPageParams = (cursor) => ({
+export const getNextPageParams = (cursor, pageSize = GRAPHQL_PAGE_SIZE) => ({
   after: cursor,
-  first: GRAPHQL_PAGE_SIZE,
+  first: pageSize,
 });
 
-export const getPreviousPageParams = (cursor) => ({
+export const getPreviousPageParams = (cursor, pageSize = GRAPHQL_PAGE_SIZE) => ({
   first: null,
   before: cursor,
-  last: GRAPHQL_PAGE_SIZE,
+  last: pageSize,
 });
 
-export const getPageParams = (pageInfo = {}) => {
+export const getPageParams = (pageInfo = {}, pageSize = GRAPHQL_PAGE_SIZE) => {
   if (pageInfo.before) {
-    return getPreviousPageParams(pageInfo.before);
+    return getPreviousPageParams(pageInfo.before, pageSize);
   }
 
   if (pageInfo.after) {
-    return getNextPageParams(pageInfo.after);
+    return getNextPageParams(pageInfo.after, pageSize);
   }
 
   return {};
