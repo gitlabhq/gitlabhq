@@ -1368,9 +1368,14 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
     let(:patch_names) { %w[0001-This-does-not-apply-to-the-feature-branch.patch] }
     let(:branch_name) { 'branch-with-patches' }
+    let(:target_sha) { nil }
 
     subject(:commit_patches) do
-      client.user_commit_patches(user, branch_name, patch_content)
+      client.user_commit_patches(user,
+        branch_name: branch_name,
+        patches: patch_content,
+        target_sha: target_sha
+      )
     end
 
     it 'applies the patch correctly' do
@@ -1390,6 +1395,14 @@ RSpec.describe Gitlab::GitalyClient::OperationService, feature_category: :source
 
       it 'raises the correct error' do
         expect { commit_patches }.to raise_error(GRPC::FailedPrecondition)
+      end
+    end
+
+    context 'when an invalid target_sha is provided' do
+      let(:target_sha) { '2df2bff3c5d39d69c49c947a6972212731e8146f' }
+
+      it 'raises the correct error' do
+        expect { commit_patches }.to raise_error(GRPC::Internal)
       end
     end
   end

@@ -554,12 +554,13 @@ module Gitlab
       end
 
       # rubocop:enable Metrics/ParameterLists
-      def user_commit_patches(user, branch_name, patches)
+      def user_commit_patches(user, branch_name:, patches:, target_sha: nil)
         header = Gitaly::UserApplyPatchRequest::Header.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           target_branch: encode_binary(branch_name),
-          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i)
+          timestamp: Google::Protobuf::Timestamp.new(seconds: Time.now.utc.to_i),
+          expected_old_oid: target_sha
         )
         reader = binary_io(patches)
 

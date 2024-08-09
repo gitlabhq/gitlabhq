@@ -131,7 +131,8 @@ then process the merge request according to your standard workflow.
 
 Vulnerability Resolution is available for a subset of the SAST rules that we cover. We are continually testing and adding more rules to this feature.
 
-<details><summary>Select to see the complete list of supported CWEs for Vulnerability Resolution</summary>
+<br><br>
+<details><summary style="color:#5943b6"><a>View the complete list of supported CWEs for Vulnerability Resolution</a></summary>
 
 <ul>
   <li>CWE-23: Relative Path Traversal</li>

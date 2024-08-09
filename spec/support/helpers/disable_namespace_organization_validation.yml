@@ -4,7 +4,6 @@
 - ee/spec/controllers/ee/omniauth_callbacks_controller_spec.rb
 - ee/spec/controllers/groups/omniauth_callbacks_controller_spec.rb
 - ee/spec/controllers/ldap/omniauth_callbacks_controller_spec.rb
-- ee/spec/controllers/registrations/groups_controller_spec.rb
 - ee/spec/features/groups_spec.rb
 - ee/spec/features/registrations/combined_registration_spec.rb
 - ee/spec/features/registrations/saas/sso_signin_standard_flow_company_creating_project_spec.rb
@@ -31,8 +30,6 @@
 - ee/spec/services/users/service_accounts/create_service_spec.rb
 - ee/spec/services/epics/update_dates_service_spec.rb
 - ee/spec/services/gitlab_subscriptions/trials/create_service_spec.rb
-- ee/spec/services/registrations/import_namespace_create_service_spec.rb
-- ee/spec/services/registrations/standard_namespace_create_service_spec.rb
 - spec/controllers/admin/groups_controller_spec.rb
 - spec/controllers/admin/users_controller_spec.rb
 - spec/controllers/groups_controller_spec.rb

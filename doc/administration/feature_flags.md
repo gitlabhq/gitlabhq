@@ -131,6 +131,12 @@ For example, to enable the `:example_feature` feature flag for project `1234`:
 Feature.enable(:example_feature, Project.find(1234))
 ```
 
+Some feature flags can be enabled or disabled on a per user basis. For example, to enable the `:example_feature` flag for user `sidney_jones`:
+
+```ruby
+Feature.enable(:example_feature, User.find_by_username("sidney_jones"))
+```
+
 `Feature.enable` and `Feature.disable` always return `true`, even if the application doesn't use the flag:
 
 ```ruby

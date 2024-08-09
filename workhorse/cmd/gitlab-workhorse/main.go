@@ -152,6 +152,7 @@ func buildConfig(arg0 string, args []string) (*bootConfig, *config.Config, error
 	}
 
 	cfg.Redis = cfgFromFile.Redis
+	cfg.Sentinel = cfgFromFile.Sentinel
 	cfg.ObjectStorageCredentials = cfgFromFile.ObjectStorageCredentials
 	cfg.ImageResizerConfig = cfgFromFile.ImageResizerConfig
 	cfg.AltDocumentRoot = cfgFromFile.AltDocumentRoot
@@ -217,7 +218,7 @@ func run(boot bootConfig, cfg config.Config) error {
 
 	log.Info("Using redis/go-redis")
 
-	rdb, err := redis.Configure(cfg.Redis)
+	rdb, err := redis.Configure(&cfg)
 	if err != nil {
 		log.WithError(err).Error("unable to configure redis client")
 	}

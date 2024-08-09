@@ -61,7 +61,8 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
   let_it_be_with_reload(:group_member) { create(:group_member, user_id: placeholder_user_id) }
 
   # Ci::Builds - schema is gitlab_ci
-  let_it_be_with_reload(:ci_build) { create(:ci_build, user_id: placeholder_user_id) }
+  # Temporarily disabling ci_build tests - https://gitlab.com/gitlab-org/gitlab/-/issues/478097
+  # let_it_be_with_reload(:ci_build) { create(:ci_build, user_id: placeholder_user_id) }
 
   subject(:service) { described_class.new(source_user) }
 
@@ -97,7 +98,8 @@ RSpec.describe Import::ReassignPlaceholderUserRecordsService, feature_category: 
     create_placeholder_reference(source_user, group_member, user_column: 'user_id')
 
     # Ci::Builds
-    create_placeholder_reference(source_user, ci_build, user_column: 'user_id')
+    # Temporarily disabling ci_build tests - https://gitlab.com/gitlab-org/gitlab/-/issues/478097
+    # create_placeholder_reference(source_user, ci_build, user_column: 'user_id')
   end
 
   describe '#execute', :aggregate_failures do

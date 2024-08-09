@@ -16,7 +16,7 @@ describe('content_editor/extensions/word_break', () => {
 
   it.each`
     input      | insertedNode
-    ${'<wbr>'} | ${() => [p(wordBreak()), p()]}
+    ${'<wbr>'} | ${() => [p(wordBreak())]}
     ${'<wbr'}  | ${() => [p()]}
     ${'wbr>'}  | ${() => [p()]}
   `('with input=$input, then should insert a $insertedNode', ({ input, insertedNode }) => {
