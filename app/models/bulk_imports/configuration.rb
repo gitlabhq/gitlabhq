@@ -19,4 +19,8 @@ class BulkImports::Configuration < ApplicationRecord
     key: Settings.attr_encrypted_db_key_base_32,
     mode: :per_attribute_iv,
     algorithm: 'aes-256-gcm'
+
+  def source_hostname
+    URI.parse(url).host
+  end
 end

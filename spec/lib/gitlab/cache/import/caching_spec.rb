@@ -221,13 +221,37 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
     end
   end
 
+  describe '.value_from_hash' do
+    it 'returns nil when field was not set' do
+      expect(described_class.value_from_hash('foo', 'bar')).to eq(nil)
+    end
+
+    it 'returns the value of the field' do
+      described_class.hash_add('foo', 'bar', 1)
+
+      expect(described_class.value_from_hash('foo', 'bar')).to eq('1')
+    end
+
+    it 'refreshes the cache key if a value is present' do
+      described_class.hash_add('foo', 'bar', 1)
+
+      redis = double(:redis)
+
+      expect(redis).to receive(:hget).with(/foo/, 'bar').and_return('1')
+      expect(redis).to receive(:expire).with(/foo/, described_class::TIMEOUT)
+      expect(Gitlab::Redis::SharedState).to receive(:with).twice.and_yield(redis)
+
+      described_class.value_from_hash('foo', 'bar')
+    end
+  end
+
   describe '.hash_increment' do
     it 'increments a value in a hash' do
       described_class.hash_increment('foo', 'field', 1)
       described_class.hash_increment('foo', 'field', 5)
 
       key = described_class.cache_key_for('foo')
-      values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
+      values = Gitlab::Redis::SharedState.with { |r| r.hgetall(key) }
 
       expect(values).to eq({ 'field' => '6' })
     end
@@ -237,7 +261,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
         described_class.hash_increment('another-foo', 'another-field', 'not-an-integer')
 
         key = described_class.cache_key_for('foo')
-        values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
+        values = Gitlab::Redis::SharedState.with { |r| r.hgetall(key) }
 
         expect(values).to eq({})
       end
@@ -248,7 +272,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
         described_class.hash_increment('another-foo', 'another-field', -5)
 
         key = described_class.cache_key_for('foo')
-        values = Gitlab::Redis::Cache.with { |r| r.hgetall(key) }
+        values = Gitlab::Redis::SharedState.with { |r| r.hgetall(key) }
 
         expect(values).to eq({})
       end
@@ -315,7 +339,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
       described_class.list_add('foo', 20)
 
       key = described_class.cache_key_for('foo')
-      values = Gitlab::Redis::Cache.with { |r| r.lrange(key, 0, -1) }
+      values = Gitlab::Redis::SharedState.with { |r| r.lrange(key, 0, -1) }
 
       expect(values).to eq(%w[10 20])
     end
@@ -328,7 +352,7 @@ RSpec.describe Gitlab::Cache::Import::Caching, :clean_gitlab_redis_shared_state,
         described_class.list_add('foo', 40, limit: 3)
 
         key = described_class.cache_key_for('foo')
-        values = Gitlab::Redis::Cache.with { |r| r.lrange(key, 0, -1) }
+        values = Gitlab::Redis::SharedState.with { |r| r.lrange(key, 0, -1) }
 
         expect(values).to eq(%w[20 30 40])
       end

@@ -254,13 +254,27 @@ module Gitlab
 
         # Returns the values of the given hash.
         #
-        # raw_key - The key of the set to check.
+        # raw_key - The key of the hash to check.
         def self.values_from_hash(raw_key)
           key = cache_key_for(raw_key)
 
           with_redis do |redis|
             redis.hgetall(key)
           end
+        end
+
+        # Returns a single value of the given hash.
+        #
+        # raw_key - The key of the hash to check.
+        # field - The field to get from the hash.
+        def self.value_from_hash(raw_key, field, timeout: TIMEOUT)
+          key = cache_key_for(raw_key)
+
+          value = with_redis { |redis| redis.hget(key, field) }
+
+          with_redis { |redis| redis.expire(key, timeout) } if value.present?
+
+          value
         end
 
         # Increments value of a field in a hash

@@ -20,7 +20,7 @@ module Import
 
     validates :namespace_id, :import_type, :source_hostname, :source_user_identifier, :status, presence: true
     validates :placeholder_user_id, presence: true, unless: :completed?
-    validates :reassign_to_user_id, presence: true, if: :reassignment_in_progress?
+    validates :reassign_to_user_id, presence: true, if: -> { reassignment_in_progress? || completed? }
 
     scope :for_namespace, ->(namespace_id) { where(namespace_id: namespace_id) }
     scope :by_statuses, ->(statuses) { where(status: statuses) }
@@ -94,8 +94,8 @@ module Import
       end
     end
 
-    def accepted_reassign_to_user
-      reassign_to_user if accepted_status?
+    def mapped_user
+      accepted_status? ? reassign_to_user : placeholder_user
     end
 
     def accepted_status?

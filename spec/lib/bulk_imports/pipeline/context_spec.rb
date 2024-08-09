@@ -2,10 +2,10 @@
 
 require 'spec_helper'
 
-RSpec.describe BulkImports::Pipeline::Context do
+RSpec.describe BulkImports::Pipeline::Context, feature_category: :importers do
   let_it_be(:user) { create(:user) }
   let_it_be(:group) { create(:group) }
-  let_it_be(:bulk_import) { create(:bulk_import, user: user) }
+  let_it_be(:bulk_import) { create(:bulk_import, :with_configuration, user: user) }
   let_it_be(:project) { create(:project) }
   let_it_be(:project_entity) { create(:bulk_import_entity, :project_entity, project: project) }
   let_it_be(:project_tracker) { create(:bulk_import_tracker, entity: project_entity) }
@@ -72,6 +72,42 @@ RSpec.describe BulkImports::Pipeline::Context do
       subject { described_class.new(project_tracker) }
 
       it { expect(subject.import_export_config).to be_instance_of(BulkImports::FileTransfer::ProjectConfig) }
+    end
+  end
+
+  describe '#source_user_mapper' do
+    it { expect(subject.source_user_mapper).to be_instance_of(Gitlab::Import::SourceUserMapper) }
+
+    it 'builds with the correct arguments' do
+      expect(Gitlab::Import::SourceUserMapper).to receive(:new).with(
+        namespace: group.root_ancestor,
+        import_type: Import::SOURCE_DIRECT_TRANSFER,
+        source_hostname: bulk_import.configuration.source_hostname
+      )
+
+      subject.source_user_mapper
+    end
+  end
+
+  describe '#importer_user_mapping_enabled?' do
+    subject { described_class.new(tracker, extra: :data).importer_user_mapping_enabled? }
+
+    before do
+      allow_next_instance_of(Import::BulkImports::EphemeralData, bulk_import.id) do |ephemeral_data|
+        allow(ephemeral_data).to receive(:importer_user_mapping_enabled?).and_return(status)
+      end
+    end
+
+    context 'when importer user mapping is disabled' do
+      let(:status) { false }
+
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when importer user mapping is enabled' do
+      let(:status) { true }
+
+      it { is_expected.to eq(true) }
     end
   end
 end

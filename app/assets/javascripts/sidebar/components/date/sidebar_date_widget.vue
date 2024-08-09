@@ -2,7 +2,7 @@
 import { GlIcon, GlDatepicker, GlTooltipDirective, GlLink, GlPopover } from '@gitlab/ui';
 import { createAlert } from '~/alert';
 import { TYPE_ISSUE } from '~/issues/constants';
-import { formatDate, localeDateFormat, parsePikadayDate } from '~/lib/utils/datetime_utility';
+import { dateInWords, formatDate, parsePikadayDate } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import { dateFields, dateTypes, Tracking } from '../../constants';
 import { dueDateQueries, startDateQueries } from '../../queries/constants';
@@ -166,7 +166,7 @@ export default {
         return this.$options.i18n.noDate;
       }
 
-      return localeDateFormat.asDate.format(this.dateValue);
+      return dateInWords(this.parsedDate, true);
     },
     workspacePath() {
       return this.issuableType === TYPE_ISSUE

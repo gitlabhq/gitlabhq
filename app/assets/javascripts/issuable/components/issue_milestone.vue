@@ -1,6 +1,6 @@
 <script>
 import { GlTooltip, GlIcon } from '@gitlab/ui';
-import { localeDateFormat, parsePikadayDate, timeFor } from '~/lib/utils/datetime_utility';
+import { timeFor, parsePikadayDate, dateInWords } from '~/lib/utils/datetime_utility';
 import { __, sprintf } from '~/locale';
 import timeagoMixin from '~/vue_shared/mixins/timeago';
 
@@ -41,10 +41,10 @@ export default {
     },
     milestoneDatesAbsolute() {
       if (this.milestoneDue) {
-        return `(${localeDateFormat.asDate.format(this.milestoneDue)})`;
+        return `(${dateInWords(this.milestoneDue)})`;
       }
       if (this.milestoneStart) {
-        return `(${localeDateFormat.asDate.format(this.milestoneStart)})`;
+        return `(${dateInWords(this.milestoneStart)})`;
       }
       return '';
     },
@@ -72,22 +72,23 @@ export default {
 };
 </script>
 <template>
-  <div ref="milestoneDetails">
-    <gl-icon :size="16" class="gl-shrink-0 gl-mr-2" name="milestone" />
-    <span class="milestone-title gl-text-truncate">{{ milestone.title }}</span>
+  <div ref="milestoneDetails" class="issue-milestone-details">
+    <gl-icon :size="16" class="gl-mr-2 flex-shrink-0" name="milestone" />
+    <span class="milestone-title gl-display-inline-block gl-text-truncate">{{
+      milestone.title
+    }}</span>
     <gl-tooltip :target="() => $refs.milestoneDetails" placement="bottom" class="js-item-milestone">
-      <div class="gl-font-bold">{{ __('Milestone') }}</div>
-      <div>{{ milestone.title }}</div>
-      <div
+      <span class="gl-font-bold">{{ __('Milestone') }}</span> <br />
+      <span>{{ milestone.title }}</span> <br />
+      <span
         v-if="milestoneStart || milestoneDue"
         :class="{
           'gl-text-red-300': isMilestonePastDue,
           'gl-text-tertiary': !isMilestonePastDue,
         }"
-      >
-        <div>{{ milestoneDatesHuman }}</div>
-        <div>{{ milestoneDatesAbsolute }}</div>
-      </div>
+        ><span>{{ milestoneDatesHuman }}</span
+        ><br /><span>{{ milestoneDatesAbsolute }}</span>
+      </span>
     </gl-tooltip>
   </div>
 </template>

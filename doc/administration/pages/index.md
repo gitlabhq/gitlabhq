@@ -1242,6 +1242,7 @@ To allow certain IP ranges (subnets) to bypass all rate limits:
 
 - `rate_limit_subnets_allow_list`: Sets the allow list with the IP ranges (subnets) that should bypass all rate limits.
   For example, `['1.2.3.4/24', '2001:db8::1/32']`.
+  [Charts example](https://docs.gitlab.com/charts/charts/gitlab/gitlab-pages/index.html#configure-rate-limits-subnets-allow-list) is available.
 
 An IPv6 address receives a large prefix in the 128-bit address space. The prefix is typically at least size /64. Because of the large number of possible addresses, if the client's IP address is IPv6, the limit is applied to the IPv6 prefix with a length of 64, rather than the entire IPv6 address.
 

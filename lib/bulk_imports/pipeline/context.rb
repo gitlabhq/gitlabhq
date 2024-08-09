@@ -43,6 +43,18 @@ module BulkImports
       def configuration
         @configuration ||= bulk_import.configuration
       end
+
+      def source_user_mapper
+        @source_user_mapper ||= Gitlab::Import::SourceUserMapper.new(
+          namespace: portable.root_ancestor,
+          import_type: Import::SOURCE_DIRECT_TRANSFER,
+          source_hostname: configuration.source_hostname
+        )
+      end
+
+      def importer_user_mapping_enabled?
+        Import::BulkImports::EphemeralData.new(bulk_import_id).importer_user_mapping_enabled?
+      end
     end
   end
 end

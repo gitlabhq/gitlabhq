@@ -32,6 +32,7 @@ FactoryBot.define do
     end
 
     trait :completed do
+      with_reassign_to_user
       status { 5 }
     end
 

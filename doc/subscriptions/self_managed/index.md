@@ -86,7 +86,7 @@ You can get a list of daily and historical billable users in your GitLab instanc
    ::HistoricalData.max_historical_user_count(from: 1.year.ago.beginning_of_day, to: Time.current.end_of_day)
    ```
 
-#### Update daily and hitorical billable users
+#### Update daily and historical billable users
 
 Prerequisites:
 

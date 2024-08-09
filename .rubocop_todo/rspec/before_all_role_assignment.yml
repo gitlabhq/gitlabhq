@@ -643,7 +643,6 @@ RSpec/BeforeAllRoleAssignment:
     - 'ee/spec/services/vulnerability_issue_links/bulk_create_service_spec.rb'
     - 'ee/spec/services/vulnerability_issue_links/delete_service_spec.rb'
     - 'ee/spec/services/vulnerability_merge_request_links/create_service_spec.rb'
-    - 'ee/spec/services/work_items/widgets/weight_service/update_service_spec.rb'
     - 'ee/spec/support/shared_contexts/gitlab_team_member_shared_context.rb'
     - 'ee/spec/support/shared_contexts/project_approval_rules_shared_context.rb'
     - 'ee/spec/support/shared_examples/controllers/projects/license_scanning_report_comparison_shared_examples.rb'

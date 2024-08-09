@@ -182,6 +182,16 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                 }
                 hasChildren
                 hasParent
+                rolledUpCountsByType {
+                  workItemType {
+                    id
+                  }
+                  countsByState {
+                    all
+                    opened
+                    closed
+                  }
+                }
               }
             }
           GRAPHQL
@@ -200,7 +210,25 @@ RSpec.describe 'Query.work_item(id)', feature_category: :team_planning do
                     hash_including('id' => child_link2.work_item.to_gid.to_s)
                   ]) },
                 'hasChildren' => true,
-                'hasParent' => false
+                'hasParent' => false,
+                'rolledUpCountsByType' => match_array([
+                  hash_including(
+                    'workItemType' => hash_including('id' => anything),
+                    'countsByState' => {
+                      'all' => 0,
+                      'opened' => 0,
+                      'closed' => 0
+                    }
+                  ),
+                  hash_including(
+                    'workItemType' => hash_including('id' => anything),
+                    'countsByState' => {
+                      'all' => 0,
+                      'opened' => 0,
+                      'closed' => 0
+                    }
+                  )
+                ])
               )
             )
           )
