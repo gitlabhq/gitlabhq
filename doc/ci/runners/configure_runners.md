@@ -476,15 +476,16 @@ When using the Kubernetes executor, you can use variables to
 
 ### Git strategy
 
-You can set the `GIT_STRATEGY` used to fetch the repository content, either
-globally or per-job in the [`variables`](../yaml/index.md#variables) section:
+The `GIT_STRATEGY` variable configures how the build directory is prepared and
+repository content is fetched. You can set this variable globally or per job
+in the [`variables`](../yaml/index.md#variables) section.
 
 ```yaml
 variables:
   GIT_STRATEGY: clone
 ```
 
-There are three possible values: `clone`, `fetch`, and `none`. If left unspecified,
+Possible values are `clone`, `fetch`, `none`, and `empty`. If you do not specify a value,
 jobs use the [project's pipeline setting](../pipelines/settings.md#choose-the-default-git-strategy).
 
 `clone` is the slowest option. It clones the repository from scratch for every
@@ -510,6 +511,15 @@ It can be used for jobs that operate exclusively on artifacts, like a deployment
 Git repository data may be present, but it's likely out of date. You should only
 rely on files brought into the local working copy from cache or artifacts, and be
 aware that cache and artifact files from previous pipelines might still be present.
+
+Unlike `none`, the `empty` Git strategy deletes and then re-creates
+a dedicated build directory before downloading cache or artifact files.
+With this strategy, the GitLab Runner hook scripts are still run
+(if provided) to allow for further behavior customization.
+Use the `empty` Git strategy when:
+
+- You do not need the repository data to be present.
+- You want a clean, controlled, or customized starting state every time a job runs.
 
 ### Git submodule strategy
 
