@@ -9,6 +9,8 @@ identifiers:
 additional_properties:
   label:
     description: "Is 'template' when the page is a template"
+  property:
+    description: "Name of the markup language used by the page"
 product_group: knowledge
 milestone: '17.0'
 introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/149271

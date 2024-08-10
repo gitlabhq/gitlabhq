@@ -1,0 +1,22 @@
+---
+data_category: optional
+key_path: counts.count_total_org_wiki_page_deleted
+description: Count of all Wiki pages written in Org deleted
+product_group: knowledge
+value_type: number
+status: active
+milestone: "17.3"
+time_frame: all
+data_source: internal_events
+events:
+  - name: delete_wiki_page
+    filter:
+      property: org
+distribution:
+- ce
+- ee
+tier:
+- free
+- premium
+- ultimate
+performance_indicator_type: []

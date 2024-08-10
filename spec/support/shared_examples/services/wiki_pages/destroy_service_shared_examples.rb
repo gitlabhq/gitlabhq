@@ -30,6 +30,7 @@ RSpec.shared_examples 'WikiPages::DestroyService#execute' do |container_type|
       let(:project) { container if container.is_a?(Project) }
       let(:namespace) { container.is_a?(Group) ? container : container.namespace }
       let(:label) { 'template' }
+      let(:property) { 'markdown' }
 
       subject(:track_event) { service.execute(page) }
     end

@@ -47,7 +47,8 @@ module WikiPages
         project: project,
         namespace: group,
         additional_properties: {
-          label: label
+          label: label,
+          property: page[:format].to_s
         }
       )
     end

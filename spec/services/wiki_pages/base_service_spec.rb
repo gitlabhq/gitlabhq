@@ -7,6 +7,10 @@ RSpec.describe WikiPages::BaseService, feature_category: :wiki do
   let(:user) { double('user') }
   let(:page) { instance_double(WikiPage, template?: false) }
 
+  before do
+    allow(page).to receive(:[]).with(:format).and_return('markdown')
+  end
+
   describe '#increment_usage' do
     let(:subject) { bad_service_class.new(container: project, current_user: user) }
 
