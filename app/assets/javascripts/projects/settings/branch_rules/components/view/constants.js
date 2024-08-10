@@ -30,7 +30,7 @@ export const I18N = {
     'BranchRules|Check for a status response in merge requests. Failures do not block merges. %{linkStart}Learn more.%{linkEnd}',
   ),
   statusChecksLinkTitle: s__('BranchRules|Manage in status checks'),
-  statusChecksHeader: s__('BranchRules|Status checks (%{total})'),
+  statusChecksHeader: s__('BranchRules|Status checks'),
   allowedToPushHeader: s__('BranchRules|Allowed to push and merge (%{total})'),
   allowedToMergeHeader: s__('BranchRules|Allowed to merge (%{total})'),
   allowForcePushLabel: s__('BranchRules|Allow force push'),

@@ -4,8 +4,6 @@ import { mapActions } from 'vuex';
 import { GlSprintf, GlLink, GlLoadingIcon, GlButton, GlModal, GlModalDirective } from '@gitlab/ui';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { sprintf, n__, s__ } from '~/locale';
-import PageHeading from '~/vue_shared/components/page_heading.vue';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import {
   getParameterByName,
   mergeUrlParams,
@@ -16,6 +14,9 @@ import { helpPagePath } from '~/helpers/help_page_helper';
 import branchRulesQuery from 'ee_else_ce/projects/settings/branch_rules/queries/branch_rules_details.query.graphql';
 import { createAlert } from '~/alert';
 import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
+import SettingsSection from '~/vue_shared/components/settings/settings_section.vue';
 import editBranchRuleMutation from 'ee_else_ce/projects/settings/branch_rules/mutations/edit_branch_rule.mutation.graphql';
 import deleteBranchRuleMutation from '../../mutations/branch_rule_delete.mutation.graphql';
 import { getAccessLevels, getAccessLevelInputFromEdges } from '../../../utils';
@@ -58,6 +59,7 @@ export default {
     RuleDrawer,
     PageHeading,
     CrudComponent,
+    SettingsSection,
   },
   mixins: [glFeatureFlagsMixin()],
   inject: {
@@ -187,6 +189,10 @@ export default {
     // needed to override EE component
     statusChecksHeader() {
       return '';
+    },
+    // needed to override EE component
+    statusChecksCount() {
+      return '0';
     },
     isPredefinedRule() {
       return (
@@ -354,14 +360,11 @@ export default {
         </gl-button>
       </template>
     </page-heading>
+
     <gl-loading-icon v-if="$apollo.loading" size="lg" />
     <div v-else-if="!branchRule && !isPredefinedRule">{{ $options.i18n.noData }}</div>
     <div v-else>
-      <crud-component
-        :title="$options.i18n.ruleTarget"
-        class="gl-mt-3"
-        data-testid="rule-target-card"
-      >
+      <crud-component :title="$options.i18n.ruleTarget" data-testid="rule-target-card">
         <template #actions>
           <gl-button
             v-if="glFeatures.editBranchRules && !isPredefinedRule"
@@ -371,6 +374,7 @@ export default {
             >{{ $options.i18n.edit }}</gl-button
           >
         </template>
+
         <div v-if="allBranches" class="gl-mt-2" data-testid="all-branches">
           {{ $options.i18n.allBranches }}
         </div>
@@ -382,15 +386,20 @@ export default {
         </p>
       </crud-component>
 
-      <section v-if="!isPredefinedRule">
-        <h2 class="h4 gl-mb-1 gl-mt-6">{{ $options.i18n.protectBranchTitle }}</h2>
-        <gl-sprintf :message="$options.i18n.protectBranchDescription">
-          <template #link="{ content }">
-            <gl-link :href="$options.protectedBranchesHelpDocLink">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
+      <settings-section
+        v-if="!isPredefinedRule"
+        :heading="$options.i18n.protectBranchTitle"
+        class="gl-mt-5"
+      >
+        <template #description>
+          <gl-sprintf :message="$options.i18n.protectBranchDescription">
+            <template #link="{ content }">
+              <gl-link :href="$options.protectedBranchesHelpDocLink">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
 
         <!-- Allowed to merge -->
         <protection
@@ -420,7 +429,6 @@ export default {
 
         <!-- Allowed to push -->
         <protection
-          class="gl-mt-3"
           :header="allowedToPushHeader"
           :header-link-title="$options.i18n.manageProtectionsLinkTitle"
           :header-link-href="protectedBranchesPath"
@@ -463,23 +471,29 @@ export default {
           :is-loading="isCodeOwnersLoading"
           @toggle="onEnableCodeOwnersToggle"
         />
-      </section>
+      </settings-section>
 
       <!-- Approvals -->
-      <template v-if="showApprovers">
-        <h2 class="h4 gl-mb-1 gl-mt-6">{{ $options.i18n.approvalsTitle }}</h2>
-        <gl-sprintf :message="$options.i18n.approvalsDescription">
-          <template #link="{ content }">
-            <gl-link :href="$options.approvalsHelpDocLink">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
+      <settings-section
+        v-if="showApprovers"
+        :heading="$options.i18n.approvalsTitle"
+        class="gl-mt-5"
+      >
+        <template #description>
+          <gl-sprintf :message="$options.i18n.approvalsDescription">
+            <template #link="{ content }">
+              <gl-link :href="$options.approvalsHelpDocLink">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
 
         <!-- eslint-disable-next-line vue/no-undef-components -->
         <approval-rules-app
           :is-mr-edit="false"
           :is-branch-rules-edit="true"
+          class="!gl-mt-0"
           @submitted="$apollo.queries.project.refetch()"
         >
           <template #rules>
@@ -487,18 +501,23 @@ export default {
             <project-rules :is-branch-rules-edit="true" />
           </template>
         </approval-rules-app>
-      </template>
+      </settings-section>
 
       <!-- Status checks -->
-      <template v-if="showStatusChecks">
-        <h2 class="h4 gl-mb-1 gl-mt-6">{{ $options.i18n.statusChecksTitle }}</h2>
-        <gl-sprintf :message="$options.i18n.statusChecksDescription">
-          <template #link="{ content }">
-            <gl-link :href="$options.statusChecksHelpDocLink">
-              {{ content }}
-            </gl-link>
-          </template>
-        </gl-sprintf>
+      <settings-section
+        v-if="showStatusChecks"
+        :heading="$options.i18n.statusChecksTitle"
+        class="-gl-mt-5"
+      >
+        <template #description>
+          <gl-sprintf :message="$options.i18n.statusChecksDescription">
+            <template #link="{ content }">
+              <gl-link :href="$options.statusChecksHelpDocLink">
+                {{ content }}
+              </gl-link>
+            </template>
+          </gl-sprintf>
+        </template>
 
         <!-- eslint-disable-next-line vue/no-undef-components -->
         <status-checks
@@ -511,14 +530,16 @@ export default {
         <protection
           v-else
           data-testid="status-checks-content"
-          class="gl-mt-3"
+          class="gl-mt-0"
           :header="statusChecksHeader"
+          :count="statusChecksCount"
           :header-link-title="$options.i18n.statusChecksLinkTitle"
           :header-link-href="statusChecksPath"
           :status-checks="statusChecks"
           :empty-state-copy="$options.i18n.statusChecksEmptyState"
         />
-      </template>
+      </settings-section>
+
       <!-- EE end -->
       <gl-modal
         v-if="glFeatures.editBranchRules"

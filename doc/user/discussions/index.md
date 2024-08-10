@@ -314,3 +314,38 @@ To resolve a thread:
 
 Additionally, in merge requests, you can [do more with threads](../project/merge_requests/index.md#resolve-a-thread),
 such as move unresolved threads to an issue or prevent merging until all threads are resolved.
+
+## Summarize issue discussions with Duo Chat
+
+DETAILS:
+**Tier:** For a limited time, Ultimate. In the future, Ultimate with [GitLab Duo Enterprise](../../subscriptions/subscription-add-ons.md).
+**Offering:** GitLab.com
+**Status:** Beta
+
+> - [Introduced](https://gitlab.com/groups/gitlab-org/-/epics/10344) in GitLab 16.0 as an [experiment](../../policy/experiment-beta-support.md#experiment).
+> - [Moved](https://gitlab.com/gitlab-org/gitlab/-/issues/454550) to GitLab Duo and promoted to [beta](../../policy/experiment-beta-support.md#beta) in GitLab 17.3 [with a flag](../../administration/feature_flags.md) named `summarize_notes_with_duo`. Disabled by default.
+
+FLAG:
+The availability of this feature is controlled by a feature flag.
+For more information, see the history.
+This feature is available for testing, but not ready for production use.
+
+Generate a summary of discussions on an issue.
+
+Prerequisites:
+
+- You must belong to at least one group with the [experiment and beta features setting](../gitlab_duo/turn_on_off.md#turn-on-beta-and-experimental-features) enabled.
+- You must have permission to view the issue.
+
+To generate a summary of issue discussions:
+
+1. In an issue, scroll to the **Activity** section.
+1. Select **View summary**.
+
+The comments in the issue are summarized in as many as 10 list items.
+You can ask follow up questions based on the response.
+
+Provide feedback on this beta feature in [issue 407779](https://gitlab.com/gitlab-org/gitlab/-/issues/407779).
+
+**Data usage**: When you use this feature, the text of all comments on the issue are sent to
+the large [language model listed on the GitLab Duo page](../gitlab_duo/index.md#discussion-summary).

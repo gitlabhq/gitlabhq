@@ -9478,9 +9478,6 @@ msgstr ""
 msgid "BranchRules|Status checks"
 msgstr ""
 
-msgid "BranchRules|Status checks (%{total})"
-msgstr ""
-
 msgid "BranchRules|Target branch"
 msgstr ""
 
@@ -48491,10 +48488,10 @@ msgstr ""
 msgid "SecurityOrchestration|This policy is inherited"
 msgstr ""
 
-msgid "SecurityOrchestration|This policy is inherited from %{namespace}"
+msgid "SecurityOrchestration|This policy is inherited from %{linkStart}namespace%{linkEnd} and must be edited there"
 msgstr ""
 
-msgid "SecurityOrchestration|This policy is inherited from the %{linkStart}namespace%{linkEnd} and must be edited there"
+msgid "SecurityOrchestration|This policy is inherited from %{namespace}"
 msgstr ""
 
 msgid "SecurityOrchestration|This project"
@@ -52736,10 +52733,10 @@ msgstr ""
 msgid "TagsPage|Please type the following to confirm:"
 msgstr ""
 
-msgid "TagsPage|Repository has no tags yet."
+msgid "TagsPage|Repository has no tags yet"
 msgstr ""
 
-msgid "TagsPage|Sorry, your filter produced no results."
+msgid "TagsPage|Sorry, your filter produced no results"
 msgstr ""
 
 msgid "TagsPage|Tags"
@@ -61090,13 +61087,13 @@ msgstr ""
 msgid "Workspaces|New workspace"
 msgstr ""
 
-msgid "Workspaces|No active workspaces. Create a workspace to get started."
+msgid "Workspaces|No active workspaces"
 msgstr ""
 
 msgid "Workspaces|No agents available to create workspaces. Please consult %{linkStart}Workspaces documentation%{linkEnd} for troubleshooting."
 msgstr ""
 
-msgid "Workspaces|No terminated workspaces to show."
+msgid "Workspaces|No terminated workspaces"
 msgstr ""
 
 msgid "Workspaces|Path to devfile"

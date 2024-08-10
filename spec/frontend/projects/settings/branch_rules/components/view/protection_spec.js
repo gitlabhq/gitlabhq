@@ -1,6 +1,6 @@
 import { GlLink } from '@gitlab/ui';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Protection, { i18n } from '~/projects/settings/branch_rules/components/view/protection.vue';
 import ProtectionRow from '~/projects/settings/branch_rules/components/view/protection_row.vue';
 import { protectionPropsMock, protectionEmptyStatePropsMock } from './mock_data';

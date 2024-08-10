@@ -1,6 +1,6 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
-import { GlModal, GlCard, GlCollapsibleListbox, GlToast } from '@gitlab/ui';
+import { GlModal, GlCollapsibleListbox, GlToast } from '@gitlab/ui';
 import { sprintf } from '~/locale';
 import * as util from '~/lib/utils/url_utility';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -9,6 +9,8 @@ import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import { createAlert } from '~/alert';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import { stubComponent, RENDER_ALL_SLOTS_TEMPLATE } from 'helpers/stub_component';
+import PageHeading from '~/vue_shared/components/page_heading.vue';
+import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import RuleView from '~/projects/settings/branch_rules/components/view/index.vue';
 import RuleDrawer from '~/projects/settings/branch_rules/components/view/rule_drawer.vue';
 import { useMockLocationHelper } from 'helpers/mock_window_location_helper';
@@ -16,8 +18,6 @@ import Protection from '~/projects/settings/branch_rules/components/view/protect
 import ProtectionToggle from '~/projects/settings/branch_rules/components/view/protection_toggle.vue';
 import BranchRuleModal from '~/projects/settings/components/branch_rule_modal.vue';
 import getProtectableBranches from '~/projects/settings/graphql/queries/protectable_branches.query.graphql';
-import PageHeading from '~/vue_shared/components/page_heading.vue';
-import CrudComponent from '~/vue_shared/components/crud_component.vue';
 
 import {
   I18N,
@@ -101,9 +101,9 @@ describe('View branch rules', () => {
         ProtectionToggle,
         BranchRuleModal,
         RuleDrawer,
-        GlCard: stubComponent(GlCard, { template: RENDER_ALL_SLOTS_TEMPLATE }),
-        GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
+        PageHeading,
         CrudComponent,
+        GlModal: stubComponent(GlModal, { template: RENDER_ALL_SLOTS_TEMPLATE }),
       },
       mocks: {
         $toast: {
@@ -125,7 +125,8 @@ describe('View branch rules', () => {
 
   const findBranchName = () => wrapper.findByTestId('branch');
   const findAllBranches = () => wrapper.findByTestId('all-branches');
-  const findBranchProtectionTitle = () => wrapper.findByText(I18N.protectBranchTitle);
+  const findBranchProtectionCrud = () => wrapper.findByTestId('status-checks');
+  const findBranchProtectionTitle = () => wrapper.findByTestId('crud-title');
   const findAllowedToMerge = () => wrapper.findByTestId('allowed-to-merge-content');
   const findAllowedToPush = () => wrapper.findByTestId('allowed-to-push-content');
   const findAllowForcePushToggle = () => wrapper.findByTestId('force-push-content');
@@ -384,7 +385,7 @@ describe('View branch rules', () => {
     });
 
     it('does not render Protect Branch section', () => {
-      expect(findBranchProtectionTitle().exists()).toBe(false);
+      expect(findBranchProtectionCrud().exists()).toBe(false);
     });
   });
 

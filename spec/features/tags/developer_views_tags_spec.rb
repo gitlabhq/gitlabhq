@@ -28,7 +28,7 @@ RSpec.describe 'Developer views tags', feature_category: :source_code_management
     end
 
     it 'displays a specific message' do
-      expect(page).to have_content 'Repository has no tags yet.'
+      expect(page).to have_content 'Repository has no tags yet'
     end
   end
 

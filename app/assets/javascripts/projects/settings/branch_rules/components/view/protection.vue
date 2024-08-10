@@ -21,6 +21,10 @@ export default {
       type: String,
       required: true,
     },
+    count: {
+      type: String,
+      required: true,
+    },
     headerLinkTitle: {
       type: String,
       required: true,
@@ -91,11 +95,9 @@ export default {
 </script>
 
 <template>
-  <crud-component :title="header" class="gl-mt-3">
-    <template #description>
-      <p v-if="showHelpText" class="gl-mb-0 gl-basis-full gl-text-subtle">
-        {{ helpText }}
-      </p>
+  <crud-component :title="header" icon="check-circle" :count="count" data-testid="status-checks">
+    <template v-if="showHelpText" #description>
+      {{ helpText }}
     </template>
     <template #actions>
       <gl-button

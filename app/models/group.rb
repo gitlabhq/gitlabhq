@@ -948,10 +948,6 @@ class Group < Namespace
     feature_flag_enabled_for_self_or_ancestor?(:work_items_alpha)
   end
 
-  def work_items_rolledup_dates_feature_flag_enabled?
-    feature_flag_enabled_for_self_or_ancestor?(:work_items_rolledup_dates)
-  end
-
   def glql_integration_feature_flag_enabled?
     feature_flag_enabled_for_self_or_ancestor?(:glql_integration)
   end

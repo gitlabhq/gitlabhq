@@ -166,6 +166,7 @@ export default {
         >{{ $options.i18n.addBranchRule }}
       </gl-button>
     </template>
+
     <ul class="content-list">
       <branch-rule
         v-for="(rule, index) in branchRules"
@@ -178,12 +179,12 @@ export default {
         "
         :approval-rules-total="rule.approvalRules ? rule.approvalRules.nodes.length : 0"
         :matching-branches-count="rule.matchingBranchesCount"
-        class="gl-px-5! gl-py-4!"
       />
-      <div v-if="!branchRules.length" class="gl-new-card-empty gl-px-5 gl-py-4" data-testid="empty">
+      <span v-if="!branchRules.length" class="gl-text-subtle" data-testid="empty">
         {{ $options.i18n.emptyState }}
-      </div>
+      </span>
     </ul>
+
     <branch-rule-modal
       v-if="glFeatures.editBranchRules"
       :id="$options.modalId"

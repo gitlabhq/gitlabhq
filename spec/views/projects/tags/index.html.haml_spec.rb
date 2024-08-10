@@ -22,6 +22,17 @@ RSpec.describe 'projects/tags/index.html.haml' do
     allow(view).to receive(:current_user).and_return(project.namespace.owner)
   end
 
+  context 'when project has no tags' do
+    before do
+      assign(:tags, [])
+    end
+
+    it 'show empty state' do
+      render
+      expect(rendered).to have_css('[data-testid="tags-empty-state"]')
+    end
+  end
+
   context 'when tag is associated with a release' do
     context 'when name does not contain a backslash' do
       it 'renders a link to the release page' do
@@ -63,13 +74,13 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).to have_css '[data-testid="status_success_borderless-icon"]'
+      expect(page.find('.content-list li', text: tag)).to have_css '[data-testid="status_success_borderless-icon"]'
     end
 
     it 'shows no build status or placeholder when no pipelines present' do
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
+      expect(page.find('.content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
     end
 
     it 'shows no build status or placeholder when pipelines are private' do
@@ -78,7 +89,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
       render
 
-      expect(page.find('.tags .content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
+      expect(page.find('.content-list li', text: tag)).not_to have_css '[data-testid="status_success_borderless-icon"]'
     end
   end
 

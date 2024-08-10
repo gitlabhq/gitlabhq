@@ -55,11 +55,10 @@ export default {
 };
 </script>
 <template>
-  <div class="gl-display-flex gl-pr-3">
+  <div class="gl-flex gl-flex-col gl-gap-3 md:gl-flex-row">
     <gl-search-box-by-click
       v-model="searchTerm"
       :placeholder="$options.i18n.searchPlaceholder"
-      class="gl-pr-3"
       @submit="visitUrlFromOption(selectedKey)"
     />
     <gl-collapsible-listbox
@@ -68,6 +67,7 @@ export default {
       :items="sortOptionsListboxItems"
       placement="bottom-end"
       :toggle-text="selectedSortMethod"
+      toggle-сlass="gl-w-full"
       @select="visitUrlFromOption"
     />
   </div>
