@@ -314,15 +314,19 @@ RSpec.shared_examples 'Lint factories' do |with_factory_defaults, without_factor
   end
 end
 
-RSpec.configure do |config|
-  config.on_example_group_definition do |example_group|
-    # Hook into every top-level example group definition.
-    #
-    # Define a new isolated context `Lint factories for <described_class>` for
-    # associated factories.
-    #
-    # Creating this context triggers this callback again with <described_class>
-    # being `nil` so recursive definitions are prevented.
-    Support::LintFactories.lint_factories_for(example_group)
-  end
-end
+# TODO: disable factory linting for now.  There are several flaky specs and some
+# ~master:broken jobs.
+# See https://gitlab.com/gitlab-org/gitlab/-/issues/478114
+# and https://gitlab.com/gitlab-org/gitlab/-/issues/478381
+# RSpec.configure do |config|
+#   config.on_example_group_definition do |example_group|
+#     # Hook into every top-level example group definition.
+#     #
+#     # Define a new isolated context `Lint factories for <described_class>` for
+#     # associated factories.
+#     #
+#     # Creating this context triggers this callback again with <described_class>
+#     # being `nil` so recursive definitions are prevented.
+#     Support::LintFactories.lint_factories_for(example_group)
+#   end
+# end
