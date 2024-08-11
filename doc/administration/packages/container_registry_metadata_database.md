@@ -11,6 +11,7 @@ DETAILS:
 **Offering:** Self-managed
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 16.4 as a [beta feature](../../policy/experiment-beta-support.md) for self-managed GitLab instances.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/423459) in GitLab 17.3.
 
 The metadata database enables many new registry features, including
 online garbage collection, and increases the efficiency of many registry operations.
@@ -122,6 +123,14 @@ A few factors affect the duration of the migration:
 - The specifications of your PostgresSQL instance.
 - The number of registry instances running.
 - Network latency between the registry, PostgresSQL and your configured Object Storage.
+
+NOTE:
+The migration only targets tagged images. Untagged and unreferenced manifests, and the layers
+exclusively referenced by them, are left behind and become inaccessible. Untagged images
+were never visible through the GitLab UI or API, but they can become "dangling" and
+left behind in the backend. After migration to the new registry, all images are subject
+to continuous online garbage collection, by default deleting any untagged and unreferenced manifests
+and layers that remain for longer than 24 hours.
 
 Choose the one or three step method according to your registry installation.
 
