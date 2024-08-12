@@ -1,0 +1,13 @@
+- title: "Rename options to skip GitGuardian secret detection"  # The name of the feature to be deprecated
+  announcement_milestone: "17.3"  # The milestone when this feature was first announced as deprecated.
+  removal_milestone: "18.0"  # The milestone when this feature is planned to be removed
+  breaking_change: true
+  body: |  # Do not modify this line, instead modify the lines below.
+    The options to skip GitGuardian secret detection, `[skip secret detection]` and `secret_detection.skip_all`, are deprecated and will be removed in GitLab 18.0. You should use `[skip secret push protection]` and `secret_push_protection.skip_all` instead.
+# The following items are not published on the docs page, but may be used in the future.
+  stage: secure  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  tiers: premium, ultimate  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
+  issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/470119  # (optional) This is a link to the deprecation issue in GitLab
+  documentation_url: https://docs.gitlab.com/ee/user/project/integrations/git_guardian.html#skip-secret-detection  # (optional) This is a link to the current documentation page
+  image_url:  # (optional) This is a link to a thumbnail image depicting the feature
+  video_url:  # (optional) Use the youtube thumbnail URL with the structure of https://img.youtube.com/vi/UNIQUEID/hqdefault.jpg

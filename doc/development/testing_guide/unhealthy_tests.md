@@ -231,6 +231,8 @@ bin/rspec --tag ~quarantine
 bin/rspec --tag \~quarantine
 ```
 
+Also, please add the ~"quarantine" label on the merge request.
+
 Note that we [should not quarantine a shared example/context](https://gitlab.com/gitlab-org/gitlab/-/issues/404388), and [we cannot quarantine a call to `it_behaves_like` or `include_examples`](https://github.com/rspec/rspec-core/pull/2307#issuecomment-236006902):
 
 ```ruby

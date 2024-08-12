@@ -534,6 +534,22 @@ The `previousStageJobsOrNeeds` field in GraphQL will be removed as it has been r
 
 <div class="deprecation breaking-change" data-milestone="18.0">
 
+### Rename options to skip GitGuardian secret detection
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.3</span>
+- Removal in GitLab <span class="milestone">18.0</span> ([breaking change](https://docs.gitlab.com/ee/update/terminology.html#breaking-change))
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/gitlab/-/issues/470119).
+
+</div>
+
+The options to skip GitGuardian secret detection, `[skip secret detection]` and `secret_detection.skip_all`, are deprecated and will be removed in GitLab 18.0. You should use `[skip secret push protection]` and `secret_push_protection.skip_all` instead.
+
+</div>
+
+<div class="deprecation breaking-change" data-milestone="18.0">
+
 ### Replace `threshold` with `maxretries` for container registry notifications
 
 <div class="deprecation-notes">
