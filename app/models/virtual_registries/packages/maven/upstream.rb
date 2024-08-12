@@ -34,6 +34,19 @@ module VirtualRegistries
         after_validation :reset_credentials, if: -> { persisted? && url_changed? }
         before_save :write_credentials
 
+        def url_for(path)
+          full_url = File.join(url, path)
+          Addressable::URI.parse(full_url).to_s
+        end
+
+        def headers
+          return {} unless username.present? && password.present?
+
+          authorization = ActionController::HttpAuthentication::Basic.encode_credentials(username, password)
+
+          { Authorization: authorization }
+        end
+
         private
 
         def read_credentials

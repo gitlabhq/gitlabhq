@@ -60,12 +60,12 @@ class Admin::IdentitiesController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def user
-    @user ||= User.find_by!(username: params[:user_id])
+    @user ||= User.find_by!(username: params.permit(:user_id)[:user_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 
   def identity
-    @identity ||= user.identities.find(params[:id])
+    @identity ||= user.identities.find(params.permit(:id)[:id])
   end
 
   def identity_params

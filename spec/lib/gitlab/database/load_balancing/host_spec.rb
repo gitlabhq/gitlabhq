@@ -315,8 +315,6 @@ RSpec.describe Gitlab::Database::LoadBalancing::Host, feature_category: :databas
     let(:load_balancer_ignore_replication_lag_time) { false }
 
     before do
-      # Enable feature flags in the load balancer. They are enabled in production and relate to behavior in these specs
-      stub_env(Feature::BypassLoadBalancer::FLAG, 'true')
       stub_feature_flags(load_balancer_double_replication_lag_time: load_balancer_double_replication_lag_time)
       stub_feature_flags(load_balancer_ignore_replication_lag_time: load_balancer_ignore_replication_lag_time)
     end

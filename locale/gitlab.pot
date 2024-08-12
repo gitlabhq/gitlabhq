@@ -867,6 +867,9 @@ msgstr ""
 msgid "%{group_name}&%{epic_iid} &middot; created %{epic_created} by %{author}"
 msgstr ""
 
+msgid "%{host} connection failed: %{error}."
+msgstr ""
+
 msgid "%{host} could not be reached. %{cta}"
 msgstr ""
 
@@ -27593,6 +27596,9 @@ msgid "Import|Timeout for decompressing archived files."
 msgstr ""
 
 msgid "Import|You can import a Subversion repository by using third-party tools. %{svn_link}."
+msgstr ""
+
+msgid "Import|You do not have permission to view import source users for this namespace"
 msgstr ""
 
 msgid "Import|You have insufficient permissions to update the import source user"

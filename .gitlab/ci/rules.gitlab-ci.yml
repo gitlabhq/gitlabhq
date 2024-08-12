@@ -2315,8 +2315,6 @@
 .rails:rules:ee-gitlab-duo-chat-base:
   rules:
     - !reference [".strict-ee-only-rules", rules]
-    - if: '$REAL_AI_REQUEST == null'
-      when: never
     - if: '$ANTHROPIC_API_KEY == null'
       when: never
     - <<: *if-fork-merge-request

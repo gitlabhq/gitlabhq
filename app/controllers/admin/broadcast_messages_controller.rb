@@ -76,11 +76,11 @@ module Admin
     protected
 
     def find_broadcast_message
-      @broadcast_message = System::BroadcastMessage.find(params[:id])
+      @broadcast_message = System::BroadcastMessage.find(params.permit(:id)[:id])
     end
 
     def find_broadcast_messages
-      @broadcast_messages = System::BroadcastMessage.order(ends_at: :desc).page(params[:page]) # rubocop: disable CodeReuse/ActiveRecord
+      @broadcast_messages = System::BroadcastMessage.order(ends_at: :desc).page(pagination_params[:page]) # rubocop: disable CodeReuse/ActiveRecord
     end
 
     def broadcast_message_params

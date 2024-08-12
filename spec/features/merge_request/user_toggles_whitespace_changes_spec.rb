@@ -20,8 +20,9 @@ RSpec.describe 'Merge request > User toggles whitespace changes', :js, feature_c
   end
 
   describe 'clicking "Hide whitespace changes" button' do
-    it 'toggles the "Hide whitespace changes" button', quarantine: 'https://gitlab.com/gitlab-org/gitlab/-/issues/333793' do
+    it 'toggles the "Hide whitespace changes" button' do
       find_by_testid('show-whitespace').click
+      wait_for_requests
 
       visit diffs_project_merge_request_path(project, merge_request)
 

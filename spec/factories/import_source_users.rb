@@ -31,6 +31,10 @@ FactoryBot.define do
       status { 2 }
     end
 
+    trait :rejected do
+      status { 3 }
+    end
+
     trait :completed do
       with_reassign_to_user
       status { 5 }

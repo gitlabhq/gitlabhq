@@ -47,7 +47,7 @@ class Admin::DeployKeysController < Admin::ApplicationController
   protected
 
   def deploy_key
-    @deploy_key ||= deploy_keys.find(params[:id])
+    @deploy_key ||= deploy_keys.find(params.permit(:id)[:id])
   end
 
   def deploy_keys

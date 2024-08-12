@@ -70,7 +70,7 @@ In the Roadmap view, you can sort epics by:
 - Last updated date
 
 Each option contains a button that toggles the sort order between **ascending**
-and **descending**. The sort option and order persist when browsing Epics, including
+and **descending**. The sort option and order persist when browsing epics, including
 the [epics list view](../epics/index.md).
 
 In the Roadmap view, you can also filter by the epics':
@@ -86,6 +86,18 @@ In the Roadmap view, you can also filter by the epics':
 ![roadmap date range in weeks](img/roadmap_filters_v13_11.png)
 
 You can also [visualize roadmaps inside of an epic](../epics/index.md#roadmap-in-epics).
+
+### Improve the performance of the roadmap
+
+If your group contains a lot of epics, using filters can reduce the time your roadmap takes to load.
+Filtering the roadmap reduces the amount of data the roadmap contains. Reducing
+the data in the roadmap can also make it easier for you to find the information you're looking for.
+
+In particular, filtering based on labels can result in a significant performance improvement.
+
+After you set the filters you want to apply, you can save the URL as bookmark in your
+browser.
+In the future, you can quickly load the filtered roadmap using the bookmark.
 
 ### Roadmap settings
 

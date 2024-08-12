@@ -13,6 +13,7 @@ class Groups::GroupMembersController < Groups::ApplicationController
   end
 
   # Authorize
+  before_action :authorize_owner_access!, only: :bulk_reassignment_file
   before_action :authorize_admin_group_member!, except: admin_not_required_endpoints
   before_action :authorize_read_group_member!, only: :index
 
@@ -50,6 +51,22 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @requesters = present_members(
       AccessRequestsFinder.new(@group).execute(current_user)
     )
+  end
+
+  def bulk_reassignment_file
+    return render_404 unless Feature.enabled?(:importer_user_mapping_reassignment_csv, current_user)
+
+    csv_response = Import::SourceUsers::GenerateCsvService.new(membershipable, current_user: current_user).execute
+
+    if csv_response.success?
+      send_data(
+        csv_response.payload,
+        filename: "bulk_reassignments_for_namespace_#{membershipable.id}_#{Time.current.to_i}.csv",
+        type: 'text/csv; charset=utf-8'
+      )
+    else
+      redirect_back_or_default(options: { alert: csv_response.message })
+    end
   end
 
   # MembershipActions concern

@@ -51,6 +51,10 @@ class Groups::ApplicationController < ApplicationController
     render_403 unless can?(current_user, :admin_group_member, group)
   end
 
+  def authorize_owner_access!
+    render_403 unless can?(current_user, :owner_access, group)
+  end
+
   def authorize_billings_page!
     render_404 unless can?(current_user, :read_billing, group)
   end

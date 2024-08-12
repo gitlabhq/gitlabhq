@@ -7,7 +7,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
   urgency :low
 
   def create
-    @runner = Ci::Runner.find(params[:runner_project][:runner_id])
+    @runner = Ci::Runner.find(safe_params[:runner_project][:runner_id])
 
     if ::Ci::Runners::AssignRunnerService.new(@runner, @project, current_user).execute.success?
       flash[:success] = s_('Runners|Runner assigned to project.')
@@ -18,7 +18,7 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
   end
 
   def destroy
-    rp = Ci::RunnerProject.find(params[:id])
+    rp = Ci::RunnerProject.find(safe_params[:id])
     runner = rp.runner
 
     ::Ci::Runners::UnassignRunnerService.new(rp, current_user).execute
@@ -31,8 +31,12 @@ class Admin::RunnerProjectsController < Admin::ApplicationController
 
   def project
     @project = Project.find_by_full_path(
-      [params[:namespace_id], '/', params[:project_id]].join('')
+      [safe_params[:namespace_id], '/', safe_params[:project_id]].join('')
     )
     @project || render_404
+  end
+
+  def safe_params
+    params.permit(:id, :namespace_id, :project_id, runner_project: [:runner_id])
   end
 end

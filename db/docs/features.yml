@@ -1,7 +1,6 @@
 ---
 table_name: features
 classes:
-- Feature::BypassLoadBalancer::FlipperFeature
 - Feature::FlipperFeature
 - Flipper::Adapters::ActiveRecord::Feature
 feature_categories:

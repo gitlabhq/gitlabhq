@@ -50,13 +50,6 @@ module Ci
             )
           end
 
-          if Feature.disabled?(:ci_pipelines_data_ingestion_to_click_house, Feature.current_request)
-            return ServiceResponse.error(
-              message: 'Feature ci_pipelines_data_ingestion_to_click_house is disabled',
-              reason: :disabled
-            )
-          end
-
           # Prevent parallel jobs
           in_lock("#{self.class.name.underscore}/worker/#{@worker_index}", ttl: MAX_TTL, retries: 0) do
             ::Gitlab::Database::LoadBalancing::Session.without_sticky_writes do

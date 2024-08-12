@@ -63,7 +63,7 @@ class Admin::SessionsController < ApplicationController
   end
 
   def user_params
-    params.fetch(:user, {}).permit(:password, :otp_attempt, :device_response)
+    params.fetch(:user, {}).permit(:password, :otp_attempt, :device_response) # rubocop:disable Rails/StrongParams -- fetch is safely followed by permit
   end
 
   def valid_otp_attempt?(user)

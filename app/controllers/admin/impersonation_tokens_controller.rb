@@ -24,7 +24,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
   end
 
   def revoke
-    @impersonation_token = finder.find(params[:id])
+    @impersonation_token = finder.find(params.permit(:id)[:id])
 
     if @impersonation_token.revoke!
       flash[:notice] = format(_("Revoked impersonation token %{token_name}!"), token_name: @impersonation_token.name)
@@ -39,7 +39,7 @@ class Admin::ImpersonationTokensController < Admin::ApplicationController
 
   # rubocop: disable CodeReuse/ActiveRecord
   def user
-    @user ||= User.find_by!(username: params[:user_id])
+    @user ||= User.find_by!(username: params.permit(:user_id)[:user_id])
   end
   # rubocop: enable CodeReuse/ActiveRecord
 

@@ -353,6 +353,7 @@ module API
         mount ::API::Users
         mount ::API::UserCounts
         mount ::API::UserRunners
+        mount ::API::VirtualRegistries::Packages::Maven
         mount ::API::Wikis
 
         add_open_api_documentation!

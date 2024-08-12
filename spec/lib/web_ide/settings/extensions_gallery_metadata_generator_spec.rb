@@ -77,6 +77,8 @@ RSpec.describe WebIde::Settings::ExtensionsGalleryMetadataGenerator, :web_ide_fa
 
     before do
       allow(user).to receive(:extensions_marketplace_opt_in_status) { opt_in_status.to_s }
+      # EE feature has to be stubbed since we run EE code through CE tests
+      allow(user).to receive(:enterprise_user?).and_return(false)
       allow(enums).to receive(:statuses).and_return({ unset: :unset, enabled: :enabled, disabled: :disabled })
     end
 

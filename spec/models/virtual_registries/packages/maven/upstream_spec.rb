@@ -135,4 +135,43 @@ RSpec.describe VirtualRegistries::Packages::Maven::Upstream, type: :model, featu
       expect(upstream_read.password).to eq('test')
     end
   end
+
+  describe '#url_for' do
+    subject { upstream.url_for(path) }
+
+    where(:path, :expected_url) do
+      'path'      | 'http://test.maven/path'
+      ''          | 'http://test.maven/'
+      '/path'     | 'http://test.maven/path'
+      '/sub/path' | 'http://test.maven/sub/path'
+    end
+
+    with_them do
+      before do
+        upstream.url = 'http://test.maven/'
+      end
+
+      it { is_expected.to eq(expected_url) }
+    end
+  end
+
+  describe '#headers' do
+    subject { upstream.headers }
+
+    where(:username, :password, :expected_headers) do
+      'user' | 'pass' | { Authorization: 'Basic dXNlcjpwYXNz' }
+      'user' | ''     | {}
+      ''     | 'pass' | {}
+      ''     | ''     | {}
+    end
+
+    with_them do
+      before do
+        upstream.username = username
+        upstream.password = password
+      end
+
+      it { is_expected.to eq(expected_headers) }
+    end
+  end
 end

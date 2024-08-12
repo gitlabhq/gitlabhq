@@ -20,14 +20,14 @@ module Gitlab
 
       # default time limit(in seconds) for running the scan operation per invocation
       DEFAULT_SCAN_TIMEOUT_SECS = 60
-      # default time limit(in seconds) for running the scan operation on a single diff
-      DEFAULT_DIFF_TIMEOUT_SECS = 5
+      # default time limit(in seconds) for running the scan operation on a single blob
+      DEFAULT_BLOB_TIMEOUT_SECS = 5
       # file path where the secrets ruleset file is located
       RULESET_FILE_PATH = File.expand_path('../../gitleaks.toml', __dir__)
       # Max no of child processes to spawn per request
       # ref: https://gitlab.com/gitlab-org/gitlab/-/issues/430160
       MAX_PROCS_PER_REQUEST = 5
-      # Minimum cumulative size of the diffs required to spawn and
+      # Minimum cumulative size of the blobs required to spawn and
       # run the scan within a new subprocess.
       MIN_CHUNK_SIZE_PER_PROC_BYTES = 2_097_152 # 2MiB
       # Whether to run scan in subprocesses or not. Default is true.
@@ -46,24 +46,23 @@ module Gitlab
         @pattern_matcher = build_pattern_matcher(rules)
       end
 
-      # Runs Secret Detection scan on the list of given diffs. Both the total scan duration and
-      # the duration for each diff is time bound via +timeout+ and +diff_timeout+ respectively.
+      # Runs Secret Detection scan on the list of given blobs. Both the total scan duration and
+      # the duration for each blob is time bound via +timeout+ and +blob_timeout+ respectively.
       #
-      # +diffs+:: Array of diffs between diff pairs. Each diff has attributes: left_blob_id, right_blob_id,
-      #           patch, status, binary, and over_patch_bytes_limit.
+      # +blobs+:: Array of blobs with each blob to have `id` and `data` properties.
       # +timeout+:: No of seconds(accepts floating point for smaller time values) to limit the total scan duration
-      # +diff_timeout+:: No of seconds(accepts floating point for smaller time values) to limit
-      #                  the scan duration on each diff
+      # +blob_timeout+:: No of seconds(accepts floating point for smaller time values) to limit
+      #                  the scan duration on each blob
       # +subprocess+:: If passed true, the scan is performed within subprocess instead of main process.
-      #           To avoid over-consuming memory by running scan on multiple large diffs within a single subprocess,
-      #           it instead groups the diffs into smaller array where each array contains diffs with cumulative size of
+      #           To avoid over-consuming memory by running scan on multiple large blobs within a single subprocess,
+      #           it instead groups the blobs into smaller array where each array contains blobs with cumulative size of
       #           +MIN_CHUNK_SIZE_PER_PROC_BYTES+ bytes and each group runs in a separate sub-process. Default value
       #           is true.
       #
       # NOTE:
       # Running the scan in fork mode primarily focuses on reducing the memory consumption of the scan by
-      # offloading regex operations on large diffs to sub-processes. However, it does not assure the improvement
-      # in the overall latency of the scan, specifically in the case of smaller diff sizes, where the overhead of
+      # offloading regex operations on large blobs to sub-processes. However, it does not assure the improvement
+      # in the overall latency of the scan, specifically in the case of smaller blob sizes, where the overhead of
       # forking a new process adds to the overall latency of the scan instead. More reference on Subprocess-based
       # execution is found here: https://gitlab.com/gitlab-org/gitlab/-/issues/430160.
       #
@@ -74,25 +73,23 @@ module Gitlab
       # }
       #
       def secrets_scan(
-        diffs,
+        blobs,
         timeout: DEFAULT_SCAN_TIMEOUT_SECS,
-        diff_timeout: DEFAULT_DIFF_TIMEOUT_SECS,
+        blob_timeout: DEFAULT_BLOB_TIMEOUT_SECS,
         subprocess: RUN_IN_SUBPROCESS
       )
-
-        return SecretDetection::Response.new(SecretDetection::Status::INPUT_ERROR) unless validate_scan_input(diffs)
+        return SecretDetection::Response.new(SecretDetection::Status::INPUT_ERROR) unless validate_scan_input(blobs)
 
         Timeout.timeout(timeout) do
-          matched_diffs = filter_by_keywords(diffs)
+          matched_blobs = filter_by_keywords(blobs)
 
-          next SecretDetection::Response.new(SecretDetection::Status::NOT_FOUND) if matched_diffs.empty?
+          next SecretDetection::Response.new(SecretDetection::Status::NOT_FOUND) if matched_blobs.empty?
 
-          secrets =
-            if subprocess
-              run_scan_within_subprocess(matched_diffs, diff_timeout)
-            else
-              run_scan(matched_diffs, diff_timeout)
-            end
+          secrets = if subprocess
+                      run_scan_within_subprocess(matched_blobs, blob_timeout)
+                    else
+                      run_scan(matched_blobs, blob_timeout)
+                    end
 
           scan_status = overall_scan_status(secrets)
 
@@ -146,137 +143,104 @@ module Gitlab
         secrets_keywords.flatten.compact.to_set
       end
 
-      # returns only those diffs that contain at least one of the keywords
+      # returns only those blobs that contain at least one of the keywords
       # from the keywords list
-      def filter_by_keywords(diffs)
-        matched_diffs = []
+      def filter_by_keywords(blobs)
+        matched_blobs = []
 
-        diffs.each do |diff|
-          matched_diffs << diff if keywords.any? { |keyword| diff.patch.include?(keyword) }
+        blobs.each do |blob|
+          matched_blobs << blob if keywords.any? { |keyword| blob.data.include?(keyword) }
         end
 
-        matched_diffs.freeze
+        matched_blobs.freeze
       end
 
-      def run_scan(diffs, diff_timeout)
-        found_secrets = diffs.flat_map do |diff|
-          Timeout.timeout(diff_timeout) do
-            find_secrets(diff)
+      def run_scan(blobs, blob_timeout)
+        found_secrets = blobs.flat_map do |blob|
+          Timeout.timeout(blob_timeout) do
+            find_secrets(blob)
           end
         rescue Timeout::Error => e
-          logger.error "Secret Detection scan timed out on the diff(id:#{diff.right_blob_id}): #{e}"
-          SecretDetection::Finding.new(diff.right_blob_id,
-            SecretDetection::Status::DIFF_TIMEOUT)
+          logger.error "Secret Detection scan timed out on the blob(id:#{blob.id}): #{e}"
+          SecretDetection::Finding.new(blob.id,
+            SecretDetection::Status::BLOB_TIMEOUT)
         end
 
         found_secrets.freeze
       end
 
-      def run_scan_within_subprocess(diffs, diff_timeout)
-        diff_sizes = diffs.map { |diff| diff.patch.length }
-        grouped_diff_indicies = group_by_chunk_size(diff_sizes)
+      def run_scan_within_subprocess(blobs, blob_timeout)
+        blob_sizes = blobs.map(&:size)
+        grouped_blob_indicies = group_by_chunk_size(blob_sizes)
 
-        grouped_diffs = grouped_diff_indicies.map { |idx_arr| idx_arr.map { |i| diffs[i] } }
+        grouped_blobs = grouped_blob_indicies.map { |idx_arr| idx_arr.map { |i| blobs[i] } }
 
         found_secrets = Parallel.flat_map(
-          grouped_diffs,
+          grouped_blobs,
           in_processes: MAX_PROCS_PER_REQUEST,
           isolation: true # do not reuse sub-processes
-        ) do |grouped_diff|
-          grouped_diff.flat_map do |diff|
-            Timeout.timeout(diff_timeout) do
-              find_secrets(diff)
+        ) do |grouped_blob|
+          grouped_blob.flat_map do |blob|
+            Timeout.timeout(blob_timeout) do
+              find_secrets(blob)
             end
           rescue Timeout::Error => e
-            logger.error "Secret Detection scan timed out on the diff(id:#{diff.right_blob_id}): #{e}"
-            SecretDetection::Finding.new(diff.right_blob_id,
-              SecretDetection::Status::DIFF_TIMEOUT)
+            logger.error "Secret Detection scan timed out on the blob(id:#{blob.id}): #{e}"
+            SecretDetection::Finding.new(blob.id,
+              SecretDetection::Status::BLOB_TIMEOUT)
           end
         end
 
         found_secrets.freeze
       end
 
-      # finds secrets in the given diff with a timeout circuit breaker
-      def find_secrets(diff)
-        line_number_offset = 0
+      # finds secrets in the given blob with a timeout circuit breaker
+      def find_secrets(blob)
         secrets = []
 
-        lines = diff.patch.split("\n")
+        blob.data.each_line.with_index do |line, index|
+          patterns = pattern_matcher.match(line, exception: false)
 
-        # The following section parses the diff patch.
-        #
-        # If the line starts with @@, it is the hunk header, used to calculate the line number.
-        # If the line starts with +, it is newly added in this diff, and we
-        # scan the line for newly added secrets. Also increment line number.
-        # If the line starts with -, it is removed in this diff, do not increment line number.
-        # If the line starts with \\, it is the no newline marker, do not increment line number.
-        # If the line starts with a space character, it is a context line, just increment the line number.
-        #
-        # A context line that starts with an important character would still be treated
-        # like a context line, as shown below:
-        # @@ -1,5 +1,5 @@
-        #  context line
-        # -removed line
-        # +added line
-        #  @@this context line has a @@ but starts with a space so isnt a header
-        #  +this context line has a + but starts with a space so isnt an addition
-        #  -this context line has a - but starts with a space so isnt a removal
-        lines.each do |line|
-          # Parse hunk header for start line
-          if line.start_with?("@@")
-            hunk_info = line.match(/@@ -\d+(,\d+)? \+(\d+)(,\d+)? @@/)
-            start_line = hunk_info[2].to_i
-            line_number_offset = start_line - 1
-          # Line added in this commit
-          elsif line.start_with?('+')
-            line_number_offset += 1
-            # Remove leading +
-            line_content = line[1..]
+          next unless patterns.any?
 
-            patterns = pattern_matcher.match(line_content, exception: false)
-            next unless patterns.any?
+          line_number = index + 1
+          patterns.each do |pattern|
+            type = rules[pattern]["id"]
+            description = rules[pattern]["description"]
 
-            patterns.each do |pattern|
-              type = rules[pattern]["id"]
-              description = rules[pattern]["description"]
-
-              secrets << SecretDetection::Finding.new(
-                diff.right_blob_id,
-                SecretDetection::Status::FOUND,
-                line_number_offset,
-                type,
-                description
-              )
-            end
-          # Line not added in this commit, just increment line number
-          elsif line.start_with?(' ')
-            line_number_offset += 1
-          # Line removed in this commit or no newline marker, do not increment line number
-          elsif line.start_with?('-', '\\')
-            # No increment
+            secrets << SecretDetection::Finding.new(
+              blob.id,
+              SecretDetection::Status::FOUND,
+              line_number,
+              type,
+              description
+            )
           end
         end
 
         secrets
       rescue StandardError => e
-        logger.error "Secret Detection scan failed on the diff(id:#{diff.right_blob_id}): #{e}"
+        logger.error "Secret Detection scan failed on the blob(id:#{blob.id}): #{e}"
 
-        SecretDetection::Finding.new(diff.right_blob_id, SecretDetection::Status::SCAN_ERROR)
+        SecretDetection::Finding.new(blob.id, SecretDetection::Status::SCAN_ERROR)
       end
 
-      def validate_scan_input(diffs)
-        return false if diffs.nil? || !diffs.instance_of?(Array)
+      def validate_scan_input(blobs)
+        return false if blobs.nil? || !blobs.instance_of?(Array)
 
-        diffs.each { |diff| diff.patch.freeze }
+        blobs.all? do |blob|
+          next false unless blob.respond_to?(:id) || blob.respond_to?(:data)
+
+          blob.data.freeze # freeze blobs to avoid additional object allocations on strings
+        end
       end
 
       def overall_scan_status(found_secrets)
         return SecretDetection::Status::NOT_FOUND if found_secrets.empty?
 
-        timed_out_diffs = found_secrets.count { |el| el.status == SecretDetection::Status::DIFF_TIMEOUT }
+        timed_out_blobs = found_secrets.count { |el| el.status == SecretDetection::Status::BLOB_TIMEOUT }
 
-        case timed_out_diffs
+        case timed_out_blobs
         when 0
           SecretDetection::Status::FOUND
         when found_secrets.length
@@ -286,15 +250,15 @@ module Gitlab
         end
       end
 
-      # This method accepts an array of diff sizes(in bytes) and groups them into an array
+      # This method accepts an array of blob sizes(in bytes) and groups them into an array
       # of arrays structure where each element is the group of indicies of the input
-      # array whose cumulative diff sizes has at least +MIN_CHUNK_SIZE_PER_PROC_BYTES+
-      def group_by_chunk_size(diff_size_arr)
+      # array whose cumulative blob sizes has at least +MIN_CHUNK_SIZE_PER_PROC_BYTES+
+      def group_by_chunk_size(blob_size_arr)
         cumulative_size = 0
         chunk_indexes = []
         chunk_idx_start = 0
 
-        diff_size_arr.each_with_index do |size, index|
+        blob_size_arr.each_with_index do |size, index|
           cumulative_size += size
           next unless cumulative_size >= MIN_CHUNK_SIZE_PER_PROC_BYTES
 
@@ -304,11 +268,11 @@ module Gitlab
           cumulative_size = 0
         end
 
-        if cumulative_size.positive? && (chunk_idx_start < diff_size_arr.length)
-          chunk_indexes << if chunk_idx_start == diff_size_arr.length - 1
+        if cumulative_size.positive? && (chunk_idx_start < blob_size_arr.length)
+          chunk_indexes << if chunk_idx_start == blob_size_arr.length - 1
                              [chunk_idx_start]
                            else
-                             (chunk_idx_start..diff_size_arr.length - 1).to_a
+                             (chunk_idx_start..blob_size_arr.length - 1).to_a
                            end
         end
 

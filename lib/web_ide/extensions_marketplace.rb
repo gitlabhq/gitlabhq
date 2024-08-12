@@ -53,12 +53,17 @@ module WebIde
 
       result = { enabled: false, reason: disabled_reason, help_url: help_url }
 
-      if disabled_reason == :opt_in_unset || disabled_reason == :opt_in_disabled
-        result[:user_preferences_url] = user_preferences_url
-      end
-
-      result
+      result.merge(gallery_disabled_extra_attributes(disabled_reason: disabled_reason, user: user))
     end
+
+    # rubocop:disable Lint/UnusedMethodArgument -- `user:` param is used in EE
+    def self.gallery_disabled_extra_attributes(disabled_reason:, user:)
+      return { user_preferences_url: user_preferences_url } if disabled_reason == :opt_in_unset
+      return { user_preferences_url: user_preferences_url } if disabled_reason == :opt_in_disabled
+
+      {}
+    end
+    # rubocop:enable Lint/UnusedMethodArgument
 
     def self.help_url
       ::Gitlab::Routing.url_helpers.help_page_url('user/project/web_ide/index', anchor: 'extension-marketplace')
@@ -72,3 +77,5 @@ module WebIde
     private_class_method :help_url, :user_preferences_url
   end
 end
+
+WebIde::ExtensionsMarketplace.prepend_mod

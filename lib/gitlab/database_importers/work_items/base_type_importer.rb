@@ -97,6 +97,7 @@ module Gitlab
             :crm_contacts,
             :current_user_todos,
             :description,
+            :development,
             :hierarchy,
             :iteration,
             :labels,

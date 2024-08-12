@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :virtual_registries_packages_maven_upstream, class: 'VirtualRegistries::Packages::Maven::Upstream' do
-    url { 'http://local.test/maven' }
+    sequence(:url) { |n| "http://local.test/maven/#{n}" }
     username { 'user' }
     password { 'password' }
     registry { association(:virtual_registries_packages_maven_registry) }

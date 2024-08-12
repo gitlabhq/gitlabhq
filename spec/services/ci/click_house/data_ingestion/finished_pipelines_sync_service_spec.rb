@@ -223,20 +223,6 @@ RSpec.describe Ci::ClickHouse::DataIngestion::FinishedPipelinesSyncService,
     end
   end
 
-  context 'when the ci_pipelines_data_ingestion_to_click_house feature flag is off' do
-    before do
-      stub_feature_flags(ci_pipelines_data_ingestion_to_click_house: false)
-    end
-
-    it 'skips execution' do
-      is_expected.to have_attributes({
-        status: :error,
-        message: 'Feature ci_pipelines_data_ingestion_to_click_house is disabled',
-        reason: :disabled
-      })
-    end
-  end
-
   def create_sync_events(*pipelines)
     pipelines.each do |pipeline|
       Ci::FinishedPipelineChSyncEvent.new(

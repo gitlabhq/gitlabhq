@@ -7,7 +7,7 @@ module Admin
     private
 
     def hook
-      @hook ||= SystemHook.find(params[:hook_id])
+      @hook ||= SystemHook.find(params.permit(:hook_id)[:hook_id])
     end
 
     def after_retry_redirect_path

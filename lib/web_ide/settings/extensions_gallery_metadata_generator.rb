@@ -9,14 +9,14 @@ module WebIde
       #       the "gitlab-web-ide" and "gitlab-web-ide-vscode-fork" projects
       #       (https://gitlab.com/gitlab-org/gitlab-web-ide & https://gitlab.com/gitlab-org/gitlab-web-ide-vscode-fork),
       #       so we must ensure that any changes made here are also reflected in those projects.
-      DISABLED_REASONS =
-        %i[
-          no_user
-          no_flag
-          instance_disabled
-          opt_in_unset
-          opt_in_disabled
-        ].to_h { |reason| [reason, reason] }.freeze
+      #       Please also see EE_DISABLED_REASONS in the relevant EE module.
+      DISABLED_REASONS = %i[
+        no_user
+        no_flag
+        instance_disabled
+        opt_in_unset
+        opt_in_disabled
+      ].to_h { |reason| [reason, reason] }.freeze
 
       # @param [Hash] context
       # @return [Hash]
@@ -31,7 +31,7 @@ module WebIde
             extensions_marketplace_feature_flag_enabled
         }
 
-        extensions_gallery_metadata = metadata_for_user(
+        extensions_gallery_metadata = build_metadata(
           user: user,
           flag_enabled: extensions_marketplace_feature_flag_enabled
         )
@@ -43,11 +43,23 @@ module WebIde
       # @param [User, nil] user
       # @param [Boolean, nil] flag_enabled
       # @return [Hash]
-      def self.metadata_for_user(user:, flag_enabled:)
+      def self.build_metadata(user:, flag_enabled:)
         return metadata_disabled(:no_user) unless user
         return metadata_disabled(:no_flag) if flag_enabled.nil?
         return metadata_disabled(:instance_disabled) unless flag_enabled
 
+        build_metadata_for_user(user)
+      end
+
+      def self.disabled_reasons
+        DISABLED_REASONS
+      end
+
+      # note: This is overridden in EE
+      #
+      # @param [User] user
+      # @return [Hash]
+      def self.build_metadata_for_user(user)
         # noinspection RubyNilAnalysis -- RubyMine doesn't realize user can't be nil because of guard clause above
         opt_in_status = user.extensions_marketplace_opt_in_status.to_sym
 
@@ -73,10 +85,13 @@ module WebIde
       # @param [symbol] reason
       # @return [Hash]
       def self.metadata_disabled(reason)
-        { enabled: false, disabled_reason: DISABLED_REASONS.fetch(reason) }
+        { enabled: false, disabled_reason: disabled_reasons.fetch(reason) }
       end
 
-      private_class_method :metadata_for_user, :metadata_enabled, :metadata_disabled
+      private_class_method :build_metadata, :build_metadata_for_user, :disabled_reasons, :metadata_enabled,
+        :metadata_disabled
     end
   end
 end
+
+WebIde::Settings::ExtensionsGalleryMetadataGenerator.prepend_mod

@@ -1,0 +1,9 @@
+---
+name: virtual_registry_maven
+feature_issue_url: https://gitlab.com/groups/gitlab-org/-/epics/14137
+introduced_by_url: https://gitlab.com/gitlab-org/gitlab/-/merge_requests/160891
+rollout_issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/474863
+milestone: '17.3'
+group: group::package registry
+type: wip
+default_enabled: false

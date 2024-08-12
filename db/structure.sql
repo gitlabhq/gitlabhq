@@ -22913,6 +22913,9 @@ ALTER TABLE ci_runners
 ALTER TABLE ci_runners
     ADD CONSTRAINT check_91230910ec CHECK ((char_length((name)::text) <= 256)) NOT VALID;
 
+ALTER TABLE ci_builds
+    ADD CONSTRAINT check_9aa9432137 CHECK ((project_id IS NOT NULL)) NOT VALID;
+
 ALTER TABLE sprints
     ADD CONSTRAINT check_ccd8a1eae0 CHECK ((start_date IS NOT NULL)) NOT VALID;
 
