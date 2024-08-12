@@ -876,6 +876,30 @@ This is one small step towards moving away from CI/CD templates in preference of
 </div>
 </div>
 
+<div class="milestone-wrapper" data-milestone="17.6">
+
+## GitLab 17.6
+
+<div class="deprecation " data-milestone="17.6">
+
+### Support for Debian 10
+
+<div class="deprecation-notes">
+
+- Announced in GitLab <span class="milestone">17.3</span>
+- Removal in GitLab <span class="milestone">17.6</span>
+- To discuss this change or learn more, see the [deprecation issue](https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8607).
+
+</div>
+
+Long term service and support (LTSS) for [Debian 10 ended in June 2024](https://wiki.debian.org/LTS).
+
+Therefore, we will longer support the Debian 10 distribution for Linux package installs. Users should upgrade to
+Debian 11 or Debian 12 for continued support.
+
+</div>
+</div>
+
 <div class="milestone-wrapper" data-milestone="17.4">
 
 ## GitLab 17.4

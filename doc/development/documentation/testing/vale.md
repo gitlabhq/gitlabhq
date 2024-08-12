@@ -230,15 +230,15 @@ guidelines:
 | Flagged word                                         | Guideline |
 |------------------------------------------------------|-----------|
 | jargon                                               | Rewrite the sentence to avoid it. |
-| *correctly-capitalized* name of a product or service | Add the word to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
+| *correctly-capitalized* name of a product or service | Add the word to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/spelling-exceptions.txt). |
 | name of a person                                     | Remove the name if it's not needed, or [add the Vale exception code inline](#disable-vale-tests). |
 | a command, variable, code, or similar                | Put it in backticks or a code block. For example: ``The git clone command can be used with the CI_COMMIT_BRANCH variable.`` -> ``The `git clone` command can be used with the `CI_COMMIT_BRANCH` variable.`` |
-| UI text from GitLab                                  | Verify it correctly matches the UI, then: If it does not match the UI, update it. If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed. If it matches the UI and seems correct, add it to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/spelling-exceptions.txt). |
+| UI text from GitLab                                  | Verify it correctly matches the UI, then: If it does not match the UI, update it. If it matches the UI, but the UI seems incorrect, create an issue to see if the UI needs to be fixed. If it matches the UI and seems correct, add it to the [Vale spelling exceptions list](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/spelling-exceptions.txt). |
 | UI text from a third-party product                   | Rewrite the sentence to avoid it, or [add the Vale exception code in-line](#disable-vale-tests). |
 
 #### Uppercase (acronym) test
 
-The [`Uppercase.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/Uppercase.yml)
+The [`Uppercase.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/Uppercase.yml)
 test checks for incorrect usage of words in all capitals. For example, avoid usage
 like `This is NOT important`.
 
@@ -254,7 +254,7 @@ If the word must be in all capitals, follow these guidelines:
 
 ### Readability score
 
-In [`ReadingLevel.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab/ReadingLevel.yml),
+In [`ReadingLevel.yml`](https://gitlab.com/gitlab-org/gitlab/-/blob/master/doc/.vale/gitlab_base/ReadingLevel.yml),
 we have implemented
 [the Flesch-Kincaid grade level test](https://readable.com/readability/flesch-reading-ease-flesch-kincaid-grade-level/)
 to determine the readability of our documentation.

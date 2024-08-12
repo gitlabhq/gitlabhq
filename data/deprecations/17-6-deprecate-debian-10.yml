@@ -1,0 +1,12 @@
+- title: "Support for Debian 10"  # (required) Clearly explain the change, or planned change. For example, "The `confidential` field for a `Note` is deprecated" or "CI/CD job names will be limited to 250 characters."
+  announcement_milestone: "17.3"  # (required) The milestone when this feature was first announced as deprecated.
+  removal_milestone: "17.6"  # (required) The milestone when this feature is planned to be removed
+  breaking_change: false  # (required) Change to false if this is not a breaking change.
+  reporter: apatterson2  # (required) GitLab username of the person reporting the change
+  stage: systems  # (required) String value of the stage that the feature was created in. e.g., Growth
+  issue_url: https://gitlab.com/gitlab-org/omnibus-gitlab/-/issues/8607
+  body: |  # (required) Do not modify this line, instead modify the lines below.
+    Long term service and support (LTSS) for [Debian 10 ended in June 2024](https://wiki.debian.org/LTS).
+
+    Therefore, we will longer support the Debian 10 distribution for Linux package installs. Users should upgrade to
+    Debian 11 or Debian 12 for continued support.

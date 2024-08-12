@@ -168,7 +168,7 @@ NOTE:
 For the GitLab Community Edition, replace `ee` with
 `ce`.
 
-## Upgrade using a manually-downloaded package
+## Download a package manually
 
 NOTE:
 The [package repository](#upgrade-using-the-official-repositories) is recommended over
@@ -178,7 +178,7 @@ If for some reason you don't use the official repositories, you can
 download the package and install it manually. This method can be used to either
 install GitLab for the first time or upgrade it.
 
-To download and install GitLab:
+To download and install or upgrade GitLab:
 
 1. Visit the [official repository](#upgrade-using-the-official-repositories) of your package.
 1. Filter the list by searching for the version you want to install (for example 14.1.8).
