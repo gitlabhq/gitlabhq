@@ -52,7 +52,7 @@ RSpec.describe Ci::Bridge, feature_category: :continuous_integration do
     end
 
     it 'returns an empty TagList for tag_list' do
-      expect(bridge.tag_list).to be_a(ActsAsTaggableOn::TagList)
+      expect(bridge.tag_list).to be_a(Gitlab::Ci::Tags::TagList)
     end
   end
 

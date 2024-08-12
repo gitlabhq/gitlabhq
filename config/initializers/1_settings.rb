@@ -856,7 +856,7 @@ Gitlab.ee do
   Settings.cron_jobs['vulnerability_historical_statistics_deletion_worker']['job_class'] = 'Vulnerabilities::HistoricalStatistics::DeletionWorker'
   Settings.cron_jobs['vulnerability_orphaned_remediations_cleanup_worker'] ||= {}
   Settings.cron_jobs['vulnerability_orphaned_remediations_cleanup_worker']['job_class'] = 'Vulnerabilities::OrphanedRemediationsCleanupWorker'
-  Settings.cron_jobs['vulnerability_orphaned_remediations_cleanup_worker']['cron'] ||= '15 3 3 * *'
+  Settings.cron_jobs['vulnerability_orphaned_remediations_cleanup_worker']['cron'] ||= '15 3 * * */6'
   Settings.cron_jobs['security_create_orchestration_policy_worker'] ||= {}
   Settings.cron_jobs['security_create_orchestration_policy_worker']['cron'] ||= '*/10 * * * *'
   Settings.cron_jobs['security_create_orchestration_policy_worker']['job_class'] = 'Security::CreateOrchestrationPolicyWorker'

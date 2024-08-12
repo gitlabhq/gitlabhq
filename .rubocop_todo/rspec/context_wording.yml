@@ -1373,7 +1373,6 @@ RSpec/ContextWording:
     - 'spec/helpers/users_helper_spec.rb'
     - 'spec/helpers/web_hooks/web_hooks_helper_spec.rb'
     - 'spec/helpers/whats_new_helper_spec.rb'
-    - 'spec/initializers/1_acts_as_taggable_spec.rb'
     - 'spec/initializers/carrierwave_s3_encryption_headers_patch_spec.rb'
     - 'spec/initializers/mail_encoding_patch_spec.rb'
     - 'spec/initializers/rack_multipart_patch_spec.rb'

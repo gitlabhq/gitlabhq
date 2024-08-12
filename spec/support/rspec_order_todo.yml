@@ -6082,8 +6082,6 @@
 - './spec/models/ability_spec.rb'
 - './spec/models/abuse_report_spec.rb'
 - './spec/models/active_session_spec.rb'
-- './spec/models/acts_as_taggable_on/tagging_spec.rb'
-- './spec/models/acts_as_taggable_on/tag_spec.rb'
 - './spec/models/alerting/project_alerting_setting_spec.rb'
 - './spec/models/alert_management/alert_assignee_spec.rb'
 - './spec/models/alert_management/alert_spec.rb'

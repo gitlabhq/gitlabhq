@@ -4262,7 +4262,7 @@ RSpec.describe Ci::Build, feature_category: :continuous_integration, factory_def
   describe '.matches_tag_ids' do
     let_it_be(:build, reload: true) { create(:ci_build, pipeline: pipeline, user: user) }
 
-    let(:tag_ids) { ::ActsAsTaggableOn::Tag.named_any(tag_list).ids }
+    let(:tag_ids) { Ci::Tag.named_any(tag_list).ids }
 
     subject { described_class.where(id: build).matches_tag_ids(tag_ids) }
 

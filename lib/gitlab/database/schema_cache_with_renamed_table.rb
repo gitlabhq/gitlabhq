@@ -18,28 +18,28 @@ module Gitlab
       end
 
       def primary_keys(connection, table_name)
-        super(connection, underlying_table(table_name))
+        super(connection, underlying_table(connection, table_name))
       end
 
       def columns(connection, table_name)
-        super(connection, underlying_table(table_name))
+        super(connection, underlying_table(connection, table_name))
       end
 
       def columns_hash(connection, table_name)
-        super(connection, underlying_table(table_name))
+        super(connection, underlying_table(connection, table_name))
       end
 
       def indexes(connection, table_name)
-        super(connection, underlying_table(table_name))
+        super(connection, underlying_table(connection, table_name))
       end
 
       private
 
-      def underlying_table(table_name)
-        renamed_tables_cache.fetch(table_name, table_name)
+      def underlying_table(connection, table_name)
+        renamed_tables_cache(connection).fetch(table_name, table_name)
       end
 
-      def renamed_tables_cache
+      def renamed_tables_cache(connection)
         @renamed_tables ||= Gitlab::Database::TABLES_TO_BE_RENAMED.select do |old_name, _new_name|
           connection.view_exists?(old_name)
         end

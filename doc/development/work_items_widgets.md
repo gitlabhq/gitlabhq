@@ -47,22 +47,21 @@ In this query example, the description widget uses the query and mutation to
 display and update the description of any work item:
 
 ```plaintext
-query {
-  workItem(input: {
-    workItemId: "gid://gitlab/AnyWorkItem/2207",
-    widgetIdentifier: "description",
-  }) {
+query workItem($fullPath: ID!, $iid: String!) {
+  workspace: namespace(fullPath: $fullPath) {
     id
-    type
-    widgets {
-      ... on WorkItemWidgetDescription {
-        description
-        descriptionHtml
+    workItem(iid: $iid) {
+      id
+      iid
+      widgets {
+        ... on WorkItemWidgetDescription {
+          description
+          descriptionHtml
+        }
       }
     }
   }
 }
-
 ```
 
 Mutation example:

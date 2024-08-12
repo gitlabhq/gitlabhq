@@ -16,6 +16,7 @@ module Ci
     include IgnorableColumns
     include Ci::HasRunnerExecutor
     include Ci::HasRunnerStatus
+    include Ci::Taggable
 
     extend ::Gitlab::Utils::Override
 
@@ -238,8 +239,6 @@ module Ci
 
       where(runner_type: runner_type)
     end
-
-    acts_as_taggable
 
     after_destroy :cleanup_runner_queue
 

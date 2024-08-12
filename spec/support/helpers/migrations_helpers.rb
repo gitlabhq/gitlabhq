@@ -24,11 +24,12 @@ module MigrationsHelpers
     end
   end
 
-  def partitioned_table(name, by: :created_at, strategy: :monthly)
-    klass = Class.new(active_record_base) do
+  def partitioned_table(name, database: nil, by: :created_at, strategy: :monthly)
+    klass = Class.new(active_record_base(database: database)) do
       include PartitionedTable
 
       self.table_name = name
+      self.inheritance_column = :_type_disabled
       self.primary_key = :id
 
       partitioned_by by, strategy: strategy

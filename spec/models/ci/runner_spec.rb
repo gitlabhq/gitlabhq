@@ -64,7 +64,7 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
       context 'tag does not exist' do
         it 'creates a tag' do
-          expect { runner.save! }.to change(ActsAsTaggableOn::Tag, :count).by(1)
+          expect { runner.save! }.to change(Ci::Tag, :count).by(1)
         end
 
         it 'creates an association to the tag' do
@@ -76,11 +76,11 @@ RSpec.describe Ci::Runner, type: :model, feature_category: :runner do
 
       context 'tag already exists' do
         before do
-          ActsAsTaggableOn::Tag.create!(name: tag_name)
+          Ci::Tag.create!(name: tag_name)
         end
 
         it 'does not create a tag' do
-          expect { runner.save! }.not_to change(ActsAsTaggableOn::Tag, :count)
+          expect { runner.save! }.not_to change(Ci::Tag, :count)
         end
 
         it 'creates an association to the tag' do

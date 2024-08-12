@@ -1,7 +1,6 @@
 ---
 table_name: tags
 classes:
-- ActsAsTaggableOn::Tag
 - Ci::Tag
 feature_categories:
 - continuous_integration

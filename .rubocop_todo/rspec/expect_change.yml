@@ -191,7 +191,6 @@ RSpec/ExpectChange:
     - 'spec/graphql/mutations/merge_requests/create_spec.rb'
     - 'spec/graphql/mutations/user_callouts/create_spec.rb'
     - 'spec/graphql/types/base_enum_spec.rb'
-    - 'spec/initializers/1_acts_as_taggable_spec.rb'
     - 'spec/initializers/load_balancing_spec.rb'
     - 'spec/lib/api/helpers_spec.rb'
     - 'spec/lib/bulk_imports/common/pipelines/badges_pipeline_spec.rb'

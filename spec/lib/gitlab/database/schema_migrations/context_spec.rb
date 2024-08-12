@@ -67,6 +67,9 @@ RSpec.describe Gitlab::Database::SchemaMigrations::Context do
     before do
       allow(connection).to receive_message_chain(:schema_migration, :all_versions).and_return(migrated_versions)
 
+      # Can be removed after Gitlab.next_rails?
+      allow(connection).to receive_message_chain(:schema_migration, :versions).and_return(migrated_versions)
+
       migrations_struct = Struct.new(:version)
       migrations = file_versions.map { |version| migrations_struct.new(version) }
       allow(connection).to receive_message_chain(:migration_context, :migrations).and_return(migrations)

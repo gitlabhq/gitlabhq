@@ -46,7 +46,7 @@ module Gitlab
           return false if taggings.empty?
 
           taggings.each_slice(TAGGINGS_BATCH_SIZE) do |taggings_slice|
-            ActsAsTaggableOn::Tagging.insert_all!(taggings_slice)
+            ::Ci::Tagging.insert_all!(taggings_slice)
           end
 
           true
@@ -54,17 +54,17 @@ module Gitlab
 
         # rubocop: disable CodeReuse/ActiveRecord
         def create_tags(tags)
-          existing_tag_records = ActsAsTaggableOn::Tag.where(name: tags).to_a
+          existing_tag_records = ::Ci::Tag.where(name: tags).to_a
           missing_tags = detect_missing_tags(tags, existing_tag_records)
           return existing_tag_records if missing_tags.empty?
 
           missing_tags
             .map { |tag| { name: tag } }
             .each_slice(TAGS_BATCH_SIZE) do |tags_attributes|
-              ActsAsTaggableOn::Tag.insert_all!(tags_attributes)
+              ::Ci::Tag.insert_all!(tags_attributes)
             end
 
-          ActsAsTaggableOn::Tag.where(name: tags).to_a
+          ::Ci::Tag.where(name: tags).to_a
         end
         # rubocop: enable CodeReuse/ActiveRecord
 

@@ -12,6 +12,7 @@ module Ci
     include Ci::HasRef
     include Ci::TrackEnvironmentUsage
     include EachBatch
+    include Ci::Taggable
 
     extend ::Gitlab::Utils::Override
 
@@ -218,8 +219,6 @@ module Ci
       .or(with_job_artifacts.where(job_artifacts: { file_type: 'dotenv', accessibility: 'public' }))
       .or(with_job_artifacts.where(project_id: project_id, job_artifacts: { file_type: 'dotenv' })).distinct
     end
-
-    acts_as_taggable
 
     add_authentication_token_field :token,
       encrypted: :required,
@@ -728,14 +727,6 @@ module Ci
 
     def remove_token!
       update!(token_encrypted: nil)
-    end
-
-    # acts_as_taggable uses this method create/remove tags with contexts
-    # defined by taggings and to get those contexts it executes a query.
-    # We don't use any other contexts except `tags`, so we don't need it.
-    override :custom_contexts
-    def custom_contexts
-      []
     end
 
     def tag_list

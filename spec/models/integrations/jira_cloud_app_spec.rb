@@ -54,7 +54,7 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
   describe '#validate_service_ids_limit' do
     let(:jira_cloud_app_integration) { build_stubbed(:jira_cloud_app_integration) }
 
-    it 'does not raise any errors if service_ids empty' do
+    it 'is valid if jira_cloud_app_service_ids is empty' do
       jira_cloud_app_integration.jira_cloud_app_service_ids = ""
 
       jira_cloud_app_integration.validate
@@ -62,12 +62,15 @@ RSpec.describe Integrations::JiraCloudApp, feature_category: :integrations do
       expect(jira_cloud_app_integration.errors).to be_empty
     end
 
-    it 'raise error if limit exceeds' do
+    it 'is invalid if jira_cloud_app_service_ids exceed the limit' do
       stub_const("#{described_class}::SERVICE_IDS_LIMIT", 2)
 
       jira_cloud_app_integration.jira_cloud_app_service_ids = 'b:asfasd=,b:bsfasd=,b:csfasd='
 
       jira_cloud_app_integration.validate
+
+      expect(jira_cloud_app_integration.errors[:jira_cloud_app_service_ids])
+        .to include('cannot have more than 2 service IDs')
     end
   end
 

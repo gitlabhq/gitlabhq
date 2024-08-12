@@ -25,9 +25,16 @@ module Database
     end
 
     def self.btree_index_struct(index)
+      columns =
+        if ::Gitlab.next_rails?
+          Array.wrap(index.columns) + Array.wrap(index.include)
+        else
+          Array.wrap(index.columns)
+        end
+
       BTREE_INDEX_STRUCT.new(
         index.name,
-        Array.wrap(index.columns).map do |column|
+        columns.map do |column|
           # https://apidock.com/rails/ActiveRecord/ConnectionAdapters/PostgreSQL/SchemaStatements/indexes
           # asc is the default order
           column_order = index.orders.is_a?(Symbol) ? index.orders : (index.orders[column] || :asc)

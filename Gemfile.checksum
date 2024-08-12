@@ -14,7 +14,6 @@
 {"name":"activerecord-explain-analyze","version":"0.1.0","platform":"ruby","checksum":"5debb11fe23f35b91953a80677d80ba9284ee737fd9d148c1d7603ce45217f7b"},
 {"name":"activestorage","version":"7.0.8.4","platform":"ruby","checksum":"cbfc2d9a708aa47822f1bfc36180c835515d3a22a160b43e8fe74ddc80e8b8e1"},
 {"name":"activesupport","version":"7.0.8.4","platform":"ruby","checksum":"69047070402b20fbaeebbeb56d21238db457c54c7e66f356dcba683e500ae197"},
-{"name":"acts-as-taggable-on","version":"10.0.0","platform":"ruby","checksum":"d360e96f1622010a2f8fe5c6f480f8cf95ba0bc2072e0b9974574e5f336edb83"},
 {"name":"addressable","version":"2.8.1","platform":"ruby","checksum":"bc724a176ef02118c8a3ed6b5c04c39cf59209607ffcce77b91d0261dbadedfa"},
 {"name":"aes_key_wrap","version":"1.1.0","platform":"ruby","checksum":"b935f4756b37375895db45669e79dfcdc0f7901e12d4e08974d5540c8e0776a5"},
 {"name":"akismet","version":"3.0.0","platform":"ruby","checksum":"74991b8e3d3257eeea996b47069abb8da2006c84a144255123e8dffd1c86b230"},

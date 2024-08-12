@@ -278,9 +278,6 @@ end
 # State machine
 gem 'state_machines-activerecord', '~> 0.8.0' # rubocop:todo Gemfile/MissingFeatureCategory
 
-# CI domain tags
-gem 'acts-as-taggable-on', '~> 10.0' # rubocop:todo Gemfile/MissingFeatureCategory
-
 # Background jobs
 gem 'sidekiq', path: 'vendor/gems/sidekiq-7.1.6', require: 'sidekiq', feature_category: :scalability
 gem 'sidekiq-cron', '~> 1.12.0', feature_category: :scalability

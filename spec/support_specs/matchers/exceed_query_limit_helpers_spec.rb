@@ -9,6 +9,10 @@ RSpec.describe ExceedQueryLimitHelpers do
 
     TestQueries.class_eval do
       self.table_name = 'schema_migrations'
+
+      def self._returning_columns_for_insert
+        ['version']
+      end
     end
 
     TestMatcher.class_eval do

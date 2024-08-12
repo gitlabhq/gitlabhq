@@ -10,7 +10,7 @@ module TaggableQueries
   class_methods do
     # context is a name `acts_as_taggable context`
     def arel_tag_names_array(context = :tags)
-      ActsAsTaggableOn::Tagging
+      Ci::Tagging
         .joins(:tag)
         .where("taggings.taggable_id=#{quoted_table_name}.id") # rubocop:disable GitlabSecurity/SqlInjection
         .where(taggings: { context: context, taggable_type: polymorphic_name })
@@ -18,7 +18,7 @@ module TaggableQueries
     end
 
     def matches_tag_ids(tag_ids, table: quoted_table_name, column: 'id')
-      matcher = ::ActsAsTaggableOn::Tagging
+      matcher = ::Ci::Tagging
         .where(taggable_type: CommitStatus.name)
         .where(context: 'tags')
         .where("taggable_id = #{connection.quote_table_name(table)}.#{connection.quote_column_name(column)}") # rubocop:disable GitlabSecurity/SqlInjection
@@ -29,7 +29,7 @@ module TaggableQueries
     end
 
     def with_any_tags(table: quoted_table_name, column: 'id')
-      matcher = ::ActsAsTaggableOn::Tagging
+      matcher = ::Ci::Tagging
         .where(taggable_type: CommitStatus.name)
         .where(context: 'tags')
         .where("taggable_id = #{connection.quote_table_name(table)}.#{connection.quote_column_name(column)}") # rubocop:disable GitlabSecurity/SqlInjection

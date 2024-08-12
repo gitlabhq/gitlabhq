@@ -607,11 +607,11 @@ module Ci
     end
 
     def tags_count
-      ActsAsTaggableOn::Tagging.where(taggable: builds).count
+      Ci::Tagging.where(taggable: builds).count
     end
 
     def distinct_tags_count
-      ActsAsTaggableOn::Tagging.where(taggable: builds).count('distinct(tag_id)')
+      Ci::Tagging.where(taggable: builds).count('distinct(tag_id)')
     end
 
     def stages_names
