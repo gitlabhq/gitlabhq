@@ -1,9 +1,11 @@
 import Api from '~/api';
 import { getProjects } from '~/rest_api';
+import axios from '~/lib/utils/axios_utils';
 import { convertObjectPropsToCamelCase } from '~/lib/utils/common_utils';
 import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import groupsAutocompleteQuery from '~/graphql_shared/queries/groups_autocomplete.query.graphql';
+import { buildUrl, GROUPS_PATH } from '~/projects/settings/api/access_dropdown_api';
 
 export const fetchProjectGroups = (projectPath, search) => {
   return Api.projectGroups(projectPath, {
@@ -32,6 +34,24 @@ export const fetchAllGroups = async (apollo, search) => {
         ...group,
         id: getIdFromGraphQLId(group.id),
         type: 'group',
+      })),
+    );
+};
+
+export const fetchGroupsWithProjectAccess = (projectId, search) => {
+  return axios
+    .get(buildUrl(gon.relative_url_root || '', GROUPS_PATH), {
+      params: {
+        project_id: projectId,
+        with_project_access: true,
+        search,
+      },
+    })
+    .then(({ data }) =>
+      data.map((group) => ({
+        text: group.name,
+        value: group.name,
+        ...convertObjectPropsToCamelCase(group),
       })),
     );
 };

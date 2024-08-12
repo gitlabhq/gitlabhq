@@ -1,9 +1,11 @@
 import Vue from 'vue';
 import VueApollo from 'vue-apollo';
 import { GlIcon, GlCollapsibleListbox, GlSearchBoxByType } from '@gitlab/ui';
+import MockAdapter from 'axios-mock-adapter';
 import CrudComponent from '~/vue_shared/components/crud_component.vue';
 import Api from '~/api';
 import RestApi from '~/rest_api';
+import axios from '~/lib/utils/axios_utils';
 import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { mountExtended } from 'helpers/vue_test_utils_helper';
@@ -19,6 +21,7 @@ import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
 import { USERS_RESPONSE_MOCK, GROUPS_RESPONSE_MOCK } from './mock_data';
 
 jest.mock('~/alert');
+jest.mock('~/api');
 jest.mock('~/rest_api', () => ({
   getProjects: jest.fn().mockResolvedValue({
     data: [
@@ -32,6 +35,7 @@ Vue.use(VueApollo);
 describe('List Selector spec', () => {
   let wrapper;
   let fakeApollo;
+  let axiosMock;
 
   const USERS_MOCK_PROPS = {
     projectPath: 'some/project/path',
@@ -185,55 +189,90 @@ describe('List Selector spec', () => {
     });
 
     describe('searching', () => {
-      const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes.map((group) => ({
-        ...group,
-        id: getIdFromGraphQLId(group.id),
-      }));
+      describe('for default all groups', () => {
+        const searchResponse = GROUPS_RESPONSE_MOCK.data.groups.nodes.map((group) => ({
+          ...group,
+          id: getIdFromGraphQLId(group.id),
+        }));
 
-      const emitSearchInput = async () => {
-        findSearchBox().vm.$emit('input', search);
-        await waitForPromises();
-      };
+        const emitSearchInput = async () => {
+          findSearchBox().vm.$emit('input', search);
+          await waitForPromises();
+        };
 
-      beforeEach(async () => {
-        findNamespaceDropdown().vm.$emit('select', 'false');
-        await emitSearchInput();
-      });
+        beforeEach(async () => {
+          findNamespaceDropdown().vm.$emit('select', 'false');
+          await emitSearchInput();
+        });
 
-      it('calls query with correct variables when Search box receives an input', () => {
-        expect(groupsAutocompleteQuerySuccess).toHaveBeenCalledWith({
-          search,
+        it('calls query with correct variables when Search box receives an input', () => {
+          expect(groupsAutocompleteQuerySuccess).toHaveBeenCalledWith({
+            search,
+          });
+        });
+
+        it('renders a dropdown for the search results', () => {
+          expect(findSearchResultsDropdown().props()).toMatchObject({
+            items: searchResponse,
+          });
+        });
+
+        it('renders a group component for each search result', () => {
+          expect(findAllGroupComponents().length).toBe(searchResponse.length);
+        });
+
+        it('emits an event when a search result is selected', () => {
+          const firstSearchResult = searchResponse[0];
+          findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
+
+          expect(wrapper.emitted('select')).toEqual([
+            [
+              {
+                __typename: 'Group',
+                avatarUrl: null,
+                fullName: 'Flightjs',
+                id: 33,
+                name: 'Flightjs',
+                text: 'Flightjs',
+                value: 'Flightjs',
+                type: 'group',
+              },
+            ],
+          ]);
         });
       });
 
-      it('renders a dropdown for the search results', () => {
-        expect(findSearchResultsDropdown().props()).toMatchObject({
-          items: searchResponse,
+      describe('for groups with project access', () => {
+        const mockProjectId = 7;
+        const mockUrl = '/-/autocomplete/project_groups.json';
+        const mockAxiosResponse = [
+          { id: 1, avatar_url: null, name: 'group1' },
+          { id: 2, avatar_url: null, name: 'group2' },
+        ];
+        axiosMock = new MockAdapter(axios);
+
+        const emitSearchInput = async () => {
+          findSearchBox().vm.$emit('input', search);
+          await waitForPromises();
+        };
+
+        beforeEach(async () => {
+          createComponent({
+            ...GROUPS_MOCK_PROPS,
+            isGroupsWithProjectAccess: true,
+            projectId: mockProjectId,
+          });
+          axiosMock.onGet(mockUrl).replyOnce(200, mockAxiosResponse);
+          await emitSearchInput();
         });
-      });
 
-      it('renders a group component for each search result', () => {
-        expect(findAllGroupComponents().length).toBe(searchResponse.length);
-      });
-
-      it('emits an event when a search result is selected', () => {
-        const firstSearchResult = searchResponse[0];
-        findSearchResultsDropdown().vm.$emit('select', firstSearchResult.name);
-
-        expect(wrapper.emitted('select')).toEqual([
-          [
-            {
-              __typename: 'Group',
-              avatarUrl: null,
-              fullName: 'Flightjs',
-              id: 33,
-              name: 'Flightjs',
-              text: 'Flightjs',
-              value: 'Flightjs',
-              type: 'group',
-            },
-          ],
-        ]);
+        it('calls query with correct variables when Search box receives an input', () => {
+          expect(axiosMock.history.get[0].params).toStrictEqual({
+            project_id: mockProjectId,
+            with_project_access: true,
+            search,
+          });
+        });
       });
     });
 

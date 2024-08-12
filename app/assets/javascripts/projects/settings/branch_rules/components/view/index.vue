@@ -66,6 +66,9 @@ export default {
     projectPath: {
       default: '',
     },
+    projectId: {
+      default: null,
+    },
     protectedBranchesPath: {
       default: '',
     },

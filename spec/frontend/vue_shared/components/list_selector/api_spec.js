@@ -1,10 +1,13 @@
+import MockAdapter from 'axios-mock-adapter';
 import Api from '~/api';
 import { getProjects } from '~/rest_api';
 import { ACCESS_LEVEL_REPORTER_INTEGER } from '~/access_level/constants';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
+import axios from '~/lib/utils/axios_utils';
 import {
   fetchProjectGroups,
   fetchAllGroups,
+  fetchGroupsWithProjectAccess,
   fetchProjects,
   fetchUsers,
 } from '~/vue_shared/components/list_selector/api';
@@ -12,12 +15,13 @@ import {
 jest.mock('~/api');
 jest.mock('~/rest_api');
 jest.mock('~/graphql_shared/utils');
+let axiosMock;
 
 const mockProjectPath = 'group/project';
+const mockGroupSearch = 'group';
 
 describe('List Selector Utils', () => {
   describe('fetchProjectGroups', () => {
-    const mockSearch = 'group';
     const mockApiResponse = [
       { id: 1, full_name: 'Group 1', name: 'group1' },
       { id: 2, full_name: 'Group 2', name: 'group2' },
@@ -28,17 +32,17 @@ describe('List Selector Utils', () => {
     });
 
     it('calls Api.projectGroups with correct parameters', async () => {
-      await fetchProjectGroups(mockProjectPath, mockSearch);
+      await fetchProjectGroups(mockProjectPath, mockGroupSearch);
 
       expect(Api.projectGroups).toHaveBeenCalledWith(mockProjectPath, {
-        search: mockSearch,
+        search: mockGroupSearch,
         with_shared: true,
         shared_min_access_level: ACCESS_LEVEL_REPORTER_INTEGER,
       });
     });
 
     it('returns formatted group data', async () => {
-      const result = await fetchProjectGroups(mockProjectPath, mockSearch);
+      const result = await fetchProjectGroups(mockProjectPath, mockGroupSearch);
 
       expect(result).toEqual([
         { text: 'Group 1', value: 'group1', id: 1, fullName: 'Group 1', name: 'group1' },
@@ -51,7 +55,6 @@ describe('List Selector Utils', () => {
     const mockApollo = {
       query: jest.fn(),
     };
-    const mockSearch = 'search-term';
     const mockGraphQLResponse = {
       data: {
         groups: {
@@ -69,16 +72,16 @@ describe('List Selector Utils', () => {
     });
 
     it('calls apollo.query with correct parameters', async () => {
-      await fetchAllGroups(mockApollo, mockSearch);
+      await fetchAllGroups(mockApollo, mockGroupSearch);
 
       expect(mockApollo.query).toHaveBeenCalledWith({
         query: expect.any(Object),
-        variables: { search: mockSearch },
+        variables: { search: mockGroupSearch },
       });
     });
 
     it('returns formatted group data', async () => {
-      const result = await fetchAllGroups(mockApollo, mockSearch);
+      const result = await fetchAllGroups(mockApollo, mockGroupSearch);
 
       expect(result).toEqual([
         {
@@ -97,6 +100,44 @@ describe('List Selector Utils', () => {
           name: 'group2',
           type: 'group',
         },
+      ]);
+    });
+  });
+
+  describe('fetchGroupsWithProjectAccess', () => {
+    const mockProjectId = 7;
+    const mockUrl = '/-/autocomplete/project_groups.json';
+
+    beforeEach(() => {
+      const mockAxiosResponse = [
+        { id: 1, avatar_url: null, name: 'group1' },
+        { id: 2, avatar_url: null, name: 'group2' },
+      ];
+      axiosMock = new MockAdapter(axios);
+      axiosMock.onGet(mockUrl).replyOnce(200, mockAxiosResponse);
+    });
+
+    afterEach(() => {
+      axiosMock.restore();
+    });
+
+    it('calls axios.get with correct parameters', async () => {
+      await fetchGroupsWithProjectAccess(mockProjectId, mockGroupSearch);
+
+      expect(axiosMock.history.get.length).toBe(1);
+      expect(axiosMock.history.get[0].params).toStrictEqual({
+        project_id: mockProjectId,
+        with_project_access: true,
+        search: mockGroupSearch,
+      });
+    });
+
+    it('returns formatted group data', async () => {
+      const result = await fetchGroupsWithProjectAccess(mockProjectId, mockGroupSearch);
+
+      expect(result).toEqual([
+        { text: 'group1', value: 'group1', id: 1, avatarUrl: null, name: 'group1' },
+        { text: 'group2', value: 'group2', id: 2, avatarUrl: null, name: 'group2' },
       ]);
     });
   });

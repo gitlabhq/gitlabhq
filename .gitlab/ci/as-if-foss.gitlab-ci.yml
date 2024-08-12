@@ -12,6 +12,7 @@ prepare-as-if-foss-branch:
   timeout: 10m
   environment:
     name: "as-if-foss/${CI_MERGE_REQUEST_IID}"
+    auto_stop_in: 2 weeks
     on_stop: delete-as-if-foss-branch
   before_script:
     - git clone --single-branch --branch master "${FOSS_REPOSITORY}" gitlab-foss

@@ -1,5 +1,5 @@
 ---
-redirect_to: (../../disaster_recovery/failover_troubleshooting.md)
+redirect_to: '../../disaster_recovery/failover_troubleshooting.md'
 remove_date: '2025-08-02'
 ---
 

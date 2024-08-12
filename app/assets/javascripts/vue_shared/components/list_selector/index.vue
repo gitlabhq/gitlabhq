@@ -7,6 +7,7 @@ import { __, sprintf } from '~/locale';
 import {
   fetchProjectGroups,
   fetchAllGroups,
+  fetchGroupsWithProjectAccess,
   fetchProjects,
   fetchUsers,
 } from '~/vue_shared/components/list_selector/api';
@@ -17,6 +18,27 @@ const I18N = {
   projectGroups: __('Project groups'),
   apiErrorMessage: __('An error occurred while fetching. Please try again.'),
 };
+
+/**
+ * Renders a selector and displays a list of selected items.
+ * Selected items can be:
+ * - users
+ * - projects
+ * - groups
+ * - deploy keys
+ *
+ *
+ * For groups type, there are three different APIs you can use:
+ * - `fetchAllGroups()` (default)
+ *   - uses GraphQL `groupsAutocompleteQuery`
+ * - `fetchProjectGroups()`
+ *   - when `isProjectNamespace` equals `true`,
+ *   - uses `Api.projectGroups()` with parameters `{with_shared: true, shared_min_access_level: ACCESS_LEVEL_REPORTER_INTEGER}`
+ * - `fetchGroupsWithProjectAccess()`
+ *   - when `isGroupsWithProjectAccess` equals `true`,
+ *   - GET Request `autocomplete/project_groups.json` to fetch groups invited to the project
+ *
+ */
 
 export default {
   name: 'ListSelector',
@@ -46,6 +68,11 @@ export default {
       required: false,
       default: null,
     },
+    projectId: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     autofocus: {
       type: Boolean,
       required: false,
@@ -62,6 +89,11 @@ export default {
       default: false,
     },
     isProjectScoped: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    isGroupsWithProjectAccess: {
       type: Boolean,
       required: false,
       default: false,
@@ -135,6 +167,8 @@ export default {
       let groups = [];
       if (parseBoolean(this.isProjectNamespace)) {
         groups = await fetchProjectGroups(this.projectPath, search);
+      } else if (this.isGroupsWithProjectAccess) {
+        groups = await fetchGroupsWithProjectAccess(this.projectId, search);
       } else {
         groups = await fetchAllGroups(this.$apollo, search);
       }
