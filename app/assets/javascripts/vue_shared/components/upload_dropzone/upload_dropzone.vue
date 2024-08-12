@@ -75,7 +75,7 @@ export default {
     iconStyles() {
       return {
         size: this.displayAsCard ? 24 : 16,
-        class: this.displayAsCard ? 'gl-mb-2' : 'gl-mr-3 gl-text-gray-500',
+        class: this.displayAsCard ? 'gl-mb-2' : 'gl-mr-3',
       };
     },
     validMimeTypeString() {

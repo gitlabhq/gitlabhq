@@ -155,6 +155,7 @@ func TestStaticFileRelativeURL(t *testing.T) {
 	content := "PUBLIC"
 	setupStaticFile(t, "static.txt", content)
 
+	// nolint:gocritic // Required for compatibility with existing code structure
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), http.HandlerFunc(http.NotFound))
 	defer ts.Close()
 	backendURLString := ts.URL + "/my-relative-url"
@@ -249,7 +250,7 @@ This is a static error page for code 499
 	defer resp.Body.Close()
 
 	require.Equal(t, 499, resp.StatusCode, "GET %q: status code", resourcePath)
-	require.Equal(t, string(errorPageBody), body, "GET %q: response body", resourcePath)
+	require.Equal(t, errorPageBody, body, "GET %q: response body", resourcePath)
 }
 
 func TestGzipAssets(t *testing.T) {
@@ -464,7 +465,7 @@ func TestSendURLForArtifacts(t *testing.T) {
 
 	rawHandler := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		hj, ok := w.(http.Hijacker)
-		assert.Equal(t, true, ok)
+		assert.True(t, ok)
 
 		conn, buf, err := hj.Hijack()
 		assert.NoError(t, err)
@@ -529,13 +530,14 @@ func TestAPIFalsePositivesAreProxied(t *testing.T) {
 	goodResponse := []byte(`<html></html>`)
 	ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 		url := r.URL.String()
-		if url[len(url)-1] == '/' {
+		switch {
+		case url[len(url)-1] == '/':
 			w.WriteHeader(500)
 			w.Write([]byte("PreAuthorize request included a trailing slash"))
-		} else if r.Header.Get(secret.RequestHeader) != "" && r.Method != "GET" {
+		case r.Header.Get(secret.RequestHeader) != "" && r.Method != "GET":
 			w.WriteHeader(500)
 			w.Write([]byte("non-GET request went through PreAuthorize handler"))
-		} else {
+		default:
 			w.Header().Set("Content-Type", "text/html")
 			_, err := w.Write(goodResponse)
 			assert.NoError(t, err)
@@ -589,8 +591,8 @@ func TestCorrelationIdHeader(t *testing.T) {
 		defer resp.Body.Close()
 
 		require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
-		requestIds := resp.Header["X-Request-Id"]
-		require.Equal(t, 1, len(requestIds), "GET %q: One X-Request-Id present", resource)
+		requestIDs := resp.Header["X-Request-Id"]
+		require.Len(t, requestIDs, 1, "GET %q: One X-Request-Id present", resource)
 	}
 }
 
@@ -662,8 +664,8 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 			ws := startWorkhorseServerWithConfig(t, upstreamConfig)
 
 			resource := "/api/v3/projects/123/repository/not/special"
-			propagatedRequestId := "Propagated-RequestId-12345678"
-			headers := map[string]string{"X-Request-Id": propagatedRequestId}
+			propagatedRequestID := "Propagated-RequestId-12345678"
+			headers := map[string]string{"X-Request-Id": propagatedRequestID}
 
 			if tc.xffHeader != "" {
 				headers["X-Forwarded-For"] = tc.xffHeader
@@ -671,15 +673,15 @@ func TestPropagateCorrelationIdHeader(t *testing.T) {
 
 			resp, _ := httpGet(t, ws.URL+resource, headers)
 			defer resp.Body.Close()
-			requestIds := resp.Header["X-Request-Id"]
+			requestIDs := resp.Header["X-Request-Id"]
 
 			require.Equal(t, 200, resp.StatusCode, "GET %q: status code", resource)
-			require.Equal(t, 1, len(requestIds), "GET %q: One X-Request-Id present", resource)
+			require.Len(t, requestIDs, 1, "GET %q: One X-Request-Id present", resource)
 
 			if tc.propagationExpected {
-				require.Contains(t, requestIds, propagatedRequestId, "GET %q: Has X-Request-Id %s present", resource, propagatedRequestId)
+				require.Contains(t, requestIDs, propagatedRequestID, "GET %q: Has X-Request-Id %s present", resource, propagatedRequestID)
 			} else {
-				require.NotContains(t, requestIds, propagatedRequestId, "GET %q: X-Request-Id not propagated")
+				require.NotContains(t, requestIDs, propagatedRequestID, "GET %q: X-Request-Id not propagated")
 			}
 		})
 	}
@@ -951,12 +953,12 @@ func TestDependencyProxyInjector(t *testing.T) {
 			}))
 			defer originResourceServer.Close()
 
-			originResourceUrl := originResourceServer.URL + originResource
+			originResourceURL := originResourceServer.URL + originResource
 
 			ts := testhelper.TestServerWithHandler(regexp.MustCompile(`.`), func(w http.ResponseWriter, r *http.Request) {
 				switch r.URL.String() {
 				case "/base":
-					params := `{"Url": "` + originResourceUrl + `", "Token": "` + token + `"}`
+					params := `{"Url": "` + originResourceURL + `", "Token": "` + token + `"}`
 					w.Header().Set("Gitlab-Workhorse-Send-Data", `send-dependency:`+base64.URLEncoding.EncodeToString([]byte(params)))
 				case "/base/upload/authorize":
 					w.Header().Set("Content-Type", api.ResponseContentType)

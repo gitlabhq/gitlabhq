@@ -1539,7 +1539,7 @@ GEM
     redis-rack (3.0.0)
       rack-session (>= 0.2.0)
       redis-store (>= 1.2, < 2)
-    redis-store (1.10.0)
+    redis-store (1.11.0)
       redis (>= 4, < 6)
     regexp_parser (2.6.0)
     regexp_property_values (1.0.0)

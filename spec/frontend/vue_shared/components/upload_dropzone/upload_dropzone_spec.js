@@ -161,7 +161,7 @@ describe('Upload dropzone component', () => {
   it('applies correct classes when displaying as a standalone item', () => {
     createComponent({ props: { displayAsCard: false } });
     expect(findDropzoneArea().classes()).not.toContain('gl-flex-col');
-    expect(findIcon().classes()).toEqual(['gl-mr-3', 'gl-text-gray-500']);
+    expect(findIcon().classes()).toEqual(['gl-mr-3']);
     expect(findIcon().props('size')).toBe(16);
   });
 

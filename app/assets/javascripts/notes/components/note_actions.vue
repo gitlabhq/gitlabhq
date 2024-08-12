@@ -198,9 +198,6 @@ export default {
       }
       return null;
     },
-    resolveVariant() {
-      return this.isResolved ? 'success' : 'default';
-    },
   },
   methods: {
     ...mapActions(['toggleAwardRequest', 'promoteCommentToTimelineEvent']),
@@ -289,14 +286,14 @@ export default {
       v-if="canResolve"
       ref="resolveButton"
       v-gl-tooltip
+      data-testid="resolve-line-button"
       category="tertiary"
-      :variant="resolveVariant"
-      :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
+      class="note-action-button"
+      :class="{ '!gl-text-success': isResolved }"
       :title="resolveButtonTitle"
       :aria-label="resolveButtonTitle"
       :icon="resolveIcon"
       :loading="isResolving"
-      class="line-resolve-btn note-action-button"
       @click="onResolve"
     />
     <timeline-event-button

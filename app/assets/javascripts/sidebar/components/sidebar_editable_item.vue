@@ -180,7 +180,7 @@ export default {
         v-gl-tooltip.viewport.html
         category="tertiary"
         size="small"
-        class="gl-text-gray-900! gl-ml-auto hide-collapsed -gl-mr-2 shortcut-sidebar-dropdown-toggle"
+        class="gl-ml-auto hide-collapsed -gl-mr-2 shortcut-sidebar-dropdown-toggle"
         :title="editTooltipText"
         :aria-label="editAriaLabelText"
         :aria-keyshortcuts="editKeyshortcutsText"

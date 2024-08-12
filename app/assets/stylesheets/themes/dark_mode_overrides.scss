@@ -22,18 +22,6 @@
 }
 
 .gl-dark {
-  .gl-button.gl-button,
-  .gl-button.gl-button.btn-block {
-    &.btn-default,
-    &.btn-dashed,
-    &.btn-danger,
-    &.btn-confirm {
-      &-tertiary {
-        mix-blend-mode: screen;
-      }
-    }
-  }
-
   .gl-datepicker-theme {
     .pika-prev,
     .pika-next {

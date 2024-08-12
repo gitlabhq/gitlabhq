@@ -200,10 +200,12 @@ RSpec.shared_examples "redis_shared_examples" do
 
         with_them do
           it 'returns hash with host, port, db, username, and password' do
+            is_expected.to include(name: host, password: 'mynewpassword', db: redis_database)
+
             if username
-              is_expected.to include(name: host, username: username, password: 'mynewpassword', db: redis_database)
+              is_expected.to include(username: username)
             else
-              is_expected.to include(name: host, password: 'mynewpassword', db: redis_database)
+              is_expected.not_to have_key(:username)
             end
 
             is_expected.not_to have_key(:url)

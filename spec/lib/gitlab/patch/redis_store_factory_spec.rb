@@ -26,31 +26,4 @@ RSpec.describe Gitlab::Patch::RedisStoreFactory, feature_category: :redis do
       end
     end
   end
-
-  describe '#extract_host_options_from_uri' do
-    using RSpec::Parameterized::TableSyntax
-
-    # rubocop:disable Layout/LineLength -- Table is more readable as one line
-    where(:url, :scheme, :username, :password, :port, :path, :db) do
-      "redis://localhost" | 'redis' | nil | nil | 6379 | nil | nil
-      "rediss://localhost" | 'rediss' | nil | nil | 6379 | nil | nil
-      "rediss://:password@localhost" | 'rediss' | nil | 'password' | 6379 | nil | nil
-      "rediss://redis-user:password@localhost:6380?db=5" | 'rediss' | 'redis-user' | 'password' | 6380 | nil | "5"
-      "unix://test-user:secret@/var/run/redis.sock?db=6" | nil | 'test-user' | 'secret' | nil | '/var/run/redis.sock' | "6"
-    end
-    # rubocop:enable Layout/LineLength
-
-    subject(:extracted) { ::Redis::Store::Factory.extract_host_options_from_uri(url) }
-
-    with_them do
-      it 'extracts the URL components', :aggregate_failures do
-        expect(extracted[:scheme]).to eq(scheme)
-        expect(extracted[:username]).to eq(username)
-        expect(extracted[:password]).to eq(password)
-        expect(extracted[:path]).to eq(path)
-        expect(extracted[:port]).to eq(port)
-        expect(extracted[:db]).to eq(db)
-      end
-    end
-  end
 end

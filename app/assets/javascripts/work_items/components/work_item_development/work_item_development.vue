@@ -164,13 +164,12 @@ export default {
           v-gl-modal="$options.createMRModalId"
           v-gl-tooltip.top
           category="tertiary"
+          icon="plus"
           size="small"
           data-testid="add-item"
           :title="__('Add branch or merge request')"
           :aria-label="__('Add branch or merge request')"
-        >
-          <gl-icon name="plus" class="!gl-text-gray-900" />
-        </gl-button>
+        />
       </div>
       <template v-if="isRelatedDevelopmentListEmpty">
         <span v-if="!canUpdate" class="gl-text-secondary">{{ __('None') }}</span>

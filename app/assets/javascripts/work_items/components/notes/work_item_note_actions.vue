@@ -162,9 +162,6 @@ export default {
       }
       return null;
     },
-    resolveVariant() {
-      return this.isResolved ? 'success' : 'default';
-    },
     resolveThreadTitle() {
       return this.isResolved
         ? __('Resolved by ') + this.resolvedBy.name
@@ -240,14 +237,14 @@ export default {
       v-if="canResolve"
       ref="resolveButton"
       v-gl-tooltip.hover
+      data-testid="resolve-line-button"
       category="tertiary"
-      :variant="resolveVariant"
-      :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
+      class="note-action-button"
+      :class="{ '!gl-text-success': isResolved }"
       :title="resolveThreadTitle"
       :aria-label="resolveThreadTitle"
       :icon="resolveIcon"
       :loading="isResolving"
-      class="line-resolve-btn note-action-button"
       @click="$emit('resolve')"
     />
     <emoji-picker

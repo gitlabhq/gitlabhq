@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import { GlLoadingIcon, GlIcon } from '@gitlab/ui';
+import { GlLoadingIcon } from '@gitlab/ui';
 import VueApollo from 'vue-apollo';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import createMockApollo from 'helpers/mock_apollo_helper';
@@ -164,7 +164,6 @@ describe('WorkItemDevelopment CE', () => {
   const findLabel = () => wrapper.findByTestId('dev-widget-label');
   const findAddButton = () => wrapper.findByTestId('add-item');
   const findLoadingIcon = () => wrapper.findComponent(GlLoadingIcon);
-  const findAddMoreIcon = () => wrapper.findComponent(GlIcon);
   const findCreateMRButton = () => wrapper.findByTestId('create-mr-button');
   const findCreateBranchButton = () => wrapper.findByTestId('create-branch-button');
   const findMoreInformation = () => wrapper.findByTestId('more-information');
@@ -183,7 +182,6 @@ describe('WorkItemDevelopment CE', () => {
       await waitForPromises();
 
       expect(findAddButton().exists()).toBe(true);
-      expect(findAddMoreIcon().exists()).toBe(true);
     });
 
     it('should not render the add button when `canUpdate` is true and `workItemsAlpha` is off', async () => {
@@ -191,7 +189,6 @@ describe('WorkItemDevelopment CE', () => {
       await waitForPromises();
 
       expect(findAddButton().exists()).toBe(false);
-      expect(findAddMoreIcon().exists()).toBe(false);
     });
 
     it('should not render the add button when `canUpdate` is false and `workItemsAlpha` is off', async () => {

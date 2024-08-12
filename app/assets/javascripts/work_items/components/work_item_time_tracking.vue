@@ -1,7 +1,6 @@
 <script>
 import {
   GlButton,
-  GlIcon,
   GlModal,
   GlModalDirective,
   GlProgressBar,
@@ -33,7 +32,6 @@ export default {
     TimeTrackingReport,
     CreateTimelogForm,
     GlButton,
-    GlIcon,
     GlModal,
     GlProgressBar,
     GlSprintf,
@@ -118,12 +116,11 @@ export default {
         v-gl-modal="$options.createTimelogModalId"
         v-gl-tooltip.top
         category="tertiary"
+        icon="plus"
         size="small"
         :title="__('Add time entry')"
         :aria-label="__('Add time entry')"
-      >
-        <gl-icon name="plus" class="gl-text-gray-900!" />
-      </gl-button>
+      />
     </div>
 
     <div
