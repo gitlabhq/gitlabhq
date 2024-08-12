@@ -20,7 +20,7 @@
         - Remove users by deactivating their SCIM identities.
 
       Previously, this was only available for GitLab.com. SCIM enables GitLab administrators to completely automate their user lifecycle management.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: false
   available_in: [Premium, Ultimate]
@@ -48,7 +48,7 @@
     To enable it on GitLab self-managed instances, see the linked documentation.
 
     Learn more about migrating GitLab projects by direct transfer Beta and what’s coming next in our recent [blog post](https://about.gitlab.com/blog/2023/01/18/try-out-new-way-to-migrate-projects/).
-  stage: manage
+  stage: Foundations
   self-managed: false
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

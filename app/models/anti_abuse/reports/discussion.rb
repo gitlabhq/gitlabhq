@@ -12,7 +12,7 @@ module AntiAbuse
       end
 
       def reply_attributes
-        first_note.slice(:abuse_report_id, :discussion_id)
+        first_note.slice(:type, :abuse_report_id, :discussion_id)
       end
 
       def individual_note?

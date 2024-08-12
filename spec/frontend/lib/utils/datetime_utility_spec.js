@@ -344,6 +344,7 @@ describe('datefix', () => {
 });
 
 describe('prettyTime methods', () => {
+  // eslint-disable-next-line max-params
   const assertTimeUnits = (obj, minutes, hours, days, weeks) => {
     expect(obj.minutes).toBe(minutes);
     expect(obj.hours).toBe(hours);

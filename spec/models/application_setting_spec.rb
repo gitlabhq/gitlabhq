@@ -37,6 +37,7 @@ RSpec.describe ApplicationSetting, feature_category: :shared, type: :model do
     it { expect(setting.nuget_skip_metadata_url_validation).to eq(false) }
     it { expect(setting.silent_admin_exports_enabled).to eq(false) }
     it { expect(setting.group_api_limit).to eq(400) }
+    it { expect(setting.group_invited_groups_api_limit).to eq(60) }
     it { expect(setting.group_projects_api_limit).to eq(600) }
     it { expect(setting.group_shared_groups_api_limit).to eq(60) }
     it { expect(setting.groups_api_limit).to eq(200) }

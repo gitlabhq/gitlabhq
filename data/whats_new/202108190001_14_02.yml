@@ -1,7 +1,7 @@
 - name: Add pronunciation to GitLab profile page
   description: |
     You can now add pronunciation to your user profile. In distributed teams where team members are from different countries, it can be difficult to determine how to say someone's name correctly. This will help others know how to pronounce your name.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

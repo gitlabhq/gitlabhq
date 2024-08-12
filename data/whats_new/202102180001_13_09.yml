@@ -88,7 +88,7 @@
 - name: "New merge request metric: mean time to merge"
   description: |
     A new metric, mean time to merge (MTTM), is available in project-level merge request analytics. MTTM is the average time from when a merge request (MR) is created, until the time it is merged. By selecting different dates in the date range selector, you can see how your time to merge MRs changes over time and understand whether you are becoming more efficient at reviewing and merging code.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]

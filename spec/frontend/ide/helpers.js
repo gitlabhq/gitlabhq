@@ -3,6 +3,7 @@ import { commitActionTypes } from '~/ide/constants';
 import { decorateData } from '~/ide/stores/utils';
 import { WEB_IDE_OAUTH_CALLBACK_URL_PATH } from '~/ide/lib/gitlab_web_ide/get_oauth_config';
 
+// eslint-disable-next-line max-params
 export const file = (name = 'name', id = name, type = '', parent = null) =>
   decorateData({
     id,

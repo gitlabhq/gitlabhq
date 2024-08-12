@@ -3,11 +3,12 @@
 require 'spec_helper'
 
 RSpec.describe 'user_settings/ssh_keys/_form.html.haml', feature_category: :system_access do
+  include RenderedHtml
   include SshKeysHelper
 
   let_it_be(:key) { Key.new }
 
-  let(:page) { Capybara::Node::Simple.new(rendered) }
+  let(:page) { rendered_html }
 
   before do
     assign(:key, key)

@@ -7,7 +7,7 @@
 
     The Jira DVCS connector is also deprecated for Jira 8.13 and earlier. You can only use the Jira DVCS connector with Jira Server or Jira Data Center in Jira 8.14 and later.
 # The following items are not published on the docs page, but may be used in the future.
-  stage: Manage  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  stage: Foundations  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: https://gitlab.com/groups/gitlab-org/-/epics/7508  # (optional) This is a link to the deprecation issue in GitLab
   documentation_url: https://docs.gitlab.com/ee/integration/jira/dvcs/  # (optional) This is a link to the current documentation page

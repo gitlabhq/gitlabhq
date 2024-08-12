@@ -144,6 +144,7 @@ export default Node.create({
   addProseMirrorPlugins() {
     const { serializer, autocompleteHelper } = this.options;
 
+    // eslint-disable-next-line max-params
     const createPlugin = (char, nodeType, referenceType, options = {}) =>
       createSuggestionPlugin({
         editor: this.editor,

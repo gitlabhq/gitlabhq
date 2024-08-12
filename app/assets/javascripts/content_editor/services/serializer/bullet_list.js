@@ -7,6 +7,7 @@ import { preserveUnchanged } from '../serialization_helpers';
  * We need to overwrite this function because we don’t want to wrap the list item nodes
  * with the bullet delimiter when the list item node hasn’t changed
  */
+// eslint-disable-next-line max-params
 export const renderList = (state, node, delim, firstDelim) => {
   if (state.closed && state.closed.type === node.type) state.flushClose(3);
   else if (state.inTightList) state.flushClose(1);

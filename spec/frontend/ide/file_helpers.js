@@ -27,6 +27,7 @@ export const createMovedFile = (path, prevPath, content) =>
   });
 
 export const createEntries = (path) =>
+  // eslint-disable-next-line max-params
   path.split('/').reduce((acc, part, idx, parts) => {
     const parentPath = parts.slice(0, idx).join('/');
     const fullPath = parentPath ? `${parentPath}/${part}` : part;

@@ -246,4 +246,48 @@ describe('~/frontend/environments/graphql/resolvers', () => {
       await expect(fluxHelmReleasesError).rejects.toThrow(apiError);
     });
   });
+
+  describe('updateFluxResource', () => {
+    const fluxResourcePath =
+      'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app';
+    const endpoint = `${configuration.basePath}/apis/${fluxResourcePath}`;
+
+    const body = JSON.stringify([
+      {
+        op: 'replace',
+        path: '/metadata/annotations/reconcile.fluxcd.io~1requestedAt',
+        value: new Date(),
+      },
+    ]);
+
+    it('should request update flux resource API', async () => {
+      mock.onPatch(endpoint).reply(HTTP_STATUS_OK);
+
+      const result = await mockResolvers.Mutation.updateFluxResource(null, {
+        configuration,
+        fluxResourcePath,
+        data: body,
+      });
+
+      expect(result).toEqual({
+        __typename: 'LocalKubernetesErrors',
+        errors: [],
+      });
+    });
+
+    it('should return errors array if the API call fails', async () => {
+      mock.onPatch(endpoint).reply(HTTP_STATUS_UNAUTHORIZED, { message: 'not authorized' });
+
+      const result = await mockResolvers.Mutation.updateFluxResource(null, {
+        configuration,
+        fluxResourcePath,
+        data: body,
+      });
+
+      expect(result).toEqual({
+        __typename: 'LocalKubernetesErrors',
+        errors: ['not authorized'],
+      });
+    });
+  });
 });

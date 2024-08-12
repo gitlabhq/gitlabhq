@@ -205,6 +205,7 @@ function cleanup(string, opts) {
   return filterThroughWhiteList(res, opts);
 }
 
+// eslint-disable-next-line max-params
 function humanizeTimeUnit(number, unit, pluralize, keepZero) {
   if (number === '0' && !keepZero) {
     return null;

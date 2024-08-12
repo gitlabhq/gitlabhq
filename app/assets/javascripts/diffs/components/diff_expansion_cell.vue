@@ -85,6 +85,7 @@ export default {
 
       return this.file[INLINE_DIFF_LINES_KEY][index - 2]?.new_line || 0;
     },
+    // eslint-disable-next-line max-params
     callLoadMoreLines(
       endpoint,
       params,

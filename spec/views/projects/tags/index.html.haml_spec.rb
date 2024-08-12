@@ -3,6 +3,8 @@
 require 'spec_helper'
 
 RSpec.describe 'projects/tags/index.html.haml' do
+  include RenderedHtml
+
   let_it_be(:project)  { create(:project, :repository) }
   let_it_be(:git_tag)  { project.repository.tags.last }
   let_it_be(:release)  do
@@ -62,7 +64,7 @@ RSpec.describe 'projects/tags/index.html.haml' do
 
   context 'build stats' do
     let(:tag) { 'v1.0.0' }
-    let(:page) { Capybara::Node::Simple.new(rendered) }
+    let(:page) { rendered_html }
 
     it 'shows build status or placeholder when pipelines present' do
       create(:ci_pipeline,

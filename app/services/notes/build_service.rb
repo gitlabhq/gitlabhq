@@ -4,15 +4,11 @@ module Notes
   class BuildService < ::BaseService
     def execute(executing_user: nil)
       in_reply_to_discussion_id = params.delete(:in_reply_to_discussion_id)
-      external_author = params.delete(:external_author)
+      handle_external_author
+
       executing_user ||= current_user
 
       discussion = nil
-
-      if external_author.present?
-        note_metadata = Notes::NoteMetadata.new(email_participant: external_author)
-        params[:note_metadata] = note_metadata
-      end
 
       if in_reply_to_discussion_id.present?
         discussion = find_discussion(in_reply_to_discussion_id)
@@ -28,6 +24,23 @@ module Notes
         params.merge!(reply_attributes)
       end
 
+      handle_confidentiality_params
+
+      new_note(params, discussion)
+    end
+
+    private
+
+    def handle_external_author
+      external_author = params.delete(:external_author)
+
+      return unless external_author.present?
+
+      note_metadata = Notes::NoteMetadata.new(email_participant: external_author)
+      params[:note_metadata] = note_metadata
+    end
+
+    def handle_confidentiality_params
       # The `confidential` param for notes is deprecated with 15.3
       # and renamed to `internal`.
       # We still accept `confidential` until the param gets removed from the API.
@@ -35,11 +48,7 @@ module Notes
       # the parameter. Issue: https://gitlab.com/gitlab-org/gitlab/-/issues/367923.
       params[:confidential] = params[:internal] || params[:confidential]
       params.delete(:internal)
-
-      new_note(params, discussion)
     end
-
-    private
 
     def new_note(params, discussion)
       note = Note.new(params)

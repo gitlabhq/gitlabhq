@@ -90,6 +90,7 @@ class DropLab {
     document.removeEventListener('click', this.eventWrapper.documentClicked);
   }
 
+  // eslint-disable-next-line max-params
   changeHookList(trigger, list, plugins, config) {
     const availableTrigger =
       typeof trigger === 'string' ? document.getElementById(trigger) : trigger;
@@ -107,6 +108,7 @@ class DropLab {
     });
   }
 
+  // eslint-disable-next-line max-params
   addHook(hook, list, plugins, config) {
     const availableHook = typeof hook === 'string' ? document.querySelector(hook) : hook;
     let availableList;
@@ -147,6 +149,7 @@ class DropLab {
     this.ready = true;
   }
 
+  // eslint-disable-next-line max-params
   init(hook, list, plugins, config) {
     if (hook) {
       this.addHook(hook, list, plugins, config);

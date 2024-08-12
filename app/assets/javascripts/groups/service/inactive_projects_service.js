@@ -6,6 +6,7 @@ export default class InactiveProjectsService {
     this.initialSort = initialSort;
   }
 
+  // eslint-disable-next-line max-params
   async getGroups(parentId, page, query, sortParam) {
     const supportedOrderBy = {
       name: 'name',

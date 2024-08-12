@@ -11,7 +11,10 @@ import {
   watchFluxKustomization,
   watchFluxHelmRelease,
 } from '~/environments/graphql/resolvers/flux';
-import { humanizeClusterErrors } from '../../../helpers/k8s_integration_helper';
+import {
+  humanizeClusterErrors,
+  buildKubernetesErrors,
+} from '~/environments/helpers/k8s_integration_helper';
 import k8sPodsQuery from '../../queries/k8s_pods.query.graphql';
 import k8sServicesQuery from '../../queries/k8s_services.query.graphql';
 import k8sDeploymentsQuery from '../../queries/k8s_deployments.query.graphql';
@@ -39,11 +42,6 @@ const watchDeployments = ({ configuration, namespace, client }) => {
 
   watchWorkloadItems({ client, query, configuration, namespace, watchPath, queryField });
 };
-
-const buildKubernetesErrors = (errors = []) => ({
-  errors,
-  __typename: 'LocalKubernetesErrors',
-});
 
 const handleKubernetesMutationError = async (err) => {
   const defaultError = __('Something went wrong. Please try again.');

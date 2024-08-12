@@ -113,6 +113,7 @@ describe('InviteMembersModal', () => {
     activeTrialDataset = {},
     stubs = {},
     provide = {},
+    // eslint-disable-next-line max-params
   ) => {
     createComponent({ usersLimitDataset, activeTrialDataset, isProject: false }, stubs, provide);
   };

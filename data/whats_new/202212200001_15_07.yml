@@ -106,7 +106,7 @@
 - name: "Self-managed support for the GitLab for Jira Cloud app"
   description: |  # Do not modify this line, instead modify the lines below.
     For self-managed GitLab, we're excited to announce support for the [GitLab for Jira Cloud app](https://marketplace.atlassian.com/apps/1221011/gitlab-com-for-jira-cloud?tab=overview&hosting=cloud)!
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: false
   available_in: [Free, Premium, Ultimate]
@@ -119,7 +119,7 @@
     When running manual jobs, users can specify the extra CI/CD variables to use in the job. However, if you wanted to retry the same job, you always had to use the same variables as the first time. If you wanted to run the job with different variables, you had to run a new pipeline.
 
     In this release, we have added the ability to specify variables every time you run a manual job, including when retrying the job. This allows for greater flexibility and convenience as you can retry a manual job as often as you like with a different set of variables in every run.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

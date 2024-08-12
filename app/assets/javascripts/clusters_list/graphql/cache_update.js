@@ -2,6 +2,7 @@ import produce from 'immer';
 
 export const hasErrors = ({ errors = [] }) => errors?.length;
 
+// eslint-disable-next-line max-params
 export function addAgentConfigToStore(
   store,
   clusterAgentTokenCreate,
@@ -33,6 +34,7 @@ export function addAgentConfigToStore(
   }
 }
 
+// eslint-disable-next-line max-params
 export function removeAgentFromStore(store, deleteClusterAgent, query, variables) {
   if (!hasErrors(deleteClusterAgent)) {
     const sourceData = store.readQuery({

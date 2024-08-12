@@ -146,6 +146,7 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_st
       [CLUSTER_HEALTH_ERROR, 'danger', 'status-alert', CLUSTER_STATUS_UNHEALTHY_TEXT],
     ])(
       'when clusterHealthStatus is %s shows health badge with variant %s, icon %s and text %s',
+      // eslint-disable-next-line max-params
       (status, variant, icon, text) => {
         createWrapper({ clusterHealthStatus: status });
 

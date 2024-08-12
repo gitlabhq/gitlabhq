@@ -1,0 +1,13 @@
+mutation updateFluxResource(
+  $configuration: LocalConfiguration
+  $fluxResourcePath: String
+  $data: String
+) {
+  updateFluxResource(
+    configuration: $configuration
+    fluxResourcePath: $fluxResourcePath
+    data: $data
+  ) @client {
+    errors
+  }
+}

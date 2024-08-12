@@ -106,6 +106,7 @@ function linesFromSelection(textArea) {
  * @param {Number} firstLineChange - number of characters changed on first line
  * @param {Number} totalChanged - total number of characters changed
  */
+// eslint-disable-next-line max-params
 function setNewSelectionRange(
   textArea,
   selectionStart,
@@ -143,6 +144,7 @@ function getEditorSelectionRange(editor) {
   return convertMonacoSelectionToAceFormat(editor.getSelection());
 }
 
+// eslint-disable-next-line max-params
 function editorBlockTagText(text, blockTag, selected, editor) {
   const lines = text.split('\n');
   const selectionRange = getEditorSelectionRange(editor);
@@ -166,6 +168,7 @@ function editorBlockTagText(text, blockTag, selected, editor) {
   return addBlockTags(blockTag, selected);
 }
 
+// eslint-disable-next-line max-params
 function blockTagText(text, textArea, blockTag, selected) {
   const shouldRemoveBlock =
     lineBeforeSelection(text, textArea) === blockTag &&

@@ -390,6 +390,7 @@ export default {
         errorCallback();
       });
     },
+    // eslint-disable-next-line max-params
     handleSaveDraftNote(note, _, parentElement, errorCallback) {
       this.addToReview(note, this.$options.FILE_DIFF_POSITION_TYPE, parentElement, errorCallback);
     },

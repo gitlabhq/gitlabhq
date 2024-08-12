@@ -207,7 +207,7 @@ describe('Global Search Store Actions', () => {
     it('calls visitUrl and setParams with the state.query', async () => {
       await testAction(actions.applyQuery, null, state, [], []);
       expect(urlUtils.visitUrl).toHaveBeenCalledWith(
-        'https://test/?scope=issues&state=all&group_id=1&language%5B%5D=C&language%5B%5D=JavaScript&labelName%5B%5D=60&labelName%5B%5D=37&search=*',
+        'https://test/?scope=issues&state=all&group_id=1&language%5B%5D=C&language%5B%5D=JavaScript&labels%5B%5D=60&labels%5B%5D=37&search=*',
       );
     });
   });
@@ -408,7 +408,7 @@ describe('Global Search Store Actions', () => {
       const expectedResult = [
         {
           payload: {
-            key: 'labelName',
+            key: 'labels',
             value: ['37'],
           },
           type: 'SET_QUERY',

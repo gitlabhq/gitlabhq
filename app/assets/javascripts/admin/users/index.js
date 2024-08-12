@@ -16,6 +16,7 @@ const apolloProvider = new VueApollo({
   defaultClient: createDefaultClient(),
 });
 
+// eslint-disable-next-line max-params
 const initApp = (el, component, userPropKey, props = {}) => {
   if (!el) {
     return false;

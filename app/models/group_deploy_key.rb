@@ -17,6 +17,11 @@ class GroupDeployKey < Key
     super.without('usage_type')
   end
 
+  # Remove Key#usage_type from attributes to avoid defining enum for it
+  def self.attributes_to_define_after_schema_loads
+    super.without('usage_type')
+  end
+
   def type
     'DeployKey'
   end

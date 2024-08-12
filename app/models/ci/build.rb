@@ -1155,6 +1155,11 @@ module Ci
     end
     strong_memoize_attr :source
 
+    # Can be removed in Rails 7.1. Related to: Gitlab.next_rails?
+    def to_partial_path
+      'jobs/job'
+    end
+
     protected
 
     def run_status_commit_hooks!

@@ -31,5 +31,11 @@ module Namespaces
 
       groups.by_visibility_level(params[:visibility])
     end
+
+    def by_min_access_level(groups)
+      return groups unless min_access_level?
+
+      groups.by_min_access_level(current_user, params[:min_access_level])
+    end
   end
 end

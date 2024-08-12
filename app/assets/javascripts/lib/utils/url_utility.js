@@ -585,6 +585,7 @@ export const setUrlParams = (
   clearParams = false,
   railsArraySyntax = false,
   decodeParams = false,
+  // eslint-disable-next-line max-params
 ) => {
   const urlObj = new URL(url);
   const queryString = urlObj.search;

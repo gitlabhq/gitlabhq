@@ -34,7 +34,7 @@ import {
   TRACKING_ACTION_SHOW,
 } from '~/search/sidebar/components/label_filter/tracking';
 
-import { LABEL_FILTER_PARAM } from '~/search/sidebar/components/label_filter/data';
+import { labelFilterData } from '~/search/sidebar/components/label_filter/data';
 
 import {
   RECEIVE_AGGREGATIONS_SUCCESS,
@@ -350,7 +350,7 @@ describe('GlobalSearchSidebarLabelFilter', () => {
       it('trigger event', () => {
         expect(actionSpies.setQuery).toHaveBeenCalledWith(
           expect.anything(),
-          expect.objectContaining({ key: LABEL_FILTER_PARAM, value: 6 }),
+          expect.objectContaining({ key: labelFilterData?.filterParam, value: 6 }),
         );
       });
 

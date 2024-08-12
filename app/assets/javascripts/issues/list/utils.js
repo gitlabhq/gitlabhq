@@ -99,6 +99,7 @@ export const getInitialPageParams = (
   lastPageSize,
   afterCursor,
   beforeCursor,
+  // eslint-disable-next-line max-params
 ) => ({
   firstPageSize: lastPageSize ? undefined : firstPageSize,
   lastPageSize,

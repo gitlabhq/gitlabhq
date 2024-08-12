@@ -44,6 +44,7 @@ describe('content_editor/components/bubble_menus/reference_bubble_menu', () => {
   let p;
   let reference;
 
+  // eslint-disable-next-line max-params
   const buildExpectedDoc = (href, originalText, referenceType, text) =>
     doc(p(reference({ className: 'gfm', href, originalText, referenceType, text })));
 

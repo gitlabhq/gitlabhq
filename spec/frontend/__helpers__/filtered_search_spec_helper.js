@@ -1,11 +1,13 @@
 import { FILTERED_SEARCH_TERM } from '~/vue_shared/components/filtered_search_bar/constants';
 
 export default class FilteredSearchSpecHelper {
+  // eslint-disable-next-line max-params
   static createFilterVisualTokenHTML(name, operator, value, isSelected) {
     return FilteredSearchSpecHelper.createFilterVisualToken(name, operator, value, isSelected)
       .outerHTML;
   }
 
+  // eslint-disable-next-line max-params
   static createFilterVisualToken(name, operator, value, isSelected = false) {
     const li = document.createElement('li');
     li.classList.add('js-visual-token', 'filtered-search-token', `search-token-${name}`);

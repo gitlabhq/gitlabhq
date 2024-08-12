@@ -42,7 +42,7 @@
     * <kbd>@</kbd> - Search for a user
     * <kbd>:</kbd> - Search for a project
     * <kbd>/</kbd> - Search for project files in the default repository branch
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

@@ -92,7 +92,7 @@
 - name: Enforce delayed project removal for all subgroups
   description: |
     Group owners can now enable and enforce [delayed project removal](https://docs.gitlab.com/ee/user/group/#enable-delayed-project-removal) for all subgroups and projects in their group. Delayed project removal protects your data by placing deleted projects in a read-only state after deletion and can be restored, if required. We plan to expand our settings model and allow more settings to be inherited and enforced in subgroups and projects in future milestones. Our new settings management model gives group owners a way to ensure that their subgroups and projects settings adhere to their organization's security and compliance needs.
-  stage: manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]

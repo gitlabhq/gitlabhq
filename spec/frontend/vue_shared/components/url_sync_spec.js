@@ -38,6 +38,7 @@ describe('url sync component', () => {
     times,
     mergeUrlParamsReturnValue,
     historyMethod = historyPushState,
+    // eslint-disable-next-line max-params
   ) => {
     expect(mergeUrlParams).toHaveBeenCalledTimes(times);
     expect(mergeUrlParams).toHaveBeenCalledWith(query, window.location.href, {

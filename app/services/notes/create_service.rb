@@ -5,10 +5,7 @@ module Notes
     include IncidentManagement::UsageData
 
     def execute(skip_capture_diff_note_position: false, skip_merge_status_trigger: false, executing_user: nil)
-      note =
-        Notes::BuildService
-          .new(project, current_user, params.except(:merge_request_diff_head_sha))
-          .execute(executing_user: executing_user)
+      note = build_note(executing_user)
 
       # n+1: https://gitlab.com/gitlab-org/gitlab-foss/issues/37440
       note_valid = Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -24,12 +21,9 @@ module Notes
       # only, there is no need be create a note!
 
       execute_quick_actions(note) do |only_commands|
-        note.check_for_spam(action: :create, user: current_user) unless only_commands
+        note.check_for_spam(action: :create, user: current_user) if check_for_spam?(only_commands)
 
-        note.run_after_commit do
-          # Finish the harder work in the background
-          NewNoteWorker.perform_async(note.id)
-        end
+        after_commit(note)
 
         note_saved = note.with_transaction_returning_status do
           break false if only_commands
@@ -52,6 +46,24 @@ module Notes
     end
 
     private
+
+    def build_note(executing_user)
+      Notes::BuildService
+        .new(project, current_user, params.except(:merge_request_diff_head_sha))
+        .execute(executing_user: executing_user)
+    end
+
+    def check_for_spam?(only_commands)
+      !only_commands
+    end
+
+    def after_commit(note)
+      note.run_after_commit do
+        # Complete more expensive operations like sending
+        # notifications and post processing in a background worker.
+        NewNoteWorker.perform_async(note.id)
+      end
+    end
 
     def execute_quick_actions(note)
       return yield(false) unless quick_actions_supported?(note)

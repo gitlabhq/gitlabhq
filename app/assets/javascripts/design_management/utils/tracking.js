@@ -21,6 +21,7 @@ export const DESIGN_SERVICE_PING_EVENT_TYPES = {
 /**
  * Track "design detail" view in Snowplow
  */
+// eslint-disable-next-line max-params
 export function trackDesignDetailView(
   referer = '',
   owner = '',

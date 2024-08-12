@@ -119,6 +119,7 @@ const expandPreserveUnchangedConfig = (configOrRender) =>
     : configOrRender;
 
 export function preserveUnchanged(configOrRender) {
+  // eslint-disable-next-line max-params
   return (state, node, parent, index) => {
     const { render, overwriteSourcePreservationStrategy, inline } =
       expandPreserveUnchangedConfig(configOrRender);
@@ -158,6 +159,7 @@ export function preserveUnchangedMark({ open, close, ...restConfig }) {
 
   return {
     ...restConfig,
+    // eslint-disable-next-line max-params
     open: (state, mark, parent, index) => {
       const same = state.options.changeTracker.get(mark);
 
@@ -168,6 +170,7 @@ export function preserveUnchangedMark({ open, close, ...restConfig }) {
 
       return open(state, mark, parent, index);
     },
+    // eslint-disable-next-line max-params
     close: (state, mark, parent, index) => {
       const { sourceMarkdown } = mark.attrs;
 

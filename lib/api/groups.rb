@@ -370,6 +370,29 @@ module API
         present_groups params, groups
       end
 
+      desc 'Get a list of invited groups in this group' do
+        success Entities::Group
+        is_array true
+        tags %w[groups]
+      end
+      params do
+        optional :relation, type: String, values: %w[direct inherited], desc: 'Include group relations'
+        optional :search, type: String, desc: 'Search for a specific group'
+        optional :min_access_level, type: Integer, values: Gitlab::Access.all_values, desc: 'Minimum access level of authenticated user'
+
+        use :pagination
+        use :with_custom_attributes
+      end
+      get ":id/invited_groups", feature_category: :groups_and_projects do
+        if Feature.enabled?(:rate_limit_groups_and_projects_api, current_user)
+          check_rate_limit_by_user_or_ip!(:group_invited_groups_api)
+        end
+
+        group = find_group!(params[:id])
+        groups = ::Namespaces::Groups::InvitedGroupsFinder.new(group, current_user, declared(params)).execute
+        present_groups params, groups
+      end
+
       desc 'Get a list of projects in this group.' do
         success Entities::Project
         is_array true

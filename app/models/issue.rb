@@ -228,7 +228,7 @@ class Issue < ApplicationRecord
   # e.g:
   #
   #   .by_project_id_and_iid({project_id: 1, iid: 2})
-  #   .by_project_id_and_iid([]) # returns ActiveRecord::NullRelation
+  #   .by_project_id_and_iid([]) # returns Issue.none
   #   .by_project_id_and_iid([
   #     {project_id: 1, iid: 1},
   #     {project_id: 2, iid: 1},

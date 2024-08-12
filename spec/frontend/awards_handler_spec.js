@@ -98,6 +98,7 @@ describe('AwardsHandler', () => {
     setHTMLFixture(htmlSnippetsShow);
 
     awardsHandler = await loadAwardsHandler(true);
+    // eslint-disable-next-line max-params
     jest.spyOn(awardsHandler, 'postEmoji').mockImplementation((button, url, emoji, cb) => cb());
   });
 

@@ -103,6 +103,17 @@ A dashboard displays one of the following status badges:
 | **Unknown** | The sync status of the deployment couldn't be retrieved. |
 | **Unavailable** | The `Kustomization` or `HelmRelease` resource couldn't be retrieved. |
 
+## Trigger Flux reconciliation
+
+> - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/434248) in GitLab 17.3.
+
+You can trigger the reconciliation of a Flux recourse (`Kustomization` or `HelmRelease`) manually from the Kubernetes dashboard.
+
+To trigger reconciliation:
+
+1. From a dashboard, select the sync status badge of a Flux deployment.
+1. Select  **Actions > Trigger reconciliation** (**{retry}**).
+
 ## Delete a pod
 
 > - [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/467653) in GitLab 17.3.

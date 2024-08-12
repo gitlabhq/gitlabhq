@@ -11,6 +11,8 @@ import {
 import { shallowMount } from '@vue/test-utils';
 import waitForPromises from 'helpers/wait_for_promises';
 import createMockApollo from 'helpers/mock_apollo_helper';
+import { useMockInternalEventsTracking } from 'helpers/tracking_internal_events_helper';
+import { createAlert } from '~/alert';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
 import { createMockDirective, getBinding } from 'helpers/vue_mock_directive';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
@@ -28,6 +30,7 @@ import { agent, kubernetesNamespace } from '../../../graphql/mock_data';
 import { mockKasTunnelUrl, fluxResourceStatus, fluxKustomization } from '../../../mock_data';
 
 Vue.use(VueApollo);
+jest.mock('~/alert');
 
 describe('~/environments/environment_details/components/kubernetes/kubernetes_overview.vue', () => {
   let wrapper;
@@ -56,14 +59,18 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
   const kustomizationResourcePath =
     'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app';
 
-  const fluxKustomizationQuery = jest.fn().mockReturnValue({});
-  const fluxHelmReleaseQuery = jest.fn().mockReturnValue({});
+  let updateFluxResourceMutationMock;
+  let fluxKustomizationQuery;
+  let fluxHelmReleaseQuery;
 
   const createApolloProvider = () => {
     const mockResolvers = {
       Query: {
         fluxKustomization: fluxKustomizationQuery,
         fluxHelmRelease: fluxHelmReleaseQuery,
+      },
+      Mutation: {
+        updateFluxResource: updateFluxResourceMutationMock,
       },
     };
 
@@ -101,6 +108,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
   const findDisclosureDropdown = () => wrapper.findComponent(GlDisclosureDropdown);
   const findDisclosureDropdownItem = () => wrapper.findComponent(GlDisclosureDropdownItem);
   const findConnectModal = () => wrapper.findComponent(ConnectToAgentModal);
+
+  beforeEach(() => {
+    updateFluxResourceMutationMock = jest.fn().mockResolvedValue({ errors: [] });
+    fluxKustomizationQuery = jest.fn().mockReturnValue({});
+    fluxHelmReleaseQuery = jest.fn().mockReturnValue({});
+  });
 
   describe('when the agent data is present', () => {
     it('renders kubernetes agent info', () => {
@@ -266,20 +279,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
         });
 
         describe('with Flux Kustomizations available', () => {
-          const createApolloProviderWithKustomizations = () => {
-            const mockResolvers = {
-              Query: {
-                fluxKustomization: jest.fn().mockReturnValue(fluxKustomization),
-                fluxHelmRelease: fluxHelmReleaseQuery,
-              },
-            };
-
-            return createMockApollo([], mockResolvers);
-          };
-
           beforeEach(async () => {
+            fluxKustomizationQuery = jest.fn().mockReturnValue(fluxKustomization);
             wrapper = createWrapper({
-              apolloProvider: createApolloProviderWithKustomizations(),
+              apolloProvider: createApolloProvider(),
             });
             await waitForPromises();
           });
@@ -296,20 +299,12 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
 
         describe('when Flux API errored', () => {
           const error = new Error('Error from the cluster_client API');
-          const createApolloProviderWithErrors = () => {
-            const mockResolvers = {
-              Query: {
-                fluxKustomization: jest.fn().mockRejectedValueOnce(error),
-                fluxHelmRelease: jest.fn().mockRejectedValueOnce(error),
-              },
-            };
-
-            return createMockApollo([], mockResolvers);
-          };
 
           beforeEach(async () => {
+            fluxKustomizationQuery = jest.fn().mockRejectedValueOnce(error);
+            fluxHelmReleaseQuery = jest.fn().mockRejectedValueOnce(error);
             wrapper = createWrapper({
-              apolloProvider: createApolloProviderWithErrors(),
+              apolloProvider: createApolloProvider(),
               fluxResourcePath:
                 'kustomize.toolkit.fluxcd.io/v1/namespaces/my-namespace/kustomizations/app',
             });
@@ -371,19 +366,10 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
 
       describe('when receives show-flux-resource-details event from the status bar', () => {
         beforeEach(async () => {
-          const createApolloProviderWithKustomizations = () => {
-            const mockResolvers = {
-              Query: {
-                fluxKustomization: jest.fn().mockReturnValue(fluxKustomization),
-                fluxHelmRelease: fluxHelmReleaseQuery,
-              },
-            };
-
-            return createMockApollo([], mockResolvers);
-          };
+          fluxKustomizationQuery = jest.fn().mockReturnValue(fluxKustomization);
           wrapper = createWrapper({
             fluxResourcePath: kustomizationResourcePath,
-            apolloProvider: createApolloProviderWithKustomizations(),
+            apolloProvider: createApolloProvider(),
           });
           await waitForPromises();
 
@@ -403,12 +389,110 @@ describe('~/environments/environment_details/components/kubernetes/kubernetes_ov
             kind: fluxKustomization.kind,
             spec: fluxKustomization.spec,
             fullStatus: fluxKustomization.status.conditions,
+            actions: [
+              {
+                name: 'flux-reconcile',
+                text: 'Trigger reconciliation',
+                icon: 'retry',
+              },
+            ],
           };
           expect(findWorkloadDetails().props('item')).toEqual(selectedItem);
         });
 
         it('renders a title with the selected item name', () => {
           expect(findDrawer().text()).toContain(fluxKustomization.metadata.name);
+        });
+      });
+    });
+
+    describe('flux reconciliation', () => {
+      const { bindInternalEventDocument } = useMockInternalEventsTracking();
+
+      describe('when successful', () => {
+        beforeEach(async () => {
+          fluxKustomizationQuery = jest.fn().mockReturnValue(fluxKustomization);
+          updateFluxResourceMutationMock = jest.fn().mockResolvedValue({ errors: [] });
+          wrapper = createWrapper({
+            apolloProvider: createApolloProvider(),
+            fluxResourcePath: kustomizationResourcePath,
+          });
+          await waitForPromises();
+
+          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', fluxKustomization);
+          await nextTick();
+          findWorkloadDetails().vm.$emit('flux-reconcile', fluxKustomization);
+        });
+
+        it('tracks `click_trigger_flux_reconciliation` event', () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_trigger_flux_reconciliation',
+            {},
+            undefined,
+          );
+        });
+
+        it('calls the mutation when receives `flux-reconcile` event', () => {
+          const body = JSON.stringify([
+            {
+              op: 'replace',
+              path: '/metadata/annotations/reconcile.fluxcd.io~1requestedAt',
+              value: new Date(),
+            },
+          ]);
+
+          expect(updateFluxResourceMutationMock).toHaveBeenCalledWith(
+            {},
+            {
+              configuration,
+              fluxResourcePath: kustomizationResourcePath,
+              data: body,
+            },
+            expect.anything(),
+            expect.anything(),
+          );
+        });
+
+        it('closes the drawer when mutation is successful', async () => {
+          expect(findDrawer().props('open')).toBe(true);
+          await waitForPromises();
+          expect(findDrawer().props('open')).toBe(false);
+        });
+      });
+
+      describe('when errored', () => {
+        const errorMessage = 'something went wrong';
+
+        beforeEach(async () => {
+          fluxKustomizationQuery = jest.fn().mockReturnValue(fluxKustomization);
+          updateFluxResourceMutationMock = jest.fn().mockResolvedValue({ errors: [errorMessage] });
+          wrapper = createWrapper({
+            apolloProvider: createApolloProvider(),
+            fluxResourcePath: kustomizationResourcePath,
+          });
+          await waitForPromises();
+
+          findKubernetesStatusBar().vm.$emit('show-flux-resource-details', fluxKustomization);
+          await nextTick();
+          findWorkloadDetails().vm.$emit('flux-reconcile', fluxKustomization);
+          await waitForPromises();
+        });
+
+        it('tracks `click_trigger_flux_reconciliation` event', () => {
+          const { trackEventSpy } = bindInternalEventDocument(wrapper.element);
+          expect(trackEventSpy).toHaveBeenCalledWith(
+            'click_trigger_flux_reconciliation',
+            {},
+            undefined,
+          );
+        });
+
+        it('shows error alert if the pod was not deleted', () => {
+          expect(createAlert).toHaveBeenCalledWith({
+            message: `Error: ${errorMessage}`,
+            variant: 'danger',
+          });
         });
       });
     });

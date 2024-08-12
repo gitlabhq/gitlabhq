@@ -24,6 +24,7 @@ export function resolveCommit(commits, path, { resolve, entry }) {
   }
 }
 
+// eslint-disable-next-line max-params
 export function fetchLogsTree(client, path, offset, resolver = null, _maxOffset = null) {
   if (_maxOffset) {
     maxOffset = _maxOffset;

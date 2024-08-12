@@ -12,7 +12,7 @@
 - name: SAML Group Sync for self-managed GitLab
   description: |  # Do not modify this line, instead modify the lines below.
     You can now map a group in your identity provider to a self-managed GitLab group using SAML group links. Previously, this feature was only available for GitLab.com. Group memberships are updated when a user logs into GitLab through their SAML provider. This new functionality decreases the workload for GitLab administrators and reduces onboarding time for group members.
-  stage: manage  # String value of the stage that the feature was created in. e.g., Growth
+  stage: Foundations  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]
@@ -23,7 +23,7 @@
 - name: Enhancing visibility into Value Stream with DORA metrics
   description: |  # Do not modify this line, instead modify the lines below.
     With the addition of the four [DORA metrics](https://docs.gitlab.com/ee/user/analytics/#devops-research-and-assessment-dora-key-metrics) tiles to the [Value Stream Analytics](https://docs.gitlab.com/ee/user/group/value_stream_analytics/) dashboard, you can now track team performance and value flow from ideation to customer delivery. Additionally, we added a new trend chart for the DORA [Time to restore service](https://docs.gitlab.com/ee/user/analytics/ci_cd_analytics.html) metric to provide insights into software stability and reliability trends. This new chart shows information about how long it takes an organization to recover from a failure in production. This is the third DORA chart that's available out of the box in GitLab. We plan to keep improving the visibility into DORA metrics and also add charts for the fourth metric- Change failure rate.
-  stage: manage  # String value of the stage that the feature was created in. e.g., Growth
+  stage: Foundations  # String value of the stage that the feature was created in. e.g., Growth
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

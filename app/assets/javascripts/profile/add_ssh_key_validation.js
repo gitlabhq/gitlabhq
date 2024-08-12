@@ -1,4 +1,5 @@
 export default class AddSshKeyValidation {
+  // eslint-disable-next-line max-params
   constructor(
     supportedAlgorithms,
     inputElement,

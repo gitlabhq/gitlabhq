@@ -44,7 +44,7 @@
     Code Owners are an important piece of the code review process in GitLab. When code owners are clearly identified, contributors can see who should review contributions to a file or repository. The Code Owners feature can also be used to establish a merge request approval process. Now, you can track which teams across your organization are using the Code Owners feature in their development workflow.
 
     If you would like to drive adoption of Code Owners, sort the DevOps Adoption table by the Code Owners column to find teams that haven't yet adopted the feature so you can easily identify which teams need help getting started. Alternatively, find teams that have successfully configured Code Owners and get tips and feedback. The DevOps Adoption table is available at [the group level](https://docs.gitlab.com/ee/user/group/devops_adoption/) and [the instance level](https://docs.gitlab.com/ee/administration/analytics/dev_ops_report.html#devops-adoption).
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
@@ -60,7 +60,7 @@
     - Self-identify and enter whatever pronouns you prefer, without selecting from a predefined list.
 
     Besides being more inclusive, GitLab wants help people use the correct pronouns when replying to comments to respect people's identity.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

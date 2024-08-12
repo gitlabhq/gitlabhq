@@ -16,6 +16,7 @@ import {
 } from '../constants';
 import workItemByIidQuery from './work_item_by_iid.query.graphql';
 
+// eslint-disable-next-line max-params
 const updateWidget = (draftData, widgetType, newData, nodePath) => {
   if (!newData) return;
 

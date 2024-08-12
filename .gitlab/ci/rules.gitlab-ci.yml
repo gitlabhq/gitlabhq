@@ -1044,7 +1044,6 @@
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
     - if: '$ENABLE_BUILD_ASSETS_IMAGE == "true"'
-    - !reference [".release-environments:rules:start-release-environments-pipeline", rules]
     - !reference [".release-environments:rules:start-release-environments-security-pipeline", rules]
     - !reference [".frontend:rules:assets-shared", rules]
 
@@ -3364,14 +3363,6 @@
 ##############################
 # release-environments rules #
 ##############################
-.release-environments:rules:start-release-environments-pipeline:
-  rules:
-    - <<: *if-not-ee
-      when: never
-    - <<: *if-merge-request-labels-pipeline-expedite
-      when: never
-    - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only", rules]
-
 .release-environments:rules:start-release-environments-security-pipeline:
   rules:
     - <<: *if-not-ee

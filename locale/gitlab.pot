@@ -30725,6 +30725,9 @@ msgstr ""
 msgid "KubernetesDashboard|There was a problem fetching cluster information. Refresh the page and try again."
 msgstr ""
 
+msgid "KubernetesDashboard|Trigger reconciliation"
+msgstr ""
+
 msgid "KubernetesDashboard|View projects"
 msgstr ""
 

@@ -6,7 +6,7 @@
     We are changing how the date filter works in Value Stream Analytics. Instead of filtering by the time that the issue or merge request was created, the date filter will filter by the end event time of the given stage. This will result in completely different figures after this change has rolled out.
 
     If you monitor Value Stream Analytics metrics and rely on the date filter, to avoid losing data, you must save the data prior to this change.
-  stage: manage  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
+  stage: Foundations  # (optional - may be required in the future) String value of the stage that the feature was created in. e.g., Growth
   tiers:  # (optional - may be required in the future) An array of tiers that the feature is available in currently.  e.g., [Free, Silver, Gold, Core, Premium, Ultimate]
   issue_url: 'https://gitlab.com/gitlab-org/gitlab/-/issues/343210'  # (optional) This is a link to the deprecation issue in GitLab
   documentation_url: "https://docs.gitlab.com/ee/user/analytics/value_stream_analytics.html#filter-value-stream-analytics-data"  # (optional) This is a link to the current documentation page

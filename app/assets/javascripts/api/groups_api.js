@@ -9,6 +9,7 @@ const GROUP_ALL_MEMBERS_PATH = '/api/:version/groups/:id/members/all';
 const DESCENDANT_GROUPS_PATH = '/api/:version/groups/:id/descendant_groups';
 const GROUP_TRANSFER_LOCATIONS_PATH = 'api/:version/groups/:id/transfer_locations';
 
+// eslint-disable-next-line max-params
 const axiosGet = (url, query, options, callback, axiosOptions = {}) => {
   return axios
     .get(url, {
@@ -26,11 +27,13 @@ const axiosGet = (url, query, options, callback, axiosOptions = {}) => {
     });
 };
 
+// eslint-disable-next-line max-params
 export function getGroups(query, options, callback = () => {}, axiosOptions = {}) {
   const url = buildApiUrl(GROUPS_PATH);
   return axiosGet(url, query, options, callback, axiosOptions);
 }
 
+// eslint-disable-next-line max-params
 export function getDescendentGroups(
   parentGroupId,
   query,

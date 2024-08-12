@@ -54,7 +54,11 @@ Rails.application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
-  config.action_mailer.preview_path = GitlabEdition.path_glob('app/mailers/previews')
+  if ::Gitlab.next_rails?
+    config.action_mailer.preview_paths = [GitlabEdition.path_glob('app/mailers/previews')]
+  else
+    config.action_mailer.preview_path = GitlabEdition.path_glob('app/mailers/previews')
+  end
 
   config.eager_load = Gitlab::Utils.to_boolean(ENV['GITLAB_TEST_EAGER_LOAD'], default: ENV['CI'].present?)
 

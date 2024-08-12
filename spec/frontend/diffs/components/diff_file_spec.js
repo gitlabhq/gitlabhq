@@ -114,9 +114,11 @@ const makeFileManuallyCollapsed = (store, index = 0) =>
 const changeViewerType = (store, newType, index = 0) =>
   changeViewer(store, index, { name: diffViewerModes[newType] });
 
+// eslint-disable-next-line max-params
 const triggerSaveNote = (wrapper, note, parent, error) =>
   findNoteForm(wrapper).vm.$emit('handleFormUpdate', note, parent, error);
 
+// eslint-disable-next-line max-params
 const triggerSaveDraftNote = (wrapper, note, parent, error) =>
   findNoteForm(wrapper).vm.$emit('handleFormUpdateAddToReview', note, false, parent, error);
 

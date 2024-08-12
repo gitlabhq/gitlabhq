@@ -149,6 +149,7 @@ export const parallelViewLeftLineType = ({
   ];
 };
 
+// eslint-disable-next-line max-params
 export const shouldShowCommentButton = (hover, context, meta, discussions) => {
   return hover && !context && !meta && !discussions;
 };

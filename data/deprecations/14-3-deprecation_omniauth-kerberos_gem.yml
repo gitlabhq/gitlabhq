@@ -8,7 +8,7 @@
     This gem has not been maintained and has very little usage. We therefore plan to remove support for this authentication method and recommend using the Kerberos [SPNEGO](https://en.wikipedia.org/wiki/SPNEGO) integration instead. You can follow the [upgrade instructions](https://docs.gitlab.com/ee/integration/kerberos.html#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins) to upgrade from the `omniauth-kerberos` integration to the supported one.
 
     Note that we are not deprecating the Kerberos SPNEGO integration, only the old password-based Kerberos integration.
-  stage: Manage
+  stage: Foundations
   tiers: [Premium, Ultimate]
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/337384
   documentation_url: https://docs.gitlab.com/ee/integration/kerberos.html#upgrading-from-password-based-to-ticket-based-kerberos-sign-ins

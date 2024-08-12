@@ -7,7 +7,7 @@
   # The stage and GitLab username of the person reporting the change,
   # and a link to the deprecation issue
   reporter: .luke
-  stage: manage
+  stage: Foundations
   issue_url: https://gitlab.com/gitlab-org/gitlab/-/issues/388424
   impact: low  # Can be one of: [critical, high, medium, low]
   scope: [instance]  # Can be one or a combination of: [instance, group, project]

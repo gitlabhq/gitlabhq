@@ -226,6 +226,7 @@ export const setNewWorkItemCache = async (
   widgetDefinitions,
   workItemType,
   workItemTypeId,
+  // eslint-disable-next-line max-params
 ) => {
   const workItemAttributesWrapperOrder = [
     WIDGET_TYPE_ASSIGNEES,

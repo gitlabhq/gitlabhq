@@ -5527,7 +5527,6 @@ CREATE TABLE application_settings (
     geo_node_allowed_ips character varying DEFAULT '0.0.0.0/0, ::/0'::character varying,
     encrypted_lets_encrypt_private_key text,
     encrypted_lets_encrypt_private_key_iv text,
-    required_instance_ci_template character varying,
     dns_rebinding_protection_enabled boolean DEFAULT true NOT NULL,
     default_project_deletion_protection boolean DEFAULT false NOT NULL,
     grafana_enabled boolean DEFAULT false NOT NULL,

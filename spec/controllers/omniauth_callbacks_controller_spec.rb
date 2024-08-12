@@ -182,7 +182,7 @@ RSpec.describe OmniauthCallbacksController, type: :controller, feature_category:
 
       before do
         user.update!(failed_attempts: User.maximum_attempts.pred)
-        subject.response = ActionDispatch::Response.new
+        subject.set_response!(ActionDispatch::Response.new)
       end
 
       context 'when using a form based provider' do

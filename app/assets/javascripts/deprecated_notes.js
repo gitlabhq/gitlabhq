@@ -53,6 +53,7 @@ function normalizeNewlines(str) {
 const REGEX_QUICK_ACTIONS = /^\/\w+.*$/gm;
 
 export default class Notes {
+  // eslint-disable-next-line max-params
   static initialize(notes_url, last_fetched_at, view, enableGFM) {
     if (!this.instance) {
       this.instance = new Notes(notes_url, last_fetched_at, view, enableGFM);
@@ -63,6 +64,7 @@ export default class Notes {
     return this.instance;
   }
 
+  // eslint-disable-next-line max-params
   constructor(notes_url, last_fetched_at, view, enableGFM = defaultAutocompleteConfig) {
     this.updateTargetButtons = this.updateTargetButtons.bind(this);
     this.updateComment = this.updateComment.bind(this);

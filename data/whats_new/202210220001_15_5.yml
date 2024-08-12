@@ -36,7 +36,7 @@
     On accounts with two-factor authentication (2FA) enabled, bad actors that enter correct usernames and passwords must still enter a
     correct one-time password (OTP) to access the account. However, users would not know incorrect codes are being entered. Now users are
     immediately sent an email when an incorrect OTP is entered, improving security by notifying them that their account might be compromised.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]

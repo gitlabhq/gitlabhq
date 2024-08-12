@@ -695,6 +695,7 @@ UsersSelect.prototype.buildUrl = function (url) {
   return url;
 };
 
+// eslint-disable-next-line max-params
 UsersSelect.prototype.renderRow = function (
   issuableType,
   user,

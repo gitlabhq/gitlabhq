@@ -14,7 +14,7 @@
     We are proud of the new navigation and can't wait to see what you think. Review a [list of what's changed](https://gitlab.com/groups/gitlab-org/-/epics/9044#whats-different) and read our blog posts about the navigation [vision](https://about.gitlab.com/blog/2023/05/01/gitlab-product-navigation/) and [design](https://about.gitlab.com/blog/2023/05/15/overhauling-the-navigation-is-like-building-a-dream-home/).
 
     Please try the new navigation and let us know about your experience in [this issue](https://gitlab.com/gitlab-org/gitlab/-/issues/409005). We are already [addressing](https://gitlab.com/gitlab-org/gitlab/-/issues/409005#actions-we-are-taking-from-the-feedback) the feedback and will eventually remove the toggle.
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Free, Premium, Ultimate]
@@ -42,7 +42,7 @@
     There are many use cases for which a non-human user might need to authenticate. Previously, depending on the desired scope, users could use personal, project, or group access tokens to meet this need. These tokens were not ideal, due to still being either tied to a human (for personal access tokens), or an unnecessarily privileged role (for group and project access tokens).
 
     Service accounts are not tied to a human user, and are more granular in scope. Service account creation and management is API-only. Support for a UI option is proposed in [issue 9965](https://gitlab.com/groups/gitlab-org/-/epics/9965).
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Premium, Ultimate]

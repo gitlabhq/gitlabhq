@@ -530,6 +530,79 @@ Example response:
 ]
 ```
 
+## List a group's invited groups
+
+Get a list of invited groups in the given group. When accessed without authentication, only public invited groups are returned.
+
+By default, this request returns 20 results at a time because the API results [are paginated](rest/index.md#pagination).
+
+Parameters:
+
+| Attribute                             | Type              | Required | Description |
+| ------------------------------------- | ----------------- | -------- | ---------- |
+| `id`                                  | integer/string    | yes      | The ID or [URL-encoded path of the group](rest/index.md#namespaced-path-encoding) owned by the authenticated user |
+| `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
+| `min_access_level`                    | integer           | no       | Limit to groups where current user has at least the specified [role (`access_level`)](members.md#roles) |
+| `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
+
+```plaintext
+GET /groups/:id/invited_groups
+```
+
+Example response:
+
+```json
+[
+  {
+    "id": 33,
+    "web_url": "http://gitlab.example.com/groups/flightjs",
+    "name": "Flightjs",
+    "path": "flightjs",
+    "description": "Illo dolorum tempore eligendi minima ducimus provident.",
+    "visibility": "public",
+    "share_with_group_lock": false,
+    "require_two_factor_authentication": false,
+    "two_factor_grace_period": 48,
+    "project_creation_level": "developer",
+    "auto_devops_enabled": null,
+    "subgroup_creation_level": "maintainer",
+    "emails_disabled": false,
+    "emails_enabled": true,
+    "mentions_disabled": null,
+    "lfs_enabled": true,
+    "math_rendering_limits_enabled": true,
+    "lock_math_rendering_limits_enabled": false,
+    "default_branch": null,
+    "default_branch_protection": 2,
+    "default_branch_protection_defaults": {
+      "allowed_to_push": [
+        {
+          "access_level": 40
+        }
+      ],
+      "allow_force_push": false,
+      "allowed_to_merge": [
+        {
+          "access_level": 40
+        }
+      ],
+      "developer_can_initial_push": false
+    },
+    "avatar_url": null,
+    "request_access_enabled": true,
+    "full_name": "Flightjs",
+    "full_path": "flightjs",
+    "created_at": "2024-07-09T10:31:08.307Z",
+    "parent_id": null,
+    "organization_id": 1,
+    "shared_runners_setting": "enabled",
+    "ldap_cn": null,
+    "ldap_access": null,
+    "wiki_access_level": "enabled"
+  }
+]
+```
+
 ## List a group's shared projects
 
 Get a list of projects shared to this group. When accessed without authentication, only public shared projects are returned.

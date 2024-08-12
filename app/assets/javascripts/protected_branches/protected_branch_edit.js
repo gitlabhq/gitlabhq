@@ -84,6 +84,7 @@ export default class ProtectedBranchEdit {
     );
   }
 
+  // eslint-disable-next-line max-params
   buildDropdown(selector, accessLevel, accessLevelsData, testId) {
     const [el] = this.$wrap.find(`.${selector}`);
     if (!el) return undefined;

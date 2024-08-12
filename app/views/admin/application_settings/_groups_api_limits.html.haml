@@ -32,4 +32,9 @@
           = f.label :group_shared_groups_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /groups/:id/groups/shared', timeframe: 'minute'), class: 'label-bold'
           = f.number_field :group_shared_groups_api_limit, min: 0, class: 'form-control gl-form-input'
 
+      %fieldset
+        .form-group
+          = f.label :group_invited_groups_api_limit, format(_('Maximum requests to the %{api_name} API per %{timeframe} per user or IP address'), api_name: 'GET /groups/:id/invited_groups', timeframe: 'minute'), class: 'label-bold'
+          = f.number_field :group_invited_groups_api_limit, min: 0, class: 'form-control gl-form-input'
+
       = f.submit _('Save changes'), pajamas_button: true

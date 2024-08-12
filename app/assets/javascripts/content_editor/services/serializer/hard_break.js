@@ -1,6 +1,7 @@
 import { preserveUnchanged } from '../serialization_helpers';
 import { isInTable } from './table';
 
+// eslint-disable-next-line max-params
 function renderHardBreak(state, node, parent, index) {
   const br = isInTable(parent) ? '<br>' : '\\\n';
 

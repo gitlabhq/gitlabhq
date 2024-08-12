@@ -2,6 +2,7 @@ import produce from 'immer';
 
 export const hasErrors = ({ errors = [] }) => errors?.length;
 
+// eslint-disable-next-line max-params
 export function removeArtifactFromStore(store, deletedArtifactId, query, variables) {
   if (hasErrors(deletedArtifactId)) return;
 

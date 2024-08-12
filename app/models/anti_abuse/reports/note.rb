@@ -6,6 +6,7 @@ module AntiAbuse
       include Notes::ActiveRecord
       include Notes::Discussion
 
+      include AfterCommitQueue
       include Awardable
       include CacheMarkdownField
       include Editable

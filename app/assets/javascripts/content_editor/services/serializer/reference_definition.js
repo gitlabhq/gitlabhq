@@ -2,6 +2,7 @@ import ReferenceDefinition from '../../extensions/reference_definition';
 import { preserveUnchanged } from '../serialization_helpers';
 
 const referenceDefinition = preserveUnchanged({
+  // eslint-disable-next-line max-params
   render: (state, node, parent, index, same, sourceMarkdown) => {
     const nextSibling = parent.maybeChild(index + 1);
 

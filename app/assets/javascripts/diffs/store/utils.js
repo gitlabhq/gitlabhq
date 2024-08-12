@@ -215,6 +215,7 @@ export function removeMatchLine(diffFile, lineNumbers, bottom) {
   }
 }
 
+// eslint-disable-next-line max-params
 export function addLineReferences(lines, lineNumbers, bottom, isExpandDown, nextLineNumbers) {
   const { oldLineNumber, newLineNumber } = lineNumbers;
   const lineCount = lines.length;

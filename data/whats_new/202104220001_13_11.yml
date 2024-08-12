@@ -20,7 +20,7 @@
     This saves security and compliance teams time by eliminating the need to manually copy a pipeline configuration to every project that needs it and then monitoring to prevent edits or removal. It also helps development teams follow policies without requiring them to become experts in compliance.
 
     Check out the [video walkthrough](https://www.youtube.com/embed/upLJ_equomw) to see its setup and implementation!
-  stage: Manage
+  stage: Foundations
   self-managed: true
   gitlab-com: true
   available_in: [Ultimate]
@@ -55,7 +55,7 @@
 - name: Group SAML Enforcement for Git activity
   description: |
     GitLab group maintainers can now enhance their group security by enforcing Group SAML for Git activity. Security-minded organizations want all GitLab activity to be protected and governed by their SAML Identity Provider. Currently, SAML SSO enforcement only applies to activity in the GitLab UI. Git CLI operations do not require an active SAML SSO session. When Git Group SAML SSO enforcement is enabled, users must have an active web SAML session to perform Git operations in the CLI.
-  stage: Manage
+  stage: Foundations
   self-managed: false
   gitlab-com: true
   available_in: [Premium, Ultimate]

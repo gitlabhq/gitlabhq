@@ -1,6 +1,7 @@
 import { renderContent } from '../serialization_helpers';
 import { renderHTMLNode } from './html_node';
 
+// eslint-disable-next-line max-params
 const detailsContent = (state, node, parent, index) => {
   if (!index) renderHTMLNode('summary')(state, node);
   else {

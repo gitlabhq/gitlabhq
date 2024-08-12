@@ -50,6 +50,8 @@ RSpec.describe Gitlab::Database::PostgresqlAdapter::TypeMapCache do
 
   # Based on https://github.com/rails/rails/blob/v6.1.3.2/activerecord/lib/active_record/connection_adapters/postgresql_adapter.rb#L36-L41
   def initialize_connection(config = db_config)
+    return adapter_class.new(config).connect! if ::Gitlab.next_rails?
+
     conn_params = config.symbolize_keys.compact
 
     conn_params[:user] = conn_params.delete(:username) if conn_params[:username]

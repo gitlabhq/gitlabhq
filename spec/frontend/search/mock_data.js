@@ -7,7 +7,7 @@ export const MOCK_QUERY = {
   confidential: null,
   group_id: 1,
   language: ['C', 'JavaScript'],
-  labelName: ['60', '37'],
+  labels: ['60', '37'],
   search: '*',
 };
 

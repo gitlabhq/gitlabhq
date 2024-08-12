@@ -107,6 +107,7 @@ export const diffHasDiscussions = () => (diff) => {
  * @param {Object} diff
  * @returns {Array}
  */
+// eslint-disable-next-line max-params
 export const getDiffFileDiscussions = (state, getters, rootState, rootGetters) => (diff) =>
   rootGetters.discussions.filter(
     (discussion) => discussion.diff_discussion && discussion.diff_file.file_hash === diff.file_hash,

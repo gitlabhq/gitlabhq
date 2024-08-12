@@ -35,9 +35,11 @@ describe('content_editor/extensions/reference', () => {
   });
 
   describe('when typing a valid reference input rule', () => {
+    // eslint-disable-next-line max-params
     const buildExpectedDoc = (href, originalText, referenceType, text = originalText) =>
       doc(p(reference({ className: null, href, originalText, referenceType, text }), ' '));
 
+    // eslint-disable-next-line max-params
     const buildExpectedDocForLabel = (href, originalText, text, color) =>
       doc(
         p(

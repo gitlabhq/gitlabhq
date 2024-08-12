@@ -60,7 +60,7 @@ module DesignManagement
     # e.g:
     #
     #   by_issue_id_and_filename(issue_id: 1, filename: 'homescreen.jpg')
-    #   by_issue_id_and_filename([]) # returns ActiveRecord::NullRelation
+    #   by_issue_id_and_filename([]) # returns DesignManagement::Design.none
     #   by_issue_id_and_filename([
     #     { issue_id: 1, filename: 'homescreen.jpg' },
     #     { issue_id: 2, filename: 'homescreen.jpg' },

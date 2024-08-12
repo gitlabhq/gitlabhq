@@ -60,6 +60,7 @@ const initPerformanceBar = (el) => {
           this.addRequest(urlOrRequestId, urlOrRequestId);
         }
       },
+      // eslint-disable-next-line max-params
       addRequest(requestId, requestUrl, operationName, requestParams, methodVerb) {
         if (!this.store.canTrackRequest(requestUrl)) {
           return;

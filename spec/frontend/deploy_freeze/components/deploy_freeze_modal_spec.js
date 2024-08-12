@@ -35,6 +35,7 @@ describe('Deploy freeze modal', () => {
   const findModal = () => wrapper.findComponent(GlModal);
   const submitDeployFreezeButton = () => findModal().findAllComponents(GlButton).at(1);
 
+  // eslint-disable-next-line max-params
   const setInput = (freezeStartCron, freezeEndCron, selectedTimezone, id = '') => {
     store.state.freezeStartCron = freezeStartCron;
     store.state.freezeEndCron = freezeEndCron;

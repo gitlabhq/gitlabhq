@@ -2,6 +2,7 @@ import { parallelLineKey, showDraftOnSide } from '../../../utils';
 
 export const draftsCount = (state) => state.drafts.length;
 
+// eslint-disable-next-line max-params
 export const getNotesData = (state, getters, rootState, rootGetters) => rootGetters.getNotesData;
 
 export const hasDrafts = (state) => state.drafts.length > 0;

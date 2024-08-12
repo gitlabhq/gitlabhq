@@ -13,6 +13,8 @@ import CLUSTER_EMPTY_SVG from '@gitlab/svgs/dist/illustrations/empty-state/empty
 import { DRAWER_Z_INDEX } from '~/lib/utils/constants';
 import { getContentWrapperHeight } from '~/lib/utils/dom_utils';
 import { s__, __ } from '~/locale';
+import { createAlert } from '~/alert';
+import { InternalEvents } from '~/tracking';
 import * as Sentry from '~/sentry/sentry_browser_wrapper';
 import { helpPagePath } from '~/helpers/help_page_helper';
 import { getIdFromGraphQLId } from '~/graphql_shared/utils';
@@ -20,6 +22,7 @@ import { k8sResourceType } from '~/environments/graphql/resolvers/kubernetes/con
 import {
   createK8sAccessConfiguration,
   fluxSyncStatus,
+  updateFluxRequested,
 } from '~/environments/helpers/k8s_integration_helper';
 import fluxKustomizationQuery from '~/environments/graphql/queries/flux_kustomization.query.graphql';
 import fluxHelmReleaseQueryStatus from '~/environments/graphql/queries/flux_helm_release.query.graphql';
@@ -33,10 +36,13 @@ import { CONNECT_MODAL_ID } from '~/clusters_list/constants';
 import WorkloadDetails from '~/kubernetes_dashboard/components/workload_details.vue';
 import eventHub from '~/environments/event_hub';
 import ConnectToAgentModal from '~/clusters_list/components/connect_to_agent_modal.vue';
+import updateFluxResourceMutation from '~/environments/graphql/mutations/update_flux_resource.mutation.graphql';
 import KubernetesStatusBar from './kubernetes_status_bar.vue';
 import KubernetesAgentInfo from './kubernetes_agent_info.vue';
 import KubernetesTabs from './kubernetes_tabs.vue';
 import DeletePodModal from './delete_pod_modal.vue';
+
+const trackingMixin = InternalEvents.mixin();
 
 export default {
   components: {
@@ -57,6 +63,7 @@ export default {
   directives: {
     GlModalDirective,
   },
+  mixins: [trackingMixin],
   inject: ['kasTunnelUrl'],
   props: {
     environmentName: {
@@ -185,6 +192,13 @@ export default {
         kind: item.kind,
         spec: item.spec,
         fullStatus: item.status.conditions,
+        actions: [
+          {
+            name: 'flux-reconcile',
+            text: s__('KubernetesDashboard|Trigger reconciliation'),
+            icon: 'retry',
+          },
+        ],
       };
     },
     showFluxResourceDetails() {
@@ -215,6 +229,31 @@ export default {
     onCloseModal() {
       this.podToDelete = {};
     },
+    onFluxReconcile() {
+      this.trackEvent('click_trigger_flux_reconciliation');
+
+      this.$apollo
+        .mutate({
+          mutation: updateFluxResourceMutation,
+          variables: {
+            configuration: this.k8sAccessConfiguration,
+            fluxResourcePath: this.fluxResourcePath,
+            data: updateFluxRequested(),
+          },
+        })
+        .then(({ data }) => {
+          const { errors } = data.updateFluxResource;
+
+          if (errors?.length) {
+            throw new Error(errors[0]);
+          } else {
+            this.closeDetailsDrawer();
+          }
+        })
+        .catch((error) => {
+          createAlert({ message: this.$options.i18n.error + error.message, variant: 'danger' });
+        });
+    },
   },
   i18n: {
     emptyTitle: s__('Environment|No Kubernetes clusters configured'),
@@ -224,6 +263,7 @@ export default {
     emptyButton: s__('Environment|Get started'),
     connectButtonText: s__('ClusterAgents|Connect to agent'),
     actions: __('Actions'),
+    error: __('Error: '),
   },
   learnMoreLink: helpPagePath('user/clusters/agent/index'),
   getStartedLink: helpPagePath('ci/environments/kubernetes_dashboard'),
@@ -311,7 +351,12 @@ export default {
         </h2>
       </template>
       <template #default>
-        <workload-details v-if="hasSelectedItem" :item="selectedItem" @delete-pod="onDeletePod" />
+        <workload-details
+          v-if="hasSelectedItem"
+          :item="selectedItem"
+          @delete-pod="onDeletePod"
+          @flux-reconcile="onFluxReconcile"
+        />
       </template>
     </gl-drawer>
   </div>

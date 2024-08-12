@@ -1,3 +1,4 @@
+// eslint-disable-next-line max-params
 export function toMatchExpectedForMarkdown(
   received,
   deserializationTarget,

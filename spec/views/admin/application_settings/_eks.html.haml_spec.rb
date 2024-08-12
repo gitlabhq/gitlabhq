@@ -3,9 +3,11 @@
 require 'spec_helper'
 
 RSpec.describe 'admin/application_settings/_eks' do
+  include RenderedHtml
+
   let_it_be(:admin) { create(:admin) }
 
-  let(:page) { Capybara::Node::Simple.new(rendered) }
+  let(:page) { rendered_html }
 
   before do
     assign(:application_setting, application_setting)

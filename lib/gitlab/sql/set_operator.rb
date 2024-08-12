@@ -36,7 +36,7 @@ module Gitlab
         # (thus fixing this problem), at a slight performance cost.
         fragments = ApplicationRecord.connection.unprepared_statement do
           relations.filter_map do |rel|
-            next if rel.is_a?(ActiveRecord::NullRelation)
+            next if rel.is_a?(ActiveRecord::Relation) && rel.null_relation?
 
             sql = remove_order ? rel.reorder(nil).to_sql : rel.to_sql
             sql.presence

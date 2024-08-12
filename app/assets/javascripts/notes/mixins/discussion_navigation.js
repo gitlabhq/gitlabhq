@@ -61,6 +61,7 @@ function getPreviousDiscussion() {
   return lastDiscussion;
 }
 
+// eslint-disable-next-line max-params
 function handleJumpForBothPages(getDiscussion, ctx, fn, scrollOptions) {
   const discussion = getDiscussion();
 

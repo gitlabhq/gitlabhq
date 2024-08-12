@@ -102,6 +102,7 @@ export class MyFancyExtension {
         // eslint-disable-next-line @gitlab/require-i18n-strings
         return `We have access to the whole Instance! ${instance.alpha()}`;
       },
+      // eslint-disable-next-line max-params
       advancedWithInstanceAndProps: ({ author, book } = {}, firstname, lastname, instance) => {
         // Advanced method where
         // { author, book } — are the props passed as an object
