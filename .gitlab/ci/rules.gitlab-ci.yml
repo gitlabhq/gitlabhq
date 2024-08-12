@@ -170,12 +170,6 @@
 .if-dot-com-gitlab-org-and-subgroups-merge-train: &if-dot-com-gitlab-org-and-subgroups-merge-train
   if: '$CI_MERGE_REQUEST_EVENT_TYPE == "merge_train" && $CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_NAMESPACE =~ /^gitlab-org/'
 
-.if-dot-com-gitlab-org-ee-tag: &if-dot-com-gitlab-org-ee-tag
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/gitlab" && $CI_COMMIT_TAG =~ /^v?[\d]+\.[\d]+\.[\d]+[\d\w-]*-ee$/'
-
-.if-dot-com-gitlab-org-security-ee-tag: &if-dot-com-gitlab-org-security-ee-tag
-  if: '$CI_SERVER_HOST == "gitlab.com" && $CI_PROJECT_PATH == "gitlab-org/security/gitlab" && $CI_COMMIT_TAG =~ /^v?[\d]+\.[\d]+\.[\d]+[\d\w-]*-ee$/'
-
 .if-ruby-branch: &if-ruby-branch
   if: '$CI_COMMIT_BRANCH =~ /^ruby\d+(_\d)*$/ || (($CI_MERGE_REQUEST_EVENT_TYPE == "merged_result" || $CI_MERGE_REQUEST_EVENT_TYPE == "detached") && $CI_MERGE_REQUEST_LABELS =~ /pipeline:run-in-ruby\d+(_\d)*/)'
 
@@ -3307,8 +3301,6 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - <<: *if-dot-com-gitlab-org-ee-tag
-      when: always
     - !reference [".releases:rules:canonical-dot-com-gitlab-stable-branch-only", rules]
 
 .release-environments:rules:start-release-environments-security-pipeline:
@@ -3317,8 +3309,6 @@
       when: never
     - <<: *if-merge-request-labels-pipeline-expedite
       when: never
-    - <<: *if-dot-com-gitlab-org-security-ee-tag
-      when: always
     - !reference [".releases:rules:canonical-dot-com-security-gitlab-stable-branch-only", rules]
 
 ###################
