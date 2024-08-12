@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-restricted-imports
 import { mapState } from 'vuex';
 import { GlBadge, GlTab, GlTabs, GlButton, GlModalDirective } from '@gitlab/ui';
+import glFeatureFlagsMixin from '~/vue_shared/mixins/gl_feature_flags_mixin';
 import { s__, sprintf } from '~/locale';
 import { getParameterByName } from '~/lib/utils/url_utility';
 import {
@@ -28,6 +29,7 @@ export default {
   directives: {
     GlModal: GlModalDirective,
   },
+  mixins: [glFeatureFlagsMixin()],
   data() {
     return {
       selectedTabIndex: 0,
@@ -47,8 +49,10 @@ export default {
     reassignedUserStatuses() {
       return PLACEHOLDER_USER_STATUS.REASSIGNED;
     },
+    isCsvReassignmentEnabled() {
+      return this.glFeatures.importerUserMappingReassignmentCsv;
+    },
   },
-
   mounted() {
     this.unassignedCount = this.pagination.awaitingReassignmentItems;
     this.reassignedCount = this.pagination.reassignedItems;
@@ -112,16 +116,17 @@ export default {
     </gl-tab>
 
     <template #tabs-end>
-      <gl-button
-        v-gl-modal="$options.uploadCsvModalId"
-        variant="link"
-        icon="media"
-        class="gl-ml-auto"
-        data-testid="reassign-csv-button"
-      >
-        {{ s__('UserMapping|Reassign with CSV file') }}
-      </gl-button>
-      <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
+      <div v-if="isCsvReassignmentEnabled" class="gl-ml-auto">
+        <gl-button
+          v-gl-modal="$options.uploadCsvModalId"
+          variant="link"
+          icon="media"
+          data-testid="reassign-csv-button"
+        >
+          {{ s__('UserMapping|Reassign with CSV file') }}
+        </gl-button>
+        <csv-upload-modal :modal-id="$options.uploadCsvModalId" />
+      </div>
     </template>
   </gl-tabs>
 </template>

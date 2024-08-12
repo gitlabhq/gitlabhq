@@ -40,6 +40,7 @@ describe('PlaceholdersTabApp', () => {
   const createComponent = ({
     queryHandler = sourceUsersQueryHandler,
     mountFn = shallowMountExtended,
+    provide = {},
   } = {}) => {
     store = new Vuex.Store({
       modules: {
@@ -60,6 +61,7 @@ describe('PlaceholdersTabApp', () => {
       provide: {
         reassignmentCsvDownloadPath: 'foo/bar',
         group: mockGroup,
+        ...provide,
       },
       mocks: { $toast },
       stubs: {
@@ -154,20 +156,39 @@ describe('PlaceholdersTabApp', () => {
   });
 
   describe('reassign CSV button', () => {
-    it('renders the button and the modal', () => {
-      createComponent({ mountFn: mountExtended });
+    describe('when the feature flag is enabled', () => {
+      beforeEach(() => {
+        createComponent({
+          provide: {
+            glFeatures: { importerUserMappingReassignmentCsv: true },
+          },
+          mountFn: mountExtended,
+        });
+      });
 
-      expect(findReassignCsvButton().exists()).toBe(true);
-      expect(findCsvModal().exists()).toBe(true);
+      it('renders the button and the modal', () => {
+        expect(findReassignCsvButton().exists()).toBe(true);
+        expect(findCsvModal().exists()).toBe(true);
+      });
+
+      it('shows modal when button is clicked', async () => {
+        findReassignCsvButton().trigger('click');
+
+        await nextTick();
+
+        expect(findCsvModal().findComponent(GlModal).isVisible()).toBe(true);
+      });
     });
 
-    it('shows modal when button is clicked', async () => {
-      createComponent({ mountFn: mountExtended });
-      findReassignCsvButton().trigger('click');
+    describe('when the feature flag is disabled', () => {
+      beforeEach(() => {
+        createComponent({ provide: { glFeatures: { importerUserMappingReassignmentCsv: false } } });
+      });
 
-      await nextTick();
-
-      expect(findCsvModal().findComponent(GlModal).isVisible()).toBe(true);
+      it('does not render the button and the modal', () => {
+        expect(findReassignCsvButton().exists()).toBe(false);
+        expect(findCsvModal().exists()).toBe(false);
+      });
     });
   });
 });
