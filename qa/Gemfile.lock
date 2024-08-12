@@ -1,7 +1,7 @@
 GIT
   remote: https://gitlab.com/gitlab-org/gitlab-qa.git
-  revision: c13294d5664fe70567eb6d83003b76faaaa37fd1
-  branch: 17-0-stable
+  revision: 608e321b52b6be4dd41b9a14dac4203ba552618a
+  branch: 17-1-stable
   specs:
     gitlab-qa (14.10.0)
       activesupport (>= 6.1, < 7.2)
