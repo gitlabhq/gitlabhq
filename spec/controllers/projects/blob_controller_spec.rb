@@ -9,6 +9,8 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
   let(:mutable_project) { create(:project, :public, :repository) }
 
   describe "GET show" do
+    let_it_be(:head_sha) { project.repository.commit.id }
+
     let(:params) { { namespace_id: project.namespace, project_id: project, id: id, ref_type: ref_type } }
     let(:ref_type) { nil }
     let(:request) do
@@ -55,6 +57,39 @@ RSpec.describe Projects::BlobController, feature_category: :source_code_manageme
 
       context "invalid branch, valid file" do
         let(:id) { 'invalid-branch/README.md' }
+
+        it { is_expected.to respond_with(:not_found) }
+      end
+
+      context 'valid branch, valid file, correct ref_type' do
+        let(:id) { 'master/README.md' }
+        let(:ref_type) { 'heads' }
+
+        it { is_expected.to respond_with(:success) }
+      end
+
+      context 'valid branch, valid file, wrong ref_type' do
+        let(:id) { 'master/README.md' }
+        let(:ref_type) { 'tags' }
+
+        it { is_expected.to respond_with(:not_found) }
+      end
+
+      context 'sha ref, valid file' do
+        let(:id) { "#{head_sha}/README.md" }
+
+        it { is_expected.to respond_with(:success) }
+      end
+
+      context 'wrong sha ref, valid file' do
+        let(:id) { '0000000000000000000000000000000000000000/README.md' }
+
+        it { is_expected.to respond_with(:not_found) }
+      end
+
+      context 'sha ref, valid file, non-empty ref_type' do
+        let(:id) { "#{head_sha}/README.md" }
+        let(:ref_type) { 'heads' }
 
         it { is_expected.to respond_with(:not_found) }
       end

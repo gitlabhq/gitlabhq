@@ -230,9 +230,11 @@ module GraphqlHelpers
     if ctx.is_a?(Hash)
       q = double('Query', schema: schema, subscription_update?: subscription_update, warden: GraphQL::Schema::Warden::PassThruWarden)
       allow(q).to receive(:after_lazy) { |value, &block| schema.after_lazy(value, &block) }
+
       ctx = GraphQL::Query::Context.new(query: q, values: ctx)
     end
 
+    allow(ctx.query).to receive(:subscription_update?).and_return(subscription_update)
     resolver_class.new(object: obj, context: ctx, field: field)
   end
 

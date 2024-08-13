@@ -2,8 +2,6 @@
 
 module Projects
   class UsageQuotasController < Projects::ApplicationController
-    include ::Observability::ContentSecurityPolicy
-
     before_action :authorize_read_usage_quotas!
 
     layout "project_settings"

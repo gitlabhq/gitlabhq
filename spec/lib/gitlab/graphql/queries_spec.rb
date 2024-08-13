@@ -342,9 +342,22 @@ RSpec.describe Gitlab::Graphql::Queries do
 
       it_behaves_like 'an invalid GraphQL query for the blog schema' do
         let(:errors) do
-          contain_exactly(
-            have_attributes(message: include('Expected LCURLY, actual: RCURLY ("}") at [1, 7]'))
-          )
+          if GraphQL::VERSION >= Gem::Version.new('2.3.12')
+            # TODO: Clean up after the following MR is merged and the graphql
+            # gem is ugpraded to 2.3.12
+            # https://gitlab.com/gitlab-org/gitlab/-/merge_requests/159460
+            contain_exactly(
+              have_attributes(
+                message: include('Expected NAME, actual: RCURLY ("}") at [1, 7]')
+              )
+            )
+          else
+            contain_exactly(
+              have_attributes(
+                message: include('Expected LCURLY, actual: RCURLY ("}") at [1, 7]')
+              )
+            )
+          end
         end
       end
     end

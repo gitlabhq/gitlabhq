@@ -13,43 +13,6 @@ function reportErrorAndThrow(e) {
 
 /** ****
  *
- * Provisioning API
- *
- * ***** */
-
-// Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L59
-async function enableObservability(provisioningUrl) {
-  try {
-    // Note: axios.put(url, undefined, {withCredentials: true}) does not send cookies properly, so need to use the API below for the correct behaviour
-    return await axios(provisioningUrl, {
-      method: 'put',
-      withCredentials: true,
-    });
-  } catch (e) {
-    return reportErrorAndThrow(e);
-  }
-}
-
-// Provisioning API spec: https://gitlab.com/gitlab-org/opstrace/opstrace/-/blob/main/provisioning-api/pkg/provisioningapi/routes.go#L37
-async function isObservabilityEnabled(provisioningUrl) {
-  try {
-    const { data } = await axios.get(provisioningUrl, { withCredentials: true });
-    if (data && data.status) {
-      // we currently ignore the 'status' payload and just check if the request was successful
-      // We might improve this as part of https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2315
-      return true;
-    }
-  } catch (e) {
-    if (e.response.status === 404) {
-      return false;
-    }
-    return reportErrorAndThrow(e);
-  }
-  return reportErrorAndThrow(new Error('Failed to check provisioning')); // eslint-disable-line @gitlab/require-i18n-strings
-}
-
-/** ****
- *
  * Common utils
  *
  * ***** */
@@ -678,7 +641,6 @@ export function buildClient(config) {
   }
 
   const {
-    provisioningUrl,
     tracingUrl,
     tracingAnalyticsUrl,
     servicesUrl,
@@ -690,10 +652,6 @@ export function buildClient(config) {
     logsSearchMetadataUrl,
     analyticsUrl,
   } = config;
-
-  if (typeof provisioningUrl !== 'string') {
-    throw new Error('provisioningUrl param must be a string');
-  }
 
   if (typeof tracingUrl !== 'string') {
     throw new Error('tracingUrl param must be a string');
@@ -736,8 +694,6 @@ export function buildClient(config) {
   }
 
   return {
-    enableObservability: () => enableObservability(provisioningUrl),
-    isObservabilityEnabled: () => isObservabilityEnabled(provisioningUrl),
     fetchTraces: (options) => fetchTraces(tracingUrl, options),
     fetchTracesAnalytics: (options) => fetchTracesAnalytics(tracingAnalyticsUrl, options),
     fetchTrace: (traceId) => fetchTrace(tracingUrl, traceId),

@@ -34,18 +34,6 @@ RSpec.describe Gitlab::Observability, feature_category: :error_tracking do
     end
   end
 
-  describe '.oauth_url' do
-    subject { described_class.oauth_url }
-
-    it { is_expected.to eq("#{described_class.observability_url}/v1/auth/start") }
-  end
-
-  describe '.provisioning_url' do
-    subject { described_class.provisioning_url(project) }
-
-    it { is_expected.to eq("#{described_class.observability_url}/v3/tenant/#{project.id}") }
-  end
-
   describe '.should_enable_observability_auth_scopes?' do
     subject { described_class.should_enable_observability_auth_scopes?(resource) }
 

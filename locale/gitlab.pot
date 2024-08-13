@@ -36427,9 +36427,6 @@ msgstr ""
 msgid "Observability|%{events} events"
 msgstr ""
 
-msgid "Observability|Enable"
-msgstr ""
-
 msgid "Observability|Enable tracing, metrics, or logs on your project."
 msgstr ""
 
@@ -36437,9 +36434,6 @@ msgid "Observability|Failed to load observability usage data."
 msgstr ""
 
 msgid "Observability|Filter data by month:"
-msgstr ""
-
-msgid "Observability|Get started with GitLab Observability"
 msgstr ""
 
 msgid "Observability|Includes Logs, Traces and Metrics. %{learnMoreLink}"
@@ -36473,9 +36467,6 @@ msgid "Observability|Last 5 minutes"
 msgstr ""
 
 msgid "Observability|Last 7 days"
-msgstr ""
-
-msgid "Observability|Monitor your applications with GitLab Observability."
 msgstr ""
 
 msgid "Observability|Sorry, there is no usage data for the selected period"
@@ -44150,9 +44141,6 @@ msgid "Reload"
 msgstr ""
 
 msgid "Reload page"
-msgstr ""
-
-msgid "Reload the page to try again."
 msgstr ""
 
 msgid "Remediations"
@@ -56732,9 +56720,6 @@ msgid "Unable to load the diff. %{button_try_again}"
 msgstr ""
 
 msgid "Unable to load the merge request widget. Try reloading the page."
-msgstr ""
-
-msgid "Unable to load the page"
 msgstr ""
 
 msgid "Unable to load user list. Reload the page and try again."

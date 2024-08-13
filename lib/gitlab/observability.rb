@@ -14,14 +14,6 @@ module Gitlab
       'https://observe.gitlab.com'
     end
 
-    def oauth_url
-      "#{Gitlab::Observability.observability_url}/v1/auth/start"
-    end
-
-    def provisioning_url(project)
-      "#{Gitlab::Observability.observability_url}/v3/tenant/#{project.id}"
-    end
-
     def should_enable_observability_auth_scopes?(resource)
       # Enable the needed oauth scopes if tracing is enabled.
       if resource.is_a?(Group) || resource.is_a?(Project)

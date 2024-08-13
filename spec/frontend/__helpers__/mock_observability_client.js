@@ -1,7 +1,6 @@
 import { buildClient } from '~/observability/client';
 
 export const mockApiConfig = {
-  provisioningUrl: 'provisioning-url',
   tracingUrl: 'tracing-url',
   tracingAnalyticsUrl: 'tracing-analytics-url',
   servicesUrl: 'services-url',

@@ -15,7 +15,6 @@ describe('buildClient', () => {
 
   const tracingUrl = 'https://example.com/tracing';
   const tracingAnalyticsUrl = 'https://example.com/tracing/analytics';
-  const provisioningUrl = 'https://example.com/provisioning';
   const servicesUrl = 'https://example.com/services';
   const operationsUrl = 'https://example.com/services/$SERVICE_NAME$/operations';
   const metricsUrl = 'https://example.com/metrics';
@@ -29,7 +28,6 @@ describe('buildClient', () => {
   const apiConfig = {
     tracingUrl,
     tracingAnalyticsUrl,
-    provisioningUrl,
     servicesUrl,
     operationsUrl,
     metricsUrl,
@@ -71,77 +69,6 @@ describe('buildClient', () => {
           [param]: undefined,
         }),
       ).toThrow(e);
-    });
-  });
-
-  describe('isObservabilityEnabled', () => {
-    it('returns true if requests succeedes', async () => {
-      axiosMock.onGet(provisioningUrl).reply(200, {
-        status: 'ready',
-      });
-
-      const enabled = await client.isObservabilityEnabled();
-
-      expect(enabled).toBe(true);
-    });
-
-    it('returns false if response is 404', async () => {
-      axiosMock.onGet(provisioningUrl).reply(404);
-
-      const enabled = await client.isObservabilityEnabled();
-
-      expect(enabled).toBe(false);
-    });
-
-    // we currently ignore the 'status' payload and just check if the request was successful
-    // We might improve this as part of https://gitlab.com/gitlab-org/opstrace/opstrace/-/issues/2315
-    it('returns true for any status', async () => {
-      axiosMock.onGet(provisioningUrl).reply(200, {
-        status: 'not ready',
-      });
-
-      const enabled = await client.isObservabilityEnabled();
-
-      expect(enabled).toBe(true);
-    });
-
-    it('throws in case of any non-404 error', async () => {
-      axiosMock.onGet(provisioningUrl).reply(500);
-
-      const e = 'Request failed with status code 500';
-      await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
-      expectErrorToBeReported(new Error(e));
-    });
-
-    it('throws in case of unexpected response', async () => {
-      axiosMock.onGet(provisioningUrl).reply(200, {});
-
-      const e = 'Failed to check provisioning';
-      await expect(client.isObservabilityEnabled()).rejects.toThrow(e);
-      expectErrorToBeReported(new Error(e));
-    });
-  });
-
-  describe('enableObservability', () => {
-    it('makes a PUT request to the provisioning URL', async () => {
-      let putConfig;
-      axiosMock.onPut(provisioningUrl).reply((config) => {
-        putConfig = config;
-        return [200];
-      });
-
-      await client.enableObservability();
-
-      expect(putConfig.withCredentials).toBe(true);
-    });
-
-    it('reports an error if the req fails', async () => {
-      axiosMock.onPut(provisioningUrl).reply(401);
-
-      const e = 'Request failed with status code 401';
-
-      await expect(client.enableObservability()).rejects.toThrow(e);
-      expectErrorToBeReported(new Error(e));
     });
   });
 
