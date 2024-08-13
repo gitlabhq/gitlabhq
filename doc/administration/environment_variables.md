@@ -58,4 +58,4 @@ To set environment variables, follow [these instructions](https://docs.gitlab.co
 
 It's possible to preconfigure the GitLab Docker image by adding the environment
 variable `GITLAB_OMNIBUS_CONFIG` to the `docker run` command.
-For more information, see [Pre-configure Docker container](../install/docker.md#pre-configure-docker-container).
+For more information, see [Pre-configure Docker container](../install/docker/index.md#pre-configure-docker-container).

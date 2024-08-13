@@ -47,6 +47,7 @@ class NamespaceSetting < ApplicationRecord
     prevent_sharing_groups_outside_hierarchy
     new_user_signups_cap
     setup_for_company
+    seat_control
     jobs_to_be_done
     runner_token_expiration_interval
     enabled_git_access_protocol

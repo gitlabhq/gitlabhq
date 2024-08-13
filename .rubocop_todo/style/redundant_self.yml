@@ -218,8 +218,6 @@ Style/RedundantSelf:
     - 'ee/lib/gitlab/auth/group_saml/response_check.rb'
     - 'ee/lib/gitlab/auth/group_saml/user.rb'
     - 'ee/lib/gitlab/auth/smartcard.rb'
-    - 'ee/lib/gitlab/ci/reports/dependency_list/dependency.rb'
-    - 'ee/lib/gitlab/ci/reports/dependency_list/vulnerability.rb'
     - 'ee/lib/gitlab/ci/reports/license_scanning/report.rb'
     - 'ee/lib/gitlab/elastic/client.rb'
     - 'ee/lib/gitlab/elastic/document_reference.rb'

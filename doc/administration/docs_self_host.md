@@ -52,7 +52,7 @@ To run the GitLab product documentation website in a Docker container:
      ```
 
    - If you host your GitLab instance using
-     [Docker compose](../install/docker.md#install-gitlab-using-docker-compose),
+     [Docker compose](../install/docker/index.md#install-gitlab-using-docker-compose),
      add the following to your existing `docker-compose.yaml`:
 
      ```yaml

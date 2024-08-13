@@ -17,3 +17,7 @@ end
 direct :subscription_portal_instance_review do
   Addressable::URI.join(subscription_portal_url, '/instance_review').to_s
 end
+
+direct :subscription_portal_openid_configuration do
+  Addressable::URI.join(subscription_portal_url, '/.well-known/openid-configuration').to_s
+end

@@ -46,7 +46,7 @@ is set.
 If a custom replication factor is set, use [`praefect set-replication-factor`](praefect.md#configure-replication-factor) to set the replication factor per repository again to get new storage assigned. For example:
 
 ```shell
-$ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
+$ sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml set-replication-factor -virtual-storage default -relative-path @hashed/3f/db/3fdba35f04dc8c462986c992bcf875546257113072a909c162f7e470e581e278.git -replication-factor 2
 
 current assignments: gitaly-1, gitaly-2
 ```
@@ -103,13 +103,13 @@ NOTE:
 To check for repositories with outdated primaries or for unavailable repositories, run:
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>]
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>]
 ```
 
 Every configured virtual storage is checked if none is specified:
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss
 ```
 
 Repositories are listed in the output that have no healthy and fully up-to-date copies available. The following
@@ -166,7 +166,7 @@ A repository is available if there is a healthy, up to date replica available. S
 replicas may be temporarily unavailable for access while they are waiting to replicate the latest changes.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>] [-partially-unavailable]
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml dataloss [-virtual-storage <virtual-storage>] [-partially-unavailable]
 ```
 
 Example output:
@@ -210,7 +210,7 @@ and replicates it to the other assigned Gitaly nodes. This process overwrites an
 repository so care must be taken.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss
 -virtual-storage <virtual-storage> -relative-path <relative-path> -authoritative-storage <storage-name>
 ```
 
@@ -224,7 +224,7 @@ Praefect provides the following subcommands to re-enable writes or accept data l
 of the up-to-date nodes back online, you might have to accept data loss:
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss -virtual-storage <virtual-storage> -relative-path <relative-path> -authoritative-storage <storage-name>
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml accept-dataloss -virtual-storage <virtual-storage> -relative-path <relative-path> -authoritative-storage <storage-name>
 ```
 
 When accepting data loss, Praefect:
@@ -293,7 +293,7 @@ The `remove-repository` Praefect sub-command removes a repository from a Gitaly 
 By default, the command operates in dry-run mode. For example:
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -relative-path <repository>
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -relative-path <repository>
 ```
 
 - Replace `<virtual-storage>` with the name of the virtual storage containing the repository.
@@ -304,7 +304,7 @@ sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.t
 - Add `-apply` to run the command outside of dry-run mode and remove the repository. For example:
 
   ```shell
-  sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -relative-path <repository> -apply
+  sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml remove-repository -virtual-storage <virtual-storage> -relative-path <repository> -apply
   ```
 
 - `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration']['virtual_storage]` and looks like the following:
@@ -362,7 +362,7 @@ Add the `-older-than` option to avoid showing repositories that:
 Replace `<duration>` with a time duration (for example, `5s`, `10m`, or `1h`). Defaults to `6h`.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories -older-than <duration>
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories -older-than <duration>
 ```
 
 Only repositories with a creation time before the specified duration are considered.
@@ -376,7 +376,7 @@ Each entry is a complete JSON string with a newline at the end (configurable usi
 `-delimiter` flag). For example:
 
 ```plaintext
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-untracked-repositories
 {"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567890.git"}
 {"virtual_storage":"default","storage":"gitaly-1","relative_path":"@hashed/ab/cd/abcd123456789012345678901234567890123456789012345678901234567891.git"}
 ```
@@ -391,7 +391,7 @@ inaccessible.
 The `track-repository` Praefect sub-command adds repositories on disk to the Praefect tracking database to be tracked.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -authoritative-storage <storage-name> -relative-path <repository> -replica-path <disk_path> -replicate-immediately
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repository -virtual-storage <virtual-storage> -authoritative-storage <storage-name> -relative-path <repository> -replica-path <disk_path> -replicate-immediately
 ```
 
 - `-virtual-storage` is the virtual storage the repository is located in. Virtual storages are configured in `/etc/gitlab/gitlab.rb` under `praefect['configuration'][:virtual_storage]` and looks like the following:
@@ -456,7 +456,7 @@ Praefect subcommand. This subcommand adds large batches of on-disk repositories 
 sudo gitlab-ctl praefect track-repositories --input-path /path/to/input.json
 
 # Source install
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repositories -input-path /path/to/input.json
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml track-repositories -input-path /path/to/input.json
 ```
 
 The command validates that all entries:
@@ -492,7 +492,7 @@ The `list-storages` Praefect sub-command lists virtual storages and their associ
 - Not specified, all virtual storages and their associated storage nodes are listed in tabular format.
 
 ```shell
-sudo /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-storages -virtual-storage <virtual_storage_name>
+sudo -u git -- /opt/gitlab/embedded/bin/praefect -config /var/opt/gitlab/praefect/config.toml list-storages -virtual-storage <virtual_storage_name>
 ```
 
 The command outputs:

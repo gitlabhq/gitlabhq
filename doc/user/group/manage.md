@@ -265,7 +265,7 @@ To specify a user cap:
    You can set a cap on the top-level group only.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. In the **User cap** box, enter the desired number of users.
+1. From **Seat controls**, select the **Set user cap** checkbox and enter the number of users in the field.
 1. Select **Save changes**.
 
 If you already have more users in the group than the user cap value, users
@@ -286,7 +286,7 @@ To remove the user cap:
 1. On the left sidebar, select **Search or go to** and find your group.
 1. Select **Settings > General**.
 1. Expand **Permissions and group features**.
-1. In the **User cap** box, delete the value.
+1. From **Seat controls**, select **Open access**.
 1. Select **Save changes**.
 
 Decreasing the user cap does not approve pending members.

@@ -219,10 +219,10 @@ After Gitaly is properly configured, Gitaly can generate bundles, which is a
 manual process. To generate a bundle for Bundle URI, run:
 
 ```shell
-sudo /opt/gitlab/embedded/bin/gitaly bundle-uri \
-                                     --config=<config-file> \
-                                     --storage=<storage-name> \
-                                     --repository=<relative-path>
+sudo -u git -- /opt/gitlab/embedded/bin/gitaly bundle-uri \
+                                               --config=<config-file> \
+                                               --storage=<storage-name> \
+                                               --repository=<relative-path>
 ```
 
 This command generates the bundle and stores it on the configured storage service.

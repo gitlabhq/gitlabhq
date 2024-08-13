@@ -6477,6 +6477,9 @@ msgstr ""
 msgid "Any milestone"
 msgstr ""
 
+msgid "Any user who is added or requests access in excess of the user cap must be approved by an administrator"
+msgstr ""
+
 msgid "App ID"
 msgstr ""
 
@@ -25615,6 +25618,9 @@ msgstr ""
 msgid "GroupSAML|Are you sure you want to reset the SCIM token? SCIM provisioning will stop working until the new token is updated."
 msgstr ""
 
+msgid "GroupSAML|Before disabling password authentication, enable SAML authentication."
+msgstr ""
+
 msgid "GroupSAML|Before enforcing SSO, enable SAML authentication."
 msgstr ""
 
@@ -25634,6 +25640,9 @@ msgid "GroupSAML|Could not create SAML group link: %{errors}."
 msgstr ""
 
 msgid "GroupSAML|Default membership role"
+msgstr ""
+
+msgid "GroupSAML|Disable password authentication for enterprise users"
 msgstr ""
 
 msgid "GroupSAML|Enable SAML authentication for this group"
@@ -28805,6 +28814,9 @@ msgid "Invitation"
 msgstr ""
 
 msgid "Invitation declined"
+msgstr ""
+
+msgid "Invitations do not require administrator approval"
 msgstr ""
 
 msgid "Invite \"%{email}\" by email"
@@ -36286,6 +36298,9 @@ msgstr ""
 msgid "Number of shards for non-code indexing"
 msgstr ""
 
+msgid "Number of users for user cap"
+msgstr ""
+
 msgid "OK"
 msgstr ""
 
@@ -38271,6 +38286,12 @@ msgstr ""
 msgid "PagesDomain|Certificate Key is too long. (Max %d bytes)"
 msgstr ""
 
+msgid "PagesUsageQuota|Active extra deployments"
+msgstr ""
+
+msgid "PagesUsageQuota|Learn about Pages deployments limits"
+msgstr ""
+
 msgid "Pages|Active"
 msgstr ""
 
@@ -38302,6 +38323,9 @@ msgid "Pages|Last updated"
 msgstr ""
 
 msgid "Pages|No deployments yet"
+msgstr ""
+
+msgid "Pages|Pages deployments"
 msgstr ""
 
 msgid "Pages|Path prefix"
@@ -47505,6 +47529,9 @@ msgstr ""
 msgid "Searching by both author and message is currently not supported."
 msgstr ""
 
+msgid "Seat controls"
+msgstr ""
+
 msgid "Seats"
 msgstr ""
 
@@ -48099,6 +48126,9 @@ msgstr ""
 msgid "SecurityOrchestration|Create security policy"
 msgstr ""
 
+msgid "SecurityOrchestration|Custom scan experiment has ended in 17.3"
+msgstr ""
+
 msgid "SecurityOrchestration|Default mode"
 msgstr ""
 
@@ -48413,6 +48443,9 @@ msgstr ""
 msgid "SecurityOrchestration|Scan execution policies can only be created by project owners."
 msgstr ""
 
+msgid "SecurityOrchestration|Scan execution policies using `custom` scan action have been detected. Policies using this action will not work after GitLab 18.0 (May 10, 2025). You must edit these policies to remove the deprecated action. Learn more about the %{linkStart}pipeline execution policy%{linkEnd}."
+msgstr ""
+
 msgid "SecurityOrchestration|Scan execution policy"
 msgstr ""
 
@@ -48653,7 +48686,7 @@ msgstr ""
 msgid "SecurityOrchestration|You don't have any security policies yet"
 msgstr ""
 
-msgid "SecurityOrchestration|You must edit the policy and replace the deprecated syntax%{deprecatedProperties}. For details on its replacement, see the %{linkStart}policy documentation%{linkEnd}."
+msgid "SecurityOrchestration|You must edit the policy and replace the deprecated syntax (%{deprecatedProperties}). For details on its replacement, see the %{linkStart}policy documentation%{linkEnd}."
 msgstr ""
 
 msgid "SecurityOrchestration|You must select one or more compliance frameworks to which this policy should apply."
@@ -50090,6 +50123,9 @@ msgid "Set up root account"
 msgstr ""
 
 msgid "Set up your project to automatically push and/or pull changes to/from another repository. Branches, tags, and commits will be synced automatically."
+msgstr ""
+
+msgid "Set user cap"
 msgstr ""
 
 msgid "Set variables on protected branches and tags only."
@@ -57799,9 +57835,6 @@ msgid "User Settings"
 msgstr ""
 
 msgid "User and IP rate limits"
-msgstr ""
-
-msgid "User cap"
 msgstr ""
 
 msgid "User cap cannot be enabled. The group or one of its subgroups or projects is shared externally."

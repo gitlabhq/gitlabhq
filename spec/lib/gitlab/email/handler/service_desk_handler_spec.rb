@@ -4,6 +4,7 @@ require 'spec_helper'
 
 RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :service_desk do
   include ServiceDeskHelper
+  include EmailHelpers
   include_context 'email shared context'
 
   before do
@@ -456,15 +457,11 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             expect(note.author).to eq(Users::Internal.support_bot)
           end
 
-          it 'does not send warning note email' do
-            ActionMailer::Base.deliveries = []
-
-            perform_enqueued_jobs do
-              expect { receiver.execute }.to change { ActionMailer::Base.deliveries.size }.by(1)
-            end
-
-            # Only sends created issue email
-            expect(ActionMailer::Base.deliveries.last.text_part.body).to include("Thank you for your support request!")
+          it 'does not send warning note email', :sidekiq_inline do
+            expect do
+              receiver.execute
+            end.to enqueue_mail_with(Notify, :service_desk_thank_you_email)
+              .and(not_enqueue_mail_with(Notify, :note_issue_email))
           end
         end
       end

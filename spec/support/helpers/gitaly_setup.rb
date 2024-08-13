@@ -379,7 +379,17 @@ module GitalySetup
     message += "- The `praefect` binary does not exist: #{praefect_binary}\n" unless File.exist?(praefect_binary)
     message += "- No `git` binaries exist\n" if git_binaries.empty?
 
-    message += "\nCheck log/gitaly-test.log & log/praefect-test.log for errors.\n"
+    gitaly_logs_path = 'log/gitaly-test.log'
+    if File.exist?(gitaly_logs_path)
+      message += "\n#{gitaly_logs_path}:\n"
+      message += File.read(gitaly_logs_path)
+    end
+
+    praefect_logs_path = 'log/praefect-test.log'
+    if File.exist?(praefect_logs_path)
+      message += "\n#{praefect_logs_path}:\n"
+      message += File.read(praefect_logs_path)
+    end
 
     unless ENV['CI']
       message += "\nIf binaries are missing, try running `make -C tmp/tests/gitaly all WITH_BUNDLED_GIT=YesPlease`.\n"

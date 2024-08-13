@@ -78,7 +78,6 @@ Style/SymbolProc:
     - 'ee/lib/ee/api/entities/geo_node.rb'
     - 'ee/lib/ee/api/entities/merge_request_approval_state.rb'
     - 'ee/lib/ee/gitlab/auth/ldap/access.rb'
-    - 'ee/lib/gitlab/ci/parsers/security/formatters/dependency_list.rb'
     - 'ee/lib/gitlab/contribution_analytics/data_collector.rb'
     - 'ee/lib/gitlab/custom_file_templates.rb'
     - 'ee/lib/gitlab/geo/oauth/logout_state.rb'

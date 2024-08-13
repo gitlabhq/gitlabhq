@@ -13351,8 +13351,11 @@ CREATE TABLE ml_model_versions (
     semver_minor integer,
     semver_patch integer,
     semver_prerelease text,
+    cached_markdown_version integer,
+    description_html text,
     CONSTRAINT check_246f5048b5 CHECK ((char_length(semver_prerelease) <= 255)),
     CONSTRAINT check_28b2d892c8 CHECK ((char_length(version) <= 255)),
+    CONSTRAINT check_4d50116294 CHECK ((char_length(description_html) <= 50000)),
     CONSTRAINT check_caff7d000b CHECK ((char_length(description) <= 500))
 );
 
@@ -17263,7 +17266,8 @@ CREATE TABLE saml_providers (
     prohibited_outer_forks boolean DEFAULT true NOT NULL,
     default_membership_role smallint DEFAULT 10 NOT NULL,
     git_check_enforced boolean DEFAULT false NOT NULL,
-    member_role_id bigint
+    member_role_id bigint,
+    disable_password_authentication_for_enterprise_users boolean DEFAULT false
 );
 
 CREATE SEQUENCE saml_providers_id_seq

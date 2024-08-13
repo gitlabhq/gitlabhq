@@ -128,7 +128,7 @@ export default {
           return;
         }
         if (this.workItemTypes?.length === 1) {
-          this.selectedWorkItemTypeId = this.workItemTypes[0].id;
+          this.selectedWorkItemTypeId = this.workItemTypes[0]?.id;
         } else {
           this.workItemTypes.forEach(async (workItemType) => {
             await setNewWorkItemCache(
@@ -260,6 +260,12 @@ export default {
     },
     workItemStartDateIsFixed() {
       return this.workItemRolledupDates?.startDateIsFixed;
+    },
+    workItemId() {
+      return this.workItem?.id;
+    },
+    workItemIid() {
+      return this.workItem?.iid;
     },
   },
   methods: {
@@ -441,8 +447,8 @@ export default {
               :autofocus="false"
               :full-path="fullPath"
               :show-buttons-below-field="false"
-              :work-item-id="$options.NEW_WORK_ITEM_GID"
-              :work-item-iid="$options.NEW_WORK_ITEM_IID"
+              :work-item-id="workItemId"
+              :work-item-iid="workItemIid"
               :work-item-type-name="selectedWorkItemTypeName"
               @error="updateError = $event"
               @updateDraft="updateDraftData('description', $event)"
@@ -469,7 +475,7 @@ export default {
                 class="gl-mb-5 js-assignee"
                 :can-update="canUpdate"
                 :full-path="fullPath"
-                :work-item-id="workItem.id"
+                :work-item-id="workItemId"
                 :assignees="workItemAssignees.assignees.nodes"
                 :participants="workItemParticipantNodes"
                 :work-item-author="workItemAuthor"
@@ -483,8 +489,8 @@ export default {
               <work-item-crm-contacts
                 class="gl-mb-5"
                 :full-path="fullPath"
-                :work-item-id="workItem.id"
-                :work-item-iid="workItem.iid"
+                :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
                 :work-item-type="selectedWorkItemTypeName"
                 @error="$emit('error', $event)"
               />
@@ -494,8 +500,8 @@ export default {
                 class="gl-mb-5 js-labels"
                 :can-update="canUpdate"
                 :full-path="fullPath"
-                :work-item-id="workItem.id"
-                :work-item-iid="workItem.iid"
+                :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
                 :work-item-type="selectedWorkItemTypeName"
                 @error="$emit('error', $event)"
               />
@@ -518,8 +524,8 @@ export default {
             <template v-if="workItemHealthStatus">
               <work-item-health-status
                 class="gl-mb-5"
-                :work-item-id="workItem.id"
-                :work-item-iid="workItem.iid"
+                :work-item-id="workItemId"
+                :work-item-iid="workItemIid"
                 :work-item-type="selectedWorkItemTypeName"
                 :full-path="fullPath"
                 @error="$emit('error', $event)"

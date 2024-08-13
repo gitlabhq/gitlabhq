@@ -61,7 +61,7 @@ Installs the GitLab packages in a Docker container.
 
 Use if you're familiar with Docker.
 
-For more information, see [Docker](docker.md).
+For more information, see [Docker](docker/index.md).
 
 ## Source
 

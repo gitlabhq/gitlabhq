@@ -106,7 +106,7 @@ function run_rspec_rails_non_fast {
 function run_rspec_feature {
   trap onexit_err ERR
 
-  printf "\n\n${BBlue}Running backend RSpec feature specs (NOTE: These sometimes are flaky! If one fails, try running it focused)...${Color_Off}\n\n"
+  printf "\n\n${BBlue}Running backend RSpec feature specs (NOTE: These sometimes are flaky (see https://gitlab.com/gitlab-org/gitlab/-/issues/478601)! If one fails, try running it focused, or just ignore it and let CI run it)...${Color_Off}\n\n"
   files_for_feature=()
   while IFS='' read -r file; do
       files_for_feature+=("$file")

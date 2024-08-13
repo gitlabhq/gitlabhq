@@ -99,6 +99,7 @@ select the vulnerability's description. The [vulnerability's details](../vulnera
 
 > - Dependency path information from CycloneDX SBOM was [introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/393061) in GitLab 16.9 [with a flag](../../../administration/feature_flags.md) named `project_level_sbom_occurrences`. Disabled by default.
 > - Dependency path information from CycloneDX SBOM was [enabled on GitLab.com, self-managed, and GitLab Dedicated](https://gitlab.com/gitlab-org/gitlab/-/issues/434371) in GitLab 17.0.
+> - [Generally available](https://gitlab.com/gitlab-org/gitlab/-/issues/457633) in GitLab 17.4. Feature flag `project_level_sbom_occurrences` removed.
 
 The dependency list shows the path between a dependency and a top-level dependency it's connected
 to, if any. Multiple paths may connect a transient dependency to top-level

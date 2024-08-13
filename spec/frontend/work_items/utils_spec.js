@@ -137,6 +137,8 @@ describe('isReference', () => {
 describe('workItemRoadmapPath', () => {
   it('constructs a path to the roadmap page', () => {
     const path = workItemRoadmapPath('project/group', '2');
-    expect(path).toBe('/groups/project/group/-/roadmap?epic_iid=2');
+    expect(path).toBe(
+      '/groups/project/group/-/roadmap?epic_iid=2&layout=QUARTERS&timeframe_range_type=THREE_YEARS',
+    );
   });
 });

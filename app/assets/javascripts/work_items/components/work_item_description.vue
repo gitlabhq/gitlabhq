@@ -121,7 +121,7 @@ export default {
   },
   computed: {
     createFlow() {
-      return this.workItemId === newWorkItemId(this.workItemType);
+      return this.workItemId === newWorkItemId(this.workItemTypeName);
     },
     workItemFullPath() {
       return this.createFlow

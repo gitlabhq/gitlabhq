@@ -29,7 +29,7 @@ but contributions are welcome.
 
 ### GitLab
 
-See [our official Docker installation method](../../install/docker.md)
+See [our official Docker installation method](../../install/docker/index.md)
 for how to run GitLab on Docker.
 
 ### SAML

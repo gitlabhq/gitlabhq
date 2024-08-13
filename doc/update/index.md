@@ -62,7 +62,7 @@ for production. However, instructions on how to upgrade such an environment are 
 
 GitLab provides official Docker images for both Community and Enterprise
 editions, and they are based on the Omnibus package. See how to
-[install GitLab using Docker](../install/docker.md).
+[install GitLab using Docker](../install/docker/index.md).
 
 :::TabTitle Self-compiled (source)
 
@@ -273,7 +273,7 @@ Edition, follow the guides below based on the installation method:
   script, start the application and check its status.
 - [Omnibus CE to EE](package/convert_to_ee.md) - Follow this guide to upgrade your Omnibus
   GitLab Community Edition to the Enterprise Edition.
-- [Docker CE to EE](../install/docker.md#convert-community-edition-to-enterprise-edition) -
+- [Docker CE to EE](../install/docker/index.md#convert-community-edition-to-enterprise-edition) -
   Follow this guide to upgrade your GitLab Community Edition container to an Enterprise Edition container.
 - [Helm chart (Kubernetes) CE to EE](https://docs.gitlab.com/charts/installation/deployment.html#convert-community-edition-to-enterprise-edition) -
   Follow this guide to upgrade your GitLab Community Edition Helm deployment to Enterprise Edition.

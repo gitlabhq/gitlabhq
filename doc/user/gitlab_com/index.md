@@ -336,11 +336,11 @@ For self-managed instance limits, see:
 - [Webhook timeout](../../administration/instance_limits.md#webhook-timeout).
 - [Multiple Pages deployments](../../administration/instance_limits.md#number-of-extra-pages-deployments-when-using-multiple-deployments).
 
-## Runner SaaS
+## GitLab-hosted runners
 
-Runner SaaS is the hosted, secure, and managed build environment you can use to run CI/CD jobs for your GitLab.com hosted project.
+You can use GitLab-hosted runners to run your CI/CD jobs on GitLab.com and GitLab Dedicated to seamlessly build, test, and deploy your application on different environments.
 
-For more information, see [Runner SaaS](../../ci/runners/index.md).
+For more information, see [GitLab-hosted runners](../../ci/runners/index.md).
 
 ## Puma
 

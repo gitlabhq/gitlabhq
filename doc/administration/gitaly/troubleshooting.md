@@ -377,7 +377,7 @@ that do not exist in a repository.
 
 ## Git pushes are slow when Dynatrace is enabled
 
-Dynatrace can cause the `/opt/gitlab/embedded/bin/gitaly-hooks` reference transaction hook,
+Dynatrace can cause the `sudo -u git -- /opt/gitlab/embedded/bin/gitaly-hooks` reference transaction hook,
 to take several seconds to start up and shut down. `gitaly-hooks` is executed twice when users
 push, which causes a significant delay.
 
