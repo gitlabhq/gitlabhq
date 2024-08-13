@@ -270,14 +270,34 @@ RSpec.describe Gitlab::Ci::Config::Entry::Job, feature_category: :pipeline_compo
         using RSpec::Parameterized::TableSyntax
 
         where(:case_name, :config, :error) do
-          'when only step is used without name'   | { stage: 'build',
-run: [{ step: 'some reference' }] } | 'job run \'/0\' must be a valid \'required\''
-          'when only script is used without name' | { stage: 'build',
-run: [{ script: 'echo' }] } | 'job run \'/0\' must be a valid \'required\''
-          'when step and script are used together' | { stage: 'build',
-run: [{ name: 'step1', step: 'some reference', script: 'echo' }] } | 'job run \'/0\' must be a valid \'oneof\''
-          'when a subkey does not exist' | { stage: 'build',
-run: [{ name: 'step1', invalid_key: 'some value' }] } | 'job run \'/0\' must be a valid \'required\''
+          'when only step is used without name' | {
+            stage: 'build',
+            run: [{ step: 'some reference' }]
+          } | 'job run object at `/0` is missing required properties: name'
+
+          'when only script is used without name' | {
+            stage: 'build',
+            run: [{ script: 'echo' }]
+          } | 'job run object at `/0` is missing required properties: name'
+
+          'when step and script are used together' | {
+            stage: 'build',
+            run: [{
+              name: 'step1',
+              step: 'some reference',
+              script: 'echo'
+            }]
+          } | 'job run value at /0 should use only one of: step, script'
+
+          'when a required subkey is missing' | {
+            stage: 'build',
+            run: [{ name: 'step1' }]
+          } | 'job run object at `/0` is missing required properties: step'
+
+          'when a subkey is invalid' | {
+            stage: 'build',
+            run: [{ name: 'step1', step: 'some step', invalid_key: 'some value' }]
+          } | 'job run object property at `/0/invalid_key` is a disallowed additional property'
         end
 
         with_them do
@@ -292,7 +312,7 @@ run: [{ name: 'step1', invalid_key: 'some value' }] } | 'job run \'/0\' must be 
 
           it 'returns error about invalid run' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job run \'\' must be a valid \'array\''
+            expect(entry.errors).to include 'job run value at root is not an array'
           end
         end
 
@@ -312,7 +332,7 @@ run: [{ name: 'step1', invalid_key: 'some value' }] } | 'job run \'/0\' must be 
 
           it 'returns error about invalid env' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job run \'/0/env/my_var\' must be a valid \'string\''
+            expect(entry.errors).to include 'job run value at `/0/env/my_var` is not a string'
           end
         end
 
@@ -321,7 +341,7 @@ run: [{ name: 'step1', invalid_key: 'some value' }] } | 'job run \'/0\' must be 
 
           it 'returns error about invalid run' do
             expect(entry).not_to be_valid
-            expect(entry.errors).to include 'job run \'/0\' must be a valid \'required\''
+            expect(entry.errors).to include 'job run object at `/0` is missing required properties: step'
           end
         end
       end

@@ -709,7 +709,7 @@ To enable the analyzer, either:
 - Create a [scan execution policy](../policies/scan_execution_policies.md) that enforces dependency
   scanning.
 - Edit the `.gitlab-ci.yml` file manually.
-- [Use CI/CD components](#use-cicd-components) (Android projects only)
+- [Use CI/CD components](#use-cicd-components)
 
 #### Use a preconfigured merge request
 
@@ -771,9 +771,9 @@ Pipelines now include a Dependency Scanning job.
 Use [CI/CD components](../../../ci/components/index.md) to perform Dependency Scanning of your
 application. For instructions, see the respective component's README file.
 
-##### Available CI/CD components per language and package manager
+##### Available CI/CD components
 
-- [Android applications](https://gitlab.com/explore/catalog/components/android-dependency-scanning)
+See <https://gitlab.com/explore/catalog/components/dependency-scanning>
 
 ### Running jobs in merge request pipelines
 

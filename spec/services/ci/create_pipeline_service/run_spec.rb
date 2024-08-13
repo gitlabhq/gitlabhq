@@ -137,7 +137,7 @@ RSpec.describe Ci::CreatePipelineService, :ci_config_feature_flag_correctness,
     it 'returns errors for invalid configuration' do
       expect(pipeline).not_to be_created_successfully
       expect(pipeline.errors.full_messages).to include(
-        "jobs:job run '/0' must be a valid 'required'"
+        "jobs:job run object at `/0` is missing required properties: name"
       )
     end
   end

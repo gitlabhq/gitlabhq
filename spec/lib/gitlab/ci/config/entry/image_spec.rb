@@ -136,7 +136,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
           it 'raises an error' do
             expect(entry).not_to be_valid
             expect(entry.errors.first)
-              .to match %r{image executor opts '/docker/platform' must be a valid 'string'}
+              .to match %r{image executor opts value at `/docker/platform` is not a string}
           end
         end
       end
@@ -184,7 +184,7 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
           it 'raises an error' do
             expect(entry).not_to be_valid
             expect(entry.errors.first)
-              .to match %r{image executor opts '/docker/user' must be a valid 'string'}
+              .to match %r{image executor opts value at `/docker/user` is not a string}
           end
         end
       end
@@ -194,8 +194,9 @@ RSpec.describe Gitlab::Ci::Config::Entry::Image do
 
         it 'is not valid' do
           expect(entry).not_to be_valid
-          expect(entry.errors.first)
-            .to match %r{image executor opts '/docker/unknown_key' must be a valid 'schema'}
+          expect(entry.errors.first).to match(
+            %r{image executor opts object property at `/docker/unknown_key` is a disallowed additional property}
+          )
         end
       end
     end

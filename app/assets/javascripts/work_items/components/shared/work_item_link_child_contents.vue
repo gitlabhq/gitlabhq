@@ -158,9 +158,7 @@ export default {
       </gl-tooltip>
     </div>
     <div class="gl-display-flex gl-flex-direction-column gl-flex-grow-1 gl-flex-wrap gl-min-w-0">
-      <div
-        class="gl-display-flex gl-flex-wrap flex-xl-nowrap gl-justify-content-space-between gl-gap-3 gl-min-w-0 gl-mb-2"
-      >
+      <div class="gl-flex gl-justify-between gl-gap-3 gl-min-w-0 gl-mb-2">
         <div class="item-title gl-min-w-0">
           <span v-if="childItem.confidential">
             <gl-icon

@@ -115,6 +115,7 @@ export default {
       widgetName: TASKS_ANCHOR,
       showLabels: true,
       fetchNextPageInProgress: false,
+      disableContent: false,
     };
   },
   computed: {
@@ -329,6 +330,7 @@ export default {
             :parent-milestone="issuableMilestone"
             :form-type="formType"
             :parent-work-item-type="workItem.workItemType.name"
+            @update-in-progress="disableContent = $event"
             @cancel="hideAddForm"
           />
           <work-item-children-wrapper
@@ -338,6 +340,7 @@ export default {
             :work-item-id="issuableGid"
             :work-item-iid="iid"
             :show-labels="showLabels"
+            :disable-content="disableContent"
             @error="error = $event"
             @show-modal="openChild"
           />

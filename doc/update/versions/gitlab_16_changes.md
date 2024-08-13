@@ -86,9 +86,24 @@ For more information about upgrading GitLab Helm Chart, see [the release notes f
 
 ## 16.11.0
 
+- A [`groups_direct` field was added](https://gitlab.com/gitlab-org/gitlab/-/merge_requests/146881)
+  to the [JSON web token (ID token)](../../ci/secrets/id_token_authentication.md).
+  - If you use GitLab CI/CD ID tokens to authenticate with third party services,
+    this change can cause the HTTP header size to increase. Proxy servers might reject
+    the request if the headers get too big.
+  - If possible, increase the header limit on the receiving system.
+  - See [issue 467253](https://gitlab.com/gitlab-org/gitlab/-/issues/467253) for more details.
+- After upgrading to GitLab 16.11 some users with large environments and databases experience
+  timeouts loading source code pages in the web UI.
+  - These timeouts are caused by slow PostgreSQL queries for pipeline data, which then
+    exceed the internal 60 second timeout.
+  - You can still clone Git repositories, and other requests for repository data works.
+  - See [issue 472420](https://gitlab.com/gitlab-org/gitlab/-/issues/472420) for more details,
+    including steps to confirm you're affected and housekeeping to run in PostgreSQL to correct it.
+
 ### Linux package installations
 
-In GitLab 16.11, PostgreSQL will automatically be upgraded to 14.x except for the following cases:
+In GitLab 16.11, PostgreSQL is automatically upgraded to 14.x except for the following cases:
 
 - You are running the database in high availability using Patroni.
 - Your database nodes are part of a GitLab Geo configuration.

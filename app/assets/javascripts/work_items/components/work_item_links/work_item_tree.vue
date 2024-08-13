@@ -106,6 +106,7 @@ export default {
       showLabels: true,
       fetchNextPageInProgress: false,
       workItem: null,
+      disableContent: false,
     };
   },
   apollo: {
@@ -324,6 +325,7 @@ export default {
           :parent-confidential="confidential"
           @cancel="hideAddForm"
           @addChild="$emit('addChild')"
+          @update-in-progress="disableContent = $event"
         />
         <work-item-children-wrapper
           :children="children"
@@ -333,6 +335,7 @@ export default {
           :work-item-iid="workItemIid"
           :work-item-type="workItemType"
           :show-labels="showLabels"
+          :disable-content="disableContent"
           @error="error = $event"
           @show-modal="showModal"
         />

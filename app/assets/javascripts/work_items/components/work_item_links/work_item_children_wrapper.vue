@@ -54,10 +54,16 @@ export default {
       required: false,
       default: true,
     },
+    disableContent: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
       prefetchedWorkItem: null,
+      updateInProgress: false,
     };
   },
   computed: {
@@ -85,6 +91,9 @@ export default {
       return this.children
         .map((child) => findHierarchyWidgets(child.widgets) || {})
         .some((hierarchy) => hierarchy.hasChildren);
+    },
+    disableList() {
+      return this.disableContent || this.updateInProgress;
     },
   },
   methods: {
@@ -121,6 +130,7 @@ export default {
     },
     async undoChildRemoval(child) {
       try {
+        this.updateInProgress = true;
         const { data } = await this.$apollo.mutate({
           mutation: updateWorkItemMutation,
           variables: { input: { id: child.id, hierarchyWidget: { parentId: this.workItemId } } },
@@ -140,6 +150,8 @@ export default {
       } catch (error) {
         this.$emit('error', s__('WorkItem|Something went wrong while undoing child removal.'));
         Sentry.captureException(error);
+      } finally {
+        this.updateInProgress = false;
       }
     },
     addWorkItemQuery({ iid }) {
@@ -210,6 +222,7 @@ export default {
       const updatedChildren = this.children.slice();
       updatedChildren.splice(oldIndex, 1);
       updatedChildren.splice(newIndex, 0, targetItem);
+      this.updateInProgress = true;
 
       this.$apollo
         .mutate({
@@ -255,6 +268,9 @@ export default {
         .catch((error) => {
           this.$emit('error', error.message);
           Sentry.captureException(error);
+        })
+        .finally(() => {
+          this.updateInProgress = false;
         });
     },
   },
@@ -266,7 +282,8 @@ export default {
     :is="treeRootWrapper"
     v-bind="treeRootOptions"
     class="content-list"
-    :class="{ 'gl-cursor-grab sortable-container': canReorder }"
+    data-testid="child-items-container"
+    :class="{ 'gl-cursor-grab sortable-container': canReorder, 'disabled-content': disableList }"
     @end="handleDragOnEnd"
   >
     <work-item-link-child

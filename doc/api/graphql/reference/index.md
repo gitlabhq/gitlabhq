@@ -19021,6 +19021,7 @@ GitLab CI/CD configuration template.
 | <a id="clusteragentid"></a>`id` | [`ID!`](#id) | ID of the cluster agent. |
 | <a id="clusteragentname"></a>`name` | [`String`](#string) | Name of the cluster agent. |
 | <a id="clusteragentproject"></a>`project` | [`Project`](#project) | Project this cluster agent is associated with. |
+| <a id="clusteragentremotedevelopmentagentconfig"></a>`remoteDevelopmentAgentConfig` | [`RemoteDevelopmentAgentConfig`](#remotedevelopmentagentconfig) | Remote development agent config for the cluster agent. |
 | <a id="clusteragenttokens"></a>`tokens` | [`ClusterAgentTokenConnection`](#clusteragenttokenconnection) | Tokens associated with the cluster agent. (see [Connections](#connections)) |
 | <a id="clusteragentupdatedat"></a>`updatedAt` | [`Time`](#time) | Timestamp the cluster agent was updated. |
 | <a id="clusteragentuseraccessauthorizations"></a>`userAccessAuthorizations` | [`ClusterAgentAuthorizationUserAccess`](#clusteragentauthorizationuseraccess) | User access config for the cluster agent. |
@@ -31135,6 +31136,28 @@ Represents the source code attached to a release in a particular format.
 | <a id="releasesourceformat"></a>`format` | [`String`](#string) | Format of the source. |
 | <a id="releasesourceurl"></a>`url` | [`String`](#string) | Download URL of the source. |
 
+### `RemoteDevelopmentAgentConfig`
+
+Represents a remote development agent configuration.
+
+#### Fields
+
+| Name | Type | Description |
+| ---- | ---- | ----------- |
+| <a id="remotedevelopmentagentconfigclusteragent"></a>`clusterAgent` | [`ClusterAgent!`](#clusteragent) | Cluster agent that the remote development agent config belongs to. |
+| <a id="remotedevelopmentagentconfigcreatedat"></a>`createdAt` | [`Time!`](#time) | Timestamp of when the remote development agent config was created. |
+| <a id="remotedevelopmentagentconfigdefaultmaxhoursbeforetermination"></a>`defaultMaxHoursBeforeTermination` | [`Int!`](#int) | Default max hours before worksapce termination of the remote development agent config. |
+| <a id="remotedevelopmentagentconfigdnszone"></a>`dnsZone` | [`String!`](#string) | DNS zone where workspaces are available. |
+| <a id="remotedevelopmentagentconfigenabled"></a>`enabled` | [`Boolean!`](#boolean) | Indicates whether remote development is enabled for the GitLab agent. |
+| <a id="remotedevelopmentagentconfiggitlabworkspacesproxynamespace"></a>`gitlabWorkspacesProxyNamespace` | [`String!`](#string) | Namespace where gitlab-workspaces-proxy is installed. |
+| <a id="remotedevelopmentagentconfigid"></a>`id` | [`RemoteDevelopmentRemoteDevelopmentAgentConfigID!`](#remotedevelopmentremotedevelopmentagentconfigid) | Global ID of the remote development agent config. |
+| <a id="remotedevelopmentagentconfigmaxhoursbeforeterminationlimit"></a>`maxHoursBeforeTerminationLimit` | [`Int!`](#int) | Max hours before worksapce termination limit of the remote development agent config. |
+| <a id="remotedevelopmentagentconfignetworkpolicyenabled"></a>`networkPolicyEnabled` | [`Boolean!`](#boolean) | Whether the network policy of the remote development agent config is enabled. |
+| <a id="remotedevelopmentagentconfigprojectid"></a>`projectId` | [`ID`](#id) | ID of the project that the remote development agent config belongs to. |
+| <a id="remotedevelopmentagentconfigupdatedat"></a>`updatedAt` | [`Time!`](#time) | Timestamp of the last update to any mutable remote development agent config property. |
+| <a id="remotedevelopmentagentconfigworkspacesperuserquota"></a>`workspacesPerUserQuota` | [`Int!`](#int) | Maximum number of workspaces per user. |
+| <a id="remotedevelopmentagentconfigworkspacesquota"></a>`workspacesQuota` | [`Int!`](#int) | Maximum number of workspaces for the GitLab agent. |
+
 ### `Repository`
 
 #### Fields
@@ -38682,6 +38705,12 @@ An example `ReleaseID` is: `"gid://gitlab/Release/1"`.
 A `ReleasesLinkID` is a global ID. It is encoded as a string.
 
 An example `ReleasesLinkID` is: `"gid://gitlab/Releases::Link/1"`.
+
+### `RemoteDevelopmentRemoteDevelopmentAgentConfigID`
+
+A `RemoteDevelopmentRemoteDevelopmentAgentConfigID` is a global ID. It is encoded as a string.
+
+An example `RemoteDevelopmentRemoteDevelopmentAgentConfigID` is: `"gid://gitlab/RemoteDevelopment::RemoteDevelopmentAgentConfig/1"`.
 
 ### `RemoteDevelopmentWorkspaceID`
 

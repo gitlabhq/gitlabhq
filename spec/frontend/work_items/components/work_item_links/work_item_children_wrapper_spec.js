@@ -1,9 +1,11 @@
 import Vue, { nextTick } from 'vue';
 import VueApollo from 'vue-apollo';
+import Draggable from 'vuedraggable';
 
 import createMockApollo from 'helpers/mock_apollo_helper';
 import { shallowMountExtended } from 'helpers/vue_test_utils_helper';
 import waitForPromises from 'helpers/wait_for_promises';
+import { isLoggedIn } from '~/lib/utils/common_utils';
 import WorkItemChildrenWrapper from '~/work_items/components/work_item_links/work_item_children_wrapper.vue';
 import WorkItemLinkChild from '~/work_items/components/work_item_links/work_item_link_child.vue';
 import updateWorkItemMutation from '~/work_items/graphql/update_work_item.mutation.graphql';
@@ -18,6 +20,8 @@ import {
   workItemByIidResponseFactory,
 } from '../../mock_data';
 
+jest.mock('~/lib/utils/common_utils');
+
 describe('WorkItemChildrenWrapper', () => {
   let wrapper;
 
@@ -30,6 +34,8 @@ describe('WorkItemChildrenWrapper', () => {
     .mockResolvedValue(changeWorkItemParentMutationResponse);
 
   const findWorkItemLinkChildItems = () => wrapper.findAllComponents(WorkItemLinkChild);
+  const findDraggable = () => wrapper.findComponent(Draggable);
+  const findChildItemsContainer = () => wrapper.findByTestId('child-items-container');
 
   Vue.use(VueApollo);
 
@@ -38,6 +44,8 @@ describe('WorkItemChildrenWrapper', () => {
     confidential = false,
     children = childrenWorkItems,
     mutationHandler = updateWorkItemMutationHandler,
+    disableContent = false,
+    canUpdate = false,
   } = {}) => {
     const mockApollo = createMockApollo([
       [workItemByIidQuery, getWorkItemQueryHandler],
@@ -62,6 +70,8 @@ describe('WorkItemChildrenWrapper', () => {
         workItemIid: '1',
         confidential,
         children,
+        disableContent,
+        canUpdate,
       },
       mocks: {
         $toast,
@@ -113,6 +123,44 @@ describe('WorkItemChildrenWrapper', () => {
       }
     },
   );
+
+  it('does not render draggable component when user is not logged in', () => {
+    createComponent({ canUpdate: true });
+
+    expect(findDraggable().exists()).toBe(false);
+  });
+
+  it('disables list when `disableContent` is true', () => {
+    createComponent({ disableContent: true });
+
+    expect(findChildItemsContainer().classes('disabled-content')).toBe(true);
+  });
+
+  describe('when user is logged in', () => {
+    beforeEach(() => {
+      isLoggedIn.mockReturnValue(true);
+    });
+
+    it('renders draggable component without disabling the list', () => {
+      createComponent({ canUpdate: true });
+
+      expect(findDraggable().exists()).toBe(true);
+      expect(findDraggable().classes('disabled-content')).toBe(false);
+    });
+
+    it('does not render draggable component when user has no permission', () => {
+      createComponent({ canUpdate: false });
+
+      expect(findDraggable().exists()).toBe(false);
+    });
+
+    it('disables the list when `disableContent` is true', () => {
+      createComponent({ disableContent: true, canUpdate: true });
+
+      expect(findDraggable().exists()).toBe(true);
+      expect(findDraggable().classes('disabled-content')).toBe(true);
+    });
+  });
 
   describe('when removing child work item', () => {
     const workItem = { id: 'gid://gitlab/WorkItem/2' };

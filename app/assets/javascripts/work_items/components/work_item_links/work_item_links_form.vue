@@ -278,8 +278,12 @@ export default {
       this.error = null;
       this.isInputValid = true;
     },
+    markFormSubmitInProgress(value) {
+      this.submitInProgress = value;
+      this.$emit('update-in-progress', this.submitInProgress);
+    },
     addChild() {
-      this.submitInProgress = true;
+      this.markFormSubmitInProgress(true);
       this.$apollo
         .mutate({
           mutation: updateWorkItemHierarchyMutation,
@@ -293,6 +297,9 @@ export default {
           },
         })
         .then(({ data }) => {
+          // Marking submitInProgress cannot be in finally block
+          // as the form may get close before the event is emitted
+          this.markFormSubmitInProgress(false);
           if (data.workItemUpdate?.errors?.length) {
             [this.error] = data.workItemUpdate.errors;
           } else {
@@ -304,17 +311,17 @@ export default {
         .catch(() => {
           this.error = this.$options.i18n.addChildErrorMessage;
           this.isInputValid = false;
+          this.markFormSubmitInProgress(false);
         })
         .finally(() => {
           this.search = '';
-          this.submitInProgress = false;
         });
     },
     createChild() {
       if (!this.canSubmitForm) {
         return;
       }
-      this.submitInProgress = true;
+      this.markFormSubmitInProgress(true);
       this.$apollo
         .mutate({
           mutation: createWorkItemMutation,
@@ -329,6 +336,9 @@ export default {
             }),
         })
         .then(({ data }) => {
+          // Marking submitInProgress cannot be in finally block
+          // as the form may get close before the event is emitted
+          this.markFormSubmitInProgress(false);
           if (data.workItemCreate?.errors?.length) {
             [this.error] = data.workItemCreate.errors;
           } else {
@@ -340,11 +350,11 @@ export default {
         .catch(() => {
           this.error = this.$options.i18n.createChildErrorMessage;
           this.isInputValid = false;
+          this.markFormSubmitInProgress(false);
         })
         .finally(() => {
           this.search = '';
           this.childToCreateTitle = null;
-          this.submitInProgress = false;
         });
     },
     closeForm() {

@@ -1533,9 +1533,6 @@ msgstr ""
 msgid "%{wildcards_link_start}Wildcards%{wildcards_link_end} such as %{code_tag_start}v*%{code_tag_end} or %{code_tag_start}*-release%{code_tag_end} are supported."
 msgstr ""
 
-msgid "'%{data_pointer}' must be a valid '%{type}'"
-msgstr ""
-
 msgid "'%{group_name}' has been scheduled for removal on %{removal_time}."
 msgstr ""
 
@@ -64528,6 +64525,9 @@ msgstr ""
 msgid "should have length between 16 to 24 characters."
 msgstr ""
 
+msgid "should use only one of: %{requirements}"
+msgstr ""
+
 msgid "show %{count} more"
 msgstr ""
 
@@ -64705,6 +64705,9 @@ msgid "users"
 msgstr ""
 
 msgid "v%{version} published %{timeAgo}"
+msgstr ""
+
+msgid "value at %{data_pointer} should use only one of: %{requirements}"
 msgstr ""
 
 msgid "value for '%{storage}' must be an integer"

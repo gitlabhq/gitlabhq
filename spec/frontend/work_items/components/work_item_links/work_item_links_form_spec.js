@@ -152,6 +152,19 @@ describe('WorkItemLinksForm', () => {
   );
 
   describe('creating a new work item', () => {
+    const submitForm = ({ title, fullPath }) => {
+      findInput().vm.$emit('input', title);
+
+      if (fullPath) {
+        findProjectSelector().vm.$emit('selectProject', fullPath);
+      }
+
+      // Trigger form submission
+      findForm().vm.$emit('submit', {
+        preventDefault: jest.fn(),
+      });
+    };
+
     describe('for project level work items', () => {
       beforeEach(async () => {
         await createComponent();
@@ -171,11 +184,10 @@ describe('WorkItemLinksForm', () => {
         expect(findFormGroup().props('invalidFeedback')).toBe(null);
         expect(findInput().props('state')).toBe(true);
 
-        findInput().vm.$emit('input', 'Create task test');
-        // Trigger form submission
-        findForm().vm.$emit('submit', {
-          preventDefault: jest.fn(),
-        });
+        submitForm({ title: 'Create task test' });
+
+        expect(wrapper.emitted('update-in-progress')).toEqual([[true]]);
+
         await waitForPromises();
 
         expect(findFormGroup().props('state')).toBe(false);
@@ -183,14 +195,14 @@ describe('WorkItemLinksForm', () => {
           'Something went wrong when trying to create a child. Please try again.',
         );
         expect(findInput().props('state')).toBe(false);
+        expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
 
       it('creates child task in non confidential parent and closes the form', async () => {
-        findInput().vm.$emit('input', 'Create task test');
+        submitForm({ title: 'Create task test' });
 
-        findForm().vm.$emit('submit', {
-          preventDefault: jest.fn(),
-        });
+        expect(wrapper.emitted('update-in-progress')).toEqual([[true]]);
+
         await waitForPromises();
 
         expect(createMutationResolver).toHaveBeenCalledWith({
@@ -206,17 +218,18 @@ describe('WorkItemLinksForm', () => {
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
         expect(wrapper.emitted('cancel')).toEqual([[]]);
+        expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
 
       it('creates child task in confidential parent', async () => {
         await createComponent({ parentConfidential: true });
 
-        findInput().vm.$emit('input', 'Create confidential task');
+        submitForm({ title: 'Create confidential task' });
 
-        findForm().vm.$emit('submit', {
-          preventDefault: jest.fn(),
-        });
+        expect(wrapper.emitted('update-in-progress')).toEqual([[true]]);
+
         await waitForPromises();
+
         expect(wrapper.vm.childWorkItemType).toEqual(workItemTypeIdForTask);
         expect(createMutationResolver).toHaveBeenCalledWith({
           input: {
@@ -229,6 +242,7 @@ describe('WorkItemLinksForm', () => {
             confidential: true,
           },
         });
+        expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
     });
 
@@ -250,13 +264,9 @@ describe('WorkItemLinksForm', () => {
       });
 
       it('creates child issue in non confidential parent and closes the form', async () => {
-        findInput().vm.$emit('input', 'Create issue test');
+        submitForm({ title: 'Create issue test', fullPath: projectData[0].fullPath });
 
-        findProjectSelector().vm.$emit('selectProject', projectData[0].fullPath);
-
-        findForm().vm.$emit('submit', {
-          preventDefault: jest.fn(),
-        });
+        expect(wrapper.emitted('update-in-progress')).toEqual([[true]]);
 
         await waitForPromises();
 
@@ -272,6 +282,7 @@ describe('WorkItemLinksForm', () => {
           },
         });
         expect(wrapper.emitted('addChild')).toEqual([[]]);
+        expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
         expect(wrapper.emitted('cancel')).toEqual([[]]);
       });
 
@@ -283,13 +294,9 @@ describe('WorkItemLinksForm', () => {
           childrenType: WORK_ITEM_TYPE_ENUM_ISSUE,
         });
 
-        findInput().vm.$emit('input', 'Create confidential issue');
+        submitForm({ title: 'Create confidential issue', fullPath: projectData[0].fullPath });
 
-        findProjectSelector().vm.$emit('selectProject', projectData[0].fullPath);
-
-        findForm().vm.$emit('submit', {
-          preventDefault: jest.fn(),
-        });
+        expect(wrapper.emitted('update-in-progress')).toEqual([[true]]);
 
         await waitForPromises();
 
@@ -304,6 +311,7 @@ describe('WorkItemLinksForm', () => {
             confidential: true,
           },
         });
+        expect(wrapper.emitted('update-in-progress')[1]).toEqual([false]);
       });
     });
 

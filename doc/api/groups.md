@@ -35,7 +35,7 @@ Parameters:
 | `search`                              | string            | no       | Return the list of authorized groups matching the search criteria |
 | `order_by`                            | string            | no       | Order groups by `name`, `path`, `id`, or `similarity`. Default is `name` |
 | `sort`                                | string            | no       | Order groups in `asc` or `desc` order. Default is `asc` |
-| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* The REST API response does not provide the full `RootStorageStatistics` data that is shown in the UI. To match the data in the UI, use GraphQL instead of REST. For more information, see the [Group GraphQL API resources](../api/graphql/reference/index.md#group).|
+| `statistics`                          | boolean           | no       | Include group statistics (administrators only).<br>*Note:* For top-level groups, the response returns the full `root_storage_statistics` data displayed in the UI. [Introduced](https://gitlab.com/gitlab-org/gitlab/-/issues/469254) in GitLab 17.3. |
 | `visibility`                          | string            | no       | Limit to groups with `public`, `internal`, or `private` visibility. |
 | `with_custom_attributes`              | boolean           | no       | Include [custom attributes](custom_attributes.md) in response (administrators only) |
 | `owned`                               | boolean           | no       | Limit to groups explicitly owned by the current user |
@@ -95,7 +95,7 @@ GET /groups
 ]
 ```
 
-When adding the parameter `statistics=true` and the authenticated user is an administrator, additional group statistics are returned.
+When adding the parameter `statistics=true` and the authenticated user is an administrator, additional group statistics are returned. For top-level groups, `root_storage_statistics` are added as well.
 
 ```plaintext
 GET /groups?statistics=true
@@ -154,6 +154,20 @@ GET /groups?statistics=true
       "snippets_size": 50,
       "uploads_size": 0
     },
+    "root_storage_statistics": {
+      "build_artifacts_size": 0,
+      "container_registry_size": 0,
+      "container_registry_size_is_estimated": false,
+      "dependency_proxy_size": 0,
+      "lfs_objects_size": 0,
+      "packages_size": 0,
+      "pipeline_artifacts_size": 0,
+      "repository_size": 0,
+      "snippets_size": 0,
+      "storage_size": 0,
+      "uploads_size": 0,
+      "wiki_size": 0
+  },
     "wiki_access_level": "private",
     "duo_features_enabled": true,
     "lock_duo_features_enabled": false,
