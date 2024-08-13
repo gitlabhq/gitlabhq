@@ -5020,7 +5020,31 @@ msgstr ""
 msgid "AiPowered|Configure AI-powered GitLab Duo features. %{linkStart}Which features?%{linkEnd}"
 msgstr ""
 
+msgid "AiPowered|Features are available. However, any group, subgroup, or project can turn them off."
+msgstr ""
+
+msgid "AiPowered|Features are not available and cannot be turned on for any group, subgroup, or project."
+msgstr ""
+
+msgid "AiPowered|Features are not available. However, any group, subgroup, or project can turn them on."
+msgstr ""
+
 msgid "AiPowered|GitLab Duo features"
+msgstr ""
+
+msgid "AiPowered|Never on"
+msgstr ""
+
+msgid "AiPowered|Off by default"
+msgstr ""
+
+msgid "AiPowered|On by default"
+msgstr ""
+
+msgid "AiPowered|When you save, GitLab Duo will be turned for all groups, subgroups, and projects."
+msgstr ""
+
+msgid "AiPowered|When you save, GitLab Duo will be turned off for all groups, subgroups, and projects."
 msgstr ""
 
 msgid "Akismet"
@@ -33088,6 +33112,9 @@ msgid "MergeChecks|Skipped pipelines are considered successful"
 msgstr ""
 
 msgid "MergeChecks|This setting is configured in group %{groupName} and can only be changed in the group settings by an administrator or group owner."
+msgstr ""
+
+msgid "MergeChecks|View locked files"
 msgstr ""
 
 msgid "MergeConflict|Commit to source branch"

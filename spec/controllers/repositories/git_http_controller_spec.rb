@@ -101,19 +101,6 @@ RSpec.describe Repositories::GitHttpController, feature_category: :source_code_m
           end
         end
 
-        describe 'recording the onboarding progress', :sidekiq_inline do
-          let_it_be(:namespace) { project.namespace }
-
-          before do
-            Onboarding::Progress.onboard(namespace)
-            send_request
-          end
-
-          subject { Onboarding::Progress.completed?(namespace, :git_pull) }
-
-          it { is_expected.to be(true) }
-        end
-
         context 'when disable_git_http_fetch_writes is enabled' do
           before do
             stub_feature_flags(disable_git_http_fetch_writes: true)

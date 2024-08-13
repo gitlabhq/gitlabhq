@@ -12,7 +12,7 @@ module RuboCop
         # the Enterprise Edition code.
         # We ignore GraphQL top-level namespaces because it's the way organize GraphQL code.
         # These are ignored after the EE module because GraphQL code can be namespaced under EE too.
-        IGNORED_TOP_LEVEL_NAMESPACES = %w[EE Mutations Types Resolvers].freeze
+        IGNORED_TOP_LEVEL_NAMESPACES = %w[EE Mutations Types::PermissionTypes Types PermissionTypes Resolvers].freeze
 
         class << self
           def external_dependency_checksum
@@ -56,24 +56,25 @@ module RuboCop
           return if self.class.bounded_contexts.include?(identifiers.first)
 
           @offense_added = true
-          add_offense(node.loc.name, message: format(message_template, identifier: identifiers.join("::")))
+          add_offense(node.loc.name, message: format(message_template, identifier: identifiers.join('::')))
         end
 
         def collect_identifiers(node)
           return if identifiers.any?
 
-          ids = identifiers_for(node)
-          ids.shift if IGNORED_TOP_LEVEL_NAMESPACES.include?(ids.first)
+          full_id = full_identifier_for(node)
+          namespace = IGNORED_TOP_LEVEL_NAMESPACES.find { |n| full_id.starts_with?(n) }
+          full_id.sub!(/^#{namespace}(::)*/, '') if namespace
 
-          identifiers.concat(ids)
+          identifiers.concat(full_id.split('::'))
         end
 
         def identifiers
           @identifiers ||= []
         end
 
-        def identifiers_for(node)
-          node.identifier.source.sub(/^::/, '').split('::')
+        def full_identifier_for(node)
+          node.identifier.source.sub(/^::/, '')
         end
       end
     end

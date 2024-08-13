@@ -11,7 +11,7 @@ RSpec.describe Onboarding::Completion, feature_category: :onboarding do
 
   describe '#percentage' do
     let(:tracked_action_columns) do
-      [*described_class::ACTION_PATHS, :security_scan_enabled].map do |key|
+      [*described_class::ACTION_PATHS, :git_write].map do |key|
         ::Onboarding::Progress.column_name(key)
       end
     end

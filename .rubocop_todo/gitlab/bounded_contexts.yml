@@ -3266,7 +3266,6 @@ Gitlab/BoundedContexts:
     - 'ee/app/services/ee/issues/update_service.rb'
     - 'ee/app/services/ee/keys/create_service.rb'
     - 'ee/app/services/ee/keys/destroy_service.rb'
-    - 'ee/app/services/ee/labels/create_service.rb'
     - 'ee/app/services/ee/labels/promote_service.rb'
     - 'ee/app/services/ee/lfs/lock_file_service.rb'
     - 'ee/app/services/ee/lfs/unlock_file_service.rb'

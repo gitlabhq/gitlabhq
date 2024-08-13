@@ -98,9 +98,6 @@ module Repositories
       return unless project
       return if Gitlab::Database.read_only?
       return unless repo_type.project?
-
-      Onboarding::ProgressService.async(project.namespace_id).execute(action: :git_pull)
-
       return if skip_fetch_statistics_increment?
 
       Projects::FetchStatisticsIncrementService.new(project).execute

@@ -5,7 +5,7 @@ require 'spec_helper'
 RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
   describe '.async' do
     let_it_be(:namespace) { create(:namespace) }
-    let_it_be(:action) { :git_pull }
+    let_it_be(:action) { :git_write }
 
     subject(:execute_service) { described_class.async(namespace.id).execute(action: action) }
 
@@ -48,7 +48,7 @@ RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
     let(:namespace) { create(:namespace) }
     let(:action) { :namespace_action }
 
-    subject(:execute_service) { described_class.new(namespace).execute(action: :subscription_created) }
+    subject(:execute_service) { described_class.new(namespace).execute(action: :merge_request_created) }
 
     context 'when the namespace is a root' do
       before do
@@ -58,7 +58,7 @@ RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
       it 'registers a namespace onboarding progress action for the given namespace' do
         execute_service
 
-        expect(Onboarding::Progress.completed?(namespace, :subscription_created)).to eq(true)
+        expect(Onboarding::Progress.completed?(namespace, :merge_request_created)).to eq(true)
       end
     end
 
@@ -72,7 +72,7 @@ RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(Onboarding::Progress.completed?(group, :subscription_created)).to be(false)
+        expect(Onboarding::Progress.completed?(group, :merge_request_created)).to be(false)
       end
     end
 
@@ -82,7 +82,7 @@ RSpec.describe Onboarding::ProgressService, feature_category: :onboarding do
       it 'does not register a namespace onboarding progress action' do
         execute_service
 
-        expect(Onboarding::Progress.completed?(namespace, :subscription_created)).to be(false)
+        expect(Onboarding::Progress.completed?(namespace, :merge_request_created)).to be(false)
       end
     end
   end

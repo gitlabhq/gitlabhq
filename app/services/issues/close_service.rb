@@ -53,10 +53,7 @@ module Issues
       issue.update_project_counter_caches
       track_incident_action(current_user, issue, :incident_closed)
 
-      if closed_via.is_a?(MergeRequest)
-        store_first_mentioned_in_commit_at(issue, closed_via)
-        Onboarding::ProgressService.new(project.namespace).execute(action: :issue_auto_closed)
-      end
+      store_first_mentioned_in_commit_at(issue, closed_via) if closed_via.is_a?(MergeRequest)
 
       Milestones::ClosedIssuesCountService.new(issue.milestone).delete_cache if issue.milestone
 

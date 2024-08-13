@@ -2248,7 +2248,6 @@
 - './ee/spec/services/ee/issues/move_service_spec.rb'
 - './ee/spec/services/ee/issues/update_service_spec.rb'
 - './ee/spec/services/ee/keys/destroy_service_spec.rb'
-- './ee/spec/services/ee/labels/create_service_spec.rb'
 - './ee/spec/services/ee/labels/promote_service_spec.rb'
 - './ee/spec/services/ee/members/create_service_spec.rb'
 - './ee/spec/services/ee/members/destroy_service_spec.rb'

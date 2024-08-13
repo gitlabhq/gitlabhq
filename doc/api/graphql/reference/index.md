@@ -24278,6 +24278,7 @@ CI/CD variables a project inherites from its parent group and ancestors.
 | <a id="inheritedcivariableenvironmentscope"></a>`environmentScope` | [`String`](#string) | Scope defining the environments that can use the variable. |
 | <a id="inheritedcivariablegroupcicdsettingspath"></a>`groupCiCdSettingsPath` | [`String`](#string) | Indicates the path to the CI/CD settings of the group the variable belongs to. |
 | <a id="inheritedcivariablegroupname"></a>`groupName` | [`String`](#string) | Indicates group the variable belongs to. |
+| <a id="inheritedcivariablehidden"></a>`hidden` | [`Boolean`](#boolean) | Indicates whether the variable is hidden. |
 | <a id="inheritedcivariableid"></a>`id` | [`ID!`](#id) | ID of the variable. |
 | <a id="inheritedcivariablekey"></a>`key` | [`String`](#string) | Name of the variable. |
 | <a id="inheritedcivariablemasked"></a>`masked` | [`Boolean`](#boolean) | Indicates whether the variable is masked. |

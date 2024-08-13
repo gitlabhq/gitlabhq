@@ -8,6 +8,10 @@ export const COMPONENTS = {
   default: () => import('./message.vue'),
   requested_changes: () =>
     import('ee_component/vue_merge_request_widget/components/checks/requested_changes.vue'),
+  locked_paths: () =>
+    import('ee_component/vue_merge_request_widget/components/checks/locked_paths.vue'),
+  locked_lfs_files: () =>
+    import('ee_component/vue_merge_request_widget/components/checks/locked_paths.vue'),
 };
 
 export const FAILURE_REASONS = {

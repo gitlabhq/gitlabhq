@@ -303,7 +303,7 @@ To resolve this issue:
    ```
 
 1. If you [installed the app from the official Atlassian Marketplace listing](jira_cloud_app.md#install-the-gitlab-for-jira-cloud-app-from-the-atlassian-marketplace),
-   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` without leading slashes.
+   ensure [**Jira Connect Proxy URL**](jira_cloud_app.md#set-up-your-instance) is set to `https://gitlab.com` with no trailing slash.
 
 ## `Missing required parameter: client_id`
 

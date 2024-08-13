@@ -194,6 +194,37 @@ RSpec.describe RuboCop::Cop::Gitlab::BoundedContexts, feature_category: :tooling
       SOURCE
     end
 
+    it 'flags an offense for a permission type not in a bounded context' do
+      expect_offense(<<~SOURCE)
+        module Types
+          module PermissionTypes
+            module NotABoundedContext
+                   ^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+            end
+          end
+        end
+      SOURCE
+    end
+
+    it 'flags an offense for a permission type not in a bounded context (compact)' do
+      expect_offense(<<~SOURCE)
+        module Types::PermissionTypes::NotABoundedContext
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ Module `NotABoundedContext` is not a valid bounded context. See https://docs.gitlab.com/ee/development/software_design#bounded-contexts.
+        end
+      SOURCE
+    end
+
+    it 'does not flag an offense for a permission type in a bounded context' do
+      expect_no_offenses(<<~SOURCE)
+        module Types
+          module PermissionTypes
+            module RemoteDevelopment
+            end
+          end
+        end
+      SOURCE
+    end
+
     it 'flags an offense for a resolver not in a bounded context' do
       expect_offense(<<~SOURCE)
         module Resolvers

@@ -27596,6 +27596,8 @@ CREATE UNIQUE INDEX index_emails_on_confirmation_token ON emails USING btree (co
 
 CREATE INDEX index_emails_on_created_at_where_confirmed_at_is_null ON emails USING btree (created_at) WHERE (confirmed_at IS NULL);
 
+CREATE INDEX index_emails_on_detumbled_email ON emails USING btree (detumbled_email);
+
 CREATE UNIQUE INDEX index_emails_on_email ON emails USING btree (email);
 
 CREATE INDEX index_emails_on_email_trigram ON emails USING gin (email gin_trgm_ops);
