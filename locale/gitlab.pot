@@ -19767,7 +19767,22 @@ msgstr ""
 msgid "DuoProDiscover|Accelerate your path to market"
 msgstr ""
 
+msgid "DuoProDiscover|Access Chat from the GitLab UI or your preferred IDE."
+msgstr ""
+
 msgid "DuoProDiscover|Adopt AI with guardrails"
+msgstr ""
+
+msgid "DuoProDiscover|Automates repetitive tasks and helps catch bugs early."
+msgstr ""
+
+msgid "DuoProDiscover|Chat from any location"
+msgstr ""
+
+msgid "DuoProDiscover|Code explanation"
+msgstr ""
+
+msgid "DuoProDiscover|Code refactoring"
 msgstr ""
 
 msgid "DuoProDiscover|Committed to transparent AI"
@@ -19782,16 +19797,31 @@ msgstr ""
 msgid "DuoProDiscover|Give your developers a single platform that integrates the best AI model for each use case across the entire workflow, from understanding code to fixing security vulnerabilities."
 msgstr ""
 
+msgid "DuoProDiscover|Helps you understand code by explaining it in natural language."
+msgstr ""
+
 msgid "DuoProDiscover|Improve developer experience"
 msgstr ""
 
+msgid "DuoProDiscover|Read documentation"
+msgstr ""
+
 msgid "DuoProDiscover|Ship software faster and more securely with AI integrated into your entire DevSecOps lifecycle."
+msgstr ""
+
+msgid "DuoProDiscover|Test generation"
+msgstr ""
+
+msgid "DuoProDiscover|What's new in GitLab Duo Chat"
 msgstr ""
 
 msgid "DuoProDiscover|Why GitLab Duo?"
 msgstr ""
 
 msgid "DuoProDiscover|With GitLab Duo, you control which users, projects, and groups can use AI-powered capabilities. Also, your organization's proprietary code and data aren't used to train AI models."
+msgstr ""
+
+msgid "DuoProDiscover|Work to improve existing code quality."
 msgstr ""
 
 msgid "DuoProTrial|Activate my trial"

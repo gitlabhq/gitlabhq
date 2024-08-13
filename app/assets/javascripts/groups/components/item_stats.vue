@@ -83,7 +83,7 @@ export default {
       data-testid="star-count"
       icon-name="star"
     />
-    <div v-if="isProject" class="last-updated gl-font-sm">
+    <div v-if="isProject" class="last-updated gl-text-sm">
       <time-ago-tooltip :time="item.lastActivityAt" tooltip-placement="bottom" />
     </div>
   </div>

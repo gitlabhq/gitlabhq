@@ -21,6 +21,7 @@ export const simpleViewerMock = {
   environmentFormattedExternalUrl: '',
   environmentExternalUrlForRouteMap: '',
   canModifyBlob: true,
+  canModifyBlobWithWebIde: true,
   canCurrentUserPushToBranch: true,
   archived: false,
   storedExternally: false,

@@ -39,7 +39,7 @@ export default {
 </script>
 
 <template>
-  <ul class="groups-list group-list-tree gl-display-flex gl-flex-direction-column gl-m-0">
+  <ul class="groups-list group-list-tree gl-m-0 gl-flex gl-flex-col">
     <!-- eslint-disable-next-line vue/no-undef-components -->
     <group-item
       v-for="(group, index) in groups"

@@ -29,14 +29,14 @@ export default {
   },
   linkClasses: [
     'gl-border',
-    'gl-text-decoration-none!',
+    '!gl-no-underline',
     'gl-rounded-base',
     'gl-p-7',
-    'gl-display-flex',
+    'gl-flex',
     'gl-h-full',
-    'gl-align-items-center',
+    'gl-items-center',
     'gl-text-purple-600',
-    'gl-hover-bg-gray-50',
+    'hover:gl-bg-gray-50',
   ],
   inject: [
     'newSubgroupPath',
@@ -53,28 +53,28 @@ export default {
 
 <template>
   <div v-if="canCreateSubgroups || canCreateProjects" class="gl-mt-5">
-    <div class="gl-display-flex -gl-mx-3 -gl-my-3 gl-flex-wrap">
-      <div v-if="canCreateSubgroups" class="gl-p-3 gl-w-full gl-sm-w-half">
+    <div class="-gl-mx-3 -gl-my-3 gl-flex gl-flex-wrap">
+      <div v-if="canCreateSubgroups" class="gl-w-full gl-p-3 sm:gl-w-1/2">
         <gl-link :href="newSubgroupPath" :class="$options.linkClasses">
-          <div class="svg-content gl-w-15 gl-flex-shrink-0 gl-mr-5">
+          <div class="svg-content gl-mr-5 gl-w-15 gl-shrink-0">
             <img :src="newSubgroupIllustration" :alt="$options.i18n.withLinks.subgroup.title" />
           </div>
           <div>
             <h4 class="gl-text-inherit">{{ $options.i18n.withLinks.subgroup.title }}</h4>
-            <p class="gl-text-body">
+            <p class="gl-text-primary">
               {{ $options.i18n.withLinks.subgroup.description }}
             </p>
           </div>
         </gl-link>
       </div>
-      <div v-if="canCreateProjects" class="gl-p-3 gl-w-full gl-sm-w-half">
+      <div v-if="canCreateProjects" class="gl-w-full gl-p-3 sm:gl-w-1/2">
         <gl-link :href="newProjectPath" :class="$options.linkClasses">
-          <div class="svg-content gl-w-13 gl-flex-shrink-0 gl-mr-5">
+          <div class="svg-content gl-mr-5 gl-w-13 gl-shrink-0">
             <img :src="newProjectIllustration" :alt="$options.i18n.withLinks.project.title" />
           </div>
           <div>
             <h4 class="gl-text-inherit">{{ $options.i18n.withLinks.project.title }}</h4>
-            <p class="gl-text-body">
+            <p class="gl-text-primary">
               {{ $options.i18n.withLinks.project.description }}
             </p>
           </div>

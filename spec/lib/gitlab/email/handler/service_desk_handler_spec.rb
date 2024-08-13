@@ -461,7 +461,7 @@ RSpec.describe Gitlab::Email::Handler::ServiceDeskHandler, feature_category: :se
             expect do
               receiver.execute
             end.to enqueue_mail_with(Notify, :service_desk_thank_you_email)
-              .and(not_enqueue_mail_with(Notify, :note_issue_email))
+              .and(not_enqueue_mail_with(Notify, :service_desk_new_note_email))
           end
         end
       end

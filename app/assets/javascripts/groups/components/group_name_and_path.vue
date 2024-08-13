@@ -292,7 +292,7 @@ export default {
       <gl-form-input
         :id="fields.name.id"
         v-model="name"
-        class="gl-field-error-ignore gl-h-auto!"
+        class="gl-field-error-ignore !gl-h-auto"
         required
         :name="fields.name.name"
         :placeholder="$options.i18n.inputs.name.placeholder"
@@ -315,13 +315,13 @@ export default {
       <gl-form-group v-if="newSubgroup" class="col-sm-6 gl-pr-0" :label="inputLabels.subgroupPath">
         <div class="input-group gl-flex-nowrap">
           <gl-button-group class="gl-w-full">
-            <gl-button class="js-group-namespace-button gl-text-truncate gl-flex-grow-0!" label>
+            <gl-button class="js-group-namespace-button !gl-grow-0 gl-truncate" label>
               {{ basePath }}
             </gl-button>
 
             <gl-dropdown
-              class="js-group-namespace-dropdown gl-flex-grow-1"
-              toggle-class="gl-rounded-top-right-base! gl-rounded-bottom-right-base! gl-w-20"
+              class="js-group-namespace-dropdown gl-grow"
+              toggle-class="!gl-rounded-tr-base !gl-rounded-br-base gl-w-20"
               @shown="handleDropdownShown"
             >
               <template #button-text>
@@ -355,7 +355,7 @@ export default {
             </gl-dropdown>
           </gl-button-group>
 
-          <div class="gl-align-self-center gl-pl-5">
+          <div class="gl-self-center gl-pl-5">
             <span class="gl-hidden md:gl-inline">/</span>
           </div>
         </div>
@@ -378,7 +378,7 @@ export default {
           </template>
           <gl-form-input
             :id="fields.path.id"
-            class="gl-field-error-ignore gl-h-auto!"
+            class="gl-field-error-ignore !gl-h-auto"
             :name="fields.path.name"
             :value="computedPath"
             :placeholder="$options.i18n.inputs.path.placeholder"

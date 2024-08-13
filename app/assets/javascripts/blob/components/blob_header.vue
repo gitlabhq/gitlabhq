@@ -75,6 +75,11 @@ export default {
       required: false,
       default: false,
     },
+    showWebIdeForkSuggestion: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     projectPath: {
       type: String,
       required: false,
@@ -161,6 +166,7 @@ export default {
         :edit-url="blob.editBlobPath"
         :web-ide-url="blob.ideEditPath"
         :needs-to-fork="showForkSuggestion"
+        :needs-to-fork-with-web-ide="showWebIdeForkSuggestion"
         :show-pipeline-editor-button="Boolean(blob.pipelineEditorPath)"
         :pipeline-editor-url="blob.pipelineEditorPath"
         :gitpod-url="blob.gitpodBlobUrl"

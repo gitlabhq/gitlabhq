@@ -49,7 +49,7 @@ describe('ItemActions', () => {
     it('renders component template correctly', () => {
       createComponent();
 
-      expect(wrapper.classes()).toContain('gl-display-flex', 'gl-justify-content-end', 'gl-ml-5');
+      expect(wrapper.classes()).toContain('gl-flex', 'gl-content-end', 'gl-ml-5');
     });
 
     it('renders "Edit" group button with correct attribute values', () => {

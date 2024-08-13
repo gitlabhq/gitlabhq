@@ -114,7 +114,7 @@ export default {
       return labelPieces.join(', ') || this.label;
     },
     toggleClass() {
-      return this.toggleLabel === this.label ? 'gl-text-gray-500!' : '';
+      return this.toggleLabel === this.label ? '!gl-text-gray-500' : '';
     },
     selection() {
       return [

@@ -158,7 +158,7 @@ export default {
   >
     <div
       :class="{ 'project-row-contents': !isGroup }"
-      class="group-row-contents gl-flex gl-items-center py-2 pr-3"
+      class="group-row-contents py-2 pr-3 gl-flex gl-items-center"
     >
       <div class="folder-toggle-wrap gl-mr-2 !gl-flex gl-items-center">
         <gl-button
@@ -176,11 +176,11 @@ export default {
       <gl-loading-icon
         v-if="group.isChildrenLoading"
         size="lg"
-        class="gl-hidden sm:gl-inline-flex flex-shrink-0 gl-mr-3"
+        class="flex-shrink-0 gl-mr-3 gl-hidden sm:gl-inline-flex"
       />
       <a
         :class="{ 'sm:gl-flex': !group.isChildrenLoading }"
-        class="gl-hidden gl-text-decoration-none! gl-mr-3"
+        class="gl-mr-3 gl-hidden !gl-no-underline"
         :href="group.relativePath"
         :aria-label="group.name"
       >
@@ -192,17 +192,17 @@ export default {
           :project-name="group.name"
         />
       </a>
-      <div class="group-text-container !gl-flex flex-fill gl-align-items-center">
+      <div class="group-text-container flex-fill !gl-flex gl-items-center">
         <div class="group-text flex-grow-1 flex-shrink-1">
           <div
-            class="gl-flex gl-align-items-center gl-flex-wrap title namespace-title gl-font-bold gl-mr-3"
+            class="title namespace-title gl-mr-3 gl-flex gl-flex-wrap gl-items-center gl-font-bold"
           >
             <a
               v-gl-tooltip.bottom
               data-testid="group-name"
               :href="group.relativePath"
               :title="group.fullName"
-              class="no-expand gl-mr-3 gl-text-gray-900! gl-break-anywhere"
+              class="no-expand gl-mr-3 !gl-text-gray-900 gl-break-anywhere"
               :itemprop="microdata.nameItemprop"
             >
               <!-- ending bracket must be by closing tag to prevent -->
@@ -219,7 +219,7 @@ export default {
             <template v-if="shouldShowVisibilityWarning">
               <gl-button
                 ref="visibilityWarningButton"
-                class="gl-p-1! gl-bg-transparent! gl-mr-3"
+                class="gl-mr-3 !gl-bg-transparent !gl-p-1"
                 category="tertiary"
                 icon="warning"
                 :aria-label="$options.i18n.popoverTitle"
@@ -233,7 +233,7 @@ export default {
                 {{ $options.i18n.popoverBody }}
                 <div class="gl-mt-3">
                   <gl-link
-                    class="gl-font-sm"
+                    class="gl-text-sm"
                     :href="$options.shareProjectsWithGroupsHelpPagePath"
                     >{{ $options.i18n.learnMore }}</gl-link
                   >
@@ -244,7 +244,7 @@ export default {
               {{ group.permission }}
             </user-access-role-badge>
           </div>
-          <div v-if="group.description" class="description gl-font-sm gl-mt-1">
+          <div v-if="group.description" class="description gl-mt-1 gl-text-sm">
             <span
               v-safe-html:[$options.safeHtmlConfig]="group.description"
               :itemprop="microdata.descriptionItemprop"
@@ -259,13 +259,8 @@ export default {
         <div v-else-if="group.archived">
           <gl-badge variant="info">{{ __('Archived') }}</gl-badge>
         </div>
-        <div
-          class="metadata gl-flex gl-flex-grow-1 gl-flex-shrink-0 gl-flex-wrap justify-content-md-between"
-        >
-          <item-stats
-            :item="group"
-            class="group-stats gl-hidden md:gl-flex gl-align-items-center"
-          />
+        <div class="metadata justify-content-md-between gl-flex gl-shrink-0 gl-grow gl-flex-wrap">
+          <item-stats :item="group" class="group-stats gl-hidden gl-items-center md:gl-flex" />
           <item-actions
             v-if="showActionsMenu"
             :group="group"
